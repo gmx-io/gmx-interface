@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useSWRConfig } from "swr";
 
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import { ApiHealthTracker } from "domain/api/apiHealthTracker";
 import { useApiDataRequest } from "domain/synthetics/common/useApiDataRequest";
 import { FreshnessMetricId } from "lib/metrics";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -10,9 +11,25 @@ import { mergeMarketsConfigValues } from "sdk/utils/markets";
 import type { RawMarketConfig, RawMarketsInfoData, RawMarketValues } from "sdk/utils/markets/types";
 
 const CONFIG_REVALIDATION_THROTTLE_MS = 10_000;
+export const MARKETS_STALE_THRESHOLD_MS = 10_000;
 
 function getApiMarketsConfigRequestKey(chainId: ContractsChainId) {
   return ["apiMarketsConfigRequest", chainId] as const;
+}
+
+export function hasStaleMarketValues(
+  valuesData: RawMarketValues[] | undefined,
+  disabledAddresses: Set<string>
+): boolean {
+  if (!valuesData) {
+    return false;
+  }
+  const now = Date.now();
+  return valuesData.some(
+    (value) =>
+      !disabledAddresses.has(value.marketTokenAddress) &&
+      (value.updatedAt == null || now - value.updatedAt > MARKETS_STALE_THRESHOLD_MS)
+  );
 }
 
 export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = true }: { enabled?: boolean } = {}) {
@@ -69,9 +86,30 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
     return mergeMarketsConfigValues(configData, valuesData);
   }, [configData, valuesData]);
 
+  // Exclude disabled markets — they are never pulled (updatedAt null) and would pin the API permanently stale.
+  const disabledMarketAddresses = useMemo(
+    () => new Set((configData ?? []).filter((config) => config.isDisabled).map((config) => config.marketTokenAddress)),
+    [configData]
+  );
+
+  const isMarketsDataStale = useMemo(
+    () => (configData ? hasStaleMarketValues(valuesData, disabledMarketAddresses) : false),
+    [configData, valuesData, disabledMarketAddresses]
+  );
+
+  useEffect(() => {
+    if (!configData) {
+      return;
+    }
+    ApiHealthTracker.getInstance().reportMarketsFreshness(
+      chainId,
+      hasStaleMarketValues(valuesData, disabledMarketAddresses)
+    );
+  }, [chainId, configData, valuesData, disabledMarketAddresses]);
+
   return {
     marketsInfoData,
-    isStale: isValuesStale || isConfigStale,
+    isStale: isValuesStale || isConfigStale || isMarketsDataStale,
     error: valuesError ?? configError,
   };
 }

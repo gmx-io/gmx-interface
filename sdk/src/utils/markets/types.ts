@@ -250,7 +250,9 @@ export type RawMarketsInfoData = {
   [marketAddress: string]: RawMarketInfo;
 };
 
-export type RawMarketValues = Pick<RawMarketInfo, "marketTokenAddress" | keyof MarketValues>;
+export type RawMarketValues = Pick<RawMarketInfo, "marketTokenAddress" | keyof MarketValues> & {
+  updatedAt: number | null;
+};
 
 export type RawMarketConfig = Omit<RawMarketInfo, keyof MarketValues>;
 
