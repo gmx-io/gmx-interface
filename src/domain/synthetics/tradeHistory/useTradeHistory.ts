@@ -131,12 +131,16 @@ export function useTradeHistory(
   const hasPopulatedData = data !== undefined && data.every((p) => p !== undefined);
   const isLoading = (!error && !hasPopulatedData) || !marketsInfoData || !tokensData;
 
-  // Cache processed rows per raw page so a crawl only processes the newly fetched page,
-  // not the whole accumulated array each step. Rebuilt when the processing inputs change.
+  // The position-lifecycle filter crawls older pages one at a time (see the setPageIndex effect in
+  // TradeHistory). Without caching, every crawl step would re-run processRawTradeActions over all
+  // pages loaded so far (O(n^2) as the crawl grows). Cache the processed result per raw page, keyed
+  // by page identity, and rebuild only when a processing input changes (chain, markets/tokens, or
+  // the collateral filter that processRawTradeActions applies client-side).
   const processedPagesCacheRef = useRef<{
     chainId: number;
     marketsInfoData: ReturnType<typeof useMarketsInfoData>;
     tokensData: ReturnType<typeof useTokensData>;
+    marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
     byRawPage: WeakMap<SubsquidTradeAction[], TradeAction[]>;
   } | null>(null);
 
@@ -150,9 +154,10 @@ export function useTradeHistory(
       !cache ||
       cache.chainId !== chainId ||
       cache.marketsInfoData !== marketsInfoData ||
-      cache.tokensData !== tokensData
+      cache.tokensData !== tokensData ||
+      cache.marketsDirectionsFilter !== marketsDirectionsFilter
     ) {
-      cache = { chainId, marketsInfoData, tokensData, byRawPage: new WeakMap() };
+      cache = { chainId, marketsInfoData, tokensData, marketsDirectionsFilter, byRawPage: new WeakMap() };
       processedPagesCacheRef.current = cache;
     }
 
@@ -165,7 +170,14 @@ export function useTradeHistory(
 
       let processed = cache.byRawPage.get(rawPage);
       if (!processed) {
-        processed = processRawTradeActions({ chainId, rawActions: rawPage, marketsInfoData, tokensData }) ?? [];
+        processed =
+          processRawTradeActions({
+            chainId,
+            rawActions: rawPage,
+            marketsInfoData,
+            tokensData,
+            marketsDirectionsFilter,
+          }) ?? [];
         cache.byRawPage.set(rawPage, processed);
       }
 
@@ -173,7 +185,7 @@ export function useTradeHistory(
     }
 
     return result;
-  }, [data, marketsInfoData, tokensData, chainId]);
+  }, [data, marketsInfoData, tokensData, chainId, marketsDirectionsFilter]);
 
   const totalCount = data?.find((page) => page?.totalCount !== undefined)?.totalCount;
   const loadedRawActionsCount = data?.reduce((count, page) => count + (page?.tradeActions.length ?? 0), 0) ?? 0;
@@ -238,7 +250,7 @@ export async function fetchRawTradeActions({
     .map((filter) => ({
       marketAddress: filter.marketAddress as Address,
       direction: filter.direction,
-      positionKey: filter.positionKey,
+      collateralAddress: filter.collateralAddress as Address,
     }));
 
   const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFilters.length > 0;
@@ -294,16 +306,11 @@ export async function fetchRawTradeActions({
                     orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
                   },
                   {
-                    // Open-position entries carry a positionKey (account+market+collateral+direction),
-                    // so filter by it directly instead of market+direction + client-side collateral.
-                    OR: nonSwapRelevantDefinedFilters.map((filter) =>
-                      filter.positionKey
-                        ? { positionKey_eq: filter.positionKey }
-                        : {
-                            marketAddress_eq: filter.marketAddress === "any" ? undefined : filter.marketAddress,
-                            isLong_eq: filter.direction === "any" ? undefined : filter.direction === "long",
-                          }
-                    ),
+                    OR: nonSwapRelevantDefinedFilters.map((filter) => ({
+                      marketAddress_eq: filter.marketAddress === "any" ? undefined : filter.marketAddress,
+                      isLong_eq: filter.direction === "any" ? undefined : filter.direction === "long",
+                      // Collateral filtering is done outside of graphql on the client
+                    })),
                   },
                 ],
           },
@@ -380,16 +387,9 @@ export async function fetchRawTradeActions({
 
   const whereClause = `where: ${filtersStr}`;
 
-  // totalCount only changes with filters, not offset, so request it once on the first page.
-  const includeTotalCount = offset === 0;
-
   const query = gql(`{
-        ${
-          includeTotalCount
-            ? `tradeActionsConnection(orderBy: [timestamp_DESC, id_DESC], ${whereClause}) {
+        tradeActionsConnection(orderBy: [timestamp_DESC, id_DESC], ${whereClause}) {
           totalCount
-        }`
-            : ""
         }
 
         tradeActions(

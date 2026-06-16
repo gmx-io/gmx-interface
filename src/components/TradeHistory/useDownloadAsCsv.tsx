@@ -77,8 +77,6 @@ export function useDownloadAsCsv({
       const aggregatedTradeActions: (PositionTradeAction | SwapTradeAction)[] = [];
       let currentPageIndex = 0;
       let hasMorePages = true;
-      // totalCount is only returned on the first page; keep it for the later pages.
-      let totalCount: number | undefined;
 
       const fetchParams = resolveTradeHistoryFetchParams({
         positionLifecycleFilter,
@@ -106,14 +104,10 @@ export function useDownloadAsCsv({
         );
         const rawPage = rawPageResult?.tradeActions;
 
-        if (rawPageResult?.totalCount !== undefined) {
-          totalCount = rawPageResult.totalCount;
-        }
-
         // Use raw page length; processing can drop rows.
         hasMorePages =
-          totalCount !== undefined
-            ? (currentPageIndex + 1) * PAGE_SIZE < totalCount
+          rawPageResult?.totalCount !== undefined
+            ? (currentPageIndex + 1) * PAGE_SIZE < rawPageResult.totalCount
             : Boolean(rawPage && rawPage.length === PAGE_SIZE);
 
         const processedPage = processRawTradeActions({
@@ -121,6 +115,7 @@ export function useDownloadAsCsv({
           rawActions: rawPage,
           marketsInfoData,
           tokensData,
+          marketsDirectionsFilter: fetchParams.marketsDirectionsFilter,
         }) as (PositionTradeAction | SwapTradeAction)[] | undefined;
 
         if (processedPage && processedPage.length) {

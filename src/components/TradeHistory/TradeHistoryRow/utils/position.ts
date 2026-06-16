@@ -25,7 +25,8 @@ import {
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
-  getBasisPointsValue,
+  getBasisPoints,
+  roundsToZero,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
@@ -808,7 +809,9 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
 
 function getPriceImpactLine(label: string, priceImpactUsd: bigint | undefined, sizeDeltaUsd: bigint): Line {
   const state = numberToState(priceImpactUsd);
-  const bpsText = formatBasisPoints(getBasisPointsValue(priceImpactUsd, sizeDeltaUsd));
+  const bpsText = formatBasisPoints(
+    priceImpactUsd !== undefined && sizeDeltaUsd > 0n ? getBasisPoints(priceImpactUsd, sizeDeltaUsd) : undefined
+  );
 
   return infoRow(
     label,
@@ -875,16 +878,6 @@ function getSizeComment(tradeAction: PositionTradeAction): Line[] | undefined {
   }
 
   return lines(infoRow(t`Margin delta`, formattedMarginDelta));
-}
-
-function roundsToZero(amount: bigint, decimals: number, displayDecimals: number) {
-  const hiddenDecimals = decimals - displayDecimals;
-
-  if (hiddenDecimals <= 0) {
-    return false;
-  }
-
-  return bigMath.abs(amount) < 10n ** BigInt(hiddenDecimals);
 }
 
 export function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {

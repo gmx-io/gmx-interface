@@ -20,7 +20,7 @@ import {
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatBalanceAmount, formatBasisPoints, formatDeltaUsd, formatUsd, getBasisPointsValue } from "lib/numbers";
+import { formatBalanceAmount, formatBasisPoints, formatDeltaUsd, formatUsd, getBasisPoints } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
@@ -103,7 +103,7 @@ export function PositionItem(p: Props) {
 
   function renderNetValue() {
     const netPriceImpactBps = formatBasisPoints(
-      getBasisPointsValue(p.position.netPriceImapctDeltaUsd, p.position.sizeInUsd)
+      p.position.sizeInUsd > 0n ? getBasisPoints(p.position.netPriceImapctDeltaUsd, p.position.sizeInUsd) : undefined
     );
 
     return (

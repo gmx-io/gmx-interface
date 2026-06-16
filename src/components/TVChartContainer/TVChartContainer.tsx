@@ -309,6 +309,7 @@ export default function TVChartContainer({
           rawActions: raw,
           marketsInfoData: markets,
           tokensData,
+          marketsDirectionsFilter: undefined,
         });
 
         (processed || []).forEach((pa) => {

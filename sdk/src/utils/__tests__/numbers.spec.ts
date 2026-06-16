@@ -18,7 +18,6 @@ import {
   formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
-  getBasisPointsValue,
   numberToBigint,
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
@@ -26,6 +25,7 @@ import {
   trimZeroDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
+  roundsToZero,
   toBigNumberWithDecimals,
 } from "utils/numbers";
 
@@ -547,18 +547,20 @@ describe("formatTokenAmount", () => {
   });
 });
 
-describe("getBasisPointsValue", () => {
-  it("calculates basis points from signed delta and positive basis", () => {
-    expect(getBasisPointsValue(-1682n * 10n ** 28n, 207019n * 10n ** 28n)).toBe(-81n);
-    expect(getBasisPointsValue(50n, 10000n)).toBe(50n);
-    expect(getBasisPointsValue(0n, 10000n)).toBe(0n);
+describe("roundsToZero", () => {
+  it("is true when the amount is below the smallest displayed unit", () => {
+    expect(roundsToZero(5n, 18, 4)).toBe(true);
+    expect(roundsToZero(-5n, 18, 4)).toBe(true);
+    expect(roundsToZero(0n, 18, 4)).toBe(true);
   });
 
-  it("returns undefined for missing or non-positive basis", () => {
-    expect(getBasisPointsValue(undefined, 100n)).toBeUndefined();
-    expect(getBasisPointsValue(100n, undefined)).toBeUndefined();
-    expect(getBasisPointsValue(100n, 0n)).toBeUndefined();
-    expect(getBasisPointsValue(100n, -1n)).toBeUndefined();
+  it("is false when the amount reaches the smallest displayed unit", () => {
+    expect(roundsToZero(10n ** 14n, 18, 4)).toBe(false);
+  });
+
+  it("is false when no decimals are hidden", () => {
+    expect(roundsToZero(1n, 6, 6)).toBe(false);
+    expect(roundsToZero(1n, 4, 6)).toBe(false);
   });
 });
 

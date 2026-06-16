@@ -79,14 +79,6 @@ export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRou
   return result;
 }
 
-export function getBasisPointsValue(deltaUsd: bigint | undefined, basisUsd: bigint | undefined): bigint | undefined {
-  if (deltaUsd === undefined || basisUsd === undefined || basisUsd <= 0n) {
-    return undefined;
-  }
-
-  return getBasisPoints(deltaUsd, basisUsd);
-}
-
 export function formatBasisPoints(bpsValue: bigint | undefined): string | undefined {
   if (bpsValue === undefined) {
     return undefined;
@@ -103,6 +95,17 @@ export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
   }
 
   return (a + b - 1n) / b;
+}
+
+// True when an amount is below the smallest unit shown at displayDecimals (i.e. it would render as zero).
+export function roundsToZero(amount: bigint, decimals: number, displayDecimals: number) {
+  const hiddenDecimals = decimals - displayDecimals;
+
+  if (hiddenDecimals <= 0) {
+    return false;
+  }
+
+  return bigMath.abs(amount) < 10n ** BigInt(hiddenDecimals);
 }
 
 export function applyFactor(value: bigint, factor: bigint) {
