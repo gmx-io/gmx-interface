@@ -104,13 +104,10 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
     [configData]
   );
 
-  const isMarketsDataStale = useMemo(() => {
-    const stale = hasStaleMarketValues(configData, valuesData, disabledMarketAddresses);
-    if (configData) {
-      ApiHealthTracker.getInstance().reportMarketsFreshness(chainId, stale);
-    }
-    return stale;
-  }, [chainId, configData, valuesData, disabledMarketAddresses]);
+  const isMarketsDataStale = hasStaleMarketValues(configData, valuesData, disabledMarketAddresses);
+  if (configData) {
+    ApiHealthTracker.getInstance().reportMarketsFreshness(chainId, isMarketsDataStale);
+  }
 
   return {
     marketsInfoData,
