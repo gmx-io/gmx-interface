@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import merge from "lodash/merge";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { SWRConfiguration } from "swr";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
@@ -131,15 +131,48 @@ export function useTradeHistory(
   const hasPopulatedData = data !== undefined && data.every((p) => p !== undefined);
   const isLoading = (!error && !hasPopulatedData) || !marketsInfoData || !tokensData;
 
-  const tradeActions = useMemo(() => {
-    const allRawData = data?.flatMap((page) => page?.tradeActions ?? []);
+  // Cache processed rows per raw page so a crawl only processes the newly fetched page,
+  // not the whole accumulated array each step. Rebuilt when the processing inputs change.
+  const processedPagesCacheRef = useRef<{
+    chainId: number;
+    marketsInfoData: ReturnType<typeof useMarketsInfoData>;
+    tokensData: ReturnType<typeof useTokensData>;
+    byRawPage: WeakMap<SubsquidTradeAction[], TradeAction[]>;
+  } | null>(null);
 
-    return processRawTradeActions({
-      chainId,
-      rawActions: allRawData,
-      marketsInfoData,
-      tokensData,
-    });
+  const tradeActions = useMemo(() => {
+    if (!data || !marketsInfoData || !tokensData) {
+      return undefined;
+    }
+
+    let cache = processedPagesCacheRef.current;
+    if (
+      !cache ||
+      cache.chainId !== chainId ||
+      cache.marketsInfoData !== marketsInfoData ||
+      cache.tokensData !== tokensData
+    ) {
+      cache = { chainId, marketsInfoData, tokensData, byRawPage: new WeakMap() };
+      processedPagesCacheRef.current = cache;
+    }
+
+    const result: TradeAction[] = [];
+    for (const page of data) {
+      const rawPage = page?.tradeActions;
+      if (!rawPage?.length) {
+        continue;
+      }
+
+      let processed = cache.byRawPage.get(rawPage);
+      if (!processed) {
+        processed = processRawTradeActions({ chainId, rawActions: rawPage, marketsInfoData, tokensData }) ?? [];
+        cache.byRawPage.set(rawPage, processed);
+      }
+
+      result.push(...processed);
+    }
+
+    return result;
   }, [data, marketsInfoData, tokensData, chainId]);
 
   const totalCount = data?.find((page) => page?.totalCount !== undefined)?.totalCount;
@@ -347,9 +380,16 @@ export async function fetchRawTradeActions({
 
   const whereClause = `where: ${filtersStr}`;
 
+  // totalCount only changes with filters, not offset, so request it once on the first page.
+  const includeTotalCount = offset === 0;
+
   const query = gql(`{
-        tradeActionsConnection(orderBy: [timestamp_DESC, id_DESC], ${whereClause}) {
+        ${
+          includeTotalCount
+            ? `tradeActionsConnection(orderBy: [timestamp_DESC, id_DESC], ${whereClause}) {
           totalCount
+        }`
+            : ""
         }
 
         tradeActions(
