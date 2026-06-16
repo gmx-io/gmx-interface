@@ -16,7 +16,6 @@ import {
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { clamp, formatUsd } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Loader from "components/Loader/Loader";
@@ -146,14 +145,6 @@ export function DailyAndCumulativePnLChart({
   );
   const visibleStartIndex = normalizedZoomWindow?.startIndex ?? 0;
   const visibleEndIndex = normalizedZoomWindow?.endIndex ?? Math.max(chartPnlData.length - 1, 0);
-  const rechartsPnlData = useMemo(() => {
-    // Recharts refreshes Bar's previous geometry only when chart data changes.
-    if (visibleStartIndex > visibleEndIndex) {
-      return EMPTY_ARRAY as ChartPnlHistoryPoint[];
-    }
-
-    return chartPnlData.slice();
-  }, [chartPnlData, visibleEndIndex, visibleStartIndex]);
   const barXAxisDomain = useMemo<[number, number]>(
     () => [visibleStartIndex - 0.25, visibleEndIndex + 0.25],
     [visibleEndIndex, visibleStartIndex]
@@ -163,6 +154,7 @@ export function DailyAndCumulativePnLChart({
     [visibleEndIndex, visibleStartIndex]
   );
   const xAxisTicks = useMemo(() => visibleChartPnlData.map((point) => point.chartIndex), [visibleChartPnlData]);
+  const pnlBarCells = useMemo(() => visibleChartPnlData.map(renderPnlBar), [visibleChartPnlData]);
   const periodPnlYAxisTicks = useMemo(
     () =>
       showDebugValues
@@ -618,7 +610,7 @@ export function DailyAndCumulativePnLChart({
           <ComposedChart
             width={500}
             height={300}
-            data={rechartsPnlData}
+            data={visibleChartPnlData}
             barCategoryGap={showDebugValues ? DEBUG_BAR_CATEGORY_GAP : BAR_CATEGORY_GAP}
             barGap={showDebugValues ? DEBUG_BAR_GAP : BAR_GAP}
             margin={chartMargin}
@@ -639,7 +631,7 @@ export function DailyAndCumulativePnLChart({
               radius={2}
               isAnimationActive={isBarAnimationActive}
             >
-              {chartPnlData.map(renderPnlBar)}
+              {pnlBarCells}
             </Bar>
 
             <defs>

@@ -9,6 +9,7 @@ import type { FromOldToNewArray } from "domain/tradingview/types";
 import {
   SECONDS_IN_DAY,
   formatDateTime,
+  toUtcDayEndByCalendarDate,
   toUtcDayStartByCalendarDate,
   type DateRange,
   type SetDateRange,
@@ -53,7 +54,7 @@ export function DailyAndCumulativePnL({
 }) {
   const [fromDate, toDate] = dateRange;
   const fromTimestamp = useMemo(() => fromDate && toUtcDayStartByCalendarDate(fromDate), [fromDate]);
-  const toTimestamp = useMemo(() => toDate && toUtcDayStartByCalendarDate(toDate), [toDate]);
+  const toTimestamp = useMemo(() => toDate && toUtcDayEndByCalendarDate(toDate), [toDate]);
   const [userGrouping, setUserGrouping] = useState<PnlChartGrouping | undefined>(undefined);
 
   const {

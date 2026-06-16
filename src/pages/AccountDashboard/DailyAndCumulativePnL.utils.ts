@@ -204,10 +204,6 @@ function getBucketCompactLabel(startTimestamp: number, grouping: PnlChartGroupin
     return formatPnlChartMonth(startTimestamp);
   }
 
-  if (grouping === "weekly") {
-    return formatPnlChartCompactDate(startTimestamp);
-  }
-
   return formatPnlChartCompactDate(startTimestamp);
 }
 
