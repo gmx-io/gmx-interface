@@ -490,10 +490,7 @@ export function composeRawMarketsInfoData({
   return data;
 }
 
-export function mergeMarketsConfigValues(
-  configs: RawMarketConfig[],
-  values: RawMarketValues[]
-): RawMarketsInfoData {
+export function mergeMarketsConfigValues(configs: RawMarketConfig[], values: RawMarketValues[]): RawMarketsInfoData {
   const valuesByAddress = new Map(values.map((value) => [value.marketTokenAddress, value]));
   const data: RawMarketsInfoData = {};
 
@@ -503,7 +500,8 @@ export function mergeMarketsConfigValues(
       continue;
     }
 
-    data[config.marketTokenAddress] = { ...config, ...value } as RawMarketInfo;
+    const { updatedAt: _updatedAt, ...valueFields } = value;
+    data[config.marketTokenAddress] = { ...config, ...valueFields } as RawMarketInfo;
   }
 
   return data;
