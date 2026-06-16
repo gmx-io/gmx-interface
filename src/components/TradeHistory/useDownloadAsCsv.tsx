@@ -115,7 +115,6 @@ export function useDownloadAsCsv({
           rawActions: rawPage,
           marketsInfoData,
           tokensData,
-          marketsDirectionsFilter: fetchParams.marketsDirectionsFilter,
         }) as (PositionTradeAction | SwapTradeAction)[] | undefined;
 
         if (processedPage && processedPage.length) {

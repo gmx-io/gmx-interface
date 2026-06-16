@@ -28,6 +28,8 @@ export type MarketFilterLongShortItemData = {
   marketAddress: Address | "any";
   direction: MarketFilterLongShortDirection;
   collateralAddress?: Address;
+  // Hashed on-chain position key; lets trade history filter a specific position server-side.
+  positionKey?: string;
 };
 
 export type MarketFilterLongShortProps = {
@@ -70,6 +72,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
           marketAddress: position.market.marketTokenAddress as Address,
           direction: position.isLong ? "long" : "short",
           collateralAddress: position.collateralTokenAddress as Address,
+          positionKey: position.contractKey,
         },
       }));
     }

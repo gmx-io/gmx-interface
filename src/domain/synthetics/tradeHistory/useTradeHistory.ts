@@ -139,9 +139,8 @@ export function useTradeHistory(
       rawActions: allRawData,
       marketsInfoData,
       tokensData,
-      marketsDirectionsFilter: marketsDirectionsFilter || EMPTY_ARRAY,
     });
-  }, [data, marketsInfoData, tokensData, marketsDirectionsFilter, chainId]);
+  }, [data, marketsInfoData, tokensData, chainId]);
 
   const totalCount = data?.find((page) => page?.totalCount !== undefined)?.totalCount;
   const loadedRawActionsCount = data?.reduce((count, page) => count + (page?.tradeActions.length ?? 0), 0) ?? 0;
@@ -206,7 +205,7 @@ export async function fetchRawTradeActions({
     .map((filter) => ({
       marketAddress: filter.marketAddress as Address,
       direction: filter.direction,
-      collateralAddress: filter.collateralAddress as Address,
+      positionKey: filter.positionKey,
     }));
 
   const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFilters.length > 0;
@@ -262,11 +261,16 @@ export async function fetchRawTradeActions({
                     orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
                   },
                   {
-                    OR: nonSwapRelevantDefinedFilters.map((filter) => ({
-                      marketAddress_eq: filter.marketAddress === "any" ? undefined : filter.marketAddress,
-                      isLong_eq: filter.direction === "any" ? undefined : filter.direction === "long",
-                      // Collateral filtering is done outside of graphql on the client
-                    })),
+                    // Open-position entries carry a positionKey (account+market+collateral+direction),
+                    // so filter by it directly instead of market+direction + client-side collateral.
+                    OR: nonSwapRelevantDefinedFilters.map((filter) =>
+                      filter.positionKey
+                        ? { positionKey_eq: filter.positionKey }
+                        : {
+                            marketAddress_eq: filter.marketAddress === "any" ? undefined : filter.marketAddress,
+                            isLong_eq: filter.direction === "any" ? undefined : filter.direction === "long",
+                          }
+                    ),
                   },
                 ],
           },
