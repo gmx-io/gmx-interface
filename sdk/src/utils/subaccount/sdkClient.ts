@@ -464,9 +464,7 @@ export async function prepareWithSubaccount<TRequest extends SubaccountPrepareRe
         status = await getSdkSubaccountStatus(client, request.from, { force: true });
       }
       if (!isSubaccountStatusUsable(status)) {
-        throw new Error(
-          "Subaccount is not active. Call activateSubaccount(mainSigner) before preparing express orders."
-        );
+        throw new Error("Subaccount is not active. Call activateSubaccount(mainSigner) before preparing express orders.");
       }
     }
 
