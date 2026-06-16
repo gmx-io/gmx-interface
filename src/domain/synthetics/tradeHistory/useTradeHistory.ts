@@ -154,8 +154,7 @@ export function useTradeHistory(
     isLoading,
     error,
     hasMorePages,
-    // setSize bumps pageIndex synchronously while data keeps the previous pages
-    // until the appended page resolves, so this is the "page in flight" window
+    // SWR keeps old pages while the next one loads.
     isFetchingNextPage: !error && data !== undefined && data.length < pageIndex,
     pageIndex,
     setPageIndex,

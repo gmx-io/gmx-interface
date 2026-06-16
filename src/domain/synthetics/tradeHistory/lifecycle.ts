@@ -33,8 +33,7 @@ export function resolveTradeHistoryFetchParams({
     };
   }
 
-  // Lifecycle mode keeps market filters in GraphQL, but date/action filters can hide close boundaries.
-  // Those display filters are re-applied after the lifecycle segment is found.
+  // Date/action filters can hide lifecycle boundaries.
   return {
     fromTxTimestamp: undefined,
     toTxTimestamp: undefined,
@@ -66,9 +65,7 @@ export function getPositionLifecycleSlice(
     return { tradeActions: [], needsMoreData: true };
   }
 
-  // Actions are sorted newest-first. Assign lifecycle segments walking oldest -> newest:
-  // an executed close ends a segment, but trigger-order cancellations that directly follow
-  // a close (e.g. auto-cancelled TP/SL orders) still belong to the closed lifecycle.
+  // Walk oldest -> newest; post-close trigger cancellations stay in the closed segment.
   const segmentIds = new Array<number>(matchingPositionActions.length);
   let segmentId = 0;
   let closeSeen = false;
@@ -90,9 +87,7 @@ export function getPositionLifecycleSlice(
   const sourceSegmentId = segmentIds[selectedIndex];
   const sliceActions = matchingPositionActions.filter((_, index) => segmentIds[index] === sourceSegmentId);
 
-  // Segment 0 contains the oldest loaded action, so older pages may still hold rows of it.
-  // When close rows lack positionSizeInUsd (legacy data), boundaries are undetectable and
-  // fetching more pages cannot help, so stop requesting data instead of crawling everything.
+  // Segment 0 can continue on older pages; legacy closes lack size boundaries.
   const needsMoreData = sourceSegmentId === 0 && !hasUndetectableCloseActions(matchingPositionActions);
 
   return { tradeActions: sliceActions, needsMoreData };

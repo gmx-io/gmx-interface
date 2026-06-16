@@ -23,8 +23,6 @@ export function filterLifecycleTradeActionsByDisplayFilters({
     return tradeActions;
   }
 
-  // Lifecycle fetches omit date/action filters so boundary rows are available.
-  // Apply them only after the lifecycle segment has been identified.
   return tradeActions.filter((tradeAction) => {
     if (fromTxTimestamp !== undefined && tradeAction.timestamp < fromTxTimestamp) {
       return false;

@@ -104,7 +104,7 @@ export function useDownloadAsCsv({
         );
         const rawPage = rawPageResult?.tradeActions;
 
-        // Pagination must be driven by the raw page length: processing can drop rows
+        // Use raw page length; processing can drop rows.
         hasMorePages =
           rawPageResult?.totalCount !== undefined
             ? (currentPageIndex + 1) * PAGE_SIZE < rawPageResult.totalCount
@@ -122,7 +122,6 @@ export function useDownloadAsCsv({
           aggregatedTradeActions.push(...processedPage);
         }
 
-        // The lifecycle slice only needs pages up to its older close boundary
         if (
           positionLifecycleFilter &&
           !getPositionLifecycleSlice(aggregatedTradeActions, positionLifecycleFilter).needsMoreData
