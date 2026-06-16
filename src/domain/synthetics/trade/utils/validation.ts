@@ -33,6 +33,7 @@ import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError } from "lib/useHasOutdatedUi";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
 import {
@@ -154,6 +155,7 @@ export function getSwapError(p: {
   isExternalSwapLoading: boolean;
   isWrapOrUnwrap: boolean;
   isStakeOrUnstake: boolean;
+  isFromTokenGmxAccount: boolean;
   swapLiquidity: bigint | undefined;
   isTwap: boolean;
   numberOfParts: number;
@@ -170,6 +172,7 @@ export function getSwapError(p: {
     fees,
     isWrapOrUnwrap,
     isStakeOrUnstake,
+    isFromTokenGmxAccount,
     swapLiquidity,
     swapPathStats,
     externalSwapQuote,
@@ -180,6 +183,15 @@ export function getSwapError(p: {
 
   if (!fromToken || !toToken) {
     return { buttonErrorMessage: t`Select a token` };
+  }
+
+  if (isFromTokenGmxAccount && (fromToken.isNative || toToken.isNative)) {
+    const wrappedToken = getWrappedToken(p.chainId);
+    const nativeToken = fromToken.isNative ? fromToken : toToken;
+
+    return {
+      buttonErrorMessage: t`GMX Account swaps cannot use native ${nativeToken.symbol}. Select ${wrappedToken.symbol} or withdraw to wallet first.`,
+    };
   }
 
   if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount <= 0 || fromUsd <= 0) {

@@ -160,6 +160,10 @@ msgstr "Créer un Swap TWAP"
 msgid "Estimated time"
 msgstr "Temps estimé"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "GMX Account swaps cannot use native {0}. Select {1} or withdraw to wallet first."
+msgstr "Les swaps GMX Account ne peuvent pas utiliser le {0} natif. Sélectionnez {1} ou retirez d'abord vers votre portefeuille."
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in leverage display"
 msgstr "Inclure le rPnL dans l'affichage de l'effet de levier"

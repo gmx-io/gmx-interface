@@ -33,6 +33,7 @@ const baseSwapParams = {
   isExternalSwapLoading: false,
   isWrapOrUnwrap: false,
   isStakeOrUnstake: false,
+  isFromTokenGmxAccount: false,
   swapLiquidity: 0n, // < toUsd → triggers Insufficient liquidity by default
   isTwap: false,
   numberOfParts: 1,
@@ -145,5 +146,47 @@ describe("getIncreaseError — isExternalSwapLoading gate", () => {
       } as any,
     });
     expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity to swap collateral");
+  });
+});
+
+describe("getSwapError — GMX Account native token guard", () => {
+  const nativeEth = { ...tokensData.ETH, isNative: true, balance: expandDecimals(100, 18) };
+  const weth = {
+    ...tokensData.ETH,
+    address: "WETH",
+    symbol: "WETH",
+    isWrapped: true,
+    balance: expandDecimals(100, 18),
+  };
+
+  // balance/liquidity pass, so only the GMX Account guard is under test
+  const unwrapParams = {
+    ...baseSwapParams,
+    fromToken: weth,
+    toToken: nativeEth,
+    isWrapOrUnwrap: true,
+    swapLiquidity: expandDecimals(1_000_000, 30),
+  };
+
+  const expectedMessage = "GMX Account swaps cannot use native ETH. Select WETH or withdraw to wallet first.";
+
+  it("allows wallet WETH -> ETH unwrap", () => {
+    const result = getSwapError({ ...unwrapParams, isFromTokenGmxAccount: false });
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+
+  it("blocks GMX Account WETH -> ETH unwrap with clear copy", () => {
+    const result = getSwapError({ ...unwrapParams, isFromTokenGmxAccount: true });
+    expect(result.buttonErrorMessage).toBe(expectedMessage);
+  });
+
+  it("blocks GMX Account ETH -> WETH wrap with clear copy", () => {
+    const result = getSwapError({
+      ...unwrapParams,
+      fromToken: nativeEth,
+      toToken: weth,
+      isFromTokenGmxAccount: true,
+    });
+    expect(result.buttonErrorMessage).toBe(expectedMessage);
   });
 });
