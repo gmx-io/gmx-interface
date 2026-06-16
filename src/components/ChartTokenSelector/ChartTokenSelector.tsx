@@ -255,7 +255,7 @@ function MarketsList() {
   const populatedTradfiSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
     if (!options) return set;
-    for (const cat of ["pre-ipo", "commodities", "stocks", "indices", "fx"] as const) {
+    for (const cat of ["stocks", "pre-ipo", "commodities", "indices", "fx"] as const) {
       if (options.some((o) => o.categories?.includes(cat))) set.add(cat);
     }
     return set;

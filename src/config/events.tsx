@@ -37,19 +37,16 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
-    id: "spcx-pre-ipo-arbitrum-listing-updated",
+    id: "spcx-stock-arbitrum-transition",
     isActive: true,
-    startDate: "09 Jun 2026, 12:00",
-    endDate: "16 Jun 2026, 12:00",
-    flagId: "showSpcxPreIpoArbitrumListingUpdated",
+    startDate: "12 Jun 2026, 12:00",
+    endDate: "19 Jun 2026, 12:00",
     chains: [ARBITRUM],
-    title: "SPCX Pre-IPO market added on Arbitrum",
+    title: "SpaceX pre-IPO market is now a 24/7 stock perp on Arbitrum",
     bodyText: (
       <>
-        <Link to="/trade">Trade</Link> pre-IPO SpaceX perpetuals with up to 10x leverage, 24/7. SPCX/USD is a new type
-        of market for GMX, launching with limited initial OI capacity. Caps and trading parameters may change around the
-        IPO, and opening or increasing positions may be unavailable when caps are reached.{" "}
-        <ExternalLink href="https://x.com/GMX_IO/status/2064418523657470193">Read more</ExternalLink>.
+        SpaceX pre-IPO market transitioned into a stock market. <Link to="/trade">Trade SPCX</Link> under TradFi &gt;
+        Stocks. Existing positions transitioned automatically.
       </>
     ),
   },
