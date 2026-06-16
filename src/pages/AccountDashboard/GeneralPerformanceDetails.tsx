@@ -20,6 +20,12 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
+import {
+  getPnlBreakdownBaseRows,
+  getPnlBreakdownFeeAndImpactRows,
+  type PnlBreakdownFieldKey,
+  type PnlBreakdownRow,
+} from "./pnlBreakdown";
 
 const bucketLabelMap: Record<PnlSummaryBucketLabel, MessageDescriptor> = {
   today: msg`Today`,
@@ -218,12 +224,6 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
   );
 }
 
-type BreakdownRow = {
-  key: string;
-  label: React.ReactNode;
-  value: bigint;
-};
-
 function PnlBreakdownTooltip({ row }: { row: PnlSummaryPoint }) {
   return (
     <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:w-[calc(100vw-24px)] max-md:max-w-[calc(100vw-24px)] max-md:p-14">
@@ -233,45 +233,16 @@ function PnlBreakdownTooltip({ row }: { row: PnlSummaryPoint }) {
 }
 
 function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
-  const pnlRows: BreakdownRow[] = [
-    { key: "realizedBasePnlUsd", label: t`Realized PnL before fees`, value: row.realizedBasePnlUsd },
-    { key: "unrealizedBasePnlUsd", label: t`Live unrealized PnL before fees`, value: row.unrealizedBasePnlUsd },
-    {
-      key: "startUnrealizedBasePnlContributionUsd",
-      label: t`Start unrealized PnL before fees`,
-      value: row.startUnrealizedBasePnlContributionUsd,
-    },
-  ];
-
-  const feeRows: BreakdownRow[] = [
-    { key: "openFeesUsd", label: t`Open fees`, value: row.openFeesUsd },
-    { key: "closeFeesUsd", label: t`Close fees`, value: row.closeFeesUsd },
-    { key: "borrowingFeesUsd", label: t`Borrow fees`, value: row.borrowingFeesUsd },
-    ...(row.positiveFundingFeesUsd === 0n
-      ? []
-      : [{ key: "positiveFundingFeesUsd", label: t`Positive funding fees`, value: row.positiveFundingFeesUsd }]),
-    { key: "negativeFundingFeesUsd", label: t`Negative funding fees`, value: row.negativeFundingFeesUsd },
-    ...(row.liquidationFeesUsd === 0n
-      ? []
-      : [{ key: "liquidationFeesUsd", label: t`Liquidation fees`, value: row.liquidationFeesUsd }]),
-    { key: "realizedFeesRemainderUsd", label: t`Other realized fees`, value: row.realizedFeesRemainderUsd },
-    {
-      key: "unrealizedFeesContributionUsd",
-      label: t`Unrealized fee contribution`,
-      value: row.unrealizedFeesContributionUsd,
-    },
-    { key: "netPriceImpactUsd", label: t`Net price impact`, value: row.netPriceImpactUsd },
-    { key: "swapFeesUsd", label: t`Swap fees`, value: row.swapFeesUsd },
-    { key: "swapPriceImpactUsd", label: t`Swap price impact`, value: row.swapPriceImpactUsd },
-  ];
+  const pnlRows = getPnlBreakdownBaseRows(row);
+  const feeRows = getPnlBreakdownFeeAndImpactRows(row);
 
   return (
     <div className="text-body-medium leading-[1.35]">
-      <BreakdownTooltipRow label={t`PnL`} value={row.pnlUsd} labelClassName="!text-typography-primary" />
+      <BreakdownTooltipTotalRow value={row.pnlUsd} />
 
       <div className="mt-8 flex flex-col gap-8">
         {pnlRows.map((breakdownRow) => (
-          <BreakdownTooltipRow key={breakdownRow.key} label={breakdownRow.label} value={breakdownRow.value} />
+          <BreakdownTooltipRow key={breakdownRow.key} row={breakdownRow} />
         ))}
       </div>
 
@@ -282,7 +253,7 @@ function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
       </div>
       <div className="flex flex-col gap-8">
         {feeRows.map((breakdownRow) => (
-          <BreakdownTooltipRow key={breakdownRow.key} label={breakdownRow.label} value={breakdownRow.value} />
+          <BreakdownTooltipRow key={breakdownRow.key} row={breakdownRow} />
         ))}
       </div>
       <div className="text-body-small mt-8 leading-[1.35] text-typography-secondary">
@@ -311,20 +282,58 @@ function PnlPercentageTooltip({ row }: { row: PnlSummaryPoint }) {
   );
 }
 
-function BreakdownTooltipRow({
-  label,
-  value,
-  labelClassName,
-}: {
-  label: React.ReactNode;
-  value: bigint;
-  labelClassName?: string;
-}) {
+function BreakdownTooltipTotalRow({ value }: { value: bigint }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-16">
-      <span className={cx("min-w-0 break-words font-medium text-typography-secondary", labelClassName)}>{label}</span>
+      <span className="min-w-0 break-words font-medium text-typography-primary">{t`PnL`}</span>
       <span className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(value))}>
         {formatUsd(value)}
+      </span>
+    </div>
+  );
+}
+
+function getPnlBreakdownFieldLabel(key: PnlBreakdownFieldKey) {
+  switch (key) {
+    case "realizedBasePnlUsd":
+      return t`Realized PnL before fees`;
+    case "unrealizedBasePnlUsd":
+      return t`Live unrealized PnL before fees`;
+    case "startUnrealizedBasePnlContributionUsd":
+      return t`Start unrealized PnL before fees`;
+    case "openFeesUsd":
+      return t`Open fees`;
+    case "closeFeesUsd":
+      return t`Close fees`;
+    case "borrowingFeesUsd":
+      return t`Borrow fees`;
+    case "positiveFundingFeesUsd":
+      return t`Positive funding fees`;
+    case "negativeFundingFeesUsd":
+      return t`Negative funding fees`;
+    case "liquidationFeesUsd":
+      return t`Liquidation fees`;
+    case "realizedFeesRemainderUsd":
+      return t`Other realized fees`;
+    case "unrealizedFeesContributionUsd":
+      return t`Unrealized fee contribution`;
+    case "netPriceImpactUsd":
+      return t`Net price impact`;
+    case "swapFeesUsd":
+      return t`Swap fees`;
+    case "swapPriceImpactUsd":
+      return t`Swap price impact`;
+  }
+}
+
+function BreakdownTooltipRow({ row, labelClassName }: { row: PnlBreakdownRow; labelClassName?: string }) {
+  return (
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-16">
+      <span className={cx("min-w-0 break-words font-medium text-typography-secondary", labelClassName)}>
+        {getPnlBreakdownFieldLabel(row.key)}
+      </span>
+      <span className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(row.value))}>
+        {formatUsd(row.value)}
       </span>
     </div>
   );
