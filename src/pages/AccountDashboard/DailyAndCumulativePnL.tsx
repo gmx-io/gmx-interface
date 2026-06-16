@@ -3,6 +3,7 @@ import { Trans } from "@lingui/macro";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { Address } from "viem";
 
+import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
@@ -62,7 +63,10 @@ export function DailyAndCumulativePnL({
     error,
     loading,
   } = usePnlHistoricalData(chainId, account, fromTimestamp, toTimestamp);
-  const grouping = userGrouping ?? getDefaultPnlChartGrouping(historicalPnlData);
+  const grouping = useMemo(
+    () => userGrouping ?? getDefaultPnlChartGrouping(historicalPnlData),
+    [historicalPnlData, userGrouping]
+  );
   const groupedPnlData = useMemo(() => groupPnlHistoryData(historicalPnlData, grouping), [grouping, historicalPnlData]);
   const chartResetKey = `${chainId}:${account}:${fromTimestamp ?? ""}:${toTimestamp ?? ""}:${grouping}`;
 
@@ -153,7 +157,8 @@ function usePnlHistoricalData(
   fromTimestamp: number | undefined,
   toTimestamp: number | undefined
 ) {
-  const showDebugValues = useShowDebugValues();
+  const showDebugValuesSetting = useShowDebugValues();
+  const showDebugValues = isDevelopment() && showDebugValuesSetting;
   const query = showDebugValues ? DEV_QUERY_WITH_TO : PROD_QUERY;
   const res = useGqlQuery(query, {
     client: getSubsquidGraphClient(chainId)!,
