@@ -2159,10 +2159,6 @@ msgstr "Faltan parámetros. Actualice la página y vuelva a intentarlo"
 msgid "Available to trade assets"
 msgstr "Activos disponibles para operar"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Position history"
-msgstr "Historial de posición"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr ""
@@ -4394,6 +4390,10 @@ msgstr "CANTIDAD"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Back to all trades"
+msgstr "Volver a todas las operaciones"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx

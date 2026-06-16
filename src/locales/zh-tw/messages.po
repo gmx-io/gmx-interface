@@ -2159,10 +2159,6 @@ msgstr "缺少參數。請重新整理後再試"
 msgid "Available to trade assets"
 msgstr "可交易資產"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Position history"
-msgstr "倉位歷史"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr ""
@@ -4394,6 +4390,10 @@ msgstr "金額"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Back to all trades"
+msgstr "返回所有交易"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx

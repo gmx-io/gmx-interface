@@ -2159,10 +2159,6 @@ msgstr "매개변수가 누락되었습니다. 새로고침 후 다시 시도하
 msgid "Available to trade assets"
 msgstr "거래 가능 자산"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Position history"
-msgstr "포지션 내역"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr ""
@@ -4394,6 +4390,10 @@ msgstr "금액"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Back to all trades"
+msgstr "모든 거래로 돌아가기"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx

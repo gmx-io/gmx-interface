@@ -30,8 +30,8 @@ import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
-import FilterIcon from "img/ic_filter.svg?react";
 import PieChartIcon from "img/ic_pie_chart.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -264,10 +264,6 @@ export function TradeHistory(p: Props) {
 
   let actions = (
     <>
-      {pnlAnalysisButton}
-
-      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
-
       {positionLifecycleFilter ? (
         <Button
           variant="ghost"
@@ -276,10 +272,14 @@ export function TradeHistory(p: Props) {
           aria-label={t`Clear position history filter`}
           title={t`Clear position history filter`}
         >
-          {isLifecycleCrawling ? <SpinnerIcon className="size-16 animate-spin" /> : <FilterIcon className="size-16" />}
-          <Trans>Position history</Trans>
+          {isLifecycleCrawling ? <SpinnerIcon className="size-16 animate-spin" /> : <ArrowLeftIcon className="size-16" />}
+          <Trans>Back to all trades</Trans>
         </Button>
       ) : null}
+
+      {pnlAnalysisButton}
+
+      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
 
       <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
         {isLoadingCsv ? <SpinnerIcon className="mr-4 animate-spin" /> : <DownloadIcon className="size-16" />}
