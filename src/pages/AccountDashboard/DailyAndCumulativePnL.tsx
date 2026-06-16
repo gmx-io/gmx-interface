@@ -117,7 +117,15 @@ export function DailyAndCumulativePnL({
   );
 
   const chartMargin = useMemo(() => {
-    const maxValue = Math.max(...clusteredPnlData.map((point) => Math.max(point.cumulativePnlFloat, point.pnlFloat)));
+    const values = clusteredPnlData
+      .flatMap((point) => [point.cumulativePnlFloat, point.pnlFloat])
+      .filter((value): value is number => Number.isFinite(value));
+
+    if (values.length === 0) {
+      return CHART_MARGIN;
+    }
+
+    const maxValue = Math.max(...values);
     const stringValue = Math.ceil(maxValue).toString();
     return { ...CHART_MARGIN, left: stringValue.length * 4 };
   }, [clusteredPnlData]);
@@ -314,7 +322,7 @@ function usePnlHistoricalData(
   const transformedData: PnlHistoricalData = useMemo(() => {
     const hasExplicitDateRange = fromTimestamp !== undefined || toTimestamp !== undefined;
     let dataPoints =
-      res.data?.accountPnlHistoryStats.map((row: any) => {
+      res.data?.accountPnlHistoryStats?.map((row: any) => {
         const parsedDebugFields = showDebugValues
           ? DEBUG_FIELDS.reduce(
               (acc, key) => {
