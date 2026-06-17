@@ -46,14 +46,6 @@ export default [
     name: "AvailableFeeAmountIsZero",
     type: "error",
   },
-  {
-    inputs: [
-      { internalType: "uint256", name: "minOracleBlockNumber", type: "uint256" },
-      { internalType: "uint256", name: "prevMinOracleBlockNumber", type: "uint256" },
-    ],
-    name: "BlockNumbersNotSorted",
-    type: "error",
-  },
   { inputs: [], name: "BridgeOutNotSupportedDuringShift", type: "error" },
   {
     inputs: [
@@ -394,65 +386,6 @@ export default [
     type: "error",
   },
   { inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }], name: "GlvWithdrawalNotFound", type: "error" },
-  { inputs: [{ internalType: "uint256", name: "signerIndex", type: "uint256" }], name: "GmEmptySigner", type: "error" },
-  {
-    inputs: [
-      { internalType: "uint256", name: "minOracleBlockNumber", type: "uint256" },
-      { internalType: "uint256", name: "currentBlockNumber", type: "uint256" },
-    ],
-    name: "GmInvalidBlockNumber",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "minOracleBlockNumber", type: "uint256" },
-      { internalType: "uint256", name: "maxOracleBlockNumber", type: "uint256" },
-    ],
-    name: "GmInvalidMinMaxBlockNumber",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "oracleSigners", type: "uint256" },
-      { internalType: "uint256", name: "maxOracleSigners", type: "uint256" },
-    ],
-    name: "GmMaxOracleSigners",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "uint256", name: "price", type: "uint256" },
-      { internalType: "uint256", name: "prevPrice", type: "uint256" },
-    ],
-    name: "GmMaxPricesNotSorted",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "signerIndex", type: "uint256" },
-      { internalType: "uint256", name: "maxSignerIndex", type: "uint256" },
-    ],
-    name: "GmMaxSignerIndex",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "oracleSigners", type: "uint256" },
-      { internalType: "uint256", name: "minOracleSigners", type: "uint256" },
-    ],
-    name: "GmMinOracleSigners",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "uint256", name: "price", type: "uint256" },
-      { internalType: "uint256", name: "prevPrice", type: "uint256" },
-    ],
-    name: "GmMinPricesNotSorted",
-    type: "error",
-  },
   {
     inputs: [
       { internalType: "uint256", name: "outputAmount", type: "uint256" },
@@ -964,45 +897,12 @@ export default [
     type: "error",
   },
   {
-    inputs: [
-      { internalType: "uint256", name: "minPrice", type: "uint256" },
-      { internalType: "uint256", name: "maxPrice", type: "uint256" },
-    ],
-    name: "InvalidGmMedianMinMaxPrice",
-    type: "error",
-  },
-  {
-    inputs: [{ internalType: "address", name: "token", type: "address" }],
-    name: "InvalidGmOraclePrice",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "recoveredSigner", type: "address" },
-      { internalType: "address", name: "expectedSigner", type: "address" },
-    ],
-    name: "InvalidGmSignature",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "minPrice", type: "uint256" },
-      { internalType: "uint256", name: "maxPrice", type: "uint256" },
-    ],
-    name: "InvalidGmSignerMinMaxPrice",
-    type: "error",
-  },
-  {
     inputs: [{ internalType: "address", name: "account", type: "address" }],
     name: "InvalidHoldingAddress",
     type: "error",
   },
   { inputs: [], name: "InvalidInitializer", type: "error" },
-  {
-    inputs: [{ internalType: "uint256", name: "interval", type: "uint256" }],
-    name: "InvalidInterval",
-    type: "error",
-  },
+  { inputs: [{ internalType: "uint256", name: "interval", type: "uint256" }], name: "InvalidInterval", type: "error" },
   {
     inputs: [{ internalType: "address", name: "keeper", type: "address" }],
     name: "InvalidKeeperForFrozenOrder",
@@ -1869,11 +1769,7 @@ export default [
     name: "SignalTimeNotYetPassed",
     type: "error",
   },
-  {
-    inputs: [{ internalType: "address", name: "token", type: "address" }],
-    name: "StaticPriceNotSet",
-    type: "error",
-  },
+  { inputs: [{ internalType: "address", name: "token", type: "address" }], name: "StaticPriceNotSet", type: "error" },
   {
     inputs: [
       { internalType: "uint256", name: "currentTimestamp", type: "uint256" },
