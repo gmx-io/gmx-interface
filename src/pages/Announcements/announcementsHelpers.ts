@@ -1,12 +1,9 @@
 import { format, isAfter, parse } from "date-fns";
 import { ReactNode } from "react";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
 import { AnnouncementType, EventData } from "config/events";
 
 export const ANNOUNCEMENTS_PAGE_SIZE = 20;
-
-export const ANNOUNCEMENTS_CHAINS = [ARBITRUM, AVALANCHE, BOTANIX, MEGAETH] as const;
 
 export type AnnouncementTab = "all" | AnnouncementType;
 

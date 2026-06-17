@@ -1,10 +1,9 @@
 import useSWR from "swr";
 
+import { CONTRACTS_CHAIN_IDS } from "config/chains";
 import { UiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { getOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-
-import { ANNOUNCEMENTS_CHAINS } from "./announcementsHelpers";
 
 /**
  * Ui flags merged across all announcement chains, so the page does not depend on the connected chain.
@@ -14,7 +13,7 @@ export function useAnnouncementsUiFlags() {
     "announcementsUiFlags",
     async () => {
       const results = await Promise.allSettled(
-        ANNOUNCEMENTS_CHAINS.map((chainId) => getOracleKeeperFetcher(chainId).fetchUiFlags())
+        CONTRACTS_CHAIN_IDS.map((chainId) => getOracleKeeperFetcher(chainId).fetchUiFlags())
       );
 
       const merged: UiFlags = {};

@@ -6,7 +6,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { getChainName } from "config/chains";
+import { CONTRACTS_CHAIN_IDS, getChainName } from "config/chains";
 import { AnnouncementType, EventData, appEventsData } from "config/events";
 import { getChainIcon } from "config/icons";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
@@ -24,7 +24,6 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { AnnouncementCard } from "./AnnouncementCard";
 import {
-  ANNOUNCEMENTS_CHAINS,
   ANNOUNCEMENTS_PAGE_SIZE,
   AnnouncementTab,
   getEventSortDate,
@@ -456,7 +455,7 @@ function ChainDropdown({
               >
                 <Trans>All chains</Trans>
               </DropdownItem>
-              {ANNOUNCEMENTS_CHAINS.map((chainId) => (
+              {CONTRACTS_CHAIN_IDS.map((chainId) => (
                 <DropdownItem
                   key={chainId}
                   isActive={selected === chainId}
