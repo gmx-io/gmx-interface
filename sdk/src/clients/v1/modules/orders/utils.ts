@@ -209,6 +209,7 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         executionFee: bigint;
         callbackGasLimit: bigint;
         minOutputAmount: bigint;
+        uiFeeFactor: bigint;
         updatedAtTime: bigint;
         validFromTime: bigint;
         srcChainId: bigint;
