@@ -66,10 +66,10 @@ export const appEventsData: EventData[] = [
       <>
         <Link to="/trade">Trade</Link> pre-IPO SpaceX perpetuals with up to 10x leverage, 24/7. SPCX/USD is a new type
         of market for GMX, launching with limited initial OI capacity. Caps and trading parameters may change around the
-        IPO, and opening or increasing positions may be unavailable when caps are reached.{" "}
-        <ExternalLink href="https://x.com/GMX_IO/status/2064418523657470193">Read more</ExternalLink>.
+        IPO, and opening or increasing positions may be unavailable when caps are reached.
       </>
     ),
+    link: { text: "Read more", href: "https://x.com/GMX_IO/status/2064418523657470193", newTab: true },
   },
   {
     id: "mega-arbitrum-megaeth-listing",
@@ -149,11 +149,9 @@ export const appEventsData: EventData[] = [
     chains: [ARBITRUM],
     title: "GOLD and SILVER trading fees heavily reduced",
     description: (
-      <>
-        Position fees for GOLD/USD and SILVER/USD have been lowered to 1/2 bps from 4/6 bps during on-hours.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#fees">Read more</ExternalLink>.
-      </>
+      <>Position fees for GOLD/USD and SILVER/USD have been lowered to 1/2 bps from 4/6 bps during on-hours.</>
     ),
+    link: { text: "Read more", href: "https://docs.gmx.io/docs/trading/overview/#fees", newTab: true },
   },
   {
     id: "gold-silver-arbitrum-listing",
@@ -182,13 +180,14 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         Trade WTIOIL, BRENTOIL (up to 100x leverage) and NATGAS (up to 40x leverage) perpetuals 24/7, or{" "}
-        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rwa-and-commodity-markets">
-          Read more
-        </ExternalLink>
-        .
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.
       </>
     ),
+    link: {
+      text: "Read more",
+      href: "https://docs.gmx.io/docs/trading/overview/#rwa-and-commodity-markets",
+      newTab: true,
+    },
   },
   {
     id: "megaeth-launch",
@@ -200,10 +199,10 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         Trade perpetuals, create and share your referral code, and provide liquidity on MegaETH using its native
-        stablecoin: USDm.{" "}
-        <ExternalLink href="https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade">Read more</ExternalLink>.
+        stablecoin: USDm.
       </>
     ),
+    link: { text: "Read more", href: "https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade", newTab: true },
   },
   {
     id: "om-mantra-migration",
@@ -292,9 +291,10 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance
-        accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
+        accuracy.
       </>
     ),
+    link: { text: "Read more", href: "https://t.me/GMX_Announcements/1175", newTab: true },
   },
   {
     id: "al16z-delisting",
@@ -403,9 +403,10 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on
-        position close. <ExternalLink href="https://x.com/GMX_IO/status/1965077965236056467">Read more</ExternalLink>.
+        position close.
       </>
     ),
+    link: { text: "Read more", href: "https://x.com/GMX_IO/status/1965077965236056467", newTab: true },
   },
   {
     id: "listing-09-04",

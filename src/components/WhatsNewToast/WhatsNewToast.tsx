@@ -110,15 +110,14 @@ export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss:
         dx *= page;
         dy *= page;
       }
-      const delta = Math.abs(dx) >= Math.abs(dy) ? dx : dy;
-      if (Math.abs(delta) < WHEEL_MIN_DELTA_PX) return;
+      if (Math.abs(dx) <= Math.abs(dy) || Math.abs(dx) < WHEEL_MIN_DELTA_PX) return;
 
       e.preventDefault();
 
       const now = performance.now();
       if (now - lastWheelStepRef.current < WHEEL_STEP_INTERVAL_MS) return;
       lastWheelStepRef.current = now;
-      goRelative(delta > 0 ? 1 : -1);
+      goRelative(dx > 0 ? 1 : -1);
     };
 
     node.addEventListener("wheel", onWheel, { passive: false });

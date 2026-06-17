@@ -39,11 +39,18 @@ const variantContainerClass: Record<AnnouncementVariant, string> = {
   success: "bg-green-900/90",
 };
 
-const variantHeaderBorderClass: Record<AnnouncementVariant, string> = {
-  info: "border-blue-300/15",
-  warning: "border-yellow-500/25",
-  error: "border-red-500/25",
-  success: "border-green-500/25",
+const variantDividerClass: Record<AnnouncementVariant, string> = {
+  info: "shadow-[inset_0_-0.5px_0_0_rgb(var(--color-stroke-primary-raw))]",
+  warning: "shadow-[inset_0_-0.5px_0_0_rgba(255,255,255,0.08)]",
+  error: "shadow-[inset_0_-0.5px_0_0_rgba(255,255,255,0.08)]",
+  success: "shadow-[inset_0_-0.5px_0_0_rgba(255,255,255,0.08)]",
+};
+
+const variantBorderClass: Record<AnnouncementVariant, string> = {
+  info: "shadow-[inset_0_0_0_0.5px_rgb(var(--color-stroke-primary-raw)),0px_8px_40px_-8px_rgba(9,10,20,0.4)]",
+  warning: "shadow-[inset_0_0_0_0.5px_rgba(255,255,255,0.08),0px_8px_40px_-8px_rgba(9,10,20,0.4)]",
+  error: "shadow-[inset_0_0_0_0.5px_rgba(255,255,255,0.08),0px_8px_40px_-8px_rgba(9,10,20,0.4)]",
+  success: "shadow-[inset_0_0_0_0.5px_rgba(255,255,255,0.08),0px_8px_40px_-8px_rgba(9,10,20,0.4)]",
 };
 
 const variantAccentTextClass: Record<AnnouncementVariant, string> = {
@@ -91,18 +98,16 @@ export function AnnouncementBanner({
   return (
     <div
       className={cx(
-        "w-[400px] max-w-full transform-gpu overflow-hidden rounded-12 border-1/2 border-stroke-primary backdrop-blur-[8px]",
-        "shadow-[0px_8px_40px_-8px_rgba(9,10,20,0.4)]",
+        "w-[400px] max-w-full transform-gpu overflow-hidden rounded-12 backdrop-blur-[8px]",
         variantContainerClass[variant],
+        variantBorderClass[variant],
         className
       )}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       data-qa="announcement-banner"
     >
-      <div
-        className={cx("flex items-center justify-between gap-8 border-b-1/2 p-12", variantHeaderBorderClass[variant])}
-      >
+      <div className={cx("flex items-center justify-between gap-8 p-12", variantDividerClass[variant])}>
         <div className="flex min-w-0 items-center gap-8">
           {headerIcon !== undefined && <HeaderIcon kind={headerIcon} className={cx("size-20 shrink-0", accentText)} />}
           <p className="text-body-medium truncate font-medium text-typography-primary">{headerLabel}</p>

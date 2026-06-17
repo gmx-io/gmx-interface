@@ -6,6 +6,10 @@ import { getChainName } from "config/chains";
 import { AnnouncementType, EventData } from "config/events";
 import { getChainIcon } from "config/icons";
 
+import Button from "components/Button/Button";
+
+import UpRightArrowIcon from "img/ic_up_right_arrow.svg?react";
+
 import { formatEventDate, getEventSortDate, reactNodeToText, splitByMatches } from "./announcementsHelpers";
 
 const EMPTY_TOKENS: string[] = [];
@@ -24,12 +28,12 @@ export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS, isHighlig
     <article
       data-announcement-id={event.id}
       className={cx(
-        "flex flex-col gap-20 rounded-8 p-20 transition-colors max-lg:gap-16",
+        "flex flex-col gap-16 rounded-8 p-20 transition-colors",
         isHighlighted ? "bg-button-secondaryHover duration-150" : "bg-fill-card duration-1000"
       )}
     >
       <div className="grid grid-cols-[1fr_auto] items-start gap-x-12 gap-y-8 max-lg:grid-cols-1">
-        <p className="text-body-small font-medium text-blue-300">{formatEventDate(date)}</p>
+        <p className="text-body-small font-medium text-blue-100">{formatEventDate(date)}</p>
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-4 max-lg:order-last max-lg:mt-4 max-lg:justify-start">
           {event.chains?.map((chainId) => <ChainBadge key={chainId} chainId={chainId} />)}
           <TypeTag type={event.type} />
@@ -39,18 +43,23 @@ export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS, isHighlig
         </h3>
       </div>
 
-      <div className="text-body-medium flex max-w-[600px] flex-col gap-12 leading-[1.3] text-typography-secondary [&_a:hover]:!underline [&_a]:!text-blue-300 [&_a]:!no-underline">
-        {event.summary !== undefined && <div>{highlightNode(event.summary, searchTokens)}</div>}
-        <div>{highlightNode(event.description, searchTokens)}</div>
+      <div className="flex max-w-[600px] flex-col gap-16">
+        <div className="text-body-medium flex flex-col gap-12 leading-[1.3] text-typography-secondary [&_a:hover]:!underline [&_a]:!text-blue-300 [&_a]:!no-underline">
+          {event.summary !== undefined && <div>{highlightNode(event.summary, searchTokens)}</div>}
+          <div>{highlightNode(event.description, searchTokens)}</div>
+        </div>
         {event.link && (
-          <a
+          <Button
+            variant="secondary"
+            size="small"
             className="self-start"
-            href={event.link.href}
-            target={event.link.newTab ? "_blank" : undefined}
-            rel={event.link.newTab ? "noopener noreferrer" : undefined}
+            to={event.link.href}
+            newTab={event.link.newTab}
+            showExternalLinkArrow={false}
           >
             {event.link.text}
-          </a>
+            <UpRightArrowIcon className="size-16" />
+          </Button>
         )}
       </div>
     </article>
