@@ -154,7 +154,7 @@ export function DailyAndCumulativePnLChart({
     [visibleEndIndex, visibleStartIndex]
   );
   const xAxisTicks = useMemo(() => visibleChartPnlData.map((point) => point.chartIndex), [visibleChartPnlData]);
-  const pnlBarCells = useMemo(() => visibleChartPnlData.map(renderPnlBar), [visibleChartPnlData]);
+  const pnlBarCells = useMemo(() => chartPnlData.map(renderPnlBar), [chartPnlData]);
   const periodPnlYAxisTicks = useMemo(
     () =>
       showDebugValues
@@ -275,13 +275,17 @@ export function DailyAndCumulativePnLChart({
     }
 
     const handleWheel = (event: WheelEvent) => {
+      if (event.cancelable) {
+        event.preventDefault();
+      }
+      event.stopPropagation();
+
       const deltaPixels = getWheelDeltaPixels(event.deltaY, event.deltaMode);
 
       if (Math.abs(deltaPixels) < 1) {
         return;
       }
 
-      event.preventDefault();
       startZoomInteraction();
       stopZoomInteraction(ZOOM_INTERACTION_RESET_DELAY);
 
@@ -610,7 +614,7 @@ export function DailyAndCumulativePnLChart({
           <ComposedChart
             width={500}
             height={300}
-            data={visibleChartPnlData}
+            data={chartPnlData}
             barCategoryGap={showDebugValues ? DEBUG_BAR_CATEGORY_GAP : BAR_CATEGORY_GAP}
             barGap={showDebugValues ? DEBUG_BAR_GAP : BAR_GAP}
             margin={chartMargin}
