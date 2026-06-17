@@ -83,8 +83,13 @@ export function GmList({
   const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
-  const { topLevelTab, subCategoryTab, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
-    useTokensFavorites("gm-list");
+  const {
+    topLevelTab,
+    subCategoryTab,
+    setSubCategoryTab,
+    favoriteTokens,
+    toggleFavoriteToken,
+  } = useTokensFavorites("gm-list");
   const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
 
   const { listingDateByIndexToken } = useMarketsListingDates(chainId);

@@ -99,7 +99,9 @@ describe("uiFeeReceiver", () => {
     });
 
     it("should default source to UI", () => {
-      expect(decodeTwapUiFeeReceiver(createTwapUiFeeReceiver({ numberOfParts: 10 }))?.source).toEqual(UI_FEE_SOURCE_UI);
+      expect(decodeTwapUiFeeReceiver(createTwapUiFeeReceiver({ numberOfParts: 10 }))?.source).toEqual(
+        UI_FEE_SOURCE_UI
+      );
     });
 
     it("should correctly encode API source", () => {

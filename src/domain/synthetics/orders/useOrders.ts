@@ -107,7 +107,10 @@ export function useOrders(
     error: apiError,
   } = useApiOrdersRequest(chainId, { account, enabled: apiEnabled });
 
-  const { shouldFallbackToRpc: rpcEnabled, isInitialFallback } = useApiDataFallbackState({
+  const {
+    shouldFallbackToRpc: rpcEnabled,
+    isInitialFallback,
+  } = useApiDataFallbackState({
     chainId,
     apiEnabled,
     apiData: apiOrdersData,
