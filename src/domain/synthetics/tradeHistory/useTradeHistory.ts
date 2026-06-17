@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import merge from "lodash/merge";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { SWRConfiguration } from "swr";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
@@ -46,7 +46,7 @@ export function useTradeHistory(
     toTxTimestamp?: number;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
     refreshInterval?: number;
-    positionKey?: string;
+    positionLifecycleId?: string;
     orderEventCombinations?: {
       eventName?: TradeActionType;
       orderType?: OrderType[];
@@ -65,7 +65,7 @@ export function useTradeHistory(
     marketsDirectionsFilter,
     orderEventCombinations,
     refreshInterval,
-    positionKey,
+    positionLifecycleId,
   } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
@@ -83,7 +83,7 @@ export function useTradeHistory(
         fromTxTimestamp,
         toTxTimestamp,
         orderEventCombinations,
-        positionKey,
+        positionLifecycleId,
         marketsDirectionsFilter,
         pageOffset,
         index,
@@ -119,7 +119,7 @@ export function useTradeHistory(
         fromTxTimestamp,
         toTxTimestamp,
         orderEventCombinations,
-        positionKey,
+        positionLifecycleId,
         showDebugValues,
       });
 
@@ -131,61 +131,17 @@ export function useTradeHistory(
   const hasPopulatedData = data !== undefined && data.every((p) => p !== undefined);
   const isLoading = (!error && !hasPopulatedData) || !marketsInfoData || !tokensData;
 
-  // The position-lifecycle filter crawls older pages one at a time (see the setPageIndex effect in
-  // TradeHistory). Without caching, every crawl step would re-run processRawTradeActions over all
-  // pages loaded so far (O(n^2) as the crawl grows). Cache the processed result per raw page, keyed
-  // by page identity, and rebuild only when a processing input changes (chain, markets/tokens, or
-  // the collateral filter that processRawTradeActions applies client-side).
-  const processedPagesCacheRef = useRef<{
-    chainId: number;
-    marketsInfoData: ReturnType<typeof useMarketsInfoData>;
-    tokensData: ReturnType<typeof useTokensData>;
-    marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
-    byRawPage: WeakMap<SubsquidTradeAction[], TradeAction[]>;
-  } | null>(null);
-
   const tradeActions = useMemo(() => {
-    if (!data || !marketsInfoData || !tokensData) {
-      return undefined;
-    }
+    const allRawData = data?.flatMap((page) => page?.tradeActions ?? []);
 
-    let cache = processedPagesCacheRef.current;
-    if (
-      !cache ||
-      cache.chainId !== chainId ||
-      cache.marketsInfoData !== marketsInfoData ||
-      cache.tokensData !== tokensData ||
-      cache.marketsDirectionsFilter !== marketsDirectionsFilter
-    ) {
-      cache = { chainId, marketsInfoData, tokensData, marketsDirectionsFilter, byRawPage: new WeakMap() };
-      processedPagesCacheRef.current = cache;
-    }
-
-    const result: TradeAction[] = [];
-    for (const page of data) {
-      const rawPage = page?.tradeActions;
-      if (!rawPage?.length) {
-        continue;
-      }
-
-      let processed = cache.byRawPage.get(rawPage);
-      if (!processed) {
-        processed =
-          processRawTradeActions({
-            chainId,
-            rawActions: rawPage,
-            marketsInfoData,
-            tokensData,
-            marketsDirectionsFilter,
-          }) ?? [];
-        cache.byRawPage.set(rawPage, processed);
-      }
-
-      result.push(...processed);
-    }
-
-    return result;
-  }, [data, marketsInfoData, tokensData, chainId, marketsDirectionsFilter]);
+    return processRawTradeActions({
+      chainId,
+      rawActions: allRawData,
+      marketsInfoData,
+      tokensData,
+      marketsDirectionsFilter,
+    });
+  }, [data, marketsInfoData, tokensData, marketsDirectionsFilter, chainId]);
 
   const totalCount = data?.find((page) => page?.totalCount !== undefined)?.totalCount;
   const loadedRawActionsCount = data?.reduce((count, page) => count + (page?.tradeActions.length ?? 0), 0) ?? 0;
@@ -216,7 +172,7 @@ export async function fetchRawTradeActions({
   fromTxTimestamp,
   toTxTimestamp,
   orderEventCombinations,
-  positionKey,
+  positionLifecycleId,
   showDebugValues,
 }: {
   chainId: number;
@@ -236,7 +192,7 @@ export async function fetchRawTradeActions({
         isTwap?: boolean | undefined;
       }[]
     | undefined;
-  positionKey?: string;
+  positionLifecycleId?: string;
   showDebugValues?: boolean;
 }): Promise<RawTradeActionsResult | undefined> {
   const client = getSubsquidGraphClient(chainId);
@@ -276,10 +232,10 @@ export async function fetchRawTradeActions({
   const filtersStr = buildFiltersBody({
     AND: [
       {
-        account_eq: forAllAccounts || positionKey ? undefined : account,
+        account_eq: forAllAccounts || positionLifecycleId ? undefined : account,
         timestamp_gte: fromTxTimestamp,
         timestamp_lte: toTxTimestamp,
-        positionKey_eq: positionKey,
+        positionLifecycleId_eq: positionLifecycleId,
       },
       {
         OR: !hasPureDirectionFilters
@@ -407,6 +363,7 @@ export async function fetchRawTradeActions({
             swapPath
             initialCollateralTokenAddress
             positionKey
+            positionLifecycleId
             positionSizeInUsd
             positionSizeInTokens
 

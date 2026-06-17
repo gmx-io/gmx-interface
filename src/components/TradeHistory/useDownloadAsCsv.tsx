@@ -9,15 +9,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { OrderType } from "domain/synthetics/orders/types";
-import {
-  filterLifecycleTradeActionsByDisplayFilters,
-  getPositionLifecycleSlice,
-  PositionLifecycleFilter,
-  PositionTradeAction,
-  resolveTradeHistoryFetchParams,
-  SwapTradeAction,
-  TradeActionType,
-} from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { downloadAsCsv } from "lib/csv";
@@ -40,7 +32,7 @@ export function useDownloadAsCsv({
   toTxTimestamp,
   orderEventCombinations,
   minCollateralUsd,
-  positionLifecycleFilter,
+  positionLifecycleId,
 }: {
   marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
@@ -57,7 +49,7 @@ export function useDownloadAsCsv({
     | undefined;
 
   minCollateralUsd?: bigint;
-  positionLifecycleFilter?: PositionLifecycleFilter;
+  positionLifecycleId?: string;
 }): [boolean, () => Promise<void>] {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
@@ -78,14 +70,6 @@ export function useDownloadAsCsv({
       let currentPageIndex = 0;
       let hasMorePages = true;
 
-      const fetchParams = resolveTradeHistoryFetchParams({
-        positionLifecycleFilter,
-        fromTxTimestamp,
-        toTxTimestamp,
-        marketsDirectionsFilter,
-        orderEventCombinations,
-      });
-
       while (hasMorePages) {
         const rawPageResult = await withRetry(
           () =>
@@ -95,7 +79,11 @@ export function useDownloadAsCsv({
               pageSize: PAGE_SIZE,
               forAllAccounts,
               account,
-              ...fetchParams,
+              fromTxTimestamp,
+              toTxTimestamp,
+              marketsDirectionsFilter,
+              orderEventCombinations,
+              positionLifecycleId,
             }),
           {
             retryCount: 3,
@@ -115,40 +103,17 @@ export function useDownloadAsCsv({
           rawActions: rawPage,
           marketsInfoData,
           tokensData,
-          marketsDirectionsFilter: fetchParams.marketsDirectionsFilter,
+          marketsDirectionsFilter,
         }) as (PositionTradeAction | SwapTradeAction)[] | undefined;
 
         if (processedPage && processedPage.length) {
           aggregatedTradeActions.push(...processedPage);
         }
 
-        if (
-          positionLifecycleFilter &&
-          !getPositionLifecycleSlice(aggregatedTradeActions, positionLifecycleFilter).needsMoreData
-        ) {
-          hasMorePages = false;
-        }
-
         currentPageIndex += 1;
       }
 
-      let exportedTradeActions: (PositionTradeAction | SwapTradeAction)[] = aggregatedTradeActions;
-
-      if (positionLifecycleFilter) {
-        const lifecycleSlice = getPositionLifecycleSlice(aggregatedTradeActions, positionLifecycleFilter);
-        exportedTradeActions = (filterLifecycleTradeActionsByDisplayFilters({
-          tradeActions: lifecycleSlice.tradeActions,
-          fromTxTimestamp,
-          toTxTimestamp,
-          orderEventCombinations,
-        }) ?? []) as (PositionTradeAction | SwapTradeAction)[];
-
-        if (exportedTradeActions.length === 0) {
-          throw new Error("Position history could not be loaded for the CSV export");
-        }
-      }
-
-      const fullFormattedData = exportedTradeActions
+      const fullFormattedData = aggregatedTradeActions
         .map((tradeAction) => {
           const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transactionHash}`;
 
@@ -205,7 +170,7 @@ export function useDownloadAsCsv({
     marketsInfoData,
     minCollateralUsd,
     orderEventCombinations,
-    positionLifecycleFilter,
+    positionLifecycleId,
     toTxTimestamp,
     tokensData,
   ]);

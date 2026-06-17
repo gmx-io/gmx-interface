@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
@@ -8,15 +8,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import {
-  filterLifecycleTradeActionsByDisplayFilters,
-  getPositionLifecycleSlice,
-  PositionLifecycleFilter,
-  PositionTradeAction,
-  resolveTradeHistoryFetchParams,
-  TradeActionType,
-  useTradeHistory,
-} from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -44,7 +36,6 @@ import { useDownloadAsCsv } from "./useDownloadAsCsv";
 import "./TradeHistorySynthetics.scss";
 
 const TRADE_HISTORY_PREFETCH_SIZE = 100;
-const POSITION_LIFECYCLE_PREFETCH_SIZE = TRADE_HISTORY_PREFETCH_SIZE;
 const ENTITIES_PER_PAGE = TRADE_HISTORY_PER_PAGE;
 
 type ActionFilter = {
@@ -67,71 +58,28 @@ export function TradeHistory(p: Props) {
   const [startDate, endDate, setDateRange] = useDateRange();
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
-  const [positionLifecycleFilter, setPositionLifecycleFilter] = useState<PositionLifecycleFilter | undefined>();
+  const [positionLifecycleId, setPositionLifecycleId] = useState<string | undefined>();
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};
 
-  const tradeHistoryFetchParams = useMemo(
-    () =>
-      resolveTradeHistoryFetchParams({
-        positionLifecycleFilter,
-        fromTxTimestamp,
-        toTxTimestamp,
-        marketsDirectionsFilter,
-        orderEventCombinations: actionFilter,
-      }),
-    [actionFilter, fromTxTimestamp, marketsDirectionsFilter, positionLifecycleFilter, toTxTimestamp]
-  );
-
   const {
     tradeActions,
     totalCount,
     isLoading: isHistoryLoading,
     error: historyError,
-    hasMorePages: hasMoreTradeActionPages,
-    isFetchingNextPage,
-    setPageIndex: setTradeActionsPageIndex,
   } = useTradeHistory(chainId, {
     account,
     forAllAccounts,
-    pageSize: positionLifecycleFilter ? POSITION_LIFECYCLE_PREFETCH_SIZE : TRADE_HISTORY_PREFETCH_SIZE,
-    ...tradeHistoryFetchParams,
+    pageSize: TRADE_HISTORY_PREFETCH_SIZE,
+    fromTxTimestamp,
+    toTxTimestamp,
+    marketsDirectionsFilter,
+    orderEventCombinations: actionFilter,
+    positionLifecycleId,
   });
-
-  const positionLifecycleSlice = useMemo(
-    () => getPositionLifecycleSlice(tradeActions, positionLifecycleFilter),
-    [positionLifecycleFilter, tradeActions]
-  );
-  const isLifecycleSliceIncomplete =
-    Boolean(positionLifecycleFilter) &&
-    positionLifecycleSlice.needsMoreData &&
-    hasMoreTradeActionPages &&
-    !historyError;
-  const shouldRequestMoreLifecycleRows = isLifecycleSliceIncomplete && !isHistoryLoading && !isFetchingNextPage;
-  const isLifecycleCrawling = Boolean(positionLifecycleFilter) && (isLifecycleSliceIncomplete || isFetchingNextPage);
-
-  const filteredTradeActions = useMemo(
-    () =>
-      positionLifecycleFilter
-        ? filterLifecycleTradeActionsByDisplayFilters({
-            tradeActions: positionLifecycleSlice.tradeActions,
-            fromTxTimestamp,
-            toTxTimestamp,
-            orderEventCombinations: actionFilter,
-          })
-        : tradeActions,
-    [
-      actionFilter,
-      fromTxTimestamp,
-      positionLifecycleFilter,
-      positionLifecycleSlice.tradeActions,
-      toTxTimestamp,
-      tradeActions,
-    ]
-  );
 
   const paginationKey = useMemo(
     () =>
@@ -142,39 +90,25 @@ export function TradeHistory(p: Props) {
         toTxTimestamp,
         marketsDirectionsFilter,
         actionFilter,
-        positionLifecycleFilter,
+        positionLifecycleId,
       ]),
-    [
-      account,
-      actionFilter,
-      forAllAccounts,
-      fromTxTimestamp,
-      marketsDirectionsFilter,
-      positionLifecycleFilter,
-      toTxTimestamp,
-    ]
+    [account, actionFilter, forAllAccounts, fromTxTimestamp, marketsDirectionsFilter, positionLifecycleId, toTxTimestamp]
   );
   const {
     currentPage,
     setCurrentPage,
     currentData: loadedCurrentPageData,
     pageCount,
-  } = usePagination(
-    paginationKey,
-    filteredTradeActions,
-    ENTITIES_PER_PAGE,
-    positionLifecycleFilter ? undefined : totalCount
-  );
+  } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE, totalCount);
 
   const currentPageStartIndex = (currentPage - 1) * ENTITIES_PER_PAGE;
   const directPageOffset =
     Math.floor(currentPageStartIndex / TRADE_HISTORY_PREFETCH_SIZE) * TRADE_HISTORY_PREFETCH_SIZE;
   const shouldFetchDirectPage = Boolean(
-    !positionLifecycleFilter &&
-      totalCount !== undefined &&
-      filteredTradeActions &&
+    totalCount !== undefined &&
+      tradeActions &&
       currentPageStartIndex < totalCount &&
-      filteredTradeActions.length <= currentPageStartIndex
+      tradeActions.length <= currentPageStartIndex
   );
 
   const {
@@ -186,7 +120,11 @@ export function TradeHistory(p: Props) {
     forAllAccounts: shouldFetchDirectPage ? forAllAccounts : undefined,
     pageSize: TRADE_HISTORY_PREFETCH_SIZE,
     pageOffset: directPageOffset,
-    ...tradeHistoryFetchParams,
+    fromTxTimestamp,
+    toTxTimestamp,
+    marketsDirectionsFilter,
+    orderEventCombinations: actionFilter,
+    positionLifecycleId,
   });
 
   const directPageStartIndex = currentPageStartIndex - directPageOffset;
@@ -196,35 +134,31 @@ export function TradeHistory(p: Props) {
   );
   const currentPageData = (shouldFetchDirectPage ? directCurrentPageData : loadedCurrentPageData) ?? [];
   const displayError = historyError || directPageError;
-  const isInitialHistoryLoading = isHistoryLoading && filteredTradeActions === undefined;
+  const isInitialHistoryLoading = isHistoryLoading && tradeActions === undefined;
 
   const isConnected = Boolean(account);
   const isLoading =
     (forAllAccounts || isConnected) &&
     (minCollateralUsd === undefined ||
       isInitialHistoryLoading ||
-      (shouldFetchDirectPage && isDirectPageLoading && directPageTradeActions === undefined) ||
-      (isLifecycleSliceIncomplete && !filteredTradeActions?.length));
+      (shouldFetchDirectPage && isDirectPageLoading && directPageTradeActions === undefined));
 
   const isEmpty = !isLoading && !currentPageData.length;
 
   const hasFilters = Boolean(
-    startDate || endDate || marketsDirectionsFilter.length || actionFilter.length || positionLifecycleFilter
+    startDate || endDate || marketsDirectionsFilter.length || actionFilter.length || positionLifecycleId
   );
 
   const handleSelectPositionLifecycle = useCallback((tradeAction: PositionTradeAction) => {
-    if (!tradeAction.positionKey) {
+    if (!tradeAction.positionLifecycleId) {
       return;
     }
 
-    setPositionLifecycleFilter({
-      positionKey: tradeAction.positionKey,
-      sourceActionId: tradeAction.id,
-    });
+    setPositionLifecycleId(tradeAction.positionLifecycleId);
   }, []);
 
   const handleClearPositionLifecycleFilter = useCallback(() => {
-    setPositionLifecycleFilter(undefined);
+    setPositionLifecycleId(undefined);
   }, []);
 
   const pnlAnalysisButton = useMemo(() => {
@@ -243,12 +177,6 @@ export function TradeHistory(p: Props) {
     );
   }, [account, chainId, hideDashboardLink]);
 
-  useEffect(() => {
-    if (positionLifecycleFilter && shouldRequestMoreLifecycleRows) {
-      setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
-    }
-  }, [positionLifecycleFilter, shouldRequestMoreLifecycleRows, setTradeActionsPageIndex]);
-
   const [isLoadingCsv, handleCsvDownload] = useDownloadAsCsv({
     account,
     forAllAccounts,
@@ -257,14 +185,14 @@ export function TradeHistory(p: Props) {
     marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
     minCollateralUsd: minCollateralUsd,
-    positionLifecycleFilter,
+    positionLifecycleId,
   });
 
   const { isMobile } = useBreakpoints();
 
   let actions = (
     <>
-      {positionLifecycleFilter ? (
+      {positionLifecycleId ? (
         <Button
           variant="ghost"
           onClick={handleClearPositionLifecycleFilter}
@@ -272,7 +200,7 @@ export function TradeHistory(p: Props) {
           aria-label={t`Clear position history filter`}
           title={t`Clear position history filter`}
         >
-          {isLifecycleCrawling ? <SpinnerIcon className="size-16 animate-spin" /> : <ArrowLeftIcon className="size-16" />}
+          <ArrowLeftIcon className="size-16" />
           <Trans>Back to all trades</Trans>
         </Button>
       ) : null}

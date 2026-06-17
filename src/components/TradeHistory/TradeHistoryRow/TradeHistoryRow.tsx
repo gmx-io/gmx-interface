@@ -233,7 +233,7 @@ export function TradeHistoryRow({
     account === tradeAction.account;
 
   const shouldDisplayPositionLifecycleButton =
-    isPositionTradeAction(tradeAction) && Boolean(tradeAction.positionKey) && Boolean(onSelectPositionLifecycle);
+    isPositionTradeAction(tradeAction) && Boolean(tradeAction.positionLifecycleId) && Boolean(onSelectPositionLifecycle);
 
   const handleSelectPositionLifecycleClick = useCallback(() => {
     if (isPositionTradeAction(tradeAction)) {

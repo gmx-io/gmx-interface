@@ -10661,6 +10661,7 @@ export interface TradeAction {
   orderType: Scalars["Int"]["output"];
   pnlUsd?: Maybe<Scalars["BigInt"]["output"]>;
   positionKey?: Maybe<Scalars["String"]["output"]>;
+  positionLifecycleId?: Maybe<Scalars["String"]["output"]>;
   positionFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   positionSizeInTokens?: Maybe<Scalars["BigInt"]["output"]>;
   positionSizeInUsd?: Maybe<Scalars["BigInt"]["output"]>;

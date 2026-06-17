@@ -106,6 +106,7 @@ export function createRawTradeActionTransformer(
         indexToken,
         swapPath,
         positionKey: rawAction.positionKey ?? undefined,
+        positionLifecycleId: rawAction.positionLifecycleId ?? undefined,
         positionSizeInUsd: rawAction.positionSizeInUsd ? toBigInt(rawAction.positionSizeInUsd) : undefined,
         positionSizeInTokens: rawAction.positionSizeInTokens ? toBigInt(rawAction.positionSizeInTokens) : undefined,
         initialCollateralTokenAddress,
