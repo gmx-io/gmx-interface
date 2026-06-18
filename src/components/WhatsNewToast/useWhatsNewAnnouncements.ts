@@ -27,12 +27,26 @@ export function useWhatsNewAnnouncements(): UseWhatsNewAnnouncementsResult {
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { account } = useWallet();
+  const { uiFlags } = useUiFlagsRequest();
+
+  const hasLivePositionGatedEvent = useMemo(() => {
+    if (isHome) return false;
+    return appEventsData.some((event) => {
+      if (!event.requiresOpenPosition) return false;
+      if (!isEventActiveByFlag(event, uiFlags)) return false;
+      if (event.startDate && isFuture(parseEventDate(event.startDate))) return false;
+      if (!isFuture(parseEventDate(event.endDate))) return false;
+      if (event.chains && !event.chains.includes(chainId)) return false;
+      return true;
+    });
+  }, [isHome, uiFlags, chainId]);
+
   const positions = usePositions(chainId, {
     marketsData: marketsInfoData,
     tokensData: tokensData,
     account,
+    enabled: hasLivePositionGatedEvent,
   });
-  const { uiFlags } = useUiFlagsRequest();
 
   const openPositionMarkets = useMemo(() => {
     const set = new Set<string>();

@@ -50,8 +50,6 @@ export type EventData = {
   requiresOpenPosition?: string;
 };
 
-export const homeEventsData: EventData[] = [];
-
 export const appEventsData: EventData[] = [
   {
     id: "spcx-pre-ipo-arbitrum-listing-updated",
