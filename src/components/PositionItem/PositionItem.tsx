@@ -54,6 +54,7 @@ export type Props = {
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
   isLarge: boolean;
   onOrdersClick?: (key?: string) => void;
+  onViewPositionHistory?: () => void;
   onCancelOrder?: (orderKey: string) => void;
 };
 
@@ -584,6 +585,7 @@ export function PositionItem(p: Props) {
                 handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
                 handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
                 handleTriggerClose={handleOpenAddTPSLModal}
+                handleViewPositionHistory={p.onViewPositionHistory}
                 disabled={isActionsDisabled}
               />
             </div>
@@ -775,6 +777,7 @@ export function PositionItem(p: Props) {
                     handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
                     handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
                     handleTriggerClose={handleOpenAddTPSLModal}
+                    handleViewPositionHistory={p.onViewPositionHistory}
                     disabled={isActionsDisabled}
                   />
                 </div>

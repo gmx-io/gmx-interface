@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
@@ -8,7 +8,12 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import { PositionTradeAction, TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import {
+  fetchPositionLifecycleId,
+  PositionTradeAction,
+  TradeActionType,
+  useTradeHistory,
+} from "domain/synthetics/tradeHistory";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -49,16 +54,25 @@ type Props = {
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
+  viewPositionKeyHistory?: string;
+  onViewPositionKeyHistoryConsumed?: () => void;
 };
 
 export function TradeHistory(p: Props) {
-  const { forAllAccounts, account, hideDashboardLink = false } = p;
+  const {
+    forAllAccounts,
+    account,
+    hideDashboardLink = false,
+    viewPositionKeyHistory,
+    onViewPositionKeyHistoryConsumed,
+  } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
   const [positionLifecycleId, setPositionLifecycleId] = useState<string | undefined>();
+  const [isResolvingLifecycle, setIsResolvingLifecycle] = useState(false);
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -139,7 +153,8 @@ export function TradeHistory(p: Props) {
   const isConnected = Boolean(account);
   const isLoading =
     (forAllAccounts || isConnected) &&
-    (minCollateralUsd === undefined ||
+    (isResolvingLifecycle ||
+      minCollateralUsd === undefined ||
       isInitialHistoryLoading ||
       (shouldFetchDirectPage && isDirectPageLoading && directPageTradeActions === undefined));
 
@@ -160,6 +175,35 @@ export function TradeHistory(p: Props) {
   const handleClearPositionLifecycleFilter = useCallback(() => {
     setPositionLifecycleId(undefined);
   }, []);
+
+  // When opened from a position (PositionItem dropdown), resolve that slot's current lifecycle id
+  // and apply it as the filter. Consumed once so it doesn't re-apply on later tab switches.
+  useEffect(() => {
+    if (!viewPositionKeyHistory) {
+      return;
+    }
+
+    let cancelled = false;
+    setIsResolvingLifecycle(true);
+
+    fetchPositionLifecycleId({ chainId, positionKey: viewPositionKeyHistory })
+      .then((lifecycleId) => {
+        if (!cancelled && lifecycleId) {
+          setPositionLifecycleId(lifecycleId);
+        }
+      })
+      .finally(() => {
+        if (cancelled) {
+          return;
+        }
+        setIsResolvingLifecycle(false);
+        onViewPositionKeyHistoryConsumed?.();
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [viewPositionKeyHistory, chainId, onViewPositionKeyHistoryConsumed]);
 
   const pnlAnalysisButton = useMemo(() => {
     if (!account || hideDashboardLink) {

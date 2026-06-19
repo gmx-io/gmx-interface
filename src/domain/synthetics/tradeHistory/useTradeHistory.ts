@@ -422,3 +422,29 @@ export async function fetchRawTradeActions({
     totalCount,
   };
 }
+
+// Resolves the current open-to-close lifecycle id for a position slot from its latest indexed action.
+export async function fetchPositionLifecycleId({
+  chainId,
+  positionKey,
+}: {
+  chainId: number;
+  positionKey: string;
+}): Promise<string | undefined> {
+  const client = getSubsquidGraphClient(chainId);
+
+  if (!client) {
+    return undefined;
+  }
+
+  const query = gql(`{
+        tradeActions(limit: 1, orderBy: [timestamp_DESC, id_DESC], where: { positionKey_eq: "${positionKey}" }) {
+            positionLifecycleId
+        }
+      }`);
+
+  const result = await client.query({ query, fetchPolicy: "no-cache" });
+  const latestAction = ((result.data?.tradeActions ?? []) as SubsquidTradeAction[])[0];
+
+  return latestAction?.positionLifecycleId ?? undefined;
+}

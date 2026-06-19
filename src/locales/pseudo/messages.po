@@ -9235,6 +9235,7 @@ msgstr ""
 msgid "Express + One-Click"
 msgstr ""
 
+#: src/components/PositionDropdown/PositionDropdown.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "View position history"

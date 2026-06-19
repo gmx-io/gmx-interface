@@ -30,13 +30,21 @@ type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
   onClosePositionClick: (key: string) => void;
   onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
+  onViewPositionHistory?: (positionKey: string) => void;
   onCancelOrder: (key: string) => void;
   openSettings: () => void;
   hideActions?: boolean;
 };
 
 export function PositionList(p: Props) {
-  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions } = p;
+  const {
+    onClosePositionClick,
+    onOrdersClick,
+    onViewPositionHistory,
+    onSelectPositionClick,
+    onCancelOrder,
+    hideActions,
+  } = p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
@@ -85,6 +93,7 @@ export function PositionList(p: Props) {
                   onOrdersClick={onOrdersClick}
                   onSelectPositionClick={onSelectPositionClick}
                   isLarge={false}
+                  onViewPositionHistory={onViewPositionHistory}
                   onShareClick={handleSharePositionClick}
                   hideActions={hideActions}
                   onCancelOrder={onCancelOrder}
@@ -155,6 +164,7 @@ export function PositionList(p: Props) {
                     onOrdersClick={onOrdersClick}
                     onSelectPositionClick={onSelectPositionClick}
                     isLarge
+                    onViewPositionHistory={onViewPositionHistory}
                     onShareClick={handleSharePositionClick}
                     hideActions={hideActions}
                     onCancelOrder={onCancelOrder}
@@ -203,6 +213,7 @@ const PositionItemWrapper = memo(
     onClosePositionClick,
     onEditCollateralClick,
     onOrdersClick,
+    onViewPositionHistory,
     onSelectPositionClick,
     onShareClick,
     onCancelOrder,
@@ -211,6 +222,7 @@ const PositionItemWrapper = memo(
     onEditCollateralClick: (positionKey: string) => void;
     onClosePositionClick: (positionKey: string) => void;
     onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
+    onViewPositionHistory?: (positionKey: string) => void;
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
     onShareClick: (positionKey: string) => void;
@@ -240,6 +252,10 @@ const PositionItemWrapper = memo(
       },
       [onOrdersClick, position.key]
     );
+    const handleViewPositionHistory = useCallback(
+      () => onViewPositionHistory?.(position.contractKey),
+      [onViewPositionHistory, position.contractKey]
+    );
 
     const isShareAvailable = account === position.account;
 
@@ -255,6 +271,7 @@ const PositionItemWrapper = memo(
         hideActions={hideActions}
         onCancelOrder={handleCancelOrder}
         onShareClick={isShareAvailable ? handleShareClick : undefined}
+        onViewPositionHistory={onViewPositionHistory ? handleViewPositionHistory : undefined}
       />
     );
   }
