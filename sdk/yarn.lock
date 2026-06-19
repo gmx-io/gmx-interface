@@ -2208,7 +2208,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/pretty-format@npm:3.2.6":
+"@vitest/pretty-format@npm:3.2.6, @vitest/pretty-format@npm:^3.2.6":
   version: 3.2.6
   resolution: "@vitest/pretty-format@npm:3.2.6"
   dependencies:
