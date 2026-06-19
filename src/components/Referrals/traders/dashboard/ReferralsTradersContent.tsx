@@ -4,6 +4,7 @@ import { lightFormat } from "date-fns";
 import { useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
+import { REFERRALS_DOCS_URL } from "config/links";
 import {
   useAffiliateTier,
   useCodeOwner,
@@ -12,13 +13,18 @@ import {
   useTraderReferralStats,
   useUserReferralCode,
 } from "domain/referrals";
-import { getReferralCodeTradeUrl, getSharePercentage } from "domain/referrals/utils/referralsHelper";
+import {
+  getProtocolReferralCodeType,
+  getReferralCodeTradeUrl,
+  getSharePercentage,
+} from "domain/referrals/utils/referralsHelper";
 import { useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { formatUsd } from "lib/numbers";
 
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Faq } from "components/Faq/Faq";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { ReferralsDocsCard } from "components/Referrals/shared/cards/ReferralsDocsCard";
@@ -147,14 +153,7 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
             </Button>
           </div>
           <Card>
-            <Trans>
-              <div className="text-body-medium mb-2 font-medium text-typography-primary">
-                You're now receiving a {currentTierDiscount}% discount on your trades!
-              </div>
-              <div className="text-body-small text-typography-secondary">
-                The reduced rate applies to every open and close fee.
-              </div>
-            </Trans>
+            <ActiveCodeExplanation currentTierDiscount={currentTierDiscount} codeString={userReferralCodeString} />
           </Card>
         </div>
         <ReferralsDocsCard />
@@ -181,6 +180,55 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={cx("rounded-8 border-1/2 border-stroke-primary bg-slate-950/50 p-12", className)}>{children}</div>
+  );
+}
+
+function ActiveCodeExplanation({
+  currentTierDiscount,
+  codeString,
+}: {
+  currentTierDiscount: string | number | undefined;
+  codeString: string | undefined;
+}) {
+  const protocolCodeType = getProtocolReferralCodeType(codeString);
+
+  if (protocolCodeType === "organic") {
+    return (
+      <div className="text-body-small text-typography-primary">
+        <Trans>
+          You've reached a trading volume threshold, so GMX assigned this protocol referral code. You're receiving a{" "}
+          {currentTierDiscount}% discount on opening and closing fees.{" "}
+          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
+            Read more
+          </ExternalLink>
+        </Trans>
+      </div>
+    );
+  }
+
+  if (protocolCodeType === "graduated") {
+    return (
+      <div className="text-body-small text-typography-primary">
+        <Trans>
+          Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral
+          program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees.{" "}
+          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
+            Read more
+          </ExternalLink>
+        </Trans>
+      </div>
+    );
+  }
+
+  return (
+    <Trans>
+      <div className="text-body-medium mb-2 font-medium text-typography-primary">
+        You're now receiving a {currentTierDiscount}% discount on your trades!
+      </div>
+      <div className="text-body-small text-typography-secondary">
+        The reduced rate applies to every open and close fee.
+      </div>
+    </Trans>
   );
 }
 

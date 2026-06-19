@@ -6695,6 +6695,10 @@ msgstr "TP/SL-Orders überschreiten die Position"
 msgid "pay"
 msgstr "zahlen"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
+msgstr "Ihr bisheriger Empfehlungscode wurde durch einen GMX-Protokollcode ersetzt, nachdem Ihre Trades die Abschluss-Schwelle des Empfehlungsprogramms erreicht haben. Sie behalten Ihren {currentTierDiscount}% Rabatt auf Eröffnungs- und Schließungsgebühren. <0>Mehr erfahren</0>"
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
 msgstr "Keine Möglichkeiten entsprechen Ihren Beständen"
@@ -10220,6 +10224,10 @@ msgstr "Erneut signieren"
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "Einzahlung auf GMX Account..."
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "You've reached a trading volume threshold, so GMX assigned this protocol referral code. You're receiving a {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
+msgstr "Sie haben eine Handelsvolumen-Schwelle erreicht, daher hat GMX Ihnen diesen Protokoll-Empfehlungscode zugewiesen. Sie erhalten {currentTierDiscount}% Rabatt auf Eröffnungs- und Schließungsgebühren. <0>Mehr erfahren</0>"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx

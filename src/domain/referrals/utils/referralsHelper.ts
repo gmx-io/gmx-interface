@@ -124,3 +124,20 @@ export function getCodeError(value: string): string {
 export function getReferralCodeTradeUrl(referralCode: string): string {
   return `${getRootUrl()}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
 }
+
+export type ProtocolReferralCodeType = "organic" | "graduated";
+
+const PROTOCOL_REFERRAL_CODES: Record<string, ProtocolReferralCodeType> = {
+  EARNED_TRADER_DISCOUNT_5: "organic",
+  EARNED_TRADER_DISCOUNT_10: "organic",
+  DIRECT_GMX_DISCOUNT_5: "graduated",
+  DIRECT_GMX_DISCOUNT_10: "graduated",
+};
+
+export function getProtocolReferralCodeType(codeString: string | undefined): ProtocolReferralCodeType | undefined {
+  if (!codeString) {
+    return undefined;
+  }
+
+  return PROTOCOL_REFERRAL_CODES[codeString];
+}
