@@ -563,6 +563,6 @@
   "resolutions": {
     "viem@2.39.0": "patch:viem@npm:2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd",
     "lodash": "4.18.1",
-    "@vitest/pretty-format": "3.0.5"
+    "@vitest/pretty-format": "3.2.6"
   }
 }
