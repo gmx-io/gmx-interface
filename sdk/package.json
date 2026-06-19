@@ -539,10 +539,10 @@
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
-    "viem": "^2.37.1"
+    "viem": "2.37.1"
   },
   "devDependencies": {
-    "@babel/plugin-transform-private-property-in-object": "^7.25.9",
+    "@babel/plugin-transform-private-property-in-object": "7.25.9",
     "@graphql-codegen/cli": "5.0.6",
     "@graphql-codegen/client-preset": "4.8.1",
     "@graphql-codegen/typescript": "4.1.6",
@@ -554,7 +554,7 @@
     "tsx": "4.19.0",
     "typescript-transform-paths": "3.5.1",
     "viem": "2.39.0",
-    "vitest": "^3.0.5"
+    "vitest": "3.0.5"
   },
   "files": [
     "build"
