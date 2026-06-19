@@ -25,7 +25,6 @@ export type TradeHistoryResult = {
   isLoading: boolean;
   error: Error | undefined;
   hasMorePages: boolean;
-  isFetchingNextPage: boolean;
   pageIndex: number;
   setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
 };
@@ -41,7 +40,6 @@ export function useTradeHistory(
     account: string | null | undefined;
     forAllAccounts?: boolean;
     pageSize: number;
-    pageOffset?: number;
     fromTxTimestamp?: number;
     toTxTimestamp?: number;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
@@ -57,7 +55,6 @@ export function useTradeHistory(
 ): TradeHistoryResult {
   const {
     pageSize,
-    pageOffset,
     account,
     forAllAccounts,
     fromTxTimestamp,
@@ -85,7 +82,6 @@ export function useTradeHistory(
         orderEventCombinations,
         positionLifecycleId,
         marketsDirectionsFilter,
-        pageOffset,
         index,
         pageSize,
       ] as const;
@@ -112,7 +108,8 @@ export function useTradeHistory(
         chainId,
         pageIndex,
         pageSize,
-        pageOffset: pageOffset === undefined ? undefined : pageOffset + pageIndex * pageSize,
+        // The total count is invariant across pages, so only the first page needs to fetch it.
+        includeTotalCount: pageIndex === 0,
         marketsDirectionsFilter,
         forAllAccounts,
         account,
@@ -154,8 +151,6 @@ export function useTradeHistory(
     isLoading,
     error,
     hasMorePages,
-    // SWR keeps old pages while the next one loads.
-    isFetchingNextPage: !error && data !== undefined && data.length < pageIndex,
     pageIndex,
     setPageIndex,
   };
@@ -165,7 +160,7 @@ export async function fetchRawTradeActions({
   chainId,
   pageIndex,
   pageSize,
-  pageOffset,
+  includeTotalCount = true,
   marketsDirectionsFilter = EMPTY_ARRAY,
   forAllAccounts,
   account,
@@ -178,7 +173,7 @@ export async function fetchRawTradeActions({
   chainId: number;
   pageIndex: number;
   pageSize: number;
-  pageOffset?: number;
+  includeTotalCount?: boolean;
   marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
   account: string | null | undefined;
@@ -198,7 +193,7 @@ export async function fetchRawTradeActions({
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
 
-  const offset = pageOffset ?? pageIndex * pageSize;
+  const offset = pageIndex * pageSize;
   const limit = pageSize;
 
   const nonSwapRelevantDefinedFilters: MarketFilterLongShortItemData[] = marketsDirectionsFilter
@@ -343,10 +338,14 @@ export async function fetchRawTradeActions({
 
   const whereClause = `where: ${filtersStr}`;
 
-  const query = gql(`{
-        tradeActionsConnection(orderBy: [timestamp_DESC, id_DESC], ${whereClause}) {
+  const connectionQuery = includeTotalCount
+    ? `tradeActionsConnection(orderBy: [timestamp_DESC, id_DESC], ${whereClause}) {
           totalCount
-        }
+        }`
+    : "";
+
+  const query = gql(`{
+        ${connectionQuery}
 
         tradeActions(
             offset: ${offset},

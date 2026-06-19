@@ -13,6 +13,7 @@ import {
   formatAmountHuman,
   formatBalanceAmount,
   formatBasisPoints,
+  formatPriceImpactBps,
   formatFactor,
   formatPercentage,
   formatTokenAmount,
@@ -583,5 +584,22 @@ describe("formatBasisPoints", () => {
 
   it("returns undefined for missing bps value", () => {
     expect(formatBasisPoints(undefined)).toBeUndefined();
+  });
+});
+
+describe("formatPriceImpactBps", () => {
+  it("formats the signed bps share of size", () => {
+    expect(formatPriceImpactBps(-81n, 10000n)).toBe("-81 bps");
+    expect(formatPriceImpactBps(50n, 10000n)).toBe("+50 bps");
+    expect(formatPriceImpactBps(0n, 10000n)).toBe("0 bps");
+  });
+
+  it("returns undefined when the price impact is missing", () => {
+    expect(formatPriceImpactBps(undefined, 10000n)).toBeUndefined();
+  });
+
+  it("returns undefined when size is not positive", () => {
+    expect(formatPriceImpactBps(-81n, 0n)).toBeUndefined();
+    expect(formatPriceImpactBps(-81n, -10000n)).toBeUndefined();
   });
 });

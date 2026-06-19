@@ -20,12 +20,11 @@ import {
   PRECISION,
   applyFactor,
   calculateDisplayDecimals,
-  formatBasisPoints,
   formatDeltaUsd,
+  formatPriceImpactBps,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
-  getBasisPoints,
   roundsToZero,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
@@ -809,29 +808,10 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
 
 function getPriceImpactLine(label: string, priceImpactUsd: bigint | undefined, sizeDeltaUsd: bigint): Line {
   const state = numberToState(priceImpactUsd);
-  const bpsText = formatBasisPoints(
-    priceImpactUsd !== undefined && sizeDeltaUsd > 0n ? getBasisPoints(priceImpactUsd, sizeDeltaUsd) : undefined
-  );
+  const usdLine = { text: formatDeltaUsd(priceImpactUsd), state };
+  const bpsText = formatPriceImpactBps(priceImpactUsd, sizeDeltaUsd);
 
-  return infoRow(
-    label,
-    bpsText
-      ? [
-          {
-            text: formatDeltaUsd(priceImpactUsd),
-            state,
-          },
-          " ",
-          {
-            text: `(${bpsText})`,
-            state,
-          },
-        ]
-      : {
-          text: formatDeltaUsd(priceImpactUsd),
-          state,
-        }
-  );
+  return infoRow(label, bpsText ? [usdLine, " ", { text: `(${bpsText})`, state }] : usdLine);
 }
 
 function getSizeComment(tradeAction: PositionTradeAction): Line[] | undefined {

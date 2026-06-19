@@ -81,9 +81,10 @@ export function TradeHistory(p: Props) {
 
   const {
     tradeActions,
-    totalCount,
     isLoading: isHistoryLoading,
     error: historyError,
+    hasMorePages,
+    setPageIndex: setTradeActionsPageIndex,
   } = useTradeHistory(chainId, {
     account,
     forAllAccounts,
@@ -106,57 +107,38 @@ export function TradeHistory(p: Props) {
         actionFilter,
         positionLifecycleId,
       ]),
-    [account, actionFilter, forAllAccounts, fromTxTimestamp, marketsDirectionsFilter, positionLifecycleId, toTxTimestamp]
+    [
+      account,
+      actionFilter,
+      forAllAccounts,
+      fromTxTimestamp,
+      marketsDirectionsFilter,
+      positionLifecycleId,
+      toTxTimestamp,
+    ]
   );
   const {
     currentPage,
     setCurrentPage,
-    currentData: loadedCurrentPageData,
+    currentData: currentPageData,
     pageCount,
-  } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE, totalCount);
+  } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE);
 
-  const currentPageStartIndex = (currentPage - 1) * ENTITIES_PER_PAGE;
-  const directPageOffset =
-    Math.floor(currentPageStartIndex / TRADE_HISTORY_PREFETCH_SIZE) * TRADE_HISTORY_PREFETCH_SIZE;
-  const shouldFetchDirectPage = Boolean(
-    totalCount !== undefined &&
-      tradeActions &&
-      currentPageStartIndex < totalCount &&
-      tradeActions.length <= currentPageStartIndex
-  );
+  // Prefetch the next chunk (~3 pages ahead) as the user approaches the end of the loaded pages.
+  useEffect(() => {
+    if (!hasMorePages) {
+      return;
+    }
 
-  const {
-    tradeActions: directPageTradeActions,
-    isLoading: isDirectPageLoading,
-    error: directPageError,
-  } = useTradeHistory(chainId, {
-    account: shouldFetchDirectPage ? account : undefined,
-    forAllAccounts: shouldFetchDirectPage ? forAllAccounts : undefined,
-    pageSize: TRADE_HISTORY_PREFETCH_SIZE,
-    pageOffset: directPageOffset,
-    fromTxTimestamp,
-    toTxTimestamp,
-    marketsDirectionsFilter,
-    orderEventCombinations: actionFilter,
-    positionLifecycleId,
-  });
-
-  const directPageStartIndex = currentPageStartIndex - directPageOffset;
-  const directCurrentPageData = directPageTradeActions?.slice(
-    directPageStartIndex,
-    directPageStartIndex + ENTITIES_PER_PAGE
-  );
-  const currentPageData = (shouldFetchDirectPage ? directCurrentPageData : loadedCurrentPageData) ?? [];
-  const displayError = historyError || directPageError;
-  const isInitialHistoryLoading = isHistoryLoading && tradeActions === undefined;
+    if (pageCount < currentPage + 2) {
+      setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
+    }
+  }, [currentPage, pageCount, hasMorePages, setTradeActionsPageIndex]);
 
   const isConnected = Boolean(account);
   const isLoading =
     (forAllAccounts || isConnected) &&
-    (isResolvingLifecycle ||
-      minCollateralUsd === undefined ||
-      isInitialHistoryLoading ||
-      (shouldFetchDirectPage && isDirectPageLoading && directPageTradeActions === undefined));
+    (isResolvingLifecycle || minCollateralUsd === undefined || (isHistoryLoading && tradeActions === undefined));
 
   const isEmpty = !isLoading && !currentPageData.length;
 
@@ -342,21 +324,21 @@ export function TradeHistory(p: Props) {
             )}
           </tbody>
         </table>
-        {isEmpty && Boolean(displayError) && (
+        {isEmpty && Boolean(historyError) && (
           <EmptyTableContent
             isLoading={false}
             isEmpty={isEmpty}
             emptyText={<Trans>Failed to load trade history</Trans>}
           />
         )}
-        {isEmpty && !displayError && hasFilters && (
+        {isEmpty && !historyError && hasFilters && (
           <EmptyTableContent
             isLoading={false}
             isEmpty={isEmpty}
             emptyText={<Trans>No trades match the selected filters</Trans>}
           />
         )}
-        {isEmpty && !displayError && !hasFilters && !isLoading && (
+        {isEmpty && !historyError && !hasFilters && !isLoading && (
           <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No trades yet</Trans>} />
         )}
       </TableScrollFadeContainer>

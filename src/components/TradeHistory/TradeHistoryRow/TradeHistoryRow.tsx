@@ -233,7 +233,9 @@ export function TradeHistoryRow({
     account === tradeAction.account;
 
   const shouldDisplayPositionLifecycleButton =
-    isPositionTradeAction(tradeAction) && Boolean(tradeAction.positionLifecycleId) && Boolean(onSelectPositionLifecycle);
+    isPositionTradeAction(tradeAction) &&
+    Boolean(tradeAction.positionLifecycleId) &&
+    Boolean(onSelectPositionLifecycle);
 
   const handleSelectPositionLifecycleClick = useCallback(() => {
     if (isPositionTradeAction(tradeAction)) {
@@ -386,6 +388,12 @@ export function TradeHistoryRow({
         </TableTd>
         <TableTd>
           <div className="flex items-center justify-end gap-4">
+            {shouldDisplayShareButton ? (
+              <Button variant="ghost" onClick={handleShareClick}>
+                <NewLinkIconThin className="size-16" />
+                <Trans>Share</Trans>
+              </Button>
+            ) : null}
             {shouldDisplayPositionLifecycleButton ? (
               <TooltipWithPortal
                 variant="none"
@@ -403,12 +411,6 @@ export function TradeHistoryRow({
                 }
                 content={<Trans>View position history</Trans>}
               />
-            ) : null}
-            {shouldDisplayShareButton ? (
-              <Button variant="ghost" onClick={handleShareClick}>
-                <NewLinkIconThin className="size-16" />
-                <Trans>Share</Trans>
-              </Button>
             ) : null}
           </div>
         </TableTd>
