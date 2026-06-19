@@ -2199,15 +2199,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/pretty-format@npm:^3.0.5":
-  version: 3.2.6
-  resolution: "@vitest/pretty-format@npm:3.2.6"
-  dependencies:
-    tinyrainbow: "npm:^2.0.0"
-  checksum: 10/d6dfa60bd93fdc62fc76aa8a42881d746e355cb6db4f8104e2e3f4719ca1a606d6aeab1fac26f4af4b29a4c750023a3e71e3b289b23484d387e19eb01c8b6791
-  languageName: node
-  linkType: hard
-
 "@vitest/runner@npm:3.0.5":
   version: 3.0.5
   resolution: "@vitest/runner@npm:3.0.5"
