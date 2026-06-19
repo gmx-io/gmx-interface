@@ -112,6 +112,7 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "vite": "6.4.3",
     "react-error-overlay": "6.0.9",
     "@coinbase/wallet-sdk": "4.3.0",
     "ethers@6.12.1": "patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c",
