@@ -275,7 +275,6 @@ export default function TVChartContainer({
             chainId: cid,
             pageIndex: 0,
             pageSize: MARKS_PAGE_SIZE,
-            // Chart marks only need the actions, not the total count.
             includeTotalCount: false,
             marketsDirectionsFilter: marketFilters,
             forAllAccounts: false,

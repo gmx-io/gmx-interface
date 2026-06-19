@@ -78,7 +78,7 @@ export function useDownloadAsCsv({
               chainId,
               pageIndex: currentPageIndex,
               pageSize: PAGE_SIZE,
-              // The total count is invariant across pages, so only the first page needs to fetch it.
+              // Count is the same across pages; fetch it once.
               includeTotalCount: currentPageIndex === 0,
               forAllAccounts,
               account,

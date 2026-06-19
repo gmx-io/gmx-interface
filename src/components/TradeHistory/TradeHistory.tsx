@@ -8,12 +8,8 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import {
-  fetchPositionLifecycleId,
-  PositionTradeAction,
-  TradeActionType,
-  useTradeHistory,
-} from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import { usePositionLifecycleIdByKey } from "domain/synthetics/tradeHistory/usePositionLifecycleIdByKey";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -72,7 +68,18 @@ export function TradeHistory(p: Props) {
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
   const [positionLifecycleId, setPositionLifecycleId] = useState<string | undefined>();
-  const [isResolvingLifecycle, setIsResolvingLifecycle] = useState(false);
+
+  // Resolve the opened position's lifecycle id and apply it as the filter (consumed once).
+  const { isResolving: isResolvingLifecycle } = usePositionLifecycleIdByKey({
+    chainId,
+    positionKey: viewPositionKeyHistory,
+    onResolve: (lifecycleId) => {
+      if (lifecycleId) {
+        setPositionLifecycleId(lifecycleId);
+      }
+      onViewPositionKeyHistoryConsumed?.();
+    },
+  });
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -124,7 +131,7 @@ export function TradeHistory(p: Props) {
     pageCount,
   } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE);
 
-  // Prefetch the next chunk (~3 pages ahead) as the user approaches the end of the loaded pages.
+  // Prefetch the next chunk as the user nears the end of the loaded pages.
   useEffect(() => {
     if (!hasMorePages) {
       return;
@@ -157,35 +164,6 @@ export function TradeHistory(p: Props) {
   const handleClearPositionLifecycleFilter = useCallback(() => {
     setPositionLifecycleId(undefined);
   }, []);
-
-  // When opened from a position (PositionItem dropdown), resolve that slot's current lifecycle id
-  // and apply it as the filter. Consumed once so it doesn't re-apply on later tab switches.
-  useEffect(() => {
-    if (!viewPositionKeyHistory) {
-      return;
-    }
-
-    let cancelled = false;
-    setIsResolvingLifecycle(true);
-
-    fetchPositionLifecycleId({ chainId, positionKey: viewPositionKeyHistory })
-      .then((lifecycleId) => {
-        if (!cancelled && lifecycleId) {
-          setPositionLifecycleId(lifecycleId);
-        }
-      })
-      .finally(() => {
-        if (cancelled) {
-          return;
-        }
-        setIsResolvingLifecycle(false);
-        onViewPositionKeyHistoryConsumed?.();
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [viewPositionKeyHistory, chainId, onViewPositionKeyHistoryConsumed]);
 
   const pnlAnalysisButton = useMemo(() => {
     if (!account || hideDashboardLink) {

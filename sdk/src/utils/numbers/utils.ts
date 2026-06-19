@@ -89,7 +89,6 @@ export function formatBasisPoints(bpsValue: bigint | undefined): string | undefi
   return `${sign}${formatAmount(bigMath.abs(bpsValue), 0, 0, true)} bps`;
 }
 
-// Price impact as a signed basis-points share of size, e.g. "-81 bps". Undefined when size is non-positive.
 export function formatPriceImpactBps(priceImpactUsd: bigint | undefined, sizeUsd: bigint): string | undefined {
   return formatBasisPoints(
     priceImpactUsd !== undefined && sizeUsd > 0n ? getBasisPoints(priceImpactUsd, sizeUsd) : undefined
@@ -104,7 +103,7 @@ export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
   return (a + b - 1n) / b;
 }
 
-// True when an amount is below the smallest unit shown at displayDecimals (i.e. it would render as zero).
+// True when the amount would render as zero at displayDecimals.
 export function roundsToZero(amount: bigint, decimals: number, displayDecimals: number) {
   const hiddenDecimals = decimals - displayDecimals;
 

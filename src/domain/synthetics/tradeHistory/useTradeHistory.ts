@@ -108,7 +108,7 @@ export function useTradeHistory(
         chainId,
         pageIndex,
         pageSize,
-        // The total count is invariant across pages, so only the first page needs to fetch it.
+        // Count is the same across pages; fetch it once.
         includeTotalCount: pageIndex === 0,
         marketsDirectionsFilter,
         forAllAccounts,
@@ -422,7 +422,7 @@ export async function fetchRawTradeActions({
   };
 }
 
-// Resolves the current open-to-close lifecycle id for a position slot from its latest indexed action.
+// Resolves a position slot's lifecycle id from its latest indexed action.
 export async function fetchPositionLifecycleId({
   chainId,
   positionKey,
