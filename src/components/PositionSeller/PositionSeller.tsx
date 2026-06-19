@@ -99,7 +99,8 @@ import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
-  buildTwapOrderPayload,
+  buildTwapOrdersPayloads,
+  CreateOrderTxnParams,
   DecreasePositionOrderParams,
 } from "sdk/utils/orderTransactions";
 import { TradeMode } from "sdk/utils/trade";
@@ -406,19 +407,16 @@ export function PositionSeller() {
       validFromTime: 0n,
     };
 
-    if (isTwap && getIsValidTwapParams(duration, numberOfParts)) {
-      const twapParams = buildTwapOrderPayload(decreaseOrderParams, { duration, numberOfParts });
+    let createOrderParams: CreateOrderTxnParams<DecreasePositionOrderParams>[] = [];
 
-      return {
-        createOrderParams: [],
-        updateOrderParams: [],
-        cancelOrderParams: [],
-        twapParams,
-      };
+    if (isTwap && getIsValidTwapParams(duration, numberOfParts)) {
+      createOrderParams = buildTwapOrdersPayloads(decreaseOrderParams, { duration, numberOfParts });
+    } else {
+      createOrderParams = [buildDecreaseOrderPayload(decreaseOrderParams)];
     }
 
     return {
-      createOrderParams: [buildDecreaseOrderPayload(decreaseOrderParams)],
+      createOrderParams,
       updateOrderParams: [],
       cancelOrderParams: [],
     };

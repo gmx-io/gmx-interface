@@ -37,10 +37,7 @@ import {
   selectTradeboxTwapDuration,
   selectTradeboxTwapNumberOfParts,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import {
-  selectTradeBoxCreateOrderParams,
-  selectTradeBoxTwapParams,
-} from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
+import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
@@ -126,12 +123,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const sidecarOrderPayloads = useSidecarOrderPayloads();
 
   const primaryCreateOrderParams = useSelector(selectTradeBoxCreateOrderParams);
-  const twapParams = useSelector(selectTradeBoxTwapParams);
 
   const slippageInputId = useId();
 
   const batchParams: BatchOrderTxnParams = useMemo(() => {
-    if (!primaryCreateOrderParams && !twapParams) {
+    if (!primaryCreateOrderParams) {
       return {
         createOrderParams: [],
         updateOrderParams: [],
@@ -140,12 +136,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     }
 
     return {
-      createOrderParams: [...(primaryCreateOrderParams ?? []), ...(sidecarOrderPayloads?.createPayloads ?? [])],
+      createOrderParams: [...primaryCreateOrderParams, ...(sidecarOrderPayloads?.createPayloads ?? [])],
       updateOrderParams: sidecarOrderPayloads?.updatePayloads ?? [],
       cancelOrderParams: sidecarOrderPayloads?.cancelPayloads ?? [],
-      twapParams: twapParams ?? undefined,
     };
-  }, [primaryCreateOrderParams, twapParams, sidecarOrderPayloads]);
+  }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
   const { data: wrapOrUnwrapExecutionFee } = useWrapOrUnwrapExecutionFee();
 
@@ -322,14 +317,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     const actionName = isSwap ? "Swap" : isIncrease ? "Open Position" : "Close Position";
     const collateralSymbol = isSwap ? fromToken?.symbol : collateralToken?.symbol;
 
-    if (
-      (!primaryCreateOrderParams && !twapParams) ||
-      !signer ||
-      !provider ||
-      !tokensData ||
-      !account ||
-      !marketsInfoData
-    ) {
+    if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
       helperToast.error(t`Order submission failed`, {
         tradingErrorInfo: { actionName, collateral: collateralSymbol, requestId: metricData.requestId },
       });
@@ -407,7 +395,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     makeOrderTxnCallback,
     marketInfo,
     marketsInfoData,
-    twapParams,
     primaryCreateOrderParams,
     provider,
     setShouldFallbackToInternalSwap,

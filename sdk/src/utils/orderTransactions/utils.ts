@@ -25,22 +25,12 @@ export type ExchangeRouterCall = {
   params: any[];
 };
 
-export type CreateTwapTxnParams = {
-  /** Per-order amounts — contract divides collateral internally */
-  createOrderTxnParams: CreateOrderTxnParams<
-    SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
-  >;
-  twapCount: number;
-  intervalSeconds: number;
-};
-
 export type BatchOrderTxnParams = {
   createOrderParams: CreateOrderTxnParams<
     SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
   >[];
   updateOrderParams: UpdateOrderTxnParams[];
   cancelOrderParams: CancelOrderTxnParams[];
-  twapParams?: CreateTwapTxnParams;
 };
 
 export type CreateOrderTxnParams<
@@ -485,139 +475,6 @@ export function buildTwapOrdersPayloads<
   });
 }
 
-/**
- * Builds per-order payload for `createTwapOrder`. The contract divides collateral
- * by twapCount internally and checks `wntAmount >= executionFee * twapCount`.
- */
-export function buildTwapOrderPayload<
-  T extends SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams,
->(p: T, twapParams: TwapOrderParams): CreateTwapTxnParams {
-  const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: twapParams.numberOfParts });
-  const numberOfParts = BigInt(twapParams.numberOfParts);
-  const intervalSeconds = getTwapIntervalSeconds(twapParams);
-  const startValidFromTime = BigInt(Math.ceil(Date.now() / 1000));
-
-  if (isSwapOrderType(p.orderType)) {
-    const params = p as SwapOrderParams;
-
-    const perOrderPayload = buildSwapOrderPayload({
-      chainId: params.chainId,
-      receiver: params.receiver,
-      executionGasLimit: params.executionGasLimit,
-      payTokenAddress: params.payTokenAddress,
-      receiveTokenAddress: params.receiveTokenAddress,
-      swapPath: params.swapPath,
-      externalSwapQuote: undefined,
-      minOutputAmount: 0n,
-      triggerRatio: params.triggerRatio,
-      referralCode: params.referralCode,
-      autoCancel: params.autoCancel,
-      allowedSlippage: 0,
-      ...(params.expectedOutputAmount !== undefined && {
-        expectedOutputAmount: params.expectedOutputAmount / numberOfParts,
-      }),
-      payTokenAmount: params.payTokenAmount,
-      executionFeeAmount: params.executionFeeAmount / numberOfParts,
-      validFromTime: startValidFromTime,
-      orderType: OrderType.LimitSwap,
-      uiFeeReceiver,
-    });
-
-    return {
-      createOrderTxnParams: perOrderPayload as CreateOrderTxnParams<
-        SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
-      >,
-      twapCount: twapParams.numberOfParts,
-      intervalSeconds,
-    };
-  }
-
-  if (isIncreaseOrderType(p.orderType)) {
-    const params = p as IncreasePositionOrderParams;
-    const acceptablePrice = params.isLong ? MaxUint256 : 0n;
-    const triggerPrice = acceptablePrice;
-
-    const perOrderPayload = buildIncreaseOrderPayload({
-      chainId: params.chainId,
-      receiver: params.receiver,
-      executionGasLimit: params.executionGasLimit,
-      referralCode: params.referralCode,
-      autoCancel: params.autoCancel,
-      swapPath: params.swapPath,
-      externalSwapQuote: undefined,
-      marketAddress: params.marketAddress,
-      indexTokenAddress: params.indexTokenAddress,
-      isLong: params.isLong,
-      sizeDeltaUsd: params.sizeDeltaUsd / numberOfParts,
-      sizeDeltaInTokens: params.sizeDeltaInTokens / numberOfParts,
-      payTokenAddress: params.payTokenAddress,
-      allowedSlippage: 0,
-      // Total — contract divides collateral internally
-      payTokenAmount: params.payTokenAmount,
-      collateralTokenAddress: params.collateralTokenAddress,
-      collateralDeltaAmount: params.collateralDeltaAmount / numberOfParts,
-      executionFeeAmount: params.executionFeeAmount / numberOfParts,
-      validFromTime: startValidFromTime,
-      orderType: OrderType.LimitIncrease,
-      acceptablePrice,
-      triggerPrice,
-      uiFeeReceiver,
-    });
-
-    return {
-      createOrderTxnParams: perOrderPayload as CreateOrderTxnParams<
-        SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
-      >,
-      twapCount: twapParams.numberOfParts,
-      intervalSeconds,
-    };
-  }
-
-  const params = p as DecreasePositionOrderParams;
-  const acceptablePrice = !params.isLong ? MaxUint256 : 0n;
-  const triggerPrice = acceptablePrice;
-
-  const perOrderPayload = buildDecreaseOrderPayload({
-    chainId: params.chainId,
-    receiver: params.receiver,
-    executionGasLimit: params.executionGasLimit,
-    referralCode: params.referralCode,
-    autoCancel: params.autoCancel,
-    swapPath: params.swapPath,
-    externalSwapQuote: undefined,
-    marketAddress: params.marketAddress,
-    indexTokenAddress: params.indexTokenAddress,
-    isLong: params.isLong,
-    collateralTokenAddress: params.collateralTokenAddress,
-    collateralDeltaAmount: params.collateralDeltaAmount / numberOfParts,
-    sizeDeltaUsd: params.sizeDeltaUsd / numberOfParts,
-    sizeDeltaInTokens: params.sizeDeltaInTokens / numberOfParts,
-    executionFeeAmount: params.executionFeeAmount / numberOfParts,
-    validFromTime: startValidFromTime,
-    orderType: OrderType.LimitDecrease,
-    acceptablePrice,
-    triggerPrice,
-    allowedSlippage: 0,
-    uiFeeReceiver,
-    minOutputUsd: params.minOutputUsd / numberOfParts,
-    receiveTokenAddress: params.receiveTokenAddress,
-    decreasePositionSwapType: params.decreasePositionSwapType,
-  });
-
-  return {
-    createOrderTxnParams: perOrderPayload as CreateOrderTxnParams<
-      SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
-    >,
-    twapCount: twapParams.numberOfParts,
-    intervalSeconds,
-  };
-}
-
-function getTwapIntervalSeconds(twapParams: TwapOrderParams): number {
-  const totalDurationSeconds = twapParams.duration.hours * 3600 + twapParams.duration.minutes * 60;
-  return Math.floor(totalDurationSeconds / (twapParams.numberOfParts - 1));
-}
-
 export function getIsTwapOrderPayload(p: CreateOrderPayload) {
   return p.numbers.validFromTime !== 0n;
 }
@@ -666,12 +523,6 @@ export function getBatchTotalExecutionFee({
     return undefined;
   }
 
-  if (batchParams.twapParams) {
-    const { createOrderTxnParams, twapCount } = batchParams.twapParams;
-    feeTokenAmount += createOrderTxnParams.orderPayload.numbers.executionFee * BigInt(twapCount);
-    gasLimit += createOrderTxnParams.params.executionGasLimit * BigInt(twapCount);
-  }
-
   for (const co of batchParams.createOrderParams) {
     feeTokenAmount += co.orderPayload.numbers.executionFee;
     gasLimit += co.params.executionGasLimit;
@@ -697,16 +548,6 @@ export function getBatchTotalExecutionFee({
 
 export function getBatchTotalPayCollateralAmount(batchParams: BatchOrderTxnParams) {
   const payAmounts: { [tokenAddress: string]: bigint } = {};
-
-  if (batchParams.twapParams) {
-    const { createOrderTxnParams } = batchParams.twapParams;
-    const payTokenAddress = createOrderTxnParams.tokenTransfersParams?.payTokenAddress;
-    const payTokenAmount = createOrderTxnParams.tokenTransfersParams?.payTokenAmount;
-
-    if (payTokenAddress && payTokenAmount) {
-      payAmounts[payTokenAddress] = (payAmounts[payTokenAddress] ?? 0n) + payTokenAmount;
-    }
-  }
 
   for (const co of batchParams.createOrderParams) {
     const payTokenAddress = co.tokenTransfersParams?.payTokenAddress;
@@ -964,16 +805,10 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
 }
 
 export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTxnParams }) {
-  const { createOrderParams, updateOrderParams, cancelOrderParams, twapParams } = params;
+  const { createOrderParams, updateOrderParams, cancelOrderParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
   let value = 0n;
-
-  if (twapParams) {
-    const { multicall: twapMulticall, value: twapValue } = buildCreateTwapOrderMulticall(twapParams);
-    multicall.push(...twapMulticall);
-    value += twapValue;
-  }
 
   for (const params of createOrderParams) {
     const { multicall: createMulticall, value: createValue } = buildCreateOrderMulticall(params);
@@ -1032,44 +867,6 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
   return {
     multicall,
     value,
-  };
-}
-
-/**
- * WNT transfers must be scaled to total execution fee (per-order fee * twapCount)
- * because the contract checks `wntAmount >= executionFee * twapCount`.
- * Collateral transfers stay at total amount — the contract divides internally.
- */
-export function buildCreateTwapOrderMulticall(twapParams: CreateTwapTxnParams) {
-  const { createOrderTxnParams, twapCount, intervalSeconds } = twapParams;
-  const { tokenTransfersParams, orderPayload } = createOrderTxnParams;
-  const { tokenTransfers = [], value = 0n } = tokenTransfersParams ?? {};
-
-  const perOrderExecutionFee = orderPayload.numbers.executionFee;
-  const additionalExecutionFee = perOrderExecutionFee * BigInt(twapCount - 1);
-
-  const multicall: ExchangeRouterCall[] = [];
-  let adjustedValue = value;
-
-  for (const transfer of tokenTransfers) {
-    if (transfer.tokenAddress === NATIVE_TOKEN_ADDRESS) {
-      const scaledAmount = transfer.amount + additionalExecutionFee;
-      multicall.push({ method: "sendWnt", params: [transfer.destination, scaledAmount] });
-    } else {
-      multicall.push({ method: "sendTokens", params: [transfer.tokenAddress, transfer.destination, transfer.amount] });
-    }
-  }
-
-  adjustedValue += additionalExecutionFee;
-
-  multicall.push({
-    method: "createTwapOrder",
-    params: [orderPayload, BigInt(twapCount), BigInt(intervalSeconds)],
-  });
-
-  return {
-    multicall,
-    value: adjustedValue,
   };
 }
 
@@ -1148,13 +945,8 @@ export function getBatchRequiredActions(orderParams: BatchOrderTxnParams | undef
     return 0;
   }
 
-  const twapActions = orderParams.twapParams ? 1 : 0;
-
   return (
-    twapActions +
-    orderParams.createOrderParams.length +
-    orderParams.updateOrderParams.length +
-    orderParams.cancelOrderParams.length
+    orderParams.createOrderParams.length + orderParams.updateOrderParams.length + orderParams.cancelOrderParams.length
   );
 }
 
@@ -1163,15 +955,9 @@ export function getBatchSwapsCount(orderParams: BatchOrderTxnParams | undefined)
     return 0;
   }
 
-  let count = orderParams.createOrderParams.reduce((acc, co) => {
+  const count = orderParams.createOrderParams.reduce((acc, co) => {
     return acc + co.orderPayload.addresses.swapPath.length;
   }, 0);
-
-  if (orderParams.twapParams) {
-    count +=
-      orderParams.twapParams.createOrderTxnParams.orderPayload.addresses.swapPath.length *
-      orderParams.twapParams.twapCount;
-  }
 
   return count;
 }
@@ -1193,20 +979,9 @@ export function getIsEmptyBatch(orderParams: BatchOrderTxnParams | undefined) {
 }
 
 export function getBatchIsNativePayment(orderParams: BatchOrderTxnParams) {
-  if (orderParams.twapParams?.createOrderTxnParams.tokenTransfersParams?.isNativePayment) {
-    return true;
-  }
-
   return orderParams.createOrderParams.some((o) => o.tokenTransfersParams?.isNativePayment);
 }
 
 export function getIsInvalidBatchReceiver(batchParams: BatchOrderTxnParams, signerAddress: string) {
-  if (
-    batchParams.twapParams &&
-    batchParams.twapParams.createOrderTxnParams.orderPayload.addresses.receiver !== signerAddress
-  ) {
-    return true;
-  }
-
   return batchParams.createOrderParams.some((co) => co.orderPayload.addresses.receiver !== signerAddress);
 }
