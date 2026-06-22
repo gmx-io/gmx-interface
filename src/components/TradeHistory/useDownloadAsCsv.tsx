@@ -69,7 +69,6 @@ export function useDownloadAsCsv({
       const aggregatedTradeActions: (PositionTradeAction | SwapTradeAction)[] = [];
       let currentPageIndex = 0;
       let hasMorePages = true;
-      let totalCount: number | undefined;
 
       while (hasMorePages) {
         const rawPageResult = await withRetry(
@@ -78,8 +77,6 @@ export function useDownloadAsCsv({
               chainId,
               pageIndex: currentPageIndex,
               pageSize: PAGE_SIZE,
-              // Count is the same across pages; fetch it once.
-              includeTotalCount: currentPageIndex === 0,
               forAllAccounts,
               account,
               fromTxTimestamp,
@@ -95,14 +92,10 @@ export function useDownloadAsCsv({
         );
         const rawPage = rawPageResult?.tradeActions;
 
-        if (currentPageIndex === 0) {
-          totalCount = rawPageResult?.totalCount;
-        }
-
         // Use raw page length; processing can drop rows.
         hasMorePages =
-          totalCount !== undefined
-            ? (currentPageIndex + 1) * PAGE_SIZE < totalCount
+          rawPageResult?.totalCount !== undefined
+            ? (currentPageIndex + 1) * PAGE_SIZE < rawPageResult.totalCount
             : Boolean(rawPage && rawPage.length === PAGE_SIZE);
 
         const processedPage = processRawTradeActions({
