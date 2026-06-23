@@ -9,7 +9,7 @@ import { GlvBuyTask, GmBuyTask } from "../GmOrGlvBuyProgress";
 import { GlvSellTask, GmSellTask } from "../GmOrGlvSellProgress";
 import { BridgeInFailed, ConversionFailed } from "../MultichainTransferProgress";
 
-describe.concurrent("LongCrossChainTask", () => {
+describe("LongCrossChainTask", () => {
   it("gm sell", { timeout: 30_000 }, async () => {
     const sourceChainId = SOURCE_SEPOLIA;
     const settlementChainId = ARBITRUM_SEPOLIA;
