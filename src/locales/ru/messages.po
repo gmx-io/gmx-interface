@@ -4562,6 +4562,10 @@ msgstr "Код не найден"
 msgid "Inactive"
 msgstr "Неактивен"
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Failed to load announcements. Please try again later."
+msgstr "Не удалось загрузить объявления. Пожалуйста, попробуйте позже."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "Превышен максимальный открытый интерес. Текущий: {openInterestText}, макс.: {maxOpenInterestText}"

@@ -15,6 +15,7 @@ import useSearchParams from "lib/useSearchParams";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { DateRangeSelect } from "components/DateRangeSelect/DateRangeSelect";
+import Loader from "components/Loader/Loader";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
@@ -46,7 +47,7 @@ const TAB_LABELS: Record<AnnouncementTab, MessageDescriptor> = {
 export default function AnnouncementsPage() {
   const { id: deepLinkId } = useSearchParams<{ id?: string }>();
   const history = useHistory();
-  const { uiFlags } = useAnnouncementsUiFlags();
+  const { uiFlags, isLoading, error } = useAnnouncementsUiFlags();
 
   const [tab, setTab] = useState<AnnouncementTab>("all");
   const [search, setSearch] = useState("");
@@ -131,13 +132,13 @@ export default function AnnouncementsPage() {
 
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
-  // deep link: clear filters, load up to the target card, then scroll to it and highlight it
   useEffect(() => {
     if (!deepLinkId) return;
+    // wait for flags: the target card is only in the DOM once uiFlags is set, so scrolling earlier hits nothing
+    if (!uiFlags) return;
     const targetIndex = allEligible.findIndex((event) => event.id === deepLinkId);
     if (targetIndex === -1) {
-      // KLI-gated entries may appear once flags load; drop the param only when flags are here
-      if (uiFlags) history.replace({ pathname: "/announcements", search: "" });
+      history.replace({ pathname: "/announcements", search: "" });
       return;
     }
     setTab("all");
@@ -218,7 +219,15 @@ export default function AnnouncementsPage() {
           />
 
           <div className="flex min-h-[70vh] flex-col gap-8">
-            {list.length === 0 ? (
+            {isLoading ? (
+              <div className="flex flex-1 items-center justify-center">
+                <Loader />
+              </div>
+            ) : error && !uiFlags ? (
+              <div className="flex flex-1 items-center justify-center p-32 text-center text-typography-secondary">
+                <Trans>Failed to load announcements. Please try again later.</Trans>
+              </div>
+            ) : list.length === 0 ? (
               <div className="flex flex-1 items-center justify-center p-32 text-center text-typography-secondary">
                 <Trans>No announcements found</Trans>
               </div>
@@ -232,7 +241,7 @@ export default function AnnouncementsPage() {
                 />
               ))
             )}
-            {hasMore && <div ref={sentinelRef} className="h-1" />}
+            {!isLoading && hasMore && <div ref={sentinelRef} className="h-1" />}
           </div>
         </div>
       </div>
@@ -390,6 +399,7 @@ function FiltersBar({
           value={search}
           setValue={setSearch}
           placeholder={t`Search`}
+          autoFocus={false}
           className="shrink-0 max-lg:order-first lg:!w-[260px] lg:!grow-0 [&_input:hover]:bg-button-secondaryHover [&_input:not(:focus)]:border-button-secondary [&_input]:bg-button-secondary"
         />
       </div>

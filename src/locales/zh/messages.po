@@ -4562,6 +4562,10 @@ msgstr "未找到推荐码"
 msgid "Inactive"
 msgstr "未激活"
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Failed to load announcements. Please try again later."
+msgstr "无法加载公告。请稍后重试。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "超出最大未平仓量。当前：{openInterestText}，上限：{maxOpenInterestText}"

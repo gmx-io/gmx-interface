@@ -17,10 +17,6 @@ export type EventData = {
   id: string;
   type: AnnouncementType;
   title: ReactNode;
-  /**
-   * Short text shown in the What's New carousel and at the top of the /announcements page card.
-   * When absent, the carousel falls back to `description`.
-   */
   summary?: ReactNode;
   description: ReactNode;
 
@@ -35,9 +31,6 @@ export type EventData = {
 
   variant?: AnnouncementVariant;
   chains?: number[];
-  /**
-   * "Read more" link rendered on the /announcements page card only, never in the carousel.
-   */
   link?: {
     text: string;
     href: string;

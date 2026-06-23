@@ -4562,6 +4562,10 @@ msgstr "コードが見つかりません"
 msgid "Inactive"
 msgstr "無効"
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Failed to load announcements. Please try again later."
+msgstr "お知らせを読み込めませんでした。後でもう一度お試しください。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "最大建玉を超過しました。現在: {openInterestText}、上限: {maxOpenInterestText}"

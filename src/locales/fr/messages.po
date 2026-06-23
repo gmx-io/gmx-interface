@@ -4562,6 +4562,10 @@ msgstr "Code introuvable"
 msgid "Inactive"
 msgstr "Inactif"
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Failed to load announcements. Please try again later."
+msgstr "Échec du chargement des annonces. Veuillez réessayer plus tard."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "Positions ouvertes maximales dépassées. Actuel : {openInterestText}, max : {maxOpenInterestText}"

@@ -51,7 +51,7 @@ export function useWhatsNewAnnouncements(): UseWhatsNewAnnouncementsResult {
   const openPositionMarkets = useMemo(() => {
     const set = new Set<string>();
     for (const position of Object.values(positions.positionsData ?? {})) {
-      set.add(position.marketAddress.toLowerCase());
+      set.add(position.marketAddress);
     }
     return set;
   }, [positions.positionsData]);
@@ -66,8 +66,7 @@ export function useWhatsNewAnnouncements(): UseWhatsNewAnnouncementsResult {
       if (!isFuture(parseEventDate(event.endDate))) return false;
       if (event.chains && !event.chains.includes(chainId)) return false;
       if (visitedSet.has(event.id)) return false;
-      if (event.requiresOpenPosition && !openPositionMarkets.has(event.requiresOpenPosition.toLowerCase()))
-        return false;
+      if (event.requiresOpenPosition && !openPositionMarkets.has(event.requiresOpenPosition)) return false;
       return true;
     });
 
