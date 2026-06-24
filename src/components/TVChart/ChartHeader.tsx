@@ -69,82 +69,70 @@ function ChartHeaderMobile() {
 
     if (isSwap) {
       return (
-        <div className="grid grid-cols-[1fr_1fr] gap-14">
-          <div>
-            <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-              <Trans>24h high</Trans>
-            </div>
-            <div className="numbers">{high24}</div>
-          </div>
-          <div>
-            <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-              <Trans>24h low</Trans>
-            </div>
-            <div className="numbers">{low24}</div>
-          </div>
+        <div className="flex flex-col">
+          <ChartHeaderMobileRow label={<Trans>24h high</Trans>} value={high24} />
+          <ChartHeaderMobileRow label={<Trans>24h low</Trans>} value={low24} />
         </div>
       );
     }
 
     return (
-      <div className="grid grid-cols-[1fr_1fr] grid-rows-2 gap-16">
-        <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-            <Trans>24h volume</Trans>
-          </div>
-          <div className="numbers">{dailyVolume}</div>
-        </div>
+      <div className="flex flex-col">
+        <ChartHeaderMobileRow label={<Trans>24h volume</Trans>} value={dailyVolume} />
 
-        <div>
-          <div className="mb-4 whitespace-nowrap text-[11px] font-medium text-typography-secondary">
-            <span className="whitespace-nowrap text-[11px] font-medium uppercase text-typography-secondary">
-              <Trans>Open interest</Trans>
-            </span>
-            <span>{" ("}</span>
-            <span className="text-green-500 numbers">{longOIPercentage}</span>
-            <span>/</span>
-            <span className="text-red-500 numbers">{shortOIPercentage}</span>
-            <span>{")"}</span>
-          </div>
-          <TooltipWithPortal
-            variant="none"
-            as="div"
-            className="inline-flex flex-row items-center gap-8"
-            position="bottom-end"
-            content={<OpenInterestTooltip />}
-          >
-            <div className="flex flex-row items-center gap-8 numbers">{longOIValue}</div>
-            <div className="flex flex-row items-center gap-8 numbers">{shortOIValue}</div>
-          </TooltipWithPortal>
-        </div>
+        <ChartHeaderMobileRow
+          label={
+            <Trans>
+              Open interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
+              <span className="text-red-500 numbers">{shortOIPercentage}</span>)
+            </Trans>
+          }
+          value={
+            <TooltipWithPortal
+              variant="none"
+              as="div"
+              className="flex items-center gap-8"
+              position="bottom-end"
+              content={<OpenInterestTooltip />}
+            >
+              <div className="flex items-center gap-4 numbers">{longOIValue}</div>
+              <span className="text-typography-inactive">/</span>
+              <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
+            </TooltipWithPortal>
+          }
+        />
 
-        <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-            <Trans>Available liquidity</Trans>
-          </div>
-          <div className="flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-8 numbers">{liquidityLong}</div>
-            <div className="flex flex-row items-center gap-8 numbers">{liquidityShort}</div>
-          </div>
-        </div>
+        <ChartHeaderMobileRow
+          label={<Trans>Available liquidity</Trans>}
+          value={
+            <div className="flex items-center gap-8">
+              <span className="numbers">{liquidityLong}</span>
+              <span className="text-typography-inactive">/</span>
+              <span className="numbers">{liquidityShort}</span>
+            </div>
+          }
+        />
 
-        <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
+        <ChartHeaderMobileRow
+          label={
             <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net rate / 1h</Trans>
             </TooltipWithPortal>
-          </div>
-          <TooltipWithPortal
-            variant="none"
-            as="div"
-            className="inline-flex flex-row items-center gap-8"
-            position="bottom-end"
-            content={<NetRate1hTooltip />}
-          >
-            <div className="numbers">{netRateLong}</div>
-            <div className="numbers">{netRateShort}</div>
-          </TooltipWithPortal>
-        </div>
+          }
+          value={
+            <TooltipWithPortal
+              variant="none"
+              as="div"
+              className="flex items-center gap-8"
+              position="bottom-end"
+              content={<NetRate1hTooltip />}
+            >
+              <div className="flex items-center gap-4 numbers">{netRateLong}</div>
+              <span className="text-typography-inactive">/</span>
+              <div className="flex items-center gap-4 numbers">{netRateShort}</div>
+            </TooltipWithPortal>
+          }
+        />
       </div>
     );
   }, [
@@ -185,7 +173,7 @@ function ChartHeaderMobile() {
         </div>
       </div>
 
-      {details ? <div className="border-t-[1px] border-t-slate-600 p-16">{details}</div> : null}
+      {details ? <div className="border-t-1/2 border-t-slate-600 p-16">{details}</div> : null}
     </div>
   );
 }
@@ -453,6 +441,15 @@ const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode 
         {label}
       </div>
       <div className="text-body-medium numbers">{value}</div>
+    </div>
+  );
+};
+
+const ChartHeaderMobileRow = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
+  return (
+    <div className="flex items-center justify-between gap-8 py-2 text-12">
+      <div className="min-w-0 font-medium text-typography-secondary">{label}</div>
+      <div className="flex shrink-0 items-center text-typography-primary numbers">{value}</div>
     </div>
   );
 };

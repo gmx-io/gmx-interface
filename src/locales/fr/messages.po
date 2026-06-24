@@ -4170,7 +4170,6 @@ msgid "Show rPnL after fees"
 msgstr "Afficher le rPnL après frais"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "Positions ouvertes"
@@ -7970,6 +7969,7 @@ msgstr ""
 msgid "Amount"
 msgstr "Montant"
 
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Positions ouvertes (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"

@@ -4170,7 +4170,6 @@ msgid "Show rPnL after fees"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr ""
@@ -7970,6 +7969,7 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr ""
