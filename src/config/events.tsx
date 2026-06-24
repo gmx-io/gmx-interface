@@ -44,6 +44,77 @@ export type EventData = {
 };
 
 export const appEventsData: EventData[] = [
+  // [Mock] entries below are for QA of the What's New toast/page — test branch only
+  {
+    id: "mock-foo-bar-listing-2",
+    type: "listing",
+    isActive: true,
+    startDate: "04 Jun 2026, 12:00",
+    endDate: "31 Dec 2026, 12:00",
+    chains: [ARBITRUM, AVALANCHE, BOTANIX, MEGAETH],
+    title: "[Mock] FOO and BAR markets added on Arbitrum",
+    summary: (
+      <>
+        <Link to="/trade">Trade</Link> FOO and BAR perpetuals with up to 100x leverage, or{" "}
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+    description: (
+      <>
+        FOO and BAR perpetual markets are now live on Arbitrum. Trade with up to 100x leverage 24/7, or provide
+        liquidity using GM, GLV <span className="text-slate-100">[WETH-USDC]</span>, or GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>. Find them under the New category in the market dropdown.
+      </>
+    ),
+    link: { text: "Read more", href: "https://gmxio.substack.com", newTab: true },
+  },
+  {
+    id: "mock-baz-migration-2",
+    type: "delisting",
+    isActive: true,
+    startDate: "03 Jun 2026, 12:00",
+    endDate: "31 Dec 2026, 12:00",
+    variant: "warning",
+    title: "[Mock] BAZ to QUX migration",
+    description: (
+      <>
+        ⚠️ BAZ is migrating to the QUX token. Please close your position on the BAZ/USD market by [08:00 UTC] 30 June to
+        avoid auto-closure or forced liquidation.
+      </>
+    ),
+  },
+  {
+    id: "mock-scheduled-maintenance-2",
+    type: "maintenance",
+    isActive: true,
+    startDate: "02 Jun 2026, 12:00",
+    endDate: "31 Dec 2026, 12:00",
+    variant: "error",
+    title: "[Mock] Scheduled maintenance on 30 June",
+    description: (
+      <>
+        The interface will be unavailable for approximately 30 minutes starting at 02:00 UTC on 30 June. Open positions
+        and orders are not affected.
+      </>
+    ),
+  },
+  {
+    id: "mock-fee-reduction-2",
+    type: "update",
+    isActive: true,
+    startDate: "01 Jun 2026, 12:00",
+    endDate: "31 Dec 2026, 12:00",
+    variant: "success",
+    title: "[Mock] Trading fees reduced across all markets",
+    description: (
+      <>
+        Position fees have been lowered to 1/2 bps from 4/6 bps across all markets. Swap fees are reduced as well, and
+        liquidity providers keep the same share of fees as before. This longer description also verifies that the
+        carousel clips overflowing content with a line clamp while the announcements page shows the full text.
+      </>
+    ),
+    link: { text: "Read more", href: "https://docs.gmx.io/docs/trading/overview/#fees", newTab: true },
+  },
   {
     id: "spcx-stock-arbitrum-transition",
     type: "update",
