@@ -43,7 +43,14 @@ import { HttpClientWithFallback } from "utils/http/httpFallback";
 import { IHttp } from "utils/http/types";
 import { fetchApiJitLiquidityInfo } from "utils/jitLiquidity/api";
 import { FetchJitLiquidityInfoParams, JitLiquidityMap } from "utils/jitLiquidity/types";
-import { fetchApiMarkets, fetchApiMarketsInfo, fetchApiMarketsTickers, fetchApiTokensData } from "utils/markets/api";
+import {
+  fetchApiMarkets,
+  fetchApiMarketsConfig,
+  fetchApiMarketsInfo,
+  fetchApiMarketsValues,
+  fetchApiMarketsTickers,
+  fetchApiTokensData,
+} from "utils/markets/api";
 import { MarketTicker, MarketWithTiers } from "utils/markets/types";
 import {
   buildCrossChainWithdrawBridgeOutParams,
@@ -247,6 +254,14 @@ export class GmxApiSdk {
 
   fetchMarketsInfo() {
     return fetchApiMarketsInfo(this.ctx);
+  }
+
+  fetchMarketsConfig() {
+    return fetchApiMarketsConfig(this.ctx);
+  }
+
+  fetchMarketsValues() {
+    return fetchApiMarketsValues(this.ctx);
   }
 
   fetchMarkets(): Promise<MarketWithTiers[]> {

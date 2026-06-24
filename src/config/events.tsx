@@ -45,22 +45,19 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
-    id: "spcx-pre-ipo-arbitrum-listing-updated",
-    type: "listing",
+    id: "spcx-stock-arbitrum-transition",
+    type: "update",
     isActive: true,
-    startDate: "09 Jun 2026, 12:00",
-    endDate: "16 Jun 2026, 12:00",
-    flagId: "showSpcxPreIpoArbitrumListingUpdated",
+    startDate: "12 Jun 2026, 12:00",
+    endDate: "19 Jun 2026, 12:00",
     chains: [ARBITRUM],
-    title: "SPCX Pre-IPO market added on Arbitrum",
+    title: "SpaceX pre-IPO market is now a 24/7 stock perp on Arbitrum",
     description: (
       <>
-        <Link to="/trade">Trade</Link> pre-IPO SpaceX perpetuals with up to 10x leverage, 24/7. SPCX/USD is a new type
-        of market for GMX, launching with limited initial OI capacity. Caps and trading parameters may change around the
-        IPO, and opening or increasing positions may be unavailable when caps are reached.
+        SpaceX pre-IPO market transitioned into a stock market. <Link to="/trade">Trade SPCX</Link> under TradFi &gt;
+        Stocks. Existing positions transitioned automatically.
       </>
     ),
-    link: { text: "Read more", href: "https://x.com/GMX_IO/status/2064418523657470193", newTab: true },
   },
   {
     id: "mega-arbitrum-megaeth-listing",
@@ -114,21 +111,6 @@ export const appEventsData: EventData[] = [
           </span>
         </span>
       </span>
-    ),
-  },
-  {
-    id: "well-delisting",
-    type: "delisting",
-    isActive: true,
-    endDate: "20 Apr 2026, 0:00",
-    chains: [ARBITRUM],
-    title: "WELL/USD delisting",
-    requiresOpenPosition: "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4",
-    description: (
-      <>
-        Position openings for WELL/USD are no longer available. Please close your existing positions before April 19.
-        Remaining positions may be auto-closed.
-      </>
     ),
   },
   {
@@ -194,23 +176,6 @@ export const appEventsData: EventData[] = [
       </>
     ),
     link: { text: "Read more", href: "https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade", newTab: true },
-  },
-  {
-    id: "om-mantra-migration",
-    type: "delisting",
-    isActive: true,
-    startDate: "20 Feb 2026, 0:00",
-    endDate: "27 Feb 2026, 0:00",
-    chains: [ARBITRUM],
-    title: "OM to MANTRA migration",
-    variant: "warning",
-    requiresOpenPosition: "0x89EB78679921499632fF16B1be3ee48295cfCD91",
-    description: (
-      <>
-        ⚠️ OM (Mantra) is migrating to the MANTRA token. Please close your position on the OM/USD market by [08:00 UTC]
-        21 February to avoid auto-closure or forced liquidation.
-      </>
-    ),
   },
   {
     id: "cc-met-arbitrum-listing",
@@ -286,25 +251,6 @@ export const appEventsData: EventData[] = [
       </>
     ),
     link: { text: "Read more", href: "https://t.me/GMX_Announcements/1175", newTab: true },
-  },
-  {
-    id: "al16z-delisting",
-    type: "delisting",
-    isActive: true,
-    startDate: "06 Nov 2025, 08:00",
-    endDate: "06 Dec 2025, 08:00",
-    chains: [ARBITRUM],
-    title: "AI16Z/USD delisting",
-    requiresOpenPosition: "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169",
-    description: (
-      <>
-        Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is
-        recommended.
-        <br />
-        <br />
-        The listing committee will evaluate the listing of ELIZAOS/USD.
-      </>
-    ),
   },
   {
     id: "xaut0-avalanche-listing",

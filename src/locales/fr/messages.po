@@ -919,10 +919,6 @@ msgstr "Impact sur le prix net et frais de votre transaction. <0>En savoir plus<
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "Les prix sont volatils. <0>Augmentez le glissement autorisé</0>"
 
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "providing liquidity"
-msgstr "fournir de la liquidité"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr "Plutus"
@@ -1338,10 +1334,6 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit fee"
 msgstr "Frais de dépôt"
-
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "<0>Botanix</0> supports"
-msgstr "<0>Botanix</0> prend en charge"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Selling {symbol}..."
@@ -3573,10 +3565,6 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
 
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "and"
-msgstr "et"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade confirmations"
 msgstr "Confirmations de transactions"
@@ -3630,6 +3618,10 @@ msgstr ""
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
 msgstr ""
+
+#: src/components/BotanixShutdownBanner/BotanixShutdownBanner.tsx
+msgid "Botanix is shutting down. Do not open new positions. Close existing positions and withdraw funds from Botanix."
+msgstr "Botanix est en cours de fermeture. N'ouvrez pas de nouvelles positions. Fermez vos positions existantes et retirez vos fonds de Botanix."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -5932,10 +5924,6 @@ msgstr "Perpétuels"
 msgid "Impact exponent (negative)"
 msgstr "Exposant d'impact (négatif)"
 
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "using GLV and GM tokens. Staking GMX and referrals are not yet supported."
-msgstr "en utilisant les jetons GLV et GM. Le staking GMX et les parrainages ne sont pas encore pris en charge."
-
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
 msgstr "Utilisez le bouton \"Close\" pour réduire votre position via des ordres au marché ou TWAP."
@@ -7312,10 +7300,6 @@ msgstr "Partager la position"
 msgid "Max deposit capacity reached for this pool"
 msgstr "Capacité maximale de dépôt atteinte pour ce pool"
 
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
-msgstr "Passez à <0><1/><2>Arbitrum</2></0> ou <3><4/><5>Avalanche</5></3> pour accéder à ces fonctionnalités"
-
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
 msgstr ""
@@ -8330,10 +8314,6 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "Acheter des GM avec {0} jusqu'aux plafonds ci-dessous"
-
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "V2 trading"
-msgstr "Trading V2"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
