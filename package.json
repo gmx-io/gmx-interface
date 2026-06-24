@@ -50,7 +50,7 @@
     "@lingui/macro": "4.11.3",
     "@lingui/react": "4.10.0",
     "@privy-io/react-auth": "3.32.0",
-    "@privy-io/wagmi": "4.0.8",
+    "@privy-io/wagmi": "4.0.13",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",
     "@tanstack/react-query": "5.25.0",
     "@taskworld.com/rereselect": "0.3.0",
@@ -120,7 +120,8 @@
     "viem@2.39.0": "patch:viem@npm:2.39.0#.yarn/patches/viem-npm-2.39.0-c113f391fd",
     "date-fns": "4.1.0",
     "lodash": "4.18.1",
-    "ox@npm:0.14.27": "patch:ox@npm:0.14.27#.yarn/patches/ox-npm-0.14.27-4b3f5eea33.patch"
+    "ox@npm:0.14.27": "patch:ox@npm:0.14.27#.yarn/patches/ox-npm-0.14.27-4b3f5eea33.patch",
+    "viem@npm:>=2.37.9": "2.52.0"
   },
   "eslintConfig": {
     "extends": [
