@@ -3490,7 +3490,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroicons/react@npm:^2.1.1":
+"@heroicons/react@npm:^2.2.0":
   version: 2.2.0
   resolution: "@heroicons/react@npm:2.2.0"
   peerDependencies:
@@ -4662,28 +4662,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/api-base@npm:1.9.0":
-  version: 1.9.0
-  resolution: "@privy-io/api-base@npm:1.9.0"
+"@privy-io/api-base@npm:1.9.1":
+  version: 1.9.1
+  resolution: "@privy-io/api-base@npm:1.9.1"
   dependencies:
-    zod: "npm:^3.24.3"
-  checksum: 10/f86582cf4493e360e7ff56484e715093410fb529dcd0c4ee7e4244685ca8df7c864efa7a1293a6154612fda0450efd923c12838a1ecbe4ef840f61bbb845622e
+    zod: "npm:^3.25.76"
+  checksum: 10/78e24161f559b11f4a4a7066c63914146441c73ab08d2ffad72e4a37400853d222264617e7e3977d850d5ee94da7eedc281ebf2ed8f7b5a33c27aff03a23c52c
   languageName: node
   linkType: hard
 
-"@privy-io/api-types@npm:0.12.0":
-  version: 0.12.0
-  resolution: "@privy-io/api-types@npm:0.12.0"
-  checksum: 10/ac3d20b649889fff41fd7413402bf747ce5ac553b22f9b8d408f00740a9aa3600a1c427e2c4921a14235ca42dd0bb0f9e33d918bf95d2e655de1a1823c13f376
+"@privy-io/api-types@npm:0.15.0":
+  version: 0.15.0
+  resolution: "@privy-io/api-types@npm:0.15.0"
+  checksum: 10/5fdac8c2fb08624b1e7a70ad15788d1940d0f0e03e3121b3cccb00b3a550fc04b2a22377983f84cd9522c166c42e0aa1be8f7467f5ba2f41028a4ca8346b5e8a
   languageName: node
   linkType: hard
 
-"@privy-io/are-addresses-equal@npm:0.0.5":
-  version: 0.0.5
-  resolution: "@privy-io/are-addresses-equal@npm:0.0.5"
+"@privy-io/are-addresses-equal@npm:0.0.9":
+  version: 0.0.9
+  resolution: "@privy-io/are-addresses-equal@npm:0.0.9"
   dependencies:
-    viem: "npm:2.48.11"
-  checksum: 10/e00932fef627d0404498deb97254813fe0852b050b80bda0f7ecf63bf43c2af33df615077474f7696bba846ff582333dd016295be5a7c1661c884b0bf7b36d3a
+    viem: "npm:2.52.0"
+  checksum: 10/8bd0e1e5c1243553b41895b379d8289db8d420fda178793abffbc5e1e3eafdab799decaf285868963ce2a0de2d95183dee8f9ff63b8dac680a1f99a58782f29c
   languageName: node
   linkType: hard
 
@@ -4694,50 +4694,50 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/encoding@npm:0.1.3":
-  version: 0.1.3
-  resolution: "@privy-io/encoding@npm:0.1.3"
+"@privy-io/encoding@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@privy-io/encoding@npm:0.2.0"
   dependencies:
     "@scure/base": "npm:^1.2.6"
-  checksum: 10/ca827f00bbcb3e22d717add4f1e5309401bea1e7cabcd77cdb57cc53907d06beebe4a25124bd52526e26a539264cffeb3bd13d0dbc360a6a05bd22d8bfd4e26c
+  checksum: 10/efb5bfe9e9282310e55ce82a8ff7a9c4ed7370e0eb86290ba3a7d844f9151cfc5cb049068dc30df66555178c8ca41cc34b97820217ea69b1cb076348c33b9c9f
   languageName: node
   linkType: hard
 
-"@privy-io/ethereum@npm:0.1.1":
-  version: 0.1.1
-  resolution: "@privy-io/ethereum@npm:0.1.1"
+"@privy-io/ethereum@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@privy-io/ethereum@npm:0.2.0"
   peerDependencies:
-    viem: 2.48.11
-  checksum: 10/403f8176072ee677aba8709216024c6a553e7d155ed7efeed5d7708563e341621f1315f5c1f6518e99db898561e78613fa33ea81e0bfd39f3c7d4ac004fe1267
+    viem: 2.52.0
+  checksum: 10/aace101f2b5a02f8be756eb2d833dee1cc6da8ad73dc64dda8502b2b134f2a29bdf3256b0d71108cb955371326090b93a855111eff59e30598333df5187e136c
   languageName: node
   linkType: hard
 
-"@privy-io/js-sdk-core@npm:0.65.1":
-  version: 0.65.1
-  resolution: "@privy-io/js-sdk-core@npm:0.65.1"
+"@privy-io/js-sdk-core@npm:0.67.3":
+  version: 0.67.3
+  resolution: "@privy-io/js-sdk-core@npm:0.67.3"
   dependencies:
-    "@privy-io/api-base": "npm:1.9.0"
-    "@privy-io/api-types": "npm:0.12.0"
+    "@privy-io/api-base": "npm:1.9.1"
+    "@privy-io/api-types": "npm:0.15.0"
     "@privy-io/chains": "npm:0.3.0"
-    "@privy-io/encoding": "npm:0.1.3"
-    "@privy-io/ethereum": "npm:0.1.1"
-    "@privy-io/routes": "npm:0.2.1"
+    "@privy-io/encoding": "npm:0.2.0"
+    "@privy-io/ethereum": "npm:0.2.0"
+    "@privy-io/routes": "npm:0.2.5"
     canonicalize: "npm:^2.0.0"
     eventemitter3: "npm:^5.0.1"
     fetch-retry: "npm:^6.0.0"
     jose: "npm:^4.15.5"
     js-cookie: "npm:^3.0.5"
-    libphonenumber-js: "npm:^1.10.44"
+    libphonenumber-js: "npm:^1.12.10"
     set-cookie-parser: "npm:^2.6.0"
   peerDependencies:
     permissionless: ^0.2.47
-    viem: 2.48.11
+    viem: 2.52.0
   peerDependenciesMeta:
     permissionless:
       optional: true
     viem:
       optional: true
-  checksum: 10/8a242e6cbdaa1a93908c408234861d88c51e1a87318c7b19c5afde17794792927278c89f42f5e5f8d32c70b5f2af7d520a986e19c9a725ba0204f0ef5a3ad257
+  checksum: 10/056b99c0a75bb91b5c7d7d56c833c7a15c4e68fbdc5f0006cb937958f25adf37bebd7cdf09bf4eced5565987517b8a117db2470c12a95d684bdf71f7dea1ab18
   languageName: node
   linkType: hard
 
@@ -4748,26 +4748,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/react-auth@npm:3.27.1":
-  version: 3.27.1
-  resolution: "@privy-io/react-auth@npm:3.27.1"
+"@privy-io/react-auth@npm:3.32.0":
+  version: 3.32.0
+  resolution: "@privy-io/react-auth@npm:3.32.0"
   dependencies:
     "@base-org/account": "npm:^1.1.0"
     "@coinbase/wallet-sdk": "npm:4.3.2"
     "@floating-ui/react": "npm:^0.26.22"
     "@hcaptcha/react-hcaptcha": "npm:^1.14.0"
     "@headlessui/react": "npm:^2.2.0"
-    "@heroicons/react": "npm:^2.1.1"
+    "@heroicons/react": "npm:^2.2.0"
     "@marsidev/react-turnstile": "npm:^1.3.1"
-    "@privy-io/api-base": "npm:1.9.0"
-    "@privy-io/api-types": "npm:0.12.0"
-    "@privy-io/are-addresses-equal": "npm:0.0.5"
+    "@privy-io/api-base": "npm:1.9.1"
+    "@privy-io/api-types": "npm:0.15.0"
+    "@privy-io/are-addresses-equal": "npm:0.0.9"
     "@privy-io/chains": "npm:0.3.0"
-    "@privy-io/encoding": "npm:0.1.3"
-    "@privy-io/ethereum": "npm:0.1.1"
-    "@privy-io/js-sdk-core": "npm:0.65.1"
+    "@privy-io/encoding": "npm:0.2.0"
+    "@privy-io/ethereum": "npm:0.2.0"
+    "@privy-io/js-sdk-core": "npm:0.67.3"
     "@privy-io/popup": "npm:0.0.4"
-    "@privy-io/routes": "npm:0.2.1"
+    "@privy-io/routes": "npm:0.2.5"
     "@privy-io/urls": "npm:0.0.4"
     "@scure/base": "npm:^1.2.5"
     "@simplewebauthn/browser": "npm:^13.2.2"
@@ -4789,9 +4789,9 @@ __metadata:
     styled-components: "npm:^6.1.13"
     stylis: "npm:^4.3.4"
     tinycolor2: "npm:^1.6.0"
-    viem: "npm:2.48.11"
+    viem: "npm:2.52.0"
     x402: "npm:^0.7.1"
-    zustand: "npm:^5.0.0"
+    zustand: "npm:^5.0.4"
   peerDependencies:
     "@abstract-foundation/agw-client": ^1.0.0
     "@farcaster/mini-app-solana": ^1.0.0
@@ -4799,6 +4799,7 @@ __metadata:
     "@solana-program/system": ">=0.8.0"
     "@solana-program/token": ">=0.6.0"
     "@solana/kit": ">=3.0.3"
+    "@stripe/crypto": ">=0.1.0"
     permissionless: ^0.2.47
     react: ^18 || ^19
     react-dom: ^18 || ^19
@@ -4815,18 +4816,20 @@ __metadata:
       optional: true
     "@solana/kit":
       optional: true
+    "@stripe/crypto":
+      optional: true
     permissionless:
       optional: true
-  checksum: 10/1e7232025944373fa6f3f906c3a3c9125fa18f20444469bb04b27d9ee96dc03b1879e57289ad77c1e49b25fa3df5db283da4648c07e0df742da7629e40a51a0b
+  checksum: 10/c81dfb74933e0bc1724cb75a9e2d5cf7578b594fe23becd27587ed752c557aff60644c568b3469420dd9e3d7c544a08bb14e4c59fbd181fa22ee9f1d3eb400bb
   languageName: node
   linkType: hard
 
-"@privy-io/routes@npm:0.2.1":
-  version: 0.2.1
-  resolution: "@privy-io/routes@npm:0.2.1"
+"@privy-io/routes@npm:0.2.5":
+  version: 0.2.5
+  resolution: "@privy-io/routes@npm:0.2.5"
   dependencies:
-    "@privy-io/api-types": "npm:0.12.0"
-  checksum: 10/b96a2a0ce4dd74fa94c6dac643919c373f880553cb47778c6a7f8ec87b519c12552c40c123c09daa290665c2dd65e35df5a09ac34e4bc2a96367783eeb7efe9c
+    "@privy-io/api-types": "npm:0.15.0"
+  checksum: 10/84f4bac74e2bdfca6b308d33d02b1e6d1dd675dd3ec9fb7d596bdc99874fea6f3399160132011212ce055e7ccb21ef4796fad09926b372468d31621d838dd5e2
   languageName: node
   linkType: hard
 
@@ -13363,7 +13366,7 @@ __metadata:
     "@lingui/react": "npm:4.10.0"
     "@lingui/vite-plugin": "npm:4.11.3"
     "@playwright/experimental-ct-react": "npm:1.58.2"
-    "@privy-io/react-auth": "npm:3.27.1"
+    "@privy-io/react-auth": "npm:3.32.0"
     "@privy-io/wagmi": "npm:4.0.8"
     "@stargatefinance/stg-evm-sdk-v2": "npm:1.1.12"
     "@tanstack/react-query": "npm:5.25.0"
@@ -14807,10 +14810,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libphonenumber-js@npm:^1.10.44":
-  version: 1.12.43
-  resolution: "libphonenumber-js@npm:1.12.43"
-  checksum: 10/bc75e4d5755840cb8390825e872c366c2a324a1afb0b8632814aaeb87ee09f35271582c485a2f1dfbe647ae7dc753221f3abb7da3b2fd8dc5aa3ed49981a5cdb
+"libphonenumber-js@npm:^1.12.10":
+  version: 1.13.7
+  resolution: "libphonenumber-js@npm:1.13.7"
+  checksum: 10/927823125be1252aea58f551f031026f42e5745b53974289334b5f09c7149371d29157d09d856b75227c9c124aa43b395f66ea9ab038abbc92814c7bed4b0d40
   languageName: node
   linkType: hard
 
@@ -16079,6 +16082,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ox@npm:0.14.27":
+  version: 0.14.27
+  resolution: "ox@npm:0.14.27"
+  dependencies:
+    "@adraffy/ens-normalize": "npm:^1.11.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/curves": "npm:1.9.1"
+    "@noble/hashes": "npm:^1.8.0"
+    "@scure/bip32": "npm:^1.7.0"
+    "@scure/bip39": "npm:^1.6.0"
+    abitype: "npm:^1.2.3"
+    eventemitter3: "npm:5.0.1"
+  peerDependencies:
+    typescript: ">=5.4.0"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/eb022ccc101d35218457d9160ab9898463bc98959f5983086002380772ed5e4bbe1cd1aaf0c28c146950a20f1f02b7c2fd6d77fd945fcfebbe71afe20797cdbf
+  languageName: node
+  linkType: hard
+
 "ox@npm:0.6.7":
   version: 0.6.7
   resolution: "ox@npm:0.6.7"
@@ -16200,6 +16224,27 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/b797f48887c0e715e9a340d186778b5e75041028fd92da2412a2582eb7024a1b21a2d80ed096218bbfc4a2803bd7bdd41ca7a62ac8b61626ca0be996394c5890
+  languageName: node
+  linkType: hard
+
+"ox@patch:ox@npm:0.14.27#.yarn/patches/ox-npm-0.14.27-4b3f5eea33.patch::locator=gmx-interface%40workspace%3A.":
+  version: 0.14.27
+  resolution: "ox@patch:ox@npm%3A0.14.27#.yarn/patches/ox-npm-0.14.27-4b3f5eea33.patch::version=0.14.27&hash=9acf0b&locator=gmx-interface%40workspace%3A."
+  dependencies:
+    "@adraffy/ens-normalize": "npm:^1.11.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/curves": "npm:1.9.1"
+    "@noble/hashes": "npm:^1.8.0"
+    "@scure/bip32": "npm:^1.7.0"
+    "@scure/bip39": "npm:^1.6.0"
+    abitype: "npm:^1.2.3"
+    eventemitter3: "npm:5.0.1"
+  peerDependencies:
+    typescript: ">=5.4.0"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/2be1bf013d6ae604e0055d8e12e0454ec0912e59b53b02a7a29fbe4846df2e3e1e4a5b5727e22de784873ab6b6d3725024e3d4e0be845535d10078db49b4784d
   languageName: node
   linkType: hard
 
@@ -20243,7 +20288,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:2.48.11, viem@npm:>=2.37.9":
+"viem@npm:2.52.0":
+  version: 2.52.0
+  resolution: "viem@npm:2.52.0"
+  dependencies:
+    "@noble/curves": "npm:1.9.1"
+    "@noble/hashes": "npm:1.8.0"
+    "@scure/bip32": "npm:1.7.0"
+    "@scure/bip39": "npm:1.6.0"
+    abitype: "npm:1.2.3"
+    isows: "npm:1.0.7"
+    ox: "npm:0.14.27"
+    ws: "npm:8.20.1"
+  peerDependencies:
+    typescript: ">=5.0.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/9adc38ea2f93a57172eeae4d73c44e5bce7013cf9518beffd69dedd8ff1bb013cdcd953527b0c19e24539d4f85b1b89381f78444056ad7ff3b61493385ed5f6b
+  languageName: node
+  linkType: hard
+
+"viem@npm:>=2.37.9":
   version: 2.48.11
   resolution: "viem@npm:2.48.11"
   dependencies:
@@ -20770,6 +20836,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ws@npm:8.20.1":
+  version: 8.20.1
+  resolution: "ws@npm:8.20.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/8c4d2b06dc65381b6bfab1f2e584275dabd30a99a5ce058b4dc76f3d03fad1921cef3a21d8f53127d30a808cfd1864aa2fe6890a5d43359f682457315baec873
+  languageName: node
+  linkType: hard
+
 "ws@npm:8.5.0":
   version: 8.5.0
   resolution: "ws@npm:8.5.0"
@@ -21010,7 +21091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.24.2, zod@npm:^3.24.3, zod@npm:^3.24.4":
+"zod@npm:^3.24.2, zod@npm:^3.24.4, zod@npm:^3.25.76":
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995
@@ -21066,27 +21147,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^5.0.0":
-  version: 5.0.13
-  resolution: "zustand@npm:5.0.13"
-  peerDependencies:
-    "@types/react": ">=18.0.0"
-    immer: ">=9.0.6"
-    react: ">=18.0.0"
-    use-sync-external-store: ">=1.2.0"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    immer:
-      optional: true
-    react:
-      optional: true
-    use-sync-external-store:
-      optional: true
-  checksum: 10/161ad29b185f2278d64f60ae9230e7309d912511f758fbbd9bfef433021f3d5ecb1b3cb37dfbd3c0cd8b412d4fd71d7de7bc700ccf497d24c8c04ea2da6275dc
-  languageName: node
-  linkType: hard
-
 "zustand@npm:^5.0.1":
   version: 5.0.8
   resolution: "zustand@npm:5.0.8"
@@ -21105,5 +21165,26 @@ __metadata:
     use-sync-external-store:
       optional: true
   checksum: 10/f824fbd0120bbb58c71e74599c7090fa81e9e94334b55a8bfc8964c57e6f1e1187d4be4771a93674755e798874eeb7612d6bde4c8c02a4fe47415fcd9f7407fc
+  languageName: node
+  linkType: hard
+
+"zustand@npm:^5.0.4":
+  version: 5.0.14
+  resolution: "zustand@npm:5.0.14"
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    immer: ">=9.0.6"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    immer:
+      optional: true
+    react:
+      optional: true
+    use-sync-external-store:
+      optional: true
+  checksum: 10/136ab316fa4fa479ce7cc0cf485665dcee9e1bd926d4e51e138cd40d6602900fd2a4b6bb172b39b03bd7b6df073a0656679e5a237c28dd026d8fd4e5228e1b7c
   languageName: node
   linkType: hard

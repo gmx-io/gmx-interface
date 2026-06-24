@@ -1,0 +1,13 @@
+diff --git a/tempo/KeyAuthorization.ts b/tempo/KeyAuthorization.ts
+index 497846068a48e927133724e877f7f5f50bb71af3..9e6f9030e2d386009e5b2e437d71d22b0ee60671 100644
+--- a/tempo/KeyAuthorization.ts
++++ b/tempo/KeyAuthorization.ts
+@@ -551,7 +551,7 @@ export function fromRpc(authorization: Rpc): Signed {
+     ...(witness !== undefined ? { witness } : {}),
+     ...(isAdmin ? { isAdmin: true } : {}),
+     ...(account !== undefined ? { account } : {}),
+-  }
++  } as Signed
+ }
+ 
+ export declare namespace fromRpc {
