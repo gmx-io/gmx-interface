@@ -1744,10 +1744,6 @@ msgstr "Failed Limit Swap"
 msgid "Failed"
 msgstr "Failed"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {amountText} more margin"
-msgstr "Insufficient margin. Add {amountText} more margin"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "CODE"
 msgstr "CODE"
@@ -3504,6 +3500,10 @@ msgstr "This swap requires external routing, which isn't available with One-Clic
 msgid "Realized fees"
 msgstr "Realized fees"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
+msgstr "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana support</0><1>Botanix support</1><2>GMX Express</2>"
 msgstr "<0>Solana support</0><1>Botanix support</1><2>GMX Express</2>"
@@ -3565,6 +3565,10 @@ msgstr "GMX V2 data analytics within Telegram"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "Runs entirely on public chains"
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Set min deposit"
+msgstr "Set min deposit"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -5468,7 +5472,6 @@ msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} TP/SL orders updated"
 
 #: src/components/Errors/getContractErrorMessage.ts
-#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add more margin"
 msgstr "Insufficient margin. Add more margin"
 
@@ -6143,6 +6146,10 @@ msgstr "Buy order cancelled"
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "Support"
 msgstr "Support"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them"
+msgstr "Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
@@ -7611,6 +7618,10 @@ msgstr "Low margin after fees. Deposit more to reduce liquidation risk."
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min deposit: {0}"
+msgstr "Min deposit: {0}"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
