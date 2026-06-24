@@ -8,6 +8,7 @@ import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
   getPositionCloseSizeDeltaUsdForDisplay,
   getPositionCloseSizeDeltaUsdForPayload,
+  getTpSlLiqPriceWarning,
   isFullClosePositionOrder,
   isFullPositionCloseSizeDeltaUsd,
 } from "../utils";
@@ -84,5 +85,66 @@ describe("isFullClosePositionOrder", () => {
         positionSizeUsd
       )
     ).toBe(false);
+  });
+});
+
+describe("getTpSlLiqPriceWarning", () => {
+  // Long: liq sits below mark, so only a trigger at/below liq is "beyond" it.
+  const longLiq = expandDecimals(63, 30);
+  // Short: liq sits above mark, so only a trigger at/above liq is "beyond" it.
+  const shortLiq = expandDecimals(80, 30);
+
+  it("warns for a long when the trigger price is below the liquidation price", () => {
+    const warning = getTpSlLiqPriceWarning({
+      triggerPrice: expandDecimals(60, 30),
+      liquidationPrice: longLiq,
+      isLong: true,
+    });
+    expect(warning).toBeTruthy();
+    expect(typeof warning).toBe("string");
+  });
+
+  it("warns for a long when the trigger price equals the liquidation price (inclusive boundary)", () => {
+    expect(getTpSlLiqPriceWarning({ triggerPrice: longLiq, liquidationPrice: longLiq, isLong: true })).toBeTruthy();
+  });
+
+  it("does not warn for a long when the trigger price is above the liquidation price", () => {
+    expect(
+      getTpSlLiqPriceWarning({ triggerPrice: expandDecimals(70, 30), liquidationPrice: longLiq, isLong: true })
+    ).toBeUndefined();
+  });
+
+  it("warns for a short when the trigger price is above the liquidation price", () => {
+    const warning = getTpSlLiqPriceWarning({
+      triggerPrice: expandDecimals(85, 30),
+      liquidationPrice: shortLiq,
+      isLong: false,
+    });
+    expect(warning).toBeTruthy();
+    expect(typeof warning).toBe("string");
+  });
+
+  it("warns for a short when the trigger price equals the liquidation price (inclusive boundary)", () => {
+    expect(getTpSlLiqPriceWarning({ triggerPrice: shortLiq, liquidationPrice: shortLiq, isLong: false })).toBeTruthy();
+  });
+
+  it("does not warn for a short when the trigger price is below the liquidation price", () => {
+    expect(
+      getTpSlLiqPriceWarning({ triggerPrice: expandDecimals(70, 30), liquidationPrice: shortLiq, isLong: false })
+    ).toBeUndefined();
+  });
+
+  it("does not warn when the liquidation price is missing, zero, or the max sentinel", () => {
+    const triggerPrice = expandDecimals(60, 30);
+    expect(getTpSlLiqPriceWarning({ triggerPrice, liquidationPrice: undefined, isLong: true })).toBeUndefined();
+    expect(getTpSlLiqPriceWarning({ triggerPrice, liquidationPrice: 0n, isLong: true })).toBeUndefined();
+    expect(getTpSlLiqPriceWarning({ triggerPrice, liquidationPrice: MaxUint256, isLong: true })).toBeUndefined();
+  });
+
+  it("does not warn when the trigger price is missing or non-positive", () => {
+    expect(
+      getTpSlLiqPriceWarning({ triggerPrice: undefined, liquidationPrice: longLiq, isLong: true })
+    ).toBeUndefined();
+    expect(getTpSlLiqPriceWarning({ triggerPrice: 0n, liquidationPrice: longLiq, isLong: true })).toBeUndefined();
   });
 });

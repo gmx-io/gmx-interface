@@ -8,6 +8,8 @@ export type EntryField = {
   input: string;
   value: bigint | null;
   error: string | null;
+  /** Non-blocking warning (e.g. trigger price beyond the liquidation price). Does not block submission. */
+  warning?: string | null;
 };
 
 export type InitialEntry = {

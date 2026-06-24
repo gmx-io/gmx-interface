@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+
 import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders";
 import { isTriggerDecreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -45,6 +47,37 @@ export function getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd: bigint, pos
 
 export function getPositionCloseSizeDeltaUsdForPayload(sizeDeltaUsd: bigint, isFullClose: boolean) {
   return isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : sizeDeltaUsd;
+}
+
+/**
+ * Shared, non-blocking warning for TP/SL trigger prices that sit beyond the current liquidation price.
+ * Long positions liquidate below mark, shorts above, so the check is direction-only and covers both TP and SL.
+ * Returns the warning copy when the trigger is at or beyond the liquidation boundary, otherwise undefined.
+ */
+export function getTpSlLiqPriceWarning({
+  triggerPrice,
+  liquidationPrice,
+  isLong,
+}: {
+  triggerPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  isLong: boolean;
+}): string | undefined {
+  if (triggerPrice === undefined || triggerPrice <= 0n) {
+    return undefined;
+  }
+
+  if (liquidationPrice === undefined || liquidationPrice <= 0n || liquidationPrice === MaxUint256) {
+    return undefined;
+  }
+
+  const isBeyondLiqPrice = isLong ? triggerPrice <= liquidationPrice : triggerPrice >= liquidationPrice;
+
+  if (!isBeyondLiqPrice) {
+    return undefined;
+  }
+
+  return t`This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute.`;
 }
 
 export function calculateTotalSizeUsd(p: {

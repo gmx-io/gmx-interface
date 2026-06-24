@@ -91,15 +91,9 @@ export function getPositionOrderError({
       return t`Max close amount exceeded`;
     }
 
-    if (existingPosition?.liquidationPrice) {
-      if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
-        return t`Set trigger price above liquidation price`;
-      }
-
-      if (!existingPosition.isLong && triggerPrice >= existingPosition?.liquidationPrice) {
-        return t`Set trigger price below liquidation price`;
-      }
-    }
+    // A trigger price beyond the current liquidation price is intentionally NOT blocked here.
+    // It surfaces as a non-blocking warning (see getTpSlLiqPriceWarning) so users keep full freedom
+    // to create or edit TP/SL orders at these prices.
 
     if (positionOrder.isLong) {
       if (positionOrder.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {

@@ -46,6 +46,7 @@ import {
   formatLiquidationPrice,
   getIsPositionInfoLoaded,
 } from "domain/synthetics/positions";
+import { SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
 import {
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
@@ -81,7 +82,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
-import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
@@ -559,8 +559,8 @@ export function AddTPSLModal({
     [closeSize]
   );
 
-  const tpPriceError = useMemo(() => {
-    if (markPrice === undefined) return undefined;
+  const tpPriceValidation = useMemo(() => {
+    if (markPrice === undefined) return { error: undefined, warning: undefined };
 
     const entry: SidecarSlTpOrderEntry = {
       id: "tp",
@@ -574,20 +574,22 @@ export function AddTPSLModal({
       increaseAmounts: undefined,
     };
 
-    return (
-      handleEntryError(entry, "tp", {
-        liqPrice: position.liquidationPrice,
-        entryPrice: position.entryPrice,
-        markPrice,
-        isLong,
-        isLimit: false,
-        isExistingPosition: true,
-      }).price.error ?? undefined
-    );
-  }, [markPrice, tpPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
+    const { price } = handleEntryError(entry, "tp", {
+      liqPrice: position.liquidationPrice,
+      entryPrice: position.entryPrice,
+      markPrice,
+      isLong,
+      isLimit: false,
+      isExistingPosition: true,
+    });
 
-  const slPriceError = useMemo(() => {
-    if (markPrice === undefined) return undefined;
+    return { error: price.error ?? undefined, warning: price.warning ?? undefined };
+  }, [markPrice, tpPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
+  const tpPriceError = tpPriceValidation.error;
+  const tpPriceWarning = tpPriceValidation.warning;
+
+  const slPriceValidation = useMemo(() => {
+    if (markPrice === undefined) return { error: undefined, warning: undefined };
 
     const entry: SidecarSlTpOrderEntry = {
       id: "sl",
@@ -601,17 +603,19 @@ export function AddTPSLModal({
       increaseAmounts: undefined,
     };
 
-    return (
-      handleEntryError(entry, "sl", {
-        liqPrice: position.liquidationPrice,
-        entryPrice: position.entryPrice,
-        markPrice,
-        isLong,
-        isLimit: false,
-        isExistingPosition: true,
-      }).price.error ?? undefined
-    );
+    const { price } = handleEntryError(entry, "sl", {
+      liqPrice: position.liquidationPrice,
+      entryPrice: position.entryPrice,
+      markPrice,
+      isLong,
+      isLimit: false,
+      isExistingPosition: true,
+    });
+
+    return { error: price.error ?? undefined, warning: price.warning ?? undefined };
   }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
+  const slPriceError = slPriceValidation.error;
+  const slPriceWarning = slPriceValidation.warning;
 
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
 
@@ -964,6 +968,7 @@ export function AddTPSLModal({
             onPriceChange={handleTpPriceChange}
             positionData={tpPositionData}
             priceError={tpPriceError}
+            priceWarning={tpPriceWarning}
             variant="full"
             defaultDisplayMode="percentage"
             estimatedPnl={tpEstimatedPnl}
@@ -977,6 +982,7 @@ export function AddTPSLModal({
             onPriceChange={handleSlPriceChange}
             positionData={slPositionData}
             priceError={slPriceError}
+            priceWarning={slPriceWarning}
             variant="full"
             defaultDisplayMode="percentage"
             estimatedPnl={slEstimatedPnl}
