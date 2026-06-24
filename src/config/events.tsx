@@ -42,17 +42,17 @@ export const appEventsData: EventData[] = [
     endDate: "01 Aug 2026, 0:00",
     chains: [BOTANIX],
     title: "Botanix network is shutting down",
-    link: {
-      text: "Withdraw liquidity",
-      href: "/pools",
-    },
     bodyText: (
       <>
         Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.
         <br />
+        <br />
         In the swap interface, swap pBTC
         to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC directly on Botanix. Move your BTC
         off the network before the deadline.
+        <br />
+        <br />
+        <Link to="/pools">Withdraw liquidity</Link>
       </>
     ),
   },
