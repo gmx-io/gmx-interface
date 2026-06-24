@@ -56,6 +56,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxIncreaseLiquidationRiskWarning } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
@@ -122,6 +123,7 @@ import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
+import { LiquidatableIncreaseWarningCard } from "./LiquidatableIncreaseWarningCard";
 import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
@@ -242,6 +244,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const showIncreaseLiquidationRiskWarning = useSelector(selectTradeboxIncreaseLiquidationRiskWarning);
 
   const closeSizeHook = useCloseSizeInput({
     positionSizeInUsd: selectedPosition?.sizeInUsd,
@@ -1222,6 +1225,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </Trans>
             </AlertInfoCard>
           )}
+          {showIncreaseLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
           {gasPaymentTokenWarningContent && (
             <AlertInfoCard hideClose type="warning">
               {gasPaymentTokenWarningContent}
