@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, MEGAETH } from "config/chains";
+import { ARBITRUM, BOTANIX, MEGAETH } from "config/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -36,6 +36,28 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
+  {
+    id: "botanix-withdraw-deadline",
+    isActive: true,
+    endDate: "01 Aug 2026, 0:00",
+    chains: [BOTANIX],
+    title: "Botanix network is shutting down",
+    bodyText: (
+      <>
+        Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026. In the swap interface, swap pBTC
+        to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC directly on Botanix. Move your BTC
+        off the network before the deadline.
+        <br />
+        <br />
+        <Link to="/pools">Withdraw liquidity</Link>.
+        <br />
+        <ExternalLink href="https://yield.botanixlabs.com/" newTab>
+          stBTC to BTC
+        </ExternalLink>
+        .
+      </>
+    ),
+  },
   {
     id: "spcx-stock-arbitrum-transition",
     isActive: true,
