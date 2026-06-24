@@ -6186,10 +6186,6 @@ msgstr "Nettowert und PnL nach allen Gebühren anzeigen"
 msgid "Liquidation fee"
 msgstr "Liquidationsgebühr"
 
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to total staked GMX and esGMX. Your actual rewards depend on staking power and may differ."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "Tauscheinflussexponent"
@@ -6229,6 +6225,10 @@ msgstr "Maximaler Hebel"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "USD-Werte werden anhand des durchschnittlichen GMX-Preises für jede angezeigte Woche geschätzt. Die tatsächlichen Rückkaufbeträge können aufgrund des Ausführungszeitpunkts, von Umwandlungen und Preisbewegungen abweichen."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -9371,6 +9371,10 @@ msgstr "Schnellste"
 msgid "Receive tokens separately"
 msgstr "Token separat erhalten"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD estimate"
+msgstr "USD-Schätzung"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "POOL-GUTHABEN"
@@ -9814,6 +9818,10 @@ msgstr "AUSLÖSEPREIS"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as shown."
 msgstr "Sammelt Gebühren aus Hebelhandel und Tauschgeschäften für den {marketName}-Markt. Exponiert gegenüber {exposedToLabel} wie dargestellt."
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR."
+msgstr "Geschätzte jährliche Rückkaufrate. Beim jüngsten Durchschnittstempo würden die GMX-Rückkäufe innerhalb eines Jahres diesem Prozentsatz des gesamten GMX-Angebots entsprechen. Dies ist eine protokollweite Rückkaufkennzahl, kein persönlicher Staking-APR."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"

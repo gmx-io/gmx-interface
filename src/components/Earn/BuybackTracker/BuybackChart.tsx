@@ -1,7 +1,6 @@
 import { tz } from "@date-fns/tz";
 import { Trans, t } from "@lingui/macro";
 import { format } from "date-fns";
-import { useMemo } from "react";
 import {
   Bar,
   ComposedChart,
@@ -18,6 +17,9 @@ import { numberWithCommas } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import InfoIcon from "img/ic_info_circle_stroke.svg?react";
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   fill: "var(--color-slate-100)",
@@ -50,7 +52,7 @@ function formatCompactNumber(value: number): string {
   return String(Math.round(value));
 }
 
-function ChartTooltip({ active, payload, gmxPrice }: TooltipProps<number, string> & { gmxPrice: number | undefined }) {
+function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
   if (!active || !payload || !payload.length) {
     return null;
   }
@@ -59,11 +61,9 @@ function ChartTooltip({ active, payload, gmxPrice }: TooltipProps<number, string
   const utc = { in: tz("UTC") };
   const weekRange = `${format(point.weekStart * 1000, "MMM d", utc)} - ${format((point.weekEnd - 1) * 1000, "MMM d", utc)}`;
   const weeklyUsd =
-    gmxPrice !== undefined ? numberWithCommas(Math.round(point.weeklyAccrued * gmxPrice), { showDollar: true }) : "—";
+    point.weeklyUsd !== undefined ? numberWithCommas(Math.round(point.weeklyUsd), { showDollar: true }) : "—";
   const cumulativeUsd =
-    gmxPrice !== undefined
-      ? numberWithCommas(Math.round(point.cumulativeAccrued * gmxPrice), { showDollar: true })
-      : "—";
+    point.cumulativeUsd !== undefined ? numberWithCommas(Math.round(point.cumulativeUsd), { showDollar: true }) : "—";
 
   return (
     <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
@@ -82,22 +82,8 @@ function ChartTooltip({ active, payload, gmxPrice }: TooltipProps<number, string
   );
 }
 
-export function BuybackChart({
-  chartData,
-  gmxPrice,
-}: {
-  chartData: BuybackChartPoint[];
-  gmxPrice: number | undefined;
-}) {
+export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) {
   const { isMobile } = useBreakpoints();
-
-  const tooltipContent = useMemo(
-    () =>
-      function BuybackChartTooltipWrapper(props: TooltipProps<number, string>) {
-        return <ChartTooltip {...props} gmxPrice={gmxPrice} />;
-      },
-    [gmxPrice]
-  );
 
   if (chartData.length === 0) {
     return (
@@ -109,13 +95,29 @@ export function BuybackChart({
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-wrap gap-24 pl-20 text-typography-secondary">
+      <div className="flex flex-wrap items-center gap-24 px-20 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Weekly bought</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-6 rounded-full bg-slate-100" /> <Trans>Cumulative</Trans>
         </div>
+        <TooltipWithPortal
+          variant="none"
+          className="ml-auto"
+          handle={
+            <span className="text-body-small inline-flex items-center gap-4 font-medium text-typography-secondary">
+              <Trans>USD estimate</Trans>
+              <InfoIcon className="size-16 text-typography-secondary" />
+            </span>
+          }
+          content={
+            <Trans>
+              USD values are estimated using the average GMX price for each displayed week. Actual buyback execution
+              amounts may differ due to execution timing, conversions, and price movements.
+            </Trans>
+          }
+        />
       </div>
 
       <div className="relative min-h-[250px] grow">
@@ -124,7 +126,7 @@ export function BuybackChart({
             <ComposedChart width={500} height={250} data={chartData} barCategoryGap="25%" margin={CHART_MARGIN}>
               <RechartsTooltip
                 cursor={CHART_CURSOR_PROPS}
-                content={tooltipContent}
+                content={<ChartTooltip />}
                 wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
               />
               <Bar yAxisId="left" dataKey="weeklyAccrued" fill="var(--color-blue-300)" radius={2} minPointSize={1} />
