@@ -8560,6 +8560,7 @@ msgstr "Claim <0>{0}</0>"
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx

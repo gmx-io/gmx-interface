@@ -151,7 +151,6 @@ export const selectPositionSellerSplitReceiveDecreaseAmounts = createSelector((q
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
 
   if (!decreaseAmountArgs) return undefined;
-  if (decreaseAmountArgs.tradeMode === TradeMode.Twap) return undefined;
 
   const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
   const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
@@ -458,8 +457,7 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
     triggerOrderType,
     isSetAcceptablePriceImpactEnabled,
     receiveToken,
-    forceDecreaseSwapType:
-      isReceiveSeparated && tradeMode !== TradeMode.Twap ? DecreasePositionSwapType.NoSwap : undefined,
+    forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
     findSwapPath,
     findSwapPathFromPnl,
     marketsInfoData,
