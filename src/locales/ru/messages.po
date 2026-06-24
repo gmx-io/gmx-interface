@@ -8372,7 +8372,7 @@ msgstr "Начальные нереализованные комиссии"
 
 #: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr ""
+msgstr "Этот ордер может не исполниться при текущем состоянии позиции. Добавьте обеспечение или уменьшите кредитное плечо до его срабатывания."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx

@@ -8372,7 +8372,7 @@ msgstr "起始未實現費用"
 
 #: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr ""
+msgstr "在目前倉位狀態下，此訂單可能無法成交。請在觸發前增加抵押品或降低槓桿。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx

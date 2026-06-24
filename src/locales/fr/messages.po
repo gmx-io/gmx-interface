@@ -8372,7 +8372,7 @@ msgstr "Frais non réalisés de départ"
 
 #: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr ""
+msgstr "Cet ordre pourrait ne pas s'exécuter avec l'état actuel de la position. Ajoutez de la garantie ou réduisez l'effet de levier avant son déclenchement."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
