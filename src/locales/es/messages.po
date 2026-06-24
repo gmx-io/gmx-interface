@@ -2156,6 +2156,10 @@ msgstr ""
 msgid "Failed withdraw"
 msgstr "Retirada fallida"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "Warning icon"
+msgstr "Icono de advertencia"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover margin below {0} USD"
 msgstr ""
@@ -6352,6 +6356,10 @@ msgstr "Reciba al menos {toAmountText} si se ejecuta. El precio se actualiza seg
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
+msgstr "Esta posición tiene un margen negativo después de las comisiones pendientes de préstamo y financiación, por lo que la compensación probablemente falle: la financiación positiva solo se vuelve reclamable tras una compensación exitosa. Añada margen, o reduzca o cierre la posición lo suficiente para que el beneficio realizado cubra el déficit."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "Orden de venta ejecutada"
@@ -9136,6 +9144,10 @@ msgstr "Margen mín.: {0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Mercado"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
+msgstr "Algunas posiciones seleccionadas tienen un margen negativo después de las comisiones pendientes de préstamo y financiación, por lo que su compensación probablemente falle: la financiación positiva solo se vuelve reclamable tras una compensación exitosa. Añada margen, o reduzca o cierre esas posiciones lo suficiente para que el beneficio realizado cubra el déficit."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"

@@ -2156,6 +2156,10 @@ msgstr ""
 msgid "Failed withdraw"
 msgstr "Retrait échoué"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "Warning icon"
+msgstr "Icône d'avertissement"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover margin below {0} USD"
 msgstr ""
@@ -6352,6 +6356,10 @@ msgstr "Recevez au moins {toAmountText} en cas d'exécution. Le prix est mis à 
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
+msgstr "Cette position a une marge négative après les frais d'emprunt et de financement en attente, le règlement risque donc d'échouer : le financement positif ne devient réclamable qu'après un règlement réussi. Ajoutez de la marge, ou réduisez ou fermez suffisamment la position pour que le profit réalisé couvre le déficit."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "Ordre de vente exécuté"
@@ -9136,6 +9144,10 @@ msgstr "Marge min. : {0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Marché"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
+msgstr "Certaines positions sélectionnées ont une marge négative après les frais d'emprunt et de financement en attente, leur règlement risque donc d'échouer : le financement positif ne devient réclamable qu'après un règlement réussi. Ajoutez de la marge, ou réduisez ou fermez suffisamment ces positions pour que le profit réalisé couvre le déficit."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"

@@ -2156,6 +2156,10 @@ msgstr ""
 msgid "Failed withdraw"
 msgstr "Fehlgeschlagene Abhebung"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "Warning icon"
+msgstr "Warnsymbol"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover margin below {0} USD"
 msgstr ""
@@ -6352,6 +6356,10 @@ msgstr "Erhalten Sie mindestens {toAmountText} bei Ausführung. Preis wird basie
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
+msgstr "Diese Position hat nach ausstehenden Leih- und Finanzierungsgebühren eine negative Margin, daher wird die Abwicklung wahrscheinlich fehlschlagen: Positive Finanzierungsgebühren werden erst nach einer erfolgreichen Abwicklung beanspruchbar. Fügen Sie Margin hinzu oder reduzieren bzw. schließen Sie die Position so weit, dass der realisierte Gewinn den Fehlbetrag deckt."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "Verkaufsorder ausgeführt"
@@ -9136,6 +9144,10 @@ msgstr "Min. Margin: {0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop-Markt"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
+msgstr "Einige ausgewählte Positionen haben nach ausstehenden Leih- und Finanzierungsgebühren eine negative Margin, daher wird ihre Abwicklung wahrscheinlich fehlschlagen: Positive Finanzierungsgebühren werden erst nach einer erfolgreichen Abwicklung beanspruchbar. Fügen Sie Margin hinzu oder reduzieren bzw. schließen Sie diese Positionen so weit, dass der realisierte Gewinn den Fehlbetrag deckt."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
