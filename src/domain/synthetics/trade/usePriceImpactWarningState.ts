@@ -2,15 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 import shallowEqual from "shallowequal";
 
 import { getExcessiveExecutionFee } from "config/chains";
-import { HIGH_SWAP_PROFIT_FEE_BPS, USD_DECIMALS } from "config/factors";
+import { USD_DECIMALS } from "config/factors";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
-import { bigMath } from "sdk/utils/bigmath";
 import type { FeeItem } from "sdk/utils/fees/types";
 import type { TradeFlags } from "sdk/utils/trade/types";
 
-import { getIsHighSwapImpact, getIsHighCollateralImpact, getIsHighExternalSwapFees } from "./utils/warnings";
+import {
+  getIsHighSwapImpact,
+  getIsHighCollateralImpact,
+  getIsHighExternalSwapFees,
+  getIsHighSwapProfitFee,
+} from "./utils/warnings";
 
 export type WarningState = {
   shouldShowWarningForCollateral: boolean;
@@ -75,9 +79,7 @@ export function usePriceImpactWarningState({
   const isHighSwapImpact = getIsHighSwapImpact(swapPriceImpact);
   const prevIsHighSwapImpact = usePrevious(isHighSwapImpact);
 
-  const isHightSwapProfitFee = Boolean(
-    swapProfitFee && swapProfitFee.deltaUsd < 0 && bigMath.abs(swapProfitFee.bps) >= HIGH_SWAP_PROFIT_FEE_BPS
-  );
+  const isHightSwapProfitFee = getIsHighSwapProfitFee(swapProfitFee);
   const prevIsHightSwapProfitFee = usePrevious(isHightSwapProfitFee);
 
   const isHighExternalSwapFees = getIsHighExternalSwapFees(externalSwapFeeItem);
