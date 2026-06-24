@@ -562,6 +562,10 @@ msgstr "Rendimiento anual proyectado solo a partir de comisiones de operaciones.
 msgid "Acceptable swap impact"
 msgstr "Impacto de intercambio aceptable"
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Delistings"
+msgstr "Deslistados"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1005,6 +1009,11 @@ msgstr "Factor de comisión de posición (PI positivo)"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "Alto impacto de precio de swap"
+
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+msgid "What's new"
+msgstr "Novedades"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to parse related transaction:"
@@ -1506,6 +1515,10 @@ msgstr "HORA"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Endpoints de Oracle"
+
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Maintenance"
+msgstr "Mantenimiento"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap fee"
@@ -2210,6 +2223,7 @@ msgid "GMX (Chinese)"
 msgstr "GMX (Chino)"
 
 #: src/components/SearchInput/SearchInput.tsx
+#: src/pages/Announcements/Announcements.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr "Buscar"
@@ -2360,6 +2374,10 @@ msgstr "No hay fondos para reclamar"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
 msgstr "Destello"
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Maintenances"
+msgstr "Mantenimientos"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor shorts"
@@ -2594,6 +2612,10 @@ msgstr "Máx."
 msgid "GMX technical announcements"
 msgstr "Anuncios técnicos de GMX"
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "All Announcements"
+msgstr "Todos los anuncios"
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2755,6 +2777,10 @@ msgstr "Moneda"
 msgid "Previous"
 msgstr ""
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Listings"
+msgstr "Listados"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr "La venta de {gmOrGlvLabel} ha fallado. Sus fondos están seguros en su GMX Account. Cambie a la cadena de compensación y diríjase al pool {indexName} para vender sus tokens {gmOrGlvLabel}."
@@ -2871,6 +2897,12 @@ msgstr "Depósito desde {sourceChainName} fallido"
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Copy address"
 msgstr "Copiar dirección"
+
+#: src/components/SideNav/SideNav.tsx
+#: src/pages/Announcements/Announcements.tsx
+#: src/pages/Announcements/Announcements.tsx
+msgid "Announcements"
+msgstr "Anuncios"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -3018,6 +3050,7 @@ msgstr "<0>Depositar</0> o <1>comprar</1> {wrappedNativeTokenSymbol}."
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
 msgstr "Actualizar"
 
@@ -3550,6 +3583,10 @@ msgstr "Confirmar reclamación"
 msgid "Wallet-only"
 msgstr "Solo monedero"
 
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Listing"
+msgstr "Listado"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
 msgstr "Firmando aprobación..."
@@ -3959,6 +3996,10 @@ msgstr "Autotransferencia no permitida"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
 msgstr "Generando sesión..."
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Stay up to date with the latest listings, updates and maintenance notices."
+msgstr "Mantente al día con los últimos listados, actualizaciones y avisos de mantenimiento."
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
@@ -4448,6 +4489,10 @@ msgstr "Cantidad mínima del pool de impacto"
 msgid "Generating..."
 msgstr ""
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+msgid "Go to slide {0}"
+msgstr "Ir a la diapositiva {0}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "Impacto en el precio demasiado alto"
@@ -4508,6 +4553,10 @@ msgstr "Código no encontrado"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr "Inactivo"
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Failed to load announcements. Please try again later."
+msgstr "No se pudieron cargar los anuncios. Inténtalo de nuevo más tarde."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
@@ -5767,6 +5816,10 @@ msgstr "Propuestas de GMX"
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
 
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+msgid "See more"
+msgstr "Ver más"
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To trade on GMX, deposit assets into your GMX Account"
 msgstr ""
@@ -6305,6 +6358,10 @@ msgstr "No se puede retirar la garantía. La garantía restante quedaría por de
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Aprobando..."
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr "Interrupción del servicio"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
@@ -7702,10 +7759,6 @@ msgstr "Errores de operación"
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "Depositando y retirando de GMX Account..."
 
-#: src/config/uiFlagEvents.tsx
-msgid "Service disruption"
-msgstr "Interrupción del servicio"
-
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long liquidity"
 msgstr ""
@@ -8006,6 +8059,10 @@ msgstr "Depósito fallido"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "EST. PNL"
 msgstr "PNL EST."
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "No announcements found"
+msgstr "No se encontraron anuncios"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
@@ -9432,6 +9489,11 @@ msgstr "DeFi"
 msgid "SNAPSHOT"
 msgstr "SNAPSHOT"
 
+#: src/pages/Announcements/Announcements.tsx
+#: src/pages/Announcements/Announcements.tsx
+msgid "All chains"
+msgstr "Todas las redes"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
 msgstr "BLOCK"
@@ -9568,6 +9630,10 @@ msgstr "Stakeado"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "Traders"
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Updates"
+msgstr "Actualizaciones"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -9804,6 +9870,10 @@ msgstr "Utilice el botón TP/SL para establecer órdenes TP/SL."
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "¿Qué es GM?"
+
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Delisting"
+msgstr "Deslistado"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -10955,6 +11025,7 @@ msgstr "El precio de ejecución no alcanzó el precio aceptable. La orden se eje
 msgid "multiple asset classes"
 msgstr "múltiples clases de activos"
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

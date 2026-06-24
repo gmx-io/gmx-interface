@@ -5,14 +5,16 @@ import { OracleFetcher, OracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 const oracleKeeperFetchersCached: Record<number, OracleFetcher> = {};
 
-export function useOracleKeeperFetcher(chainId: ContractsChainId): OracleFetcher {
-  return useMemo(() => {
-    if (!oracleKeeperFetchersCached[chainId]) {
-      oracleKeeperFetchersCached[chainId] = new OracleKeeperFetcher({
-        chainId,
-      });
-    }
+export function getOracleKeeperFetcher(chainId: ContractsChainId): OracleFetcher {
+  if (!oracleKeeperFetchersCached[chainId]) {
+    oracleKeeperFetchersCached[chainId] = new OracleKeeperFetcher({
+      chainId,
+    });
+  }
 
-    return oracleKeeperFetchersCached[chainId];
-  }, [chainId]);
+  return oracleKeeperFetchersCached[chainId];
+}
+
+export function useOracleKeeperFetcher(chainId: ContractsChainId): OracleFetcher {
+  return useMemo(() => getOracleKeeperFetcher(chainId), [chainId]);
 }

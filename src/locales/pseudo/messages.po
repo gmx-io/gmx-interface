@@ -562,6 +562,10 @@ msgstr ""
 msgid "Acceptable swap impact"
 msgstr ""
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Delistings"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1004,6 +1008,11 @@ msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
+msgstr ""
+
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+msgid "What's new"
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -1505,6 +1514,10 @@ msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
+msgstr ""
+
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Maintenance"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2210,6 +2223,7 @@ msgid "GMX (Chinese)"
 msgstr ""
 
 #: src/components/SearchInput/SearchInput.tsx
+#: src/pages/Announcements/Announcements.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr ""
@@ -2359,6 +2373,10 @@ msgstr ""
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
+msgstr ""
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Maintenances"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -2594,6 +2612,10 @@ msgstr ""
 msgid "GMX technical announcements"
 msgstr ""
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "All Announcements"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2755,6 +2777,10 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Listings"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr ""
@@ -2870,6 +2896,12 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Copy address"
+msgstr ""
+
+#: src/components/SideNav/SideNav.tsx
+#: src/pages/Announcements/Announcements.tsx
+#: src/pages/Announcements/Announcements.tsx
+msgid "Announcements"
 msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -3018,6 +3050,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
 msgstr ""
 
@@ -3550,6 +3583,10 @@ msgstr ""
 msgid "Wallet-only"
 msgstr ""
 
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Listing"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
 msgstr ""
@@ -3958,6 +3995,10 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
+msgstr ""
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Stay up to date with the latest listings, updates and maintenance notices."
 msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
@@ -4448,6 +4489,10 @@ msgstr ""
 msgid "Generating..."
 msgstr ""
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+msgid "Go to slide {0}"
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr ""
@@ -4507,6 +4552,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
+msgstr ""
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Failed to load announcements. Please try again later."
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -5767,6 +5816,10 @@ msgstr ""
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
 
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+msgid "See more"
+msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To trade on GMX, deposit assets into your GMX Account"
 msgstr ""
@@ -6304,6 +6357,10 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
+msgstr ""
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
 msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
@@ -7702,10 +7759,6 @@ msgstr ""
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr ""
 
-#: src/config/uiFlagEvents.tsx
-msgid "Service disruption"
-msgstr ""
-
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long liquidity"
 msgstr ""
@@ -8005,6 +8058,10 @@ msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "EST. PNL"
+msgstr ""
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "No announcements found"
 msgstr ""
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -9432,6 +9489,11 @@ msgstr ""
 msgid "SNAPSHOT"
 msgstr ""
 
+#: src/pages/Announcements/Announcements.tsx
+#: src/pages/Announcements/Announcements.tsx
+msgid "All chains"
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
 msgstr ""
@@ -9567,6 +9629,10 @@ msgstr ""
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
+msgstr ""
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Updates"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
@@ -9803,6 +9869,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
+msgstr ""
+
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Delisting"
 msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
@@ -10955,6 +11025,7 @@ msgstr ""
 msgid "multiple asset classes"
 msgstr ""
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
