@@ -8372,7 +8372,7 @@ msgstr "Start unrealisierte Gebühren"
 
 #: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr "Diese Order kann mit dem aktuellen Positionsstatus möglicherweise nicht ausgeführt werden. Füge Sicherheiten hinzu oder reduziere den Hebel, bevor sie ausgelöst wird."
+msgstr "Diese Order kann mit dem aktuellen Positionsstatus möglicherweise nicht ausgeführt werden. Fügen Sie Sicherheiten hinzu oder reduzieren Sie den Hebel, bevor sie ausgelöst wird."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx

@@ -507,6 +507,7 @@ export function OrderEditor(p: Props) {
   ]);
 
   const showLiquidationRiskWarning = useMemo(() => {
+    // Suppress the warning while a blocking error is shown (mirrors the tradebox selector).
     if (error || !positionOrder || !existingPosition) {
       return false;
     }
