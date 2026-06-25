@@ -4,6 +4,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import { isDevelopment } from "config/env";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -203,22 +204,51 @@ export function MenuSection({
     { icon: <EcosystemIcon className="size-20" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
   ];
 
+  const dashboardNavItems = [
+    { icon: <DashboardIcon className="size-20" />, label: t`Costs comparison`, key: "costs", to: "/costs" },
+    {
+      icon: <DashboardIcon className="size-20" />,
+      label: t`Order Stats`,
+      key: "orderStats",
+      to: "/order_execution_stats",
+    },
+    ...(isDevelopment()
+      ? [
+          {
+            icon: <DashboardIcon className="size-20" />,
+            label: t`Execution cost`,
+            key: "gmxExecutionCosts",
+            to: "/gmx-execution-costs",
+          },
+        ]
+      : []),
+  ];
+
   const { pathname } = useLocation();
 
+  const isNavItemActive = (item: { to: string }) => {
+    return pathname === item.to || pathname.startsWith(`${item.to}/`);
+  };
+
+  const renderNavItem = (item: { icon: ReactNode; label: ReactNode; key: string; to: string }) => (
+    <NavItem
+      key={item.key}
+      icon={item.icon}
+      label={item.label}
+      isActive={isNavItemActive(item)}
+      isCollapsed={isCollapsed}
+      to={item.to}
+      onClick={onMenuItemClick}
+    />
+  );
+
   return (
-    <ul className="flex list-none flex-col px-0">
-      {mainNavItems.map((item) => (
-        <NavItem
-          key={item.key}
-          icon={item.icon}
-          label={item.label}
-          isActive={pathname === item.to || pathname.startsWith(`${item.to}/`)}
-          isCollapsed={isCollapsed}
-          to={item.to}
-          onClick={onMenuItemClick}
-        />
-      ))}
-    </ul>
+    <div className="flex flex-col">
+      <ul className="flex list-none flex-col px-0">{mainNavItems.map(renderNavItem)}</ul>
+      <ul className="mt-8 flex list-none flex-col border-t border-slate-800 px-0 pt-8">
+        {dashboardNavItems.map(renderNavItem)}
+      </ul>
+    </div>
   );
 }
 

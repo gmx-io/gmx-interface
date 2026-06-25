@@ -86,6 +86,7 @@ export type SyntheticsPageType =
   | "leaderboard"
   | "competitions"
   | "stats"
+  | "tradingCosts"
   | "earn"
   | "buy"
   | "home"
@@ -188,6 +189,7 @@ export function SyntheticsStateContextProvider({
 
   const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
   const isTradePage = pageType === "trade";
+  const shouldFetchJitLiquidity = isTradePage || pageType === "tradingCosts";
   const isAccountPage = pageType === "accounts";
 
   const account = isAccountPage ? checkSummedAccount : walletAccount;
@@ -254,7 +256,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const oracleSettings = useOracleSettingsData();
-  const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage });
+  const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: shouldFetchJitLiquidity });
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
