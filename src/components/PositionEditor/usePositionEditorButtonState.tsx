@@ -38,11 +38,13 @@ import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
+  addMinDepositSlippage,
   getIsPositionInfoLoaded,
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { getMarkPrice, getMaxWithdrawAmount } from "domain/synthetics/trade";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
+import { getMarkPrice, getMaxWithdrawAmount, getMinRequiredCollateralUsdForPosition } from "domain/synthetics/trade";
 import {
   getCommonError,
   getEditCollateralError,
@@ -79,6 +81,7 @@ import {
   buildIncreaseOrderPayload,
 } from "sdk/utils/orderTransactions";
 
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -90,6 +93,7 @@ import { OPERATION_LABELS, Operation } from "./types";
 type PositionEditorButtonState = {
   text: ReactNode;
   tooltipContent: ReactNode | null;
+  errorBannerContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => void;
   expressParams: ExpressTxnParams | undefined;
@@ -329,6 +333,36 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     );
   }, [selectedCollateralToken, maxWithdrawAmount, minCollateralFactor, position, setCollateralInputValue]);
 
+  const minDepositUsd = useMemo(() => {
+    if (!isDeposit || !getIsPositionInfoLoaded(position) || minCollateralUsd === undefined) {
+      return undefined;
+    }
+
+    const minRequiredCollateralUsd = getMinRequiredCollateralUsdForPosition({
+      position,
+      minCollateralUsd,
+      userReferralInfo,
+    });
+
+    const requiredDepositUsd = minRequiredCollateralUsd - position.collateralUsd;
+
+    return requiredDepositUsd > 0 ? requiredDepositUsd : undefined;
+  }, [isDeposit, minCollateralUsd, position, userReferralInfo]);
+
+  const setMinDepositValue = useCallback(() => {
+    if (minDepositUsd === undefined || !selectedCollateralToken) return;
+
+    const minDepositAmount = convertToTokenAmount(
+      addMinDepositSlippage(minDepositUsd),
+      selectedCollateralToken.decimals,
+      selectedCollateralToken.prices.minPrice
+    );
+
+    if (minDepositAmount === undefined) return;
+
+    setCollateralInputValue(formatAmountFree(minDepositAmount, selectedCollateralToken.decimals));
+  }, [minDepositUsd, selectedCollateralToken, setCollateralInputValue]);
+
   const validationResult: ValidationResult = useMemo(() => {
     const commonError = getCommonError({
       chainId,
@@ -350,6 +384,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       position,
       depositToken: selectedCollateralToken,
       depositAmount: collateralDeltaAmount,
+      minDepositUsd,
       marketInfo: position?.marketInfo,
       maxWithdrawAmount,
     });
@@ -369,6 +404,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     isDeposit,
     position,
     selectedCollateralToken,
+    minDepositUsd,
     maxWithdrawAmount,
   ]);
 
@@ -393,6 +429,24 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       </Trans>
     );
   }, [detectAndSetMaxSize, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
+
+  const errorBannerContent = useMemo(() => {
+    if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.minDeposit) {
+      return null;
+    }
+
+    return (
+      <div>
+        <Trans>
+          Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the
+          deposit must also cover them.
+        </Trans>
+        <ColorfulButtonLink color="red" onClick={setMinDepositValue}>
+          <Trans>Set min deposit</Trans>
+        </ColorfulButtonLink>
+      </div>
+    );
+  }, [setMinDepositValue, validationResult.buttonTooltipName]);
 
   async function onSubmit() {
     if (!account || !signer) {
@@ -505,12 +559,13 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
 
   const commonParams: Pick<
     PositionEditorButtonState,
-    "expressParams" | "isExpressLoading" | "onSubmit" | "tooltipContent" | "bannerErrorName"
+    "expressParams" | "isExpressLoading" | "onSubmit" | "tooltipContent" | "errorBannerContent" | "bannerErrorName"
   > = {
     expressParams,
     isExpressLoading,
     onSubmit,
     tooltipContent: errorTooltipContent,
+    errorBannerContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
 

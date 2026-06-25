@@ -1,5 +1,5 @@
-import { useConnectOrCreateWallet } from "@privy-io/react-auth";
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import type { SettlementChainId } from "config/chains";
 import {
@@ -33,10 +33,16 @@ function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) 
 export function ConnectModalProvider({ children }: { children: ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
+  const connectRequestInFlightRef = useRef(false);
+  const { isOpen: privyModalOpen } = useModalStatus();
+  const { authenticated } = usePrivy();
 
   const handleSuccess = useCallback(() => {
+    connectRequestInFlightRef.current = false;
     setConnectModalOpen(false);
 
+    // @privy-io/wagmi already handles this callback by setting recentConnectorId
+    // and reconnecting wagmi. Calling setActiveWallet here can re-enter wagmi connect.
     if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
       return;
     }
@@ -48,13 +54,47 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
-    onError: () => setConnectModalOpen(false),
+    onError: () => {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+    },
+  });
+  const { connectWallet } = useConnectWallet({
+    onSuccess: handleSuccess,
+    onError: () => {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+    },
   });
 
+  useEffect(() => {
+    if (!privyModalOpen) {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+    }
+  }, [privyModalOpen]);
+
   const openConnectModal = useCallback(() => {
+    // MetaMask rejects duplicate connection requests while the first one is pending.
+    if (connectRequestInFlightRef.current) {
+      return;
+    }
+
+    connectRequestInFlightRef.current = true;
     setConnectModalOpen(true);
-    connectOrCreateWallet();
-  }, [connectOrCreateWallet]);
+    try {
+      // Privy rejects connectOrCreateWallet for already-authenticated sessions.
+      if (authenticated) {
+        connectWallet();
+      } else {
+        connectOrCreateWallet();
+      }
+    } catch (error) {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+      metrics.pushError(error, "connectModal.open");
+    }
+  }, [authenticated, connectOrCreateWallet, connectWallet]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 

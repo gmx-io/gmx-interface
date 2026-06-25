@@ -321,6 +321,9 @@ export function useTradeboxButtonState({
           break;
         }
 
+        case ValidationButtonTooltipName.minDeposit:
+          break;
+
         default:
           mustNeverExist(validationResult.buttonTooltipName);
       }

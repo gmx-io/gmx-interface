@@ -144,31 +144,32 @@ export type RawOpenInterestValues = {
   shortInterestInTokensUsingShortToken: bigint;
 };
 
+export const MARKET_VALUES_KEYS = [
+  "longInterestUsd",
+  "shortInterestUsd",
+  "longInterestInTokens",
+  "shortInterestInTokens",
+  "longPoolAmount",
+  "shortPoolAmount",
+  "poolValueMin",
+  "poolValueMax",
+  "totalBorrowingFees",
+  "positionImpactPoolAmount",
+  "swapImpactPoolAmountLong",
+  "swapImpactPoolAmountShort",
+  "borrowingFactorPerSecondForLongs",
+  "borrowingFactorPerSecondForShorts",
+  "fundingFactorPerSecond",
+  "longsPayShorts",
+  "virtualPoolAmountForLongToken",
+  "virtualPoolAmountForShortToken",
+  "virtualInventoryForPositions",
+] as const satisfies readonly (keyof MarketInfo)[];
+
 /**
  * Updates frequently
  */
-export type MarketValues = Pick<
-  MarketInfo,
-  | "longInterestUsd"
-  | "shortInterestUsd"
-  | "longInterestInTokens"
-  | "shortInterestInTokens"
-  | "longPoolAmount"
-  | "shortPoolAmount"
-  | "poolValueMin"
-  | "poolValueMax"
-  | "totalBorrowingFees"
-  | "positionImpactPoolAmount"
-  | "swapImpactPoolAmountLong"
-  | "swapImpactPoolAmountShort"
-  | "borrowingFactorPerSecondForLongs"
-  | "borrowingFactorPerSecondForShorts"
-  | "fundingFactorPerSecond"
-  | "longsPayShorts"
-  | "virtualPoolAmountForLongToken"
-  | "virtualPoolAmountForShortToken"
-  | "virtualInventoryForPositions"
->;
+export type MarketValues = Pick<MarketInfo, (typeof MARKET_VALUES_KEYS)[number]>;
 
 /**
  * Updates seldom
@@ -248,6 +249,12 @@ export type RawMarketInfo = Omit<
 export type RawMarketsInfoData = {
   [marketAddress: string]: RawMarketInfo;
 };
+
+export type RawMarketValues = Pick<RawMarketInfo, "marketTokenAddress" | keyof MarketValues> & {
+  updatedAt: number | null;
+};
+
+export type RawMarketConfig = Omit<RawMarketInfo, keyof MarketValues>;
 
 export type MarketsInfoData = {
   [marketAddress: string]: MarketInfo;
