@@ -615,10 +615,6 @@ msgstr "Projets développés par la communauté GMX. <0/>Faites preuve de pruden
 msgid "ADDRESS"
 msgstr "ADRESSE"
 
-#: src/components/PositionItem/PositionItem.tsx
-msgid "Negative funding fees reduce margin and affect liquidation price. Positive funding fees are claimable in the Claims tab."
-msgstr ""
-
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
 msgstr "Opportunités supplémentaires"
@@ -1481,6 +1477,10 @@ msgstr "Collatéral"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Stocks"
 msgstr "Actions"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Estimated daily fees"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -4891,7 +4891,6 @@ msgstr "En autres tokens"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
-#: src/components/PositionItem/PositionItem.tsx
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
@@ -5520,6 +5519,7 @@ msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
 msgstr "Réclamable"
 
@@ -6790,6 +6790,10 @@ msgstr ""
 msgid "THREAD"
 msgstr "THREAD"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Negative funding fees reduce margin and affect liquidation price."
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit signed for {0}"
 msgstr "Permit signé pour {0}"
@@ -7789,10 +7793,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
 msgstr "GMX stakés"
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "Click the edit icon to adjust margin."
-msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor shorts"
@@ -9203,6 +9203,10 @@ msgstr "Clé de l'ordre :"
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Show size in USD"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimable in Claims."
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -11079,6 +11083,11 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> vers </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "Aucun échange décentralisé disponible"
+
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Margin before borrow/funding"
+msgstr "Marge avant frais d'emprunt/financement"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
