@@ -394,7 +394,7 @@ export function PositionEditor() {
                     value={collateralInputValue}
                     className="text-body-large min-w-0 shrink overflow-hidden text-ellipsis p-0 outline-none"
                     onValueChange={(e) => setCollateralInputValue(e.target.value)}
-                    placeholder="0.0"
+                    placeholder="0.00"
                     qa="amount-input-input"
                     maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
                   />
@@ -477,11 +477,18 @@ export function PositionEditor() {
                   />
                 </AlertInfoCard>
               )}
-              {!submitButtonState.bannerErrorName && lowGasPaymentTokenWarningContent && (
-                <AlertInfoCard type="warning" hideClose>
-                  {lowGasPaymentTokenWarningContent}
+              {submitButtonState.errorBannerContent && (
+                <AlertInfoCard type="error" hideClose>
+                  {submitButtonState.errorBannerContent}
                 </AlertInfoCard>
               )}
+              {!submitButtonState.bannerErrorName &&
+                !submitButtonState.errorBannerContent &&
+                lowGasPaymentTokenWarningContent && (
+                  <AlertInfoCard type="warning" hideClose>
+                    {lowGasPaymentTokenWarningContent}
+                  </AlertInfoCard>
+                )}
 
               <ExpressTradingWarningCard
                 expressParams={submitButtonState.expressParams}

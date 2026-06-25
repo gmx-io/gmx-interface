@@ -14,9 +14,10 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
+import { getIsConfirmedOutOfGasPaymentTokenBalance } from "sdk/utils/express";
 import { BatchOrderTxnParams, getBatchTotalPayCollateralAmount } from "sdk/utils/orderTransactions";
 
-import { ExpressTxnParams } from "./types";
+import { ExpressTxnParams, GasPaymentValidations } from "./types";
 
 const GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID = "gas-payment-token-switched";
 
@@ -75,7 +76,7 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   const payAmounts = useMemo(() => (orderParams ? getBatchTotalPayCollateralAmount(orderParams) : {}), [orderParams]);
 
   useSwitchGasPaymentTokenIfRequired({
-    isOutGasTokenBalance: expressParams?.gasPaymentValidations.isOutGasTokenBalance,
+    gasPaymentValidations: expressParams?.gasPaymentValidations,
     gasPaymentToken: expressParams?.gasPaymentParams.gasPaymentToken,
     gasPaymentTokenAmount: expressParams?.gasPaymentParams.gasPaymentTokenAmount,
     payAmounts,
@@ -84,13 +85,13 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
 }
 
 function useSwitchGasPaymentTokenIfRequired({
-  isOutGasTokenBalance,
+  gasPaymentValidations,
   gasPaymentToken,
   gasPaymentTokenAmount,
   payAmounts,
   isGmxAccount,
 }: {
-  isOutGasTokenBalance: boolean | undefined;
+  gasPaymentValidations: GasPaymentValidations | undefined;
   gasPaymentToken: TokenData | undefined;
   gasPaymentTokenAmount: bigint | undefined;
   payAmounts: Record<string, bigint>;
@@ -103,7 +104,12 @@ function useSwitchGasPaymentTokenIfRequired({
 
   useEffect(
     function switchGasPaymentToken() {
-      if (!isOutGasTokenBalance || !gasPaymentToken || gasPaymentTokenAmount === undefined) return;
+      if (
+        !getIsConfirmedOutOfGasPaymentTokenBalance(gasPaymentValidations) ||
+        !gasPaymentToken ||
+        gasPaymentTokenAmount === undefined
+      )
+        return;
 
       const anotherGasToken = findNextGasPaymentToken({
         chainId,
@@ -131,7 +137,7 @@ function useSwitchGasPaymentTokenIfRequired({
       gasPaymentToken,
       gasPaymentTokenAmount,
       isGmxAccount,
-      isOutGasTokenBalance,
+      gasPaymentValidations,
       setGmxAccountGasPaymentTokenAddress,
       payAmounts,
       setGasPaymentTokenAddress,
