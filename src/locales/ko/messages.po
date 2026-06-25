@@ -8705,10 +8705,6 @@ msgstr "V2 리베이트"
 msgid "Select asset to deposit"
 msgstr "입금할 자산 선택"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max GM buyable amount reached"
-msgstr "최대 GM 구매 가능 금액 도달"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "세션 생성됨"
@@ -8967,6 +8963,8 @@ msgstr "법정화폐 게이트웨이를 통해 GMX 구매"
 msgid "Max network fee"
 msgstr "최대 네트워크 수수료"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"

@@ -11,6 +11,7 @@ import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import { ExchangeInfo } from "components/GmSwap/GmSwapBox/ExchangeInfo";
 import { GmPoolsSelectorForGlvMarket } from "components/MarketSelector/GmPoolsSelectorForGlvMarket";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
+import { useDepositableGlvGmMarketAddresses } from "components/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 
 export function GmSwapBoxPoolRow({
   indexName,
@@ -33,6 +34,7 @@ export function GmSwapBoxPoolRow({
 }) {
   const chainId = useSelector(selectChainId);
   const markets = values(useSelector(selectGlvAndMarketsInfoData));
+  const depositableMarketAddresses = useDepositableGlvGmMarketAddresses();
 
   const onSelectMarket = useCallback(
     (marketInfo: MarketInfo) => {
@@ -64,6 +66,7 @@ export function GmSwapBoxPoolRow({
               markets={markets}
               glvInfo={glvInfo}
               marketTokensData={marketTokensData}
+              depositableMarketAddresses={depositableMarketAddresses}
               isSideMenu
               showAllPools
               showBalances

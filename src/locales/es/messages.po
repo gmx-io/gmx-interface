@@ -8705,10 +8705,6 @@ msgstr "Reembolsos V2"
 msgid "Select asset to deposit"
 msgstr "Seleccionar activo para depositar"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max GM buyable amount reached"
-msgstr "Cantidad máxima comprable de GM alcanzada"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "Sesión generada"
@@ -8967,6 +8963,8 @@ msgstr "Comprar GMX mediante pasarelas fiat"
 msgid "Max network fee"
 msgstr "Comisión de red máxima"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"

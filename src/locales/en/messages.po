@@ -8705,10 +8705,6 @@ msgstr "V2 rebates"
 msgid "Select asset to deposit"
 msgstr "Select asset to deposit"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max GM buyable amount reached"
-msgstr "Max GM buyable amount reached"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "Session generated"
@@ -8967,6 +8963,8 @@ msgstr "Buy GMX using fiat gateways"
 msgid "Max network fee"
 msgstr "Max network fee"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
