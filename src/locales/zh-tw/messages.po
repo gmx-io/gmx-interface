@@ -85,6 +85,10 @@ msgstr "斷開連接"
 msgid "Order simulation failed"
 msgstr "訂單模擬失敗"
 
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Solana support</0><1>GMX Express</1>"
+msgstr "<0>Solana 支援</0><1>GMX Express</1>"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -504,10 +508,6 @@ msgstr ""
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "{tokenSymbol} 的 Oracle 價格無效"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
-msgstr "<0>無需 KYC、無需冗長的開戶流程，也無需存入資金。您只需要一個自託管錢包：</0><1><2>連接任何 EVM 錢包（如 MetaMask、Rabby、Coinbase Wallet、Trust Wallet、OKX Wallet、Ledger 等）</2><3>選擇一個您有可用資金的受支援區塊鏈網路</3><4>開始交易</4></1><5>您可以直接使用 Arbitrum、MegaETH、Avalanche、Solana 或 Botanix 上的資金進行交易，或存入您的 GMX Account，從任何受支援的 Multichain 網路（包括 Ethereum、Base 和 BSC）進行交易。</5>"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
@@ -2510,6 +2510,10 @@ msgstr "GM 跨鏈至..."
 msgid "Set limit price below mark price"
 msgstr ""
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, or Solana, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
+msgstr "<0>無需 KYC、無需冗長的開戶流程，也無需存入資金。您只需要一個自託管錢包：</0><1><2>連接任何 EVM 錢包（如 MetaMask、Rabby、Coinbase Wallet、Trust Wallet、OKX Wallet、Ledger 等）</2><3>選擇一個您有可用資金的受支援區塊鏈網路</3><4>開始交易</4></1><5>您可以直接使用 Arbitrum、MegaETH、Avalanche 或 Solana 上的資金進行交易，或存入您的 GMX Account，從任何受支援的 Multichain 網路（包括 Ethereum、Base 和 BSC）進行交易。</5>"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
 msgstr "停用 1CT"
@@ -3507,10 +3511,6 @@ msgstr "已實現費用"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "累計的借貸費用和資金費用會在存款改善倉位保證金之前從存款中扣除，因此存款還必須覆蓋這些費用。"
-
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Solana support</0><1>Botanix support</1><2>GMX Express</2>"
-msgstr "<0>Solana 支援</0><1>Botanix 支援</1><2>GMX Express</2>"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
@@ -5755,11 +5755,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order failed due to a protocol validation error: {errorName}"
 msgstr "訂單因協議驗證錯誤而失敗：{errorName}"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Botanix"
-msgstr "Botanix"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx

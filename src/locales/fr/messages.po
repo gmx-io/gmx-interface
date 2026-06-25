@@ -85,6 +85,10 @@ msgstr "Déconnecter"
 msgid "Order simulation failed"
 msgstr "La simulation d'ordre a échoué"
 
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Solana support</0><1>GMX Express</1>"
+msgstr "<0>Support Solana</0><1>GMX Express</1>"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -504,10 +508,6 @@ msgstr ""
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "Prix oracle invalide pour {tokenSymbol}"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
-msgstr "<0>Pas de KYC, pas d'inscription longue, et aucun dépôt requis. Tout ce dont vous avez besoin est un portefeuille auto-hébergé :</0><1><2>Connectez n'importe quel portefeuille EVM (tel que MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Sélectionnez un réseau blockchain supporté où vous disposez de fonds</3><4>Commencez à trader</4></1><5>Vous pouvez trader directement avec vos fonds sur Arbitrum, MegaETH, Avalanche, Solana ou Botanix, ou déposer sur votre GMX Account pour trader depuis n'importe quel réseau Multichain supporté, y compris Ethereum, Base et BSC.</5>"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
@@ -2510,6 +2510,10 @@ msgstr "Pontage GM vers..."
 msgid "Set limit price below mark price"
 msgstr ""
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, or Solana, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
+msgstr "<0>Pas de KYC, pas d'inscription longue, et aucun dépôt requis. Tout ce dont vous avez besoin est un portefeuille auto-hébergé :</0><1><2>Connectez n'importe quel portefeuille EVM (tel que MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Sélectionnez un réseau blockchain supporté où vous disposez de fonds</3><4>Commencez à trader</4></1><5>Vous pouvez trader directement avec vos fonds sur Arbitrum, MegaETH, Avalanche ou Solana, ou déposer sur votre GMX Account pour trader depuis n'importe quel réseau Multichain supporté, y compris Ethereum, Base et BSC.</5>"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
 msgstr "Désactiver 1CT"
@@ -3507,10 +3511,6 @@ msgstr "Frais réalisés"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "Les frais d'emprunt et de financement accumulés sont déduits du dépôt avant qu'il n'améliore la marge de la position, le dépôt doit donc également les couvrir."
-
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Solana support</0><1>Botanix support</1><2>GMX Express</2>"
-msgstr "<0>Support Solana</0><1>Support Botanix</1><2>GMX Express</2>"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
@@ -5755,11 +5755,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order failed due to a protocol validation error: {errorName}"
 msgstr "L'ordre a échoué en raison d'une erreur de validation du protocole : {errorName}"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Botanix"
-msgstr "Botanix"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
