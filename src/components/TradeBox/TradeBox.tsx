@@ -7,6 +7,7 @@ import { zeroAddress } from "viem";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -37,6 +38,7 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxFees,
+  selectTradeboxFormState,
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
@@ -50,7 +52,6 @@ import {
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
-  selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxSwapTokens,
   selectTradeboxTradeFlags,
@@ -90,7 +91,6 @@ import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -216,7 +216,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
-  } = useSelector(selectTradeboxState);
+  } = useSelector(selectTradeboxFormState);
 
   const isTwapModeAvailable = useMemo(
     () =>

@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -13,7 +14,6 @@ import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWal
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import type { GmSwapFees } from "sdk/utils/trade/types";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";

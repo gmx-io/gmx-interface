@@ -1,7 +1,7 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ConnectModalProvider, useConnectModal } from "./useConnectModal";
+import { ConnectModalProvider, useConnectModal } from "./ConnectModalContext";
 
 const mocks = vi.hoisted(() => ({
   authenticated: false,

@@ -47,12 +47,7 @@ export function PositionItemOrdersSmall({
   return (
     <div className="flex flex-col gap-8">
       {ordersWithErrors.map((params) => (
-        <PositionItemOrder
-          key={params.order.key}
-          onOrdersClick={onOrdersClick}
-          hideActions={hideActions}
-          {...params}
-        />
+        <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} hideActions={hideActions} {...params} />
       ))}
     </div>
   );

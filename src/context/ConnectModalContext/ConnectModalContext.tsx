@@ -1,5 +1,5 @@
 import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import type { SettlementChainId } from "config/chains";
 import {
@@ -11,12 +11,12 @@ import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks"
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
 
-type ConnectModalContextValue = {
+export type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
   connectModalOpen: boolean;
 };
 
-const ConnectModalContext = createContext<ConnectModalContextValue>({
+export const ConnectModalContext = createContext<ConnectModalContextValue>({
   openConnectModal: undefined,
   connectModalOpen: false,
 });
@@ -30,7 +30,7 @@ function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) 
   return selectedNetworkWasAppSelected && isSourceChain(chainIdFromLocalStorage, settlementChainId);
 }
 
-export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
+export function ConnectModalProvider({ children }: { children: ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const connectRequestInFlightRef = useRef(false);

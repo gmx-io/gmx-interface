@@ -37,14 +37,8 @@ type Props = {
 };
 
 export function PositionList(p: Props) {
-  const {
-    onClosePositionClick,
-    onOrdersClick,
-    onSelectPositionClick,
-    onCancelOrder,
-    hideActions,
-    hideOrderActions,
-  } = p;
+  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions, hideOrderActions } =
+    p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
