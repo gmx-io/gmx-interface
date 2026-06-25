@@ -87,6 +87,8 @@ type AvailableMarketsOptions = {
   isNoSufficientLiquidityInMarketWithPosition?: boolean;
 };
 
+const EMPTY_AVAILABLE_MARKETS_OPTIONS: AvailableMarketsOptions = {};
+
 export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
   const flags = q(selectTradeboxTradeFlags);
   const indexTokenAddress = q(selectTradeboxToTokenAddress);
@@ -106,7 +108,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
   const { isIncrease, isPosition, isLong } = flags;
 
   if (!isPosition || !indexToken || isLong === undefined || !marketsInfoData) {
-    return {};
+    return EMPTY_AVAILABLE_MARKETS_OPTIONS;
   }
 
   const allMarkets = Object.values(marketsInfoData).filter((market) => !market.isSpotOnly && !market.isDisabled);

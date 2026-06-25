@@ -569,7 +569,7 @@ export default function TVChartContainer({
 
   useEffect(() => {
     markPriceDirectionRef.current = undefined;
-  }, [theme]);
+  }, [chainId, datafeed, theme]);
 
   useEffect(() => {
     if (!datafeed) return;
@@ -578,11 +578,13 @@ export default function TVChartContainer({
       if (!chartReady || !tvWidgetRef.current) return;
 
       const detail = (event as CustomEvent).detail as {
+        symbol: string;
         resolution: ResolutionString;
         bar: { open: number; close: number };
       };
 
       if (tvWidgetRef.current.activeChart().resolution() !== detail.resolution) return;
+      if (tvWidgetRef.current.activeChart().symbolExt()?.name !== detail.symbol) return;
 
       const direction =
         detail.bar.close > detail.bar.open ? "up" : detail.bar.close < detail.bar.open ? "down" : "flat";
