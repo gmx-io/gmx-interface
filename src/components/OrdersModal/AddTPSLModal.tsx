@@ -560,8 +560,8 @@ export function AddTPSLModal({
     [closeSize]
   );
 
-  const tpPriceValidation = useMemo(() => {
-    if (markPrice === undefined) return { error: undefined, warning: undefined };
+  const tpPriceField = useMemo(() => {
+    if (markPrice === undefined) return undefined;
 
     const entry: SidecarSlTpOrderEntry = {
       id: "tp",
@@ -575,22 +575,20 @@ export function AddTPSLModal({
       increaseAmounts: undefined,
     };
 
-    const { price } = handleEntryError(entry, "tp", {
+    return handleEntryError(entry, "tp", {
       liqPrice: position.liquidationPrice,
       entryPrice: position.entryPrice,
       markPrice,
       isLong,
       isLimit: false,
       isExistingPosition: true,
-    });
-
-    return { error: price.error ?? undefined, warning: price.warning ?? undefined };
+    }).price;
   }, [markPrice, tpPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
-  const tpPriceError = tpPriceValidation.error;
-  const tpPriceWarning = tpPriceValidation.warning;
+  const tpPriceError = tpPriceField?.error ?? undefined;
+  const tpPriceWarning = tpPriceField?.warning ?? undefined;
 
-  const slPriceValidation = useMemo(() => {
-    if (markPrice === undefined) return { error: undefined, warning: undefined };
+  const slPriceField = useMemo(() => {
+    if (markPrice === undefined) return undefined;
 
     const entry: SidecarSlTpOrderEntry = {
       id: "sl",
@@ -604,19 +602,17 @@ export function AddTPSLModal({
       increaseAmounts: undefined,
     };
 
-    const { price } = handleEntryError(entry, "sl", {
+    return handleEntryError(entry, "sl", {
       liqPrice: position.liquidationPrice,
       entryPrice: position.entryPrice,
       markPrice,
       isLong,
       isLimit: false,
       isExistingPosition: true,
-    });
-
-    return { error: price.error ?? undefined, warning: price.warning ?? undefined };
+    }).price;
   }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
-  const slPriceError = slPriceValidation.error;
-  const slPriceWarning = slPriceValidation.warning;
+  const slPriceError = slPriceField?.error ?? undefined;
+  const slPriceWarning = slPriceField?.warning ?? undefined;
 
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
 

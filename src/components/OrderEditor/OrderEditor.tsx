@@ -834,7 +834,6 @@ export function OrderEditor(p: Props) {
         setIsVisible={p.onClose}
         label={editorTitle}
         contentPadding={false}
-        contentClassName="w-[380px]"
         onBack={p.onBack ? handleBack : undefined}
       >
         <div className="flex flex-col gap-4 px-20 py-16">

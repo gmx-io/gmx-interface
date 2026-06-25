@@ -49,11 +49,6 @@ export function getPositionCloseSizeDeltaUsdForPayload(sizeDeltaUsd: bigint, isF
   return isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : sizeDeltaUsd;
 }
 
-/**
- * Shared, non-blocking warning for TP/SL trigger prices that sit beyond the current liquidation price.
- * Long positions liquidate below mark, shorts above, so the check is direction-only and covers both TP and SL.
- * Returns the warning copy when the trigger is at or beyond the liquidation boundary, otherwise undefined.
- */
 export function getTpSlLiqPriceWarning({
   triggerPrice,
   liquidationPrice,

@@ -91,9 +91,7 @@ export function getPositionOrderError({
       return t`Max close amount exceeded`;
     }
 
-    // A trigger price beyond the current liquidation price is intentionally NOT blocked here.
-    // It surfaces as a non-blocking warning (see getTpSlLiqPriceWarning) so users keep full freedom
-    // to create or edit TP/SL orders at these prices.
+    // Beyond-liq trigger price surfaces as a non-blocking warning (getTpSlLiqPriceWarning), not a block here.
 
     if (positionOrder.isLong) {
       if (positionOrder.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {

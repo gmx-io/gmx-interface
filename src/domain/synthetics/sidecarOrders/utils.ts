@@ -175,8 +175,6 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     percentageError = t`Size percentage required`;
   }
 
-  // Non-blocking warning when the trigger price sits beyond the current liquidation price.
-  // Suppressed when a real (blocking) price error already applies.
   let priceWarning: string | null = null;
   if (!priceError) {
     priceWarning =

@@ -89,9 +89,7 @@ describe("isFullClosePositionOrder", () => {
 });
 
 describe("getTpSlLiqPriceWarning", () => {
-  // Long: liq sits below mark, so only a trigger at/below liq is "beyond" it.
   const longLiq = expandDecimals(63, 30);
-  // Short: liq sits above mark, so only a trigger at/above liq is "beyond" it.
   const shortLiq = expandDecimals(80, 30);
 
   it("warns for a long when the trigger price is below the liquidation price", () => {
