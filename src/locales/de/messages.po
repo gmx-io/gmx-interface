@@ -8700,10 +8700,6 @@ msgstr "V2-Rückvergütungen"
 msgid "Select asset to deposit"
 msgstr "Asset zum Einzahlen auswählen"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max GM buyable amount reached"
-msgstr "Max. kaufbarer GM-Betrag erreicht"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "Sitzung generiert"
@@ -8962,6 +8958,8 @@ msgstr "GMX über Fiat-Gateways kaufen"
 msgid "Max network fee"
 msgstr "Max. Netzwerkgebühr"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"

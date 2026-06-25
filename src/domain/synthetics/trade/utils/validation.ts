@@ -900,8 +900,18 @@ export function getGmSwapError(p: {
       const maxShortExceeded =
         shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount;
 
-      if (maxLongExceeded || maxShortExceeded) {
-        return { buttonErrorMessage: t`Max GM buyable amount reached`, buttonTooltipMessage: glvTooltipMessage };
+      if (maxLongExceeded) {
+        return {
+          buttonErrorMessage: t`Max ${longToken?.symbol} amount exceeded`,
+          buttonTooltipMessage: glvTooltipMessage,
+        };
+      }
+
+      if (maxShortExceeded) {
+        return {
+          buttonErrorMessage: t`Max ${shortToken?.symbol} amount exceeded`,
+          buttonTooltipMessage: glvTooltipMessage,
+        };
       }
     } else {
       const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);

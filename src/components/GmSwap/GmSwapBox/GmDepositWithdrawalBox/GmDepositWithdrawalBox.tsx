@@ -444,7 +444,6 @@ export function GmSwapBoxDepositWithdrawal() {
   });
 
   useBestGmPoolAddressForGlv({
-    fees: logicalFees,
     uiFeeFactor,
     marketTokenAmount: marketOrGlvTokenAmount,
     marketTokensData,

@@ -8700,10 +8700,6 @@ msgstr "V2 返利"
 msgid "Select asset to deposit"
 msgstr "選擇要存入的資產"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max GM buyable amount reached"
-msgstr "已達到 GM 最大可買入數量"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "工作階段已產生"
@@ -8962,6 +8958,8 @@ msgstr "透過法幣入口買入 GMX"
 msgid "Max network fee"
 msgstr "最大網路費用"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"

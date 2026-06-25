@@ -42,6 +42,7 @@ type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   glvInfo: GlvInfo;
   onSelectMarket?: (market: MarketInfo) => void;
   disablePoolSelector?: boolean;
+  depositableMarketAddresses?: Set<string>;
 };
 
 function PoolLabel({
@@ -85,6 +86,7 @@ export function GmPoolsSelectorForGlvMarket({
   showIndexIcon = false,
   glvInfo,
   disablePoolSelector,
+  depositableMarketAddresses,
   favoriteKey,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -104,6 +106,10 @@ export function GmPoolsSelectorForGlvMarket({
           }
 
           if (isDeposit && (marketInfo.isDisabled || isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress))) {
+            return null;
+          }
+
+          if (depositableMarketAddresses && !depositableMarketAddresses.has(marketInfo.marketTokenAddress)) {
             return null;
           }
 
@@ -141,7 +147,7 @@ export function GmPoolsSelectorForGlvMarket({
     });
 
     return [...sortedMarketsWithBalance, ...marketsWithoutBalance];
-  }, [chainId, getMarketState, isDeposit, marketTokensData, markets]);
+  }, [chainId, depositableMarketAddresses, getMarketState, isDeposit, marketTokensData, markets]);
 
   const marketInfo = useMemo(
     () => markets.find((m) => m.market?.marketTokenAddress === selectedMarketAddress)?.market,
