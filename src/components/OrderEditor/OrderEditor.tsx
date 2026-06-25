@@ -111,7 +111,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -1035,9 +1035,9 @@ export function OrderEditor(p: Props) {
           />
 
           {liqPriceWarning && (
-            <AlertInfo type="warning" textColor="text-yellow-300" noMargin>
+            <AlertInfoCard type="warning" hideClose>
               {liqPriceWarning}
-            </AlertInfo>
+            </AlertInfoCard>
           )}
 
           {button}

@@ -11,6 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { ExpandableRow } from "components/ExpandableRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -31,10 +32,22 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" }) {
 }
 
 export function TPSLRows() {
+  const entries = useSidecarEntries();
+
+  const liqPriceWarning = useMemo(
+    () => entries.find((e) => e.txnType !== "cancel" && e.price?.warning)?.price?.warning ?? undefined,
+    [entries]
+  );
+
   return (
     <div className="flex flex-col gap-8">
       <SideOrders type="takeProfit" />
       <SideOrders type="stopLoss" />
+      {liqPriceWarning && (
+        <AlertInfoCard type="warning" hideClose>
+          {liqPriceWarning}
+        </AlertInfoCard>
+      )}
     </div>
   );
 }

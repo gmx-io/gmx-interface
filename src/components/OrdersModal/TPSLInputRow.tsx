@@ -16,7 +16,6 @@ import {
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import NumberInput from "components/NumberInput/NumberInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -374,13 +373,6 @@ export function TPSLInputRow({
     </div>
   );
 
-  const warningRow =
-    priceWarning && !priceError ? (
-      <AlertInfo type="warning" textColor="text-yellow-300" noMargin>
-        {priceWarning}
-      </AlertInfo>
-    ) : null;
-
   if (variant === "compact") {
     return (
       <div className="flex flex-col gap-4">
@@ -395,8 +387,12 @@ export function TPSLInputRow({
             <div
               className={cx(
                 "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
-                priceError ? "border-red-500" : priceWarning ? "border-yellow-300" : "border-slate-800",
-                "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
+                priceError
+                  ? "border-red-500"
+                  : priceWarning
+                    ? "border-yellow-300"
+                    : "border-slate-800 focus-within:border-blue-300 active:border-blue-300",
+                "hover:bg-fill-surfaceElevatedHover"
               )}
               onClick={handleBoxClick(priceInputRef)}
             >
@@ -445,7 +441,6 @@ export function TPSLInputRow({
             </div>
           </div>
         </div>
-        {warningRow}
         {estimatedPnlRow}
       </div>
     );
@@ -464,8 +459,12 @@ export function TPSLInputRow({
           <div
             className={cx(
               "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6",
-              priceError ? "border-red-500" : priceWarning ? "border-yellow-300" : "border-slate-800",
-              "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              priceError
+                ? "border-red-500"
+                : priceWarning
+                  ? "border-yellow-300"
+                  : "border-slate-800 focus-within:border-blue-300",
+              "hover:bg-fill-surfaceElevatedHover"
             )}
             onClick={handleBoxClick(priceInputRef)}
           >
@@ -522,7 +521,6 @@ export function TPSLInputRow({
           </div>
         </div>
       </div>
-      {warningRow}
       {estimatedPnlRow}
     </div>
   );
