@@ -16,7 +16,7 @@ import {
   joinMarketNames,
   shouldShowDelistingAnnouncement,
   writeDismissal,
-} from "./delistingExitAnnouncements";
+} from "./delistingExitAnnouncementsLogic";
 
 describe("joinMarketNames", () => {
   it("joins one name", () => expect(joinMarketNames(["TON/USD"])).toBe("TON/USD"));
