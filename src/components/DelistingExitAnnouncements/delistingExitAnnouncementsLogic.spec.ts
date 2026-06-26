@@ -46,6 +46,10 @@ describe("buildPositionsBodyText", () => {
     expect(buildPositionsBodyText(["TON/USD"], 1)).toBe(
       "TON/USD is being delisted. Close your existing position as remaining positions may be auto-closed."
     ));
+  it("singular market with plural positions", () =>
+    expect(buildPositionsBodyText(["TON/USD"], 2)).toBe(
+      "TON/USD is being delisted. Close your existing positions as remaining positions may be auto-closed."
+    ));
   it("plural markets and positions", () =>
     expect(buildPositionsBodyText(["TON/USD", "PI/USD"], 3)).toBe(
       "TON/USD and PI/USD are being delisted. Close your existing positions as remaining positions may be auto-closed."
