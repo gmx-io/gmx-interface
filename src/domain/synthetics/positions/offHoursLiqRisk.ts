@@ -1,5 +1,7 @@
 import { getOffHoursMarketInfo } from "domain/synthetics/markets/offHoursLiquidationRisk";
+import { bigMath } from "sdk/utils/bigmath";
 import type { MarketInfo } from "sdk/utils/markets/types";
+import { applyFactor } from "sdk/utils/numbers";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 
 import type { PositionInfo } from "./types";
@@ -17,7 +19,14 @@ function isRiskyUnderOffHours(
     minCollateralUsd
   );
 
-  return offHours !== undefined && offHours < SOFT_LIQUIDATION_HOURS;
+  if (offHours !== undefined && offHours < SOFT_LIQUIDATION_HOURS) return true;
+
+  const liquidationCollateralUsd = bigMath.max(
+    applyFactor(positionLike.sizeInUsd, offHoursMarketInfo.minCollateralFactor),
+    minCollateralUsd
+  );
+
+  return positionLike.netValue <= liquidationCollateralUsd;
 }
 
 export function getPositionOffHoursLiqRisk(p: {

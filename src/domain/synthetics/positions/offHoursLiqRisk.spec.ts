@@ -30,6 +30,10 @@ function nonOffHoursMarket() {
   };
 }
 
+function zeroFeeOffHoursMarket() {
+  return { ...createMockMarketInfo(), marketTokenAddress: GOLD };
+}
+
 function goldLong(marketInfo: ReturnType<typeof offHoursMarket>, collateralUsd: bigint) {
   return mockPositionInfo(
     {
@@ -76,6 +80,24 @@ describe("getPositionOffHoursLiqRisk", () => {
     expect(showWarning).toBe(true);
   });
 
+  it("warns when off-hours under-collateralizes the position even with zero fees (criterion a)", () => {
+    const undercollateralized = getPositionOffHoursLiqRisk({
+      chainId: ARBITRUM,
+      position: goldLong(zeroFeeOffHoursMarket(), expandDecimals(400, 30)),
+      minCollateralUsd: MIN_COLLATERAL_USD,
+      userReferralInfo: undefined,
+    });
+    expect(undercollateralized.showWarning).toBe(true);
+
+    const safe = getPositionOffHoursLiqRisk({
+      chainId: ARBITRUM,
+      position: goldLong(zeroFeeOffHoursMarket(), expandDecimals(10_000, 30)),
+      minCollateralUsd: MIN_COLLATERAL_USD,
+      userReferralInfo: undefined,
+    });
+    expect(safe.showWarning).toBe(false);
+  });
+
   it("returns no warning for non-off-hours markets", () => {
     const { showWarning } = getPositionOffHoursLiqRisk({
       chainId: ARBITRUM,
@@ -109,6 +131,19 @@ describe("isTradeboxOffHoursLiqRisk", () => {
         isLong: true,
         nextSizeInUsd: SIZE_USD,
         nextCollateralUsd: expandDecimals(300, 30),
+        minCollateralUsd: MIN_COLLATERAL_USD,
+      })
+    ).toBe(true);
+  });
+
+  it("warns when off-hours under-collateralizes a zero-fee market (criterion a)", () => {
+    expect(
+      isTradeboxOffHoursLiqRisk({
+        chainId: ARBITRUM,
+        marketInfo: zeroFeeOffHoursMarket(),
+        isLong: true,
+        nextSizeInUsd: SIZE_USD,
+        nextCollateralUsd: expandDecimals(400, 30),
         minCollateralUsd: MIN_COLLATERAL_USD,
       })
     ).toBe(true);
