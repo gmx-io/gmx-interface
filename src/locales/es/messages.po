@@ -38,7 +38,7 @@ msgstr "Reembolsos por impacto en el precio reclamados"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
-msgstr ""
+msgstr "Es posible que la orden no se ejecute: la posición resultante sería liquidable al precio de activación. Añade garantía o reduce el tamaño."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"

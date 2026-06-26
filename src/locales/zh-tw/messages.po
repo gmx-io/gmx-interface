@@ -38,7 +38,7 @@ msgstr "已領取價格影響返還"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
-msgstr ""
+msgstr "訂單可能無法執行：在觸發價格處，所產生的倉位將面臨清算。請增加抵押品或減小規模。"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"

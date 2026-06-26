@@ -38,7 +38,7 @@ msgstr "Возвраты за влияние на цену получены"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
-msgstr ""
+msgstr "Ордер может не исполниться: итоговая позиция будет подвержена ликвидации по цене активации. Добавьте обеспечение или уменьшите размер."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"

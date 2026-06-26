@@ -38,7 +38,7 @@ msgstr "가격 영향 리베이트가 수령되었습니다"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
-msgstr ""
+msgstr "주문이 실행되지 않을 수 있습니다: 결과 포지션이 조건가에서 청산 대상이 됩니다. 담보를 추가하거나 규모를 줄이세요."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
