@@ -1,3 +1,4 @@
+import { DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX } from "config/localStorage";
 import { isDelistingMarket } from "config/static/markets";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import type { MarketInfo } from "domain/synthetics/markets/types";
@@ -66,4 +67,44 @@ export function computeAffectedLiquidityMarkets(
   }
 
   return result;
+}
+
+export const DELISTING_ANNOUNCEMENT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+export type DelistingDismissal = { dismissedAt: number; markets: string[] };
+
+function getDismissalKey(toastId: string): string {
+  return `${DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX}-${toastId}`;
+}
+
+export function readDismissal(toastId: string): DelistingDismissal | undefined {
+  const raw = localStorage.getItem(getDismissalKey(toastId));
+  if (!raw) {
+    return undefined;
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    if (typeof parsed?.dismissedAt !== "number" || !Array.isArray(parsed?.markets)) {
+      return undefined;
+    }
+    return parsed as DelistingDismissal;
+  } catch {
+    return undefined;
+  }
+}
+
+export function writeDismissal(toastId: string, marketAddresses: string[], dismissedAt: number): void {
+  const value: DelistingDismissal = { dismissedAt, markets: [...marketAddresses].sort() };
+  localStorage.setItem(getDismissalKey(toastId), JSON.stringify(value));
+}
+
+export function shouldShowDelistingAnnouncement(toastId: string, affectedAddresses: string[], now: number): boolean {
+  const record = readDismissal(toastId);
+  if (!record) {
+    return true;
+  }
+  if (now - record.dismissedAt >= DELISTING_ANNOUNCEMENT_COOLDOWN_MS) {
+    return true;
+  }
+  return affectedAddresses.some((address) => !record.markets.includes(address));
 }

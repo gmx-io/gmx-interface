@@ -1,15 +1,18 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 
 import {
+  DELISTING_ANNOUNCEMENT_COOLDOWN_MS,
   buildLiquidityBodyText,
   buildPositionsBodyText,
   computeAffectedLiquidityMarkets,
   computeAffectedPositionMarkets,
   getDelistingMarketLabel,
   joinMarketNames,
+  shouldShowDelistingAnnouncement,
+  writeDismissal,
 } from "./delistingExitAnnouncements";
 
 describe("joinMarketNames", () => {
@@ -99,5 +102,37 @@ describe("computeAffectedLiquidityMarkets", () => {
   it("excludes markets not in the delisting list", () => {
     const data = { [NON_DELISTING]: { symbol: "GM", balance: 5n } } as any;
     expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([]);
+  });
+});
+
+describe("dismissal", () => {
+  const ID = "delisting-positions";
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("shows when there is no dismissal record", () => {
+    expect(shouldShowDelistingAnnouncement(ID, ["0xA"], 1000)).toBe(true);
+  });
+
+  it("suppresses within the cooldown for the same set", () => {
+    writeDismissal(ID, ["0xA"], 1000);
+    expect(shouldShowDelistingAnnouncement(ID, ["0xA"], 1000 + 60_000)).toBe(false);
+  });
+
+  it("re-shows once the cooldown elapses", () => {
+    writeDismissal(ID, ["0xA"], 1000);
+    expect(shouldShowDelistingAnnouncement(ID, ["0xA"], 1000 + DELISTING_ANNOUNCEMENT_COOLDOWN_MS)).toBe(true);
+  });
+
+  it("re-shows immediately when a new market enters the set", () => {
+    writeDismissal(ID, ["0xA"], 1000);
+    expect(shouldShowDelistingAnnouncement(ID, ["0xA", "0xB"], 1000 + 60_000)).toBe(true);
+  });
+
+  it("ignores a corrupt record and shows", () => {
+    localStorage.setItem("delisting-announcement-dismissed-delisting-positions", "not-json");
+    expect(shouldShowDelistingAnnouncement(ID, ["0xA"], 1000)).toBe(true);
   });
 });
