@@ -65,9 +65,8 @@ import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoC
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
-  capLossAtLiquidationPnl,
-  getLiquidationPnlUsd,
   isFullClosePositionOrder,
+  isTriggerBeyondLiquidation,
 } from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -524,28 +523,26 @@ export function AddTPSLModal({
   const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? activePreview.triggerPrice;
   const hasPreviewData = Boolean(tpDecreaseAmounts || slDecreaseAmounts);
 
-  const activeLiquidationPnlUsd = useMemo(() => {
-    if (!activeDecreaseAmounts) return undefined;
-    return getLiquidationPnlUsd({
-      entryPrice: position.entryPrice,
-      liquidationPrice: position.liquidationPrice,
-      sizeInTokens: activeDecreaseAmounts.sizeDeltaInTokens,
-      indexTokenDecimals,
-      isLong,
-    });
-  }, [activeDecreaseAmounts, position.entryPrice, position.liquidationPrice, indexTokenDecimals, isLong]);
-
-  const activeEstimatedPnl = activeDecreaseAmounts
-    ? capLossAtLiquidationPnl(activeDecreaseAmounts.estimatedPnl, activeLiquidationPnlUsd)
+  // Beyond the liquidation price you'll be liquidated and lose your whole margin, so show -100%.
+  const activeIsBeyondLiquidation = isTriggerBeyondLiquidation({
+    triggerPrice: activeTriggerPrice,
+    liquidationPrice: position.liquidationPrice,
+    isLong,
+  });
+  const activeEstimatedPnlPercentage = activeDecreaseAmounts
+    ? activeIsBeyondLiquidation
+      ? -BASIS_POINTS_DIVISOR_BIGINT
+      : activeDecreaseAmounts.estimatedPnlPercentage
     : undefined;
-  const activeEstimatedPnlPercentage =
-    activeDecreaseAmounts && activeEstimatedPnl !== undefined && activeDecreaseAmounts.estimatedPnl !== 0n
+  const activeEstimatedPnl = activeDecreaseAmounts
+    ? activeIsBeyondLiquidation && activeDecreaseAmounts.estimatedPnlPercentage !== 0n
       ? bigMath.mulDiv(
-          activeDecreaseAmounts.estimatedPnlPercentage,
-          activeEstimatedPnl,
-          activeDecreaseAmounts.estimatedPnl
+          activeDecreaseAmounts.estimatedPnl,
+          -BASIS_POINTS_DIVISOR_BIGINT,
+          activeDecreaseAmounts.estimatedPnlPercentage
         )
-      : activeDecreaseAmounts?.estimatedPnlPercentage;
+      : activeDecreaseAmounts.estimatedPnl
+    : undefined;
 
   const netPriceImpactAndFeesDisplay = useMemo(() => {
     if (!activeFees) {

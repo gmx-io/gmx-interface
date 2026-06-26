@@ -6,13 +6,14 @@ import { expandDecimals, MaxUint256 } from "lib/numbers";
 
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
-  capLossAtLiquidationPnl,
-  getLiquidationPnlUsd,
+  capLossAtCollateral,
+  getCappedTpSlLossUsd,
   getPositionCloseSizeDeltaUsdForDisplay,
   getPositionCloseSizeDeltaUsdForPayload,
   getTpSlLiqPriceWarning,
   isFullClosePositionOrder,
   isFullPositionCloseSizeDeltaUsd,
+  isTriggerBeyondLiquidation,
 } from "../utils";
 
 describe("TPSL full-position close utilities", () => {
@@ -149,64 +150,104 @@ describe("getTpSlLiqPriceWarning", () => {
   });
 });
 
-describe("getLiquidationPnlUsd", () => {
-  const sizeInTokens = expandDecimals(1, 18);
-  const indexTokenDecimals = 18;
+describe("capLossAtCollateral", () => {
+  const collateralUsd = expandDecimals(100, 30);
 
-  it("returns the negative loss at the liquidation price for a long", () => {
-    expect(
-      getLiquidationPnlUsd({
-        entryPrice: expandDecimals(100, 30),
-        liquidationPrice: expandDecimals(80, 30),
-        sizeInTokens,
-        indexTokenDecimals,
-        isLong: true,
-      })
-    ).toBe(-expandDecimals(20, 30));
-  });
-
-  it("returns the negative loss at the liquidation price for a short", () => {
-    expect(
-      getLiquidationPnlUsd({
-        entryPrice: expandDecimals(100, 30),
-        liquidationPrice: expandDecimals(120, 30),
-        sizeInTokens,
-        indexTokenDecimals,
-        isLong: false,
-      })
-    ).toBe(-expandDecimals(20, 30));
-  });
-
-  it("returns undefined when the liquidation price, entry price, or size is missing or zero", () => {
-    const base = { entryPrice: expandDecimals(100, 30), sizeInTokens, indexTokenDecimals, isLong: true };
-    expect(getLiquidationPnlUsd({ ...base, liquidationPrice: undefined })).toBeUndefined();
-    expect(getLiquidationPnlUsd({ ...base, liquidationPrice: 0n })).toBeUndefined();
-    expect(getLiquidationPnlUsd({ ...base, entryPrice: 0n, liquidationPrice: expandDecimals(80, 30) })).toBeUndefined();
-    expect(
-      getLiquidationPnlUsd({ ...base, entryPrice: undefined, liquidationPrice: expandDecimals(80, 30) })
-    ).toBeUndefined();
-    expect(
-      getLiquidationPnlUsd({ ...base, sizeInTokens: 0n, liquidationPrice: expandDecimals(80, 30) })
-    ).toBeUndefined();
-  });
-});
-
-describe("capLossAtLiquidationPnl", () => {
-  const floor = -expandDecimals(100, 30);
-
-  it("floors a loss that exceeds the liquidation loss", () => {
-    expect(capLossAtLiquidationPnl(-expandDecimals(115, 30), floor)).toBe(floor);
+  it("floors a loss that exceeds the collateral at -collateral (you can't lose more than your margin)", () => {
+    expect(capLossAtCollateral(-expandDecimals(115, 30), collateralUsd)).toBe(-expandDecimals(100, 30));
   });
 
   it("leaves a smaller loss unchanged", () => {
-    expect(capLossAtLiquidationPnl(-expandDecimals(50, 30), floor)).toBe(-expandDecimals(50, 30));
+    expect(capLossAtCollateral(-expandDecimals(50, 30), collateralUsd)).toBe(-expandDecimals(50, 30));
   });
 
   it("leaves a profit unchanged", () => {
-    expect(capLossAtLiquidationPnl(expandDecimals(30, 30), floor)).toBe(expandDecimals(30, 30));
+    expect(capLossAtCollateral(expandDecimals(30, 30), collateralUsd)).toBe(expandDecimals(30, 30));
   });
 
-  it("returns the value unchanged when there is no liquidation floor", () => {
-    expect(capLossAtLiquidationPnl(-expandDecimals(115, 30), undefined)).toBe(-expandDecimals(115, 30));
+  it("returns the value unchanged when the collateral is missing or zero", () => {
+    expect(capLossAtCollateral(-expandDecimals(115, 30), undefined)).toBe(-expandDecimals(115, 30));
+    expect(capLossAtCollateral(-expandDecimals(115, 30), 0n)).toBe(-expandDecimals(115, 30));
+  });
+});
+
+describe("isTriggerBeyondLiquidation", () => {
+  const longLiq = expandDecimals(63, 30);
+  const shortLiq = expandDecimals(80, 30);
+
+  it("is true for a long trigger at or below the liquidation price", () => {
+    expect(
+      isTriggerBeyondLiquidation({ triggerPrice: expandDecimals(60, 30), liquidationPrice: longLiq, isLong: true })
+    ).toBe(true);
+    expect(isTriggerBeyondLiquidation({ triggerPrice: longLiq, liquidationPrice: longLiq, isLong: true })).toBe(true);
+  });
+
+  it("is false for a long trigger above the liquidation price", () => {
+    expect(
+      isTriggerBeyondLiquidation({ triggerPrice: expandDecimals(70, 30), liquidationPrice: longLiq, isLong: true })
+    ).toBe(false);
+  });
+
+  it("is true for a short trigger at or above the liquidation price", () => {
+    expect(
+      isTriggerBeyondLiquidation({ triggerPrice: expandDecimals(85, 30), liquidationPrice: shortLiq, isLong: false })
+    ).toBe(true);
+  });
+
+  it("is false for a short trigger below the liquidation price", () => {
+    expect(
+      isTriggerBeyondLiquidation({ triggerPrice: expandDecimals(70, 30), liquidationPrice: shortLiq, isLong: false })
+    ).toBe(false);
+  });
+
+  it("is false when the trigger or liquidation price is missing, zero, or the max sentinel", () => {
+    const triggerPrice = expandDecimals(60, 30);
+    expect(isTriggerBeyondLiquidation({ triggerPrice: undefined, liquidationPrice: longLiq, isLong: true })).toBe(
+      false
+    );
+    expect(isTriggerBeyondLiquidation({ triggerPrice, liquidationPrice: undefined, isLong: true })).toBe(false);
+    expect(isTriggerBeyondLiquidation({ triggerPrice, liquidationPrice: 0n, isLong: true })).toBe(false);
+    expect(isTriggerBeyondLiquidation({ triggerPrice, liquidationPrice: MaxUint256, isLong: true })).toBe(false);
+  });
+});
+
+describe("getCappedTpSlLossUsd", () => {
+  const collateralUsd = expandDecimals(100, 30);
+  const longLiq = expandDecimals(63, 30);
+
+  it("shows the full collateral loss (-100%) for a trigger beyond the liquidation price", () => {
+    expect(
+      getCappedTpSlLossUsd({
+        pnlUsd: -expandDecimals(52, 30),
+        collateralUsd,
+        triggerPrice: expandDecimals(60, 30),
+        liquidationPrice: longLiq,
+        isLong: true,
+      })
+    ).toBe(-collateralUsd);
+  });
+
+  it("shows the actual price PnL for a trigger within range", () => {
+    expect(
+      getCappedTpSlLossUsd({
+        pnlUsd: -expandDecimals(40, 30),
+        collateralUsd,
+        triggerPrice: expandDecimals(70, 30),
+        liquidationPrice: longLiq,
+        isLong: true,
+      })
+    ).toBe(-expandDecimals(40, 30));
+  });
+
+  it("still floors a within-range loss at -collateral", () => {
+    expect(
+      getCappedTpSlLossUsd({
+        pnlUsd: -expandDecimals(150, 30),
+        collateralUsd,
+        triggerPrice: expandDecimals(70, 30),
+        liquidationPrice: longLiq,
+        isLong: true,
+      })
+    ).toBe(-collateralUsd);
   });
 });
