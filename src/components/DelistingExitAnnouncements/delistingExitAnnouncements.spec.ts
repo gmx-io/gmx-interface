@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM } from "config/chains";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 
 import {
   buildLiquidityBodyText,
   buildPositionsBodyText,
+  computeAffectedLiquidityMarkets,
+  computeAffectedPositionMarkets,
   getDelistingMarketLabel,
   joinMarketNames,
 } from "./delistingExitAnnouncements";
@@ -52,4 +55,49 @@ describe("buildLiquidityBodyText", () => {
     expect(buildLiquidityBodyText(["KTA/USD", "SATS/USD"])).toBe(
       "KTA/USD and SATS/USD are being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
     ));
+});
+
+describe("computeAffectedPositionMarkets", () => {
+  const TON = "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c";
+  const NON_DELISTING = "0x0000000000000000000000000000000000000002";
+
+  it("intersects positions with the delisting list and counts entries", () => {
+    const positionsInfoData = {
+      k1: { marketAddress: TON },
+      k2: { marketAddress: TON }, // e.g. long + short in the same market
+      k3: { marketAddress: NON_DELISTING },
+    } as any;
+    const result = computeAffectedPositionMarkets(ARBITRUM, positionsInfoData);
+    expect(result.marketAddresses).toEqual([TON]);
+    expect(result.positionCount).toBe(2);
+  });
+
+  it("returns empty for undefined data", () => {
+    expect(computeAffectedPositionMarkets(ARBITRUM, undefined)).toEqual({ marketAddresses: [], positionCount: 0 });
+  });
+});
+
+describe("computeAffectedLiquidityMarkets", () => {
+  const KTA = "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d";
+  const NON_DELISTING = "0x0000000000000000000000000000000000000003";
+
+  it("includes GM tokens with a positive balance that are delisting", () => {
+    const data = { [KTA]: { symbol: "GM", balance: 5n } } as any;
+    expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([KTA]);
+  });
+
+  it("excludes zero balances", () => {
+    const data = { [KTA]: { symbol: "GM", balance: 0n } } as any;
+    expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([]);
+  });
+
+  it("excludes GLV holdings (symbol !== 'GM')", () => {
+    const data = { [KTA]: { symbol: "GLV", balance: 5n } } as any;
+    expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([]);
+  });
+
+  it("excludes markets not in the delisting list", () => {
+    const data = { [NON_DELISTING]: { symbol: "GM", balance: 5n } } as any;
+    expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([]);
+  });
 });
