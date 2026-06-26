@@ -1,9 +1,10 @@
 import { DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX } from "config/localStorage";
 import { isDelistingMarket } from "config/static/markets";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import type { MarketInfo } from "domain/synthetics/markets/types";
+import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
+import { getByKey } from "lib/objects";
 
 export function getDelistingMarketLabel(marketInfo: MarketInfo): string {
   if (marketInfo.isSpotOnly) {
@@ -107,4 +108,73 @@ export function shouldShowDelistingAnnouncement(toastId: string, affectedAddress
     return true;
   }
   return affectedAddresses.some((address) => !record.markets.includes(address));
+}
+
+export const POSITIONS_TOAST_ID = "delisting-positions";
+export const LIQUIDITY_TOAST_ID = "delisting-liquidity";
+export const DELISTING_ANNOUNCEMENT_TITLE = "Market delistings";
+
+export type DelistingToast = {
+  id: string;
+  title: string;
+  bodyText: string;
+  markets: string[];
+  link?: { text: string; href: string };
+};
+
+export function getDelistingAnnouncementActions(params: {
+  chainId: number;
+  positionsInfoData: PositionsInfoData | undefined;
+  depositMarketTokensData: TokensData | undefined;
+  marketsInfoData: MarketsInfoData | undefined;
+  now: number;
+}): { toShow: DelistingToast[]; toDismiss: string[] } {
+  const { chainId, positionsInfoData, depositMarketTokensData, marketsInfoData, now } = params;
+
+  const toShow: DelistingToast[] = [];
+  const toDismiss: string[] = [];
+
+  const labelOf = (addresses: string[]): string[] =>
+    addresses
+      .map((address) => getByKey(marketsInfoData, address))
+      .filter((marketInfo): marketInfo is MarketInfo => Boolean(marketInfo))
+      .map(getDelistingMarketLabel);
+
+  // Positions
+  const { marketAddresses: positionMarkets, positionCount } = computeAffectedPositionMarkets(
+    chainId,
+    positionsInfoData
+  );
+  if (positionMarkets.length === 0) {
+    toDismiss.push(POSITIONS_TOAST_ID);
+  } else {
+    const names = labelOf(positionMarkets);
+    if (names.length > 0 && shouldShowDelistingAnnouncement(POSITIONS_TOAST_ID, positionMarkets, now)) {
+      toShow.push({
+        id: POSITIONS_TOAST_ID,
+        title: DELISTING_ANNOUNCEMENT_TITLE,
+        bodyText: buildPositionsBodyText(names, positionCount),
+        markets: positionMarkets,
+      });
+    }
+  }
+
+  // Liquidity
+  const liquidityMarkets = computeAffectedLiquidityMarkets(chainId, depositMarketTokensData);
+  if (liquidityMarkets.length === 0) {
+    toDismiss.push(LIQUIDITY_TOAST_ID);
+  } else {
+    const names = labelOf(liquidityMarkets);
+    if (names.length > 0 && shouldShowDelistingAnnouncement(LIQUIDITY_TOAST_ID, liquidityMarkets, now)) {
+      toShow.push({
+        id: LIQUIDITY_TOAST_ID,
+        title: DELISTING_ANNOUNCEMENT_TITLE,
+        bodyText: buildLiquidityBodyText(names),
+        markets: liquidityMarkets,
+        link: { text: "Manage liquidity", href: "/pools" },
+      });
+    }
+  }
+
+  return { toShow, toDismiss };
 }
