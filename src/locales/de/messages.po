@@ -7492,6 +7492,10 @@ msgstr ""
 msgid "({0} of {1})"
 msgstr "({0} von {1})"
 
+#: src/pages/Whales/WhalesMarketPage.tsx
+msgid "Market Whales"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "Gesamter realisierter und unrealisierter PnL einschließlich Gebühren und Preiseinfluss"
@@ -8580,6 +8584,12 @@ msgstr "<0>{0}</0> beanspruchen"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive"
 msgstr "Erhalten"
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+#: src/pages/Whales/WhalesMarketPage.tsx
+#: src/pages/Whales/WhalesPage.tsx
+msgid "Whale Monitor"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
@@ -11124,6 +11134,10 @@ msgstr "Unzureichender Saldo"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
+msgstr ""
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Account Whale Breakdown"
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
