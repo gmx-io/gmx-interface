@@ -3127,6 +3127,10 @@ msgstr "TVL"
 msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
 msgstr "Ihr GMX Account Guthaben, nutzbar für den Handel von jeder unterstützten Chain. <0>Mehr erfahren</0>."
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation. Consider lowering leverage or adding margin. <0>Read more</0>."
+msgstr "Risiko außerhalb der Handelszeiten: Wenn dieser Markt in den Modus außerhalb der Handelszeiten wechselt, könnte diese Position nahe an der Liquidation sein. Erwägen Sie, den Hebel zu reduzieren oder Margin hinzuzufügen. <0>Mehr erfahren</0>."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI trading assistant"
 msgstr "KI-Handelsassistent"
@@ -4321,6 +4325,10 @@ msgstr "Stop-Loss erstellen"
 msgid "Direction"
 msgstr "Richtung"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is currently above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
+msgstr "Diese Position liegt derzeit über dem Liquidationsrisiko, könnte aber nahe an die Liquidation geraten, wenn der Markt auf die Risikoparameter außerhalb der Handelszeiten umschaltet. Fügen Sie Margin hinzu oder reduzieren Sie den Hebel, um Ihren Puffer zu vergrößern."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
 msgstr "Basisleihfaktor Long"
@@ -5068,6 +5076,7 @@ msgstr "<0>GMX führt Trades gegen einen dynamisch ausbalancierten Liquiditätsp
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -9856,6 +9865,10 @@ msgstr "Siehe den empfohlenen Abschnitt oben, um zu beginnen"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Erhalten Sie Benachrichtigungen und Ankündigungen von GMX, um über Ihre Trades, Liquidationsrisiken und mehr auf dem Laufenden zu bleiben"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Estimated off-hours liquidation price"
+msgstr "Geschätzter Liquidationspreis außerhalb der Handelszeiten"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"

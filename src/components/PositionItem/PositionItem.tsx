@@ -6,17 +6,20 @@ import { useIntersection } from "react-use";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
+import { OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
+  getPositionOffHoursLiqRisk,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
@@ -28,6 +31,7 @@ import { getMarketIndexName } from "sdk/utils/markets";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import PositionDropdown from "components/PositionDropdown/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
@@ -69,6 +73,8 @@ export function PositionItem(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
+  const chainId = useSelector(selectChainId);
+  const userReferralInfo = useSelector(selectUserReferralInfo);
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
   const [tpslInitialView, setTpslInitialView] = useState<"list" | "add">("list");
@@ -315,6 +321,15 @@ export function PositionItem(p: Props) {
     let liqPriceWarning: string | undefined;
     const estimatedLiquidationHours = getEstimatedLiquidationTimeInHours(p.position, minCollateralUsd);
 
+    const offHoursLiqRisk = getPositionOffHoursLiqRisk({
+      chainId,
+      position: p.position,
+      minCollateralUsd,
+      userReferralInfo,
+    });
+    const showOffHoursWarning = offHoursLiqRisk.showWarning;
+    const offHoursLiqPrice = offHoursLiqRisk.offHoursLiqPrice;
+
     if (p.position.liquidationPrice === undefined) {
       if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
         const symbol = p.position.collateralToken.symbol;
@@ -362,10 +377,36 @@ export function PositionItem(p: Props) {
         ) : (
           ""
         )}
+        {showOffHoursWarning && (
+          <div>
+            {(liqPriceWarning || estimatedLiquidationHours) && <br />}
+            <Trans>
+              This position is currently above liquidation risk, but it may become close to liquidation when the market
+              switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
+            </Trans>
+            <br />
+            <br />
+            <StatsTooltipRow
+              label={t`Estimated off-hours liquidation price`}
+              value={
+                formatLiquidationPrice(offHoursLiqPrice, {
+                  displayDecimals: marketDecimals,
+                  visualMultiplier: p.position.indexToken.visualMultiplier,
+                }) || "..."
+              }
+              valueClassName="numbers"
+              showDollar={false}
+            />
+            <br />
+            <ExternalLink href={OFF_HOURS_DOCS_URL}>
+              <Trans>Read more</Trans>
+            </ExternalLink>
+          </div>
+        )}
       </>
     );
 
-    if (liqPriceWarning || estimatedLiquidationHours) {
+    if (liqPriceWarning || estimatedLiquidationHours || showOffHoursWarning) {
       return (
         <TooltipWithPortal
           handle={
@@ -379,6 +420,8 @@ export function PositionItem(p: Props) {
           handleClassName={cx("numbers", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
             "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
+            "LiqPrice-offhours-warning":
+              showOffHoursWarning && !(estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7),
           })}
           position="bottom-end"
           renderContent={getLiqPriceTooltipContent}

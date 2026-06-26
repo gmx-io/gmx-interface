@@ -47,6 +47,7 @@ import {
   selectTradeboxMarkPrice,
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxNextPositionValues,
+  selectTradeboxOffHoursLiqRisk,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
@@ -60,7 +61,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
+import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
@@ -255,6 +256,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
+  const offHoursLiqRisk = useSelector(selectTradeboxOffHoursLiqRisk);
+  const showOffHoursWarning = offHoursLiqRisk.shouldWarn;
   const fees = useSelector(selectTradeboxFees);
   const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
@@ -1232,6 +1235,18 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           {gasPaymentTokenWarningContent && (
             <AlertInfoCard hideClose type="warning">
               {gasPaymentTokenWarningContent}
+            </AlertInfoCard>
+          )}
+          {showOffHoursWarning && (
+            <AlertInfoCard hideClose type="warning">
+              <Trans>
+                Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation.
+                Consider lowering leverage or adding margin.{" "}
+                <ExternalLink href={OFF_HOURS_DOCS_URL} newTab>
+                  Read more
+                </ExternalLink>
+                .
+              </Trans>
             </AlertInfoCard>
           )}
 
