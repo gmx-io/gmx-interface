@@ -1167,6 +1167,10 @@ msgstr "오류:"
 msgid "Cross-chain one-click deposits into GM"
 msgstr "GM으로 크로스체인 원클릭 예치"
 
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Open full dashboard"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>TBTC-TBTC 풀로 전환</0>하면 가격 영향이 줄어들 수 있습니다"

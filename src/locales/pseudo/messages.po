@@ -1167,6 +1167,10 @@ msgstr ""
 msgid "Cross-chain one-click deposits into GM"
 msgstr ""
 
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Open full dashboard"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr ""
