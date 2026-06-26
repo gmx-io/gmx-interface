@@ -88,7 +88,6 @@ import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
@@ -1010,12 +1009,6 @@ export function AddTPSLModal({
             estimatedPnl={slEstimatedPnl}
           />
         </div>
-
-        {(tpPriceWarning || slPriceWarning) && (
-          <AlertInfoCard type="warning" hideClose>
-            {tpPriceWarning ?? slPriceWarning}
-          </AlertInfoCard>
-        )}
 
         <div className="flex flex-col gap-8">
           <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>

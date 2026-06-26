@@ -421,8 +421,8 @@ export function TPSLInputRow({
             className="flex grow"
             handleClassName="grow"
             variant="none"
-            disabled={!priceError}
-            content={priceError}
+            disabled={!priceError && !priceWarning}
+            content={priceError ?? priceWarning}
           >
             <div
               className={cx(
@@ -493,8 +493,8 @@ export function TPSLInputRow({
           className="flex-1"
           handleClassName="w-full"
           variant="none"
-          disabled={!priceError}
-          content={priceError}
+          disabled={!priceError && !priceWarning}
+          content={priceError ?? priceWarning}
         >
           <div
             className={cx(
