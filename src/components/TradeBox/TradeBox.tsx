@@ -1239,14 +1239,20 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           )}
           {showOffHoursWarning && (
             <AlertInfoCard hideClose type="warning">
-              <Trans>
-                Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation.
-                Consider lowering leverage or adding margin.{" "}
+              <div className="flex flex-col gap-8">
+                <div>
+                  <Trans>
+                    Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation.
+                    Consider lowering leverage or adding margin.
+                  </Trans>
+                </div>
+                <div>
+                  <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
+                </div>
                 <ExternalLink href={OFF_HOURS_DOCS_URL} newTab>
-                  Read more
+                  <Trans>Read more</Trans>
                 </ExternalLink>
-                .
-              </Trans>
+              </div>
             </AlertInfoCard>
           )}
 

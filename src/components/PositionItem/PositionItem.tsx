@@ -386,6 +386,9 @@ export function PositionItem(p: Props) {
             </Trans>
             <br />
             <br />
+            <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
+            <br />
+            <br />
             <StatsTooltipRow
               label={t`Estimated off-hours liquidation price`}
               value={

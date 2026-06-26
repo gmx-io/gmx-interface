@@ -66,6 +66,16 @@ describe("getPositionOffHoursLiqRisk", () => {
     expect(result.offHoursLiqPrice).toBeDefined();
   });
 
+  it("warns at high leverage even when the on-hours config is already at risk", () => {
+    const { showWarning } = getPositionOffHoursLiqRisk({
+      chainId: ARBITRUM,
+      position: goldLong(offHoursMarket(), expandDecimals(300, 30)),
+      minCollateralUsd: MIN_COLLATERAL_USD,
+      userReferralInfo: undefined,
+    });
+    expect(showWarning).toBe(true);
+  });
+
   it("returns no warning for non-off-hours markets", () => {
     const { showWarning } = getPositionOffHoursLiqRisk({
       chainId: ARBITRUM,
@@ -86,6 +96,19 @@ describe("isTradeboxOffHoursLiqRisk", () => {
         isLong: true,
         nextSizeInUsd: SIZE_USD,
         nextCollateralUsd: expandDecimals(800, 30),
+        minCollateralUsd: MIN_COLLATERAL_USD,
+      })
+    ).toBe(true);
+  });
+
+  it("warns at high leverage where the on-hours config is also at risk", () => {
+    expect(
+      isTradeboxOffHoursLiqRisk({
+        chainId: ARBITRUM,
+        marketInfo: offHoursMarket(),
+        isLong: true,
+        nextSizeInUsd: SIZE_USD,
+        nextCollateralUsd: expandDecimals(300, 30),
         minCollateralUsd: MIN_COLLATERAL_USD,
       })
     ).toBe(true);

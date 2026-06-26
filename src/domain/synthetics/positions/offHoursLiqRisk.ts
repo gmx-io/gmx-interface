@@ -7,25 +7,17 @@ import { getEstimatedLiquidationTimeInHours, getLiquidationPrice } from "./utils
 
 const SOFT_LIQUIDATION_HOURS = 24 * 7;
 
-function entersOffHoursLiqZone(
-  onHoursMarketInfo: MarketInfo,
+function isRiskyUnderOffHours(
   offHoursMarketInfo: MarketInfo,
   positionLike: PositionInfo,
   minCollateralUsd: bigint
 ): boolean {
-  const onHours = getEstimatedLiquidationTimeInHours(
-    { ...positionLike, marketInfo: onHoursMarketInfo },
-    minCollateralUsd
-  );
   const offHours = getEstimatedLiquidationTimeInHours(
     { ...positionLike, marketInfo: offHoursMarketInfo },
     minCollateralUsd
   );
 
-  const onHoursSafe = onHours === undefined || onHours >= SOFT_LIQUIDATION_HOURS;
-  const offHoursAtRisk = offHours !== undefined && offHours < SOFT_LIQUIDATION_HOURS;
-
-  return onHoursSafe && offHoursAtRisk;
+  return offHours !== undefined && offHours < SOFT_LIQUIDATION_HOURS;
 }
 
 export function getPositionOffHoursLiqRisk(p: {
@@ -41,7 +33,7 @@ export function getPositionOffHoursLiqRisk(p: {
     return { showWarning: false, offHoursLiqPrice: undefined };
   }
 
-  if (!entersOffHoursLiqZone(position.marketInfo, offHoursMarketInfo, position, minCollateralUsd)) {
+  if (!isRiskyUnderOffHours(offHoursMarketInfo, position, minCollateralUsd)) {
     return { showWarning: false, offHoursLiqPrice: undefined };
   }
 
@@ -94,5 +86,5 @@ export function isTradeboxOffHoursLiqRisk(p: {
     pendingImpactAmount: 0n,
   } as PositionInfo;
 
-  return entersOffHoursLiqZone(marketInfo, offHoursMarketInfo, resultingPosition, minCollateralUsd);
+  return isRiskyUnderOffHours(offHoursMarketInfo, resultingPosition, minCollateralUsd);
 }

@@ -3127,10 +3127,6 @@ msgstr "TVL"
 msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
 msgstr "Ihr GMX Account Guthaben, nutzbar für den Handel von jeder unterstützten Chain. <0>Mehr erfahren</0>."
 
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation. Consider lowering leverage or adding margin. <0>Read more</0>."
-msgstr "Risiko außerhalb der Handelszeiten: Wenn dieser Markt in den Modus außerhalb der Handelszeiten wechselt, könnte diese Position nahe an der Liquidation sein. Erwägen Sie, den Hebel zu reduzieren oder Margin hinzuzufügen. <0>Mehr erfahren</0>."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI trading assistant"
 msgstr "KI-Handelsassistent"
@@ -5084,6 +5080,7 @@ msgstr "<0>GMX führt Trades gegen einen dynamisch ausbalancierten Liquiditätsp
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -6962,6 +6959,10 @@ msgstr "GLV verkaufen"
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "von {BLOCKCHAIN_COUNT} Blockchains"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation. Consider lowering leverage or adding margin."
+msgstr "Risiko außerhalb der Handelszeiten: Wenn dieser Markt in den Modus außerhalb der Handelszeiten wechselt, könnte diese Position nahe an der Liquidation sein. Erwägen Sie, den Hebel zu reduzieren oder Margin hinzuzufügen."
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -8109,6 +8110,11 @@ msgstr "24h Volumen"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
 msgstr "Betrag eingeben"
+
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
+msgstr "Außerhalb der Handelszeiten: täglich 20:45–22:15 UTC (Wochenende Fr. 20:45 → So. 22:15 UTC)."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."
