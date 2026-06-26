@@ -5,6 +5,7 @@ import cx from "classnames";
 import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
+import { capLossAtLiquidationPnl, getLiquidationPnlUsd } from "domain/tpsl/utils";
 import {
   calculateDisplayDecimals,
   expandDecimals,
@@ -141,6 +142,19 @@ export function TPSLInputRow({
     [getPriceDiff, sizeInTokens, tokenPrecision]
   );
 
+  // Loss can't exceed what the liquidation price would realize — you'd be liquidated first.
+  const liquidationPnlUsd = useMemo(
+    () =>
+      getLiquidationPnlUsd({
+        entryPrice: pnlReferencePrice,
+        liquidationPrice,
+        sizeInTokens,
+        indexTokenDecimals,
+        isLong,
+      }),
+    [pnlReferencePrice, liquidationPrice, sizeInTokens, indexTokenDecimals, isLong]
+  );
+
   const calculatePriceFromPnlUsd = useCallback(
     (targetPnlUsd: bigint): bigint | undefined => {
       if (sizeInTokens === 0n || pnlReferencePrice === 0n) return undefined;
@@ -226,17 +240,17 @@ export function TPSLInputRow({
       if (mode === "percentage") {
         const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
         if (pnlCollateralUsd > 0n) {
-          const pnlUsd = getPnlUsdForPrice(currentPriceValue);
+          const pnlUsd = capLossAtLiquidationPnl(getPnlUsdForPrice(currentPriceValue), liquidationPnlUsd);
           const percentage = bigMath.mulDiv(bigMath.abs(pnlUsd), 10000n, pnlCollateralUsd);
           return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
         }
       } else {
-        const pnlUsd = getPnlUsdForPrice(currentPriceValue);
+        const pnlUsd = capLossAtLiquidationPnl(getPnlUsdForPrice(currentPriceValue), liquidationPnlUsd);
         return String(removeTrailingZeros(formatAmount(bigMath.abs(pnlUsd), USD_DECIMALS, 2)));
       }
       return "";
     },
-    [currentPriceValue, getCollateralUsdForPnl, getPnlUsdForPrice, sizeInTokens, pnlReferencePrice]
+    [currentPriceValue, getCollateralUsdForPnl, getPnlUsdForPrice, liquidationPnlUsd, sizeInTokens, pnlReferencePrice]
   );
 
   const calculateAndUpdatePrice = useCallback(
@@ -342,7 +356,20 @@ export function TPSLInputRow({
     }
   };
 
-  const estimatedPnl = estimatedPnlProp ?? derivedEstimatedPnl;
+  const estimatedPnl = useMemo(() => {
+    const base = estimatedPnlProp ?? derivedEstimatedPnl;
+    if (!base) return base;
+
+    const cappedPnlUsd = capLossAtLiquidationPnl(base.pnlUsd, liquidationPnlUsd);
+    if (cappedPnlUsd === base.pnlUsd) return base;
+
+    const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
+    return {
+      pnlUsd: cappedPnlUsd,
+      pnlPercentage:
+        pnlCollateralUsd > 0n ? bigMath.mulDiv(cappedPnlUsd, 10000n, pnlCollateralUsd) : base.pnlPercentage,
+    };
+  }, [estimatedPnlProp, derivedEstimatedPnl, liquidationPnlUsd, getCollateralUsdForPnl, currentPriceValue]);
   const estimatedPnlDisplay = estimatedPnl ? formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage) : "-";
 
   const formattedMarkPrice = useMemo(() => {

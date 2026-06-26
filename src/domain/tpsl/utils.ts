@@ -5,7 +5,8 @@ import { isTriggerDecreaseOrderType, isTwapOrder } from "domain/synthetics/order
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import type { TokenData } from "domain/synthetics/tokens";
 import { DUST_USD } from "lib/legacy";
-import { MaxUint256 } from "lib/numbers";
+import { expandDecimals, MaxUint256 } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 
 export const FULL_POSITION_CLOSE_SIZE_DELTA_USD = MaxUint256;
 
@@ -73,6 +74,44 @@ export function getTpSlLiqPriceWarning({
   }
 
   return t`This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute.`;
+}
+
+// PnL realized by closing `sizeInTokens` at the liquidation price — the worst loss a position can actually reach.
+export function getLiquidationPnlUsd({
+  entryPrice,
+  liquidationPrice,
+  sizeInTokens,
+  indexTokenDecimals,
+  isLong,
+}: {
+  entryPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  sizeInTokens: bigint;
+  indexTokenDecimals: number;
+  isLong: boolean;
+}): bigint | undefined {
+  if (
+    entryPrice === undefined ||
+    entryPrice <= 0n ||
+    liquidationPrice === undefined ||
+    liquidationPrice <= 0n ||
+    sizeInTokens <= 0n
+  ) {
+    return undefined;
+  }
+
+  const priceDiff = isLong ? liquidationPrice - entryPrice : entryPrice - liquidationPrice;
+
+  return bigMath.mulDiv(priceDiff, sizeInTokens, expandDecimals(1, indexTokenDecimals));
+}
+
+// Floor a loss at the PnL the liquidation price would realize (you can't lose more — you'd be liquidated first).
+export function capLossAtLiquidationPnl(pnlUsd: bigint, liquidationPnlUsd: bigint | undefined): bigint {
+  if (liquidationPnlUsd === undefined) {
+    return pnlUsd;
+  }
+
+  return pnlUsd < liquidationPnlUsd ? liquidationPnlUsd : pnlUsd;
 }
 
 export function calculateTotalSizeUsd(p: {

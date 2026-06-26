@@ -6,6 +6,8 @@ import { expandDecimals, MaxUint256 } from "lib/numbers";
 
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  capLossAtLiquidationPnl,
+  getLiquidationPnlUsd,
   getPositionCloseSizeDeltaUsdForDisplay,
   getPositionCloseSizeDeltaUsdForPayload,
   getTpSlLiqPriceWarning,
@@ -144,5 +146,67 @@ describe("getTpSlLiqPriceWarning", () => {
       getTpSlLiqPriceWarning({ triggerPrice: undefined, liquidationPrice: longLiq, isLong: true })
     ).toBeUndefined();
     expect(getTpSlLiqPriceWarning({ triggerPrice: 0n, liquidationPrice: longLiq, isLong: true })).toBeUndefined();
+  });
+});
+
+describe("getLiquidationPnlUsd", () => {
+  const sizeInTokens = expandDecimals(1, 18);
+  const indexTokenDecimals = 18;
+
+  it("returns the negative loss at the liquidation price for a long", () => {
+    expect(
+      getLiquidationPnlUsd({
+        entryPrice: expandDecimals(100, 30),
+        liquidationPrice: expandDecimals(80, 30),
+        sizeInTokens,
+        indexTokenDecimals,
+        isLong: true,
+      })
+    ).toBe(-expandDecimals(20, 30));
+  });
+
+  it("returns the negative loss at the liquidation price for a short", () => {
+    expect(
+      getLiquidationPnlUsd({
+        entryPrice: expandDecimals(100, 30),
+        liquidationPrice: expandDecimals(120, 30),
+        sizeInTokens,
+        indexTokenDecimals,
+        isLong: false,
+      })
+    ).toBe(-expandDecimals(20, 30));
+  });
+
+  it("returns undefined when the liquidation price, entry price, or size is missing or zero", () => {
+    const base = { entryPrice: expandDecimals(100, 30), sizeInTokens, indexTokenDecimals, isLong: true };
+    expect(getLiquidationPnlUsd({ ...base, liquidationPrice: undefined })).toBeUndefined();
+    expect(getLiquidationPnlUsd({ ...base, liquidationPrice: 0n })).toBeUndefined();
+    expect(getLiquidationPnlUsd({ ...base, entryPrice: 0n, liquidationPrice: expandDecimals(80, 30) })).toBeUndefined();
+    expect(
+      getLiquidationPnlUsd({ ...base, entryPrice: undefined, liquidationPrice: expandDecimals(80, 30) })
+    ).toBeUndefined();
+    expect(
+      getLiquidationPnlUsd({ ...base, sizeInTokens: 0n, liquidationPrice: expandDecimals(80, 30) })
+    ).toBeUndefined();
+  });
+});
+
+describe("capLossAtLiquidationPnl", () => {
+  const floor = -expandDecimals(100, 30);
+
+  it("floors a loss that exceeds the liquidation loss", () => {
+    expect(capLossAtLiquidationPnl(-expandDecimals(115, 30), floor)).toBe(floor);
+  });
+
+  it("leaves a smaller loss unchanged", () => {
+    expect(capLossAtLiquidationPnl(-expandDecimals(50, 30), floor)).toBe(-expandDecimals(50, 30));
+  });
+
+  it("leaves a profit unchanged", () => {
+    expect(capLossAtLiquidationPnl(expandDecimals(30, 30), floor)).toBe(expandDecimals(30, 30));
+  });
+
+  it("returns the value unchanged when there is no liquidation floor", () => {
+    expect(capLossAtLiquidationPnl(-expandDecimals(115, 30), undefined)).toBe(-expandDecimals(115, 30));
   });
 });

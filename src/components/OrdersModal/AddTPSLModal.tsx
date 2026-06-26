@@ -63,7 +63,12 @@ import {
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
-import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, isFullClosePositionOrder } from "domain/tpsl/utils";
+import {
+  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  capLossAtLiquidationPnl,
+  getLiquidationPnlUsd,
+  isFullClosePositionOrder,
+} from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
@@ -518,6 +523,29 @@ export function AddTPSLModal({
   const activeReceiveDisplay = activePreview.receiveDisplay;
   const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? activePreview.triggerPrice;
   const hasPreviewData = Boolean(tpDecreaseAmounts || slDecreaseAmounts);
+
+  const activeLiquidationPnlUsd = useMemo(() => {
+    if (!activeDecreaseAmounts) return undefined;
+    return getLiquidationPnlUsd({
+      entryPrice: position.entryPrice,
+      liquidationPrice: position.liquidationPrice,
+      sizeInTokens: activeDecreaseAmounts.sizeDeltaInTokens,
+      indexTokenDecimals,
+      isLong,
+    });
+  }, [activeDecreaseAmounts, position.entryPrice, position.liquidationPrice, indexTokenDecimals, isLong]);
+
+  const activeEstimatedPnl = activeDecreaseAmounts
+    ? capLossAtLiquidationPnl(activeDecreaseAmounts.estimatedPnl, activeLiquidationPnlUsd)
+    : undefined;
+  const activeEstimatedPnlPercentage =
+    activeDecreaseAmounts && activeEstimatedPnl !== undefined && activeDecreaseAmounts.estimatedPnl !== 0n
+      ? bigMath.mulDiv(
+          activeDecreaseAmounts.estimatedPnlPercentage,
+          activeEstimatedPnl,
+          activeDecreaseAmounts.estimatedPnl
+        )
+      : activeDecreaseAmounts?.estimatedPnlPercentage;
 
   const netPriceImpactAndFeesDisplay = useMemo(() => {
     if (!activeFees) {
@@ -1096,10 +1124,7 @@ export function AddTPSLModal({
                   label={<Trans>PnL</Trans>}
                   value={
                     <ValueTransition
-                      from={formatDeltaUsd(
-                        activeDecreaseAmounts?.estimatedPnl,
-                        activeDecreaseAmounts?.estimatedPnlPercentage
-                      )}
+                      from={formatDeltaUsd(activeEstimatedPnl, activeEstimatedPnlPercentage)}
                       to={formatDeltaUsd(
                         activeNextPositionValues?.nextPnl,
                         activeNextPositionValues?.nextPnlPercentage
