@@ -10,6 +10,9 @@ import { fetchAccountMarketVolume } from "./whaleVolume";
 
 export type WhaleRow = { account: string; volume: bigint; shareBps: bigint; peakSize: bigint };
 
+const WHALE_FETCH_ROWS = 100;
+const WHALE_CANDIDATE_LIMIT = 50;
+
 const TOP_POSITIONS_QUERY = gql`
   query MarketTopPositions($market: String!, $limit: Int!) {
     positions(where: { market_eq: $market, isSnapshot_eq: false }, orderBy: maxSize_DESC, limit: $limit) {
@@ -56,16 +59,18 @@ export function useMarketWhales(
   const { data: marketVolumes } = useMarketVolumes(chainId, window);
   const totalVolume = market ? marketVolumes?.[market] : undefined;
 
-  const { data, isLoading } = useSWR<WhaleRow[]>(
-    market ? ["whaleMarketWhales", chainId, market, window, displayCount] : null,
+  type CandidateRow = { account: string; volume: bigint; peakSize: bigint };
+
+  const { data, isLoading } = useSWR<CandidateRow[]>(
+    market ? ["whaleMarketWhales", chainId, market, window] : null,
     async () => {
       const client = getSubsquidGraphClient(chainId);
       if (!client || !market) return [];
-      // Wide candidate pool by peak size, then re-rank the displayed rows by exact volume.
+      // Wide candidate pool by peak size, then re-rank all candidates by exact volume.
       const candidates = await fetchMarketTopCandidates(client, {
         market,
-        fetchRows: 100,
-        limit: 50,
+        fetchRows: WHALE_FETCH_ROWS,
+        limit: WHALE_CANDIDATE_LIMIT,
       });
       const fromTimestamp = windowToFromTimestamp(window, Math.floor(Date.now() / 1000));
       const withVolume = await Promise.all(
@@ -75,15 +80,16 @@ export function useMarketWhales(
           volume: await fetchAccountMarketVolume(client, { account: c.account, market, fromTimestamp }),
         }))
       );
-      const total = market ? marketVolumes?.[market] ?? 0n : 0n;
-      return rankByVolumeDesc(withVolume)
-        .slice(0, displayCount)
-        .map((r) => ({ ...r, shareBps: computeShareBps(r.volume, total) }));
+      return rankByVolumeDesc(withVolume);
     },
     {
       refreshInterval: 60_000,
     }
   );
 
-  return { rows: data ?? [], totalVolume, isLoading };
+  const rows: WhaleRow[] = (data ?? [])
+    .slice(0, displayCount)
+    .map((r) => ({ ...r, shareBps: computeShareBps(r.volume, totalVolume ?? 0n) }));
+
+  return { rows, totalVolume, isLoading };
 }
