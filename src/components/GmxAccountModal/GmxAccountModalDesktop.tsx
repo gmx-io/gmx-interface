@@ -12,13 +12,28 @@ import { SlideModal } from "components/Modal/SlideModal";
 import { AvailableToTradeAssetsView } from "./AvailableToTradeAssetsView";
 import { DepositStatusView } from "./DepositStatusView";
 import { DepositView } from "./DepositView";
-import { AvailableToTradeAssetsTitle, TransferDetailsTitle, WithdrawalScreen } from "./GmxAccountModalShared";
-import { MainView } from "./MainView";
+import {
+  AvailableToTradeAssetsTitle,
+  MainViewTitle,
+  TransferDetailsTitle,
+  TransferHistoryTitle,
+  WithdrawalScreen,
+} from "./GmxAccountModalShared";
+import { MainView, TransferHistoryView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
 import { TransferDetailsView } from "./TransferDetailsView";
+import { WalletReceiveView } from "./WalletReceiveView";
+import { WalletSendView } from "./WalletSendView";
 
-const MAIN_VIEWS = ["main", "availableToTradeAssets", "transferDetails"] as const;
-const OVERLAY_VIEWS = ["deposit", "withdraw", "depositStatus", "selectAssetToDeposit"] as const;
+const MAIN_VIEWS = ["main", "availableToTradeAssets", "transferDetails", "transferHistory"] as const;
+const OVERLAY_VIEWS = [
+  "deposit",
+  "withdraw",
+  "depositStatus",
+  "selectAssetToDeposit",
+  "walletReceive",
+  "walletSend",
+] as const;
 
 type MainView = (typeof MAIN_VIEWS)[number];
 type OverlayView = (typeof OVERLAY_VIEWS)[number];
@@ -32,9 +47,10 @@ function isOverlayView(view: GmxAccountModalView): view is OverlayView {
 }
 
 const SLIDE_MODAL_LABELS: Record<MainView, ReactNode> = {
-  main: <Trans>GMX Account</Trans>,
+  main: <MainViewTitle />,
   availableToTradeAssets: <AvailableToTradeAssetsTitle />,
   transferDetails: <TransferDetailsTitle />,
+  transferHistory: <TransferHistoryTitle />,
 };
 
 const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
@@ -42,6 +58,8 @@ const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
   withdraw: <Trans>Withdraw from GMX Account</Trans>,
   depositStatus: <Trans>Deposit in progress...</Trans>,
   selectAssetToDeposit: <Trans>Select asset to deposit</Trans>,
+  walletReceive: <Trans>Deposit to Wallet</Trans>,
+  walletSend: <Trans>Send</Trans>,
 };
 
 function OverlayContent({ view }: { view: OverlayView }) {
@@ -54,6 +72,10 @@ function OverlayContent({ view }: { view: OverlayView }) {
       return <DepositStatusView />;
     case "withdraw":
       return <WithdrawalScreen />;
+    case "walletReceive":
+      return <WalletReceiveView />;
+    case "walletSend":
+      return <WalletSendView />;
   }
 }
 
@@ -90,11 +112,13 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
         disableOverflowHandling={true}
         className="text-body-medium"
         contentPadding={false}
+        hideHeaderBorder
       >
         {(view === "main" || showMainViewInBackground) && <MainView account={account} />}
 
         {view === "availableToTradeAssets" && <AvailableToTradeAssetsView />}
         {view === "transferDetails" && <TransferDetailsView />}
+        {view === "transferHistory" && <TransferHistoryView />}
       </SlideModal>
 
       {isOverlayView(view) && (
@@ -109,6 +133,7 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
               ? "!w-[420px] text-body-medium"
               : "!h-[640px] !w-[420px] !overflow-hidden text-body-medium"
           }
+          hideHeaderBorder
           zIndex={1002}
         >
           <div className="flex min-h-0 grow flex-col">

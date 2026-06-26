@@ -6,6 +6,8 @@ import { useAccount } from "wagmi";
 
 import { getChainName, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { isSettlementChain } from "config/multichain";
+import type { GmxAccountAvailableAssetsFilter } from "context/GmxAccountContext/GmxAccountContext";
+import { useGmxAccountAvailableAssetsFilter } from "context/GmxAccountContext/hooks";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -18,7 +20,7 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-type FilterType = "all" | "gmxAccount" | "wallet";
+type FilterType = GmxAccountAvailableAssetsFilter;
 
 const FILTERS: FilterType[] = ["all", "wallet", "gmxAccount"];
 
@@ -55,9 +57,17 @@ const tokenSorter = (a: DisplayToken, b: DisplayToken): 1 | -1 | 0 => {
   return 0;
 };
 
-const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChainFilter?: boolean }) => {
+const AssetsList = ({
+  tokens,
+  noChainFilter,
+  initialFilter = "all",
+}: {
+  tokens: DisplayToken[];
+  noChainFilter?: boolean;
+  initialFilter?: FilterType;
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [activeFilter, setActiveFilter] = useState<FilterType>(initialFilter);
   const titles = useLocalizedMap(FILTER_TITLE_MAP);
 
   const sortedFilteredTokens = useMemo(() => {
@@ -160,6 +170,7 @@ const AssetListMultichain = () => {
 const AssetListSettlementChain = () => {
   const { chainId, srcChainId } = useChainId();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const [availableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
 
   const displayTokens = useMemo(() => {
     const displayTokens: DisplayToken[] = Object.values(tokensData || {})
@@ -187,7 +198,7 @@ const AssetListSettlementChain = () => {
     return displayTokens;
   }, [chainId, tokensData]);
 
-  return <AssetsList tokens={displayTokens} />;
+  return <AssetsList tokens={displayTokens} initialFilter={availableAssetsFilter} />;
 };
 
 export const AvailableToTradeAssetsView = () => {

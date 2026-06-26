@@ -31,6 +31,9 @@ export const selectGmxAccountSetWithdrawalViewTokenInputValue = (s: GmxAccountCo
 export const selectGmxAccountSelectedTransferGuid = (s: GmxAccountContext) => s.selectedTransferGuid;
 export const selectGmxAccountSetSelectedTransferGuid = (s: GmxAccountContext) => s.setSelectedTransferGuid;
 
+export const selectGmxAccountAvailableAssetsFilter = (s: GmxAccountContext) => s.availableAssetsFilter;
+export const selectGmxAccountSetAvailableAssetsFilter = (s: GmxAccountContext) => s.setAvailableAssetsFilter;
+
 //#endregion Pure selectors
 
 //#region Derived selectors

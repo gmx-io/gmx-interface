@@ -27,6 +27,7 @@ function MobileSlideModal({
   footerContent,
   className,
   fitContent = false,
+  hideHeaderBorder = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -38,6 +39,7 @@ function MobileSlideModal({
   footerContent?: React.ReactNode;
   className?: string;
   fitContent?: boolean;
+  hideHeaderBorder?: boolean;
 }>) {
   const curtainStyle = useMemo(
     () =>
@@ -272,7 +274,7 @@ function MobileSlideModal({
           onClick={stopPropagation}
         >
           <div
-            className="border-b-1/2 border-slate-600 pb-12"
+            className={cx("pb-12", hideHeaderBorder ? "" : "border-b-1/2 border-slate-600")}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -329,6 +331,7 @@ export function SlideModal({
   desktopClassName,
   disableOverflowHandling = false,
   fitContent = false,
+  hideHeaderBorder = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -349,6 +352,7 @@ export function SlideModal({
    * When true, the mobile curtain sizes to its content instead of being full-screen.
    */
   fitContent?: boolean;
+  hideHeaderBorder?: boolean;
 }>) {
   const { isMobile } = useBreakpoints();
 
@@ -365,6 +369,7 @@ export function SlideModal({
         footerContent={footerContent}
         className={className}
         fitContent={fitContent}
+        hideHeaderBorder={hideHeaderBorder}
       >
         {children}
       </MobileSlideModal>
@@ -384,6 +389,7 @@ export function SlideModal({
         className={cx(className, desktopClassName)}
         contentClassName={desktopContentClassName}
         disableOverflowHandling={disableOverflowHandling}
+        hideHeaderBorder={hideHeaderBorder}
       >
         {children}
       </Modal>
