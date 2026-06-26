@@ -33,7 +33,7 @@ import {
   getIncreaseError,
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
-import { getIsPositionLiquidatableAtPrice } from "domain/synthetics/trade/utils/warnings";
+import { getIsResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 
 const selectTradeboxSwapTradeError = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -178,7 +178,7 @@ export const selectTradeboxTradeTypeError = createSelector((q) => {
 });
 
 export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) => {
-  const { isIncrease, isLimit, isLong } = q(selectTradeboxTradeFlags);
+  const { isIncrease, isLimit } = q(selectTradeboxTradeFlags);
 
   if (!isIncrease || !isLimit) {
     return false;
@@ -196,11 +196,14 @@ export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) =
   }
 
   const nextPositionValues = q(selectTradeboxNextPositionValues);
-  const triggerPrice = q(selectTradeboxTriggerPrice);
+  const marketInfo = q(selectTradeboxMarketInfo);
+  const { minCollateralUsd } = q(selectPositionConstants);
 
-  return getIsPositionLiquidatableAtPrice({
-    liqPrice: nextPositionValues?.nextLiqPrice,
-    price: triggerPrice,
-    isLong,
+  return getIsResultingPositionLiquidatable({
+    nextCollateralUsd: nextPositionValues?.nextCollateralUsd,
+    nextPnl: nextPositionValues?.nextPnl,
+    nextSizeUsd: nextPositionValues?.nextSizeUsd,
+    minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+    minCollateralUsd,
   });
 });

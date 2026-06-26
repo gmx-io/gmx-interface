@@ -80,7 +80,7 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { getIsPositionLiquidatableAtPrice } from "domain/synthetics/trade/utils/warnings";
+import { getIsResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
@@ -519,12 +519,14 @@ export function OrderEditor(p: Props) {
       return false;
     }
 
-    return getIsPositionLiquidatableAtPrice({
-      liqPrice: nextPositionValuesForIncrease?.nextLiqPrice,
-      price: triggerPrice,
-      isLong: positionOrder.isLong,
+    return getIsResultingPositionLiquidatable({
+      nextCollateralUsd: nextPositionValuesForIncrease?.nextCollateralUsd,
+      nextPnl: nextPositionValuesForIncrease?.nextPnl,
+      nextSizeUsd: nextPositionValuesForIncrease?.nextSizeUsd,
+      minCollateralFactorForLiquidation: market?.minCollateralFactorForLiquidation,
+      minCollateralUsd,
     });
-  }, [error, positionOrder, existingPosition, nextPositionValuesForIncrease, triggerPrice]);
+  }, [error, positionOrder, existingPosition, nextPositionValuesForIncrease, market, minCollateralUsd]);
 
   const onSubmit = useCallback(async () => {
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
