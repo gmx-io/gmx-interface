@@ -157,10 +157,10 @@ Verified via live introspection of the Arbitrum endpoint.
 ### What exists and is used
 
 - **Market total volume**: `positionsVolume(where: {period})` →
-  `PositionMarketVolumeInfo { market, volume }` (per-market). Known-good for the
-  24h period (`use24Volumes.ts`). For all-time / 30d / 7d windows, confirm the
-  available period keys for `positionVolumeInfos` / `positionsVolume`, or
-  aggregate finer buckets. **(Implementation detail to verify.)**
+  `PositionMarketVolumeInfo { market, volume }` (per-market, 30-decimal USD).
+  Confirmed allowed period keys (live endpoint): `1h, 1d, 7d, 30d, 90d, 180d,
+  1y, total, epoch`. So **all-time → `total`, 30d → `30d`, 7d → `7d`** map
+  directly — no bucket summation needed. (`use24Volumes.ts` uses `1d`.)
 - **Exact per-account-per-market volume** (the "Whale volume" column): sum
   `positionChange.sizeDeltaUsd` where `{account_eq, market_eq, timestamp_gte?}`,
   paginated. `PositionChangeWhereInput` supports `account_eq`, `market_eq`,
@@ -248,9 +248,9 @@ New code lives under `src/pages/Whales/` (page components) and
 
 ## Open questions / risks
 
-1. **Market-total period keys**: confirm which `period` values
-   `positionsVolume` / `positionVolumeInfos` expose for all-time / 30d / 7d, or
-   whether finer buckets must be summed.
+1. ~~Market-total period keys~~ **(Resolved)**: `positionsVolume` accepts
+   `1h/1d/7d/30d/90d/180d/1y/total/epoch`; windows map directly to
+   `total` / `30d` / `7d`.
 2. **`sizeDeltaUsd` sign convention**: confirm volume = Σ |sizeDeltaUsd| across
    increase + decrease events matches the screenshot's definition.
 3. **Closed positions in discovery**: live-position discovery can under-count
