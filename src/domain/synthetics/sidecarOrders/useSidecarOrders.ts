@@ -27,7 +27,7 @@ import { usePrevious } from "lib/usePrevious";
 import { SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
 import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
-import { getCommonError, handleEntryError } from "./utils";
+import { getCommonError, getInlineTpDecreaseSwapType, handleEntryError } from "./utils";
 
 export * from "./types";
 
@@ -115,6 +115,7 @@ export function useSidecarOrders() {
         closeSizeUsd: sizeUsd.value,
         triggerPrice: price.value,
         triggerOrderType,
+        forceDecreaseSwapType: getInlineTpDecreaseSwapType(triggerOrderType, mockPositionInfo),
         isLimit,
         limitPrice: triggerPrice,
         minCollateralUsd,
