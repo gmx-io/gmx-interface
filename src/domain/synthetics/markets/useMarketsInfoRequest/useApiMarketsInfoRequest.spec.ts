@@ -76,8 +76,8 @@ describe("hasStaleMarketValues", () => {
     vi.useFakeTimers();
     vi.setSystemTime(1_000_000);
     const disabled = new Set(["0xmissing"]);
-    expect(
-      hasStaleMarketValues([config("0xa"), config("0xmissing", true)], [value("0xa", 1_000_000)], disabled)
-    ).toBe(false);
+    expect(hasStaleMarketValues([config("0xa"), config("0xmissing", true)], [value("0xa", 1_000_000)], disabled)).toBe(
+      false
+    );
   });
 });
