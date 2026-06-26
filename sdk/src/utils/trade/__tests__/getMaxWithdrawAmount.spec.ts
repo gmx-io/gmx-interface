@@ -5,7 +5,7 @@ import { applyFactor, expandDecimals, USD_DECIMALS } from "utils/numbers";
 import { getLiquidationPrice } from "utils/positions";
 import type { PositionInfoLoaded } from "utils/positions/types";
 
-import { getMaxWithdrawAmount } from "../decrease";
+import { getMaxWithdrawAmount, getMinRequiredCollateralUsdForPosition } from "../decrease";
 
 describe("getMaxWithdrawAmount", () => {
   const ETH_PRICE = expandDecimals(11952, 29); // $1195.20
@@ -134,5 +134,61 @@ describe("getMaxWithdrawAmount", () => {
     const { position } = buildScenario();
     expect(applyFactor(position.sizeInUsd, position.marketInfo.minCollateralFactorForLiquidation)).toBeGreaterThan(0n);
     expect(applyFactor(position.sizeInUsd, position.marketInfo.minCollateralFactor)).toBeGreaterThan(0n);
+  });
+
+  it("max withdraw equals the collateral above the min required collateral", () => {
+    const { position, usdcToken } = buildScenario();
+    const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
+    const collateralPrice = usdcToken.prices.minPrice;
+
+    const minRequiredCollateralUsd = getMinRequiredCollateralUsdForPosition({
+      position,
+      minCollateralUsd,
+      userReferralInfo: undefined,
+    });
+
+    const maxWithdraw = getMaxWithdrawAmount({
+      position,
+      minCollateralUsd,
+      collateralPrice,
+      collateralDecimals: usdcToken.decimals,
+      userReferralInfo: undefined,
+    });
+
+    const maxWithdrawUsd = (maxWithdraw * collateralPrice) / expandDecimals(1, usdcToken.decimals);
+    const conversionLossUsd = position.collateralUsd - minRequiredCollateralUsd - maxWithdrawUsd;
+
+    expect(minRequiredCollateralUsd).toBeGreaterThan(0n);
+    expect(conversionLossUsd).toBeGreaterThanOrEqual(0n);
+    expect(conversionLossUsd).toBeLessThan(expandDecimals(1, USD_DECIMALS - usdcToken.decimals));
+  });
+
+  it("min required collateral exceeds current collateral when pending fees turn the remaining margin negative", () => {
+    const { position, usdcToken } = buildScenario();
+    const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
+
+    const feeShortfallUsd = expandDecimals(100, USD_DECIMALS);
+    const underwaterPosition = {
+      ...position,
+      pendingBorrowingFeesUsd: position.collateralUsd + feeShortfallUsd,
+    };
+
+    const minRequiredCollateralUsd = getMinRequiredCollateralUsdForPosition({
+      position: underwaterPosition,
+      minCollateralUsd,
+      userReferralInfo: undefined,
+    });
+
+    expect(minRequiredCollateralUsd - underwaterPosition.collateralUsd).toBeGreaterThan(feeShortfallUsd);
+
+    expect(
+      getMaxWithdrawAmount({
+        position: underwaterPosition,
+        minCollateralUsd,
+        collateralPrice: usdcToken.prices.minPrice,
+        collateralDecimals: usdcToken.decimals,
+        userReferralInfo: undefined,
+      })
+    ).toBe(0n);
   });
 });

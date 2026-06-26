@@ -7,6 +7,7 @@ import type { Hash } from "viem";
 
 import { AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
 import { getIsGlv } from "config/markets";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
@@ -22,7 +23,6 @@ import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getTokens } from "sdk/configs/tokens";

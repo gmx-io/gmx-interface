@@ -539,7 +539,7 @@
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
-    "viem": "2.37.1"
+    "viem": "^2.48.11"
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "7.25.9",
@@ -553,7 +553,7 @@
     "ts-patch": "3.2.1",
     "tsx": "4.19.0",
     "typescript-transform-paths": "3.5.1",
-    "viem": "2.39.0",
+    "viem": "2.48.11",
     "vitest": "3.2.6"
   },
   "files": [
@@ -561,7 +561,8 @@
   ],
   "packageManager": "yarn@4.12.0",
   "resolutions": {
-    "viem@2.39.0": "patch:viem@npm:2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd",
+    "ox@0.14.20": "patch:ox@npm:0.14.29#../.yarn/patches/ox-npm-0.14.29-gmx-types",
+    "viem@2.48.11": "patch:viem@npm:2.48.11#../.yarn/patches/viem-npm-2.48.11-gmx-hex-types",
     "lodash": "4.18.1",
     "@vitest/pretty-format": "3.2.6"
   }

@@ -17,7 +17,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
+import {
+  getIsConfirmedOutOfGasPaymentTokenBalance,
+  getOrderRelayRouterAddress,
+} from "domain/synthetics/express/expressOrderUtils";
 import {
   getIsSubaccountActionsExceeded,
   getIsSubaccountApprovalInvalid,
@@ -80,7 +83,8 @@ export function useExpressTradingWarnings({
       rawSubaccount &&
       (subaccountValidations?.isActionsExceeded ?? getIsSubaccountActionsExceeded(rawSubaccount, 1)),
     shouldShowOutOfGasPaymentBalanceWarning:
-      expressParams?.gasPaymentValidations.isOutGasTokenBalance &&
+      expressParams !== undefined &&
+      getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations) &&
       !isGmxAccount &&
       nativeToken?.walletBalance !== undefined &&
       nativeToken.walletBalance > expressParams.gasPaymentParams.totalRelayerFeeTokenAmount,
