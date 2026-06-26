@@ -21,9 +21,16 @@ import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
 import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
-import { FindSwapPath, getAcceptablePriceInfo, getMaxSwapPathLiquidity, getSwapAmountsByFromValue } from "../trade";
+import {
+  FindSwapPath,
+  NextPositionValues,
+  getAcceptablePriceInfo,
+  getMaxSwapPathLiquidity,
+  getSwapAmountsByFromValue,
+} from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
+import { getIsResultingPositionLiquidatable } from "../trade/utils/warnings";
 
 function getSwapOrderTitle() {
   return t`Swap`;
@@ -86,6 +93,8 @@ export function getOrderErrors(p: {
   chainId: number;
   isSetAcceptablePriceImpactEnabled: boolean;
   jitLiquidityMap?: Record<string, JitLiquidityInfo>;
+  nextPositionValues?: NextPositionValues;
+  minCollateralUsd?: bigint;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
@@ -326,6 +335,23 @@ export function getOrderErrors(p: {
           ),
           key: "maxLeverage",
           level: "error",
+        });
+      }
+
+      const marketInfo = marketsInfoData[order.marketAddress];
+      if (
+        getIsResultingPositionLiquidatable({
+          nextCollateralUsd: p.nextPositionValues?.nextCollateralUsd,
+          nextPnl: p.nextPositionValues?.nextPnl,
+          nextSizeUsd: p.nextPositionValues?.nextSizeUsd,
+          minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+          minCollateralUsd: p.minCollateralUsd,
+        })
+      ) {
+        errors.push({
+          key: "resultingLiquidatable",
+          level: "error",
+          msg: t`Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size.`,
         });
       }
     }

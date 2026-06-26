@@ -2,6 +2,7 @@ import {
   OrderErrors,
   PositionOrderInfo,
   getOrderErrors,
+  isIncreaseOrderType,
   isOrderForPosition,
   sortPositionOrders,
 } from "domain/synthetics/orders";
@@ -12,9 +13,11 @@ import {
   selectChainId,
   selectJitLiquidityMap,
   selectMarketsInfoData,
+  selectPositionConstants,
   selectPositionsInfoData,
   selectUiFeeFactor,
 } from "./globalSelectors";
+import { makeSelectOrderEditorNextPositionValuesForIncrease } from "./orderEditorSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "./settingsSelectors";
 import { makeSelectFindSwapPath } from "./tradeSelectors";
 
@@ -38,6 +41,19 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
 
     const jitLiquidityMap = q(selectJitLiquidityMap);
 
+    const nextPositionValues =
+      orderInfo &&
+      isIncreaseOrderType(orderInfo.orderType) &&
+      (orderInfo as PositionOrderInfo).triggerPrice !== undefined
+        ? q(
+            makeSelectOrderEditorNextPositionValuesForIncrease(
+              orderInfo.key,
+              (orderInfo as PositionOrderInfo).triggerPrice!
+            )
+          )
+        : undefined;
+    const { minCollateralUsd } = q(selectPositionConstants);
+
     const { errors, level } = getOrderErrors({
       order: orderInfo,
       positionsInfoData,
@@ -47,6 +63,8 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       chainId,
       isSetAcceptablePriceImpactEnabled,
       jitLiquidityMap,
+      nextPositionValues,
+      minCollateralUsd,
     });
 
     return { errors, level };
