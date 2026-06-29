@@ -125,7 +125,6 @@ export function IntegrationStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -192,7 +191,6 @@ export function PriceChangeStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -256,7 +254,6 @@ export function LeverageOffStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -317,7 +314,6 @@ export function EthMarginPriceChangeStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -357,7 +353,6 @@ export function IntegrationNoTriggerCallbackStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(10000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -405,7 +400,6 @@ export function MaxAvailableDivergenceStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(5000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}

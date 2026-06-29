@@ -85,7 +85,6 @@ export function TradeboxMarginFieldsStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}

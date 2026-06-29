@@ -20,7 +20,7 @@ export type GmxAccountModalView =
   | "walletReceive"
   | "walletSend";
 
-export type GmxAccountAvailableAssetsFilter = "all" | "wallet" | "gmxAccount";
+export type GmxAccountAvailableAssetsFilter = "wallet" | "gmxAccount";
 
 export type GmxAccountContext = {
   modalOpen: boolean | GmxAccountModalView;
@@ -128,7 +128,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
     useState<GmxAccountContext["selectedTransferGuid"]>(undefined);
 
   const [availableAssetsFilter, setAvailableAssetsFilter] =
-    useState<GmxAccountContext["availableAssetsFilter"]>("all");
+    useState<GmxAccountContext["availableAssetsFilter"]>("gmxAccount");
 
   const handleSetModalOpen = useCallback((newModalOpen: boolean | GmxAccountModalView) => {
     setModalOpen(newModalOpen);
@@ -143,7 +143,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
 
       setSelectedTransferGuid(undefined);
 
-      setAvailableAssetsFilter("all");
+      setAvailableAssetsFilter("gmxAccount");
     }
   }, []);
 

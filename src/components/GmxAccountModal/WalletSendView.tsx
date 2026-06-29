@@ -2,10 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { Address, encodeFunctionData, isAddress } from "viem";
 
-import {
-  useGmxAccountModalOpen,
-  useGmxAccountSettlementChainId,
-} from "context/GmxAccountContext/hooks";
+import { useGmxAccountModalOpen, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, TokenBalanceType, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -78,7 +75,9 @@ export function WalletSendView() {
 
   const amount =
     selectedToken && inputValue !== "" ? parseValue(inputValue, selectedToken.decimals) ?? undefined : undefined;
-  const amountUsd = selectedToken ? convertToUsd(amount, selectedToken.decimals, selectedToken.prices?.maxPrice) : undefined;
+  const amountUsd = selectedToken
+    ? convertToUsd(amount, selectedToken.decimals, selectedToken.prices?.maxPrice)
+    : undefined;
 
   const walletBalanceUsd =
     selectedToken && walletBalance !== undefined
@@ -203,7 +202,7 @@ export function WalletSendView() {
             autoComplete="off"
             placeholder="0x..."
             className="w-full rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-16 leading-base
-                       outline-none focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+                       outline-none placeholder:text-typography-secondary focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
           />
         </div>
 

@@ -131,27 +131,26 @@ function WalletBlock({ account }: { account: string }) {
         </button>
         <div className="flex items-center gap-8">
           <TooltipWithPortal content={t`Receive`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <button
-              className={WALLET_ICON_BUTTON_BLUE}
-              onClick={() => setIsVisibleOrView("walletReceive")}
-            >
+            <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletReceive")}>
               <ReceiveIcon className="size-16" />
             </button>
           </TooltipWithPortal>
           {/* Hidden for smart-contract wallets (Safe/ERC-4337): wallet Send has no AA/Safe send support yet (FEDEV-3882). */}
           {canSend && (
             <TooltipWithPortal content={t`Send`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-              <button
-                className={WALLET_ICON_BUTTON_BLUE}
-                onClick={() => setIsVisibleOrView("walletSend")}
-              >
+              <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
                 <SendIcon className="size-16" />
               </button>
             </TooltipWithPortal>
           )}
           <div className="h-16 border-l-1/2 border-slate-600" />
           {canExport && (
-            <TooltipWithPortal content={t`Export wallet`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+            <TooltipWithPortal
+              content={t`Export wallet`}
+              position="bottom"
+              tooltipClassName="!min-w-max"
+              variant="none"
+            >
               <button
                 className={WALLET_ICON_BUTTON_GRAY}
                 onClick={() => {
@@ -176,10 +175,7 @@ function WalletBlock({ account }: { account: string }) {
             </a>
           </TooltipWithPortal>
           <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <button
-              className={WALLET_ICON_BUTTON_GRAY}
-              onClick={handleDisconnect}
-            >
+            <button className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
           </TooltipWithPortal>
@@ -235,27 +231,37 @@ function ConnectedToSourceChainBanner({
   );
 }
 
-function GmxAccountBlock() {
+function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boolean }) {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setAvailableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
   const { gmxAccountUsd } = useAvailableToTradeAssetSettlementChain();
+  const handleDisconnect = useDisconnectAndClose();
 
   const hasBalance = gmxAccountUsd !== undefined && gmxAccountUsd > 0n;
 
   return (
     <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
-      <div className="flex flex-col gap-8">
-        <span className="text-body-small text-typography-secondary">
-          <Trans>GMX Account Balance</Trans>
-        </span>
-        <BalanceAmount
-          usd={gmxAccountUsd}
-          onClick={() => {
-            setAvailableAssetsFilter("gmxAccount");
-            setIsVisibleOrView("availableToTradeAssets");
-          }}
-        />
+      <div className="flex items-start justify-between gap-8">
+        <div className="flex flex-col gap-8">
+          <span className="text-body-small text-typography-secondary">
+            <Trans>GMX Account Balance</Trans>
+          </span>
+          <BalanceAmount
+            usd={gmxAccountUsd}
+            onClick={() => {
+              setAvailableAssetsFilter("gmxAccount");
+              setIsVisibleOrView("availableToTradeAssets");
+            }}
+          />
+        </div>
+        {showDisconnectButton && (
+          <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+            <button className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
+              <DisconnectIcon className="size-16" />
+            </button>
+          </TooltipWithPortal>
+        )}
       </div>
 
       {srcChainId !== undefined && (
@@ -311,7 +317,7 @@ function GmxAccountBlock() {
 function MenuRow({ icon, label, onClick }: { icon: ReactNode; label: ReactNode; onClick: () => void }) {
   return (
     <button
-      className="flex items-center justify-between rounded-8 p-12 -mx-12 -outline-offset-4 gmx-hover:bg-fill-surfaceElevated50"
+      className="-mx-12 flex items-center justify-between rounded-8 p-12 -outline-offset-4 gmx-hover:bg-fill-surfaceElevated50"
       onClick={onClick}
     >
       <div className="text-body-medium flex items-center gap-8 text-typography-secondary">
@@ -384,7 +390,7 @@ export const MainView = ({ account }: { account: string }) => {
     <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
       <div className="flex flex-col gap-12 px-adaptive pb-12 pt-8">
         {mode !== "gmxAccount" && <WalletBlock account={account} />}
-        {mode !== "walletOnly" && <GmxAccountBlock />}
+        {mode !== "walletOnly" && <GmxAccountBlock showDisconnectButton={mode === "gmxAccount"} />}
         <MenuList account={account} />
       </div>
     </div>
@@ -469,7 +475,11 @@ export function TransferHistoryView() {
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-16">
-              <TokenIcon symbol={transfer.token.symbol} displaySize={40} />
+              <TokenIcon
+                symbol={transfer.token.symbol}
+                displaySize={40}
+                chainIdBadge={transfer.sourceChainId === 0 ? transfer.settlementChainId : transfer.sourceChainId}
+              />
               <div>
                 <div className="text-body-large">{transfer.token.symbol}</div>
                 <FundingHistoryItemLabel

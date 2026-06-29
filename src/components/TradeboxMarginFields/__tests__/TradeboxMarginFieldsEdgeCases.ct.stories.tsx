@@ -113,7 +113,6 @@ export function EdgeCaseStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -155,7 +154,6 @@ export function UndefinedToTokenStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(10000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -197,7 +195,6 @@ export function RapidInputStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(10000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -235,7 +232,6 @@ export function LargeValuesStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(999999999, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -273,7 +269,6 @@ export function DustAmountsStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(10000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}

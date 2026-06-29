@@ -28,12 +28,14 @@ import { isDevelopment } from "config/env";
 import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
 import { getContract } from "sdk/configs/contracts";
-import { CHAIN_ID_TO_ENDPOINT_ID, isSettlementChain, isSourceChain, LayerZeroEndpointId } from "sdk/configs/multichain";
 import {
-  getMultichainTokenGroups,
-  MultichainTokenGroups,
-  MultichainTokenId,
-} from "sdk/configs/multichainTokens";
+  CHAIN_ID_TO_ENDPOINT_ID,
+  isSettlementChain,
+  isSourceChain,
+  isSourceChainForAnySettlementChain,
+  LayerZeroEndpointId,
+} from "sdk/configs/multichain";
+import { getMultichainTokenGroups, MultichainTokenGroups, MultichainTokenId } from "sdk/configs/multichainTokens";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
 export * from "sdk/configs/multichain";
@@ -58,6 +60,14 @@ export const SETTLEMENT_CHAINS: SettlementChainId[] = isDevelopment()
   ? (SETTLEMENT_CHAIN_IDS_DEV as unknown as SettlementChainId[])
   : (SETTLEMENT_CHAIN_IDS as unknown as SettlementChainId[]);
 
+export function isValidVisualSettlementChain(chainId: number): boolean {
+  return isSettlementChain(chainId) && chainId !== AVALANCHE;
+}
+
+export function isValidVisualSourceChain(chainId: number): boolean {
+  return isSourceChainForAnySettlementChain(chainId) && chainId !== AVALANCHE;
+}
+
 const TOKEN_GROUPS: MultichainTokenGroups = getMultichainTokenGroups({ includeTestnets: isDevelopment() });
 
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
@@ -78,8 +88,7 @@ for (const byChain of Object.values(TOKEN_GROUPS)) {
   for (const token of Object.values(byChain)) {
     if (!token) continue;
     const tokenChainId = token.chainId as AnyChainId;
-    const chainTokens =
-      CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] || (CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] = {});
+    const chainTokens = CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] || (CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] = {});
     chainTokens[token.address] = token;
 
     if (!isSettlementChain(token.chainId)) continue;
@@ -187,4 +196,3 @@ export function getSourceChainDecimalsMapped(
   const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId);
   return tokenId?.decimals;
 }
-

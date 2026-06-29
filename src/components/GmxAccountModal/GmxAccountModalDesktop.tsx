@@ -87,6 +87,7 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
 
   const slideModalLabel = isMainView(view) ? SLIDE_MODAL_LABELS[view] : SLIDE_MODAL_LABELS.main;
   const showMainViewInBackground = isOverlayView(view);
+  const isMainViewContent = view === "main" || showMainViewInBackground;
 
   const handleOverlayClose = (nextVisible: boolean) => {
     if (nextVisible) return;
@@ -107,7 +108,7 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
         label={slideModalLabel}
         isVisible={isOpen}
         setIsVisible={setModalState}
-        desktopContentClassName="!h-[640px] !w-[420px]"
+        desktopContentClassName={isMainViewContent ? "!w-[420px]" : "!h-[640px] !w-[420px]"}
         desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
         disableOverflowHandling={true}
         className="text-body-medium"
@@ -129,7 +130,7 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
           contentPadding={false}
           disableOverflowHandling={true}
           contentClassName={
-            view === "depositStatus"
+            view === "depositStatus" || view === "walletReceive"
               ? "!w-[420px] text-body-medium"
               : "!h-[640px] !w-[420px] !overflow-hidden text-body-medium"
           }

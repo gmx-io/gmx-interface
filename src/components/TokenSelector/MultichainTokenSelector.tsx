@@ -69,12 +69,6 @@ type Props = {
   multichainTokens: TokenChainData[] | undefined;
   includeMultichainTokensInPay?: boolean;
 
-  // TODO(FEDEV-3882): no longer used after the GMX Account / Wallet tabs redesign — deposit now goes
-  // through the footer "Deposit to GMX Account" button. Kept optional to avoid touching the trade-form
-  // call sites (TradeBox/TradeboxMarginFields/MarginField); remove in a dedicated cleanup.
-  // eslint-disable-next-line react/no-unused-prop-types
-  onDepositTokenAddress?: (tokenAddress: string, chainId: SourceChainId) => void;
-
   isConnected?: boolean;
   walletIconUrls?: string[];
   openConnectModal?: () => void;
@@ -128,6 +122,7 @@ export function MultichainTokenSelector({
   const [activeFilter, setActiveFilter] = useState<BalanceSource>("gmxAccount");
 
   const isAvalancheSettlement = chainId === AVALANCHE;
+  const isGmxAccountOnly = srcChainId !== undefined;
 
   const availableToTradeTokenList = useAvailableToTradeTokenList({
     srcChainId,
@@ -164,9 +159,11 @@ export function MultichainTokenSelector({
     if (isModalVisible) {
       setSearchKeyword("");
       const preferredTab: BalanceSource = payChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID ? "gmxAccount" : "wallet";
-      setActiveFilter(isAvalancheSettlement || isGmxAccountEmpty ? "wallet" : preferredTab);
+      setActiveFilter(
+        isGmxAccountOnly ? "gmxAccount" : isAvalancheSettlement || isGmxAccountEmpty ? "wallet" : preferredTab
+      );
     }
-  }, [isAvalancheSettlement, isGmxAccountEmpty, isModalVisible, payChainId, setSearchKeyword]);
+  }, [isAvalancheSettlement, isGmxAccountEmpty, isGmxAccountOnly, isModalVisible, payChainId, setSearchKeyword]);
 
   const tabsOptions: TabOption<BalanceSource>[] = useMemo(() => {
     return [
@@ -184,12 +181,7 @@ export function MultichainTokenSelector({
     isConnected === false ? (
       footerContent
     ) : (
-      <Button
-        variant="secondary"
-        size="medium"
-        className="w-full !text-typography-primary"
-        onClick={handleFooterClick}
-      >
+      <Button variant="secondary" size="medium" className="w-full !text-typography-primary" onClick={handleFooterClick}>
         <ArrowDownIcon className="size-20 text-blue-300" />
         {activeFilter === "gmxAccount" ? <Trans>Deposit to GMX Account</Trans> : <Trans>Deposit to Wallet</Trans>}
       </Button>
@@ -217,13 +209,8 @@ export function MultichainTokenSelector({
                 className="mb-16"
                 onKeyDown={handleKeyDown}
               />
-              {!isAvalancheSettlement && (
-                <Tabs
-                  type="underline"
-                  options={tabsOptions}
-                  selectedValue={activeFilter}
-                  onChange={setActiveFilter}
-                />
+              {!isAvalancheSettlement && !isGmxAccountOnly && (
+                <Tabs type="underline" options={tabsOptions} selectedValue={activeFilter} onChange={setActiveFilter} />
               )}
             </div>
           )
@@ -311,7 +298,7 @@ function useAvailableToTradeTokenList({
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
       if (includeGmxAccountTokens) {
-        if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
+        if (token.gmxAccountBalance !== undefined) {
           const balanceUsd = convertToUsd(token.gmxAccountBalance, token.decimals, token.prices.maxPrice) ?? 0n;
           concatenatedTokens.push({
             ...token,
