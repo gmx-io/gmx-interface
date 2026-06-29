@@ -391,7 +391,7 @@ export const MainView = ({ account }: { account: string }) => {
 
   return (
     <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
-      <div className="flex flex-col gap-12 px-adaptive pb-12 pt-8">
+      <div className="flex flex-col gap-12 px-adaptive pb-12 pt-4">
         {mode !== "gmxAccount" && <WalletBlock account={account} />}
         {mode !== "walletOnly" && <GmxAccountBlock showDisconnectButton={mode === "gmxAccount"} />}
         <MenuList account={account} />
