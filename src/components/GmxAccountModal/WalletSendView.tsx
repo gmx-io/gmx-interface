@@ -5,10 +5,10 @@ import { Address, encodeFunctionData, isAddress } from "viem";
 import { useGmxAccountModalOpen, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, TokenBalanceType, TokenData } from "domain/tokens";
-import { getMaxAvailableTokenAmount } from "domain/tokens/useMaxAvailableAmount";
+import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { formatAmountFree, formatUsd, parseValue } from "lib/numbers";
+import { formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import useWallet from "lib/wallets/useWallet";
@@ -92,21 +92,18 @@ export function WalletSendView() {
   const isInputEmpty = amount === undefined || amount <= 0n;
   const isInsufficientBalance = walletBalance !== undefined && amount !== undefined && amount > walletBalance;
 
+  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+    fromToken: selectedToken,
+    fromTokenBalance: walletBalance,
+    fromTokenAmount: amount,
+    fromTokenInputValue: inputValue,
+    gasPaymentToken: nativeToken,
+    gasPaymentTokenBalance: nativeToken?.walletBalance,
+  });
+
   const handleMaxClick = useCallback(() => {
-    if (selectedToken === undefined || walletBalance === undefined) {
-      return;
-    }
-
-    const { maxAvailableAmount } = getMaxAvailableTokenAmount({
-      chainId,
-      fromTokenAddress: selectedToken.address,
-      fromTokenBalance: walletBalance,
-      gasPaymentToken: nativeToken,
-      gasPaymentTokenBalance: nativeToken?.walletBalance,
-    });
-
-    setInputValue(formatAmountFree(maxAvailableAmount, selectedToken.decimals, selectedToken.decimals));
-  }, [chainId, nativeToken, selectedToken, walletBalance]);
+    setInputValue(formattedMaxAvailableAmount);
+  }, [formattedMaxAvailableAmount]);
 
   const handleSend = useCallback(async () => {
     if (
@@ -232,7 +229,7 @@ export function WalletSendView() {
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
-              {selectedToken !== undefined && walletBalance !== undefined && walletBalance > 0n && (
+              {showClickMax && (
                 <button
                   className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
                            hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"

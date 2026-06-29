@@ -16,12 +16,12 @@ import {
   AvailableToTradeAssetsTitle,
   MainViewTitle,
   TransferDetailsTitle,
+  TransferHistoryScreen,
   TransferHistoryTitle,
   WithdrawalScreen,
 } from "./GmxAccountModalShared";
-import { MainView, TransferHistoryView } from "./MainView";
+import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
-import { TransferDetailsView } from "./TransferDetailsView";
 import { WalletReceiveView } from "./WalletReceiveView";
 import { WalletSendView } from "./WalletSendView";
 
@@ -118,8 +118,9 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
         {(view === "main" || showMainViewInBackground) && <MainView account={account} />}
 
         {view === "availableToTradeAssets" && <AvailableToTradeAssetsView />}
-        {view === "transferDetails" && <TransferDetailsView />}
-        {view === "transferHistory" && <TransferHistoryView />}
+        {(view === "transferHistory" || view === "transferDetails") && (
+          <TransferHistoryScreen showDetails={view === "transferDetails"} />
+        )}
       </SlideModal>
 
       {isOverlayView(view) && (

@@ -18,12 +18,12 @@ import {
   TitleRow,
   TitleWithBack,
   TransferDetailsTitle,
+  TransferHistoryScreen,
   TransferHistoryTitle,
   WithdrawalScreen,
 } from "./GmxAccountModalShared";
-import { MainView, TransferHistoryView } from "./MainView";
+import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
-import { TransferDetailsView } from "./TransferDetailsView";
 import { WalletReceiveView } from "./WalletReceiveView";
 import { WalletSendView } from "./WalletSendView";
 
@@ -120,8 +120,9 @@ export function GmxAccountModalMobile({ account }: { account: string }) {
       >
         {view === "main" && <MainView account={account} />}
         {view === "availableToTradeAssets" && <AvailableToTradeAssetsView />}
-        {view === "transferDetails" && <TransferDetailsView />}
-        {view === "transferHistory" && <TransferHistoryView />}
+        {(view === "transferHistory" || view === "transferDetails") && (
+          <TransferHistoryScreen showDetails={view === "transferDetails"} />
+        )}
         {view === "deposit" && <DepositView />}
         {view === "selectAssetToDeposit" && <SelectAssetToDepositView />}
         {view === "withdraw" && <WithdrawalScreen />}

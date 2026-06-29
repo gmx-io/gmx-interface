@@ -14,6 +14,8 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 
 import { getAccountModalMode } from "./getAccountModalMode";
+import { TransferHistoryView } from "./MainView";
+import { TransferDetailsView } from "./TransferDetailsView";
 import { WithdrawalView } from "./WithdrawalView";
 
 export function TitleRow({ children }: { children: ReactNode }) {
@@ -147,7 +149,7 @@ export function TransferDetailsTitle() {
   const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
 
   return (
-    <TitleWithBack backTo="main">
+    <TitleWithBack backTo="transferHistory">
       {selectedTransfer?.operation === "withdrawal" ? (
         <Trans>Withdrawal from GMX Account</Trans>
       ) : (
@@ -170,5 +172,20 @@ export function WithdrawalScreen() {
     <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="gmxAccount">
       <WithdrawalView />
     </SyntheticsStateContextProvider>
+  );
+}
+
+export function TransferHistoryScreen({ showDetails }: { showDetails: boolean }) {
+  return (
+    <div className="relative flex min-h-0 grow flex-col">
+      <div className="isolate flex min-h-0 grow flex-col">
+        <TransferHistoryView />
+      </div>
+      {showDetails && (
+        <div className="absolute inset-0 flex flex-col bg-slate-900">
+          <TransferDetailsView />
+        </div>
+      )}
+    </div>
   );
 }
