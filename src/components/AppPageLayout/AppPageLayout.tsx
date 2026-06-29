@@ -1,8 +1,11 @@
 import cx from "classnames";
 
+import { BOTANIX } from "config/chains";
+import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
+import { BotanixShutdownBanner } from "components/BotanixShutdownBanner/BotanixShutdownBanner";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Footer from "components/Footer/Footer";
 import SEO from "components/Seo/SEO";
@@ -27,6 +30,8 @@ export default function AppPageLayout({
   pageWrapperClassName?: string;
   footer?: React.ReactNode;
 }) {
+  const { chainId } = useChainId();
+
   return (
     <SEO title={getPageTitle(title)}>
       <div className={cx("flex h-full w-full", className)}>
@@ -39,6 +44,7 @@ export default function AppPageLayout({
         >
           <div className="flex h-full grow flex-col items-center">
             <div className="w-full md:pb-8">{header ? header : <AppHeader />}</div>
+            {chainId === BOTANIX && <BotanixShutdownBanner />}
             <div className={cx("flex w-full max-w-[1512px] grow flex-col gap-8 py-8 max-md:px-8", contentClassName)}>
               <ErrorBoundary id="Page" variant="page">
                 {children}

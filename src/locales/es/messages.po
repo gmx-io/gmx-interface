@@ -86,6 +86,10 @@ msgstr "Desconectar"
 msgid "Order simulation failed"
 msgstr "La simulación de la orden ha fallado"
 
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Solana support</0><1>GMX Express</1>"
+msgstr "<0>Soporte de Solana</0><1>GMX Express</1>"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -464,7 +468,7 @@ msgstr "Buscar en mercados perpetuos"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr "¡Dirección copiada!"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
@@ -509,10 +513,6 @@ msgstr ""
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "Precio del Oracle no válido para {tokenSymbol}"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
-msgstr "<0>Sin KYC, sin procesos de registro extensos y sin depósito requerido. Todo lo que necesita es un monedero de autocustodia:</0><1><2>Conecte cualquier monedero EVM (como MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Seleccione una red blockchain compatible donde tenga fondos disponibles</3><4>Comience a operar</4></1><5>Puede operar directamente con fondos en Arbitrum, MegaETH, Avalanche, Solana o Botanix, o depositar en su GMX Account para operar desde cualquier red Multichain compatible, incluyendo Ethereum, Base y BSC.</5>"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -922,13 +922,9 @@ msgstr "Impacto en el precio neto y comisiones de su operación. <0>Más informa
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "Los precios son volátiles. <0>Aumente el deslizamiento permitido</0>"
 
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "providing liquidity"
-msgstr "proporcionando liquidez"
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr "¡Envíe solo <0>activos compatibles con {chainName}</0> a esta dirección!"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -1340,10 +1336,6 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit fee"
 msgstr "Comisión de depósito"
-
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "<0>Botanix</0> supports"
-msgstr "<0>Botanix</0> soporta"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Selling {symbol}..."
@@ -1765,10 +1757,6 @@ msgstr "Intercambio Límite Fallido"
 msgid "Failed"
 msgstr "Fallida"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {amountText} more margin"
-msgstr ""
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "CODE"
 msgstr ""
@@ -2181,6 +2169,10 @@ msgstr ""
 msgid "Failed withdraw"
 msgstr "Retirada fallida"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "Warning icon"
+msgstr "Icono de advertencia"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover margin below {0} USD"
 msgstr ""
@@ -2485,7 +2477,7 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Deposit to Wallet"
-msgstr "Depositar en la cartera"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -2536,6 +2528,10 @@ msgstr "GM transfiriendo a..."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set limit price below mark price"
 msgstr ""
+
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, or Solana, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
+msgstr "<0>Sin KYC, sin procesos de registro extensos y sin depósito requerido. Todo lo que necesita es un monedero de autocustodia:</0><1><2>Conecte cualquier monedero EVM (como MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Seleccione una red blockchain compatible donde tenga fondos disponibles</3><4>Comience a operar</4></1><5>Puede operar directamente con fondos en Arbitrum, MegaETH, Avalanche o Solana, o depositar en su GMX Account para operar desde cualquier red Multichain compatible, incluyendo Ethereum, Base y BSC.</5>"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
@@ -3531,9 +3527,9 @@ msgstr "Este swap requiere enrutamiento externo, que no está disponible con One
 msgid "Realized fees"
 msgstr "Comisiones realizadas"
 
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Solana support</0><1>Botanix support</1><2>GMX Express</2>"
-msgstr "<0>Soporte de Solana</0><1>Soporte de Botanix</1><2>GMX Express</2>"
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
+msgstr "Las comisiones de préstamo y financiación acumuladas se deducen del depósito antes de que este mejore el margen de la posición, por lo que el depósito también debe cubrirlas."
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
@@ -3558,10 +3554,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
-
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "and"
-msgstr "y"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade confirmations"
@@ -3597,6 +3589,10 @@ msgstr "Análisis de datos de GMX V2 en Telegram"
 msgid "Runs entirely on public chains"
 msgstr "Se ejecuta completamente en cadenas públicas"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Set min deposit"
+msgstr "Establecer depósito mínimo"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "Puede haber liquidez insuficiente para partes de esta orden cuando se ejecute"
@@ -3612,6 +3608,10 @@ msgstr ""
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
 msgstr ""
+
+#: src/components/BotanixShutdownBanner/BotanixShutdownBanner.tsx
+msgid "Botanix is shutting down. Do not open new positions. Close existing positions and withdraw funds from Botanix."
+msgstr "Botanix está cerrando. No abra nuevas posiciones. Cierre las posiciones existentes y retire los fondos de Botanix."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3771,7 +3771,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
-msgstr "Ingrese el importe"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3867,7 +3867,7 @@ msgstr "Establecer impacto en el precio aceptable"
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send"
-msgstr "Enviar"
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 volume"
@@ -3896,7 +3896,7 @@ msgstr "Stop-Loss Decrease"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Wallet balance"
-msgstr "Saldo de la cartera"
+msgstr ""
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4052,7 +4052,7 @@ msgstr "Unstakear completado"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
-msgstr "Exportar cartera"
+msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "20s"
@@ -4285,7 +4285,7 @@ msgstr "Impacto de intercambio realizado"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
-msgstr "Ingrese la dirección del destinatario"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -4366,7 +4366,7 @@ msgstr "Dirección"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet. GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
-msgstr "Puede abrir posiciones aisladas en GMX usando fondos directamente desde su cartera conectada. GMX Account no está disponible en {chainName}. Para usar GMX Account, cambie a Arbitrum."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
@@ -4374,7 +4374,7 @@ msgstr "Factor base de préstamo largo"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
-msgstr "Dirección del destinatario"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "VOL."
@@ -5413,7 +5413,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
-msgstr "Análisis de PnL"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -5526,7 +5526,6 @@ msgstr "Óptimo"
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} órdenes TP/SL actualizadas"
 
-#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add more margin"
 msgstr ""
@@ -5808,11 +5807,6 @@ msgstr ""
 msgid "Order failed due to a protocol validation error: {errorName}"
 msgstr "La orden falló debido a un error de validación del protocolo: {errorName}"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Botanix"
-msgstr "Botanix"
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
@@ -5925,10 +5919,6 @@ msgstr "Perpetuos"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Exponente de impacto (negativo)"
-
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "using GLV and GM tokens. Staking GMX and referrals are not yet supported."
-msgstr "utilizando tokens GLV y GM. El staking de GMX y las referencias aún no están disponibles."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
@@ -6199,6 +6189,10 @@ msgstr "Orden de compra cancelada"
 msgid "Support"
 msgstr "Soporte"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them"
+msgstr "Margen insuficiente. Las comisiones se deducen de la garantía depositada antes de que esta mejore el margen de la posición; deposite más para cubrirlas"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
@@ -6241,10 +6235,6 @@ msgstr "Mostrar valor neto y PnL después de todas las tarifas"
 msgid "Liquidation fee"
 msgstr "Comisión de liquidación"
 
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to total staked GMX and esGMX. Your actual rewards depend on staking power and may differ."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "Exponente de impacto del intercambio"
@@ -6284,6 +6274,10 @@ msgstr "Apalancamiento máximo"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "Los valores en USD se estiman utilizando el precio promedio de GMX de cada semana mostrada. Los importes reales de recompra pueden diferir debido al momento de ejecución, las conversiones y los movimientos de precio."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -6399,6 +6393,10 @@ msgstr "Reciba al menos {toAmountText} si se ejecuta. El precio se actualiza seg
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
+msgstr "Esta posición tiene un margen negativo después de las comisiones pendientes de préstamo y financiación, por lo que la compensación probablemente falle: la financiación positiva solo se vuelve reclamable tras una compensación exitosa. Añada margen, o reduzca o cierre la posición lo suficiente para que el beneficio realizado cubra el déficit."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
@@ -6816,7 +6814,7 @@ msgstr "Capital utilizado"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "{chainName} address"
-msgstr "Dirección de {chainName}"
+msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Current endpoints ({0})"
@@ -7303,10 +7301,6 @@ msgstr "Compartir posición"
 msgid "Max deposit capacity reached for this pool"
 msgstr "Se alcanzó la capacidad máxima de depósito para este pool"
 
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
-msgstr "Cambie a <0><1/><2>Arbitrum</2></0> o <3><4/><5>Avalanche</5></3> para acceder a esas funciones"
-
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
 msgstr ""
@@ -7676,6 +7670,10 @@ msgstr ""
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Recibir {profitTokenSymbol} y {collateralTokenSymbol} por separado"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min deposit: {0}"
+msgstr "Depósito mínimo: {0}"
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
@@ -7886,7 +7884,7 @@ msgstr "de comisión de apertura"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Sent"
-msgstr "Enviado"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
@@ -8325,10 +8323,6 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "Comprar GM con {0} hasta los límites indicados a continuación"
-
-#: src/components/BotanixBanner/BotanixBanner.tsx
-msgid "V2 trading"
-msgstr "Trading V2"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
@@ -8847,7 +8841,7 @@ msgstr "Recibir (aproximado)"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send failed"
-msgstr "Error al enviar"
+msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid Ethereum address"
@@ -9122,7 +9116,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Connected to {sourceChainName}. Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
-msgstr "Conectado a {sourceChainName}. Los fondos de la cartera en esta red se pueden depositar en GMX Account para operar en {settlementChainName}. Para operar directamente con el saldo de la cartera de {settlementChainName}, <0>cambie a {settlementChainName}</0>."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -9205,6 +9199,10 @@ msgstr "Margen mín.: {0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Mercado"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
+msgstr "Algunas posiciones seleccionadas tienen un margen negativo después de las comisiones pendientes de préstamo y financiación, por lo que su compensación probablemente falle: la financiación positiva solo se vuelve reclamable tras una compensación exitosa. Añada margen, o reduzca o cierre esas posiciones lo suficiente para que el beneficio realizado cubra el déficit."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
@@ -9299,7 +9297,7 @@ msgstr "El importe está por debajo del límite de depósito. Pruebe con un impo
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
-msgstr "Saldo de GMX Account"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
@@ -9454,6 +9452,10 @@ msgstr "Más rápido"
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive tokens separately"
 msgstr "Recibir tokens por separado"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD estimate"
+msgstr "Estimación en USD"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
@@ -9848,7 +9850,7 @@ msgstr "El puente de entrada ha fallado"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Invalid recipient address"
-msgstr "Dirección del destinatario no válida"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -9901,6 +9903,10 @@ msgstr "PRECIO DE ACTIVACIÓN"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as shown."
 msgstr "Acumula comisiones del trading con apalancamiento e intercambios del mercado {marketName}. Expuesto a {exposedToLabel} como se muestra."
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR."
+msgstr "Tasa anual estimada de recompra. Al ritmo promedio reciente, las recompras de GMX equivaldrían a este porcentaje del suministro total de GMX en un año. Esta es una métrica de recompra de todo el protocolo, no un APR de staking personal."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
@@ -10168,7 +10174,7 @@ msgstr "La liquidez solo está disponible en {chainNames} o {lastChainName}. Cam
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
-msgstr "Historial de transferencias"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
@@ -10486,7 +10492,7 @@ msgstr "Índices"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using your GMX Account. Wallet funds on {sourceChainName} are not used directly for GMX trades. GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
-msgstr "Puede abrir posiciones aisladas en GMX usando su GMX Account. Los fondos de la cartera en {sourceChainName} no se usan directamente para operaciones en GMX. GMX Account usa un saldo de trading separado vinculado a su cartera. Para operar, deposite fondos de su cartera en su GMX Account. Todas las posiciones pertenecen a la misma cartera conectada y se muestran juntas, ya sea que se hayan abierto con fondos de la cartera de {settlementChainName} o de GMX Account."
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -10870,7 +10876,7 @@ msgstr "Código de referido creado"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account. Wallet uses funds directly from your connected wallet. GMX Account uses a separate trading balance linked to that wallet. To use it, fund it with a deposit to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
-msgstr "Puede abrir posiciones aisladas en GMX usando fondos de su cartera o de su GMX Account. La cartera usa fondos directamente desde su cartera conectada. GMX Account usa un saldo de trading separado vinculado a esa cartera. Para usarlo, deposite fondos en su GMX Account. Todas las posiciones pertenecen a la misma cartera conectada y se muestran juntas, ya sea que se hayan abierto con fondos de la cartera o de GMX Account."
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

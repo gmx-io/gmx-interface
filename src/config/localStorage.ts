@@ -46,7 +46,6 @@ const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-pri
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
-export const LAST_EARN_TAB_KEY = "last-earn-tab";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY = "synthetics-collateral-edit-token-map";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY = "synthetics-collateral-edit-token-is-from-gmx-account";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
