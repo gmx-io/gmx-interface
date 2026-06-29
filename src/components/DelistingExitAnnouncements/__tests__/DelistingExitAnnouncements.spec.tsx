@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
+import { MemoryRouter, Route, Switch } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { customMock, dismissMock, getActionsMock, writeDismissalMock } = vi.hoisted(() => ({
@@ -28,6 +29,8 @@ vi.mock("../delistingExitAnnouncementsLogic", async (importOriginal) => ({
 }));
 
 import { DelistingExitAnnouncements } from "../DelistingExitAnnouncements";
+
+const ROOT_ENTRIES = ["/"];
 
 describe("DelistingExitAnnouncements", () => {
   beforeEach(() => {
@@ -65,5 +68,38 @@ describe("DelistingExitAnnouncements", () => {
 
     expect(dismissMock).toHaveBeenCalledWith("delisting-positions");
     expect(writeDismissalMock).toHaveBeenCalledWith("delisting-positions", ["0xA"], expect.any(Number));
+  });
+
+  it("renders the action link inline in the body and navigates to /pools via react-router", () => {
+    getActionsMock.mockReturnValue({
+      toShow: [
+        {
+          id: "delisting-liquidity",
+          title: "Market delistings",
+          bodyText: "KTA/USD is being delisted. Withdraw your liquidity.",
+          markets: ["0xB"],
+          link: { text: "Manage liquidity", href: "/pools" },
+        },
+      ],
+      toDismiss: [],
+    });
+
+    render(<DelistingExitAnnouncements />);
+
+    const renderToast = customMock.mock.calls[0][0] as (t: any) => JSX.Element;
+    const r = render(
+      <MemoryRouter initialEntries={ROOT_ENTRIES}>
+        <Switch>
+          <Route exact path="/" render={() => renderToast({ visible: true })} />
+          <Route path="/pools" render={() => <div>POOLS PAGE</div>} />
+        </Switch>
+      </MemoryRouter>
+    );
+
+    // The link is part of the toast body (not a separate field) and uses client-side navigation.
+    const link = r.getByText("Manage liquidity");
+    expect(link.closest("a")).not.toBeNull();
+    fireEvent.click(link);
+    expect(r.getByText("POOLS PAGE")).toBeTruthy();
   });
 });

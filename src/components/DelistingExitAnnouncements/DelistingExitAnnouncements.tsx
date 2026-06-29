@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 import {
   selectChainId,
@@ -46,6 +47,20 @@ export function DelistingExitAnnouncements() {
       }
       shownSignatures.current.set(item.id, signature);
 
+      // Render the optional action link inline in the body, separated by a blank line.
+      const body = item.link ? (
+        <>
+          {item.bodyText}
+          <br />
+          <br />
+          <Link to={item.link.href} className="link-underline hover:text-blue-300">
+            {item.link.text}
+          </Link>
+        </>
+      ) : (
+        item.bodyText
+      );
+
       toast.custom(
         (t) => (
           <EventToast
@@ -53,9 +68,8 @@ export function DelistingExitAnnouncements() {
             event={{
               id: item.id,
               title: item.title,
-              bodyText: item.bodyText,
+              bodyText: body,
               endDate: "",
-              link: item.link,
             }}
             id={item.id}
             toast={t}

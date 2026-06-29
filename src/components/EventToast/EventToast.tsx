@@ -1,6 +1,5 @@
 import "./EventToast.css";
 import { Toast } from "react-hot-toast";
-import { Link } from "react-router-dom";
 
 import { EventData } from "config/events";
 import { UiFlagEventVariant } from "config/uiFlagEvents";
@@ -57,15 +56,9 @@ export default function EventToast({
       )}
       {event.link && (
         <div className="toast-links">
-          {event.link.href.startsWith("/") ? (
-            <Link key={event.id + event.link.text} to={event.link.href} className="link-underline hover:text-blue-300">
-              {event.link.text}
-            </Link>
-          ) : (
-            <ExternalLink key={event.id + event.link.text} href={event.link.href} newTab={event.link?.newTab ?? false}>
-              {event.link.text}
-            </ExternalLink>
-          )}
+          <ExternalLink key={event.id + event.link.text} href={event.link.href} newTab={event.link?.newTab ?? false}>
+            {event.link.text}
+          </ExternalLink>
           .
         </div>
       )}
