@@ -4321,6 +4321,10 @@ msgstr ""
 msgid "Direction"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is currently above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
 msgstr ""
@@ -5068,6 +5072,7 @@ msgstr ""
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -5075,6 +5080,7 @@ msgstr ""
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -6953,6 +6959,10 @@ msgstr ""
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr ""
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation. Consider lowering leverage or adding margin."
+msgstr ""
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -8099,6 +8109,11 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
 msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -9855,6 +9870,10 @@ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Estimated off-hours liquidation price"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
