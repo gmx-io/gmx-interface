@@ -209,6 +209,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
         result.byMarketAddress[marketAddress] = {
           total: totalIncome,
           recent: recentIncome,
+          expected365d: 0n,
         };
 
         result.allMarkets.total = result.allMarkets.total + totalIncome;
@@ -231,6 +232,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
     }
 
     let expected365d = 0n;
+    const byMarketAddress: UserEarningsData["byMarketAddress"] = { ...data.byMarketAddress };
 
     marketAddresses.forEach((marketAddress) => {
       const apy = marketsTokensApyData[marketAddress];
@@ -240,12 +242,24 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
       if (apy === undefined || balance === undefined || balance === 0n) return;
 
       const price = token.prices.maxPrice;
-      expected365d =
-        expected365d + bigMath.mulDiv(apy * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
+      const marketExpected365d = bigMath.mulDiv(apy * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
+
+      expected365d = expected365d + marketExpected365d;
+
+      const marketEarnings = byMarketAddress[marketAddress];
+
+      if (marketEarnings || marketExpected365d > 0n) {
+        byMarketAddress[marketAddress] = {
+          total: marketEarnings?.total ?? 0n,
+          recent: marketEarnings?.recent ?? 0n,
+          expected365d: marketExpected365d,
+        };
+      }
     });
 
     return {
       ...data,
+      byMarketAddress,
       allMarkets: {
         ...data.allMarkets,
         expected365d,

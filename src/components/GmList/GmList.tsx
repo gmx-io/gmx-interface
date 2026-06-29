@@ -213,6 +213,8 @@ export function GmList({
           userEarnings={userEarnings}
           isUserEarningsLoading={isUserEarningsLoading}
           isUserEarningsUnavailable={isUserEarningsUnavailable}
+          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
         />
       );
     });

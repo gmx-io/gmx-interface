@@ -6559,6 +6559,7 @@ msgid "Mark price for the liquidation"
 msgstr "Mark price for the liquidation"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
 msgstr "Projected from last {daysConsidered} days' APY"
 
@@ -8145,6 +8146,7 @@ msgstr "Insufficient collateral to cover order costs"
 msgid "Unknown shift GM order"
 msgstr "Unknown shift GM order"
 
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimated fees"
 msgstr "365d estimated fees"

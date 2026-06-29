@@ -62,13 +62,12 @@ export type ClaimableFundingData = {
 export type UserMarketEarnings = {
   total: bigint;
   recent: bigint;
+  expected365d: bigint;
 };
 
 export type UserEarningsData = {
   byMarketAddress: Record<string, UserMarketEarnings>;
-  allMarkets: UserMarketEarnings & {
-    expected365d: bigint;
-  };
+  allMarkets: UserMarketEarnings;
 };
 
 export type CreateDepositParamsAddresses = {

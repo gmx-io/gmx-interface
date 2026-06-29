@@ -26,6 +26,7 @@ export const GmTokensBalanceInfo = ({
   token,
   earnedTotal,
   earnedRecently,
+  earnedExpected365d,
   daysConsidered,
   multichainBalances,
   isGlv = false,
@@ -33,10 +34,13 @@ export const GmTokensBalanceInfo = ({
   isMultichainBalancesLoading = false,
   isUserEarningsLoading = false,
   isUserEarningsUnavailable = false,
+  isEstimated365dFeesLoading = false,
+  isEstimated365dFeesUnavailable = false,
 }: {
   token: ProgressiveTokenData | undefined;
   earnedTotal?: bigint;
   earnedRecently?: bigint;
+  earnedExpected365d?: bigint;
   daysConsidered: number;
   multichainBalances: MultichainMarketTokenBalances | undefined;
   isGlv?: boolean;
@@ -44,6 +48,8 @@ export const GmTokensBalanceInfo = ({
   isMultichainBalancesLoading?: boolean;
   isUserEarningsLoading?: boolean;
   isUserEarningsUnavailable?: boolean;
+  isEstimated365dFeesLoading?: boolean;
+  isEstimated365dFeesUnavailable?: boolean;
 }) => {
   const balance = multichainBalances?.totalBalance ?? 0n;
   const balanceUsd = getPlatformTokenBalanceAfterThreshold(multichainBalances?.totalBalanceUsd);
@@ -72,10 +78,18 @@ export const GmTokensBalanceInfo = ({
       <MultichainBalanceTooltip multichainBalances={multichainBalances} symbol={symbol} decimals={token?.decimals} />
     );
   }, [hasChainBalances, balanceUsd, multichainBalances, symbol, token?.decimals]);
-  const hasFees = earnedTotal !== undefined || earnedRecently !== undefined;
+  const hasEarnedFees = earnedTotal !== undefined || earnedRecently !== undefined;
+  const hasEstimated365dFees = earnedExpected365d !== undefined && earnedExpected365d > 0n;
   const shouldShowFeesLoading = !isGlv && isUserEarningsLoading && balance !== 0n;
   const shouldShowFeesUnavailable = !isGlv && isUserEarningsUnavailable && balance !== 0n;
-  const shouldShowFeeRows = hasFees || shouldShowFeesLoading || shouldShowFeesUnavailable;
+  const shouldShowEarnedFeeRows = hasEarnedFees || shouldShowFeesLoading || shouldShowFeesUnavailable;
+  const shouldShowEstimated365dFeesLoading =
+    !isGlv && balance !== 0n && (shouldShowFeesLoading || isEstimated365dFeesLoading);
+  const shouldShowEstimated365dFeesUnavailable =
+    !isGlv && balance !== 0n && (shouldShowFeesUnavailable || isEstimated365dFeesUnavailable);
+  const shouldShowEstimated365dFeeRow =
+    hasEstimated365dFees || shouldShowEstimated365dFeesLoading || shouldShowEstimated365dFeesUnavailable;
+  const shouldShowFeeRows = shouldShowEarnedFeeRows || shouldShowEstimated365dFeeRow;
 
   const tooltipContent = useMemo(() => {
     if (!shouldShowFeeRows && !hasChainBalances) {
@@ -85,7 +99,7 @@ export const GmTokensBalanceInfo = ({
     return (
       <>
         {multichainBalanceTooltip}
-        {shouldShowFeeRows && (
+        {shouldShowEarnedFeeRows && (
           <StatsTooltipRow
             showDollar={false}
             label={t`Total earned fees`}
@@ -102,7 +116,7 @@ export const GmTokensBalanceInfo = ({
             valueClassName="numbers"
           />
         )}
-        {shouldShowFeeRows && (
+        {shouldShowEarnedFeeRows && (
           <StatsTooltipRow
             showDollar={false}
             textClassName={earnedRecently !== undefined ? getPositiveOrNegativeClass(earnedRecently) : undefined}
@@ -119,13 +133,32 @@ export const GmTokensBalanceInfo = ({
             valueClassName="numbers"
           />
         )}
-        {shouldShowFeesUnavailable && (
+        {shouldShowEstimated365dFeeRow && (
+          <StatsTooltipRow
+            showDollar={false}
+            textClassName={
+              earnedExpected365d !== undefined ? getPositiveOrNegativeClass(earnedExpected365d) : undefined
+            }
+            label={t`365d estimated fees`}
+            value={
+              <EarningValue
+                value={earnedExpected365d}
+                isLoading={shouldShowEstimated365dFeesLoading}
+                isAvailable={!shouldShowEstimated365dFeesUnavailable}
+              >
+                {(value) => formatDeltaUsd(value, undefined)}
+              </EarningValue>
+            }
+            valueClassName="numbers"
+          />
+        )}
+        {(shouldShowFeesUnavailable || shouldShowEstimated365dFeesUnavailable) && (
           <>
             <br />
             <EarningUnavailableNote />
           </>
         )}
-        {hasFees && (
+        {hasEarnedFees && (
           <>
             <br />
             <div className="text-typography-primary">
@@ -133,15 +166,29 @@ export const GmTokensBalanceInfo = ({
             </div>
           </>
         )}
+        {hasEstimated365dFees && (
+          <>
+            <br />
+            <div className="text-typography-primary">
+              <Trans>Projected from last {daysConsidered} days' APY</Trans>
+            </div>
+          </>
+        )}
       </>
     );
   }, [
     daysConsidered,
+    earnedExpected365d,
     earnedRecently,
     earnedTotal,
     hasChainBalances,
-    hasFees,
+    hasEarnedFees,
+    hasEstimated365dFees,
     multichainBalanceTooltip,
+    shouldShowEarnedFeeRows,
+    shouldShowEstimated365dFeeRow,
+    shouldShowEstimated365dFeesLoading,
+    shouldShowEstimated365dFeesUnavailable,
     shouldShowFeeRows,
     shouldShowFeesLoading,
     shouldShowFeesUnavailable,

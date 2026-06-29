@@ -6559,6 +6559,7 @@ msgid "Mark price for the liquidation"
 msgstr "清算時のマーク価格"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
 msgstr "過去{daysConsidered}日間のAPYから算出"
 
@@ -8145,6 +8146,7 @@ msgstr "注文コストを賄うための担保が不足しています"
 msgid "Unknown shift GM order"
 msgstr "不明なシフトGM注文"
 
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimated fees"
 msgstr ""

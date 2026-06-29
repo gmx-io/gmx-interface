@@ -6559,6 +6559,7 @@ msgid "Mark price for the liquidation"
 msgstr "Расчётная цена на момент ликвидации"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
 msgstr "Прогноз на основе APY за последние {daysConsidered} дней"
 
@@ -8145,6 +8146,7 @@ msgstr "Недостаточно обеспечения для покрытия 
 msgid "Unknown shift GM order"
 msgstr "Неизвестный ордер сдвига GM"
 
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimated fees"
 msgstr ""
