@@ -16,7 +16,6 @@ vi.mock("react-hot-toast", () => ({
   },
 }));
 
-// All selectors return undefined; the orchestration result is fully stubbed below.
 vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
   ...(await importOriginal<typeof import("context/SyntheticsStateContext/utils")>()),
   useSelector: () => undefined,
@@ -96,7 +95,6 @@ describe("DelistingExitAnnouncements", () => {
       </MemoryRouter>
     );
 
-    // The link is part of the toast body (not a separate field) and uses client-side navigation.
     const link = r.getByText("Manage liquidity");
     expect(link.closest("a")).not.toBeNull();
     fireEvent.click(link);

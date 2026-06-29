@@ -101,11 +101,6 @@ describe("computeAffectedLiquidityMarkets", () => {
     expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([]);
   });
 
-  it("excludes GLV holdings (symbol !== 'GM')", () => {
-    const data = { [KTA]: { symbol: "GLV", balance: 5n } } as any;
-    expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([]);
-  });
-
   it("excludes markets not in the delisting list", () => {
     const data = { [NON_DELISTING]: { symbol: "GM", balance: 5n } } as any;
     expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([]);

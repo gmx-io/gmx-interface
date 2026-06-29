@@ -4,6 +4,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
+import { DAY_MS } from "lib/dates";
 import { getByKey } from "lib/objects";
 
 export function getDelistingMarketLabel(marketInfo: MarketInfo): string {
@@ -61,8 +62,7 @@ export function computeAffectedLiquidityMarkets(
   const result: string[] = [];
 
   for (const [address, token] of Object.entries(depositMarketTokensData ?? {})) {
-    // symbol === "GM" excludes GLV tokens; GLV depositors hold the GLV token, not the GM token.
-    if (token.symbol === "GM" && (token.balance ?? 0n) > 0n && isDelistingMarket(chainId, address)) {
+    if ((token.balance ?? 0n) > 0n && isDelistingMarket(chainId, address)) {
       result.push(address);
     }
   }
@@ -70,7 +70,7 @@ export function computeAffectedLiquidityMarkets(
   return result;
 }
 
-export const DELISTING_ANNOUNCEMENT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+export const DELISTING_ANNOUNCEMENT_COOLDOWN_MS = DAY_MS;
 
 export type DelistingDismissal = { dismissedAt: number; markets: string[] };
 

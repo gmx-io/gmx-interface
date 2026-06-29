@@ -20,9 +20,7 @@ export function DelistingExitAnnouncements() {
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
-  // Maps a toast id to the signature of the set it currently displays, to avoid redundant re-renders
-  // while still refreshing when the affected set changes.
-  const shownSignatures = useRef<Map<string, string>>(new Map());
+  const shownSignatures = useRef<Record<string, string>>({});
 
   useEffect(() => {
     const { toShow, toDismiss } = getDelistingAnnouncementActions({
@@ -34,18 +32,18 @@ export function DelistingExitAnnouncements() {
     });
 
     for (const id of toDismiss) {
-      if (shownSignatures.current.has(id)) {
+      if (shownSignatures.current[id] !== undefined) {
         toast.dismiss(id);
-        shownSignatures.current.delete(id);
+        delete shownSignatures.current[id];
       }
     }
 
     for (const item of toShow) {
       const signature = [...item.markets].sort().join(",");
-      if (shownSignatures.current.get(item.id) === signature) {
+      if (shownSignatures.current[item.id] === signature) {
         continue;
       }
-      shownSignatures.current.set(item.id, signature);
+      shownSignatures.current[item.id] = signature;
 
       // Render the optional action link inline in the body, separated by a blank line.
       const body = item.link ? (
@@ -76,7 +74,7 @@ export function DelistingExitAnnouncements() {
             variant="warning"
             onClick={() => {
               toast.dismiss(item.id);
-              shownSignatures.current.delete(item.id);
+              delete shownSignatures.current[item.id];
               writeDismissal(item.id, item.markets, Date.now());
             }}
           />

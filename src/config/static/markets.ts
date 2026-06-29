@@ -820,8 +820,6 @@ export function isDepositDisabledMarket(chainId: number, marketTokenAddress: str
   return DEPOSIT_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
 }
 
-// Markets/pools in the delisting flow (FEDEV-4022), curated by Risk.
-// Positions in these should be closed; direct (non-GLV) GM liquidity should be withdrawn.
 export const DELISTING_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
     "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c", // TON/USD
