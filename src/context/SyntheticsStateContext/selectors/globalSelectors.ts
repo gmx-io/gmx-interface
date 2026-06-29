@@ -126,13 +126,33 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
  */
 export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
 
-export const selectSubaccountForSettlementChainAction = createSelector((q) => {
-  const chainId = q(selectChainId);
+export const selectRawSubaccountForSettlementChainAction = createSelector((q) => {
   const rawSubaccount = q(selectRawSubaccount);
   const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
 
+  if (!isEnabled || !rawSubaccount) {
+    return undefined;
+  }
+
+  return rawSubaccount;
+});
+
+export const selectRawSubaccountForMultichainAction = createSelector((q) => {
+  const rawSubaccount = q(selectRawSubaccount);
+  const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
+
+  if (!isEnabled || !rawSubaccount) {
+    return undefined;
+  }
+
+  return rawSubaccount;
+});
+
+export const selectSubaccountForSettlementChainAction = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const rawSubaccount = q(selectRawSubaccountForSettlementChainAction);
+
   if (
-    !isEnabled ||
     !rawSubaccount ||
     getIsInvalidSubaccount({
       subaccount: rawSubaccount,
@@ -148,11 +168,9 @@ export const selectSubaccountForSettlementChainAction = createSelector((q) => {
 
 export const selectSubaccountForMultichainAction = createSelector((q) => {
   const chainId = q(selectChainId);
-  const rawSubaccount = q(selectRawSubaccount);
-  const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
+  const rawSubaccount = q(selectRawSubaccountForMultichainAction);
 
   if (
-    !isEnabled ||
     !rawSubaccount ||
     getIsInvalidSubaccount({
       subaccount: rawSubaccount,
@@ -178,6 +196,15 @@ export const selectSubaccountForChainAction = createSelector((q) => {
   }
 
   return q(selectSubaccountForSettlementChainAction);
+});
+
+export const selectRawSubaccountForChainAction = createSelector((q) => {
+  const srcChainId = q(selectSrcChainId);
+  if (srcChainId !== undefined) {
+    return q(selectRawSubaccountForMultichainAction);
+  }
+
+  return q(selectRawSubaccountForSettlementChainAction);
 });
 
 export const selectOracleSettings = (s: SyntheticsState) => s.globals.oracleSettings;

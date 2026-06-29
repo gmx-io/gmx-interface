@@ -23,7 +23,7 @@ export function BuybackDashboard({ gmxPrice }: { gmxPrice: bigint | undefined })
   return (
     <AppCard>
       <AppCardSection>
-        <div className="text-16 font-medium">{t`Buyback Dashboard`}</div>
+        <div className="text-16 font-medium">{t`Buyback dashboard`}</div>
         <BuybackMetricsHeader metrics={metrics} isLoading={isLoading} error={error} />
       </AppCardSection>
       <AppCardSection>

@@ -292,7 +292,10 @@ export type ExternalSwapQuote = {
   priceIn: bigint;
   priceOut: bigint;
   feesUsd: bigint;
+  slippage?: number;
   needSpenderApproval?: boolean;
+  // Stamped by byToValue fetches as a request fingerprint; other strategies use `amountIn`.
+  desiredAmountOut?: bigint;
   txnData: {
     to: string;
     data: string;
@@ -316,7 +319,7 @@ export type ExternalSwapQuoteParams = {
   botanixStakingAssetsPerShare: bigint | undefined;
 };
 
-export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
+export type ExternalSwapCalculationStrategy = "byFromValue" | "byToValue" | "leverageBySize";
 
 export type ExternalSwapInputs = {
   amountIn: bigint;
@@ -325,6 +328,7 @@ export type ExternalSwapInputs = {
   usdIn: bigint;
   usdOut: bigint;
   strategy: ExternalSwapCalculationStrategy;
+  desiredAmountOut?: bigint;
   internalSwapTotalFeesDeltaUsd?: bigint;
   internalSwapTotalFeeItem?: FeeItem;
   internalSwapAmounts: SwapAmounts;

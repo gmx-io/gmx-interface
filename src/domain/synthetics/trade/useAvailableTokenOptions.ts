@@ -4,7 +4,14 @@ import { zeroAddress } from "viem";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "config/chains";
 import { getSortedMarketsAddressesKey } from "config/localStorage";
 import { SORTED_MARKETS } from "config/static/sortedMarkets";
-import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
+import {
+  GlvAndGmMarketsInfoData,
+  Market,
+  MarketInfo,
+  MarketsData,
+  getIsMarketDeprecated,
+  isMarketInfo,
+} from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -178,7 +185,10 @@ export function useAvailableTokenOptions(
       shortTokensWithPoolValue[shortToken.address] =
         (shortTokensWithPoolValue[shortToken.address] ?? 0n) + shortPoolAmountUsd;
 
-      if (!marketInfo.isSpotOnly) {
+      const isSpcxMarket = marketInfo.marketTokenAddress === "0x470128853D74dab7423904a20eA5AA230e9e561B";
+
+      // Temporary: SPCX is listed before its OI caps are initialized, so do not treat it as deprecated yet.
+      if (!marketInfo.isSpotOnly && (isSpcxMarket || !getIsMarketDeprecated(marketInfo))) {
         indexTokens.add(indexToken);
         allMarkets.add(marketInfo);
         indexTokensWithPoolValue[indexToken.address] =
@@ -225,6 +235,16 @@ export function useAvailableTokenOptions(
         }
       }
     });
+
+    // Add all deployment tokens to swap list so they can be swapped via external aggregator
+    // even if they have no internal GM pool route
+    if (tokensData) {
+      for (const tokenData of Object.values(tokensData)) {
+        if (!collateralAddresses.has(tokenData.address) && !tokenData.isSynthetic && !tokenData.isWrapped) {
+          collaterals.add(tokenData);
+        }
+      }
+    }
 
     return {
       tokensMap,

@@ -87,7 +87,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div>{t`Price impact`}:</div>
+                      <div className="text-typography-primary">{t`Price impact`}:</div>
                       <div>
                         <Trans>
                           (
@@ -116,7 +116,9 @@ export function GmFees(p: Props) {
                   <StatsTooltipRow
                     label={
                       <div>
-                        <div>{p.operation === Operation.Deposit ? t`Buy fee` : t`Sell fee`}:</div>
+                        <div className="text-typography-primary">
+                          {p.operation === Operation.Deposit ? t`Buy fee` : t`Sell fee`}:
+                        </div>
                         <div>
                           <Trans>
                             (
@@ -143,7 +145,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div>{t`UI fee`}:</div>
+                      <div className="text-typography-primary">{t`UI fee`}:</div>
                       <div>
                         <Trans>
                           (
@@ -169,7 +171,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div>{t`Shift fee`}:</div>
+                      <div className="text-typography-primary">{t`Shift fee`}:</div>
                       <div>
                         <Trans>
                           (

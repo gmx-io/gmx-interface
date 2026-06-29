@@ -2,16 +2,18 @@ import { useEffect } from "react";
 
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGasPrice, selectRawSubaccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
-  selectBaseExternalSwapOutput,
   selectExternalSwapInputs,
   selectExternalSwapQuote,
-  selectSetBaseExternalSwapOutput,
+  selectExternalSwapRequestResult,
+  selectSetExternalSwapRequestResult,
   selectSetShouldFallbackToInternalSwap,
   selectSetShouldForceExternalSwap,
   selectShouldFallbackToInternalSwap,
   selectShouldForceExternalSwap,
+  selectShouldRequestExternalSwapQuote,
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
@@ -21,16 +23,17 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { getContract } from "sdk/configs/contracts";
 
+import { useExternalSwapInputRequest } from "./useExternalSwapInputRequest";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
-import { useExternalSwapsEnabled } from "./useExternalSwapsEnabled";
+import { externalSwapRequestKeysMatch, getExternalSwapRequestKey } from "./utils";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
   const { orderStatuses } = useSyntheticsEvents();
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const slippage = useSelector(selectTradeboxAllowedSlippage);
-  const setBaseExternalSwapOutput = useSelector(selectSetBaseExternalSwapOutput);
-  const storedBaseExternalSwapOutput = useSelector(selectBaseExternalSwapOutput);
+  const storedResult = useSelector(selectExternalSwapRequestResult);
+  const setRequestResult = useSelector(selectSetExternalSwapRequestResult);
   const gasPrice = useSelector(selectGasPrice);
 
   const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
@@ -44,9 +47,15 @@ export function useExternalSwapHandler() {
   const shouldForceExternalSwap = useSelector(selectShouldForceExternalSwap);
   const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
 
-  const enabled = useExternalSwapsEnabled();
+  const hasRawSubaccount = Boolean(useSelector(selectRawSubaccount));
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const swapToTokenAddress = swapToToken?.address;
 
-  const { quote } = useExternalSwapOutputRequest({
+  const enabled = useSelector(selectShouldRequestExternalSwapQuote);
+
+  const isByToValue = externalSwapInputs?.strategy === "byToValue";
+
+  const { quote: outputQuote, error: outputError } = useExternalSwapOutputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -54,52 +63,82 @@ export function useExternalSwapHandler() {
     receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
-    enabled,
+    enabled: enabled && !isByToValue,
   });
+
+  const { quote: inputQuote, error: inputError } = useExternalSwapInputRequest({
+    chainId,
+    tokenInAddress: fromTokenAddress,
+    tokenOutAddress: swapToToken?.address,
+    desiredAmountOut: externalSwapInputs?.desiredAmountOut,
+    initialAmountIn: externalSwapInputs?.amountIn,
+    receiverAddress: getContract(chainId, "OrderVault"),
+    slippage,
+    gasPrice,
+    enabled: enabled && isByToValue,
+  });
+
+  const quote = isByToValue ? inputQuote : outputQuote;
+  const requestError = isByToValue ? inputError : outputError;
 
   if (shouldDebugValues) {
     throttleLog("external swaps", {
-      baseOutput: quote,
+      quote,
       externalSwapQuote,
       inputs: externalSwapInputs,
+      isByToValue,
     });
   }
 
   useEffect(
-    function setBaseExternalSwapOutputEff() {
-      const shouldClearBaseOutput =
+    function syncRequestResultEff() {
+      const shouldClear =
         !enabled ||
         externalSwapInputs?.amountIn === undefined ||
         externalSwapInputs.amountIn <= 0n ||
         !fromTokenAddress ||
         !swapToToken?.address;
 
-      if (shouldClearBaseOutput) {
-        if (storedBaseExternalSwapOutput !== undefined) {
-          setBaseExternalSwapOutput(undefined);
+      if (shouldClear) {
+        if (storedResult !== undefined) {
+          setRequestResult(undefined);
         }
-
         return;
       }
 
-      // Keep last quote while refresh is loading to avoid flapping to internal swap pricing
-      if (!quote) {
+      const key = getExternalSwapRequestKey({
+        fromTokenAddress,
+        toTokenAddress: swapToToken.address,
+        strategy: externalSwapInputs.strategy,
+        amountIn: externalSwapInputs.amountIn,
+        desiredAmountOut: externalSwapInputs.desiredAmountOut,
+        slippage,
+      });
+      if (!key) return;
+
+      if (requestError) {
+        if (storedResult?.status !== "failed" || !externalSwapRequestKeysMatch(storedResult.key, key)) {
+          setRequestResult({ status: "failed", key });
+        }
         return;
       }
 
-      // Update quote only if actual txn data has changed
-      if (storedBaseExternalSwapOutput?.txnData?.data !== quote.txnData.data) {
-        setBaseExternalSwapOutput(quote);
+      if (quote) {
+        if (storedResult?.status !== "success" || storedResult.quote.txnData.data !== quote.txnData.data) {
+          setRequestResult({ status: "success", key, quote });
+        }
       }
     },
     [
       enabled,
-      externalSwapInputs?.amountIn,
       fromTokenAddress,
-      quote,
-      setBaseExternalSwapOutput,
-      storedBaseExternalSwapOutput,
       swapToToken?.address,
+      externalSwapInputs,
+      slippage,
+      quote,
+      requestError,
+      storedResult,
+      setRequestResult,
     ]
   );
 
@@ -123,6 +162,22 @@ export function useExternalSwapHandler() {
       shouldFallbackToInternalSwap,
       setShouldFallbackToInternalSwap,
       shouldForceExternalSwap,
+      setShouldForceExternalSwap,
+    ]
+  );
+
+  useEffect(
+    function resetFallbackFlagsOnContextChangeEff() {
+      setShouldFallbackToInternalSwap(false);
+      setShouldForceExternalSwap(false);
+    },
+    [
+      hasRawSubaccount,
+      expressOrdersEnabled,
+      fromTokenAddress,
+      swapToTokenAddress,
+      chainId,
+      setShouldFallbackToInternalSwap,
       setShouldForceExternalSwap,
     ]
   );

@@ -57,6 +57,14 @@ export function useLocalStorageSerializeKey<T>(
   return useLocalStorage<T>(key, initialValue, opts);
 }
 
+export function hasStoredLocalStorageValue(key: LocalStorageKey | LocalStorageKey[]) {
+  try {
+    return window.localStorage.getItem(JSON.stringify(key)) !== null;
+  } catch (e) {
+    return false;
+  }
+}
+
 function tryGetLocalStorageItem<T>(key: string): T | undefined {
   const item = localStorage.getItem(key);
   if (!item) {

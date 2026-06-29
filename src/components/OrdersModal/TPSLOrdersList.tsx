@@ -20,13 +20,14 @@ import {
   PositionOrderInfo,
 } from "domain/synthetics/orders";
 import { PositionInfo, getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { getDecreasePositionAmounts } from "domain/synthetics/trade";
-import { DUST_USD } from "lib/legacy";
-import { formatDeltaUsd, formatUsd, formatBalanceAmount, formatPercentage } from "lib/numbers";
+import { getDecreasePositionAmounts, getDecreaseReceiveOutputs } from "domain/synthetics/trade";
+import { getPositionCloseSizeDeltaUsdForDisplay, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
+import { formatDeltaUsd, formatUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
+import { DecreaseReceiveOutputDisplay } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableTd, TableTr } from "components/Table/Table";
 
@@ -179,7 +180,7 @@ function useTPSLOrderViewModel({
       return <span>-{formatUsd(order.sizeDeltaUsd)}</span>;
     }
 
-    const isFullClose = order.sizeDeltaUsd >= position.sizeInUsd || position.sizeInUsd - order.sizeDeltaUsd < DUST_USD;
+    const isFullClose = isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, position.sizeInUsd);
 
     if (isFullClose) {
       return <Trans>Full position close</Trans>;
@@ -204,14 +205,15 @@ function useTPSLOrderViewModel({
     const entryPrice = position.entryPrice ?? 0n;
     const priceDiff = order.isLong ? order.triggerPrice - entryPrice : entryPrice - order.triggerPrice;
 
-    const pnlUsd = entryPrice > 0n ? bigMath.mulDiv(priceDiff, order.sizeDeltaUsd, entryPrice) : 0n;
+    const sizeDeltaUsd = getPositionCloseSizeDeltaUsdForDisplay(order.sizeDeltaUsd, position.sizeInUsd);
+    const pnlUsd = entryPrice > 0n ? bigMath.mulDiv(priceDiff, sizeDeltaUsd, entryPrice) : 0n;
     const pnlPercentage = position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : 0n;
 
     return { pnlUsd, pnlPercentage };
   }, [order.isLong, order.sizeDeltaUsd, order.triggerPrice, position, isIncrease]);
 
   const shouldKeepLeverage = useMemo(() => {
-    if (!position || order.sizeDeltaUsd >= position.sizeInUsd) {
+    if (!position || isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, position.sizeInUsd)) {
       return true;
     }
 
@@ -244,6 +246,7 @@ function useTPSLOrderViewModel({
       uiFeeFactor,
       triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease,
       isSetAcceptablePriceImpactEnabled,
+      forceDecreaseSwapType: order.decreasePositionSwapType,
     });
   }, [
     isIncrease,
@@ -260,27 +263,24 @@ function useTPSLOrderViewModel({
     userReferralInfo,
     uiFeeFactor,
     isSetAcceptablePriceImpactEnabled,
+    order.decreasePositionSwapType,
   ]);
 
   const receiveDisplay = useMemo(() => {
     if (!decreaseAmounts) return "—";
 
-    const receiveUsd = decreaseAmounts.receiveUsd;
-    const receiveToken = order.targetCollateralToken;
+    const tokensData =
+      position && order.targetCollateralToken
+        ? {
+            [position.pnlToken.address]: position.pnlToken,
+            [position.collateralToken.address]: position.collateralToken,
+            [order.targetCollateralToken.address]: order.targetCollateralToken,
+          }
+        : undefined;
+    const outputs = getDecreaseReceiveOutputs({ decreaseAmounts, tokensData });
 
-    if (!receiveToken) return "—";
-
-    const receiveAmount = decreaseAmounts.receiveTokenAmount ?? 0n;
-
-    return (
-      <span>
-        {formatBalanceAmount(receiveAmount, receiveToken.decimals, receiveToken.symbol, {
-          isStable: receiveToken.isStable,
-        })}
-        <span className="ml-4 text-typography-secondary">({formatUsd(receiveUsd)})</span>
-      </span>
-    );
-  }, [decreaseAmounts, order.targetCollateralToken]);
+    return <DecreaseReceiveOutputDisplay outputs={outputs} layout="stacked" />;
+  }, [decreaseAmounts, order.targetCollateralToken, position]);
 
   const handleEdit = useCallback(() => {
     onEdit?.(order.key);
@@ -342,7 +342,7 @@ function TPSLOrderCard({
 
       <div className="flex items-center justify-between">
         <span className="text-14 font-medium text-typography-secondary">
-          <Trans>Trigger Price</Trans>
+          <Trans>Trigger price</Trans>
         </span>
         <span className="text-body-medium numbers">{triggerPriceDisplay}</span>
       </div>

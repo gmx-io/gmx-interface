@@ -2,13 +2,21 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import type { MarketInfo } from "domain/synthetics/markets";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import type { PositionInfo, PositionInfoLoaded } from "domain/synthetics/positions";
 import { getPendingMockPosition } from "domain/synthetics/positions/usePositions";
 import type { TokenData } from "domain/synthetics/tokens";
 import { getDecreasePositionAmounts } from "domain/synthetics/trade";
 import type { DecreasePositionAmounts } from "domain/synthetics/trade";
-import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
+import {
+  buildDecreaseOrderPayload,
+  buildUpdateOrderPayload,
+  CreateOrderTxnParams,
+  DecreasePositionOrderParams,
+  UpdateOrderTxnParams,
+} from "sdk/utils/orderTransactions";
+
+import { FULL_POSITION_CLOSE_SIZE_DELTA_USD } from "./utils";
 
 export type BuildTpSlPositionInfoParams = {
   positionKey?: string;
@@ -143,6 +151,9 @@ export function buildTpSlPositionInfo(p: BuildTpSlPositionInfoParams): PositionI
     pnlPercentage: 0n,
     pnlAfterFees: 0n,
     pnlAfterFeesPercentage: 0n,
+    netValueAfterAllFees: feeSource?.netValueAfterAllFees ?? 0n,
+    pnlAfterAllFees: 0n,
+    pnlAfterAllFeesPercentage: 0n,
     closingFeeUsd: 0n,
     uiFeeUsd: 0n,
     pendingFundingFeesUsd: feeSource?.pendingFundingFeesUsd ?? 0n,
@@ -172,6 +183,7 @@ export function getTpSlDecreaseAmounts(p: {
   uiFeeFactor: bigint | undefined;
   userReferralInfo: ReturnType<typeof selectUserReferralInfo> | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
+  forceDecreaseSwapType?: DecreasePositionSwapType;
 }): DecreasePositionAmounts | undefined {
   if (
     !p.position ||
@@ -203,6 +215,7 @@ export function getTpSlDecreaseAmounts(p: {
     limitPrice: p.limitPrice,
     triggerOrderType: p.triggerOrderType,
     isSetAcceptablePriceImpactEnabled: p.isSetAcceptablePriceImpactEnabled,
+    forceDecreaseSwapType: p.forceDecreaseSwapType,
   });
 }
 
@@ -210,6 +223,11 @@ export type TpSlCreatePayloadEntry = {
   amounts?: DecreasePositionAmounts;
   executionFeeAmount?: bigint;
   executionGasLimit?: bigint;
+  sizeDeltaUsd?: bigint;
+};
+
+export type TpSlPayloadEntry = TpSlCreatePayloadEntry & {
+  existingFullCloseOrder?: PositionOrderInfo;
 };
 
 export function buildTpSlCreatePayloads(p: {
@@ -247,7 +265,7 @@ export function buildTpSlCreatePayloads(p: {
       receiver: account,
       collateralDeltaAmount: amounts.collateralDeltaAmount ?? 0n,
       collateralTokenAddress,
-      sizeDeltaUsd: amounts.sizeDeltaUsd,
+      sizeDeltaUsd: item.sizeDeltaUsd ?? amounts.sizeDeltaUsd,
       sizeDeltaInTokens: amounts.sizeDeltaInTokens,
       referralCode: p.userReferralCode,
       uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
@@ -269,4 +287,62 @@ export function buildTpSlCreatePayloads(p: {
       validFromTime: 0n,
     });
   });
+}
+
+export function buildTpSlBatchPayloads(p: {
+  autoCancelOrdersLimit: number;
+  chainId: number;
+  account: string | undefined;
+  marketAddress: string | undefined;
+  indexTokenAddress: string | undefined;
+  collateralTokenAddress: string | undefined;
+  isLong: boolean | undefined;
+  entries: TpSlPayloadEntry[];
+  userReferralCode: string | undefined;
+}): {
+  createOrderParams: CreateOrderTxnParams<DecreasePositionOrderParams>[];
+  updateOrderParams: UpdateOrderTxnParams[];
+} {
+  const updateOrderParams: UpdateOrderTxnParams[] = [];
+  const createEntries: TpSlCreatePayloadEntry[] = [];
+
+  for (const entry of p.entries) {
+    const replacesExisting = Boolean(entry.amounts?.isFullClose && entry.existingFullCloseOrder);
+
+    if (replacesExisting && entry.amounts && entry.existingFullCloseOrder) {
+      const order = entry.existingFullCloseOrder;
+      updateOrderParams.push(
+        buildUpdateOrderPayload({
+          chainId: p.chainId as any,
+          indexTokenAddress: order.indexToken.address,
+          orderKey: order.key,
+          orderType: order.orderType,
+          sizeDeltaUsd: FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+          triggerPrice: entry.amounts.triggerPrice ?? 0n,
+          acceptablePrice: entry.amounts.acceptablePrice ?? 0n,
+          minOutputAmount: order.minOutputAmount,
+          autoCancel: order.autoCancel,
+          validFromTime: 0n,
+          executionFeeTopUp: 0n,
+        })
+      );
+      createEntries.push({ ...entry, amounts: undefined });
+    } else {
+      createEntries.push(entry);
+    }
+  }
+
+  const createOrderParams = buildTpSlCreatePayloads({
+    autoCancelOrdersLimit: p.autoCancelOrdersLimit,
+    chainId: p.chainId,
+    account: p.account,
+    marketAddress: p.marketAddress,
+    indexTokenAddress: p.indexTokenAddress,
+    collateralTokenAddress: p.collateralTokenAddress,
+    isLong: p.isLong,
+    entries: createEntries,
+    userReferralCode: p.userReferralCode,
+  });
+
+  return { createOrderParams, updateOrderParams };
 }

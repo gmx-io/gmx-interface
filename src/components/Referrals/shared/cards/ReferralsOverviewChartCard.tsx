@@ -6,6 +6,7 @@ export function OverviewChartCard({
   label,
   tooltipContent,
   value,
+  valueSuffix,
   valueChange,
   isValueChangePositive,
   topRightContent,
@@ -14,6 +15,7 @@ export function OverviewChartCard({
   label: React.ReactNode;
   tooltipContent?: React.ReactNode;
   value: React.ReactNode;
+  valueSuffix?: React.ReactNode;
   valueChange?: React.ReactNode;
   isValueChangePositive?: boolean;
   topRightContent?: React.ReactNode;
@@ -44,6 +46,7 @@ export function OverviewChartCard({
                 {valueChange}
               </div>
             )}
+            {valueSuffix}
           </div>
         </div>
         {topRightContent}

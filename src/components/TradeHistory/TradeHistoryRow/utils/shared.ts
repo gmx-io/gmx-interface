@@ -5,11 +5,11 @@ import type { Locale as DateLocale } from "date-fns";
 import { format } from "date-fns/format";
 import { formatRelative } from "date-fns/formatRelative";
 import { enUS as dateEn } from "date-fns/locale/en-US";
-import words from "lodash/words";
 
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
+import { getContractErrorMessage } from "components/Errors/getContractErrorMessage";
 
 import { CustomErrorName } from "./CustomErrorName";
 
@@ -98,6 +98,9 @@ export type RowDetails = {
   priceComment: TooltipContent | null;
   pnl?: string;
   pnlState?: TooltipState;
+  pnlTooltip?: string;
+  fees?: string;
+  feesTooltip?: TooltipContent;
   isLong?: boolean;
   indexTokenSymbol?: string;
   swapFromTokenSymbol?: string;
@@ -166,7 +169,7 @@ export function formatTradeActionTimestampUTC(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
+export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, errorArgs?: unknown) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {
     return t`Execution price didn't meet acceptable price. Order will fill when the condition is met.`;
   } else if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && isMarketOrder) {
@@ -181,7 +184,66 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) 
     return t`Insufficient liquidity`;
   }
 
-  return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+  const tradeHistoryErrorMessage = getTradeHistoryErrorMessage(errorName);
+
+  if (tradeHistoryErrorMessage) {
+    return tradeHistoryErrorMessage;
+  }
+
+  const contractErrorMessage = getContractErrorMessage({
+    errorData: {
+      contractError: errorName,
+      contractErrorArgs: errorArgs,
+    },
+  });
+
+  if (contractErrorMessage) {
+    return contractErrorMessage;
+  }
+
+  return t`Order failed due to a protocol validation error: ${errorName}`;
+}
+
+function getTradeHistoryErrorMessage(errorName: string) {
+  switch (errorName) {
+    case CustomErrorName.DisabledFeature:
+      return t`This action is currently disabled`;
+    case CustomErrorName.InsufficientExecutionFee:
+      return t`Execution fee is too low for current network costs`;
+    case CustomErrorName.InsufficientMarketTokens:
+      return t`Insufficient GM tokens for withdrawal`;
+    case CustomErrorName.InsufficientWntAmount:
+    case CustomErrorName.InsufficientWntAmountForExecutionFee:
+      return t`Not enough native token was provided for the execution fee`;
+    case CustomErrorName.InvalidKeeperForFrozenOrder:
+      return t`Frozen order can only be executed by an authorized keeper`;
+    case CustomErrorName.InvalidOrderPrices:
+      return t`Trigger price condition has not been met`;
+    case CustomErrorName.InvalidSignature:
+      return t`Invalid signature. Try signing the request again`;
+    case CustomErrorName.MaxPoolAmountForDepositExceeded:
+    case "MaxPoolUsdForDepositExceeded":
+      return t`Max deposit capacity reached for this pool`;
+    case CustomErrorName.OrderAlreadyFrozen:
+      return t`Order is already frozen`;
+    case CustomErrorName.EmptyPosition:
+    case CustomErrorName.PositionNotFound:
+      return t`Position not found. It may have been closed`;
+    case CustomErrorName.RequestNotYetCancellable:
+      return t`Request cannot be canceled yet. Try again after the cancellation delay`;
+    case CustomErrorName.UnsupportedOrderType:
+      return t`This order type is not supported`;
+    case CustomErrorName.DepositNotFound:
+      return t`Deposit not found. It may have been executed or canceled`;
+    case CustomErrorName.WithdrawalNotFound:
+      return t`Withdrawal not found. It may have been executed or canceled`;
+    case CustomErrorName.InsufficientFundsToPayForCosts:
+      return t`Insufficient collateral to cover order costs`;
+    case CustomErrorName.LiquidatablePosition:
+      return t`Position would be liquidatable at current prices`;
+    default:
+      return undefined;
+  }
 }
 
 const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);

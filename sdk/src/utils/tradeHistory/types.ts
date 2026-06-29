@@ -39,7 +39,10 @@ export type PositionTradeAction = {
   minOutputAmount: bigint;
   priceImpactUsd?: bigint;
   priceImpactDiffUsd?: bigint;
+  swapImpactUsd?: bigint;
+  swapFeeUsd?: bigint;
   positionFeeAmount?: bigint;
+  traderDiscountAmount?: bigint;
   borrowingFeeAmount?: bigint;
   fundingFeeAmount?: bigint;
   pnlUsd?: bigint;

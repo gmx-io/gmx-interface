@@ -258,9 +258,14 @@ export async function fetchTradeActions({
 
             priceImpactUsd
             priceImpactDiffUsd
+            swapImpactUsd
+            totalImpactUsd
             positionFeeAmount
+            traderDiscountAmount
             borrowingFeeAmount
             fundingFeeAmount
+            swapFeeUsd
+            liquidationFeeAmount
             pnlUsd
             basePnlUsd
 

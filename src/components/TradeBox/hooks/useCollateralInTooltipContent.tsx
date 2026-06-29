@@ -35,7 +35,7 @@ export function getCollateralInHintText(tradeType: TradeType, collateralToken: T
     } else if (marketInfo.indexToken.isSynthetic) {
       return (
         <Trans>
-          Double exposure: Long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price
+          Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price
           varies with {collateralSymbol} price.
         </Trans>
       );
@@ -53,14 +53,14 @@ export function getCollateralInHintText(tradeType: TradeType, collateralToken: T
     } else if (marketInfo.indexToken.isSynthetic) {
       return (
         <Trans>
-          Mixed exposure: Short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with{" "}
+          Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with{" "}
           {collateralSymbol} price.
         </Trans>
       );
     } else {
       return (
         <Trans>
-          Mixed exposure: Short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies
+          Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies
           to earn funding.
         </Trans>
       );

@@ -15,7 +15,11 @@ export default defineConfig((props) => {
       outDir: resolve(__dirname, "build"),
       minify: "terser",
       rollupOptions: {
+        ...config.build?.rollupOptions,
         output: {
+          ...(typeof config.build?.rollupOptions?.output === "object" && !Array.isArray(config.build.rollupOptions.output)
+            ? config.build.rollupOptions.output
+            : {}),
           manualChunks: undefined,
         },
         input: {

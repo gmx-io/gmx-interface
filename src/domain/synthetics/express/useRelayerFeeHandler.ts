@@ -2,12 +2,13 @@ import { useMemo } from "react";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
-  selectExpressGlobalParams,
+  selectGmxAccountExpressGlobalParams,
   selectIsExpressTransactionAvailable,
+  selectSettlementChainExpressGlobalParams,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
-  selectSubaccountForMultichainAction,
-  selectSubaccountForSettlementChainAction,
+  selectRawSubaccountForMultichainAction,
+  selectRawSubaccountForSettlementChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
@@ -39,6 +40,7 @@ export type ExpressOrdersParamsResult = {
   asyncExpressParams: ExpressTxnParams | undefined;
   expressParamsPromise: Promise<ExpressTxnParams | undefined> | undefined;
   isLoading: boolean;
+  isMultichainSubmitDisabled: boolean;
 };
 
 export function useExpressOrdersParams({
@@ -54,15 +56,15 @@ export function useExpressOrdersParams({
   const { chainId } = useChainId();
 
   const showDebugValues = useShowDebugValues();
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
+  const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
+  const globalExpressParams = isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams;
   const subaccount = useSelector(
-    isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
+    isGmxAccount ? selectRawSubaccountForMultichainAction : selectRawSubaccountForSettlementChainAction
   );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 
-  // Relay routers don't support createTwapOrder yet
-  const isAvailable =
-    isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams) && !orderParams.twapParams;
+  const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
 
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId, { isExpress: isExpressAvailable });
@@ -182,11 +184,15 @@ export function useExpressOrdersParams({
         fastExpressParams: undefined,
         asyncExpressParams: undefined,
         isLoading: false,
+        isMultichainSubmitDisabled: false,
         expressParamsPromise: undefined,
       };
     }
 
     const expressParams = isAsyncEnabled ? asyncExpressParams ?? fastExpressParams : fastExpressParams;
+    const hasOrderParams = !getIsEmptyBatch(orderParams);
+    const isLoading = hasOrderParams && !fastExpressParams && !fastExpressError;
+    const isMultichainSubmitDisabled = isGmxAccount && hasOrderParams && !expressParams;
 
     const expressParamsPromise = Promise.race([fastExpressPromise, asyncExpressPromise])
       .then((result) => {
@@ -199,7 +205,8 @@ export function useExpressOrdersParams({
       expressEstimateMethod: expressParams?.estimationMethod,
       fastExpressParams,
       asyncExpressParams,
-      isLoading: !getIsEmptyBatch(orderParams) && !fastExpressParams && !fastExpressError,
+      isLoading,
+      isMultichainSubmitDisabled,
       expressParamsPromise,
     };
   }, [
@@ -211,10 +218,12 @@ export function useExpressOrdersParams({
     asyncExpressPromise,
     orderParams,
     fastExpressError,
+    isGmxAccount,
   ]);
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({
     expressParams: result.expressParams,
+    orderParams,
     isGmxAccount,
   });
 

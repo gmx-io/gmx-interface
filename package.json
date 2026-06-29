@@ -34,7 +34,7 @@
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss} landing/**/*.{js,ts,jsx,tsx,css,scss}",
     "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild",
-    "test:ct": "playwright test -c playwright-ct.config.ts"
+    "test:ct": "NODE_OPTIONS='--max-old-space-size=8192' playwright test -c playwright-ct.config.ts"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
@@ -49,6 +49,8 @@
     "@lingui/core": "4.10.0",
     "@lingui/macro": "4.11.3",
     "@lingui/react": "4.10.0",
+    "@privy-io/react-auth": "^3.27.1",
+    "@privy-io/wagmi": "^4.0.8",
     "@rainbow-me/rainbowkit": "2.2.9",
     "@reown/walletkit": "^1.5.3",
     "@safe-global/protocol-kit": "^6.1.2",
@@ -175,7 +177,7 @@
     "happy-dom": "^20.8.8",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
-    "postcss": "8.4.41",
+    "postcss": "8.5.12",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.6.5",
     "rollup-plugin-visualizer": "5.12.0",

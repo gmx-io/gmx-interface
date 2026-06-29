@@ -3,8 +3,12 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
+import { ARBITRUM, MEGAETH } from "config/chains";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import sparkleIcon from "img/sparkle.svg";
 
 export type EventData = {
   id: string;
@@ -31,21 +35,72 @@ export type EventData = {
 
 export const homeEventsData: EventData[] = [];
 
-export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
-export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
-export const WELL_DELISTING_EVENT_ID = "well-delisting";
-
 export const appEventsData: EventData[] = [
   {
-    id: WELL_DELISTING_EVENT_ID,
+    id: "spcx-pre-ipo-arbitrum-listing-updated",
     isActive: true,
-    endDate: "20 Apr 2026, 0:00",
-    title: "WELL/USD delisting",
+    startDate: "09 Jun 2026, 12:00",
+    endDate: "16 Jun 2026, 12:00",
+    flagId: "showSpcxPreIpoArbitrumListingUpdated",
+    chains: [ARBITRUM],
+    title: "SPCX Pre-IPO market added on Arbitrum",
     bodyText: (
       <>
-        Position openings for WELL/USD are no longer available. Please close your existing positions before April 19.
-        Remaining positions may be auto-closed.
+        <Link to="/trade">Trade</Link> pre-IPO SpaceX perpetuals with up to 10x leverage, 24/7. SPCX/USD is a new type
+        of market for GMX, launching with limited initial OI capacity. Caps and trading parameters may change around the
+        IPO, and opening or increasing positions may be unavailable when caps are reached.{" "}
+        <ExternalLink href="https://x.com/GMX_IO/status/2064418523657470193">Read more</ExternalLink>.
       </>
+    ),
+  },
+  {
+    id: "mega-arbitrum-megaeth-listing",
+    flagId: "showMegaListingArbitrumMegaeth",
+    endDate: "07 May 2026, 12:00",
+    chains: [ARBITRUM, MEGAETH],
+    title: "MEGA market added on Arbitrum and MegaETH",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> MEGA, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum, or GLV{" "}
+        <span className="text-slate-100">[USDM-USDM]</span> on MegaETH.
+      </>
+    ),
+  },
+  {
+    id: "megaeth-points-program",
+    flagId: "showMegaethPoints",
+    endDate: "31 Dec 2026, 0:00",
+    chains: [MEGAETH],
+    title: "Earn points on GMX MegaETH",
+    bodyText: (
+      <span className="block">
+        <span className="mb-12 block text-slate-100">Earn points each epoch across four activities:</span>
+        <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Trading activity</span>
+            <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Referral volume</span>
+            <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Trader PnL</span>
+            <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">
+              GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
+            </span>
+            <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
+          </span>
+        </span>
+      </span>
     ),
   },
   {
@@ -70,7 +125,7 @@ export const appEventsData: EventData[] = [
       <>
         <Link to="/trade">Trade</Link> GOLD and SILVER perpetuals 24/7 with up to 100x leverage, or{" "}
         <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>. Find
-        them under the RWA category in the market dropdown.
+        them under the TradFi category in the market dropdown.
       </>
     ),
   },
@@ -101,20 +156,6 @@ export const appEventsData: EventData[] = [
         Trade perpetuals, create and share your referral code, and provide liquidity on MegaETH using its native
         stablecoin: USDm.{" "}
         <ExternalLink href="https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade">Read more</ExternalLink>.
-      </>
-    ),
-  },
-  {
-    id: OM_MANTRA_MIGRATION_EVENT_ID,
-    isActive: true,
-    startDate: "20 Feb 2026, 0:00",
-    endDate: "27 Feb 2026, 0:00",
-    title: "OM to MANTRA migration",
-    variant: "warning",
-    bodyText: (
-      <>
-        ⚠️ OM (Mantra) is migrating to the MANTRA token. Please close your position on the OM/USD market by [08:00 UTC]
-        21 February to avoid auto-closure or forced liquidation.
       </>
     ),
   },
@@ -180,22 +221,6 @@ export const appEventsData: EventData[] = [
       <>
         From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance
         accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
-      </>
-    ),
-  },
-  {
-    id: AL16Z_DELISTING_EVENT_ID,
-    isActive: true,
-    startDate: "06 Nov 2025, 08:00",
-    endDate: "06 Dec 2025, 08:00",
-    title: "AI16Z/USD delisting",
-    bodyText: (
-      <>
-        Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is
-        recommended.
-        <br />
-        <br />
-        The listing committee will evaluate the listing of ELIZAOS/USD.
       </>
     ),
   },

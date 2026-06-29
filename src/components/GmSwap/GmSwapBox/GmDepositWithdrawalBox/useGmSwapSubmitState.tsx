@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
@@ -20,14 +19,20 @@ import {
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectSettlementChainGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectGasPrice,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectGasPaymentTokenAddress,
+  selectGmxAccountGasPaymentTokenAddress,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
@@ -44,10 +49,12 @@ import {
   ValidationBannerErrorName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 import { GmSwapFees } from "sdk/utils/trade/types";
@@ -83,7 +90,7 @@ type SubmitButtonState = {
   tokensToApprove?: string[];
   isAllowanceLoaded?: boolean;
   isAllowanceLoading?: boolean;
-  errorDescription?: string;
+  errorDescription?: React.ReactNode;
   bannerErrorContent?: React.ReactNode;
 };
 
@@ -115,9 +122,15 @@ export const useGmSwapSubmitState = ({
   const srcChainId = useSelector(selectSrcChainId);
   const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
-  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const gasPaymentTokenAddress =
+    paySource === "gmxAccount" ? gmxAccountGasPaymentTokenAddress : settlementChainGasPaymentTokenAddress;
+  const gasPaymentToken = paySource === "gmxAccount" ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
 
@@ -365,6 +378,7 @@ export const useGmSwapSubmitState = ({
 
   const error = takeValidationResult(
     commonError,
+    multipleWalletExtensionsChainError,
     swapError,
     expressError,
     nativeGasError,
@@ -390,6 +404,15 @@ export const useGmSwapSubmitState = ({
         text: t`Not supported`,
         disabled: true,
         onSubmit,
+      };
+    }
+
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        disabled: true,
+        onSubmit,
+        errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
       };
     }
 
@@ -456,7 +479,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: (
           <>
-            <Trans>Loading network fees…</Trans>
+            <Trans>Loading network fees...</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -473,7 +496,7 @@ export const useGmSwapSubmitState = ({
         if (errorName === "InsufficientMultichainBalance") {
           errorText = t`Insufficient balance`;
         } else if (errorName === "MaxPoolAmountExceeded" || errorName === "MaxPoolAmountForDepositExceeded") {
-          errorText = t`Max pool amount exceeded`;
+          errorText = t`Maximum pool capacity reached`;
         } else {
           errorText = isDeposit ? t`Error simulating deposit` : t`Error simulating withdrawal`;
         }
@@ -494,6 +517,7 @@ export const useGmSwapSubmitState = ({
   }, [
     account,
     isAvalancheGmxAccountWarning,
+    multipleWalletExtensionsChainError,
     isAllowanceLoading,
     technicalFees,
     technicalFeesError,

@@ -2,9 +2,9 @@ import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { type Provider } from "ethers";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Address, encodeAbiParameters, encodeEventTopics, toHex, zeroAddress } from "viem";
+import { Address, encodeAbiParameters, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -34,11 +34,16 @@ import {
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
-  selectExpressGlobalParams,
-  selectGasPaymentToken,
+  selectGmxAccountExpressGlobalParams,
+  selectGmxAccountGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressOrdersEnabled,
+  selectSetExpressOrdersEnabled,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
@@ -49,6 +54,7 @@ import {
   sendSameChainWithdrawalTxn,
 } from "domain/multichain/sendSameChainWithdrawalTxn";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
+import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
@@ -64,6 +70,7 @@ import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "dom
 import { convertToUsd, sortTokenDataByBalance, TokenBalanceType, TokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
 import {
@@ -83,7 +90,7 @@ import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExp
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
@@ -99,6 +106,7 @@ import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculate
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -303,6 +311,10 @@ function useWithdrawViewTransactions({
                   return;
                 }
 
+                if (!isHex(txnHash)) {
+                  return;
+                }
+
                 getPublicClientWithRpc(chainId)
                   .waitForTransactionReceipt({
                     hash: txnHash,
@@ -496,12 +508,13 @@ export const WithdrawalView = () => {
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawalViewTokenAddress();
 
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
   const { tokensData } = useTokensDataRequest(chainId, withdrawalViewChain);
   const networks = useGmxAccountWithdrawNetworks();
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const globalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const gasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
 
   const selectedToken = useMemo(() => {
     return getByKey(tokensData, selectedTokenAddress);
@@ -779,6 +792,20 @@ export const WithdrawalView = () => {
     [sameChainNetworkFeeAsyncResult.data, gasPrice, tokensData]
   );
 
+  const isSelectedGasPaymentToken = useMemo(() => {
+    if (selectedToken === undefined || gasPaymentToken === undefined) {
+      return false;
+    }
+
+    return isStringEqualInsensitive(
+      convertTokenAddress(chainId, selectedToken.address, "wrapped"),
+      convertTokenAddress(chainId, gasPaymentToken.address, "wrapped")
+    );
+  }, [chainId, gasPaymentToken, selectedToken]);
+
+  const gasPaymentTokenAsCollateralAmount = isSelectedGasPaymentToken ? inputAmount : undefined;
+  const baseGasPaymentTokenAsCollateralAmount = isSelectedGasPaymentToken ? baseBridgeOutParams?.amount : undefined;
+
   const baseExpressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
     if (
       account === undefined ||
@@ -811,6 +838,7 @@ export const WithdrawalView = () => {
     isGmxAccount: true,
     requireValidations: false,
     overrideWnt: !isSameChain,
+    gasPaymentTokenAsCollateralAmount: baseGasPaymentTokenAsCollateralAmount,
     enabled: !isSameChain,
   });
 
@@ -841,10 +869,11 @@ export const WithdrawalView = () => {
     isGmxAccount: true,
     requireValidations: false,
     overrideWnt: !isSameChain,
+    gasPaymentTokenAsCollateralAmount,
     enabled: !isSameChain,
   });
 
-  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: true });
 
   const isOutOfTokenErrorToken = useMemo(() => {
     if (errors?.isOutOfTokenError?.tokenAddress) {
@@ -1007,7 +1036,7 @@ export const WithdrawalView = () => {
     };
   }, [gasPaymentToken, isSameChain, networkFeeInGasPaymentToken, selectedToken, someGasPaymentTokenAmount, wntFee]);
 
-  const isLoadingWithdrawalMax = isSameChain ? false : gasPaymentTokenAmountForMax === undefined;
+  const isLoadingWithdrawalMax = isSameChain ? false : expressTxnParamsAsyncResult.isLoading;
 
   const withdrawalMaxDetails = useMaxAvailableAmount({
     fromToken: selectedToken,
@@ -1018,10 +1047,10 @@ export const WithdrawalView = () => {
     gasPaymentToken: gasPaymentTokenForMax,
     gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
     gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
+    isGmxAccount: true,
   });
 
-  const showMaxButton =
-    withdrawalMaxDetails.showClickMax && !(showWntWarning && !isSameChain && !selectedToken?.isWrapped);
+  const showMaxButton = withdrawalMaxDetails.showClickMax;
 
   const handlePickToken = useCallback(
     (tokenAddress: string) => {
@@ -1084,13 +1113,25 @@ export const WithdrawalView = () => {
     shouldShowInfoRowPlaceholder &&
     (isSameChain
       ? sameChainNetworkFeeAsyncResult.isLoading
-      : areMultichainFeesLoading || !expressTxnParamsAsyncResult.data);
+      : areMultichainFeesLoading || (!expressTxnParamsAsyncResult.data && !expressTxnParamsAsyncResult.error));
+
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
+  const { setIsSettingsVisible } = useSettings();
+
+  useEffect(() => {
+    if (withdrawalViewChain !== undefined && !isSameChain && !expressOrdersEnabled) {
+      setExpressOrdersEnabled(true);
+      toastEnableExpress(() => setIsSettingsVisible(true));
+    }
+  }, [withdrawalViewChain, isSameChain, expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible]);
 
   let buttonState: {
     text: React.ReactNode;
     bannerErrorName?: ValidationBannerErrorName;
     disabled?: boolean;
     onClick?: () => void;
+    errorDescription?: ReactNode;
   } = {
     text: t`Withdraw`,
     onClick: handleWithdraw,
@@ -1099,6 +1140,12 @@ export const WithdrawalView = () => {
   if (hasOutdatedUi) {
     buttonState = {
       text: getPageOutdatedError(),
+      disabled: true,
+    };
+  } else if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+    buttonState = {
+      text: multipleWalletExtensionsChainError.buttonErrorMessage,
+      errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
       disabled: true,
     };
   } else if (isSubmitting) {
@@ -1466,23 +1513,6 @@ export const WithdrawalView = () => {
               </div>
             </AlertInfoCard>
           )}
-
-          {buttonState.bannerErrorName && (
-            <AlertInfoCard type="error" className="mt-8" hideClose>
-              <ValidationBannerErrorContent
-                validationBannerErrorName={buttonState.bannerErrorName}
-                chainId={chainId}
-                srcChainId={withdrawalViewChain}
-                gasPaymentTokenAddress={gasPaymentToken?.address}
-              />
-            </AlertInfoCard>
-          )}
-
-          {withdrawalMaxDetails.gasPaymentTokenWarningContent && (
-            <AlertInfoCard type="warning" className="mt-8" hideClose>
-              {withdrawalMaxDetails.gasPaymentTokenWarningContent}
-            </AlertInfoCard>
-          )}
         </>
       )}
 
@@ -1516,14 +1546,37 @@ export const WithdrawalView = () => {
         </div>
       )}
 
-      <Button
-        variant="primary-action"
-        className="w-full shrink-0"
-        onClick={buttonState.onClick}
-        disabled={buttonState.disabled}
-      >
-        {buttonState.text}
-      </Button>
+      {!isInsufficientBalance && (
+        <>
+          {buttonState.bannerErrorName && (
+            <AlertInfoCard type="error" className="mb-16" hideClose>
+              <ValidationBannerErrorContent
+                validationBannerErrorName={buttonState.bannerErrorName}
+                chainId={chainId}
+                srcChainId={withdrawalViewChain}
+                gasPaymentTokenAddress={gasPaymentToken?.address}
+              />
+            </AlertInfoCard>
+          )}
+
+          {withdrawalMaxDetails.gasPaymentTokenWarningContent && (
+            <AlertInfoCard type="warning" className="mb-16" hideClose>
+              {withdrawalMaxDetails.gasPaymentTokenWarningContent}
+            </AlertInfoCard>
+          )}
+        </>
+      )}
+
+      <ButtonTooltipWrapper content={buttonState.errorDescription}>
+        <Button
+          variant="primary-action"
+          className="w-full shrink-0"
+          onClick={buttonState.onClick}
+          disabled={buttonState.disabled}
+        >
+          {buttonState.text}
+        </Button>
+      </ButtonTooltipWrapper>
     </div>
   );
 };

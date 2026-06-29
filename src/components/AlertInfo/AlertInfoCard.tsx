@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useState } from "react";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
+import AlertIconComponent from "img/ic_alert.svg?react";
 import InfoIconComponent from "img/ic_info.svg?react";
 import WarnIconComponent from "img/ic_warn.svg?react";
 
@@ -18,7 +19,7 @@ type Props = {
 
 export function AlertInfoCard({ children, type = "info", onClose, className, hideClose }: Props) {
   const [closed, setClosed] = useState(false);
-  const Icon = type === "info" ? InfoIconComponent : WarnIconComponent;
+  const Icon = type === "info" ? InfoIconComponent : type === "warning" ? WarnIconComponent : AlertIconComponent;
 
   const handleClose = useCallback(() => {
     setClosed(true);

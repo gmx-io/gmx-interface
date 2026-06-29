@@ -129,6 +129,11 @@ export default [
                   },
                   {
                     internalType: "uint256",
+                    name: "uiFeeFactor",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
                     name: "updatedAtTime",
                     type: "uint256",
                   },
@@ -1041,6 +1046,11 @@ export default [
               {
                 internalType: "uint256",
                 name: "minMarketTokens",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "uiFeeFactor",
                 type: "uint256",
               },
               {
@@ -2616,6 +2626,11 @@ export default [
               {
                 internalType: "uint256",
                 name: "minOutputAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "uiFeeFactor",
                 type: "uint256",
               },
               {
@@ -4232,6 +4247,11 @@ export default [
               },
               {
                 internalType: "uint256",
+                name: "uiFeeFactor",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
                 name: "updatedAtTime",
                 type: "uint256",
               },
@@ -4587,6 +4607,11 @@ export default [
               {
                 internalType: "uint256",
                 name: "minShortTokenAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "uiFeeFactor",
                 type: "uint256",
               },
               {

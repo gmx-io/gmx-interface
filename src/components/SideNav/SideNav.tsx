@@ -5,6 +5,7 @@ import { ReactNode, useCallback, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import { useTheme } from "context/ThemeContext/ThemeContext";
+import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -20,6 +21,7 @@ import ReferralsIcon from "img/ic_referrals.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
 import LogoText from "img/logo-text.svg?react";
+import sparkleIcon from "img/sparkle.svg";
 import TradeIcon from "img/trade.svg?react";
 
 import { BottomMenuSection } from "./BottomMenuSection";
@@ -164,12 +166,39 @@ export function MenuSection({
   isCollapsed: boolean | undefined;
   onMenuItemClick?: () => void;
 }) {
+  const isMegaethPointsActive = useMegaethPointsActive();
+
+  const withMegaethSparkle = (label: string) =>
+    isMegaethPointsActive ? (
+      <span className="inline-flex items-center gap-4">
+        {label}
+        <img className="h-10" src={sparkleIcon} alt="" />
+      </span>
+    ) : (
+      label
+    );
+
   const mainNavItems = [
-    { icon: <TradeIcon className="size-20" />, label: t`Trade`, key: "trade", to: "/trade" },
+    {
+      icon: <TradeIcon className="size-20" />,
+      label: withMegaethSparkle(t`Trade`),
+      key: "trade",
+      to: "/trade",
+    },
     { icon: <EarnIcon className="size-20" />, label: t`Earn`, key: "earn", to: "/earn" },
-    { icon: <DatabaseIcon className="size-20" />, label: t`Pools`, key: "pools", to: "/pools" },
+    {
+      icon: <DatabaseIcon className="size-20" />,
+      label: withMegaethSparkle(t`Pools`),
+      key: "pools",
+      to: "/pools",
+    },
     { icon: <DashboardIcon className="size-20" />, label: t`Stats`, key: "stats", to: "/stats" },
-    { icon: <ReferralsIcon className="size-20" />, label: t`Referrals`, key: "referrals", to: "/referrals" },
+    {
+      icon: <ReferralsIcon className="size-20" />,
+      label: withMegaethSparkle(t`Referrals`),
+      key: "referrals",
+      to: "/referrals",
+    },
     { icon: <LeaderboardIcon className="size-20" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
     { icon: <EcosystemIcon className="size-20" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
   ];

@@ -7,7 +7,7 @@ export async function fetchApiPositionsInfo(
   ctx: { api: IHttp },
   params: { address: string; includeRelatedOrders?: boolean }
 ): Promise<ApiPositionInfo[]> {
-  const positions: any[] = await ctx.api.fetchJson("/positions", {
+  const positions: any[] = await ctx.api.fetchJson("/v1/positions", {
     query: {
       address: params.address,
       includeRelatedOrders: params.includeRelatedOrders || undefined,

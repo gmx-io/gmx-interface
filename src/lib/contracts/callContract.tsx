@@ -196,7 +196,7 @@ export async function callContract(
   }
 }
 
-function showCallContractToast({
+export function showCallContractToast({
   chainId,
   hash,
   sentMsg,
@@ -217,7 +217,7 @@ function showCallContractToast({
           <br />
           <br />
           <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
-            <Trans>View status</Trans>
+            <Trans>View</Trans>
           </ExternalLink>
         </>
       )}

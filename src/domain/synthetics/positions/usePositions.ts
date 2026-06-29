@@ -59,9 +59,10 @@ export function usePositions(
     marketsData?: MarketsData;
     tokensData?: TokensData;
     account: string | null | undefined;
+    enabled?: boolean;
   }
 ): PositionsResult {
-  const { marketsData, tokensData, account } = p;
+  const { marketsData, tokensData, account, enabled = true } = p;
   const [disableBatching, setDisableBatching] = useState(true);
 
   const keysAndPrices = useKeysAndPricesParams({
@@ -71,8 +72,8 @@ export function usePositions(
   });
 
   const positionsKey = useMemo(
-    () => (account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null),
-    [account, keysAndPrices.marketsKeys]
+    () => (enabled && account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null),
+    [account, enabled, keysAndPrices.marketsKeys]
   );
 
   const {

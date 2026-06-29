@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { SourceChainId } from "config/chains";
 import { TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
@@ -65,6 +65,7 @@ export function TradeboxMarginFields({
   const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
 
   const prevSizeSyncContextRef = useRef<string>();
+  const prevTriggerPriceRef = useRef<bigint | undefined | null>(null);
   const shouldForceSizeUsdSyncRef = useRef(false);
 
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -80,6 +81,9 @@ export function TradeboxMarginFields({
   const showPriceField = isLimit && triggerPriceInputValue !== undefined;
   const sizeFieldInputValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
 
+  // For limit orders, use trigger price for USD↔token conversion so the displayed
+  // position size reflects the limit fill price. Each trigger price keystroke
+  // recomputes this, but the size-sync effect guards against overwriting focused fields.
   const sizeConversionPrice = isLimit && triggerPrice !== undefined ? triggerPrice : markPrice;
   const { tokensToUsd, usdToTokens, canConvert } = useSizeConversion({
     toToken,
@@ -100,6 +104,7 @@ export function TradeboxMarginFields({
   } = useTradeboxManualLeverageSizeSlider({
     sizeDisplayMode,
     canConvert,
+    maxAvailableAmount,
     tokensToUsd,
     setSizeInputValue,
     setToTokenInputValue,
@@ -108,7 +113,7 @@ export function TradeboxMarginFields({
   // Sync size input value to USD when market/token context changes
   // USD value calculated separately from increase/decrease amounts
   // so we need to force a sync when the context changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     const nextContext = `${marketAddress ?? ""}:${toTokenAddress ?? ""}`;
 
     if (prevSizeSyncContextRef.current === undefined) {
@@ -122,7 +127,26 @@ export function TradeboxMarginFields({
     }
   }, [marketAddress, toTokenAddress]);
 
-  useEffect(() => {
+  // Keep USD size anchored when the limit trigger price changes.
+  useLayoutEffect(() => {
+    if (!isLimit) {
+      prevTriggerPriceRef.current = triggerPrice;
+      return;
+    }
+
+    if (prevTriggerPriceRef.current === null) {
+      prevTriggerPriceRef.current = triggerPrice;
+      return;
+    }
+
+    if (prevTriggerPriceRef.current !== triggerPrice && sizeDisplayMode === "usd") {
+      shouldForceSizeUsdSyncRef.current = true;
+    }
+
+    prevTriggerPriceRef.current = triggerPrice;
+  }, [isLimit, triggerPrice, sizeDisplayMode]);
+
+  useLayoutEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
 
     if (shouldForceSizeUsdSyncRef.current) {
@@ -161,6 +185,8 @@ export function TradeboxMarginFields({
 
   const handleMarginPercentageChange = useCallback(
     (percentage: number) => {
+      // maxAvailableAmount is pre-bounded to wallet balance by the parent (via useMaxAvailableAmount);
+      // 0n means the user has no available margin to commit
       if (fromToken?.decimals === undefined || maxAvailableAmount === 0n) return;
 
       const formatted = calcMarginAmountByPercentage(
@@ -270,6 +296,7 @@ export function TradeboxMarginFields({
           onDepositTokenAddress={onDepositTokenAddress}
           onMaxClick={() => handleMarginPercentageChange(100)}
           onFocus={() => setFocusedInput("from")}
+          qa="margin"
         />
 
         <SizeField

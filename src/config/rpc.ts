@@ -230,12 +230,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
   // SOURCE CHAINS
   [SOURCE_BASE_MAINNET]: [
-    ...[
-      "https://mainnet.base.org",
-      "https://base.llamarpc.com",
-      "https://base-rpc.publicnode.com",
-      "https://base.drpc.org",
-    ].map((url) => ({
+    ...["https://mainnet.base.org", "https://base-rpc.publicnode.com", "https://base.drpc.org"].map((url) => ({
       url,
       isPublic: true,
       purpose: "default",
@@ -308,12 +303,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
   // ADDITIONAL CHAINS
   [SOURCE_ETHEREUM_MAINNET]: [
-    ...[
-      "https://eth.llamarpc.com",
-      "https://rpc.ankr.com/eth",
-      "https://eth.drpc.org",
-      "https://ethereum.publicnode.com",
-    ].map((url) => ({
+    ...["https://rpc.ankr.com/eth", "https://eth.drpc.org", "https://ethereum.publicnode.com"].map((url) => ({
       url,
       isPublic: true,
       purpose: "default",

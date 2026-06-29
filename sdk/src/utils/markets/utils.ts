@@ -2,13 +2,12 @@ import { zeroAddress } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-import { MARKET_HOURS_MARKETS } from "configs/marketHours";
-import type { MarketConfig as ConfigMarketConfig } from "configs/markets";
+import { UI_MAX_LEVERAGE_BY_MARKET, type MarketConfig as ConfigMarketConfig } from "configs/markets";
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import type { DayPriceCandle } from "utils/24h/types";
 import { bigMath } from "utils/bigmath";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fees";
-import { applyFactor, PRECISION } from "utils/numbers";
+import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { periodToSeconds } from "utils/time";
 import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "utils/tokens";
@@ -142,31 +141,59 @@ export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; p
 }
 
 /**
- * Rounds to nearest .0 leverage, so that getMaxAllowedLeverageByMinCollateralFactor can get .0 or .5 leverage.
+ * Theoretical max leverage derived purely from minCollateralFactor. Does not account for
+ * fees or the liquidation safety buffer. Used by the deposit-collateral path where the
+ * user is not opening a new size.
  */
 const ROUNDING_VALUE = 10000;
-export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
-  if (minCollateralFactor === undefined) return 100 * BASIS_POINTS_DIVISOR;
-  if (minCollateralFactor === 0n) return 100 * BASIS_POINTS_DIVISOR;
+function capByUiMaxLeverageOverride(value: number, marketAddress?: string) {
+  const uiMaxLeverageOverride = marketAddress ? UI_MAX_LEVERAGE_BY_MARKET[marketAddress] : undefined;
+
+  return uiMaxLeverageOverride === undefined ? value : Math.min(value, uiMaxLeverageOverride * BASIS_POINTS_DIVISOR);
+}
+
+export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined, marketAddress?: string) {
+  if (minCollateralFactor === undefined) return capByUiMaxLeverageOverride(100 * BASIS_POINTS_DIVISOR, marketAddress);
+  if (minCollateralFactor === 0n) return capByUiMaxLeverageOverride(100 * BASIS_POINTS_DIVISOR, marketAddress);
 
   const x = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, minCollateralFactor);
   const rounded = Math.round(Number(x) / ROUNDING_VALUE) * ROUNDING_VALUE;
-  return rounded;
+  return capByUiMaxLeverageOverride(rounded, marketAddress);
 }
 
-export function getMaxAllowedLeverageByMinCollateralFactor(
-  minCollateralFactor: bigint | undefined,
-  marketAddress: string | undefined
-) {
-  if (marketAddress) {
-    const cfg = MARKET_HOURS_MARKETS[marketAddress];
-    if (cfg) {
-      if (minCollateralFactor === cfg.onHoursMcf) return cfg.onHoursMaxLeverage * BASIS_POINTS_DIVISOR;
-      if (minCollateralFactor === cfg.offHoursMcf) return cfg.offHoursMaxLeverage * BASIS_POINTS_DIVISOR;
-    }
+const MAX_ALLOWED_LEVERAGE_STEP_BP = 5 * BASIS_POINTS_DIVISOR;
+export function getMaxAllowedLeverage({
+  marketAddress,
+  minCollateralFactor,
+  minCollateralFactorForLiquidation,
+  positionFeeFactorForBalanceWasNotImproved,
+}: {
+  marketAddress?: string;
+  minCollateralFactor: bigint | undefined;
+  minCollateralFactorForLiquidation: bigint | undefined;
+  positionFeeFactorForBalanceWasNotImproved: bigint | undefined;
+}): number {
+  if (
+    minCollateralFactor === undefined ||
+    minCollateralFactor === 0n ||
+    minCollateralFactorForLiquidation === undefined ||
+    minCollateralFactorForLiquidation === 0n ||
+    positionFeeFactorForBalanceWasNotImproved === undefined
+  ) {
+    return capByUiMaxLeverageOverride(100 * BASIS_POINTS_DIVISOR, marketAddress);
   }
 
-  return getMaxLeverageByMinCollateralFactor(minCollateralFactor) / 2;
+  const openingDenominator = minCollateralFactor + 2n * positionFeeFactorForBalanceWasNotImproved;
+  const openingMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, openingDenominator);
+
+  const liquidationDenominator = 2n * minCollateralFactorForLiquidation;
+  const liquidationMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, liquidationDenominator);
+
+  const rawMaxBp = bigMath.min(openingMaxBp, liquidationMaxBp);
+
+  const maxAllowedLeverage = Math.floor(Number(rawMaxBp) / MAX_ALLOWED_LEVERAGE_STEP_BP) * MAX_ALLOWED_LEVERAGE_STEP_BP;
+
+  return capByUiMaxLeverageOverride(maxAllowedLeverage, marketAddress);
 }
 
 export function getOppositeCollateral(marketInfo: MarketInfo, tokenAddress: string) {
@@ -319,6 +346,13 @@ export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: b
 export function getIsMarketAvailableForExpressSwaps(marketInfo: MarketInfo) {
   return [marketInfo.indexToken, marketInfo.longToken, marketInfo.shortToken].every(
     (token) => token.hasPriceFeedProvider
+  );
+}
+
+export function getIsMarketDeprecated(marketInfo: MarketInfo) {
+  return (
+    marketInfo.maxOpenInterestLong <= expandDecimals(1n, 30) &&
+    marketInfo.maxOpenInterestShort <= expandDecimals(1n, 30)
   );
 }
 
@@ -526,7 +560,10 @@ export function getMarketWithTiers(
     minPositionSizeUsd: bigint;
   }
 ): MarketWithTiers {
-  const maxLeverage = getMaxLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
+  const maxLeverage = getMaxLeverageByMinCollateralFactor(
+    marketInfo.minCollateralFactor,
+    marketInfo.marketTokenAddress
+  );
   const maxLeverageBigint = BigInt(maxLeverage);
 
   const leverageTiers: LeverageTier[] = [

@@ -7,8 +7,8 @@ import { ISigner } from "lib/transactions/iSigner";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
-import { getPublicClientWithRpc, getRainbowKitConfig } from "./rainbowKitConfig";
 import { clientToSigner } from "./useEthersSigner";
+import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
 export type SignatureDomain = {
   name: string;
@@ -80,7 +80,7 @@ async function withSmartWalletChainSwap<T>(
   },
   action: (signer: AnySigner) => Promise<T>
 ): Promise<T> {
-  const config = getRainbowKitConfig();
+  const config = getWagmiConfig();
   const startingChainId = getChainId(config);
   const needsSwap = await needsChainSwapForSmartWallet({
     address,

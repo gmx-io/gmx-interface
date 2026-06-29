@@ -37,15 +37,15 @@ import {
   selectTradeboxTwapDuration,
   selectTradeboxTwapNumberOfParts,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import {
-  selectTradeBoxCreateOrderParams,
-  selectTradeBoxTwapParams,
-} from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
+import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getJitGlvShiftParams } from "domain/synthetics/jit/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
@@ -123,12 +123,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const sidecarOrderPayloads = useSidecarOrderPayloads();
 
   const primaryCreateOrderParams = useSelector(selectTradeBoxCreateOrderParams);
-  const twapParams = useSelector(selectTradeBoxTwapParams);
 
   const slippageInputId = useId();
 
   const batchParams: BatchOrderTxnParams = useMemo(() => {
-    if (!primaryCreateOrderParams && !twapParams) {
+    if (!primaryCreateOrderParams) {
       return {
         createOrderParams: [],
         updateOrderParams: [],
@@ -137,12 +136,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     }
 
     return {
-      createOrderParams: [...(primaryCreateOrderParams ?? []), ...(sidecarOrderPayloads?.createPayloads ?? [])],
+      createOrderParams: [...primaryCreateOrderParams, ...(sidecarOrderPayloads?.createPayloads ?? [])],
       updateOrderParams: sidecarOrderPayloads?.updatePayloads ?? [],
       cancelOrderParams: sidecarOrderPayloads?.cancelPayloads ?? [],
-      twapParams: twapParams ?? undefined,
     };
-  }, [primaryCreateOrderParams, twapParams, sidecarOrderPayloads]);
+  }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
   const { data: wrapOrUnwrapExecutionFee } = useWrapOrUnwrapExecutionFee();
 
@@ -150,7 +148,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     if (isWrapOrUnwrap) {
       return wrapOrUnwrapExecutionFee;
     }
-    return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
+    return tokensData
+      ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData, allowEmptyBatch: true })
+      : undefined;
   }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
   const {
@@ -159,6 +159,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     asyncExpressParams,
     expressParamsPromise,
     isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
@@ -316,14 +317,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     const actionName = isSwap ? "Swap" : isIncrease ? "Open Position" : "Close Position";
     const collateralSymbol = isSwap ? fromToken?.symbol : collateralToken?.symbol;
 
-    if (
-      (!primaryCreateOrderParams && !twapParams) ||
-      !signer ||
-      !provider ||
-      !tokensData ||
-      !account ||
-      !marketsInfoData
-    ) {
+    if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
       helperToast.error(t`Order submission failed`, {
         tradingErrorInfo: { actionName, collateral: collateralSymbol, requestId: metricData.requestId },
       });
@@ -331,10 +325,24 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       return Promise.reject();
     }
 
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount: isFromTokenGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName,
+        collateral: collateralSymbol,
+        requestId: metricData.requestId,
+        metricId: metricData.metricId,
+      })
+    ) {
+      return Promise.reject();
+    }
+
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-    const jitLiquidityInfo = marketInfo
-      ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)
+    const jitShiftParamsList = marketInfo
+      ? getJitGlvShiftParams(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
       : undefined;
     const nativeReserveLiquidity = marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined;
     return sendBatchOrderTxn({
@@ -343,14 +351,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       provider,
       batchParams,
       isGmxAccount: isFromTokenGmxAccount,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
             tokensData,
             blockTimestampData,
-            jitShiftParamsList: jitLiquidityInfo?.glvShiftParams,
+            jitShiftParamsList,
             // Excludes JIT — determines whether JIT simulation is needed
             nativeReserveLiquidity,
           },
@@ -388,7 +395,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     makeOrderTxnCallback,
     marketInfo,
     marketsInfoData,
-    twapParams,
     primaryCreateOrderParams,
     provider,
     setShouldFallbackToInternalSwap,
@@ -435,6 +441,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     expressParams,
     batchParams,
     isExpressLoading,
+    isMultichainSubmitDisabled,
     totalExecutionFee,
   };
 }

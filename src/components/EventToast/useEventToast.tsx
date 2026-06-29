@@ -4,28 +4,15 @@ import toast from "react-hot-toast";
 import { useLocalStorage } from "react-use";
 
 import { ARBITRUM } from "config/chains";
-import {
-  AL16Z_DELISTING_EVENT_ID,
-  EventData,
-  OM_MANTRA_MIGRATION_EVENT_ID,
-  WELL_DELISTING_EVENT_ID,
-  appEventsData,
-  homeEventsData,
-} from "config/events";
+import { EventData, appEventsData, homeEventsData } from "config/events";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
-import { usePositions } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
-import useWallet from "lib/wallets/useWallet";
 
 import EventToast from "./EventToast";
-
-const AL16Z_MARKET_ADDRESS = "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169";
-const OM_MARKET_ADDRESS = "0x89EB78679921499632fF16B1be3ee48295cfCD91";
-const WELL_MARKET_ADDRESS = "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4";
 
 function useEventToast() {
   const isHome = isHomeSite();
@@ -47,32 +34,6 @@ function useEventToast() {
       .every((market) => market.fundingIncreaseFactorPerSecond > 0);
   }, [marketsInfoData]);
 
-  const { account } = useWallet();
-
-  const positions = usePositions(chainId, {
-    marketsData: marketsInfoData,
-    tokensData: tokensData,
-    account: account,
-  });
-
-  const hasAl16ZPosition = useMemo(() => {
-    return Object.values(positions.positionsData ?? {}).some(
-      (position) => position.marketAddress === AL16Z_MARKET_ADDRESS
-    );
-  }, [positions.positionsData]);
-
-  const hasOmPosition = useMemo(() => {
-    return Object.values(positions.positionsData ?? {}).some(
-      (position) => position.marketAddress === OM_MARKET_ADDRESS
-    );
-  }, [positions.positionsData]);
-
-  const hasWellPosition = useMemo(() => {
-    return Object.values(positions.positionsData ?? {}).some(
-      (position) => position.marketAddress === WELL_MARKET_ADDRESS
-    );
-  }, [positions.positionsData]);
-
   const { uiFlags } = useUiFlagsRequest();
 
   useEffect(() => {
@@ -87,9 +48,6 @@ function useEventToast() {
     const eventsData = isHome ? homeEventsData : appEventsData;
 
     eventsData
-      .filter((event) => event.id !== AL16Z_DELISTING_EVENT_ID || hasAl16ZPosition)
-      .filter((event) => event.id !== OM_MANTRA_MIGRATION_EVENT_ID || hasOmPosition)
-      .filter((event) => event.id !== WELL_DELISTING_EVENT_ID || hasWellPosition)
       .filter((event) => isEventActive(event, uiFlags))
       .filter(
         (event) => !event.startDate || !isFuture(parse(event.startDate + ", +00", "d MMM yyyy, H:mm, x", new Date()))
@@ -127,9 +85,6 @@ function useEventToast() {
     isAdaptiveFundingActiveSomeMarkets,
     isAdaptiveFundingActiveAllMarkets,
     arbIncentiveStats,
-    hasAl16ZPosition,
-    hasOmPosition,
-    hasWellPosition,
     uiFlags,
   ]);
 }

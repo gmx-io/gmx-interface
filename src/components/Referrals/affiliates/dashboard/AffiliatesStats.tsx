@@ -1,13 +1,14 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { lightFormat } from "date-fns";
+import type { TransactionResponse } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import { Fragment, useCallback, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { useAffiliateReferralStats } from "domain/referrals/hooks/useAffiliateReferralStats";
-import { type ReferralCodeStats } from "domain/referrals/types";
+import type { ReferralCodeStats } from "domain/referrals/types";
 import { getReferralCodeTradeUrl, getSharePercentage, getTierIdDisplay } from "domain/referrals/utils/referralsHelper";
 import { useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
@@ -51,7 +52,7 @@ import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 type Props = {
   account?: string;
   referralsData?: TotalReferralsStats;
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
 };
 
 export function AffiliatesStats({ account, referralsData, handleCreateReferralCode }: Props) {
@@ -184,7 +185,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
             </div>
             <div className="text-body-small font-medium text-typography-secondary">
               <span className="text-slate-500">
-                <Trans>Last Updated:</Trans>
+                <Trans>Last updated:</Trans>
               </span>{" "}
               {lastUpdated ?? "—"}
             </div>
@@ -237,7 +238,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                       </TableTh>
                       <TableTh scope="col" className="w-0">
                         <span className="sr-only">
-                          <Trans>Actions</Trans>
+                          <Trans>ACTIONS</Trans>
                         </span>
                       </TableTh>
                     </TableTheadTr>
@@ -422,10 +423,10 @@ function ReferralCodesMobileTable({
     <div role="table" className="grid grid-cols-[1fr_1fr_auto] gap-y-4 px-4">
       <GridRow>
         <GridHeaderCell>
-          <Trans>Code</Trans>
+          <Trans>CODE</Trans>
         </GridHeaderCell>
         <GridHeaderCell className="col-span-2 text-right">
-          <Trans>Total Volume</Trans>
+          <Trans>TOTAL VOLUME</Trans>
         </GridHeaderCell>
         <GridHeaderCell />
       </GridRow>
@@ -461,14 +462,14 @@ function ReferralCodesMobileTable({
               >
                 <div className="text-body-small flex items-center justify-between py-4">
                   <span className="font-medium text-typography-secondary">
-                    <Trans>Traders Referred</Trans>
+                    <Trans>Traders referred</Trans>
                   </span>
                   <span className="numbers">{stat.registeredReferralsCount}</span>
                 </div>
 
                 <div className="text-body-small flex items-center justify-between py-4">
                   <span className="font-medium text-typography-secondary">
-                    <Trans>Total Rebates</Trans>
+                    <Trans>Total rebates</Trans>
                   </span>
                   <span className="numbers">{formatBigUsd(stat.affiliateRebateUsd)}</span>
                 </div>

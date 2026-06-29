@@ -1,6 +1,51 @@
-import type { PositionOrderInfo } from "domain/synthetics/orders";
+import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders";
+import { isTriggerDecreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import type { TokenData } from "domain/synthetics/tokens";
+import { DUST_USD } from "lib/legacy";
+import { MaxUint256 } from "lib/numbers";
+
+export const FULL_POSITION_CLOSE_SIZE_DELTA_USD = MaxUint256;
+
+export function isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd: bigint | undefined, positionSizeUsd?: bigint) {
+  if (sizeDeltaUsd === undefined) {
+    return false;
+  }
+
+  if (sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD) {
+    return true;
+  }
+
+  if (positionSizeUsd === undefined || positionSizeUsd <= 0n) {
+    return false;
+  }
+
+  return sizeDeltaUsd >= positionSizeUsd || positionSizeUsd - sizeDeltaUsd < DUST_USD;
+}
+
+export function isFullClosePositionOrder(order: OrderInfo, positionSizeUsd?: bigint) {
+  if (isTwapOrder(order)) {
+    return false;
+  }
+
+  return (
+    isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, positionSizeUsd)
+  );
+}
+
+export function getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd: bigint, positionSizeUsd?: bigint) {
+  if (sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD) {
+    return positionSizeUsd ?? 0n;
+  }
+
+  return isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd, positionSizeUsd) && positionSizeUsd !== undefined
+    ? positionSizeUsd
+    : sizeDeltaUsd;
+}
+
+export function getPositionCloseSizeDeltaUsdForPayload(sizeDeltaUsd: bigint, isFullClose: boolean) {
+  return isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : sizeDeltaUsd;
+}
 
 export function calculateTotalSizeUsd(p: {
   existingPositionSizeUsd: bigint | undefined;

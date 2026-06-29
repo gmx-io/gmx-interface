@@ -177,7 +177,7 @@ function NetworkMenuItem({
                 return;
               }
               close();
-              switchNetwork(network.value, isConnected);
+              switchNetwork(network.value, isConnected, { fallbackToAppSelectionOnError: true });
             }}
           >
             <div className="menu-item-group">

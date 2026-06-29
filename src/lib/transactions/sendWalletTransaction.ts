@@ -1,13 +1,15 @@
+import { isAddress, isHex } from "viem";
+
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
-import { ISigner, ISignerSendTransactionParams, ISignerSendTransactionResult } from "./iSigner";
+import { ISigner, ISignerSendTransactionParams } from "./iSigner";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 
 export type WalletTxnCtx = {};
@@ -76,15 +78,17 @@ export async function sendWalletTransaction({
 
     const gasLimitPromise = gasLimit
       ? Promise.resolve(gasLimit)
-      : getPublicClientWithRpc(chainId)
-          .estimateGas({
-            account: from,
-            to,
-            data: callData,
-            value,
-          })
-          .then(applyGasLimitBuffer)
-          .catch(() => undefined);
+      : isAddress(from) && isAddress(to) && isHex(callData)
+        ? getPublicClientWithRpc(chainId)
+            .estimateGas({
+              account: from,
+              to,
+              data: callData,
+              value,
+            })
+            .then(applyGasLimitBuffer)
+            .catch(() => undefined)
+        : Promise.resolve(undefined);
 
     const provider = getProvider(undefined, chainId);
     const gasPriceDataPromise = gasPriceData
@@ -130,7 +134,7 @@ export async function sendWalletTransaction({
 
     return {
       transactionHash: res.hash,
-      wait: makeWalletTxnResultWaiter(res.hash, res),
+      wait: makeWalletTxnResultWaiter(chainId, res.hash as `0x${string}`),
     };
   } catch (error) {
     callback?.(eventBuilder.Error(error));
@@ -139,16 +143,14 @@ export async function sendWalletTransaction({
   }
 }
 
-function makeWalletTxnResultWaiter(
-  hash: string,
-  txn: ISignerSendTransactionResult
-): () => Promise<TransactionWaiterResult> {
+function makeWalletTxnResultWaiter(chainId: number, hash: `0x${string}`): () => Promise<TransactionWaiterResult> {
   return async () => {
-    const receipt = await txn.wait();
+    const publicClient = getPublicClientWithRpc(chainId);
+    const receipt = await publicClient.waitForTransactionReceipt({ hash });
     return {
       transactionHash: hash,
-      blockNumber: receipt?.blockNumber,
-      status: receipt?.status === 1 ? "success" : "failed",
+      blockNumber: receipt.blockNumber !== undefined ? Number(receipt.blockNumber) : undefined,
+      status: receipt.status === "success" ? "success" : "failed",
     };
   };
 }

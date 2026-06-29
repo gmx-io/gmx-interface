@@ -5,19 +5,21 @@ import {
   ContractFunctionName,
   ContractFunctionParameters,
   encodeFunctionData,
+  isAddress,
+  isHex,
   numberToHex,
   type StateOverride,
 } from "viem";
 
 import { isDevelopment } from "config/env";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import { applyGasLimitBuffer } from "./gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";
-import { getPublicClientWithRpc } from "./wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "./wallets/walletConfig";
 
 export type TenderlyConfig = {
   accountSlug: string;
@@ -68,11 +70,15 @@ export async function simulateCallDataWithTenderly({
   }
 
   if (gasLimit === undefined) {
+    if (!isAddress(from) || !isAddress(to) || !isHex(data)) {
+      throw new Error("Invalid Tenderly simulation transaction data");
+    }
+
     gasLimit = await publicClient
       .estimateGas({
         account: from,
-        to: to,
-        data: data,
+        to,
+        data,
         value: value,
       })
       .then(applyGasLimitBuffer);

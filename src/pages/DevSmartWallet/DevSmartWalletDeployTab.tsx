@@ -3,8 +3,8 @@ import { type Address, decodeEventLog, encodeFunctionData, getAddress, type Hex,
 
 import { getChainName, getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 
 import Button from "components/Button/Button";
 

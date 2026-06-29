@@ -26,6 +26,8 @@ export interface AccountPnlHistoryPointObject {
   /** Field for debug */
   cumulativeRealizedPriceImpact: Scalars["BigInt"]["output"];
   /** Field for debug */
+  cumulativeRealizedSwapFees: Scalars["BigInt"]["output"];
+  /** Field for debug */
   cumulativeRealizedSwapImpact: Scalars["BigInt"]["output"];
   pnl: Scalars["BigInt"]["output"];
   /** Field for debug */
@@ -34,6 +36,8 @@ export interface AccountPnlHistoryPointObject {
   realizedPnl: Scalars["BigInt"]["output"];
   /** Field for debug */
   realizedPriceImpact: Scalars["BigInt"]["output"];
+  /** Field for debug */
+  realizedSwapFees: Scalars["BigInt"]["output"];
   /** Field for debug */
   realizedSwapImpact: Scalars["BigInt"]["output"];
   /** Field for debug */
@@ -60,6 +64,8 @@ export interface AccountPnlSummaryBucketObject {
   realizedPnlUsd: Scalars["BigInt"]["output"];
   /** Field for debug */
   realizedPriceImpactUsd: Scalars["BigInt"]["output"];
+  /** Field for debug */
+  realizedSwapFeesUsd: Scalars["BigInt"]["output"];
   /** Field for debug */
   realizedSwapImpactUsd: Scalars["BigInt"]["output"];
   /** Field for debug */
@@ -98,6 +104,7 @@ export interface AccountStat {
   realizedFees: Scalars["BigInt"]["output"];
   realizedPnl: Scalars["BigInt"]["output"];
   realizedPriceImpact: Scalars["BigInt"]["output"];
+  realizedSwapFees: Scalars["BigInt"]["output"];
   realizedSwapImpact: Scalars["BigInt"]["output"];
   sumMaxSize: Scalars["BigInt"]["output"];
   volume: Scalars["BigInt"]["output"];
@@ -214,6 +221,12 @@ export enum AccountStatOrderByInput {
   realizedPriceImpact_DESC = "realizedPriceImpact_DESC",
   realizedPriceImpact_DESC_NULLS_FIRST = "realizedPriceImpact_DESC_NULLS_FIRST",
   realizedPriceImpact_DESC_NULLS_LAST = "realizedPriceImpact_DESC_NULLS_LAST",
+  realizedSwapFees_ASC = "realizedSwapFees_ASC",
+  realizedSwapFees_ASC_NULLS_FIRST = "realizedSwapFees_ASC_NULLS_FIRST",
+  realizedSwapFees_ASC_NULLS_LAST = "realizedSwapFees_ASC_NULLS_LAST",
+  realizedSwapFees_DESC = "realizedSwapFees_DESC",
+  realizedSwapFees_DESC_NULLS_FIRST = "realizedSwapFees_DESC_NULLS_FIRST",
+  realizedSwapFees_DESC_NULLS_LAST = "realizedSwapFees_DESC_NULLS_LAST",
   realizedSwapImpact_ASC = "realizedSwapImpact_ASC",
   realizedSwapImpact_ASC_NULLS_FIRST = "realizedSwapImpact_ASC_NULLS_FIRST",
   realizedSwapImpact_ASC_NULLS_LAST = "realizedSwapImpact_ASC_NULLS_LAST",
@@ -414,6 +427,15 @@ export interface AccountStatWhereInput {
   realizedPriceImpact_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   realizedPriceImpact_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   realizedPriceImpact_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  realizedSwapFees_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapFees_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapFees_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapFees_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  realizedSwapFees_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  realizedSwapFees_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapFees_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapFees_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapFees_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   realizedSwapImpact_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   realizedSwapImpact_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   realizedSwapImpact_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -6233,6 +6255,7 @@ export interface PeriodAccountStatObject {
   realizedFees: Scalars["BigInt"]["output"];
   realizedPnl: Scalars["BigInt"]["output"];
   realizedPriceImpact: Scalars["BigInt"]["output"];
+  realizedSwapFees: Scalars["BigInt"]["output"];
   realizedSwapImpact: Scalars["BigInt"]["output"];
   startUnrealizedFees: Scalars["BigInt"]["output"];
   startUnrealizedPnl: Scalars["BigInt"]["output"];
@@ -6510,6 +6533,7 @@ export interface PositionChange {
   sizeDeltaUsd: Scalars["BigInt"]["output"];
   sizeInTokens: Scalars["BigInt"]["output"];
   sizeInUsd: Scalars["BigInt"]["output"];
+  swapFeeUsd?: Maybe<Scalars["BigInt"]["output"]>;
   swapImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
   timestamp: Scalars["Int"]["output"];
   totalImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
@@ -6667,6 +6691,12 @@ export enum PositionChangeOrderByInput {
   sizeInUsd_DESC = "sizeInUsd_DESC",
   sizeInUsd_DESC_NULLS_FIRST = "sizeInUsd_DESC_NULLS_FIRST",
   sizeInUsd_DESC_NULLS_LAST = "sizeInUsd_DESC_NULLS_LAST",
+  swapFeeUsd_ASC = "swapFeeUsd_ASC",
+  swapFeeUsd_ASC_NULLS_FIRST = "swapFeeUsd_ASC_NULLS_FIRST",
+  swapFeeUsd_ASC_NULLS_LAST = "swapFeeUsd_ASC_NULLS_LAST",
+  swapFeeUsd_DESC = "swapFeeUsd_DESC",
+  swapFeeUsd_DESC_NULLS_FIRST = "swapFeeUsd_DESC_NULLS_FIRST",
+  swapFeeUsd_DESC_NULLS_LAST = "swapFeeUsd_DESC_NULLS_LAST",
   swapImpactUsd_ASC = "swapImpactUsd_ASC",
   swapImpactUsd_ASC_NULLS_FIRST = "swapImpactUsd_ASC_NULLS_FIRST",
   swapImpactUsd_ASC_NULLS_LAST = "swapImpactUsd_ASC_NULLS_LAST",
@@ -6953,6 +6983,15 @@ export interface PositionChangeWhereInput {
   sizeInUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   sizeInUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   sizeInUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  swapFeeUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  swapFeeUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  swapFeeUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   swapImpactUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   swapImpactUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   swapImpactUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -7714,6 +7753,12 @@ export enum PositionOrderByInput {
   accountStat_realizedPriceImpact_DESC = "accountStat_realizedPriceImpact_DESC",
   accountStat_realizedPriceImpact_DESC_NULLS_FIRST = "accountStat_realizedPriceImpact_DESC_NULLS_FIRST",
   accountStat_realizedPriceImpact_DESC_NULLS_LAST = "accountStat_realizedPriceImpact_DESC_NULLS_LAST",
+  accountStat_realizedSwapFees_ASC = "accountStat_realizedSwapFees_ASC",
+  accountStat_realizedSwapFees_ASC_NULLS_FIRST = "accountStat_realizedSwapFees_ASC_NULLS_FIRST",
+  accountStat_realizedSwapFees_ASC_NULLS_LAST = "accountStat_realizedSwapFees_ASC_NULLS_LAST",
+  accountStat_realizedSwapFees_DESC = "accountStat_realizedSwapFees_DESC",
+  accountStat_realizedSwapFees_DESC_NULLS_FIRST = "accountStat_realizedSwapFees_DESC_NULLS_FIRST",
+  accountStat_realizedSwapFees_DESC_NULLS_LAST = "accountStat_realizedSwapFees_DESC_NULLS_LAST",
   accountStat_realizedSwapImpact_ASC = "accountStat_realizedSwapImpact_ASC",
   accountStat_realizedSwapImpact_ASC_NULLS_FIRST = "accountStat_realizedSwapImpact_ASC_NULLS_FIRST",
   accountStat_realizedSwapImpact_ASC_NULLS_LAST = "accountStat_realizedSwapImpact_ASC_NULLS_LAST",
@@ -10646,10 +10691,12 @@ export interface TradeAction {
   sizeDeltaInTokens?: Maybe<Scalars["BigInt"]["output"]>;
   sizeDeltaUsd?: Maybe<Scalars["BigInt"]["output"]>;
   srcChainId?: Maybe<Scalars["BigInt"]["output"]>;
+  swapFeeUsd?: Maybe<Scalars["BigInt"]["output"]>;
   swapImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
   swapPath: Array<Scalars["String"]["output"]>;
   timestamp: Scalars["Int"]["output"];
   totalImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
+  traderDiscountAmount?: Maybe<Scalars["BigInt"]["output"]>;
   transactionHash: Scalars["String"]["output"];
   triggerPrice?: Maybe<Scalars["BigInt"]["output"]>;
   twapGroupId?: Maybe<Scalars["String"]["output"]>;
@@ -10885,6 +10932,12 @@ export enum TradeActionOrderByInput {
   srcChainId_DESC = "srcChainId_DESC",
   srcChainId_DESC_NULLS_FIRST = "srcChainId_DESC_NULLS_FIRST",
   srcChainId_DESC_NULLS_LAST = "srcChainId_DESC_NULLS_LAST",
+  swapFeeUsd_ASC = "swapFeeUsd_ASC",
+  swapFeeUsd_ASC_NULLS_FIRST = "swapFeeUsd_ASC_NULLS_FIRST",
+  swapFeeUsd_ASC_NULLS_LAST = "swapFeeUsd_ASC_NULLS_LAST",
+  swapFeeUsd_DESC = "swapFeeUsd_DESC",
+  swapFeeUsd_DESC_NULLS_FIRST = "swapFeeUsd_DESC_NULLS_FIRST",
+  swapFeeUsd_DESC_NULLS_LAST = "swapFeeUsd_DESC_NULLS_LAST",
   swapImpactUsd_ASC = "swapImpactUsd_ASC",
   swapImpactUsd_ASC_NULLS_FIRST = "swapImpactUsd_ASC_NULLS_FIRST",
   swapImpactUsd_ASC_NULLS_LAST = "swapImpactUsd_ASC_NULLS_LAST",
@@ -10903,6 +10956,12 @@ export enum TradeActionOrderByInput {
   totalImpactUsd_DESC = "totalImpactUsd_DESC",
   totalImpactUsd_DESC_NULLS_FIRST = "totalImpactUsd_DESC_NULLS_FIRST",
   totalImpactUsd_DESC_NULLS_LAST = "totalImpactUsd_DESC_NULLS_LAST",
+  traderDiscountAmount_ASC = "traderDiscountAmount_ASC",
+  traderDiscountAmount_ASC_NULLS_FIRST = "traderDiscountAmount_ASC_NULLS_FIRST",
+  traderDiscountAmount_ASC_NULLS_LAST = "traderDiscountAmount_ASC_NULLS_LAST",
+  traderDiscountAmount_DESC = "traderDiscountAmount_DESC",
+  traderDiscountAmount_DESC_NULLS_FIRST = "traderDiscountAmount_DESC_NULLS_FIRST",
+  traderDiscountAmount_DESC_NULLS_LAST = "traderDiscountAmount_DESC_NULLS_LAST",
   transactionHash_ASC = "transactionHash_ASC",
   transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
   transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
@@ -11317,6 +11376,15 @@ export interface TradeActionWhereInput {
   srcChainId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   srcChainId_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   srcChainId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  swapFeeUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  swapFeeUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  swapFeeUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapFeeUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   swapImpactUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   swapImpactUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   swapImpactUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -11348,6 +11416,15 @@ export interface TradeActionWhereInput {
   totalImpactUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalImpactUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalImpactUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  traderDiscountAmount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  traderDiscountAmount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  traderDiscountAmount_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
   transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;

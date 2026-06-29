@@ -1,5 +1,3 @@
-import "@wagmi/connectors";
-
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { useEffect } from "react";
@@ -25,13 +23,12 @@ import { SettingsContextProvider } from "context/SettingsContext/SettingsContext
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
-import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
-import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
+import { ConnectModalProvider } from "lib/wallets/useConnectModal";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";
@@ -73,7 +70,7 @@ function App() {
   app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <SEO>{app}</SEO>;
-  app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
+  app = <ConnectModalProvider>{app}</ConnectModalProvider>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
@@ -81,7 +78,6 @@ function App() {
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
-  app = <ThemeProvider>{app}</ThemeProvider>;
   app = <GmxSdkProvider>{app}</GmxSdkProvider>;
   app = <Router>{app}</Router>;
 

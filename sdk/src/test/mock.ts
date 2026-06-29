@@ -175,6 +175,7 @@ export function mockExternalSwap({
     priceIn,
     priceOut,
     feesUsd,
+    slippage: 0,
     txnData: {
       to,
       data,

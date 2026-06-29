@@ -1,12 +1,19 @@
 import { ARBITRUM, getViemChain } from "configs/chains";
+import { sleep } from "utils/common";
+import type { IHttp } from "utils/http/types";
 import type {
+  PrepareCancelOrderRequest,
+  PrepareCollateralRequest,
+  PrepareEditOrderRequest,
+  OrderStatusResponse,
   PrepareOrderRequest,
   PrepareOrderResponse,
+  SubmitOrderRequest,
   SubmitOrderResponse,
-  OrderStatusResponse,
 } from "utils/orderTransactions/api";
 import { PrivateKeySigner } from "utils/signer";
 import type { IAbstractSigner } from "utils/signer";
+import type { SubaccountStatusRequest, SubaccountStatusResponse } from "utils/subaccount/api";
 
 import { GmxApiSdk } from "../index";
 
@@ -17,6 +24,122 @@ export const TEST_SIZE_USD = 10n * 10n ** 30n; // $10
 export const TEST_COLLATERAL = { amount: 1000000n, token: "USDC" }; // 1 USDC
 
 const TERMINAL_STATUSES = new Set(["executed", "cancelled", "relay_failed", "relay_reverted"]);
+const ORDER_PREPARE_PATHS = new Set([
+  "/v1/orders/txns/prepare",
+  "/v1/orders/txns/edit/prepare",
+  "/v1/orders/txns/cancel/prepare",
+  "/v1/orders/txns/collateral/prepare",
+]);
+
+export type RecordedOrderPrepareRequest =
+  | PrepareOrderRequest
+  | PrepareEditOrderRequest
+  | PrepareCancelOrderRequest
+  | PrepareCollateralRequest;
+
+export class RecordingApi implements IHttp {
+  url: string;
+  orderPrepareRequests: RecordedOrderPrepareRequest[] = [];
+  orderSubmitRequests: SubmitOrderRequest[] = [];
+
+  constructor(private delegate: IHttp) {
+    this.url = delegate.url;
+  }
+
+  fetchJson<TResult>(
+    path: string,
+    opts?: { query?: Record<string, any>; transform?: (result: any) => TResult }
+  ): Promise<TResult> {
+    return this.delegate.fetchJson(path, opts);
+  }
+
+  postJson<TResult>(path: string, body: unknown, opts?: { transform?: (result: any) => TResult }): Promise<TResult> {
+    if (ORDER_PREPARE_PATHS.has(path)) {
+      this.orderPrepareRequests.push(body as RecordedOrderPrepareRequest);
+    } else if (path === "/v1/orders/txns/submit") {
+      this.orderSubmitRequests.push(body as SubmitOrderRequest);
+    }
+
+    return this.delegate.postJson(path, body, opts);
+  }
+}
+
+export function buildPreparedOrderResponse(requestId: string): PrepareOrderResponse {
+  return {
+    requestId,
+    mode: "express",
+    payloadType: "typed-data",
+    payload: {
+      batchParams: {},
+      relayParams: {},
+    },
+  };
+}
+
+export class ScriptedOrderApi implements IHttp {
+  url = "http://test";
+  prepareRequests: PrepareOrderRequest[] = [];
+  submitRequests: SubmitOrderRequest[] = [];
+  subaccountStatusRequests: SubaccountStatusRequest[] = [];
+
+  constructor(
+    private readonly prepareResponse: PrepareOrderResponse,
+    private readonly submitResponses: SubmitOrderResponse[] = [],
+    private readonly subaccountStatusResponses: SubaccountStatusResponse[] = []
+  ) {}
+
+  fetchJson<TResult>(
+    path: string,
+    _opts?: { query?: Record<string, any>; transform?: (result: any) => TResult }
+  ): Promise<TResult> {
+    return Promise.reject(new Error(`Unexpected fetchJson call ${path}`));
+  }
+
+  postJson<TResult>(path: string, body: unknown, opts?: { transform?: (result: any) => TResult }): Promise<TResult> {
+    if (path === "/v1/orders/txns/prepare") {
+      this.prepareRequests.push(body as PrepareOrderRequest);
+      return Promise.resolve(
+        opts?.transform ? opts.transform(this.prepareResponse) : (this.prepareResponse as TResult)
+      );
+    }
+
+    if (path === "/v1/orders/txns/submit") {
+      this.submitRequests.push(body as SubmitOrderRequest);
+      const response = this.submitResponses.shift();
+      if (!response) {
+        return Promise.reject(new Error("Unexpected submit call"));
+      }
+      return Promise.resolve(response as TResult);
+    }
+
+    if (path === "/v1/subaccounts/status") {
+      this.subaccountStatusRequests.push(body as SubaccountStatusRequest);
+      const response = this.subaccountStatusResponses.shift();
+      if (!response) {
+        return Promise.reject(new Error("Unexpected subaccount status call"));
+      }
+      return Promise.resolve(response as TResult);
+    }
+
+    return Promise.reject(new Error(`Unexpected API path ${path}`));
+  }
+}
+
+export function buildSubaccountStatusResponse(
+  overrides: Partial<SubaccountStatusResponse> = {}
+): SubaccountStatusResponse {
+  return {
+    active: true,
+    maxAllowedCount: "10",
+    currentActionsCount: "0",
+    remainingActions: "10",
+    expiresAt: String(Math.floor(Date.now() / 1000) + 86400),
+    approvalNonce: "0",
+    multichainApprovalNonce: "0",
+    integrationId: null,
+    ...overrides,
+  };
+}
 
 export function getTestSdk() {
   // eslint-disable-next-line no-restricted-globals
@@ -162,8 +285,4 @@ export async function activateTestSubaccount(
     expiresInSeconds: 86400,
     maxAllowedCount,
   });
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

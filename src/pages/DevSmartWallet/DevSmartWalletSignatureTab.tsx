@@ -3,7 +3,7 @@ import { concatHex, decodeAbiParameters, encodeAbiParameters, isHex, keccak256, 
 
 import { ARBITRUM_SEPOLIA, getChainName } from "config/chains";
 import { helperToast } from "lib/helperToast";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 
 import Button from "components/Button/Button";
 

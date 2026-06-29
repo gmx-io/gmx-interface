@@ -6,7 +6,7 @@ import {
   estimateOrderOraclePriceCount,
   getFeeItem,
 } from "domain/synthetics/fees";
-import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
+import { getMaxAllowedLeverage } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -687,19 +687,27 @@ export const selectOrderEditorFindSwapPath = createSelector((q) => {
 
 export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
-  if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined, undefined);
+  const marketInfo = q((s) => (order ? selectMarketsInfoData(s)?.[order.marketAddress] : undefined));
 
-  const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
-  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor, order.marketAddress);
+  return getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
+    minCollateralFactor: marketInfo?.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+  });
 });
 
 const makeSelectOrderEditorMaxAllowedLeverage = createSelectorFactory((orderKey: string) =>
   createSelector((q) => {
     const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
-    if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined, undefined);
+    const marketInfo = q((s) => (order ? selectMarketsInfoData(s)?.[order.marketAddress] : undefined));
 
-    const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
-    return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor, order.marketAddress);
+    return getMaxAllowedLeverage({
+      marketAddress: marketInfo?.marketTokenAddress,
+      minCollateralFactor: marketInfo?.minCollateralFactor,
+      minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+      positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+    });
   })
 );
 

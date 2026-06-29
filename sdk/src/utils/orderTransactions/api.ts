@@ -26,6 +26,8 @@ export type PrepareOrderRequest = {
   twapConfig?: { duration: number; parts: number; frequency?: number };
   tpsl?: { type: "take-profit" | "stop-loss"; triggerPrice: bigint; size?: bigint }[];
   gasPaymentToken?: string;
+  referralCode?: string;
+  uiFeeReceiver?: string;
   mode: TransactionMode;
   from: string;
   subaccountAddress?: string;
@@ -143,6 +145,7 @@ export type PrepareCollateralRequest = {
   slippage?: number;
   executionFeeBufferBps?: number;
   gasPaymentToken?: string;
+  uiFeeReceiver?: string;
   mode: TransactionMode;
   from: string;
   subaccountAddress?: string;
@@ -152,14 +155,14 @@ export type PrepareCollateralRequest = {
 function parseEstimates(raw: any): OrderEstimates | undefined {
   if (!raw) return undefined;
   return {
-    positionPriceImpactDeltaUsd: BigInt(raw.positionPriceImpactDeltaUsd),
-    swapPriceImpactDeltaUsd: BigInt(raw.swapPriceImpactDeltaUsd),
-    executionFeeAmount: BigInt(raw.executionFeeAmount),
-    acceptablePrice: BigInt(raw.acceptablePrice),
-    sizeDeltaUsd: BigInt(raw.sizeDeltaUsd),
-    positionFeeUsd: BigInt(raw.positionFeeUsd),
-    borrowingFeeUsd: BigInt(raw.borrowingFeeUsd),
-    fundingFeeUsd: BigInt(raw.fundingFeeUsd),
+    positionPriceImpactDeltaUsd: BigInt(raw.positionPriceImpactDeltaUsd ?? "0"),
+    swapPriceImpactDeltaUsd: BigInt(raw.swapPriceImpactDeltaUsd ?? "0"),
+    executionFeeAmount: BigInt(raw.executionFeeAmount ?? "0"),
+    acceptablePrice: BigInt(raw.acceptablePrice ?? "0"),
+    sizeDeltaUsd: BigInt(raw.sizeDeltaUsd ?? "0"),
+    positionFeeUsd: BigInt(raw.positionFeeUsd ?? "0"),
+    borrowingFeeUsd: BigInt(raw.borrowingFeeUsd ?? "0"),
+    fundingFeeUsd: BigInt(raw.fundingFeeUsd ?? "0"),
   };
 }
 
@@ -168,20 +171,20 @@ function parsePrepareResponse(raw: any): PrepareOrderResponse {
 }
 
 export async function prepareOrder(ctx: { api: IHttp }, request: PrepareOrderRequest): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/prepare", request, {
+  return ctx.api.postJson<PrepareOrderResponse>("/v1/orders/txns/prepare", request, {
     transform: parsePrepareResponse,
   });
 }
 
 export async function submitOrder(ctx: { api: IHttp }, request: SubmitOrderRequest): Promise<SubmitOrderResponse> {
-  return ctx.api.postJson<SubmitOrderResponse>("/orders/txns/submit", request);
+  return ctx.api.postJson<SubmitOrderResponse>("/v1/orders/txns/submit", request);
 }
 
 export async function prepareEditOrder(
   ctx: { api: IHttp },
   request: PrepareEditOrderRequest
 ): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/edit/prepare", request, {
+  return ctx.api.postJson<PrepareOrderResponse>("/v1/orders/txns/edit/prepare", request, {
     transform: parsePrepareResponse,
   });
 }
@@ -190,7 +193,7 @@ export async function prepareCancelOrder(
   ctx: { api: IHttp },
   request: PrepareCancelOrderRequest
 ): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/cancel/prepare", request, {
+  return ctx.api.postJson<PrepareOrderResponse>("/v1/orders/txns/cancel/prepare", request, {
     transform: parsePrepareResponse,
   });
 }
@@ -199,13 +202,13 @@ export async function prepareCollateral(
   ctx: { api: IHttp },
   request: PrepareCollateralRequest
 ): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/collateral/prepare", request, {
+  return ctx.api.postJson<PrepareOrderResponse>("/v1/orders/txns/collateral/prepare", request, {
     transform: parsePrepareResponse,
   });
 }
 
 export async function fetchOrderStatus(ctx: { api: IHttp }, request: OrderStatusRequest): Promise<OrderStatusResponse> {
-  return ctx.api.postJson<OrderStatusResponse>("/orders/txns/status", request);
+  return ctx.api.postJson<OrderStatusResponse>("/v1/orders/txns/status", request);
 }
 
 export async function signPreparedOrder(

@@ -2,6 +2,8 @@ import type { ChainName } from "config/chains";
 import { EditingOrderSource } from "domain/synthetics/orders/types";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 
+import type { WalletAnalyticsProvenance } from "./walletProvenance";
+
 export type LandingPageViewEvent = {
   event: "LandingPageAction";
   data: {
@@ -54,7 +56,7 @@ export type ConnectWalletClickEvent = {
 
 export type ConnectWalletResultEvent = {
   event: "ConnectWalletAction";
-  data: {
+  data: WalletAnalyticsProvenance & {
     action: "ConnectedSuccessfully" | "ConnectionFail";
     provider: string; // ProviderName
     ordersCount: number | undefined;

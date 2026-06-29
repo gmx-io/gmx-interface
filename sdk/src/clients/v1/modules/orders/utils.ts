@@ -118,7 +118,7 @@ export function matchByMarket({
     return nonSwapRelevantDefinedFiltersLowercased.some((filter) => {
       const marketMatch = filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase();
       const directionMath = filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short");
-      const initialCollateralAddress = order.initialCollateralTokenAddress.toLowerCase();
+      const initialCollateralAddress = order.initialCollateralTokenAddress;
 
       let collateralMatch = true;
       if (!filter.collateralAddress) {
@@ -209,6 +209,7 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         executionFee: bigint;
         callbackGasLimit: bigint;
         minOutputAmount: bigint;
+        uiFeeFactor: bigint;
         updatedAtTime: bigint;
         validFromTime: bigint;
         srcChainId: bigint;

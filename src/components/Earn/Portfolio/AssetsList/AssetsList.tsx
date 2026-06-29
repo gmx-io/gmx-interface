@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
@@ -11,6 +10,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";

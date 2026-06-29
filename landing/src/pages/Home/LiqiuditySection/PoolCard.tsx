@@ -26,7 +26,7 @@ const style: React.CSSProperties = {
 };
 
 export function PoolCard({ name, apr, description, iconComponent, coinImage, onClick, isRewardsSuspended }: Props) {
-  const aprText = isRewardsSuspended ? t`Accumulating` : apr ? percentFormat(apr) : "-";
+  const aprText = isRewardsSuspended ? t`Accumulating...` : apr ? percentFormat(apr) : "-";
   return (
     <div
       onClick={onClick}

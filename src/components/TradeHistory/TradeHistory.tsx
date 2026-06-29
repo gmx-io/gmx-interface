@@ -163,32 +163,45 @@ export function TradeHistory(p: Props) {
             <col className="TradeHistorySynthetics-market-column" />
             <col className="TradeHistorySynthetics-size-column" />
             <col className="TradeHistorySynthetics-price-column" />
-            <col className="TradeHistorySynthetics-pnl-fees-column" />
+            <col className="TradeHistorySynthetics-pnl-column" />
+            <col className="TradeHistorySynthetics-fees-column" />
           </colgroup>
           <thead>
             <TableTheadTr>
-              <TableTh className="w-[18%]">
+              <TableTh className="w-[16%]">
                 <ActionFilter value={actionFilter} onChange={setActionFilter} />
               </TableTh>
-              <TableTh className="w-[18%]">
+              <TableTh className="w-[16%]">
                 <MarketFilterLongShort
                   withPositions="all"
                   value={marketsDirectionsFilter}
                   onChange={setMarketsDirectionsFilter}
                 />
               </TableTh>
-              <TableTh className="w-[26%]">
+              <TableTh className="w-[22%]">
                 <Trans>SIZE</Trans>
               </TableTh>
-              <TableTh className="w-[22%]">
+              <TableTh className="w-[18%]">
                 <Trans>PRICE</Trans>
               </TableTh>
               <TableTh className="w-[12%]">
                 <TooltipWithPortal
                   variant="iconStroke"
-                  content={<Trans>Realized PnL after fees and net price impact</Trans>}
+                  content={<Trans>Realized PnL before fees, discounts and price impact.</Trans>}
                 >
                   <Trans>RPNL</Trans>
+                </TooltipWithPortal>
+              </TableTh>
+              <TableTh className="w-[12%]">
+                <TooltipWithPortal
+                  variant="iconStroke"
+                  content={
+                    <Trans>
+                      Net total of action-level fees, and price impact. Hover the value to see the breakdown.
+                    </Trans>
+                  }
+                >
+                  <Trans>FEES</Trans>
                 </TooltipWithPortal>
               </TableTh>
               <TableTh className="w-[100px]" />

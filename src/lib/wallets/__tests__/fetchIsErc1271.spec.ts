@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, SOURCE_SEPOLIA } from "sdk/configs/chains";
 
-import { getPublicClientWithRpc } from "../rainbowKitConfig";
 import { fetchIsErc1271 } from "../useAccountType";
+import { getPublicClientWithRpc } from "../walletConfig";
 
 const EOA_ARB_SEP_ADDRESS = "0x196A492f60696930D6eE0551D3f4eD56b668Aa00";
 const SAFE_SEPOLIA_ADDRESS = "0x865386FCB1bbD2A75364c40AdabD4B1062FfFFd2";

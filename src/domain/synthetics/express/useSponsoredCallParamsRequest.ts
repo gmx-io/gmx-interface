@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import { getIsFlagEnabled } from "config/ab";
 import { metrics } from "lib/metrics";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { fetchGelatoGasTankBalance } from "sdk/utils/express";
@@ -18,10 +17,6 @@ export function useIsSponsoredCallBalanceAvailable(chainId: number): SponsoredCa
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     fetcher: async () => {
       try {
-        if (!getIsFlagEnabled("testSponsoredCall")) {
-          return false;
-        }
-
         const gasTankBalance = await fetchGelatoGasTankBalance(chainId);
 
         if (!gasTankBalance) {

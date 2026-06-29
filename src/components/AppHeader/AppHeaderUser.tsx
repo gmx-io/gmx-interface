@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 import { NETWORK_OPTIONS } from "config/networkOptions";
 import { useChainId } from "lib/chains";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import { OneClickButton } from "components/OneClickButton/OneClickButton";

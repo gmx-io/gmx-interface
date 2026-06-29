@@ -143,10 +143,13 @@ export function createRawTradeActionTransformer(
 
         priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigInt(rawAction.priceImpactDiffUsd) : undefined,
         priceImpactUsd: rawAction.priceImpactUsd ? BigInt(rawAction.priceImpactUsd) : undefined,
+        swapImpactUsd: rawAction.swapImpactUsd ? BigInt(rawAction.swapImpactUsd) : undefined,
         totalImpactUsd: rawAction.totalImpactUsd ? BigInt(rawAction.totalImpactUsd) : undefined,
         positionFeeAmount: rawAction.positionFeeAmount ? BigInt(rawAction.positionFeeAmount) : undefined,
+        traderDiscountAmount: rawAction.traderDiscountAmount ? BigInt(rawAction.traderDiscountAmount) : undefined,
         borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigInt(rawAction.borrowingFeeAmount) : undefined,
         fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
+        swapFeeUsd: rawAction.swapFeeUsd ? BigInt(rawAction.swapFeeUsd) : undefined,
         liquidationFeeAmount: rawAction.liquidationFeeAmount ? BigInt(rawAction.liquidationFeeAmount) : undefined,
 
         reason: rawAction.reason ?? undefined,

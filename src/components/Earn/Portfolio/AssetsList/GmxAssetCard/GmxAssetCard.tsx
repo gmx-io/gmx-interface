@@ -213,7 +213,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
               <span className="text-h3 font-bold text-typography-secondary">—</span>
             ) : stakingPowerData.treasuryGmxBalance === null ? (
               <span className="text-h3 font-bold text-typography-secondary">
-                <Trans>Accumulating</Trans>
+                <Trans>Accumulating...</Trans>
               </span>
             ) : displayProjectedRewardGmx !== undefined ? (
               <span className="text-h3 block font-bold numbers">
@@ -237,6 +237,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         </div>
 
         <StakingPowerAlerts stakingPowerData={stakingPowerData} />
+
+        <div className="mt-12 border-t-1/2 border-slate-600" />
 
         <div className="mt-12 flex grow flex-col gap-8">
           <SyntheticsInfoRow
@@ -262,6 +264,15 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             }
           />
           <div className="grow" />
+          {stakingPowerData && stakingPowerData.powerResetCount > 0 && (
+            <AlertInfoCard type="info">
+              <Trans>
+                Your staking power was reset{" "}
+                {stakingPowerData.powerResetCount === 1 ? "once" : `${stakingPowerData.powerResetCount} times`} due to
+                dropping below the 80% loyalty threshold. Power is now accruing again from your current balance.
+              </Trans>
+            </AlertInfoCard>
+          )}
           <div className="grid grid-cols-2 gap-8">
             <Button variant="secondary" onClick={handleOpenGmxStakeModal} className="whitespace-nowrap">
               <DownloadIcon className="size-16 shrink-0" />
@@ -370,11 +381,10 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
   if (!stakingPowerData) return null;
 
   const loyaltyActive = isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart);
-  const hasBeenReset = stakingPowerData.powerResetCount > 0;
   const hasPower = stakingPowerData.cumulativePower > 0n;
   const showLoyalty = loyaltyActive && stakingPowerData.loyaltyRatio !== null;
 
-  if (!showLoyalty && !hasBeenReset && !hasPower) return null;
+  if (!showLoyalty && !hasPower) return null;
 
   return (
     <div className="mt-8 flex flex-col gap-8">
@@ -399,29 +409,37 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
         />
       )}
       {hasPower && (
-        <SyntheticsInfoRow
-          label={
-            <Tooltip
-              handle={<Trans>Staking power</Trans>}
-              content={
-                <Trans>
-                  Staking power accrues over time based on your staked GMX balance and determines your share of buyback
-                  rewards.
-                </Trans>
-              }
-            />
-          }
-          value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
-        />
-      )}
-      {hasBeenReset && (
-        <AlertInfoCard type="warning" hideClose>
-          <Trans>
-            Your staking power was reset{" "}
-            {stakingPowerData.powerResetCount === 1 ? "once" : `${stakingPowerData.powerResetCount} times`} due to
-            dropping below the 80% loyalty threshold. Power is now accruing again from your current balance.
-          </Trans>
-        </AlertInfoCard>
+        <>
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Staking power</Trans>}
+                content={
+                  <Trans>
+                    Staking power accrues over time based on your staked GMX balance and determines your share of
+                    buyback rewards
+                  </Trans>
+                }
+              />
+            }
+            value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
+          />
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Staking Power Share</Trans>}
+                content={
+                  <Trans>
+                    Your share of the total network staking power. Treasury rewards will be distributed proportionally
+                    to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual
+                    distribution is subject to DAO governance.
+                  </Trans>
+                }
+              />
+            }
+            value={<span className="numbers">{stakingPowerData.userSharePercent.toFixed(2)}%</span>}
+          />
+        </>
       )}
     </div>
   );

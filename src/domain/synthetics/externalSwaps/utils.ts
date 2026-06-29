@@ -1,12 +1,19 @@
 import { getSwapDebugSettings } from "config/externalSwaps";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
 import { PositionInfo } from "sdk/utils/positions/types";
+import { SwapStrategyForSwapOrders } from "sdk/utils/swap/types";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import { TokenData } from "sdk/utils/tokens/types";
-import { ExternalSwapInputs, ExternalSwapQuote, SwapAmounts } from "sdk/utils/trade/types";
+import {
+  ExternalSwapCalculationStrategy,
+  ExternalSwapInputs,
+  ExternalSwapQuote,
+  SwapAmounts,
+} from "sdk/utils/trade/types";
 
 import {
   FindSwapPath,
@@ -15,6 +22,7 @@ import {
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
+import { ExternalSwapRequestKey } from "./types";
 
 export function getExternalSwapInputsByFromValue({
   tokenIn,
@@ -59,6 +67,60 @@ export function getExternalSwapInputsByFromValue({
     usdIn: swapAmounts.usdIn,
     usdOut: swapAmounts.usdOut,
     strategy: "byFromValue",
+    internalSwapTotalFeeItem,
+    internalSwapTotalFeesDeltaUsd,
+    internalSwapAmounts: swapAmounts,
+  };
+}
+
+export function getExternalSwapInputsByToValue({
+  tokenIn,
+  tokenOut,
+  amountOut,
+  findSwapPath,
+  uiFeeFactor,
+  marketsInfoData,
+  chainId,
+}: {
+  tokenIn: TokenData;
+  tokenOut: TokenData;
+  amountOut: bigint;
+  findSwapPath: FindSwapPath;
+  uiFeeFactor: bigint;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
+}): ExternalSwapInputs {
+  const swapAmounts = getSwapAmountsByToValue({
+    tokenIn,
+    tokenOut,
+    amountOut,
+    isLimit: false,
+    findSwapPath,
+    uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
+    allowSameTokenSwap: false,
+  });
+
+  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapStrategy.swapPathStats
+    ? swapAmounts.swapStrategy.swapPathStats.totalFeesDeltaUsd
+    : undefined;
+
+  const internalSwapTotalFeeItem = getFeeItem(internalSwapTotalFeesDeltaUsd, swapAmounts.usdIn);
+
+  // Estimate amountIn from oracle prices for the initial KyberSwap request
+  const estimatedUsdIn = convertToUsd(amountOut, tokenOut.decimals, tokenOut.prices.maxPrice)!;
+  const estimatedAmountIn = convertToTokenAmount(estimatedUsdIn, tokenIn.decimals, tokenIn.prices.minPrice)!;
+
+  return {
+    amountIn: swapAmounts.amountIn > 0n ? swapAmounts.amountIn : estimatedAmountIn,
+    priceIn: swapAmounts.priceIn,
+    priceOut: swapAmounts.priceOut,
+    usdIn: swapAmounts.usdIn > 0n ? swapAmounts.usdIn : estimatedUsdIn,
+    usdOut: swapAmounts.usdOut,
+    strategy: "byToValue",
+    desiredAmountOut: amountOut,
     internalSwapTotalFeeItem,
     internalSwapTotalFeesDeltaUsd,
     internalSwapAmounts: swapAmounts,
@@ -156,6 +218,78 @@ export function getExternalSwapInputsByLeverageSize({
     internalSwapTotalFeesDeltaUsd,
     internalSwapAmounts: swapAmounts,
   };
+}
+
+export function isInternalSwapBetterByFeeRate(params: {
+  internalFeesDeltaUsd: bigint | undefined;
+  internalUsdIn: bigint;
+  internalAmountOut: bigint;
+  internalSwapType: SwapStrategyForSwapOrders["type"];
+  externalUsdIn: bigint;
+  externalFeesUsd: bigint;
+}): boolean {
+  const { internalFeesDeltaUsd, internalUsdIn, internalAmountOut, internalSwapType, externalUsdIn, externalFeesUsd } =
+    params;
+  return (
+    internalSwapType !== "noSwap" &&
+    internalAmountOut > 0n &&
+    internalFeesDeltaUsd !== undefined &&
+    internalUsdIn > 0n &&
+    externalUsdIn > 0n &&
+    // Cross-multiplied from internalFee/internalUsdIn > -externalFee/externalUsdIn to avoid division.
+    internalFeesDeltaUsd * externalUsdIn > -externalFeesUsd * internalUsdIn
+  );
+}
+
+export function inflateAmountForSlippage(amount: bigint, slippageBps: bigint): bigint {
+  if (slippageBps <= 0n || slippageBps >= BASIS_POINTS_DIVISOR_BIGINT) return amount;
+  // Ceiling division: ensures that subsequent floor-style slippage reduction upstream
+  // cannot yield less than the original amount due to compounded rounding.
+  const denominator = BASIS_POINTS_DIVISOR_BIGINT - slippageBps;
+  return (amount * BASIS_POINTS_DIVISOR_BIGINT + denominator - 1n) / denominator;
+}
+
+export function overrideQuoteWithOraclePrices(
+  quote: ExternalSwapQuote,
+  oracle: { usdIn: bigint; usdOut: bigint; feesUsd: bigint; priceIn: bigint; priceOut: bigint }
+): ExternalSwapQuote {
+  return { ...quote, ...oracle };
+}
+
+export function getExternalSwapRequestKey(params: {
+  fromTokenAddress: string | undefined;
+  toTokenAddress: string | undefined;
+  strategy: ExternalSwapCalculationStrategy | undefined;
+  amountIn: bigint | undefined;
+  desiredAmountOut: bigint | undefined;
+  slippage: number | undefined;
+}): ExternalSwapRequestKey | undefined {
+  const { fromTokenAddress, toTokenAddress, strategy, amountIn, desiredAmountOut, slippage } = params;
+  if (!fromTokenAddress || !toTokenAddress || !strategy || slippage === undefined) return undefined;
+  const amount = strategy === "byToValue" ? desiredAmountOut : amountIn;
+  if (amount === undefined || amount <= 0n) return undefined;
+  return {
+    structuralKey: `${fromTokenAddress}:${toTokenAddress}:${strategy}:${slippage}`,
+    amount,
+  };
+}
+
+export const EXTERNAL_SWAP_KEY_AMOUNT_TOLERANCE_BPS = 30n;
+
+export function isAmountWithinKeyTolerance(a: bigint, b: bigint): boolean {
+  if (a <= 0n || b <= 0n) return false;
+  if (a === b) return true;
+  const diff = a > b ? a - b : b - a;
+  const reference = a > b ? a : b;
+  return diff * BASIS_POINTS_DIVISOR_BIGINT <= reference * EXTERNAL_SWAP_KEY_AMOUNT_TOLERANCE_BPS;
+}
+
+export function externalSwapRequestKeysMatch(
+  a: ExternalSwapRequestKey | undefined,
+  b: ExternalSwapRequestKey | undefined
+): boolean {
+  if (!a || !b) return false;
+  return a.structuralKey === b.structuralKey && isAmountWithinKeyTolerance(a.amount, b.amount);
 }
 
 export function getBestSwapStrategy({

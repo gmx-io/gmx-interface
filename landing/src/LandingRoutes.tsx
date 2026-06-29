@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 
@@ -19,6 +19,11 @@ function TermsPageLoader() {
   );
 }
 
+// Preserves search so /#/trade/?ref=<code> doesn't lose the ref on redirect.
+function RedirectToHomeWithSearch({ location }: RouteComponentProps) {
+  return <Redirect to={`/${location.search}`} />;
+}
+
 export function LandingRoutes() {
   return (
     <Switch>
@@ -35,9 +40,7 @@ export function LandingRoutes() {
           <TermsAndConditions />
         </Suspense>
       </Route>
-      <Route path="*">
-        <Redirect to="/" />
-      </Route>
+      <Route path="*" render={RedirectToHomeWithSearch} />
     </Switch>
   );
 }

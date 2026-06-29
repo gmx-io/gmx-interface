@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { usePrevious } from "react-use";
 import useSWR from "swr";
 
@@ -16,6 +16,24 @@ import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getKyberSwapTxnData, KyberSwapQuote } from "./kyberSwap";
+import { isAmountWithinKeyTolerance } from "./utils";
+
+function useStableRequestAmountIn(amountIn: bigint | undefined, resetKey: string): bigint | undefined {
+  const ref = useRef<{ resetKey: string; value: bigint } | undefined>(undefined);
+
+  if (amountIn === undefined || amountIn <= 0n) {
+    ref.current = undefined;
+    return undefined;
+  }
+
+  const prev = ref.current;
+  if (!prev || prev.resetKey !== resetKey || !isAmountWithinKeyTolerance(amountIn, prev.value)) {
+    ref.current = { resetKey, value: amountIn };
+    return amountIn;
+  }
+
+  return prev.value;
+}
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -36,17 +54,19 @@ export function useExternalSwapOutputRequest({
   gasPrice: bigint | undefined;
   enabled?: boolean;
 }) {
+  const stableAmountIn = useStableRequestAmountIn(amountIn, `${tokenInAddress}:${tokenOutAddress}:${slippage}`);
+
   const swapKey =
     enabled &&
     tokenInAddress &&
     tokenOutAddress &&
     receiverAddress &&
     tokenOutAddress !== tokenInAddress &&
-    amountIn !== undefined &&
-    amountIn > 0n &&
+    stableAmountIn !== undefined &&
+    stableAmountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${gasPrice}:${receiverAddress}`
+      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${stableAmountIn}:${slippage}:${receiverAddress}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
@@ -55,7 +75,7 @@ export function useExternalSwapOutputRequest({
   const prevAmountIn = usePrevious(amountIn);
   const botanixAssetsPerShare = useSelector(selectBotanixStakingAssetsPerShare);
 
-  const { data } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
+  const { data, error } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
     fetcher: async () => {
       try {
@@ -63,7 +83,7 @@ export function useExternalSwapOutputRequest({
           !tokenInAddress ||
           !tokenOutAddress ||
           !receiverAddress ||
-          amountIn === undefined ||
+          stableAmountIn === undefined ||
           slippage === undefined ||
           gasPrice === undefined
         ) {
@@ -82,7 +102,7 @@ export function useExternalSwapOutputRequest({
           receiverAddress,
           tokenInAddress,
           tokenOutAddress,
-          amountIn,
+          amountIn: stableAmountIn,
           gasPrice,
           slippage,
         });
@@ -104,15 +124,15 @@ export function useExternalSwapOutputRequest({
   });
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: data?.to,
-    tokenAddresses: tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
+    spenderAddress: enabled ? data?.to : undefined,
+    tokenAddresses: enabled && tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
   const tokensData = useTokensData();
 
   return useMemo(() => {
     if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
-      return {};
+      return { error };
     }
 
     const botanixStakingQuote =
@@ -129,13 +149,11 @@ export function useExternalSwapOutputRequest({
         : undefined;
 
     if (botanixStakingQuote) {
-      return {
-        quote: botanixStakingQuote,
-      };
+      return { quote: botanixStakingQuote, error };
     }
 
     if (!data) {
-      return {};
+      return { error };
     }
 
     const needSpenderApproval = getNeedTokenApprove(
@@ -157,6 +175,7 @@ export function useExternalSwapOutputRequest({
       priceIn: data.priceIn,
       priceOut: data.priceOut,
       feesUsd: data.usdIn - data.usdOut,
+      slippage: data.slippage,
       needSpenderApproval,
       txnData: {
         to: data.to,
@@ -167,9 +186,7 @@ export function useExternalSwapOutputRequest({
       },
     };
 
-    return {
-      quote,
-    };
+    return { quote, error };
   }, [
     amountIn,
     tokenInAddress,
@@ -180,6 +197,7 @@ export function useExternalSwapOutputRequest({
     botanixAssetsPerShare,
     chainId,
     data,
+    error,
     tokensAllowanceData,
   ]);
 }

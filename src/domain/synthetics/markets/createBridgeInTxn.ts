@@ -5,13 +5,13 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, MultichainTokenId } from "config/multichain";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { sendWalletTransaction } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 
 import { fetchLayerZeroNativeFee } from "./feeEstimation/stargateTransferFees";
 
@@ -104,7 +104,7 @@ export async function createBridgeInTxn({
       callData: encodeFunctionData({
         abi: abis.IStargate,
         functionName: "send",
-        args: [sendParams, sendQuoteFromNative(nativeFee), account],
+        args: [sendParams, quoteFromNativeFee(nativeFee), account],
       }),
       value,
       msg: t`Bridge transfer sent`,

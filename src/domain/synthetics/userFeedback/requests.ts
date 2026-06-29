@@ -12,11 +12,13 @@ export const sendMissedCoinSearchDebounced = debounce(
     totalVolume,
     monthVolume,
     place,
+    mode,
   }: {
     searchText: string;
     totalVolume: bigint | undefined;
     monthVolume: bigint | undefined;
     place: MissedCoinsPlace;
+    mode?: "perp" | "swap";
     account?: string;
   }) => {
     const coin = searchText.trim().toUpperCase();
@@ -33,6 +35,7 @@ export const sendMissedCoinSearchDebounced = debounce(
         totalVolume: formatAmountForMetrics(totalVolume ? totalVolume : 0n, USD_DECIMALS, "toSecondOrderInt"),
         monthVolume: formatAmountForMetrics(monthVolume ? monthVolume : 0n, USD_DECIMALS, "toSecondOrderInt"),
         place,
+        mode,
       },
     });
   },

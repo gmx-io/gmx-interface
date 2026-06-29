@@ -5,8 +5,8 @@ import { ARBITRUM_SEPOLIA, getChainName, getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 
 import Button from "components/Button/Button";

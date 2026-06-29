@@ -21,8 +21,8 @@ import {
 import { ARBITRUM_SEPOLIA, getChainName } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 
 import Button from "components/Button/Button";
 
