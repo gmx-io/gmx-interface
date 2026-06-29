@@ -10,7 +10,6 @@ import { getCanSplitReceive } from "sdk/utils/trade/decreaseOutputs";
 
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
 
-// Inline TP orders default to split receive (no internal swap) when PnL and collateral tokens differ.
 export function getInlineTpDecreaseSwapType(
   triggerOrderType: OrderType,
   position: PositionInfo | undefined
