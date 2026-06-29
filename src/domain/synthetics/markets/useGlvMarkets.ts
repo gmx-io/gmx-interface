@@ -32,6 +32,7 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
 import { convertToContractTokenPrices, getBalanceTypeFromSrcChainId } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
+import { useTokenRecentPricesRequest } from "../tokens/useTokenRecentPricesData";
 
 export type GlvList = {
   glv: {
@@ -74,6 +75,7 @@ export function useGlvMarketsInfo(
   } = params;
 
   const { websocketTokenBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const { pricesData } = useTokenRecentPricesRequest(chainId, { enabled });
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
   const glvReaderAddress = enabled ? getContract(chainId, "GlvReader") : "";
@@ -288,6 +290,10 @@ export function useGlvMarketsInfo(
       const [valueMin] = glvRawData[glv.glvToken + "-glvValue"].glvValueMin.returnValues as [bigint, bigint, bigint];
       const [priceMin, , totalSupply] = pricesMin;
       const [priceMax] = pricesMax;
+      const glvTokenPrices = pricesData?.[glv.glvToken] ?? {
+        minPrice: priceMin,
+        maxPrice: priceMax,
+      };
 
       const glvName = getGlvMarketName(chainId, glv.glvToken)!;
 
@@ -310,10 +316,7 @@ export function useGlvMarketsInfo(
       } = {
         ...tokenConfig,
         address: glv.glvToken,
-        prices: {
-          minPrice: priceMin,
-          maxPrice: priceMax,
-        },
+        prices: glvTokenPrices,
         totalSupply,
         balanceType: getBalanceTypeFromSrcChainId(srcChainId),
         balance,
@@ -375,7 +378,7 @@ export function useGlvMarketsInfo(
     });
 
     return result;
-  }, [chainId, glvRawData, glvs, marketsInfoData, multichainMarketTokensBalances, srcChainId, tokensData]);
+  }, [chainId, glvRawData, glvs, marketsInfoData, multichainMarketTokensBalances, pricesData, srcChainId, tokensData]);
 
   // TODO MLTCH: use updated tokens balances hook
   // useUpdatedTokensBalances()

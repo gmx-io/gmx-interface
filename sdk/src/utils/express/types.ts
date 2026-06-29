@@ -50,6 +50,7 @@ export type GasPaymentParams = {
 };
 
 export type GasPaymentValidations = {
+  isGasPaymentTokenBalanceLoaded: boolean;
   isOutGasTokenBalance: boolean;
   needGasPaymentTokenApproval: boolean;
   isValid: boolean;

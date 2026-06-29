@@ -285,3 +285,8 @@ export function substractMaxLeverageSlippage(number: bigint | number): bigint | 
   }
   return (number * 99n) / 100n;
 }
+
+// 1% slippage
+export function addMinDepositSlippage(number: bigint): bigint {
+  return (number * 101n) / 100n;
+}

@@ -22,22 +22,8 @@ export function getContractErrorMessage({
   const args = errorData.contractErrorArgs;
 
   switch (errorData.contractError) {
-    case CustomErrorName.InsufficientCollateralAmount: {
-      const collateralAmount = getBigIntContractErrorArg(args, 0, "collateralAmount");
-      const collateralDeltaAmount = getBigIntContractErrorArg(args, 1, "collateralDeltaAmount");
-      const missingCollateralAmount =
-        collateralAmount !== undefined && collateralDeltaAmount !== undefined && collateralDeltaAmount < 0n
-          ? bigMath.abs(collateralDeltaAmount) - collateralAmount
-          : undefined;
-      const amountText =
-        missingCollateralAmount !== undefined && missingCollateralAmount > 0n
-          ? formatAmount(missingCollateralAmount, 0, 0, true)
-          : undefined;
-
-      return amountText
-        ? t`Insufficient margin. Add ${amountText} more margin`
-        : t`Insufficient margin. Add more margin`;
-    }
+    case CustomErrorName.InsufficientCollateralAmount:
+      return t`Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them`;
 
     case CustomErrorName.InsufficientCollateralUsd: {
       const remainingCollateralUsd = getBigIntContractErrorArg(args, 0, "remainingCollateralUsd");

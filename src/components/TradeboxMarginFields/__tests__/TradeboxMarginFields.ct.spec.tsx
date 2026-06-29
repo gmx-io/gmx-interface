@@ -29,14 +29,15 @@ test.describe("TradeboxMarginFields", () => {
     test("margin input has placeholder 0.00", async ({ mount, page }) => {
       await mount(<TradeboxMarginFieldsStory initialFromValue="" />);
 
-      await expect(page.locator(getDataQALocator("margin-input"))).toBeVisible();
+      const marginInput = page.locator(getDataQALocator("margin-input"));
+      await expect(marginInput).toHaveAttribute("placeholder", "0.00");
     });
 
-    test("size input has placeholder 0.0", async ({ mount, page }) => {
+    test("size input has placeholder 0.00", async ({ mount, page }) => {
       await mount(<TradeboxMarginFieldsStory initialToValue="" />);
 
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
-      await expect(sizeInput).toHaveAttribute("placeholder", "0.0");
+      await expect(sizeInput).toHaveAttribute("placeholder", "0.00");
     });
   });
 
