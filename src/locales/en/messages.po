@@ -989,6 +989,10 @@ msgstr "1st place"
 msgid "Transaction blocked"
 msgstr "Transaction blocked"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Show line values in tokens"
+msgstr "Show line values in tokens"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -5187,7 +5191,7 @@ msgstr "Connect wallet to view distributions"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7968,6 +7972,10 @@ msgstr "Copy"
 msgid "Amount"
 msgstr "Amount"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Show line values in USD"
+msgstr "Show line values in USD"
+
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
@@ -9274,7 +9282,7 @@ msgstr "Unable to fetch swap route. Please try again."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -10451,7 +10459,7 @@ msgid "Enter a new size or price"
 msgstr "Enter a new size or price"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Unknown order"
 msgstr "Unknown order"
 

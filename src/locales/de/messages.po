@@ -989,6 +989,10 @@ msgstr "1. Platz"
 msgid "Transaction blocked"
 msgstr "Transaktion blockiert"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Show line values in tokens"
+msgstr "Linienwerte in Token anzeigen"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -5187,7 +5191,7 @@ msgstr ""
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -6974,7 +6978,7 @@ msgstr "Letzte 90T"
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Show size in tokens"
-msgstr ""
+msgstr "Größe in Token anzeigen"
 
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
@@ -7967,6 +7971,10 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
 msgstr "Betrag"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Show line values in USD"
+msgstr "Linienwerte in USD anzeigen"
 
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
@@ -9198,7 +9206,7 @@ msgstr "Order-Schlüssel:"
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Show size in USD"
-msgstr ""
+msgstr "Größe in USD anzeigen"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -9274,7 +9282,7 @@ msgstr ""
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -10451,7 +10459,7 @@ msgid "Enter a new size or price"
 msgstr "Neue Größe oder Preis eingeben"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Unknown order"
 msgstr "Unbekannte Order"
 

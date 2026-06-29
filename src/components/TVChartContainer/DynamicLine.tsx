@@ -3,12 +3,13 @@ import { useLingui } from "@lingui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { OrderType } from "domain/synthetics/orders";
 import { helperToast } from "lib/helperToast";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { chartLabelColors, orderTypeToTitle } from "./constants";
+import { chartLabelColors, getOrderLineLabel } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
 import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
 
@@ -27,6 +28,7 @@ export function DynamicLine({
   isPending,
   getError,
   marketName,
+  sizeData,
   lineLength,
   bodyFontSizePt = 14,
 }: {
@@ -42,6 +44,7 @@ export function DynamicLine({
 } & Omit<DynamicChartLine, "updatedAtTime">) {
   const { _ } = useLingui();
   const { theme } = useTheme();
+  const { chartLinesSizeInTokens } = useSettings();
   const lineApi = useRef<IOrderLineAdapter | undefined>(undefined);
   const latestOnEdit = useLatest(onEdit);
   const latestOnCancel = useLatest(onCancel);
@@ -60,12 +63,11 @@ export function DynamicLine({
   const orderBodyBgBorderColor = palette.bg[theme];
   const orderBodyTextColor = palette.text[theme];
 
-  const title = useMemo(() => {
-    const directionText = isLong ? t`Long` : t`Short`;
-    const orderTypeTitle = orderTypeToTitle[orderType];
-    const orderTitleText = orderTypeTitle ? _(orderTypeTitle) : t`Unknown order`;
-    return `${directionText} ${marketName} · ${orderTitleText}`;
-  }, [_, isLong, marketName, orderType]);
+  const title = useMemo(
+    () => getOrderLineLabel(_, { isLong, marketName, orderType, sizeData, showSizeInTokens: chartLinesSizeInTokens }),
+    [_, chartLinesSizeInTokens, isLong, marketName, orderType, sizeData]
+  );
+  const latestTitle = useLatest(title);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -84,7 +86,7 @@ export function DynamicLine({
 
       lineApi.current = chart!
         .createOrderLine({ disableUndo: true })
-        .setText(title)
+        .setText(latestTitle.current)
         .setPrice(price)
         .setQuantity("\u270E")
         .setModifyTooltip(t`Edit order`)
@@ -137,7 +139,7 @@ export function DynamicLine({
               lineApi.current!.setPrice(latestPrice.current);
               lineApi.current!.setBodyBackgroundColor(orderBodyBgBorderColor);
               lineApi.current!.setBodyBorderColor(orderBodyBgBorderColor);
-              lineApi.current!.setText(title);
+              lineApi.current!.setText(latestTitle.current);
               return;
             }
 
@@ -184,7 +186,7 @@ export function DynamicLine({
     orderBodyBgBorderColor,
     orderBodyTextColor,
     price,
-    title,
+    latestTitle,
     tvWidgetRef,
     bodyFontSizePt,
     theme,
