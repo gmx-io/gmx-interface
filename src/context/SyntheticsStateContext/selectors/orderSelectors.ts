@@ -13,7 +13,6 @@ import {
   selectChainId,
   selectJitLiquidityMap,
   selectMarketsInfoData,
-  selectPositionConstants,
   selectPositionsInfoData,
   selectUiFeeFactor,
 } from "./globalSelectors";
@@ -52,7 +51,6 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
             )
           )
         : undefined;
-    const { minCollateralUsd } = q(selectPositionConstants);
 
     const { errors, level } = getOrderErrors({
       order: orderInfo,
@@ -64,7 +62,6 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       isSetAcceptablePriceImpactEnabled,
       jitLiquidityMap,
       nextPositionValues,
-      minCollateralUsd,
     });
 
     return { errors, level };

@@ -30,7 +30,7 @@ import {
 } from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
-import { getIsResultingPositionLiquidatable } from "../trade/utils/warnings";
+import { getIsPositionLiquidatableAtPrice } from "../trade/utils/warnings";
 
 function getSwapOrderTitle() {
   return t`Swap`;
@@ -94,7 +94,6 @@ export function getOrderErrors(p: {
   isSetAcceptablePriceImpactEnabled: boolean;
   jitLiquidityMap?: Record<string, JitLiquidityInfo>;
   nextPositionValues?: NextPositionValues;
-  minCollateralUsd?: bigint;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
@@ -338,14 +337,11 @@ export function getOrderErrors(p: {
         });
       }
 
-      const marketInfo = marketsInfoData[order.marketAddress];
       if (
-        getIsResultingPositionLiquidatable({
-          nextCollateralUsd: p.nextPositionValues?.nextCollateralUsd,
-          nextPnl: p.nextPositionValues?.nextPnl,
-          nextSizeUsd: p.nextPositionValues?.nextSizeUsd,
-          minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
-          minCollateralUsd: p.minCollateralUsd,
+        getIsPositionLiquidatableAtPrice({
+          liqPrice: p.nextPositionValues?.nextLiqPrice,
+          price: (order as PositionOrderInfo).triggerPrice,
+          isLong: (order as PositionOrderInfo).isLong,
         })
       ) {
         errors.push({
