@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { getEmbeddedConnectedWallet, useExportWallet, useWallets } from "@privy-io/react-auth";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
@@ -95,6 +95,7 @@ function WalletBlock({ account }: { account: string }) {
   const { ensName } = useENS(account);
   const [, copyToClipboard] = useCopyToClipboard();
   const [isCopied, setIsCopied] = useState(false);
+  const copyTimeoutRef = useRef<number | undefined>(undefined);
   const handleDisconnect = useDisconnectAndClose();
   const { walletUsd } = useAvailableToTradeAssetSettlementChain();
   const { wallets } = useWallets();
@@ -110,11 +111,14 @@ function WalletBlock({ account }: { account: string }) {
 
   const accountUrl = !account || !chainId ? "" : `${getExplorerUrl(chainId)}address/${account}`;
 
+  useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
+
   const handleCopyAddress = () => {
     if (account) {
       copyToClipboard(account);
+      clearTimeout(copyTimeoutRef.current);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 1000);
+      copyTimeoutRef.current = window.setTimeout(() => setIsCopied(false), 1000);
     }
   };
 
@@ -135,7 +139,6 @@ function WalletBlock({ account }: { account: string }) {
               <ReceiveIcon className="size-16" />
             </button>
           </TooltipWithPortal>
-          {/* Hidden for smart-contract wallets (Safe/ERC-4337): wallet Send has no AA/Safe send support yet (FEDEV-3882). */}
           {canSend && (
             <TooltipWithPortal content={t`Send`} position="bottom" tooltipClassName="!min-w-max" variant="none">
               <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>

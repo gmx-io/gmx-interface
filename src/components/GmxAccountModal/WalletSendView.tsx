@@ -5,14 +5,15 @@ import { Address, encodeFunctionData, isAddress } from "viem";
 import { useGmxAccountModalOpen, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, TokenBalanceType, TokenData } from "domain/tokens";
+import { getMaxAvailableTokenAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { formatAmountFree, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { TxnEventName } from "lib/transactions";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { getMidPrice } from "sdk/utils/tokens";
 
 import { Amount } from "components/Amount/Amount";
@@ -71,6 +72,7 @@ export function WalletSendView() {
   const tokenOptions = useMemo(() => getWalletTokenOptions(tokensData), [tokensData]);
 
   const selectedToken = getByKey(tokensData, selectedTokenAddress);
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const walletBalance = getBalanceByBalanceType(selectedToken, TokenBalanceType.Wallet);
 
   const amount =
@@ -91,10 +93,20 @@ export function WalletSendView() {
   const isInsufficientBalance = walletBalance !== undefined && amount !== undefined && amount > walletBalance;
 
   const handleMaxClick = useCallback(() => {
-    if (selectedToken && walletBalance !== undefined) {
-      setInputValue(formatAmountFree(walletBalance, selectedToken.decimals, selectedToken.decimals));
+    if (selectedToken === undefined || walletBalance === undefined) {
+      return;
     }
-  }, [selectedToken, walletBalance]);
+
+    const { maxAvailableAmount } = getMaxAvailableTokenAmount({
+      chainId,
+      fromTokenAddress: selectedToken.address,
+      fromTokenBalance: walletBalance,
+      gasPaymentToken: nativeToken,
+      gasPaymentTokenBalance: nativeToken?.walletBalance,
+    });
+
+    setInputValue(formatAmountFree(maxAvailableAmount, selectedToken.decimals, selectedToken.decimals));
+  }, [chainId, nativeToken, selectedToken, walletBalance]);
 
   const handleSend = useCallback(async () => {
     if (
@@ -121,24 +133,11 @@ export function WalletSendView() {
               args: [recipient as Address, amount],
             });
 
-        await sendWalletTransaction({
-          chainId,
-          signer,
-          to,
-          callData,
-          value,
-          callback: (txnEvent) => {
-            if (txnEvent.event === TxnEventName.Sent) {
-              helperToast.success(t`Sent`);
-              setIsVisibleOrView("main");
-              setIsSubmitting(false);
-            } else if (txnEvent.event === TxnEventName.Error) {
-              helperToast.error(t`Send failed`);
-              setIsSubmitting(false);
-            }
-          },
-        });
+        await sendWalletTransaction({ chainId, signer, to, callData, value });
       });
+
+      helperToast.success(t`Sent`);
+      setIsVisibleOrView("main");
     } catch (error) {
       helperToast.error(t`Send failed`);
     } finally {

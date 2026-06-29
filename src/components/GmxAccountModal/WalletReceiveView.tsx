@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { QRCodeSVG } from "qrcode.react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 import { useAccount } from "wagmi";
 
@@ -23,8 +23,11 @@ export function WalletReceiveView() {
 
   const [isCopied, setIsCopied] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
+  const copyTimeoutRef = useRef<number | undefined>(undefined);
 
   const imageSettings = useMemo(() => ({ src: chainIcon, height: 28, width: 28, excavate: true }), [chainIcon]);
+
+  useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
 
   if (!address) {
     return null;
@@ -32,7 +35,9 @@ export function WalletReceiveView() {
 
   const handleCopy = () => {
     copyToClipboard(address);
+    clearTimeout(copyTimeoutRef.current);
     setIsCopied(true);
+    copyTimeoutRef.current = window.setTimeout(() => setIsCopied(false), 1000);
   };
 
   return (
@@ -48,7 +53,7 @@ export function WalletReceiveView() {
       </div>
 
       <div className="flex flex-col items-center gap-12 self-stretch">
-        <div className="text-body-large break-all self-stretch px-28 text-center font-medium">
+        <div className="text-body-large self-stretch break-all px-28 text-center font-medium">
           <span className="text-typography-primary">{address.slice(0, 5)}</span>
           <span className="text-typography-secondary">{address.slice(5, -4)}</span>
           <span className="text-typography-primary">{address.slice(-4)}</span>

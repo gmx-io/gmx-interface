@@ -28,9 +28,6 @@ export function AddressDropdown({ account }: Props) {
     [chainId]
   );
 
-  // Wallet-only chains (Avalanche/Botanix/MegaETH) open the account modal in wallet-first mode per DES-45.
-  // Smart-contract wallets also use the modal; the wallet Send action is hidden for them inside WalletBlock
-  // since Safe/ERC-4337 (AA) sends aren't supported yet (FEDEV-3882).
   const showAccountModal =
     isWalletOnlyChain(chainId) ||
     (isSettlementChain(chainId) && hasRelatedSourceChains && !isEmptyAvalancheGmxAccountOrNotConnected);

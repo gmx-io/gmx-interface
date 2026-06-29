@@ -8846,7 +8846,6 @@ msgid "Receive (approximate)"
 msgstr "Получение (приблизительно)"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
-#: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send failed"
 msgstr "Не удалось отправить"
 
