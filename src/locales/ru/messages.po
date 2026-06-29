@@ -8442,6 +8442,10 @@ msgstr ""
 msgid "You"
 msgstr "Вы"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Close position"
+msgstr "Закрыть позицию"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
 msgstr "с 100x левериджем"
