@@ -11,6 +11,9 @@ export type GlobalMetricData = {
   isAuthorised: boolean;
   isLargeAccount: boolean;
   abFlags: Record<string, boolean>;
+  apiSdkMarkets?: boolean;
+  apiSdkPositions?: boolean;
+  apiSdkOrders?: boolean;
   isMobile: boolean;
   isHomeSite: boolean;
   browserName?: string;
@@ -116,6 +119,8 @@ export type ViemWsClientError = {
   };
 };
 
+export type ApiDataSource = "api" | "rpc";
+
 // Loading measurements
 export type LoadingStartEvent = {
   event: `${MeasureMetricType}.${LoadingStage.Started}`;
@@ -124,6 +129,7 @@ export type LoadingStartEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -134,6 +140,7 @@ export type LoadingSuccessEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -144,6 +151,7 @@ export type LoadingTimeoutEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -154,7 +162,17 @@ export type LoadingFailedEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   } & ErrorData;
+};
+
+export type ApiDataFallbackCounter = {
+  event: "apiData.fallback";
+  data: {
+    domain: "markets" | "positions" | "orders";
+    reason: "stale" | "error" | "initial";
+    chainId: number;
+  };
 };
 
 export enum FreshnessMetricId {
@@ -536,6 +554,7 @@ export type MissedCoinEvent = {
     monthVolume: number | undefined;
     place: MissedCoinsPlace;
     account?: string;
+    mode?: "perp" | "swap";
   };
 };
 

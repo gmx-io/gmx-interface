@@ -1,19 +1,17 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { type TransactionResponse } from "ethers";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { ContractsChainId, getChainName } from "config/chains";
+import { ContractsChainId, getChainName, getViemChain } from "config/chains";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { useMultichainReferralDepositToken } from "domain/multichain/useMultichainReferralDepositToken";
@@ -36,7 +34,9 @@ import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -134,17 +134,24 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
           return;
         }
 
-        const tx = (await createReferralCode(referralCode)) as TransactionResponse;
-        const receipt = await tx.wait();
+        const tx = await createReferralCode(referralCode);
+        if (!tx?.hash) {
+          throw new Error("Referral code transaction was not submitted");
+        }
 
-        if (receipt?.status === 1) {
+        const publicClient = getPublicClientWithRpc(chainId);
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash as `0x${string}` });
+
+        if (receipt?.status === "success") {
           helperToast.success(t`Referral code created`);
           onSuccess(referralCode);
           setReferralCode("");
+        } else {
+          throw new Error(`Transaction failed with status ${receipt?.status}`);
         }
       } catch (err) {
-        setError(t`Referral code creation failed`);
         metrics.pushError(err, "createReferralCode");
+        setError(t`Referral code creation failed`);
       } finally {
         setIsProcessing(false);
       }
@@ -315,7 +322,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
           callData: encodeFunctionData({
             abi: abis.IStargate,
             functionName: "sendToken",
-            args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
+            args: [sendParams, quoteFromNativeFee(quoteResult.data.nativeFee), account],
           }),
           value,
           msg: t`Creating referral code...`,
@@ -334,10 +341,12 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
               <Trans>May take a few minutes to appear. Check back later</Trans>
             </>
           );
+        } else {
+          throw new Error(`Transaction failed with status ${receipt.status}`);
         }
       } catch (err) {
-        toastCustomOrStargateError(chainId, err);
         metrics.pushError(err, "createReferralCodeMultichain");
+        toastCustomOrStargateError(chainId, err);
       } finally {
         setIsSubmitting(false);
         setIsValidating(false);
@@ -600,8 +609,8 @@ function CreateReferralCodeLayout({
         {hasNoTokensOnSourceChain && srcChainId && (
           <AlertInfoCard type="error" className="text-left" hideClose>
             <Trans>
-              You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit
-              funds or switch to a different network.
+              You need USDC and {getViemChain(srcChainId).nativeCurrency.symbol} on {getChainName(srcChainId)} to create
+              a referral code via GMX Account. Deposit funds or switch to a different network.
             </Trans>
           </AlertInfoCard>
         )}

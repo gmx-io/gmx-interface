@@ -24,6 +24,10 @@ $slider-color: var(--color-blue-300);
     background: var(--color-slate-800);
   }
 
+  .rc-slider-disabled {
+    background: transparent;
+  }
+
   .rc-slider-track {
     border-radius: 0;
     height: 4px;

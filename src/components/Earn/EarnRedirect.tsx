@@ -1,87 +1,77 @@
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useMemo } from "react";
 
-import { ContractsChainId } from "config/chains";
-import { LAST_EARN_TAB_KEY } from "config/localStorage";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
+import {
+  selectDepositMarketTokensData,
+  selectGlvAndMarketsInfoData,
+  selectMultichainMarketTokensBalancesResult,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
-import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import type { TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
-import { getTokenBySymbolSafe } from "sdk/configs/tokens";
+import type { SettlementChainId } from "sdk/configs/chains";
 
 import Loader from "components/Loader/Loader";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
-import EarnPageLayout, { EarnTab, isEarnTab } from "../../pages/Earn/EarnPageLayout";
-
-function hasGmxTokenBalance(chainId: ContractsChainId, tokensData: TokensData | undefined) {
-  if (!tokensData) {
-    return false;
-  }
-
-  const tokenAddress = getTokenBySymbolSafe(chainId, "GMX")?.address;
-  if (!tokenAddress) {
-    return false;
-  }
-
-  const token = getByKey(tokensData, tokenAddress);
-  if (!token) {
-    return false;
-  }
-
-  return token.balance !== undefined && token.balance > 0n;
-}
+import EarnPageLayout from "../../pages/Earn/EarnPageLayout";
 
 export function EarnRedirect() {
-  const [lastEarnTab] = useLocalStorageSerializeKey<EarnTab | undefined>(LAST_EARN_TAB_KEY, undefined);
-
-  if (lastEarnTab && isEarnTab(lastEarnTab)) {
-    return <RedirectWithQuery to={`/earn/${lastEarnTab}`} />;
-  }
-
-  return <EarnFirstVisitRedirect />;
-}
-
-function EarnFirstVisitRedirect() {
-  const { account } = useWallet();
-  const { chainId, srcChainId } = useChainId();
+  const { account, status } = useWallet();
+  const { ready: isPrivyReady } = usePrivy();
+  const { ready: isWalletsReady, wallets } = useWallets();
+  const { chainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
-  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
+  const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const multichainMarketTokensBalancesResult = useSelector(selectMultichainMarketTokensBalancesResult);
   const { data: processedData } = useStakingProcessedData();
 
-  const tokensData = useTokensData();
-  const hasEarnTokenHoldings = useMemo(() => hasGmxTokenBalance(chainId, tokensData), [chainId, tokensData]);
-
-  const hasStakedGmx = (processedData?.gmxInStakedGmx ?? 0n) > 0n;
+  const hasGmxAssets = (processedData?.gmxBalance ?? 0n) > 0n || (processedData?.gmxInStakedGmx ?? 0n) > 0n;
 
   const hasGmGlvAssets = useMemo(() => {
-    if (!marketsInfoData || !marketTokensData) {
+    if (!marketsInfoData) {
       return false;
     }
 
     return Object.values(marketsInfoData).some((info) => {
       const tokenAddress = isGlvInfo(info) ? info.glvTokenAddress : info.marketTokenAddress;
-      const balance = getByKey(marketTokensData, tokenAddress)?.balance;
-      return balance !== undefined && balance > 0n;
+      const balance = getByKey(multichainMarketTokensBalances, tokenAddress)?.totalBalance;
+      const balanceUsd = getByKey(multichainMarketTokensBalances, tokenAddress)?.totalBalanceUsd;
+
+      const filteredBalanceUsd = getPlatformTokenBalanceAfterThreshold(balanceUsd);
+      return filteredBalanceUsd !== 0n && balance !== undefined && balance > 0n;
     });
-  }, [marketTokensData, marketsInfoData]);
+  }, [marketsInfoData, multichainMarketTokensBalances]);
 
-  const hasAnyEarnHoldings = hasEarnTokenHoldings || hasStakedGmx || hasGmGlvAssets;
+  const hasAnyEarnHoldings = hasGmxAssets || hasGmGlvAssets;
 
-  const tokenBalancesReady = tokensData !== undefined;
-  const processedDataReady = !account || processedData !== undefined;
+  const platformTokens = MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined;
+
+  const isWalletInitializing =
+    !isPrivyReady ||
+    !isWalletsReady ||
+    (wallets.length > 0 && !account) ||
+    status === "connecting" ||
+    status === "reconnecting";
+
+  const processedDataReady = processedData !== undefined;
   const marketsInfoReady = marketsInfoData !== undefined;
   const marketTokensReady =
-    !account || marketTokensData !== undefined || Object.keys(marketsInfoData ?? {}).length === 0;
+    (depositMarketTokensData !== undefined &&
+      Object.values(depositMarketTokensData).every((token) => token.walletBalance !== undefined)) ||
+    Object.keys(marketsInfoData ?? {}).length === 0;
+  const sourceChainBalancesReady = !platformTokens?.length || !multichainMarketTokensBalancesResult.isLoading;
 
   const isBalancesReady =
-    !account || (tokenBalancesReady && processedDataReady && marketsInfoReady && marketTokensReady);
+    !isWalletInitializing &&
+    (!account || (processedDataReady && marketsInfoReady && marketTokensReady && sourceChainBalancesReady));
 
   const target = account && hasAnyEarnHoldings ? "/earn/portfolio" : "/earn/discover";
 

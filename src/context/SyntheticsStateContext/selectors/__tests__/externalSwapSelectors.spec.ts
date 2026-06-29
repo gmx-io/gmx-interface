@@ -407,7 +407,11 @@ describe("externalSwapSelectors", () => {
       const state = createMockState({
         externalSwap: {
           ...defaultState.externalSwap,
-          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+          requestResult: {
+            status: "success",
+            key: { structuralKey: "stale-key", amount: 1n },
+            quote: mockBaseSwapQuote,
+          },
         },
       });
       expect(selectExternalSwapIsLoading(state as SyntheticsState)).toBe(true);
@@ -458,7 +462,11 @@ describe("externalSwapSelectors", () => {
       const state = createMockState({
         externalSwap: {
           ...defaultState.externalSwap,
-          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+          requestResult: {
+            status: "success",
+            key: { structuralKey: "stale-key", amount: 1n },
+            quote: mockBaseSwapQuote,
+          },
         },
       });
 
@@ -513,7 +521,11 @@ describe("externalSwapSelectors", () => {
       const state = createMockState({
         externalSwap: {
           ...defaultState.externalSwap,
-          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+          requestResult: {
+            status: "success",
+            key: { structuralKey: "stale-key", amount: 1n },
+            quote: mockBaseSwapQuote,
+          },
         },
       });
       expect(selectExternalSwapQuote(state as SyntheticsState)).toBeUndefined();

@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ChangeEvent, useCallback, useRef } from "react";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, SourceChainId } from "config/chains";
 import { isSettlementChain } from "config/multichain";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {

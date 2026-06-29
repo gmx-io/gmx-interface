@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
@@ -7,6 +6,7 @@ import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
@@ -19,7 +19,10 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectSettlementChainGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -72,6 +75,7 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { numericBinarySearch } from "lib/binarySearch";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { adjustForDecimals, formatAmountFree } from "lib/numbers";
@@ -132,6 +136,7 @@ export function useTradeboxButtonState({
   const sidecarEntries = useSidecarEntries();
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const tradeMode = useSelector(selectTradeboxTradeMode);
@@ -144,12 +149,14 @@ export function useTradeboxButtonState({
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = useSelector(selectTradeboxToToken);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
   const tokensData = useSelector(selectTokensData);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const gasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const { tokenChainDataArray } = useMultichainTokens();
@@ -167,6 +174,7 @@ export function useTradeboxButtonState({
     expressParams,
     batchParams,
     isExpressLoading,
+    isMultichainSubmitDisabled,
     totalExecutionFee,
   } = useTradeboxTransactions({
     setPendingTxns,
@@ -261,6 +269,7 @@ export function useTradeboxButtonState({
 
     const validationResult = takeValidationResult(
       commonError,
+      multipleWalletExtensionsChainError,
       tradeError,
       externalSwapBlockedError,
       expressError,
@@ -268,7 +277,9 @@ export function useTradeboxButtonState({
     );
 
     let tooltipContent: ReactNode = null;
-    if (validationResult.buttonTooltipName) {
+    if (validationResult.buttonTooltipMessage) {
+      tooltipContent = validationResult.buttonTooltipMessage;
+    } else if (validationResult.buttonTooltipName) {
       switch (validationResult.buttonTooltipName) {
         case ValidationButtonTooltipName.maxLeverage: {
           tooltipContent = (
@@ -310,6 +321,9 @@ export function useTradeboxButtonState({
           break;
         }
 
+        case ValidationButtonTooltipName.minDeposit:
+          break;
+
         default:
           mustNeverExist(validationResult.buttonTooltipName);
       }
@@ -330,6 +344,7 @@ export function useTradeboxButtonState({
     hasOutdatedUi,
     expressParams,
     tokensData,
+    multipleWalletExtensionsChainError,
     tradeError,
     externalSwapBlockedError,
     nativeGasError,
@@ -541,7 +556,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isExpressLoading) {
+    if (isExpressLoading || isMultichainSubmitDisabled) {
       return {
         ...commonState,
         text: (
@@ -641,6 +656,7 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
     buttonErrorText,

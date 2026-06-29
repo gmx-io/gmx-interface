@@ -1,10 +1,10 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { REFERRALS_DOCS_URL } from "config/links";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
   useAffiliateTier,
   useCodeOwner,

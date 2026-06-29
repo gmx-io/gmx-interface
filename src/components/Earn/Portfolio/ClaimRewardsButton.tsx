@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useState } from "react";
 import useSWR from "swr";
@@ -7,6 +6,7 @@ import { zeroAddress } from "viem";
 
 import { getChainNativeTokenSymbol, getChainWrappedTokenSymbol } from "config/chains";
 import { getContract } from "config/contracts";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";

@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, MEGAETH } from "config/chains";
+import { ARBITRUM, BOTANIX, MEGAETH } from "config/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -35,11 +35,40 @@ export type EventData = {
 
 export const homeEventsData: EventData[] = [];
 
-export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
-export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
-export const WELL_DELISTING_EVENT_ID = "well-delisting";
-
 export const appEventsData: EventData[] = [
+  {
+    id: "botanix-withdraw-deadline",
+    isActive: true,
+    endDate: "01 Aug 2026, 0:00",
+    chains: [BOTANIX],
+    title: "Botanix network is shutting down",
+    bodyText: (
+      <>
+        Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.
+        <br />
+        <br />
+        In the swap interface, swap pBTC to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC
+        directly on Botanix. Move your BTC off the network before the deadline.
+        <br />
+        <br />
+        <Link to="/pools">Withdraw liquidity</Link>
+      </>
+    ),
+  },
+  {
+    id: "spcx-stock-arbitrum-transition",
+    isActive: true,
+    startDate: "12 Jun 2026, 12:00",
+    endDate: "19 Jun 2026, 12:00",
+    chains: [ARBITRUM],
+    title: "SpaceX pre-IPO market is now a 24/7 stock perp on Arbitrum",
+    bodyText: (
+      <>
+        SpaceX pre-IPO market transitioned into a stock market. <Link to="/trade">Trade SPCX</Link> under TradFi &gt;
+        Stocks. Existing positions transitioned automatically.
+      </>
+    ),
+  },
   {
     id: "mega-arbitrum-megaeth-listing",
     flagId: "showMegaListingArbitrumMegaeth",
@@ -91,18 +120,6 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: WELL_DELISTING_EVENT_ID,
-    isActive: true,
-    endDate: "20 Apr 2026, 0:00",
-    title: "WELL/USD delisting",
-    bodyText: (
-      <>
-        Position openings for WELL/USD are no longer available. Please close your existing positions before April 19.
-        Remaining positions may be auto-closed.
-      </>
-    ),
-  },
-  {
     id: "gold-silver-fee-reduction",
     flagId: "showGoldSilverFeeReduction",
     endDate: "21 Apr 2026, 12:00",
@@ -124,7 +141,7 @@ export const appEventsData: EventData[] = [
       <>
         <Link to="/trade">Trade</Link> GOLD and SILVER perpetuals 24/7 with up to 100x leverage, or{" "}
         <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>. Find
-        them under the RWA category in the market dropdown.
+        them under the TradFi category in the market dropdown.
       </>
     ),
   },
@@ -155,20 +172,6 @@ export const appEventsData: EventData[] = [
         Trade perpetuals, create and share your referral code, and provide liquidity on MegaETH using its native
         stablecoin: USDm.{" "}
         <ExternalLink href="https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade">Read more</ExternalLink>.
-      </>
-    ),
-  },
-  {
-    id: OM_MANTRA_MIGRATION_EVENT_ID,
-    isActive: true,
-    startDate: "20 Feb 2026, 0:00",
-    endDate: "27 Feb 2026, 0:00",
-    title: "OM to MANTRA migration",
-    variant: "warning",
-    bodyText: (
-      <>
-        ⚠️ OM (Mantra) is migrating to the MANTRA token. Please close your position on the OM/USD market by [08:00 UTC]
-        21 February to avoid auto-closure or forced liquidation.
       </>
     ),
   },
@@ -234,22 +237,6 @@ export const appEventsData: EventData[] = [
       <>
         From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance
         accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
-      </>
-    ),
-  },
-  {
-    id: AL16Z_DELISTING_EVENT_ID,
-    isActive: true,
-    startDate: "06 Nov 2025, 08:00",
-    endDate: "06 Dec 2025, 08:00",
-    title: "AI16Z/USD delisting",
-    bodyText: (
-      <>
-        Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is
-        recommended.
-        <br />
-        <br />
-        The listing committee will evaluate the listing of ELIZAOS/USD.
       </>
     ),
   },

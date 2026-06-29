@@ -4,6 +4,8 @@ import { Address, ContractFunctionReturnType, getAddress, isAddressEqual } from 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
+import { useIsApiHealthy } from "domain/api/apiHealthTracker";
+import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
 import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
@@ -12,6 +14,7 @@ import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
+import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -98,14 +101,25 @@ export function useOrders(
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
-  const apiEnabled = useIsApiSdkEnabled(API_UI_FLAGS.orders);
+  // Stale markets ⇒ gmx-api unhealthy ⇒ orders fall back to RPC globally too.
+  const isApiHealthy = useIsApiHealthy(chainId);
+  const apiEnabled = useIsApiSdkEnabled(API_UI_FLAGS.orders) && isApiHealthy;
   const {
     ordersData: apiOrdersData,
     isStale: isApiStale,
     error: apiError,
   } = useApiOrdersRequest(chainId, { account, enabled: apiEnabled });
 
-  const rpcEnabled = !apiEnabled || isApiStale || Boolean(apiError);
+  const { shouldFallbackToRpc: rpcEnabled, isInitialFallback } = useApiDataFallbackState({
+    chainId,
+    apiEnabled,
+    apiData: apiOrdersData,
+    isApiStale,
+    apiError,
+    isEnabled: Boolean(account),
+    resetKey: account,
+  });
+
   const { data: rpcData } = useMulticall(chainId, `useOrdersData-${chainId}`, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     key: rpcEnabled ? key : null,
@@ -122,10 +136,23 @@ export function useOrders(
     }
   }, [key, chainId]);
 
+  useApiDataFallbackCounter({
+    domain: "orders",
+    chainId,
+    apiEnabled,
+    apiData: apiOrdersData,
+    isApiStale,
+    apiError,
+    isInitialFallback,
+    resetKey: account,
+  });
+
+  const shouldUseApiOrdersData = apiEnabled && Boolean(apiOrdersData) && (!rpcEnabled || !rpcData?.orders);
+
   const ordersData: OrdersData | undefined = useMemo(() => {
     let orders: Order[] | undefined;
 
-    if (apiEnabled && apiOrdersData && !isApiStale && !apiError) {
+    if (shouldUseApiOrdersData && apiOrdersData) {
       orders = Object.values(apiOrdersData).map(convertApiOrderToOrder);
     } else if (rpcData?.orders) {
       orders = rpcData.orders;
@@ -177,10 +204,8 @@ export function useOrders(
       return acc;
     }, {} as OrdersData);
   }, [
-    apiEnabled,
     apiOrdersData,
-    isApiStale,
-    apiError,
+    shouldUseApiOrdersData,
     rpcData?.orders,
     chainId,
     hasNonSwapRelevantDefinedMarkets,
@@ -193,8 +218,7 @@ export function useOrders(
     swapRelevantDefinedMarketsLowercased,
   ]);
 
-  const count =
-    apiEnabled && apiOrdersData && !isApiStale && !apiError ? Object.keys(apiOrdersData).length : rpcData?.count;
+  const count = shouldUseApiOrdersData && apiOrdersData ? Object.keys(apiOrdersData).length : rpcData?.count;
 
   return {
     ordersData: ordersData,
@@ -357,7 +381,7 @@ function matchByMarket({
     return nonSwapRelevantDefinedFiltersLowercased.some((filter) => {
       const marketMatch = filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase();
       const directionMath = filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short");
-      const initialCollateralAddress = order.initialCollateralTokenAddress.toLowerCase();
+      const initialCollateralAddress = order.initialCollateralTokenAddress;
 
       let collateralMatch = true;
       if (!filter.collateralAddress) {

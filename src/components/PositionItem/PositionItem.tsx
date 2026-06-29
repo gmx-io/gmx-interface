@@ -22,6 +22,7 @@ import { TradeMode } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -54,6 +55,7 @@ export type Props = {
   isLarge: boolean;
   onOrdersClick?: (key?: string) => void;
   onCancelOrder?: (orderKey: string) => void;
+  hideOrderActions?: boolean;
 };
 
 export function PositionItem(p: Props) {
@@ -83,6 +85,8 @@ export function PositionItem(p: Props) {
   const isCloseStuck = closeEntry ? !closeEntry.isIntersecting : false;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
+  const indexTokenVisualMultiplier = BigInt(p.position.indexToken.visualMultiplier ?? 1);
+  const indexTokenDisplaySymbol = `${getTokenVisualMultiplier(p.position.indexToken)}${p.position.indexToken.symbol}`;
 
   const handleSizeClick = useCallback(() => {
     setShowSizeInTokens((prev) => !prev);
@@ -475,13 +479,17 @@ export function PositionItem(p: Props) {
             <span className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
               {showSizeInTokens
                 ? formatBalanceAmount(
-                    p.position.sizeInTokens,
+                    p.position.sizeInTokens / indexTokenVisualMultiplier,
                     p.position.indexToken.decimals,
-                    p.position.indexToken.symbol
+                    indexTokenDisplaySymbol
                   )
                 : formatUsd(p.position.sizeInUsd)}
             </span>
-            <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+            <PositionItemOrdersLarge
+              positionKey={p.position.key}
+              onOrdersClick={p.onOrdersClick}
+              hideActions={p.hideOrderActions}
+            />
           </div>
         </TableTd>
         <TableTd>
@@ -639,9 +647,9 @@ export function PositionItem(p: Props) {
             <div className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
               {showSizeInTokens
                 ? formatBalanceAmount(
-                    p.position.sizeInTokens,
+                    p.position.sizeInTokens / indexTokenVisualMultiplier,
                     p.position.indexToken.decimals,
-                    p.position.indexToken.symbol
+                    indexTokenDisplaySymbol
                   )
                 : formatUsd(p.position.sizeInUsd)}
             </div>
@@ -726,12 +734,16 @@ export function PositionItem(p: Props) {
             </div>
           )}
         </AppCardSection>
-        <AppCardSection className="border-b-0">
+        <AppCardSection className="!border-b-0">
           <div className="font-medium text-typography-secondary">
             <Trans>Orders</Trans>
           </div>
 
-          <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+          <PositionItemOrdersSmall
+            positionKey={p.position.key}
+            onOrdersClick={p.onOrdersClick}
+            hideActions={p.hideOrderActions}
+          />
         </AppCardSection>
 
         <div ref={closeSentinelRef} />

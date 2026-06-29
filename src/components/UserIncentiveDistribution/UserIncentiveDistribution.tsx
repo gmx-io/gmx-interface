@@ -1,16 +1,19 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import type { Hash } from "viem";
 
 import { AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
 import { getIsGlv } from "config/markets";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
-import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
+import useUserIncentiveData, {
+  type UserIncentiveDistribution as UserIncentiveDistributionData,
+} from "domain/synthetics/common/useUserIncentiveData";
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
@@ -20,9 +23,8 @@ import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
-import { Distribution } from "sdk/codegen/subsquid";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getTokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -49,7 +51,7 @@ type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
 function getNormalizedIncentive(
   chainId: ContractsChainId,
-  incentive: Distribution,
+  incentive: UserIncentiveDistributionData,
   tokens: Token[],
   gmMarkets: MarketsData | undefined,
   marketTokensData: TokensData | undefined
@@ -381,7 +383,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   );
 }
 
-const TxnStatus = ({ chainId, hash }: { chainId: number; hash: string }) => {
+const TxnStatus = ({ chainId, hash }: { chainId: number; hash: Hash }) => {
   const [status, setStatus] = useState<"success" | "failed" | null>(null);
 
   useEffect(() => {

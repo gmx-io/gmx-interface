@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
@@ -8,11 +7,15 @@ import { zeroAddress } from "viem";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectSettlementChainGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectGasLimits,
@@ -24,6 +27,7 @@ import {
 import {
   selectExpressOrdersEnabled,
   selectGasPaymentTokenAddress,
+  selectGmxAccountGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -34,6 +38,7 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxFees,
+  selectTradeboxFormState,
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
@@ -47,7 +52,6 @@ import {
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
-  selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxSwapTokens,
   selectTradeboxTradeFlags,
@@ -135,6 +139,8 @@ import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
 
 import "./TradeBox.scss";
 
+const TRADEBOX_INPUT_PLACEHOLDER = "0.00";
+
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
@@ -210,7 +216,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
-  } = useSelector(selectTradeboxState);
+  } = useSelector(selectTradeboxFormState);
 
   const isTwapModeAvailable = useMemo(
     () =>
@@ -222,6 +228,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = getByKey(tokensData, toTokenAddress);
+  const toTokenBalance = getBalanceByBalanceType(
+    toToken,
+    isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet
+  );
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
@@ -248,8 +258,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const fees = useSelector(selectTradeboxFees);
   const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
-  const gasPaymentTokenData = useSelector(selectGasPaymentToken);
-  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const settlementChainGasPaymentTokenData = useSelector(selectSettlementChainGasPaymentToken);
+  const gmxAccountGasPaymentTokenData = useSelector(selectGmxAccountGasPaymentToken);
+  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
   const { subaccount } = useSelector(selectSubaccountState);
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
@@ -260,6 +272,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
   const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
+  const gasPaymentTokenData = isFromTokenGmxAccount
+    ? gmxAccountGasPaymentTokenData
+    : settlementChainGasPaymentTokenData;
+  const gasPaymentTokenAddress = isFromTokenGmxAccount
+    ? gmxAccountGasPaymentTokenAddress
+    : settlementChainGasPaymentTokenAddress;
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
@@ -731,6 +749,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
           maxDecimals={fromToken?.decimals}
+          placeholder={TRADEBOX_INPUT_PLACEHOLDER}
         >
           {fromTokenAddress &&
             (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
@@ -798,17 +817,28 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     : undefined
                 }
                 bottomRightValue={
-                  !isTwap && toToken && toToken.balance !== undefined && toToken.balance > 0n
-                    ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol, {
+                  !isTwap && toToken && toTokenBalance !== undefined && toTokenBalance > 0n ? (
+                    <span className="inline-flex items-center">
+                      {isFromTokenGmxAccount && (
+                        <TokenIcon
+                          symbol={toToken.symbol}
+                          displaySize={14}
+                          chainIdBadge={GMX_ACCOUNT_PSEUDO_CHAIN_ID}
+                          className="mr-4"
+                        />
+                      )}
+                      {formatBalanceAmount(toTokenBalance, toToken.decimals, toToken.symbol, {
                         isStable: toToken.isStable,
-                      })
-                    : undefined
+                      })}
+                    </span>
+                  ) : undefined
                 }
                 inputValue={toTokenInputValue}
                 onInputValueChange={handleToInputTokenChange}
                 qa="swap-receive"
                 isDisabled={isTwap}
                 maxDecimals={toToken?.decimals}
+                placeholder={TRADEBOX_INPUT_PLACEHOLDER}
               >
                 {toTokenAddress && (
                   <TokenSelector
@@ -822,6 +852,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     showBalances={true}
                     showTokenImgInDropdown={true}
                     extendedSortSequence={sortedLongAndShortTokens}
+                    chainIdBadge={isFromTokenGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : undefined}
                     qa="receive-selector"
                   />
                 )}
@@ -846,6 +877,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             onInputValueChange={handleToInputTokenChange}
             qa="buy"
             maxDecimals={toToken?.decimals}
+            placeholder={TRADEBOX_INPUT_PLACEHOLDER}
           >
             {toTokenAddress && (
               <MarketSelector
@@ -942,6 +974,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleTriggerPriceInputChange}
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
+        placeholder={TRADEBOX_INPUT_PLACEHOLDER}
       >
         {t`USD`}
       </BuyInputSection>
@@ -959,6 +992,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleTriggerRatioInputChange}
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
+        placeholder={TRADEBOX_INPUT_PLACEHOLDER}
       >
         {markRatio && (
           <>

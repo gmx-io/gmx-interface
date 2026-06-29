@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import type { ReactNode } from "react";
 import { maxUint256, zeroAddress } from "viem";
 
 import {
@@ -49,6 +50,7 @@ export enum ValidationButtonTooltipName {
   maxLeverage = "maxLeverage",
   liqPriceGtMarkPrice = "liqPrice > markPrice",
   noSwapPath = "noSwapPath",
+  minDeposit = "minDeposit",
 }
 
 export enum ValidationBannerErrorName {
@@ -58,6 +60,7 @@ export enum ValidationBannerErrorName {
   insufficientGmxAccountCurrentGasTokenBalance = "insufficientGmxAccountCurrentGasTokenBalance",
   insufficientGmxAccountWntBalance = "insufficientGmxAccountWntBalance",
   insufficientSourceChainNativeTokenBalance = "insufficientSourceChainNativeTokenBalance",
+  poolAtCapacity = "poolAtCapacity",
 }
 
 export function getDefaultInsufficientGasMessage() {
@@ -74,7 +77,7 @@ export type ValidationResult =
   | {
       buttonErrorMessage: string;
       buttonTooltipName?: ValidationButtonTooltipName | undefined;
-      buttonTooltipMessage?: string | undefined;
+      buttonTooltipMessage?: string | ReactNode | undefined;
       bannerErrorName?: ValidationBannerErrorName | undefined;
     };
 
@@ -449,6 +452,7 @@ export function getIncreaseError(p: {
   }
 
   const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
     minCollateralFactor: marketInfo?.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
@@ -607,6 +611,7 @@ export function getDecreaseError(p: {
   }
 
   const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
     minCollateralFactor: marketInfo?.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
@@ -657,7 +662,9 @@ export function getEditCollateralError(p: {
   isDeposit: boolean;
   depositToken: TokenData | undefined;
   depositAmount: bigint | undefined;
+  minDepositUsd: bigint | undefined;
   marketInfo: MarketInfo | undefined;
+  maxWithdrawAmount: bigint | undefined;
 }): ValidationResult {
   const {
     collateralDeltaAmount,
@@ -668,10 +675,16 @@ export function getEditCollateralError(p: {
     isDeposit,
     depositToken,
     depositAmount,
+    minDepositUsd,
     marketInfo,
+    maxWithdrawAmount,
   } = p;
 
   const minCollateralFactor = marketInfo?.minCollateralFactor;
+
+  if (!isDeposit && maxWithdrawAmount === 0n) {
+    return { buttonErrorMessage: t`Withdrawal not available` };
+  }
 
   if (
     collateralDeltaAmount === undefined ||
@@ -686,6 +699,13 @@ export function getEditCollateralError(p: {
     return { buttonErrorMessage: t`Insufficient ${depositToken.symbol} balance` };
   }
 
+  if (isDeposit && minDepositUsd !== undefined && minDepositUsd > 0 && collateralDeltaUsd < minDepositUsd) {
+    return {
+      buttonErrorMessage: t`Min deposit: ${formatUsd(minDepositUsd)}`,
+      buttonTooltipName: ValidationButtonTooltipName.minDeposit,
+    };
+  }
+
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
     if (position?.isLong && nextLiqPrice < maxUint256 && position?.markPrice < nextLiqPrice) {
       return { buttonErrorMessage: t`Invalid liquidation price` };
@@ -697,8 +717,9 @@ export function getEditCollateralError(p: {
   }
 
   const maxAllowedLeverage = isDeposit
-    ? getMaxLeverageByMinCollateralFactor(minCollateralFactor)
+    ? getMaxLeverageByMinCollateralFactor(minCollateralFactor, marketInfo?.marketTokenAddress)
     : getMaxAllowedLeverage({
+        marketAddress: marketInfo?.marketTokenAddress,
         minCollateralFactor: marketInfo?.minCollateralFactor,
         minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
         positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
@@ -840,16 +861,18 @@ export function getGmSwapError(p: {
 
       if (!getIsValidPoolAmount(marketInfo, newPoolAmount)) {
         return {
-          buttonErrorMessage: t`Max pool amount exceeded`,
+          buttonErrorMessage: t`Maximum pool capacity reached`,
           buttonTooltipMessage: glvTooltipMessage,
+          bannerErrorName: ValidationBannerErrorName.poolAtCapacity,
         };
       }
     }
 
     if (!getIsValidPoolUsdForDeposit(marketInfo)) {
       return {
-        buttonErrorMessage: t`Max pool USD exceeded`,
+        buttonErrorMessage: t`Maximum pool capacity reached`,
         buttonTooltipMessage: glvTooltipMessage,
+        bannerErrorName: ValidationBannerErrorName.poolAtCapacity,
       };
     }
 
@@ -1039,12 +1062,12 @@ export function getGmShiftError({
     const newPoolAmount = applyDeltaToPoolAmount(toMarketInfo, impactAmount);
 
     if (!getIsValidPoolAmount(toMarketInfo, newPoolAmount)) {
-      return { buttonErrorMessage: t`Max pool amount exceeded` };
+      return { buttonErrorMessage: t`Maximum pool capacity reached` };
     }
   }
 
   if (!getIsValidPoolUsdForDeposit(toMarketInfo)) {
-    return { buttonErrorMessage: t`Max pool USD exceeded` };
+    return { buttonErrorMessage: t`Maximum pool capacity reached` };
   }
 
   const sellable = getSellableMarketToken(fromMarketInfo, fromToken);

@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.5.0-alpha-15",
+  "version": "1.6.3",
   "type": "module",
   "repository": {
     "type": "git",
@@ -152,6 +152,12 @@
       ],
       "utils/types": [
         "./build/types/src/utils/types/index.d.ts"
+      ],
+      "utils/multichain": [
+        "./build/types/src/utils/multichain/index.d.ts"
+      ],
+      "utils/gas/*": [
+        "./build/types/src/utils/gas/*.d.ts"
       ]
     }
   },
@@ -450,6 +456,12 @@
       "require": "./build/cjs/src/utils/orderTransactions/index.js",
       "default": "./build/cjs/src/utils/orderTransactions/index.js"
     },
+    "./utils/multichain": {
+      "types": "./build/types/src/utils/multichain/index.d.ts",
+      "import": "./build/esm/src/utils/multichain/index.js",
+      "require": "./build/cjs/src/utils/multichain/index.js",
+      "default": "./build/cjs/src/utils/multichain/index.js"
+    },
     "./utils/express": {
       "types": "./build/types/src/utils/express/index.d.ts",
       "import": "./build/esm/src/utils/express/index.js",
@@ -479,6 +491,12 @@
       "import": "./build/esm/src/utils/metrics/index.js",
       "require": "./build/cjs/src/utils/metrics/index.js",
       "default": "./build/cjs/src/utils/metrics/index.js"
+    },
+    "./utils/gas/*": {
+      "types": "./build/types/src/utils/gas/*.d.ts",
+      "import": "./build/esm/src/utils/gas/*.js",
+      "require": "./build/cjs/src/utils/gas/*.js",
+      "default": "./build/cjs/src/utils/gas/*.js"
     }
   },
   "scripts": {
@@ -512,6 +530,7 @@
   },
   "dependencies": {
     "@gelatocloud/gasless": "0.0.10",
+    "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "cross-fetch": "4.0.0",
     "crypto-js": "4.2.0",
     "graphql": "15.8.0",
@@ -520,10 +539,10 @@
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
-    "viem": "^2.37.1"
+    "viem": "^2.48.11"
   },
   "devDependencies": {
-    "@babel/plugin-transform-private-property-in-object": "^7.25.9",
+    "@babel/plugin-transform-private-property-in-object": "7.25.9",
     "@graphql-codegen/cli": "5.0.6",
     "@graphql-codegen/client-preset": "4.8.1",
     "@graphql-codegen/typescript": "4.1.6",
@@ -534,15 +553,17 @@
     "ts-patch": "3.2.1",
     "tsx": "4.19.0",
     "typescript-transform-paths": "3.5.1",
-    "viem": "2.39.0",
-    "vitest": "^3.0.5"
+    "viem": "2.48.11",
+    "vitest": "3.2.6"
   },
   "files": [
     "build"
   ],
   "packageManager": "yarn@4.12.0",
   "resolutions": {
-    "viem@2.39.0": "patch:viem@npm:2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd",
-    "lodash": "4.18.1"
+    "ox@0.14.20": "patch:ox@npm:0.14.29#../.yarn/patches/ox-npm-0.14.29-gmx-types",
+    "viem@2.48.11": "patch:viem@npm:2.48.11#../.yarn/patches/viem-npm-2.48.11-gmx-hex-types",
+    "lodash": "4.18.1",
+    "@vitest/pretty-format": "3.2.6"
   }
 }

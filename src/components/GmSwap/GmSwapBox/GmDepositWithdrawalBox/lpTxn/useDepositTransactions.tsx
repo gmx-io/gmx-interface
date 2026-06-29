@@ -29,7 +29,10 @@ import {
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectGasPaymentTokenAddress,
+  selectGmxAccountGasPaymentTokenAddress,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   TokensBalancesUpdates,
@@ -143,7 +146,10 @@ export const useDepositTransactions = ({
     };
   }, [rawParams, technicalFees, isDeposit]);
 
-  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const gasPaymentTokenAddress =
+    paySource === "gmxAccount" ? gmxAccountGasPaymentTokenAddress : settlementChainGasPaymentTokenAddress;
   const gasPaymentTokenAsCollateralAmount = useMemo((): bigint | undefined => {
     if (longTokenAddress === gasPaymentTokenAddress) {
       return longTokenAmount;
@@ -586,7 +592,9 @@ export const useDepositTransactions = ({
           }
         });
       } else if (paySource === "settlementChain") {
-        if (!tokensData) {
+        const glvToken = glvInfo?.glvToken;
+
+        if (!tokensData || !glvToken) {
           helperToast.error(t`Error submitting order`, {
             tradingErrorInfo: {
               actionName: "GM Deposit",
@@ -627,6 +635,7 @@ export const useDepositTransactions = ({
           executionGasLimit: fees.gasLimit,
           skipSimulation: shouldDisableValidation,
           tokensData,
+          glvToken,
           blockTimestampData,
           setPendingTxns,
           setPendingDeposit,
@@ -643,6 +652,7 @@ export const useDepositTransactions = ({
     [
       isDeposit,
       getDepositMetricData,
+      glvInfo,
       tokensData,
       signer,
       rawParams,

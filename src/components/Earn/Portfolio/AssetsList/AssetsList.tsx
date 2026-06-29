@@ -1,10 +1,10 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
 
 import { ContractsChainId } from "config/chains";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";

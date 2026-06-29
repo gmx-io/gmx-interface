@@ -261,6 +261,7 @@ export async function fetchTradeActions({
             swapImpactUsd
             totalImpactUsd
             positionFeeAmount
+            traderDiscountAmount
             borrowingFeeAmount
             fundingFeeAmount
             swapFeeUsd

@@ -183,6 +183,7 @@ export function getTpSlDecreaseAmounts(p: {
   uiFeeFactor: bigint | undefined;
   userReferralInfo: ReturnType<typeof selectUserReferralInfo> | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
+  forceDecreaseSwapType?: DecreasePositionSwapType;
 }): DecreasePositionAmounts | undefined {
   if (
     !p.position ||
@@ -214,6 +215,7 @@ export function getTpSlDecreaseAmounts(p: {
     limitPrice: p.limitPrice,
     triggerOrderType: p.triggerOrderType,
     isSetAcceptablePriceImpactEnabled: p.isSetAcceptablePriceImpactEnabled,
+    forceDecreaseSwapType: p.forceDecreaseSwapType,
   });
 }
 

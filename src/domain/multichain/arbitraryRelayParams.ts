@@ -3,6 +3,7 @@ import {
   encodeAbiParameters,
   encodePacked,
   EstimateGasParameters,
+  Hex,
   keccak256,
   PublicClient,
   toHex,
@@ -12,15 +13,18 @@ import {
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
-import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
+import {
+  selectExpressGlobalParams,
+  selectGmxAccountExpressGlobalParams,
+  selectSettlementChainExpressGlobalParams,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
   selectChainId,
   selectSubaccountForMultichainAction,
   selectSubaccountForSettlementChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   ExpressTransactionBuilder,
@@ -43,14 +47,15 @@ import { getSubaccountValidations } from "domain/synthetics/subaccount";
 import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount";
 import { convertToTokenAmount } from "domain/tokens";
 import { CustomError, isCustomError } from "lib/errors";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { bigMath } from "sdk/utils/bigmath";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
+import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT } from "sdk/utils/multichain/stateOverrides";
 import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { createViemRpc, type IRpc, type StateOverrideEntry } from "sdk/utils/rpc";
 
@@ -122,7 +127,7 @@ export function getRawBaseRelayerParams({
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
 }
 
-export function calculateMappingSlot(key: string, mappingSlotIndex: number): string {
+export function calculateMappingSlot(key: string, mappingSlotIndex: number): Hex {
   const encodedKeyAndSlot = encodeAbiParameters(
     [{ type: "bytes32" }, { type: "uint256" }],
     [key, BigInt(mappingSlotIndex)]
@@ -398,7 +403,9 @@ export function useArbitraryRelayParamsAndPayload({
 }): AsyncResult<ExpressTxnParams> {
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
+  const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
+  const globalExpressParams = isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams;
   const subaccount = useSelector(
     isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
   );
@@ -527,12 +534,22 @@ export type ArbitraryExpressError = {
 };
 
 export function useArbitraryError(
-  error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined
+  error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined,
+  opts: { isGmxAccount?: boolean; gasPaymentTokenAddress?: string } = EMPTY_OBJECT
 ): ArbitraryExpressError | undefined {
-  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
+  const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const gasPaymentTokenAddress =
+    opts.gasPaymentTokenAddress ??
+    (opts.isGmxAccount === undefined
+      ? globalExpressParams?.gasPaymentTokenAddress
+      : opts.isGmxAccount
+        ? gmxAccountGlobalExpressParams?.gasPaymentTokenAddress
+        : settlementChainGlobalExpressParams?.gasPaymentTokenAddress);
 
   return useMemo(() => {
-    if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
+    if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError && gasPaymentTokenAddress) {
       return {
         isOutOfTokenError: {
           tokenAddress: gasPaymentTokenAddress,
@@ -553,7 +570,7 @@ export function useArbitraryError(
       return {
         isOutOfTokenError: {
           tokenAddress: error.args.token,
-          isGasPaymentToken: error.args.token === gasPaymentTokenAddress,
+          isGasPaymentToken: gasPaymentTokenAddress !== undefined && error.args.token === gasPaymentTokenAddress,
           balance: error.args.balance,
           requiredAmount: error.args.amount,
         },

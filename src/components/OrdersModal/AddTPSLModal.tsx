@@ -26,8 +26,11 @@ import {
   selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import {
   DecreasePositionSwapType,
@@ -94,6 +97,8 @@ import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPe
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TPSLInputRow } from "./TPSLInputRow";
 
@@ -709,7 +714,7 @@ export function AddTPSLModal({
     return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
   }, [batchParams, chainId, tokensData]);
 
-  const { expressParamsPromise } = useExpressOrdersParams({
+  const { expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
@@ -759,14 +764,25 @@ export function AddTPSLModal({
     try {
       const fulfilledExpressParams = await expressParamsPromise;
 
+      const isGmxAccount = srcChainId !== undefined;
+
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount,
+          expressParams: fulfilledExpressParams,
+          tokensData,
+          actionName: "Add TP/SL",
+          collateral: position.collateralToken.symbol,
+        })
+      ) {
+        return;
+      }
+
       await sendBatchOrderTxn({
         chainId,
         signer,
         batchParams,
-        expressParams:
-          fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams)
-            ? fulfilledExpressParams
-            : undefined,
+        expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
         simulationParams: shouldDisableValidationForTesting
           ? undefined
           : {
@@ -832,6 +848,39 @@ export function AddTPSLModal({
   const hasTP = Boolean(tpPriceInput);
   const hasSL = Boolean(slPriceInput);
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
+
+  const submitButtonState = useMemo(() => {
+    if (isMultichainSubmitDisabled) {
+      return {
+        text: (
+          <>
+            {t`Loading network fees…`}
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isSubmitting) {
+      return {
+        text: t`Creating...`,
+        disabled: true,
+      };
+    }
+
+    if (submitError) {
+      return {
+        text: submitError,
+        disabled: true,
+      };
+    }
+
+    return {
+      text: `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`,
+      disabled: false,
+    };
+  }, [actionLabel, directionLabel, isMultichainSubmitDisabled, isSubmitting, marketPairLabel, modePrefix, submitError]);
 
   const currentLeverage = formatLeverage(position.leverage);
   const nextLeverage = activeNextPositionValues?.nextLeverage;
@@ -987,10 +1036,9 @@ export function AddTPSLModal({
           variant="primary-action"
           className="w-full"
           onClick={handleSubmit}
-          disabled={!!submitError || isSubmitting}
+          disabled={submitButtonState.disabled}
         >
-          {submitError ||
-            (isSubmitting ? t`Creating...` : `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`)}
+          {submitButtonState.text}
         </Button>
 
         {hasPreviewData && (

@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 import { NETWORK_OPTIONS } from "config/networkOptions";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useChainId } from "lib/chains";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";

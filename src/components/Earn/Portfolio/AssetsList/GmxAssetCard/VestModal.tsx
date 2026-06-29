@@ -1,9 +1,9 @@
 import { Trans, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";

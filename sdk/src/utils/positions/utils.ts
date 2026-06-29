@@ -295,6 +295,57 @@ export function getLiquidationPrice(p: {
   return liquidationPrice;
 }
 
+export function getMinCollateralUsdForLiquidationPrice(p: {
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  marketInfo: MarketInfo;
+  pendingImpactAmount: bigint;
+  minCollateralUsd: bigint;
+  pnl: bigint;
+  isLong: boolean;
+  userReferralInfo: UserReferralInfo | undefined;
+}): bigint {
+  const { sizeInUsd, sizeInTokens, marketInfo, pendingImpactAmount, minCollateralUsd, pnl, isLong, userReferralInfo } =
+    p;
+
+  if (sizeInUsd <= 0 || sizeInTokens <= 0) {
+    return 0n;
+  }
+
+  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
+
+  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
+
+  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+    fallbackToZero: true,
+  }).priceImpactDeltaUsd;
+
+  if (priceImpactDeltaUsd > 0) {
+    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
+  }
+
+  const pendingImpactUsd = convertToUsd(
+    pendingImpactAmount,
+    marketInfo.indexToken.decimals,
+    pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
+  )!;
+
+  priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
+
+  if (priceImpactDeltaUsd > 0) {
+    priceImpactDeltaUsd = 0n;
+  } else if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
+    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+  }
+
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
+  if (liquidationCollateralUsd < minCollateralUsd) {
+    liquidationCollateralUsd = minCollateralUsd;
+  }
+
+  return liquidationCollateralUsd - pnl - priceImpactDeltaUsd + closingFeeUsd;
+}
+
 export function getNetPriceImpactDeltaUsdForDecrease({
   marketInfo,
   sizeInUsd,
@@ -644,6 +695,7 @@ export function getPositionInfo(p: {
   });
 
   const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: marketInfo.marketTokenAddress,
     minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,

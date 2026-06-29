@@ -5,9 +5,9 @@ import { HashRouter as Router } from "react-router-dom";
 import { SWRConfig } from "swr";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import WalletProvider from "lib/wallets/WalletProvider";
 import { ARBITRUM } from "sdk/configs/chainIds";
 
 import SEO from "components/Seo/SEO";
@@ -32,13 +32,13 @@ export default function App() {
     <Router>
       <SWRConfig>
         <I18nProvider i18n={i18n as any}>
-          <WalletProvider>
+          <ThemeProvider>
             <SEO>
               <div className="overflow-hidden proportional-nums text-white">
                 <LandingRoutes />
               </div>
             </SEO>
-          </WalletProvider>
+          </ThemeProvider>
         </I18nProvider>
       </SWRConfig>
     </Router>

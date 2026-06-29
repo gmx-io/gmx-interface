@@ -24,6 +24,7 @@ type Props = {
   label: ReactNode;
   alternateValue: ReactNode;
   tokenSymbol?: string;
+  tokenLabel?: string;
   displayMode: DisplayMode;
   onDisplayModeChange?: (mode: DisplayMode) => void;
   showDisplayModeToggle?: boolean;
@@ -41,6 +42,7 @@ export function TradeInputField({
   label,
   alternateValue,
   tokenSymbol,
+  tokenLabel = tokenSymbol,
   displayMode,
   onDisplayModeChange,
   showDisplayModeToggle = true,
@@ -49,7 +51,7 @@ export function TradeInputField({
   inputValue,
   onInputValueChange,
   onFocus,
-  placeholder = "0.0",
+  placeholder = "0.00",
   qa,
   maxDecimals,
 }: Props) {
@@ -60,7 +62,7 @@ export function TradeInputField({
     displayMode === "token" && tokenSymbol ? (
       <span className="flex items-center gap-4">
         <TokenIcon symbol={tokenSymbol} displaySize={20} />
-        {tokenSymbol}
+        {tokenLabel}
       </span>
     ) : (
       <span className="flex items-center gap-4">
@@ -81,13 +83,13 @@ export function TradeInputField({
         >
           {isMobile ? (
             <DisplayModeSelectorMobile
-              tokenSymbol={tokenSymbol}
+              tokenLabel={tokenLabel}
               displayMode={displayMode}
               onDisplayModeChange={onDisplayModeChange}
             />
           ) : (
             <DisplayModeSelectorDesktop
-              tokenSymbol={tokenSymbol}
+              tokenLabel={tokenLabel}
               displayMode={displayMode}
               onDisplayModeChange={onDisplayModeChange}
             />
@@ -127,12 +129,12 @@ export function TradeInputField({
 }
 
 type DisplayModeSelectorProps = {
-  tokenSymbol?: string;
+  tokenLabel?: string;
   displayMode: DisplayMode;
   onDisplayModeChange: (mode: DisplayMode) => void;
 };
 
-function DisplayModeSelectorDesktop({ tokenSymbol, displayMode, onDisplayModeChange }: DisplayModeSelectorProps) {
+function DisplayModeSelectorDesktop({ tokenLabel, displayMode, onDisplayModeChange }: DisplayModeSelectorProps) {
   const close = useSelectorClose();
 
   const handleSelect = useCallback(
@@ -156,14 +158,14 @@ function DisplayModeSelectorDesktop({ tokenSymbol, displayMode, onDisplayModeCha
           onClick={() => handleSelect("token")}
           className={cx({ "text-blue-300": displayMode === "token" })}
         >
-          <TableTd padding="compact-one-column">{tokenSymbol}</TableTd>
+          <TableTd padding="compact-one-column">{tokenLabel}</TableTd>
         </SelectorBaseDesktopRow>
       </tbody>
     </table>
   );
 }
 
-function DisplayModeSelectorMobile({ tokenSymbol, displayMode, onDisplayModeChange }: DisplayModeSelectorProps) {
+function DisplayModeSelectorMobile({ tokenLabel, displayMode, onDisplayModeChange }: DisplayModeSelectorProps) {
   const close = useSelectorClose();
 
   const handleSelect = useCallback(
@@ -180,7 +182,7 @@ function DisplayModeSelectorMobile({ tokenSymbol, displayMode, onDisplayModeChan
         <div className={cx("py-4", { "text-blue-300": displayMode === "usd" })}>USD</div>
       </SelectorBaseMobileButton>
       <SelectorBaseMobileButton onSelect={() => handleSelect("token")}>
-        <div className={cx("py-4", { "text-blue-300": displayMode === "token" })}>{tokenSymbol}</div>
+        <div className={cx("py-4", { "text-blue-300": displayMode === "token" })}>{tokenLabel}</div>
       </SelectorBaseMobileButton>
     </SelectorBaseMobileList>
   );

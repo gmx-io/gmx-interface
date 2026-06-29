@@ -9,6 +9,7 @@ import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import {
   useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
+  useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
 } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "domain/multichain/types";
@@ -179,6 +180,7 @@ export const SelectAssetToDepositView = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setDepositViewChain] = useGmxAccountDepositViewChain();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
 
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -251,6 +253,7 @@ export const SelectAssetToDepositView = () => {
             onClick={() => {
               setDepositViewChain(tokenChainData.sourceChainId);
               setDepositViewTokenAddress(tokenChainData.address);
+              setDepositViewTokenInputValue(undefined);
               setIsVisibleOrView("deposit");
             }}
           />

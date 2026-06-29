@@ -1,4 +1,5 @@
 export const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
+export const SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY = "SELECTED_NETWORK_WAS_APP_SELECTED";
 export const SELECTED_SETTLEMENT_CHAIN_ID_KEY = "SELECTED_SETTLEMENT_CHAIN_ID";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
@@ -46,7 +47,6 @@ const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-pri
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
-export const LAST_EARN_TAB_KEY = "last-earn-tab";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY = "synthetics-collateral-edit-token-map";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY = "synthetics-collateral-edit-token-is-from-gmx-account";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
@@ -79,6 +79,8 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const API_ROLLOUT_BUCKET_KEY = "api-rollout-bucket";
 
+export const API_UI_FLAGS_CACHE_KEY = "api-ui-flags-cache";
+
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 export const TRADEBOX_SIZE_DENOMINATION_KEY = "tradebox-size-denomination";
@@ -93,6 +95,7 @@ const HAD_GMX_ACCOUNT_BALANCE_KEY = "had-gmx-account-balance";
 
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
+const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token-address";
 
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
@@ -208,6 +211,10 @@ export function getExpressOrdersEnabledKey(chainId: number, account: string | un
 
 export function getGasPaymentTokenAddressKey(chainId: number, account: string | undefined) {
   return [chainId, account, GAS_PAYMENT_TOKEN_ADDRESS_KEY];
+}
+
+export function getGmxAccountGasPaymentTokenAddressKey(chainId: number, account: string | undefined) {
+  return [chainId, account, GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY];
 }
 
 export function getOneClickTradingPromoHiddenKey(chainId: number) {

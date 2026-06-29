@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo } from "react";
 
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -10,6 +10,7 @@ import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError, takeValidationResult } from "domain/synthetics/trade/utils/validation";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -50,6 +51,7 @@ export function useShiftSubmitState({
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
   const { openConnectModal } = useConnectModal();
 
@@ -81,6 +83,16 @@ export function useShiftSubmitState({
       return {
         text: t`Submitting...`,
         disabled: true,
+      };
+    }
+
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        error: multipleWalletExtensionsChainError.buttonErrorMessage,
+        errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
+        disabled: true,
+        onSubmit,
       };
     }
 
@@ -119,12 +131,13 @@ export function useShiftSubmitState({
       priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
     });
 
-    const error = takeValidationResult(commonError, shiftError);
+    const error = takeValidationResult(commonError, multipleWalletExtensionsChainError, shiftError);
 
     if (error.buttonErrorMessage) {
       return {
         text: error.buttonErrorMessage,
         error: error.buttonErrorMessage,
+        errorDescription: error.buttonTooltipMessage,
         disabled: !shouldDisableValidationForTesting,
         onSubmit,
       };
@@ -188,6 +201,7 @@ export function useShiftSubmitState({
     toMarketInfo,
     toToken,
     fees,
+    multipleWalletExtensionsChainError,
     isApproving,
     tokensToApprove,
     isAllowanceLoaded,

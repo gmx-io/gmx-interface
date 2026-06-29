@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { OrderType, PositionOrderInfo } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { DecreasePositionAmounts } from "domain/synthetics/trade";
 import { expandDecimals, MaxUint256 } from "lib/numbers";
 import { ARBITRUM } from "sdk/configs/chains";
@@ -105,6 +105,23 @@ describe("buildTpSlBatchPayloads", () => {
 
     expect(result.createOrderParams).toHaveLength(1);
     expect(result.updateOrderParams).toHaveLength(0);
+  });
+
+  it("preserves no-swap split receive on created orders", () => {
+    const result = buildTpSlBatchPayloads({
+      ...baseParams,
+      entries: [
+        {
+          amounts: makeAmounts({ decreaseSwapType: DecreasePositionSwapType.NoSwap }),
+          executionFeeAmount: 0n,
+          executionGasLimit: 0n,
+        },
+      ],
+    });
+
+    expect(result.createOrderParams).toHaveLength(1);
+    expect(result.createOrderParams[0].orderPayload.decreasePositionSwapType).toBe(DecreasePositionSwapType.NoSwap);
+    expect(result.createOrderParams[0].orderPayload.addresses.swapPath).toEqual([]);
   });
 
   it("handles TP and SL independently - update one, create the other", () => {

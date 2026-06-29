@@ -121,7 +121,7 @@ export function GlvList({
             <table className="w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
-                  <TableTh className="pl-16">
+                  <TableTh className="!pl-12">
                     <Trans>VAULT</Trans>
                   </TableTh>
                   <TableTh>
