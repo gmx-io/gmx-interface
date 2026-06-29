@@ -15,7 +15,9 @@
 }
 
 .MultichainTokenSelector-modal .Modal-content > .overflow-auto,
-.MultichainTokenSelector-modal .Modal-content > .overflow-auto > .Modal-body {
+.MultichainTokenSelector-modal .Modal-content > .overflow-auto > .Modal-body,
+.TokenSelector-modal .Modal-content > .overflow-auto,
+.TokenSelector-modal .Modal-content > .overflow-auto > .Modal-body {
   display: flex;
   flex: 1;
   flex-direction: column;
