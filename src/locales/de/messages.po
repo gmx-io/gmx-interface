@@ -3001,10 +3001,6 @@ msgstr "Staken gesendet"
 msgid "Net"
 msgstr ""
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "None"
-msgstr "Keine"
-
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
 msgstr "Transaktion fehlgeschlagen.<0/><1/><2>Ansicht</2>"
@@ -3577,10 +3573,6 @@ msgstr "Läuft vollständig auf öffentlichen Chains"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
 msgstr "Mindesteinzahlung festlegen"
-
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Current"
-msgstr "Aktuell"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -4418,7 +4410,6 @@ msgstr "<0><1>@GMX_IO</1> geht eine Datenpartnerschaft mit Token Terminal ein. G
 #: src/components/GmList/GmList.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
-#: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
@@ -4796,6 +4787,10 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "Positiver Einflussfaktor"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "All trades"
+msgstr "Alle Trades"
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -5522,6 +5517,10 @@ msgstr "Abhebungsgebühr"
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
+msgstr "Wählen Sie, welche Kauf-/Verkaufsmarkierungen im Chart angezeigt werden: alle Ihre vergangenen Trades, nur Ihre aktuell offene Position oder keine."
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
@@ -6765,6 +6764,10 @@ msgstr "Transaktion"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
 msgstr "Letztes Jahr"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Off"
+msgstr "Aus"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
@@ -10391,6 +10394,10 @@ msgstr "Tauschen"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "Woher kommen die GMX-Staking-Belohnungen?"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current position only"
+msgstr "Nur aktuelle Position"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX token icon"

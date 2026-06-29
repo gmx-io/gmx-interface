@@ -8,12 +8,11 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import CheckIcon from "img/ic_checked.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import { SettingsSection } from "./shared";
+import { SettingLabelWithTooltip, SettingsSection } from "./shared";
 import { ThemeSelector } from "./ThemeSelector";
 
 function BuySellIconsOption({
@@ -51,9 +50,9 @@ export function DisplaySettings() {
   const settings = useSettings();
 
   const buySellIconsOptions: { value: BuySellIconsMode; label: string }[] = [
-    { value: "off", label: t`None` },
-    { value: "current", label: t`Current` },
-    { value: "all", label: t`All` },
+    { value: "all", label: t`All trades` },
+    { value: "current", label: t`Current position only` },
+    { value: "off", label: t`Off` },
   ];
 
   return (
@@ -61,11 +60,10 @@ export function DisplaySettings() {
       <SettingsSection>
         <div className="flex items-center gap-8">
           <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
-            <TooltipWithPortal
-              handle={<Trans>Manual leverage</Trans>}
+            <SettingLabelWithTooltip
+              label={t`Manual leverage`}
               position="top"
-              variant="icon"
-              content={
+              tooltip={
                 <div>
                   <Trans>
                     When on, leverage is set manually and determines margin and position size. When off, margin and size
@@ -79,11 +77,10 @@ export function DisplaySettings() {
 
         <div className="flex items-center gap-8">
           <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
-            <TooltipWithPortal
-              handle={<Trans>Display net value and PnL after all fees</Trans>}
+            <SettingLabelWithTooltip
+              label={t`Display net value and PnL after all fees`}
               position="top"
-              variant="icon"
-              content={
+              tooltip={
                 <div>
                   <Trans>Include all fees, including close fees, in net value and PnL display.</Trans>
                 </div>
@@ -100,44 +97,52 @@ export function DisplaySettings() {
           <Trans>Show positions on chart</Trans>
         </ToggleSwitch>
 
-        <SelectorBase
-          modalLabel={t`Show buy/sell icons on chart`}
-          desktopPanelClassName="!z-[10000] w-[180px] !top-[10px]"
-          chevronClassName="hidden"
-          label={
-            <div className="flex w-full items-center justify-between">
+        <div className="flex items-center justify-between gap-8">
+          <SettingLabelWithTooltip
+            label={t`Show buy/sell icons on chart`}
+            position="top"
+            tooltip={
               <div>
-                <Trans>Show buy/sell icons on chart</Trans>
+                <Trans>
+                  Choose which buy/sell marks appear on the chart: all your past trades, only your current open
+                  position, or none.
+                </Trans>
               </div>
-              <Button variant="secondary">
+            }
+          />
+          <SelectorBase
+            modalLabel={t`Show buy/sell icons on chart`}
+            desktopPanelClassName="!z-[10000] w-[180px] !top-[10px]"
+            chevronClassName="hidden"
+            label={
+              <Button variant="secondary" className="whitespace-nowrap">
                 {buySellIconsOptions.find((o) => o.value === settings.buySellIconsMode)?.label}
                 <ChevronDownIcon className="inline-block size-14" />
               </Button>
+            }
+          >
+            <div className="flex flex-col">
+              {buySellIconsOptions.map((opt) => (
+                <BuySellIconsOption
+                  key={opt.value}
+                  option={opt}
+                  isSelected={opt.value === settings.buySellIconsMode}
+                  onClick={() => settings.setBuySellIconsMode(opt.value)}
+                />
+              ))}
             </div>
-          }
-        >
-          <div className="flex flex-col">
-            {buySellIconsOptions.map((opt) => (
-              <BuySellIconsOption
-                key={opt.value}
-                option={opt}
-                isSelected={opt.value === settings.buySellIconsMode}
-                onClick={() => settings.setBuySellIconsMode(opt.value)}
-              />
-            ))}
-          </div>
-        </SelectorBase>
+          </SelectorBase>
+        </div>
 
         <div className="flex items-center gap-8">
           <ToggleSwitch
             isChecked={settings.breakdownNetPriceImpactEnabled}
             setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
           >
-            <TooltipWithPortal
-              handle={<Trans>Break down net price impact</Trans>}
+            <SettingLabelWithTooltip
+              label={t`Break down net price impact`}
               position="top"
-              variant="icon"
-              content={
+              tooltip={
                 <div>
                   <Trans>
                     Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease

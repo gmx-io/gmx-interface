@@ -3001,10 +3001,6 @@ msgstr "质押已提交"
 msgid "Net"
 msgstr ""
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "None"
-msgstr "无"
-
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
 msgstr "交易失败。<0/><1/><2>查看</2>"
@@ -3577,10 +3573,6 @@ msgstr "完全在公共链上运行"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
 msgstr "设置最低存入金额"
-
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Current"
-msgstr "当前"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -4418,7 +4410,6 @@ msgstr "<0><1>@GMX_IO</1> 与 Token Terminal 达成数据合作。GMX 是建立�
 #: src/components/GmList/GmList.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
-#: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
@@ -4796,6 +4787,10 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "正向影响因子"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "All trades"
+msgstr "所有交易"
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -5522,6 +5517,10 @@ msgstr "提取费用"
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
+msgstr "选择图表上显示哪些买入/卖出标记：您的所有历史交易、仅您当前的持仓，或不显示。"
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
@@ -6765,6 +6764,10 @@ msgstr "交易"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
 msgstr "去年"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Off"
+msgstr "关闭"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
@@ -10391,6 +10394,10 @@ msgstr "交换"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMX 质押奖励来自哪里？"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current position only"
+msgstr "仅当前持仓"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX token icon"

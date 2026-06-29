@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ReactNode } from "react";
+import { ComponentProps, ReactNode } from "react";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
@@ -9,6 +9,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueInput } from "components/ValueInput/ValueInput";
 
 import InfoIcon from "img/ic_info.svg?react";
+import InfoCircleIcon from "img/ic_info_circle.svg?react";
 
 export enum TradingMode {
   Classic = "classic",
@@ -19,6 +20,44 @@ export enum TradingMode {
 export function SettingsSection({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
     <div className={cx("flex flex-col gap-16 rounded-8 bg-fill-surfaceElevated50 p-12", className)}>{children}</div>
+  );
+}
+
+export function SettingLabelWithTooltip({
+  label,
+  tooltip,
+  position,
+  className,
+  labelClassName,
+}: {
+  label: string;
+  tooltip: ReactNode;
+  position?: ComponentProps<typeof TooltipWithPortal>["position"];
+  className?: string;
+  labelClassName?: string;
+}) {
+  // Keep the info icon glued to the last word so it never wraps onto a line by itself.
+  const trimmed = label.trim();
+  const lastSpace = trimmed.lastIndexOf(" ");
+  const head = lastSpace === -1 ? "" : trimmed.slice(0, lastSpace + 1);
+  const lastWord = lastSpace === -1 ? trimmed : trimmed.slice(lastSpace + 1);
+
+  return (
+    <TooltipWithPortal
+      className={className}
+      position={position}
+      variant="none"
+      content={tooltip}
+      handle={
+        <span className={labelClassName}>
+          {head}
+          <span className="whitespace-nowrap">
+            {lastWord}
+            <InfoCircleIcon className="ml-4 inline-block size-16 align-middle" />
+          </span>
+        </span>
+      }
+    />
   );
 }
 
@@ -34,7 +73,7 @@ export function InputSetting({
   suggestions,
   type = "percentage",
 }: {
-  title: ReactNode;
+  title: string;
   description?: ReactNode;
   defaultValue: number;
   value?: number;
@@ -45,14 +84,15 @@ export function InputSetting({
   suggestions?: number[];
   type?: "percentage" | "number";
 }) {
-  const titleComponent = <span className="text-14 font-medium">{title}</span>;
-
   const titleWithDescription = description ? (
-    <TooltipWithPortal position="bottom" content={description} variant="icon">
-      {titleComponent}
-    </TooltipWithPortal>
+    <SettingLabelWithTooltip
+      label={title}
+      tooltip={description}
+      position="bottom"
+      labelClassName="text-14 font-medium"
+    />
   ) : (
-    titleComponent
+    <span className="text-14 font-medium">{title}</span>
   );
 
   const Input =
