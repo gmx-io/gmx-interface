@@ -822,7 +822,6 @@ export function isDepositDisabledMarket(chainId: number, marketTokenAddress: str
 
 export const DELISTING_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
-    "0x47c031236e19d024b42f8AE6780E44A573170703", // BTC/USD
     "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c", // TON/USD
     "0x39AC3C494950A4363D739201BA5A0861265C9ae5", // PI/USD
     "0x12fD1A4BdB96219E637180Ff5293409502b2951D", // MELANIA/USD
