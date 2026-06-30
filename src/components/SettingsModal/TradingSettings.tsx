@@ -21,7 +21,7 @@ import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useNonSingingAccount } from "lib/wallets/useAccountType";
+import { useNonSigningAccount } from "lib/wallets/useAccountType";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
 
@@ -68,7 +68,7 @@ export function TradingSettings({
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const { isNonEoaAccountOnAnyChain } = useNonSingingAccount();
+  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
   const isExpressTradingDisabled = (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain;

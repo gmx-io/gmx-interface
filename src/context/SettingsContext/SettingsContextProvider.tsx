@@ -33,7 +33,7 @@ import {
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useNonSigningAccount } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
@@ -125,7 +125,7 @@ export function useSettings() {
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { isLoading: isNonEoaLoading } = useIsNonEoaAccountOnAnyChain();
+  const { isLoading: isNonEoaLoading } = useNonSigningAccount();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);

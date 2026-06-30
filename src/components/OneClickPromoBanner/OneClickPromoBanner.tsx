@@ -6,7 +6,7 @@ import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useChainId } from "lib/chains";
-import { useNonSingingAccount } from "lib/wallets/useAccountType";
+import { useNonSigningAccount } from "lib/wallets/useAccountType";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
@@ -20,7 +20,7 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
     false
   );
 
-  const { isNonEoaAccountOnAnyChain } = useNonSingingAccount();
+  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
   const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && !isNonEoaAccountOnAnyChain;

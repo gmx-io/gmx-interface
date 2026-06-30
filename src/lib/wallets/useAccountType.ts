@@ -82,7 +82,7 @@ async function getAccountType(
   return AccountType.SmartAccount;
 }
 
-export function useNonSingingAccount(): {
+export function useNonSigningAccount(): {
   isNonEoaAccountOnAnyChain: boolean;
   isLoading: boolean;
 } {
@@ -144,8 +144,6 @@ export function useNonSingingAccount(): {
 
   return { isNonEoaAccountOnAnyChain, isLoading };
 }
-
-export const useIsNonEoaAccountOnAnyChain = useNonSingingAccount;
 
 export async function fetchIsErc1271(client: PublicClient, address: string): Promise<boolean> {
   try {

@@ -68,7 +68,7 @@ import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { useNonSingingAccount } from "lib/wallets/useAccountType";
+import { useNonSigningAccount } from "lib/wallets/useAccountType";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
@@ -556,7 +556,7 @@ export const DepositView = () => {
 
   const subaccountState = useSubaccountContext();
 
-  const { isNonEoaAccountOnAnyChain } = useNonSingingAccount();
+  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
   const isExpressTradingDisabled = isNonEoaAccountOnAnyChain;
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
