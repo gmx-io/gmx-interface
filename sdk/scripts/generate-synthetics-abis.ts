@@ -27,7 +27,7 @@ type DeploymentArtifact = {
 };
 
 // Only process these specific chains (copied from extractAddresses.mjs)
-const allowedChains = ["arbitrum", "avalanche", "arbitrumSepolia", "avalancheFuji", "botanix"];
+const allowedChains = ["arbitrum", "avalanche", "arbitrumSepolia", "avalancheFuji", "megaeth"];
 
 // Only include these specific contracts (copied from extractAddresses.mjs)
 const allowedContracts = [
