@@ -4,7 +4,6 @@ import { useLeaderboardData } from "domain/synthetics/leaderboard";
 import { windowToFromTimestamp, type WhaleWindow } from "domain/synthetics/whales/period";
 import { rankByVolumeDesc } from "domain/synthetics/whales/shares";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import AddressView from "components/AddressView/AddressView";
@@ -12,6 +11,7 @@ import { Sorter } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
+import { formatWhaleUsd } from "./whaleFormat";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
 const TOP_N = 100;
@@ -61,7 +61,7 @@ export function WhaleLeaderboardTable({ window }: { window: WhaleWindow }) {
               <TableTdActionable>
                 <AddressView address={acc.account} size={20} noLink />
               </TableTdActionable>
-              <TableTdActionable>{formatUsd(acc.volume)}</TableTdActionable>
+              <TableTdActionable>{formatWhaleUsd(acc.volume)}</TableTdActionable>
               <TableTdActionable>
                 <Link
                   to={buildAccountDashboardUrl(acc.account, chainId, 2)}

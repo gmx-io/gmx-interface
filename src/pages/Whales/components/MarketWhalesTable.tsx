@@ -4,7 +4,7 @@ import { useMarketHolders } from "domain/synthetics/whales/marketConcentration";
 import type { WhaleWindow } from "domain/synthetics/whales/period";
 import { computeShareBps } from "domain/synthetics/whales/shares";
 import { useChainId } from "lib/chains";
-import { formatPercentage, formatUsd } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
 import { Sorter } from "components/Sorter/Sorter";
@@ -12,6 +12,7 @@ import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrAction
 
 import { MarketHoldersPie } from "./MarketHoldersPie";
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
+import { formatWhaleUsd } from "./whaleFormat";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
 const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
@@ -32,7 +33,7 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
   return (
     <div className="flex flex-col gap-16">
       <div className="text-body-medium text-typography-secondary">
-        Open interest: {formatUsd(totalOi)} · Market volume: {formatUsd(totalVolume)}
+        Open interest: {formatWhaleUsd(totalOi)} · Market volume: {formatWhaleUsd(totalVolume)}
       </div>
 
       {rows.length > 0 && (
@@ -42,7 +43,7 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
             <MarketHoldersPie
               items={rows.map((r) => ({ name: shortAddr(r.account), value: r.size }))}
               total={totalOi}
-              label={formatUsd(totalOi) ?? "—"}
+              label={formatWhaleUsd(totalOi) ?? "—"}
             />
           </div>
           <div className="flex flex-col items-center gap-4">
@@ -50,7 +51,7 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
             <MarketHoldersPie
               items={rows.map((r) => ({ name: shortAddr(r.account), value: r.volume }))}
               total={totalVolume}
-              label={formatUsd(totalVolume) ?? "—"}
+              label={formatWhaleUsd(totalVolume) ?? "—"}
             />
           </div>
         </div>
@@ -91,11 +92,11 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
                 <TableTdActionable>
                   <AddressView address={r.account} size={20} noLink />
                 </TableTdActionable>
-                <TableTdActionable>{formatUsd(r.size)}</TableTdActionable>
+                <TableTdActionable>{formatWhaleUsd(r.size)}</TableTdActionable>
                 <TableTdActionable>
                   {formatPercentage(r.oiShareBps, { bps: true, displayDecimals: 1 })}
                 </TableTdActionable>
-                <TableTdActionable>{formatUsd(r.volume)}</TableTdActionable>
+                <TableTdActionable>{formatWhaleUsd(r.volume)}</TableTdActionable>
                 <TableTdActionable>
                   {formatPercentage(r.volShareBps, { bps: true, displayDecimals: 1 })}
                 </TableTdActionable>

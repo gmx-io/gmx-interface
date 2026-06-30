@@ -6,13 +6,14 @@ import { useMarketsConcentration } from "domain/synthetics/whales/marketConcentr
 import { useMarketVolumes } from "domain/synthetics/whales/marketVolumes";
 import type { WhaleWindow } from "domain/synthetics/whales/period";
 import { useChainId } from "lib/chains";
-import { formatPercentage, formatUsd } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
+import { formatWhaleUsd } from "./whaleFormat";
 import { buildWhaleMarketUrl } from "../whaleRoutes";
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 
@@ -82,7 +83,7 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
                 onClick={() => history.push(buildWhaleMarketUrl(r.market))}
               >
                 <TableTdActionable>{r.name}</TableTdActionable>
-                <TableTdActionable>{formatUsd(r.volume)}</TableTdActionable>
+                <TableTdActionable>{formatWhaleUsd(r.volume)}</TableTdActionable>
                 <TableTdActionable>
                   {r.topHolder ? <AddressView address={r.topHolder} size={20} noLink /> : "—"}
                 </TableTdActionable>

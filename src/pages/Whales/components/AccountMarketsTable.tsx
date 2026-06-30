@@ -1,12 +1,13 @@
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import type { AccountMarketRow } from "domain/synthetics/whales/accountMarkets";
 import { computeShareBps } from "domain/synthetics/whales/shares";
-import { formatPercentage, formatUsd } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 
 import { Sorter } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
+import { formatWhaleUsd } from "./whaleFormat";
 
 type AccountField = "totalVolume" | "whaleVolume" | "share";
 
@@ -41,15 +42,15 @@ export function AccountMarketsTable({ rows }: { rows: AccountMarketRow[] }) {
         {sorted.map((r) => (
           <TableTr key={r.market}>
             <TableTd>{marketsInfoData?.[r.market]?.name ?? r.market}</TableTd>
-            <TableTd>{formatUsd(r.totalVolume)}</TableTd>
-            <TableTd>{formatUsd(r.whaleVolume)}</TableTd>
+            <TableTd>{formatWhaleUsd(r.totalVolume)}</TableTd>
+            <TableTd>{formatWhaleUsd(r.whaleVolume)}</TableTd>
             <TableTd>{formatPercentage(r.shareBps, { bps: true, displayDecimals: 1 })}</TableTd>
           </TableTr>
         ))}
         <TableTr>
           <TableTd>All</TableTd>
-          <TableTd>{formatUsd(totalMarket)}</TableTd>
-          <TableTd>{formatUsd(totalWhale)}</TableTd>
+          <TableTd>{formatWhaleUsd(totalMarket)}</TableTd>
+          <TableTd>{formatWhaleUsd(totalWhale)}</TableTd>
           <TableTd>
             {formatPercentage(computeShareBps(totalWhale, totalMarket), { bps: true, displayDecimals: 1 })}
           </TableTd>

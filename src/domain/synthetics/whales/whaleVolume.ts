@@ -50,16 +50,18 @@ export async function fetchAccountMarketVolume(
 
 const MARKET_CHANGES_QUERY = gql`
   query MarketChanges($where: PositionChangeWhereInput!, $limit: Int!, $offset: Int!) {
-    positionChanges(where: $where, orderBy: timestamp_ASC, limit: $limit, offset: $offset) {
+    positionChanges(where: $where, orderBy: timestamp_DESC, limit: $limit, offset: $offset) {
       account
       sizeDeltaUsd
     }
   }
 `;
 
-// Safety cap for very active markets (40k changes); thin markets (the whale use
-// case) are far below this.
-const MARKET_CHANGES_MAX_PAGES = 40;
+// Safety cap for very active markets; thin markets (the whale use case) are far
+// below this, and the busiest market today (~30k changes/30d) is still under it.
+// Ordered newest-first so that if the cap is ever hit, the oldest tail is what
+// gets dropped, not recent activity.
+const MARKET_CHANGES_MAX_PAGES = 50;
 
 export function aggregateTraderVolumes(rows: { account: string; sizeDeltaUsd: string }[]): {
   volumes: Map<string, bigint>;
