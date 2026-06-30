@@ -1,24 +1,22 @@
-import { useMarketWhales } from "domain/synthetics/whales/marketWhales";
-import type { WhaleWindow } from "domain/synthetics/whales/period";
-import { computeShareBps } from "domain/synthetics/whales/shares";
+import { useMarketConcentration } from "domain/synthetics/whales/marketConcentration";
 import { useChainId } from "lib/chains";
 import { formatPercentage } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
 import { TableTd } from "components/Table/Table";
 
-export function MarketOverviewWhaleCells({ market, window }: { market: string; window: WhaleWindow }) {
+// Cheap, window-independent concentration (top holder + size shares of current
+// open interest) — one query per market. Exact cumulative volume share lives on
+// the market detail and account pages.
+export function MarketOverviewWhaleCells({ market }: { market: string }) {
   const { chainId } = useChainId();
-  const { rows, totalVolume } = useMarketWhales(chainId, market, window, 3);
-  const top = rows[0];
-  const top3Volume = rows.reduce((acc, r) => acc + r.volume, 0n);
+  const { data } = useMarketConcentration(chainId, market);
+  const topHolder = data?.topHolder;
   return (
     <>
-      <TableTd>{top ? <AddressView address={top.account} size={20} noLink /> : "—"}</TableTd>
-      <TableTd>{top ? formatPercentage(top.shareBps, { bps: true, displayDecimals: 1 }) : "—"}</TableTd>
-      <TableTd>
-        {formatPercentage(computeShareBps(top3Volume, totalVolume ?? 0n), { bps: true, displayDecimals: 1 })}
-      </TableTd>
+      <TableTd>{topHolder ? <AddressView address={topHolder} size={20} noLink /> : "—"}</TableTd>
+      <TableTd>{data ? formatPercentage(data.topShareBps, { bps: true, displayDecimals: 1 }) : "—"}</TableTd>
+      <TableTd>{data ? formatPercentage(data.top3ShareBps, { bps: true, displayDecimals: 1 }) : "—"}</TableTd>
     </>
   );
 }

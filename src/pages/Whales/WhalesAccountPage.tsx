@@ -19,7 +19,7 @@ import { WHALES_PATH } from "./whaleRoutes";
 export default function WhalesAccountPage() {
   const { account } = useParams<{ account: string }>();
   const { chainId } = useChainId();
-  const [window, setWindow] = useState<WhaleWindow>("total");
+  const [window, setWindow] = useState<WhaleWindow>("30d");
   const { rows } = useAccountMarketBreakdown(chainId, account, window);
 
   return (

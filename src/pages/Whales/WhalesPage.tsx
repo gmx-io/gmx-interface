@@ -12,7 +12,7 @@ import { WhaleWindowTabs } from "./components/WhaleWindowTabs";
 
 export default function WhalesPage() {
   const [mode, setMode] = useState<WhalesMode>("markets");
-  const [window, setWindow] = useState<WhaleWindow>("total");
+  const [window, setWindow] = useState<WhaleWindow>("30d");
 
   return (
     <AppPageLayout title={t`Whale Monitor`}>

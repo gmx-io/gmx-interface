@@ -57,7 +57,7 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
               <TableTrActionable key={r.market} onClick={() => history.push(buildWhaleMarketUrl(r.market))}>
                 <TableTd>{r.name}</TableTd>
                 <TableTd>{formatUsd(r.volume)}</TableTd>
-                <MarketOverviewWhaleCells market={r.market} window={window} />
+                <MarketOverviewWhaleCells market={r.market} />
               </TableTrActionable>
             ))
           )}

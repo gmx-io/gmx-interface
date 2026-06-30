@@ -15,7 +15,7 @@ import { WHALES_PATH } from "./whaleRoutes";
 
 export default function WhalesMarketPage() {
   const { market } = useParams<{ market: string }>();
-  const [window, setWindow] = useState<WhaleWindow>("total");
+  const [window, setWindow] = useState<WhaleWindow>("30d");
   const marketsInfoData = useMarketsInfoData();
   const marketName = (market && marketsInfoData?.[market]?.name) || market;
 
