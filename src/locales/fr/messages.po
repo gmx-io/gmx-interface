@@ -8001,11 +8001,6 @@ msgstr ""
 msgid "Amount"
 msgstr "Montant"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Data is currently unavailable"
-msgstr "Les données sont actuellement indisponibles"
-
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Positions ouvertes (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
@@ -10147,7 +10142,6 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "No data available"
 msgstr "Aucune donnée disponible"
 

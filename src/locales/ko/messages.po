@@ -8001,11 +8001,6 @@ msgstr ""
 msgid "Amount"
 msgstr "수량"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Data is currently unavailable"
-msgstr "현재 데이터를 사용할 수 없습니다"
-
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "미결제약정 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
@@ -10147,7 +10142,6 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "No data available"
 msgstr "데이터 없음"
 

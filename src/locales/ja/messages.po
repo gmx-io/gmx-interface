@@ -8001,11 +8001,6 @@ msgstr ""
 msgid "Amount"
 msgstr "金額"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Data is currently unavailable"
-msgstr "現在データを利用できません"
-
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "建玉（<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>）"
@@ -10147,7 +10142,6 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "No data available"
 msgstr "データなし"
 
