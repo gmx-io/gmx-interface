@@ -1,7 +1,6 @@
 import { useHistory } from "react-router-dom";
 
 import { useMarketHolders } from "domain/synthetics/whales/marketConcentration";
-import { useMarketVolumes } from "domain/synthetics/whales/marketVolumes";
 import type { WhaleWindow } from "domain/synthetics/whales/period";
 import { computeShareBps } from "domain/synthetics/whales/shares";
 import { useChainId } from "lib/chains";
@@ -22,12 +21,10 @@ type DetailField = "size" | "oiShare" | "volume" | "volShare";
 export function MarketWhalesTable({ market, window }: { market: string; window: WhaleWindow }) {
   const { chainId } = useChainId();
   const history = useHistory();
-  const { rows, totalOi, isLoading } = useMarketHolders(chainId, market, window, 25);
-  const { data: volumes } = useMarketVolumes(chainId, window);
-  const marketVolume = volumes?.[market];
-  const { orderBy, direction, sorterProps } = useWhaleSort<DetailField>("size");
+  const { rows, totalOi, totalVolume, isLoading } = useMarketHolders(chainId, market, window, 25);
+  const { orderBy, direction, sorterProps } = useWhaleSort<DetailField>("volume");
 
-  const decorated = rows.map((r) => ({ ...r, volShareBps: computeShareBps(r.volume, marketVolume ?? 0n) }));
+  const decorated = rows.map((r) => ({ ...r, volShareBps: computeShareBps(r.volume, totalVolume ?? 0n) }));
   const sorted = sortByBigint(decorated, direction, (r) =>
     orderBy === "size" ? r.size : orderBy === "oiShare" ? r.oiShareBps : orderBy === "volume" ? r.volume : r.volShareBps
   );
@@ -35,7 +32,7 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
   return (
     <div className="flex flex-col gap-16">
       <div className="text-body-medium text-typography-secondary">
-        Open interest: {formatUsd(totalOi)} · Market volume: {formatUsd(marketVolume)}
+        Open interest: {formatUsd(totalOi)} · Market volume: {formatUsd(totalVolume)}
       </div>
 
       {rows.length > 0 && (
@@ -52,8 +49,8 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
             <div className="text-body-small text-typography-secondary">Volume concentration</div>
             <MarketHoldersPie
               items={rows.map((r) => ({ name: shortAddr(r.account), value: r.volume }))}
-              total={marketVolume}
-              label={formatUsd(marketVolume) ?? "—"}
+              total={totalVolume}
+              label={formatUsd(totalVolume) ?? "—"}
             />
           </div>
         </div>

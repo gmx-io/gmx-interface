@@ -5,7 +5,7 @@ import { getSubsquidGraphClient } from "lib/indexers/clients";
 
 import { windowToFromTimestamp, type WhaleWindow } from "./period";
 import { computeShareBps } from "./shares";
-import { fetchAccountMarketVolume } from "./whaleVolume";
+import { fetchMarketTraderVolumes } from "./whaleVolume";
 
 export type MarketHolder = { account: string; size: bigint };
 
@@ -99,32 +99,50 @@ export function useMarketHolders(
   market: string | undefined,
   window: WhaleWindow,
   displayCount: number
-): { rows: MarketHolderRow[]; totalOi: bigint | undefined; isLoading: boolean } {
-  const { data, isLoading } = useSWR<{ rows: MarketHolderRow[]; totalOi: bigint }>(
+): { rows: MarketHolderRow[]; totalOi: bigint | undefined; totalVolume: bigint | undefined; isLoading: boolean } {
+  const { data, isLoading } = useSWR<{ rows: MarketHolderRow[]; totalOi: bigint; totalVolume: bigint }>(
     market ? ["whaleMarketHolders", chainId, market, window, displayCount] : null,
     async () => {
       const client = getSubsquidGraphClient(chainId);
-      if (!client || !market) return { rows: [], totalOi: 0n };
-      const res = await client.query<{ positions: { account: string; sizeInUsd: string }[] }>({
-        query: TOP_HOLDERS_BY_SIZE,
-        variables: { market, limit: HOLDERS_LIMIT },
-        fetchPolicy: "no-cache",
-      });
-      const holders = aggregateHoldersBySize(res.data?.positions ?? []);
-      const totalOi = holders.reduce((acc, h) => acc + h.size, 0n);
+      if (!client || !market) return { rows: [], totalOi: 0n, totalVolume: 0n };
       const fromTimestamp = windowToFromTimestamp(window, Math.floor(Date.now() / 1000));
-      const rows = await Promise.all(
-        holders.slice(0, displayCount).map(async (h) => ({
-          account: h.account,
-          size: h.size,
-          oiShareBps: computeShareBps(h.size, totalOi),
-          volume: await fetchAccountMarketVolume(client, { account: h.account, market, fromTimestamp }),
-        }))
-      );
-      return { rows, totalOi };
+
+      const [sizeRes, traderVolumes] = await Promise.all([
+        client.query<{ positions: { account: string; sizeInUsd: string }[] }>({
+          query: TOP_HOLDERS_BY_SIZE,
+          variables: { market, limit: HOLDERS_LIMIT },
+          fetchPolicy: "no-cache",
+        }),
+        fetchMarketTraderVolumes(client, { market, fromTimestamp }),
+      ]);
+
+      const holders = aggregateHoldersBySize(sizeRes.data?.positions ?? []);
+      const totalOi = holders.reduce((acc, h) => acc + h.size, 0n);
+      const sizeMap = new Map(holders.map((h) => [h.account, h.size]));
+
+      // Candidates: top by traded volume (surfaces high-churn whales the open-size
+      // ranking misses) unioned with the top current open-interest holders.
+      const topByVolume = [...traderVolumes.volumes.entries()]
+        .sort((a, b) => (a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0))
+        .slice(0, displayCount)
+        .map(([account]) => account);
+      const topBySize = holders.slice(0, displayCount).map((h) => h.account);
+      const candidates = [...new Set([...topByVolume, ...topBySize])];
+
+      const rows = candidates.map((account) => {
+        const size = sizeMap.get(account) ?? 0n;
+        return {
+          account,
+          size,
+          oiShareBps: computeShareBps(size, totalOi),
+          volume: traderVolumes.volumes.get(account) ?? 0n,
+        };
+      });
+
+      return { rows, totalOi, totalVolume: traderVolumes.total };
     },
     { refreshInterval: 60_000 }
   );
 
-  return { rows: data?.rows ?? [], totalOi: data?.totalOi, isLoading };
+  return { rows: data?.rows ?? [], totalOi: data?.totalOi, totalVolume: data?.totalVolume, isLoading };
 }
