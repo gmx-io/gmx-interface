@@ -51,8 +51,6 @@
     "@lingui/react": "4.10.0",
     "@privy-io/react-auth": "3.32.0",
     "@privy-io/wagmi": "4.0.8",
-    "@reown/walletkit": "^1.5.3",
-    "@safe-global/protocol-kit": "^6.1.2",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",
     "@tanstack/react-query": "5.25.0",
     "@taskworld.com/rereselect": "0.3.0",
