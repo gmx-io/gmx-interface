@@ -8,7 +8,7 @@ import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
 import SearchInput from "components/SearchInput/SearchInput";
-import { Table, TableTd, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
+import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
 import { buildWhaleMarketUrl } from "../whaleRoutes";
 import { MarketOverviewWhaleCells } from "./MarketOverviewWhaleCells";
@@ -54,9 +54,13 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
             </tr>
           ) : (
             filteredRows.map((r) => (
-              <TableTrActionable key={r.market} onClick={() => history.push(buildWhaleMarketUrl(r.market))}>
-                <TableTd>{r.name}</TableTd>
-                <TableTd>{formatUsd(r.volume)}</TableTd>
+              <TableTrActionable
+                key={r.market}
+                className="cursor-pointer"
+                onClick={() => history.push(buildWhaleMarketUrl(r.market))}
+              >
+                <TableTdActionable>{r.name}</TableTdActionable>
+                <TableTdActionable>{formatUsd(r.volume)}</TableTdActionable>
                 <MarketOverviewWhaleCells market={r.market} />
               </TableTrActionable>
             ))
