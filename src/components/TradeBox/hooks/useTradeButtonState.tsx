@@ -218,8 +218,6 @@ export function useTradeboxButtonState({
   const tradeError = useSelector(selectTradeboxTradeTypeError);
 
   const nativeGasError = useMemo((): ValidationResult => {
-    // TODO: when express is enabled but expressParams fail to load we get native fee error
-    // but we should not
     if (gasPaymentToken && expressParams?.gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
       return {};
     }
@@ -277,13 +275,6 @@ export function useTradeboxButtonState({
       expressError,
       nativeGasError
     );
-
-    // console.log({
-    //   commonError,
-    //   tradeError,
-    //   expressError,
-    //   nativeGasError,
-    // });
 
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipMessage) {

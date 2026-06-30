@@ -66,8 +66,6 @@
     "@uniswap/v3-sdk": "3.9.0",
     "@wagmi/connectors": "6.2.0",
     "@wagmi/core": "2.22.1",
-    "@walletconnect/core": "^2.23.6",
-    "@walletconnect/utils": "^2.23.6",
     "bigdecimal": "0.6.1",
     "bowser": "2.11.0",
     "classnames": "2.3.1",
