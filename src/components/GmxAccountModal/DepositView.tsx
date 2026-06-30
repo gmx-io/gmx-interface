@@ -68,8 +68,7 @@ import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { useNonSigningAccount } from "lib/wallets/useAccountType";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
@@ -142,13 +141,11 @@ export const DepositView = () => {
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
-  const {
-    tokenChainDataArray: multichainTokens,
-    isPriceDataLoading,
-    isBalanceDataLoading,
-  } = useMultichainTradeTokensRequest(settlementChainId, account);
-  const { tokensData: settlementChainTokensData, isBalancesLoaded: isSettlementChainBalancesLoaded } =
-    useTokensDataRequest(settlementChainId, depositViewChain);
+  const { tokenChainDataArray: multichainTokens, isPriceDataLoading } = useMultichainTradeTokensRequest(
+    settlementChainId,
+    account
+  );
+  const { tokensData: settlementChainTokensData } = useTokensDataRequest(settlementChainId, depositViewChain);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
@@ -559,9 +556,8 @@ export const DepositView = () => {
 
   const subaccountState = useSubaccountContext();
 
-  const isGeminiWallet = useIsGeminiWallet();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
-  const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
+  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
+  const isExpressTradingDisabled = isNonEoaAccountOnAnyChain;
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
@@ -960,16 +956,6 @@ export const DepositView = () => {
     ]
   );
 
-  const hasSettlementChainBalance = Object.values(settlementChainTokensData || {}).some(
-    (token) => token.walletBalance !== undefined && token.walletBalance > 0n
-  );
-
-  const tokenSelectorDisabled =
-    !isBalanceDataLoading &&
-    isSettlementChainBalancesLoaded &&
-    multichainTokens.length === 0 &&
-    !hasSettlementChainBalance;
-
   const isAvalancheSettlement = settlementChainId === AVALANCHE;
 
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
@@ -1023,14 +1009,6 @@ export const DepositView = () => {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      disabled: true,
-    };
-  } else if (tokenSelectorDisabled) {
-    buttonState = {
-      text:
-        depositViewChain !== undefined
-          ? t`No eligible tokens available on ${getChainName(depositViewChain)} for deposit`
-          : t`No eligible tokens available for deposit`,
       disabled: true,
     };
   } else if (needTokenApprove) {
@@ -1180,51 +1158,34 @@ export const DepositView = () => {
           <div className="text-body-medium text-typography-secondary">
             <Trans>Asset</Trans>
           </div>
-          {!tokenSelectorDisabled ? (
-            <div
-              tabIndex={0}
-              role="button"
-              onClick={() => {
-                setIsVisibleOrView("selectAssetToDeposit");
-              }}
-              className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 gmx-hover:bg-fill-surfaceElevatedHover"
-            >
-              <div className="flex items-center gap-8">
-                {selectedToken ? (
-                  <>
-                    <TokenIcon symbol={selectedToken.symbol} displaySize={20} />
-                    <span className="text-16 leading-base">{selectedToken.symbol}</span>
-                  </>
-                ) : depositViewChain !== undefined ? (
-                  <>
-                    <Skeleton
-                      baseColor="#B4BBFF1A"
-                      highlightColor="#B4BBFF1A"
-                      width={20}
-                      height={20}
-                      borderRadius={10}
-                    />
-                    <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
-                  </>
-                ) : (
-                  <span className="text-typography-secondary">
-                    <Trans>Select an asset to deposit</Trans>
-                  </span>
-                )}
-              </div>
-              <ChevronRightIcon className="size-14 text-typography-secondary" />
+
+          <div
+            tabIndex={0}
+            role="button"
+            onClick={() => {
+              setIsVisibleOrView("selectAssetToDeposit");
+            }}
+            className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 gmx-hover:bg-fill-surfaceElevatedHover"
+          >
+            <div className="flex items-center gap-8">
+              {selectedToken ? (
+                <>
+                  <TokenIcon symbol={selectedToken.symbol} displaySize={20} />
+                  <span className="text-16 leading-base">{selectedToken.symbol}</span>
+                </>
+              ) : depositViewChain !== undefined ? (
+                <>
+                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
+                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
+                </>
+              ) : (
+                <span className="text-typography-secondary">
+                  <Trans>Select an asset to deposit</Trans>
+                </span>
+              )}
             </div>
-          ) : (
-            <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-typography-secondary">
-              <span className="flex min-h-20 items-center">
-                {depositViewChain !== undefined ? (
-                  <Trans>No eligible tokens available on {getChainName(depositViewChain)} for deposit</Trans>
-                ) : (
-                  <Trans>No eligible tokens available for deposit</Trans>
-                )}
-              </span>
-            </div>
-          )}
+            <ChevronRightIcon className="size-14 text-typography-secondary" />
+          </div>
         </div>
         {depositViewChain !== undefined && (
           <div className="flex flex-col gap-6">

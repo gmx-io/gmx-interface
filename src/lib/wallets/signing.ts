@@ -1,11 +1,14 @@
-import { AbstractSigner, TypedDataEncoder, type Wallet } from "ethers";
-import { withRetry } from "viem";
+import { getAccount, getChainId, getWalletClient } from "@wagmi/core";
+import { AbstractSigner, type Wallet } from "ethers";
+import { hashTypedData, withRetry, type Hex } from "viem";
 
 import { parseError } from "lib/errors";
 import { ISigner } from "lib/transactions/iSigner";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
-import type { WalletSigner } from ".";
+import { switchNetwork, type WalletSigner } from ".";
+import { clientToSigner } from "./useEthersSigner";
+import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
 export type SignatureDomain = {
   name: string;
@@ -23,7 +26,107 @@ export type SignTypedDataParams = {
   domain: SignatureDomain;
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
+  /** Chain the on-chain verifier runs on; smart wallets must sign with their wallet on this chain. */
+  verificationChainId?: number;
 };
+
+type RpcSendable = Pick<WalletSigner["provider"], "send">;
+
+type AnySigner = WalletSigner | Wallet | AbstractSigner | ISigner;
+
+async function needsChainSwapForSmartWallet({
+  address,
+  currentChainId,
+  targetChainId,
+}: {
+  address: string;
+  currentChainId: number;
+  targetChainId: number | undefined;
+}): Promise<boolean> {
+  if (targetChainId === undefined || targetChainId === currentChainId) {
+    return false;
+  }
+  try {
+    const code = await getPublicClientWithRpc(currentChainId).getCode({ address });
+    return Boolean(code && code !== "0x");
+  } catch {
+    return false;
+  }
+}
+
+function providerSendSign(signer: AnySigner, from: string, eip712: object) {
+  return withRetry<string>(
+    () => (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]),
+    {
+      retryCount: 1,
+      delay: 100,
+      shouldRetry: ({ error }) => {
+        const errorData = parseError(error);
+        return errorData?.errorMessage?.toLowerCase().includes("an error has occurred") || false;
+      },
+    }
+  );
+}
+
+async function withSmartWalletChainSwap<T>(
+  {
+    signer,
+    address,
+    targetChainId,
+  }: {
+    signer: AnySigner;
+    address: string;
+    targetChainId: number | undefined;
+  },
+  action: (signer: AnySigner) => Promise<T>
+): Promise<T> {
+  const config = getWagmiConfig();
+  const startingChainId = getChainId(config);
+  const needsSwap = await needsChainSwapForSmartWallet({
+    address,
+    currentChainId: startingChainId,
+    targetChainId,
+  });
+
+  if (!needsSwap) return action(signer);
+
+  await switchNetwork(targetChainId!, true);
+  const account = getAccount(config).address;
+  if (!account) throw new Error("No account after chain swap");
+  const swappedWalletClient = await getWalletClient(config);
+  const swappedSigner = clientToSigner(swappedWalletClient, account);
+  try {
+    return await action(swappedSigner);
+  } finally {
+    await switchNetwork(startingChainId, true).catch(() => {
+      // restoring is best-effort
+    });
+  }
+}
+
+// TODO: it this needed or we can just use [0] as primaryType?
+function hashTypedDataWithViem({
+  domain,
+  types,
+  message,
+}: {
+  domain: SignatureDomain;
+  types: SignatureTypes;
+  message: Record<string, any>;
+}): Hex {
+  const primaryType = Object.keys(types).find((t) => t !== "EIP712Domain");
+
+  if (!primaryType) {
+    throw new Error("Unable to determine EIP-712 primary type");
+  }
+
+  return hashTypedData({
+    domain,
+    types,
+    primaryType,
+    message,
+  });
+}
 
 export async function signTypedData({
   signer,
@@ -32,6 +135,7 @@ export async function signTypedData({
   typedData,
   shouldUseSignerMethod = false,
   minified = true,
+  verificationChainId,
 }: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
@@ -57,7 +161,11 @@ export async function signTypedData({
   let messageToSign = typedData;
 
   if (minified) {
-    const digest = TypedDataEncoder.hash(domain, types, typedData);
+    const digest = hashTypedDataWithViem({
+      domain,
+      types,
+      message: typedData,
+    });
     const minifiedTypes = {
       Minified: [{ name: "digest", type: "bytes32" }],
     };
@@ -65,18 +173,6 @@ export async function signTypedData({
     messageToSign = {
       digest,
     };
-  }
-
-  if (shouldUseSignerMethod && signer.signTypedData) {
-    try {
-      return await signer.signTypedData(domain, typesToSign, messageToSign);
-    } catch (e) {
-      if (e.message.includes("requires a provider")) {
-        // ignore and try to send request directly to provider
-      } else {
-        throw e;
-      }
-    }
   }
 
   const primaryType = Object.keys(typesToSign).filter((t) => t !== "EIP712Domain")[0];
@@ -88,7 +184,6 @@ export async function signTypedData({
     throw new Error("Signer does not support provider-based signing or signTypedData");
   }
 
-  const provider = signer.provider;
   const from = await signer.getAddress();
 
   const eip712 = {
@@ -106,21 +201,15 @@ export async function signTypedData({
     message: messageToSign,
   };
 
-  const signature = await withRetry<string>(
-    () => {
-      return (provider as ISigner).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
-    },
-    {
-      retryCount: 1,
-      delay: 100,
-      shouldRetry: ({ error }) => {
-        const errorData = parseError(error);
-        return errorData?.errorMessage?.toLowerCase().includes("an error has occurred") || false;
-      },
+  return withSmartWalletChainSwap({ signer, address: from, targetChainId: verificationChainId }, (signWith) => {
+    if (shouldUseSignerMethod && signWith.signTypedData) {
+      return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {
+        if (!e.message.includes("requires a provider")) throw e;
+        return providerSendSign(signWith, from, eip712);
+      });
     }
-  );
-
-  return signature;
+    return providerSendSign(signWith, from, eip712);
+  });
 }
 
 export function splitSignature(signature: string): { r: string; s: string; v: number } {

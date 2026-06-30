@@ -2955,11 +2955,6 @@ msgstr "최대 {0} 판매 가능 금액 초과"
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "입금 가능한 적격 토큰 없음"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "일"
@@ -3868,11 +3863,6 @@ msgstr "주문 요청을 전송하는 중…"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>{0}{1} 판매<1>{poolName}</1></0>"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "{0}에서 입금 가능한 적격 토큰 없음"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "손절매 감소"
@@ -4148,7 +4138,6 @@ msgstr "추천 코드 입력"
 msgid "Referral link copied to clipboard"
 msgstr ""
 
-#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TradeBox/TradeBox.tsx

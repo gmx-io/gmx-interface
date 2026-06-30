@@ -1,5 +1,6 @@
 import { erc20Abi } from "viem";
 
+import AbstractSubaccountApprovalNonceable from "./AbstractSubaccountApprovalNonceable";
 import ArbitrumNodeInterface from "./ArbitrumNodeInterface";
 import ClaimHandler from "./ClaimHandler";
 import CustomErrors from "./CustomErrors";
@@ -54,28 +55,6 @@ import VaultV2b from "./VaultV2b";
 import VenusVToken from "./VenusVToken";
 import Vester from "./Vester";
 import WETH from "./WETH";
-
-const AbstractSubaccountApprovalNonceable = [
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "subaccountApprovalNonces",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const;
 
 export const abis = {
   AbstractSubaccountApprovalNonceable,

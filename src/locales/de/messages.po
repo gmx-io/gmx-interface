@@ -2955,11 +2955,6 @@ msgstr "Max. {0} verkaufbarer Betrag überschritten"
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "Keine berechtigten Tokens für Einzahlung verfügbar"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "Tag(e)"
@@ -3868,11 +3863,6 @@ msgstr "Order-Anfrage wird gesendet…"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Verkaufen von {0}{1}<1>{poolName}</1></0>"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "Keine berechtigten Tokens auf {0} für Einzahlung verfügbar"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "Stop-Loss Decrease"
@@ -4148,7 +4138,6 @@ msgstr "Empfehlungscode eingeben"
 msgid "Referral link copied to clipboard"
 msgstr ""
 
-#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TradeBox/TradeBox.tsx

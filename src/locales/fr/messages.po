@@ -2955,11 +2955,6 @@ msgstr "Montant vendable max {0} dépassé"
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "Aucun jeton éligible disponible pour dépôt"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "Jour(s)"
@@ -3868,11 +3863,6 @@ msgstr "Envoi de la demande d'ordre…"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Vente de {0}{1}<1>{poolName}</1></0>"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "Aucun jeton éligible disponible sur {0} pour dépôt"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "Stop-Loss Decrease"
@@ -4148,7 +4138,6 @@ msgstr "Entrez le code de parrainage"
 msgid "Referral link copied to clipboard"
 msgstr ""
 
-#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TradeBox/TradeBox.tsx

@@ -2955,11 +2955,6 @@ msgstr "最大{0}売却可能額超過"
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "入金可能な対象トークンなし"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "日"
@@ -3868,11 +3863,6 @@ msgstr "注文リクエストを送信中…"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>{0}{1}の売却<1>{poolName}</1></0>"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "{0} で入金可能な対象トークンなし"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "ストップロス Decrease"
@@ -4148,7 +4138,6 @@ msgstr "リファラルコードを入力"
 msgid "Referral link copied to clipboard"
 msgstr ""
 
-#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TradeBox/TradeBox.tsx
