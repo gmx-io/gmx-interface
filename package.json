@@ -51,7 +51,6 @@
     "@lingui/react": "4.10.0",
     "@privy-io/react-auth": "3.32.0",
     "@privy-io/wagmi": "4.0.8",
-    "@rainbow-me/rainbowkit": "2.2.9",
     "@reown/walletkit": "^1.5.3",
     "@safe-global/protocol-kit": "^6.1.2",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",

@@ -1,8 +1,8 @@
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useEffect, useState } from "react";
 import { type Address, getAddress, isAddress } from "viem";
 
 import { ARBITRUM_SEPOLIA, getChainName } from "config/chains";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
