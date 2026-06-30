@@ -2046,13 +2046,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
       isPlatformToken: true,
     },
-    {
-      name: "MEGA",
-      symbol: "MEGA",
-      address: "0x28B7E77f82B25B95953825F1E3eA0E36c1c29861",
-      decimals: 18,
-      isPlatformToken: true,
-    },
     /** Placeholder tokens */
     {
       name: "GMX Market tokens",

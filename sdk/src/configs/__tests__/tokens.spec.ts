@@ -31,7 +31,7 @@ const getIgnoredTokensByChain = (chainId: number) => {
       [ARBITRUM]: ["FRAX", "MIM"],
       [AVALANCHE]: ["MIM", "WBTC"],
       [BOTANIX]: ["GMX"],
-      [MEGAETH]: ["GMX", "MEGA"],
+      [MEGAETH]: ["GMX"],
     }[chainId] ?? []
   );
 };

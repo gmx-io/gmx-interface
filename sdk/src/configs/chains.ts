@@ -280,32 +280,6 @@ export type ContractsChainSlug = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof C
 export type SourceChainSlug = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["slug"];
 export type ChainSlug = ContractsChainSlug | SourceChainSlug | "unknown";
 
-export const megaEth: Chain = defineChain({
-  id: MEGAETH,
-  name: "MegaETH",
-  nativeCurrency: {
-    name: "Ether",
-    symbol: "ETH",
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: {
-      http: ["https://mainnet.megaeth.com/rpc"],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: "MegaETH Explorer",
-      url: "https://megaeth.blockscout.com/",
-    },
-  },
-  contracts: {
-    multicall3: {
-      address: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
-    },
-  },
-});
-
 export const botanix: Chain = defineChain({
   id: BOTANIX,
   name: "Botanix",
@@ -337,13 +311,39 @@ export const botanix: Chain = defineChain({
   },
 });
 
+export const megaeth: Chain = defineChain({
+  id: MEGAETH,
+  name: "MegaETH",
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://mainnet.megaeth.com/rpc"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "MegaExplorer",
+      url: "https://megaeth.blockscout.com",
+    },
+  },
+  contracts: {
+    multicall3: {
+      address: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
+    },
+  },
+});
+
 export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
-  [MEGAETH]: megaEth,
   [BOTANIX]: botanix,
+  [MEGAETH]: megaeth,
   [SOURCE_ETHEREUM_MAINNET]: mainnet,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
