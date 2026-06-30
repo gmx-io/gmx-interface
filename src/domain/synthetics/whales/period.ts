@@ -9,5 +9,7 @@ const WINDOW_DAYS: Record<Exclude<WhaleWindow, "total">, number> = {
 
 export function windowToFromTimestamp(window: WhaleWindow, nowSec: number): number | undefined {
   if (window === "total") return undefined;
-  return nowSec - WINDOW_DAYS[window] * 86400;
+  const from = nowSec - WINDOW_DAYS[window] * 86400;
+  // periodAccountStats requires `from` aligned to 00:00:00 UTC (whole days).
+  return from - (from % 86400);
 }

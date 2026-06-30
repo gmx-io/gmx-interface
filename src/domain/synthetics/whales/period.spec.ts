@@ -9,12 +9,16 @@ describe("windowToFromTimestamp", () => {
     expect(windowToFromTimestamp("total", now)).toBeUndefined();
   });
 
-  it("returns now - 7 days for 7d", () => {
-    expect(windowToFromTimestamp("7d", now)).toBe(now - 7 * 86400);
+  it("returns a midnight-aligned start ~7 days back for 7d", () => {
+    const from = windowToFromTimestamp("7d", now)!;
+    expect(from % 86400).toBe(0); // periodAccountStats requires day-aligned `from`
+    expect(from).toBe(now - 7 * 86400 - ((now - 7 * 86400) % 86400));
   });
 
-  it("returns now - 30 days for 30d", () => {
-    expect(windowToFromTimestamp("30d", now)).toBe(now - 30 * 86400);
+  it("returns a midnight-aligned start ~30 days back for 30d", () => {
+    const from = windowToFromTimestamp("30d", now)!;
+    expect(from % 86400).toBe(0);
+    expect(from).toBe(now - 30 * 86400 - ((now - 30 * 86400) % 86400));
   });
 
   it("exposes the three windows in order", () => {
