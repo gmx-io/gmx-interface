@@ -225,7 +225,7 @@ export function DailyAndCumulativePnL({
         )}
         {!loading && (error || clusteredPnlData.length === 0) && (
           <div className="absolute grid size-full place-items-center text-typography-secondary">
-            {error ? <Trans>Data is currently unavailable</Trans> : <Trans>No data available</Trans>}
+            <Trans>No data available</Trans>
           </div>
         )}
       </div>

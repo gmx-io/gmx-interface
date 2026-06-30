@@ -50,6 +50,46 @@ type PnlSummaryPointBreakdownFields = {
 
 type PnlSummaryData = PnlSummaryPoint[];
 
+const PNL_SUMMARY_BUCKET_LABELS: PnlSummaryBucketLabel[] = ["today", "yesterday", "week", "month", "year", "all"];
+
+// Zero-filled rows for the empty/error state, so the table shows zeros instead of raw request errors.
+export function getEmptyPnlSummaryData(): PnlSummaryData {
+  return PNL_SUMMARY_BUCKET_LABELS.map((bucketLabel) => ({
+    bucketLabel,
+    losses: 0,
+    wins: 0,
+    pnlBps: 0n,
+    pnlUsd: 0n,
+    pnlUsdRank: undefined,
+    pnlBpsRank: undefined,
+    volume: 0n,
+    volumeRank: undefined,
+    winsLossesRatioBps: undefined,
+    usedCapitalUsd: 0n,
+    realizedSwapImpactUsd: 0n,
+    realizedBasePnlUsd: 0n,
+    realizedFeesUsd: 0n,
+    realizedSwapFeesUsd: 0n,
+    realizedPriceImpactUsd: 0n,
+    unrealizedBasePnlUsd: 0n,
+    unrealizedFeesUsd: 0n,
+    startUnrealizedBasePnlUsd: 0n,
+    startUnrealizedFeesUsd: 0n,
+    unrealizedFeesContributionUsd: 0n,
+    startUnrealizedBasePnlContributionUsd: 0n,
+    openFeesUsd: 0n,
+    closeFeesUsd: 0n,
+    borrowingFeesUsd: 0n,
+    positiveFundingFeesUsd: 0n,
+    negativeFundingFeesUsd: 0n,
+    liquidationFeesUsd: 0n,
+    realizedFeesRemainderUsd: 0n,
+    netPriceImpactUsd: 0n,
+    swapFeesUsd: 0n,
+    swapPriceImpactUsd: 0n,
+  }));
+}
+
 const QUERY = gql`
   query AccountHistoricalPnlResolver($account: String!, $rankMaxCapitalGte: String) {
     accountPnlSummaryStats(account: $account, rankMaxCapitalGte: $rankMaxCapitalGte) {

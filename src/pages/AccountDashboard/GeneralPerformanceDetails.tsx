@@ -2,15 +2,15 @@ import type { MessageDescriptor } from "@lingui/core";
 import { Trans, msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
+import { useMemo } from "react";
 import type { Address } from "viem";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { PnlSummaryBucketLabel, PnlSummaryPoint } from "domain/synthetics/accountStats/usePnlSummaryData";
-import { usePnlSummaryData } from "domain/synthetics/accountStats/usePnlSummaryData";
+import { getEmptyPnlSummaryData, usePnlSummaryData } from "domain/synthetics/accountStats/usePnlSummaryData";
 import { formatPercentage, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
-import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -46,6 +46,13 @@ export function GeneralPerformanceDetails({
   onBucketClick?: (bucketLabel: PnlSummaryBucketLabel) => void;
 }) {
   const { data, error, loading } = usePnlSummaryData(chainId, account);
+
+  const summaryData = useMemo(() => {
+    if (error || data.length === 0) {
+      return getEmptyPnlSummaryData();
+    }
+    return data;
+  }, [data, error]);
 
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
@@ -92,18 +99,11 @@ export function GeneralPerformanceDetails({
           <tbody>
             {loading && <AccountPnlSummarySkeleton count={6} />}
             {!loading &&
-              data.map((row) => (
+              summaryData.map((row) => (
                 <GeneralPerformanceDetailsRow key={row.bucketLabel} row={row} onBucketClick={onBucketClick} />
               ))}
           </tbody>
         </table>
-        {!loading && (error || data.length === 0) && (
-          <EmptyTableContent
-            isLoading={false}
-            isEmpty
-            emptyText={error ? <Trans>Data is currently unavailable</Trans> : <Trans>No data available</Trans>}
-          />
-        )}
       </TableScrollFadeContainer>
     </div>
   );
