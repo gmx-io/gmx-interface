@@ -104,6 +104,8 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapSubaccountBlockedWarning,
     shouldShowExternalSwapGasConflictRequiredWarning,
     shouldShowExternalSwapGasConflictOptionalWarning,
+    dismissExpiredSubaccountWarning,
+    dismissAllowedActionsWarning,
   } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap, isGmxAccount });
 
   const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);
@@ -170,6 +172,7 @@ export function ExpressTradingWarningCard({
     );
   } else if (shouldShowAllowedActionsWarning) {
     onClick = handleUpdateSubaccountSettings;
+    onCloseClick = dismissAllowedActionsWarning;
     icon = OneClickIcon;
     color = "yellow";
     content = <Trans>One-Click Trading action limit reached. You're now using Express Trading.</Trans>;
@@ -182,6 +185,7 @@ export function ExpressTradingWarningCard({
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
+    onCloseClick = dismissExpiredSubaccountWarning;
     icon = OneClickIcon;
     color = "yellow";
     content = <Trans>One-Click Trading time limit expired. You're now using Express Trading.</Trans>;
