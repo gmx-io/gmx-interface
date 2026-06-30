@@ -320,7 +320,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
   ],
 };
 
-const WS_RPC_CONFIGS: Partial<Record<AnyChainId, RpcConfig[]>> = {
+const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
   [ARBITRUM]: [getAlchemyProvider(ARBITRUM, "fallback", "ws"), getAlchemyProvider(ARBITRUM, "largeAccount", "ws")],
   [AVALANCHE]: [{ url: "wss://api.avax.network/ext/bc/C/ws", isPublic: true, purpose: "fallback" }],
   [ARBITRUM_SEPOLIA]: [
@@ -362,7 +362,7 @@ export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig
 }
 
 export function getWsRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
-  const config = WS_RPC_CONFIGS[chainId as AnyChainId];
+  const config = WS_RPC_CONFIGS[chainId];
 
   if (!config) {
     return [];
@@ -468,7 +468,6 @@ const SELF_EXPLANATORY_HOSTNAMES = [
   "api.avax.network",
   "api.avax-test.network",
   "sepolia-rollup.arbitrum.io",
-  "mainnet.megaeth.com",
 ];
 
 export function getProviderNameFromUrl(rpcUrl: string) {

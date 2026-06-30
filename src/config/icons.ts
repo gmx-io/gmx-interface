@@ -37,6 +37,7 @@ import eth from "img/tokens/ic_eth.svg";
 import glpIcon from "img/tokens/ic_glp.svg";
 import glvIcon from "img/tokens/ic_glv.svg";
 import gmxIcon from "img/tokens/ic_gmx.svg";
+import megaeth from "img/tokens/ic_megaeth.svg";
 import optimismSepolia from "img/tokens/ic_op.svg";
 import sepolia from "img/tokens/ic_sepolia.svg";
 
@@ -86,7 +87,7 @@ const ICONS: Record<number | "common", ChainIcons> = {
     esgmx: esGMXIcon,
   },
   [MEGAETH]: {
-    network: eth,
+    network: megaeth,
     glp: glpIcon,
     gmx: gmxIcon,
     gm: gmIcon,
@@ -113,7 +114,7 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChain
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
   [BOTANIX]: botanix,
-  [MEGAETH]: eth,
+  [MEGAETH]: megaeth,
   [SOURCE_BSC_MAINNET]: bsc,
 };
 
@@ -129,15 +130,14 @@ export function getIcon(chainId: number | "common", label: keyof ChainIcons) {
 }
 
 export function getChainIcon(chainId: number): string {
-  const icon = CHAIN_ID_TO_NETWORK_ICON[chainId as keyof typeof CHAIN_ID_TO_NETWORK_ICON];
-  if (icon === undefined) {
+  if (!(chainId in CHAIN_ID_TO_NETWORK_ICON)) {
     throw new Error(`No icon found for chain: ${chainId}`);
   }
 
-  return icon;
+  return CHAIN_ID_TO_NETWORK_ICON[chainId as AnyChainId];
 }
 
-export function getIcons(chainId: number | "common") {
+export function getIcons(chainId: number | "common"): ChainIcons {
   if (!chainId || !(chainId in ICONS)) {
     throw new Error(`No icons found for chain: ${chainId}`);
   }

@@ -1,4 +1,12 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  MEGAETH,
+  ContractsChainId,
+} from "config/chains";
 import { getContract } from "config/contracts";
 
 const ARBITRUM_GMX = getContract(ARBITRUM, "GMX").toLowerCase();
@@ -236,14 +244,6 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
     links: {
       [ARBITRUM]: "https://kyberswap.com/swap/arbitrum/eth-to-gmx",
       [AVALANCHE]: "https://kyberswap.com/swap/avalanche/avax-to-gmx",
-    },
-  },
-  {
-    name: "OpenOcean",
-    icon: "ic_openocean.svg",
-    links: {
-      [ARBITRUM]: "https://app.openocean.finance/CLASSIC#/ARBITRUM/ETH/GMX",
-      [AVALANCHE]: "https://app.openocean.finance/CLASSIC#/AVAX/AVAX/GMX",
     },
   },
   {
