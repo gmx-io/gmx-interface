@@ -11,6 +11,7 @@ import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orde
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
@@ -95,11 +96,13 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
 
 export function HistoricalLists({ chainId, account }: Props) {
   const [tabKey, setTabKey] = useLocalStorageSerializeKey(getAccountDashboardTabKey(chainId), TabKey.Positions);
+  const { account: walletAccount } = useWallet();
 
   const tabLabels = useTabLabels();
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
+  const hideOrderActions = !walletAccount || walletAccount !== account;
 
   const handleOrdersClick = useCallback(() => {
     setTabKey(TabKey.Orders);
@@ -143,6 +146,7 @@ export function HistoricalLists({ chainId, account }: Props) {
           openSettings={noop}
           onCancelOrder={noop}
           hideActions
+          hideOrderActions={hideOrderActions}
         />
       )}
       {tabKey === TabKey.Orders && (

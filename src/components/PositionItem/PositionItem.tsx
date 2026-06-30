@@ -56,6 +56,7 @@ export type Props = {
   onOrdersClick?: (key?: string) => void;
   onViewPositionHistory?: () => void;
   onCancelOrder?: (orderKey: string) => void;
+  hideOrderActions?: boolean;
 };
 
 export function PositionItem(p: Props) {
@@ -492,7 +493,11 @@ export function PositionItem(p: Props) {
                   )
                 : formatUsd(p.position.sizeInUsd)}
             </span>
-            <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+            <PositionItemOrdersLarge
+              positionKey={p.position.key}
+              onOrdersClick={p.onOrdersClick}
+              hideActions={p.hideOrderActions}
+            />
           </div>
         </TableTd>
         <TableTd>
@@ -738,12 +743,16 @@ export function PositionItem(p: Props) {
             </div>
           )}
         </AppCardSection>
-        <AppCardSection className="border-b-0">
+        <AppCardSection className="!border-b-0">
           <div className="font-medium text-typography-secondary">
             <Trans>Orders</Trans>
           </div>
 
-          <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+          <PositionItemOrdersSmall
+            positionKey={p.position.key}
+            onOrdersClick={p.onOrdersClick}
+            hideActions={p.hideOrderActions}
+          />
         </AppCardSection>
 
         <div ref={closeSentinelRef} />
