@@ -38,9 +38,9 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
           <TableTheadTr>
             <TableTh>Market</TableTh>
             <TableTh>Total volume</TableTh>
-            <TableTh>Top whale</TableTh>
-            <TableTh>Top whale share</TableTh>
-            <TableTh>Top-3 concentration</TableTh>
+            <TableTh>Top holder</TableTh>
+            <TableTh>OI share</TableTh>
+            <TableTh>Top-3 OI</TableTh>
           </TableTheadTr>
         </thead>
         <tbody>
