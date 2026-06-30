@@ -1,6 +1,6 @@
 import uniq from "lodash/uniq";
 import useSWR from "swr";
-import { ContractFunctionExecutionError, ContractFunctionZeroDataError, Hex, PublicClient } from "viem";
+import { ContractFunctionExecutionError, ContractFunctionZeroDataError, Hex, PublicClient, zeroHash } from "viem";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } from "config/chains";
@@ -151,7 +151,7 @@ export async function fetchIsErc1271(client: PublicClient, address: string): Pro
       address,
       abi: abis.SmartAccount,
       functionName: "isValidSignature",
-      args: ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x"],
+      args: [zeroHash, "0x"],
     });
     return true;
   } catch (error) {
