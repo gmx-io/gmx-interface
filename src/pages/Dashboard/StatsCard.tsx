@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH, ContractsChainIdProduction } from "config/chains";
+import { ARBITRUM, AVALANCHE, MEGAETH, ContractsChainIdProduction } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
@@ -18,13 +18,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-const chainsMap: Record<ContractsChainIdProduction, ContractsChainIdProduction> = {
-  [ARBITRUM]: ARBITRUM,
-  [AVALANCHE]: AVALANCHE,
-  [BOTANIX]: BOTANIX,
-  [MEGAETH]: MEGAETH,
-};
-const chains = Object.values(chainsMap).filter((chain) => Boolean(getTokenBySymbol(chain, "GMX").address));
+const chains: ContractsChainIdProduction[] = [ARBITRUM, AVALANCHE, MEGAETH];
 const gmxTokenAddresses = chains.map((chain) => getTokenBySymbol(chain, "GMX").address);
 const gmGmxTokenAddresses = chains.map((chain) =>
   Object.keys(MARKETS[chain]).filter((address) => {
@@ -41,7 +35,6 @@ export function StatsCard() {
 
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
-  const v2BotanixOverview = useV2Stats(BOTANIX);
   const v2MegaethOverview = useV2Stats(MEGAETH);
 
   const uniqueUsers = useUniqueUsers();
@@ -53,7 +46,6 @@ export function StatsCard() {
     v1AvalancheTotalFees?.totalFees,
     v2ArbitrumOverview.totalFees,
     v2AvalancheOverview.totalFees,
-    v2BotanixOverview.totalFees,
     v2MegaethOverview.totalFees
   );
 
@@ -80,7 +72,6 @@ export function StatsCard() {
     () => ({
       "V2 Arbitrum": v2ArbitrumOverview?.totalFees,
       "V2 Avalanche": v2AvalancheOverview?.totalFees,
-      "V2 Botanix": v2BotanixOverview?.totalFees,
       "V2 MegaETH": v2MegaethOverview?.totalFees,
       "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
       "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
@@ -90,7 +81,6 @@ export function StatsCard() {
       v1ArbitrumTotalFees?.totalFees,
       v2ArbitrumOverview?.totalFees,
       v2AvalancheOverview?.totalFees,
-      v2BotanixOverview?.totalFees,
       v2MegaethOverview?.totalFees,
     ]
   );
@@ -99,36 +89,22 @@ export function StatsCard() {
     () => ({
       "V2 Arbitrum": v2ArbitrumOverview?.totalVolume,
       "V2 Avalanche": v2AvalancheOverview?.totalVolume,
-      "V2 Botanix": v2BotanixOverview?.totalVolume,
       "V2 MegaETH": v2MegaethOverview?.totalVolume,
       "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
       "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
     }),
-    [
-      v1TotalVolume,
-      v2ArbitrumOverview?.totalVolume,
-      v2AvalancheOverview?.totalVolume,
-      v2BotanixOverview?.totalVolume,
-      v2MegaethOverview?.totalVolume,
-    ]
+    [v1TotalVolume, v2ArbitrumOverview?.totalVolume, v2AvalancheOverview?.totalVolume, v2MegaethOverview?.totalVolume]
   );
 
   const uniqueUsersEntries = useMemo(
     () => ({
       "V2 Arbitrum": v2ArbitrumOverview?.totalUsers,
       "V2 Avalanche": v2AvalancheOverview?.totalUsers,
-      "V2 Botanix": v2BotanixOverview?.totalUsers,
       "V2 MegaETH": v2MegaethOverview?.totalUsers,
       "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
       "V1 Avalanche": uniqueUsers?.[AVALANCHE],
     }),
-    [
-      uniqueUsers,
-      v2ArbitrumOverview?.totalUsers,
-      v2AvalancheOverview?.totalUsers,
-      v2BotanixOverview?.totalUsers,
-      v2MegaethOverview?.totalUsers,
-    ]
+    [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2MegaethOverview?.totalUsers]
   );
 
   return (
@@ -163,11 +139,9 @@ export function StatsCard() {
                 sumBigInts(
                   v1TotalVolume?.[ARBITRUM],
                   v1TotalVolume?.[AVALANCHE],
-                  v1TotalVolume?.[BOTANIX],
                   v1TotalVolume?.[MEGAETH],
                   v2ArbitrumOverview?.totalVolume,
                   v2AvalancheOverview?.totalVolume,
-                  v2BotanixOverview?.totalVolume,
                   v2MegaethOverview?.totalVolume
                 ),
                 USD_DECIMALS,
@@ -191,11 +165,9 @@ export function StatsCard() {
                 sumBigInts(
                   uniqueUsers?.[ARBITRUM],
                   uniqueUsers?.[AVALANCHE],
-                  uniqueUsers?.[BOTANIX],
                   uniqueUsers?.[MEGAETH],
                   v2ArbitrumOverview?.totalUsers,
                   v2AvalancheOverview?.totalUsers,
-                  v2BotanixOverview?.totalUsers,
                   v2MegaethOverview?.totalUsers
                 ),
                 0,

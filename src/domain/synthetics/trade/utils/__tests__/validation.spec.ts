@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 
-import { getIncreaseError, getSwapError } from "../validation";
+import { getEditCollateralError, getIncreaseError, getSwapError, ValidationButtonTooltipName } from "../validation";
 
 const tokensData = mockTokensData({
   ETH: { balance: expandDecimals(100, 18) },
@@ -145,5 +145,56 @@ describe("getIncreaseError — isExternalSwapLoading gate", () => {
       } as any,
     });
     expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity to swap collateral");
+  });
+});
+
+const baseEditCollateralParams = {
+  collateralDeltaAmount: expandDecimals(10, 6),
+  collateralDeltaUsd: expandDecimals(10, 30),
+  nextLiqPrice: undefined,
+  nextLeverage: undefined,
+  position: undefined,
+  isDeposit: true,
+  depositToken: toToken,
+  depositAmount: expandDecimals(10, 6),
+  minDepositUsd: undefined,
+  marketInfo,
+  maxWithdrawAmount: 0n,
+};
+
+describe("getEditCollateralError — min deposit covering pending fees", () => {
+  it("returns the min deposit error when the deposit is below the required minimum", () => {
+    const result = getEditCollateralError({
+      ...baseEditCollateralParams,
+      minDepositUsd: expandDecimals(25, 30),
+    });
+    expect(result.buttonErrorMessage).toBe(`Min deposit: ${formatUsd(expandDecimals(25, 30))}`);
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.minDeposit);
+  });
+
+  it("passes when the deposit covers the required minimum", () => {
+    const result = getEditCollateralError({
+      ...baseEditCollateralParams,
+      collateralDeltaAmount: expandDecimals(30, 6),
+      collateralDeltaUsd: expandDecimals(30, 30),
+      depositAmount: expandDecimals(30, 6),
+      minDepositUsd: expandDecimals(25, 30),
+    });
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+
+  it("keeps ordinary deposits without a pending-fee shortfall unaffected", () => {
+    const result = getEditCollateralError(baseEditCollateralParams);
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+
+  it("does not apply the min deposit check to withdrawals", () => {
+    const result = getEditCollateralError({
+      ...baseEditCollateralParams,
+      isDeposit: false,
+      minDepositUsd: expandDecimals(25, 30),
+      maxWithdrawAmount: expandDecimals(100, 6),
+    });
+    expect(result.buttonErrorMessage).toBeUndefined();
   });
 });

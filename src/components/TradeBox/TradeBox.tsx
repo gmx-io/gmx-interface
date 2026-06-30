@@ -7,6 +7,7 @@ import { zeroAddress } from "viem";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -37,6 +38,7 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxFees,
+  selectTradeboxFormState,
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
@@ -50,7 +52,6 @@ import {
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
-  selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxSwapTokens,
   selectTradeboxTradeFlags,
@@ -90,7 +91,6 @@ import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useNonSingingAccount } from "lib/wallets/useAccountType";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -138,6 +138,8 @@ import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
 
 import "./TradeBox.scss";
+
+const TRADEBOX_INPUT_PLACEHOLDER = "0.00";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -214,7 +216,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
-  } = useSelector(selectTradeboxState);
+  } = useSelector(selectTradeboxFormState);
 
   const isTwapModeAvailable = useMemo(
     () =>
@@ -747,6 +749,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
           maxDecimals={fromToken?.decimals}
+          placeholder={TRADEBOX_INPUT_PLACEHOLDER}
         >
           {fromTokenAddress &&
             (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
@@ -835,6 +838,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 qa="swap-receive"
                 isDisabled={isTwap}
                 maxDecimals={toToken?.decimals}
+                placeholder={TRADEBOX_INPUT_PLACEHOLDER}
               >
                 {toTokenAddress && (
                   <TokenSelector
@@ -873,6 +877,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             onInputValueChange={handleToInputTokenChange}
             qa="buy"
             maxDecimals={toToken?.decimals}
+            placeholder={TRADEBOX_INPUT_PLACEHOLDER}
           >
             {toTokenAddress && (
               <MarketSelector
@@ -969,6 +974,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleTriggerPriceInputChange}
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
+        placeholder={TRADEBOX_INPUT_PLACEHOLDER}
       >
         {t`USD`}
       </BuyInputSection>
@@ -986,6 +992,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleTriggerRatioInputChange}
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
+        placeholder={TRADEBOX_INPUT_PLACEHOLDER}
       >
         {markRatio && (
           <>

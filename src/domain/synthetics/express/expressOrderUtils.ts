@@ -221,7 +221,11 @@ export async function estimateExpressParams({
   });
 }
 
-export { getGasPaymentValidations, getIsValidExpressParams } from "sdk/utils/express";
+export {
+  getGasPaymentValidations,
+  getIsConfirmedOutOfGasPaymentTokenBalance,
+  getIsValidExpressParams,
+} from "sdk/utils/express";
 
 export async function buildAndSignExpressBatchOrderTxn({
   chainId,

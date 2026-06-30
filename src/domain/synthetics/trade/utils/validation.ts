@@ -50,6 +50,7 @@ export enum ValidationButtonTooltipName {
   maxLeverage = "maxLeverage",
   liqPriceGtMarkPrice = "liqPrice > markPrice",
   noSwapPath = "noSwapPath",
+  minDeposit = "minDeposit",
 }
 
 export enum ValidationBannerErrorName {
@@ -661,6 +662,7 @@ export function getEditCollateralError(p: {
   isDeposit: boolean;
   depositToken: TokenData | undefined;
   depositAmount: bigint | undefined;
+  minDepositUsd: bigint | undefined;
   marketInfo: MarketInfo | undefined;
   maxWithdrawAmount: bigint | undefined;
 }): ValidationResult {
@@ -673,6 +675,7 @@ export function getEditCollateralError(p: {
     isDeposit,
     depositToken,
     depositAmount,
+    minDepositUsd,
     marketInfo,
     maxWithdrawAmount,
   } = p;
@@ -694,6 +697,13 @@ export function getEditCollateralError(p: {
 
   if (isDeposit && depositToken && depositAmount !== undefined && depositAmount > (depositToken.balance ?? 0)) {
     return { buttonErrorMessage: t`Insufficient ${depositToken.symbol} balance` };
+  }
+
+  if (isDeposit && minDepositUsd !== undefined && minDepositUsd > 0 && collateralDeltaUsd < minDepositUsd) {
+    return {
+      buttonErrorMessage: t`Min deposit: ${formatUsd(minDepositUsd)}`,
+      buttonTooltipName: ValidationButtonTooltipName.minDeposit,
+    };
   }
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {

@@ -1252,7 +1252,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x8CBd0d5d81e7957123E6D8fFaE657a40bDC5691b",
       isSynthetic: true,
       decimals: 18,
-      categories: ["tradfi", "pre-ipo"],
+      categories: ["tradfi", "stocks"],
       searchAliases: ["Space", "X"],
       explorerUrl: "https://arbiscan.io/token/0x8CBd0d5d81e7957123E6D8fFaE657a40bDC5691b",
     },

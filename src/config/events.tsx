@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, MEGAETH } from "config/chains";
+import { ARBITRUM, BOTANIX, MEGAETH } from "config/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -37,19 +37,36 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
-    id: "spcx-pre-ipo-arbitrum-listing-updated",
+    id: "botanix-withdraw-deadline",
     isActive: true,
-    startDate: "09 Jun 2026, 12:00",
-    endDate: "16 Jun 2026, 12:00",
-    flagId: "showSpcxPreIpoArbitrumListingUpdated",
-    chains: [ARBITRUM],
-    title: "SPCX Pre-IPO market added on Arbitrum",
+    endDate: "01 Aug 2026, 0:00",
+    chains: [BOTANIX],
+    title: "Botanix network is shutting down",
     bodyText: (
       <>
-        <Link to="/trade">Trade</Link> pre-IPO SpaceX perpetuals with up to 10x leverage, 24/7. SPCX/USD is a new type
-        of market for GMX, launching with limited initial OI capacity. Caps and trading parameters may change around the
-        IPO, and opening or increasing positions may be unavailable when caps are reached.{" "}
-        <ExternalLink href="https://x.com/GMX_IO/status/2064418523657470193">Read more</ExternalLink>.
+        Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.
+        <br />
+        <br />
+        In the swap interface, swap pBTC
+        to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC directly on Botanix. Move your BTC
+        off the network before the deadline.
+        <br />
+        <br />
+        <Link to="/pools">Withdraw liquidity</Link>
+      </>
+    ),
+  },
+  {
+    id: "spcx-stock-arbitrum-transition",
+    isActive: true,
+    startDate: "12 Jun 2026, 12:00",
+    endDate: "19 Jun 2026, 12:00",
+    chains: [ARBITRUM],
+    title: "SpaceX pre-IPO market is now a 24/7 stock perp on Arbitrum",
+    bodyText: (
+      <>
+        SpaceX pre-IPO market transitioned into a stock market. <Link to="/trade">Trade SPCX</Link> under TradFi &gt;
+        Stocks. Existing positions transitioned automatically.
       </>
     ),
   },
