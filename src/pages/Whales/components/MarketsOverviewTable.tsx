@@ -1,17 +1,22 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useMarketsConcentration } from "domain/synthetics/whales/marketConcentration";
 import { useMarketVolumes } from "domain/synthetics/whales/marketVolumes";
 import type { WhaleWindow } from "domain/synthetics/whales/period";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
+import { formatPercentage, formatUsd } from "lib/numbers";
 
+import AddressView from "components/AddressView/AddressView";
 import SearchInput from "components/SearchInput/SearchInput";
+import { Sorter } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
 import { buildWhaleMarketUrl } from "../whaleRoutes";
-import { MarketOverviewWhaleCells } from "./MarketOverviewWhaleCells";
+import { sortByBigint, useWhaleSort } from "./useWhaleSort";
+
+type OverviewField = "volume" | "oiShare" | "top3";
 
 export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
   const { chainId } = useChainId();
@@ -19,16 +24,27 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
   const marketsInfoData = useMarketsInfoData();
   const { data: volumes, isLoading } = useMarketVolumes(chainId, window);
   const [search, setSearch] = useState("");
+  const { orderBy, direction, sorterProps } = useWhaleSort<OverviewField>("volume");
 
-  const rows = Object.entries(volumes ?? {})
-    .map(([market, volume]) => ({
+  const marketAddresses = useMemo(() => Object.keys(volumes ?? {}).sort(), [volumes]);
+  const { data: concentration } = useMarketsConcentration(chainId, marketAddresses);
+
+  const rows = marketAddresses.map((market) => {
+    const conc = concentration?.[market];
+    return {
       market,
-      volume,
       name: marketsInfoData?.[market]?.name ?? market,
-    }))
-    .sort((a, b) => (a.volume < b.volume ? 1 : a.volume > b.volume ? -1 : 0));
+      volume: volumes?.[market] ?? 0n,
+      topHolder: conc?.topHolder,
+      oiShareBps: conc?.topShareBps ?? 0n,
+      top3ShareBps: conc?.top3ShareBps ?? 0n,
+    };
+  });
 
-  const filteredRows = search ? rows.filter((r) => r.name.toLowerCase().includes(search.toLowerCase())) : rows;
+  const filtered = search ? rows.filter((r) => r.name.toLowerCase().includes(search.toLowerCase())) : rows;
+  const sorted = sortByBigint(filtered, direction, (r) =>
+    orderBy === "volume" ? r.volume : orderBy === "oiShare" ? r.oiShareBps : r.top3ShareBps
+  );
 
   return (
     <>
@@ -37,10 +53,16 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
         <thead>
           <TableTheadTr>
             <TableTh>Market</TableTh>
-            <TableTh>Total volume</TableTh>
+            <TableTh>
+              <Sorter {...sorterProps("volume")}>Total volume</Sorter>
+            </TableTh>
             <TableTh>Top holder</TableTh>
-            <TableTh>OI share</TableTh>
-            <TableTh>Top-3 OI</TableTh>
+            <TableTh>
+              <Sorter {...sorterProps("oiShare")}>OI share</Sorter>
+            </TableTh>
+            <TableTh>
+              <Sorter {...sorterProps("top3")}>Top-3 OI</Sorter>
+            </TableTh>
           </TableTheadTr>
         </thead>
         <tbody>
@@ -48,12 +70,12 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
             <tr>
               <TableTd colSpan={5}>Loading…</TableTd>
             </tr>
-          ) : filteredRows.length === 0 ? (
+          ) : sorted.length === 0 ? (
             <tr>
               <TableTd colSpan={5}>No markets</TableTd>
             </tr>
           ) : (
-            filteredRows.map((r) => (
+            sorted.map((r) => (
               <TableTrActionable
                 key={r.market}
                 className="cursor-pointer"
@@ -61,7 +83,15 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
               >
                 <TableTdActionable>{r.name}</TableTdActionable>
                 <TableTdActionable>{formatUsd(r.volume)}</TableTdActionable>
-                <MarketOverviewWhaleCells market={r.market} />
+                <TableTdActionable>
+                  {r.topHolder ? <AddressView address={r.topHolder} size={20} noLink /> : "—"}
+                </TableTdActionable>
+                <TableTdActionable>
+                  {r.topHolder ? formatPercentage(r.oiShareBps, { bps: true, displayDecimals: 1 }) : "—"}
+                </TableTdActionable>
+                <TableTdActionable>
+                  {r.topHolder ? formatPercentage(r.top3ShareBps, { bps: true, displayDecimals: 1 }) : "—"}
+                </TableTdActionable>
               </TableTrActionable>
             ))
           )}

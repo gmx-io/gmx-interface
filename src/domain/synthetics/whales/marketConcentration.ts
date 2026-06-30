@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { ApolloClient, gql } from "@apollo/client";
 import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/indexers/clients";
@@ -42,28 +42,46 @@ export function aggregateHoldersBySize(rows: { account: string; sizeInUsd: strin
     .sort((a, b) => (a.size < b.size ? 1 : a.size > b.size ? -1 : 0));
 }
 
-export function useMarketConcentration(
+export async function fetchMarketConcentration(
+  client: ApolloClient<unknown>,
+  market: string
+): Promise<MarketConcentration> {
+  const res = await client.query<{ positions: { account: string; sizeInUsd: string }[] }>({
+    query: TOP_HOLDERS_BY_SIZE,
+    variables: { market, limit: HOLDERS_LIMIT },
+    fetchPolicy: "no-cache",
+  });
+  const holders = aggregateHoldersBySize(res.data?.positions ?? []);
+  const total = holders.reduce((acc, h) => acc + h.size, 0n);
+  const top3 = holders.slice(0, 3).reduce((acc, h) => acc + h.size, 0n);
+  return {
+    topHolder: holders[0]?.account,
+    topShareBps: computeShareBps(holders[0]?.size ?? 0n, total),
+    top3ShareBps: computeShareBps(top3, total),
+  };
+}
+
+// Concentration for many markets at once (one query per market, run
+// concurrently) so the overview can rank markets by concentration.
+export function useMarketsConcentration(
   chainId: number,
-  market: string | undefined
-): { data: MarketConcentration | undefined; isLoading: boolean } {
-  const { data, isLoading } = useSWR<MarketConcentration | undefined>(
-    market ? ["whaleMarketConcentration", chainId, market] : null,
+  markets: string[]
+): { data: Record<string, MarketConcentration> | undefined; isLoading: boolean } {
+  const { data, isLoading } = useSWR<Record<string, MarketConcentration>>(
+    markets.length ? ["whaleMarketsConcentration", chainId, markets.join(",")] : null,
     async () => {
       const client = getSubsquidGraphClient(chainId);
-      if (!client || !market) return undefined;
-      const res = await client.query<{ positions: { account: string; sizeInUsd: string }[] }>({
-        query: TOP_HOLDERS_BY_SIZE,
-        variables: { market, limit: HOLDERS_LIMIT },
-        fetchPolicy: "no-cache",
-      });
-      const holders = aggregateHoldersBySize(res.data?.positions ?? []);
-      const total = holders.reduce((acc, h) => acc + h.size, 0n);
-      const top3 = holders.slice(0, 3).reduce((acc, h) => acc + h.size, 0n);
-      return {
-        topHolder: holders[0]?.account,
-        topShareBps: computeShareBps(holders[0]?.size ?? 0n, total),
-        top3ShareBps: computeShareBps(top3, total),
-      };
+      if (!client) return {};
+      const entries = await Promise.all(
+        markets.map(async (market) => {
+          try {
+            return [market, await fetchMarketConcentration(client, market)] as const;
+          } catch {
+            return [market, undefined] as const;
+          }
+        })
+      );
+      return Object.fromEntries(entries.filter((e): e is readonly [string, MarketConcentration] => e[1] !== undefined));
     },
     { refreshInterval: 300_000 }
   );

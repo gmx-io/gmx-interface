@@ -8,12 +8,16 @@ import { useChainId } from "lib/chains";
 import { formatPercentage, formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
+import { Sorter } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
 import { MarketHoldersPie } from "./MarketHoldersPie";
+import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
 const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
+
+type DetailField = "size" | "oiShare" | "volume" | "volShare";
 
 export function MarketWhalesTable({ market, window }: { market: string; window: WhaleWindow }) {
   const { chainId } = useChainId();
@@ -21,6 +25,12 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
   const { rows, totalOi, isLoading } = useMarketHolders(chainId, market, window, 25);
   const { data: volumes } = useMarketVolumes(chainId, window);
   const marketVolume = volumes?.[market];
+  const { orderBy, direction, sorterProps } = useWhaleSort<DetailField>("size");
+
+  const decorated = rows.map((r) => ({ ...r, volShareBps: computeShareBps(r.volume, marketVolume ?? 0n) }));
+  const sorted = sortByBigint(decorated, direction, (r) =>
+    orderBy === "size" ? r.size : orderBy === "oiShare" ? r.oiShareBps : orderBy === "volume" ? r.volume : r.volShareBps
+  );
 
   return (
     <div className="flex flex-col gap-16">
@@ -54,10 +64,18 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
           <TableTheadTr>
             <TableTh>#</TableTh>
             <TableTh>Address</TableTh>
-            <TableTh>Open size</TableTh>
-            <TableTh>OI share</TableTh>
-            <TableTh>Traded volume</TableTh>
-            <TableTh>Vol share</TableTh>
+            <TableTh>
+              <Sorter {...sorterProps("size")}>Open size</Sorter>
+            </TableTh>
+            <TableTh>
+              <Sorter {...sorterProps("oiShare")}>OI share</Sorter>
+            </TableTh>
+            <TableTh>
+              <Sorter {...sorterProps("volume")}>Traded volume</Sorter>
+            </TableTh>
+            <TableTh>
+              <Sorter {...sorterProps("volShare")}>Vol share</Sorter>
+            </TableTh>
           </TableTheadTr>
         </thead>
         <tbody>
@@ -66,7 +84,7 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
               <TableTd colSpan={6}>Loading…</TableTd>
             </tr>
           ) : (
-            rows.map((r, i) => (
+            sorted.map((r, i) => (
               <TableTrActionable
                 key={r.account}
                 className="cursor-pointer"
@@ -82,7 +100,7 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
                 </TableTdActionable>
                 <TableTdActionable>{formatUsd(r.volume)}</TableTdActionable>
                 <TableTdActionable>
-                  {formatPercentage(computeShareBps(r.volume, marketVolume ?? 0n), { bps: true, displayDecimals: 1 })}
+                  {formatPercentage(r.volShareBps, { bps: true, displayDecimals: 1 })}
                 </TableTdActionable>
               </TableTrActionable>
             ))

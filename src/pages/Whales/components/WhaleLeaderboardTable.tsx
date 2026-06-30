@@ -8,8 +8,10 @@ import { formatUsd } from "lib/numbers";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import AddressView from "components/AddressView/AddressView";
+import { Sorter } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
+import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
 const TOP_N = 100;
@@ -18,6 +20,7 @@ export function WhaleLeaderboardTable({ window }: { window: WhaleWindow }) {
   const { chainId } = useChainId();
   const history = useHistory();
   const from = windowToFromTimestamp(window, Math.floor(Date.now() / 1000)) ?? 0;
+  const { direction, sorterProps } = useWhaleSort<"volume">("volume");
 
   const { data, isLoading } = useLeaderboardData(true, chainId, {
     account: undefined,
@@ -27,7 +30,8 @@ export function WhaleLeaderboardTable({ window }: { window: WhaleWindow }) {
     leaderboardDataType: "accounts",
   });
 
-  const rows = rankByVolumeDesc(data?.accounts ?? []).slice(0, TOP_N);
+  const top = rankByVolumeDesc(data?.accounts ?? []).slice(0, TOP_N);
+  const rows = sortByBigint(top, direction, (r) => r.volume);
 
   return (
     <Table>
@@ -35,7 +39,9 @@ export function WhaleLeaderboardTable({ window }: { window: WhaleWindow }) {
         <TableTheadTr>
           <TableTh>#</TableTh>
           <TableTh>Address</TableTh>
-          <TableTh>Total volume</TableTh>
+          <TableTh>
+            <Sorter {...sorterProps("volume")}>Total volume</Sorter>
+          </TableTh>
           <TableTh>Dashboard</TableTh>
         </TableTheadTr>
       </thead>
