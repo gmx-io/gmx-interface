@@ -21,7 +21,13 @@ describe("windowToFromTimestamp", () => {
     expect(from).toBe(now - 30 * 86400 - ((now - 30 * 86400) % 86400));
   });
 
-  it("exposes the three windows in order", () => {
-    expect(WHALE_WINDOWS).toEqual(["total", "30d", "7d"]);
+  it("returns a midnight-aligned start ~90 days back for 90d", () => {
+    const from = windowToFromTimestamp("90d", now)!;
+    expect(from % 86400).toBe(0);
+    expect(from).toBe(now - 90 * 86400 - ((now - 90 * 86400) % 86400));
+  });
+
+  it("exposes the windows in order", () => {
+    expect(WHALE_WINDOWS).toEqual(["total", "90d", "30d", "7d"]);
   });
 });

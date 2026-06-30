@@ -1,18 +1,17 @@
 import { t } from "@lingui/macro";
 import { useState } from "react";
 
-import type { WhaleWindow } from "domain/synthetics/whales/period";
-
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 
 import { MarketsOverviewTable } from "./components/MarketsOverviewTable";
+import { useWhaleWindow } from "./components/useWhaleWindow";
 import { WhaleLeaderboardTable } from "./components/WhaleLeaderboardTable";
 import { WhalesModeToggle, type WhalesMode } from "./components/WhalesModeToggle";
 import { WhaleWindowTabs } from "./components/WhaleWindowTabs";
 
 export default function WhalesPage() {
   const [mode, setMode] = useState<WhalesMode>("markets");
-  const [window, setWindow] = useState<WhaleWindow>("30d");
+  const [window, setWindow] = useWhaleWindow();
 
   return (
     <AppPageLayout title={t`Whale Monitor`}>

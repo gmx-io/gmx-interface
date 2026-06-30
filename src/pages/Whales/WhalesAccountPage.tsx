@@ -1,10 +1,8 @@
 import { t } from "@lingui/macro";
 import { Trans } from "@lingui/macro";
-import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { useAccountMarketBreakdown } from "domain/synthetics/whales/accountMarkets";
-import type { WhaleWindow } from "domain/synthetics/whales/period";
 import { useChainId } from "lib/chains";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -13,13 +11,14 @@ import { Breadcrumbs, BreadcrumbItem } from "components/Breadcrumbs/Breadcrumbs"
 
 import { AccountMarketsPie } from "./components/AccountMarketsPie";
 import { AccountMarketsTable } from "./components/AccountMarketsTable";
+import { useWhaleWindow } from "./components/useWhaleWindow";
 import { WhaleWindowTabs } from "./components/WhaleWindowTabs";
 import { WHALES_PATH } from "./whaleRoutes";
 
 export default function WhalesAccountPage() {
   const { account } = useParams<{ account: string }>();
   const { chainId } = useChainId();
-  const [window, setWindow] = useState<WhaleWindow>("30d");
+  const [window, setWindow] = useWhaleWindow();
   const { rows } = useAccountMarketBreakdown(chainId, account, window);
 
   return (

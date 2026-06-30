@@ -1,8 +1,9 @@
-export type WhaleWindow = "total" | "30d" | "7d";
+export type WhaleWindow = "total" | "90d" | "30d" | "7d";
 
-export const WHALE_WINDOWS: WhaleWindow[] = ["total", "30d", "7d"];
+export const WHALE_WINDOWS: WhaleWindow[] = ["total", "90d", "30d", "7d"];
 
 const WINDOW_DAYS: Record<Exclude<WhaleWindow, "total">, number> = {
+  "90d": 90,
   "30d": 30,
   "7d": 7,
 };

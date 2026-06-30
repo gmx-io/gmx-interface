@@ -1,21 +1,20 @@
 import { t } from "@lingui/macro";
 import { Trans } from "@lingui/macro";
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import type { WhaleWindow } from "domain/synthetics/whales/period";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { Breadcrumbs, BreadcrumbItem } from "components/Breadcrumbs/Breadcrumbs";
 
 import { MarketWhalesTable } from "./components/MarketWhalesTable";
+import { useWhaleWindow } from "./components/useWhaleWindow";
 import { WhaleWindowTabs } from "./components/WhaleWindowTabs";
 import { WHALES_PATH } from "./whaleRoutes";
 
 export default function WhalesMarketPage() {
   const { market } = useParams<{ market: string }>();
-  const [window, setWindow] = useState<WhaleWindow>("30d");
+  const [window, setWindow] = useWhaleWindow();
   const marketsInfoData = useMarketsInfoData();
   const marketName = (market && marketsInfoData?.[market]?.name) || market;
 
