@@ -5,6 +5,7 @@ import cx from "classnames";
 import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
+import { getCappedTpSlLossUsd } from "domain/tpsl/utils";
 import {
   calculateDisplayDecimals,
   expandDecimals,
@@ -43,6 +44,7 @@ type Props = {
   onPriceChange: (value: string) => void;
   positionData: PositionData;
   priceError?: string;
+  priceWarning?: string;
   variant?: "compact" | "full";
   defaultDisplayMode?: TPSLDisplayMode;
   estimatedPnl?: {
@@ -57,6 +59,7 @@ export function TPSLInputRow({
   onPriceChange,
   positionData,
   priceError,
+  priceWarning,
   variant = "compact",
   defaultDisplayMode = "percentage",
   estimatedPnl: estimatedPnlProp,
@@ -224,17 +227,37 @@ export function TPSLInputRow({
       if (mode === "percentage") {
         const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
         if (pnlCollateralUsd > 0n) {
-          const pnlUsd = getPnlUsdForPrice(currentPriceValue);
+          const pnlUsd = getCappedTpSlLossUsd({
+            pnlUsd: getPnlUsdForPrice(currentPriceValue),
+            collateralUsd: pnlCollateralUsd,
+            triggerPrice: currentPriceValue,
+            liquidationPrice,
+            isLong,
+          });
           const percentage = bigMath.mulDiv(bigMath.abs(pnlUsd), 10000n, pnlCollateralUsd);
           return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
         }
       } else {
-        const pnlUsd = getPnlUsdForPrice(currentPriceValue);
+        const pnlUsd = getCappedTpSlLossUsd({
+          pnlUsd: getPnlUsdForPrice(currentPriceValue),
+          collateralUsd: getCollateralUsdForPnl(currentPriceValue),
+          triggerPrice: currentPriceValue,
+          liquidationPrice,
+          isLong,
+        });
         return String(removeTrailingZeros(formatAmount(bigMath.abs(pnlUsd), USD_DECIMALS, 2)));
       }
       return "";
     },
-    [currentPriceValue, getCollateralUsdForPnl, getPnlUsdForPrice, sizeInTokens, pnlReferencePrice]
+    [
+      currentPriceValue,
+      getCollateralUsdForPnl,
+      getPnlUsdForPrice,
+      liquidationPrice,
+      isLong,
+      sizeInTokens,
+      pnlReferencePrice,
+    ]
   );
 
   const calculateAndUpdatePrice = useCallback(
@@ -340,7 +363,26 @@ export function TPSLInputRow({
     }
   };
 
-  const estimatedPnl = estimatedPnlProp ?? derivedEstimatedPnl;
+  const estimatedPnl = useMemo(() => {
+    const base = estimatedPnlProp ?? derivedEstimatedPnl;
+    if (!base) return base;
+
+    const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
+    const cappedPnlUsd = getCappedTpSlLossUsd({
+      pnlUsd: base.pnlUsd,
+      collateralUsd: pnlCollateralUsd,
+      triggerPrice: currentPriceValue,
+      liquidationPrice,
+      isLong,
+    });
+    if (cappedPnlUsd === base.pnlUsd) return base;
+
+    return {
+      pnlUsd: cappedPnlUsd,
+      pnlPercentage:
+        pnlCollateralUsd > 0n ? bigMath.mulDiv(cappedPnlUsd, 10000n, pnlCollateralUsd) : base.pnlPercentage,
+    };
+  }, [estimatedPnlProp, derivedEstimatedPnl, getCollateralUsdForPnl, currentPriceValue, liquidationPrice, isLong]);
   const estimatedPnlDisplay = estimatedPnl ? formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage) : "-";
 
   const formattedMarkPrice = useMemo(() => {
@@ -379,14 +421,18 @@ export function TPSLInputRow({
             className="flex grow"
             handleClassName="grow"
             variant="none"
-            disabled={!priceError}
-            content={priceError}
+            disabled={!priceError && !priceWarning}
+            content={priceError ?? priceWarning}
           >
             <div
               className={cx(
                 "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
-                priceError ? "border-red-500" : "border-slate-800",
-                "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
+                priceError
+                  ? "border-red-500"
+                  : priceWarning
+                    ? "border-yellow-300"
+                    : "border-slate-800 focus-within:border-blue-300 active:border-blue-300",
+                "hover:bg-fill-surfaceElevatedHover"
               )}
               onClick={handleBoxClick(priceInputRef)}
             >
@@ -447,14 +493,18 @@ export function TPSLInputRow({
           className="flex-1"
           handleClassName="w-full"
           variant="none"
-          disabled={!priceError}
-          content={priceError}
+          disabled={!priceError && !priceWarning}
+          content={priceError ?? priceWarning}
         >
           <div
             className={cx(
               "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6",
-              priceError ? "border-red-500" : "border-slate-800",
-              "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              priceError
+                ? "border-red-500"
+                : priceWarning
+                  ? "border-yellow-300"
+                  : "border-slate-800 focus-within:border-blue-300",
+              "hover:bg-fill-surfaceElevatedHover"
             )}
             onClick={handleBoxClick(priceInputRef)}
           >

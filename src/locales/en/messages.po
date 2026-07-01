@@ -3473,6 +3473,10 @@ msgstr "Exponent (positive)"
 msgid "Deposit in progress..."
 msgstr "Deposit in progress..."
 
+#: src/domain/tpsl/utils.ts
+msgid "This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute."
+msgstr "This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute."
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -7703,7 +7707,6 @@ msgstr "Single-sided liquidity vaults with active hedging and rebalancing to min
 msgid "GMX V2 actions"
 msgstr "GMX V2 actions"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr "Set trigger price below liquidation price"
@@ -10826,7 +10829,6 @@ msgstr "Funds bridging to..."
 msgid "Network fee"
 msgstr "Network fee"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"
 msgstr "Set trigger price above liquidation price"

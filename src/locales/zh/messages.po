@@ -3473,6 +3473,10 @@ msgstr "指数（正）"
 msgid "Deposit in progress..."
 msgstr "存入处理中..."
 
+#: src/domain/tpsl/utils.ts
+msgid "This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute."
+msgstr "此触发价格超过当前清算价格。在此 TP/SL 订单执行之前，您的仓位可能会被清算。"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -7703,7 +7707,6 @@ msgstr "单边流动性金库，通过主动对冲和再平衡以最小化无常
 msgid "GMX V2 actions"
 msgstr "GMX V2 操作"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr ""
@@ -10826,7 +10829,6 @@ msgstr "资金正在跨链转移至..."
 msgid "Network fee"
 msgstr "网络费用"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"
 msgstr ""

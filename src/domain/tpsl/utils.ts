@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+
 import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders";
 import { isTriggerDecreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -45,6 +47,77 @@ export function getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd: bigint, pos
 
 export function getPositionCloseSizeDeltaUsdForPayload(sizeDeltaUsd: bigint, isFullClose: boolean) {
   return isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : sizeDeltaUsd;
+}
+
+export function isTriggerBeyondLiquidation({
+  triggerPrice,
+  liquidationPrice,
+  isLong,
+}: {
+  triggerPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  isLong: boolean;
+}): boolean {
+  if (triggerPrice === undefined || triggerPrice <= 0n) {
+    return false;
+  }
+
+  if (liquidationPrice === undefined || liquidationPrice <= 0n || liquidationPrice === MaxUint256) {
+    return false;
+  }
+
+  return isLong ? triggerPrice <= liquidationPrice : triggerPrice >= liquidationPrice;
+}
+
+export function getTpSlLiqPriceWarning({
+  triggerPrice,
+  liquidationPrice,
+  isLong,
+}: {
+  triggerPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  isLong: boolean;
+}): string | undefined {
+  if (!isTriggerBeyondLiquidation({ triggerPrice, liquidationPrice, isLong })) {
+    return undefined;
+  }
+
+  return t`This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute.`;
+}
+
+// You can't lose more than your collateral, so floor a displayed loss at -collateral (-100%).
+export function capLossAtCollateral(pnlUsd: bigint, collateralUsd: bigint | undefined): bigint {
+  if (collateralUsd === undefined || collateralUsd <= 0n) {
+    return pnlUsd;
+  }
+
+  return pnlUsd < -collateralUsd ? -collateralUsd : pnlUsd;
+}
+
+// Beyond the liquidation price you'll be liquidated and lose your whole margin (pending fees consume the
+// rest of it), so show -collateral; within range it's the price PnL, still bounded by your collateral.
+export function getCappedTpSlLossUsd({
+  pnlUsd,
+  collateralUsd,
+  triggerPrice,
+  liquidationPrice,
+  isLong,
+}: {
+  pnlUsd: bigint;
+  collateralUsd: bigint | undefined;
+  triggerPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  isLong: boolean;
+}): bigint {
+  if (
+    collateralUsd !== undefined &&
+    collateralUsd > 0n &&
+    isTriggerBeyondLiquidation({ triggerPrice, liquidationPrice, isLong })
+  ) {
+    return -collateralUsd;
+  }
+
+  return capLossAtCollateral(pnlUsd, collateralUsd);
 }
 
 export function calculateTotalSizeUsd(p: {

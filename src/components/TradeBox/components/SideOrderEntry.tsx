@@ -28,6 +28,7 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
   const { isLong } = useSelector(selectTradeboxTradeFlags);
 
   const priceError = entry.price?.error ?? undefined;
+  const priceWarning = entry.price?.warning ?? undefined;
 
   const collateralUsd = useMemo(() => {
     const collateralAmount = mockPosition?.collateralAmount;
@@ -88,6 +89,7 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
       onPriceChange={handlePriceChange}
       positionData={positionData}
       priceError={priceError}
+      priceWarning={priceWarning}
       variant="compact"
       estimatedPnl={estimatedPnl}
     />

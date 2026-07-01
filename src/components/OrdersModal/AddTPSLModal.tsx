@@ -46,6 +46,7 @@ import {
   formatLiquidationPrice,
   getIsPositionInfoLoaded,
 } from "domain/synthetics/positions";
+import { SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
 import {
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
@@ -62,7 +63,11 @@ import {
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
-import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, isFullClosePositionOrder } from "domain/tpsl/utils";
+import {
+  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  isFullClosePositionOrder,
+  isTriggerBeyondLiquidation,
+} from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
@@ -81,7 +86,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
-import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
@@ -518,6 +522,27 @@ export function AddTPSLModal({
   const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? activePreview.triggerPrice;
   const hasPreviewData = Boolean(tpDecreaseAmounts || slDecreaseAmounts);
 
+  // Beyond the liquidation price you'll be liquidated and lose your whole margin, so show -100%.
+  const activeIsBeyondLiquidation = isTriggerBeyondLiquidation({
+    triggerPrice: activeTriggerPrice,
+    liquidationPrice: position.liquidationPrice,
+    isLong,
+  });
+  const activeEstimatedPnlPercentage = activeDecreaseAmounts
+    ? activeIsBeyondLiquidation
+      ? -BASIS_POINTS_DIVISOR_BIGINT
+      : activeDecreaseAmounts.estimatedPnlPercentage
+    : undefined;
+  const activeEstimatedPnl = activeDecreaseAmounts
+    ? activeIsBeyondLiquidation && activeDecreaseAmounts.estimatedPnlPercentage !== 0n
+      ? bigMath.mulDiv(
+          activeDecreaseAmounts.estimatedPnl,
+          -BASIS_POINTS_DIVISOR_BIGINT,
+          activeDecreaseAmounts.estimatedPnlPercentage
+        )
+      : activeDecreaseAmounts.estimatedPnl
+    : undefined;
+
   const netPriceImpactAndFeesDisplay = useMemo(() => {
     if (!activeFees) {
       return {
@@ -559,7 +584,7 @@ export function AddTPSLModal({
     [closeSize]
   );
 
-  const tpPriceError = useMemo(() => {
+  const tpPriceField = useMemo(() => {
     if (markPrice === undefined) return undefined;
 
     const entry: SidecarSlTpOrderEntry = {
@@ -574,19 +599,19 @@ export function AddTPSLModal({
       increaseAmounts: undefined,
     };
 
-    return (
-      handleEntryError(entry, "tp", {
-        liqPrice: position.liquidationPrice,
-        entryPrice: position.entryPrice,
-        markPrice,
-        isLong,
-        isLimit: false,
-        isExistingPosition: true,
-      }).price.error ?? undefined
-    );
+    return handleEntryError(entry, "tp", {
+      liqPrice: position.liquidationPrice,
+      entryPrice: position.entryPrice,
+      markPrice,
+      isLong,
+      isLimit: false,
+      isExistingPosition: true,
+    }).price;
   }, [markPrice, tpPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
+  const tpPriceError = tpPriceField?.error ?? undefined;
+  const tpPriceWarning = tpPriceField?.warning ?? undefined;
 
-  const slPriceError = useMemo(() => {
+  const slPriceField = useMemo(() => {
     if (markPrice === undefined) return undefined;
 
     const entry: SidecarSlTpOrderEntry = {
@@ -601,17 +626,17 @@ export function AddTPSLModal({
       increaseAmounts: undefined,
     };
 
-    return (
-      handleEntryError(entry, "sl", {
-        liqPrice: position.liquidationPrice,
-        entryPrice: position.entryPrice,
-        markPrice,
-        isLong,
-        isLimit: false,
-        isExistingPosition: true,
-      }).price.error ?? undefined
-    );
+    return handleEntryError(entry, "sl", {
+      liqPrice: position.liquidationPrice,
+      entryPrice: position.entryPrice,
+      markPrice,
+      isLong,
+      isLimit: false,
+      isExistingPosition: true,
+    }).price;
   }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
+  const slPriceError = slPriceField?.error ?? undefined;
+  const slPriceWarning = slPriceField?.warning ?? undefined;
 
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
 
@@ -956,7 +981,7 @@ export function AddTPSLModal({
       withMobileBottomPosition
       contentPadding={false}
     >
-      <div className="flex flex-col gap-16 px-20 py-16">
+      <div className="flex max-w-[464px] flex-col gap-16 px-20 py-16 max-md:max-w-none">
         <div className="flex flex-col gap-4">
           <TPSLInputRow
             type="takeProfit"
@@ -964,6 +989,7 @@ export function AddTPSLModal({
             onPriceChange={handleTpPriceChange}
             positionData={tpPositionData}
             priceError={tpPriceError}
+            priceWarning={tpPriceWarning}
             variant="full"
             defaultDisplayMode="percentage"
             estimatedPnl={tpEstimatedPnl}
@@ -977,6 +1003,7 @@ export function AddTPSLModal({
             onPriceChange={handleSlPriceChange}
             positionData={slPositionData}
             priceError={slPriceError}
+            priceWarning={slPriceWarning}
             variant="full"
             defaultDisplayMode="percentage"
             estimatedPnl={slEstimatedPnl}
@@ -1087,10 +1114,7 @@ export function AddTPSLModal({
                   label={<Trans>PnL</Trans>}
                   value={
                     <ValueTransition
-                      from={formatDeltaUsd(
-                        activeDecreaseAmounts?.estimatedPnl,
-                        activeDecreaseAmounts?.estimatedPnlPercentage
-                      )}
+                      from={formatDeltaUsd(activeEstimatedPnl, activeEstimatedPnlPercentage)}
                       to={formatDeltaUsd(
                         activeNextPositionValues?.nextPnl,
                         activeNextPositionValues?.nextPnlPercentage
