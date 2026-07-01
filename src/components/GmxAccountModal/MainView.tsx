@@ -4,10 +4,12 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
+import { isAddressEqual } from "viem";
 
 import { BOTANIX, getChainName, getExplorerUrl } from "config/chains";
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY } from "config/localStorage";
+import { getAccountModalMode } from "config/multichain";
 import {
   useGmxAccountAvailableAssetsFilter,
   useGmxAccountModalOpen,
@@ -57,7 +59,6 @@ import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
-import { getAccountModalMode } from "./getAccountModalMode";
 import { useAvailableToTradeAssetSettlementChain } from "./hooks";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
 
@@ -102,9 +103,7 @@ function WalletBlock({ account }: { account: string }) {
   const { exportWallet } = useExportWallet();
 
   const embeddedWallet = getEmbeddedConnectedWallet(wallets);
-  const canExport = Boolean(
-    embeddedWallet && account && embeddedWallet.address.toLowerCase() === account.toLowerCase()
-  );
+  const canExport = Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
 
   const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const canSend = !isNonEoaAccountOnAnyChain;

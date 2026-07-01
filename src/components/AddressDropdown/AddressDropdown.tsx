@@ -1,12 +1,10 @@
 import { useMemo } from "react";
 
-import { isSettlementChain, MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
+import { isSettlementChain, isValidVisualSettlementChain, MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import { useEmptyAvalancheGmxAccount } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainId } from "lib/chains";
 import { EMPTY_OBJECT } from "lib/objects";
 import type { SettlementChainId } from "sdk/configs/chains";
-
-import { isWalletOnlyChain } from "components/GmxAccountModal/getAccountModalMode";
 
 import { AddressDropdownWithMultichain } from "./AddressDropdownWithMultichain";
 import { AddressDropdownWithoutMultichain } from "./AddressDropdownWithoutMultichain";
@@ -29,7 +27,7 @@ export function AddressDropdown({ account }: Props) {
   );
 
   const showAccountModal =
-    isWalletOnlyChain(chainId) ||
+    !isValidVisualSettlementChain(chainId) ||
     (isSettlementChain(chainId) && hasRelatedSourceChains && !isEmptyAvalancheGmxAccountOrNotConnected);
 
   if (!showAccountModal) {

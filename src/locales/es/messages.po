@@ -468,7 +468,7 @@ msgstr "Buscar en mercados perpetuos"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr ""
+msgstr "¡Dirección copiada!"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
@@ -924,7 +924,7 @@ msgstr "Los precios son volátiles. <0>Aumente el deslizamiento permitido</0>"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr ""
+msgstr "¡Solo envíe <0>activos compatibles con {chainName}</0> a esta dirección!"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -2481,7 +2481,7 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Deposit to Wallet"
-msgstr ""
+msgstr "Depositar en Monedero"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -3779,7 +3779,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
-msgstr ""
+msgstr "Ingresa un importe"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3877,7 +3877,7 @@ msgstr "Establecer impacto en el precio aceptable"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 volume"
@@ -3906,7 +3906,7 @@ msgstr "Stop-Loss Decrease"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Wallet balance"
-msgstr ""
+msgstr "Saldo del monedero"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4062,7 +4062,7 @@ msgstr "Unstakear completado"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
-msgstr ""
+msgstr "Exportar monedero"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -4300,7 +4300,7 @@ msgstr "Impacto de intercambio realizado"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
-msgstr ""
+msgstr "Ingresa la dirección del destinatario"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -4381,7 +4381,7 @@ msgstr "Dirección"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet. GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
-msgstr ""
+msgstr "Puede abrir posiciones aisladas en GMX utilizando fondos directamente desde su monedero conectado. GMX Account no está disponible en {chainName}. Para utilizar GMX Account, cambie a Arbitrum."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
@@ -4389,7 +4389,7 @@ msgstr "Factor base de préstamo largo"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
-msgstr ""
+msgstr "Dirección del destinatario"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "VOL."
@@ -5429,7 +5429,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
-msgstr ""
+msgstr "Análisis de PnL"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -6838,7 +6838,7 @@ msgstr "Capital utilizado"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "{chainName} address"
-msgstr ""
+msgstr "Dirección de {chainName}"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Current endpoints ({0})"
@@ -9143,7 +9143,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Connected to {sourceChainName}. Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
-msgstr ""
+msgstr "Conectado a {sourceChainName}. Los fondos del monedero en esta red pueden depositarse en GMX Account para operar en {settlementChainName}. Para operar directamente con el saldo del monedero de {settlementChainName}, <0>cambie a {settlementChainName}</0>."
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -9324,7 +9324,7 @@ msgstr "El importe está por debajo del límite de depósito. Pruebe con un impo
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
-msgstr ""
+msgstr "Saldo de GMX Account"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
@@ -9882,7 +9882,7 @@ msgstr "El puente de entrada ha fallado"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Invalid recipient address"
-msgstr ""
+msgstr "Dirección del destinatario no válida"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -10206,7 +10206,7 @@ msgstr "La liquidez solo está disponible en {chainNames} o {lastChainName}. Cam
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
-msgstr ""
+msgstr "Historial de transferencias"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
@@ -10524,7 +10524,7 @@ msgstr "Índices"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using your GMX Account. Wallet funds on {sourceChainName} are not used directly for GMX trades. GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
-msgstr ""
+msgstr "Puede abrir posiciones aisladas en GMX utilizando su GMX Account. Los fondos del monedero en {sourceChainName} no se utilizan directamente para las operaciones de GMX. GMX Account utiliza un saldo de trading independiente vinculado a su monedero. Para operar, deposite fondos desde su monedero a su GMX Account. Todas las posiciones pertenecen al mismo monedero conectado y se muestran juntas, ya sea que se hayan abierto con fondos del monedero de {settlementChainName} o con fondos de GMX Account."
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -10908,7 +10908,7 @@ msgstr "Código de referido creado"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account. Wallet uses funds directly from your connected wallet. GMX Account uses a separate trading balance linked to that wallet. To use it, fund it with a deposit to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
-msgstr ""
+msgstr "Puede abrir posiciones aisladas en GMX utilizando fondos de su monedero o de su GMX Account. Monedero utiliza fondos directamente desde su monedero conectado. GMX Account utiliza un saldo de trading independiente vinculado a ese monedero. Para utilizarla, deposite fondos en su GMX Account. Todas las posiciones pertenecen al mismo monedero conectado y se muestran juntas, ya sea que se hayan abierto con fondos del monedero o con fondos de GMX Account."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

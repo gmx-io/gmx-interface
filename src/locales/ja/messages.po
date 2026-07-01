@@ -468,7 +468,7 @@ msgstr "無期限市場を検索"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr ""
+msgstr "アドレスがコピーされました！"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
@@ -924,7 +924,7 @@ msgstr "価格が不安定です。<0>許容スリッページを増やしてく
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr ""
+msgstr "このアドレスには<0>{chainName}対応の資産</0>のみを送信してください！"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -2481,7 +2481,7 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Deposit to Wallet"
-msgstr ""
+msgstr "ウォレットに入金"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -3779,7 +3779,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
-msgstr ""
+msgstr "額を入力"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3877,7 +3877,7 @@ msgstr "許容可能な価格への影響を設定する"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send"
-msgstr ""
+msgstr "送信"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 volume"
@@ -3906,7 +3906,7 @@ msgstr "ストップロス Decrease"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Wallet balance"
-msgstr ""
+msgstr "ウォレット残高"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4062,7 +4062,7 @@ msgstr "アンステーク完了"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
-msgstr ""
+msgstr "ウォレットをエクスポート"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -4300,7 +4300,7 @@ msgstr "実現スワップインパクト"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
-msgstr ""
+msgstr "受取人アドレスを入力"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -4381,7 +4381,7 @@ msgstr "方向"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet. GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
-msgstr ""
+msgstr "接続されたウォレットの資金を直接使用して、GMXで個別ポジションを開くことができます。GMX Accountは{chainName}では利用できません。GMX Accountを使用するには、Arbitrumに切り替えてください。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
@@ -4389,7 +4389,7 @@ msgstr "ロング基本借入ファクター"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
-msgstr ""
+msgstr "受取人アドレス"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "VOL."
@@ -5429,7 +5429,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
-msgstr ""
+msgstr "PnL 分析"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -6838,7 +6838,7 @@ msgstr "使用資本"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "{chainName} address"
-msgstr ""
+msgstr "{chainName} アドレス"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Current endpoints ({0})"
@@ -9143,7 +9143,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Connected to {sourceChainName}. Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
-msgstr ""
+msgstr "{sourceChainName}に接続されています。このネットワークのウォレット資金は、{settlementChainName}での取引のためにGMX Accountに入金できます。{settlementChainName}のウォレット残高で直接取引するには、<0>{settlementChainName}に切り替えてください</0>。"
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -9324,7 +9324,7 @@ msgstr "金額が入金下限を下回っています。<0>{lowerLimitFormatted}
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
-msgstr ""
+msgstr "GMX Account残高"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
@@ -9882,7 +9882,7 @@ msgstr "ブリッジ入金に失敗しました"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Invalid recipient address"
-msgstr ""
+msgstr "無効な受取人アドレス"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -10206,7 +10206,7 @@ msgstr "流動性は{chainNames}または{lastChainName}でのみ利用可能で
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
-msgstr ""
+msgstr "送金履歴"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
@@ -10524,7 +10524,7 @@ msgstr "指数"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using your GMX Account. Wallet funds on {sourceChainName} are not used directly for GMX trades. GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
-msgstr ""
+msgstr "GMX Accountを使用して、GMXで個別ポジションを開くことができます。{sourceChainName}上のウォレット資金は、GMXでの取引に直接使用されません。GMX Accountは、ウォレットに紐づいた別の取引残高を使用します。取引するには、ウォレットからGMX Accountへ資金を入金してください。すべてのポジションは同じ接続されたウォレットに属し、{settlementChainName}のウォレット資金とGMX Accountの資金のどちらで開かれたものであっても、まとめて表示されます。"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -10908,7 +10908,7 @@ msgstr "リファラルコードが作成されました"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account. Wallet uses funds directly from your connected wallet. GMX Account uses a separate trading balance linked to that wallet. To use it, fund it with a deposit to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
-msgstr ""
+msgstr "ウォレットまたはGMX Accountのいずれかの資金を使用して、GMXで個別ポジションを開くことができます。ウォレットは、接続されたウォレットの資金を直接使用します。GMX Accountは、そのウォレットに紐づいた別の取引残高を使用します。使用するには、GMX Accountへの入金により資金を準備してください。すべてのポジションは同じ接続されたウォレットに属し、ウォレットの資金とGMX Accountの資金のどちらで開かれたものであっても、まとめて表示されます。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

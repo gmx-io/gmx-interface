@@ -68,6 +68,23 @@ export function isValidVisualSourceChain(chainId: number): boolean {
   return isSourceChainForAnySettlementChain(chainId) && chainId !== AVALANCHE;
 }
 
+export type AccountModalMode = "walletAndGmxAccount" | "gmxAccount" | "walletOnly";
+
+export function getAccountModalMode(
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined
+): AccountModalMode {
+  if (!isValidVisualSettlementChain(chainId)) {
+    return "walletOnly";
+  }
+
+  if (srcChainId !== undefined) {
+    return "gmxAccount";
+  }
+
+  return "walletAndGmxAccount";
+}
+
 const TOKEN_GROUPS: MultichainTokenGroups = getMultichainTokenGroups({ includeTestnets: isDevelopment() });
 
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;

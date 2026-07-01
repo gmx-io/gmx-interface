@@ -161,7 +161,6 @@ export function WalletSendView() {
 
   const isRecipientValid = isAddress(recipient);
   const isInputEmpty = amount === undefined || amount <= 0n;
-  const isInsufficientBalance = walletBalance !== undefined && amount !== undefined && amount > walletBalance;
 
   const sendParamsWithoutSlippage: SendParam | undefined = useMemo(() => {
     if (
@@ -245,7 +244,7 @@ export function WalletSendView() {
     skip: isSameChain || isDestinationUnsupported || selectedToken?.isNative || stargateAddress === undefined,
   });
 
-  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+  const { formattedMaxAvailableAmount, showClickMax, maxAvailableAmount } = useMaxAvailableAmount({
     fromToken: selectedToken,
     fromTokenBalance: walletBalance,
     fromTokenAmount: amount,
@@ -254,6 +253,8 @@ export function WalletSendView() {
     gasPaymentTokenBalance: nativeToken?.walletBalance,
     gasPaymentTokenAmount: !isSameChain && selectedToken?.isNative ? quoteSendNativeFee : undefined,
   });
+
+  const isInsufficientBalance = amount !== undefined && amount > maxAvailableAmount;
 
   const handleMaxClick = useCallback(() => {
     setInputValue(formattedMaxAvailableAmount);

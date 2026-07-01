@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import { type KeyboardEvent, type ReactNode } from "react";
 
 import { getChainName } from "config/chains";
+import { getAccountModalMode } from "config/multichain";
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -13,7 +14,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 
-import { getAccountModalMode } from "./getAccountModalMode";
 import { TransferHistoryView } from "./MainView";
 import { TransferDetailsView } from "./TransferDetailsView";
 import { WithdrawalView } from "./WithdrawalView";
