@@ -25,3 +25,17 @@ export function getIsHighExternalSwapFees(externalSwapFees?: FeeItem) {
       bigMath.abs(externalSwapFees.bps) >= HIGH_EXTERNAL_SWAP_FEES_BPS
   );
 }
+
+export function getIsPositionLiquidatableAtPrice(p: {
+  liqPrice: bigint | undefined;
+  price: bigint | undefined;
+  isLong: boolean;
+}): boolean {
+  const { liqPrice, price, isLong } = p;
+
+  if (liqPrice === undefined || price === undefined) {
+    return false;
+  }
+
+  return isLong ? liqPrice > price : liqPrice < price;
+}

@@ -36,6 +36,10 @@ msgstr "Protocolo Pear"
 msgid "Price impact rebates claimed"
 msgstr "Reembolsos por impacto en el precio reclamados"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
+msgstr "Es posible que la orden no se ejecute: la posición resultante sería liquidable al precio de activación. Añade garantía o reduce el tamaño."
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "O actualice el RPC de su monedero a través de <0>chainlist.org</0>"
@@ -8384,6 +8388,10 @@ msgstr "Valor desconocido"
 msgid "Start unrealized fees"
 msgstr "Comisiones no realizadas iniciales"
 
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
+msgstr "Esta orden podría no ejecutarse con el estado actual de la posición. Añade garantía o reduce el apalancamiento antes de que se active."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -10132,7 +10140,6 @@ msgstr "Reclamar comisiones de financiación"
 msgid "Token permit testing"
 msgstr "Pruebas de permisos de tokens"
 
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

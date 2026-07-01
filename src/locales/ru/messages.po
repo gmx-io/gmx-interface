@@ -36,6 +36,10 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "Возвраты за влияние на цену получены"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
+msgstr "Ордер может не исполниться: итоговая позиция будет подвержена ликвидации по цене активации. Добавьте обеспечение или уменьшите размер."
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "Или обновите RPC вашего кошелька через <0>chainlist.org</0>"
@@ -8384,6 +8388,10 @@ msgstr "Неизвестное значение"
 msgid "Start unrealized fees"
 msgstr "Начальные нереализованные комиссии"
 
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
+msgstr "Этот ордер может не исполниться при текущем состоянии позиции. Добавьте обеспечение или уменьшите кредитное плечо до его срабатывания."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -10132,7 +10140,6 @@ msgstr "Получить комиссии финансирования"
 msgid "Token permit testing"
 msgstr "Тестирование разрешений токенов"
 
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

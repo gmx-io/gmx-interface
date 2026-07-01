@@ -36,6 +36,10 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "价格影响返还已领取"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
+msgstr "订单可能无法执行：在触发价格处，所产生的仓位将面临清算。请增加抵押品或减小规模。"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "或通过 <0>chainlist.org</0> 更新您钱包的 RPC"
@@ -8384,6 +8388,10 @@ msgstr "未知值"
 msgid "Start unrealized fees"
 msgstr "起始未实现费用"
 
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
+msgstr "在当前仓位状态下，此订单可能无法成交。请在触发前增加抵押品或降低杠杆。"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -10132,7 +10140,6 @@ msgstr "领取资金费用"
 msgid "Token permit testing"
 msgstr "代币许可测试"
 
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
