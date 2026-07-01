@@ -3,7 +3,7 @@ import { Popover, Portal } from "@headlessui/react";
 import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { sub, type Locale as DateLocale, type Duration, format, addYears } from "date-fns";
+import { addYears, format, sub, type Duration, type Locale as DateLocale } from "date-fns";
 import { de as dateDe } from "date-fns/locale/de";
 import { enUS as dateEn } from "date-fns/locale/en-US";
 import { es as dateEs } from "date-fns/locale/es";
@@ -143,9 +143,10 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
         return;
       }
 
-      const res = sub(new Date(), duration);
+      const end = new Date();
+      const res = sub(end, duration);
 
-      onChange([res, new Date()]);
+      onChange([res, end]);
     },
     [onChange]
   );

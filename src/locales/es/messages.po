@@ -273,6 +273,10 @@ msgstr "Límite Fallido"
 msgid "Performance"
 msgstr "Rendimiento"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Open fees"
+msgstr "Comisiones de apertura"
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total earned"
 msgstr "Total obtenido"
@@ -521,6 +525,10 @@ msgstr "Cripto"
 msgid "Image generation failed. Refresh and try again."
 msgstr "La generación de la imagen ha fallado. Actualice la página e inténtelo de nuevo."
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Unrealized fee contribution"
+msgstr "Contribución de comisiones no realizadas"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding"
@@ -755,7 +763,6 @@ msgid "Activate 1CT"
 msgstr "Activar 1CT"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
@@ -847,10 +854,6 @@ msgstr "Liquidez disponible"
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr "El sitio web es una instancia desplegada por la comunidad del código abierto <0>GMX front end</0>, alojada en la red distribuida entre pares <1>IPFS network</1>"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Total PnL (realized + unrealized) after fees and price impact"
-msgstr "PnL total (realizado + no realizado) después de comisiones e impacto en el precio"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
 msgstr "Factor de disminución de financiación"
@@ -902,6 +905,10 @@ msgstr "Error en la creación de la conversión"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "27% of protocol fees fund Treasury buybacks — rewards distributed at $90"
 msgstr ""
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Swap fees"
+msgstr "Comisiones de intercambio"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -1228,7 +1235,6 @@ msgid "{0} swapped to {1} when executed"
 msgstr "{0} se intercambia por {1} cuando se ejecuta"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
@@ -1979,6 +1985,10 @@ msgstr "Trading en Un Clic desactivado. Límite de acciones superado."
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP reimbursement"
 msgstr "Reembolso de GLP"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL before fees"
+msgstr "PnL no realizado inicial antes de comisiones"
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -2920,7 +2930,6 @@ msgid "Buyback dashboard"
 msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized PnL"
@@ -3297,7 +3306,7 @@ msgstr "No hay coincidencias para los filtros seleccionados"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Outstanding claimable amounts are not included"
-msgstr ""
+msgstr "Los importes reclamables pendientes no están incluidos"
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
@@ -3600,6 +3609,10 @@ msgstr "Botanix está cerrando. No abra nuevas posiciones. Cierre las posiciones
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized price impact"
 msgstr "Impacto en el precio realizado"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Other realized fees"
+msgstr "Otras comisiones realizadas"
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -4279,6 +4292,10 @@ msgstr "La diferencia entre el precio de ejecución esperado y el real debido a 
 msgid "{chainName} data"
 msgstr "Datos de {chainName}"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Rank among accounts for this metric and period."
+msgstr "Clasificación entre cuentas para esta métrica y periodo."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -4630,6 +4647,7 @@ msgstr "GM pools"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "PnL"
 msgstr "GyP"
 
@@ -4928,6 +4946,7 @@ msgid "Last 180d"
 msgstr "Últimos 180d"
 
 #: src/components/Claims/ClaimableCardUI.tsx
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Positive funding fees"
 msgstr "Comisiones de financiación positivas"
 
@@ -7040,6 +7059,10 @@ msgstr "Transferencia enviada"
 msgid "Order submission failed"
 msgstr "Error en el envío de la orden"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Realized PnL before fees"
+msgstr "PnL realizado antes de comisiones"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
@@ -7144,6 +7167,10 @@ msgstr "Para mí"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Bond Protocol"
 msgstr "Bond Protocol"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Fees and impacts"
+msgstr "Comisiones e impactos"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -7436,7 +7463,6 @@ msgstr "TAMAÑO"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "De"
 
@@ -7845,6 +7871,7 @@ msgstr "Utilice esta opción únicamente para transferencias completas de cuenta
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Net price impact"
 msgstr "Impacto neto en el precio"
 
@@ -7868,6 +7895,10 @@ msgstr "{fromText} a {toExecutionText}"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Total rebates"
 msgstr ""
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Total PnL after fees and price impact. Hover the value to see the breakdown."
+msgstr "PnL total después de comisiones e impacto en el precio. Pasa el cursor sobre el valor para ver el desglose."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -8109,6 +8140,10 @@ msgstr ""
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
 msgstr "para {comment}"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
+msgstr "Capital usado = max(suma de colateral de posiciones abiertas - PnL realizado + PnL pendiente inicial)."
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
@@ -9445,6 +9480,10 @@ msgstr "Bóvedas basadas en opciones"
 msgid "Time limit"
 msgstr "Límite de tiempo"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Live unrealized PnL before fees"
+msgstr "PnL no realizado actual antes de comisiones"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "DeFi"
 msgstr "DeFi"
@@ -9546,6 +9585,7 @@ msgstr "Incrementar"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "Impacto en el precio del intercambio"
 
@@ -9619,6 +9659,10 @@ msgstr ""
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Vested claimable GMX:"
 msgstr "GMX adquirido reclamable:"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
+msgstr "Porcentaje total de PnL después de comisiones e impacto en el precio. Pasa el cursor sobre el valor para ver el desglose."
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -9714,6 +9758,10 @@ msgstr "Depositar ETH"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "No tokens on source chain"
 msgstr "Sin tokens en la cadena de origen"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Liquidation fees"
+msgstr "Comisiones de liquidación"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects integrated with GMX"
@@ -9822,6 +9870,10 @@ msgstr "Todas las ganancias se reinvierten automáticamente"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "Utilice el botón TP/SL para establecer órdenes TP/SL."
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Close fees"
+msgstr "Comisiones de cierre"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
@@ -10297,6 +10349,10 @@ msgstr "Buscar en mercados swap"
 msgid "Liquidation confirmations"
 msgstr "Confirmaciones de liquidación"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Negative funding fees"
+msgstr "Comisiones de financiación negativas"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -10575,10 +10631,6 @@ msgstr "No se encontraron mercados"
 msgid "Do I need to enter a code on each network?"
 msgstr ""
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital).<0/><1/>Capital used = max(<2>sum of collateral of open positions - realized PnL + starting pending PnL</2>)."
-msgstr "Rentabilidad sobre el capital empleado (PnL / capital).<0/><1/>Capital empleado = máx(<2>suma de garantía de posiciones abiertas - PnL realizado + PnL pendiente inicial</2>)."
-
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Update default destination"
 msgstr ""
@@ -10654,6 +10706,10 @@ msgstr "Pérdida diaria"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "Chat anónimo con el equipo de GMX"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Borrow fees"
+msgstr "Comisiones de préstamo"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -10739,7 +10795,7 @@ msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized swap fees"
-msgstr ""
+msgstr "Comisiones de intercambio realizadas"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
