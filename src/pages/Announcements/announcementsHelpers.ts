@@ -2,6 +2,7 @@ import { format, isAfter, parse } from "date-fns";
 import { ReactNode } from "react";
 
 import { AnnouncementType, EventData } from "config/events";
+import type { UiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 export const ANNOUNCEMENTS_PAGE_SIZE = 20;
 
@@ -19,9 +20,9 @@ export function formatEventDate(date: Date): string {
   return format(date, "EEEE, MMMM d, yyyy");
 }
 
-export function isEventActiveByFlag(event: EventData, uiFlags: Record<string, boolean> | undefined): boolean {
+export function isEventActiveByFlag(event: EventData, uiFlags: UiFlags | undefined): boolean {
   if (event.flagId !== undefined) {
-    return uiFlags?.[event.flagId] === true;
+    return uiFlags?.[event.flagId]?.enabled === true;
   }
   return event.isActive === true;
 }
