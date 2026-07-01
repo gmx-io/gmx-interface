@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest";
 import {
   formatPnlChartYAxisTick,
   getDefaultPnlChartGrouping,
-  getPnlChartAreaXAxisDomain,
   getPnlChartDragPanSpeed,
   getPnlChartWheelZoomSlowdown,
+  getPnlChartXAxisDomain,
   getPnlChartYAxisTicks,
   getPnlChartYAxisTicksFromValues,
   getWheelDeltaPixels,
@@ -212,14 +212,14 @@ describe("getWheelDeltaPixels", () => {
   });
 });
 
-describe("getPnlChartAreaXAxisDomain", () => {
-  it("spans the visible window for multiple points", () => {
-    expect(getPnlChartAreaXAxisDomain(2, 5)).toEqual([2, 5]);
-    expect(getPnlChartAreaXAxisDomain(0, 9)).toEqual([0, 9]);
+describe("getPnlChartXAxisDomain", () => {
+  it("pads the visible window so line points align with bar centers", () => {
+    expect(getPnlChartXAxisDomain(2, 5)).toEqual([1.75, 5.25]);
+    expect(getPnlChartXAxisDomain(0, 9)).toEqual([-0.25, 9.25]);
   });
 
-  it("centers a single visible point to match the bar position", () => {
-    expect(getPnlChartAreaXAxisDomain(0, 0)).toEqual([-0.5, 0.5]);
-    expect(getPnlChartAreaXAxisDomain(3, 3)).toEqual([2.5, 3.5]);
+  it("pads a single visible point to match the bar position", () => {
+    expect(getPnlChartXAxisDomain(0, 0)).toEqual([-0.25, 0.25]);
+    expect(getPnlChartXAxisDomain(3, 3)).toEqual([2.75, 3.25]);
   });
 });

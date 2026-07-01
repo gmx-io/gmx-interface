@@ -346,13 +346,8 @@ export function getZoomedPnlHistoryData<T>(data: T[], window: PnlZoomWindow | un
   return data.slice(normalizedWindow.startIndex, normalizedWindow.endIndex + 1);
 }
 
-export function getPnlChartAreaXAxisDomain(startIndex: number, endIndex: number): [number, number] {
-  if (startIndex === endIndex) {
-    // A single point cannot span an axis; pad half a slot on each side so the point aligns with the bar's center.
-    return [startIndex - 0.5, endIndex + 0.5];
-  }
-
-  return [startIndex, endIndex];
+export function getPnlChartXAxisDomain(startIndex: number, endIndex: number): [number, number] {
+  return [startIndex - 0.25, endIndex + 0.25];
 }
 
 const WHEEL_DELTA_LINE_HEIGHT = 40;

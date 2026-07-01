@@ -24,9 +24,9 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import type { AccountPnlHistoryPoint } from "./DailyAndCumulativePnL";
 import {
   formatPnlChartYAxisTick,
-  getPnlChartAreaXAxisDomain,
   getPnlChartDragPanSpeed,
   getPnlChartWheelZoomSlowdown,
+  getPnlChartXAxisDomain,
   getPnlChartYAxisTicks,
   getPnlChartYAxisTicksFromValues,
   getWheelDeltaPixels,
@@ -145,12 +145,8 @@ export function DailyAndCumulativePnLChart({
   );
   const visibleStartIndex = normalizedZoomWindow?.startIndex ?? 0;
   const visibleEndIndex = normalizedZoomWindow?.endIndex ?? Math.max(chartPnlData.length - 1, 0);
-  const barXAxisDomain = useMemo<[number, number]>(
-    () => [visibleStartIndex - 0.25, visibleEndIndex + 0.25],
-    [visibleEndIndex, visibleStartIndex]
-  );
-  const areaXAxisDomain = useMemo<[number, number]>(
-    () => getPnlChartAreaXAxisDomain(visibleStartIndex, visibleEndIndex),
+  const xAxisDomain = useMemo<[number, number]>(
+    () => getPnlChartXAxisDomain(visibleStartIndex, visibleEndIndex),
     [visibleEndIndex, visibleStartIndex]
   );
   const xAxisTicks = useMemo(() => visibleChartPnlData.map((point) => point.chartIndex), [visibleChartPnlData]);
@@ -662,14 +658,14 @@ export function DailyAndCumulativePnLChart({
               dataKey="chartIndex"
               type="number"
               allowDataOverflow
-              domain={areaXAxisDomain}
+              domain={xAxisDomain}
               hide
             />
             <XAxis
               dataKey="chartIndex"
               type="number"
               allowDataOverflow
-              domain={barXAxisDomain}
+              domain={xAxisDomain}
               ticks={xAxisTicks}
               tickLine={false}
               axisLine={X_AXIS_LINE_PROPS}
