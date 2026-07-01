@@ -296,7 +296,7 @@ export function TradeHistory(p: Props) {
                   minCollateralUsd={minCollateralUsd!}
                   showDebugValues={showDebugValues}
                   shouldDisplayAccount={forAllAccounts}
-                  onSelectPositionLifecycle={handleSelectPositionLifecycle}
+                  onSelectPositionLifecycle={positionLifecycleId ? undefined : handleSelectPositionLifecycle}
                 />
               ))
             )}

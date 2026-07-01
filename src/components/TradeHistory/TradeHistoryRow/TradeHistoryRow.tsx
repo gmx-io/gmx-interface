@@ -31,7 +31,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import FilterIcon from "img/ic_filter.svg?react";
+import FilterHistoryIcon from "img/ic_filter_history.svg?react";
 import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
 
 import ShareClosedPosition from "./ShareClosedPosition";
@@ -406,7 +406,7 @@ export function TradeHistoryRow({
                     className="!min-h-28 !px-8 !py-6"
                     aria-label={t`View position history`}
                   >
-                    <FilterIcon className="size-14" />
+                    <FilterHistoryIcon className="size-14" />
                   </Button>
                 }
                 content={<Trans>View position history</Trans>}

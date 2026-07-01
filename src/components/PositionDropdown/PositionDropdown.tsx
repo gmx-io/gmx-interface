@@ -5,7 +5,7 @@ import { Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 
 import EditIcon from "img/ic_edit.svg?react";
-import FilterIcon from "img/ic_filter.svg?react";
+import FilterHistoryIcon from "img/ic_filter_history.svg?react";
 import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import IncreaseMarket from "img/ic_increasemarket_16.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
@@ -156,7 +156,7 @@ export default function PositionDropdown({
           {handleViewPositionHistory && (
             <Menu.Item>
               <div className="menu-item" onClick={handleViewPositionHistory}>
-                <FilterIcon className="size-16" />
+                <FilterHistoryIcon className="size-16" />
                 <p>
                   <Trans>View position history</Trans>
                 </p>
