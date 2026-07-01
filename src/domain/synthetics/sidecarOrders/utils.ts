@@ -2,11 +2,24 @@ import { t } from "@lingui/macro";
 import uniqueId from "lodash/uniqueId";
 
 import { USD_DECIMALS } from "config/factors";
-import { PositionOrderInfo } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
+import type { PositionInfo } from "domain/synthetics/positions";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
+import { getCanSplitReceive } from "sdk/utils/trade/decreaseOutputs";
 
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
+
+export function getInlineTpDecreaseSwapType(
+  triggerOrderType: OrderType,
+  position: PositionInfo | undefined
+): DecreasePositionSwapType | undefined {
+  if (triggerOrderType === OrderType.LimitDecrease && getCanSplitReceive(position)) {
+    return DecreasePositionSwapType.NoSwap;
+  }
+
+  return undefined;
+}
 
 export const MAX_PERCENTAGE = 100n;
 export const PERCENTAGE_DECIMALS = 0;

@@ -69,6 +69,7 @@ import {
   getExpressError,
   takeValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { Token } from "domain/tokens";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
@@ -347,11 +348,19 @@ export function PositionSeller() {
     swapProfitFee: fees?.swapProfitFee,
   });
 
+  const twapSplitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
+    shouldShow: isTwap && isSplitReceiveAvailable && !isReceiveSeparated && getIsHighSwapProfitFee(fees?.swapProfitFee),
+    receiveToken: position?.collateralToken,
+    profitToken: position?.pnlToken,
+    collateralToken: position?.collateralToken,
+    swapProfitFee: fees?.swapProfitFee,
+  });
+
   useEffect(() => {
-    if ((isTwap || !isSplitReceiveAvailable) && isReceiveSeparated) {
+    if (!isSplitReceiveAvailable && isReceiveSeparated) {
       setIsReceiveSeparated(false);
     }
-  }, [isTwap, isSplitReceiveAvailable, isReceiveSeparated, setIsReceiveSeparated]);
+  }, [isSplitReceiveAvailable, isReceiveSeparated, setIsReceiveSeparated]);
 
   useEffect(() => {
     if (isVisible) {
@@ -853,6 +862,20 @@ export function PositionSeller() {
     />
   );
 
+  const twapReceiveRow = (
+    <SyntheticsInfoRow
+      label={t`Receive`}
+      value={
+        <DecreaseReceiveOutputDisplay
+          outputs={receiveOutputs}
+          className="max-w-full"
+          secondaryValueClassName="!text-14"
+          layout="stacked"
+        />
+      }
+    />
+  );
+
   const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
   const keepLeverage = usePositionSellerKeepLeverage();
   const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
@@ -1125,7 +1148,7 @@ export function PositionSeller() {
                   </ToggleSwitch>
                 )}
 
-                {!isTwap && isSplitReceiveAvailable && (
+                {isSplitReceiveAvailable && (
                   <ToggleSwitch
                     textClassName="text-typography-secondary"
                     isChecked={isReceiveSeparated}
@@ -1167,6 +1190,12 @@ export function PositionSeller() {
                   swapProfitFeeWarning={splitReceiveSwapProfitFeeWarning}
                 />
 
+                {twapSplitReceiveSwapProfitFeeWarning && (
+                  <AlertInfoCard type="warning" hideClose>
+                    {twapSplitReceiveSwapProfitFeeWarning}
+                  </AlertInfoCard>
+                )}
+
                 {twapRecommendation && !isTwapBannerDismissed && (
                   <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
                     <div className="flex flex-col gap-8">
@@ -1198,12 +1227,14 @@ export function PositionSeller() {
                   </Button>
                 </ButtonTooltipWrapper>
 
-                {!isTwap && (
+                {!isTwap ? (
                   <>
                     {receiveTokenRow}
                     {liqPriceRow}
                     {pnlRow}
                   </>
+                ) : (
+                  twapReceiveRow
                 )}
 
                 <PositionSellerPriceImpactFeesRow />

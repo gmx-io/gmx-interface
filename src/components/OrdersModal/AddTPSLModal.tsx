@@ -37,6 +37,7 @@ import {
   isLimitDecreaseOrderType,
   isStopLossOrderType,
   isTwapOrder,
+  OrderType,
 } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -54,6 +55,8 @@ import {
 } from "domain/synthetics/sidecarOrders/utils";
 import {
   DecreasePositionAmounts,
+  getDecreaseReceiveOutputs,
+  getIsSplitReceiveAvailable,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
   getTradeFees,
@@ -61,13 +64,13 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, isFullClosePositionOrder } from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   calculateDisplayDecimals,
-  formatBalanceAmount,
   formatDeltaUsd,
   formatPercentage,
   formatTokenAmount,
@@ -84,11 +87,17 @@ import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import {
+  DecreaseReceiveOutputDisplay,
+  SplitReceiveTokensLabel,
+} from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { getSplitReceiveSwapProfitFeeWarning } from "components/PositionSeller/SplitReceiveSwapProfitFeeWarning";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -126,6 +135,7 @@ export function AddTPSLModal({
   const [keepLeverage, setKeepLeverage] = useState(true);
   const [editTPSLSize, setEditTPSLSize] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReceiveSeparated, setIsReceiveSeparated] = useState(false);
   const [executionDetailsOpen, setExecutionDetailsOpen] = useLocalStorageSerializeKey(
     "add-tpsl-execution-details-open",
     false
@@ -251,69 +261,61 @@ export function AddTPSLModal({
     });
   }, [slTriggerPrice, markPrice, isLong]);
 
-  const tpDecreaseAmounts: DecreasePositionAmounts | undefined = useMemo(() => {
-    if (tpTriggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
-      return undefined;
-    }
-
-    return getTpSlDecreaseAmounts({
-      position,
+  const getDecreaseAmountsForTrigger = useCallback(
+    (
+      triggerPrice: bigint | undefined,
+      triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
+      forceDecreaseSwapType: DecreasePositionSwapType | undefined
+    ): DecreasePositionAmounts | undefined => {
+      if (triggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
+        return undefined;
+      }
+      return getTpSlDecreaseAmounts({
+        position,
+        closeSizeUsd,
+        triggerPrice,
+        triggerOrderType,
+        keepLeverage,
+        isLimit: false,
+        limitPrice: undefined,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        uiFeeFactor,
+        userReferralInfo,
+        isSetAcceptablePriceImpactEnabled,
+        forceDecreaseSwapType,
+      });
+    },
+    [
       closeSizeUsd,
-      triggerPrice: tpTriggerPrice,
-      triggerOrderType: tpTriggerOrderType,
+      isSetAcceptablePriceImpactEnabled,
       keepLeverage,
-      isLimit: false,
-      limitPrice: undefined,
       minCollateralUsd,
       minPositionSizeUsd,
-      uiFeeFactor,
-      userReferralInfo,
-      isSetAcceptablePriceImpactEnabled,
-    });
-  }, [
-    tpTriggerPrice,
-    position,
-    closeSizeUsd,
-    keepLeverage,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor,
-    userReferralInfo,
-    tpTriggerOrderType,
-    isSetAcceptablePriceImpactEnabled,
-  ]);
-
-  const slDecreaseAmounts: DecreasePositionAmounts | undefined = useMemo(() => {
-    if (slTriggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
-      return undefined;
-    }
-
-    return getTpSlDecreaseAmounts({
       position,
-      closeSizeUsd,
-      triggerPrice: slTriggerPrice,
-      triggerOrderType: slTriggerOrderType,
-      keepLeverage,
-      isLimit: false,
-      limitPrice: undefined,
-      minCollateralUsd,
-      minPositionSizeUsd,
       uiFeeFactor,
       userReferralInfo,
-      isSetAcceptablePriceImpactEnabled,
-    });
-  }, [
-    slTriggerPrice,
-    position,
-    closeSizeUsd,
-    keepLeverage,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor,
-    userReferralInfo,
-    slTriggerOrderType,
-    isSetAcceptablePriceImpactEnabled,
-  ]);
+    ]
+  );
+
+  const receiveSwapType = isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined;
+
+  const tpDecreaseAmounts = useMemo(
+    () => getDecreaseAmountsForTrigger(tpTriggerPrice, tpTriggerOrderType, receiveSwapType),
+    [getDecreaseAmountsForTrigger, receiveSwapType, tpTriggerOrderType, tpTriggerPrice]
+  );
+  const slDecreaseAmounts = useMemo(
+    () => getDecreaseAmountsForTrigger(slTriggerPrice, slTriggerOrderType, receiveSwapType),
+    [getDecreaseAmountsForTrigger, receiveSwapType, slTriggerOrderType, slTriggerPrice]
+  );
+  const tpSplitReceiveDecreaseAmounts = useMemo(
+    () => getDecreaseAmountsForTrigger(tpTriggerPrice, tpTriggerOrderType, DecreasePositionSwapType.NoSwap),
+    [getDecreaseAmountsForTrigger, tpTriggerOrderType, tpTriggerPrice]
+  );
+  const slSplitReceiveDecreaseAmounts = useMemo(
+    () => getDecreaseAmountsForTrigger(slTriggerPrice, slTriggerOrderType, DecreasePositionSwapType.NoSwap),
+    [getDecreaseAmountsForTrigger, slTriggerOrderType, slTriggerPrice]
+  );
 
   const tpPositionData = useMemo(
     () => ({
@@ -468,35 +470,41 @@ export function AddTPSLModal({
     [getEstimatedPnlFromAmounts, slDecreaseAmounts]
   );
 
-  const getReceiveDisplay = useCallback(
-    (amounts: DecreasePositionAmounts | undefined) => {
-      if (!amounts) return undefined;
-
-      const receiveUsd = amounts.receiveUsd ?? 0n;
-      const receiveAmount = amounts.receiveTokenAmount ?? 0n;
-
-      return {
-        text: formatBalanceAmount(receiveAmount, collateralToken.decimals, collateralToken.symbol, {
-          isStable: collateralToken.isStable,
-        }),
-        usd: formatUsd(receiveUsd),
-      };
-    },
-    [collateralToken]
+  const tpReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: tpDecreaseAmounts, tokensData }),
+    [tokensData, tpDecreaseAmounts]
   );
+  const slReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: slDecreaseAmounts, tokensData }),
+    [tokensData, slDecreaseAmounts]
+  );
+  const tpSplitReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: tpSplitReceiveDecreaseAmounts, tokensData }),
+    [tokensData, tpSplitReceiveDecreaseAmounts]
+  );
+  const slSplitReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: slSplitReceiveDecreaseAmounts, tokensData }),
+    [tokensData, slSplitReceiveDecreaseAmounts]
+  );
+  const isSplitReceiveAvailable =
+    getIsSplitReceiveAvailable(position, tpSplitReceiveOutputs) ||
+    getIsSplitReceiveAvailable(position, slSplitReceiveOutputs);
 
-  const tpReceiveDisplay = useMemo(() => getReceiveDisplay(tpDecreaseAmounts), [getReceiveDisplay, tpDecreaseAmounts]);
-  const slReceiveDisplay = useMemo(() => getReceiveDisplay(slDecreaseAmounts), [getReceiveDisplay, slDecreaseAmounts]);
+  useEffect(() => {
+    if (!isSplitReceiveAvailable && isReceiveSeparated) {
+      setIsReceiveSeparated(false);
+    }
+  }, [isSplitReceiveAvailable, isReceiveSeparated]);
 
   const tpPreview = useMemo(
     () => ({
       decreaseAmounts: tpDecreaseAmounts,
       nextPositionValues: tpNextPositionValues,
       fees: tpFees,
-      receiveDisplay: tpReceiveDisplay,
+      receiveOutputs: tpReceiveOutputs,
       triggerPrice: tpTriggerPrice,
     }),
-    [tpDecreaseAmounts, tpNextPositionValues, tpFees, tpReceiveDisplay, tpTriggerPrice]
+    [tpDecreaseAmounts, tpNextPositionValues, tpFees, tpReceiveOutputs, tpTriggerPrice]
   );
 
   const slPreview = useMemo(
@@ -504,19 +512,27 @@ export function AddTPSLModal({
       decreaseAmounts: slDecreaseAmounts,
       nextPositionValues: slNextPositionValues,
       fees: slFees,
-      receiveDisplay: slReceiveDisplay,
+      receiveOutputs: slReceiveOutputs,
       triggerPrice: slTriggerPrice,
     }),
-    [slDecreaseAmounts, slNextPositionValues, slFees, slReceiveDisplay, slTriggerPrice]
+    [slDecreaseAmounts, slNextPositionValues, slFees, slReceiveOutputs, slTriggerPrice]
   );
 
   const activePreview = previewTab === "tp" ? tpPreview : slPreview;
   const activeDecreaseAmounts = activePreview.decreaseAmounts;
   const activeNextPositionValues = activePreview.nextPositionValues;
   const activeFees = activePreview.fees;
-  const activeReceiveDisplay = activePreview.receiveDisplay;
+  const activeReceiveOutputs = activePreview.receiveOutputs;
   const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? activePreview.triggerPrice;
   const hasPreviewData = Boolean(tpDecreaseAmounts || slDecreaseAmounts);
+
+  const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
+    shouldShow: isSplitReceiveAvailable && !isReceiveSeparated && getIsHighSwapProfitFee(activeFees?.swapProfitFee),
+    receiveToken: position.collateralToken,
+    profitToken: position.pnlToken,
+    collateralToken: position.collateralToken,
+    swapProfitFee: activeFees?.swapProfitFee,
+  });
 
   const netPriceImpactAndFeesDisplay = useMemo(() => {
     if (!activeFees) {
@@ -828,6 +844,7 @@ export function AddTPSLModal({
       setTpPriceInput("");
       setSlPriceInput("");
       setEditTPSLSize(false);
+      setIsReceiveSeparated(false);
       closeSizeReset();
       setPreviewTab("tp");
     }
@@ -990,6 +1007,11 @@ export function AddTPSLModal({
           <ToggleSwitch isChecked={editTPSLSize} setIsChecked={handleEditTPSLSizeToggle}>
             <Trans>Edit TP/SL size</Trans>
           </ToggleSwitch>
+          {isSplitReceiveAvailable && (
+            <ToggleSwitch isChecked={isReceiveSeparated} setIsChecked={setIsReceiveSeparated}>
+              <SplitReceiveTokensLabel profitToken={position.pnlToken} collateralToken={position.collateralToken} />
+            </ToggleSwitch>
+          )}
         </div>
 
         {editTPSLSize && (
@@ -1051,17 +1073,13 @@ export function AddTPSLModal({
               <div className="flex flex-col gap-10">
                 <SyntheticsInfoRow
                   label={<Trans>Receive</Trans>}
-                  value={
-                    activeReceiveDisplay ? (
-                      <span className="numbers">
-                        {activeReceiveDisplay.text}{" "}
-                        <span className="text-typography-secondary">({activeReceiveDisplay.usd})</span>
-                      </span>
-                    ) : (
-                      "-"
-                    )
-                  }
+                  value={<DecreaseReceiveOutputDisplay outputs={activeReceiveOutputs} layout="stacked" />}
                 />
+                {splitReceiveSwapProfitFeeWarning && (
+                  <AlertInfoCard type="warning" hideClose>
+                    {splitReceiveSwapProfitFeeWarning}
+                  </AlertInfoCard>
+                )}
                 <SyntheticsInfoRow
                   label={<Trans>Liquidation price</Trans>}
                   value={
