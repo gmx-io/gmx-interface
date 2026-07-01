@@ -4788,6 +4788,10 @@ msgstr ""
 msgid "Positive impact factor"
 msgstr "Positiver Einflussfaktor"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "All trades"
+msgstr "Alle Trades"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Alternative Links finden Sie in den <0>Docs</0>.<1/><2/>Durch Klicken auf Zustimmen akzeptieren Sie die <3>AGB</3> und die <4>Empfehlungs-AGB</4>.<5/><6/>"
@@ -5514,6 +5518,10 @@ msgstr "Abhebungsgebühr"
 msgid "TP"
 msgstr "TP"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
+msgstr "Wählen Sie, welche Kauf-/Verkaufsmarkierungen im Chart angezeigt werden: alle Ihre vergangenen Trades, nur Ihre aktuell offene Position oder keine."
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
 msgstr ""
@@ -5839,6 +5847,11 @@ msgstr ""
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show buy/sell icons on chart"
+msgstr "Kauf-/Verkaufssymbole im Chart anzeigen"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
@@ -6751,6 +6764,10 @@ msgstr "Transaktion"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
 msgstr "Letztes Jahr"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Off"
+msgstr "Aus"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
@@ -10377,6 +10394,10 @@ msgstr "Tauschen"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "Woher kommen die GMX-Staking-Belohnungen?"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current position only"
+msgstr "Nur aktuelle Position"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX token icon"

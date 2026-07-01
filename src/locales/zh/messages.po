@@ -4788,6 +4788,10 @@ msgstr ""
 msgid "Positive impact factor"
 msgstr "正向影响因子"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "All trades"
+msgstr "所有交易"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "替代链接在<0>文档</0>中。<1/><2/>点击同意即表示您接受<3>条款与条件</3>和<4>推荐条款与条件</4>。<5/><6/>"
@@ -5514,6 +5518,10 @@ msgstr "提取费用"
 msgid "TP"
 msgstr "TP"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
+msgstr "选择图表上显示哪些买入/卖出标记：您的所有历史交易、仅您当前的持仓，或不显示。"
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
 msgstr ""
@@ -5839,6 +5847,11 @@ msgstr ""
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show buy/sell icons on chart"
+msgstr "在图表上显示买/卖图标"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
@@ -6751,6 +6764,10 @@ msgstr "交易"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
 msgstr "去年"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Off"
+msgstr "关闭"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
@@ -10377,6 +10394,10 @@ msgstr "交换"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMX 质押奖励来自哪里？"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current position only"
+msgstr "仅当前持仓"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX token icon"

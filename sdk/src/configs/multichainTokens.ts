@@ -223,10 +223,7 @@ const TESTNET_TOKEN_GROUPS: MultichainTokenGroups = {
   },
 };
 
-type PlatformTokenSet = Record<
-  string,
-  Partial<Record<string, { address: string; stargate: string }>>
->;
+type PlatformTokenSet = Record<string, Partial<Record<string, { address: string; stargate: string }>>>;
 
 function applyPlatformTokens(
   groups: MultichainTokenGroups,
@@ -268,9 +265,9 @@ let cachedAll: MultichainTokenGroups | undefined;
  * Returns the full multichain token registry. By default returns mainnet-only;
  * pass `includeTestnets: true` to also expose Sepolia/Fuji/USDC.SG entries.
  */
-export function getMultichainTokenGroups(
-  { includeTestnets }: { includeTestnets?: boolean } = {}
-): MultichainTokenGroups {
+export function getMultichainTokenGroups({
+  includeTestnets,
+}: { includeTestnets?: boolean } = {}): MultichainTokenGroups {
   if (includeTestnets) {
     if (!cachedAll) {
       const groups = mergeGroups(MAINNET_TOKEN_GROUPS, TESTNET_TOKEN_GROUPS);
@@ -352,4 +349,3 @@ export function resolveStargatePool(
   }
   return undefined;
 }
-

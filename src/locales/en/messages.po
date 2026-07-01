@@ -4788,6 +4788,10 @@ msgstr "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by t
 msgid "Positive impact factor"
 msgstr "Positive impact factor"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "All trades"
+msgstr "All trades"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -5514,6 +5518,10 @@ msgstr "Withdraw fee"
 msgid "TP"
 msgstr "TP"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
+msgstr "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
 msgstr "Buy GMX on GMX swap"
@@ -5839,6 +5847,11 @@ msgstr "Your rebates depend on your tier level, which you can view <0>here</0>. 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr "Swap token unavailable"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show buy/sell icons on chart"
+msgstr "Show buy/sell icons on chart"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
@@ -6751,6 +6764,10 @@ msgstr "Transaction"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
 msgstr "Last year"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Off"
+msgstr "Off"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
@@ -10377,6 +10394,10 @@ msgstr "Swap"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "Where do GMX staking rewards come from?"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current position only"
+msgstr "Current position only"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX token icon"

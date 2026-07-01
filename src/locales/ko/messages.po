@@ -4788,6 +4788,10 @@ msgstr ""
 msgid "Positive impact factor"
 msgstr "긍정적 영향 계수"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "All trades"
+msgstr "모든 거래"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "대체 링크는 <0>문서</0>에서 확인할 수 있습니다.<1/><2/>동의를 클릭하면 <3>이용약관</3> 및 <4>추천 이용약관</4>에 동의하게 됩니다.<5/><6/>"
@@ -5514,6 +5518,10 @@ msgstr "출금 수수료"
 msgid "TP"
 msgstr "TP"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
+msgstr "차트에 표시할 매수/매도 마크를 선택하세요: 모든 과거 거래, 현재 보유 중인 포지션만, 또는 표시 안 함."
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
 msgstr ""
@@ -5839,6 +5847,11 @@ msgstr ""
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show buy/sell icons on chart"
+msgstr "차트에 매수/매도 아이콘 표시"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
@@ -6751,6 +6764,10 @@ msgstr "거래"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
 msgstr "작년"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Off"
+msgstr "끄기"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
@@ -10377,6 +10394,10 @@ msgstr "스왑"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMX 스테이킹 보상은 어디서 나오나요?"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current position only"
+msgstr "현재 포지션만"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX token icon"
