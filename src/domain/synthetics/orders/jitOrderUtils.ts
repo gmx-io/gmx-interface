@@ -64,7 +64,7 @@ export function getNeedsJitOrder({
 
 const JIT_SHIFT_ERROR_NAMES = new Set([
   "GlvInsufficientMarketTokenBalance",
-  "GlvShiftMaxPriceImpactExceeded",
+  "GlvShiftMaxLossExceeded",
   "GlvMaxMarketTokenBalanceUsdExceeded",
   "GlvDisabledMarket",
   "GlvShiftIntervalNotYetPassed",

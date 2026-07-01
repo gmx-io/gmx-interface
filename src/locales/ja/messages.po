@@ -419,6 +419,10 @@ msgstr "GLVとは？"
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "割合"
@@ -910,6 +914,10 @@ msgstr "GMXアラート"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "お取引による価格への影響とフィーの差引額です。<0>詳細はこちら</0>。"
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1795,6 +1803,7 @@ msgstr "サポートされていません"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -3366,6 +3375,7 @@ msgstr "予約済みポジティブインパクト差引後のインパクトプ
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText}から{toMinText}へ"
 
@@ -3577,6 +3587,10 @@ msgstr "最小入金額を設定"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "トリガー時に注文の一部で流動性が不足する可能性があります"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
@@ -4251,6 +4265,10 @@ msgstr "価格への影響の内訳を表示"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
 msgstr "受取パラメータが不足しています。数秒後に再試行してください"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
@@ -5033,6 +5051,10 @@ msgstr "ロング純レート / 1H"
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
 msgstr "パーミット署名を検証できませんでした。"
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5917,10 +5939,6 @@ msgstr "デコードするには上記にhexエラーデータを入力してく
 msgid "Allowed actions"
 msgstr "許可されたアクション"
 
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr "最大ファンディングファクター"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr ""
@@ -6583,10 +6601,6 @@ msgstr "プール最大ロング数量"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "GLVより積極的な管理が必要です"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
-msgstr "最小ファンディングファクター"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -7754,6 +7768,10 @@ msgstr "建玉"
 msgid "Begin transfer"
 msgstr "送金を開始"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "市場"
@@ -8133,6 +8151,10 @@ msgstr "買いリクエストを実行中…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "GMの購入に失敗しました"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
@@ -10733,6 +10755,12 @@ msgstr "デルタニュートラルボールト"
 msgid "Sending shift request..."
 msgstr "シフトリクエストを送信中…"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -11005,6 +11033,10 @@ msgstr "クローズ"
 msgid "Link"
 msgstr "リンク"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to deposit"
 msgstr "入金可能"
@@ -11023,6 +11055,10 @@ msgstr "全般パフォーマンス詳細"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

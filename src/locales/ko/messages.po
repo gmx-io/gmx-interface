@@ -419,6 +419,10 @@ msgstr "GLV란 무엇인가요?"
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "비율"
@@ -910,6 +914,10 @@ msgstr "GMX 알림"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "거래에서 발생한 순 가격 영향 및 수수료입니다. <0>자세히 보기</0>."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1795,6 +1803,7 @@ msgstr "지원되지 않음"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -3366,6 +3375,7 @@ msgstr "양의 가격 영향 예약 후 영향 풀"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText}에서 {toMinText}로"
 
@@ -3577,6 +3587,10 @@ msgstr "최소 예치 금액 설정"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "발동 시 이 주문의 일부에 대해 유동성이 부족할 수 있습니다"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
@@ -4251,6 +4265,10 @@ msgstr "순 가격 영향 세부 분석"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
 msgstr "수령 매개변수가 누락되었습니다. 몇 초 후에 다시 시도하십시오"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
@@ -5033,6 +5051,10 @@ msgstr "롱 순 비율 / 1H"
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
 msgstr "퍼밋 서명을 검증할 수 없습니다."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5917,10 +5939,6 @@ msgstr "위에 16진수 오류 데이터를 입력하여 디코딩하십시오"
 msgid "Allowed actions"
 msgstr "허용된 작업"
 
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr "최대 펀딩 계수"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr ""
@@ -6583,10 +6601,6 @@ msgstr "풀 최대 롱 수량"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "GLV보다 적극적인 관리가 필요합니다"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
-msgstr "최소 펀딩 팩터"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -7754,6 +7768,10 @@ msgstr "미결제약정"
 msgid "Begin transfer"
 msgstr "전송 시작"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "시장"
@@ -8133,6 +8151,10 @@ msgstr "매수 요청을 실행하는 중…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "GM 구매 실패"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
@@ -10733,6 +10755,12 @@ msgstr "델타 중립 볼트"
 msgid "Sending shift request..."
 msgstr "시프트 요청을 전송하는 중…"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -11005,6 +11033,10 @@ msgstr "종료"
 msgid "Link"
 msgstr "링크"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to deposit"
 msgstr "입금 가능"
@@ -11023,6 +11055,10 @@ msgstr "일반 성과 상세"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

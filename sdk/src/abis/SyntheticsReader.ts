@@ -129,6 +129,11 @@ export default [
                   },
                   {
                     internalType: "uint256",
+                    name: "uiFeeFactor",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
                     name: "updatedAtTime",
                     type: "uint256",
                   },
@@ -714,6 +719,11 @@ export default [
             name: "pnlAfterPriceImpactUsd",
             type: "int256",
           },
+          {
+            internalType: "int256",
+            name: "positionValueInUsd",
+            type: "int256",
+          },
         ],
         internalType: "struct ReaderPositionUtils.PositionInfo[]",
         name: "",
@@ -1036,6 +1046,11 @@ export default [
               {
                 internalType: "uint256",
                 name: "minMarketTokens",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "uiFeeFactor",
                 type: "uint256",
               },
               {
@@ -2615,6 +2630,11 @@ export default [
               },
               {
                 internalType: "uint256",
+                name: "uiFeeFactor",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
                 name: "updatedAtTime",
                 type: "uint256",
               },
@@ -3501,6 +3521,11 @@ export default [
             name: "pnlAfterPriceImpactUsd",
             type: "int256",
           },
+          {
+            internalType: "int256",
+            name: "positionValueInUsd",
+            type: "int256",
+          },
         ],
         internalType: "struct ReaderPositionUtils.PositionInfo",
         name: "",
@@ -4016,6 +4041,11 @@ export default [
             name: "pnlAfterPriceImpactUsd",
             type: "int256",
           },
+          {
+            internalType: "int256",
+            name: "positionValueInUsd",
+            type: "int256",
+          },
         ],
         internalType: "struct ReaderPositionUtils.PositionInfo[]",
         name: "",
@@ -4213,6 +4243,11 @@ export default [
               {
                 internalType: "uint256",
                 name: "minMarketTokens",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "uiFeeFactor",
                 type: "uint256",
               },
               {
@@ -4572,6 +4607,11 @@ export default [
               {
                 internalType: "uint256",
                 name: "minShortTokenAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "uiFeeFactor",
                 type: "uint256",
               },
               {

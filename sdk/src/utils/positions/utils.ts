@@ -219,7 +219,10 @@ export function getLiquidationPrice(p: {
   if (useMaxPriceImpact) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   } else {
-    const priceImpactForPosition = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, { fallbackToZero: true });
+    const priceImpactForPosition = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+      fallbackToZero: true,
+      sizeDeltaInTokens: sizeInTokens,
+    });
     priceImpactDeltaUsd = priceImpactForPosition.priceImpactDeltaUsd;
 
     if (priceImpactDeltaUsd > 0) {
@@ -615,6 +618,7 @@ export function getPositionInfo(p: {
     isLong: position.isLong,
     indexPrice: markPrice,
     sizeDeltaUsd: position.sizeInUsd,
+    sizeDeltaInTokens: position.sizeInTokens,
   });
 
   const positionFeeInfo = getPositionFee(

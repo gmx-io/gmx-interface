@@ -8,9 +8,11 @@ import {
   FUNDING_EXPONENT_FACTOR_KEY,
   FUNDING_FACTOR_KEY,
   FUNDING_INCREASE_FACTOR_PER_SECOND,
+  MIN_FUNDING_INCREASE_RATE_PER_SECOND,
   IS_MARKET_DISABLED_KEY,
   LENT_POSITION_IMPACT_POOL_AMOUNT_KEY,
   MAX_FUNDING_FACTOR_PER_SECOND,
+  MAX_COLLATERAL_SUM_KEY,
   MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS_KEY,
   MAX_LENDABLE_IMPACT_FACTOR_KEY,
   MAX_LENDABLE_IMPACT_USD_KEY,
@@ -129,6 +131,22 @@ export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKey
       ["bytes32", "address", "bool"],
       [MAX_OPEN_INTEREST_KEY, marketAddress, false],
     ],
+    maxCollateralSumLongTokenLong: [
+      ["bytes32", "address", "address", "bool"],
+      [MAX_COLLATERAL_SUM_KEY, marketAddress, market.longTokenAddress, true],
+    ],
+    maxCollateralSumLongTokenShort: [
+      ["bytes32", "address", "address", "bool"],
+      [MAX_COLLATERAL_SUM_KEY, marketAddress, market.longTokenAddress, false],
+    ],
+    maxCollateralSumShortTokenLong: [
+      ["bytes32", "address", "address", "bool"],
+      [MAX_COLLATERAL_SUM_KEY, marketAddress, market.shortTokenAddress, true],
+    ],
+    maxCollateralSumShortTokenShort: [
+      ["bytes32", "address", "address", "bool"],
+      [MAX_COLLATERAL_SUM_KEY, marketAddress, market.shortTokenAddress, false],
+    ],
     minPositionImpactPoolAmount: [
       ["bytes32", "address"],
       [MIN_POSITION_IMPACT_POOL_AMOUNT_KEY, marketAddress],
@@ -165,6 +183,10 @@ export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKey
       ["bytes32", "address"],
       [FUNDING_INCREASE_FACTOR_PER_SECOND, marketAddress],
     ],
+    minFundingIncreaseRatePerSecond: [
+      ["bytes32", "address"],
+      [MIN_FUNDING_INCREASE_RATE_PER_SECOND, marketAddress],
+    ],
     fundingDecreaseFactorPerSecond: [
       ["bytes32", "address"],
       [FUNDING_DECREASE_FACTOR_PER_SECOND, marketAddress],
@@ -177,13 +199,21 @@ export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKey
       ["bytes32", "address"],
       [THRESHOLD_FOR_DECREASE_FUNDING, marketAddress],
     ],
-    minFundingFactorPerSecond: [
-      ["bytes32", "address"],
-      [MIN_FUNDING_FACTOR_PER_SECOND, marketAddress],
+    minFundingFactorPerSecondLong: [
+      ["bytes32", "address", "bool"],
+      [MIN_FUNDING_FACTOR_PER_SECOND, marketAddress, true],
     ],
-    maxFundingFactorPerSecond: [
-      ["bytes32", "address"],
-      [MAX_FUNDING_FACTOR_PER_SECOND, marketAddress],
+    minFundingFactorPerSecondShort: [
+      ["bytes32", "address", "bool"],
+      [MIN_FUNDING_FACTOR_PER_SECOND, marketAddress, false],
+    ],
+    maxFundingFactorPerSecondLong: [
+      ["bytes32", "address", "bool"],
+      [MAX_FUNDING_FACTOR_PER_SECOND, marketAddress, true],
+    ],
+    maxFundingFactorPerSecondShort: [
+      ["bytes32", "address", "bool"],
+      [MAX_FUNDING_FACTOR_PER_SECOND, marketAddress, false],
     ],
     maxPnlFactorForTradersLong: [
       ["bytes32", "bytes32", "address", "bool"],

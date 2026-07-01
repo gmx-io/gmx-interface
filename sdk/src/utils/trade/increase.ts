@@ -409,6 +409,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
+    sizeDeltaInTokens: values.indexTokenAmount,
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
@@ -447,6 +448,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
         maxNegativePriceImpactBps,
+        sizeDeltaInTokens: values.indexTokenAmount,
       });
 
       values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;

@@ -419,6 +419,10 @@ msgstr "Was ist GLV?"
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "Prozentsatz"
@@ -910,6 +914,10 @@ msgstr "GMX-Benachrichtigungen"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "Nettopreiseinfluss und Gebühren aus Ihrem Handel. <0>Mehr erfahren</0>."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1795,6 +1803,7 @@ msgstr "Nicht unterstützt"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -3366,6 +3375,7 @@ msgstr "Impact-Pool nach reserviertem positivem Einfluss"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} zu {toMinText}"
 
@@ -3577,6 +3587,10 @@ msgstr "Mindesteinzahlung festlegen"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "Bei Auslösung kann für Teile dieser Order unzureichende Liquidität vorhanden sein"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
@@ -4251,6 +4265,10 @@ msgstr "Nettopreiseinfluss aufschlüsseln"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
 msgstr "Fehlende Beanspruchungsparameter. Versuchen Sie es in wenigen Sekunden erneut"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
@@ -5033,6 +5051,10 @@ msgstr "LONGS NETTORATE / 1H"
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
 msgstr "Die Permit-Signatur konnte nicht validiert werden."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5917,10 +5939,6 @@ msgstr "Geben Sie oben Hex-Fehlerdaten ein, um sie zu decodieren"
 msgid "Allowed actions"
 msgstr "Erlaubte Aktionen"
 
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr "Maximaler Finanzierungsfaktor"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr ""
@@ -6583,10 +6601,6 @@ msgstr "Maximaler Long-Betrag des Pools"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "Erfordert aktiveres Management als GLV"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
-msgstr "Minimaler Finanzierungsfaktor"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -7754,6 +7768,10 @@ msgstr "OPEN INTEREST"
 msgid "Begin transfer"
 msgstr "Übertragung starten"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "markt"
@@ -8133,6 +8151,10 @@ msgstr "Kaufanfrage wird ausgeführt…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "GM-Kauf fehlgeschlagen"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
@@ -10733,6 +10755,12 @@ msgstr "Deltaneutrale Vaults"
 msgid "Sending shift request..."
 msgstr "Shift-Anfrage wird gesendet…"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -11005,6 +11033,10 @@ msgstr "Schließen"
 msgid "Link"
 msgstr "Link"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to deposit"
 msgstr "Zum Einzahlen verfügbar"
@@ -11023,6 +11055,10 @@ msgstr "Allgemeine Leistungsdetails"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

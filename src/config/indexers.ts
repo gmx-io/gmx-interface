@@ -44,7 +44,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia:prod/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arb-sepolia@qhfvq9/api/graphql",
   },
 
   [BOTANIX]: {

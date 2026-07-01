@@ -374,6 +374,22 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxOpenInterestShort],
         },
+        maxCollateralSumLongTokenLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumLongTokenLong],
+        },
+        maxCollateralSumLongTokenShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumLongTokenShort],
+        },
+        maxCollateralSumShortTokenLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumShortTokenLong],
+        },
+        maxCollateralSumShortTokenShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumShortTokenShort],
+        },
         minPositionImpactPoolAmount: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.minPositionImpactPoolAmount],
@@ -410,6 +426,10 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.fundingIncreaseFactorPerSecond],
         },
+        minFundingIncreaseRatePerSecond: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.minFundingIncreaseRatePerSecond],
+        },
         fundingDecreaseFactorPerSecond: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.fundingDecreaseFactorPerSecond],
@@ -422,13 +442,21 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.thresholdForDecreaseFunding],
         },
-        minFundingFactorPerSecond: {
+        minFundingFactorPerSecondLong: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.minFundingFactorPerSecond],
+          params: [prebuiltHashedKeys.minFundingFactorPerSecondLong],
         },
-        maxFundingFactorPerSecond: {
+        minFundingFactorPerSecondShort: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.maxFundingFactorPerSecond],
+          params: [prebuiltHashedKeys.minFundingFactorPerSecondShort],
+        },
+        maxFundingFactorPerSecondLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxFundingFactorPerSecondLong],
+        },
+        maxFundingFactorPerSecondShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxFundingFactorPerSecondShort],
         },
         maxPnlFactorForTradersLong: {
           methodName: "getUint",
@@ -598,6 +626,10 @@ export function parseMarketsConfigsResponse(
         openInterestReserveFactorShort: dataStoreValues.openInterestReserveFactorShort.returnValues[0],
         maxOpenInterestLong: dataStoreValues.maxOpenInterestLong.returnValues[0],
         maxOpenInterestShort: dataStoreValues.maxOpenInterestShort.returnValues[0],
+        maxCollateralSumLongTokenLong: dataStoreValues.maxCollateralSumLongTokenLong.returnValues[0],
+        maxCollateralSumLongTokenShort: dataStoreValues.maxCollateralSumLongTokenShort.returnValues[0],
+        maxCollateralSumShortTokenLong: dataStoreValues.maxCollateralSumShortTokenLong.returnValues[0],
+        maxCollateralSumShortTokenShort: dataStoreValues.maxCollateralSumShortTokenShort.returnValues[0],
         minPositionImpactPoolAmount: dataStoreValues.minPositionImpactPoolAmount.returnValues[0],
         positionImpactPoolDistributionRate: dataStoreValues.positionImpactPoolDistributionRate.returnValues[0],
         borrowingFactorLong: dataStoreValues.borrowingFactorLong.returnValues[0],
@@ -607,11 +639,14 @@ export function parseMarketsConfigsResponse(
         fundingFactor: dataStoreValues.fundingFactor.returnValues[0],
         fundingExponentFactor: dataStoreValues.fundingExponentFactor.returnValues[0],
         fundingIncreaseFactorPerSecond: dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0],
+        minFundingIncreaseRatePerSecond: dataStoreValues.minFundingIncreaseRatePerSecond.returnValues[0],
         fundingDecreaseFactorPerSecond: dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0],
         thresholdForDecreaseFunding: dataStoreValues.thresholdForDecreaseFunding.returnValues[0],
         thresholdForStableFunding: dataStoreValues.thresholdForStableFunding.returnValues[0],
-        minFundingFactorPerSecond: dataStoreValues.minFundingFactorPerSecond.returnValues[0],
-        maxFundingFactorPerSecond: dataStoreValues.maxFundingFactorPerSecond.returnValues[0],
+        minFundingFactorPerSecondLong: dataStoreValues.minFundingFactorPerSecondLong.returnValues[0],
+        minFundingFactorPerSecondShort: dataStoreValues.minFundingFactorPerSecondShort.returnValues[0],
+        maxFundingFactorPerSecondLong: dataStoreValues.maxFundingFactorPerSecondLong.returnValues[0],
+        maxFundingFactorPerSecondShort: dataStoreValues.maxFundingFactorPerSecondShort.returnValues[0],
         maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
         maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
         maxPnlFactorForDepositsLong: dataStoreValues.maxPnlFactorForDepositsLong.returnValues[0],

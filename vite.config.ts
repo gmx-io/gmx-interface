@@ -247,7 +247,7 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: "happy-dom",
       globalSetup: "./vitest.global-setup.js",
-      exclude: ["./autotests", "node_modules", "./sdk", "**/*.ct.spec.tsx"],
+      exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx"],
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
       server: {
         deps: {

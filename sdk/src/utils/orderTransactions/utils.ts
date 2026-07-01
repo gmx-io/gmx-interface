@@ -955,9 +955,11 @@ export function getBatchSwapsCount(orderParams: BatchOrderTxnParams | undefined)
     return 0;
   }
 
-  return orderParams.createOrderParams.reduce((acc, co) => {
+  const count = orderParams.createOrderParams.reduce((acc, co) => {
     return acc + co.orderPayload.addresses.swapPath.length;
   }, 0);
+
+  return count;
 }
 
 export function getIsEmptyBatch(orderParams: BatchOrderTxnParams | undefined) {

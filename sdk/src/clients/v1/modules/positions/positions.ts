@@ -142,7 +142,7 @@ export class Positions extends Module {
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo: any) => {
-        const { position, fees, basePnlUsd } = positionInfo;
+        const { position, fees, basePnlUsd, positionValueInUsd } = positionInfo;
         const { addresses, numbers, flags, data } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
@@ -175,6 +175,7 @@ export class Positions extends Module {
           positionFeeAmount: fees.positionFeeAmount,
           traderDiscountAmount: fees.referral.traderDiscountAmount,
           uiFeeAmount: fees.ui.uiFeeAmount,
+          positionValueInUsd,
           data,
         };
 

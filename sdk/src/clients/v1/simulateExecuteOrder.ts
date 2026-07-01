@@ -1,7 +1,7 @@
 import { Abi, Address, decodeErrorResult, encodeFunctionData, withRetry } from "viem";
 
 import { abis } from "abis";
-import { getContract } from "configs/contracts";
+import { getContract, tryGetContract } from "configs/contracts";
 import { convertTokenAddress } from "configs/tokens";
 import { extractTxnError } from "utils/errors";
 import { SwapPricingType } from "utils/orders/types";
@@ -69,79 +69,95 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 
   let simulationPayloadData = [...p.createMulticallPayload];
 
-  const routerAbi = abis.ExchangeRouter as Abi;
-  const routerAddress = exchangeRouterAddress;
+  const simulationRouterAddress = tryGetContract(chainId, "SimulationRouter");
 
-  let encodedFunctionData: string;
+  const retryConfig = {
+    retryCount: 2,
+    delay: 200,
+    shouldRetry: (error: { error: Error }) => {
+      const [message] = extractTxnError(error);
+      return message?.toLocaleLowerCase()?.includes("unsupported block number") ?? false;
+    },
+  };
 
-  encodedFunctionData = encodeFunctionData({
-    abi: routerAbi,
-    functionName: "simulateExecuteLatestOrder",
-    args: [simulationPriceParams],
-  });
-  simulationPayloadData.push(encodedFunctionData);
+  if (simulationRouterAddress) {
+    // v2.2c: create-only validation (SimulationRouter can't simulate without on-chain order)
+    await withRetry(async () => {
+      return await client.simulateContract({
+        address: exchangeRouterAddress,
+        abi: abis.ExchangeRouter as Abi,
+        functionName: "multicall",
+        args: [simulationPayloadData],
+        value: p.value,
+        account: account as Address,
+        blockNumber,
+      });
+    }, retryConfig);
+  } else {
+    const simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter as Abi,
+      functionName: "simulateExecuteLatestOrder",
+      args: [simulationPriceParams],
+    });
+    simulationPayloadData.push(simulateExecuteData);
 
-  try {
-    await withRetry(
-      async () => {
+    try {
+      await withRetry(async () => {
         return await client.simulateContract({
-          address: routerAddress,
-          abi: routerAbi,
+          address: exchangeRouterAddress,
+          abi: abis.ExchangeRouter as Abi,
           functionName: "multicall",
           args: [simulationPayloadData],
           value: p.value,
           account: account as Address,
           blockNumber,
         });
-      },
-      {
-        retryCount: 2,
-        delay: 200,
-        shouldRetry: (error) => {
-          const [message] = extractTxnError(error);
-          return message?.toLocaleLowerCase()?.includes("unsupported block number") ?? false;
-        },
-      }
-    );
-  } catch (txnError: any) {
-    let msg: string | undefined = undefined;
-    try {
-      const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
+      }, retryConfig);
+    } catch (txnError: any) {
+      handleSimulationError(txnError);
+      return;
+    }
+  }
+}
 
-      const error = new SimulateExecuteOrderError("No data found in error.", txnError);
+function handleSimulationError(txnError: any): void {
+  let msg: string | undefined = undefined;
+  try {
+    const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
 
-      if (!errorData) throw error;
+    const error = new SimulateExecuteOrderError("No data found in error.", txnError);
 
-      const decodedError = decodeErrorResult<typeof abis.CustomErrors>({
-        abi: abis.CustomErrors,
-        data: errorData as Address,
-      });
+    if (!errorData) throw error;
 
-      const isSimulationPassed = decodedError.errorName === "EndOfOracleSimulation";
+    const decodedError = decodeErrorResult<typeof abis.CustomErrors>({
+      abi: abis.CustomErrors,
+      data: errorData as Address,
+    });
 
-      if (isSimulationPassed) {
-        return;
-      }
+    const isSimulationPassed = decodedError.errorName === "EndOfOracleSimulation";
 
-      const parsedArgs = Object.keys(decodedError.args ?? {}).reduce(
-        (acc, k) => {
-          const args = (decodedError.args ?? {}) as unknown as Record<string, any>;
-          acc[k] = args[k]?.toString();
-          return acc;
-        },
-        {} as Record<string, string>
-      );
-
-      msg = `${txnError?.info?.error?.message ?? decodedError.errorName ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`;
-    } catch (parsingError) {
-      /* eslint-disable-next-line */
-      console.error(parsingError);
-      msg = `Execute order simulation failed`;
-      throw new Error(msg);
+    if (isSimulationPassed) {
+      return;
     }
 
-    throw txnError;
+    const parsedArgs = Object.keys(decodedError.args ?? {}).reduce(
+      (acc, k) => {
+        const args = (decodedError.args ?? {}) as unknown as Record<string, any>;
+        acc[k] = args[k]?.toString();
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+    msg = `${txnError?.info?.error?.message ?? decodedError.errorName ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`;
+  } catch (parsingError) {
+    /* eslint-disable-next-line */
+    console.error(parsingError);
+    msg = `Execute order simulation failed`;
+    throw new Error(msg);
   }
+
+  throw txnError;
 }
 
 export function extractDataFromError(errorMessage: unknown) {

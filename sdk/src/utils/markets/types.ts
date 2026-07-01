@@ -51,6 +51,11 @@ export type MarketInfo = Market &
     maxOpenInterestLong: bigint;
     maxOpenInterestShort: bigint;
 
+    maxCollateralSumLongTokenLong: bigint;
+    maxCollateralSumLongTokenShort: bigint;
+    maxCollateralSumShortTokenLong: bigint;
+    maxCollateralSumShortTokenShort: bigint;
+
     borrowingFactorLong: bigint;
     borrowingFactorShort: bigint;
     borrowingExponentFactorLong: bigint;
@@ -59,11 +64,14 @@ export type MarketInfo = Market &
     fundingFactor: bigint;
     fundingExponentFactor: bigint;
     fundingIncreaseFactorPerSecond: bigint;
+    minFundingIncreaseRatePerSecond: bigint;
     fundingDecreaseFactorPerSecond: bigint;
     thresholdForStableFunding: bigint;
     thresholdForDecreaseFunding: bigint;
-    minFundingFactorPerSecond: bigint;
-    maxFundingFactorPerSecond: bigint;
+    minFundingFactorPerSecondLong: bigint;
+    minFundingFactorPerSecondShort: bigint;
+    maxFundingFactorPerSecondLong: bigint;
+    maxFundingFactorPerSecondShort: bigint;
 
     totalBorrowingFees: bigint;
 
@@ -187,6 +195,10 @@ export type MarketConfig = Pick<
   | "openInterestReserveFactorShort"
   | "maxOpenInterestLong"
   | "maxOpenInterestShort"
+  | "maxCollateralSumLongTokenLong"
+  | "maxCollateralSumLongTokenShort"
+  | "maxCollateralSumShortTokenLong"
+  | "maxCollateralSumShortTokenShort"
   | "minPositionImpactPoolAmount"
   | "positionImpactPoolDistributionRate"
   | "borrowingFactorLong"
@@ -196,11 +208,14 @@ export type MarketConfig = Pick<
   | "fundingFactor"
   | "fundingExponentFactor"
   | "fundingIncreaseFactorPerSecond"
+  | "minFundingIncreaseRatePerSecond"
   | "fundingDecreaseFactorPerSecond"
   | "thresholdForDecreaseFunding"
   | "thresholdForStableFunding"
-  | "minFundingFactorPerSecond"
-  | "maxFundingFactorPerSecond"
+  | "minFundingFactorPerSecondLong"
+  | "minFundingFactorPerSecondShort"
+  | "maxFundingFactorPerSecondLong"
+  | "maxFundingFactorPerSecondShort"
   | "maxPnlFactorForTradersLong"
   | "maxPnlFactorForTradersShort"
   | "maxPnlFactorForDepositsLong"

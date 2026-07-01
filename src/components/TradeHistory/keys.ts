@@ -1,10 +1,11 @@
 import { i18n, type MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 
-import { isLimitOrderType, isSwapOrderType, OrderType } from "domain/synthetics/orders";
+import { isLimitOrderType, isMarketOrderType, isSwapOrderType, OrderType } from "domain/synthetics/orders";
 import { getNameByOrderType } from "domain/synthetics/positions";
-import type { TradeActionType } from "domain/synthetics/tradeHistory";
+import { TradeActionType } from "domain/synthetics/tradeHistory";
 import { mustNeverExist } from "lib/types";
+import { USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
 
 import { getOrderActionText } from "./TradeHistoryRow/utils/shared";
 
@@ -70,6 +71,15 @@ const actionTextMapBase: Partial<
   "Liquidation-OrderExecuted": msg`Liquidated`,
 };
 
+/** Overrides for market orders cancelled with USER_INITIATED_CANCEL — means expired, not failed. */
+export const expiredActionTextMap: Partial<Record<string, MessageDescriptor>> = {
+  "MarketSwap-OrderCancelled": msg`Expired Market Swap`,
+  "MarketIncrease-OrderCancelled": msg`Expired Market Increase`,
+  "MarketDecrease-OrderCancelled": msg`Expired Market Decrease`,
+  "Deposit-OrderCancelled": msg`Expired deposit`,
+  "Withdraw-OrderCancelled": msg`Expired withdraw`,
+};
+
 export const actionTextMap: Partial<
   Record<`${OrderTypes | "Deposit" | "Withdraw" | "Twap" | "TwapSwap"}-${TradeActionType}`, MessageDescriptor>
 > = {
@@ -109,10 +119,22 @@ function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
   }
 }
 
-export function getActionTitle(orderType: OrderType, eventName: TradeActionType, isTwap: boolean) {
+export function getActionTitle(orderType: OrderType, eventName: TradeActionType, isTwap: boolean, reason?: string) {
   const key: keyof typeof actionTextMap = isTwap
     ? `Twap${isSwapOrderType(orderType) ? "Swap" : ""}-${eventName}`
     : `${orderTypeToKey(orderType)}-${eventName}`;
+
+  if (
+    reason === USER_INITIATED_CANCEL &&
+    eventName === TradeActionType.OrderCancelled &&
+    isMarketOrderType(orderType)
+  ) {
+    const expiredTitle = expiredActionTextMap[key];
+    if (expiredTitle) {
+      return i18n._(expiredTitle);
+    }
+  }
+
   const title = actionTextMap[key];
 
   if (title) {

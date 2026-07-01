@@ -44,11 +44,14 @@ const MARKETS_INFO_QUERY = gql`
       fundingFactor
       fundingExponentFactor
       fundingIncreaseFactorPerSecond
+      minFundingIncreaseRatePerSecond
       fundingDecreaseFactorPerSecond
       thresholdForStableFunding
       thresholdForDecreaseFunding
-      minFundingFactorPerSecond
-      maxFundingFactorPerSecond
+      minFundingFactorPerSecondLong
+      minFundingFactorPerSecondShort
+      maxFundingFactorPerSecondLong
+      maxFundingFactorPerSecondShort
 
       totalBorrowingFees
 
@@ -191,6 +194,11 @@ export function useFastMarketsInfoRequest(chainId: number, { enabled = true }: {
             maxOpenInterestLong: BigInt(mInfo.maxOpenInterestLong),
             maxOpenInterestShort: BigInt(mInfo.maxOpenInterestShort),
 
+            maxCollateralSumLongTokenLong: 0n,
+            maxCollateralSumLongTokenShort: 0n,
+            maxCollateralSumShortTokenLong: 0n,
+            maxCollateralSumShortTokenShort: 0n,
+
             borrowingFactorLong: 0n,
             borrowingFactorShort: 0n,
             borrowingExponentFactorLong: 0n,
@@ -199,11 +207,14 @@ export function useFastMarketsInfoRequest(chainId: number, { enabled = true }: {
             fundingFactor: BigInt(mInfo.fundingFactor),
             fundingExponentFactor: BigInt(mInfo.fundingExponentFactor),
             fundingIncreaseFactorPerSecond: BigInt(mInfo.fundingIncreaseFactorPerSecond),
+            minFundingIncreaseRatePerSecond: BigInt(mInfo.minFundingIncreaseRatePerSecond),
             fundingDecreaseFactorPerSecond: BigInt(mInfo.fundingDecreaseFactorPerSecond),
             thresholdForStableFunding: BigInt(mInfo.thresholdForStableFunding),
             thresholdForDecreaseFunding: BigInt(mInfo.thresholdForDecreaseFunding),
-            minFundingFactorPerSecond: BigInt(mInfo.minFundingFactorPerSecond),
-            maxFundingFactorPerSecond: BigInt(mInfo.maxFundingFactorPerSecond),
+            minFundingFactorPerSecondLong: BigInt(mInfo.minFundingFactorPerSecondLong),
+            minFundingFactorPerSecondShort: BigInt(mInfo.minFundingFactorPerSecondShort),
+            maxFundingFactorPerSecondLong: BigInt(mInfo.maxFundingFactorPerSecondLong),
+            maxFundingFactorPerSecondShort: BigInt(mInfo.maxFundingFactorPerSecondShort),
 
             totalBorrowingFees: BigInt(mInfo.totalBorrowingFees),
 

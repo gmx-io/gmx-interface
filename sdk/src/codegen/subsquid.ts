@@ -3031,6 +3031,7 @@ export interface MarketInfo {
   fundingFactor: Scalars["BigInt"]["output"];
   fundingFactorPerSecond: Scalars["BigInt"]["output"];
   fundingIncreaseFactorPerSecond: Scalars["BigInt"]["output"];
+  minFundingIncreaseRatePerSecond: Scalars["BigInt"]["output"];
   id: Scalars["String"]["output"];
   indexTokenAddress: Scalars["String"]["output"];
   isDisabled: Scalars["Boolean"]["output"];
@@ -3047,6 +3048,8 @@ export interface MarketInfo {
   marketTokenAddress: Scalars["String"]["output"];
   marketTokenSupply: Scalars["BigInt"]["output"];
   maxFundingFactorPerSecond: Scalars["BigInt"]["output"];
+  maxFundingFactorPerSecondLong: Scalars["BigInt"]["output"];
+  maxFundingFactorPerSecondShort: Scalars["BigInt"]["output"];
   maxLendableImpactFactor: Scalars["BigInt"]["output"];
   maxLendableImpactFactorForWithdrawals: Scalars["BigInt"]["output"];
   maxLendableImpactUsd: Scalars["BigInt"]["output"];
@@ -3066,6 +3069,8 @@ export interface MarketInfo {
   minCollateralFactorForOpenInterestLong: Scalars["BigInt"]["output"];
   minCollateralFactorForOpenInterestShort: Scalars["BigInt"]["output"];
   minFundingFactorPerSecond: Scalars["BigInt"]["output"];
+  minFundingFactorPerSecondLong: Scalars["BigInt"]["output"];
+  minFundingFactorPerSecondShort: Scalars["BigInt"]["output"];
   minPositionImpactPoolAmount: Scalars["BigInt"]["output"];
   openInterestReserveFactorLong: Scalars["BigInt"]["output"];
   openInterestReserveFactorShort: Scalars["BigInt"]["output"];
@@ -3215,6 +3220,12 @@ export enum MarketInfoOrderByInput {
   fundingIncreaseFactorPerSecond_DESC = "fundingIncreaseFactorPerSecond_DESC",
   fundingIncreaseFactorPerSecond_DESC_NULLS_FIRST = "fundingIncreaseFactorPerSecond_DESC_NULLS_FIRST",
   fundingIncreaseFactorPerSecond_DESC_NULLS_LAST = "fundingIncreaseFactorPerSecond_DESC_NULLS_LAST",
+  minFundingIncreaseRatePerSecond_ASC = "minFundingIncreaseRatePerSecond_ASC",
+  minFundingIncreaseRatePerSecond_ASC_NULLS_FIRST = "minFundingIncreaseRatePerSecond_ASC_NULLS_FIRST",
+  minFundingIncreaseRatePerSecond_ASC_NULLS_LAST = "minFundingIncreaseRatePerSecond_ASC_NULLS_LAST",
+  minFundingIncreaseRatePerSecond_DESC = "minFundingIncreaseRatePerSecond_DESC",
+  minFundingIncreaseRatePerSecond_DESC_NULLS_FIRST = "minFundingIncreaseRatePerSecond_DESC_NULLS_FIRST",
+  minFundingIncreaseRatePerSecond_DESC_NULLS_LAST = "minFundingIncreaseRatePerSecond_DESC_NULLS_LAST",
   id_ASC = "id_ASC",
   id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
   id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
@@ -3838,6 +3849,15 @@ export interface MarketInfoWhereInput {
   fundingIncreaseFactorPerSecond_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   fundingIncreaseFactorPerSecond_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   fundingIncreaseFactorPerSecond_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minFundingIncreaseRatePerSecond_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minFundingIncreaseRatePerSecond_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  minFundingIncreaseRatePerSecond_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   id_contains?: InputMaybe<Scalars["String"]["input"]>;
   id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   id_endsWith?: InputMaybe<Scalars["String"]["input"]>;

@@ -77,7 +77,7 @@ export function getCappedPositionImpactUsd(
   sizeDeltaUsd: bigint,
   isLong: boolean,
   isIncrease: boolean,
-  opts: { fallbackToZero?: boolean; shouldCapNegativeImpact?: boolean } = {}
+  opts: { fallbackToZero?: boolean; shouldCapNegativeImpact?: boolean; sizeDeltaInTokens?: bigint } = {}
 ) {
   sizeDeltaUsd = isIncrease ? sizeDeltaUsd : sizeDeltaUsd * -1n;
 
@@ -148,15 +148,29 @@ export function getPriceImpactForPosition(
   marketInfo: MarketInfo,
   sizeDeltaUsd: bigint,
   isLong: boolean,
-  opts: { fallbackToZero?: boolean } = {}
+  opts: { fallbackToZero?: boolean; sizeDeltaInTokens?: bigint } = {}
 ) {
   const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
   const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);
 
+  // Match v2.2c contract: usdDelta = tokenDelta * midPrice for OI balance
+  let effectiveUsdDelta = sizeDeltaUsd;
+  if (marketInfo.useOpenInterestInTokensForBalance) {
+    const midPrice = getMidPrice(marketInfo.indexToken.prices);
+    if (opts.sizeDeltaInTokens !== undefined && midPrice > 0n) {
+      effectiveUsdDelta = convertToUsd(opts.sizeDeltaInTokens, marketInfo.indexToken.decimals, midPrice)!;
+      if (sizeDeltaUsd < 0n && effectiveUsdDelta > 0n) {
+        effectiveUsdDelta = -effectiveUsdDelta;
+      } else if (sizeDeltaUsd > 0n && effectiveUsdDelta < 0n) {
+        effectiveUsdDelta = -effectiveUsdDelta;
+      }
+    }
+  }
+
   const { currentLongUsd, currentShortUsd, nextLongUsd, nextShortUsd } = getNextOpenInterestParams({
     currentLongUsd: longInterestUsd,
     currentShortUsd: shortInterestUsd,
-    usdDelta: sizeDeltaUsd,
+    usdDelta: effectiveUsdDelta,
     isLong: isLong!,
   });
 
@@ -188,7 +202,7 @@ export function getPriceImpactForPosition(
 
   const virtualInventoryParams = getNextOpenInterestForVirtualInventory({
     virtualInventory: marketInfo.virtualInventoryForPositions,
-    usdDelta: sizeDeltaUsd,
+    usdDelta: effectiveUsdDelta,
     isLong: isLong!,
   });
 
