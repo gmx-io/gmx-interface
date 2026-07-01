@@ -5,6 +5,7 @@ import { cloneElement, Fragment, isValidElement, ReactNode } from "react";
 import { getChainName } from "config/chains";
 import { AnnouncementType, EventData } from "config/events";
 import { getChainIcon } from "config/icons";
+import type { UiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 import Button from "components/Button/Button";
 
@@ -16,12 +17,18 @@ const EMPTY_TOKENS: string[] = [];
 
 type AnnouncementCardProps = {
   event: EventData;
+  uiFlags: UiFlags | undefined;
   searchTokens?: string[];
   isHighlighted?: boolean;
 };
 
-export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS, isHighlighted }: AnnouncementCardProps) {
-  const date = getEventSortDate(event);
+export function AnnouncementCard({
+  event,
+  uiFlags,
+  searchTokens = EMPTY_TOKENS,
+  isHighlighted,
+}: AnnouncementCardProps) {
+  const date = getEventSortDate(event, uiFlags);
   const titleText = reactNodeToText(event.title);
 
   return (
