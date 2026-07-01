@@ -339,6 +339,7 @@ function OrderStatusNotification({
 
       const matchedStatusKey = Object.values(orderStatuses).find((orderStatus) => {
         if (orderStatus.isViewed) return false;
+        if (orderStatus.cancelledTxnHash && pendingOrderData.txnType !== "cancel") return false;
         if (contractOrderKey && orderStatus.key === contractOrderKey) return true;
         if (orderStatus.data && getPendingOrderKey(orderStatus.data) === pendingOrderKey) return true;
         return orderStatus.key === pendingOrderKey;
@@ -355,6 +356,7 @@ function OrderStatusNotification({
       orderStatusKey,
       orderStatuses,
       pendingOrderKey,
+      pendingOrderData.txnType,
       setOrderStatusViewed,
       toastTimestamp,
     ]
@@ -449,10 +451,12 @@ export function OrdersStatusNotificiation({
 
   useEffect(() => {
     Object.values(allOrderStatuses).forEach((orderStatus) => {
-      const isPendingOrderMatch = orderStatus.data && ordersByPendingKey.has(getPendingOrderKey(orderStatus.data));
-      const isContractOrderMatch = ordersByContractKey.has(orderStatus.key);
+      const matchedPendingOrder =
+        ordersByContractKey.get(orderStatus.key) ??
+        (orderStatus.data ? ordersByPendingKey.get(getPendingOrderKey(orderStatus.data)) : undefined);
 
-      if (orderStatus.isViewed || (!isPendingOrderMatch && !isContractOrderMatch)) return;
+      if (orderStatus.isViewed || !matchedPendingOrder) return;
+      if (orderStatus.cancelledTxnHash && matchedPendingOrder.txnType !== "cancel") return;
 
       setMatchedOrderStatusKeys((prev) => [...prev, orderStatus.key]);
       setOrderStatusViewed(orderStatus.key);
