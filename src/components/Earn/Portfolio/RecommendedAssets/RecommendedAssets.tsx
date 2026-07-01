@@ -15,6 +15,7 @@ import {
   isMarketInfo,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { Mode, Operation } from "domain/synthetics/markets/types";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { convertToUsd, getMidPrice, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -368,7 +369,7 @@ function GlvGmxRecommendedAssetItem({
       button={
         <Button
           variant="primary"
-          to={`/pools/details?market=${getGlvOrMarketAddress(glvOrMarketInfo)}`}
+          to={`/pools/details?market=${getGlvOrMarketAddress(glvOrMarketInfo)}&operation=${Operation.Deposit}&mode=${Mode.Single}`}
           onClick={handleClick}
         >
           <Trans>Earn</Trans>

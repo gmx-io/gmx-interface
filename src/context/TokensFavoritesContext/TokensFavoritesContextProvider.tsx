@@ -46,9 +46,9 @@ export const cryptoSubCategoryOptions: CryptoSubCategory[] = ["all", "ai", "laye
 
 export const tradfiSubCategoryOptions: TradfiSubCategory[] = [
   "all",
+  "stocks",
   "pre-ipo",
   "commodities",
-  "stocks",
   "indices",
   "fx",
 ];
