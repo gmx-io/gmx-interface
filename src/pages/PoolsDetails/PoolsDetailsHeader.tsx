@@ -26,6 +26,7 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
 import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
+import { EarningValue } from "components/EarningValue/EarningValue";
 import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
@@ -64,7 +65,11 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
 
-  const { userEarnings } = useUserEarnings(chainId, srcChainId);
+  const {
+    userEarnings,
+    isLoading: isUserEarningsLoading,
+    isUnavailable: isUserEarningsUnavailable,
+  } = useUserEarnings(chainId, srcChainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
   const { isMobile } = useBreakpoints();
@@ -78,6 +83,10 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
 
   const totalBalance = multichainMarketTokenBalances?.totalBalance;
   const marketBalanceUsd = multichainMarketTokenBalances?.totalBalanceUsd;
+  const hasGmBalance = !isGlv && typeof totalBalance === "bigint" && totalBalance > 0n;
+  const shouldShowEarningsFallback =
+    !marketEarnings && hasGmBalance && (isUserEarningsLoading || isUserEarningsUnavailable);
+  const shouldShowEarningsHeader = !isGlv && (marketEarnings || shouldShowEarningsFallback);
 
   const [isOpen, setIsOpen] = useState(true);
 
@@ -204,10 +213,18 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                     }
                   />
                 )}
-                {marketEarnings && (
+                {shouldShowEarningsHeader && (
                   <PoolsDetailsMarketAmount
                     label={<Trans>Total earned fees</Trans>}
-                    value={formatUsd(marketEarnings?.total)}
+                    value={
+                      <EarningValue
+                        value={marketEarnings?.total}
+                        isLoading={!marketEarnings && isUserEarningsLoading}
+                        isAvailable={Boolean(marketEarnings) || !isUserEarningsUnavailable}
+                      >
+                        {(value) => formatUsd(value)}
+                      </EarningValue>
+                    }
                   />
                 )}
               </div>

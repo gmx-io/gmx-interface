@@ -5832,6 +5832,10 @@ msgstr "Sin confirmaciones repetidas de wallet"
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Depositar {gasPaymentTokensText}"
 
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Fee data is temporarily unavailable."
+msgstr "Los datos de comisiones no están disponibles temporalmente."
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr ""
@@ -6556,6 +6560,7 @@ msgstr "Tiempo estimado hasta la liquidación"
 msgid "Mark price for the liquidation"
 msgstr "Precio de referencia de la liquidación"
 
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
 msgstr "Proyectado a partir del APY de los últimos {daysConsidered} días"
@@ -7592,6 +7597,7 @@ msgstr "Superados largos Máx. de {0}"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -8142,6 +8148,7 @@ msgstr "Colateral insuficiente para cubrir los costos de la orden"
 msgid "Unknown shift GM order"
 msgstr "Orden de cambio GM desconocida"
 
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimated fees"
 msgstr ""
