@@ -40,6 +40,10 @@ msgstr "가격 영향 리베이트가 수령되었습니다"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하십시오"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Monthly"
+msgstr "월별"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "추천 코드"
@@ -1227,6 +1231,10 @@ msgstr "이미 사용된 코드입니다"
 msgid "{0} swapped to {1} when executed"
 msgstr "체결 시 {0}이(가) {1}(으)로 스왑됩니다"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Weekly"
+msgstr "주별"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1450,6 +1458,10 @@ msgstr "가상 롱 토큰 ID"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "비활성화 중..."
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period loss"
+msgstr "기간 손실"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -2303,6 +2315,10 @@ msgstr "손절매 업데이트"
 msgid "How do I choose?"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Grouping"
+msgstr "그룹화"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr ""
@@ -2545,7 +2561,7 @@ msgstr "{0} 구매"
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "시프팅은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL"
 msgstr "누적 PnL"
 
@@ -2778,10 +2794,6 @@ msgstr "최소 입금 USD 한도"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}을(를) 초과하여 청산되었습니다."
-
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily profit"
-msgstr "일일 수익"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -4529,6 +4541,10 @@ msgstr "손절매"
 msgid "Enter receiver address"
 msgstr "수신자 주소를 입력하십시오"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Period"
+msgstr "기간"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "Market Swap: 현재 시장 가격으로 토큰을 스왑합니다"
@@ -4629,7 +4645,7 @@ msgstr "GM 풀"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -5555,6 +5571,10 @@ msgstr "스탑 마켓 실패"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "설정"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Daily"
+msgstr "일별"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing limit order in WETH-USDC pool but lacks liquidity for this order"
@@ -7436,7 +7456,6 @@ msgstr "규모"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "부터"
 
@@ -8852,7 +8871,7 @@ msgid "Claims"
 msgstr "청구"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "일자"
 
@@ -10095,7 +10114,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "No data available"
 msgstr "데이터 없음"
 
@@ -10647,10 +10666,6 @@ msgstr ""
 msgid "24H VOL."
 msgstr "24시간 거래량"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily loss"
-msgstr "일일 손실"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "GMX 팀과 익명 채팅"
@@ -10733,7 +10748,7 @@ msgstr "델타 중립 볼트"
 msgid "Sending shift request..."
 msgstr "시프트 요청을 전송하는 중…"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
 
@@ -10863,6 +10878,10 @@ msgstr "{glvOrGm} 입금"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet GMX"
 msgstr ""
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period profit"
+msgstr "기간 수익"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Debug settings"

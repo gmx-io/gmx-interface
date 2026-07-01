@@ -40,6 +40,10 @@ msgstr "Preiseinfluss-Rückerstattungen beansprucht"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "Oder aktualisieren Sie den RPC Ihres Wallets über <0>chainlist.org</0>"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Monthly"
+msgstr "Monatlich"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "EMPFEHLUNGSCODE"
@@ -1227,6 +1231,10 @@ msgstr "Code bereits vergeben"
 msgid "{0} swapped to {1} when executed"
 msgstr "{0} wird bei Ausführung in {1} getauscht"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Weekly"
+msgstr "Wöchentlich"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1450,6 +1458,10 @@ msgstr "Virtuelle Long-Token-ID"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "Deaktivieren..."
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period loss"
+msgstr "Verlust im Zeitraum"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -2303,6 +2315,10 @@ msgstr "Stop-Loss aktualisieren"
 msgid "How do I choose?"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Grouping"
+msgstr "Gruppierung"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr ""
@@ -2545,7 +2561,7 @@ msgstr "Kaufe {0}"
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Shifting nur verfügbar auf {chainNames}. Wechseln Sie das Netzwerk, um fortzufahren."
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL"
 msgstr "Kumulativer Gewinn/Verlust"
 
@@ -2778,10 +2794,6 @@ msgstr "Strengste Einzahlungskapazität in USD"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "Liquidiert, da der maximale Hebel von {formattedMaxLeverage} unter Berücksichtigung der Gebühren überschritten wurde."
-
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily profit"
-msgstr "Täglicher Gewinn"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -4529,6 +4541,10 @@ msgstr "Stop-Loss"
 msgid "Enter receiver address"
 msgstr "Empfängeradresse eingeben"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Period"
+msgstr "Zeitraum"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "Market Swap: Tauschen Sie Token zum aktuellen Marktpreis"
@@ -4629,7 +4645,7 @@ msgstr "GM Pools"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -5555,6 +5571,10 @@ msgstr "Fehlgeschlagener Stop Market"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "Einstellungen"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Daily"
+msgstr "Täglich"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing limit order in WETH-USDC pool but lacks liquidity for this order"
@@ -7436,7 +7456,6 @@ msgstr "GRÖSSE"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "Von"
 
@@ -8852,7 +8871,7 @@ msgid "Claims"
 msgstr "Beanspruchungen"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "Datum"
 
@@ -10095,7 +10114,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "No data available"
 msgstr "Keine Daten verfügbar"
 
@@ -10647,10 +10666,6 @@ msgstr ""
 msgid "24H VOL."
 msgstr "24H VOL."
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily loss"
-msgstr "Täglicher Verlust"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "Anonymer Chat mit GMX-Team"
@@ -10733,7 +10748,7 @@ msgstr "Deltaneutrale Vaults"
 msgid "Sending shift request..."
 msgstr "Shift-Anfrage wird gesendet…"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
 
@@ -10863,6 +10878,10 @@ msgstr "{glvOrGm} einzahlen"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet GMX"
 msgstr ""
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period profit"
+msgstr "Gewinn im Zeitraum"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Debug settings"

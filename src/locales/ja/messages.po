@@ -40,6 +40,10 @@ msgstr "価格への影響リベートを受け取りました"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "または<0>chainlist.org</0>からウォレットのRPCを更新してください"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Monthly"
+msgstr "月次"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "REFERRAL CODE"
@@ -1227,6 +1231,10 @@ msgstr "そのコードは既に使用されています"
 msgid "{0} swapped to {1} when executed"
 msgstr "約定時に {0} が {1} にスワップされます"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Weekly"
+msgstr "週次"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1450,6 +1458,10 @@ msgstr "仮想ロングトークン ID"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "無効化中..."
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period loss"
+msgstr "期間損失"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -2303,6 +2315,10 @@ msgstr "ストップロスを更新"
 msgid "How do I choose?"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Grouping"
+msgstr "グループ化"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr ""
@@ -2545,7 +2561,7 @@ msgstr "{0}を購入"
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "シフトは{chainNames}でのみ利用可能です。続行するにはネットワークを切り替えてください。"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL"
 msgstr "累積PnL"
 
@@ -2778,10 +2794,6 @@ msgstr "最も厳しい入金USD容量"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "手数料を考慮した結果、最大レバレッジ{formattedMaxLeverage}を超えたため清算されました。"
-
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily profit"
-msgstr "日次利益"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -4529,6 +4541,10 @@ msgstr "ストップロス"
 msgid "Enter receiver address"
 msgstr "受取アドレスを入力"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Period"
+msgstr "期間"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "スワップ Market: 現在の市場価格でトークンをスワップします"
@@ -4629,7 +4645,7 @@ msgstr "GM プール"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "PnL"
 msgstr "損益"
 
@@ -5555,6 +5571,10 @@ msgstr "ストップマーケット失敗"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "設定"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Daily"
+msgstr "日次"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing limit order in WETH-USDC pool but lacks liquidity for this order"
@@ -7436,7 +7456,6 @@ msgstr "サイズ"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "から"
 
@@ -8852,7 +8871,7 @@ msgid "Claims"
 msgstr "請求"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "日付"
 
@@ -10095,7 +10114,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "No data available"
 msgstr "データなし"
 
@@ -10647,10 +10666,6 @@ msgstr ""
 msgid "24H VOL."
 msgstr "24時間取引量"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily loss"
-msgstr "日次損失"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "GMXチームとの匿名チャット"
@@ -10733,7 +10748,7 @@ msgstr "デルタニュートラルボールト"
 msgid "Sending shift request..."
 msgstr "シフトリクエストを送信中…"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
 
@@ -10863,6 +10878,10 @@ msgstr "{glvOrGm}を入金"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet GMX"
 msgstr ""
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period profit"
+msgstr "期間利益"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Debug settings"

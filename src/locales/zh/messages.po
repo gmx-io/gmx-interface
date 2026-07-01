@@ -40,6 +40,10 @@ msgstr "价格影响返还已领取"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "或通过 <0>chainlist.org</0> 更新您钱包的 RPC"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Monthly"
+msgstr "每月"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "推荐码"
@@ -1227,6 +1231,10 @@ msgstr "代码已被使用"
 msgid "{0} swapped to {1} when executed"
 msgstr "执行时 {0} 将兑换为 {1}"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Weekly"
+msgstr "每周"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1450,6 +1458,10 @@ msgstr "虚拟做多代币 ID"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "停用中..."
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period loss"
+msgstr "期间亏损"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -2303,6 +2315,10 @@ msgstr "更新止损"
 msgid "How do I choose?"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Grouping"
+msgstr "分组"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr ""
@@ -2545,7 +2561,7 @@ msgstr "购买 {0}"
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "转换仅在 {chainNames} 上可用。请切换网络以继续。"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL"
 msgstr "累积盈亏"
 
@@ -2778,10 +2794,6 @@ msgstr "最严格的 USD 存入容量"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "在计入费用后超出最大杠杆 {formattedMaxLeverage}，仓位已被清算。"
-
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily profit"
-msgstr "每日盈利"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -4529,6 +4541,10 @@ msgstr "止损"
 msgid "Enter receiver address"
 msgstr "输入接收方地址"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Period"
+msgstr "期间"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "Market Swap：以当前市场价格兑换代币"
@@ -4629,7 +4645,7 @@ msgstr "GM 池"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -5555,6 +5571,10 @@ msgstr "止损市价失败"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "设置"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Daily"
+msgstr "每日"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing limit order in WETH-USDC pool but lacks liquidity for this order"
@@ -7436,7 +7456,6 @@ msgstr "规模"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "从"
 
@@ -8852,7 +8871,7 @@ msgid "Claims"
 msgstr "领取"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "日期"
 
@@ -10095,7 +10114,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "No data available"
 msgstr "无可用数据"
 
@@ -10647,10 +10666,6 @@ msgstr ""
 msgid "24H VOL."
 msgstr "24 小时交易量"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily loss"
-msgstr "每日亏损"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "与 GMX 团队匿名聊天"
@@ -10733,7 +10748,7 @@ msgstr "Delta 中性金库"
 msgid "Sending shift request..."
 msgstr "正在发送转移请求…"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
 
@@ -10863,6 +10878,10 @@ msgstr "存入 {glvOrGm}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet GMX"
 msgstr ""
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period profit"
+msgstr "期间盈利"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Debug settings"

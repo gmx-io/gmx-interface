@@ -1,6 +1,9 @@
 import { t } from "@lingui/macro";
-import { format as formatDateFn, isToday, isYesterday, set as setTime } from "date-fns";
+import { format as formatDateFn, isToday, isYesterday } from "date-fns";
 import { useMemo, useState } from "react";
+
+export type DateRange = [startDate: Date | undefined, endDate: Date | undefined];
+export type SetDateRange = (dateRange: DateRange) => void;
 
 export function formatDateTime(time: number) {
   return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a");
@@ -47,42 +50,33 @@ export function getDaysAgo(timestamp: number) {
   return Math.floor(diff / 86400);
 }
 
-function toSeconds(date: Date) {
-  return Math.round(date.getTime() / 1000);
-}
-
 export function toUtcDayStart(date: Date) {
   const dateUtcSeconds = Math.trunc(date.getTime() / 1000);
 
   return Math.trunc(dateUtcSeconds / 86400) * 86400;
 }
 
-const START_OF_DAY_DURATION = {
-  hours: 0,
-  minutes: 0,
-  seconds: 0,
-  milliseconds: 0,
-};
+export function toUtcDayStartByCalendarDate(date: Date) {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 1000;
+}
 
-const INCLUDING_CURRENT_DAY_DURATION = {
-  hours: 23,
-  minutes: 59,
-  seconds: 59,
-  milliseconds: 0,
-};
+export function toUtcDayEndByCalendarDate(date: Date) {
+  return toUtcDayStartByCalendarDate(date) + SECONDS_IN_DAY - 1;
+}
 
 export function normalizeDateRange<S extends Date | undefined, E extends Date | undefined>(
   start: S,
   end: E
 ): [S extends Date ? number : undefined, E extends Date ? number : undefined] {
-  const fromTxTimestamp = start ? toSeconds(setTime(start, START_OF_DAY_DURATION)) : undefined;
-  const toTxTimestamp = end ? toSeconds(setTime(end, INCLUDING_CURRENT_DAY_DURATION)) : undefined;
+  const fromTxTimestamp = start ? toUtcDayStartByCalendarDate(start) : undefined;
+  const toTxTimestamp = end ? toUtcDayEndByCalendarDate(end) : undefined;
 
   return [fromTxTimestamp, toTxTimestamp] as [S extends Date ? number : undefined, E extends Date ? number : undefined];
 }
 
 /**
- * Normalizes timestamps to start of the day and end of the day respectively
+ * Normalizes the picked calendar dates to UTC day bounds (start of the first day, end of the last day),
+ * matching the UTC daily buckets used by analytics data
  */
 export function useNormalizeDateRange(
   start: Date | undefined,
@@ -96,10 +90,7 @@ export function useNormalizeDateRange(
  * By default, the date range is undefined
  */
 export function useDateRange() {
-  const [dateRange, setDateRange] = useState<[startDate: Date | undefined, endDate: Date | undefined]>([
-    undefined,
-    undefined,
-  ]);
+  const [dateRange, setDateRange] = useState<DateRange>([undefined, undefined]);
 
   const startDate = dateRange[0];
   const endDate = dateRange[1];

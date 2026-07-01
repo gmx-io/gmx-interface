@@ -2,3 +2,27 @@
   /* Last tick is too close to edge. https://github.com/recharts/recharts/issues/661#issuecomment-297588801 */
   visibility: hidden;
 }
+
+.DailyAndCumulativePnL-chartInteraction {
+  cursor: zoom-in;
+  touch-action: pan-y;
+}
+
+.DailyAndCumulativePnL-chartInteraction * {
+  cursor: inherit !important;
+}
+
+.DailyAndCumulativePnL-chartInteraction--zoomed {
+  cursor: grab;
+}
+
+.DailyAndCumulativePnL-chartInteraction[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.DailyAndCumulativePnL-chartInteraction[data-suppress-hover="true"] .recharts-tooltip-wrapper,
+.DailyAndCumulativePnL-chartInteraction[data-suppress-hover="true"] .recharts-tooltip-cursor,
+.DailyAndCumulativePnL-chartInteraction[data-suppress-hover="true"] .recharts-active-dot,
+.DailyAndCumulativePnL-chartInteraction[data-suppress-hover="true"] .recharts-active-shape {
+  display: none !important;
+}

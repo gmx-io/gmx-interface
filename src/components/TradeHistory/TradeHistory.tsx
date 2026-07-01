@@ -9,7 +9,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
-import { useDateRange, useNormalizeDateRange } from "lib/dates";
+import { useDateRange, useNormalizeDateRange, type DateRange, type SetDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -48,13 +48,18 @@ type Props = {
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
+  dateRange?: DateRange;
+  setDateRange?: SetDateRange;
 };
 
 export function TradeHistory(p: Props) {
   const { forAllAccounts, account, hideDashboardLink = false } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
-  const [startDate, endDate, setDateRange] = useDateRange();
+  const [localStartDate, localEndDate, setLocalDateRange] = useDateRange();
+  const startDate = p.dateRange ? p.dateRange[0] : localStartDate;
+  const endDate = p.dateRange ? p.dateRange[1] : localEndDate;
+  const setDateRange = p.setDateRange ?? setLocalDateRange;
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
 

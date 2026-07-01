@@ -1,9 +1,11 @@
 import { Trans, t } from "@lingui/macro";
+import { useMemo } from "react";
 import { useMedia } from "react-use";
 import { isAddress } from "viem";
 
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
+import { useDateRange, type DateRange } from "lib/dates";
 
 import AddressView from "components/AddressView/AddressView";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -21,6 +23,8 @@ export function AccountDashboard() {
   const isMobile = useMedia("(max-width: 600px)");
 
   const { chainId, version, account } = usePageParams(initialChainId);
+  const [startDate, endDate, setDateRange] = useDateRange();
+  const dateRange = useMemo<DateRange>(() => [startDate, endDate], [endDate, startDate]);
 
   const header = <ChainContentHeader chainId={chainId} />;
 
@@ -57,14 +61,19 @@ export function AccountDashboard() {
           <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode={false}>
             <div className="flex flex-col gap-8">
               <div className="flex flex-row flex-wrap gap-8">
-                <div className="max-w-full grow-[2] *:size-full">
+                <div className="max-w-full grow *:size-full">
                   <GeneralPerformanceDetails chainId={chainId} account={account} />
                 </div>
                 <div className="grow *:size-full">
-                  <DailyAndCumulativePnL chainId={chainId} account={account} />
+                  <DailyAndCumulativePnL
+                    chainId={chainId}
+                    account={account}
+                    dateRange={dateRange}
+                    setDateRange={setDateRange}
+                  />
                 </div>
               </div>
-              <HistoricalLists chainId={chainId} account={account} />
+              <HistoricalLists chainId={chainId} account={account} dateRange={dateRange} setDateRange={setDateRange} />
             </div>
           </SyntheticsStateContextProvider>
         )}
