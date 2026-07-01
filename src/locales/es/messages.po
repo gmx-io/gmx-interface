@@ -75,6 +75,7 @@ msgstr "Reinvierte automáticamente sus recompensas de GMX sin necesidad de recl
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "Desconectar"
 
@@ -159,6 +160,7 @@ msgid "Create TWAP Swap"
 msgstr "Crear Intercambio TWAP"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Estimated time"
@@ -455,7 +457,6 @@ msgstr "Doble exposición a {indexSymbol} por posición y garantía. Precio de l
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX Account balance"
@@ -464,6 +465,10 @@ msgstr "Saldo de GMX Account"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
 msgstr "Buscar en mercados perpetuos"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Address copied!"
+msgstr "¡Dirección copiada!"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
@@ -509,6 +514,8 @@ msgstr ""
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "Precio del Oracle no válido para {tokenSymbol}"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "Seleccionar token"
@@ -914,6 +921,10 @@ msgstr "Impacto en el precio neto y comisiones de su operación. <0>Más informa
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "Los precios son volátiles. <0>Aumente el deslizamiento permitido</0>"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
+msgstr "¡Solo envíe <0>activos compatibles con {chainName}</0> a esta dirección!"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -1581,6 +1592,8 @@ msgstr "Red de destino"
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Deposit to GMX Account"
 msgstr "Depositar en Cuenta GMX"
 
@@ -2176,6 +2189,10 @@ msgstr "DefiLlama"
 msgid "Daily and cumulative PnL"
 msgstr "PnL diario y acumulado"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Amount is below the transfer limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
+msgstr "El importe está por debajo del límite de transferencia. Pruebe con un importe superior a <0>{lowerLimitFormatted}</0>."
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "Las posiciones {longOrShort} no pagan comisión de financiación y pagan una comisión de préstamo del {borrowRate} por hora"
@@ -2460,6 +2477,12 @@ msgstr "Permitir gasto de {0}"
 msgid "Swap debug"
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
+msgid "Deposit to Wallet"
+msgstr "Depositar en Monedero"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2589,6 +2612,7 @@ msgstr "{txnTypeText} {0} orden para"
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Max"
@@ -2738,6 +2762,7 @@ msgid "High slippage set. Current swap impact: {0}."
 msgstr "Deslizamiento alto establecido. Impacto actual del intercambio: {0}."
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Instant"
 msgstr "Instantáneo"
@@ -2873,6 +2898,7 @@ msgid "Deposit from {sourceChainName} failed"
 msgstr "Depósito desde {sourceChainName} fallido"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Copy address"
 msgstr "Copiar dirección"
 
@@ -3123,10 +3149,6 @@ msgstr "Falló la reclamación de tarifas de funding"
 msgid "TVL"
 msgstr "TVL"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
-msgstr "Su saldo de GMX Account, utilizable para operar desde cualquier cadena compatible. <0>Más información</0>."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI trading assistant"
 msgstr "Asistente de trading con IA"
@@ -3156,6 +3178,7 @@ msgstr "Aún no hay activos"
 msgid "AB flags"
 msgstr "AB flags"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet & GMX Account"
 msgstr "Monedero y GMX Account"
@@ -3712,6 +3735,7 @@ msgstr "Días máximos antes de que se requiera reautorización"
 msgid "Minimum {0} capital required for rankings"
 msgstr "Se requiere un capital mínimo de {0} para las clasificaciones"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "Enviando..."
@@ -3744,10 +3768,18 @@ msgstr "Comisión de financiación"
 msgid "{0}"
 msgstr "{0}"
 
+#: src/domain/multichain/progress/walletCrossChainSendToast.tsx
+msgid "Sending {0} to {1}"
+msgstr "Enviando {0} a {1}"
+
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "Cumulative"
 msgstr ""
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Enter amount"
+msgstr "Ingresa un importe"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3838,6 +3870,15 @@ msgstr "Puestos 4-18"
 msgid "Set acceptable price impact"
 msgstr "Establecer impacto en el precio aceptable"
 
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Send"
+msgstr "Enviar"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 volume"
 msgstr "Volumen V1"
@@ -3862,6 +3903,10 @@ msgstr "No hay tokens elegibles disponibles en {0} para depósito"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "Stop-Loss Decrease"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Wallet balance"
+msgstr "Saldo del monedero"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4015,6 +4060,11 @@ msgstr "VALOR DEL POOL"
 msgid "Unstake completed"
 msgstr "Unstakear completado"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Export wallet"
+msgstr "Exportar monedero"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "20s"
 msgstr "20s"
@@ -4145,6 +4195,10 @@ msgstr "Los monederos inteligentes no son compatibles con Express Trading ni con
 msgid "Executed"
 msgstr "Ejecutada"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Amount exceeds the transfer limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr "El importe excede el límite de transferencia. Pruebe con un importe inferior a <0>{upperLimitFormatted}</0>."
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 volume"
 msgstr "Volumen V2"
@@ -4244,6 +4298,10 @@ msgstr "Copiar usuarios"
 msgid "Realized swap impact"
 msgstr "Impacto de intercambio realizado"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Enter recipient address"
+msgstr "Ingresa la dirección del destinatario"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
 msgstr "Desglosar impacto neto en el precio"
@@ -4321,9 +4379,17 @@ msgstr "Crear Stop-Loss"
 msgid "Direction"
 msgstr "Dirección"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using funds directly from your connected wallet. GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
+msgstr "Puede abrir posiciones aisladas en GMX utilizando fondos directamente desde su monedero conectado. GMX Account no está disponible en {chainName}. Para utilizar GMX Account, cambie a Arbitrum."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
 msgstr "Factor base de préstamo largo"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Recipient address"
+msgstr "Dirección del destinatario"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "VOL."
@@ -4408,7 +4474,6 @@ msgstr "<0><1>@GMX_IO</1> establece una asociación de datos con Token Terminal.
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
-#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -4471,10 +4536,6 @@ msgstr "Ingresa cantidad de retiro"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "Órdenes activas"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
-msgstr "Los depósitos en Avalanche están desactivados. Opere directamente desde su monedero de Avalanche."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buying GM unavailable"
@@ -4592,6 +4653,7 @@ msgid "Failed to load order data:"
 msgstr "Error al cargar los datos de la orden:"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "Red"
 
@@ -5067,6 +5129,8 @@ msgstr "<0>GMX ejecuta operaciones contra un pool de liquidez equilibrado dinám
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -5343,7 +5407,6 @@ msgid "tBTC LP incentives"
 msgstr "Incentivos de tBTC LP"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "PnL analysis"
 msgstr "Análisis de PnL"
@@ -5363,6 +5426,10 @@ msgstr "Shifting solo disponible en {chainNames} o {lastChainName}. Cambie de re
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "PnL Analysis"
+msgstr "Análisis de PnL"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -5601,6 +5668,11 @@ msgstr "GMX vault"
 msgid "Sending settle request..."
 msgstr "Enviando solicitud de liquidación..."
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Sending {0} to {1} is not supported"
+msgstr "El envío de {0} a {1} no está soportado"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Creator"
@@ -5767,10 +5839,6 @@ msgstr "Propuestas de GMX"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
-msgstr ""
-
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
-msgid "To trade on GMX, deposit assets into your GMX Account"
 msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -6049,10 +6117,6 @@ msgstr "Saldo de {fromSymbol} insuficiente. Token de Gas cambiado a {toSymbol}"
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
 
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
-msgid "Available to pay"
-msgstr "Disponible para pagar"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Firebird Finance"
 msgstr "Firebird Finance"
@@ -6305,6 +6369,7 @@ msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "No se puede retirar la garantía. La garantía restante quedaría por debajo del mínimo"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
@@ -6668,6 +6733,7 @@ msgid "How do I share my code?"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
 msgstr "1m 40s"
@@ -6745,6 +6811,7 @@ msgid "Cancel TWAP Swap"
 msgstr "Cancelar Intercambio TWAP"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/domain/multichain/progress/walletCrossChainSendToast.tsx
 msgid "Transaction"
 msgstr "Transacción"
 
@@ -6768,6 +6835,10 @@ msgstr "comprar"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
 msgstr "Capital utilizado"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "{chainName} address"
+msgstr "Dirección de {chainName}"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Current endpoints ({0})"
@@ -6825,6 +6896,7 @@ msgid "Order error. Prices are volatile for this market, try again by <0>increas
 msgstr "Error de orden. Los precios son volátiles en este mercado, inténtelo de nuevo <0>aumentando el deslizamiento permitido</0>"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset"
 msgstr "Activo"
@@ -7571,6 +7643,7 @@ msgstr "Ingresa cantidad de depósito"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -7637,7 +7710,6 @@ msgstr "{formattedNetRate} / 1h"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Balance"
 msgstr "Balance"
@@ -7835,6 +7907,11 @@ msgstr "Precios de ejecución para incrementar cortos<0/>y reducir largos"
 msgid "of open fee"
 msgstr "de comisión de apertura"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Sent"
+msgstr "Enviado"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "Utilice esta opción únicamente para transferencias completas de cuenta.<0/>Se transferirán todos sus GMX, esGMX, GLP, Multiplier Points y poder de voto a su nueva cuenta.<1/>Las transferencias solo son posibles si la cuenta receptora no ha tenido GMX o GLP en staking anteriormente.<2/>Las transferencias son unidireccionales; no podrá devolver los tokens en staking a la cuenta de origen."
@@ -7964,6 +8041,7 @@ msgid "Copy"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
 msgstr "Importe"
@@ -8470,7 +8548,6 @@ msgstr "Comprar GM con {0} y {1} hasta los límites indicados a continuación"
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/PositionEditor/types.ts
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
@@ -8569,6 +8646,7 @@ msgstr "Reclamar <0>{0}</0>"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -8786,6 +8864,11 @@ msgstr "Cuenta estándar"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive (approximate)"
 msgstr "Recibir (aproximado)"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Send failed"
+msgstr "Envío fallido"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid Ethereum address"
@@ -9058,6 +9141,10 @@ msgstr "Vender {operationTokenSymbol}"
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 msgstr ""
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Connected to {sourceChainName}. Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
+msgstr "Conectado a {sourceChainName}. Los fondos del monedero en esta red pueden depositarse en GMX Account para operar en {settlementChainName}. Para operar directamente con el saldo del monedero de {settlementChainName}, <0>cambie a {settlementChainName}</0>."
+
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -9234,6 +9321,10 @@ msgstr "Ajustar apalancamiento"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Amount is below the deposit limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "El importe está por debajo del límite de depósito. Pruebe con un importe superior a <0>{lowerLimitFormatted}</0>."
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "GMX Account Balance"
+msgstr "Saldo de GMX Account"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
@@ -9483,6 +9574,10 @@ msgstr "Terminal de trading con apalancamiento"
 msgid "Receiver address"
 msgstr "Dirección del destinatario"
 
+#: src/domain/multichain/progress/walletCrossChainSendToast.tsx
+msgid "Received on {0}"
+msgstr "Recibido en {0}"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
 msgstr ""
@@ -9621,13 +9716,12 @@ msgid "Vested claimable GMX:"
 msgstr "GMX adquirido reclamable:"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
@@ -9673,6 +9767,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
 msgstr "Seleccionar red"
@@ -9784,6 +9879,10 @@ msgstr "HoudiniSwap"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge in failed"
 msgstr "El puente de entrada ha fallado"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Invalid recipient address"
+msgstr "Dirección del destinatario no válida"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -9957,9 +10056,10 @@ msgstr "Factor de uso óptimo largo"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Wallet"
 msgstr "Monedero"
 
@@ -10015,10 +10115,6 @@ msgstr "LIQUIDEZ LARGO"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "PnL corto"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "All assets"
-msgstr "Todos los activos"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
@@ -10107,6 +10203,11 @@ msgstr "Red para su GMX Account y posiciones. Los saldos y las posiciones no se 
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "La liquidez solo está disponible en {chainNames} o {lastChainName}. Cambie de red para continuar."
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Transfer history"
+msgstr "Historial de transferencias"
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
 msgstr ""
@@ -10138,10 +10239,6 @@ msgstr "Pruebas de permisos de tokens"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "Precio de liquidación no válido"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Available to trade"
-msgstr "Disponible para negociar"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"
@@ -10228,7 +10325,6 @@ msgid "Depositing to GMX Account..."
 msgstr "Depositando en GMX Account..."
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 msgid "Address copied"
 msgstr "Dirección copiada"
 
@@ -10425,6 +10521,10 @@ msgstr "Acciones de GMX V1"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "Índices"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using your GMX Account. Wallet funds on {sourceChainName} are not used directly for GMX trades. GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
+msgstr "Puede abrir posiciones aisladas en GMX utilizando su GMX Account. Los fondos del monedero en {sourceChainName} no se utilizan directamente para las operaciones de GMX. GMX Account utiliza un saldo de trading independiente vinculado a su monedero. Para operar, deposite fondos desde su monedero a su GMX Account. Todas las posiciones pertenecen al mismo monedero conectado y se muestran juntas, ya sea que se hayan abierto con fondos del monedero de {settlementChainName} o con fondos de GMX Account."
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -10806,6 +10906,10 @@ msgstr "Copiar enlace"
 msgid "Referral code created"
 msgstr "Código de referido creado"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account. Wallet uses funds directly from your connected wallet. GMX Account uses a separate trading balance linked to that wallet. To use it, fund it with a deposit to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
+msgstr "Puede abrir posiciones aisladas en GMX utilizando fondos de su monedero o de su GMX Account. Monedero utiliza fondos directamente desde su monedero conectado. GMX Account utiliza un saldo de trading independiente vinculado a ese monedero. Para utilizarla, deposite fondos en su GMX Account. Todas las posiciones pertenecen al mismo monedero conectado y se muestran juntas, ya sea que se hayan abierto con fondos del monedero o con fondos de GMX Account."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Funds bridging to..."
@@ -10815,6 +10919,7 @@ msgstr "Fondos transfiriéndose a..."
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
@@ -10906,11 +11011,8 @@ msgstr "Dirección del destinatario no válida"
 msgid "Withdraw submitted"
 msgstr "Retiro enviado"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Funding activity"
-msgstr "Actividad de financiación"
-
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
 msgstr "Disponible:"
@@ -11004,10 +11106,6 @@ msgstr "Cerrar"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Link"
 msgstr "Enlace"
-
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
-msgid "Available to deposit"
-msgstr "Disponible para depositar"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
@@ -11105,6 +11203,10 @@ msgstr ""
 msgid "Active management"
 msgstr "Gestión activa"
 
+#: src/domain/multichain/progress/walletCrossChainSendToast.tsx
+msgid "Sent on {0}"
+msgstr "Enviado en {0}"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeBank"
 msgstr "DeBank"
@@ -11118,6 +11220,7 @@ msgstr "Incentivo de bonificación GLV (test)"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"
 msgstr "Saldo insuficiente"

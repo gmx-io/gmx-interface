@@ -75,6 +75,7 @@ msgstr "自动复投您的 GMX 奖励，无需手动领取"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "断开连接"
 
@@ -159,6 +160,7 @@ msgid "Create TWAP Swap"
 msgstr "创建 TWAP 交换"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Estimated time"
@@ -455,7 +457,6 @@ msgstr "仓位和抵押品带来双重 {indexSymbol} 敞口。清算价格高于
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX Account balance"
@@ -464,6 +465,10 @@ msgstr "GMX Account 余额"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
 msgstr "搜索永续合约市场"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Address copied!"
+msgstr "地址已复制！"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
@@ -509,6 +514,8 @@ msgstr ""
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "{tokenSymbol} 的 Oracle 价格无效"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "选择代币"
@@ -914,6 +921,10 @@ msgstr "您交易的净价格影响和费用。<0>了解更多</0>。"
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "价格波动剧烈。<0>增加允许的滑点</0>"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
+msgstr "请仅向此地址发送<0>与 {chainName} 兼容的资产</0>！"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -1581,6 +1592,8 @@ msgstr "目标网络"
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Deposit to GMX Account"
 msgstr "存入 GMX 账户"
 
@@ -2176,6 +2189,10 @@ msgstr "DefiLlama"
 msgid "Daily and cumulative PnL"
 msgstr "每日及累计 PnL"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Amount is below the transfer limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
+msgstr "金额低于转账限额。请尝试大于 <0>{lowerLimitFormatted}</0> 的金额。"
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} 仓位无需支付资金费用，每小时支付 {borrowRate} 的借贷费用"
@@ -2460,6 +2477,12 @@ msgstr "授权 {0} 支出"
 msgid "Swap debug"
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
+msgid "Deposit to Wallet"
+msgstr "存入钱包"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2589,6 +2612,7 @@ msgstr "{txnTypeText} {0} 订单为"
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Max"
@@ -2738,6 +2762,7 @@ msgid "High slippage set. Current swap impact: {0}."
 msgstr "滑点设置过高。当前兑换影响：{0}。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Instant"
 msgstr "立即"
@@ -2873,6 +2898,7 @@ msgid "Deposit from {sourceChainName} failed"
 msgstr "从 {sourceChainName} 存入失败"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Copy address"
 msgstr "复制地址"
 
@@ -3123,10 +3149,6 @@ msgstr "申领资金费用失败"
 msgid "TVL"
 msgstr "TVL"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
-msgstr "您的 GMX Account 余额，可从任何支持的链上进行交易。<0>了解更多</0>。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI trading assistant"
 msgstr "AI 交易助手"
@@ -3156,6 +3178,7 @@ msgstr "暂无资产"
 msgid "AB flags"
 msgstr "AB 标志"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet & GMX Account"
 msgstr "钱包 & GMX Account"
@@ -3712,6 +3735,7 @@ msgstr "需要重新授权前的最大天数"
 msgid "Minimum {0} capital required for rankings"
 msgstr "排名需要最低 {0} 的资金"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "发送中..."
@@ -3744,10 +3768,18 @@ msgstr "资金费用"
 msgid "{0}"
 msgstr "{0}"
 
+#: src/domain/multichain/progress/walletCrossChainSendToast.tsx
+msgid "Sending {0} to {1}"
+msgstr "正在发送 {0} 至 {1}"
+
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "Cumulative"
 msgstr ""
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Enter amount"
+msgstr "输入金额"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3838,6 +3870,15 @@ msgstr "第 4-18 名"
 msgid "Set acceptable price impact"
 msgstr "设置可接受的价格影响"
 
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Send"
+msgstr "发送"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 volume"
 msgstr "V1 交易量"
@@ -3862,6 +3903,10 @@ msgstr "在 {0} 上没有符合条件的代币可存入"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "止损减仓"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Wallet balance"
+msgstr "钱包余额"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4015,6 +4060,11 @@ msgstr "POOL VALUE"
 msgid "Unstake completed"
 msgstr "解除质押完成"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Export wallet"
+msgstr "导出钱包"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "20s"
 msgstr "20 秒"
@@ -4145,6 +4195,10 @@ msgstr "智能钱包不支持 Express Trading 或 One-Click Trading"
 msgid "Executed"
 msgstr "已执行"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Amount exceeds the transfer limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr "金额超出转账限额。请尝试低于 <0>{upperLimitFormatted}</0> 的金额。"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 volume"
 msgstr "V2 交易量"
@@ -4244,6 +4298,10 @@ msgstr "复制用户"
 msgid "Realized swap impact"
 msgstr "已实现兑换影响"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Enter recipient address"
+msgstr "输入接收方地址"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
 msgstr "分解净价格影响"
@@ -4321,9 +4379,17 @@ msgstr "创建止损"
 msgid "Direction"
 msgstr "方向"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using funds directly from your connected wallet. GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
+msgstr "您可以使用已连接钱包中的资金直接在 GMX 上开立独立仓位。GMX Account 在 {chainName} 上不可用。如需使用 GMX Account，请切换到 Arbitrum。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
 msgstr "做多基础借贷因子"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Recipient address"
+msgstr "接收地址"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "VOL."
@@ -4408,7 +4474,6 @@ msgstr "<0><1>@GMX_IO</1> 与 Token Terminal 达成数据合作。GMX 是建立�
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
-#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -4471,10 +4536,6 @@ msgstr "输入提取金额"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "活跃订单"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
-msgstr "向 Avalanche 存款已禁用。请直接从您的 Avalanche 钱包进行交易。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buying GM unavailable"
@@ -4592,6 +4653,7 @@ msgid "Failed to load order data:"
 msgstr "加载订单数据失败："
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "网络"
 
@@ -5067,6 +5129,8 @@ msgstr "<0>GMX 与动态平衡的流动性池执行交易，与传统订单簿�
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -5343,7 +5407,6 @@ msgid "tBTC LP incentives"
 msgstr "tBTC LP 激励"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "PnL analysis"
 msgstr "PnL 分析"
@@ -5363,6 +5426,10 @@ msgstr "转换仅在 {chainNames} 或 {lastChainName} 上可用。请切换网�
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "PnL Analysis"
+msgstr "PnL 分析"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -5601,6 +5668,11 @@ msgstr "GMX 金库"
 msgid "Sending settle request..."
 msgstr "正在发送结算请求..."
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Sending {0} to {1} is not supported"
+msgstr "不支持将 {0} 发送至 {1}"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Creator"
@@ -5767,10 +5839,6 @@ msgstr "GMX 提案"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
-msgstr ""
-
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
-msgid "To trade on GMX, deposit assets into your GMX Account"
 msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -6049,10 +6117,6 @@ msgstr "{fromSymbol} 余额不足。Gas 代币已切换为 {toSymbol}"
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
 
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
-msgid "Available to pay"
-msgstr "可用于支付"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Firebird Finance"
 msgstr "Firebird Finance"
@@ -6305,6 +6369,7 @@ msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "无法提取抵押品。剩余抵押品将低于最低要求"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
@@ -6668,6 +6733,7 @@ msgid "How do I share my code?"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
 msgstr "1 分 40 秒"
@@ -6745,6 +6811,7 @@ msgid "Cancel TWAP Swap"
 msgstr "取消 TWAP 交换"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/domain/multichain/progress/walletCrossChainSendToast.tsx
 msgid "Transaction"
 msgstr "交易"
 
@@ -6768,6 +6835,10 @@ msgstr "买入"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
 msgstr "已用资金"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "{chainName} address"
+msgstr "{chainName} 地址"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Current endpoints ({0})"
@@ -6825,6 +6896,7 @@ msgid "Order error. Prices are volatile for this market, try again by <0>increas
 msgstr "订单错误。该市场价格波动剧烈，请尝试<0>增加允许的滑点</0>"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset"
 msgstr "资产"
@@ -7571,6 +7643,7 @@ msgstr "输入存入金额"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -7637,7 +7710,6 @@ msgstr "{formattedNetRate} / 1 小时"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Balance"
 msgstr "余额"
@@ -7835,6 +7907,11 @@ msgstr "做空加仓<0/>和做多减仓的执行价格"
 msgid "of open fee"
 msgstr "开仓费用"
 
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Sent"
+msgstr "已发送"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "仅在完整账户转移时使用此功能。<0/>这将把您所有的 GMX、esGMX、GLP、乘数积分和投票权转移到您的新账户。<1/>仅当接收账户之前未质押过 GMX 或 GLP 代币时才支持转移。<2/>转移是单向的，您将无法将已质押的代币转回发送账户。"
@@ -7964,6 +8041,7 @@ msgid "Copy"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
 msgstr "金额"
@@ -8470,7 +8548,6 @@ msgstr "使用 {0} 和 {1} 买入 GM，上限如下"
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/PositionEditor/types.ts
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
@@ -8569,6 +8646,7 @@ msgstr "领取 <0>{0}</0>"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -8786,6 +8864,11 @@ msgstr "普通账户"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive (approximate)"
 msgstr "收到（近似值）"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Send failed"
+msgstr "发送失败"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid Ethereum address"
@@ -9058,6 +9141,10 @@ msgstr "出售 {operationTokenSymbol}"
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 msgstr ""
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Connected to {sourceChainName}. Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
+msgstr "已连接到 {sourceChainName}。此网络上的钱包资金可存入 GMX Account，用于 {settlementChainName} 交易。如需直接使用 {settlementChainName} 钱包余额进行交易，请<0>切换到 {settlementChainName}</0>。"
+
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -9234,6 +9321,10 @@ msgstr "调整杠杆"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Amount is below the deposit limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "金额低于存入限额。请尝试大于 <0>{lowerLimitFormatted}</0> 的金额。"
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "GMX Account Balance"
+msgstr "GMX Account 余额"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
@@ -9483,6 +9574,10 @@ msgstr "杠杆交易终端"
 msgid "Receiver address"
 msgstr "接收地址"
 
+#: src/domain/multichain/progress/walletCrossChainSendToast.tsx
+msgid "Received on {0}"
+msgstr "已在 {0} 接收"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
 msgstr ""
@@ -9621,13 +9716,12 @@ msgid "Vested claimable GMX:"
 msgstr "已归属可领取的 GMX："
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
@@ -9673,6 +9767,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
 msgstr "选择网络"
@@ -9784,6 +9879,10 @@ msgstr "HoudiniSwap"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge in failed"
 msgstr "跨链桥转入失败"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+msgid "Invalid recipient address"
+msgstr "接收地址无效"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -9957,9 +10056,10 @@ msgstr "做多最优使用率"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Wallet"
 msgstr "钱包"
 
@@ -10015,10 +10115,6 @@ msgstr "LIQUIDITY LONG"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "做空 PnL"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "All assets"
-msgstr "所有资产"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
@@ -10107,6 +10203,11 @@ msgstr "您的 GMX Account 和仓位所在的网络。余额和仓位不会在�
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "流动性仅在 {chainNames} 或 {lastChainName} 上可用。请切换网络以继续。"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Transfer history"
+msgstr "转账历史"
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
 msgstr ""
@@ -10138,10 +10239,6 @@ msgstr "代币许可测试"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "无效的清算价格"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Available to trade"
-msgstr "可用于交易"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"
@@ -10228,7 +10325,6 @@ msgid "Depositing to GMX Account..."
 msgstr "正在存入 GMX Account..."
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 msgid "Address copied"
 msgstr "地址已复制"
 
@@ -10425,6 +10521,10 @@ msgstr "GMX V1 操作"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "指数"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using your GMX Account. Wallet funds on {sourceChainName} are not used directly for GMX trades. GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
+msgstr "您可以使用 GMX Account 在 GMX 上开立独立仓位。{sourceChainName} 上的钱包资金不会直接用于 GMX 交易。GMX Account 使用与您的钱包关联的单独交易余额。如需交易，请将资金从钱包存入您的 GMX Account。所有仓位均归属于同一已连接钱包，无论是通过 {settlementChainName} 钱包资金还是 GMX Account 资金开立，都会一并显示。"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -10806,6 +10906,10 @@ msgstr "复制链接"
 msgid "Referral code created"
 msgstr "推荐码已创建"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account. Wallet uses funds directly from your connected wallet. GMX Account uses a separate trading balance linked to that wallet. To use it, fund it with a deposit to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
+msgstr "您可以使用钱包或 GMX Account 中的资金在 GMX 上开立独立仓位。钱包直接使用您已连接钱包中的资金。GMX Account 使用与该钱包关联的单独交易余额。如需使用，请向您的 GMX Account 存入资金。所有仓位均归属于同一已连接钱包，无论是使用钱包资金还是 GMX Account 资金开立，都会一并显示。"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Funds bridging to..."
@@ -10815,6 +10919,7 @@ msgstr "资金正在跨链转移至..."
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
@@ -10906,11 +11011,8 @@ msgstr "接收地址无效"
 msgid "Withdraw submitted"
 msgstr "提取已提交"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Funding activity"
-msgstr "资金费率活动"
-
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
 msgstr "可用："
@@ -11004,10 +11106,6 @@ msgstr "关闭"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Link"
 msgstr "链接"
-
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
-msgid "Available to deposit"
-msgstr "可存入"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
@@ -11105,6 +11203,10 @@ msgstr ""
 msgid "Active management"
 msgstr "主动管理"
 
+#: src/domain/multichain/progress/walletCrossChainSendToast.tsx
+msgid "Sent on {0}"
+msgstr "已在 {0} 发送"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeBank"
 msgstr "DeBank"
@@ -11118,6 +11220,7 @@ msgstr "GLV 奖金激励（测试）"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"
 msgstr "余额不足"

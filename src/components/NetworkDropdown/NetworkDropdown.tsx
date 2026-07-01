@@ -5,11 +5,15 @@ import partition from "lodash/partition";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
-import { isSettlementChain, isSourceChainForAnySettlementChain } from "config/multichain";
+import {
+  isSourceChainForAnySettlementChain,
+  isValidVisualSettlementChain,
+  isValidVisualSourceChain,
+} from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
 import { switchNetwork } from "lib/wallets";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { AVALANCHE, getChainName, isContractsChain } from "sdk/configs/chains";
+import { getChainName, isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
@@ -67,14 +71,6 @@ export default function NetworkDropdown({
       </Menu>
     </div>
   );
-}
-
-function isValidVisualSettlementChain(chainId: number) {
-  return isSettlementChain(chainId) && chainId !== AVALANCHE;
-}
-
-function isValidVisualSourceChain(chainId: number) {
-  return isSourceChainForAnySettlementChain(chainId) && chainId !== AVALANCHE;
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {

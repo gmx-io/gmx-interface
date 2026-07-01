@@ -8,7 +8,6 @@ import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
-import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -176,8 +175,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const walletIconUrls = useWalletIconUrls();
 
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
-
-  const onDepositTokenAddress = useOpenMultichainDepositModal();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -783,7 +780,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 qa="collateral-selector"
                 tokensData={tokensData}
                 multichainTokens={multichainTokens}
-                onDepositTokenAddress={onDepositTokenAddress}
               />
             ))}
         </BuyInputSection>
@@ -1113,7 +1109,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isIncrease && (
                 <TradeboxMarginFields
                   onSelectFromTokenAddress={handleSelectFromTokenAddress}
-                  onDepositTokenAddress={onDepositTokenAddress}
                   fromTokenInputValue={fromTokenInputValue}
                   setFromTokenInputValue={setFromTokenInputValue}
                   setFocusedInput={setFocusedInput}

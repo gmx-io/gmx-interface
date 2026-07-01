@@ -14,14 +14,18 @@ import { DepositStatusView } from "./DepositStatusView";
 import { DepositView } from "./DepositView";
 import {
   AvailableToTradeAssetsTitle,
+  MainViewTitle,
   TitleRow,
   TitleWithBack,
   TransferDetailsTitle,
+  TransferHistoryScreen,
+  TransferHistoryTitle,
   WithdrawalScreen,
 } from "./GmxAccountModalShared";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
-import { TransferDetailsView } from "./TransferDetailsView";
+import { WalletReceiveView } from "./WalletReceiveView";
+import { WalletSendView } from "./WalletSendView";
 
 function DepositTitle() {
   return (
@@ -55,13 +59,32 @@ function SelectAssetToDepositTitle() {
   );
 }
 
+function DepositToWalletTitle() {
+  return (
+    <TitleWithBack backTo="main">
+      <Trans>Deposit to Wallet</Trans>
+    </TitleWithBack>
+  );
+}
+
+function SendTitle() {
+  return (
+    <TitleWithBack backTo="main">
+      <Trans>Send</Trans>
+    </TitleWithBack>
+  );
+}
+
 const SLIDE_MODAL_LABELS: Record<Exclude<GmxAccountModalView, "depositStatus">, ReactNode> = {
-  main: <Trans>GMX Account</Trans>,
+  main: <MainViewTitle />,
   availableToTradeAssets: <AvailableToTradeAssetsTitle />,
   transferDetails: <TransferDetailsTitle />,
+  transferHistory: <TransferHistoryTitle />,
   deposit: <DepositTitle />,
   withdraw: <WithdrawTitle />,
   selectAssetToDeposit: <SelectAssetToDepositTitle />,
+  walletReceive: <DepositToWalletTitle />,
+  walletSend: <SendTitle />,
 };
 
 export function GmxAccountModalMobile({ account }: { account: string }) {
@@ -93,13 +116,18 @@ export function GmxAccountModalMobile({ account }: { account: string }) {
         disableOverflowHandling={true}
         className="text-body-medium"
         contentPadding={false}
+        hideHeaderBorder
       >
         {view === "main" && <MainView account={account} />}
         {view === "availableToTradeAssets" && <AvailableToTradeAssetsView />}
-        {view === "transferDetails" && <TransferDetailsView />}
+        {(view === "transferHistory" || view === "transferDetails") && (
+          <TransferHistoryScreen showDetails={view === "transferDetails"} />
+        )}
         {view === "deposit" && <DepositView />}
         {view === "selectAssetToDeposit" && <SelectAssetToDepositView />}
         {view === "withdraw" && <WithdrawalScreen />}
+        {view === "walletReceive" && <WalletReceiveView />}
+        {view === "walletSend" && <WalletSendView />}
       </SlideModal>
 
       {isDepositStatus && (

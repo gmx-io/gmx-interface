@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import noop from "lodash/noop";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import {
@@ -13,13 +12,14 @@ import {
   type SourceChainId,
 } from "config/chains";
 import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import type { TokenChainData } from "domain/multichain/types";
 import { getMarketBadge } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, Token, TokensData } from "domain/tokens";
 import { getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import {
   getIsSpotOnlyMarket,
@@ -39,12 +39,15 @@ import Tabs from "components/Tabs/Tabs";
 import type { Option as TabOption } from "components/Tabs/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { ConnectWalletModalContent } from "./ConnectWalletModalContent";
 import type { DisplayToken } from "./types";
 
 import "./TokenSelector.scss";
+
+type BalanceSource = "gmxAccount" | "wallet";
 
 type Props = {
   chainId: ContractsChainId;
@@ -66,8 +69,6 @@ type Props = {
   multichainTokens: TokenChainData[] | undefined;
   includeMultichainTokensInPay?: boolean;
 
-  onDepositTokenAddress?: (tokenAddress: string, chainId: SourceChainId) => void;
-
   isConnected?: boolean;
   walletIconUrls?: string[];
   openConnectModal?: () => void;
@@ -87,13 +88,13 @@ export function MultichainTokenSelector({
   label,
   multichainTokens,
   includeMultichainTokensInPay,
-  onDepositTokenAddress: propsOnDepositTokenAddress = noop,
   isConnected,
   walletIconUrls,
   openConnectModal,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   let token: Token | undefined = isMarketTokenAddress(chainId, tokenAddress)
     ? getToken(chainId, GM_STUB_ADDRESS)
     : getToken(chainId, tokenAddress);
@@ -108,11 +109,6 @@ export function MultichainTokenSelector({
     propsOnSelectTokenAddress(tokenAddress, isGmxAccount, tokenSrcChainId);
   };
 
-  const onDepositTokenAddress = (tokenAddress: string, chainId: SourceChainId) => {
-    setIsModalVisible(false);
-    propsOnDepositTokenAddress(tokenAddress, chainId);
-  };
-
   const isGmxAccountEmpty = useMemo(() => {
     if (!tokensData) return true;
 
@@ -123,12 +119,12 @@ export function MultichainTokenSelector({
     return allEmpty;
   }, [tokensData]);
 
-  const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">("pay");
+  const [activeFilter, setActiveFilter] = useState<BalanceSource>("gmxAccount");
 
   const isAvalancheSettlement = chainId === AVALANCHE;
+  const isGmxAccountOnly = srcChainId !== undefined;
 
   const availableToTradeTokenList = useAvailableToTradeTokenList({
-    activeFilter,
     srcChainId,
     searchKeyword,
     tokensData,
@@ -138,24 +134,23 @@ export function MultichainTokenSelector({
     includeMultichainTokensInPay,
     includeGmxAccountTokens: !isAvalancheSettlement,
   });
-  const multichainTokenList = useMultichainTokensList({
-    searchKeyword,
-    multichainTokens,
-    extendedSortSequence,
-  });
+
+  const gmxAccountTokens = useMemo(
+    () => availableToTradeTokenList.filter((token) => token.balanceType === TokenBalanceType.GmxAccount),
+    [availableToTradeTokenList]
+  );
+  const walletTokens = useMemo(
+    () => availableToTradeTokenList.filter((token) => token.balanceType !== TokenBalanceType.GmxAccount),
+    [availableToTradeTokenList]
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();
-      if (activeFilter === "pay") {
-        if (availableToTradeTokenList.length > 0) {
-          onSelectTokenAddress(availableToTradeTokenList[0].address, availableToTradeTokenList[0].chainId);
-        }
-      } else {
-        if (multichainTokenList.length > 0) {
-          onDepositTokenAddress(multichainTokenList[0].address, multichainTokenList[0].sourceChainId);
-        }
+      const activeList = activeFilter === "gmxAccount" ? gmxAccountTokens : walletTokens;
+      if (activeList.length > 0) {
+        onSelectTokenAddress(activeList[0].address, activeList[0].chainId);
       }
     }
   };
@@ -163,32 +158,34 @@ export function MultichainTokenSelector({
   useEffect(() => {
     if (isModalVisible) {
       setSearchKeyword("");
-
-      if (srcChainId === undefined) {
-        setActiveFilter("pay");
-      } else {
-        if (isGmxAccountEmpty && !includeMultichainTokensInPay && !isAvalancheSettlement) {
-          setActiveFilter("deposit");
-        } else {
-          setActiveFilter("pay");
-        }
-      }
+      const preferredTab: BalanceSource = payChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID ? "gmxAccount" : "wallet";
+      setActiveFilter(
+        isGmxAccountOnly ? "gmxAccount" : isAvalancheSettlement || isGmxAccountEmpty ? "wallet" : preferredTab
+      );
     }
-  }, [
-    includeMultichainTokensInPay,
-    isGmxAccountEmpty,
-    isModalVisible,
-    setSearchKeyword,
-    srcChainId,
-    isAvalancheSettlement,
-  ]);
+  }, [isAvalancheSettlement, isGmxAccountEmpty, isGmxAccountOnly, isModalVisible, payChainId, setSearchKeyword]);
 
-  const tabsOptions: TabOption<"pay" | "deposit">[] = useMemo(() => {
+  const tabsOptions: TabOption<BalanceSource>[] = useMemo(() => {
     return [
-      { value: "pay", label: <Trans>Available to pay</Trans> },
-      { value: "deposit", label: <Trans>Available to deposit</Trans> },
+      { value: "gmxAccount", label: <Trans>GMX Account</Trans> },
+      { value: "wallet", label: <Trans>Wallet</Trans> },
     ];
   }, []);
+
+  const handleFooterClick = () => {
+    setIsModalVisible(false);
+    setGmxAccountModalOpen(activeFilter === "gmxAccount" ? "deposit" : "walletReceive");
+  };
+
+  const modalFooter =
+    isConnected === false ? (
+      footerContent
+    ) : (
+      <Button variant="secondary" size="medium" className="w-full !text-typography-primary" onClick={handleFooterClick}>
+        <ArrowDownIcon className="size-20 text-blue-300" />
+        {activeFilter === "gmxAccount" ? <Trans>Deposit to GMX Account</Trans> : <Trans>Deposit to Wallet</Trans>}
+      </Button>
+    );
 
   if (!token) {
     return null;
@@ -198,26 +195,22 @@ export function MultichainTokenSelector({
     <div className={cx("TokenSelector", className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal text-body-medium"
+        className="TokenSelector-modal MultichainTokenSelector-modal text-body-medium"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
-        footerContent={footerContent}
+        footerContent={modalFooter}
         headerContent={
           isConnected === false ? null : (
-            <div className={cx(!isAvalancheSettlement && "pb-12")}>
+            <div>
               <SearchInput
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 className="mb-16"
                 onKeyDown={handleKeyDown}
               />
-              {isAvalancheSettlement ? null : isGmxAccountEmpty && srcChainId !== undefined ? (
-                <div className="text-body-medium text-typography-secondary">
-                  <Trans>To trade on GMX, deposit assets into your GMX Account</Trans>
-                </div>
-              ) : (
-                <Tabs type="inline" options={tabsOptions} selectedValue={activeFilter} onChange={setActiveFilter} />
+              {!isAvalancheSettlement && !isGmxAccountOnly && (
+                <Tabs type="underline" options={tabsOptions} selectedValue={activeFilter} onChange={setActiveFilter} />
               )}
             </div>
           )
@@ -229,15 +222,21 @@ export function MultichainTokenSelector({
           <ConnectWalletModalContent openConnectModal={openConnectModal} walletIconUrls={walletIconUrls} />
         ) : (
           <>
-            {activeFilter === "pay" && (
+            {activeFilter === "gmxAccount" && (
               <AvailableToTradeTokenList
                 chainId={chainId}
                 onSelectTokenAddress={onSelectTokenAddress}
-                tokens={availableToTradeTokenList}
+                tokens={gmxAccountTokens}
+                className="py-16"
               />
             )}
-            {activeFilter === "deposit" && multichainTokens && (
-              <MultichainTokenList tokens={multichainTokenList} onDepositTokenAddress={onDepositTokenAddress} />
+            {activeFilter === "wallet" && (
+              <AvailableToTradeTokenList
+                chainId={chainId}
+                onSelectTokenAddress={onSelectTokenAddress}
+                tokens={walletTokens}
+                className="py-16"
+              />
             )}
           </>
         )}
@@ -275,7 +274,6 @@ export function MultichainTokenSelector({
 
 function useAvailableToTradeTokenList({
   chainId,
-  activeFilter,
   srcChainId,
   searchKeyword,
   tokensData,
@@ -286,7 +284,6 @@ function useAvailableToTradeTokenList({
   includeGmxAccountTokens = true,
 }: {
   chainId: ContractsChainId;
-  activeFilter: "pay" | "deposit";
   srcChainId: SourceChainId | undefined;
   searchKeyword: string;
   tokensData: TokensData | undefined;
@@ -297,15 +294,11 @@ function useAvailableToTradeTokenList({
   includeGmxAccountTokens?: boolean;
 }) {
   return useMemo(() => {
-    if (activeFilter !== "pay") {
-      return EMPTY_ARRAY;
-    }
-
     const concatenatedTokens: DisplayToken[] = [];
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
       if (includeGmxAccountTokens) {
-        if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
+        if (token.gmxAccountBalance !== undefined) {
           const balanceUsd = convertToUsd(token.gmxAccountBalance, token.decimals, token.prices.maxPrice) ?? 0n;
           concatenatedTokens.push({
             ...token,
@@ -429,7 +422,6 @@ function useAvailableToTradeTokenList({
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
   }, [
-    activeFilter,
     includeMultichainTokensInPay,
     multichainTokens,
     searchKeyword,
@@ -446,13 +438,15 @@ export function AvailableToTradeTokenList({
   chainId,
   onSelectTokenAddress,
   tokens,
+  className,
 }: {
   chainId: ContractsChainId;
   onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | GmxAccountPseudoChainId) => void;
   tokens: DisplayToken[];
+  className?: string;
 }) {
   return (
-    <VerticalScrollFadeContainer>
+    <VerticalScrollFadeContainer className={className}>
       {tokens.map((token) => {
         return (
           <div
@@ -524,136 +518,5 @@ export function AvailableToTradeTokenList({
         );
       })}
     </VerticalScrollFadeContainer>
-  );
-}
-
-type DisplayMultichainToken = TokenChainData & { sourceChainBalanceUsd: bigint };
-function useMultichainTokensList({
-  searchKeyword,
-  multichainTokens,
-  extendedSortSequence,
-}: {
-  searchKeyword: string;
-  multichainTokens: TokenChainData[] | undefined;
-  extendedSortSequence?: string[];
-}) {
-  const filteredTokens = useMemo(() => {
-    if (!multichainTokens) {
-      return EMPTY_ARRAY;
-    }
-
-    if (!searchKeyword.trim()) {
-      return multichainTokens;
-    }
-
-    return searchBy(
-      multichainTokens,
-      [
-        (item) => {
-          let name = item.name;
-
-          return stripBlacklistedWords(name);
-        },
-        "symbol",
-        (item) => (item.searchAliases ?? []).join(" "),
-      ],
-      searchKeyword
-    );
-  }, [searchKeyword, multichainTokens]);
-
-  const sortedFilteredTokens: DisplayMultichainToken[] = useMemo((): DisplayMultichainToken[] => {
-    const tokensWithBalance: DisplayMultichainToken[] = [];
-    const tokensWithoutBalance: DisplayMultichainToken[] = [];
-
-    for (const token of filteredTokens) {
-      const balance = token.sourceChainBalance;
-
-      if (balance !== undefined && balance > 0n) {
-        const balanceUsd = convertToUsd(balance, token.sourceChainDecimals, token.sourceChainPrices?.maxPrice) ?? 0n;
-        tokensWithBalance.push({ ...token, sourceChainBalanceUsd: balanceUsd });
-      } else {
-        tokensWithoutBalance.push({ ...token, sourceChainBalanceUsd: 0n });
-      }
-    }
-
-    const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
-      return b.sourceChainBalanceUsd - a.sourceChainBalanceUsd > 0n ? 1 : -1;
-    });
-
-    const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
-      if (extendedSortSequence) {
-        // making sure to use the wrapped address if it exists in the extended sort sequence
-        const aAddress =
-          a.wrappedAddress && extendedSortSequence.includes(a.wrappedAddress) ? a.wrappedAddress : a.address;
-
-        const bAddress =
-          b.wrappedAddress && extendedSortSequence.includes(b.wrappedAddress) ? b.wrappedAddress : b.address;
-
-        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
-      }
-
-      return 0;
-    });
-
-    return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [filteredTokens, extendedSortSequence]);
-
-  return sortedFilteredTokens;
-}
-
-function MultichainTokenList({
-  tokens,
-  onDepositTokenAddress,
-}: {
-  tokens: DisplayMultichainToken[];
-  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
-}) {
-  return (
-    <div>
-      {tokens.map((token) => {
-        return (
-          <div
-            key={token.address + "_" + token.sourceChainId}
-            className="group flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
-            onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
-          >
-            <div className="flex items-center gap-16">
-              <TokenIcon
-                symbol={token.symbol}
-                className="size-40"
-                displaySize={40}
-                chainIdBadge={token.sourceChainId}
-              />
-
-              <div>
-                <div className="text-body-large">{token.symbol}</div>
-                <span className="text-body-small text-typography-secondary">{token.name}</span>
-              </div>
-            </div>
-            <div className="text-right group-gmx-hover:hidden">
-              {(token.sourceChainBalance !== undefined && (
-                <div className="text-body-large">
-                  {token.sourceChainBalance > 0 &&
-                    formatBalanceAmount(token.sourceChainBalance, token.sourceChainDecimals, undefined, {
-                      isStable: token.isStable,
-                    })}
-                  {token.sourceChainBalance == 0n && "-"}
-                </div>
-              )) ||
-                null}
-              <span className="text-body-small text-typography-secondary">
-                {token.sourceChainBalanceUsd !== undefined &&
-                  token.sourceChainBalanceUsd > 0 &&
-                  formatUsd(token.sourceChainBalanceUsd)}
-              </span>
-            </div>
-
-            <Button variant="secondary" size="small" className="not-group-gmx-hover:hidden">
-              <Trans>Deposit</Trans>
-            </Button>
-          </div>
-        );
-      })}
-    </div>
   );
 }

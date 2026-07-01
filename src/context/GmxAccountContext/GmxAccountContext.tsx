@@ -15,7 +15,12 @@ export type GmxAccountModalView =
   | "deposit"
   | "depositStatus"
   | "selectAssetToDeposit"
-  | "withdraw";
+  | "withdraw"
+  | "transferHistory"
+  | "walletReceive"
+  | "walletSend";
+
+export type GmxAccountAvailableAssetsFilter = "wallet" | "gmxAccount";
 
 export type GmxAccountContext = {
   modalOpen: boolean | GmxAccountModalView;
@@ -50,6 +55,11 @@ export type GmxAccountContext = {
 
   selectedTransferGuid: string | undefined;
   setSelectedTransferGuid: React.Dispatch<React.SetStateAction<string | undefined>>;
+
+  // available assets view
+
+  availableAssetsFilter: GmxAccountAvailableAssetsFilter;
+  setAvailableAssetsFilter: (filter: GmxAccountAvailableAssetsFilter) => void;
 };
 
 export const context = createContext<GmxAccountContext | null>(null);
@@ -117,6 +127,9 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const [selectedTransferGuid, setSelectedTransferGuid] =
     useState<GmxAccountContext["selectedTransferGuid"]>(undefined);
 
+  const [availableAssetsFilter, setAvailableAssetsFilter] =
+    useState<GmxAccountContext["availableAssetsFilter"]>("gmxAccount");
+
   const handleSetModalOpen = useCallback((newModalOpen: boolean | GmxAccountModalView) => {
     setModalOpen(newModalOpen);
 
@@ -129,6 +142,8 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       setWithdrawalViewTokenInputValue(undefined);
 
       setSelectedTransferGuid(undefined);
+
+      setAvailableAssetsFilter("gmxAccount");
     }
   }, []);
 
@@ -162,6 +177,11 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
 
       selectedTransferGuid,
       setSelectedTransferGuid,
+
+      // available assets view
+
+      availableAssetsFilter,
+      setAvailableAssetsFilter,
     }),
     [
       modalOpen,
@@ -175,6 +195,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       withdrawalViewTokenAddress,
       withdrawalViewTokenInputValue,
       selectedTransferGuid,
+      availableAssetsFilter,
     ]
   );
 

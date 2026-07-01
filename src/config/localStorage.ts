@@ -71,6 +71,8 @@ export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 
+export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
+
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 export const PERMITS_DISABLED_KEY = "permits-disabled";
 
