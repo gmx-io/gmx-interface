@@ -24,6 +24,7 @@ type MultiTransactionStatus<TEventData> = {
 };
 
 export type PositionIncreaseEvent = {
+  blockNumber: number;
   positionKey: string;
   contractPositionKey: string;
   account: string;
@@ -46,6 +47,7 @@ export type PositionIncreaseEvent = {
 };
 
 export type PositionDecreaseEvent = {
+  blockNumber: number;
   positionKey: string;
   contractPositionKey: string;
   account: string;
@@ -76,6 +78,7 @@ export type PendingPositionUpdate = {
   collateralDeltaAmount: bigint;
   updatedAt: number;
   updatedAtBlock: bigint;
+  orderKey?: string;
 };
 
 export type PendingExpressTxnParams = {

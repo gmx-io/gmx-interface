@@ -16,7 +16,7 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
-import { useMarketsInfoRequest } from "domain/synthetics/markets";
+import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
@@ -30,6 +30,14 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import {
+  getIsPendingOrderBackfillable,
+  getOrderCreatedDataFromPendingOrder,
+  ORDER_BACKFILL_MAX_AGE_MS,
+  ORDER_STATUS_TXN_HASH_FIELD_BY_EVENT,
+  OrderBackfillMatch,
+} from "domain/synthetics/tradeHistory/orderStatusesBackfill";
+import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrderStatusesBackfill";
 import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
@@ -74,6 +82,7 @@ import {
   GelatoTaskStatus,
   GLVDepositCreatedEventData,
   OrderCreatedEventData,
+  OrderStatus,
   OrderStatuses,
   PendingDepositData,
   PendingExpressTxnParams,
@@ -145,6 +154,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [pendingOrdersUpdates, setPendingOrdersUpdates] = useState<PendingOrdersUpdates>({});
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
+  const [awaitingBackfillOrders, setAwaitingBackfillOrders] = useState<PendingOrderData[]>([]);
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
   const [gelatoTaskStatuses, setGelatoTaskStatuses] = useState<{ [taskId: string]: GelatoTaskStatus }>({});
@@ -240,10 +250,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setOrderStatuses((old) =>
         setByKey(old, data.key, {
+          ...old[data.key],
           key: data.key,
           data,
           createdTxnHash: txnParams.transactionHash,
-          createdAt: Date.now(),
+          createdAt: old[data.key]?.createdAt ?? Date.now(),
         })
       );
 
@@ -257,6 +268,24 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       setPendingOrdersUpdates((old) => deleteByKey(old, data.key));
+
+      setAwaitingBackfillOrders((old) => {
+        const index = old.findIndex(
+          (order) => order.txnType === "create" && getPendingOrderKey(order) === pendingOrderKey
+        );
+
+        return index === -1 ? old : old.filter((_, i) => i !== index);
+      });
+
+      if (isMarketOrderType(data.orderType) && marketsInfoData) {
+        const pendingPositionKey = getPendingPositionKeyFromOrder(chainId, marketsInfoData, data);
+
+        if (pendingPositionKey) {
+          setPendingPositionsUpdates((old) =>
+            old[pendingPositionKey] ? updateByKey(old, pendingPositionKey, { orderKey: data.key }) : old
+          );
+        }
+      }
     },
 
     OrderUpdated: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -283,6 +312,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       });
 
       setPendingOrdersUpdates((old) => deleteByKey(old, key));
+
+      setAwaitingBackfillOrders((old) =>
+        old.filter((order) => !(order.txnType === "update" && order.orderKey === key))
+      );
     },
 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -304,7 +337,18 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       setOrderStatuses((old) => {
-        if (!old[key]) return old;
+        if (!old[key]) {
+          // Avoid tracking unrelated background executions.
+          if (awaitingBackfillOrders.length === 0) {
+            return old;
+          }
+
+          return setByKey(old, key, {
+            key,
+            createdAt: Date.now(),
+            executedTxnHash: txnParams.transactionHash,
+          });
+        }
 
         return updateByKey(old, key, { executedTxnHash: txnParams.transactionHash });
       });
@@ -335,6 +379,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         }
       });
 
+      setAwaitingBackfillOrders((old) => old.filter((awaitingOrder) => awaitingOrder.orderKey !== key));
+
       const order = orderStatuses[key]?.data;
 
       if (order) {
@@ -348,35 +394,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       // If pending user order is cancelled, reset the pending position state
       if (order && marketsInfoData) {
-        const wrappedToken = getWrappedToken(chainId);
-
-        let pendingPositionKey: string | undefined;
-
-        // For increase orders, we need to check the target collateral token
-        if (isIncreaseOrderType(order.orderType)) {
-          const { outTokenAddress } = getSwapPathOutputAddresses({
-            marketsInfoData: marketsInfoData,
-            initialCollateralAddress: order.initialCollateralTokenAddress,
-            swapPath: order.swapPath,
-            wrappedNativeTokenAddress: wrappedToken.address,
-            shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
-            isIncrease: true,
-          });
-
-          if (outTokenAddress) {
-            pendingPositionKey = getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong);
-          }
-        } else if (isDecreaseOrderType(order.orderType)) {
-          pendingPositionKey = getPositionKey(
-            order.account,
-            order.marketAddress,
-            order.initialCollateralTokenAddress,
-            order.isLong
-          );
-        }
+        const pendingPositionKey = getPendingPositionKeyFromOrder(chainId, marketsInfoData, order);
 
         if (pendingPositionKey) {
-          setPendingPositionsUpdates((old) => setByKey(old, pendingPositionKey!, undefined));
+          setPendingPositionsUpdates((old) => setByKey(old, pendingPositionKey, undefined));
         }
       }
     },
@@ -737,6 +758,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     PositionIncrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionIncreaseEvent = {
+        blockNumber: txnParams.blockNumber,
         positionKey: getPositionKey(
           eventData.addressItems.items.account,
           eventData.addressItems.items.market,
@@ -803,6 +825,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     PositionDecrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionDecreaseEvent = {
+        blockNumber: txnParams.blockNumber,
         positionKey: getPositionKey(
           eventData.addressItems.items.account,
           eventData.addressItems.items.market,
@@ -1232,11 +1255,53 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [multichainTransferProgress, setMultichainTransferProgress] = useState<
     MultichainTransferProgress<string> | undefined
-  >(
-    undefined
-  );
+  >(undefined);
 
   useMultichainTransferProgressView(multichainTransferProgress);
+
+  useEffect(() => {
+    setAwaitingBackfillOrders([]);
+  }, [chainId, currentAccount]);
+
+  const handleOrderBackfillMatches = useCallback((matches: OrderBackfillMatch[]) => {
+    setOrderStatuses((old) => {
+      let next = old;
+
+      for (const match of matches) {
+        const txnHashField = ORDER_STATUS_TXN_HASH_FIELD_BY_EVENT[match.eventName];
+        const existing = next[match.orderKey];
+
+        if (existing?.[txnHashField]) {
+          continue;
+        }
+
+        const txnHashPatch: Partial<OrderStatus> = {};
+        txnHashPatch[txnHashField] = match.transactionHash;
+
+        next = existing
+          ? updateByKey(next, match.orderKey, txnHashPatch)
+          : setByKey(next, match.orderKey, {
+              key: match.orderKey,
+              createdAt: match.pendingOrder.createdAt,
+              ...(match.pendingOrder.txnType === "create"
+                ? { data: getOrderCreatedDataFromPendingOrder(match.pendingOrder, match.orderKey) }
+                : {}),
+              ...txnHashPatch,
+            });
+      }
+
+      return next;
+    });
+
+    setAwaitingBackfillOrders((old) => old.filter((order) => !matches.some((m) => m.pendingOrder === order)));
+  }, []);
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: awaitingBackfillOrders.filter((order) => order.createdAt + ORDER_BACKFILL_MAX_AGE_MS > Date.now()),
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
@@ -1293,6 +1358,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         );
 
         setPendingOrdersUpdates((old) => ({ ...old, ...objData }));
+
+        const backfillableOrders = arrayData.filter(getIsPendingOrderBackfillable);
+
+        if (backfillableOrders.length > 0) {
+          setAwaitingBackfillOrders((old) => [...old, ...backfillableOrders]);
+        }
       },
       setPendingOrderUpdate: (data: PendingOrderData, remove?: "remove") => {
         setPendingOrdersUpdates((old) => {
@@ -1407,4 +1478,42 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
+}
+
+function getPendingPositionKeyFromOrder(
+  chainId: number,
+  marketsInfoData: MarketsInfoData,
+  order: Pick<
+    OrderCreatedEventData,
+    | "account"
+    | "marketAddress"
+    | "initialCollateralTokenAddress"
+    | "swapPath"
+    | "shouldUnwrapNativeToken"
+    | "isLong"
+    | "orderType"
+  >
+): string | undefined {
+  if (isIncreaseOrderType(order.orderType)) {
+    const wrappedToken = getWrappedToken(chainId);
+
+    const { outTokenAddress } = getSwapPathOutputAddresses({
+      marketsInfoData,
+      initialCollateralAddress: order.initialCollateralTokenAddress,
+      swapPath: order.swapPath,
+      wrappedNativeTokenAddress: wrappedToken.address,
+      shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+      isIncrease: true,
+    });
+
+    return outTokenAddress
+      ? getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong)
+      : undefined;
+  }
+
+  if (isDecreaseOrderType(order.orderType)) {
+    return getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong);
+  }
+
+  return undefined;
 }
