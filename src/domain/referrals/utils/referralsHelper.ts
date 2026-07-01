@@ -74,37 +74,27 @@ export function getTierIdDisplay(tierId: number | bigint | string): number {
   return Number(tierId) + 1;
 }
 
-const tierRebateInfo: Record<number, number> = {
-  0: 5,
-  1: 10,
-  2: 15,
-};
-
-const tierDiscountInfo: Record<number, number> = {
-  0: 5,
-  1: 10,
-  2: 10,
-};
-
 export function getSharePercentage(
-  tierId: number | undefined,
-  discountShare: bigint | undefined,
+  customDiscountShare: bigint | undefined,
+  tierDiscountShare: bigint | undefined,
   totalRebate: bigint | undefined,
   isRebate?: boolean
 ): string | number | undefined {
-  if (tierId === undefined || totalRebate === undefined) return;
-  if (discountShare === undefined || discountShare === 0n)
-    return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
+  const discountShare =
+    customDiscountShare !== undefined && customDiscountShare > 0n ? customDiscountShare : tierDiscountShare;
+
+  if (discountShare === undefined || totalRebate === undefined) return;
+
   const decimals = 4;
 
-  const discount = bigMath.mulDiv(
+  const share = bigMath.mulDiv(
     totalRebate * (isRebate ? BASIS_POINTS_DIVISOR_BIGINT - discountShare : discountShare),
     BigInt(Math.pow(10, decimals)),
     BASIS_POINTS_DIVISOR_BIGINT
   );
 
-  const discountPercentage = discount / 100n;
-  return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
+  const percentage = share / 100n;
+  return removeTrailingZeros(formatAmount(percentage, decimals, 3, true));
 }
 
 export function getCodeError(value: string): string {

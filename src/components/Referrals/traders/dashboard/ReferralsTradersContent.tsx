@@ -1,7 +1,8 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { lightFormat } from "date-fns";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { useCopyToClipboard } from "react-use";
 
 import { REFERRALS_DOCS_URL } from "config/links";
@@ -51,7 +52,7 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
   const { discountShare } = useReferrerDiscountShare(chainId, codeOwner);
   const [, copyToClipboard] = useCopyToClipboard();
   const [isEditReferralCodeModalVisible, setIsEditReferralCodeModalVisible] = useState(false);
-  const { totalRebate } = useTiers(chainId, traderTier);
+  const { totalRebate, discountShare: tierDiscountShare } = useTiers(chainId, traderTier);
   const { timeRangeInfo, setTimeRange, periodStart, periodEnd } = useTimeRange(
     "referrals-traders-time-range",
     REFERRALS_TIME_RANGE_INFOS
@@ -62,7 +63,7 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
     from: periodStart,
     to: periodEnd,
   });
-  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
+  const currentTierDiscount = getSharePercentage(discountShare, tierDiscountShare, totalRebate);
   const lastUpdated = traderStats?.to ? `${lightFormat(traderStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC` : "--";
 
   return (
@@ -137,23 +138,28 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
           <div className="text-body-medium mb-8 font-medium text-typography-secondary">
             <Trans>Active referral code</Trans>
           </div>
-          <div className="mb-12 flex items-center justify-between">
+          <div className="mb-12 flex items-center justify-between gap-8">
             <div
-              className="flex cursor-pointer items-center gap-4 text-24 font-medium text-typography-primary"
+              className="flex min-w-0 cursor-pointer items-center gap-4 text-typography-primary"
               onClick={() => {
                 if (!userReferralCodeString) return;
                 copyToClipboard(getReferralCodeTradeUrl(userReferralCodeString));
                 helperToast.success(t`Referral link copied to clipboard`);
               }}
             >
-              {userReferralCodeString} <CopyStrokeIcon className="size-20 text-typography-secondary" />
+              <ScaledText className="text-24 font-medium">{userReferralCodeString}</ScaledText>
+              <CopyStrokeIcon className="size-20 shrink-0 text-typography-secondary" />
             </div>
-            <Button variant="secondary" onClick={() => setIsEditReferralCodeModalVisible(true)}>
+            <Button variant="secondary" className="shrink-0" onClick={() => setIsEditReferralCodeModalVisible(true)}>
               <Trans>Edit</Trans> <EditIcon className="size-16" />
             </Button>
           </div>
           <Card>
-            <ActiveCodeExplanation currentTierDiscount={currentTierDiscount} codeString={userReferralCodeString} />
+            {currentTierDiscount === undefined ? (
+              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" count={3} />
+            ) : (
+              <ActiveCodeExplanation currentTierDiscount={currentTierDiscount} codeString={userReferralCodeString} />
+            )}
           </Card>
         </div>
         <ReferralsDocsCard />
@@ -180,6 +186,39 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={cx("rounded-8 border-1/2 border-stroke-primary bg-slate-950/50 p-12", className)}>{children}</div>
+  );
+}
+
+function ScaledText({ children, className }: { children: React.ReactNode; className?: string }) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    const text = textRef.current;
+    if (!wrapper || !text) return;
+
+    const update = () => {
+      const available = wrapper.clientWidth;
+      const natural = text.scrollWidth;
+      setScale(natural > available && natural > 0 ? available / natural : 1);
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, [children]);
+
+  const scaleStyle = useMemo(() => (scale < 1 ? { transform: `scale(${scale})` } : undefined), [scale]);
+
+  return (
+    <div ref={wrapperRef} className="min-w-0 overflow-hidden">
+      <span ref={textRef} className={cx("inline-block origin-left whitespace-nowrap", className)} style={scaleStyle}>
+        {children}
+      </span>
+    </div>
   );
 }
 
