@@ -23,21 +23,24 @@
   }
 
   &-action-column {
-    width: 18%;
+    width: 16%;
   }
   &-market-column {
-    width: 18%;
+    width: 16%;
   }
   &-size-column {
-    width: 22%;
+    width: 20%;
   }
   &-price-column {
     width: 16%;
   }
   &-pnl-column {
-    width: 13%;
+    width: 10%;
   }
   &-fees-column {
-    width: 13%;
+    width: 10%;
+  }
+  &-actions-column {
+    width: 132px;
   }
 }

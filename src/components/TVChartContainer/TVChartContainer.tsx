@@ -116,7 +116,7 @@ export default function TVChartContainer({
   });
   const marksHistoryCacheRef = useRef<{
     key?: string;
-    raw?: Awaited<ReturnType<typeof fetchRawTradeActions>>;
+    raw?: NonNullable<Awaited<ReturnType<typeof fetchRawTradeActions>>>["tradeActions"];
     fetchedAt?: number;
   }>({});
 
@@ -238,7 +238,7 @@ export default function TVChartContainer({
         },
       ];
 
-      let raw;
+      let raw: NonNullable<Awaited<ReturnType<typeof fetchRawTradeActions>>>["tradeActions"] | undefined;
       let marketAddresses: string[] = [];
       try {
         const now = Math.floor(Date.now() / 1000);
@@ -271,10 +271,11 @@ export default function TVChartContainer({
         ) {
           raw = cached.raw;
         } else {
-          raw = await fetchRawTradeActions({
+          const rawResult = await fetchRawTradeActions({
             chainId: cid,
             pageIndex: 0,
             pageSize: MARKS_PAGE_SIZE,
+            includeTotalCount: false,
             marketsDirectionsFilter: marketFilters,
             forAllAccounts: false,
             account: acc,
@@ -283,6 +284,7 @@ export default function TVChartContainer({
             orderEventCombinations: combinations,
             showDebugValues: false,
           });
+          raw = rawResult?.tradeActions;
           marksHistoryCacheRef.current = { key: cacheKey, raw, fetchedAt: Date.now() };
         }
       } catch (err) {

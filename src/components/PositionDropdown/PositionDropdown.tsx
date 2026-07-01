@@ -5,6 +5,7 @@ import { Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 
 import EditIcon from "img/ic_edit.svg?react";
+import FilterHistoryIcon from "img/ic_filter_history.svg?react";
 import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import IncreaseMarket from "img/ic_increasemarket_16.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
@@ -24,6 +25,7 @@ type Props = {
   handleStopMarketIncreaseSize?: () => void;
   handleTwapIncreaseSize?: () => void;
   handleTriggerClose?: () => void;
+  handleViewPositionHistory?: () => void;
   disabled?: boolean;
 };
 
@@ -36,6 +38,7 @@ export default function PositionDropdown({
   handleStopMarketIncreaseSize,
   handleTwapIncreaseSize,
   handleTriggerClose,
+  handleViewPositionHistory,
   disabled,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
@@ -146,6 +149,16 @@ export default function PositionDropdown({
                 <ShareIcon className="size-16" />
                 <p>
                   <Trans>Share position</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleViewPositionHistory && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleViewPositionHistory}>
+                <FilterHistoryIcon className="size-16" />
+                <p>
+                  <Trans>View position history</Trans>
                 </p>
               </div>
             </Menu.Item>

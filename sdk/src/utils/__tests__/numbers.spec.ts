@@ -12,6 +12,8 @@ import {
   formatAmount,
   formatAmountHuman,
   formatBalanceAmount,
+  formatBasisPoints,
+  formatPriceImpactBps,
   formatFactor,
   formatPercentage,
   formatTokenAmount,
@@ -24,6 +26,7 @@ import {
   trimZeroDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
+  roundsToZero,
   toBigNumberWithDecimals,
 } from "utils/numbers";
 
@@ -542,5 +545,61 @@ describe("formatTokenAmount", () => {
       minThreshold: "0.00000001",
     });
     expect(result).toContain("<");
+  });
+});
+
+describe("roundsToZero", () => {
+  it("is true when the amount is below the smallest displayed unit", () => {
+    expect(roundsToZero(5n, 18, 4)).toBe(true);
+    expect(roundsToZero(-5n, 18, 4)).toBe(true);
+    expect(roundsToZero(0n, 18, 4)).toBe(true);
+  });
+
+  it("is false when the amount reaches the smallest displayed unit", () => {
+    expect(roundsToZero(10n ** 14n, 18, 4)).toBe(false);
+  });
+
+  it("is false when no decimals are hidden", () => {
+    expect(roundsToZero(1n, 6, 6)).toBe(false);
+    expect(roundsToZero(1n, 4, 6)).toBe(false);
+  });
+});
+
+describe("formatBasisPoints", () => {
+  it("formats negative bps values with sign", () => {
+    expect(formatBasisPoints(-81n)).toBe("-81 bps");
+  });
+
+  it("formats positive bps values with plus sign", () => {
+    expect(formatBasisPoints(50n)).toBe("+50 bps");
+  });
+
+  it("formats zero without sign", () => {
+    expect(formatBasisPoints(0n)).toBe("0 bps");
+  });
+
+  it("uses comma separators for large bps values", () => {
+    expect(formatBasisPoints(20000n)).toBe("+20,000 bps");
+  });
+
+  it("returns undefined for missing bps value", () => {
+    expect(formatBasisPoints(undefined)).toBeUndefined();
+  });
+});
+
+describe("formatPriceImpactBps", () => {
+  it("formats the signed bps share of size", () => {
+    expect(formatPriceImpactBps(-81n, 10000n)).toBe("-81 bps");
+    expect(formatPriceImpactBps(50n, 10000n)).toBe("+50 bps");
+    expect(formatPriceImpactBps(0n, 10000n)).toBe("0 bps");
+  });
+
+  it("returns undefined when the price impact is missing", () => {
+    expect(formatPriceImpactBps(undefined, 10000n)).toBeUndefined();
+  });
+
+  it("returns undefined when size is not positive", () => {
+    expect(formatPriceImpactBps(-81n, 0n)).toBeUndefined();
+    expect(formatPriceImpactBps(-81n, -10000n)).toBeUndefined();
   });
 });

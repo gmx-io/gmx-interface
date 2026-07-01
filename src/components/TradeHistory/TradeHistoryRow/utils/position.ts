@@ -21,9 +21,11 @@ import {
   applyFactor,
   calculateDisplayDecimals,
   formatDeltaUsd,
+  formatPriceImpactBps,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
+  roundsToZero,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
@@ -180,6 +182,7 @@ export const formatPositionMessage = (
   });
 
   const priceImpactLines = getPriceImpactLines(tradeAction);
+  const sizeComment = getSizeComment(tradeAction);
 
   let displayedPriceImpact: string | undefined = undefined;
   if (isIncreaseOrderType(ot) && !isV22Action) {
@@ -190,6 +193,48 @@ export const formatPositionMessage = (
 
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC" | "price" | "size"> = {
     priceComment: null,
+  };
+
+  const getCancelledMarketOrderResult = (
+    collateralActionKey: "Deposit-OrderCancelled" | "Withdraw-OrderCancelled"
+  ): typeof result => {
+    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap[collateralActionKey]!);
+    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+    const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
+    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
+    const hasMarkPrice = marketPrice !== undefined;
+
+    const priceComment = lines(
+      hasMarkPrice ? t`Mark price for the order` : t`Acceptable price for the order`,
+      hasMarkPrice || error?.args?.price !== undefined ? "" : undefined,
+      hasMarkPrice
+        ? infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice)
+        : undefined,
+      error?.args?.price !== undefined
+        ? infoRow(
+            t`Order execution price`,
+            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+              displayDecimals: marketPriceDecimals,
+              visualMultiplier: tradeAction.indexToken.visualMultiplier,
+            })
+          )
+        : undefined
+    );
+
+    return {
+      action: customAction,
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name, true, error.args),
+          state: "error",
+        }),
+      size: customSize,
+      priceComment,
+      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      isActionError: true,
+      ...(hasMarkPrice ? {} : { price: customPrice }),
+    };
   };
 
   //#region MarketIncrease
@@ -222,39 +267,7 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCancelled) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Deposit-OrderCancelled"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
-    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
-
-    const priceComment = lines(
-      t`Acceptable price for the order`,
-      error?.args?.price !== undefined ? "" : undefined,
-      error?.args?.price !== undefined
-        ? infoRow(
-            t`Order execution price`,
-            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: marketPriceDecimals,
-              visualMultiplier: tradeAction.indexToken.visualMultiplier,
-            })
-          )
-        : undefined
-    );
-
-    result = {
-      action: customAction,
-      actionComment:
-        error &&
-        lines({
-          text: getErrorTooltipTitle(error.name, true, error.args),
-          state: "error",
-        }),
-      size: customSize,
-      price: customPrice,
-      priceComment,
-      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      isActionError: true,
-    };
+    result = getCancelledMarketOrderResult("Deposit-OrderCancelled");
     //#endregion MarketIncrease
     //#region Twap
   } else if (tradeAction.twapParams) {
@@ -373,38 +386,7 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCancelled) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
-    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
-    const priceComment = lines(
-      t`Acceptable price for the order`,
-      error?.args?.price !== undefined ? "" : undefined,
-      error?.args?.price !== undefined
-        ? infoRow(
-            t`Order execution price`,
-            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: marketPriceDecimals,
-              visualMultiplier: tradeAction.indexToken.visualMultiplier,
-            })
-          )
-        : undefined
-    );
-
-    result = {
-      action: customAction,
-      actionComment:
-        error &&
-        lines({
-          text: getErrorTooltipTitle(error.name, true, error.args),
-          state: "error",
-        }),
-      size: customSize,
-      price: customPrice,
-      priceComment,
-      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      isActionError: true,
-    };
+    result = getCancelledMarketOrderResult("Withdraw-OrderCancelled");
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderExecuted) {
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
@@ -413,7 +395,7 @@ export const formatPositionMessage = (
       action: customAction,
       size: customSize,
       priceComment:
-        priceImpactLines.length > 0
+        sizeDeltaUsd > 0 && priceImpactLines.length > 0
           ? lines(t`Mark price for the order`, "", ...priceImpactLines)
           : lines(t`Mark price for the order`),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
@@ -712,6 +694,7 @@ export const formatPositionMessage = (
     marketPrice: formattedMarketPrice,
     executionPrice: formattedExecutionPrice,
     priceImpact: displayedPriceImpact,
+    ...(sizeComment ? { sizeComment } : {}),
     indexName,
     poolName,
     ...result!,
@@ -796,23 +779,9 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
 
   if (isLiquidationOrderType(tradeAction.orderType)) {
     if (isV22Action && tradeAction.totalImpactUsd !== undefined) {
-      const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
-
-      lines.push(
-        infoRow(t`Net price impact`, {
-          text: formattedNetPriceImpact!,
-          state: numberToState(tradeAction.totalImpactUsd!),
-        })
-      );
+      lines.push(getPriceImpactLine(t`Net price impact`, tradeAction.totalImpactUsd, tradeAction.sizeDeltaUsd));
     } else {
-      const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
-
-      lines.push(
-        infoRow(t`Price impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        })
-      );
+      lines.push(getPriceImpactLine(t`Price impact`, tradeAction.priceImpactUsd, tradeAction.sizeDeltaUsd));
     }
 
     return lines;
@@ -823,39 +792,72 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       return [];
     }
 
-    const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
-
-    lines.push(
-      infoRow(t`Price impact`, {
-        text: formattedPriceImpact!,
-        state: numberToState(tradeAction.priceImpactUsd!),
-      })
-    );
+    lines.push(getPriceImpactLine(t`Price impact`, tradeAction.priceImpactUsd, tradeAction.sizeDeltaUsd));
   }
 
   if (isDecreaseOrderType(tradeAction.orderType)) {
     if (isV22Action && tradeAction.totalImpactUsd !== undefined) {
-      const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
-
-      lines.push(
-        infoRow(t`Net price impact`, {
-          text: formattedNetPriceImpact!,
-          state: numberToState(tradeAction.totalImpactUsd!),
-        })
-      );
+      lines.push(getPriceImpactLine(t`Net price impact`, tradeAction.totalImpactUsd, tradeAction.sizeDeltaUsd));
     } else {
-      const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
-
-      lines.push(
-        infoRow(t`Price impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        })
-      );
+      lines.push(getPriceImpactLine(t`Price impact`, tradeAction.priceImpactUsd, tradeAction.sizeDeltaUsd));
     }
   }
 
   return lines;
+}
+
+function getPriceImpactLine(label: string, priceImpactUsd: bigint | undefined, sizeDeltaUsd: bigint): Line {
+  const state = numberToState(priceImpactUsd);
+  const usdLine = { text: formatDeltaUsd(priceImpactUsd), state };
+  const bpsText = formatPriceImpactBps(priceImpactUsd, sizeDeltaUsd);
+
+  return infoRow(label, bpsText ? [usdLine, " ", { text: `(${bpsText})`, state }] : usdLine);
+}
+
+function getSizeComment(tradeAction: PositionTradeAction): Line[] | undefined {
+  if (tradeAction.eventName !== TradeActionType.OrderExecuted) {
+    return undefined;
+  }
+
+  if (tradeAction.sizeDeltaUsd <= 0n || tradeAction.initialCollateralDeltaAmount === 0n) {
+    return undefined;
+  }
+
+  if (isLiquidationOrderType(tradeAction.orderType)) {
+    return undefined;
+  }
+
+  const signedMarginDelta = isDecreaseOrderType(tradeAction.orderType)
+    ? -tradeAction.initialCollateralDeltaAmount
+    : tradeAction.initialCollateralDeltaAmount;
+  const displayDecimals = calculateDisplayDecimals(
+    tradeAction.initialCollateralDeltaAmount,
+    tradeAction.initialCollateralToken.decimals,
+    undefined,
+    tradeAction.initialCollateralToken.isStable
+  );
+
+  if (roundsToZero(signedMarginDelta, tradeAction.initialCollateralToken.decimals, displayDecimals)) {
+    return undefined;
+  }
+
+  const formattedMarginDelta = formatTokenAmount(
+    signedMarginDelta,
+    tradeAction.initialCollateralToken.decimals,
+    tradeAction.initialCollateralToken.symbol,
+    {
+      useCommas: true,
+      displayPlus: true,
+      displayDecimals,
+      isStable: tradeAction.initialCollateralToken.isStable,
+    }
+  );
+
+  if (!formattedMarginDelta) {
+    return undefined;
+  }
+
+  return lines(infoRow(t`Margin delta`, formattedMarginDelta));
 }
 
 export function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {

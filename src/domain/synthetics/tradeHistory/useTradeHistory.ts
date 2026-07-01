@@ -21,9 +21,17 @@ import { processRawTradeActions } from "./processTradeActions";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
+  totalCount?: number;
   isLoading: boolean;
+  error: Error | undefined;
+  hasMorePages: boolean;
   pageIndex: number;
   setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
+};
+
+export type RawTradeActionsResult = {
+  tradeActions: SubsquidTradeAction[];
+  totalCount?: number;
 };
 
 export function useTradeHistory(
@@ -36,6 +44,7 @@ export function useTradeHistory(
     toTxTimestamp?: number;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
     refreshInterval?: number;
+    positionLifecycleId?: string;
     orderEventCombinations?: {
       eventName?: TradeActionType;
       orderType?: OrderType[];
@@ -53,6 +62,7 @@ export function useTradeHistory(
     marketsDirectionsFilter,
     orderEventCombinations,
     refreshInterval,
+    positionLifecycleId,
   } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
@@ -70,6 +80,7 @@ export function useTradeHistory(
         fromTxTimestamp,
         toTxTimestamp,
         orderEventCombinations,
+        positionLifecycleId,
         marketsDirectionsFilter,
         index,
         pageSize,
@@ -97,12 +108,15 @@ export function useTradeHistory(
         chainId,
         pageIndex,
         pageSize,
+        // Count is the same across pages; fetch it once.
+        includeTotalCount: pageIndex === 0,
         marketsDirectionsFilter,
         forAllAccounts,
         account,
         fromTxTimestamp,
         toTxTimestamp,
         orderEventCombinations,
+        positionLifecycleId,
         showDebugValues,
       });
 
@@ -115,20 +129,28 @@ export function useTradeHistory(
   const isLoading = (!error && !hasPopulatedData) || !marketsInfoData || !tokensData;
 
   const tradeActions = useMemo(() => {
-    const allRawData = data?.flat().filter(Boolean) as SubsquidTradeAction[] | undefined;
+    const allRawData = data?.flatMap((page) => page?.tradeActions ?? []);
 
     return processRawTradeActions({
       chainId,
       rawActions: allRawData,
       marketsInfoData,
       tokensData,
-      marketsDirectionsFilter: marketsDirectionsFilter || EMPTY_ARRAY,
+      marketsDirectionsFilter,
     });
   }, [data, marketsInfoData, tokensData, marketsDirectionsFilter, chainId]);
 
+  const totalCount = data?.find((page) => page?.totalCount !== undefined)?.totalCount;
+  const loadedRawActionsCount = data?.reduce((count, page) => count + (page?.tradeActions.length ?? 0), 0) ?? 0;
+  const hasMorePages =
+    totalCount !== undefined ? loadedRawActionsCount < totalCount : data?.at(-1)?.tradeActions.length === pageSize;
+
   return {
     tradeActions,
+    totalCount,
     isLoading,
+    error,
+    hasMorePages,
     pageIndex,
     setPageIndex,
   };
@@ -138,17 +160,20 @@ export async function fetchRawTradeActions({
   chainId,
   pageIndex,
   pageSize,
+  includeTotalCount = true,
   marketsDirectionsFilter = EMPTY_ARRAY,
   forAllAccounts,
   account,
   fromTxTimestamp,
   toTxTimestamp,
   orderEventCombinations,
+  positionLifecycleId,
   showDebugValues,
 }: {
   chainId: number;
   pageIndex: number;
   pageSize: number;
+  includeTotalCount?: boolean;
   marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
   account: string | null | undefined;
@@ -162,8 +187,9 @@ export async function fetchRawTradeActions({
         isTwap?: boolean | undefined;
       }[]
     | undefined;
+  positionLifecycleId?: string;
   showDebugValues?: boolean;
-}): Promise<SubsquidTradeAction[] | undefined> {
+}): Promise<RawTradeActionsResult | undefined> {
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
 
@@ -201,9 +227,10 @@ export async function fetchRawTradeActions({
   const filtersStr = buildFiltersBody({
     AND: [
       {
-        account_eq: forAllAccounts ? undefined : account,
+        account_eq: forAllAccounts || positionLifecycleId ? undefined : account,
         timestamp_gte: fromTxTimestamp,
         timestamp_lte: toTxTimestamp,
+        positionLifecycleId_eq: positionLifecycleId,
       },
       {
         OR: !hasPureDirectionFilters
@@ -311,11 +338,19 @@ export async function fetchRawTradeActions({
 
   const whereClause = `where: ${filtersStr}`;
 
+  const connectionQuery = includeTotalCount
+    ? `tradeActionsConnection(orderBy: [timestamp_DESC, id_DESC], ${whereClause}) {
+          totalCount
+        }`
+    : "";
+
   const query = gql(`{
+        ${connectionQuery}
+
         tradeActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: timestamp_DESC,
+            orderBy: [timestamp_DESC, id_DESC],
             ${whereClause}
         ) {
             id
@@ -326,6 +361,10 @@ export async function fetchRawTradeActions({
             marketAddress
             swapPath
             initialCollateralTokenAddress
+            positionKey
+            positionLifecycleId
+            positionSizeInUsd
+            positionSizeInTokens
 
             initialCollateralDeltaAmount
             sizeDeltaUsd
@@ -375,6 +414,36 @@ export async function fetchRawTradeActions({
   const result = await client!.query({ query, fetchPolicy: "no-cache" });
 
   const rawTradeActions = (result.data?.tradeActions || []) as SubsquidTradeAction[];
+  const totalCount = result.data?.tradeActionsConnection?.totalCount;
 
-  return rawTradeActions;
+  return {
+    tradeActions: rawTradeActions,
+    totalCount,
+  };
+}
+
+// Resolves a position slot's lifecycle id from its latest indexed action.
+export async function fetchPositionLifecycleId({
+  chainId,
+  positionKey,
+}: {
+  chainId: number;
+  positionKey: string;
+}): Promise<string | undefined> {
+  const client = getSubsquidGraphClient(chainId);
+
+  if (!client) {
+    return undefined;
+  }
+
+  const query = gql(`{
+        tradeActions(limit: 1, orderBy: [timestamp_DESC, id_DESC], where: { positionKey_eq: "${positionKey}" }) {
+            positionLifecycleId
+        }
+      }`);
+
+  const result = await client.query({ query, fetchPolicy: "no-cache" });
+  const latestAction = ((result.data?.tradeActions ?? []) as SubsquidTradeAction[])[0];
+
+  return latestAction?.positionLifecycleId ?? undefined;
 }

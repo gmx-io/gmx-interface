@@ -13,7 +13,6 @@ import { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/sy
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { downloadAsCsv } from "lib/csv";
-import { definedOrThrow } from "lib/guards";
 import { helperToast } from "lib/helperToast";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
@@ -33,6 +32,7 @@ export function useDownloadAsCsv({
   toTxTimestamp,
   orderEventCombinations,
   minCollateralUsd,
+  positionLifecycleId,
 }: {
   marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
@@ -49,6 +49,7 @@ export function useDownloadAsCsv({
     | undefined;
 
   minCollateralUsd?: bigint;
+  positionLifecycleId?: string;
 }): [boolean, () => Promise<void>] {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
@@ -70,24 +71,32 @@ export function useDownloadAsCsv({
       let hasMorePages = true;
 
       while (hasMorePages) {
-        const rawPage = await withRetry(
+        const rawPageResult = await withRetry(
           () =>
             fetchRawTradeActions({
               chainId,
               pageIndex: currentPageIndex,
               pageSize: PAGE_SIZE,
-              marketsDirectionsFilter,
               forAllAccounts,
               account,
               fromTxTimestamp,
               toTxTimestamp,
+              marketsDirectionsFilter,
               orderEventCombinations,
+              positionLifecycleId,
             }),
           {
             retryCount: 3,
             delay: 300,
           }
         );
+        const rawPage = rawPageResult?.tradeActions;
+
+        // Use raw page length; processing can drop rows.
+        hasMorePages =
+          rawPageResult?.totalCount !== undefined
+            ? (currentPageIndex + 1) * PAGE_SIZE < rawPageResult.totalCount
+            : Boolean(rawPage && rawPage.length === PAGE_SIZE);
 
         const processedPage = processRawTradeActions({
           chainId,
@@ -97,17 +106,12 @@ export function useDownloadAsCsv({
           marketsDirectionsFilter,
         }) as (PositionTradeAction | SwapTradeAction)[] | undefined;
 
-        if (!processedPage || processedPage.length === 0 || processedPage.length < PAGE_SIZE) {
-          hasMorePages = false;
-        }
-
         if (processedPage && processedPage.length) {
           aggregatedTradeActions.push(...processedPage);
         }
+
         currentPageIndex += 1;
       }
-
-      definedOrThrow(aggregatedTradeActions);
 
       const fullFormattedData = aggregatedTradeActions
         .map((tradeAction) => {
@@ -166,6 +170,7 @@ export function useDownloadAsCsv({
     marketsInfoData,
     minCollateralUsd,
     orderEventCombinations,
+    positionLifecycleId,
     toTxTimestamp,
     tokensData,
   ]);

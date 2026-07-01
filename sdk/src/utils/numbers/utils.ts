@@ -79,12 +79,39 @@ export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRou
   return result;
 }
 
+export function formatBasisPoints(bpsValue: bigint | undefined): string | undefined {
+  if (bpsValue === undefined) {
+    return undefined;
+  }
+
+  const sign = getPlusOrMinusSymbol(bpsValue);
+
+  return `${sign}${formatAmount(bigMath.abs(bpsValue), 0, 0, true)} bps`;
+}
+
+export function formatPriceImpactBps(priceImpactUsd: bigint | undefined, sizeUsd: bigint): string | undefined {
+  return formatBasisPoints(
+    priceImpactUsd !== undefined && sizeUsd > 0n ? getBasisPoints(priceImpactUsd, sizeUsd) : undefined
+  );
+}
+
 export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
   if (a < 0n) {
     return (a - b + 1n) / b;
   }
 
   return (a + b - 1n) / b;
+}
+
+// True when the amount would render as zero at displayDecimals.
+export function roundsToZero(amount: bigint, decimals: number, displayDecimals: number) {
+  const hiddenDecimals = decimals - displayDecimals;
+
+  if (hiddenDecimals <= 0) {
+    return false;
+  }
+
+  return bigMath.abs(amount) < 10n ** BigInt(hiddenDecimals);
 }
 
 export function applyFactor(value: bigint, factor: bigint) {

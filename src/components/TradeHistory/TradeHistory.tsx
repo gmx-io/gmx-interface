@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/macro";
-import { useEffect, useMemo, useState } from "react";
+import { t, Trans } from "@lingui/macro";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
@@ -8,7 +8,8 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import { usePositionLifecycleIdByKey } from "domain/synthetics/tradeHistory/usePositionLifecycleIdByKey";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -22,6 +23,7 @@ import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
 import PieChartIcon from "img/ic_pie_chart.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -48,15 +50,36 @@ type Props = {
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
+  viewPositionKeyHistory?: string;
+  onViewPositionKeyHistoryConsumed?: () => void;
 };
 
 export function TradeHistory(p: Props) {
-  const { forAllAccounts, account, hideDashboardLink = false } = p;
+  const {
+    forAllAccounts,
+    account,
+    hideDashboardLink = false,
+    viewPositionKeyHistory,
+    onViewPositionKeyHistoryConsumed,
+  } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
+  const [positionLifecycleId, setPositionLifecycleId] = useState<string | undefined>();
+
+  // Resolve the opened position's lifecycle id and apply it as the filter (consumed once).
+  const { isResolving: isResolvingLifecycle } = usePositionLifecycleIdByKey({
+    chainId,
+    positionKey: viewPositionKeyHistory,
+    onResolve: (lifecycleId) => {
+      if (lifecycleId) {
+        setPositionLifecycleId(lifecycleId);
+      }
+      onViewPositionKeyHistoryConsumed?.();
+    },
+  });
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -66,7 +89,8 @@ export function TradeHistory(p: Props) {
   const {
     tradeActions,
     isLoading: isHistoryLoading,
-    pageIndex: tradeActionsPageIndex,
+    error: historyError,
+    hasMorePages,
     setPageIndex: setTradeActionsPageIndex,
   } = useTradeHistory(chainId, {
     account,
@@ -76,20 +100,70 @@ export function TradeHistory(p: Props) {
     toTxTimestamp,
     marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
+    positionLifecycleId,
   });
 
-  const isConnected = Boolean(account);
-  const isLoading = (forAllAccounts || isConnected) && (minCollateralUsd === undefined || isHistoryLoading);
-
-  const isEmpty = !isLoading && !tradeActions?.length;
+  const paginationKey = useMemo(
+    () =>
+      JSON.stringify([
+        account,
+        forAllAccounts,
+        fromTxTimestamp,
+        toTxTimestamp,
+        marketsDirectionsFilter,
+        actionFilter,
+        positionLifecycleId,
+      ]),
+    [
+      account,
+      actionFilter,
+      forAllAccounts,
+      fromTxTimestamp,
+      marketsDirectionsFilter,
+      positionLifecycleId,
+      toTxTimestamp,
+    ]
+  );
   const {
     currentPage,
     setCurrentPage,
     currentData: currentPageData,
     pageCount,
-  } = usePagination([account, forAllAccounts].toString(), tradeActions, ENTITIES_PER_PAGE);
+  } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE);
 
-  const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
+  // Prefetch the next chunk as the user nears the end of the loaded pages.
+  useEffect(() => {
+    if (!hasMorePages) {
+      return;
+    }
+
+    if (pageCount < currentPage + 2) {
+      setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
+    }
+  }, [currentPage, pageCount, hasMorePages, setTradeActionsPageIndex]);
+
+  const isConnected = Boolean(account);
+  const isLoading =
+    (forAllAccounts || isConnected) &&
+    (isResolvingLifecycle || minCollateralUsd === undefined || (isHistoryLoading && tradeActions === undefined));
+
+  const isEmpty = !isLoading && !currentPageData.length;
+
+  const hasFilters = Boolean(
+    startDate || endDate || marketsDirectionsFilter.length || actionFilter.length || positionLifecycleId
+  );
+
+  const handleSelectPositionLifecycle = useCallback((tradeAction: PositionTradeAction) => {
+    if (!tradeAction.positionLifecycleId) {
+      return;
+    }
+
+    setPositionLifecycleId(tradeAction.positionLifecycleId);
+  }, []);
+
+  const handleClearPositionLifecycleFilter = useCallback(() => {
+    setPositionLifecycleId(undefined);
+  }, []);
 
   const pnlAnalysisButton = useMemo(() => {
     if (!account || hideDashboardLink) {
@@ -107,17 +181,6 @@ export function TradeHistory(p: Props) {
     );
   }, [account, chainId, hideDashboardLink]);
 
-  useEffect(() => {
-    if (!pageCount || !currentPage) return;
-    const totalPossiblePages = (TRADE_HISTORY_PREFETCH_SIZE * tradeActionsPageIndex) / TRADE_HISTORY_PER_PAGE;
-    const doesMoreDataExist = pageCount >= totalPossiblePages;
-    const isCloseToEnd = pageCount && pageCount < currentPage + 2;
-
-    if (doesMoreDataExist && isCloseToEnd) {
-      setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
-    }
-  }, [currentPage, pageCount, tradeActionsPageIndex, setTradeActionsPageIndex]);
-
   const [isLoadingCsv, handleCsvDownload] = useDownloadAsCsv({
     account,
     forAllAccounts,
@@ -126,12 +189,26 @@ export function TradeHistory(p: Props) {
     marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
     minCollateralUsd: minCollateralUsd,
+    positionLifecycleId,
   });
 
   const { isMobile } = useBreakpoints();
 
   let actions = (
     <>
+      {positionLifecycleId ? (
+        <Button
+          variant="ghost"
+          onClick={handleClearPositionLifecycleFilter}
+          className="flex items-center gap-4"
+          aria-label={t`Clear position history filter`}
+          title={t`Clear position history filter`}
+        >
+          <ArrowLeftIcon className="size-16" />
+          <Trans>Back to all trades</Trans>
+        </Button>
+      ) : null}
+
       {pnlAnalysisButton}
 
       <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
@@ -165,6 +242,7 @@ export function TradeHistory(p: Props) {
             <col className="TradeHistorySynthetics-price-column" />
             <col className="TradeHistorySynthetics-pnl-column" />
             <col className="TradeHistorySynthetics-fees-column" />
+            <col className="TradeHistorySynthetics-actions-column" />
           </colgroup>
           <thead>
             <TableTheadTr>
@@ -178,13 +256,13 @@ export function TradeHistory(p: Props) {
                   onChange={setMarketsDirectionsFilter}
                 />
               </TableTh>
-              <TableTh className="w-[22%]">
+              <TableTh className="w-[20%]">
                 <Trans>SIZE</Trans>
               </TableTh>
-              <TableTh className="w-[18%]">
+              <TableTh className="w-[16%]">
                 <Trans>PRICE</Trans>
               </TableTh>
-              <TableTh className="w-[12%]">
+              <TableTh className="w-[10%]">
                 <TooltipWithPortal
                   variant="iconStroke"
                   content={<Trans>Realized PnL before fees, discounts and price impact.</Trans>}
@@ -192,7 +270,7 @@ export function TradeHistory(p: Props) {
                   <Trans>RPNL</Trans>
                 </TooltipWithPortal>
               </TableTh>
-              <TableTh className="w-[12%]">
+              <TableTh className="w-[10%]">
                 <TooltipWithPortal
                   variant="iconStroke"
                   content={
@@ -204,7 +282,7 @@ export function TradeHistory(p: Props) {
                   <Trans>FEES</Trans>
                 </TooltipWithPortal>
               </TableTh>
-              <TableTh className="w-[100px]" />
+              <TableTh className="w-[132px]" />
             </TableTheadTr>
           </thead>
           <tbody>
@@ -218,19 +296,27 @@ export function TradeHistory(p: Props) {
                   minCollateralUsd={minCollateralUsd!}
                   showDebugValues={showDebugValues}
                   shouldDisplayAccount={forAllAccounts}
+                  onSelectPositionLifecycle={positionLifecycleId ? undefined : handleSelectPositionLifecycle}
                 />
               ))
             )}
           </tbody>
         </table>
-        {isEmpty && hasFilters && (
+        {isEmpty && Boolean(historyError) && (
+          <EmptyTableContent
+            isLoading={false}
+            isEmpty={isEmpty}
+            emptyText={<Trans>Failed to load trade history</Trans>}
+          />
+        )}
+        {isEmpty && !historyError && hasFilters && (
           <EmptyTableContent
             isLoading={false}
             isEmpty={isEmpty}
             emptyText={<Trans>No trades match the selected filters</Trans>}
           />
         )}
-        {isEmpty && !hasFilters && !isLoading && (
+        {isEmpty && !historyError && !hasFilters && !isLoading && (
           <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No trades yet</Trans>} />
         )}
       </TableScrollFadeContainer>
