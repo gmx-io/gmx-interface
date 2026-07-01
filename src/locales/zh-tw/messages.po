@@ -6693,6 +6693,10 @@ msgstr "TP/SL 訂單超過倉位"
 msgid "pay"
 msgstr "支付"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
+msgstr "在您的交易達到推薦計畫的畢業門檻後，您先前的推薦碼已被替換為 GMX 協議碼。您將保留開倉和平倉費用 {currentTierDiscount}% 的折扣。<0>瞭解更多</0>"
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
 msgstr "沒有符合您持有資產的機會"
@@ -10226,6 +10230,10 @@ msgstr "重新簽署"
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "正在存入至 GMX Account..."
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "You've reached a trading volume threshold, so GMX assigned this protocol referral code. You're receiving a {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
+msgstr "您已達到交易量門檻，因此 GMX 為您分配了此協議推薦碼。您將享有開倉和平倉費用 {currentTierDiscount}% 的折扣。<0>瞭解更多</0>"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx

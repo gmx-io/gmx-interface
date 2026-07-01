@@ -6693,6 +6693,10 @@ msgstr "TP/SL注文がポジションを超過"
 msgid "pay"
 msgstr "支払い"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
+msgstr "お取引が紹介プログラムの卒業しきい値に達したため、以前の紹介コードはGMXプロトコルコードに置き換えられました。オープンおよびクローズ手数料の{currentTierDiscount}%割引は維持されます。<0>詳細</0>"
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
 msgstr "お持ちの資産に一致する機会はありません"
@@ -10226,6 +10230,10 @@ msgstr "再署名"
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "GMX Account に入金中..."
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "You've reached a trading volume threshold, so GMX assigned this protocol referral code. You're receiving a {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
+msgstr "取引高のしきい値に達したため、GMXがこのプロトコル紹介コードを割り当てました。オープンおよびクローズ手数料が{currentTierDiscount}%割引されます。<0>詳細</0>"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
