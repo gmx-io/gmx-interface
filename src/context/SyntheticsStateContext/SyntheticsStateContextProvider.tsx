@@ -73,6 +73,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
+import { DelistingExitAnnouncements } from "components/DelistingExitAnnouncements/DelistingExitAnnouncements";
 import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
 
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
@@ -506,5 +507,10 @@ export function SyntheticsStateContextProvider({
 
   latestStateRef.current = state;
 
-  return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
+  return (
+    <StateCtx.Provider value={state}>
+      <DelistingExitAnnouncements />
+      {children}
+    </StateCtx.Provider>
+  );
 }

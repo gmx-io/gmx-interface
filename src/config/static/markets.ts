@@ -820,6 +820,31 @@ export function isDepositDisabledMarket(chainId: number, marketTokenAddress: str
   return DEPOSIT_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
 }
 
+export const DELISTING_MARKET_ADDRESSES: Record<number, Set<string>> = {
+  [ARBITRUM]: new Set([
+    "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c", // TON/USD
+    "0x39AC3C494950A4363D739201BA5A0861265C9ae5", // PI/USD
+    "0x12fD1A4BdB96219E637180Ff5293409502b2951D", // MELANIA/USD
+    "0x71237F8C3d1484495A136022E16840b70fF84a69", // BOME/USD
+    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d", // KTA/USD
+    "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366", // SATS/USD
+    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169", // AI16Z/USD
+    "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50", // BRETT/USD
+    "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C", // MEME/USD
+    "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244", // MEW/USD
+    "0x2aE5c5Cd4843cf588AA8D1289894318130acc823", // MKR/USD
+    "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665", // SWAP-ONLY [USDC-DAI]
+  ]),
+  [AVALANCHE]: new Set([
+    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b", // MELANIA/USD
+    "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b", // SWAP-ONLY [USDC-DAI.e]
+  ]),
+};
+
+export function isDelistingMarket(chainId: number, marketTokenAddress: string): boolean {
+  return DELISTING_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
+}
+
 export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
     // Commodity markets — accessible only via GLV
