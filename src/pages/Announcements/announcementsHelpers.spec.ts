@@ -33,6 +33,8 @@ describe("getEventStartDate", () => {
 
   it("returns undefined when there is neither a startDate nor a flag createdAt", () => {
     expect(getEventStartDate(makeEvent({ isActive: true }), undefined)).toBeUndefined();
+    expect(getEventStartDate(makeEvent({ flagId: "f" }), undefined)).toBeUndefined();
+    expect(getEventStartDate(makeEvent({ flagId: "f" }), {})).toBeUndefined();
   });
 });
 
@@ -44,6 +46,11 @@ describe("getEventSortDate", () => {
 
   it("falls back to endDate only when no start is resolvable", () => {
     expect(getEventSortDate(makeEvent({ isActive: true }), undefined)).toEqual(parseEventDate("10 May 2026, 12:00"));
+  });
+
+  it("uses an explicit startDate over the flag createdAt and endDate", () => {
+    const event = makeEvent({ startDate: "01 May 2026, 12:00", flagId: "f" });
+    expect(getEventSortDate(event, flags("2026-05-05T00:00:00.000Z"))).toEqual(parseEventDate("01 May 2026, 12:00"));
   });
 });
 
