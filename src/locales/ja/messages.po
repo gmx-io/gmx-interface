@@ -1167,6 +1167,10 @@ msgstr "エラー："
 msgid "Cross-chain one-click deposits into GM"
 msgstr "GMへのクロスチェーン1クリック入金"
 
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Open full dashboard"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>TBTC-TBTCプールに切り替える</0>ことで価格への影響を軽減できる可能性があります"
@@ -7492,6 +7496,10 @@ msgstr ""
 msgid "({0} of {1})"
 msgstr "({1}の{0})"
 
+#: src/pages/Whales/WhalesMarketPage.tsx
+msgid "Market Whales"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "手数料と価格への影響を含む、実現損益および含み損益の合計"
@@ -8580,6 +8588,12 @@ msgstr "<0>{0}</0> を請求"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive"
 msgstr "受取"
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+#: src/pages/Whales/WhalesMarketPage.tsx
+#: src/pages/Whales/WhalesPage.tsx
+msgid "Whale Monitor"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
@@ -11124,6 +11138,10 @@ msgstr "残高不足"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
+msgstr ""
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Account Whale Breakdown"
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx

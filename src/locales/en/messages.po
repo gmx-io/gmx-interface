@@ -1167,6 +1167,10 @@ msgstr "Error:"
 msgid "Cross-chain one-click deposits into GM"
 msgstr "Cross-chain one-click deposits into GM"
 
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Open full dashboard"
+msgstr "Open full dashboard"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
@@ -7492,6 +7496,10 @@ msgstr "Set SL price below limit price"
 msgid "({0} of {1})"
 msgstr "({0} of {1})"
 
+#: src/pages/Whales/WhalesMarketPage.tsx
+msgid "Market Whales"
+msgstr "Market Whales"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "Total realized and unrealized PnL including fees and price impact"
@@ -8580,6 +8588,12 @@ msgstr "Claim <0>{0}</0>"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive"
 msgstr "Receive"
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+#: src/pages/Whales/WhalesMarketPage.tsx
+#: src/pages/Whales/WhalesPage.tsx
+msgid "Whale Monitor"
+msgstr "Whale Monitor"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
@@ -11125,6 +11139,10 @@ msgstr "Insufficient balance"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
 msgstr "From: block {0} ({1})"
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Account Whale Breakdown"
+msgstr "Account Whale Breakdown"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"

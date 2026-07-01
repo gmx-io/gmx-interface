@@ -1167,6 +1167,10 @@ msgstr "错误："
 msgid "Cross-chain one-click deposits into GM"
 msgstr "跨链一键存款到 GM"
 
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Open full dashboard"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>切换至 TBTC-TBTC 池</0>以降低潜在价格影响"
@@ -7492,6 +7496,10 @@ msgstr ""
 msgid "({0} of {1})"
 msgstr "（{0}，占 {1}）"
 
+#: src/pages/Whales/WhalesMarketPage.tsx
+msgid "Market Whales"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "已实现和未实现盈亏总计，包含费用和价格影响"
@@ -8580,6 +8588,12 @@ msgstr "领取 <0>{0}</0>"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive"
 msgstr "接收"
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+#: src/pages/Whales/WhalesMarketPage.tsx
+#: src/pages/Whales/WhalesPage.tsx
+msgid "Whale Monitor"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
@@ -11124,6 +11138,10 @@ msgstr "余额不足"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
+msgstr ""
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Account Whale Breakdown"
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx

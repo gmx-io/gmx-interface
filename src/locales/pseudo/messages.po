@@ -1167,6 +1167,10 @@ msgstr ""
 msgid "Cross-chain one-click deposits into GM"
 msgstr ""
 
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Open full dashboard"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr ""
@@ -7492,6 +7496,10 @@ msgstr ""
 msgid "({0} of {1})"
 msgstr ""
 
+#: src/pages/Whales/WhalesMarketPage.tsx
+msgid "Market Whales"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr ""
@@ -8579,6 +8587,12 @@ msgstr ""
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive"
+msgstr ""
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+#: src/pages/Whales/WhalesMarketPage.tsx
+#: src/pages/Whales/WhalesPage.tsx
+msgid "Whale Monitor"
 msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
@@ -11124,6 +11138,10 @@ msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
+msgstr ""
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Account Whale Breakdown"
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
