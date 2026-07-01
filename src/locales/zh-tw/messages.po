@@ -164,6 +164,10 @@ msgstr "建立 TWAP 兌換"
 msgid "Estimated time"
 msgstr "預估時間"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "GMX Account swaps cannot use native {0}. Select {1} or withdraw to wallet first."
+msgstr "GMX Account 交換無法使用原生 {0}。請選擇 {1}，或先提取至錢包。"
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in leverage display"
 msgstr "在槓桿顯示中包含已實現盈虧"
