@@ -8700,10 +8700,6 @@ msgstr "V2 リベート"
 msgid "Select asset to deposit"
 msgstr "入金するアセットを選択"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max GM buyable amount reached"
-msgstr "最大GM購入可能額に到達"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "セッション生成済"
@@ -8962,6 +8958,8 @@ msgstr "法定通貨ゲートウェイでGMXを購入"
 msgid "Max network fee"
 msgstr "最大ネットワーク手数料"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
