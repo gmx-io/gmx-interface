@@ -60,6 +60,7 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
           formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal, undefined, undefined, tokenVisualMultiplier)
         ),
         positionData: {
+          positionKey: position.key,
           pnl: position.pnlAfterFees,
           sizeInUsd: position.sizeInUsd,
           sizeInTokens: position.sizeInTokens,

@@ -157,4 +157,3 @@ describe("multichain api: buildCrossChainWithdrawBridgeOutParams", () => {
     expect(params.minAmountOut).toBe(1_000_000n);
   });
 });
-

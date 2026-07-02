@@ -45,6 +45,26 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "botanix-withdraw-deadline",
+    type: "delisting",
+    isActive: true,
+    endDate: "01 Aug 2026, 0:00",
+    chains: [BOTANIX],
+    title: "Botanix network is shutting down",
+    description: (
+      <>
+        Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.
+        <br />
+        <br />
+        In the swap interface, swap pBTC to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC
+        directly on Botanix. Move your BTC off the network before the deadline.
+        <br />
+        <br />
+        <Link to="/pools">Withdraw liquidity</Link>
+      </>
+    ),
+  },
+  {
     id: "spcx-stock-arbitrum-transition",
     type: "update",
     isActive: true,

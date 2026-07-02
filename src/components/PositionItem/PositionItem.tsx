@@ -55,6 +55,7 @@ export type Props = {
   isLarge: boolean;
   onOrdersClick?: (key?: string) => void;
   onCancelOrder?: (orderKey: string) => void;
+  hideOrderActions?: boolean;
 };
 
 export function PositionItem(p: Props) {
@@ -117,7 +118,7 @@ export function PositionItem(p: Props) {
             <br />
             <br />
             <StatsTooltipRow
-              label={t`Current margin`}
+              label={t`Margin before borrow/funding`}
               value={formatUsd(p.position.collateralUsd) || "..."}
               valueClassName="numbers"
               showDollar={false}
@@ -198,6 +199,21 @@ export function PositionItem(p: Props) {
   }, [p.position.marketInfo, p.position.isLong, p.position.sizeInUsd]);
 
   function renderCollateral() {
+    const isStableCollateral = p.position.collateralToken.isStable;
+    const renderMarginValue = (amount: bigint, usd: bigint) =>
+      isStableCollateral ? (
+        formatUsd(usd) || "..."
+      ) : (
+        <AmountWithUsdBalance
+          amount={amount}
+          decimals={p.position.collateralToken.decimals}
+          usd={usd}
+          symbol={p.position.collateralToken.symbol}
+          isStable={isStableCollateral}
+          usdAsPrimary
+        />
+      );
+
     return (
       <div className="flex flex-col gap-4">
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
@@ -216,19 +232,18 @@ export function PositionItem(p: Props) {
                   </div>
                 )}
                 <StatsTooltipRow
-                  label={t`Margin before pending borrow and funding fees`}
-                  value={
-                    <AmountWithUsdBalance
-                      amount={p.position.collateralAmount}
-                      decimals={p.position.collateralToken.decimals}
-                      symbol={p.position.collateralToken.symbol}
-                      usd={p.position.collateralUsd}
-                      isStable={p.position.collateralToken.isStable}
-                    />
-                  }
+                  label={t`Current margin`}
                   showDollar={false}
+                  value={renderMarginValue(p.position.remainingCollateralAmount, p.position.remainingCollateralUsd)}
+                  valueClassName="numbers"
                 />
                 <br />
+                <StatsTooltipRow
+                  label={t`Margin before borrow/funding`}
+                  showDollar={false}
+                  value={renderMarginValue(p.position.collateralAmount, p.position.collateralUsd)}
+                  valueClassName="numbers"
+                />
                 <StatsTooltipRow
                   label={t`Borrow fee`}
                   showDollar={false}
@@ -247,6 +262,10 @@ export function PositionItem(p: Props) {
                     "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
                   })}
                 />
+                <br />
+                <div className="mb-4 text-typography-primary">
+                  <Trans>Claimable</Trans>
+                </div>
                 <StatsTooltipRow
                   label={t`Positive funding fee`}
                   showDollar={false}
@@ -257,6 +276,9 @@ export function PositionItem(p: Props) {
                   })}
                 />
                 <br />
+                <div className="mb-4 text-typography-primary">
+                  <Trans>Estimated daily fees</Trans>
+                </div>
                 <StatsTooltipRow
                   showDollar={false}
                   label={t`Borrow fee / day`}
@@ -274,13 +296,9 @@ export function PositionItem(p: Props) {
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                 />
                 <br />
-                <Trans>Click the edit icon to adjust margin.</Trans>
+                <Trans>Negative funding fees reduce margin and affect liquidation price.</Trans>
                 <br />
-                <br />
-                <Trans>
-                  Negative funding fees reduce margin and affect liquidation price. Positive funding fees are claimable
-                  in the Claims tab.
-                </Trans>
+                <Trans>Positive funding fees are claimable in Claims.</Trans>
               </>
             }
           />
@@ -484,7 +502,11 @@ export function PositionItem(p: Props) {
                   )
                 : formatUsd(p.position.sizeInUsd)}
             </span>
-            <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+            <PositionItemOrdersLarge
+              positionKey={p.position.key}
+              onOrdersClick={p.onOrdersClick}
+              hideActions={p.hideOrderActions}
+            />
           </div>
         </TableTd>
         <TableTd>
@@ -729,12 +751,16 @@ export function PositionItem(p: Props) {
             </div>
           )}
         </AppCardSection>
-        <AppCardSection className="border-b-0">
+        <AppCardSection className="!border-b-0">
           <div className="font-medium text-typography-secondary">
             <Trans>Orders</Trans>
           </div>
 
-          <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+          <PositionItemOrdersSmall
+            positionKey={p.position.key}
+            onOrdersClick={p.onOrdersClick}
+            hideActions={p.hideOrderActions}
+          />
         </AppCardSection>
 
         <div ref={closeSentinelRef} />

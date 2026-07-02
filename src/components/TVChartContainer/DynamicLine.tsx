@@ -1,12 +1,16 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
+import { USD_DECIMALS } from "config/factors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { OrderType } from "domain/synthetics/orders";
+import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
 import { helperToast } from "lib/helperToast";
+import { formatUsd, numberToBigint } from "lib/numbers";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { bigMath } from "sdk/utils/bigmath";
 
 import { chartLabelColors, orderTypeToTitle } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
@@ -29,6 +33,11 @@ export function DynamicLine({
   marketName,
   lineLength,
   bodyFontSizePt = 14,
+  positionEntryPrice,
+  positionSizeInUsd,
+  sizeDeltaUsd,
+  indexTokenVisualMultiplier,
+  isPartial,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -60,12 +69,50 @@ export function DynamicLine({
   const orderBodyBgBorderColor = palette.bg[theme];
   const orderBodyTextColor = palette.text[theme];
 
-  const title = useMemo(() => {
-    const directionText = isLong ? t`Long` : t`Short`;
-    const orderTypeTitle = orderTypeToTitle[orderType];
-    const orderTitleText = orderTypeTitle ? _(orderTypeTitle) : t`Unknown order`;
-    return `${directionText} ${marketName} · ${orderTitleText}`;
-  }, [_, isLong, marketName, orderType]);
+  const buildTitle = useCallback(
+    (triggerPriceNumber: number): string => {
+      const directionText = isLong ? t`Long` : t`Short`;
+      const orderTypeTitle = orderTypeToTitle[orderType];
+      let orderTitleText = orderTypeTitle ? _(orderTypeTitle) : t`Unknown order`;
+
+      if (isPartial) {
+        if (orderType === OrderType.LimitDecrease) {
+          orderTitleText = t`Partial TP`;
+        } else if (orderType === OrderType.StopLossDecrease) {
+          orderTitleText = t`Partial SL`;
+        }
+      }
+
+      const baseTitle = `${directionText} ${marketName} · ${orderTitleText}`;
+
+      if (positionEntryPrice === undefined || positionSizeInUsd === undefined || sizeDeltaUsd === undefined) {
+        return baseTitle;
+      }
+
+      const triggerPriceBigInt =
+        numberToBigint(triggerPriceNumber, USD_DECIMALS) / BigInt(indexTokenVisualMultiplier || 1);
+
+      const priceDiff = isLong ? triggerPriceBigInt - positionEntryPrice : positionEntryPrice - triggerPriceBigInt;
+      const closeSizeUsd = getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd, positionSizeInUsd);
+      const pnlUsd = bigMath.mulDiv(priceDiff, closeSizeUsd, positionEntryPrice);
+
+      return `${baseTitle} · ${formatUsd(pnlUsd, { displayPlus: true })}`;
+    },
+    [
+      _,
+      isLong,
+      marketName,
+      orderType,
+      isPartial,
+      positionEntryPrice,
+      positionSizeInUsd,
+      sizeDeltaUsd,
+      indexTokenVisualMultiplier,
+    ]
+  );
+
+  const title = useMemo(() => buildTitle(price), [buildTitle, price]);
+  const buildTitleRef = useLatest(buildTitle);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -117,8 +164,13 @@ export function DynamicLine({
         lineApi.current
           .setLineLength(lineLengthRef.current, "pixel")
           .onMoving(() => {
-            const error = getError(id, lineApi.current!.getPrice());
+            const newPrice = lineApi.current!.getPrice();
+            const error = getError(id, newPrice);
             setError(error);
+
+            if (!error) {
+              lineApi.current!.setText(buildTitleRef.current(newPrice));
+            }
           })
           .onMove(() => {
             const error = getError(id, lineApi.current!.getPrice());
@@ -188,6 +240,7 @@ export function DynamicLine({
     tvWidgetRef,
     bodyFontSizePt,
     theme,
+    buildTitleRef,
   ]);
 
   useEffect(() => {

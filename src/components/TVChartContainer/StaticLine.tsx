@@ -15,10 +15,12 @@ export function StaticLine({
   positionData,
   lineType,
   tvWidgetRef,
+  onClose,
   lineLength = -40,
   bodyFontSizePt = 14,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
+  onClose?: (positionKey: string) => void;
   lineLength?: number;
   bodyFontSizePt?: number;
 } & StaticChartLine) {
@@ -55,6 +57,8 @@ export function StaticLine({
   const showSizeInUsdRef = useLatest(showSizeInUsd);
   const getDisplayTextRef = useLatest(getDisplayText);
   const lineLengthRef = useLatest(lineLength);
+  const latestOnClose = useLatest(onClose);
+  const positionKeyRef = useLatest(positionData?.positionKey);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -105,6 +109,18 @@ export function StaticLine({
               return newValue;
             });
           });
+
+        positionLine
+          .setCloseTooltip(t`Close position`)
+          .onClose(() => {
+            const positionKey = positionKeyRef.current;
+            if (positionKey) {
+              latestOnClose.current?.(positionKey);
+            }
+          })
+          .setCloseButtonBackgroundColor(chartLabelColors.button.bg[theme])
+          .setCloseButtonBorderColor(bodyBorderColor)
+          .setCloseButtonIconColor(chartLabelColors.button.icon[theme]);
       } else {
         positionLine.setQuantity("");
       }
@@ -143,6 +159,8 @@ export function StaticLine({
     getDisplayTextRef,
     showSizeInUsdRef,
     lineLengthRef,
+    latestOnClose,
+    positionKeyRef,
     bodyFontSizePt,
     theme,
   ]);
@@ -163,6 +181,7 @@ export function StaticLine({
     lineApi.current.setBodyBackgroundColor(bodyBgColor);
     lineApi.current.setBodyBorderColor(bodyBorderColor);
     lineApi.current.setQuantityBorderColor(bodyBorderColor);
+    lineApi.current.setCloseButtonBorderColor(bodyBorderColor);
   }, [displayText, bodyBgColor, bodyBorderColor, lineColor, isPositionEntry]);
 
   return null;

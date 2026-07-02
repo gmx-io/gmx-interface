@@ -12,6 +12,7 @@ export type StaticChartLine = {
   title: string;
   lineType?: "liquidation";
   positionData?: {
+    positionKey: string;
     pnl: bigint;
     sizeInUsd: bigint;
     sizeInTokens: bigint;
@@ -29,4 +30,9 @@ export type DynamicChartLine = {
   isLong: boolean;
   marketName: string;
   updatedAtTime: bigint;
+  positionEntryPrice?: bigint;
+  positionSizeInUsd?: bigint;
+  sizeDeltaUsd?: bigint;
+  indexTokenVisualMultiplier: number;
+  isPartial: boolean;
 };

@@ -2,7 +2,8 @@ import { t } from "@lingui/macro";
 
 import { useBuybackChartData } from "domain/buyback/useBuybackChartData";
 import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
-import { useTotalStakedGmxAndEsGmx } from "domain/legacy";
+import { useGmxDailyPrices } from "domain/buyback/useGmxDailyPrices";
+import { GMX_DECIMALS } from "lib/legacy";
 import { bigintToNumber } from "lib/numbers";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
@@ -10,15 +11,17 @@ import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import { BuybackChart } from "./BuybackChart";
 import { BuybackMetricsHeader } from "./BuybackMetricsHeader";
 
-export function BuybackDashboard({ gmxPrice }: { gmxPrice: bigint | undefined }) {
-  const { data, isLoading, error } = useBuybackWeeklyStats();
-  const { total: totalStakedAmount } = useTotalStakedGmxAndEsGmx();
+export function BuybackDashboard({ totalGmxSupply }: { totalGmxSupply: bigint | undefined }) {
+  const { data, isLoading: isStatsLoading, error: statsError } = useBuybackWeeklyStats();
+  const { candles, isLoading: isCandlesLoading, error: candlesError } = useGmxDailyPrices(data?.weeks?.[0]?.weekStart);
 
-  const gmxPriceNumber = gmxPrice !== undefined ? bigintToNumber(gmxPrice, 30) : undefined;
-  const totalStakedGmxNumber =
-    totalStakedAmount !== undefined && totalStakedAmount > 0n ? bigintToNumber(totalStakedAmount, 18) : undefined;
+  const isLoading = isStatsLoading || isCandlesLoading;
+  const error = statsError ?? candlesError;
 
-  const { chartData, metrics } = useBuybackChartData(data, gmxPriceNumber, totalStakedGmxNumber);
+  const totalGmxSupplyNumber =
+    totalGmxSupply !== undefined && totalGmxSupply > 0n ? bigintToNumber(totalGmxSupply, GMX_DECIMALS) : undefined;
+
+  const { chartData, metrics } = useBuybackChartData(data, candles, totalGmxSupplyNumber);
 
   return (
     <AppCard>
@@ -27,7 +30,7 @@ export function BuybackDashboard({ gmxPrice }: { gmxPrice: bigint | undefined })
         <BuybackMetricsHeader metrics={metrics} isLoading={isLoading} error={error} />
       </AppCardSection>
       <AppCardSection>
-        <BuybackChart chartData={chartData} gmxPrice={gmxPriceNumber} />
+        <BuybackChart chartData={chartData} />
       </AppCardSection>
     </AppCard>
   );
