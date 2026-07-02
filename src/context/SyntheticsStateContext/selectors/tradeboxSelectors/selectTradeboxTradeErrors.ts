@@ -33,7 +33,7 @@ import {
   getIncreaseError,
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
-import { getIsPositionLiquidatableAtPrice } from "domain/synthetics/trade/utils/warnings";
+import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 
 const selectTradeboxSwapTradeError = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -184,36 +184,20 @@ export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) =
     return false;
   }
 
-  const existingPosition = q(selectTradeboxSelectedPosition);
-
-  if (!existingPosition) {
-    return false;
-  }
-
   // Don't stack the warning on top of a blocking error.
   if (q(selectTradeboxIncreaseTradeError).buttonErrorMessage) {
     return false;
   }
 
+  // With no existing position the order is checked against the standalone position it would open.
+  const existingPosition = q(selectTradeboxSelectedPosition);
   const triggerPrice = q(selectTradeboxTriggerPrice);
-
-  // A trigger beyond the current liq price means the position would be liquidated before the
-  // trigger is reached, and the order would then execute as a new position — no warning.
-  if (
-    getIsPositionLiquidatableAtPrice({
-      liqPrice: existingPosition.liquidationPrice,
-      price: triggerPrice,
-      isLong,
-    })
-  ) {
-    return false;
-  }
-
   const nextPositionValues = q(selectTradeboxNextPositionValues);
 
-  return getIsPositionLiquidatableAtPrice({
-    liqPrice: nextPositionValues?.nextLiqPrice,
-    price: triggerPrice,
+  return getIsIncreaseResultingPositionLiquidatable({
+    currentLiqPrice: existingPosition?.liquidationPrice,
+    nextLiqPrice: nextPositionValues?.nextLiqPrice,
+    triggerPrice,
     isLong,
   });
 });

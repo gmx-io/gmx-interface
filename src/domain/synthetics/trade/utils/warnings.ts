@@ -39,3 +39,20 @@ export function getIsPositionLiquidatableAtPrice(p: {
 
   return isLong ? liqPrice > price : liqPrice < price;
 }
+
+export function getIsIncreaseResultingPositionLiquidatable(p: {
+  currentLiqPrice: bigint | undefined;
+  nextLiqPrice: bigint | undefined;
+  triggerPrice: bigint | undefined;
+  isLong: boolean;
+}): boolean {
+  const { currentLiqPrice, nextLiqPrice, triggerPrice, isLong } = p;
+
+  // A trigger beyond the current liq price is not flagged: the position would be liquidated
+  // before the trigger is reached, and the order would then execute as a new position.
+  if (getIsPositionLiquidatableAtPrice({ liqPrice: currentLiqPrice, price: triggerPrice, isLong })) {
+    return false;
+  }
+
+  return getIsPositionLiquidatableAtPrice({ liqPrice: nextLiqPrice, price: triggerPrice, isLong });
+}

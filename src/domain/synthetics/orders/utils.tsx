@@ -30,7 +30,7 @@ import {
 } from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
-import { getIsPositionLiquidatableAtPrice } from "../trade/utils/warnings";
+import { getIsIncreaseResultingPositionLiquidatable } from "../trade/utils/warnings";
 
 function getSwapOrderTitle() {
   return t`Swap`;
@@ -339,22 +339,12 @@ export function getOrderErrors(p: {
 
       // Only resting Limit/Stop Increase orders execute at the trigger price;
       // Market Increase orders have triggerPrice=0n.
-      // A trigger beyond the current liq price is not flagged: the position would be liquidated
-      // before the trigger is reached, and the order would then execute as a new position.
-      const isCurrentPositionLiquidatableAtTrigger = position
-        ? getIsPositionLiquidatableAtPrice({
-            liqPrice: position.liquidationPrice,
-            price: (order as PositionOrderInfo).triggerPrice,
-            isLong: (order as PositionOrderInfo).isLong,
-          })
-        : false;
-
       if (
         isLimitOrderType(order.orderType) &&
-        !isCurrentPositionLiquidatableAtTrigger &&
-        getIsPositionLiquidatableAtPrice({
-          liqPrice: p.nextPositionValues?.nextLiqPrice,
-          price: (order as PositionOrderInfo).triggerPrice,
+        getIsIncreaseResultingPositionLiquidatable({
+          currentLiqPrice: position?.liquidationPrice,
+          nextLiqPrice: p.nextPositionValues?.nextLiqPrice,
+          triggerPrice: (order as PositionOrderInfo).triggerPrice,
           isLong: (order as PositionOrderInfo).isLong,
         })
       ) {

@@ -80,7 +80,7 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { getIsPositionLiquidatableAtPrice } from "domain/synthetics/trade/utils/warnings";
+import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
@@ -508,7 +508,7 @@ export function OrderEditor(p: Props) {
 
   const showLiquidationRiskWarning = useMemo(() => {
     // Suppress the warning while a blocking error is shown (mirrors the tradebox selector).
-    if (error || !positionOrder || !existingPosition) {
+    if (error || !positionOrder) {
       return false;
     }
 
@@ -519,21 +519,11 @@ export function OrderEditor(p: Props) {
       return false;
     }
 
-    // A trigger beyond the current liq price means the position would be liquidated before the
-    // trigger is reached, and the order would then execute as a new position — no warning.
-    if (
-      getIsPositionLiquidatableAtPrice({
-        liqPrice: existingPosition.liquidationPrice,
-        price: triggerPrice,
-        isLong: positionOrder.isLong,
-      })
-    ) {
-      return false;
-    }
-
-    return getIsPositionLiquidatableAtPrice({
-      liqPrice: nextPositionValuesForIncrease?.nextLiqPrice,
-      price: triggerPrice,
+    // With no existing position the order is checked against the standalone position it would open.
+    return getIsIncreaseResultingPositionLiquidatable({
+      currentLiqPrice: existingPosition?.liquidationPrice,
+      nextLiqPrice: nextPositionValuesForIncrease?.nextLiqPrice,
+      triggerPrice,
       isLong: positionOrder.isLong,
     });
   }, [error, positionOrder, existingPosition, nextPositionValuesForIncrease, triggerPrice]);
