@@ -31,9 +31,11 @@ import {
   getMaxAllowedLeverage,
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
+  isOffHoursMarket,
 } from "domain/synthetics/markets";
 import { PreferredTradeTypePickStrategy, chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { isTradeboxOffHoursLiqRisk } from "domain/synthetics/positions";
 import {
   TokenData,
   TokensRatio,
@@ -82,6 +84,7 @@ import {
   selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
+  selectPositionConstants,
   selectPositionsInfoData,
   selectSubaccountForChainAction,
   selectTokensData,
@@ -1643,6 +1646,30 @@ export const selectTradeboxNextLeverageWithoutPnl = createSelector((q) => {
 export const selectTradeboxNextPositionValues = createSelector((q) => {
   const { isIncrease } = q(selectTradeboxTradeFlags);
   return isIncrease ? q(selectTradeboxNextPositionValuesForIncrease) : q(selectTradeboxNextPositionValuesForDecrease);
+});
+
+export const selectTradeboxOffHoursLiqRisk = createSelector((q) => {
+  const { isPosition, isIncrease, isTwap, isLong } = q(selectTradeboxTradeFlags);
+  const chainId = q(selectChainId);
+  const marketInfo = q(selectTradeboxMarketInfo);
+
+  if (!isPosition || !isIncrease || isTwap || !isOffHoursMarket(chainId, marketInfo?.marketTokenAddress)) {
+    return { shouldWarn: false };
+  }
+
+  const nextPositionValues = q(selectTradeboxNextPositionValues);
+  const { minCollateralUsd } = q(selectPositionConstants);
+
+  const shouldWarn = isTradeboxOffHoursLiqRisk({
+    chainId,
+    marketInfo,
+    isLong,
+    nextSizeInUsd: nextPositionValues?.nextSizeUsd,
+    nextCollateralUsd: nextPositionValues?.nextCollateralUsd,
+    minCollateralUsd,
+  });
+
+  return { shouldWarn };
 });
 
 export const selectTradeboxSelectedPositionKey = createSelector((q) => {
