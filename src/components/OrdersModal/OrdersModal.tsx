@@ -13,6 +13,7 @@ import {
   selectChainId,
   selectSrcChainId,
   selectSubaccountForChainAction,
+  selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -26,7 +27,12 @@ import {
 } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import { PositionInfo, formatLiquidationPrice, getEstimatedLiquidationTimeInHours } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  formatLiquidationPrice,
+  getEstimatedLiquidationTimeInHours,
+  getPositionOffHoursLiqRisk,
+} from "domain/synthetics/positions";
 import type { TokenData } from "domain/synthetics/tokens";
 import { formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -105,6 +111,14 @@ export function OrdersModal({
   const estimatedLiquidationHours = useMemo(
     () => (position ? getEstimatedLiquidationTimeInHours(position, minCollateralUsd) : undefined),
     [position, minCollateralUsd]
+  );
+  const userReferralInfo = useSelector(selectUserReferralInfo);
+  const showOffHoursWarning = useMemo(
+    () =>
+      position
+        ? getPositionOffHoursLiqRisk({ chainId, position, minCollateralUsd, userReferralInfo }).showWarning
+        : false,
+    [chainId, position, minCollateralUsd, userReferralInfo]
   );
 
   const { tpOrders, slOrders, allOrders } = useMemo(() => {
@@ -312,7 +326,9 @@ export function OrdersModal({
               </span>
               <span
                 className={cx("text-body-medium numbers", {
-                  "text-yellow-300": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+                  "text-yellow-300":
+                    (estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7) ||
+                    (showOffHoursWarning && !(estimatedLiquidationHours && estimatedLiquidationHours < 24)),
                   "text-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
                 })}
               >
