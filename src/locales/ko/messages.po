@@ -3783,7 +3783,7 @@ msgstr "Copin"
 msgid "Funding fee"
 msgstr "펀딩 수수료"
 
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr ""
 
@@ -4444,7 +4444,7 @@ msgstr "금액"
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
 
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Partial SL"
 msgstr ""
 

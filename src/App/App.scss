@@ -752,6 +752,8 @@ button.App-button {
 
 .zoomIn {
   animation-name: zoomIn;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
 }
 
 @keyframes zoomOut {
@@ -771,6 +773,8 @@ button.App-button {
 
 .zoomOut {
   animation-name: zoomOut;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
 }
 
 .positive {
