@@ -48,7 +48,7 @@ type ReferralsTradersContentProps = {
 export function ReferralsTradersContent({ account }: ReferralsTradersContentProps) {
   const { chainId } = useChainId();
   const { address: walletAddress } = useAccount();
-  const isAccountOwner = Boolean(account && walletAddress && account.toLowerCase() === walletAddress.toLowerCase());
+  const isAccountOwner = Boolean(account && walletAddress && account === walletAddress);
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(chainId, account);
   const { codeOwner } = useCodeOwner(chainId, account, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(chainId, codeOwner);
