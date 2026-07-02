@@ -60,6 +60,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
+import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
@@ -357,16 +358,24 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       return undefined;
     }
 
-    const storedGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+    const storedExpressParams = submitButtonState.expressParams;
     if (
-      storedGasPaymentParams === undefined ||
-      storedGasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
+      storedExpressParams === undefined ||
+      storedExpressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
     ) {
       return undefined;
     }
 
-    return storedGasPaymentParams.gasPaymentTokenAmount;
-  }, [expressOrdersEnabledForMax, submitButtonState.expressParams?.gasPaymentParams, gasPaymentTokenAddress]);
+    return getPrimaryOrderGasPaymentTokenAmount({
+      expressParams: storedExpressParams,
+      primaryExecutionFeeAmount: submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    });
+  }, [
+    expressOrdersEnabledForMax,
+    submitButtonState.expressParams,
+    submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    gasPaymentTokenAddress,
+  ]);
 
   const treatMinimalBufferAsEnough =
     isSwap &&
@@ -378,7 +387,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
-    : submitButtonState.totalExecutionFee?.feeTokenAmount;
+    : submitButtonState.primaryExecutionFee?.feeTokenAmount;
 
   const fallbackSwapExecutionFeeAmount = useMemo(() => {
     if (!isSwap || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
