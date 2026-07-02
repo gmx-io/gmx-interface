@@ -333,10 +333,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           <Trans>Settle {totalStr}</Trans>
         </div>
       </div>
-      <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
+      <div className="mb-20 mt-15 h-1 bg-slate-700" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
-          <div className="App-card-divider" />
           <div className="ClaimSettleModal-header">
             <div className="ClaimSettleModal-header-left">
               <Trans>POSITION</Trans>
