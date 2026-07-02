@@ -1,16 +1,15 @@
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { useLeaderboardData } from "domain/synthetics/leaderboard";
 import { windowToFromTimestamp, type WhaleWindow } from "domain/synthetics/whales/period";
 import { rankByVolumeDesc } from "domain/synthetics/whales/shares";
 import { useChainId } from "lib/chains";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import AddressView from "components/AddressView/AddressView";
-import { Sorter } from "components/Sorter/Sorter";
-import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
+import { Table, TableTd, TableTdActionable, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
+import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
@@ -37,18 +36,19 @@ export function WhaleLeaderboardTable({ window }: { window: WhaleWindow }) {
     <Table>
       <thead>
         <TableTheadTr>
-          <TableTh>#</TableTh>
-          <TableTh>Address</TableTh>
-          <TableTh>
-            <Sorter {...sorterProps("volume")}>Total volume</Sorter>
-          </TableTh>
-          <TableTh>Dashboard</TableTh>
+          <WhaleColumnHeader title="#" />
+          <WhaleColumnHeader title="Address" />
+          <WhaleColumnHeader
+            title="Total volume"
+            tooltip="Account's total traded volume across all markets in the selected window"
+            sorter={sorterProps("volume")}
+          />
         </TableTheadTr>
       </thead>
       <tbody>
         {isLoading && rows.length === 0 ? (
           <tr>
-            <TableTd colSpan={4}>Loading…</TableTd>
+            <TableTd colSpan={3}>Loading…</TableTd>
           </tr>
         ) : (
           rows.map((acc, i) => (
@@ -62,16 +62,6 @@ export function WhaleLeaderboardTable({ window }: { window: WhaleWindow }) {
                 <AddressView address={acc.account} size={20} noLink />
               </TableTdActionable>
               <TableTdActionable>{formatWhaleUsd(acc.volume)}</TableTdActionable>
-              <TableTdActionable>
-                <Link
-                  to={buildAccountDashboardUrl(acc.account, chainId, 2)}
-                  target="_blank"
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-blue-300 hover:underline"
-                >
-                  Open ↗
-                </Link>
-              </TableTdActionable>
             </TableTrActionable>
           ))
         )}

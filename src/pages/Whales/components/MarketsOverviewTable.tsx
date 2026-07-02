@@ -10,12 +10,12 @@ import { formatPercentage } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
 import SearchInput from "components/SearchInput/SearchInput";
-import { Sorter } from "components/Sorter/Sorter";
-import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
+import { Table, TableTd, TableTdActionable, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
+import { sortByBigint, useWhaleSort } from "./useWhaleSort";
+import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
 import { buildWhaleMarketUrl } from "../whaleRoutes";
-import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 
 type OverviewField = "volume" | "oiShare" | "top3";
 
@@ -53,17 +53,26 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
       <Table>
         <thead>
           <TableTheadTr>
-            <TableTh>Market</TableTh>
-            <TableTh>
-              <Sorter {...sorterProps("volume")}>Total volume</Sorter>
-            </TableTh>
-            <TableTh>Top holder</TableTh>
-            <TableTh>
-              <Sorter {...sorterProps("oiShare")}>OI share</Sorter>
-            </TableTh>
-            <TableTh>
-              <Sorter {...sorterProps("top3")}>Top-3 OI</Sorter>
-            </TableTh>
+            <WhaleColumnHeader title="Market" />
+            <WhaleColumnHeader
+              title="Total volume"
+              tooltip="Market's total traded volume in the selected window"
+              sorter={sorterProps("volume")}
+            />
+            <WhaleColumnHeader
+              title="Top holder"
+              tooltip="Account with the largest current open position in this market"
+            />
+            <WhaleColumnHeader
+              title="OI share"
+              tooltip="Top holder's share of the market's current open interest"
+              sorter={sorterProps("oiShare")}
+            />
+            <WhaleColumnHeader
+              title="Top-3 OI"
+              tooltip="Combined open-interest share of the 3 largest holders"
+              sorter={sorterProps("top3")}
+            />
           </TableTheadTr>
         </thead>
         <tbody>

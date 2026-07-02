@@ -4,16 +4,20 @@ import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import type { TooltipProps } from "recharts";
 import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
-type Props = {
-  data: {
-    name: string;
-    value: number;
-    color: string;
-  }[];
-  label: string;
+type Slice = {
+  name: string;
+  value: number;
+  color: string;
+  id?: string;
 };
 
-export default function InteractivePieChart({ data, label }: Props) {
+type Props = {
+  data: Slice[];
+  label: string;
+  onSliceClick?: (slice: Slice) => void;
+};
+
+export default function InteractivePieChart({ data, label, onSliceClick }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const sortedData = useMemo(() => data.filter(Boolean).sort((a, b) => b.value - a.value), [data]);
@@ -53,6 +57,7 @@ export default function InteractivePieChart({ data, label }: Props) {
             onMouseEnter={onChartEnter}
             onMouseOut={onChartLeave}
             onMouseLeave={onChartLeave}
+            onClick={onSliceClick ? (_, index) => onSliceClick(sortedData[index]) : undefined}
             paddingAngle={2}
           >
             {sortedData.map((entry, index) => (

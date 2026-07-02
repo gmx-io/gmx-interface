@@ -7,11 +7,11 @@ import { useChainId } from "lib/chains";
 import { formatPercentage } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
-import { Sorter } from "components/Sorter/Sorter";
-import { Table, TableTd, TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
+import { Table, TableTd, TableTdActionable, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
 import { MarketHoldersPie } from "./MarketHoldersPie";
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
+import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
@@ -32,16 +32,12 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
 
   return (
     <div className="flex flex-col gap-16">
-      <div className="text-body-medium text-typography-secondary">
-        Open interest: {formatWhaleUsd(totalOi)} · Market volume: {formatWhaleUsd(totalVolume)}
-      </div>
-
       {rows.length > 0 && (
         <div className="flex flex-wrap gap-24">
           <div className="flex flex-col items-center gap-4">
             <div className="text-body-small text-typography-secondary">OI concentration</div>
             <MarketHoldersPie
-              items={rows.map((r) => ({ name: shortAddr(r.account), value: r.size }))}
+              items={rows.map((r) => ({ name: shortAddr(r.account), value: r.size, id: r.account }))}
               total={totalOi}
               label={formatWhaleUsd(totalOi) ?? "—"}
             />
@@ -49,7 +45,7 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
           <div className="flex flex-col items-center gap-4">
             <div className="text-body-small text-typography-secondary">Volume concentration</div>
             <MarketHoldersPie
-              items={rows.map((r) => ({ name: shortAddr(r.account), value: r.volume }))}
+              items={rows.map((r) => ({ name: shortAddr(r.account), value: r.volume, id: r.account }))}
               total={totalVolume}
               label={formatWhaleUsd(totalVolume) ?? "—"}
             />
@@ -60,20 +56,28 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
       <Table>
         <thead>
           <TableTheadTr>
-            <TableTh>#</TableTh>
-            <TableTh>Address</TableTh>
-            <TableTh>
-              <Sorter {...sorterProps("size")}>Open size</Sorter>
-            </TableTh>
-            <TableTh>
-              <Sorter {...sorterProps("oiShare")}>OI share</Sorter>
-            </TableTh>
-            <TableTh>
-              <Sorter {...sorterProps("volume")}>Traded volume</Sorter>
-            </TableTh>
-            <TableTh>
-              <Sorter {...sorterProps("volShare")}>Vol share</Sorter>
-            </TableTh>
+            <WhaleColumnHeader title="#" />
+            <WhaleColumnHeader title="Address" />
+            <WhaleColumnHeader
+              title="Open size"
+              tooltip="Account's current open position size in this market"
+              sorter={sorterProps("size")}
+            />
+            <WhaleColumnHeader
+              title="Traded volume"
+              tooltip="Account's traded volume in this market over the selected window"
+              sorter={sorterProps("volume")}
+            />
+            <WhaleColumnHeader
+              title="OI share"
+              tooltip="Account's share of the market's current open interest (by position size)"
+              sorter={sorterProps("oiShare")}
+            />
+            <WhaleColumnHeader
+              title="Vol share"
+              tooltip="Account's share of the market's total traded volume in the window"
+              sorter={sorterProps("volShare")}
+            />
           </TableTheadTr>
         </thead>
         <tbody>
@@ -93,10 +97,10 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
                   <AddressView address={r.account} size={20} noLink />
                 </TableTdActionable>
                 <TableTdActionable>{formatWhaleUsd(r.size)}</TableTdActionable>
+                <TableTdActionable>{formatWhaleUsd(r.volume)}</TableTdActionable>
                 <TableTdActionable>
                   {formatPercentage(r.oiShareBps, { bps: true, displayDecimals: 1 })}
                 </TableTdActionable>
-                <TableTdActionable>{formatWhaleUsd(r.volume)}</TableTdActionable>
                 <TableTdActionable>
                   {formatPercentage(r.volShareBps, { bps: true, displayDecimals: 1 })}
                 </TableTdActionable>

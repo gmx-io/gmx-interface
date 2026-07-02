@@ -3,10 +3,10 @@ import type { AccountMarketRow } from "domain/synthetics/whales/accountMarkets";
 import { computeShareBps } from "domain/synthetics/whales/shares";
 import { formatPercentage } from "lib/numbers";
 
-import { Sorter } from "components/Sorter/Sorter";
-import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { Table, TableTd, TableTheadTr, TableTr } from "components/Table/Table";
 
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
+import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
 
 type AccountField = "totalVolume" | "whaleVolume" | "share";
@@ -26,16 +26,22 @@ export function AccountMarketsTable({ rows }: { rows: AccountMarketRow[] }) {
     <Table>
       <thead>
         <TableTheadTr>
-          <TableTh>Market</TableTh>
-          <TableTh>
-            <Sorter {...sorterProps("totalVolume")}>Total volume</Sorter>
-          </TableTh>
-          <TableTh>
-            <Sorter {...sorterProps("whaleVolume")}>Whale volume</Sorter>
-          </TableTh>
-          <TableTh>
-            <Sorter {...sorterProps("share")}>Whale share</Sorter>
-          </TableTh>
+          <WhaleColumnHeader title="Market" />
+          <WhaleColumnHeader
+            title="Total volume"
+            tooltip="Market's total traded volume in the selected window"
+            sorter={sorterProps("totalVolume")}
+          />
+          <WhaleColumnHeader
+            title="Whale volume"
+            tooltip="This account's traded volume in the market over the selected window"
+            sorter={sorterProps("whaleVolume")}
+          />
+          <WhaleColumnHeader
+            title="Whale share"
+            tooltip="This account's share of the market's total traded volume"
+            sorter={sorterProps("share")}
+          />
         </TableTheadTr>
       </thead>
       <tbody>

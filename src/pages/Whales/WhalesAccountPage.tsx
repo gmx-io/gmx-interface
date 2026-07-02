@@ -2,12 +2,14 @@ import { t } from "@lingui/macro";
 import { Trans } from "@lingui/macro";
 import { Link, useParams } from "react-router-dom";
 
+import { getExplorerUrl } from "config/chains";
 import { useAccountMarketBreakdown } from "domain/synthetics/whales/accountMarkets";
 import { useChainId } from "lib/chains";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { Breadcrumbs, BreadcrumbItem } from "components/Breadcrumbs/Breadcrumbs";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { AccountMarketsPie } from "./components/AccountMarketsPie";
 import { AccountMarketsTable } from "./components/AccountMarketsTable";
@@ -31,9 +33,17 @@ export default function WhalesAccountPage() {
           <BreadcrumbItem active>{account}</BreadcrumbItem>
         </Breadcrumbs>
         <div className="flex items-center justify-between">
-          <Link to={buildAccountDashboardUrl(account, chainId, 2)} target="_blank">
-            <Trans>Open full dashboard</Trans>
-          </Link>
+          <div className="text-body-small flex items-center gap-16">
+            <Link to={buildAccountDashboardUrl(account, chainId, 2)} className="link-underline hover:text-blue-300">
+              GMX account
+            </Link>
+            <ExternalLink href={`${getExplorerUrl(chainId)}address/${account}`} variant="icon">
+              Explorer
+            </ExternalLink>
+            <ExternalLink href={`https://debank.com/profile/${account}`} variant="icon">
+              DeBank
+            </ExternalLink>
+          </div>
           <WhaleWindowTabs value={window} onChange={setWindow} />
         </div>
         <div className="flex gap-16">

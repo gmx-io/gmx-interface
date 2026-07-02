@@ -39,4 +39,19 @@ describe("buildPieSlices", () => {
   it("returns an empty array when total is zero", () => {
     expect(buildPieSlices([{ name: "A", value: 5n }], 0n)).toEqual([]);
   });
+
+  it("passes each kept slice's id through (Others has none)", () => {
+    const slices = buildPieSlices(
+      [
+        { name: "A", value: 60n, id: "0xAAA" },
+        { name: "B", value: 3n, id: "0xBBB" },
+      ],
+      100n,
+      500n
+    );
+    expect(slices).toEqual([
+      { name: "A", value: 60, id: "0xAAA" },
+      { name: "Others", value: 40 },
+    ]);
+  });
 });

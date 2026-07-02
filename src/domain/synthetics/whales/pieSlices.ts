@@ -5,18 +5,18 @@ import { computeShareBps } from "./shares";
 // items plus the unlisted remainder of `total`) is merged into one "Others"
 // slice. Slice `value` is the share as a percentage number (e.g. 40.2).
 export function buildPieSlices(
-  items: { name: string; value: bigint }[],
+  items: { name: string; value: bigint; id?: string }[],
   total: bigint,
   minShareBps = 500n
-): { name: string; value: number }[] {
+): { name: string; value: number; id?: string }[] {
   if (total <= 0n) return [];
 
-  const slices: { name: string; value: number }[] = [];
+  const slices: { name: string; value: number; id?: string }[] = [];
   let keptValue = 0n;
   for (const item of items) {
     const shareBps = computeShareBps(item.value, total);
     if (shareBps >= minShareBps) {
-      slices.push({ name: item.name, value: Number(shareBps) / 100 });
+      slices.push({ name: item.name, value: Number(shareBps) / 100, id: item.id });
       keptValue += item.value;
     }
   }
