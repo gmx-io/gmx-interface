@@ -2,7 +2,9 @@ import {
   OrderErrors,
   PositionOrderInfo,
   getOrderErrors,
+  isLimitIncreaseOrderType,
   isOrderForPosition,
+  isStopIncreaseOrderType,
   sortPositionOrders,
 } from "domain/synthetics/orders";
 
@@ -15,6 +17,7 @@ import {
   selectPositionsInfoData,
   selectUiFeeFactor,
 } from "./globalSelectors";
+import { makeSelectOrderEditorNextPositionValuesForIncrease } from "./orderEditorSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "./settingsSelectors";
 import { makeSelectFindSwapPath } from "./tradeSelectors";
 
@@ -38,6 +41,20 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
 
     const jitLiquidityMap = q(selectJitLiquidityMap);
 
+    // Market Increase orders have triggerPrice=0n, so the trigger-price simulation only
+    // makes sense for resting Limit/Stop Increase orders.
+    const nextPositionValues =
+      orderInfo &&
+      (isLimitIncreaseOrderType(orderInfo.orderType) || isStopIncreaseOrderType(orderInfo.orderType)) &&
+      (orderInfo as PositionOrderInfo).triggerPrice !== undefined
+        ? q(
+            makeSelectOrderEditorNextPositionValuesForIncrease(
+              orderInfo.key,
+              (orderInfo as PositionOrderInfo).triggerPrice!
+            )
+          )
+        : undefined;
+
     const { errors, level } = getOrderErrors({
       order: orderInfo,
       positionsInfoData,
@@ -47,6 +64,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       chainId,
       isSetAcceptablePriceImpactEnabled,
       jitLiquidityMap,
+      nextPositionValues,
     });
 
     return { errors, level };
