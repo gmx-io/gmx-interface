@@ -43,7 +43,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
-import { shouldPreSelectPosition } from "./utils";
+import { getIsSettlementLikelyToFail, shouldPreSelectPosition } from "./utils";
 
 import "./SettleAccruedFundingFeeModal.scss";
 
@@ -99,6 +99,10 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const selectedPositions = useMemo(
     () => positiveFeePositions.filter((position) => positionKeys.includes(position.key)),
     [positionKeys, positiveFeePositions]
+  );
+  const hasSelectedPositionsLikelyToFail = useMemo(
+    () => selectedPositions.some(getIsSettlementLikelyToFail),
+    [selectedPositions]
   );
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
   const totalStr = formatDeltaUsd(total);
@@ -329,10 +333,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           <Trans>Settle {totalStr}</Trans>
         </div>
       </div>
-      <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
+      <div className="mb-20 mt-15 h-1 bg-slate-700" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
-          <div className="App-card-divider" />
           <div className="ClaimSettleModal-header">
             <div className="ClaimSettleModal-header-left">
               <Trans>POSITION</Trans>
@@ -351,12 +354,22 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               key={position.key}
               position={position}
               isMarketDisabled={position.marketInfo?.isDisabled ?? false}
+              isSettlementLikelyToFail={getIsSettlementLikelyToFail(position)}
               isSelected={positionKeys.includes(position.key)}
               onCheckboxChange={handleRowCheckboxChange}
             />
           ))}
         </div>
       </div>
+      {hasSelectedPositionsLikelyToFail && (
+        <AlertInfo type="warning" compact textColor="text-yellow-300">
+          <Trans>
+            Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is
+            likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce
+            or close enough of those positions for the realized profit to cover the shortfall.
+          </Trans>
+        </AlertInfo>
+      )}
       <AlertInfo type="info" compact>
         <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
       </AlertInfo>

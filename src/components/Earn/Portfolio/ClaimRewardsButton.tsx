@@ -6,11 +6,11 @@ import { zeroAddress } from "viem";
 
 import { getChainNativeTokenSymbol, getChainWrappedTokenSymbol } from "config/chains";
 import { getContract } from "config/contracts";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";

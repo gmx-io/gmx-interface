@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import useSWR from "swr";
 import type { Key } from "swr";
 
@@ -51,20 +51,16 @@ export function useApiDataRequest<T>(
     }
   }, [chainId]);
 
-  const [isStale, setIsStale] = useState(true);
+  const [, forceStaleCheck] = useReducer((tick: number) => tick + 1, 0);
 
   useEffect(() => {
     if (!response?.updatedAt) {
-      setIsStale(true);
       return;
     }
 
-    const check = () => {
-      setIsStale(Date.now() - response.updatedAt > refreshInterval + apiStaleMs);
-    };
-
-    check();
-    const intervalId = setInterval(check, refreshInterval);
+    const intervalId = setInterval(() => {
+      forceStaleCheck();
+    }, refreshInterval);
     return () => clearInterval(intervalId);
   }, [response?.updatedAt, refreshInterval, apiStaleMs]);
 
@@ -74,11 +70,15 @@ export function useApiDataRequest<T>(
     }
   }, [chainId, freshnessMetricId, response?.data]);
 
+  const isCurrentResponseStale = response?.updatedAt
+    ? Date.now() - response.updatedAt > refreshInterval + apiStaleMs
+    : false;
+
   return {
     data: response?.data,
     mountedAt: mountedAtRef.current,
     updatedAt: response?.updatedAt,
-    isStale,
+    isStale: isCurrentResponseStale,
     error,
   };
 }

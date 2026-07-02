@@ -498,14 +498,12 @@ export function getMinCollateralUsdForLeverage(position: PositionInfoLoaded, ope
   return applyFactor(position.sizeInUsd, minCollateralFactor);
 }
 
-export function getMaxWithdrawAmount(p: {
+export function getMinRequiredCollateralUsdForPosition(p: {
   position: PositionInfoLoaded;
   minCollateralUsd: bigint | undefined;
-  collateralPrice: bigint | undefined;
-  collateralDecimals: number | undefined;
   userReferralInfo: UserReferralInfo | undefined;
 }): bigint {
-  const { position, minCollateralUsd, collateralPrice, collateralDecimals, userReferralInfo } = p;
+  const { position, minCollateralUsd, userReferralInfo } = p;
 
   const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
   let minRequiredNextCollateralUsd = minCollateralUsdForLeverage;
@@ -529,8 +527,25 @@ export function getMaxWithdrawAmount(p: {
     minRequiredNextCollateralUsd = minCollateralUsdForLiquidationPrice;
   }
 
-  const minRequiredCollateralUsd =
-    minRequiredNextCollateralUsd + (position.pendingBorrowingFeesUsd ?? 0n) + (position.pendingFundingFeesUsd ?? 0n);
+  return (
+    minRequiredNextCollateralUsd + (position.pendingBorrowingFeesUsd ?? 0n) + (position.pendingFundingFeesUsd ?? 0n)
+  );
+}
+
+export function getMaxWithdrawAmount(p: {
+  position: PositionInfoLoaded;
+  minCollateralUsd: bigint | undefined;
+  collateralPrice: bigint | undefined;
+  collateralDecimals: number | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+}): bigint {
+  const { position, minCollateralUsd, collateralPrice, collateralDecimals, userReferralInfo } = p;
+
+  const minRequiredCollateralUsd = getMinRequiredCollateralUsdForPosition({
+    position,
+    minCollateralUsd,
+    userReferralInfo,
+  });
 
   if (position.collateralUsd < minRequiredCollateralUsd) {
     return 0n;

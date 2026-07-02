@@ -7,6 +7,7 @@ import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from 
 import { getIsExpressSupported } from "config/features";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
+  BUY_SELL_ICONS_MODE_KEY,
   CHART_LINES_SIZE_DENOMINATION_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
@@ -42,6 +43,16 @@ import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
+export type BuySellIconsMode = "off" | "current" | "all";
+
+const DEFAULT_BUY_SELL_ICONS_MODE: BuySellIconsMode = "current";
+
+function getBuySellIconsMode(savedValue: BuySellIconsMode | boolean | undefined): BuySellIconsMode {
+  if (savedValue === false) return "off";
+  if (savedValue === true) return "all";
+  return savedValue ?? DEFAULT_BUY_SELL_ICONS_MODE;
+}
+
 export type SettingsContextType = {
   showDebugValues: boolean;
   setShowDebugValues: (val: boolean) => void;
@@ -64,6 +75,8 @@ export type SettingsContextType = {
   setShouldDisableShareModalPnlCheck: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
+  buySellIconsMode: BuySellIconsMode;
+  setBuySellIconsMode: (val: BuySellIconsMode) => void;
   isAutoCancelTPSL: boolean;
   setIsAutoCancelTPSL: (val: boolean) => void;
   isLeverageSliderEnabled: boolean;
@@ -264,6 +277,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     true
   );
 
+  const [savedBuySellIconsModeRaw, setSavedBuySellIconsModeRaw] = useLocalStorageSerializeKey<
+    BuySellIconsMode | boolean
+  >([chainId, BUY_SELL_ICONS_MODE_KEY], DEFAULT_BUY_SELL_ICONS_MODE);
+
+  const savedBuySellIconsMode = useMemo(
+    () => getBuySellIconsMode(savedBuySellIconsModeRaw),
+    [savedBuySellIconsModeRaw]
+  );
+
   const [savedTwapNumberOfParts, setSavedTWAPNumberOfParts] = useLocalStorageSerializeKey(
     [chainId, TWAP_NUMBER_OF_PARTS_KEY],
     DEFAULT_TWAP_NUMBER_OF_PARTS
@@ -371,6 +393,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableShareModalPnlCheck: setSavedShouldDisableShareModalPnlCheck,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
+      buySellIconsMode: savedBuySellIconsMode!,
+      setBuySellIconsMode: setSavedBuySellIconsModeRaw,
       isAutoCancelTPSL: savedIsAutoCancelTPSL!,
       setIsAutoCancelTPSL: setIsAutoCancelTPSL,
       isLeverageSliderEnabled: isLeverageSliderEnabled!,
@@ -445,6 +469,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableShareModalPnlCheck,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
+    savedBuySellIconsMode,
+    setSavedBuySellIconsModeRaw,
     savedIsAutoCancelTPSL,
     setIsAutoCancelTPSL,
     isLeverageSliderEnabled,

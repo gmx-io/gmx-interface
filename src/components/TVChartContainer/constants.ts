@@ -163,17 +163,28 @@ export function getOrderLineLabel(
     orderType,
     sizeData,
     showSizeInTokens,
+    isPartial,
   }: {
     isLong: boolean;
     marketName: string;
     orderType: OrderType;
     sizeData?: ChartLineSizeData;
     showSizeInTokens: boolean;
+    isPartial?: boolean;
   }
 ) {
   const directionText = translate(isLong ? msg`Long` : msg`Short`);
   const orderTypeTitle = orderTypeToTitle[orderType];
-  const orderTitleText = orderTypeTitle ? translate(orderTypeTitle) : translate(msg`Unknown order`);
+  let orderTitleText = orderTypeTitle ? translate(orderTypeTitle) : translate(msg`Unknown order`);
+
+  if (isPartial) {
+    if (orderType === OrderType.LimitDecrease) {
+      orderTitleText = translate(msg`Partial TP`);
+    } else if (orderType === OrderType.StopLossDecrease) {
+      orderTitleText = translate(msg`Partial SL`);
+    }
+  }
+
   const baseTitle = `${directionText} ${marketName} · ${orderTitleText}`;
 
   if (!sizeData) {

@@ -1,13 +1,17 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
+import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { OrderType } from "domain/synthetics/orders";
+import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
 import { helperToast } from "lib/helperToast";
+import { formatUsd, numberToBigint } from "lib/numbers";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { bigMath } from "sdk/utils/bigmath";
 
 import { chartLabelColors, getOrderLineLabel } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
@@ -31,6 +35,11 @@ export function DynamicLine({
   sizeData,
   lineLength,
   bodyFontSizePt = 14,
+  positionEntryPrice,
+  positionSizeInUsd,
+  sizeDeltaUsd,
+  indexTokenVisualMultiplier,
+  isPartial,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -63,11 +72,48 @@ export function DynamicLine({
   const orderBodyBgBorderColor = palette.bg[theme];
   const orderBodyTextColor = palette.text[theme];
 
-  const title = useMemo(
-    () => getOrderLineLabel(_, { isLong, marketName, orderType, sizeData, showSizeInTokens: chartLinesSizeInTokens }),
-    [_, chartLinesSizeInTokens, isLong, marketName, orderType, sizeData]
+  const buildTitle = useCallback(
+    (triggerPriceNumber: number): string => {
+      const baseTitle = getOrderLineLabel(_, {
+        isLong,
+        marketName,
+        orderType,
+        sizeData,
+        showSizeInTokens: chartLinesSizeInTokens,
+        isPartial,
+      });
+
+      if (positionEntryPrice === undefined || positionSizeInUsd === undefined || sizeDeltaUsd === undefined) {
+        return baseTitle;
+      }
+
+      const triggerPriceBigInt =
+        numberToBigint(triggerPriceNumber, USD_DECIMALS) / BigInt(indexTokenVisualMultiplier || 1);
+
+      const priceDiff = isLong ? triggerPriceBigInt - positionEntryPrice : positionEntryPrice - triggerPriceBigInt;
+      const closeSizeUsd = getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd, positionSizeInUsd);
+      const pnlUsd = bigMath.mulDiv(priceDiff, closeSizeUsd, positionEntryPrice);
+
+      return `${baseTitle} · ${formatUsd(pnlUsd, { displayPlus: true })}`;
+    },
+    [
+      _,
+      chartLinesSizeInTokens,
+      isLong,
+      marketName,
+      orderType,
+      sizeData,
+      isPartial,
+      positionEntryPrice,
+      positionSizeInUsd,
+      sizeDeltaUsd,
+      indexTokenVisualMultiplier,
+    ]
   );
+
+  const title = useMemo(() => buildTitle(price), [buildTitle, price]);
   const latestTitle = useLatest(title);
+  const buildTitleRef = useLatest(buildTitle);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -119,8 +165,13 @@ export function DynamicLine({
         lineApi.current
           .setLineLength(lineLengthRef.current, "pixel")
           .onMoving(() => {
-            const error = getError(id, lineApi.current!.getPrice());
+            const newPrice = lineApi.current!.getPrice();
+            const error = getError(id, newPrice);
             setError(error);
+
+            if (!error) {
+              lineApi.current!.setText(buildTitleRef.current(newPrice));
+            }
           })
           .onMove(() => {
             const error = getError(id, lineApi.current!.getPrice());
@@ -190,6 +241,7 @@ export function DynamicLine({
     tvWidgetRef,
     bodyFontSizePt,
     theme,
+    buildTitleRef,
   ]);
 
   useEffect(() => {
