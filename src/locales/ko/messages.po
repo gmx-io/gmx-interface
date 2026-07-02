@@ -325,6 +325,10 @@ msgstr "오류 표시"
 msgid "settings"
 msgstr "설정"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Est. APR"
+msgstr "예상 APR"
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Price impact rebates ready to claim. <0>Read more</0>."
 msgstr "가격 영향 리베이트를 수령할 수 있습니다. <0>자세히 보기</0>."
@@ -1390,6 +1394,10 @@ msgstr "반영까지 몇 분이 소요될 수 있습니다. 나중에 다시 확
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
+msgstr "최근 GMX 바이백 속도, 회원님의 스테이킹 파워 비율, 현재 스테이킹된 GMX + esGMX를 기반으로 한 지갑별 예상 연이율입니다. 실제 분배는 DAO 거버넌스에 따라 결정됩니다."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

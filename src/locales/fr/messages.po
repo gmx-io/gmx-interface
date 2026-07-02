@@ -325,6 +325,10 @@ msgstr "Afficher l'erreur"
 msgid "settings"
 msgstr "paramètres"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Est. APR"
+msgstr "APR est."
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Price impact rebates ready to claim. <0>Read more</0>."
 msgstr "Remises sur l'impact sur le prix prêtes à récupérer. <0>En savoir plus</0>."
@@ -1390,6 +1394,10 @@ msgstr "Peut prendre quelques minutes avant d'apparaître. Veuillez vérifier ul
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
+msgstr "Taux annualisé estimé propre à votre portefeuille, basé sur le rythme récent de rachat de GMX, votre part de staking power et votre GMX + esGMX actuellement stakés. La distribution réelle dépend de la gouvernance de la DAO."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
