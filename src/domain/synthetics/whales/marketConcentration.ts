@@ -13,6 +13,7 @@ export type MarketConcentration = {
   topHolder: string | undefined;
   topShareBps: bigint;
   top3ShareBps: bigint;
+  totalOi: bigint;
 };
 
 // High enough to capture (essentially) all open positions, so the open-interest
@@ -58,6 +59,7 @@ export async function fetchMarketConcentration(
     topHolder: holders[0]?.account,
     topShareBps: computeShareBps(holders[0]?.size ?? 0n, total),
     top3ShareBps: computeShareBps(top3, total),
+    totalOi: total,
   };
 }
 
