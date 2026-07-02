@@ -34,9 +34,11 @@ import { TwapOrderProgress } from "../OrderItem/OrderItem";
 export function PositionItemOrdersSmall({
   positionKey,
   onOrdersClick,
+  hideActions,
 }: {
   positionKey: string;
   onOrdersClick?: (key?: string) => void;
+  hideActions?: boolean;
 }) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
@@ -45,7 +47,7 @@ export function PositionItemOrdersSmall({
   return (
     <div className="flex flex-col gap-8">
       {ordersWithErrors.map((params) => (
-        <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
+        <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} hideActions={hideActions} {...params} />
       ))}
     </div>
   );
@@ -54,9 +56,11 @@ export function PositionItemOrdersSmall({
 export function PositionItemOrdersLarge({
   positionKey,
   onOrdersClick,
+  hideActions,
 }: {
   positionKey: string;
   onOrdersClick?: (key?: string) => void;
+  hideActions?: boolean;
 }) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
@@ -100,7 +104,12 @@ export function PositionItemOrdersLarge({
               <Trans>Active orders</Trans>
             </div>
             {ordersWithErrors.map((params) => (
-              <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
+              <PositionItemOrder
+                key={params.order.key}
+                onOrdersClick={onOrdersClick}
+                hideActions={hideActions}
+                {...params}
+              />
             ))}
           </div>
         }
@@ -113,10 +122,12 @@ function PositionItemOrder({
   order,
   orderErrors,
   onOrdersClick,
+  hideActions,
 }: {
   order: PositionOrderInfo;
   orderErrors: OrderErrors;
   onOrdersClick?: (key?: string) => void;
+  hideActions?: boolean;
 }) {
   const [, setEditingOrderState] = useEditingOrderState();
   const [isCancelling, cancel] = useCancelOrder(order);
@@ -150,16 +161,17 @@ function PositionItemOrder({
             <ChevronRightIcon className="ml-4 size-14" />
           </div>
         </Button>
-        {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
+        {!hideActions && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
           <Button variant="secondary" onClick={handleEditClick} className="px-8">
             <EditIcon className="size-16" />
           </Button>
         )}
-        {disabledCancelMarketOrderMessage ? (
-          <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
-        ) : (
-          cancelButton
-        )}
+        {!hideActions &&
+          (disabledCancelMarketOrderMessage ? (
+            <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
+          ) : (
+            cancelButton
+          ))}
       </div>
 
       {errors.length !== 0 && (

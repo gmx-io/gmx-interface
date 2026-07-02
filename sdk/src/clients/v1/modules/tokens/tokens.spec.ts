@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import { GmxSdk } from "clients/v1";
 import { arbitrumSdk, arbitrumSdkConfig } from "clients/v1/testUtil";
 
-describe("Tokens", () => {
+// Skipped in CI (FEDEV-4029): hits the live gmxinfra API and is flaky (FetchError: Premature close).
+describe.skip("Tokens", () => {
   it("should be able to fetch tokens", { timeout: 90_000 }, async () => {
     const response = await arbitrumSdk.oracle.getTokens();
     expect(response).toBeDefined();

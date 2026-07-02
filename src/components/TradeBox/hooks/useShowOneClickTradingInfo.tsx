@@ -1,9 +1,14 @@
+import { useCallback, useMemo } from "react";
+
 import {
+  EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY,
+  EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
 import { selectIsExpressTransactionAvailable } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
+  selectAccount,
   selectChainId,
   selectRawSubaccount,
   selectSrcChainId,
@@ -17,12 +22,17 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
+import {
+  getIsConfirmedOutOfGasPaymentTokenBalance,
+  getOrderRelayRouterAddress,
+} from "domain/synthetics/express/expressOrderUtils";
 import {
   getIsSubaccountActionsExceeded,
   getIsSubaccountApprovalInvalid,
   getIsSubaccountExpired,
   getIsSubaccountNonceExpired,
+  getMaxSubaccountActions,
+  getSubaccountExpiresAt,
 } from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
@@ -39,6 +49,7 @@ export function useExpressTradingWarnings({
   expressParams: ExpressTxnParams | undefined;
   isGmxAccount: boolean;
 }) {
+  const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -63,6 +74,40 @@ export function useExpressTradingWarnings({
     false
   );
 
+  const [expiredSubaccountWarningDismissedKey, setExpiredSubaccountWarningDismissedKey] =
+    useLocalStorageSerializeKey<string>(EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY, "");
+  const [allowedActionsWarningDismissedKey, setAllowedActionsWarningDismissedKey] = useLocalStorageSerializeKey<string>(
+    EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY,
+    ""
+  );
+
+  const expiredSubaccountWarningKey = useMemo(
+    () =>
+      rawSubaccount
+        ? getOneClickWarningDismissalKey([
+            account,
+            chainId,
+            isGmxAccount,
+            rawSubaccount.address,
+            getSubaccountExpiresAt(rawSubaccount),
+          ])
+        : undefined,
+    [account, chainId, isGmxAccount, rawSubaccount]
+  );
+  const allowedActionsWarningKey = useMemo(
+    () =>
+      rawSubaccount
+        ? getOneClickWarningDismissalKey([
+            account,
+            chainId,
+            isGmxAccount,
+            rawSubaccount.address,
+            getMaxSubaccountActions(rawSubaccount),
+          ])
+        : undefined,
+    [account, chainId, isGmxAccount, rawSubaccount]
+  );
+
   const conditions = {
     shouldShowWrapOrUnwrapWarning: isExpressTransactionAvailable && isWrapOrUnwrap && !wrapOrUnwrapWarningHidden,
     shouldShowNativeTokenWarning:
@@ -70,7 +115,8 @@ export function useExpressTradingWarnings({
     shouldShowExpiredSubaccountWarning:
       isExpressTransactionAvailable &&
       rawSubaccount &&
-      (subaccountValidations?.isExpired ?? getIsSubaccountExpired(rawSubaccount)),
+      (subaccountValidations?.isExpired ?? getIsSubaccountExpired(rawSubaccount)) &&
+      expiredSubaccountWarningDismissedKey !== expiredSubaccountWarningKey,
     shouldShowNonceExpiredWarning:
       isExpressTransactionAvailable &&
       rawSubaccount &&
@@ -78,9 +124,11 @@ export function useExpressTradingWarnings({
     shouldShowAllowedActionsWarning:
       isExpressTransactionAvailable &&
       rawSubaccount &&
-      (subaccountValidations?.isActionsExceeded ?? getIsSubaccountActionsExceeded(rawSubaccount, 1)),
+      (subaccountValidations?.isActionsExceeded ?? getIsSubaccountActionsExceeded(rawSubaccount, 1)) &&
+      allowedActionsWarningDismissedKey !== allowedActionsWarningKey,
     shouldShowOutOfGasPaymentBalanceWarning:
-      expressParams?.gasPaymentValidations.isOutGasTokenBalance &&
+      expressParams !== undefined &&
+      getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations) &&
       !isGmxAccount &&
       nativeToken?.walletBalance !== undefined &&
       nativeToken.walletBalance > expressParams.gasPaymentParams.totalRelayerFeeTokenAmount,
@@ -107,8 +155,26 @@ export function useExpressTradingWarnings({
 
   const shouldShowWarning = Object.values(conditions).some(Boolean);
 
+  const dismissExpiredSubaccountWarning = useCallback(() => {
+    if (expiredSubaccountWarningKey) {
+      setExpiredSubaccountWarningDismissedKey(expiredSubaccountWarningKey);
+    }
+  }, [expiredSubaccountWarningKey, setExpiredSubaccountWarningDismissedKey]);
+
+  const dismissAllowedActionsWarning = useCallback(() => {
+    if (allowedActionsWarningKey) {
+      setAllowedActionsWarningDismissedKey(allowedActionsWarningKey);
+    }
+  }, [allowedActionsWarningKey, setAllowedActionsWarningDismissedKey]);
+
   return {
     ...conditions,
     shouldShowWarning,
+    dismissExpiredSubaccountWarning,
+    dismissAllowedActionsWarning,
   };
+}
+
+function getOneClickWarningDismissalKey(parts: (string | number | bigint | boolean | undefined)[]): string {
+  return parts.map((part) => (part === undefined ? "" : part.toString())).join(":");
 }
