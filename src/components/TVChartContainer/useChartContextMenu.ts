@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { RefObject, useCallback, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   selectTradeboxMarkPrice,
   selectTradeboxSelectedPosition,
@@ -115,6 +116,7 @@ function buildMenuItems(p: {
 export function useChartContextMenu(
   visualMultiplier: number | undefined,
   chartContainerRef: RefObject<HTMLDivElement | null>,
+  hasSizableLines: boolean,
   options?: {
     onOpenTPSLModal?: (params: OpenChartTPSLModalParams) => void;
   }
@@ -125,6 +127,7 @@ export function useChartContextMenu(
   const position = useSelector(selectTradeboxSelectedPosition);
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const setTriggerPriceInputValue = useSelector(selectTradeboxSetTriggerPriceInputValue);
+  const { chartLinesSizeInTokens, setChartLinesSizeInTokens } = useSettings();
 
   const [menuState, setMenuState] = useState<ChartContextMenuState>(INITIAL_MENU_STATE);
 
@@ -259,8 +262,10 @@ export function useChartContextMenu(
 
       const formattedPrice = formatClickPrice(clickPrice);
 
+      let orderItems: ContextMenuItem[] = [];
+
       if (tradeType === TradeType.Long || tradeType === TradeType.Short) {
-        return buildMenuItems({
+        orderItems = buildMenuItems({
           clickPrice,
           markPrice,
           isLong: tradeType === TradeType.Long,
@@ -271,10 +276,8 @@ export function useChartContextMenu(
           formattedPrice,
           onAction: handleOrderAction,
         });
-      }
-
-      if (tradeType === TradeType.Swap) {
-        return [
+      } else if (tradeType === TradeType.Swap) {
+        orderItems = [
           ...buildMenuItems({
             clickPrice,
             markPrice,
@@ -294,9 +297,34 @@ export function useChartContextMenu(
         ];
       }
 
-      return [];
+      if (!hasSizableLines) {
+        return orderItems;
+      }
+
+      const sizeDenominationItem: ContextMenuItem = {
+        position: "top",
+        text: chartLinesSizeInTokens ? t`Show line values in USD` : t`Show line values in tokens`,
+        click: () => setChartLinesSizeInTokens(!chartLinesSizeInTokens),
+      };
+
+      if (orderItems.length === 0) {
+        return [sizeDenominationItem];
+      }
+
+      const separator: ContextMenuItem = { position: "top", text: "-", click: () => undefined };
+
+      return [...orderItems, separator, sizeDenominationItem];
     },
-    [markPrice, tradeType, formatClickPrice, handleOrderAction, position]
+    [
+      markPrice,
+      tradeType,
+      formatClickPrice,
+      handleOrderAction,
+      position,
+      hasSizableLines,
+      chartLinesSizeInTokens,
+      setChartLinesSizeInTokens,
+    ]
   );
 
   return {

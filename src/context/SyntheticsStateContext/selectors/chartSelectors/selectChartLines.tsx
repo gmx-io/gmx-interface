@@ -10,7 +10,7 @@ import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getTokenData } from "domain/synthetics/tokens";
 import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { StaticChartLine } from "components/TVChartContainer/types";
@@ -60,12 +60,13 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
           formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal, undefined, undefined, tokenVisualMultiplier)
         ),
         positionData: {
+          positionKey: position.key,
           pnl: position.pnlAfterFees,
           sizeInUsd: position.sizeInUsd,
-          sizeInTokens: position.sizeInTokens,
+          sizeInTokens: position.sizeInTokens / BigInt(tokenVisualMultiplier ?? 1),
           isLong: position.isLong,
           marketIndexName,
-          tokenSymbol: position.indexToken.symbol,
+          tokenSymbol: `${getTokenVisualMultiplier(position.indexToken)}${position.indexToken.symbol}`,
           tokenDecimals: position.indexToken.decimals,
         },
       },
