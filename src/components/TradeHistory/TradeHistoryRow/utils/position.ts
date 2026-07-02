@@ -538,10 +538,13 @@ export const formatPositionMessage = (
     //#endregion StopLossDecrease
     //#region Liquidation
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
-    const maxLeverage =
-      tradeAction.marketInfo.minCollateralFactorForLiquidation === 0n
-        ? 0n
-        : PRECISION / tradeAction.marketInfo.minCollateralFactorForLiquidation;
+    // Use the block-time minCollateralFactorForLiquidation captured on the trade action so historical
+    // liquidation context is not reconstructed with the current (possibly changed) market config.
+    // Falls back to the current market config only when the historical value is unavailable (old data).
+    const minCollateralFactorForLiquidation =
+      tradeAction.minCollateralFactorForLiquidation ?? tradeAction.marketInfo.minCollateralFactorForLiquidation;
+
+    const maxLeverage = minCollateralFactorForLiquidation === 0n ? 0n : PRECISION / minCollateralFactorForLiquidation;
     const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";
 
     const initialCollateralUsd = convertToUsd(
@@ -589,7 +592,7 @@ export const formatPositionMessage = (
     );
     const formattedPositionFee = formatUsd(positionFeeUsd === undefined ? undefined : -positionFeeUsd);
 
-    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactorForLiquidation);
+    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, minCollateralFactorForLiquidation);
     if (liquidationCollateralUsd < minCollateralUsd) {
       liquidationCollateralUsd = minCollateralUsd;
     }

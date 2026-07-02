@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { OrderType } from "domain/synthetics/orders";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
-import { MaxUint256 } from "lib/numbers";
+import { MaxUint256, PRECISION, applyFactor, formatUsd } from "lib/numbers";
 
 import {
   cancelOrderIncreaseLong,
@@ -748,6 +748,55 @@ describe("TradeHistoryRow helpers", () => {
       sizeDeltaUsd: MaxUint256,
     };
     expect(formatPositionMessage(fullCloseStopLoss, minCollateralUsd).size).toBe("Full position close");
+  });
+
+  it("formatPositionMessage uses block-time minCollateralFactorForLiquidation for liquidations", () => {
+    // Current/on-hours market config (0.5% -> 200x) differs from the block-time/off-hours factor (1% -> 100x).
+    const currentFactor = PRECISION / 200n;
+    const blockTimeFactor = PRECISION / 100n;
+
+    const historicalLiquidation = {
+      ...liquidated,
+      marketInfo: {
+        ...liquidated.marketInfo,
+        minCollateralFactorForLiquidation: currentFactor,
+      },
+      minCollateralFactorForLiquidation: blockTimeFactor,
+    };
+
+    const details = formatPositionMessage(historicalLiquidation, minCollateralUsd);
+
+    // Max leverage context reflects the block-time factor (100x), not the current config (200x).
+    expect(details.priceComment).toContainEqual(
+      "Liquidated as max leverage of 100.0x was exceeded when accounting for fees."
+    );
+
+    // Minimum required margin is computed from the block-time factor, not the current market config.
+    const expectedMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, blockTimeFactor));
+    const currentConfigMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, currentFactor));
+    expect(expectedMinMargin).not.toBe(currentConfigMinMargin);
+    expect(details.priceComment).toContainEqual({ key: "Minimum required margin", value: expectedMinMargin });
+  });
+
+  it("formatPositionMessage falls back to current market config when block-time factor is missing", () => {
+    // Old data without an indexed block-time factor keeps using the current market config.
+    const currentFactor = PRECISION / 100n;
+    const fallbackLiquidation = {
+      ...liquidated,
+      marketInfo: {
+        ...liquidated.marketInfo,
+        minCollateralFactorForLiquidation: currentFactor,
+      },
+      minCollateralFactorForLiquidation: undefined,
+    };
+
+    const details = formatPositionMessage(fallbackLiquidation, minCollateralUsd);
+
+    const expectedMinMargin = formatUsd(applyFactor(fallbackLiquidation.sizeDeltaUsd, currentFactor));
+    expect(details.priceComment).toContainEqual({ key: "Minimum required margin", value: expectedMinMargin });
+    expect(details.priceComment).toContainEqual(
+      "Liquidated as max leverage of 100.0x was exceeded when accounting for fees."
+    );
   });
 
   it("formatPositionMessage includes indexed trader discounts in the fee breakdown", () => {

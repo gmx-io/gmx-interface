@@ -52,6 +52,7 @@ export type PositionTradeAction = {
   shouldUnwrapNativeToken: boolean;
   totalImpactUsd?: bigint;
   liquidationFeeAmount?: bigint;
+  minCollateralFactorForLiquidation?: bigint;
   twapParams:
     | {
         twapGroupId: string;
