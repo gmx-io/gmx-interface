@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { OrderType } from "domain/synthetics/orders";
 import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
@@ -12,7 +13,7 @@ import { formatUsd, numberToBigint } from "lib/numbers";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { chartLabelColors, orderTypeToTitle } from "./constants";
+import { chartLabelColors, getOrderLineLabel } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
 import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
 
@@ -31,6 +32,7 @@ export function DynamicLine({
   isPending,
   getError,
   marketName,
+  sizeData,
   lineLength,
   bodyFontSizePt = 14,
   positionEntryPrice,
@@ -51,6 +53,7 @@ export function DynamicLine({
 } & Omit<DynamicChartLine, "updatedAtTime">) {
   const { _ } = useLingui();
   const { theme } = useTheme();
+  const { chartLinesSizeInTokens } = useSettings();
   const lineApi = useRef<IOrderLineAdapter | undefined>(undefined);
   const latestOnEdit = useLatest(onEdit);
   const latestOnCancel = useLatest(onCancel);
@@ -71,19 +74,14 @@ export function DynamicLine({
 
   const buildTitle = useCallback(
     (triggerPriceNumber: number): string => {
-      const directionText = isLong ? t`Long` : t`Short`;
-      const orderTypeTitle = orderTypeToTitle[orderType];
-      let orderTitleText = orderTypeTitle ? _(orderTypeTitle) : t`Unknown order`;
-
-      if (isPartial) {
-        if (orderType === OrderType.LimitDecrease) {
-          orderTitleText = t`Partial TP`;
-        } else if (orderType === OrderType.StopLossDecrease) {
-          orderTitleText = t`Partial SL`;
-        }
-      }
-
-      const baseTitle = `${directionText} ${marketName} · ${orderTitleText}`;
+      const baseTitle = getOrderLineLabel(_, {
+        isLong,
+        marketName,
+        orderType,
+        sizeData,
+        showSizeInTokens: chartLinesSizeInTokens,
+        isPartial,
+      });
 
       if (positionEntryPrice === undefined || positionSizeInUsd === undefined || sizeDeltaUsd === undefined) {
         return baseTitle;
@@ -100,9 +98,11 @@ export function DynamicLine({
     },
     [
       _,
+      chartLinesSizeInTokens,
       isLong,
       marketName,
       orderType,
+      sizeData,
       isPartial,
       positionEntryPrice,
       positionSizeInUsd,
@@ -112,6 +112,7 @@ export function DynamicLine({
   );
 
   const title = useMemo(() => buildTitle(price), [buildTitle, price]);
+  const latestTitle = useLatest(title);
   const buildTitleRef = useLatest(buildTitle);
 
   useEffect(() => {
@@ -131,7 +132,7 @@ export function DynamicLine({
 
       lineApi.current = chart!
         .createOrderLine({ disableUndo: true })
-        .setText(title)
+        .setText(latestTitle.current)
         .setPrice(price)
         .setQuantity("\u270E")
         .setModifyTooltip(t`Edit order`)
@@ -189,7 +190,7 @@ export function DynamicLine({
               lineApi.current!.setPrice(latestPrice.current);
               lineApi.current!.setBodyBackgroundColor(orderBodyBgBorderColor);
               lineApi.current!.setBodyBorderColor(orderBodyBgBorderColor);
-              lineApi.current!.setText(title);
+              lineApi.current!.setText(latestTitle.current);
               return;
             }
 
@@ -236,7 +237,7 @@ export function DynamicLine({
     orderBodyBgBorderColor,
     orderBodyTextColor,
     price,
-    title,
+    latestTitle,
     tvWidgetRef,
     bodyFontSizePt,
     theme,
