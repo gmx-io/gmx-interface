@@ -389,7 +389,6 @@ export async function getSdkSubaccountApprovalForOrder(
     force: forceStatusRefresh,
   });
 
-  // After forced refresh due to submittedRequestId, clear the flag if approval still exists (relay failed but approval is still valid)
   if (subaccount.approval?.submittedRequestId !== undefined) {
     subaccount.approval.submittedRequestId = undefined;
   }
@@ -464,7 +463,9 @@ export async function prepareWithSubaccount<TRequest extends SubaccountPrepareRe
         status = await getSdkSubaccountStatus(client, request.from, { force: true });
       }
       if (!isSubaccountStatusUsable(status)) {
-        throw new Error("Subaccount is not active. Call activateSubaccount(mainSigner) before preparing express orders.");
+        throw new Error(
+          "Subaccount is not active. Call activateSubaccount(mainSigner) before preparing express orders."
+        );
       }
     }
 

@@ -3,7 +3,7 @@ import type { TransactionResponse } from "ethers";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { useConnectModal } from "lib/wallets/useConnectModal";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";

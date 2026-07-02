@@ -4,6 +4,7 @@ import { Address, ContractFunctionReturnType, getAddress, isAddressEqual } from 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
+import { useIsApiHealthy } from "domain/api/apiHealthTracker";
 import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
@@ -100,17 +101,16 @@ export function useOrders(
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
-  const apiEnabled = useIsApiSdkEnabled(API_UI_FLAGS.orders);
+  // Stale markets ⇒ gmx-api unhealthy ⇒ orders fall back to RPC globally too.
+  const isApiHealthy = useIsApiHealthy(chainId);
+  const apiEnabled = useIsApiSdkEnabled(API_UI_FLAGS.orders) && isApiHealthy;
   const {
     ordersData: apiOrdersData,
     isStale: isApiStale,
     error: apiError,
   } = useApiOrdersRequest(chainId, { account, enabled: apiEnabled });
 
-  const {
-    shouldFallbackToRpc: rpcEnabled,
-    isInitialFallback,
-  } = useApiDataFallbackState({
+  const { shouldFallbackToRpc: rpcEnabled, isInitialFallback } = useApiDataFallbackState({
     chainId,
     apiEnabled,
     apiData: apiOrdersData,

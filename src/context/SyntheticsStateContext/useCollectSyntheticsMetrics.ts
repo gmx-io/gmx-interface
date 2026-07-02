@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { MarketsInfoResult } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensDataResult } from "domain/synthetics/tokens";
 import { useMeasureLoadTime } from "lib/metrics";
 import { ApiDataSource } from "lib/metrics/types";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 export function useCollectSyntheticsMetrics({

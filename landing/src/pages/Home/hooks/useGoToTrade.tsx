@@ -7,7 +7,6 @@ import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import {
   ARBITRUM,
   AVALANCHE,
-  BOTANIX,
   MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
@@ -20,7 +19,6 @@ import { useHomePageContext } from "../contexts/HomePageContext";
 export enum RedirectChainIds {
   Arbitum = ARBITRUM,
   Avalanche = AVALANCHE,
-  Botanix = BOTANIX,
   MegaETH = MEGAETH,
   Base = SOURCE_BASE_MAINNET,
   Bsc = SOURCE_BSC_MAINNET,
@@ -37,7 +35,6 @@ const TRADE_CHAIN_IDS: Record<Exclude<RedirectChainIds, RedirectChainIds.Solana>
   [RedirectChainIds.Base]: SOURCE_BASE_MAINNET,
   [RedirectChainIds.Arbitum]: ARBITRUM,
   [RedirectChainIds.Avalanche]: AVALANCHE,
-  [RedirectChainIds.Botanix]: BOTANIX,
   [RedirectChainIds.MegaETH]: MEGAETH,
   [RedirectChainIds.Bsc]: SOURCE_BSC_MAINNET,
   [RedirectChainIds.Ethereum]: SOURCE_ETHEREUM_MAINNET,

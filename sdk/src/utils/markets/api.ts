@@ -2,11 +2,21 @@ import { IHttp } from "utils/http/types";
 import { deserializeBigIntsInObject } from "utils/numbers";
 import { TokenData } from "utils/tokens/types";
 
-import { MarketTicker, MarketWithTiers, RawMarketInfo } from "./types";
+import { MarketTicker, MarketWithTiers, RawMarketConfig, RawMarketInfo, RawMarketValues } from "./types";
 
 export async function fetchApiMarketsInfo(ctx: { api: IHttp }): Promise<RawMarketInfo[]> {
   const mInfos: any[] = await ctx.api.fetchJson("/v1/markets/info");
   return mInfos.map((mInfo) => deserializeBigIntsInObject(mInfo, { handleInts: true })) as RawMarketInfo[];
+}
+
+export async function fetchApiMarketsConfig(ctx: { api: IHttp }): Promise<RawMarketConfig[]> {
+  const configs: any[] = await ctx.api.fetchJson("/v1/markets/config");
+  return configs.map((config) => deserializeBigIntsInObject(config, { handleInts: true })) as RawMarketConfig[];
+}
+
+export async function fetchApiMarketsValues(ctx: { api: IHttp }): Promise<RawMarketValues[]> {
+  const values: any[] = await ctx.api.fetchJson("/v1/markets/values");
+  return values.map((value) => deserializeBigIntsInObject(value, { handleInts: true })) as RawMarketValues[];
 }
 
 export async function fetchApiTokensData(ctx: { api: IHttp }): Promise<TokenData[]> {
