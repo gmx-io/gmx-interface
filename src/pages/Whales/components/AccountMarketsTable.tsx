@@ -1,18 +1,22 @@
+import { useHistory } from "react-router-dom";
+
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import type { AccountMarketRow } from "domain/synthetics/whales/accountMarkets";
 import { computeShareBps } from "domain/synthetics/whales/shares";
 import { formatPercentage } from "lib/numbers";
 
-import { Table, TableTd, TableTheadTr, TableTr } from "components/Table/Table";
+import { Table, TableTd, TableTdActionable, TableTheadTr, TableTr, TableTrActionable } from "components/Table/Table";
 
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
+import { buildWhaleMarketUrl } from "../whaleRoutes";
 
 type AccountField = "totalVolume" | "whaleVolume" | "share";
 
 export function AccountMarketsTable({ rows }: { rows: AccountMarketRow[] }) {
   const marketsInfoData = useMarketsInfoData();
+  const history = useHistory();
   const { orderBy, direction, sorterProps } = useWhaleSort<AccountField>("whaleVolume");
 
   const totalMarket = rows.reduce((acc, r) => acc + r.totalVolume, 0n);
@@ -46,12 +50,16 @@ export function AccountMarketsTable({ rows }: { rows: AccountMarketRow[] }) {
       </thead>
       <tbody>
         {sorted.map((r) => (
-          <TableTr key={r.market}>
-            <TableTd>{marketsInfoData?.[r.market]?.name ?? r.market}</TableTd>
-            <TableTd>{formatWhaleUsd(r.totalVolume)}</TableTd>
-            <TableTd>{formatWhaleUsd(r.whaleVolume)}</TableTd>
-            <TableTd>{formatPercentage(r.shareBps, { bps: true, displayDecimals: 1 })}</TableTd>
-          </TableTr>
+          <TableTrActionable
+            key={r.market}
+            className="cursor-pointer"
+            onClick={() => history.push(buildWhaleMarketUrl(r.market))}
+          >
+            <TableTdActionable>{marketsInfoData?.[r.market]?.name ?? r.market}</TableTdActionable>
+            <TableTdActionable>{formatWhaleUsd(r.totalVolume)}</TableTdActionable>
+            <TableTdActionable>{formatWhaleUsd(r.whaleVolume)}</TableTdActionable>
+            <TableTdActionable>{formatPercentage(r.shareBps, { bps: true, displayDecimals: 1 })}</TableTdActionable>
+          </TableTrActionable>
         ))}
         <TableTr>
           <TableTd>All</TableTd>

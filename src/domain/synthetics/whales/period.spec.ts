@@ -28,6 +28,6 @@ describe("windowToFromTimestamp", () => {
   });
 
   it("exposes the windows in order", () => {
-    expect(WHALE_WINDOWS).toEqual(["total", "90d", "30d", "7d"]);
+    expect(WHALE_WINDOWS).toEqual(["total", "1y", "180d", "90d", "30d", "7d"]);
   });
 });
