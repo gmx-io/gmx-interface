@@ -562,6 +562,10 @@ msgstr "僅來自交易手續費的預估年化報酬。<0/><1/>包含：交易�
 msgid "Acceptable swap impact"
 msgstr "可接受的兌換影響"
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Delistings"
+msgstr "下架"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1001,6 +1005,11 @@ msgstr "倉位手續費因子（正價格影響）"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "兌換價格影響過高"
+
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+msgid "What's new"
+msgstr "最新動態"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to parse related transaction:"
@@ -1506,6 +1515,10 @@ msgstr "時間"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Oracle 端點"
+
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Maintenance"
+msgstr "維護"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap fee"
@@ -2214,6 +2227,7 @@ msgid "GMX (Chinese)"
 msgstr "GMX（中文）"
 
 #: src/components/SearchInput/SearchInput.tsx
+#: src/pages/Announcements/Announcements.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr "搜尋"
@@ -2364,6 +2378,10 @@ msgstr "無可領取的資金"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
 msgstr "Sparkle"
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Maintenances"
+msgstr "維護"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor shorts"
@@ -2602,6 +2620,10 @@ msgstr "最大"
 msgid "GMX technical announcements"
 msgstr "GMX 技術公告"
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "All Announcements"
+msgstr "所有公告"
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2763,6 +2785,10 @@ msgstr "硬幣"
 msgid "Previous"
 msgstr ""
 
+#: src/pages/Announcements/Announcements.tsx
+msgid "Listings"
+msgstr "上架"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr "賣出 {gmOrGlvLabel} 失敗。您的資金安全地保存在 GMX Account 中。請切換至結算鏈，前往 {indexName} 池賣出您的 {gmOrGlvLabel} 代幣。"
@@ -2879,6 +2905,12 @@ msgstr "從 {sourceChainName} 存入失敗"
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Copy address"
 msgstr "複製地址"
+
+#: src/components/SideNav/SideNav.tsx
+#: src/pages/Announcements/Announcements.tsx
+#: src/pages/Announcements/Announcements.tsx
+msgid "Announcements"
+msgstr "公告"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -3026,6 +3058,7 @@ msgstr "<0>存入</0>或<1>買入</1> {wrappedNativeTokenSymbol}。"
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
 msgstr "更新"
 
@@ -3558,6 +3591,10 @@ msgstr "確認領取"
 msgid "Wallet-only"
 msgstr "僅限錢包"
 
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Listing"
+msgstr "上架"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
 msgstr "正在簽署授權..."
@@ -3975,6 +4012,10 @@ msgstr "不支援自行轉帳"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
 msgstr "正在生成會話..."
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Stay up to date with the latest listings, updates and maintenance notices."
+msgstr "即時掌握最新的上架、更新與維護通知。"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
@@ -4468,6 +4509,10 @@ msgstr "最小影響池數量"
 msgid "Generating..."
 msgstr ""
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+msgid "Go to slide {0}"
+msgstr "前往第 {0} 張"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "價格影響過高"
@@ -4528,6 +4573,10 @@ msgstr "找不到代碼"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr "未啟用"
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Failed to load announcements. Please try again later."
+msgstr "無法載入公告。請稍後再試。"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
@@ -5789,6 +5838,10 @@ msgstr "GMX 提案"
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
 
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
+msgid "See more"
+msgstr "查看更多"
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To trade on GMX, deposit assets into your GMX Account"
 msgstr ""
@@ -6336,6 +6389,10 @@ msgstr "無法提取抵押品。剩餘抵押品將低於最低要求"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "授權中..."
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr "服務中斷"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
@@ -7753,10 +7810,6 @@ msgstr "交易錯誤"
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "正在存入和提取 GMX Account..."
 
-#: src/config/uiFlagEvents.tsx
-msgid "Service disruption"
-msgstr "服務中斷"
-
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long liquidity"
 msgstr ""
@@ -8053,6 +8106,10 @@ msgstr "存入失敗"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "EST. PNL"
 msgstr "預估 PNL"
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "No announcements found"
+msgstr "未找到公告"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
@@ -9493,6 +9550,11 @@ msgstr "DeFi"
 msgid "SNAPSHOT"
 msgstr "快照"
 
+#: src/pages/Announcements/Announcements.tsx
+#: src/pages/Announcements/Announcements.tsx
+msgid "All chains"
+msgstr "所有鏈"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
 msgstr "區塊"
@@ -9629,6 +9691,10 @@ msgstr "已質押"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "交易者"
+
+#: src/pages/Announcements/Announcements.tsx
+msgid "Updates"
+msgstr "更新"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -9865,6 +9931,10 @@ msgstr "使用 TP/SL 按鈕設定 TP/SL 訂單。"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "什麼是 GM？"
+
+#: src/pages/Announcements/AnnouncementCard.tsx
+msgid "Delisting"
+msgstr "下架"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -11028,6 +11098,7 @@ msgstr "成交價格未達到可接受價格。當條件滿足時，訂單將會
 msgid "multiple asset classes"
 msgstr "多種資產類別"
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
