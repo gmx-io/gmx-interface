@@ -1,9 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { lightFormat } from "date-fns";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { useCopyToClipboard } from "react-use";
+import { useCopyToClipboard, useMeasure } from "react-use";
+import { useAccount } from "wagmi";
 
 import { REFERRALS_DOCS_URL } from "config/links";
 import {
@@ -46,6 +47,8 @@ type ReferralsTradersContentProps = {
 
 export function ReferralsTradersContent({ account }: ReferralsTradersContentProps) {
   const { chainId } = useChainId();
+  const { address: walletAddress } = useAccount();
+  const isAccountOwner = Boolean(account && walletAddress && account.toLowerCase() === walletAddress.toLowerCase());
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(chainId, account);
   const { codeOwner } = useCodeOwner(chainId, account, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(chainId, codeOwner);
@@ -138,47 +141,67 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
           <div className="text-body-medium mb-8 font-medium text-typography-secondary">
             <Trans>Active referral code</Trans>
           </div>
-          <div className="mb-12 flex items-center justify-between gap-8">
-            <div
-              className="flex min-w-0 cursor-pointer items-center gap-4 text-typography-primary"
-              onClick={() => {
-                if (!userReferralCodeString) return;
-                copyToClipboard(getReferralCodeTradeUrl(userReferralCodeString));
-                helperToast.success(t`Referral link copied to clipboard`);
-              }}
-            >
-              <ScaledText className="text-24 font-medium">{userReferralCodeString}</ScaledText>
-              <CopyStrokeIcon className="size-20 shrink-0 text-typography-secondary" />
-            </div>
-            <Button variant="secondary" className="shrink-0" onClick={() => setIsEditReferralCodeModalVisible(true)}>
-              <Trans>Edit</Trans> <EditIcon className="size-16" />
-            </Button>
-          </div>
-          <Card>
-            {currentTierDiscount === undefined ? (
-              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" count={3} />
-            ) : (
-              <ActiveCodeExplanation currentTierDiscount={currentTierDiscount} codeString={userReferralCodeString} />
-            )}
-          </Card>
+          {!userReferralCodeString ? (
+            <Card>
+              <div className="text-body-small text-typography-secondary">
+                <Trans>This account has no active referral code.</Trans>
+              </div>
+            </Card>
+          ) : (
+            <>
+              <div className="mb-12 flex items-center justify-between gap-8">
+                <div
+                  className="flex min-w-0 cursor-pointer items-center gap-4 text-typography-primary"
+                  onClick={() => {
+                    copyToClipboard(getReferralCodeTradeUrl(userReferralCodeString));
+                    helperToast.success(t`Referral link copied to clipboard`);
+                  }}
+                >
+                  <ScaledText className="text-24 font-medium">{userReferralCodeString}</ScaledText>
+                  <CopyStrokeIcon className="size-20 shrink-0 text-typography-secondary" />
+                </div>
+                {isAccountOwner && (
+                  <Button
+                    variant="secondary"
+                    className="shrink-0"
+                    onClick={() => setIsEditReferralCodeModalVisible(true)}
+                  >
+                    <Trans>Edit</Trans> <EditIcon className="size-16" />
+                  </Button>
+                )}
+              </div>
+              <Card>
+                {currentTierDiscount === undefined ? (
+                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" count={3} />
+                ) : (
+                  <ActiveCodeExplanation
+                    currentTierDiscount={currentTierDiscount}
+                    codeString={userReferralCodeString}
+                  />
+                )}
+              </Card>
+            </>
+          )}
         </div>
         <ReferralsDocsCard />
         <Faq items={POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
       </div>
-      <ModalWithPortal
-        className="Connect-wallet-modal"
-        isVisible={isEditReferralCodeModalVisible}
-        setIsVisible={setIsEditReferralCodeModalVisible}
-        label={t`Edit referral code`}
-      >
-        <div className="w-[31rem]">
-          <ReferralCodeEditFormContainer
-            type="edit"
-            userReferralCodeString={userReferralCodeString}
-            callAfterSuccess={() => setIsEditReferralCodeModalVisible(false)}
-          />
-        </div>
-      </ModalWithPortal>
+      {isAccountOwner && (
+        <ModalWithPortal
+          className="Connect-wallet-modal"
+          isVisible={isEditReferralCodeModalVisible}
+          setIsVisible={setIsEditReferralCodeModalVisible}
+          label={t`Edit referral code`}
+        >
+          <div className="w-[31rem]">
+            <ReferralCodeEditFormContainer
+              type="edit"
+              userReferralCodeString={userReferralCodeString}
+              callAfterSuccess={() => setIsEditReferralCodeModalVisible(false)}
+            />
+          </div>
+        </ModalWithPortal>
+      )}
     </>
   );
 }
@@ -190,27 +213,10 @@ function Card({ children, className }: { children: React.ReactNode; className?: 
 }
 
 function ScaledText({ children, className }: { children: React.ReactNode; className?: string }) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
-  const [scale, setScale] = useState(1);
+  const [wrapperRef, { width: wrapperWidth }] = useMeasure<HTMLDivElement>();
+  const [textRef, { width: textWidth }] = useMeasure<HTMLSpanElement>();
 
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const text = textRef.current;
-    if (!wrapper || !text) return;
-
-    const update = () => {
-      const available = wrapper.clientWidth;
-      const natural = text.scrollWidth;
-      setScale(natural > available && natural > 0 ? available / natural : 1);
-    };
-
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(wrapper);
-    return () => observer.disconnect();
-  }, [children]);
-
+  const scale = wrapperWidth > 0 && textWidth > wrapperWidth ? wrapperWidth / textWidth : 1;
   const scaleStyle = useMemo(() => (scale < 1 ? { transform: `scale(${scale})` } : undefined), [scale]);
 
   return (

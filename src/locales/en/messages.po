@@ -2151,6 +2151,10 @@ msgstr "Secure & permissionless"
 msgid "Register an affiliate code to access distributions"
 msgstr "Register an affiliate code to access distributions"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "This account has no active referral code."
+msgstr "This account has no active referral code."
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Missing parameters. Refresh and retry"
