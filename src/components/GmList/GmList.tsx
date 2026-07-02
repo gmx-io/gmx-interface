@@ -118,7 +118,7 @@ export function GmList({
   const populatedTradfiSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
     if (!marketsInfo) return set;
-    for (const cat of ["pre-ipo", "commodities", "stocks", "indices", "fx"] as const) {
+    for (const cat of ["stocks", "pre-ipo", "commodities", "indices", "fx"] as const) {
       const found = Object.values(marketsInfo).some(
         (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken?.categories?.includes(cat)
       );

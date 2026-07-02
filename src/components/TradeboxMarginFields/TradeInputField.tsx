@@ -51,7 +51,7 @@ export function TradeInputField({
   inputValue,
   onInputValueChange,
   onFocus,
-  placeholder = "0.0",
+  placeholder = "0.00",
   qa,
   maxDecimals,
 }: Props) {

@@ -33,10 +33,12 @@ type Props = {
   onCancelOrder: (key: string) => void;
   openSettings: () => void;
   hideActions?: boolean;
+  hideOrderActions?: boolean;
 };
 
 export function PositionList(p: Props) {
-  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions } = p;
+  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions, hideOrderActions } =
+    p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
@@ -87,6 +89,7 @@ export function PositionList(p: Props) {
                   isLarge={false}
                   onShareClick={handleSharePositionClick}
                   hideActions={hideActions}
+                  hideOrderActions={hideOrderActions}
                   onCancelOrder={onCancelOrder}
                 />
               ))}
@@ -157,6 +160,7 @@ export function PositionList(p: Props) {
                     isLarge
                     onShareClick={handleSharePositionClick}
                     hideActions={hideActions}
+                    hideOrderActions={hideOrderActions}
                     onCancelOrder={onCancelOrder}
                   />
                 ))}
@@ -206,6 +210,7 @@ const PositionItemWrapper = memo(
     onSelectPositionClick,
     onShareClick,
     onCancelOrder,
+    hideOrderActions,
   }: {
     position: PositionInfo;
     onEditCollateralClick: (positionKey: string) => void;
@@ -216,6 +221,7 @@ const PositionItemWrapper = memo(
     onShareClick: (positionKey: string) => void;
     hideActions: boolean | undefined;
     onCancelOrder: (orderKey: string) => void;
+    hideOrderActions: boolean | undefined;
   }) => {
     const { account } = useWallet();
     const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
@@ -241,7 +247,7 @@ const PositionItemWrapper = memo(
       [onOrdersClick, position.key]
     );
 
-    const isShareAvailable = account === position.account;
+    const isPositionOwner = account === position.account;
 
     return (
       <PositionItem
@@ -253,8 +259,9 @@ const PositionItemWrapper = memo(
         showPnlAfterFees={showPnlAfterFees}
         isLarge={isLarge}
         hideActions={hideActions}
+        hideOrderActions={hideOrderActions}
         onCancelOrder={handleCancelOrder}
-        onShareClick={isShareAvailable ? handleShareClick : undefined}
+        onShareClick={isPositionOwner ? handleShareClick : undefined}
       />
     );
   }

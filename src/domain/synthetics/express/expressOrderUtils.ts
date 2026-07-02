@@ -1,9 +1,5 @@
 import { AbstractSigner, Provider, Signer } from "ethers";
-import {
-  Address,
-  encodeFunctionData,
-  recoverTypedDataAddress,
-} from "viem";
+import { Address, encodeFunctionData, recoverTypedDataAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
@@ -20,10 +16,7 @@ import {
   RawRelayParamsPayload,
   RelayParamsPayload,
 } from "domain/synthetics/express";
-import {
-  getSubaccountValidations,
-  Subaccount,
-} from "domain/synthetics/subaccount";
+import { getSubaccountValidations, Subaccount } from "domain/synthetics/subaccount";
 import { TokenData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { metrics } from "lib/metrics";
@@ -36,10 +29,7 @@ import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import {
-  type ExpressTxnData,
-  estimateExpressParams as sdkEstimateExpressParams,
-} from "sdk/utils/express";
+import { type ExpressTxnData, estimateExpressParams as sdkEstimateExpressParams } from "sdk/utils/express";
 import { getBatchTypedData, buildBatchOrderCalldata } from "sdk/utils/express";
 import {
   BatchOrderTxnParams,
@@ -231,9 +221,11 @@ export async function estimateExpressParams({
   });
 }
 
-
-
-export { getGasPaymentValidations, getIsValidExpressParams } from "sdk/utils/express";
+export {
+  getGasPaymentValidations,
+  getIsConfirmedOutOfGasPaymentTokenBalance,
+  getIsValidExpressParams,
+} from "sdk/utils/express";
 
 export async function buildAndSignExpressBatchOrderTxn({
   chainId,
@@ -258,7 +250,7 @@ export async function buildAndSignExpressBatchOrderTxn({
 }): Promise<ExpressTxnData> {
   const messageSigner = subaccount ? subaccount!.signer : signer;
   const crossChainId = isGmxAccount ? await getMultichainInfoFromSigner(signer, chainId) : undefined;
-  const effectiveSrcChainId = isGmxAccount ? (crossChainId ?? chainId) : undefined;
+  const effectiveSrcChainId = isGmxAccount ? crossChainId ?? chainId : undefined;
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
 
   const relayPayload: RelayParamsPayload = {
@@ -321,7 +313,6 @@ export async function buildAndSignExpressBatchOrderTxn({
     feeAmount: relayerFeeAmount,
   };
 }
-
 
 export async function getMultichainInfoFromSigner(
   signer: Signer,

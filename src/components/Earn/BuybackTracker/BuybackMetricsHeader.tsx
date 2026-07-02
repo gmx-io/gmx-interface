@@ -29,7 +29,9 @@ export function BuybackMetricsHeader({
         tooltip={<Trans>Total amount of GMX bought back since tracking began</Trans>}
         value={metrics ? `${numberWithCommas(Math.round(metrics.totalBoughtGmx))} GMX` : "N/A"}
         subtitle={
-          metrics ? `(${numberWithCommas(Math.round(metrics.totalBoughtUsd), { showDollar: true })})` : undefined
+          metrics?.totalBoughtUsd !== undefined
+            ? `(${numberWithCommas(Math.round(metrics.totalBoughtUsd), { showDollar: true })})`
+            : undefined
         }
         isLoading={isLoading}
         isUnavailable={isUnavailable}
@@ -38,8 +40,8 @@ export function BuybackMetricsHeader({
         label={<Trans>Annualized rate</Trans>}
         tooltip={
           <Trans>
-            Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to
-            total staked GMX and esGMX. Your actual rewards depend on staking power and may differ.
+            Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total
+            GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR.
           </Trans>
         }
         value={metrics ? (metrics.annualizedRate !== undefined ? formatPercent(metrics.annualizedRate) : "N/A") : "N/A"}

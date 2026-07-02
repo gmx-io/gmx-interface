@@ -9,14 +9,23 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import WarnIcon from "img/ic_warn.svg?react";
+
 type Props = {
   position: PositionInfo;
   isMarketDisabled: boolean;
+  isSettlementLikelyToFail: boolean;
   isSelected: boolean;
   onCheckboxChange: (value: boolean, positionKey: string) => void;
 };
 
-export const SettleAccruedFundingFeeRow = ({ position, isMarketDisabled, isSelected, onCheckboxChange }: Props) => {
+export const SettleAccruedFundingFeeRow = ({
+  position,
+  isMarketDisabled,
+  isSettlementLikelyToFail,
+  isSelected,
+  onCheckboxChange,
+}: Props) => {
   const { indexName, poolName } = position;
 
   const labelContent = (
@@ -25,6 +34,9 @@ export const SettleAccruedFundingFeeRow = ({ position, isMarketDisabled, isSelec
         {position.isLong ? t`Long` : t`Short`} {indexName}
       </span>{" "}
       <span className="subtext">[{poolName}]</span>
+      {!isMarketDisabled && isSettlementLikelyToFail && (
+        <WarnIcon className="ml-4 self-center text-yellow-300" aria-label={t`Warning icon`} />
+      )}
     </div>
   );
   const label = isMarketDisabled ? (
@@ -32,6 +44,18 @@ export const SettleAccruedFundingFeeRow = ({ position, isMarketDisabled, isSelec
       position="top-start"
       handle={labelContent}
       content={<Trans>This market is disabled. Contact support to claim your remaining funding fees.</Trans>}
+    />
+  ) : isSettlementLikelyToFail ? (
+    <TooltipWithPortal
+      position="top-start"
+      handle={labelContent}
+      content={
+        <Trans>
+          This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail:
+          positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough
+          of the position for the realized profit to cover the shortfall.
+        </Trans>
+      }
     />
   ) : (
     labelContent

@@ -1,5 +1,8 @@
+import { i18n, type MessageDescriptor } from "@lingui/core";
+
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 
+import { getOrderLineLabel } from "./constants";
 import type { DynamicChartLine, StaticChartLine } from "./types";
 
 const BASE_LINE_LENGTH_PX = -40;
@@ -71,6 +74,30 @@ function getStaticLabelWidthPx(line: StaticChartLine, fontSizePt: number) {
   return Math.max(POSITION_LABEL_MIN_WIDTH_PX * scale, Math.min(POSITION_LABEL_MAX_WIDTH_PX * scale, estimated));
 }
 
+function getDynamicLabelWidthPx(line: DynamicChartLine, fontSizePt: number) {
+  const scale = fontScale(fontSizePt);
+  const baseWidthPx = ORDER_LABEL_WIDTH_PX * scale;
+
+  if (!line.sizeData) {
+    return Math.round(baseWidthPx);
+  }
+
+  const resolve = (descriptor: MessageDescriptor) => i18n._(descriptor);
+  const labelParams = {
+    isLong: line.isLong,
+    marketName: line.marketName,
+    orderType: line.orderType,
+    sizeData: line.sizeData,
+  };
+  const textWidthPx = Math.max(
+    measureTextWidthPx(getOrderLineLabel(resolve, { ...labelParams, showSizeInTokens: false }), fontSizePt),
+    measureTextWidthPx(getOrderLineLabel(resolve, { ...labelParams, showSizeInTokens: true }), fontSizePt)
+  );
+  const estimated = POSITION_LABEL_EXTRA_WIDTH_PX * scale + textWidthPx * POSITION_LABEL_COLLISION_SCALE;
+
+  return Math.round(Math.max(baseWidthPx, Math.min(POSITION_LABEL_MAX_WIDTH_PX * scale, estimated)));
+}
+
 function measureTextWidthPx(text: string, fontSizePt: number) {
   const fallbackCharWidth = POSITION_LABEL_FALLBACK_CHAR_WIDTH_PX * fontScale(fontSizePt);
   let width = Math.ceil(text.length * fallbackCharWidth);
@@ -122,14 +149,12 @@ export function stackOverlappingChartLines(p: {
     };
   }
 
-  const scaledOrderLabelWidth = Math.round(ORDER_LABEL_WIDTH_PX * fontScale(bodyFontSizePt));
-
   const items: StackableItem[] = [
     ...dynamicLines.map(
       (line): StackableItem => ({
         kind: "dynamic",
         price: line.price,
-        widthPx: scaledOrderLabelWidth,
+        widthPx: getDynamicLabelWidthPx(line, bodyFontSizePt),
         line,
       })
     ),
