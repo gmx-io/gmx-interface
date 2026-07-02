@@ -3738,6 +3738,10 @@ msgstr "Copin"
 msgid "Funding fee"
 msgstr "Frais de financement"
 
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "Partial TP"
+msgstr ""
+
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
@@ -4385,6 +4389,10 @@ msgstr "MONTANT"
 
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
+msgstr ""
+
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "Partial SL"
 msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
