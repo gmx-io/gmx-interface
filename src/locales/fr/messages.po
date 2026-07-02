@@ -3783,7 +3783,7 @@ msgstr "Copin"
 msgid "Funding fee"
 msgstr "Frais de financement"
 
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr ""
 
@@ -4444,7 +4444,7 @@ msgstr "MONTANT"
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
 
-#: src/components/TVChartContainer/DynamicLine.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Partial SL"
 msgstr ""
 
