@@ -1,17 +1,30 @@
-import { useMemo } from "react";
+import throttle from "lodash/throttle";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { useLocation } from "react-router-dom";
 
+
+import { getIsFlagEnabled } from "config/ab";
 import { ContractsChainId } from "config/chains";
+import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { parseContractPrice, TokenPricesData } from "domain/synthetics/tokens";
 import { FreshnessMetricId, metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { _debugOracleKeeper } from "lib/oracleKeeperFetcher/_debug";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
+import type { StreamStatus } from "sdk/clients/v2";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/utils/tokens/types";
 
 import { useSequentialTimedSWR } from "./useSequentialTimedSWR";
+import { getWsPriceStore } from "./wsPriceStreamStore";
+
+const noopSubscribe = () => () => undefined;
+const noopStatus = (): StreamStatus => "closed";
+
+// Generous vs normal end-to-end latency so a real stall (not jitter) trips the REST fallback.
+const WS_PRICES_STALE_MS = 10_000;
+const WS_PRICES_THROTTLE_MS = 250;
 
 export type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
@@ -123,9 +136,45 @@ export function useTokenRecentPricesRequest(
     },
   });
 
+  const sdk = useGmxSdk(chainId);
+  const wsFeedEnabled = getIsFlagEnabled("abWebsocket");
+  const store = wsFeedEnabled && sdk ? getWsPriceStore(sdk) : undefined;
+  const wsStatus = useSyncExternalStore(store?.subscribeStatus ?? noopSubscribe, store?.getStatus ?? noopStatus);
+
+  // Propagate frames at most every WS_PRICES_THROTTLE_MS: the channel carries the whole token set on
+  // any token's change, so re-deriving tokensData per frame would be a render storm.
+  const [wsFrame, setWsFrame] = useState<{ prices?: TokenPricesData; originTs?: number }>();
+  useEffect(() => {
+    if (!store) {
+      setWsFrame(undefined);
+      return;
+    }
+    const propagate = throttle(
+      () => setWsFrame({ prices: store.getSnapshot(), originTs: store.getMeta()?.originTs }),
+      WS_PRICES_THROTTLE_MS,
+      { leading: true, trailing: true }
+    );
+    const unsubscribe = store.subscribe(propagate);
+    propagate();
+    return () => {
+      propagate.cancel();
+      unsubscribe();
+    };
+  }, [store]);
+
+  // A "live" socket can still be stale (an upstream stall stops frames); gate on source freshness.
+  const wsPrices = wsFrame?.prices;
+  const wsOriginTs = wsFrame?.originTs;
+  const wsFresh =
+    wsFeedEnabled &&
+    wsStatus === "live" &&
+    wsPrices !== undefined &&
+    wsOriginTs !== undefined &&
+    Date.now() - wsOriginTs < WS_PRICES_STALE_MS;
+
   return {
-    pricesData: data?.pricesData,
-    updatedAt: data?.updatedAt,
+    pricesData: wsFresh ? wsPrices : data?.pricesData,
+    updatedAt: wsFresh ? wsOriginTs : data?.updatedAt,
     error,
     isPriceDataLoading: isLoading,
   };

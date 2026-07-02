@@ -18,6 +18,7 @@ const PERSISTED_API_FLAG_KEYS = [
   "apiMarkets",
   "apiPositions",
   "apiOrders",
+  "wsPrices",
   "api30",
   "api50",
   "api100",

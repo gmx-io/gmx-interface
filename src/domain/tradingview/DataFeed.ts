@@ -19,6 +19,7 @@ import {
   formatTimeInBarToMs,
   getCurrentCandleTime,
   multiplyBarValues,
+  ohlcvCandleToBar,
   parseSymbolName,
 } from "domain/tradingview/utils";
 import { parseError } from "lib/errors";
@@ -36,6 +37,7 @@ import { calculateDisplayDecimals } from "lib/numbers";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
+import type { OhlcvCandle, Subscription } from "sdk/clients/v2";
 import {
   getNativeToken,
   getTokenBySymbol,
@@ -53,6 +55,8 @@ const PREFETCH_CANDLES_COUNT = 300;
 
 export class DataFeed extends EventTarget implements IBasicDataFeed {
   private subscriptions: Record<string, PauseableInterval<Bar | undefined>> = {};
+  private candleStreamUnsubscribers: Record<string, () => void> = {};
+  private candleStreamFactory?: (symbol: string, timeframe: string) => Subscription<OhlcvCandle> | undefined;
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
   private visibilityHandler: () => void;
   private marksGetter?: (
@@ -110,6 +114,12 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   setTokenPriceGetter(getter: (symbol: string) => bigint | undefined): void {
     this.tokenPriceGetter = getter;
+  }
+
+  setCandleStreamFactory(
+    factory: ((symbol: string, timeframe: string) => Subscription<OhlcvCandle> | undefined) | undefined
+  ): void {
+    this.candleStreamFactory = factory;
   }
 
   notifyPricesReady(): void {
@@ -262,6 +272,16 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     const res = resolution as TradingViewResolution;
 
+    // monotonic guard: the WS frame lags the fresh poll, so without it a stale frame rewinds the bar at a rollover
+    let lastEmittedTime = 0;
+    const emit = (bar: Bar) => {
+      if (bar.time < lastEmittedTime) {
+        return;
+      }
+      lastEmittedTime = bar.time;
+      onTick(bar);
+    };
+
     const interval = new PauseableInterval<Bar | undefined>(async ({ lastReturnedValue }) => {
       let candlesToFetch = 1;
 
@@ -306,10 +326,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
             high: Math.max(lastReturnedValue.high, price.open),
           };
 
-          onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
+          emit(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
         }
 
-        onTick(multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier));
+        emit(multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier));
 
         newLastReturnedValue = price;
       }
@@ -330,11 +350,25 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }, V2_UPDATE_INTERVAL);
 
     this.subscriptions[listenerGuid] = interval;
+
+    const candleStreamFactory = this.candleStreamFactory;
+    if (candleStreamFactory && !isStable) {
+      const subscription = candleStreamFactory(symbolInfo.name, SUPPORTED_RESOLUTIONS_V2[res]);
+      if (subscription) {
+        subscription.subscribe((candle) => {
+          emit(multiplyBarValues(formatTimeInBarToMs(ohlcvCandleToBar(candle)), visualMultiplier));
+        });
+        this.candleStreamUnsubscribers[listenerGuid]?.();
+        this.candleStreamUnsubscribers[listenerGuid] = () => subscription.close();
+      }
+    }
   }
 
   unsubscribeBars(listenerGuid: string): void {
     this.subscriptions[listenerGuid].destroy();
     delete this.subscriptions[listenerGuid];
+    this.candleStreamUnsubscribers[listenerGuid]?.();
+    delete this.candleStreamUnsubscribers[listenerGuid];
   }
 
   onReady(callback: OnReadyCallback): void {
@@ -484,6 +518,8 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   destroy() {
     Object.values(this.subscriptions).forEach((subscription) => subscription.destroy());
+    Object.values(this.candleStreamUnsubscribers).forEach((unsubscribe) => unsubscribe());
+    this.candleStreamUnsubscribers = {};
     document.removeEventListener("visibilitychange", this.visibilityHandler);
   }
 }
