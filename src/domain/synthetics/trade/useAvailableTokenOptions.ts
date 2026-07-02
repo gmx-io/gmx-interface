@@ -185,7 +185,10 @@ export function useAvailableTokenOptions(
       shortTokensWithPoolValue[shortToken.address] =
         (shortTokensWithPoolValue[shortToken.address] ?? 0n) + shortPoolAmountUsd;
 
-      if (!marketInfo.isSpotOnly && !getIsMarketDeprecated(marketInfo)) {
+      const isSpcxMarket = marketInfo.marketTokenAddress === "0x470128853D74dab7423904a20eA5AA230e9e561B";
+
+      // Temporary: SPCX is listed before its OI caps are initialized, so do not treat it as deprecated yet.
+      if (!marketInfo.isSpotOnly && (isSpcxMarket || !getIsMarketDeprecated(marketInfo))) {
         indexTokens.add(indexToken);
         allMarkets.add(marketInfo);
         indexTokensWithPoolValue[indexToken.address] =

@@ -695,6 +695,7 @@ export function getPositionInfo(p: {
   });
 
   const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: marketInfo.marketTokenAddress,
     minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,

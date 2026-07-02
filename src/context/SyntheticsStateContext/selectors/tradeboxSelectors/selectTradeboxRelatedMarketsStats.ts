@@ -16,7 +16,7 @@ import {
   MarketStat,
   marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
@@ -32,6 +32,11 @@ type RelatedMarketsStats = {
   relatedMarketStats: MarketStat[];
 };
 
+const EMPTY_RELATED_MARKETS_STATS: RelatedMarketsStats = {
+  relatedMarketsPositionStats: EMPTY_OBJECT,
+  relatedMarketStats: EMPTY_ARRAY,
+};
+
 export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
   const flags = q(selectTradeboxTradeFlags);
   const indexTokenAddress = q(selectTradeboxToTokenAddress);
@@ -44,10 +49,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
   const { isPosition, isLong } = flags;
 
   if (!isPosition || !indexToken || isLong === undefined) {
-    return {
-      relatedMarketsPositionStats: {},
-      relatedMarketStats: [],
-    } as RelatedMarketsStats;
+    return EMPTY_RELATED_MARKETS_STATS;
   }
 
   const availableMarkets = q(selectTradeboxAvailableMarkets);

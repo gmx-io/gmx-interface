@@ -13,7 +13,6 @@ import useRouteQuery from "lib/useRouteQuery";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { BlueShimmerText } from "components/BlueShimmerText/BlueShimmerText";
-import { BotanixBanner } from "components/BotanixBanner/BotanixBanner";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import PageTitle from "components/PageTitle/PageTitle";
 import { ReferralsAffiliatesTab } from "components/Referrals/affiliates/ReferralsAffiliatesTab";
@@ -141,9 +140,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
             }
             qa="referrals-page"
           />
-          {isBotanix ? (
-            <BotanixBanner />
-          ) : (
+          {!isBotanix && (
             <div className="flex grow flex-col">
               <Tabs
                 type="inline-primary"

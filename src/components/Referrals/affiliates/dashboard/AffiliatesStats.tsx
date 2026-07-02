@@ -93,9 +93,9 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
-  const { totalRebate } = useTiers(chainId, tierId);
-  const currentRebatePercentage = getSharePercentage(tierId, discountShare, totalRebate, true);
-  const currentTraderDiscountPercentage = getSharePercentage(tierId, discountShare, totalRebate);
+  const { totalRebate, discountShare: tierDiscountShare } = useTiers(chainId, tierId);
+  const currentRebatePercentage = getSharePercentage(discountShare, tierDiscountShare, totalRebate, true);
+  const currentTraderDiscountPercentage = getSharePercentage(discountShare, tierDiscountShare, totalRebate);
 
   const trackCopyCode = useCallback(() => {
     userAnalytics.pushEvent<ReferralShareEvent>(

@@ -690,6 +690,7 @@ export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {
   const marketInfo = q((s) => (order ? selectMarketsInfoData(s)?.[order.marketAddress] : undefined));
 
   return getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
     minCollateralFactor: marketInfo?.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
@@ -702,6 +703,7 @@ const makeSelectOrderEditorMaxAllowedLeverage = createSelectorFactory((orderKey:
     const marketInfo = q((s) => (order ? selectMarketsInfoData(s)?.[order.marketAddress] : undefined));
 
     return getMaxAllowedLeverage({
+      marketAddress: marketInfo?.marketTokenAddress,
       minCollateralFactor: marketInfo?.minCollateralFactor,
       minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
       positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,

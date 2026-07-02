@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 
-import ExchangeInfoRow from "../../EventToast/ExchangeInfoRow";
+import ExchangeInfoRow from "../../ExchangeInfoRow/ExchangeInfoRow";
 
 interface ExchangeInfoProps {
   children?: ReactNode;

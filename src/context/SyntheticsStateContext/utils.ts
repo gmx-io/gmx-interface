@@ -1,7 +1,7 @@
 import { EnhancedSelector, createSelectionContext } from "@taskworld.com/rereselect";
 import { useCallback } from "react";
 import { Selector, createSelector as createSelectorCommon } from "reselect";
-import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
+import { createContext, useContextSelector } from "use-context-selector";
 
 import type { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { LRUCache } from "sdk/utils/LruCache";
@@ -69,11 +69,18 @@ export type SupportedArg = Arg | Record<string, Arg>;
 export type CachedSelector<T> = EnhancedSelector<SyntheticsState, T> | Selector<SyntheticsState, T>;
 
 function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
-  const value = useContext(StateCtx);
-  if (!value) {
-    throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
-  }
-  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
+  const nullableSelector = useCallback(
+    (value: SyntheticsState | null) => {
+      if (!value) {
+        throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
+      }
+
+      return selector(value);
+    },
+    [selector]
+  );
+
+  return useContextSelector(StateCtx, nullableSelector) as Selected;
 }
 
 export const useSelector = useSyntheticsStateSelector;

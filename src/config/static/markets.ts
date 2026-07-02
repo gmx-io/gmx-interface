@@ -553,6 +553,10 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b": {
       enabled: true,
     },
+    // SPCX/USD [WETH-USDC]
+    "0x470128853D74dab7423904a20eA5AA230e9e561B": {
+      enabled: true,
+    },
     // MEGA/USD [WETH-USDC]
     "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
       enabled: true,
@@ -808,6 +812,7 @@ export const DEPOSIT_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
     "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
     "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
+    "0x470128853D74dab7423904a20eA5AA230e9e561B", // SPCX/USD
   ]),
 };
 
@@ -823,6 +828,7 @@ export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> =
     "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
     "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
+    "0x470128853D74dab7423904a20eA5AA230e9e561B", // SPCX/USD
   ]),
 };
 

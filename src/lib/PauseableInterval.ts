@@ -7,7 +7,7 @@ export class PauseableInterval<T = undefined> {
   private timerId: number | undefined;
   private wasPausedSinceLastCall = false;
   private lastReturnedValue: Awaited<T> | undefined;
-  private state: "paused" | "running" = "running";
+  private state: "paused" | "running" | "destroyed" = "running";
 
   constructor(
     private cb: PauseableIntervalFunction<T>,
@@ -17,7 +17,7 @@ export class PauseableInterval<T = undefined> {
   }
 
   pause() {
-    if (this.state === "paused") {
+    if (this.state !== "running") {
       return;
     }
 
@@ -30,10 +30,11 @@ export class PauseableInterval<T = undefined> {
   destroy() {
     window.clearTimeout(this.timerId);
     this.timerId = undefined;
+    this.state = "destroyed";
   }
 
   resume() {
-    if (this.state === "running") {
+    if (this.state !== "paused") {
       return;
     }
 
@@ -65,7 +66,7 @@ export class PauseableInterval<T = undefined> {
         this.wasPausedSinceLastCall = false;
       }
 
-      if (this.state === "paused") {
+      if (this.state !== "running") {
         this.timerId = undefined;
         return;
       }

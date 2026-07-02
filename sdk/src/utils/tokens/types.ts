@@ -15,6 +15,7 @@ export type TokenCategory =
   | "defi"
   | "ai"
   | "tradfi"
+  | "pre-ipo"
   | "commodities"
   | "stocks"
   | "indices"

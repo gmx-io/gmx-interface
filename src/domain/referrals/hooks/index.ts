@@ -290,6 +290,7 @@ export function useUserReferralCode(
     userReferralCodeString,
     attachedOnChain,
     referralCodeForTxn,
+    isLoading: referralCodeResult.isLoading,
   };
 }
 

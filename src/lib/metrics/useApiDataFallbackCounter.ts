@@ -12,6 +12,8 @@ export function useApiDataFallbackCounter({
   apiData,
   isApiStale,
   apiError,
+  isInitialFallback,
+  resetKey,
 }: {
   domain: Domain;
   chainId: number;
@@ -19,24 +21,31 @@ export function useApiDataFallbackCounter({
   apiData: unknown;
   isApiStale: boolean;
   apiError: Error | undefined;
+  isInitialFallback?: boolean;
+  resetKey?: string | null;
 }) {
   const wasInFallbackRef = useRef(false);
 
   useEffect(() => {
     wasInFallbackRef.current = false;
-  }, [chainId]);
+  }, [chainId, resetKey]);
 
   useEffect(() => {
-    const inFallback = apiEnabled && Boolean(apiError || (apiData && isApiStale));
+    const reason = apiError ? "error" : apiData && isApiStale ? "stale" : isInitialFallback ? "initial" : undefined;
 
-    if (inFallback && !wasInFallbackRef.current) {
+    if (!apiEnabled || !reason) {
+      wasInFallbackRef.current = false;
+      return;
+    }
+
+    if (!wasInFallbackRef.current) {
       metrics.pushCounter<ApiDataFallbackCounter>("apiData.fallback", {
         domain,
-        reason: apiError ? "error" : "stale",
+        reason,
         chainId,
       });
     }
 
-    wasInFallbackRef.current = inFallback;
-  }, [apiEnabled, isApiStale, apiError, apiData, chainId, domain]);
+    wasInFallbackRef.current = true;
+  }, [apiEnabled, isApiStale, apiError, apiData, isInitialFallback, chainId, domain, resetKey]);
 }

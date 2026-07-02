@@ -183,6 +183,16 @@ describe("getMaxLeverageByMinCollateralFactor", () => {
   it("returns correct leverage for a given factor", () => {
     expect(getMaxLeverageByMinCollateralFactor(1000000000000000000n)).toBe(10000000000000000);
   });
+
+  it("caps SPCX min-collateral-factor leverage at 10x", () => {
+    expect(
+      getMaxLeverageByMinCollateralFactor(1000000000000000000n, "0x470128853D74dab7423904a20eA5AA230e9e561B")
+    ).toBe(100000);
+  });
+
+  it("caps SPCX default min-collateral-factor leverage at 10x", () => {
+    expect(getMaxLeverageByMinCollateralFactor(undefined, "0x470128853D74dab7423904a20eA5AA230e9e561B")).toBe(100000);
+  });
 });
 
 describe("getMaxAllowedLeverage", () => {
@@ -303,6 +313,39 @@ describe("getMaxAllowedLeverage", () => {
         positionFeeFactorForBalanceWasNotImproved: pct(0.05),
       })
     ).toBe(bps(25));
+  });
+
+  it("caps SPCX UI max leverage at 10x", () => {
+    expect(
+      getMaxAllowedLeverage({
+        marketAddress: "0x470128853D74dab7423904a20eA5AA230e9e561B",
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(10));
+  });
+
+  it("does not cap other markets with matching factors", () => {
+    expect(
+      getMaxAllowedLeverage({
+        marketAddress: "0x0000000000000000000000000000000000000000",
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
+  });
+
+  it("keeps lower dynamic max leverage for SPCX when factors require it", () => {
+    expect(
+      getMaxAllowedLeverage({
+        marketAddress: "0x470128853D74dab7423904a20eA5AA230e9e561B",
+        minCollateralFactor: pct(10),
+        minCollateralFactorForLiquidation: pct(10),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(5));
   });
 });
 
