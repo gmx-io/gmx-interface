@@ -184,12 +184,10 @@ export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) =
     return false;
   }
 
-  // Don't stack the warning on top of a blocking error.
   if (q(selectTradeboxIncreaseTradeError).buttonErrorMessage) {
     return false;
   }
 
-  // With no existing position the order is checked against the standalone position it would open.
   const existingPosition = q(selectTradeboxSelectedPosition);
   const triggerPrice = q(selectTradeboxTriggerPrice);
   const nextPositionValues = q(selectTradeboxNextPositionValues);

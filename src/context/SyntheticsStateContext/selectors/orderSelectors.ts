@@ -41,8 +41,6 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
 
     const jitLiquidityMap = q(selectJitLiquidityMap);
 
-    // Market Increase orders have triggerPrice=0n, so the trigger-price simulation only
-    // makes sense for resting Limit/Stop Increase orders.
     const nextPositionValues =
       orderInfo &&
       (isLimitIncreaseOrderType(orderInfo.orderType) || isStopIncreaseOrderType(orderInfo.orderType)) &&

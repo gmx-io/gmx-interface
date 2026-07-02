@@ -10,7 +10,6 @@ import { getOrderErrors } from "../utils";
 
 const tokensData = mockTokensData();
 const marketsInfoData = mockMarketsInfoData(tokensData, ["BTC-BTC-USDC"], {
-  // non-zero factor so the max-leverage check does not divide by zero
   "BTC-BTC-USDC": { minCollateralFactor: expandDecimals(1, 28) },
 });
 const marketInfo = marketsInfoData["BTC-BTC-USDC"];
@@ -89,7 +88,6 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
   });
 
   it("does not flag a Market Increase order even if nextPositionValues are provided", () => {
-    // Market Increase orders store triggerPrice=0n, so the trigger-price simulation must not apply
     const result = getOrderErrors({
       ...baseParams,
       order: makeIncreaseOrder(OrderType.MarketIncrease, { triggerPrice: 0n }),
@@ -121,8 +119,6 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
   }
 
   it("does not flag when the trigger is beyond the current position's liq price", () => {
-    // long: trigger 50k is below the current liq 55k — the position would be liquidated
-    // before the trigger, and the order would then open a new position
     const result = getOrderErrors({
       ...baseParams,
       positionsInfoData: { [positionKey]: makePosition(expandDecimals(55_000, 30)) },
@@ -134,7 +130,6 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
   });
 
   it("flags when the position is alive at the trigger and the resulting position is liquidatable", () => {
-    // long: current liq 45k is below the trigger 50k (alive), resulting liq 52k is above it
     const result = getOrderErrors({
       ...baseParams,
       positionsInfoData: { [positionKey]: makePosition(expandDecimals(45_000, 30)) },

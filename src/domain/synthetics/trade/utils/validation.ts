@@ -482,9 +482,6 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Min position size: ${formatUsd(minPositionSizeUsd)}` };
   }
 
-  // Market Increase executes at the mark price, so block immediately if the resulting
-  // position would be liquidatable now. Limit/Stop Increase orders rest and are handled
-  // by the non-blocking trigger-price warning instead.
   if (
     !isLimit &&
     getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong })

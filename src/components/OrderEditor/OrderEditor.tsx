@@ -507,7 +507,6 @@ export function OrderEditor(p: Props) {
   ]);
 
   const showLiquidationRiskWarning = useMemo(() => {
-    // Suppress the warning while a blocking error is shown (mirrors the tradebox selector).
     if (error || !positionOrder) {
       return false;
     }
@@ -519,7 +518,6 @@ export function OrderEditor(p: Props) {
       return false;
     }
 
-    // With no existing position the order is checked against the standalone position it would open.
     return getIsIncreaseResultingPositionLiquidatable({
       currentLiqPrice: existingPosition?.liquidationPrice,
       nextLiqPrice: nextPositionValuesForIncrease?.nextLiqPrice,

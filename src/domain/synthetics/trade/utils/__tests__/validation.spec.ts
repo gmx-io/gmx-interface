@@ -152,13 +152,13 @@ describe("getIncreaseError — isExternalSwapLoading gate", () => {
 describe("getIncreaseError — increase liquidation guard is Market-only", () => {
   const liqGuardParams = {
     ...baseIncreaseParams,
-    initialCollateralToken: toToken, // USDC == targetCollateralToken → no swap path needed
+    initialCollateralToken: toToken,
     targetCollateralToken: toToken,
-    initialCollateralAmount: expandDecimals(1000, 6), // USDC has 6 decimals; within the mock balance
+    initialCollateralAmount: expandDecimals(1000, 6),
     collateralLiquidity: expandDecimals(1_000_000, 30),
     nextPositionValues: {
       nextCollateralUsd: expandDecimals(1000, 30),
-      nextLiqPrice: expandDecimals(60000, 30), // > markPrice (50000) → liquidatable for a long
+      nextLiqPrice: expandDecimals(60000, 30),
     } as any,
     markPrice: expandDecimals(50000, 30),
     isLong: true,
@@ -173,7 +173,7 @@ describe("getIncreaseError — increase liquidation guard is Market-only", () =>
     const result = getIncreaseError({
       ...liqGuardParams,
       isLimit: true,
-      triggerPrice: expandDecimals(49000, 30), // long limit trigger below mark → valid resting
+      triggerPrice: expandDecimals(49000, 30),
       thresholdType: TriggerThresholdType.Below,
     });
     expect(result.buttonErrorMessage).not.toBe("Invalid liquidation price");

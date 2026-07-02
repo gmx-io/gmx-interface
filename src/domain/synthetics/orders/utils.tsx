@@ -337,8 +337,6 @@ export function getOrderErrors(p: {
         });
       }
 
-      // Only resting Limit/Stop Increase orders execute at the trigger price;
-      // Market Increase orders have triggerPrice=0n.
       if (
         isLimitOrderType(order.orderType) &&
         getIsIncreaseResultingPositionLiquidatable({
