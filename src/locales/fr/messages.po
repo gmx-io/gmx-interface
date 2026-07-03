@@ -4452,10 +4452,6 @@ msgstr ""
 msgid "Partial SL"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Back to all trades"
-msgstr "Retour à tous les trades"
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5511,8 +5507,7 @@ msgstr ""
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Récupérations indisponibles sur Avalanche Fuji"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-#: src/components/TradeHistory/TradeHistory.tsx
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "Clear position history filter"
 msgstr "Effacer le filtre d'historique de position"
 
@@ -10298,6 +10293,10 @@ msgstr "Prix de liquidation invalide"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
 msgstr "Disponible pour le trading"
+
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
+msgstr "{count, plural, one {# action dans ce cycle de vie} other {# actions dans ce cycle de vie}}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"

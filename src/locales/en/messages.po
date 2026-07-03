@@ -4452,10 +4452,6 @@ msgstr "Current margin excludes pending borrow and funding fees. Post-close marg
 msgid "Partial SL"
 msgstr "Partial SL"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Back to all trades"
-msgstr "Back to all trades"
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5511,8 +5507,7 @@ msgstr "{typeString} Long Limit: {0} a long position when the price is below the
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Claims unavailable on Avalanche Fuji"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-#: src/components/TradeHistory/TradeHistory.tsx
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "Clear position history filter"
 msgstr "Clear position history filter"
 
@@ -10298,6 +10293,10 @@ msgstr "Invalid liquidation price"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
 msgstr "Available to trade"
+
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
+msgstr "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"

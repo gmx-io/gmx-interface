@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Address } from "viem";
 
@@ -6,9 +6,15 @@ import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getMarketIndexName } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import { PositionTradeAction, TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import {
+  isPositionTradeAction,
+  PositionTradeAction,
+  TradeActionType,
+  useTradeHistory,
+} from "domain/synthetics/tradeHistory";
 import { usePositionLifecycleIdByKey } from "domain/synthetics/tradeHistory/usePositionLifecycleIdByKey";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -23,7 +29,6 @@ import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
 import PieChartIcon from "img/ic_pie_chart.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -31,6 +36,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ActionFilter } from "./filters/ActionFilter";
+import { PositionLifecycleFilterHeader } from "./PositionLifecycleFilterHeader";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
@@ -88,6 +94,7 @@ export function TradeHistory(p: Props) {
 
   const {
     tradeActions,
+    totalCount,
     isLoading: isHistoryLoading,
     error: historyError,
     hasMorePages,
@@ -194,21 +201,23 @@ export function TradeHistory(p: Props) {
 
   const { isMobile } = useBreakpoints();
 
+  const lifecycleSummary = useMemo(() => {
+    if (!positionLifecycleId) {
+      return undefined;
+    }
+    const action = tradeActions?.find(isPositionTradeAction);
+    if (!action) {
+      return undefined;
+    }
+    return {
+      indexName: getMarketIndexName({ indexToken: action.indexToken, isSpotOnly: action.marketInfo.isSpotOnly }),
+      isLong: action.isLong,
+      tokenSymbol: action.indexToken.symbol,
+    };
+  }, [positionLifecycleId, tradeActions]);
+
   let actions = (
     <>
-      {positionLifecycleId ? (
-        <Button
-          variant="ghost"
-          onClick={handleClearPositionLifecycleFilter}
-          className="flex items-center gap-4"
-          aria-label={t`Clear position history filter`}
-          title={t`Clear position history filter`}
-        >
-          <ArrowLeftIcon className="size-16" />
-          <Trans>Back to all trades</Trans>
-        </Button>
-      ) : null}
-
       {pnlAnalysisButton}
 
       <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
@@ -233,6 +242,15 @@ export function TradeHistory(p: Props) {
 
         {controls}
       </div>
+      {positionLifecycleId ? (
+        <PositionLifecycleFilterHeader
+          indexName={lifecycleSummary?.indexName}
+          isLong={lifecycleSummary?.isLong}
+          tokenSymbol={lifecycleSummary?.tokenSymbol}
+          count={totalCount}
+          onClear={handleClearPositionLifecycleFilter}
+        />
+      ) : null}
       <TableScrollFadeContainer disableScrollFade={currentPageData.length === 0} className="flex grow flex-col">
         <table className="TradeHistorySynthetics-table table-fixed">
           <colgroup>

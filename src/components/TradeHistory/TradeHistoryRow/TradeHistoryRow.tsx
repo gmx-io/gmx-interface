@@ -411,7 +411,12 @@ export function TradeHistoryRow({
                 }
                 content={<Trans>View position history</Trans>}
               />
-            ) : null}
+            ) : (
+              // Reserve the button's space so the Share button and layout don't shift between rows/states.
+              <Button variant="ghost" className="invisible !min-h-28 !px-8 !py-6">
+                <FilterHistoryIcon className="size-14" />
+              </Button>
+            )}
           </div>
         </TableTd>
       </TableTr>

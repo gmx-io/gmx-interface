@@ -4452,10 +4452,6 @@ msgstr ""
 msgid "Partial SL"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Back to all trades"
-msgstr "모든 거래로 돌아가기"
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5511,8 +5507,7 @@ msgstr ""
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji에서는 수령이 불가합니다"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-#: src/components/TradeHistory/TradeHistory.tsx
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "Clear position history filter"
 msgstr "포지션 내역 필터 지우기"
 
@@ -10298,6 +10293,10 @@ msgstr "유효하지 않은 청산가"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
 msgstr "거래 가능 잔액"
+
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
+msgstr "{count, plural, other {이 수명 주기의 액션 #개}}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"
