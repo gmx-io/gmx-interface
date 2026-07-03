@@ -10,11 +10,12 @@ import { Table, TableTd, TableTdActionable, TableTheadTr, TableTr, TableTrAction
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
+import { WhaleTableSkeleton } from "./WhaleSkeletons";
 import { buildWhaleMarketUrl } from "../whaleRoutes";
 
 type AccountField = "whaleVolume" | "volShare" | "whaleOi" | "oiShare";
 
-export function AccountMarketsTable({ rows }: { rows: AccountMarketRow[] }) {
+export function AccountMarketsTable({ rows, isLoading }: { rows: AccountMarketRow[]; isLoading?: boolean }) {
   const marketsInfoData = useMarketsInfoData();
   const history = useHistory();
   const { orderBy, direction, sorterProps } = useWhaleSort<AccountField>("whaleVolume");
@@ -62,30 +63,38 @@ export function AccountMarketsTable({ rows }: { rows: AccountMarketRow[] }) {
         </TableTheadTr>
       </thead>
       <tbody>
-        {sorted.map((r) => (
-          <TableTrActionable
-            key={r.market}
-            className="cursor-pointer"
-            onClick={() => history.push(buildWhaleMarketUrl(r.market))}
-          >
-            <TableTdActionable>{marketsInfoData?.[r.market]?.name ?? r.market}</TableTdActionable>
-            <TableTdActionable>{formatWhaleUsd(r.whaleVolume)}</TableTdActionable>
-            <TableTdActionable>{formatPercentage(r.shareBps, { bps: true, displayDecimals: 1 })}</TableTdActionable>
-            <TableTdActionable>{formatWhaleUsd(r.whaleOi)}</TableTdActionable>
-            <TableTdActionable>{formatPercentage(r.oiShareBps, { bps: true, displayDecimals: 1 })}</TableTdActionable>
-          </TableTrActionable>
-        ))}
-        <TableTr>
-          <TableTd>All</TableTd>
-          <TableTd>{formatWhaleUsd(totalWhaleVolume)}</TableTd>
-          <TableTd>
-            {formatPercentage(computeShareBps(totalWhaleVolume, totalVolume), { bps: true, displayDecimals: 1 })}
-          </TableTd>
-          <TableTd>{formatWhaleUsd(totalWhaleOi)}</TableTd>
-          <TableTd>
-            {formatPercentage(computeShareBps(totalWhaleOi, totalOi), { bps: true, displayDecimals: 1 })}
-          </TableTd>
-        </TableTr>
+        {isLoading && rows.length === 0 ? (
+          <WhaleTableSkeleton columns={5} />
+        ) : (
+          <>
+            {sorted.map((r) => (
+              <TableTrActionable
+                key={r.market}
+                className="cursor-pointer"
+                onClick={() => history.push(buildWhaleMarketUrl(r.market))}
+              >
+                <TableTdActionable>{marketsInfoData?.[r.market]?.name ?? r.market}</TableTdActionable>
+                <TableTdActionable>{formatWhaleUsd(r.whaleVolume)}</TableTdActionable>
+                <TableTdActionable>{formatPercentage(r.shareBps, { bps: true, displayDecimals: 1 })}</TableTdActionable>
+                <TableTdActionable>{formatWhaleUsd(r.whaleOi)}</TableTdActionable>
+                <TableTdActionable>
+                  {formatPercentage(r.oiShareBps, { bps: true, displayDecimals: 1 })}
+                </TableTdActionable>
+              </TableTrActionable>
+            ))}
+            <TableTr>
+              <TableTd>All</TableTd>
+              <TableTd>{formatWhaleUsd(totalWhaleVolume)}</TableTd>
+              <TableTd>
+                {formatPercentage(computeShareBps(totalWhaleVolume, totalVolume), { bps: true, displayDecimals: 1 })}
+              </TableTd>
+              <TableTd>{formatWhaleUsd(totalWhaleOi)}</TableTd>
+              <TableTd>
+                {formatPercentage(computeShareBps(totalWhaleOi, totalOi), { bps: true, displayDecimals: 1 })}
+              </TableTd>
+            </TableTr>
+          </>
+        )}
       </tbody>
     </Table>
   );

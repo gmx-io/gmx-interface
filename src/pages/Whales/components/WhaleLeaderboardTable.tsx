@@ -6,11 +6,12 @@ import { rankByVolumeDesc } from "domain/synthetics/whales/shares";
 import { useChainId } from "lib/chains";
 
 import AddressView from "components/AddressView/AddressView";
-import { Table, TableTd, TableTdActionable, TableTheadTr, TableTrActionable } from "components/Table/Table";
+import { Table, TableTdActionable, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
+import { WhaleTableSkeleton } from "./WhaleSkeletons";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
 const TOP_N = 100;
@@ -47,9 +48,7 @@ export function WhaleLeaderboardTable({ window }: { window: WhaleWindow }) {
       </thead>
       <tbody>
         {isLoading && rows.length === 0 ? (
-          <tr>
-            <TableTd colSpan={3}>Loading…</TableTd>
-          </tr>
+          <WhaleTableSkeleton columns={3} />
         ) : (
           rows.map((acc, i) => (
             <TableTrActionable

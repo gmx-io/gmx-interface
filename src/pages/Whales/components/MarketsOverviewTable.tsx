@@ -15,6 +15,7 @@ import { Table, TableTd, TableTdActionable, TableTheadTr, TableTrActionable } fr
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
+import { WhaleCellSkeleton, WhaleTableSkeleton } from "./WhaleSkeletons";
 import { buildWhaleMarketUrl } from "../whaleRoutes";
 
 type OverviewField = "volume" | "oiShare" | "top3";
@@ -77,9 +78,7 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
         </thead>
         <tbody>
           {isLoading && rows.length === 0 ? (
-            <tr>
-              <TableTd colSpan={5}>Loading…</TableTd>
-            </tr>
+            <WhaleTableSkeleton columns={5} />
           ) : sorted.length === 0 ? (
             <tr>
               <TableTd colSpan={5}>No markets</TableTd>
@@ -94,13 +93,31 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
                 <TableTdActionable>{r.name}</TableTdActionable>
                 <TableTdActionable>{formatWhaleUsd(r.volume)}</TableTdActionable>
                 <TableTdActionable>
-                  {r.topHolder ? <AddressView address={r.topHolder} size={20} noLink /> : "—"}
+                  {!concentration ? (
+                    <WhaleCellSkeleton width={90} />
+                  ) : r.topHolder ? (
+                    <AddressView address={r.topHolder} size={20} noLink />
+                  ) : (
+                    "—"
+                  )}
                 </TableTdActionable>
                 <TableTdActionable>
-                  {r.topHolder ? formatPercentage(r.oiShareBps, { bps: true, displayDecimals: 1 }) : "—"}
+                  {!concentration ? (
+                    <WhaleCellSkeleton />
+                  ) : r.topHolder ? (
+                    formatPercentage(r.oiShareBps, { bps: true, displayDecimals: 1 })
+                  ) : (
+                    "—"
+                  )}
                 </TableTdActionable>
                 <TableTdActionable>
-                  {r.topHolder ? formatPercentage(r.top3ShareBps, { bps: true, displayDecimals: 1 }) : "—"}
+                  {!concentration ? (
+                    <WhaleCellSkeleton />
+                  ) : r.topHolder ? (
+                    formatPercentage(r.top3ShareBps, { bps: true, displayDecimals: 1 })
+                  ) : (
+                    "—"
+                  )}
                 </TableTdActionable>
               </TableTrActionable>
             ))

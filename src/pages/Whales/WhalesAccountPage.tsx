@@ -14,6 +14,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { AccountMarketsPie } from "./components/AccountMarketsPie";
 import { AccountMarketsTable } from "./components/AccountMarketsTable";
 import { useWhaleWindow } from "./components/useWhaleWindow";
+import { WhalePieSkeleton } from "./components/WhaleSkeletons";
 import { WhaleWindowTabs } from "./components/WhaleWindowTabs";
 import { WHALES_PATH } from "./whaleRoutes";
 
@@ -21,7 +22,7 @@ export default function WhalesAccountPage() {
   const { account } = useParams<{ account: string }>();
   const { chainId } = useChainId();
   const [window, setWindow] = useWhaleWindow();
-  const { rows } = useAccountMarketBreakdown(chainId, account, window);
+  const { rows, isLoading } = useAccountMarketBreakdown(chainId, account, window);
 
   return (
     <AppPageLayout title={t`Account Whale Breakdown`}>
@@ -47,8 +48,8 @@ export default function WhalesAccountPage() {
           <WhaleWindowTabs value={window} onChange={setWindow} />
         </div>
         <div className="flex gap-16">
-          <AccountMarketsTable rows={rows} />
-          <AccountMarketsPie rows={rows} />
+          <AccountMarketsTable rows={rows} isLoading={isLoading} />
+          {isLoading && rows.length === 0 ? <WhalePieSkeleton /> : <AccountMarketsPie rows={rows} />}
         </div>
       </div>
     </AppPageLayout>

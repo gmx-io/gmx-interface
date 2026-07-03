@@ -7,12 +7,13 @@ import { useChainId } from "lib/chains";
 import { formatPercentage } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
-import { Table, TableTd, TableTdActionable, TableTheadTr, TableTrActionable } from "components/Table/Table";
+import { Table, TableTdActionable, TableTheadTr, TableTrActionable } from "components/Table/Table";
 
 import { MarketHoldersPie } from "./MarketHoldersPie";
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
+import { WhalePieSkeleton, WhaleTableSkeleton } from "./WhaleSkeletons";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
 const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
@@ -30,25 +31,35 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
     orderBy === "size" ? r.size : orderBy === "oiShare" ? r.oiShareBps : orderBy === "volume" ? r.volume : r.volShareBps
   );
 
+  const loadingEmpty = isLoading && rows.length === 0;
+
   return (
     <div className="flex flex-col gap-16">
-      {rows.length > 0 && (
+      {(rows.length > 0 || loadingEmpty) && (
         <div className="flex flex-wrap gap-24">
           <div className="flex flex-col items-center gap-4">
             <div className="text-body-small text-typography-secondary">OI concentration</div>
-            <MarketHoldersPie
-              items={rows.map((r) => ({ name: shortAddr(r.account), value: r.size, id: r.account }))}
-              total={totalOi}
-              label={formatWhaleUsd(totalOi) ?? "—"}
-            />
+            {rows.length > 0 ? (
+              <MarketHoldersPie
+                items={rows.map((r) => ({ name: shortAddr(r.account), value: r.size, id: r.account }))}
+                total={totalOi}
+                label={formatWhaleUsd(totalOi) ?? "—"}
+              />
+            ) : (
+              <WhalePieSkeleton />
+            )}
           </div>
           <div className="flex flex-col items-center gap-4">
             <div className="text-body-small text-typography-secondary">Volume concentration</div>
-            <MarketHoldersPie
-              items={rows.map((r) => ({ name: shortAddr(r.account), value: r.volume, id: r.account }))}
-              total={totalVolume}
-              label={formatWhaleUsd(totalVolume) ?? "—"}
-            />
+            {rows.length > 0 ? (
+              <MarketHoldersPie
+                items={rows.map((r) => ({ name: shortAddr(r.account), value: r.volume, id: r.account }))}
+                total={totalVolume}
+                label={formatWhaleUsd(totalVolume) ?? "—"}
+              />
+            ) : (
+              <WhalePieSkeleton />
+            )}
           </div>
         </div>
       )}
@@ -81,10 +92,8 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
           </TableTheadTr>
         </thead>
         <tbody>
-          {isLoading && rows.length === 0 ? (
-            <tr>
-              <TableTd colSpan={6}>Loading…</TableTd>
-            </tr>
+          {loadingEmpty ? (
+            <WhaleTableSkeleton columns={6} />
           ) : (
             sorted.map((r, i) => (
               <TableTrActionable
