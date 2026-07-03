@@ -9,7 +9,7 @@ import SettingsIcon from "img/ic_settings.svg?react";
 
 const BACKDROP_ANIMATION_DURATION = 300;
 
-export function OneClickButton({ openSettings }: { openSettings: () => void }) {
+export function SettingsButton({ openSettings }: { openSettings: () => void }) {
   const { isSettingsVisible, setIsSettingsVisible } = useSettings();
 
   // Keep elevated z-index during backdrop fade-out animation
