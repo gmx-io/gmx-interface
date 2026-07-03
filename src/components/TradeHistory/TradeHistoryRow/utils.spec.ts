@@ -751,7 +751,6 @@ describe("TradeHistoryRow helpers", () => {
   });
 
   it("formatPositionMessage uses block-time minCollateralFactorForLiquidation for liquidations", () => {
-    // Current/on-hours market config (0.5% -> 200x) differs from the block-time/off-hours factor (1% -> 100x).
     const currentFactor = PRECISION / 200n;
     const blockTimeFactor = PRECISION / 100n;
 
@@ -766,12 +765,10 @@ describe("TradeHistoryRow helpers", () => {
 
     const details = formatPositionMessage(historicalLiquidation, minCollateralUsd);
 
-    // Max leverage context reflects the block-time factor (100x), not the current config (200x).
     expect(details.priceComment).toContainEqual(
       "Liquidated as max leverage of 100.0x was exceeded when accounting for fees."
     );
 
-    // Minimum required margin is computed from the block-time factor, not the current market config.
     const expectedMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, blockTimeFactor));
     const currentConfigMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, currentFactor));
     expect(expectedMinMargin).not.toBe(currentConfigMinMargin);
@@ -779,7 +776,6 @@ describe("TradeHistoryRow helpers", () => {
   });
 
   it("formatPositionMessage falls back to current market config when block-time factor is missing", () => {
-    // Old data without an indexed block-time factor keeps using the current market config.
     const currentFactor = PRECISION / 100n;
     const fallbackLiquidation = {
       ...liquidated,

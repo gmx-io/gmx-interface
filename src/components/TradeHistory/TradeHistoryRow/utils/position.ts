@@ -538,9 +538,6 @@ export const formatPositionMessage = (
     //#endregion StopLossDecrease
     //#region Liquidation
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
-    // Use the block-time minCollateralFactorForLiquidation captured on the trade action so historical
-    // liquidation context is not reconstructed with the current (possibly changed) market config.
-    // Falls back to the current market config only when the historical value is unavailable (old data).
     const minCollateralFactorForLiquidation =
       tradeAction.minCollateralFactorForLiquidation ?? tradeAction.marketInfo.minCollateralFactorForLiquidation;
 
