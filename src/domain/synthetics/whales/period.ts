@@ -6,6 +6,13 @@ export const WHALE_WINDOWS: WhaleWindow[] = ["total", "1y", "180d", "90d", "30d"
 // windows shorter than 90 days, so it offers this reduced set.
 export const LEADERBOARD_WINDOWS: WhaleWindow[] = ["total", "30d", "7d"];
 
+// Windows that scan a lot of history (>= 90 days, incl. all-time) and are slow to load.
+export const LONG_WHALE_WINDOWS: WhaleWindow[] = ["total", "1y", "180d", "90d"];
+
+export function isLongWhaleWindow(window: WhaleWindow): boolean {
+  return LONG_WHALE_WINDOWS.includes(window);
+}
+
 const WINDOW_DAYS: Record<Exclude<WhaleWindow, "total">, number> = {
   "1y": 365,
   "180d": 180,

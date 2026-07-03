@@ -14,7 +14,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { AccountMarketsPie } from "./components/AccountMarketsPie";
 import { AccountMarketsTable } from "./components/AccountMarketsTable";
 import { useWhaleWindow } from "./components/useWhaleWindow";
-import { WhalePieSkeleton } from "./components/WhaleSkeletons";
+import { WhaleLongWindowHint, WhalePieSkeleton } from "./components/WhaleSkeletons";
 import { WhaleWindowTabs } from "./components/WhaleWindowTabs";
 import { WHALES_PATH } from "./whaleRoutes";
 
@@ -47,6 +47,7 @@ export default function WhalesAccountPage() {
           </div>
           <WhaleWindowTabs value={window} onChange={setWindow} />
         </div>
+        {isLoading && rows.length === 0 && <WhaleLongWindowHint window={window} />}
         <div className="flex gap-16">
           <AccountMarketsTable rows={rows} isLoading={isLoading} />
           {isLoading && rows.length === 0 ? <WhalePieSkeleton /> : <AccountMarketsPie rows={rows} />}

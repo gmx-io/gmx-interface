@@ -11,7 +11,7 @@ import { Table, TableTdActionable, TableTheadTr, TableTrActionable } from "compo
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
-import { WhaleTableSkeleton } from "./WhaleSkeletons";
+import { WhaleLongWindowHint, WhaleTableSkeleton } from "./WhaleSkeletons";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
 const TOP_N = 100;
@@ -34,37 +34,40 @@ export function WhaleLeaderboardTable({ window }: { window: WhaleWindow }) {
   const rows = sortByBigint(top, direction, (r) => r.volume);
 
   return (
-    <Table>
-      <thead>
-        <TableTheadTr>
-          <WhaleColumnHeader title="#" />
-          <WhaleColumnHeader title="Address" />
-          <WhaleColumnHeader
-            title="Total volume"
-            tooltip="Account's total traded volume across all markets in the selected window"
-            sorter={sorterProps("volume")}
-          />
-        </TableTheadTr>
-      </thead>
-      <tbody>
-        {isLoading && rows.length === 0 ? (
-          <WhaleTableSkeleton columns={3} />
-        ) : (
-          rows.map((acc, i) => (
-            <TableTrActionable
-              key={acc.account}
-              className="cursor-pointer"
-              onClick={() => history.push(buildWhaleAccountUrl(acc.account))}
-            >
-              <TableTdActionable>{i + 1}</TableTdActionable>
-              <TableTdActionable>
-                <AddressView address={acc.account} size={20} noLink />
-              </TableTdActionable>
-              <TableTdActionable>{formatWhaleUsd(acc.volume)}</TableTdActionable>
-            </TableTrActionable>
-          ))
-        )}
-      </tbody>
-    </Table>
+    <>
+      {isLoading && rows.length === 0 && <WhaleLongWindowHint window={window} />}
+      <Table>
+        <thead>
+          <TableTheadTr>
+            <WhaleColumnHeader title="#" />
+            <WhaleColumnHeader title="Address" />
+            <WhaleColumnHeader
+              title="Total volume"
+              tooltip="Account's total traded volume across all markets in the selected window"
+              sorter={sorterProps("volume")}
+            />
+          </TableTheadTr>
+        </thead>
+        <tbody>
+          {isLoading && rows.length === 0 ? (
+            <WhaleTableSkeleton columns={3} />
+          ) : (
+            rows.map((acc, i) => (
+              <TableTrActionable
+                key={acc.account}
+                className="cursor-pointer"
+                onClick={() => history.push(buildWhaleAccountUrl(acc.account))}
+              >
+                <TableTdActionable>{i + 1}</TableTdActionable>
+                <TableTdActionable>
+                  <AddressView address={acc.account} size={20} noLink />
+                </TableTdActionable>
+                <TableTdActionable>{formatWhaleUsd(acc.volume)}</TableTdActionable>
+              </TableTrActionable>
+            ))
+          )}
+        </tbody>
+      </Table>
+    </>
   );
 }

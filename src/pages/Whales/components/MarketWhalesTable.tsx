@@ -13,7 +13,7 @@ import { MarketHoldersPie } from "./MarketHoldersPie";
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
-import { WhalePieSkeleton, WhaleTableSkeleton } from "./WhaleSkeletons";
+import { WhaleLongWindowHint, WhalePieSkeleton, WhaleTableSkeleton } from "./WhaleSkeletons";
 import { buildWhaleAccountUrl } from "../whaleRoutes";
 
 const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
@@ -35,6 +35,7 @@ export function MarketWhalesTable({ market, window }: { market: string; window: 
 
   return (
     <div className="flex flex-col gap-16">
+      {loadingEmpty && <WhaleLongWindowHint window={window} />}
       {(rows.length > 0 || loadingEmpty) && (
         <div className="flex flex-wrap gap-24">
           <div className="flex flex-col items-center gap-4">

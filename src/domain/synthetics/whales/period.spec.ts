@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { WHALE_WINDOWS, windowToFromTimestamp } from "./period";
+import { isLongWhaleWindow, WHALE_WINDOWS, windowToFromTimestamp } from "./period";
 
 describe("windowToFromTimestamp", () => {
   const now = 1_700_000_000;
@@ -29,5 +29,19 @@ describe("windowToFromTimestamp", () => {
 
   it("exposes the windows in order", () => {
     expect(WHALE_WINDOWS).toEqual(["total", "1y", "180d", "90d", "30d", "7d"]);
+  });
+});
+
+describe("isLongWhaleWindow", () => {
+  it("flags windows of 90 days or more (incl. all-time)", () => {
+    expect(isLongWhaleWindow("total")).toBe(true);
+    expect(isLongWhaleWindow("1y")).toBe(true);
+    expect(isLongWhaleWindow("180d")).toBe(true);
+    expect(isLongWhaleWindow("90d")).toBe(true);
+  });
+
+  it("does not flag short windows", () => {
+    expect(isLongWhaleWindow("30d")).toBe(false);
+    expect(isLongWhaleWindow("7d")).toBe(false);
   });
 });

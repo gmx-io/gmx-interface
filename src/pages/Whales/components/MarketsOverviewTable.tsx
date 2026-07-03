@@ -15,7 +15,7 @@ import { Table, TableTd, TableTdActionable, TableTheadTr, TableTrActionable } fr
 import { sortByBigint, useWhaleSort } from "./useWhaleSort";
 import { WhaleColumnHeader } from "./WhaleColumnHeader";
 import { formatWhaleUsd } from "./whaleFormat";
-import { WhaleCellSkeleton, WhaleTableSkeleton } from "./WhaleSkeletons";
+import { WhaleCellSkeleton, WhaleLongWindowHint, WhaleTableSkeleton } from "./WhaleSkeletons";
 import { buildWhaleMarketUrl } from "../whaleRoutes";
 
 type OverviewField = "volume" | "oiShare" | "top3";
@@ -51,6 +51,7 @@ export function MarketsOverviewTable({ window }: { window: WhaleWindow }) {
   return (
     <>
       <SearchInput value={search} setValue={setSearch} placeholder="Search market" className="mb-8 max-w-[260px]" />
+      {isLoading && rows.length === 0 && <WhaleLongWindowHint window={window} />}
       <Table>
         <thead>
           <TableTheadTr>
