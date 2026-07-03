@@ -5,7 +5,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import Button from "components/Button/Button";
 
-import SettingsIcon from "img/ic_settings.svg?react";
+import SettingsIcon from "img/ic_settings_filled.svg?react";
 
 const BACKDROP_ANIMATION_DURATION = 300;
 
