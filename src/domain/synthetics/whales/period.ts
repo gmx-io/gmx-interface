@@ -2,6 +2,10 @@ export type WhaleWindow = "total" | "1y" | "180d" | "90d" | "30d" | "7d";
 
 export const WHALE_WINDOWS: WhaleWindow[] = ["total", "1y", "180d", "90d", "30d", "7d"];
 
+// The whale leaderboard's `periodAccountStats` source only supports all-time or
+// windows shorter than 90 days, so it offers this reduced set.
+export const LEADERBOARD_WINDOWS: WhaleWindow[] = ["total", "30d", "7d"];
+
 const WINDOW_DAYS: Record<Exclude<WhaleWindow, "total">, number> = {
   "1y": 365,
   "180d": 180,

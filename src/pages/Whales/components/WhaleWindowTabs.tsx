@@ -13,7 +13,15 @@ const LABELS: Record<WhaleWindow, string> = {
   "7d": "7D",
 };
 
-export function WhaleWindowTabs({ value, onChange }: { value: WhaleWindow; onChange: (v: WhaleWindow) => void }) {
-  const options = useMemo(() => WHALE_WINDOWS.map((w) => ({ label: LABELS[w], value: w })), []);
+export function WhaleWindowTabs({
+  value,
+  onChange,
+  windows = WHALE_WINDOWS,
+}: {
+  value: WhaleWindow;
+  onChange: (v: WhaleWindow) => void;
+  windows?: WhaleWindow[];
+}) {
+  const options = useMemo(() => windows.map((w) => ({ label: LABELS[w], value: w })), [windows]);
   return <Tabs options={options} selectedValue={value} onChange={onChange} type="inline" />;
 }
