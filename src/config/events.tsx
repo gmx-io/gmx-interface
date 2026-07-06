@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
+import { isDevelopment } from "config/env";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -43,7 +44,19 @@ export type EventData = {
   requiresOpenPosition?: string;
 };
 
+const testEvent: EventData = {
+  id: "test-event-flag",
+  type: "update",
+  flagId: "testEventFlagId",
+  endDate: "31 Dec 2026, 0:00",
+  title: "Test announcement",
+  description: (
+    <>Test announcement gated by the testEventFlagId KLI flag; its start date comes from the flag's createdAt.</>
+  ),
+};
+
 export const appEventsData: EventData[] = [
+  ...(isDevelopment() ? [testEvent] : []),
   {
     id: "botanix-withdraw-deadline",
     type: "delisting",
