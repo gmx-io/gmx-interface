@@ -399,3 +399,25 @@ th {
   font-size: 11px;
   letter-spacing: 0.08em;
 }
+
+/**
+ * FEDEV-4037: GMX sets html font-size to 10px, which shrinks the rem-based texts of
+ * Privy's export-wallet screen ("Your wallet" label 0.75rem -> 7.5px, warning 1rem -> 10px).
+ * Privy exposes no font-size variables and no stable ids/testids on these elements, hence
+ * relational selectors. Scoped to that screen (the dialog contains Privy's key-export
+ * iframe) so other Privy screens are unaffected; rules only resize host-DOM text and fail
+ * safe back to Privy defaults if their DOM changes. Escalated to Privy to use px instead
+ * of rem; remove once fixed on their side.
+ */
+#privy-dialog:has(iframe[src*="embedded-wallets/export"]) {
+  // "Never share your private key..." warning: the text beside the heroicons triangle
+  div:has(> svg[data-slot="icon"]) > div {
+    font-size: 13px;
+  }
+
+  // "Your wallet": the label right before the wallet card (a div holding the copy button)
+  span:has(+ div button) {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+}
