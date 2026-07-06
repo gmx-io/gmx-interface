@@ -61,6 +61,7 @@ export const appEventsData: EventData[] = [
     id: "botanix-withdraw-deadline",
     type: "delisting",
     isActive: true,
+    startDate: "24 Jun 2026, 16:45",
     endDate: "01 Aug 2026, 0:00",
     chains: [BOTANIX],
     title: "Botanix network is shutting down",
