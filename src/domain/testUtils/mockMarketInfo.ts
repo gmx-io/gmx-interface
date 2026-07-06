@@ -1,19 +1,47 @@
 import { expandDecimals, PRECISION } from "lib/numbers";
-import type { MarketInfo } from "sdk/utils/markets/types";
+import type { Market, MarketInfo } from "sdk/utils/markets/types";
 import type { TokenData } from "sdk/utils/tokens/types";
 
 import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "./mockTokens";
 
 export const MOCK_MARKET_ADDRESS = "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336";
+// Real ETH/USD [WETH-WETH] market on Arbitrum: same index token, different pool
+export const SECOND_ETH_MARKET_ADDRESS = "0x450bb6774Dd8a756274E0ab4107953259d2ac541";
+
+/**
+ * Derives raw MarketsData (as returned by useMarkets) from MarketInfo fixtures,
+ * so tests keep a single source of truth for market fields.
+ */
+export function createMockMarketsData(marketInfos: MarketInfo[]): Record<string, Market> {
+  return Object.fromEntries(
+    marketInfos.map((info) => [
+      info.marketTokenAddress,
+      {
+        marketTokenAddress: info.marketTokenAddress,
+        indexTokenAddress: info.indexTokenAddress,
+        longTokenAddress: info.longTokenAddress,
+        shortTokenAddress: info.shortTokenAddress,
+        isSameCollaterals: info.isSameCollaterals,
+        isSpotOnly: info.isSpotOnly,
+        name: info.name,
+        data: info.data,
+      },
+    ])
+  );
+}
 
 /**
  * Builds a mock ETH/USD [ETH-USDC] MarketInfo with moderate liquidity and
  * 100x max leverage (minCollateralFactor = PRECISION / 100n).
  * Accepts an optional indexToken override so price-change tests can rebuild
- * the market with updated prices.
+ * the market with updated prices, plus field overrides for scenario fixtures
+ * (capped open interest, aggressive price impact, etc).
  */
-export function createMockMarketInfo(indexToken: TokenData = ETH_TOKEN): MarketInfo {
-  return {
+export function createMockMarketInfo(
+  indexToken: TokenData = ETH_TOKEN,
+  overrides: Partial<MarketInfo> = {}
+): MarketInfo {
+  const base: MarketInfo = {
     marketTokenAddress: MOCK_MARKET_ADDRESS,
     indexTokenAddress: ETH_ADDRESS,
     longTokenAddress: ETH_ADDRESS,
@@ -99,4 +127,6 @@ export function createMockMarketInfo(indexToken: TokenData = ETH_TOKEN): MarketI
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
   } as MarketInfo;
+
+  return { ...base, ...overrides };
 }

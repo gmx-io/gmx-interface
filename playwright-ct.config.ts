@@ -17,6 +17,7 @@ function ctModuleMocks(): Plugin {
   const mockPath = path.resolve(__dirname, "playwright/mocks/rpcDebug.ts");
   const privyReactAuthMockPath = path.resolve(__dirname, "playwright/mocks/privyReactAuth.tsx");
   const privyWagmiMockPath = path.resolve(__dirname, "playwright/mocks/privyWagmi.tsx");
+  const syntheticsEventsMockPath = path.resolve(__dirname, "playwright/mocks/syntheticsEventsProvider.tsx");
 
   return {
     name: "ct-module-mocks",
@@ -37,6 +38,17 @@ function ctModuleMocks(): Plugin {
       }
       if (source.includes("lib/rpc/_debug")) {
         return mockPath;
+      }
+      // Websocket-driven events layer: replaced with a static "no events" stub
+      if (source.includes("SyntheticsEvents/SyntheticsEventsProvider")) {
+        return syntheticsEventsMockPath;
+      }
+      if (
+        source === "./SyntheticsEventsProvider" &&
+        importer &&
+        importer.includes(path.join("context", "SyntheticsEvents"))
+      ) {
+        return syntheticsEventsMockPath;
       }
     },
   };
