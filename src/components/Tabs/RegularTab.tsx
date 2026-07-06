@@ -78,7 +78,7 @@ export default function RegularTab<V extends string | number>({
       <button
         type="button"
         className={cx(
-          `-mb-[0.5px] flex items-baseline justify-center gap-8 border-b-[2.5px] border-b-[transparent] px-20 pb-9 pt-11
+          `-mb-[0.5px] flex items-baseline justify-center gap-8 border-b-[2.5px] border-b-[transparent] px-20 max-[400px]:px-12 pb-9 pt-11
         font-medium first:rounded-tl-8 last:rounded-tr-8 hover:text-typography-primary`,
           optionClassName,
           regularOptionClassname,
