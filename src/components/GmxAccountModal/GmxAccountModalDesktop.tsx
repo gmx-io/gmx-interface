@@ -58,8 +58,8 @@ const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
   withdraw: <Trans>Withdraw from GMX Account</Trans>,
   depositStatus: <Trans>Deposit in progress...</Trans>,
   selectAssetToDeposit: <Trans>Select asset to deposit</Trans>,
-  walletReceive: <Trans>Deposit to Wallet</Trans>,
-  walletSend: <Trans>Send</Trans>,
+  walletReceive: <Trans>Receive to Wallet</Trans>,
+  walletSend: <Trans>Send from Wallet</Trans>,
 };
 
 function OverlayContent({ view }: { view: OverlayView }) {

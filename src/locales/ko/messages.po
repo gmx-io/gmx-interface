@@ -2503,12 +2503,6 @@ msgstr "{0} 지출 허용"
 msgid "Swap debug"
 msgstr ""
 
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
-msgid "Deposit to Wallet"
-msgstr "지갑에 입금"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -3919,9 +3913,6 @@ msgstr "4-18위"
 msgid "Set acceptable price impact"
 msgstr "허용 가격 영향 설정"
 
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -6452,6 +6443,12 @@ msgstr ""
 msgid "If you continue, you will lose {0} in rewards"
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Send from Wallet"
+msgstr "지갑에서 보내기"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "담보를 출금할 수 없습니다. 잔여 담보가 최소 기준 미만이 됩니다"
@@ -8763,7 +8760,6 @@ msgstr "<0>{0}</0> 수령"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -9598,6 +9594,13 @@ msgstr "가장 빠름"
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive tokens separately"
 msgstr "토큰을 별도로 받기"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
+msgid "Receive to Wallet"
+msgstr "지갑으로 받기"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "USD estimate"

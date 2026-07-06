@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { Address, encodeFunctionData, isAddress } from "viem";
 
 import { AnyChainId, getChainName, isTestnetChain, SettlementChainId, SourceChainId } from "config/chains";
@@ -41,6 +42,18 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { useGmxAccountWithdrawNetworks } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
+
+const valueSkeleton = (
+  <Skeleton
+    baseColor="#B4BBFF1A"
+    highlightColor="#B4BBFF1A"
+    width={96}
+    height={14}
+    borderRadius={4}
+    className="leading-[14px]"
+    inline
+  />
+);
 
 function getWalletBalanceUsd(token: TokenData): bigint {
   if (!token.prices || token.walletBalance === undefined) {
@@ -182,7 +195,11 @@ export function WalletSendView() {
     });
   }, [isSameChain, isDestinationUnsupported, isRecipientValid, amount, stargateAddress, destinationChainId, recipient]);
 
-  const { data: quoteOft } = useQuoteOft({
+  const {
+    data: quoteOft,
+    isLoading: isQuoteOftLoading,
+    error: quoteOftError,
+  } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: stargateAddress,
     fromChainId: chainId,
@@ -208,7 +225,11 @@ export function WalletSendView() {
     };
   }, [quoteOft, sendParamsWithoutSlippage]);
 
-  const { data: quoteSendData } = useQuoteSendNativeFeeWithGasLimit({
+  const {
+    data: quoteSendData,
+    isLoading: isQuoteSendLoading,
+    error: quoteSendError,
+  } = useQuoteSendNativeFeeWithGasLimit({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: stargateAddress,
     fromChainId: chainId,
@@ -383,15 +404,29 @@ export function WalletSendView() {
       return <Trans>Instant</Trans>;
     }
 
+    if (isDestinationUnsupported) {
+      return "-";
+    }
+
     if (amount === undefined || amount === 0n) {
       return "...";
     }
 
     return isTestnet ? <Trans>1m 40s</Trans> : <Trans>20s</Trans>;
-  }, [isSameChain, amount, isTestnet]);
+  }, [isSameChain, isDestinationUnsupported, amount, isTestnet]);
+
+  const isNetworkFeeLoading = isQuoteOftLoading || isQuoteSendLoading;
 
   const networkFeeValue = useMemo(() => {
+    if (isDestinationUnsupported) {
+      return "-";
+    }
+
     if (networkFee === undefined || networkFeeUsd === undefined || nativeToken === undefined) {
+      if (quoteOftError !== undefined || quoteSendError !== undefined) {
+        return "-";
+      }
+
       return "...";
     }
 
@@ -404,7 +439,7 @@ export function WalletSendView() {
         symbol={nativeToken.symbol}
       />
     );
-  }, [networkFee, networkFeeUsd, nativeToken]);
+  }, [isDestinationUnsupported, networkFee, networkFeeUsd, nativeToken, quoteOftError, quoteSendError]);
 
   let buttonState: { text: ReactNode; disabled?: boolean; onClick?: () => void } = {
     text: t`Send`,
@@ -583,7 +618,12 @@ export function WalletSendView() {
             valueClassName="numbers"
             value={estimatedTimeValue}
           />
-          {!isSameChain && <SyntheticsInfoRow label={<Trans>Network fee</Trans>} value={networkFeeValue} />}
+          {!isSameChain && (
+            <SyntheticsInfoRow
+              label={<Trans>Network fee</Trans>}
+              value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
+            />
+          )}
           <SyntheticsInfoRow
             label={<Trans>Wallet balance</Trans>}
             value={<ValueTransition from={formatUsd(walletBalanceUsd)} to={formatUsd(nextWalletBalanceUsd)} />}

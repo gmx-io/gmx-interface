@@ -2503,12 +2503,6 @@ msgstr "授权 {0} 支出"
 msgid "Swap debug"
 msgstr ""
 
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
-msgid "Deposit to Wallet"
-msgstr "存入钱包"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -3919,9 +3913,6 @@ msgstr "第 4-18 名"
 msgid "Set acceptable price impact"
 msgstr "设置可接受的价格影响"
 
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -6452,6 +6443,12 @@ msgstr ""
 msgid "If you continue, you will lose {0} in rewards"
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Send from Wallet"
+msgstr "从钱包发送"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "无法提取抵押品。剩余抵押品将低于最低要求"
@@ -8763,7 +8760,6 @@ msgstr "领取 <0>{0}</0>"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -9598,6 +9594,13 @@ msgstr "最快"
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive tokens separately"
 msgstr "分别接收代币"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
+msgid "Receive to Wallet"
+msgstr "接收至钱包"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "USD estimate"

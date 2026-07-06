@@ -133,13 +133,23 @@ function WalletBlock({ account }: { account: string }) {
           {isCopied ? <CheckIcon className="size-16 text-green-500" /> : <CopyIcon className="size-16" />}
         </button>
         <div className="flex items-center gap-8">
-          <TooltipWithPortal content={t`Receive`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+          <TooltipWithPortal
+            content={t`Receive to Wallet`}
+            position="bottom"
+            tooltipClassName="!min-w-max"
+            variant="none"
+          >
             <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletReceive")}>
               <ReceiveIcon className="size-16" />
             </button>
           </TooltipWithPortal>
           {canSend && (
-            <TooltipWithPortal content={t`Send`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+            <TooltipWithPortal
+              content={t`Send from Wallet`}
+              position="bottom"
+              tooltipClassName="!min-w-max"
+              variant="none"
+            >
               <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
                 <SendIcon className="size-16" />
               </button>

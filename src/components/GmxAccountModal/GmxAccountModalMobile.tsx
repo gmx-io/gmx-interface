@@ -59,18 +59,18 @@ function SelectAssetToDepositTitle() {
   );
 }
 
-function DepositToWalletTitle() {
+function ReceiveToWalletTitle() {
   return (
     <TitleWithBack backTo="main">
-      <Trans>Deposit to Wallet</Trans>
+      <Trans>Receive to Wallet</Trans>
     </TitleWithBack>
   );
 }
 
-function SendTitle() {
+function SendFromWalletTitle() {
   return (
     <TitleWithBack backTo="main">
-      <Trans>Send</Trans>
+      <Trans>Send from Wallet</Trans>
     </TitleWithBack>
   );
 }
@@ -83,8 +83,8 @@ const SLIDE_MODAL_LABELS: Record<Exclude<GmxAccountModalView, "depositStatus">, 
   deposit: <DepositTitle />,
   withdraw: <WithdrawTitle />,
   selectAssetToDeposit: <SelectAssetToDepositTitle />,
-  walletReceive: <DepositToWalletTitle />,
-  walletSend: <SendTitle />,
+  walletReceive: <ReceiveToWalletTitle />,
+  walletSend: <SendFromWalletTitle />,
 };
 
 export function GmxAccountModalMobile({ account }: { account: string }) {
