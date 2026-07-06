@@ -19,9 +19,8 @@ export type MockPositionInfoOverrides = {
 };
 
 /**
- * A clean 2x ETH/USD long by default: 1 ETH size at $2000 entry backed by
- * 1000 USDC collateral, zero pending fees/pnl. The key matches what
- * selectTradeboxSelectedPositionKey computes for the mock account.
+ * A clean 2x ETH/USD long by default: 1 ETH at $2000 entry, 1000 USDC collateral,
+ * zero pending fees/pnl. The key matches selectTradeboxSelectedPositionKey.
  */
 export function createMockPositionInfo({
   account,

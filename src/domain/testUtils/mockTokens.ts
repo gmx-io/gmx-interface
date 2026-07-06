@@ -51,7 +51,7 @@ export const BTC_TOKEN = {
   balanceType: TokenBalanceType.Wallet,
 } as TokenData;
 
-// Native ETH (zero address) is required for execution fee estimation.
+// native ETH (zero address) is required for execution fee estimation
 export const NATIVE_ETH_TOKEN = {
   ...NATIVE_ETH,
   prices: { minPrice: expandDecimals(2000, 30), maxPrice: expandDecimals(2000, 30) },

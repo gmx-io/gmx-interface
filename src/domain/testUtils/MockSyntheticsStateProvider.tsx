@@ -48,14 +48,9 @@ export type MockSyntheticsStateProviderProps = {
 };
 
 /**
- * Prod-like SyntheticsState for component tests: chain data (tokens, markets,
- * positions, orders, gas) is static mock data, while the interactive parts
- * (tradebox form state, settings, permits, subaccount, external swaps) come from
- * the real hooks, so all derived selectors compute through the production pipeline.
- *
- * Requires the same provider stack as the app (see TradeBox.ct.stories.tsx):
- * wagmi, GmxAccount, Chain, Settings, PendingTxns, ConnectModal, TokensBalances,
- * TokenPermits, Subaccount, TokensFavorites, Sorter.
+ * Prod-like SyntheticsState for component tests: chain data is static mock data,
+ * interactive parts come from the real hooks, so derived selectors compute through
+ * the production pipeline. Requires the app provider stack (see TradeBox.ct.stories.tsx).
  */
 export function MockSyntheticsStateProvider({
   children,
@@ -145,7 +140,7 @@ export function MockSyntheticsStateProvider({
         jitLiquidityData: {} as SyntheticsState["globals"]["jitLiquidityData"],
       },
       claims: { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] },
-      // Leaderboard is page-scoped and unrelated to trading widgets
+      // page-scoped, unrelated to trading widgets
       leaderboard: {} as SyntheticsState["leaderboard"],
       settings,
       subaccountState,
@@ -157,8 +152,7 @@ export function MockSyntheticsStateProvider({
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
       poolsDetails: undefined,
-      // NOTE: features/uiFlags/oracleSettings stay undefined; populate them here
-      // if the component under test grows feature-gated or oracle-based behavior
+      // populate if the component under test grows feature-gated or oracle-based behavior
       features: undefined,
       uiFlags: undefined,
       sponsoredCallBalanceData: undefined,

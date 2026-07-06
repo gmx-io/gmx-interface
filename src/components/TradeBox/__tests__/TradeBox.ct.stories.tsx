@@ -48,7 +48,7 @@ function AutoConnect({ children }: { children: ReactNode }) {
     }
   }, [status, connect, connectors]);
 
-  // Wait for the mock account before mounting, so effects don't run twice
+  // mount children only when connected so effects don't run twice
   if (status !== "connected") {
     return null;
   }
@@ -69,7 +69,7 @@ function SeedLocalStorage({ entries, children }: { entries: Array<[string, strin
   return <>{children}</>;
 }
 
-/** Turns the leverage slider setting off through the real settings context, like the settings modal does. */
+/** Turns the leverage slider setting off through the real settings context. */
 function ManualLeverageMode({ children }: { children: ReactNode }) {
   const { isLeverageSliderEnabled, setIsLeverageSliderEnabled } = useSettings();
 
@@ -79,7 +79,6 @@ function ManualLeverageMode({ children }: { children: ReactNode }) {
     }
   }, [isLeverageSliderEnabled, setIsLeverageSliderEnabled]);
 
-  // Wait for the setting to apply before mounting the widget
   if (isLeverageSliderEnabled) {
     return null;
   }
@@ -134,10 +133,8 @@ export type TradeBoxStoryProps = {
 };
 
 /**
- * Mounts the production trade widget (header tabs + TradeBox, as in
- * TradeBoxResponsiveContainer) with the production provider stack.
- * Chain data comes from mock fixtures via MockSyntheticsStateProvider, while
- * form state, settings and selectors behave exactly like in production.
+ * Mounts the trade widget (header tabs + TradeBox, as in TradeBoxResponsiveContainer)
+ * with the production provider stack over mock fixtures.
  */
 export function TradeBoxStory({
   connected = false,
@@ -171,7 +168,7 @@ export function TradeBoxStory({
         shortToken: ETH_TOKEN,
         isSameCollaterals: true,
         name: "ETH/USD [WETH-WETH]",
-        // Cheaper than the default pool: lower open fee, no negative impact
+        // cheaper than the default pool
         positionFeeFactorForBalanceWasNotImproved: expandDecimals(2, 25),
         positionImpactFactorNegative: 0n,
         swapImpactFactorNegative: 0n,

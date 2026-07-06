@@ -5,13 +5,10 @@ import type { TokenData } from "sdk/utils/tokens/types";
 import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "./mockTokens";
 
 export const MOCK_MARKET_ADDRESS = "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336";
-// Real ETH/USD [WETH-WETH] market on Arbitrum: same index token, different pool
+// real ETH/USD [WETH-WETH] Arbitrum market: same index token, different pool
 export const SECOND_ETH_MARKET_ADDRESS = "0x450bb6774Dd8a756274E0ab4107953259d2ac541";
 
-/**
- * Derives raw MarketsData (as returned by useMarkets) from MarketInfo fixtures,
- * so tests keep a single source of truth for market fields.
- */
+/** Derives raw MarketsData (as returned by useMarkets) from MarketInfo fixtures. */
 export function createMockMarketsData(marketInfos: MarketInfo[]): Record<string, Market> {
   return Object.fromEntries(
     marketInfos.map((info) => [
@@ -32,10 +29,8 @@ export function createMockMarketsData(marketInfos: MarketInfo[]): Record<string,
 
 /**
  * Builds a mock ETH/USD [ETH-USDC] MarketInfo with moderate liquidity and
- * 100x max leverage (minCollateralFactor = PRECISION / 100n).
- * Accepts an optional indexToken override so price-change tests can rebuild
- * the market with updated prices, plus field overrides for scenario fixtures
- * (capped open interest, aggressive price impact, etc).
+ * 100x max leverage. `indexToken` allows price-change scenarios, `overrides`
+ * allow scenario fixtures (capped open interest, other pools, etc).
  */
 export function createMockMarketInfo(
   indexToken: TokenData = ETH_TOKEN,

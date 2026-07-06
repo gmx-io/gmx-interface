@@ -13,8 +13,7 @@ type PageLike = {
 test.beforeEach(async ({ page }) => {
   // eslint-disable-next-line no-console
   page.on("pageerror", (err) => console.log("PAGEERROR:", err.stack ?? err.message));
-  // Keep tests hermetic: the story provides all chain data via mocks,
-  // anything reaching a real backend (RPC, oracle, analytics) is dropped.
+  // Hermetic: fixtures provide all data, requests to real backends are dropped
   await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
 });
 
@@ -47,16 +46,13 @@ test.describe("TradeBox", () => {
     test("renders Long/Market defaults with connect wallet button", async ({ mount, page }) => {
       await mount(<TradeBoxStory />);
 
-      // Trade mode tabs
       const tradeModeTabs = page.locator(getDataQALocator("trade-mode"));
       await expect(tradeModeTabs.getByRole("button", { name: "Market", exact: true })).toBeVisible();
       await expect(tradeModeTabs.getByRole("button", { name: "Limit", exact: true })).toBeVisible();
 
-      // Margin (Pay) and Size fields from the mock ETH/USD market
       await expect(page.locator(getDataQALocator("margin-input"))).toBeVisible();
       await expect(page.locator(getDataQALocator("position-size-input"))).toBeVisible();
 
-      // No wallet connected -> button asks to connect and is clickable
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
       await expect(submitButton).toHaveText("Connect wallet");
       await expect(submitButton).toBeEnabled();
@@ -71,19 +67,18 @@ test.describe("TradeBox", () => {
 
       await page.locator(getDataQALocator("margin-input")).fill("1000");
 
-      // Default leverage is 2x: size ~= 1000 USDC * 2 = $2000 minus open fees
+      // default leverage 2x: ~$2000 minus open fees
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       await expect(sizeInput).not.toHaveValue("");
       await expectInputInRange(sizeInput, 1950, 2000);
 
-      // Alternate value shows the same size in index tokens (ETH at $2000)
       await expect(page.getByText(/≈\s*0\.9\d+\s+ETH/)).toBeVisible();
     });
 
     test("typing size derives margin (reverse anchor)", async ({ mount, page }) => {
       await mount(<TradeBoxStory />);
 
-      // Size is USD-denominated by default: $3000 at 2x -> ~1500 USDC margin + open fees
+      // $3000 at 2x -> ~1500 USDC margin + open fees
       await page.locator(getDataQALocator("position-size-input")).fill("3000");
 
       const marginInput = page.locator(getDataQALocator("margin-input"));
@@ -113,7 +108,6 @@ test.describe("TradeBox", () => {
       const marginInput = page.locator(getDataQALocator("margin-input"));
       await expectInputInRange(marginInput, 4999, 5000);
 
-      // Size follows through the real pipeline: 5000 * 2x minus fees
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       await expectInputInRange(sizeInput, 9900, 10000);
     });
@@ -123,7 +117,7 @@ test.describe("TradeBox", () => {
 
       await switchSizeDisplayMode(page, "ETH");
 
-      // 1 ETH * $2000 = $2000 size -> ~1000 USDC margin at 2x + open fees
+      // 1 ETH * $2000 at 2x -> ~1000 USDC margin
       await page.locator(getDataQALocator("position-size-input")).fill("1");
 
       const marginInput = page.locator(getDataQALocator("margin-input"));
@@ -139,7 +133,7 @@ test.describe("TradeBox", () => {
       await selectTradeMode(page, "Limit");
       await page.locator(getDataQALocator("margin-input")).fill("1000");
 
-      // No limit price yet -> the real pipeline falls back to mark price ($2000)
+      // empty limit price falls back to mark price ($2000)
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       await expectInputInRange(sizeInput, 1950, 2000);
       await expect(page.getByText(/≈\s*0\.9\d+\s+ETH/)).toBeVisible();
@@ -152,14 +146,13 @@ test.describe("TradeBox", () => {
       await page.locator(getDataQALocator("margin-input")).fill("1000");
       await expect(page.getByText(/≈\s*0\.9\d+\s+ETH/)).toBeVisible();
 
-      // Long limit executes below mark: $1000 entry doubles the token amount
+      // $1000 entry doubles the token amount for the same USD size
       await page.locator(getDataQALocator("trigger-price-input")).fill("1000");
 
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       await expectInputInRange(sizeInput, 1950, 2000);
       await expect(page.getByText(/≈\s*1\.9\d+\s+ETH/)).toBeVisible();
 
-      // Raising the limit price back to mark halves the token amount again
       await page.locator(getDataQALocator("trigger-price-input")).fill("2000");
       await expect(page.getByText(/≈\s*0\.9\d+\s+ETH/)).toBeVisible();
     });
@@ -171,7 +164,7 @@ test.describe("TradeBox", () => {
       await page.locator(getDataQALocator("trigger-price-input")).fill("1000");
 
       await switchSizeDisplayMode(page, "ETH");
-      // 2 ETH at $1000 limit price = $2000 size -> ~1000 USDC margin at 2x
+      // 2 ETH at $1000 limit price at 2x -> ~1000 USDC margin
       await page.locator(getDataQALocator("position-size-input")).fill("2");
 
       const marginInput = page.locator(getDataQALocator("margin-input"));
@@ -225,7 +218,7 @@ test.describe("TradeBox", () => {
 
       await page.locator(getDataQALocator("margin-max")).click();
 
-      // USDC fixture wallet balance is 10 000
+      // fixture wallet balance
       await expect(page.locator(getDataQALocator("margin-input"))).toHaveValue(/^10,?000/);
     });
   });
@@ -238,12 +231,10 @@ test.describe("TradeBox", () => {
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       await expectInputInRange(sizeInput, 1950, 2000);
 
-      // The header leverage field opens the "Adjust leverage" popover
       await page.locator(getDataQALocator("leverage-slider")).first().click();
       await expect(page.getByText("Adjust leverage")).toBeVisible();
       await page.getByText("5x", { exact: true }).click();
 
-      // Same margin at 5x: ~$5000 minus open fees
       await expectInputInRange(sizeInput, 4900, 5000);
     });
 
@@ -289,7 +280,7 @@ test.describe("TradeBox", () => {
     test("margin below minimum shows min margin error", async ({ mount, page }) => {
       await mount(<TradeBoxStory connected />);
 
-      // Fixture minCollateralUsd is $1
+      // fixture minCollateralUsd is $1
       await page.locator(getDataQALocator("margin-input")).fill("0.5");
 
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
@@ -312,7 +303,6 @@ test.describe("TradeBox", () => {
     test("long stop market price below mark is rejected", async ({ mount, page }) => {
       await mount(<TradeBoxStory connected />);
 
-      // Stop Market lives under the "More" nested tab
       await page.locator(getDataQALocator("trade-mode")).getByRole("button", { name: "More" }).click();
       await page.getByText("Stop Market", { exact: true }).click();
 
@@ -329,7 +319,7 @@ test.describe("TradeBox", () => {
     test("increase flow shows Increase Long and liquidation price transition", async ({ mount, page }) => {
       await mount(<TradeBoxStory withPosition />);
 
-      // Position fixture: 2x long 1 ETH, liq ~$1050 shown as current value
+      // position fixture liq price is ~$1050
       const liqRow = page.getByText("Liquidation price").locator("..");
       await expect(liqRow).toContainText(/1,?050/);
 
@@ -338,7 +328,7 @@ test.describe("TradeBox", () => {
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
       await expect(submitButton).toHaveText("Increase Long");
 
-      // Now the row renders a from -> to transition: old liq price plus the recomputed one
+      // old liq price -> recomputed one
       await expect(liqRow).toContainText(/1,?050/);
       await expect(liqRow.locator(".ValueTransition")).toBeVisible();
     });
@@ -365,11 +355,10 @@ test.describe("TradeBox", () => {
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       await sizeInput.fill("2");
 
-      // 2 ETH * $1000 = $2000 size -> ~1000 USDC margin at 2x
       const marginInput = page.locator(getDataQALocator("margin-input"));
       await expectInputInRange(marginInput, 995, 1015);
 
-      // Raising the limit price doubles the USD size for the same 2 ETH -> margin ~2000
+      // higher limit price doubles USD size for the same 2 ETH -> margin ~2000
       await page.locator(getDataQALocator("trigger-price-input")).fill("2000");
 
       await expect(sizeInput).toHaveValue("2");
@@ -392,11 +381,11 @@ test.describe("TradeBox", () => {
       const tpPriceInput = page.getByPlaceholder("TP price");
       await expect(tpPriceInput).toBeVisible();
 
-      // Valid: TP above entry for a long
+      // valid for a long: TP above entry
       await tpPriceInput.fill("3000");
       await expect(submitButton).toBeEnabled();
 
-      // Invalid: TP below the mark price for a long -> entry error disables submit
+      // invalid: TP below mark
       await tpPriceInput.fill("1000");
       await expect(submitButton).toBeDisabled();
     });
@@ -414,14 +403,12 @@ test.describe("TradeBox", () => {
       await marginInput.fill("1000");
       await sizeInput.fill("3000");
 
-      // The header leverage field now displays the estimated leverage (~3x)
+      // the header leverage field displays the derived estimate (~3x)
       await expect(leverageDisplay(page)).toContainText(/(2\.9\d*|3(\.0\d*)?)x/);
 
-      // Neither input got rewritten by the other
       await expect(marginInput).toHaveValue("1000");
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
 
-      // Changing margin only re-derives leverage (~1.5x), size stays
       await marginInput.fill("2000");
       await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)x/);
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
@@ -433,13 +420,12 @@ test.describe("TradeBox", () => {
       const marginInput = page.locator(getDataQALocator("margin-input"));
       await marginInput.fill("1000");
 
-      // Max size for 1000 USDC at ~98.6x allowed leverage is ~$98k; 50% ~= $49k
+      // max size for 1000 USDC at max allowed leverage is ~$98k; 50% ~= $49k
       await page.locator(".rc-slider-mark-text", { hasText: "50%" }).click();
 
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       await expectInputInRange(sizeInput, 45000, 50000);
 
-      // Margin is untouched: the slider controls size, not margin
       await expect(marginInput).toHaveValue("1000");
     });
 
@@ -453,7 +439,7 @@ test.describe("TradeBox", () => {
       await page.locator(".rc-slider-mark-text", { hasText: "50%" }).click();
       await expectInputInRange(sizeInput, 45000, 50000);
 
-      // Doubling margin doubles the 50% target size
+      // doubled margin re-applies the fixed 50%
       await marginInput.fill("2000");
       await expectInputInRange(sizeInput, 90000, 100000);
     });
@@ -471,7 +457,7 @@ test.describe("TradeBox", () => {
       await sizeInput.fill("3000");
 
       await marginInput.fill("2000");
-      // Leverage re-derives (~1.5x) but the manually typed size is preserved
+      // leverage re-derives but the manually typed size is preserved
       await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)x/);
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
     });
@@ -497,7 +483,7 @@ test.describe("TradeBox", () => {
     test("order below min position size is rejected", async ({ mount, page }) => {
       await mount(<TradeBoxStory connected manualLeverage />);
 
-      // Margin passes the $1 min collateral, but the $0.5 order size is below minPositionSizeUsd
+      // margin passes the $1 min collateral, but the $0.5 size is below minPositionSizeUsd
       await page.locator(getDataQALocator("margin-input")).fill("5");
       await page.locator(getDataQALocator("position-size-input")).fill("0.5");
 
@@ -521,7 +507,7 @@ test.describe("TradeBox", () => {
       await expect(payInput).toBeVisible();
       await payInput.fill("1000");
 
-      // 1000 USDC -> ETH at $2000 is ~0.5 ETH minus swap fees and impact
+      // ~0.5 ETH minus swap fees and impact
       const receiveInput = page.locator(getDataQALocator("swap-receive-input"));
       await expect(receiveInput).not.toHaveValue("");
       await expectInputInRange(receiveInput, 0.45, 0.5);
@@ -542,8 +528,7 @@ test.describe("TradeBox", () => {
 
       await page.locator(getDataQALocator("swap-ball")).click();
 
-      // Directions flip and the old pay amount becomes the receive anchor:
-      // pay is recomputed through the reverse ETH -> USDC path (~0.55 ETH for 1000 USDC out)
+      // the old pay amount becomes the receive anchor, pay recomputes via the reverse path
       await expect(receiveInput).toHaveValue("1000");
       await expectInputInRange(payInput, 0.5, 0.6);
     });
@@ -617,7 +602,7 @@ test.describe("TradeBox", () => {
     test("dust amount below token precision counts as no amount", async ({ mount, page }) => {
       await mount(<TradeBoxStory connected />);
 
-      // 7 decimals is below USDC's 6-decimals precision -> parses to zero
+      // 7 decimals is below USDC's 6-decimals precision, parses to zero
       await page.locator(getDataQALocator("margin-input")).fill("0.0000001");
 
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
@@ -651,10 +636,9 @@ test.describe("TradeBox", () => {
     test("native ETH pay reserves a gas buffer on max", async ({ mount, page }) => {
       await mount(<TradeBoxStory seedPayNativeEth />);
 
-      // Balance button shows the 10 ETH wallet balance
       await page.locator(getDataQALocator("margin-max")).click();
 
-      // Max leaves a residual gas buffer: strictly below the full 10 ETH balance
+      // max leaves a residual gas buffer, strictly below the 10 ETH balance
       const marginInput = page.locator(getDataQALocator("margin-input"));
       await expectInputInRange(marginInput, 9.5, 9.9999);
     });
@@ -662,10 +646,10 @@ test.describe("TradeBox", () => {
     test("stored leverage above market cap is clamped on mount", async ({ mount, page }) => {
       await mount(<TradeBoxStory seedLeverageOption={150} />);
 
-      // validateLeverageOption clamps 150x to the market max, which is rounded down to a 5x step (95x)
+      // 150x is clamped to the market max rounded down to a 5x step
       await expect(page.locator(getDataQALocator("leverage-slider")).first()).toContainText("95x");
 
-      // The clamped value (not the stored 150x) drives the calculation: 100 USDC * 95x minus fees
+      // the clamped value drives the calculation: 100 USDC * 95x minus fees
       await page.locator(getDataQALocator("margin-input")).fill("100");
       await expectInputInRange(page.locator(getDataQALocator("position-size-input")), 9000, 9500);
     });
@@ -675,7 +659,7 @@ test.describe("TradeBox", () => {
 
       await expect(page.locator(getDataQALocator("position-size-display-mode-button"))).toContainText("ETH");
 
-      // Token semantics from the start: 1 ETH -> ~1000 USDC margin at 2x
+      // token semantics from the start: 1 ETH at 2x -> ~1000 USDC margin
       await page.locator(getDataQALocator("position-size-input")).fill("1");
       await expectInputInRange(page.locator(getDataQALocator("margin-input")), 995, 1015);
     });
@@ -683,7 +667,6 @@ test.describe("TradeBox", () => {
     test("wrap collapses trade modes to Market and converts 1:1", async ({ mount, page }) => {
       await mount(<TradeBoxStory seedSwapWrap />);
 
-      // ETH -> WETH wrap: only Market mode is available
       const tradeModeTabs = page.locator(getDataQALocator("trade-mode"));
       await expect(tradeModeTabs.getByRole("button", { name: "Market", exact: true })).toBeVisible();
       await expect(tradeModeTabs.getByRole("button", { name: "Limit", exact: true })).not.toBeVisible();
@@ -711,7 +694,7 @@ test.describe("TradeBox", () => {
     test("capped long open interest rejects the order", async ({ mount, page }) => {
       await mount(<TradeBoxStory connected marketScenario="cappedLongOI" />);
 
-      // $2000 size exceeds the $1500 max long open interest
+      // $2000 size exceeds the $1500 OI cap from the fixture
       await page.locator(getDataQALocator("margin-input")).fill("1000");
 
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
@@ -728,7 +711,7 @@ test.describe("TradeBox", () => {
       await marginInput.fill("1000");
       await expect(page.locator(getDataQALocator("position-size-input"))).not.toHaveValue("");
 
-      // TradeBox listens for this window event (fired when the express gas token changes)
+      // fired in prod when the express gas token changes
       await page.evaluate(() => window.dispatchEvent(new Event("gasPaymentTokenChanged")));
 
       await expect(marginInput).toHaveValue("");
@@ -739,8 +722,7 @@ test.describe("TradeBox", () => {
     test("seeded Trigger mode falls back to Market (close flow lives outside TradeBox)", async ({ mount, page }) => {
       await mount(<TradeBoxStory withPosition seedTradeMode="Trigger" />);
 
-      // Trigger is not in AVAILABLE_TRADE_MODES, so updateTradeMode resets it:
-      // the increase UI renders, not the close-size input
+      // Trigger is not in AVAILABLE_TRADE_MODES, updateTradeMode resets it
       await expect(page.locator(getDataQALocator("margin-input"))).toBeVisible();
       await expect(page.locator(getDataQALocator("close-input"))).toHaveCount(0);
     });
@@ -753,15 +735,13 @@ test.describe("TradeBox", () => {
       await page.locator(getDataQALocator("margin-input")).fill("1000");
       await page.getByText("Execution details").click();
 
-      // In Market mode there is a slippage input but no acceptable price impact row
       await expect(page.getByText("Allowed slippage")).toBeVisible();
       await expect(page.getByText("Acceptable price impact")).not.toBeVisible();
 
       const slippageInput = page.locator('input:right-of(:text("Allowed slippage"))').first();
       await slippageInput.fill("5");
 
-      // Above EXCESSIVE_SLIPPAGE_AMOUNT (2%): the input flags the error with a yellow border
-      // (the "Slippage is too high" text itself lives in a hover tooltip)
+      // above EXCESSIVE_SLIPPAGE_AMOUNT: yellow border (the error text lives in a hover tooltip)
       await expect(
         page.locator('[class*="border-yellow-500"]:right-of(:text("Allowed slippage"))').first()
       ).toBeVisible();
@@ -780,7 +760,7 @@ test.describe("TradeBox", () => {
       const impactInput = page.locator('input:right-of(:text("Acceptable price impact"))').first();
       await impactInput.fill("5");
 
-      // High value flags the input with the error border (warning text is a hover tooltip)
+      // high value: yellow border (the warning text lives in a hover tooltip)
       await expect(
         page.locator('[class*="border-yellow-500"]:right-of(:text("Acceptable price impact"))').first()
       ).toBeVisible();
@@ -794,7 +774,7 @@ test.describe("TradeBox", () => {
       await page.locator(getDataQALocator("trade-direction-swap")).getByRole("button", { name: "Swap" }).click();
       await page.locator(getDataQALocator("pay-input")).fill("1000");
 
-      // Default fixture swap impact on $1000 is far above the 0.5% threshold
+      // fixture swap impact on $1000 is far above the 0.5% threshold
       await expect(page.getByText("High swap price impact")).toBeVisible();
     });
   });
@@ -808,16 +788,15 @@ test.describe("TradeBox", () => {
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       await expectInputInRange(sizeInput, 1950, 2000);
 
-      // Pool names come from token symbols: ETH-USDC (default) and ETH-ETH (WETH-WETH fixture)
+      // pool names come from token symbols: ETH-USDC and ETH-ETH (WETH-WETH fixture)
       await page.getByText("ETH-USDC", { exact: true }).click();
       await page.getByText("ETH-ETH", { exact: true }).click();
 
-      // The pool selector shows the new pool and margin survives the switch
       await expect(page.getByText("ETH-ETH", { exact: true })).toBeVisible();
       await expect(marginInput).toHaveValue("1000");
 
-      // ETH-ETH pool collateral is WETH, so the 1000 USDC margin is routed through
-      // a USDC -> WETH swap with the default pool's negative impact: size drops below 2x
+      // ETH-ETH collateral is WETH: margin is routed through a USDC -> WETH swap
+      // with the default pool's negative impact, so size drops below 2x
       await expectInputInRange(sizeInput, 1750, 1950);
     });
 
@@ -826,7 +805,7 @@ test.describe("TradeBox", () => {
 
       await page.locator(getDataQALocator("margin-input")).fill("1000");
 
-      // The ETH-ETH fixture pool has no negative price impact and a lower open fee
+      // the ETH-ETH fixture pool has no negative impact and a lower open fee
       const switchLink = page.getByText(/Switch to ETH-ETH pool/);
       await expect(switchLink).toBeVisible();
 
@@ -845,7 +824,6 @@ test.describe("TradeBox", () => {
 
       await page.getByText("Switch to ETH collateral").click();
 
-      // Collateral switched to the position's one -> warning is gone
       await expect(page.getByText(/Existing position uses ETH collateral/)).not.toBeVisible();
     });
   });

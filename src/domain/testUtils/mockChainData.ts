@@ -2,10 +2,7 @@ import type { PositionsConstants } from "domain/synthetics/positions/usePosition
 import { expandDecimals } from "lib/numbers";
 import type { GasLimitsConfig } from "sdk/utils/fees/types";
 
-/**
- * Static chain-level fixtures (values close to Arbitrum production ones)
- * so execution fee and validation selectors produce realistic results.
- */
+/** Chain-level fixtures close to Arbitrum production values. */
 
 export const MOCK_GAS_PRICE = 100000000n; // 0.1 gwei
 

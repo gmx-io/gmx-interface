@@ -39,7 +39,7 @@ function ctModuleMocks(): Plugin {
       if (source.includes("lib/rpc/_debug")) {
         return mockPath;
       }
-      // Websocket-driven events layer: replaced with a static "no events" stub
+      // websocket-driven events layer, replaced with a "no events" stub
       if (source.includes("SyntheticsEvents/SyntheticsEventsProvider")) {
         return syntheticsEventsMockPath;
       }
