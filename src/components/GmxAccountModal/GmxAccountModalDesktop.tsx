@@ -97,6 +97,8 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
         event: "OneClickPromotion",
         data: { action: "UserRejected" },
       });
+      setModalState("transferHistory");
+      return;
     }
 
     setModalState("main");

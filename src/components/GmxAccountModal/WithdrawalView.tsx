@@ -294,7 +294,7 @@ function useWithdrawViewTransactions({
           callback: (txnEvent) => {
             if (txnEvent.event === TxnEventName.Sent) {
               helperToast.success("Withdrawal sent", { toastId: "same-chain-gmx-account-withdrawal" });
-              setIsVisibleOrView("main");
+              setIsVisibleOrView("transferHistory");
               setIsSubmitting(false);
 
               if (txnEvent.data.type === "wallet") {
@@ -445,7 +445,7 @@ function useWithdrawViewTransactions({
 
         sendOrderTxnSubmittedMetric(metricData.metricId);
 
-        setIsVisibleOrView("main");
+        setIsVisibleOrView("transferHistory");
 
         const txResult = await receipt.wait();
 

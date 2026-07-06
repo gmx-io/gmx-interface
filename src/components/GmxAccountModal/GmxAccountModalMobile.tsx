@@ -104,7 +104,7 @@ export function GmxAccountModalMobile({ account }: { account: string }) {
       data: { action: "UserRejected" },
     });
 
-    setModalState("main");
+    setModalState("transferHistory");
   };
 
   return (

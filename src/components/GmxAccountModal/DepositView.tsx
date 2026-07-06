@@ -573,7 +573,7 @@ export const DepositView = () => {
 
       if (txnEvent.event === TxnEventName.Sent) {
         helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
-        setIsVisibleOrView("main");
+        setIsVisibleOrView("transferHistory");
         setIsSubmitting(false);
 
         const sizeInUsdValue = latestInputAmountUsd.current;
@@ -757,7 +757,7 @@ export const DepositView = () => {
             if (!subaccountState.subaccount && !isExpressTradingDisabled) {
               setIsVisibleOrView("depositStatus");
             } else {
-              setIsVisibleOrView("main");
+              setIsVisibleOrView("transferHistory");
             }
           }
         } else if (txnEvent.event === TxnEventName.Simulated) {
