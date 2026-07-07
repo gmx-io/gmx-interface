@@ -332,6 +332,7 @@ export function SlideModal({
   disableOverflowHandling = false,
   fitContent = false,
   hideHeaderBorder = false,
+  desktopZIndex,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -353,6 +354,7 @@ export function SlideModal({
    */
   fitContent?: boolean;
   hideHeaderBorder?: boolean;
+  desktopZIndex?: number;
 }>) {
   const { isMobile } = useBreakpoints();
 
@@ -382,6 +384,7 @@ export function SlideModal({
         qa={qa}
         setIsVisible={setIsVisible}
         isVisible={isVisible}
+        zIndex={desktopZIndex}
         label={label}
         headerContent={headerContent}
         contentPadding={contentPadding}

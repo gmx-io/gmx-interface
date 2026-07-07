@@ -13,6 +13,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 import { TransferHistoryView } from "./MainView";
 import { TransferDetailsView } from "./TransferDetailsView";
@@ -103,7 +104,10 @@ function WalletAndGmxAccountInfo() {
 
 export function MainViewTitle() {
   const { chainId, srcChainId } = useChainId();
+  const [modalState] = useGmxAccountModalOpen();
   const mode = getAccountModalMode(chainId, srcChainId);
+
+  const isMainViewActive = modalState === true || modalState === "main";
 
   const settlementChainName = getChainName(chainId);
   const sourceChainName = srcChainId !== undefined ? getChainName(srcChainId) : settlementChainName;
@@ -123,14 +127,19 @@ export function MainViewTitle() {
   }
 
   return (
-    <TooltipWithPortal
-      content={<div className="text-typography-secondary">{info}</div>}
-      variant="iconStroke"
-      iconClassName="text-typography-secondary"
-      tooltipClassName="!max-w-[320px]"
-    >
+    <div className="flex items-center gap-2">
       {title}
-    </TooltipWithPortal>
+      <TooltipWithPortal
+        content={<div className="text-typography-secondary">{info}</div>}
+        variant="none"
+        className="flex items-center"
+        tooltipClassName="!max-w-[320px]"
+        disabled={!isMainViewActive}
+        openDelay={300}
+      >
+        <InfoIconStroke className="size-16 text-typography-secondary" />
+      </TooltipWithPortal>
+    </div>
   );
 }
 

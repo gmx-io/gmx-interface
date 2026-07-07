@@ -37,6 +37,7 @@ import { Token } from "sdk/utils/tokens/types";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
+import { MODAL_ANIMATION_DURATION_MS } from "components/Modal/Modal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -355,7 +356,7 @@ function MenuList({ account }: { account: string }) {
     openNotifyModal();
     setTimeout(() => {
       setIsVisible(false);
-    }, 200);
+    }, MODAL_ANIMATION_DURATION_MS);
   };
 
   const handlePnlAnalysisClick = () => {
@@ -368,7 +369,7 @@ function MenuList({ account }: { account: string }) {
     setIsSettingsVisible(true);
     setTimeout(() => {
       setIsVisible(false);
-    }, 200);
+    }, MODAL_ANIMATION_DURATION_MS);
   };
 
   return (

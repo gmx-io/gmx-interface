@@ -26,7 +26,9 @@ const HIDDEN_STYLES: React.CSSProperties = {
   position: "fixed",
 };
 
-const TRANSITION = { duration: 0.2 };
+export const MODAL_ANIMATION_DURATION_MS = 200;
+
+const TRANSITION = { duration: MODAL_ANIMATION_DURATION_MS / 1000 };
 
 export type ModalProps = PropsWithChildren<{
   className?: string;
