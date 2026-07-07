@@ -518,6 +518,7 @@ msgid "Crypto"
 msgstr "暗号資産"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Image generation failed. Refresh and try again."
 msgstr "画像の生成に失敗しました。更新して再度お試しください。"
 
@@ -2600,6 +2601,7 @@ msgid "Protocol risk explorer and stats"
 msgstr "プロトコルリスクエクスプローラーと統計"
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "シェア可能な画像を作成中..."
 
@@ -2676,6 +2678,10 @@ msgstr "インセンティブを除く"
 msgid "Buying {symbol}..."
 msgstr "{symbol}を購入中..."
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Show PnL amounts"
+msgstr "PnLの金額を表示"
+
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
 msgstr ""
@@ -2738,6 +2744,7 @@ msgid "System"
 msgstr "システム"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "紹介コードを共有して報酬を獲得しましょう"
@@ -3353,6 +3360,7 @@ msgstr "TRANSACTION"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Copy image"
 msgstr ""
 
@@ -4597,6 +4605,10 @@ msgstr "ストップロス"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Enter receiver address"
 msgstr "受取アドレスを入力"
+
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
+msgid "Period"
+msgstr "期間"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
@@ -6157,6 +6169,10 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "<0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> から <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3> へシフト中"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Share your PnL"
+msgstr "あなたのPnLをシェア"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
@@ -6198,7 +6214,7 @@ msgstr "以下の上限までGMを{0}および{1}で売却できます。残り�
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "All time"
 msgstr "すべての時間"
 
@@ -6543,6 +6559,7 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Share"
 msgstr "シェア"
 
@@ -6571,6 +6588,7 @@ msgid "DeFi portfolio tracker"
 msgstr "DeFiポートフォリオトラッカー"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "取引"
@@ -6959,6 +6977,7 @@ msgid "Order type unavailable for creation"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win rate"
 msgstr "勝率"
@@ -7524,7 +7543,7 @@ msgid "Keep leverage at {currentLeverage}"
 msgstr "レバレッジを{currentLeverage}に維持"
 
 #: src/lib/dates.ts
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Today"
 msgstr "今日"
 
@@ -8039,7 +8058,7 @@ msgstr "取引高"
 msgid "Save settings"
 msgstr "設定を保存"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7d"
 msgstr "過去7日"
@@ -9184,6 +9203,7 @@ msgid "Perfectswap"
 msgstr "Perfectswap"
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Referral code"
 msgstr "リファラルコード"
 
@@ -9541,6 +9561,7 @@ msgid "Stake {tokenSymbol}"
 msgstr "{tokenSymbol}をステーク"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Link copied to clipboard"
 msgstr "リンクがクリップボードにコピーされました"
 
@@ -9741,6 +9762,7 @@ msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "純粋な{indexSymbol}ロング。エクスポージャーはポジションのみからです。"
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Used referral code"
 msgstr ""
 
@@ -9822,6 +9844,7 @@ msgid "Completed"
 msgstr "完了"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Skip creating a referral code?"
 msgstr "紹介コードの作成をスキップしますか？"
@@ -10232,6 +10255,7 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "No data available"
 msgstr "データなし"
 
@@ -10634,7 +10658,7 @@ msgstr ""
 msgid "Request withdraw"
 msgstr "出金リクエスト"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
@@ -10743,6 +10767,10 @@ msgstr ""
 msgid "Set short Take-Profit @ {0}"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Share PnL"
+msgstr "PnLをシェア"
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "TRANSACTION ID"
@@ -10840,7 +10868,7 @@ msgstr ""
 msgid "Transaction hash copied to clipboard"
 msgstr ""
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "今年"
 
@@ -10914,7 +10942,7 @@ msgid "Buy on other platforms"
 msgstr "他プラットフォームで購入"
 
 #: src/lib/dates.ts
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Yesterday"
 msgstr "昨日"
 
@@ -10940,6 +10968,7 @@ msgstr "受け取り可能な分配はありません"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Copy link"
 msgstr "リンクをコピー"
 
@@ -11106,6 +11135,7 @@ msgstr "注文は{priceText}で約定しない可能性があります: 許容�
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Share on"
 msgstr "シェアする"
 

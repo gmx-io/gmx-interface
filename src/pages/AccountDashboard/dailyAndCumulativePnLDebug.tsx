@@ -8,7 +8,7 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-import type { AccountPnlHistoryPoint } from "./DailyAndCumulativePnL";
+import type { AccountPnlHistoryPoint } from "./usePnlHistoricalData";
 
 export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
   const showDebugValues = useShowDebugValues();

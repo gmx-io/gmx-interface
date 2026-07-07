@@ -518,6 +518,7 @@ msgid "Crypto"
 msgstr "加密"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Image generation failed. Refresh and try again."
 msgstr "圖片生成失敗。請重新整理後再試一次。"
 
@@ -2600,6 +2601,7 @@ msgid "Protocol risk explorer and stats"
 msgstr "協議風險瀏覽器與統計數據"
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "正在產生分享圖片..."
 
@@ -2676,6 +2678,10 @@ msgstr "不含激勵獎勵"
 msgid "Buying {symbol}..."
 msgstr "正在買入 {symbol}..."
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Show PnL amounts"
+msgstr "顯示 PnL 金額"
+
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
 msgstr ""
@@ -2738,6 +2744,7 @@ msgid "System"
 msgstr "系統"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "分享您的推薦碼即可賺取獎勵"
@@ -3353,6 +3360,7 @@ msgstr "交易紀錄"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Copy image"
 msgstr ""
 
@@ -4597,6 +4605,10 @@ msgstr "止損"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Enter receiver address"
 msgstr "請輸入接收地址"
+
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
+msgid "Period"
+msgstr "期間"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
@@ -6157,6 +6169,10 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "從 <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> 轉移至 <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Share your PnL"
+msgstr "分享您的 PnL"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
@@ -6198,7 +6214,7 @@ msgstr "賣出 GM 換取 {0} 和 {1}，上限如下。剩餘代幣保留給未�
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "All time"
 msgstr "所有時間"
 
@@ -6543,6 +6559,7 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Share"
 msgstr "分享"
 
@@ -6571,6 +6588,7 @@ msgid "DeFi portfolio tracker"
 msgstr "DeFi 投資組合追蹤器"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "交易"
@@ -6959,6 +6977,7 @@ msgid "Order type unavailable for creation"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win rate"
 msgstr "勝率"
@@ -7524,7 +7543,7 @@ msgid "Keep leverage at {currentLeverage}"
 msgstr "維持槓桿於 {currentLeverage}"
 
 #: src/lib/dates.ts
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Today"
 msgstr "今天"
 
@@ -8039,7 +8058,7 @@ msgstr "交易量"
 msgid "Save settings"
 msgstr "儲存設定"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7d"
 msgstr "近 7 天"
@@ -9184,6 +9203,7 @@ msgid "Perfectswap"
 msgstr "Perfectswap"
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Referral code"
 msgstr "推薦碼"
 
@@ -9541,6 +9561,7 @@ msgid "Stake {tokenSymbol}"
 msgstr "質押 {tokenSymbol}"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Link copied to clipboard"
 msgstr "連結已複製到剪貼簿"
 
@@ -9741,6 +9762,7 @@ msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "純粹 {indexSymbol} 做多。風險敞口僅來自該倉位。"
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Used referral code"
 msgstr ""
 
@@ -9822,6 +9844,7 @@ msgid "Completed"
 msgstr "已完成"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Skip creating a referral code?"
 msgstr "跳過建立推薦碼？"
@@ -10232,6 +10255,7 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "No data available"
 msgstr "無可用資料"
 
@@ -10634,7 +10658,7 @@ msgstr ""
 msgid "Request withdraw"
 msgstr "申請提取"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
@@ -10743,6 +10767,10 @@ msgstr ""
 msgid "Set short Take-Profit @ {0}"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Share PnL"
+msgstr "分享 PnL"
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "TRANSACTION ID"
@@ -10840,7 +10868,7 @@ msgstr ""
 msgid "Transaction hash copied to clipboard"
 msgstr ""
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "今年"
 
@@ -10914,7 +10942,7 @@ msgid "Buy on other platforms"
 msgstr "在其他平台購買"
 
 #: src/lib/dates.ts
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Yesterday"
 msgstr "昨天"
 
@@ -10940,6 +10968,7 @@ msgstr "無可領取的分配"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Copy link"
 msgstr "複製連結"
 
@@ -11106,6 +11135,7 @@ msgstr "訂單可能無法以{priceText}成交：可接受的價格影響（{for
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Share on"
 msgstr "分享至"
 

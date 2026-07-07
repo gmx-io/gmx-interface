@@ -1,6 +1,4 @@
-import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
-import { lightFormat } from "date-fns";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Area,
@@ -16,15 +14,11 @@ import {
 } from "recharts";
 import type { Address } from "viem";
 
-import { USD_DECIMALS } from "config/factors";
-import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import type { FromOldToNewArray } from "domain/tradingview/types";
-import { SECONDS_IN_DAY, formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
+import type { ContractsChainId } from "config/chains";
+import { toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
-import { getSubsquidGraphClient } from "lib/indexers";
-import { bigintToNumber, formatUsd } from "lib/numbers";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
@@ -34,15 +28,11 @@ import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import DownloadIcon from "img/ic_download2.svg?react";
+import ShareArrowFilledIcon from "img/ic_share_arrow_filled.svg?react";
 
-import {
-  DEBUG_FIELDS,
-  DEV_QUERY,
-  DebugLegend,
-  DebugLines,
-  DebugTooltip,
-  type AccountPnlHistoryPointDebugFields,
-} from "./dailyAndCumulativePnLDebug";
+import { DebugLegend, DebugLines, DebugTooltip } from "./dailyAndCumulativePnLDebug";
+import { PerformanceShare } from "./PerformanceShare";
+import { usePnlHistoricalData, type AccountPnlHistoryPoint, type PnlHistoricalData } from "./usePnlHistoricalData";
 
 import "./DailyAndCumulativePnL.css";
 
@@ -76,13 +66,15 @@ const ACTIVE_DOT_PROPS = {
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
 
-export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; account: Address }) {
+export function DailyAndCumulativePnL({ chainId, account }: { chainId: ContractsChainId; account: Address }) {
   const [fromDate, setFromDate] = useState<Date | undefined>(getInitialDate);
   const fromTimestamp = useMemo(() => fromDate && toUtcDayStart(fromDate), [fromDate]);
 
   const { data: clusteredPnlData, error, loading } = usePnlHistoricalData(chainId, account, fromTimestamp);
 
   const { cardRef, handleImageDownload } = useImageDownload();
+
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const { isMobile } = useBreakpoints();
 
@@ -94,6 +86,11 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
         </div>
 
         <Trans>PNG</Trans>
+      </Button>
+      <Button variant="ghost" className="gap-4" data-exclude onClick={() => setIsShareModalOpen(true)}>
+        <ShareArrowFilledIcon className="size-16" />
+
+        <Trans>Share PnL</Trans>
       </Button>
       <DateSelect date={fromDate} onChange={setFromDate} buttonTextPrefix={t`From`} />
     </>
@@ -211,6 +208,14 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
       </div>
 
       {isMobile && <div className="flex justify-around border-t-1/2 border-slate-600 px-16 py-12">{buttons}</div>}
+
+      <PerformanceShare
+        chainId={chainId}
+        account={account}
+        fromDate={fromDate}
+        isOpen={isShareModalOpen}
+        setIsOpen={setIsShareModalOpen}
+      />
     </div>
   );
 }
@@ -261,108 +266,6 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
       <DebugTooltip stats={stats} />
     </div>
   );
-}
-
-export type AccountPnlHistoryPoint = {
-  date: string;
-  dateCompact: string;
-  pnlFloat: number;
-  pnl: bigint;
-  cumulativePnlFloat: number;
-  cumulativePnl: bigint;
-} & AccountPnlHistoryPointDebugFields;
-
-type PnlHistoricalData = FromOldToNewArray<AccountPnlHistoryPoint>;
-
-const PROD_QUERY = gql`
-  query AccountHistoricalPnlResolver($account: String!, $from: Int) {
-    accountPnlHistoryStats(account: $account, from: $from) {
-      cumulativePnl
-      pnl
-      timestamp
-    }
-  }
-`;
-
-const MINIMUM_DATA_POINTS = 7;
-
-function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: number | undefined) {
-  const showDebugValues = useShowDebugValues();
-  const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
-    client: getSubsquidGraphClient(chainId)!,
-    variables: { account: account, from: fromTimestamp },
-  });
-
-  const transformedData: PnlHistoricalData = useMemo(() => {
-    let dataPoints =
-      res.data?.accountPnlHistoryStats?.map((row: any) => {
-        const parsedDebugFields = showDebugValues
-          ? DEBUG_FIELDS.reduce(
-              (acc, key) => {
-                const raw = row[key];
-
-                const bn = raw ? BigInt(raw) : 0n;
-                acc[key] = bn;
-                acc[`${key}Float`] = bigintToNumber(bn, USD_DECIMALS);
-                return acc;
-              },
-              {} as Record<string, bigint | number>
-            )
-          : EMPTY_OBJECT;
-
-        return {
-          date: showDebugValues
-            ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + SECONDS_IN_DAY) + " local"
-            : formatDate(row.timestamp),
-          dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
-          timestamp: row.timestamp,
-          pnl: BigInt(row.pnl),
-          pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
-          cumulativePnl: BigInt(row.cumulativePnl),
-          cumulativePnlFloat: bigintToNumber(BigInt(row.cumulativePnl), USD_DECIMALS),
-          ...parsedDebugFields,
-        };
-      }) || EMPTY_ARRAY;
-
-    if (dataPoints.length === 0) {
-      return EMPTY_ARRAY;
-    }
-
-    if (dataPoints.length < MINIMUM_DATA_POINTS) {
-      const lastTimestamp = dataPoints.length > 0 ? dataPoints[0].timestamp : Math.floor(Date.now() / 1000);
-
-      const pointsLength = dataPoints.length;
-      for (let i = pointsLength; i < MINIMUM_DATA_POINTS; i++) {
-        const newTimestamp = lastTimestamp - SECONDS_IN_DAY * (i - pointsLength + 1);
-        const emptyPoint = {
-          date: showDebugValues
-            ? formatDateTime(newTimestamp) + " - " + formatDateTime(newTimestamp + SECONDS_IN_DAY) + " local"
-            : formatDate(newTimestamp),
-          dateCompact: lightFormat(newTimestamp * 1000, "dd/MM"),
-          pnl: undefined,
-          pnlFloat: undefined,
-          cumulativePnl: undefined,
-          cumulativePnlFloat: undefined,
-          ...(showDebugValues
-            ? DEBUG_FIELDS.reduce(
-                (acc, key) => {
-                  acc[key] = 0n;
-                  acc[`${key}Float`] = 0;
-                  return acc;
-                },
-                {} as Record<string, bigint | number>
-              )
-            : EMPTY_OBJECT),
-        };
-
-        dataPoints = [emptyPoint].concat(dataPoints);
-      }
-    }
-
-    return dataPoints;
-  }, [res.data?.accountPnlHistoryStats, showDebugValues]);
-
-  return { data: transformedData, error: res.error, loading: res.loading };
 }
 
 function useImageDownload() {

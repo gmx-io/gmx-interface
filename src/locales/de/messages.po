@@ -518,6 +518,7 @@ msgid "Crypto"
 msgstr "Krypto"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Image generation failed. Refresh and try again."
 msgstr "Bilderzeugung fehlgeschlagen. Aktualisieren Sie die Seite und versuchen Sie es erneut."
 
@@ -2600,6 +2601,7 @@ msgid "Protocol risk explorer and stats"
 msgstr "Protokoll-Risiko-Explorer und Statistiken"
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "Generierung von teilbaren Bildern..."
 
@@ -2676,6 +2678,10 @@ msgstr "Ohne Anreize"
 msgid "Buying {symbol}..."
 msgstr "Kaufe {symbol}..."
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Show PnL amounts"
+msgstr "PnL-Beträge anzeigen"
+
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
 msgstr ""
@@ -2738,6 +2744,7 @@ msgid "System"
 msgstr "System"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "Verdienen Sie Belohnungen, indem Sie Ihren Empfehlungscode teilen"
@@ -3353,6 +3360,7 @@ msgstr "TRANSAKTION"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Copy image"
 msgstr ""
 
@@ -4597,6 +4605,10 @@ msgstr "Stop-Loss"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Enter receiver address"
 msgstr "Empfängeradresse eingeben"
+
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
+msgid "Period"
+msgstr "Zeitraum"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
@@ -6157,6 +6169,10 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "Verschiebe von <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> zu <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Share your PnL"
+msgstr "Teilen Sie Ihren PnL"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
@@ -6198,7 +6214,7 @@ msgstr "Verkaufen Sie GM für {0} und {1} bis zu den unten angegebenen Obergrenz
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "All time"
 msgstr "Gesamtzeit"
 
@@ -6543,6 +6559,7 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Share"
 msgstr "Teilen"
 
@@ -6571,6 +6588,7 @@ msgid "DeFi portfolio tracker"
 msgstr "DeFi Portfoliotracker"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Trades"
@@ -6959,6 +6977,7 @@ msgid "Order type unavailable for creation"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win rate"
 msgstr "Gewinnrate"
@@ -7524,7 +7543,7 @@ msgid "Keep leverage at {currentLeverage}"
 msgstr "Hebel bei {currentLeverage} beibehalten"
 
 #: src/lib/dates.ts
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Today"
 msgstr "Heute"
 
@@ -8039,7 +8058,7 @@ msgstr "Handelsvolumen"
 msgid "Save settings"
 msgstr "Einstellungen speichern"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7d"
 msgstr "Letzte 7T"
@@ -9184,6 +9203,7 @@ msgid "Perfectswap"
 msgstr "Perfectswap"
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Referral code"
 msgstr "Empfehlungscode"
 
@@ -9541,6 +9561,7 @@ msgid "Stake {tokenSymbol}"
 msgstr "{tokenSymbol} staken"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Link copied to clipboard"
 msgstr "Link in die Zwischenablage kopiert"
 
@@ -9741,6 +9762,7 @@ msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "Reiner {indexSymbol} Long. Das Exposure stammt ausschließlich aus der Position."
 
 #: src/components/PositionShare/PositionShareCard.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Used referral code"
 msgstr ""
 
@@ -9822,6 +9844,7 @@ msgid "Completed"
 msgstr "Abgeschlossen"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Skip creating a referral code?"
 msgstr "Erstellung eines Empfehlungscodes überspringen?"
@@ -10232,6 +10255,7 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "No data available"
 msgstr "Keine Daten verfügbar"
 
@@ -10634,7 +10658,7 @@ msgstr ""
 msgid "Request withdraw"
 msgstr "Abhebung anfordern"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
@@ -10743,6 +10767,10 @@ msgstr ""
 msgid "Set short Take-Profit @ {0}"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Share PnL"
+msgstr "PnL teilen"
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "TRANSACTION ID"
@@ -10840,7 +10868,7 @@ msgstr ""
 msgid "Transaction hash copied to clipboard"
 msgstr ""
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "Dieses Jahr"
 
@@ -10914,7 +10942,7 @@ msgid "Buy on other platforms"
 msgstr "Auf anderen Plattformen kaufen"
 
 #: src/lib/dates.ts
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Yesterday"
 msgstr "Gestern"
 
@@ -10940,6 +10968,7 @@ msgstr "Keine Ausschüttungen zum Beanspruchen"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Copy link"
 msgstr "Link kopieren"
 
@@ -11106,6 +11135,7 @@ msgstr "Order wird möglicherweise nicht bei {priceText} ausgeführt: akzeptable
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "Share on"
 msgstr "Teilen auf"
 

@@ -1,5 +1,4 @@
-import type { MessageDescriptor } from "@lingui/core";
-import { Trans, msg, t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import type { Address } from "viem";
@@ -18,15 +17,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
-
-const bucketLabelMap: Record<string, MessageDescriptor> = {
-  today: msg`Today`,
-  yesterday: msg`Yesterday`,
-  week: msg`Last 7d`,
-  month: msg`Last 30d`,
-  year: msg`This year`,
-  all: msg`All time`,
-};
+import { PNL_SUMMARY_BUCKET_LABELS } from "./pnlSummaryBuckets";
 
 export function GeneralPerformanceDetails({ chainId, account }: { chainId: number; account: Address }) {
   const { data, error, loading } = usePnlSummaryData(chainId, account);
@@ -102,7 +93,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
 
   return (
     <TableTr key={row.bucketLabel}>
-      <TableTd>{_(bucketLabelMap[row.bucketLabel])}</TableTd>
+      <TableTd>{_(PNL_SUMMARY_BUCKET_LABELS[row.bucketLabel])}</TableTd>
       <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
       <TableTd>
         <TooltipWithPortal
