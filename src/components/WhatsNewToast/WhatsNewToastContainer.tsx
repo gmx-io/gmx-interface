@@ -61,6 +61,7 @@ export function WhatsNewToastContainer() {
       data-qa="whats-new-toast-container"
     >
       <div className="flex w-[400px] max-w-[calc(100vw-46px)] flex-col">
+        <div id="delisting-announcements-slot" className="empty:hidden" />
         <AnimatePresence initial={false}>
           {activeUiFlagEvents.map((event) => (
             <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>

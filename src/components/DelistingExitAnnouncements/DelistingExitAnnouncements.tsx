@@ -1,4 +1,5 @@
-import { useCallback, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 
 import {
@@ -14,6 +15,8 @@ import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBa
 
 import { DelistingToast, getDelistingAnnouncementActions, writeDismissal } from "./delistingExitAnnouncementsLogic";
 
+const SLOT_ID = "delisting-announcements-slot";
+
 export function DelistingExitAnnouncements() {
   const chainId = useSelector(selectChainId);
   const positionsInfoData = useSelector(selectPositionsInfoData);
@@ -21,6 +24,11 @@ export function DelistingExitAnnouncements() {
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const pageType = useSelector(selectPageType);
   const [, forceRerender] = useReducer((count: number) => count + 1, 0);
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setSlot(document.getElementById(SLOT_ID));
+  }, []);
 
   const handleDismiss = useCallback((item: DelistingToast) => {
     writeDismissal(item.id, item.markets, Date.now());
@@ -36,18 +44,18 @@ export function DelistingExitAnnouncements() {
   });
 
   // The account page loads positions/balances for the viewed address, not the connected wallet.
-  if (pageType === "accounts" || toShow.length === 0) {
+  if (pageType === "accounts" || toShow.length === 0 || !slot) {
     return null;
   }
 
-  return (
-    <div className="pointer-events-none fixed right-[23px] top-[56px] z-[801]" data-qa="delisting-announcements">
-      <div className="flex w-[400px] max-w-[calc(100vw-46px)] flex-col gap-12">
-        {toShow.map((item) => (
-          <DelistingBanner key={item.id} item={item} onDismiss={handleDismiss} />
-        ))}
+  // Render inside the shared announcement stack so it doesn't overlap the app-event toasts.
+  return createPortal(
+    toShow.map((item) => (
+      <div key={item.id} className="pb-12">
+        <DelistingBanner item={item} onDismiss={handleDismiss} />
       </div>
-    </div>
+    )),
+    slot
   );
 }
 
