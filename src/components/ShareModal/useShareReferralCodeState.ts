@@ -5,6 +5,7 @@ import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
+import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 type Params = {
@@ -12,12 +13,16 @@ type Params = {
   account: string | undefined;
   isOpen: boolean;
   source: SharePositionActionSource;
-  canCreateReferralCode?: boolean;
 };
 
-export function useShareReferralCodeState({ chainId, account, isOpen, source, canCreateReferralCode = true }: Params) {
+export function useShareReferralCodeState({ chainId, account, isOpen, source }: Params) {
+  const { account: connectedAccount } = useWallet();
+  // the account may be someone else's (e.g. any address opened on the account dashboard):
+  // only offer code creation and the browser-local pending code for the user's own account
+  const isOwnAccount = Boolean(connectedAccount) && connectedAccount === account;
+
   const userAffiliateCode = useAffiliateCodes(chainId, account);
-  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account);
+  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account, !isOwnAccount);
   const [createdReferralCode, setCreatedReferralCode] = useState<string | null>(null);
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
   const [isCreateReferralCodeInfoMessageClosed, setIsCreateReferralCodeInfoMessageClosed] = useLocalStorageSerializeKey(
@@ -43,6 +48,10 @@ export function useShareReferralCodeState({ chainId, account, isOpen, source, ca
     }
     return { referralCodeOwnerKind: undefined, code: undefined };
   }, [hasReferralCode, shareAffiliateCode?.code, usedReferralCode]);
+
+  useEffect(() => {
+    setCreatedReferralCode(null);
+  }, [account, chainId]);
 
   useEffect(() => {
     if (userAffiliateCode.code) {
@@ -82,12 +91,9 @@ export function useShareReferralCodeState({ chainId, account, isOpen, source, ca
   }, [setIsCreateReferralCodeInfoMessageClosed]);
 
   const shouldShowCreateReferralCard =
-    canCreateReferralCode && userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
+    isOwnAccount && userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
   const shouldPromptToCreateReferralCode =
-    canCreateReferralCode &&
-    !hasReferralCode &&
-    !promptedToCreateReferralCode &&
-    !isCreateReferralCodeInfoMessageClosed;
+    isOwnAccount && !hasReferralCode && !promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
   const shouldShowSkipReferralCodeBanner = promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
 
   return {

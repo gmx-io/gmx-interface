@@ -14,7 +14,6 @@ import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAna
 type Params = {
   cardRef: React.RefObject<HTMLDivElement>;
   shareAffiliateCode: AffiliateCodesState;
-  hasReferralCode: boolean;
   source: SharePositionActionSource;
   fileName: string;
   tweetText: string;
@@ -24,12 +23,12 @@ type Params = {
 export function useShareCardActions({
   cardRef,
   shareAffiliateCode,
-  hasReferralCode,
   source,
   fileName,
   tweetText,
   onShareAction,
 }: Params) {
+  const hasReferralCode = Boolean(shareAffiliateCode.code);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [, copyToClipboard] = useCopyToClipboard();
@@ -105,6 +104,10 @@ export function useShareCardActions({
     );
 
     const url = await uploadAndGetShareUrl();
+    if (!url) {
+      return;
+    }
+
     const tweetLink = getTwitterIntentURL(tweetText, url);
     window.open(tweetLink, "_blank", "noopener,noreferrer");
   }, [hasReferralCode, onShareAction, source, tweetText, uploadAndGetShareUrl]);

@@ -6,19 +6,19 @@ import type { Address } from "viem";
 import type { ContractsChainId } from "config/chains";
 import { usePnlSummaryData } from "domain/synthetics/accountStats";
 import useLoadImage from "lib/useLoadImage";
-import useWallet from "lib/wallets/useWallet";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Loader from "components/Loader/Loader";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import CreateReferralCode from "components/ShareModal/CreateReferralCode";
 import { ShareCardActionButtons } from "components/ShareModal/ShareCardActionButtons";
+import { ShareCardFrame } from "components/ShareModal/ShareCardFrame";
 import { SkipReferralCodeBanner } from "components/ShareModal/SkipReferralCodeBanner";
 import { useShareCardActions } from "components/ShareModal/useShareCardActions";
 import { useShareReferralCodeState } from "components/ShareModal/useShareReferralCodeState";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
-import shareBgImg from "img/performance-share-bg.png";
+import shareBgImg from "img/performance-share-bg.webp";
 
 import { PerformanceShareCard } from "./PerformanceShareCard";
 import { PNL_SUMMARY_BUCKET_LABELS, getPnlSummaryBucketForFromDate } from "./pnlSummaryBuckets";
@@ -34,8 +34,6 @@ type Props = {
 
 export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen }: Props) {
   const { _ } = useLingui();
-  const { account: connectedAccount } = useWallet();
-  const isOwnAccount = connectedAccount === account;
 
   const [showPnlAmounts, setShowPnlAmounts] = useState(true);
   const sharePerformanceBgImg = useLoadImage(shareBgImg);
@@ -43,7 +41,6 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
 
   const {
     shareAffiliateCode,
-    hasReferralCode,
     referralCodeOwnerKind,
     code,
     shouldShowCreateReferralCard,
@@ -57,13 +54,11 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
     account,
     isOpen,
     source: "account-dashboard",
-    canCreateReferralCode: isOwnAccount,
   });
 
   const { isUploading, uploadError, handleCopy, handleCopyImage, handleShareTwitter } = useShareCardActions({
     cardRef,
     shareAffiliateCode,
-    hasReferralCode,
     source: "account-dashboard",
     fileName: "GMX Performance.png",
     tweetText: `Trading performance on @GMX_IO`,
@@ -72,13 +67,18 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
   const bucket = useMemo(() => getPnlSummaryBucketForFromDate(fromDate), [fromDate]);
   const periodLabel = _(PNL_SUMMARY_BUCKET_LABELS[bucket.bucketLabel]);
 
-  const { data: pnlSummaryData, loading: isSummaryLoading } = usePnlSummaryData(chainId, account);
+  const { data: pnlSummaryData, error: summaryError, loading: isSummaryLoading } = usePnlSummaryData(chainId, account);
   const summaryRow = useMemo(
     () => pnlSummaryData.find((row) => row.bucketLabel === bucket.bucketLabel),
     [pnlSummaryData, bucket.bucketLabel]
   );
-  const { data: pnlHistory, loading: isHistoryLoading } = usePnlHistoricalData(chainId, account, bucket.fromTimestamp);
+  const {
+    data: pnlHistory,
+    error: historyError,
+    loading: isHistoryLoading,
+  } = usePnlHistoricalData(chainId, account, bucket.fromTimestamp);
 
+  const error = summaryError ?? historyError;
   const isDataLoading = isSummaryLoading || isHistoryLoading;
   const hasData = pnlHistory.length > 0 && summaryRow !== undefined;
 
@@ -93,7 +93,7 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
     >
       <div className="flex flex-col gap-20 border-b-1/2 border-slate-600 p-20">
         <div className="flex justify-center">
-          {summaryRow !== undefined && pnlHistory.length > 0 ? (
+          {hasData ? (
             <PerformanceShareCard
               pnlBps={summaryRow.pnlBps}
               pnlUsd={summaryRow.pnlUsd}
@@ -109,9 +109,21 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
               showPnlAmounts={showPnlAmounts}
             />
           ) : (
-            <div className="flex aspect-[460/240] w-full max-w-[460px] items-center justify-center rounded-9 bg-slate-800 text-typography-secondary md:min-w-[460px]">
-              {isDataLoading ? <Loader /> : <Trans>No data available</Trans>}
-            </div>
+            <ShareCardFrame
+              bgImgUrl={null}
+              loading={false}
+              cardClassName="flex items-center justify-center bg-slate-800 text-typography-secondary"
+            >
+              {isDataLoading ? (
+                <Loader />
+              ) : error ? (
+                <div className="max-h-full overflow-auto whitespace-pre-wrap font-mono text-12 text-red-500">
+                  {JSON.stringify(error, null, 2)}
+                </div>
+              ) : (
+                <Trans>No data available</Trans>
+              )}
+            </ShareCardFrame>
           )}
         </div>
         {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}

@@ -1,11 +1,11 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
-import { forwardRef } from "react";
+import { forwardRef, useMemo } from "react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
-import { formatPercentage, formatUsd } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 
 import { ShareCardFrame } from "components/ShareModal/ShareCardFrame";
+import { ShareCardPnlValue } from "components/ShareModal/ShareCardPnlValue";
 import { ShareCardQRCode } from "components/ShareModal/ShareCardQRCode";
 import { ShareCardReferralCodeStat } from "components/ShareModal/ShareCardReferralCodeStat";
 import { ShareCardStat } from "components/ShareModal/ShareCardStat";
@@ -45,11 +45,12 @@ export const PerformanceShareCard = forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
-    const pnlClassName = cx({
-      "text-[#0FDE8D]": pnlBps > 0n,
-      "text-[#FF506A]": pnlBps < 0n,
-      "text-white": pnlBps === 0n,
-    });
+    // the sub-7-point padding of usePnlHistoricalData has no values and would
+    // prevent recharts from rendering a lone real data point
+    const chartPoints = useMemo(
+      () => pnlHistory.filter((point) => point.cumulativePnlFloat !== undefined),
+      [pnlHistory]
+    );
 
     return (
       <ShareCardFrame ref={ref} bgImgUrl={sharePerformanceBgImg} loading={loading} cardClassName="flex flex-col">
@@ -57,7 +58,7 @@ export const PerformanceShareCard = forwardRef<HTMLDivElement, Props>(
           <div className="relative -ml-20 grow max-md:-ml-16">
             <div className="absolute inset-x-0 bottom-0 top-[25%]">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={pnlHistory} margin={CHART_MARGIN}>
+                <AreaChart data={chartPoints} margin={CHART_MARGIN}>
                   <defs>
                     <linearGradient id="performance-share-pnl-gradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="-45%" stopColor="#A4C3F9" stopOpacity={0.5} />
@@ -70,7 +71,7 @@ export const PerformanceShareCard = forwardRef<HTMLDivElement, Props>(
                     stroke="#A4C3F9"
                     fill="url(#performance-share-pnl-gradient)"
                     strokeWidth={2}
-                    dot={false}
+                    dot={chartPoints.length === 1}
                     baseValue="dataMin"
                     isAnimationActive={false}
                   />
@@ -82,14 +83,12 @@ export const PerformanceShareCard = forwardRef<HTMLDivElement, Props>(
         </div>
 
         <div className="flex flex-col gap-12 max-md:gap-4 max-smallMobile:gap-0">
-          <div className="flex items-end gap-6">
-            <h3 className={cx("text-[40px] font-medium max-md:text-[32px]", pnlClassName)}>
-              {formatPercentage(pnlBps, { signed: true })}
-            </h3>
-            {showPnlAmounts && (
-              <p className={cx("pb-8 text-14 font-medium", pnlClassName)}>{formatUsd(pnlUsd, { displayPlus: true })}</p>
-            )}
-          </div>
+          <ShareCardPnlValue
+            pnlPercentage={pnlBps}
+            pnlUsd={pnlUsd}
+            showPnlAmounts={showPnlAmounts}
+            zeroClassName="text-white"
+          />
           <div className="flex gap-20 max-md:gap-10">
             <ShareCardStat label={<Trans>Period</Trans>}>{periodLabel}</ShareCardStat>
             <ShareCardStat label={<Trans>Win rate</Trans>}>{formatPercentage(winsLossesRatioBps ?? 0n)}</ShareCardStat>

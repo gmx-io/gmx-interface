@@ -1,4 +1,4 @@
-import { startOfYear, subDays } from "date-fns";
+import { subDays } from "date-fns";
 import { describe, expect, it } from "vitest";
 
 import { toUtcDayStart } from "lib/dates";
@@ -6,14 +6,14 @@ import { toUtcDayStart } from "lib/dates";
 import { getPnlSummaryBucketForFromDate } from "./pnlSummaryBuckets";
 
 describe("getPnlSummaryBucketForFromDate", () => {
-  const now = new Date(2026, 6, 6, 15, 30);
+  const now = new Date(Date.UTC(2026, 6, 6, 15, 30));
 
   it("returns the all bucket when no date is selected", () => {
     expect(getPnlSummaryBucketForFromDate(undefined, now)).toEqual({ bucketLabel: "all", fromTimestamp: undefined });
   });
 
-  it("maps today to the today bucket", () => {
-    const fromDate = new Date(2026, 6, 6, 0, 0);
+  it("maps a date within the current UTC day to the today bucket", () => {
+    const fromDate = new Date(Date.UTC(2026, 6, 6, 3, 0));
     expect(getPnlSummaryBucketForFromDate(fromDate, now)).toEqual({
       bucketLabel: "today",
       fromTimestamp: toUtcDayStart(fromDate),
@@ -36,8 +36,8 @@ describe("getPnlSummaryBucketForFromDate", () => {
     });
   });
 
-  it("maps the start of the current year to the year bucket", () => {
-    const fromDate = startOfYear(now);
+  it("maps the UTC start of the current year to the year bucket", () => {
+    const fromDate = new Date(Date.UTC(2026, 0, 1, 8, 0));
     expect(getPnlSummaryBucketForFromDate(fromDate, now)).toEqual({
       bucketLabel: "year",
       fromTimestamp: toUtcDayStart(fromDate),
@@ -53,7 +53,16 @@ describe("getPnlSummaryBucketForFromDate", () => {
       bucketLabel: "all",
       fromTimestamp: undefined,
     });
-    expect(getPnlSummaryBucketForFromDate(new Date(2026, 2, 15), now)).toEqual({
+    expect(getPnlSummaryBucketForFromDate(new Date(Date.UTC(2026, 2, 15)), now)).toEqual({
+      bucketLabel: "all",
+      fromTimestamp: undefined,
+    });
+  });
+
+  it("falls back to the all bucket when the picked local day starts in the previous UTC day", () => {
+    // local midnight east of UTC lands on the previous UTC day and must not be labeled today
+    const fromDate = new Date(Date.UTC(2026, 6, 5, 21, 0));
+    expect(getPnlSummaryBucketForFromDate(fromDate, now)).toEqual({
       bucketLabel: "all",
       fromTimestamp: undefined,
     });

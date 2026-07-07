@@ -87,7 +87,6 @@ function PositionShare({
   const { isUploading, uploadError, handleCopy, handleCopyImage, handleShareTwitter } = useShareCardActions({
     cardRef,
     shareAffiliateCode,
-    hasReferralCode,
     source: shareSource,
     fileName: "GMX Position.png",
     tweetText: `Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`,

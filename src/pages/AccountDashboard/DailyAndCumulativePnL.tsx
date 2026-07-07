@@ -20,6 +20,8 @@ import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { userAnalytics } from "lib/userAnalytics";
+import { SharePositionClickEvent } from "lib/userAnalytics/types";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
@@ -28,7 +30,7 @@ import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import DownloadIcon from "img/ic_download2.svg?react";
-import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg";
+import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg?react";
 
 import { DebugLegend, DebugLines, DebugTooltip } from "./dailyAndCumulativePnLDebug";
 import { PerformanceShare } from "./PerformanceShare";
@@ -75,6 +77,20 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
   const { cardRef, handleImageDownload } = useImageDownload();
 
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  // mounted lazily on the first open to not run the share modal data hooks on every page view
+  const [isShareModalMounted, setIsShareModalMounted] = useState(false);
+
+  const handleShareClick = useCallback(() => {
+    userAnalytics.pushEvent<SharePositionClickEvent>({
+      event: "SharePositionAction",
+      data: {
+        action: "SharePositionClick",
+      },
+    });
+
+    setIsShareModalMounted(true);
+    setIsShareModalOpen(true);
+  }, []);
 
   const { isMobile } = useBreakpoints();
 
@@ -85,7 +101,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
 
         <Trans>PNG</Trans>
       </Button>
-      <Button variant="ghost" className="gap-4" data-exclude onClick={() => setIsShareModalOpen(true)}>
+      <Button variant="ghost" className="gap-4" data-exclude onClick={handleShareClick}>
         <ShareArrowOutlineIcon className="size-16" />
 
         <Trans>Share PnL</Trans>
@@ -207,13 +223,15 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
 
       {isMobile && <div className="flex justify-around border-t-1/2 border-slate-600 px-16 py-12">{buttons}</div>}
 
-      <PerformanceShare
-        chainId={chainId}
-        account={account}
-        fromDate={fromDate}
-        isOpen={isShareModalOpen}
-        setIsOpen={setIsShareModalOpen}
-      />
+      {isShareModalMounted && (
+        <PerformanceShare
+          chainId={chainId}
+          account={account}
+          fromDate={fromDate}
+          isOpen={isShareModalOpen}
+          setIsOpen={setIsShareModalOpen}
+        />
+      )}
     </div>
   );
 }

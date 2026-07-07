@@ -4,10 +4,11 @@ import { forwardRef } from "react";
 
 import { Token } from "domain/tokens";
 import { calculateDisplayDecimals } from "lib/numbers";
-import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { ShareCardFrame } from "components/ShareModal/ShareCardFrame";
+import { ShareCardPnlValue } from "components/ShareModal/ShareCardPnlValue";
 import { ShareCardQRCode } from "components/ShareModal/ShareCardQRCode";
 import { ShareCardReferralCodeStat } from "components/ShareModal/ShareCardReferralCodeStat";
 import { ShareCardStat } from "components/ShareModal/ShareCardStat";
@@ -77,26 +78,11 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 </span>
               </div>
             </div>
-            <div className="flex items-end gap-6">
-              <h3
-                className={cx(
-                  "text-[40px] font-medium max-md:text-[32px]",
-                  pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
-                )}
-              >
-                {formatPercentage(pnlAfterFeesPercentage, { signed: true })}
-              </h3>
-              {showPnlAmounts && (
-                <p
-                  className={cx(
-                    "pb-8 text-14 font-medium",
-                    pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
-                  )}
-                >
-                  {formatUsd(pnlAfterFeesUsd, { displayPlus: true })}
-                </p>
-              )}
-            </div>
+            <ShareCardPnlValue
+              pnlPercentage={pnlAfterFeesPercentage}
+              pnlUsd={pnlAfterFeesUsd}
+              showPnlAmounts={showPnlAmounts}
+            />
           </div>
           <div className="flex gap-20 max-md:gap-10">
             <ShareCardStat label={<Trans>Entry price</Trans>}>

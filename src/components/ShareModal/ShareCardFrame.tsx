@@ -13,7 +13,7 @@ type Props = {
 
 export const ShareCardFrame = forwardRef<HTMLDivElement, Props>(
   ({ bgImgUrl, loading, cardClassName, children }, ref) => {
-    const style = useMemo(() => ({ backgroundImage: `url(${bgImgUrl})` }), [bgImgUrl]);
+    const style = useMemo(() => (bgImgUrl ? { backgroundImage: `url(${bgImgUrl})` } : undefined), [bgImgUrl]);
 
     return (
       <div className="relative max-w-[460px] grow overflow-hidden rounded-9 md:min-w-[460px]">

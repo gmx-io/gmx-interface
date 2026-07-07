@@ -79,7 +79,7 @@ export function usePnlHistoricalData(chainId: number, account: Address, fromTime
     }
 
     if (dataPoints.length < MINIMUM_DATA_POINTS) {
-      const lastTimestamp = dataPoints.length > 0 ? dataPoints[0].timestamp : Math.floor(Date.now() / 1000);
+      const lastTimestamp = dataPoints[0].timestamp;
 
       const pointsLength = dataPoints.length;
       for (let i = pointsLength; i < MINIMUM_DATA_POINTS; i++) {

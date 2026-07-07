@@ -1,8 +1,7 @@
 import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
-import { differenceInCalendarDays, isSameDay, startOfYear } from "date-fns";
 
-import { toUtcDayStart } from "lib/dates";
+import { SECONDS_IN_DAY, toUtcDayStart } from "lib/dates";
 
 export const PNL_SUMMARY_BUCKET_LABELS: Record<string, MessageDescriptor> = {
   today: msg`Today`,
@@ -18,14 +17,17 @@ export type PnlSummaryBucket = {
   fromTimestamp: number | undefined;
 };
 
-// accountPnlSummaryStats is only available for fixed buckets, so chart periods
-// without a matching bucket are shared as all time to keep stats and chart consistent.
+// accountPnlSummaryStats is only available for fixed UTC-based buckets, so buckets are
+// matched by UTC day boundaries and chart periods without a matching bucket are shared
+// as all time to keep stats and chart consistent.
 export function getPnlSummaryBucketForFromDate(fromDate: Date | undefined, now = new Date()): PnlSummaryBucket {
   if (!fromDate) {
     return { bucketLabel: "all", fromTimestamp: undefined };
   }
 
-  const daysDiff = differenceInCalendarDays(now, fromDate);
+  const fromTimestamp = toUtcDayStart(fromDate);
+  const daysDiff = (toUtcDayStart(now) - fromTimestamp) / SECONDS_IN_DAY;
+  const utcYearStartTimestamp = Date.UTC(now.getUTCFullYear(), 0, 1) / 1000;
 
   let bucketLabel: string | undefined;
   if (daysDiff === 0) {
@@ -34,7 +36,7 @@ export function getPnlSummaryBucketForFromDate(fromDate: Date | undefined, now =
     bucketLabel = "week";
   } else if (daysDiff === 30) {
     bucketLabel = "month";
-  } else if (isSameDay(fromDate, startOfYear(now))) {
+  } else if (fromTimestamp === utcYearStartTimestamp) {
     bucketLabel = "year";
   }
 
@@ -42,5 +44,5 @@ export function getPnlSummaryBucketForFromDate(fromDate: Date | undefined, now =
     return { bucketLabel: "all", fromTimestamp: undefined };
   }
 
-  return { bucketLabel, fromTimestamp: toUtcDayStart(fromDate) };
+  return { bucketLabel, fromTimestamp };
 }
