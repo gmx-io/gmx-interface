@@ -18,7 +18,7 @@ import { useShareCardActions } from "components/ShareModal/useShareCardActions";
 import { useShareReferralCodeState } from "components/ShareModal/useShareReferralCodeState";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
-import shareBgImg from "img/performance-share-bg.webp";
+import shareBgImg from "img/performance-share-bg.png";
 
 import { PerformanceShareCard } from "./PerformanceShareCard";
 import { PNL_SUMMARY_BUCKET_LABELS, getPnlSummaryBucketForFromDate } from "./pnlSummaryBuckets";
