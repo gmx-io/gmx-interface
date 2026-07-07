@@ -1,12 +1,12 @@
 import { MessageDescriptor } from "@lingui/core";
-import { msg } from "@lingui/macro";
+import { Trans, msg } from "@lingui/macro";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { isSettlementChain } from "config/multichain";
 import type { GmxAccountAvailableAssetsFilter } from "context/GmxAccountContext/GmxAccountContext";
-import { useGmxAccountAvailableAssetsFilter } from "context/GmxAccountContext/hooks";
+import { useGmxAccountAvailableAssetsFilter, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -14,6 +14,7 @@ import { formatUsd } from "lib/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { Amount } from "components/Amount/Amount";
+import Button from "components/Button/Button";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -68,6 +69,7 @@ const AssetsList = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>(initialFilter);
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const titles = useLocalizedMap(FILTER_TITLE_MAP);
 
   const tabsOptions = useMemo<TabOption<FilterType>[]>(
@@ -127,6 +129,30 @@ const AssetsList = ({
             </div>
           </div>
         ))}
+        {sortedFilteredTokens.length === 0 &&
+          (searchQuery !== "" ? (
+            <div className="flex h-full flex-col items-center justify-center p-adaptive text-typography-secondary">
+              <Trans>No assets found</Trans>
+            </div>
+          ) : !noChainFilter && activeFilter === "wallet" ? (
+            <div className="flex h-full flex-col items-center justify-center gap-12 p-adaptive">
+              <span className="text-typography-secondary">
+                <Trans>No assets in your wallet</Trans>
+              </span>
+              <Button variant="secondary" size="medium" onClick={() => setIsVisibleOrView("walletReceive")}>
+                <Trans>Receive to Wallet</Trans>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-12 p-adaptive">
+              <span className="text-typography-secondary">
+                <Trans>No assets in your GMX Account</Trans>
+              </span>
+              <Button variant="secondary" size="medium" onClick={() => setIsVisibleOrView("deposit")}>
+                <Trans>Deposit to GMX Account</Trans>
+              </Button>
+            </div>
+          ))}
       </VerticalScrollFadeContainer>
     </div>
   );

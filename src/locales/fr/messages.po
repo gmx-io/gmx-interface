@@ -1606,6 +1606,7 @@ msgstr "Copié"
 msgid "To network"
 msgstr "Réseau de destination"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -2177,10 +2178,6 @@ msgstr "Ce compte n'a pas de code de parrainage actif."
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Missing parameters. Refresh and retry"
 msgstr "Paramètres manquants. Actualisez et réessayez"
-
-#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-msgid "Available to trade assets"
-msgstr "Actifs disponibles pour le trading"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
@@ -3110,6 +3107,10 @@ msgstr "Facteur négatif"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
 msgstr "Exécution plus rapide grâce aux RPC premium GMX"
+
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "No assets in your GMX Account"
+msgstr "Aucun actif dans votre GMX Account"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
@@ -5407,6 +5408,10 @@ msgstr "Transaction invalide"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "Liquidité insuffisante dans le pool {0}. Sélectionnez un pool différent."
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "No assets in your wallet"
+msgstr "Aucun actif dans votre portefeuille"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Frozen order can only be executed by an authorized keeper"
 msgstr "Un ordre gelé ne peut être exécuté que par un keeper autorisé"
@@ -6764,6 +6769,10 @@ msgstr "Prix de déclenchement de l'ordre"
 msgid "Price"
 msgstr "Prix"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "No assets found"
+msgstr "Aucun actif trouvé"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Wallet disconnected. Reconnect and retry"
 msgstr "Portefeuille déconnecté. Reconnectez-vous et réessayez"
@@ -7449,6 +7458,10 @@ msgstr "Facteur de frais de position (PI négatif)"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
 msgstr "90j"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "Available Assets"
+msgstr "Actifs disponibles"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "({0} days ago)"
@@ -9595,6 +9608,7 @@ msgstr "Le plus rapide"
 msgid "Receive tokens separately"
 msgstr "Recevoir les jetons séparément"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx

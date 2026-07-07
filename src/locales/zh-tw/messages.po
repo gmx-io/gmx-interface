@@ -1606,6 +1606,7 @@ msgstr "已複製"
 msgid "To network"
 msgstr "目標網路"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -2177,10 +2178,6 @@ msgstr "此帳戶沒有使用中的推薦碼。"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Missing parameters. Refresh and retry"
 msgstr "缺少參數。請重新整理後再試"
-
-#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-msgid "Available to trade assets"
-msgstr "可交易資產"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
@@ -3110,6 +3107,10 @@ msgstr "負向因子"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
 msgstr "透過 GMX 高級 RPC 實現更快執行"
+
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "No assets in your GMX Account"
+msgstr "您的 GMX Account 中沒有資產"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
@@ -5407,6 +5408,10 @@ msgstr "無效交易"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 池流動性不足。請選擇其他池。"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "No assets in your wallet"
+msgstr "您的錢包中沒有資產"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Frozen order can only be executed by an authorized keeper"
 msgstr "凍結訂單只能由授權 keeper 執行"
@@ -6764,6 +6769,10 @@ msgstr "訂單的觸發價格"
 msgid "Price"
 msgstr "價格"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "No assets found"
+msgstr "未找到資產"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Wallet disconnected. Reconnect and retry"
 msgstr "錢包已斷開連接。請重新連接並重試"
@@ -7449,6 +7458,10 @@ msgstr "倉位手續費因子（負向 PI）"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
 msgstr "90天"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "Available Assets"
+msgstr "可用資產"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "({0} days ago)"
@@ -9595,6 +9608,7 @@ msgstr "最快"
 msgid "Receive tokens separately"
 msgstr "分開接收代幣"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
