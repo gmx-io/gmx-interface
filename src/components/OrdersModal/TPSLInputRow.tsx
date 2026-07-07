@@ -442,7 +442,7 @@ export function TPSLInputRow({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-8 max-[400px]:flex-col">
+      <div className="flex gap-8 max-smallMobile:flex-col">
         <TooltipWithPortal
           className="flex-1"
           handleClassName="w-full"
