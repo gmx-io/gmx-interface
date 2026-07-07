@@ -77,7 +77,6 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
   const { cardRef, handleImageDownload } = useImageDownload();
 
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  // mounted lazily on the first open to not run the share modal data hooks on every page view
   const [isShareModalMounted, setIsShareModalMounted] = useState(false);
 
   const handleShareClick = useCallback(() => {

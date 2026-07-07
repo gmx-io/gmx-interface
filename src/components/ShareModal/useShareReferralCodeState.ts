@@ -17,8 +17,7 @@ type Params = {
 
 export function useShareReferralCodeState({ chainId, account, isOpen, source }: Params) {
   const { account: connectedAccount } = useWallet();
-  // the account may be someone else's (e.g. any address opened on the account dashboard):
-  // only offer code creation and the browser-local pending code for the user's own account
+  // code creation and the browser-local pending code are only for the user's own account
   const isOwnAccount = Boolean(connectedAccount) && connectedAccount === account;
 
   const userAffiliateCode = useAffiliateCodes(chainId, account);

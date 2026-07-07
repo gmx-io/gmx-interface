@@ -45,8 +45,7 @@ export const PerformanceShareCard = forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
-    // the sub-7-point padding of usePnlHistoricalData has no values and would
-    // prevent recharts from rendering a lone real data point
+    // padding points have no values and would prevent rendering a lone data point
     const chartPoints = useMemo(
       () => pnlHistory.filter((point) => point.cumulativePnlFloat !== undefined),
       [pnlHistory]

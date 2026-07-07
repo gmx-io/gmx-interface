@@ -17,9 +17,7 @@ export type PnlSummaryBucket = {
   fromTimestamp: number | undefined;
 };
 
-// accountPnlSummaryStats is only available for fixed UTC-based buckets, so buckets are
-// matched by UTC day boundaries and chart periods without a matching bucket are shared
-// as all time to keep stats and chart consistent.
+// stats exist only for fixed UTC day buckets, so unmatched periods fall back to all time
 export function getPnlSummaryBucketForFromDate(fromDate: Date | undefined, now = new Date()): PnlSummaryBucket {
   if (!fromDate) {
     return { bucketLabel: "all", fromTimestamp: undefined };

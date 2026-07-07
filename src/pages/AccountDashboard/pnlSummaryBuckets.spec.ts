@@ -60,7 +60,6 @@ describe("getPnlSummaryBucketForFromDate", () => {
   });
 
   it("falls back to the all bucket when the picked local day starts in the previous UTC day", () => {
-    // local midnight east of UTC lands on the previous UTC day and must not be labeled today
     const fromDate = new Date(Date.UTC(2026, 6, 5, 21, 0));
     expect(getPnlSummaryBucketForFromDate(fromDate, now)).toEqual({
       bucketLabel: "all",
