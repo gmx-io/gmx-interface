@@ -5,6 +5,7 @@ import {
   selectChainId,
   selectDepositMarketTokensData,
   selectMarketsInfoData,
+  selectPageType,
   selectPositionsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -18,6 +19,7 @@ export function DelistingExitAnnouncements() {
   const positionsInfoData = useSelector(selectPositionsInfoData);
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const pageType = useSelector(selectPageType);
   const [, forceRerender] = useReducer((count: number) => count + 1, 0);
 
   const handleDismiss = useCallback((item: DelistingToast) => {
@@ -33,7 +35,8 @@ export function DelistingExitAnnouncements() {
     now: Date.now(),
   });
 
-  if (toShow.length === 0) {
+  // The account page loads positions/balances for the viewed address, not the connected wallet.
+  if (pageType === "accounts" || toShow.length === 0) {
     return null;
   }
 
