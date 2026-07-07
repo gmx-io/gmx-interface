@@ -5,7 +5,6 @@ import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 type Params = {
@@ -16,12 +15,8 @@ type Params = {
 };
 
 export function useShareReferralCodeState({ chainId, account, isOpen, source }: Params) {
-  const { account: connectedAccount } = useWallet();
-  // code creation and the browser-local pending code are only for the user's own account
-  const isOwnAccount = Boolean(connectedAccount) && connectedAccount === account;
-
   const userAffiliateCode = useAffiliateCodes(chainId, account);
-  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account, !isOwnAccount);
+  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account);
   const [createdReferralCode, setCreatedReferralCode] = useState<string | null>(null);
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
   const [isCreateReferralCodeInfoMessageClosed, setIsCreateReferralCodeInfoMessageClosed] = useLocalStorageSerializeKey(
@@ -89,10 +84,9 @@ export function useShareReferralCodeState({ chainId, account, isOpen, source }: 
     setIsCreateReferralCodeInfoMessageClosed(true);
   }, [setIsCreateReferralCodeInfoMessageClosed]);
 
-  const shouldShowCreateReferralCard =
-    isOwnAccount && userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
+  const shouldShowCreateReferralCard = userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
   const shouldPromptToCreateReferralCode =
-    isOwnAccount && !hasReferralCode && !promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
+    !hasReferralCode && !promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
   const shouldShowSkipReferralCodeBanner = promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
 
   return {

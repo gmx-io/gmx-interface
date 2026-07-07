@@ -23,6 +23,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import { DateSelect } from "components/DateRangeSelect/DateRangeSelect";
@@ -76,6 +77,9 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
 
   const { cardRef, handleImageDownload } = useImageDownload();
 
+  const { account: connectedAccount } = useWallet();
+  const isOwnAccount = connectedAccount === account;
+
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isShareModalMounted, setIsShareModalMounted] = useState(false);
 
@@ -100,11 +104,13 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
 
         <Trans>PNG</Trans>
       </Button>
-      <Button variant="ghost" className="gap-4" data-exclude onClick={handleShareClick}>
-        <ShareArrowOutlineIcon className="size-16" />
+      {isOwnAccount && (
+        <Button variant="ghost" className="gap-4" data-exclude onClick={handleShareClick}>
+          <ShareArrowOutlineIcon className="size-16" />
 
-        <Trans>Share PnL</Trans>
-      </Button>
+          <Trans>Share PnL</Trans>
+        </Button>
+      )}
       <DateSelect date={fromDate} onChange={setFromDate} buttonTextPrefix={t`From`} />
     </>
   );
@@ -222,7 +228,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
 
       {isMobile && <div className="flex justify-around border-t-1/2 border-slate-600 px-16 py-12">{buttons}</div>}
 
-      {isShareModalMounted && (
+      {isOwnAccount && isShareModalMounted && (
         <PerformanceShare
           chainId={chainId}
           account={account}
