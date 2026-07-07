@@ -28,7 +28,7 @@ import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import DownloadIcon from "img/ic_download2.svg?react";
-import ShareArrowFilledIcon from "img/ic_share_arrow_filled.svg?react";
+import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg";
 
 import { DebugLegend, DebugLines, DebugTooltip } from "./dailyAndCumulativePnLDebug";
 import { PerformanceShare } from "./PerformanceShare";
@@ -81,14 +81,12 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
   const buttons = (
     <>
       <Button variant="ghost" className="gap-4" data-exclude onClick={handleImageDownload}>
-        <div className="size-16">
-          <DownloadIcon />
-        </div>
+        <DownloadIcon className="size-16" />
 
         <Trans>PNG</Trans>
       </Button>
       <Button variant="ghost" className="gap-4" data-exclude onClick={() => setIsShareModalOpen(true)}>
-        <ShareArrowFilledIcon className="size-16" />
+        <ShareArrowOutlineIcon className="size-16" />
 
         <Trans>Share PnL</Trans>
       </Button>
