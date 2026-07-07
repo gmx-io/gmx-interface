@@ -1,34 +1,25 @@
 import { Trans, t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useCopyToClipboard, usePrevious } from "react-use";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { usePrevious } from "react-use";
 
-import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
 import { Token } from "domain/tokens";
-import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
-import { helperToast } from "lib/helperToast";
-import { getTwitterIntentURL } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { getShareURL, uploadElementAsShareImage } from "lib/shareImage";
-import { useBreakpoints } from "lib/useBreakpoints";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import CreateReferralCode from "components/ShareModal/CreateReferralCode";
+import { ShareCardActionButtons } from "components/ShareModal/ShareCardActionButtons";
+import { SkipReferralCodeBanner } from "components/ShareModal/SkipReferralCodeBanner";
+import { useShareCardActions } from "components/ShareModal/useShareCardActions";
+import { useShareReferralCodeState } from "components/ShareModal/useShareReferralCodeState";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
-import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
-import InfoIcon from "img/ic_info.svg?react";
-import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg?react";
-import TwitterIcon from "img/ic_x.svg?react";
 import shareBgImg from "img/position-share-bg.jpg";
 
-import CreateReferralCode from "./CreateReferralCode";
 import { PositionShareCard } from "./PositionShareCard";
 
 type Props = {
@@ -70,40 +61,38 @@ function PositionShare({
   shareSource,
   isRpnl = false,
 }: Props) {
-  const userAffiliateCode = useAffiliateCodes(chainId, account);
-  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
-  const [, copyToClipboard] = useCopyToClipboard();
-  const { isMobile } = useBreakpoints();
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
-  const [createdReferralCode, setCreatedReferralCode] = useState<string | null>(null);
-  const [isCreateReferralCodeInfoMessageClosed, setIsCreateReferralCodeInfoMessageClosed] = useLocalStorageSerializeKey(
-    "is-create-referral-code-info-message-closed",
-    false
-  );
-  const shareAffiliateCode = useMemo(() => {
-    if (createdReferralCode) {
-      return { code: createdReferralCode, success: true };
-    }
-    return userAffiliateCode;
-  }, [createdReferralCode, userAffiliateCode]);
-  const hasReferralCode = Boolean(shareAffiliateCode?.code);
 
-  const { referralCodeOwnerKind, code } = useMemo(() => {
-    if (hasReferralCode && shareAffiliateCode?.code) {
-      return { referralCodeOwnerKind: "created" as const, code: shareAffiliateCode.code };
-    }
-    if (usedReferralCode) {
-      return { referralCodeOwnerKind: "used" as const, code: usedReferralCode };
-    }
-    return { referralCodeOwnerKind: undefined, code: undefined };
-  }, [hasReferralCode, shareAffiliateCode?.code, usedReferralCode]);
+  const {
+    shareAffiliateCode,
+    hasReferralCode,
+    referralCodeOwnerKind,
+    code,
+    shouldShowCreateReferralCard,
+    shouldPromptToCreateReferralCode,
+    shouldShowSkipReferralCodeBanner,
+    closeCreateReferralCodeInfoMessage,
+    handleReferralCodeSuccess,
+    handlePromptToCreateReferralCode,
+  } = useShareReferralCodeState({
+    chainId,
+    account,
+    isOpen: isPositionShareModalOpen,
+    source: shareSource,
+  });
 
-  const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
+  const { isUploading, uploadError, handleCopy, handleCopyImage, handleShareTwitter } = useShareCardActions({
+    cardRef,
+    shareAffiliateCode,
+    hasReferralCode,
+    source: shareSource,
+    fileName: "GMX Position.png",
+    tweetText: `Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`,
+    onShareAction,
+  });
 
   const prevIsOpen = usePrevious(isPositionShareModalOpen);
 
@@ -159,18 +148,6 @@ function PositionShare({
   }, [hasReferralCode, isPositionShareModalOpen, prevIsOpen, shareSource]);
 
   useEffect(() => {
-    if (userAffiliateCode.code) {
-      setCreatedReferralCode(null);
-    }
-  }, [userAffiliateCode.code]);
-
-  useEffect(() => {
-    if (prevIsOpen && !isPositionShareModalOpen) {
-      setPromptedToCreateReferralCode(false);
-    }
-  }, [prevIsOpen, isPositionShareModalOpen]);
-
-  useEffect(() => {
     if (prevIsOpen && !isPositionShareModalOpen && shareSource === "auto-prompt") {
       userAnalytics.pushEvent<SharePositionActionEvent>({
         event: "SharePositionAction",
@@ -184,110 +161,12 @@ function PositionShare({
     }
   }, [prevIsOpen, isPositionShareModalOpen, hasReferralCode, shareSource, doNotShowAgain]);
 
-  const uploadAndGetShareUrl = useCallback(async (): Promise<string | undefined> => {
-    const element = cardRef.current;
-    if (!element) return undefined;
-
-    setIsUploading(true);
-    setUploadError(null);
-    element.classList.add("image-capture-in-progress");
-    try {
-      const imageInfo = await uploadElementAsShareImage(element);
-      const ref = shareAffiliateCode.success && shareAffiliateCode.code ? shareAffiliateCode.code : undefined;
-      return getShareURL(imageInfo.id, ref);
-    } catch {
-      setUploadError(t`Image generation failed. Refresh and try again.`);
-      return undefined;
-    } finally {
-      element.classList.remove("image-capture-in-progress");
-      setIsUploading(false);
-    }
-  }, [shareAffiliateCode]);
-
-  const shouldShowCreateReferralCard = userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
-  const handleReferralCodeSuccess = useCallback(
-    (code: string) => {
-      setCreatedReferralCode(code);
-
-      userAnalytics.pushEvent<SharePositionActionEvent>({
-        event: "SharePositionAction",
-        data: {
-          action: "ReferralCodeCreated",
-          source: shareSource,
-          hasReferralCode: true,
-        },
-      });
-    },
-    [shareSource]
-  );
-  async function handleCopyImage() {
-    const element = cardRef.current;
-    onShareAction?.();
-    if (!element) return;
-    userAnalytics.pushEvent<SharePositionActionEvent>({
-      event: "SharePositionAction",
-      data: {
-        action: isMobile ? "ShareImage" : "CopyImage",
-        source: shareSource,
-        hasReferralCode: hasReferralCode,
-      },
-    });
-
-    await shareOrCopyElementAsImage({ element, isMobile, fileName: "GMX Position.png" });
-  }
-
-  async function handleCopy() {
-    onShareAction?.();
-
-    userAnalytics.pushEvent<SharePositionActionEvent>({
-      event: "SharePositionAction",
-      data: {
-        action: "Copy",
-        source: shareSource,
-        hasReferralCode: hasReferralCode,
-      },
-    });
-
-    const url = await uploadAndGetShareUrl();
-    if (url) {
-      copyToClipboard(url);
-      helperToast.success(t`Link copied to clipboard`);
-    }
-  }
-
-  const handleShareTwitter = useCallback(async () => {
-    onShareAction?.();
-    userAnalytics.pushEvent<SharePositionActionEvent>(
-      {
-        event: "SharePositionAction",
-        data: {
-          action: "ShareTwitter",
-          source: shareSource,
-          hasReferralCode: hasReferralCode,
-        },
-      },
-      { instantSend: true }
-    );
-
-    const url = await uploadAndGetShareUrl();
-    const tweetLink = getTwitterIntentURL(`Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`, url);
-    window.open(tweetLink, "_blank", "noopener,noreferrer");
-  }, [hasReferralCode, indexToken?.symbol, onShareAction, shareSource, uploadAndGetShareUrl]);
-
   const handleDoNotShowAgainToggle = useCallback(
     (value: boolean) => {
       onDoNotShowAgainChange?.(value);
     },
     [onDoNotShowAgainChange]
   );
-
-  const handlePromptToCreateReferralCode = (e: React.MouseEvent<unknown>) => {
-    e.preventDefault();
-    setPromptedToCreateReferralCode(true);
-  };
-
-  const shouldPromptToCreateReferralCode =
-    !hasReferralCode && !promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
 
   return (
     <ModalWithPortal
@@ -333,18 +212,7 @@ function PositionShare({
           </span>
         </ToggleSwitch>
 
-        {promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed && (
-          <ColorfulBanner color="blue" icon={InfoIcon} onClose={() => setIsCreateReferralCodeInfoMessageClosed(true)}>
-            <div className="flex flex-col gap-4">
-              <span className="font-medium text-blue-300">
-                <Trans>Skip creating a referral code?</Trans>
-              </span>
-              <span className="text-blue-100">
-                <Trans>Earn rewards by sharing your referral code</Trans>
-              </span>
-            </div>
-          </ColorfulBanner>
-        )}
+        {shouldShowSkipReferralCodeBanner && <SkipReferralCodeBanner onClose={closeCreateReferralCodeInfoMessage} />}
       </div>
       <div className="flex flex-col gap-16 p-20 pt-12">
         {uploadError && (
@@ -352,46 +220,13 @@ function PositionShare({
             {uploadError}
           </AlertInfoCard>
         )}
-        <div className="flex gap-12">
-          <Button
-            variant="secondary"
-            disabled={isUploading}
-            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleCopy}
-            size="medium"
-            className="grow !text-14"
-          >
-            <Trans>Copy link</Trans>
-            <CopyStrokeIcon className="size-16" />
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleCopyImage}
-            size="medium"
-            className="grow !text-14"
-          >
-            {isMobile ? (
-              <>
-                <Trans>Share</Trans>
-                <ShareArrowOutlineIcon className="size-16" />
-              </>
-            ) : (
-              <>
-                <Trans>Copy image</Trans>
-                <CopyStrokeIcon className="size-16" />
-              </>
-            )}
-          </Button>
-          <Button
-            variant="secondary"
-            disabled={isUploading}
-            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleShareTwitter}
-            size="medium"
-            className="grow !text-14"
-          >
-            <Trans>Share on</Trans>
-            <TwitterIcon className="size-16" />
-          </Button>
-        </div>
+        <ShareCardActionButtons
+          isUploading={isUploading}
+          interceptOnClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : undefined}
+          onCopyLink={handleCopy}
+          onCopyImage={handleCopyImage}
+          onShareTwitter={handleShareTwitter}
+        />
         {Boolean(onDoNotShowAgainChange) && (
           <div className="flex justify-center">
             <Checkbox isChecked={doNotShowAgain} setIsChecked={handleDoNotShowAgainToggle}>

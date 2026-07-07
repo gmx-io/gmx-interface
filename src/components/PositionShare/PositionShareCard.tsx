@@ -1,16 +1,16 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { QRCodeSVG } from "qrcode.react";
-import { forwardRef, useMemo } from "react";
+import { forwardRef } from "react";
 
 import { Token } from "domain/tokens";
-import { getHomeUrl } from "lib/legacy";
 import { calculateDisplayDecimals } from "lib/numbers";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
-import { useBreakpoints } from "lib/useBreakpoints";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
-import SpinningLoader from "components/Loader/SpinningLoader";
+import { ShareCardFrame } from "components/ShareModal/ShareCardFrame";
+import { ShareCardQRCode } from "components/ShareModal/ShareCardQRCode";
+import { ShareCardReferralCodeStat } from "components/ShareModal/ShareCardReferralCodeStat";
+import { ShareCardStat } from "components/ShareModal/ShareCardStat";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import coinImg from "img/coin.png";
@@ -49,119 +49,78 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
-    const { isMobile } = useBreakpoints();
-    const homeURL = getHomeUrl();
-    const style = useMemo(() => ({ backgroundImage: `url(${sharePositionBgImg})` }), [sharePositionBgImg]);
-
     const priceDecimals = calculateDisplayDecimals(markPrice, undefined, indexToken.visualMultiplier);
 
-    const qrCodeUrl = code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`;
-
     return (
-      <div className="relative max-w-[460px] grow overflow-hidden rounded-9">
-        <div
-          ref={ref}
-          className="flex aspect-[460/240] w-full justify-between rounded-9 bg-contain bg-no-repeat p-20 pb-28 max-md:p-16"
-          style={style}
-        >
-          <img src={coinImg} alt={t`Coin`} className="z-1 absolute bottom-0 right-0 size-[100px] max-md:size-[70px]" />
-          <div className="z-3 relative flex flex-col justify-end gap-12 max-md:gap-4 max-smallMobile:gap-0">
-            <div className="flex flex-col gap-4 max-md:gap-0">
-              <div className="flex gap-8">
-                <div
-                  className={cx(
-                    "inline-flex items-center gap-4 text-13 font-medium",
-                    isLong ? "text-[#0FDE8D]" : "text-[#FF506A]"
-                  )}
-                >
-                  <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
+      <ShareCardFrame ref={ref} bgImgUrl={sharePositionBgImg} loading={loading} cardClassName="flex justify-between">
+        <img src={coinImg} alt={t`Coin`} className="z-1 absolute bottom-0 right-0 size-[100px] max-md:size-[70px]" />
+        <div className="z-3 relative flex flex-col justify-end gap-12 max-md:gap-4 max-smallMobile:gap-0">
+          <div className="flex flex-col gap-4 max-md:gap-0">
+            <div className="flex gap-8">
+              <div
+                className={cx(
+                  "inline-flex items-center gap-4 text-13 font-medium",
+                  isLong ? "text-[#0FDE8D]" : "text-[#FF506A]"
+                )}
+              >
+                <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
 
-                  <span className="ml-2">
-                    {isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>} {formatAmount(leverage, 4, 2, true)}x
-                  </span>
-                </div>
-                <div className="flex items-center gap-4 font-medium text-white">
-                  <TokenIcon symbol={indexToken.symbol} displaySize={14} />
-                  <span>
-                    {getTokenVisualMultiplier(indexToken)}
-                    {indexToken.symbol} / USD
-                  </span>
-                </div>
+                <span className="ml-2">
+                  {isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>} {formatAmount(leverage, 4, 2, true)}x
+                </span>
               </div>
-              <div className="flex items-end gap-6">
-                <h3
+              <div className="flex items-center gap-4 font-medium text-white">
+                <TokenIcon symbol={indexToken.symbol} displaySize={14} />
+                <span>
+                  {getTokenVisualMultiplier(indexToken)}
+                  {indexToken.symbol} / USD
+                </span>
+              </div>
+            </div>
+            <div className="flex items-end gap-6">
+              <h3
+                className={cx(
+                  "text-[40px] font-medium max-md:text-[32px]",
+                  pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
+                )}
+              >
+                {formatPercentage(pnlAfterFeesPercentage, { signed: true })}
+              </h3>
+              {showPnlAmounts && (
+                <p
                   className={cx(
-                    "text-[40px] font-medium max-md:text-[32px]",
+                    "pb-8 text-14 font-medium",
                     pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
                   )}
                 >
-                  {formatPercentage(pnlAfterFeesPercentage, { signed: true })}
-                </h3>
-                {showPnlAmounts && (
-                  <p
-                    className={cx(
-                      "pb-8 text-14 font-medium",
-                      pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
-                    )}
-                  >
-                    {formatUsd(pnlAfterFeesUsd, { displayPlus: true })}
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="flex gap-20 max-md:gap-10">
-              <div className="flex flex-col gap-4">
-                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
-                  <Trans>Entry price</Trans>
+                  {formatUsd(pnlAfterFeesUsd, { displayPlus: true })}
                 </p>
-                <p className="whitespace-nowrap text-13 font-medium text-white">
-                  {formatUsd(entryPrice, {
-                    displayDecimals: priceDecimals,
-                    visualMultiplier: indexToken.visualMultiplier,
-                  })}
-                </p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
-                  <Trans>Mark price</Trans>
-                </p>
-                <p className="whitespace-nowrap text-13 font-medium text-white">
-                  {formatUsd(markPrice, {
-                    displayDecimals: priceDecimals,
-                    visualMultiplier: indexToken.visualMultiplier,
-                  })}
-                </p>
-              </div>
-
-              {referralCodeOwnerKind && code && (
-                <div className="flex flex-col gap-4">
-                  <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
-                    {referralCodeOwnerKind === "created" ? (
-                      <Trans>Referral code</Trans>
-                    ) : (
-                      <Trans>Used referral code</Trans>
-                    )}
-                  </p>
-                  <p className="whitespace-nowrap text-13 font-medium text-white">{code}</p>
-                </div>
               )}
             </div>
           </div>
+          <div className="flex gap-20 max-md:gap-10">
+            <ShareCardStat label={<Trans>Entry price</Trans>}>
+              {formatUsd(entryPrice, {
+                displayDecimals: priceDecimals,
+                visualMultiplier: indexToken.visualMultiplier,
+              })}
+            </ShareCardStat>
+            <ShareCardStat label={<Trans>Mark price</Trans>}>
+              {formatUsd(markPrice, {
+                displayDecimals: priceDecimals,
+                visualMultiplier: indexToken.visualMultiplier,
+              })}
+            </ShareCardStat>
 
-          <div className="flex flex-col items-end justify-between">
-            <QRCodeSVG size={isMobile ? 40 : 52} value={qrCodeUrl} className="rounded-4 bg-white p-4" />
-            <div className="size-80 max-md:size-50"></div>
+            <ShareCardReferralCodeStat referralCodeOwnerKind={referralCodeOwnerKind} code={code} />
           </div>
         </div>
-        {loading && (
-          <div className="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 items-center gap-8 rounded-b-8 bg-[#22243a] px-8 py-6 text-12">
-            <SpinningLoader className="size-14" />
-            <p className="font-medium text-white">
-              <Trans>Generating shareable image...</Trans>
-            </p>
-          </div>
-        )}
-      </div>
+
+        <div className="flex flex-col items-end justify-between">
+          <ShareCardQRCode code={code} />
+          <div className="size-80 max-md:size-50"></div>
+        </div>
+      </ShareCardFrame>
     );
   }
 );
