@@ -32,6 +32,7 @@ import {
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPositionOrderError,
+  selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
@@ -110,6 +111,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -154,6 +156,7 @@ export function OrderEditor(p: Props) {
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
+  const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
@@ -1030,6 +1033,12 @@ export function OrderEditor(p: Props) {
             isGmxAccount={srcChainId !== undefined}
             onAfterAction={p.onClose}
           />
+
+          {liqPriceWarning && (
+            <AlertInfoCard type="warning" hideClose>
+              {liqPriceWarning}
+            </AlertInfoCard>
+          )}
 
           {button}
         </div>
