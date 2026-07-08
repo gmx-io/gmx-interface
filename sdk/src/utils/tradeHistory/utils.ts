@@ -151,6 +151,9 @@ export function createRawTradeActionTransformer(
         fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
         swapFeeUsd: rawAction.swapFeeUsd ? BigInt(rawAction.swapFeeUsd) : undefined,
         liquidationFeeAmount: rawAction.liquidationFeeAmount ? BigInt(rawAction.liquidationFeeAmount) : undefined,
+        minCollateralFactorForLiquidation: rawAction.minCollateralFactorForLiquidation
+          ? BigInt(rawAction.minCollateralFactorForLiquidation)
+          : undefined,
 
         reason: rawAction.reason ?? undefined,
         reasonBytes: rawAction.reasonBytes ?? undefined,

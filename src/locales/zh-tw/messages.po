@@ -477,6 +477,10 @@ msgstr "GMX Account 餘額"
 msgid "Search in perpetuals markets"
 msgstr "搜尋永續合約市場"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+msgstr "計入費用後，超過最大允許槓桿，已被清算。"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "出售 {gmOrGlvLabel} 失敗"

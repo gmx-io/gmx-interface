@@ -477,6 +477,10 @@ msgstr "Баланс GMX Account"
 msgid "Search in perpetuals markets"
 msgstr "Поиск на рынках бессрочных контрактов"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+msgstr "Ликвидировано, так как максимальное допустимое кредитное плечо было превышено с учётом комиссий."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "Не удалось продать {gmOrGlvLabel}"

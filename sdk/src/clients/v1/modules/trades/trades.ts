@@ -266,6 +266,7 @@ export async function fetchTradeActions({
             fundingFeeAmount
             swapFeeUsd
             liquidationFeeAmount
+            minCollateralFactorForLiquidation
             pnlUsd
             basePnlUsd
 
