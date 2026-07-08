@@ -528,20 +528,30 @@ export function AddTPSLModal({
     liquidationPrice: position.liquidationPrice,
     isLong,
   });
-  const activeEstimatedPnlPercentage = activeDecreaseAmounts
-    ? activeIsBeyondLiquidation
-      ? -BASIS_POINTS_DIVISOR_BIGINT
-      : activeDecreaseAmounts.estimatedPnlPercentage
-    : undefined;
-  const activeEstimatedPnl = activeDecreaseAmounts
-    ? activeIsBeyondLiquidation && activeDecreaseAmounts.estimatedPnlPercentage !== 0n
-      ? bigMath.mulDiv(
-          activeDecreaseAmounts.estimatedPnl,
-          -BASIS_POINTS_DIVISOR_BIGINT,
-          activeDecreaseAmounts.estimatedPnlPercentage
-        )
-      : activeDecreaseAmounts.estimatedPnl
-    : undefined;
+  const { activeEstimatedPnl, activeEstimatedPnlPercentage } = useMemo(() => {
+    if (!activeDecreaseAmounts) {
+      return { activeEstimatedPnl: undefined, activeEstimatedPnlPercentage: undefined };
+    }
+
+    // Only force -100% when we can back-derive the USD from a non-zero percentage; otherwise keep both
+    // raw so the value and percentage never desync (e.g. a beyond-liq trigger whose PnL rounds to 0 bps).
+    const showFullLoss = activeIsBeyondLiquidation && activeDecreaseAmounts.estimatedPnlPercentage !== 0n;
+    if (!showFullLoss) {
+      return {
+        activeEstimatedPnl: activeDecreaseAmounts.estimatedPnl,
+        activeEstimatedPnlPercentage: activeDecreaseAmounts.estimatedPnlPercentage,
+      };
+    }
+
+    return {
+      activeEstimatedPnl: bigMath.mulDiv(
+        activeDecreaseAmounts.estimatedPnl,
+        -BASIS_POINTS_DIVISOR_BIGINT,
+        activeDecreaseAmounts.estimatedPnlPercentage
+      ),
+      activeEstimatedPnlPercentage: -BASIS_POINTS_DIVISOR_BIGINT,
+    };
+  }, [activeDecreaseAmounts, activeIsBeyondLiquidation]);
 
   const netPriceImpactAndFeesDisplay = useMemo(() => {
     if (!activeFees) {
