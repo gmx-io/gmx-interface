@@ -2,10 +2,11 @@ import { Trans } from "@lingui/macro";
 import { type JSX } from "react";
 
 import { AnnouncementVariant } from "config/events";
+import { DAY_MS } from "lib/dates";
 
 export type UiFlagEventVariant = AnnouncementVariant;
 
-const DEFAULT_DISMISS_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24h
+const DEFAULT_DISMISS_COOLDOWN_MS = DAY_MS;
 
 export type UiFlagEventData = {
   id: string;

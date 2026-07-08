@@ -538,11 +538,15 @@ export const formatPositionMessage = (
     //#endregion StopLossDecrease
     //#region Liquidation
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
-    const maxLeverage =
-      tradeAction.marketInfo.minCollateralFactorForLiquidation === 0n
-        ? 0n
-        : PRECISION / tradeAction.marketInfo.minCollateralFactorForLiquidation;
-    const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";
+    const minCollateralFactorForLiquidation =
+      tradeAction.minCollateralFactorForLiquidation !== undefined && tradeAction.minCollateralFactorForLiquidation > 0n
+        ? tradeAction.minCollateralFactorForLiquidation
+        : undefined;
+
+    const formattedMaxLeverage =
+      minCollateralFactorForLiquidation === undefined
+        ? undefined
+        : Number(PRECISION / minCollateralFactorForLiquidation).toFixed(1) + "x";
 
     const initialCollateralUsd = convertToUsd(
       tradeAction.initialCollateralDeltaAmount,
@@ -589,8 +593,11 @@ export const formatPositionMessage = (
     );
     const formattedPositionFee = formatUsd(positionFeeUsd === undefined ? undefined : -positionFeeUsd);
 
-    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactorForLiquidation);
-    if (liquidationCollateralUsd < minCollateralUsd) {
+    let liquidationCollateralUsd =
+      minCollateralFactorForLiquidation === undefined
+        ? undefined
+        : applyFactor(sizeDeltaUsd, minCollateralFactorForLiquidation);
+    if (liquidationCollateralUsd !== undefined && liquidationCollateralUsd < minCollateralUsd) {
       liquidationCollateralUsd = minCollateralUsd;
     }
 
@@ -600,7 +607,8 @@ export const formatPositionMessage = (
         : initialCollateralUsd + tradeAction.basePnlUsd! - borrowingFeeUsd! - fundingFeeUsd! - positionFeeUsd!;
 
     const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
-    const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
+    const formattedMinCollateral =
+      liquidationCollateralUsd === undefined ? undefined : formatUsd(liquidationCollateralUsd);
 
     const liquidationFeeUsd =
       convertToUsd(
@@ -643,7 +651,9 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the liquidation`,
         "",
-        t`Liquidated as max leverage of ${formattedMaxLeverage} was exceeded when accounting for fees.`,
+        formattedMaxLeverage === undefined
+          ? t`Liquidated as the max allowed leverage was exceeded when accounting for fees.`
+          : t`Liquidated as max leverage of ${formattedMaxLeverage} was exceeded when accounting for fees.`,
         "",
         infoRow(t`Initial margin`, formattedInitialCollateral!),
         infoRow(t`PnL`, {
@@ -663,7 +673,7 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Minimum required margin`, formattedMinCollateral),
+        formattedMinCollateral === undefined ? undefined : infoRow(t`Minimum required margin`, formattedMinCollateral),
         infoRow(t`Margin at liquidation`, formattedLeftoverCollateral),
         "",
         ...priceImpactLines,
