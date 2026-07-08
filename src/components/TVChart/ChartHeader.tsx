@@ -69,18 +69,18 @@ function ChartHeaderMobile() {
 
     if (isSwap) {
       return (
-        <div className="flex flex-col">
-          <ChartHeaderMobileRow label={<Trans>24h high</Trans>} value={high24} />
-          <ChartHeaderMobileRow label={<Trans>24h low</Trans>} value={low24} />
+        <div className="flex flex-wrap gap-16 min-[440px]:grid min-[440px]:grid-cols-2">
+          <ChartHeaderMobileItem label={<Trans>24h high</Trans>} value={high24} />
+          <ChartHeaderMobileItem label={<Trans>24h low</Trans>} value={low24} />
         </div>
       );
     }
 
     return (
-      <div className="flex flex-col">
-        <ChartHeaderMobileRow label={<Trans>24h volume</Trans>} value={dailyVolume} />
+      <div className="flex flex-wrap gap-16 min-[440px]:grid min-[440px]:grid-cols-2">
+        <ChartHeaderMobileItem label={<Trans>24h volume</Trans>} value={dailyVolume} />
 
-        <ChartHeaderMobileRow
+        <ChartHeaderMobileItem
           label={
             <Trans>
               Open interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
@@ -102,7 +102,7 @@ function ChartHeaderMobile() {
           }
         />
 
-        <ChartHeaderMobileRow
+        <ChartHeaderMobileItem
           label={<Trans>Available liquidity</Trans>}
           value={
             <div className="flex items-center gap-8">
@@ -113,7 +113,7 @@ function ChartHeaderMobile() {
           }
         />
 
-        <ChartHeaderMobileRow
+        <ChartHeaderMobileItem
           label={
             <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net rate / 1h</Trans>
@@ -445,11 +445,11 @@ const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode 
   );
 };
 
-const ChartHeaderMobileRow = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
+const ChartHeaderMobileItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
-    <div className="flex items-center justify-between gap-8 py-2 text-12">
-      <div className="min-w-0 font-medium text-typography-secondary">{label}</div>
-      <div className="flex shrink-0 items-center text-typography-primary numbers">{value}</div>
+    <div className="flex flex-col gap-8 text-12 leading-[1.25]">
+      <div className="font-medium capitalize text-typography-secondary">{label}</div>
+      <div className="flex items-center text-typography-primary numbers">{value}</div>
     </div>
   );
 };
