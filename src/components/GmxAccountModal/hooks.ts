@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
+import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
 import {
@@ -415,4 +416,51 @@ export function useGmxAccountWithdrawNetworks() {
   }, [chainId, sourceChains]);
 
   return networks;
+}
+
+export function useGmxAccountDepositNetworks(): { id: number; name: string }[] {
+  const { chainId } = useChainId();
+
+  const networks = useMemo(() => {
+    const sourceChains = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId] || {}).map(Number);
+
+    return [
+      { id: chainId as number, name: getChainName(chainId) },
+      ...sourceChains.map((sourceChainId) => ({
+        id: sourceChainId,
+        name: getChainName(sourceChainId),
+      })),
+    ];
+  }, [chainId]);
+
+  return networks;
+}
+
+export function useGmxAccountDepositEligibility(): {
+  hasAnyDepositFunds: boolean;
+  hasDepositFundsOnChain: (network: number) => boolean;
+  isEligibilityLoading: boolean;
+} {
+  const { chainId, srcChainId } = useChainId();
+  const { address: account } = useAccount();
+
+  const { tokenChainDataArray, isBalanceDataLoading } = useMultichainTradeTokensRequest(chainId, account);
+  const { tokensData, isWalletBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
+
+  return useMemo(() => {
+    const hasSettlementChainFunds = Object.values(tokensData ?? (EMPTY_OBJECT as TokensData)).some(
+      (token) => token.walletBalance !== undefined && token.walletBalance > 0n
+    );
+
+    const hasDepositFundsOnChain = (network: number): boolean =>
+      network === chainId
+        ? hasSettlementChainFunds
+        : tokenChainDataArray.some((token) => token.sourceChainId === network);
+
+    return {
+      hasAnyDepositFunds: hasSettlementChainFunds || tokenChainDataArray.length > 0,
+      hasDepositFundsOnChain,
+      isEligibilityLoading: isBalanceDataLoading || !isWalletBalancesLoaded,
+    };
+  }, [chainId, tokenChainDataArray, tokensData, isBalanceDataLoading, isWalletBalancesLoaded]);
 }

@@ -616,6 +616,10 @@ msgstr ""
 msgid "Long OI"
 msgstr "OI Long"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No funds available to deposit from {networkName}"
+msgstr "Aucuns fonds disponibles pour déposer depuis {networkName}"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
 msgstr "vendre"
@@ -783,6 +787,10 @@ msgstr "Activer 1CT"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
 msgstr "PnL réalisé"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account."
+msgstr "Recevez des actifs pris en charge dans votre portefeuille sur {networksList}, puis déposez-les sur le Compte GMX."
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
@@ -3023,11 +3031,6 @@ msgstr "Montant vendable max {0} dépassé"
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "Aucun jeton éligible disponible pour dépôt"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "Jour(s)"
@@ -3963,11 +3966,6 @@ msgstr "Envoi de la demande d'ordre…"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Vente de {0}{1}<1>{poolName}</1></0>"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "Aucun jeton éligible disponible sur {0} pour dépôt"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -9059,6 +9057,10 @@ msgstr "Événements du compte :"
 msgid "Short funding rate"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No funds available for GMX Account deposit"
+msgstr "Aucuns fonds disponibles pour le dépôt sur le Compte GMX"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. SIZE"
 msgstr "TAILLE MOY."
@@ -9650,6 +9652,7 @@ msgid "Receive tokens separately"
 msgstr "Recevoir les jetons séparément"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -9885,6 +9888,10 @@ msgstr "Exécuter une partie TWAP"
 msgid "Create Limit Swap"
 msgstr "Créer un échange limité"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Change network"
+msgstr "Changer de réseau"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
 msgstr "Groupe Telegram (portugais)"
@@ -9953,6 +9960,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
@@ -11091,6 +11099,10 @@ msgstr "Basculez vers le compte {receiver} pour terminer ce transfert"
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No distributions to claim"
 msgstr "Aucune distribution à récupérer"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive {tokensList} into your wallet on {networkName}, or choose another network."
+msgstr "Recevez {tokensList} dans votre portefeuille sur {networkName} ou choisissez un autre réseau."
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx

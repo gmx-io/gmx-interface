@@ -28,6 +28,11 @@ export const selectGmxAccountWithdrawalViewTokenInputValue = (s: GmxAccountConte
 export const selectGmxAccountSetWithdrawalViewTokenInputValue = (s: GmxAccountContext) =>
   s.setWithdrawalViewTokenInputValue;
 
+export const selectGmxAccountWalletReceiveViewChain = (s: GmxAccountContext) => s.walletReceiveViewChain;
+export const selectGmxAccountSetWalletReceiveViewChain = (s: GmxAccountContext) => s.setWalletReceiveViewChain;
+export const selectGmxAccountWalletReceiveViewBackTo = (s: GmxAccountContext) => s.walletReceiveViewBackTo;
+export const selectGmxAccountSetWalletReceiveViewBackTo = (s: GmxAccountContext) => s.setWalletReceiveViewBackTo;
+
 export const selectGmxAccountSelectedTransferGuid = (s: GmxAccountContext) => s.selectedTransferGuid;
 export const selectGmxAccountSetSelectedTransferGuid = (s: GmxAccountContext) => s.setSelectedTransferGuid;
 

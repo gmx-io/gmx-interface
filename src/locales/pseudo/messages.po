@@ -616,6 +616,10 @@ msgstr ""
 msgid "Long OI"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No funds available to deposit from {networkName}"
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
 msgstr ""
@@ -782,6 +786,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
+msgstr ""
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account."
 msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -3023,11 +3031,6 @@ msgstr ""
 msgid "TOKEN"
 msgstr ""
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr ""
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr ""
@@ -3962,11 +3965,6 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
-msgstr ""
-
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -9059,6 +9057,10 @@ msgstr ""
 msgid "Short funding rate"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No funds available for GMX Account deposit"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. SIZE"
 msgstr ""
@@ -9650,6 +9652,7 @@ msgid "Receive tokens separately"
 msgstr ""
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -9885,6 +9888,10 @@ msgstr ""
 msgid "Create Limit Swap"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Change network"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
 msgstr ""
@@ -9953,6 +9960,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
@@ -11090,6 +11098,10 @@ msgstr ""
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No distributions to claim"
+msgstr ""
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive {tokensList} into your wallet on {networkName}, or choose another network."
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx

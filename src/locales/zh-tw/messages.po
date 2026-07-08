@@ -616,6 +616,10 @@ msgstr ""
 msgid "Long OI"
 msgstr "做多 OI"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No funds available to deposit from {networkName}"
+msgstr "沒有可從 {networkName} 存入的資金"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
 msgstr "賣出"
@@ -783,6 +787,10 @@ msgstr "啟用 1CT"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
 msgstr "已實現 PnL"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account."
+msgstr "在 {networksList} 網路上接收支援的資產到您的錢包，然後將其存入 GMX Account。"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
@@ -3023,11 +3031,6 @@ msgstr "超過 {0} 最大可賣出數量"
 msgid "TOKEN"
 msgstr "代幣"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "沒有符合條件的代幣可供存入"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "天"
@@ -3963,11 +3966,6 @@ msgstr "正在提交訂單請求..."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>賣出 {0}{1}<1>{poolName}</1></0>"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "{0} 上沒有可存入的合格代幣"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -9059,6 +9057,10 @@ msgstr "帳戶事件："
 msgid "Short funding rate"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No funds available for GMX Account deposit"
+msgstr "沒有可存入 GMX Account 的資金"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. SIZE"
 msgstr "平均規模"
@@ -9650,6 +9652,7 @@ msgid "Receive tokens separately"
 msgstr "分開接收代幣"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -9885,6 +9888,10 @@ msgstr "執行 TWAP 部分"
 msgid "Create Limit Swap"
 msgstr "建立 Limit Swap"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Change network"
+msgstr "更換網路"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
 msgstr "Telegram 群組（葡萄牙語）"
@@ -9953,6 +9960,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
@@ -11091,6 +11099,10 @@ msgstr "切換至帳戶 {receiver} 以完成此轉帳"
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No distributions to claim"
 msgstr "無可領取的分配"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive {tokensList} into your wallet on {networkName}, or choose another network."
+msgstr "在 {networkName} 網路上接收 {tokensList} 到您的錢包，或選擇其他網路。"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx

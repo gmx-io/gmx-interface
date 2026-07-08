@@ -616,6 +616,10 @@ msgstr ""
 msgid "Long OI"
 msgstr "ロングOI"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No funds available to deposit from {networkName}"
+msgstr "{networkName}から入金できる資金がありません"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
 msgstr "売却"
@@ -783,6 +787,10 @@ msgstr "1CTを有効化"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
 msgstr "実現PnL"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account."
+msgstr "{networksList}のウォレットで対応資産を受け取り、その後GMXアカウントに入金してください。"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
@@ -3023,11 +3031,6 @@ msgstr "最大{0}売却可能額超過"
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "入金可能な対象トークンなし"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "日"
@@ -3963,11 +3966,6 @@ msgstr "注文リクエストを送信中…"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>{0}{1}の売却<1>{poolName}</1></0>"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "{0} で入金可能な対象トークンなし"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -9059,6 +9057,10 @@ msgstr "アカウントのイベント："
 msgid "Short funding rate"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No funds available for GMX Account deposit"
+msgstr "GMXアカウントへの入金に利用できる資金がありません"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. SIZE"
 msgstr "平均サイズ"
@@ -9650,6 +9652,7 @@ msgid "Receive tokens separately"
 msgstr "トークンを別々に受け取る"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -9885,6 +9888,10 @@ msgstr "TWAP部分注文を約定"
 msgid "Create Limit Swap"
 msgstr "リミットスワップを作成"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Change network"
+msgstr "ネットワークを変更"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
 msgstr "Telegramグループ（ポルトガル語）"
@@ -9953,6 +9960,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
@@ -11091,6 +11099,10 @@ msgstr "この送金を完了するにはアカウント{receiver}に切り替�
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No distributions to claim"
 msgstr "受け取り可能な分配はありません"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive {tokensList} into your wallet on {networkName}, or choose another network."
+msgstr "{networkName}のウォレットに{tokensList}を受け取るか、別のネットワークを選択してください。"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx

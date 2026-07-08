@@ -51,6 +51,14 @@ export type GmxAccountContext = {
   withdrawalViewTokenInputValue: string | undefined;
   setWithdrawalViewTokenInputValue: (value: string | undefined) => void;
 
+  // wallet receive view
+
+  walletReceiveViewChain: SourceChainId | undefined;
+  setWalletReceiveViewChain: (chain: SourceChainId | undefined) => void;
+
+  walletReceiveViewBackTo: GmxAccountModalView | undefined;
+  setWalletReceiveViewBackTo: (view: GmxAccountModalView | undefined) => void;
+
   // funding history
 
   selectedTransferGuid: string | undefined;
@@ -124,6 +132,11 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const [withdrawalViewTokenInputValue, setWithdrawalViewTokenInputValue] =
     useState<GmxAccountContext["withdrawalViewTokenInputValue"]>(undefined);
 
+  const [walletReceiveViewChain, setWalletReceiveViewChain] =
+    useState<GmxAccountContext["walletReceiveViewChain"]>(undefined);
+  const [walletReceiveViewBackTo, setWalletReceiveViewBackTo] =
+    useState<GmxAccountContext["walletReceiveViewBackTo"]>(undefined);
+
   const [selectedTransferGuid, setSelectedTransferGuid] =
     useState<GmxAccountContext["selectedTransferGuid"]>(undefined);
 
@@ -140,6 +153,9 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
 
       setWithdrawalViewTokenAddress(undefined);
       setWithdrawalViewTokenInputValue(undefined);
+
+      setWalletReceiveViewChain(undefined);
+      setWalletReceiveViewBackTo(undefined);
 
       setSelectedTransferGuid(undefined);
 
@@ -173,6 +189,13 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       withdrawalViewTokenInputValue,
       setWithdrawalViewTokenInputValue,
 
+      // wallet receive view
+
+      walletReceiveViewChain,
+      setWalletReceiveViewChain,
+      walletReceiveViewBackTo,
+      setWalletReceiveViewBackTo,
+
       // funding history
 
       selectedTransferGuid,
@@ -194,6 +217,8 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       withdrawalViewChain,
       withdrawalViewTokenAddress,
       withdrawalViewTokenInputValue,
+      walletReceiveViewChain,
+      walletReceiveViewBackTo,
       selectedTransferGuid,
       availableAssetsFilter,
     ]

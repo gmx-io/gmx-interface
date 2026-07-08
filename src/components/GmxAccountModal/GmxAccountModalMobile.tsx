@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { useGmxAccountModalOpen, useGmxAccountWalletReceiveViewBackTo } from "context/GmxAccountContext/hooks";
 import { userAnalytics } from "lib/userAnalytics";
 import { OneClickPromotionEvent } from "lib/userAnalytics/types";
 
@@ -60,8 +60,10 @@ function SelectAssetToDepositTitle() {
 }
 
 function ReceiveToWalletTitle() {
+  const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+
   return (
-    <TitleWithBack backTo="main">
+    <TitleWithBack backTo={walletReceiveViewBackTo ?? "main"}>
       <Trans>Receive to Wallet</Trans>
     </TitleWithBack>
   );

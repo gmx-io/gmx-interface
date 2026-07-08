@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { useGmxAccountModalOpen, useGmxAccountWalletReceiveViewBackTo } from "context/GmxAccountContext/hooks";
 import { userAnalytics } from "lib/userAnalytics";
 import { OneClickPromotionEvent } from "lib/userAnalytics/types";
 
@@ -81,6 +81,7 @@ function OverlayContent({ view }: { view: OverlayView }) {
 
 export function GmxAccountModalDesktop({ account }: { account: string }) {
   const [modalState, setModalState] = useGmxAccountModalOpen();
+  const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
 
   const isOpen = modalState !== false;
   const view: GmxAccountModalView = typeof modalState === "string" ? modalState : "main";
@@ -91,6 +92,11 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
 
   const handleOverlayClose = (nextVisible: boolean) => {
     if (nextVisible) return;
+
+    if (view === "walletReceive" && walletReceiveViewBackTo !== undefined) {
+      setModalState(walletReceiveViewBackTo);
+      return;
+    }
 
     if (view === "depositStatus") {
       userAnalytics.pushEvent<OneClickPromotionEvent>({

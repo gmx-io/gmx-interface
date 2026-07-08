@@ -6,7 +6,12 @@ import { useAccount } from "wagmi";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { isSettlementChain } from "config/multichain";
 import type { GmxAccountAvailableAssetsFilter } from "context/GmxAccountContext/GmxAccountContext";
-import { useGmxAccountAvailableAssetsFilter, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import {
+  useGmxAccountAvailableAssetsFilter,
+  useGmxAccountModalOpen,
+  useGmxAccountWalletReceiveViewBackTo,
+  useGmxAccountWalletReceiveViewChain,
+} from "context/GmxAccountContext/hooks";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -70,7 +75,15 @@ const AssetsList = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>(initialFilter);
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
+  const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
   const titles = useLocalizedMap(FILTER_TITLE_MAP);
+
+  const handleOpenWalletReceive = () => {
+    setWalletReceiveViewChain(undefined);
+    setWalletReceiveViewBackTo(undefined);
+    setIsVisibleOrView("walletReceive");
+  };
 
   const tabsOptions = useMemo<TabOption<FilterType>[]>(
     () => FILTERS.map((filter) => ({ value: filter, label: titles[filter] })),
@@ -139,7 +152,7 @@ const AssetsList = ({
               <span className="text-typography-secondary">
                 <Trans>No assets in your wallet</Trans>
               </span>
-              <Button variant="secondary" size="medium" onClick={() => setIsVisibleOrView("walletReceive")}>
+              <Button variant="secondary" size="medium" onClick={handleOpenWalletReceive}>
                 <Trans>Receive to Wallet</Trans>
               </Button>
             </div>

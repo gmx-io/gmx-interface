@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
+import { useGmxAccountWalletReceiveViewChain } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 
 import Button from "components/Button/Button";
@@ -17,7 +18,8 @@ import CopyIcon from "img/ic_copy.svg?react";
 export function WalletReceiveView() {
   const { address } = useAccount();
   const { chainId: settlementChainId, srcChainId } = useChainId();
-  const chainId = srcChainId ?? settlementChainId;
+  const [walletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
+  const chainId = walletReceiveViewChain ?? srcChainId ?? settlementChainId;
   const chainName = getChainName(chainId);
   const chainIcon = getChainIcon(chainId);
 
@@ -67,12 +69,13 @@ export function WalletReceiveView() {
 
       <div className="h-0 w-full border-t-1/2 border-stroke-primary opacity-80" />
 
-      <ColorfulBanner color="blue">
+      <ColorfulBanner color="blue" className="w-full">
         <div className="flex items-start gap-8">
           <img src={chainIcon} alt={chainName} className="size-20 shrink-0" />
           <span className="text-blue-300">
             <Trans>
-              Only send <span className="text-blue-100">{chainName}-compatible assets</span> to this address!
+              Only send <span className="text-blue-400 dark:text-blue-100">{chainName}-compatible assets</span> to this
+              address!
             </Trans>
           </span>
         </div>

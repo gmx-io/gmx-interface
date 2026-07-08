@@ -36,7 +36,7 @@ import {
   LayerZeroEndpointId,
 } from "sdk/configs/multichain";
 import { getMultichainTokenGroups, MultichainTokenGroups, MultichainTokenId } from "sdk/configs/multichainTokens";
-import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 
 export * from "sdk/configs/multichain";
 export type { MultichainTokenId } from "sdk/configs/multichainTokens";
@@ -204,6 +204,29 @@ export const RANDOM_WALLET: ISigner = ISigner.fromPrivateKeyAccount(RANDOM_ACCOU
  * Uses maxUint256 / 100n to avoid number overflows in EVM operations.
  */
 export const SIMULATED_MULTICHAIN_BALANCE = maxUint256 / 100n;
+
+export function getDepositTokenSymbolsForNetwork(settlementChainId: SettlementChainId, network: number): string[] {
+  const depositTradeTokens = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId] ?? [];
+
+  const tokenAddresses =
+    network === settlementChainId
+      ? depositTradeTokens
+      : Object.values(MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[network as SourceChainId] ?? {})
+          .map((mapping) => mapping.settlementChainTokenAddress)
+          // The mapping also contains platform tokens (GLV/GM), which getToken doesn't know about
+          .filter((address) => depositTradeTokens.includes(address));
+
+  const symbols: string[] = [];
+
+  for (const tokenAddress of tokenAddresses) {
+    const symbol = getToken(settlementChainId, tokenAddress).symbol;
+    if (!symbols.includes(symbol)) {
+      symbols.push(symbol);
+    }
+  }
+
+  return symbols;
+}
 
 export function getSourceChainDecimalsMapped(
   chainId: ContractsChainId,

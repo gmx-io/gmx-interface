@@ -19,6 +19,10 @@ import {
   selectGmxAccountSetWithdrawalViewTokenAddress,
   selectGmxAccountSetWithdrawalViewTokenInputValue,
   selectGmxAccountSettlementChainId,
+  selectGmxAccountSetWalletReceiveViewBackTo,
+  selectGmxAccountSetWalletReceiveViewChain,
+  selectGmxAccountWalletReceiveViewBackTo,
+  selectGmxAccountWalletReceiveViewChain,
   selectGmxAccountWithdrawalViewChain,
   selectGmxAccountWithdrawalViewTokenAddress,
   selectGmxAccountWithdrawalViewTokenInputValue,
@@ -84,6 +88,20 @@ export function useGmxAccountWithdrawalViewTokenInputValue() {
   return [
     useGmxAccountSelector(selectGmxAccountWithdrawalViewTokenInputValue),
     useGmxAccountSelector(selectGmxAccountSetWithdrawalViewTokenInputValue),
+  ] as const;
+}
+
+export function useGmxAccountWalletReceiveViewChain() {
+  return [
+    useGmxAccountSelector(selectGmxAccountWalletReceiveViewChain),
+    useGmxAccountSelector(selectGmxAccountSetWalletReceiveViewChain),
+  ] as const;
+}
+
+export function useGmxAccountWalletReceiveViewBackTo() {
+  return [
+    useGmxAccountSelector(selectGmxAccountWalletReceiveViewBackTo),
+    useGmxAccountSelector(selectGmxAccountSetWalletReceiveViewBackTo),
   ] as const;
 }
 
