@@ -683,7 +683,7 @@ export function AddTPSLModal({
   }, [positionOrders, position.sizeInUsd]);
 
   const orderPayloads = useMemo(() => {
-    const empty = { createOrderParams: [], updateOrderParams: [] };
+    const empty = { createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] };
 
     if (!account || !marketInfo || !collateralToken) {
       return empty;
@@ -749,11 +749,16 @@ export function AddTPSLModal({
   ]);
 
   const batchParams = useMemo(() => {
-    if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) return undefined;
+    if (
+      orderPayloads.createOrderParams.length === 0 &&
+      orderPayloads.updateOrderParams.length === 0 &&
+      orderPayloads.cancelOrderParams.length === 0
+    )
+      return undefined;
     return {
       createOrderParams: orderPayloads.createOrderParams,
       updateOrderParams: orderPayloads.updateOrderParams,
-      cancelOrderParams: [],
+      cancelOrderParams: orderPayloads.cancelOrderParams,
     };
   }, [orderPayloads]);
 
