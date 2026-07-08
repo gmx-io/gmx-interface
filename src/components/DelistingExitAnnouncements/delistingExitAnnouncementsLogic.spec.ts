@@ -26,7 +26,7 @@ describe("joinMarketNames", () => {
   it("joins one name", () => expect(joinMarketNames(["TON/USD"])).toBe("TON/USD"));
   it("joins two names with 'and'", () => expect(joinMarketNames(["TON/USD", "PI/USD"])).toBe("TON/USD and PI/USD"));
   it("joins three names with commas and 'and'", () =>
-    expect(joinMarketNames(["A/USD", "B/USD", "C/USD"])).toBe("A/USD, B/USD and C/USD"));
+    expect(joinMarketNames(["A/USD", "B/USD", "C/USD"])).toBe("A/USD, B/USD, and C/USD"));
 });
 
 describe("getDelistingMarketLabel", () => {
