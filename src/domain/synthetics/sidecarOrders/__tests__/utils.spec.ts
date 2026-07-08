@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "config/factors";
-import { DecreasePositionSwapType, OrderType, type PositionOrderInfo } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, type PositionOrderInfo } from "domain/synthetics/orders";
 import type { PositionInfo } from "domain/synthetics/positions";
 import { expandDecimals, MaxUint256 } from "lib/numbers";
 
 import type { SidecarSlTpOrderEntry } from "../types";
 import {
   getDefaultEntryField,
-  getInlineTpDecreaseSwapType,
+  getInlineDecreaseSwapType,
   handleEntryError,
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
@@ -54,28 +54,22 @@ describe("prepareInitialEntries", () => {
   });
 });
 
-describe("getInlineTpDecreaseSwapType", () => {
+describe("getInlineDecreaseSwapType", () => {
   const tokenA = { address: "0x0000000000000000000000000000000000000001", symbol: "A" };
   const tokenB = { address: "0x0000000000000000000000000000000000000002", symbol: "B" };
   const splitablePosition = { pnlToken: tokenA, collateralToken: tokenB } as unknown as PositionInfo;
   const sameTokenPosition = { pnlToken: tokenA, collateralToken: tokenA } as unknown as PositionInfo;
 
-  it("returns NoSwap for a TP order when PnL and collateral tokens differ", () => {
-    expect(getInlineTpDecreaseSwapType(OrderType.LimitDecrease, splitablePosition)).toBe(
-      DecreasePositionSwapType.NoSwap
-    );
+  it("returns NoSwap when PnL and collateral tokens differ", () => {
+    expect(getInlineDecreaseSwapType(splitablePosition)).toBe(DecreasePositionSwapType.NoSwap);
   });
 
-  it("returns undefined for a TP order when PnL and collateral tokens are equivalent", () => {
-    expect(getInlineTpDecreaseSwapType(OrderType.LimitDecrease, sameTokenPosition)).toBeUndefined();
-  });
-
-  it("returns undefined for an SL order even when PnL and collateral tokens differ", () => {
-    expect(getInlineTpDecreaseSwapType(OrderType.StopLossDecrease, splitablePosition)).toBeUndefined();
+  it("returns undefined when PnL and collateral tokens are equivalent", () => {
+    expect(getInlineDecreaseSwapType(sameTokenPosition)).toBeUndefined();
   });
 
   it("returns undefined when the position is undefined", () => {
-    expect(getInlineTpDecreaseSwapType(OrderType.LimitDecrease, undefined)).toBeUndefined();
+    expect(getInlineDecreaseSwapType(undefined)).toBeUndefined();
   });
 });
 
