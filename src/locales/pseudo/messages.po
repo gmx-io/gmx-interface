@@ -465,6 +465,10 @@ msgstr ""
 msgid "Search in perpetuals markets"
 msgstr "[!! Search in perpetuals markets !!]"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr ""

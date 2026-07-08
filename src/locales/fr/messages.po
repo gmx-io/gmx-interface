@@ -465,6 +465,10 @@ msgstr "Solde du GMX Account"
 msgid "Search in perpetuals markets"
 msgstr "Rechercher dans les marchés perpétuels"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+msgstr "Liquidé car l’effet de levier maximum autorisé a été dépassé après prise en compte des frais."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "Échec de la vente de {gmOrGlvLabel}"

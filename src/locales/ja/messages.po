@@ -465,6 +465,10 @@ msgstr "GMX Account残高"
 msgid "Search in perpetuals markets"
 msgstr "無期限市場を検索"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+msgstr "手数料を考慮した結果、最大許容レバレッジを超えたため清算されました。"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "{gmOrGlvLabel}の売却に失敗しました"

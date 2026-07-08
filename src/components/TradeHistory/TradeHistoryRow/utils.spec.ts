@@ -414,7 +414,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": [
           "Mark price for the liquidation",
           "",
-          "Liquidated as max leverage of 0.0x was exceeded when accounting for fees.",
+          "Liquidated as the max allowed leverage was exceeded when accounting for fees.",
           "",
           {
             "key": "Initial margin",
@@ -449,10 +449,7 @@ describe("TradeHistoryRow helpers", () => {
             },
           },
           "",
-          {
-            "key": "Minimum required margin",
-            "value": "< $ 0.01",
-          },
+          undefined,
           {
             "key": "Margin at liquidation",
             "value": "$ 83.95",
@@ -775,24 +772,31 @@ describe("TradeHistoryRow helpers", () => {
     expect(details.priceComment).toContainEqual({ key: "Minimum required margin", value: expectedMinMargin });
   });
 
-  it("formatPositionMessage falls back to current market config when block-time factor is missing", () => {
-    const currentFactor = PRECISION / 100n;
-    const fallbackLiquidation = {
-      ...liquidated,
-      marketInfo: {
-        ...liquidated.marketInfo,
-        minCollateralFactorForLiquidation: currentFactor,
-      },
-      minCollateralFactorForLiquidation: undefined,
-    };
+  it("formatPositionMessage hides factor-derived rows when the block-time factor is unresolved", () => {
+    for (const unresolved of [undefined, 0n]) {
+      const oldLiquidation = {
+        ...liquidated,
+        marketInfo: {
+          ...liquidated.marketInfo,
+          minCollateralFactorForLiquidation: PRECISION / 100n,
+        },
+        minCollateralFactorForLiquidation: unresolved,
+      };
 
-    const details = formatPositionMessage(fallbackLiquidation, minCollateralUsd);
+      const details = formatPositionMessage(oldLiquidation, minCollateralUsd);
+      const rowKeys = (details.priceComment ?? [])
+        .filter((line) => typeof line === "object" && line !== null && "key" in line)
+        .map((line) => (line as { key: string }).key);
 
-    const expectedMinMargin = formatUsd(applyFactor(fallbackLiquidation.sizeDeltaUsd, currentFactor));
-    expect(details.priceComment).toContainEqual({ key: "Minimum required margin", value: expectedMinMargin });
-    expect(details.priceComment).toContainEqual(
-      "Liquidated as max leverage of 100.0x was exceeded when accounting for fees."
-    );
+      expect(details.priceComment).toContainEqual(
+        "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+      );
+      expect(details.priceComment).not.toContainEqual(
+        "Liquidated as max leverage of 0.0x was exceeded when accounting for fees."
+      );
+      expect(rowKeys).not.toContain("Minimum required margin");
+      expect(rowKeys).toContain("Margin at liquidation");
+    }
   });
 
   it("formatPositionMessage includes indexed trader discounts in the fee breakdown", () => {
