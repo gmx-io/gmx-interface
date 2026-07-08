@@ -21,10 +21,10 @@ type ReferralsTradersTabProps = {
 export function ReferralsTradersTab({ isLoading, account, hasAddressInUrl = false }: ReferralsTradersTabProps) {
   const [forceDashboard, setForceDashboard] = useState(false);
   const { chainId } = useChainId();
-  const { userReferralCode } = useUserReferralCode(chainId, account);
+  const { userReferralCode, isLoading: isUserReferralCodeLoading } = useUserReferralCode(chainId, account);
   const handleGoToTraderDashboard = useCallback(() => setForceDashboard(true), []);
 
-  if (isLoading) {
+  if (isLoading || isUserReferralCodeLoading) {
     return <Loader />;
   }
 
