@@ -5542,7 +5542,7 @@ msgstr "Основной"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{positionCount, plural, one {position} other {positions}}"
-msgstr "{positionCount, plural, one {позицию} few {позиции} many {позиций} other {позиции}}"
+msgstr "{positionCount, plural, one {позицию} few {позиции} many {позиции} other {позиции}}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
