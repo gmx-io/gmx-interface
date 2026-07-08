@@ -16,6 +16,7 @@ import {
   TradeAction,
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
+import { useCloseSettlement } from "domain/synthetics/tradeHistory/useCloseSettlement";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -32,9 +33,10 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import ShareClosedPosition from "./ShareClosedPosition";
-import { formatPositionMessage } from "./utils/position";
+import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
@@ -117,6 +119,41 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
   );
 }
 
+function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeAction; feesLines: TooltipContent }) {
+  const chainId = useSelector(selectChainId);
+
+  const positionTradeAction = isPositionTradeAction(tradeAction) ? tradeAction : undefined;
+  const isFullCloseCandidate =
+    positionTradeAction !== undefined &&
+    positionTradeAction.eventName === TradeActionType.OrderExecuted &&
+    isDecreaseOrderType(positionTradeAction.orderType) &&
+    positionTradeAction.sizeDeltaUsd > 0n;
+
+  const { settlement, isLoading } = useCloseSettlement(chainId, isFullCloseCandidate ? positionTradeAction : undefined);
+
+  const content = useMemo(() => {
+    if (!positionTradeAction || !settlement?.isFullClose || !settlement.closeChange) {
+      return feesLines;
+    }
+
+    return [
+      ...feesLines,
+      ...getSettlementTooltipLines(positionTradeAction, settlement.closeChange, settlement.openChange),
+    ];
+  }, [feesLines, positionTradeAction, settlement]);
+
+  return (
+    <>
+      <TooltipContentComponent content={content} />
+      {isLoading ? (
+        <div className="mt-8">
+          <SpinnerIcon className="size-12 animate-spin" />
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 const PRICE_TOOLTIP_WIDTH = 400;
 
 export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAccount, showDebugValues }: Props) {
@@ -175,8 +212,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   );
 
   const renderFeesTooltipContent = useCallback(
-    () => <TooltipContentComponent content={msg.feesTooltip ?? EMPTY_ARRAY} />,
-    [msg.feesTooltip]
+    () => <FeesTooltipContent tradeAction={tradeAction} feesLines={msg.feesTooltip ?? EMPTY_ARRAY} />,
+    [msg.feesTooltip, tradeAction]
   );
 
   const marketTooltipHandle = useMemo(

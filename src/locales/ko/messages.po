@@ -1122,6 +1122,10 @@ msgstr "최대 풀 금액 도달"
 msgid "Partnerships and integrations"
 msgstr "파트너십 및 통합"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Margin at close"
+msgstr "청산 시 마진"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Gas 잔액이 부족합니다. ETH를 추가로 입금하십시오."
@@ -1365,8 +1369,9 @@ msgid "Threshold for stable funding"
 msgstr "안정적 펀딩 임계값"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Initial margin"
-msgstr ""
+msgstr "최초 마진"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
@@ -1636,6 +1641,7 @@ msgid "0x"
 msgstr "0x"
 
 #: src/components/TradeHistory/TradeHistory.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "RPNL"
 msgstr "RPNL"
 
@@ -3623,6 +3629,10 @@ msgstr "최소 예치 금액 설정"
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "발동 시 이 주문의 일부에 대해 유동성이 부족할 수 있습니다"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Settlement"
+msgstr "정산"
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "GMX가 다른 영구 플랫폼보다 비용 효율적인 이유는 무엇인가요?"
@@ -3694,6 +3704,10 @@ msgstr "순 가격 영향 / 수수료"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "주문이 취소되었습니다"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Original margin reconciliation requires the opening row."
+msgstr "최초 마진을 확인하려면 오픈 행이 필요합니다."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM pool liquidity"
@@ -6074,6 +6088,10 @@ msgstr ""
 msgid "Decrease"
 msgstr "감소"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Wallet received"
+msgstr "지갑 수령액"
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above mark price"
 msgstr ""
@@ -7032,6 +7050,10 @@ msgstr ""
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
 msgstr "열려 있는 포지션 없음"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Open fee / discount"
+msgstr "개시 수수료 / 할인"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
@@ -9186,6 +9208,10 @@ msgstr "퍼펙트스왑"
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Referral code"
 msgstr "추천 코드"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Net close fees / impact"
+msgstr "순 청산 수수료 / 영향"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

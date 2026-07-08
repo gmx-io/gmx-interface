@@ -26,7 +26,7 @@ import {
   undefinedOrder,
   withdraw1Usd,
 } from "./mocks";
-import { formatPositionMessage } from "./utils/position";
+import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
 import { getErrorTooltipTitle } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
@@ -786,5 +786,96 @@ describe("TradeHistoryRow helpers", () => {
         ],
       }
     );
+  });
+
+  describe("getSettlementTooltipLines", () => {
+    // Arbitrum tx 0x936261d3c5394be68ccd53173b116f8f2e6c5d007dd3ab88943ded9b6e69f38e
+    const fullCloseAction = {
+      orderType: OrderType.MarketDecrease,
+      eventName: TradeActionType.OrderExecuted,
+      srcChainId: 0,
+      swapPath: [],
+      initialCollateralToken: { symbol: "USDC", decimals: 6, isStable: true },
+      collateralTokenPriceMin: 999757458143159100000000000000n,
+      basePnlUsd: 294764671686842964882169505960200n,
+      positionFeeAmount: 3984889n,
+      traderDiscountAmount: 199244n,
+      borrowingFeeAmount: 12850n,
+      fundingFeeAmount: 338315n,
+      liquidationFeeAmount: 0n,
+      totalImpactUsd: 39839233440000000000000000000000n,
+      priceImpactUsd: 16647709627538459795542642163244n,
+      swapFeeUsd: 167301952563420478623863092367n,
+      swapImpactUsd: 40202004253824880382311194750n,
+    } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+
+    const closeChange = {
+      positionKey: "0x5cc6146539659b0e38cf9abf31342fa6f75f6409823735fdfaac09dfebb99f9b",
+      block: 463477048,
+      type: "decrease" as const,
+      sizeInUsd: 0n,
+      sizeDeltaUsd: 9959808360000000000000000000000000n,
+      collateralAmount: 0n,
+      collateralDeltaAmount: 996214440n,
+      feesAmount: 4136810n,
+    };
+
+    const openChange = {
+      positionKey: "0x5cc6146539659b0e38cf9abf31342fa6f75f6409823735fdfaac09dfebb99f9b",
+      block: 463424563,
+      type: "increase" as const,
+      sizeInUsd: 9959808360000000000000000000000000n,
+      sizeDeltaUsd: 9959808360000000000000000000000000n,
+      collateralAmount: 996214440n,
+      collateralDeltaAmount: 996214440n,
+      feesAmount: 3785560n,
+    };
+
+    it("reconciles against the original margin when the opening row is matched", () => {
+      const result = getSettlementTooltipLines(fullCloseAction, closeChange, openChange).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        { key: "Initial margin", value: "1,000.00\u00a0USDC" },
+        { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
+      ]);
+    });
+
+    it("falls back to close-side-only settlement when the opening row is not matched", () => {
+      const result = getSettlementTooltipLines(fullCloseAction, closeChange, undefined).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
+        "",
+        { text: "Original margin reconciliation requires the opening row.", state: "muted" },
+      ]);
+    });
+
+    it("shows the received value in USD when the collateral was swapped on close", () => {
+      const swappedAction = {
+        ...fullCloseAction,
+        swapPath: ["0x0000000000000000000000000000000000000001"],
+      } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+
+      const result = getSettlementTooltipLines(swappedAction, closeChange, openChange).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "$ 1,326.31" });
+    });
   });
 });
