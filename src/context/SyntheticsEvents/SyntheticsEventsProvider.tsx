@@ -31,10 +31,9 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import {
+  applyOrderBackfillMatches,
   getIsPendingOrderBackfillable,
-  getOrderCreatedDataFromPendingOrder,
   ORDER_BACKFILL_MAX_AGE_MS,
-  ORDER_STATUS_TXN_HASH_FIELD_BY_EVENT,
   OrderBackfillMatch,
 } from "domain/synthetics/tradeHistory/orderStatusesBackfill";
 import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrderStatusesBackfill";
@@ -82,7 +81,6 @@ import {
   GelatoTaskStatus,
   GLVDepositCreatedEventData,
   OrderCreatedEventData,
-  OrderStatus,
   OrderStatuses,
   PendingDepositData,
   PendingExpressTxnParams,
@@ -1264,34 +1262,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   }, [chainId, currentAccount]);
 
   const handleOrderBackfillMatches = useCallback((matches: OrderBackfillMatch[]) => {
-    setOrderStatuses((old) => {
-      let next = old;
-
-      for (const match of matches) {
-        const txnHashField = ORDER_STATUS_TXN_HASH_FIELD_BY_EVENT[match.eventName];
-        const existing = next[match.orderKey];
-
-        if (existing?.[txnHashField]) {
-          continue;
-        }
-
-        const txnHashPatch: Partial<OrderStatus> = {};
-        txnHashPatch[txnHashField] = match.transactionHash;
-
-        next = existing
-          ? updateByKey(next, match.orderKey, txnHashPatch)
-          : setByKey(next, match.orderKey, {
-              key: match.orderKey,
-              createdAt: match.pendingOrder.createdAt,
-              ...(match.pendingOrder.txnType === "create"
-                ? { data: getOrderCreatedDataFromPendingOrder(match.pendingOrder, match.orderKey) }
-                : {}),
-              ...txnHashPatch,
-            });
-      }
-
-      return next;
-    });
+    setOrderStatuses((old) => applyOrderBackfillMatches(old, matches));
 
     setAwaitingBackfillOrders((old) => old.filter((order) => !matches.some((m) => m.pendingOrder === order)));
   }, []);

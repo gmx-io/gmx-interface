@@ -1,6 +1,7 @@
 import { zeroAddress } from "viem";
 
 import { OrderCreatedEventData, OrderStatus, OrderStatuses, PendingOrderData } from "context/SyntheticsEvents/types";
+import { setByKey, updateByKey } from "lib/objects";
 import { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
 import { OrderType } from "sdk/utils/orders/types";
 import { isMarketOrderType, isSwapOrderType } from "sdk/utils/orders/utils";
@@ -113,7 +114,7 @@ export function getOrderBackfillMatches(
     const action = rawActions.find(
       (rawAction) =>
         !usedActionIds.has(rawAction.id) &&
-        !getIsActionAlreadyApplied(rawAction, orderStatuses[rawAction.orderKey]) &&
+        !getIsActionAlreadyApplied(rawAction, orderStatuses[rawAction.orderKey], pendingOrder) &&
         getIsRawTradeActionMatchingPendingOrder(rawAction, pendingOrder)
     );
 
@@ -133,10 +134,23 @@ export function getOrderBackfillMatches(
   return matches;
 }
 
-function getIsActionAlreadyApplied(rawAction: RawTradeAction, orderStatus: OrderStatus | undefined) {
+function getIsActionAlreadyApplied(
+  rawAction: RawTradeAction,
+  orderStatus: OrderStatus | undefined,
+  pendingOrder: PendingOrderData
+) {
   const txnHashField = ORDER_STATUS_TXN_HASH_FIELD_BY_EVENT[rawAction.eventName as OrderBackfillEventName];
 
-  return txnHashField !== undefined && Boolean(orderStatus?.[txnHashField]);
+  if (txnHashField === undefined || !orderStatus?.[txnHashField]) {
+    return false;
+  }
+
+  // Create recoveries also need reconstructed order data so the notification can match the status.
+  if (pendingOrder.txnType === "create" && !orderStatus.data) {
+    return false;
+  }
+
+  return true;
 }
 
 function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pendingOrder: PendingOrderData) {
@@ -204,4 +218,41 @@ export function getOrderCreatedDataFromPendingOrder(
     externalSwapQuote: undefined,
     isTwap: pendingOrder.isTwap,
   };
+}
+
+export function applyOrderBackfillMatches(orderStatuses: OrderStatuses, matches: OrderBackfillMatch[]): OrderStatuses {
+  let next = orderStatuses;
+
+  for (const match of matches) {
+    const txnHashField = ORDER_STATUS_TXN_HASH_FIELD_BY_EVENT[match.eventName];
+    const existing = next[match.orderKey];
+
+    const needsTxnHash = !existing?.[txnHashField];
+    // A recovered execution/cancellation carries no order data, so reconstruct it for create notifications.
+    const needsData = match.pendingOrder.txnType === "create" && !existing?.data;
+
+    if (!needsTxnHash && !needsData) {
+      continue;
+    }
+
+    const patch: Partial<OrderStatus> = {};
+
+    if (needsTxnHash) {
+      patch[txnHashField] = match.transactionHash;
+    }
+
+    if (needsData) {
+      patch.data = getOrderCreatedDataFromPendingOrder(match.pendingOrder, match.orderKey);
+    }
+
+    next = existing
+      ? updateByKey(next, match.orderKey, patch)
+      : setByKey(next, match.orderKey, {
+          key: match.orderKey,
+          createdAt: match.pendingOrder.createdAt,
+          ...patch,
+        });
+  }
+
+  return next;
 }

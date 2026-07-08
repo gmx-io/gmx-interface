@@ -9,9 +9,11 @@ import { ExternalSwapQuote } from "sdk/utils/trade/types";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import {
+  applyOrderBackfillMatches,
   getOrderBackfillParams,
   getOrderBackfillMatches,
   getOrderCreatedDataFromPendingOrder,
+  OrderBackfillMatch,
 } from "./orderStatusesBackfill";
 
 const account = "0x1111111111111111111111111111111111111111";
@@ -258,16 +260,27 @@ describe("getOrderBackfillMatches", () => {
   });
 
   it("skips actions already applied to the order status", () => {
+    const pendingOrder = makePendingOrder();
     const executedStatuses: OrderStatuses = {
-      "0xorder": { key: "0xorder", createdAt: 1_700_000_000_000, executedTxnHash: "0xseen" },
+      "0xorder": {
+        key: "0xorder",
+        createdAt: 1_700_000_000_000,
+        executedTxnHash: "0xseen",
+        data: getOrderCreatedDataFromPendingOrder(pendingOrder, "0xorder"),
+      },
     };
 
-    expect(getMatches([makePendingOrder()], [makeRawAction()], executedStatuses)).toEqual([]);
+    expect(getMatches([pendingOrder], [makeRawAction()], executedStatuses)).toEqual([]);
 
-    const createdStatuses: OrderStatuses = {
-      "0xorder": { key: "0xorder", createdAt: 1_700_000_000_000, createdTxnHash: "0xseen" },
-    };
     const pendingLimit = makePendingOrder({ orderType: OrderType.LimitDecrease });
+    const createdStatuses: OrderStatuses = {
+      "0xorder": {
+        key: "0xorder",
+        createdAt: 1_700_000_000_000,
+        createdTxnHash: "0xseen",
+        data: getOrderCreatedDataFromPendingOrder(pendingLimit, "0xorder"),
+      },
+    };
     const createdAction = makeRawAction({
       eventName: TradeActionType.OrderCreated,
       orderType: OrderType.LimitDecrease,
@@ -276,12 +289,71 @@ describe("getOrderBackfillMatches", () => {
     expect(getMatches([pendingLimit], [createdAction], createdStatuses)).toEqual([]);
   });
 
+  it("re-matches a recorded execution that is missing reconstructed order data", () => {
+    const datalessStatuses: OrderStatuses = {
+      "0xorder": { key: "0xorder", createdAt: 1_700_000_000_000, executedTxnHash: "0xseen" },
+    };
+
+    const matches = getMatches([makePendingOrder()], [makeRawAction()], datalessStatuses);
+
+    expect(matches).toHaveLength(1);
+    expect(matches[0]?.eventName).toBe(TradeActionType.OrderExecuted);
+  });
+
   it("still matches an execution when only the creation was seen", () => {
     const createdOnlyStatuses: OrderStatuses = {
       "0xorder": { key: "0xorder", createdAt: 1_700_000_000_000, createdTxnHash: "0xcreate" },
     };
 
     expect(getMatches([makePendingOrder()], [makeRawAction()], createdOnlyStatuses)).toHaveLength(1);
+  });
+});
+
+describe("applyOrderBackfillMatches", () => {
+  function makeMatch(overrides: Partial<OrderBackfillMatch> = {}): OrderBackfillMatch {
+    return {
+      pendingOrder: makePendingOrder(),
+      orderKey: "0xorder",
+      eventName: TradeActionType.OrderExecuted,
+      transactionHash: "0xexecution",
+      ...overrides,
+    };
+  }
+
+  it("creates a completed status with reconstructed data for a fresh execution", () => {
+    const next = applyOrderBackfillMatches({}, [makeMatch()]);
+    const status = next["0xorder"];
+
+    expect(status?.executedTxnHash).toBe("0xexecution");
+    expect(status?.data && getPendingOrderKey(status.data)).toBe(getPendingOrderKey(makePendingOrder()));
+  });
+
+  it("attaches missing data to a dataless status recorded by the websocket handler", () => {
+    const datalessStatuses: OrderStatuses = {
+      "0xorder": { key: "0xorder", createdAt: 1_700_000_000_000, executedTxnHash: "0xexecution" },
+    };
+
+    const next = applyOrderBackfillMatches(datalessStatuses, [makeMatch()]);
+    const status = next["0xorder"];
+
+    expect(status?.executedTxnHash).toBe("0xexecution");
+    expect(status?.data?.key).toBe("0xorder");
+  });
+
+  it("does not overwrite an existing transaction hash", () => {
+    const seenStatuses: OrderStatuses = {
+      "0xorder": {
+        key: "0xorder",
+        createdAt: 1_700_000_000_000,
+        executedTxnHash: "0xseen",
+        data: getOrderCreatedDataFromPendingOrder(makePendingOrder(), "0xorder"),
+      },
+    };
+
+    const next = applyOrderBackfillMatches(seenStatuses, [makeMatch()]);
+
+    expect(next).toBe(seenStatuses);
+    expect(next["0xorder"]?.executedTxnHash).toBe("0xseen");
   });
 });
 
