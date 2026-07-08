@@ -5,7 +5,12 @@ import { Address, encodeFunctionData, isAddress } from "viem";
 
 import { AnyChainId, getChainName, isTestnetChain, SettlementChainId, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { getMappedTokenId, getMultichainTokenId, MULTICHAIN_FUNDING_SLIPPAGE_BPS } from "config/multichain";
+import {
+  getMappedTokenId,
+  getMultichainTokenId,
+  MULTICHAIN_FUNDING_SLIPPAGE_BPS,
+  RANDOM_ACCOUNT,
+} from "config/multichain";
 import { useGmxAccountModalOpen, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { showWalletCrossChainSendStatusToast } from "domain/multichain/progress/walletCrossChainSendToast";
@@ -15,19 +20,25 @@ import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFe
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
+import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
+import { getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, TokenBalanceType, TokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { formatUsd, parseValue } from "lib/numbers";
+import { expandDecimals, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
+import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { getMidPrice } from "sdk/utils/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
+import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -40,8 +51,11 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { calculateNetworkFeeDetails } from "./calculateNetworkFeeDetails";
 import { useGmxAccountWithdrawNetworks } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
+
+const NATIVE_TOKEN_TRANSFER_GAS_LIMIT = 21_000n;
 
 const valueSkeleton = (
   <Skeleton
@@ -235,15 +249,52 @@ export function WalletSendView() {
     fromTokenAddress: selectedToken?.address,
   });
 
+  const baseSendParams: SendParam | undefined = useMemo(() => {
+    if (isSameChain || isDestinationUnsupported || selectedToken === undefined || stargateAddress === undefined) {
+      return undefined;
+    }
+
+    const amountLD = convertToTokenAmount(
+      expandDecimals(10, USD_DECIMALS),
+      selectedToken.decimals,
+      selectedToken.prices ? getMidPrice(selectedToken.prices) : undefined
+    );
+    if (amountLD === undefined) {
+      return undefined;
+    }
+
+    return getMultichainTransferSendParams({
+      dstChainId: destinationChainId,
+      account: RANDOM_ACCOUNT.address,
+      amountLD,
+      isToGmx: false,
+    });
+  }, [isSameChain, isDestinationUnsupported, selectedToken, stargateAddress, destinationChainId]);
+
+  const {
+    data: baseQuoteSendData,
+    isLoading: isBaseQuoteSendLoading,
+    error: baseQuoteSendError,
+  } = useQuoteSendNativeFeeWithGasLimit({
+    sendParams: baseSendParams,
+    fromStargateAddress: stargateAddress,
+    fromChainId: chainId,
+    toChainId: destinationChainId,
+    fromTokenAddress: selectedToken?.address,
+  });
+
   const quoteSendNativeFee = quoteSendData?.nativeFee;
 
+  const hasCrossChainQuoteError =
+    quoteOftError !== undefined || quoteSendError !== undefined || baseQuoteSendError !== undefined;
+
   const { networkFee, networkFeeUsd } = useMultichainQuoteFeeUsd({
-    quoteSendNativeFee,
+    quoteSendNativeFee: quoteSendNativeFee ?? baseQuoteSendData?.nativeFee,
     quoteOft,
     unwrappedTokenAddress: selectedToken?.address,
     sourceChainId: chainId,
     targetChainId: destinationChainId,
-    initialTxGasLimit: quoteSendData?.gasLimit,
+    initialTxGasLimit: quoteSendData?.gasLimit ?? baseQuoteSendData?.gasLimit,
     waitForTxGasLimit: true,
   });
 
@@ -263,17 +314,92 @@ export function WalletSendView() {
     skip: isSameChain || isDestinationUnsupported || selectedToken?.isNative || stargateAddress === undefined,
   });
 
-  const { formattedMaxAvailableAmount, showClickMax, maxAvailableAmount } = useMaxAvailableAmount({
+  const gasPrice = useGasPrice(chainId);
+
+  const sameChainNetworkFeeAsyncResult = useThrottledAsync(
+    async ({ params }) => {
+      const client = getPublicClientWithRpc(params.chainId);
+
+      const gas = await client.estimateGas({
+        account: params.account,
+        to: params.to,
+        value: params.value,
+        data: params.data,
+      });
+
+      return applyGasLimitBuffer(gas);
+    },
+    {
+      params:
+        isSameChain && selectedToken !== undefined && account !== undefined
+          ? selectedToken.isNative
+            ? {
+                chainId,
+                account,
+                to: isAddress(recipient) ? recipient : account,
+                value: 1n,
+                data: undefined,
+              }
+            : {
+                chainId,
+                account,
+                to: selectedToken.address as Address,
+                value: 0n,
+                data: encodeFunctionData({
+                  abi: abis.ERC20,
+                  functionName: "transfer",
+                  args: [
+                    isAddress(recipient) ? recipient : account,
+                    bigMath.min(amount ?? walletBalance ?? 0n, walletBalance ?? 0n),
+                  ],
+                }),
+              }
+          : undefined,
+    }
+  );
+
+  const sameChainNetworkFeeDetails = useMemo(
+    () =>
+      calculateNetworkFeeDetails({
+        gasLimit: sameChainNetworkFeeAsyncResult.data,
+        gasPrice,
+        tokensData,
+      }),
+    [sameChainNetworkFeeAsyncResult.data, gasPrice, tokensData]
+  );
+
+  const fallbackSameChainNetworkFee =
+    gasPrice !== undefined ? applyGasLimitBuffer(NATIVE_TOKEN_TRANSFER_GAS_LIMIT) * gasPrice : undefined;
+
+  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
     fromToken: selectedToken,
     fromTokenBalance: walletBalance,
     fromTokenAmount: amount,
     fromTokenInputValue: inputValue,
+    isLoading: selectedToken?.isNative
+      ? isSameChain
+        ? fallbackSameChainNetworkFee === undefined
+        : networkFee === undefined && !hasCrossChainQuoteError
+      : false,
     gasPaymentToken: nativeToken,
     gasPaymentTokenBalance: nativeToken?.walletBalance,
-    gasPaymentTokenAmount: !isSameChain && selectedToken?.isNative ? quoteSendNativeFee : undefined,
+    gasPaymentTokenAmount: selectedToken?.isNative
+      ? isSameChain
+        ? sameChainNetworkFeeDetails?.amount
+        : networkFee
+      : undefined,
+    fallbackGasPaymentTokenAmount: isSameChain && selectedToken?.isNative ? fallbackSameChainNetworkFee : undefined,
+    useMinimalBuffer: isSameChain,
   });
 
-  const isInsufficientBalance = amount !== undefined && amount > maxAvailableAmount;
+  const isInsufficientBalance = amount !== undefined && walletBalance !== undefined && amount > walletBalance;
+
+  const sendNetworkFee = isSameChain ? sameChainNetworkFeeDetails?.amount : networkFee;
+
+  const isInsufficientNativeBalance =
+    nativeToken?.walletBalance !== undefined &&
+    sendNetworkFee !== undefined &&
+    sendNetworkFee + (selectedToken?.isNative ? amount ?? 0n : 0n) > nativeToken.walletBalance;
 
   const nextWalletBalanceUsd =
     !isInsufficientBalance && walletBalanceUsd !== undefined && amountUsd !== undefined
@@ -418,15 +544,33 @@ export function WalletSendView() {
     return isTestnet ? <Trans>1m 40s</Trans> : <Trans>20s</Trans>;
   }, [isSameChain, isDestinationUnsupported, amount, isTestnet]);
 
-  const isNetworkFeeLoading = isQuoteOftLoading || isQuoteSendLoading;
+  const isNetworkFeeLoading = isSameChain
+    ? sameChainNetworkFeeDetails === undefined && sameChainNetworkFeeAsyncResult.error === undefined
+    : isQuoteOftLoading || isQuoteSendLoading || isBaseQuoteSendLoading;
 
   const networkFeeValue = useMemo(() => {
+    if (isSameChain) {
+      if (sameChainNetworkFeeDetails === undefined) {
+        return sameChainNetworkFeeAsyncResult.error !== undefined ? "-" : "...";
+      }
+
+      return (
+        <AmountWithUsdBalance
+          className="leading-1"
+          amount={sameChainNetworkFeeDetails.amount}
+          decimals={sameChainNetworkFeeDetails.decimals}
+          usd={sameChainNetworkFeeDetails.usd}
+          symbol={sameChainNetworkFeeDetails.symbol}
+        />
+      );
+    }
+
     if (isDestinationUnsupported) {
       return "-";
     }
 
     if (networkFee === undefined || networkFeeUsd === undefined || nativeToken === undefined) {
-      if (quoteOftError !== undefined || quoteSendError !== undefined) {
+      if (hasCrossChainQuoteError) {
         return "-";
       }
 
@@ -442,7 +586,16 @@ export function WalletSendView() {
         symbol={nativeToken.symbol}
       />
     );
-  }, [isDestinationUnsupported, networkFee, networkFeeUsd, nativeToken, quoteOftError, quoteSendError]);
+  }, [
+    isSameChain,
+    sameChainNetworkFeeDetails,
+    sameChainNetworkFeeAsyncResult.error,
+    isDestinationUnsupported,
+    networkFee,
+    networkFeeUsd,
+    nativeToken,
+    hasCrossChainQuoteError,
+  ]);
 
   let buttonState: { text: ReactNode; disabled?: boolean; onClick?: () => void } = {
     text: t`Send`,
@@ -466,6 +619,8 @@ export function WalletSendView() {
     buttonState = { text: t`Enter amount`, disabled: true };
   } else if (isInsufficientBalance) {
     buttonState = { text: t`Insufficient balance`, disabled: true };
+  } else if (isInsufficientNativeBalance) {
+    buttonState = { text: getDefaultInsufficientGasMessage(), disabled: true };
   } else if (!isSameChain) {
     if (isAboveLimit || isBelowLimit) {
       buttonState = { text: t`Send`, disabled: true };
@@ -621,12 +776,10 @@ export function WalletSendView() {
             valueClassName="numbers"
             value={estimatedTimeValue}
           />
-          {!isSameChain && (
-            <SyntheticsInfoRow
-              label={<Trans>Network fee</Trans>}
-              value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
-            />
-          )}
+          <SyntheticsInfoRow
+            label={<Trans>Network fee</Trans>}
+            value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
+          />
           <SyntheticsInfoRow
             label={<Trans>Wallet balance</Trans>}
             value={<ValueTransition from={formatUsd(walletBalanceUsd)} to={formatUsd(nextWalletBalanceUsd)} />}
