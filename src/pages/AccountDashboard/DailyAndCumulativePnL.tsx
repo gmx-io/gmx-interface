@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
   Bar,
@@ -94,6 +94,26 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
     setIsShareModalMounted(true);
     setIsShareModalOpen(true);
   }, []);
+
+  // Unmount the share modal once it has closed so its data hooks (referral polling, PnL
+  // queries) stop running in the background. The delay lets the close animation finish, and
+  // remounting on reopen recomputes the period bucket against the current time.
+  useEffect(() => {
+    if (isShareModalOpen || !isShareModalMounted) {
+      return;
+    }
+    const timeoutId = setTimeout(() => setIsShareModalMounted(false), 300);
+    return () => clearTimeout(timeoutId);
+  }, [isShareModalOpen, isShareModalMounted]);
+
+  // Reset when viewing someone else's account (e.g. wallet disconnect) so the modal does not
+  // linger or auto-reopen when the account becomes own again.
+  useEffect(() => {
+    if (!isOwnAccount) {
+      setIsShareModalOpen(false);
+      setIsShareModalMounted(false);
+    }
+  }, [isOwnAccount]);
 
   const { isMobile } = useBreakpoints();
 

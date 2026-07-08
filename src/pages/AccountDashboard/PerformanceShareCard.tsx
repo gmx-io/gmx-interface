@@ -90,7 +90,9 @@ export const PerformanceShareCard = forwardRef<HTMLDivElement, Props>(
           />
           <div className="flex gap-20 max-md:gap-10">
             <ShareCardStat label={<Trans>Period</Trans>}>{periodLabel}</ShareCardStat>
-            <ShareCardStat label={<Trans>Win rate</Trans>}>{formatPercentage(winsLossesRatioBps ?? 0n)}</ShareCardStat>
+            {winsLossesRatioBps !== undefined && (
+              <ShareCardStat label={<Trans>Win rate</Trans>}>{formatPercentage(winsLossesRatioBps)}</ShareCardStat>
+            )}
             <ShareCardStat label={<Trans>Trades</Trans>}>{tradesCount}</ShareCardStat>
 
             <ShareCardReferralCodeStat referralCodeOwnerKind={referralCodeOwnerKind} code={code} />

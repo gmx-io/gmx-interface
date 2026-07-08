@@ -5,6 +5,7 @@ import type { Address } from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { usePnlSummaryData } from "domain/synthetics/accountStats";
+import { useChainId } from "lib/chains";
 import useLoadImage from "lib/useLoadImage";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -35,6 +36,10 @@ type Props = {
 export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen }: Props) {
   const { _ } = useLingui();
 
+  // Referral codes are looked up and created on the connected wallet chain, which can differ
+  // from the dashboard's ?network= chain used for the PnL stats below.
+  const { chainId: walletChainId } = useChainId();
+
   const [showPnlAmounts, setShowPnlAmounts] = useState(true);
   const sharePerformanceBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -50,7 +55,7 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
     handleReferralCodeSuccess,
     handlePromptToCreateReferralCode,
   } = useShareReferralCodeState({
-    chainId,
+    chainId: walletChainId,
     account,
     isOpen,
     source: "account-dashboard",
