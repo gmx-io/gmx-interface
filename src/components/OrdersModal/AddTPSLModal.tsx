@@ -533,8 +533,6 @@ export function AddTPSLModal({
       return { activeEstimatedPnl: undefined, activeEstimatedPnlPercentage: undefined };
     }
 
-    // Only force -100% when we can back-derive the USD from a non-zero percentage; otherwise keep both
-    // raw so the value and percentage never desync (e.g. a beyond-liq trigger whose PnL rounds to 0 bps).
     const showFullLoss = activeIsBeyondLiquidation && activeDecreaseAmounts.estimatedPnlPercentage !== 0n;
     if (!showFullLoss) {
       return {

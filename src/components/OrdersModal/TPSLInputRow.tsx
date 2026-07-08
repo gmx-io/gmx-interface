@@ -121,8 +121,6 @@ export function TPSLInputRow({
   const currentPriceValue = useMemo(() => {
     if (!priceValue) return undefined;
     const parsed = parseValue(priceValue, USD_DECIMALS);
-    // priceValue is the displayed (visual-multiplied) price; convert to the raw price used by
-    // entry/liquidation prices so PnL and beyond-liquidation checks compare like with like.
     return parsed === undefined ? undefined : parsed / BigInt(visualMultiplier);
   }, [priceValue, visualMultiplier]);
 
