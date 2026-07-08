@@ -536,6 +536,11 @@ export const WithdrawalView = () => {
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
 
+  const isInsufficientBalance =
+    selectedToken?.gmxAccountBalance !== undefined &&
+    inputAmount !== undefined &&
+    inputAmount > selectedToken.gmxAccountBalance;
+
   const filteredNetworks = useMemo(
     () =>
       getFilteredNetworks({
@@ -551,14 +556,19 @@ export const WithdrawalView = () => {
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo(() => {
-    if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
+    if (
+      selectedToken === undefined ||
+      inputAmount === undefined ||
+      inputAmountUsd === undefined ||
+      isInsufficientBalance
+    ) {
       return { nextGmxAccountBalanceUsd: undefined };
     }
 
     const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) - inputAmountUsd;
 
     return { nextGmxAccountBalanceUsd };
-  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd]);
+  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd, isInsufficientBalance]);
 
   const sendParamsWithoutSlippage: SendParam | undefined = useMemo(() => {
     if (
@@ -1101,10 +1111,6 @@ export const WithdrawalView = () => {
   }, [withdrawalMaxDetails.formattedMaxAvailableAmount, setInputValue]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
-  const isInsufficientBalance =
-    selectedToken?.gmxAccountBalance !== undefined &&
-    inputAmount !== undefined &&
-    inputAmount > selectedToken.gmxAccountBalance;
 
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
@@ -1164,7 +1170,7 @@ export const WithdrawalView = () => {
       text: t`Enter withdrawal amount`,
       disabled: true,
     };
-  } else if (selectedToken?.gmxAccountBalance !== undefined && inputAmount > selectedToken.gmxAccountBalance) {
+  } else if (isInsufficientBalance) {
     buttonState = {
       text: t`Insufficient balance`,
       disabled: true,

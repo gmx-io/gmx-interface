@@ -169,8 +169,6 @@ export function WalletSendView() {
     selectedToken && walletBalance !== undefined
       ? convertToUsd(walletBalance, selectedToken.decimals, selectedToken.prices?.maxPrice)
       : undefined;
-  const nextWalletBalanceUsd =
-    walletBalanceUsd !== undefined && amountUsd !== undefined ? walletBalanceUsd - amountUsd : undefined;
 
   const isRecipientValid = isAddress(recipient);
   const isInputEmpty = amount === undefined || amount <= 0n;
@@ -276,6 +274,11 @@ export function WalletSendView() {
   });
 
   const isInsufficientBalance = amount !== undefined && amount > maxAvailableAmount;
+
+  const nextWalletBalanceUsd =
+    !isInsufficientBalance && walletBalanceUsd !== undefined && amountUsd !== undefined
+      ? walletBalanceUsd - amountUsd
+      : undefined;
 
   const handleMaxClick = useCallback(() => {
     setInputValue(formattedMaxAvailableAmount);
