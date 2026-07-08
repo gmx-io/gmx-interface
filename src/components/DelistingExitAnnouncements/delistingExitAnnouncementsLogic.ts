@@ -4,7 +4,7 @@ import { DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX } from "config/localStorage
 import { isDelistingMarket } from "config/static/markets";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
-import type { PositionsInfoData } from "domain/synthetics/positions";
+import type { PositionsData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
 import { DAY_MS } from "lib/dates";
 import { getByKey } from "lib/objects";
@@ -44,7 +44,7 @@ export function buildLiquidityBodyText(poolNames: string[]): string {
 
 export function computeAffectedPositionMarkets(
   chainId: number,
-  positionsInfoData: PositionsInfoData | undefined
+  positionsInfoData: PositionsData | undefined
 ): { marketAddresses: string[]; positionCount: number } {
   const marketAddresses = new Set<string>();
   let positionCount = 0;
@@ -127,7 +127,7 @@ export type DelistingToast = {
 
 export function getActiveDelistingAnnouncements(params: {
   chainId: number;
-  positionsInfoData: PositionsInfoData | undefined;
+  positionsInfoData: PositionsData | undefined;
   depositMarketTokensData: TokensData | undefined;
   marketsInfoData: MarketsInfoData | undefined;
   now: number;

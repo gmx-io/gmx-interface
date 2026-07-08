@@ -845,6 +845,10 @@ export function isDelistingMarket(chainId: number, marketTokenAddress: string): 
   return DELISTING_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
 }
 
+export function hasDelistingMarkets(chainId: number): boolean {
+  return (DELISTING_MARKET_ADDRESSES[chainId]?.size ?? 0) > 0;
+}
+
 export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
     // Commodity markets — accessible only via GLV
