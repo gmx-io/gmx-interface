@@ -131,6 +131,10 @@ msgstr ""
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
 msgstr ""
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
+msgstr ""
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr ""
@@ -145,6 +149,10 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
+msgstr ""
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using your GMX Account."
 msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
@@ -321,6 +329,10 @@ msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Show error"
+msgstr ""
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -645,6 +657,10 @@ msgstr ""
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
+msgstr ""
+
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes fees for additional orders. Refunded in full if they don't trigger and are canceled. <0>Read more</0>."
 msgstr ""
@@ -766,6 +782,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
+msgstr ""
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
 msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
@@ -3120,6 +3140,10 @@ msgstr ""
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral spread"
 msgstr ""
@@ -3859,6 +3883,10 @@ msgstr ""
 msgid "Deadline:"
 msgstr ""
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Connected to {sourceChainName}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4208,6 +4236,10 @@ msgstr ""
 msgid "Multiple wallets are connected on different networks. GMX expects {desiredChainName}."
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "Wallet uses funds directly from your connected wallet."
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Executes when oracle price is {0} {1}"
 msgstr ""
@@ -4422,10 +4454,6 @@ msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
-msgstr ""
-
-#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-msgid "You can open isolated positions on GMX using funds directly from your connected wallet. GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
@@ -6888,6 +6916,10 @@ msgstr ""
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr ""
@@ -7594,6 +7626,10 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
+msgstr ""
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "Wallet funds on {sourceChainName} are not used directly for GMX trades."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8987,6 +9023,10 @@ msgstr ""
 msgid "Receive (approximate)"
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "GMX Account uses a separate trading balance linked to that wallet. To use it, fund your wallet first, then deposit to your GMX Account."
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send failed"
@@ -9263,10 +9303,6 @@ msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
-msgstr ""
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Connected to {sourceChainName}. Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
 msgstr ""
 
 #: src/lib/contracts/callContract.tsx
@@ -10683,10 +10719,6 @@ msgstr ""
 msgid "Indices"
 msgstr "[!! Indices !!]"
 
-#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-msgid "You can open isolated positions on GMX using your GMX Account. Wallet funds on {sourceChainName} are not used directly for GMX trades. GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
-msgstr ""
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
 msgstr ""
@@ -10805,6 +10837,10 @@ msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"
+msgstr ""
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account."
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -11065,10 +11101,6 @@ msgstr ""
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Referral code created"
-msgstr ""
-
-#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account. Wallet uses funds directly from your connected wallet. GMX Account uses a separate trading balance linked to that wallet. To use it, fund it with a deposit to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

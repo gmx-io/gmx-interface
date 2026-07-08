@@ -58,10 +58,14 @@ const DOCS_MULTICHAIN_URL = "https://docs.gmx.io/docs/trading/overview/#multicha
 function WalletOnlyInfo({ chainName }: { chainName: string }) {
   return (
     <div className="flex flex-col gap-16">
-      <Trans>
-        You can open isolated positions on GMX using funds directly from your connected wallet. GMX Account is not
-        available on {chainName}. To use GMX Account, switch to Arbitrum.
-      </Trans>
+      <div className="flex flex-col gap-12">
+        <div>
+          <Trans>You can open isolated positions on GMX using funds directly from your connected wallet.</Trans>
+        </div>
+        <div>
+          <Trans>GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum.</Trans>
+        </div>
+      </div>
       <ExternalLink href={DOCS_MULTICHAIN_URL} variant="icon-arrow" className="font-medium text-blue-300">
         <Trans>Read more</Trans>
       </ExternalLink>
@@ -77,24 +81,52 @@ function GmxAccountInfo({
   settlementChainName: string;
 }) {
   return (
-    <Trans>
-      You can open isolated positions on GMX using your GMX Account. Wallet funds on {sourceChainName} are not used
-      directly for GMX trades. GMX Account uses a separate trading balance linked to your wallet. To trade, deposit
-      funds from your wallet to your GMX Account. All positions belong to the same connected wallet and are shown
-      together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds.
-    </Trans>
+    <div className="flex flex-col gap-12">
+      <div>
+        <Trans>You can open isolated positions on GMX using your GMX Account.</Trans>
+      </div>
+      <div>
+        <Trans>Wallet funds on {sourceChainName} are not used directly for GMX trades.</Trans>
+      </div>
+      <div>
+        <Trans>
+          GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to
+          your GMX Account.
+        </Trans>
+      </div>
+      <div>
+        <Trans>
+          All positions belong to the same connected wallet and are shown together, whether they were opened from{" "}
+          {settlementChainName} wallet funds or GMX Account funds.
+        </Trans>
+      </div>
+    </div>
   );
 }
 
 function WalletAndGmxAccountInfo() {
   return (
     <div className="flex flex-col gap-16">
-      <Trans>
-        You can open isolated positions on GMX using funds from either your wallet or your GMX Account. Wallet uses
-        funds directly from your connected wallet. GMX Account uses a separate trading balance linked to that wallet. To
-        use it, fund it with a deposit to your GMX Account. All positions belong to the same connected wallet and are
-        shown together, whether they were opened with wallet funds or GMX Account funds.
-      </Trans>
+      <div className="flex flex-col gap-12">
+        <div>
+          <Trans>You can open isolated positions on GMX using funds from either your wallet or your GMX Account.</Trans>
+        </div>
+        <div>
+          <Trans>Wallet uses funds directly from your connected wallet.</Trans>
+        </div>
+        <div>
+          <Trans>
+            GMX Account uses a separate trading balance linked to that wallet. To use it, fund your wallet first, then
+            deposit to your GMX Account.
+          </Trans>
+        </div>
+        <div>
+          <Trans>
+            All positions belong to the same connected wallet and are shown together, whether they were opened with
+            wallet funds or GMX Account funds.
+          </Trans>
+        </div>
+      </div>
       <ExternalLink href={DOCS_MULTICHAIN_URL} variant="icon-arrow" className="font-medium text-blue-300">
         <Trans>Read more</Trans>
       </ExternalLink>
@@ -132,6 +164,7 @@ export function MainViewTitle() {
       <TooltipWithPortal
         content={<div className="text-typography-secondary">{info}</div>}
         variant="none"
+        position="bottom"
         className="flex items-center"
         tooltipClassName="!max-w-[320px]"
         disabled={!isMainViewActive}

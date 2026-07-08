@@ -131,6 +131,10 @@ msgstr ""
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
 msgstr ""
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
+msgstr "このネットワークのウォレット資金は、{settlementChainName}での取引のためにGMX Accountに入金できます。{settlementChainName}のウォレット残高で直接取引するには、<0>{settlementChainName}に切り替えてください</0>。"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "同意する"
@@ -146,6 +150,10 @@ msgstr "BonsaiDAO"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "承認署名完了"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using your GMX Account."
+msgstr "GMX Accountを使用して、GMXで個別ポジションを開くことができます。"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
@@ -322,6 +330,10 @@ msgstr "{gasPaymentTokensText}を購入"
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Show error"
 msgstr "エラーを表示"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
+msgstr "GMX Accountは{chainName}では利用できません。GMX Accountを使用するには、Arbitrumに切り替えてください。"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "settings"
@@ -645,6 +657,10 @@ msgstr ""
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "インセンティブ、エアドロップ、賞品はこちらに表示されます"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
+msgstr "接続されたウォレットの資金を直接使用して、GMXで個別ポジションを開くことができます。"
+
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes fees for additional orders. Refunded in full if they don't trigger and are canceled. <0>Read more</0>."
 msgstr "最大ネットワーク手数料には追加注文の手数料が含まれます。トリガーされずキャンセルされた場合は全額返金されます。<0>詳細を読む</0>。"
@@ -767,6 +783,10 @@ msgstr "1CTを有効化"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
 msgstr "実現PnL"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
+msgstr "すべてのポジションは同じ接続されたウォレットに属し、ウォレットの資金とGMX Accountの資金のどちらで開かれたものであっても、まとめて表示されます。"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High external swap impact"
@@ -3120,6 +3140,10 @@ msgstr "注文タイプ"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
+msgstr "GMX Accountは、ウォレットに紐づいた別の取引残高を使用します。取引するには、ウォレットからGMX Accountへ資金を入金してください。"
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral spread"
 msgstr "担保スプレッド"
@@ -3859,6 +3883,10 @@ msgstr "{gmOrGlvLabel} のブリッジ先..."
 msgid "Deadline:"
 msgstr "有効期限:"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Connected to {sourceChainName}"
+msgstr "{sourceChainName}に接続済み"
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4208,6 +4236,10 @@ msgstr "マーケット"
 msgid "Multiple wallets are connected on different networks. GMX expects {desiredChainName}."
 msgstr "複数のウォレットが異なるネットワークに接続されています。GMXは{desiredChainName}を想定しています。"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "Wallet uses funds directly from your connected wallet."
+msgstr "ウォレットは、接続されたウォレットの資金を直接使用します。"
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Executes when oracle price is {0} {1}"
 msgstr "オラクル価格が {0} {1} のとき約定します"
@@ -4423,10 +4455,6 @@ msgstr "ストップロスを作成"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
 msgstr "方向"
-
-#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-msgid "You can open isolated positions on GMX using funds directly from your connected wallet. GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum."
-msgstr "接続されたウォレットの資金を直接使用して、GMXで個別ポジションを開くことができます。GMX Accountは{chainName}では利用できません。GMX Accountを使用するには、Arbitrumに切り替えてください。"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position is currently above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
@@ -6888,6 +6916,10 @@ msgstr "分"
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "GMXが暗号資産の利回りを得るのに最適な場所の一つである理由は何ですか？"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
+msgstr "すべてのポジションは同じ接続されたウォレットに属し、{settlementChainName}のウォレット資金とGMX Accountの資金のどちらで開かれたものであっても、まとめて表示されます。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "{tokenSymbol}を承認中..."
@@ -7595,6 +7627,10 @@ msgstr "私の資産"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "GMXアカウントから引き出し"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "Wallet funds on {sourceChainName} are not used directly for GMX trades."
+msgstr "{sourceChainName}上のウォレット資金は、GMXでの取引に直接使用されません。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8987,6 +9023,10 @@ msgstr "通常アカウント"
 msgid "Receive (approximate)"
 msgstr "受取（概算）"
 
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "GMX Account uses a separate trading balance linked to that wallet. To use it, fund your wallet first, then deposit to your GMX Account."
+msgstr "GMX Accountは、そのウォレットに紐づいた別の取引残高を使用します。使用するには、まずウォレットに資金を用意してから、GMX Accountに入金してください。"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send failed"
@@ -9264,10 +9304,6 @@ msgstr "{operationTokenSymbol}を売却"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 msgstr ""
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Connected to {sourceChainName}. Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
-msgstr "{sourceChainName}に接続されています。このネットワークのウォレット資金は、{settlementChainName}での取引のためにGMX Accountに入金できます。{settlementChainName}のウォレット残高で直接取引するには、<0>{settlementChainName}に切り替えてください</0>。"
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -10683,10 +10719,6 @@ msgstr "GMX V1 アクション"
 msgid "Indices"
 msgstr "指数"
 
-#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-msgid "You can open isolated positions on GMX using your GMX Account. Wallet funds on {sourceChainName} are not used directly for GMX trades. GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
-msgstr "GMX Accountを使用して、GMXで個別ポジションを開くことができます。{sourceChainName}上のウォレット資金は、GMXでの取引に直接使用されません。GMX Accountは、ウォレットに紐づいた別の取引残高を使用します。取引するには、ウォレットからGMX Accountへ資金を入金してください。すべてのポジションは同じ接続されたウォレットに属し、{settlementChainName}のウォレット資金とGMX Accountの資金のどちらで開かれたものであっても、まとめて表示されます。"
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
 msgstr "GLV ボールト:"
@@ -10806,6 +10838,10 @@ msgstr "Rage Trade"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"
 msgstr "1時間"
+
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
+msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account."
+msgstr "ウォレットまたはGMX Accountのいずれかの資金を使用して、GMXで個別ポジションを開くことができます。"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs"
@@ -11066,10 +11102,6 @@ msgstr "リンクをコピー"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Referral code created"
 msgstr "リファラルコードが作成されました"
-
-#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
-msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account. Wallet uses funds directly from your connected wallet. GMX Account uses a separate trading balance linked to that wallet. To use it, fund it with a deposit to your GMX Account. All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
-msgstr "ウォレットまたはGMX Accountのいずれかの資金を使用して、GMXで個別ポジションを開くことができます。ウォレットは、接続されたウォレットの資金を直接使用します。GMX Accountは、そのウォレットに紐づいた別の取引残高を使用します。使用するには、GMX Accountへの入金により資金を準備してください。すべてのポジションは同じ接続されたウォレットに属し、ウォレットの資金とGMX Accountの資金のどちらで開かれたものであっても、まとめて表示されます。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

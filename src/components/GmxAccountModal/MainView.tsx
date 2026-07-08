@@ -8,6 +8,7 @@ import { isAddressEqual } from "viem";
 
 import { BOTANIX, getChainName, getExplorerUrl } from "config/chains";
 import type { ContractsChainId, SourceChainId } from "config/chains";
+import { getChainIcon } from "config/icons";
 import { GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY } from "config/localStorage";
 import { getAccountModalMode } from "config/multichain";
 import {
@@ -34,22 +35,22 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 import { getToken } from "sdk/configs/tokens";
 import { Token } from "sdk/utils/tokens/types";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { MODAL_ANIMATION_DURATION_MS } from "components/Modal/Modal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import BellIcon from "img/ic_bell.svg?react";
 import CheckIcon from "img/ic_check.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import ClockIcon from "img/ic_clock.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
+import DepositIcon from "img/ic_deposit.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
 import KeyIcon from "img/ic_key.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
@@ -59,6 +60,7 @@ import SettingsIcon from "img/ic_settings.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
+import WithdrawIcon from "img/ic_withdraw.svg?react";
 
 import { useAvailableToTradeAssetSettlementChain } from "./hooks";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
@@ -84,7 +86,7 @@ function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () 
 }
 
 const WALLET_ICON_BUTTON_BLUE =
-  "flex size-28 -m-4 items-center justify-center rounded-8 text-blue-300 gmx-hover:bg-blue-300/20";
+  "flex size-28 -m-4 items-center justify-center rounded-8 text-blue-400 gmx-hover:bg-blue-400/20 dark:text-blue-300 dark:gmx-hover:bg-blue-300/20";
 const WALLET_ICON_BUTTON_GRAY =
   "flex size-28 -m-4 items-center justify-center rounded-8 text-typography-secondary gmx-hover:bg-fill-surfaceHover gmx-hover:text-typography-primary";
 
@@ -123,7 +125,7 @@ function WalletBlock({ account }: { account: string }) {
   };
 
   return (
-    <div className="flex flex-col gap-8 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
+    <div className="flex flex-col gap-6 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
       <div className="flex items-center justify-between gap-8">
         <button
           className="flex items-center gap-8 text-typography-secondary gmx-hover:text-typography-primary"
@@ -231,16 +233,31 @@ function ConnectedToSourceChainBanner({
   }
 
   return (
-    <AlertInfoCard type="info" onClose={() => setIsDismissed(true)}>
-      <Trans>
-        Connected to {sourceChainName}. Wallet funds on this network can be deposited to GMX Account for{" "}
-        {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance,{" "}
-        <span role="button" tabIndex={0} className="cursor-pointer text-blue-300 underline" onClick={handleSwitch}>
-          switch to {settlementChainName}
-        </span>
-        .
-      </Trans>
-    </AlertInfoCard>
+    <ColorfulBanner onClose={() => setIsDismissed(true)}>
+      <div className="flex items-start gap-8">
+        <img src={getChainIcon(srcChainId)} alt={sourceChainName} className="size-20 shrink-0" />
+        <div className="flex flex-col gap-4">
+          <div className="font-medium">
+            <Trans>Connected to {sourceChainName}</Trans>
+          </div>
+          <div className="font-medium text-typography-secondary dark:text-blue-100">
+            <Trans>
+              Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade
+              directly with {settlementChainName} wallet balance,{" "}
+              <span
+                role="button"
+                tabIndex={0}
+                className="cursor-pointer font-medium text-blue-300 underline decoration-dotted"
+                onClick={handleSwitch}
+              >
+                switch to {settlementChainName}
+              </span>
+              .
+            </Trans>
+          </div>
+        </div>
+      </div>
+    </ColorfulBanner>
   );
 }
 
@@ -256,8 +273,8 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
   return (
     <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
       <div className="flex items-start justify-between gap-8">
-        <div className="flex flex-col gap-8">
-          <span className="text-body-small text-typography-secondary">
+        <div className="flex flex-col gap-6">
+          <span className="text-body-small font-medium text-typography-secondary">
             <Trans>GMX Account Balance</Trans>
           </span>
           <BalanceAmount
@@ -277,10 +294,6 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
         )}
       </div>
 
-      {srcChainId !== undefined && (
-        <ConnectedToSourceChainBanner srcChainId={srcChainId} settlementChainId={settlementChainId} />
-      )}
-
       {hasBalance ? (
         <div className="flex gap-12">
           <Button
@@ -289,7 +302,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
             className="flex-grow basis-1/2 !text-typography-primary"
             onClick={() => setIsVisibleOrView("deposit")}
           >
-            <ArrowDownIcon className="size-20 text-blue-300" />
+            <DepositIcon className="size-20 text-blue-400 dark:text-blue-100" />
             <Trans>Deposit</Trans>
           </Button>
           <Button
@@ -298,7 +311,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
             className="flex-grow basis-1/2 !text-typography-primary"
             onClick={() => setIsVisibleOrView("withdraw")}
           >
-            <ArrowDownIcon className="size-20 rotate-180 text-blue-300" />
+            <WithdrawIcon className="size-20 text-blue-400 dark:text-blue-100" />
             <Trans>Withdraw</Trans>
           </Button>
         </div>
@@ -309,9 +322,13 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
           className="w-full !text-typography-primary"
           onClick={() => setIsVisibleOrView("deposit")}
         >
-          <ArrowDownIcon className="size-20 text-blue-300" />
+          <DepositIcon className="size-20 text-blue-400 dark:text-blue-100" />
           <Trans>Deposit to GMX Account</Trans>
         </Button>
+      )}
+
+      {srcChainId !== undefined && (
+        <ConnectedToSourceChainBanner srcChainId={srcChainId} settlementChainId={settlementChainId} />
       )}
 
       <button
@@ -319,7 +336,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
         onClick={() => setIsVisibleOrView("transferHistory")}
       >
         <ClockIcon className="size-16" />
-        <span className="text-13">
+        <span className="text-13 font-medium">
           <Trans>Transfer history</Trans>
         </span>
       </button>
@@ -333,7 +350,7 @@ function MenuRow({ icon, label, onClick }: { icon: ReactNode; label: ReactNode; 
       className="-mx-12 flex items-center justify-between rounded-8 p-12 -outline-offset-4 gmx-hover:bg-fill-surfaceElevated50"
       onClick={onClick}
     >
-      <div className="text-body-medium flex items-center gap-8 text-typography-secondary">
+      <div className="text-body-medium flex items-center gap-8 font-medium text-typography-secondary">
         {icon}
         {label}
       </div>
