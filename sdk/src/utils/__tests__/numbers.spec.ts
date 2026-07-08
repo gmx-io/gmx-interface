@@ -431,6 +431,11 @@ describe("formatPercentage", () => {
     expect(formatPercentage(123456n, { displayDecimals: 1 })).toBe("1234.6%");
   });
 
+  it("should format with commas when requested", () => {
+    expect(formatPercentage(123456n, { useCommas: true })).toBe("1,234.56%");
+    expect(formatPercentage(-123456n, { signed: true, useCommas: true })).toBe("-\u200a1,234.56%");
+  });
+
   it("should handle basis points (bps) formatting", () => {
     expect(
       formatPercentage(toBigNumberWithDecimals("1", PERCENT_PRECISION_DECIMALS), { bps: false, displayDecimals: 4 })

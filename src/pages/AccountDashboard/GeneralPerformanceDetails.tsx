@@ -172,7 +172,7 @@ function GeneralPerformanceDetailsRow({
               "decoration-gray-400": row.pnlBps === 0n,
             })}
             content={<PnlPercentageTooltip row={row} />}
-            handle={<span className="numbers">{formatPercentage(row.pnlBps, { signed: true })}</span>}
+            handle={<span className="numbers">{formatPercentage(row.pnlBps, { signed: true, useCommas: true })}</span>}
           />
         </MetricWithRank>
       </TableTd>

@@ -106,9 +106,8 @@ export function AccountDashboard() {
                   <DailyAndCumulativePnL
                     chainId={chainId}
                     account={account}
-                    startDate={dashboardDateRange[0]}
-                    endDate={dashboardDateRange[1]}
-                    onDateRangeChange={setDashboardDateRange}
+                    dateRange={dashboardDateRange}
+                    setDateRange={setDashboardDateRange}
                   />
                 </div>
               </div>
