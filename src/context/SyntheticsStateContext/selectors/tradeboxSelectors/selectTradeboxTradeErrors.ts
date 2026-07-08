@@ -8,6 +8,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
@@ -45,6 +46,7 @@ const selectTradeboxSwapTradeError = createSelector((q) => {
   const { isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
   const isStakeOrUnstake = q(selectTradeboxIsStakeOrUnstake);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
   const { triggerRatio, markRatio } = q(selectTradeboxTradeRatios);
   const fees = q(selectTradeboxFees);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
@@ -65,6 +67,7 @@ const selectTradeboxSwapTradeError = createSelector((q) => {
     isLimit,
     isWrapOrUnwrap,
     isStakeOrUnstake,
+    isFromTokenGmxAccount,
     triggerRatio,
     markRatio,
     fees,
