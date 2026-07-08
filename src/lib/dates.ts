@@ -1,16 +1,34 @@
+import { tz } from "@date-fns/tz";
 import { t } from "@lingui/macro";
-import { format as formatDateFn, isToday, isYesterday } from "date-fns";
+import { format as formatDateFn, isToday, isYesterday, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
 
 export type DateRange = [startDate: Date | undefined, endDate: Date | undefined];
 export type SetDateRange = (dateRange: DateRange) => void;
 
-export function formatDateTime(time: number) {
-  return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a");
+const UTC_DATE_FORMAT_OPTIONS = { in: tz("UTC") };
+
+export const SECONDS_IN_DAY = 86400;
+export const ONE_YEAR_SECONDS = SECONDS_IN_DAY * 365;
+
+type DateFormatOptions = {
+  timezone?: "utc" | "device";
+};
+
+function getDateFormatOptions(options?: DateFormatOptions) {
+  return options?.timezone === "utc" ? UTC_DATE_FORMAT_OPTIONS : undefined;
 }
 
-export function formatDate(time: number) {
-  return formatDateFn(time * 1000, "dd MMM yyyy");
+export function formatDateTime(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a", getDateFormatOptions(options));
+}
+
+export function formatDate(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "dd MMM yyyy", getDateFormatOptions(options));
+}
+
+export function formatDateCompact(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "dd/MM", getDateFormatOptions(options));
 }
 
 function formatDateWithComma(time: number) {
@@ -50,12 +68,6 @@ export function getDaysAgo(timestamp: number) {
   return Math.floor(diff / 86400);
 }
 
-export function toUtcDayStart(date: Date) {
-  const dateUtcSeconds = Math.trunc(date.getTime() / 1000);
-
-  return Math.trunc(dateUtcSeconds / 86400) * 86400;
-}
-
 export function toUtcDayStartByCalendarDate(date: Date) {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 1000;
 }
@@ -64,19 +76,56 @@ export function toUtcDayEndByCalendarDate(date: Date) {
   return toUtcDayStartByCalendarDate(date) + SECONDS_IN_DAY - 1;
 }
 
+function toSeconds(date: Date) {
+  return Math.round(date.getTime() / 1000);
+}
+
+const START_OF_DAY_DURATION = {
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+  milliseconds: 0,
+};
+
+const INCLUDING_CURRENT_DAY_DURATION = {
+  hours: 23,
+  minutes: 59,
+  seconds: 59,
+  milliseconds: 0,
+};
+
 export function normalizeDateRange<S extends Date | undefined, E extends Date | undefined>(
   start: S,
   end: E
 ): [S extends Date ? number : undefined, E extends Date ? number : undefined] {
-  const fromTxTimestamp = start ? toUtcDayStartByCalendarDate(start) : undefined;
-  const toTxTimestamp = end ? toUtcDayEndByCalendarDate(end) : undefined;
+  const fromTxTimestamp = start ? toSeconds(setTime(start, START_OF_DAY_DURATION)) : undefined;
+  const toTxTimestamp = end ? toSeconds(setTime(end, INCLUDING_CURRENT_DAY_DURATION)) : undefined;
+
+  return [fromTxTimestamp, toTxTimestamp] as [S extends Date ? number : undefined, E extends Date ? number : undefined];
+}
+
+export function normalizeDateRangeToUtcBucketDays<S extends Date | undefined, E extends Date | undefined>(
+  start: S,
+  end: E
+): [S extends Date ? number : undefined, E extends Date ? number : undefined] {
+  const fromTxTimestamp = start ? getUtcDayStartTimestamp(start) : undefined;
+  const toTxTimestamp = end ? getUtcDayStartTimestamp(end) : undefined;
+
+  return [fromTxTimestamp, toTxTimestamp] as [S extends Date ? number : undefined, E extends Date ? number : undefined];
+}
+
+export function normalizeDateRangeToUtcDays<S extends Date | undefined, E extends Date | undefined>(
+  start: S,
+  end: E
+): [S extends Date ? number : undefined, E extends Date ? number : undefined] {
+  const fromTxTimestamp = start ? getUtcDayStartTimestamp(start) : undefined;
+  const toTxTimestamp = end ? getUtcDayEndTimestamp(end) : undefined;
 
   return [fromTxTimestamp, toTxTimestamp] as [S extends Date ? number : undefined, E extends Date ? number : undefined];
 }
 
 /**
- * Normalizes the picked calendar dates to UTC day bounds (start of the first day, end of the last day),
- * matching the UTC daily buckets used by analytics data
+ * Normalizes timestamps to start of the day and end of the day respectively
  */
 export function useNormalizeDateRange(
   start: Date | undefined,
@@ -98,12 +147,17 @@ export function useDateRange() {
   return [startDate, endDate, setDateRange] as const;
 }
 
-export const SECONDS_IN_DAY = 86400;
-export const ONE_YEAR_SECONDS = SECONDS_IN_DAY * 365;
-
 function floorTimestamp(timestamp: number, period: "day" | "hour") {
   const delimiter = period === "day" ? 86400 : 3600;
   return Math.floor(timestamp / delimiter) * delimiter;
+}
+
+function getUtcDayStartTimestamp(date: Date) {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 1000;
+}
+
+function getUtcDayEndTimestamp(date: Date) {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59) / 1000;
 }
 
 function getTodayStart() {
@@ -111,7 +165,7 @@ function getTodayStart() {
 }
 
 function getYearStart() {
-  return floorTimestamp(new Date(new Date().getUTCFullYear(), 0, 1, 0, 0, 0, 0).getTime() / 1000, "day");
+  return Date.UTC(new Date().getUTCFullYear(), 0, 1) / 1000;
 }
 
 export function getTimePeriodsInSeconds() {

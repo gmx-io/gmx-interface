@@ -1,36 +1,51 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { normalizeDateRange } from "./dates";
+import { normalizeDateRange, normalizeDateRangeToUtcBucketDays, normalizeDateRangeToUtcDays } from "./dates";
 
-describe("normalizeDateRange", () => {
-  beforeAll(() => {
-    // UTC+12 in June, to prove the result does not depend on the local timezone.
-    vi.stubEnv("TZ", "Pacific/Auckland");
+function toSeconds(date: Date) {
+  return Math.round(date.getTime() / 1000);
+}
+
+describe("date range normalization", () => {
+  it("converts device-local calendar filters to UTC timestamp bounds", () => {
+    const start = new Date(2026, 5, 11, 15, 30);
+    const end = new Date(2026, 5, 12, 8, 10);
+
+    const expectedStart = new Date(start);
+    expectedStart.setHours(0, 0, 0, 0);
+
+    const expectedEnd = new Date(end);
+    expectedEnd.setHours(23, 59, 59, 0);
+
+    expect(normalizeDateRange(start, end)).toEqual([toSeconds(expectedStart), toSeconds(expectedEnd)]);
   });
 
-  afterAll(() => {
-    vi.unstubAllEnvs();
+  it("converts selected calendar dates to UTC history buckets", () => {
+    const start = new Date(2026, 5, 11, 15, 30);
+    const end = new Date(2026, 5, 12, 8, 10);
+
+    const [fromBucketTimestamp, toBucketTimestamp] = normalizeDateRangeToUtcBucketDays(start, end);
+
+    expect(fromBucketTimestamp).toBe(Date.UTC(2026, 5, 11) / 1000);
+    expect(toBucketTimestamp).toBe(Date.UTC(2026, 5, 12) / 1000);
   });
 
-  it("normalizes picked calendar dates to UTC day bounds regardless of local timezone", () => {
-    const [from, to] = normalizeDateRange(new Date(2024, 5, 10), new Date(2024, 5, 12));
+  it("keeps one selected calendar date to one UTC history bucket", () => {
+    const date = new Date(2026, 5, 12, 8, 10);
 
-    expect(from).toBe(Date.UTC(2024, 5, 10) / 1000);
-    expect(to).toBe(Date.UTC(2024, 5, 13) / 1000 - 1);
+    expect(normalizeDateRangeToUtcBucketDays(date, date)).toEqual([
+      Date.UTC(2026, 5, 12) / 1000,
+      Date.UTC(2026, 5, 12) / 1000,
+    ]);
   });
 
-  it("covers exactly one full UTC day for a single-day range", () => {
-    const [from, to] = normalizeDateRange(new Date(2024, 5, 10), new Date(2024, 5, 10));
+  it("converts selected calendar dates to UTC event timestamp bounds", () => {
+    const start = new Date(2026, 5, 11, 15, 30);
+    const end = new Date(2026, 5, 12, 8, 10);
 
-    expect(from).toBe(Date.UTC(2024, 5, 10) / 1000);
-    expect(to! - from!).toBe(86400 - 1);
-  });
-
-  it("keeps undefined bounds undefined", () => {
-    expect(normalizeDateRange(undefined, undefined)).toEqual([undefined, undefined]);
-
-    const [from, to] = normalizeDateRange(new Date(2024, 5, 10), undefined);
-    expect(from).toBe(Date.UTC(2024, 5, 10) / 1000);
-    expect(to).toBeUndefined();
+    expect(normalizeDateRangeToUtcDays(start, end)).toEqual([
+      Date.UTC(2026, 5, 11) / 1000,
+      Date.UTC(2026, 5, 12, 23, 59, 59) / 1000,
+    ]);
   });
 });

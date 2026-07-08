@@ -1,11 +1,11 @@
 import { Trans, t } from "@lingui/macro";
-import { useMemo } from "react";
+import { useCallback, useState } from "react";
 import { useMedia } from "react-use";
 import { isAddress } from "viem";
 
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { PnlSummaryBucketLabel } from "domain/synthetics/accountStats/usePnlSummaryData";
 import { useChainId } from "lib/chains";
-import { useDateRange, type DateRange } from "lib/dates";
 
 import AddressView from "components/AddressView/AddressView";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -18,13 +18,47 @@ import { HistoricalLists } from "./HistoricalLists";
 import { usePageParams } from "./usePageParams";
 import { VersionNetworkSwitcherRow } from "./VersionNetworkSwitcherRow";
 
+type DashboardDateRange = [Date | undefined, Date | undefined];
+
+function getBucketDateRange(bucketLabel: PnlSummaryBucketLabel): DashboardDateRange {
+  const now = new Date();
+  const today = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+
+  const getPastDate = (days: number) => {
+    const date = new Date(today);
+    date.setDate(date.getDate() - days);
+    return date;
+  };
+
+  switch (bucketLabel) {
+    case "today":
+      return [today, today];
+    case "yesterday": {
+      const yesterday = getPastDate(1);
+      return [yesterday, yesterday];
+    }
+    case "week":
+      return [getPastDate(7), today];
+    case "month":
+      return [getPastDate(30), today];
+    case "year":
+      return [new Date(now.getUTCFullYear(), 0, 1), today];
+    case "all":
+    default:
+      return [undefined, undefined];
+  }
+}
+
 export function AccountDashboard() {
   const { chainId: initialChainId } = useChainId();
   const isMobile = useMedia("(max-width: 600px)");
+  const [dashboardDateRange, setDashboardDateRange] = useState<DashboardDateRange>([undefined, undefined]);
+
+  const handleSummaryBucketClick = useCallback((bucketLabel: PnlSummaryBucketLabel) => {
+    setDashboardDateRange(getBucketDateRange(bucketLabel));
+  }, []);
 
   const { chainId, version, account } = usePageParams(initialChainId);
-  const [startDate, endDate, setDateRange] = useDateRange();
-  const dateRange = useMemo<DateRange>(() => [startDate, endDate], [endDate, startDate]);
 
   const header = <ChainContentHeader chainId={chainId} />;
 
@@ -62,18 +96,27 @@ export function AccountDashboard() {
             <div className="flex flex-col gap-8">
               <div className="flex flex-row flex-wrap gap-8">
                 <div className="max-w-full grow *:size-full">
-                  <GeneralPerformanceDetails chainId={chainId} account={account} />
+                  <GeneralPerformanceDetails
+                    chainId={chainId}
+                    account={account}
+                    onBucketClick={handleSummaryBucketClick}
+                  />
                 </div>
                 <div className="grow *:size-full">
                   <DailyAndCumulativePnL
                     chainId={chainId}
                     account={account}
-                    dateRange={dateRange}
-                    setDateRange={setDateRange}
+                    dateRange={dashboardDateRange}
+                    setDateRange={setDashboardDateRange}
                   />
                 </div>
               </div>
-              <HistoricalLists chainId={chainId} account={account} dateRange={dateRange} setDateRange={setDateRange} />
+              <HistoricalLists
+                chainId={chainId}
+                account={account}
+                dateRange={dashboardDateRange}
+                onDateRangeChange={setDashboardDateRange}
+              />
             </div>
           </SyntheticsStateContextProvider>
         )}
