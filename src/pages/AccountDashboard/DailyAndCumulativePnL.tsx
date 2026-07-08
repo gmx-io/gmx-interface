@@ -1,7 +1,6 @@
 import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
-import { lightFormat } from "date-fns";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import {
   Area,
   Bar,
@@ -19,7 +18,13 @@ import type { Address } from "viem";
 import { USD_DECIMALS } from "config/factors";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
-import { SECONDS_IN_DAY, formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
+import {
+  SECONDS_IN_DAY,
+  formatDate,
+  formatDateCompact,
+  formatDateTime,
+  normalizeDateRangeToUtcBucketDays,
+} from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { getSubsquidGraphClient } from "lib/indexers";
@@ -29,7 +34,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
-import { DateSelect } from "components/DateRangeSelect/DateRangeSelect";
+import { DateRangeSelect } from "components/DateRangeSelect/DateRangeSelect";
 import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
@@ -47,8 +52,6 @@ import {
 import "./DailyAndCumulativePnL.css";
 
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
-
-const getInitialDate = () => undefined;
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   fill: "var(--color-slate-100)",
@@ -76,11 +79,25 @@ const ACTIVE_DOT_PROPS = {
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
 
-export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; account: Address }) {
-  const [fromDate, setFromDate] = useState<Date | undefined>(getInitialDate);
-  const fromTimestamp = useMemo(() => fromDate && toUtcDayStart(fromDate), [fromDate]);
+export function DailyAndCumulativePnL({
+  chainId,
+  account,
+  startDate,
+  endDate,
+  onDateRangeChange,
+}: {
+  chainId: number;
+  account: Address;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  onDateRangeChange: (dateRange: [Date | undefined, Date | undefined]) => void;
+}) {
+  const [fromTimestamp, toTimestamp] = useMemo(
+    () => normalizeDateRangeToUtcBucketDays(startDate, endDate),
+    [startDate, endDate]
+  );
 
-  const { data: clusteredPnlData, error, loading } = usePnlHistoricalData(chainId, account, fromTimestamp);
+  const { data: clusteredPnlData, error, loading } = usePnlHistoricalData(chainId, account, fromTimestamp, toTimestamp);
 
   const { cardRef, handleImageDownload } = useImageDownload();
 
@@ -95,12 +112,20 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
 
         <Trans>PNG</Trans>
       </Button>
-      <DateSelect date={fromDate} onChange={setFromDate} buttonTextPrefix={t`From`} />
+      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={onDateRangeChange} />
     </>
   );
 
   const chartMargin = useMemo(() => {
-    const maxValue = Math.max(...clusteredPnlData.map((point) => Math.max(point.cumulativePnlFloat, point.pnlFloat)));
+    const values = clusteredPnlData
+      .flatMap((point) => [point.cumulativePnlFloat, point.pnlFloat])
+      .filter((value): value is number => Number.isFinite(value));
+
+    if (values.length === 0) {
+      return CHART_MARGIN;
+    }
+
+    const maxValue = Math.max(...values);
     const stringValue = Math.ceil(maxValue).toString();
     return { ...CHART_MARGIN, left: stringValue.length * 4 };
   }, [clusteredPnlData]);
@@ -193,17 +218,12 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
             </ComposedChart>
           </ResponsiveContainer>
         </div>
-        {error && (
-          <div className="absolute grid size-full max-h-full place-items-center overflow-auto">
-            <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
-          </div>
-        )}
         {loading && (
           <div className="absolute grid size-full place-items-center">
             <Loader />
           </div>
         )}
-        {!loading && !error && clusteredPnlData.length === 0 && (
+        {!loading && (error || clusteredPnlData.length === 0) && (
           <div className="absolute grid size-full place-items-center text-typography-secondary">
             <Trans>No data available</Trans>
           </div>
@@ -274,9 +294,9 @@ export type AccountPnlHistoryPoint = {
 
 type PnlHistoricalData = FromOldToNewArray<AccountPnlHistoryPoint>;
 
-const PROD_QUERY = gql`
-  query AccountHistoricalPnlResolver($account: String!, $from: Int) {
-    accountPnlHistoryStats(account: $account, from: $from) {
+const QUERY = gql`
+  query AccountHistoricalPnlResolver($account: String!, $from: Int, $to: Int) {
+    accountPnlHistoryStats(account: $account, from: $from, to: $to) {
       cumulativePnl
       pnl
       timestamp
@@ -286,14 +306,21 @@ const PROD_QUERY = gql`
 
 const MINIMUM_DATA_POINTS = 7;
 
-function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: number | undefined) {
+function usePnlHistoricalData(
+  chainId: number,
+  account: Address,
+  fromTimestamp: number | undefined,
+  toTimestamp: number | undefined
+) {
   const showDebugValues = useShowDebugValues();
-  const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
+  const query = showDebugValues ? DEV_QUERY : QUERY;
+  const res = useGqlQuery(query, {
     client: getSubsquidGraphClient(chainId)!,
-    variables: { account: account, from: fromTimestamp },
+    variables: { account: account, from: fromTimestamp, to: toTimestamp },
   });
 
   const transformedData: PnlHistoricalData = useMemo(() => {
+    const hasExplicitDateRange = fromTimestamp !== undefined || toTimestamp !== undefined;
     let dataPoints =
       res.data?.accountPnlHistoryStats?.map((row: any) => {
         const parsedDebugFields = showDebugValues
@@ -312,9 +339,12 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
 
         return {
           date: showDebugValues
-            ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + SECONDS_IN_DAY) + " local"
-            : formatDate(row.timestamp),
-          dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
+            ? formatDateTime(row.timestamp, { timezone: "utc" }) +
+              " - " +
+              formatDateTime(row.timestamp + SECONDS_IN_DAY, { timezone: "utc" }) +
+              " UTC"
+            : formatDate(row.timestamp, { timezone: "utc" }),
+          dateCompact: formatDateCompact(row.timestamp, { timezone: "utc" }),
           timestamp: row.timestamp,
           pnl: BigInt(row.pnl),
           pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
@@ -328,7 +358,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
       return EMPTY_ARRAY;
     }
 
-    if (dataPoints.length < MINIMUM_DATA_POINTS) {
+    if (!hasExplicitDateRange && dataPoints.length < MINIMUM_DATA_POINTS) {
       const lastTimestamp = dataPoints.length > 0 ? dataPoints[0].timestamp : Math.floor(Date.now() / 1000);
 
       const pointsLength = dataPoints.length;
@@ -336,9 +366,12 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
         const newTimestamp = lastTimestamp - SECONDS_IN_DAY * (i - pointsLength + 1);
         const emptyPoint = {
           date: showDebugValues
-            ? formatDateTime(newTimestamp) + " - " + formatDateTime(newTimestamp + SECONDS_IN_DAY) + " local"
-            : formatDate(newTimestamp),
-          dateCompact: lightFormat(newTimestamp * 1000, "dd/MM"),
+            ? formatDateTime(newTimestamp, { timezone: "utc" }) +
+              " - " +
+              formatDateTime(newTimestamp + SECONDS_IN_DAY, { timezone: "utc" }) +
+              " UTC"
+            : formatDate(newTimestamp, { timezone: "utc" }),
+          dateCompact: formatDateCompact(newTimestamp, { timezone: "utc" }),
           pnl: undefined,
           pnlFloat: undefined,
           cumulativePnl: undefined,
@@ -360,7 +393,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
     }
 
     return dataPoints;
-  }, [res.data?.accountPnlHistoryStats, showDebugValues]);
+  }, [fromTimestamp, res.data?.accountPnlHistoryStats, showDebugValues, toTimestamp]);
 
   return { data: transformedData, error: res.error, loading: res.loading };
 }
