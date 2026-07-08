@@ -3524,7 +3524,7 @@ msgstr "作成中…"
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{0, plural, one {is} other {are}}"
-msgstr ""
+msgstr "{0, plural, one {まもなく} other {まもなく}}"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -5519,7 +5519,7 @@ msgstr "プライマリ"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{positionCount, plural, one {position} other {positions}}"
-msgstr ""
+msgstr "{positionCount, plural, one {ポジション} other {ポジション}}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
@@ -7887,7 +7887,7 @@ msgstr ""
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
-msgstr ""
+msgstr "{markets}は{verb}上場廃止されます。既存の{positionNoun}をクローズしてください。残りのポジションは自動的にクローズされる場合があります。"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
@@ -8432,7 +8432,7 @@ msgstr "新しいティア:"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
-msgstr ""
+msgstr "マーケットの上場廃止"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -10346,7 +10346,7 @@ msgstr "入金中…"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
-msgstr ""
+msgstr "{pools}は{verb}上場廃止されます。入金ができなくなるため、流動性を出金するか、GLVに移動して収益を得続けてください。"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -10502,7 +10502,7 @@ msgstr "Compass Labs trading simulations"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Manage liquidity"
-msgstr ""
+msgstr "流動性を管理"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
