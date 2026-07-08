@@ -7301,6 +7301,7 @@ msgstr "バージョン："
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr "利用可能"
 
@@ -11204,7 +11205,6 @@ msgstr "無効な受取人アドレスです"
 msgid "Withdraw submitted"
 msgstr "出金が送信されました"
 
-#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"

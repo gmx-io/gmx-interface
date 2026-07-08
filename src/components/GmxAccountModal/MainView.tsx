@@ -13,6 +13,9 @@ import { GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY } from "config/localStorage"
 import { getAccountModalMode } from "config/multichain";
 import {
   useGmxAccountAvailableAssetsFilter,
+  useGmxAccountDepositViewChain,
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelectedTransferGuid,
 } from "context/GmxAccountContext/hooks";
@@ -265,10 +268,20 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setAvailableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
+  const [, setDepositViewChain] = useGmxAccountDepositViewChain();
+  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
   const { gmxAccountUsd } = useAvailableToTradeAssetSettlementChain();
   const handleDisconnect = useDisconnectAndClose();
 
   const hasBalance = gmxAccountUsd !== undefined && gmxAccountUsd > 0n;
+
+  const handleStartDeposit = () => {
+    setDepositViewChain(undefined);
+    setDepositViewTokenAddress(undefined);
+    setDepositViewTokenInputValue(undefined);
+    setIsVisibleOrView("selectAssetToDeposit");
+  };
 
   return (
     <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
@@ -300,7 +313,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
             variant="secondary"
             size="medium"
             className="flex-grow basis-1/2 !text-typography-primary"
-            onClick={() => setIsVisibleOrView("deposit")}
+            onClick={handleStartDeposit}
           >
             <DepositIcon className="size-20 text-blue-400 dark:text-blue-100" />
             <Trans>Deposit</Trans>
@@ -320,7 +333,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
           variant="secondary"
           size="medium"
           className="w-full !text-typography-primary"
-          onClick={() => setIsVisibleOrView("deposit")}
+          onClick={handleStartDeposit}
         >
           <DepositIcon className="size-20 text-blue-400 dark:text-blue-100" />
           <Trans>Deposit to GMX Account</Trans>

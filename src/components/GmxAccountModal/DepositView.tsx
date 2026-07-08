@@ -1243,7 +1243,7 @@ export const DepositView = () => {
             <Trans>Deposit</Trans>
             {selectedToken !== undefined && (
               <div>
-                <Trans>Available:</Trans>{" "}
+                <Trans>Available</Trans>{" "}
                 <span className="text-typography-primary">
                   <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
                 </span>
@@ -1273,7 +1273,9 @@ export const DepositView = () => {
               )}
             </div>
           </div>
-          <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          {!selectedToken?.isStable && (
+            <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          )}
           {isAboveLimit && (
             <AlertInfoCard type="warning" className="mt-8" hideClose>
               <div>
