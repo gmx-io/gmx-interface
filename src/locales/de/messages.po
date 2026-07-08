@@ -3554,6 +3554,11 @@ msgstr "Dieser Auslösepreis liegt jenseits des aktuellen Liquidationspreises. D
 msgid "Creating..."
 msgstr "Wird erstellt…"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{0, plural, one {is} other {are}}"
+msgstr "{0, plural, one {wird} other {werden}}"
+
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
 msgstr "GMX stellt derzeit nicht aktiv ein. Wenn Sie glauben, einen Beitrag leisten zu können, senden Sie eine E-Mail an <0>jobs@gmx.io</0>."
@@ -5558,6 +5563,10 @@ msgstr "Benutzer"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary"
 msgstr "Primär"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{positionCount, plural, one {position} other {positions}}"
+msgstr "{positionCount, plural, one {Ihre Position} other {Ihre Positionen}}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
@@ -7933,6 +7942,10 @@ msgstr "Min. Positionsgröße: {0}"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
+msgstr "{markets} {verb} ausgelistet. Schließen Sie {positionNoun}, da verbleibende Positionen automatisch geschlossen werden können."
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr "Ausgefallen"
@@ -8482,6 +8495,10 @@ msgstr "~5 Min."
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "New tier:"
 msgstr "Neue Stufe:"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Market delistings"
+msgstr "Markt-Delistings"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -10410,6 +10427,10 @@ msgstr "Kaufen Sie APE auf Arbitrum mit <0>Camelot</0>"
 msgid "Depositing..."
 msgstr "Wird eingezahlt…"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
+msgstr "{pools} {verb} ausgelistet. Ziehen Sie Ihre Liquidität ab, da Einzahlungen nicht mehr verfügbar sind, oder verschieben Sie sie in GLV, um weiterhin Erträge zu erzielen."
+
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -10565,6 +10586,10 @@ msgstr "GMX Trading Chat"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs Trading-Simulationen"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Manage liquidity"
+msgstr "Liquidität verwalten"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"

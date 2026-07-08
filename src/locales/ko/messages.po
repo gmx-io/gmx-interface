@@ -3554,6 +3554,11 @@ msgstr "이 조건가는 현재 청산가를 초과합니다. 이 TP/SL 주문�
 msgid "Creating..."
 msgstr "생성 중…"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{0, plural, one {is} other {are}}"
+msgstr "{0, plural, one {곧} other {곧}}"
+
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
 msgstr "GMX는 현재 채용을 진행하고 있지 않습니다. 기여할 수 있다고 생각하시면 <0>jobs@gmx.io</0>로 이메일을 보내 주십시오."
@@ -5558,6 +5563,10 @@ msgstr "사용자"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary"
 msgstr "기본"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{positionCount, plural, one {position} other {positions}}"
+msgstr "{positionCount, plural, one {포지션} other {포지션}}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
@@ -7933,6 +7942,10 @@ msgstr "최소 포지션 크기: {0}"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
+msgstr "{markets} {verb} 상장 폐지됩니다. 기존 {positionNoun}을(를) 종료하세요. 남은 포지션은 자동으로 종료될 수 있습니다."
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr "중단"
@@ -8482,6 +8495,10 @@ msgstr "~5분"
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "New tier:"
 msgstr "신규 등급:"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Market delistings"
+msgstr "마켓 상장 폐지"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -10410,6 +10427,10 @@ msgstr "<0>Camelot</0>을 통해 Arbitrum에서 APE를 구매하십시오"
 msgid "Depositing..."
 msgstr "입금 중…"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
+msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 예치할 수 없으므로 유동성을 인출하거나 GLV로 옮겨 계속 수익을 얻으세요."
+
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -10565,6 +10586,10 @@ msgstr "GMX trading chat"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs trading simulations"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Manage liquidity"
+msgstr "유동성 관리"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"

@@ -3554,6 +3554,11 @@ msgstr ""
 msgid "Creating..."
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{0, plural, one {is} other {are}}"
+msgstr ""
+
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
 msgstr ""
@@ -5557,6 +5562,10 @@ msgstr ""
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary"
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{positionCount, plural, one {position} other {positions}}"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7933,6 +7942,10 @@ msgstr ""
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr ""
@@ -8481,6 +8494,10 @@ msgstr ""
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "New tier:"
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Market delistings"
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -10410,6 +10427,10 @@ msgstr ""
 msgid "Depositing..."
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
+msgstr ""
+
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -10564,6 +10585,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs trading simulations"
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Manage liquidity"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
