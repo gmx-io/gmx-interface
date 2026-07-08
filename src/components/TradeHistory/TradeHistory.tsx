@@ -16,7 +16,7 @@ import {
   useTradeHistory,
 } from "domain/synthetics/tradeHistory";
 import { usePositionLifecycleIdByKey } from "domain/synthetics/tradeHistory/usePositionLifecycleIdByKey";
-import { useDateRange, useNormalizeDateRange } from "lib/dates";
+import { normalizeDateRange, normalizeDateRangeToUtcDays, useDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -58,7 +58,16 @@ type Props = {
   hideDashboardLink?: boolean;
   viewPositionKeyHistory?: string;
   onViewPositionKeyHistoryConsumed?: () => void;
-};
+} & (
+  | {
+      dateRange: [Date | undefined, Date | undefined];
+      onDateRangeChange: (dateRange: [Date | undefined, Date | undefined]) => void;
+    }
+  | {
+      dateRange?: undefined;
+      onDateRangeChange?: undefined;
+    }
+);
 
 export function TradeHistory(p: Props) {
   const {
@@ -70,7 +79,10 @@ export function TradeHistory(p: Props) {
   } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
-  const [startDate, endDate, setDateRange] = useDateRange();
+  const [localStartDate, localEndDate, setLocalDateRange] = useDateRange();
+  const hasExternalDateRange = p.dateRange !== undefined;
+  const [startDate, endDate] = hasExternalDateRange ? p.dateRange : [localStartDate, localEndDate];
+  const setDateRange = hasExternalDateRange ? p.onDateRangeChange : setLocalDateRange;
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
   const [positionLifecycleId, setPositionLifecycleId] = useState<string | undefined>();
@@ -87,7 +99,11 @@ export function TradeHistory(p: Props) {
     },
   });
 
-  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
+  const [fromTxTimestamp, toTxTimestamp] = useMemo(
+    () =>
+      hasExternalDateRange ? normalizeDateRangeToUtcDays(startDate, endDate) : normalizeDateRange(startDate, endDate),
+    [endDate, hasExternalDateRange, startDate]
+  );
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};
@@ -113,6 +129,7 @@ export function TradeHistory(p: Props) {
   const paginationKey = useMemo(
     () =>
       JSON.stringify([
+        chainId,
         account,
         forAllAccounts,
         fromTxTimestamp,
@@ -124,6 +141,7 @@ export function TradeHistory(p: Props) {
     [
       account,
       actionFilter,
+      chainId,
       forAllAccounts,
       fromTxTimestamp,
       marketsDirectionsFilter,
