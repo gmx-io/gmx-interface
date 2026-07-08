@@ -6730,6 +6730,10 @@ msgstr "Analíticas"
 msgid "wstETH APR"
 msgstr "APR de wstETH"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr "Los retiros de GMX Account están limitados por la liquidez del puente Stargate. Pruebe con un importe inferior a <0>{upperLimitFormatted}</0>."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "TraderJoe"
@@ -8404,10 +8408,6 @@ msgstr "Abre GMTrade en una nueva pestaña"
 msgid "Top addresses"
 msgstr "Principales direcciones"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
-msgstr "El importe excede el límite de retirada. Pruebe con un importe inferior a <0>{upperLimitFormatted}</0>."
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
 msgstr "El nonce de aprobación de One-Click Trading ha expirado. Vuelva a firmar para seguir usando One-Click Trading."
@@ -8621,6 +8621,10 @@ msgstr "Valor desconocido"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized fees"
 msgstr "Comisiones no realizadas iniciales"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr "Los depósitos de GMX Account están limitados por la liquidez del puente Stargate. Pruebe con un importe inferior a <0>{upperLimitFormatted}</0>."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -10463,10 +10467,6 @@ msgstr "Transacción fallida"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COLLATERAL"
 msgstr "GARANTÍA"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "Amount exceeds the deposit limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
-msgstr "El importe supera el límite de depósito. Pruebe un importe inferior a <0>{upperLimitFormatted}</0>."
 
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>"

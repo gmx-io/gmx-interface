@@ -591,6 +591,7 @@ export const WithdrawalView = () => {
     amountLD: inputAmount,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSettlementChainTokenId?.decimals,
+    symbol: selectedToken?.symbol,
     enabled: !isSameChain,
   });
 
@@ -1497,7 +1498,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4" hideClose>
               <div>
                 <Trans>
-                  Amount exceeds the withdrawal limit. Try an amount smaller than{" "}
+                  GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than{" "}
                   <span className="numbers">{upperLimitFormatted}</span>.
                 </Trans>
               </div>

@@ -6730,6 +6730,10 @@ msgstr "Аналитика"
 msgid "wstETH APR"
 msgstr "APR wstETH"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr "Выводы GMX Account ограничены ликвидностью моста Stargate. Попробуйте сумму меньше <0>{upperLimitFormatted}</0>."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "TraderJoe"
@@ -8404,10 +8408,6 @@ msgstr "Открывает GMTrade в новой вкладке"
 msgid "Top addresses"
 msgstr "Лучшие адреса"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
-msgstr "Сумма превышает лимит на вывод. Попробуйте сумму меньше <0>{upperLimitFormatted}</0>."
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
 msgstr "Срок действия nonce подтверждения One-Click Trading истёк. Подпишите повторно, чтобы продолжить использовать One-Click Trading."
@@ -8621,6 +8621,10 @@ msgstr "Неизвестное значение"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized fees"
 msgstr "Начальные нереализованные комиссии"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr "Депозиты GMX Account ограничены ликвидностью моста Stargate. Попробуйте сумму меньше <0>{upperLimitFormatted}</0>."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -10463,10 +10467,6 @@ msgstr "Транзакция не удалась"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COLLATERAL"
 msgstr "ЗАЛОГ"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "Amount exceeds the deposit limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
-msgstr "Сумма превышает лимит депозита. Попробуйте сумму меньше <0>{upperLimitFormatted}</0>."
 
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>"

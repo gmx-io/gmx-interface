@@ -373,6 +373,7 @@ export const DepositView = () => {
     amountLD,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSourceChainTokenId?.decimals,
+    symbol: selectedToken?.symbol,
     enabled: depositViewChain !== settlementChainId,
   });
 
@@ -1280,7 +1281,7 @@ export const DepositView = () => {
             <AlertInfoCard type="warning" className="mt-8" hideClose>
               <div>
                 <Trans>
-                  Amount exceeds the deposit limit. Try an amount smaller than{" "}
+                  GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than{" "}
                   <span className="numbers">{upperLimitFormatted}</span>.
                 </Trans>
               </div>
