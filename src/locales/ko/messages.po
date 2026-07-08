@@ -3539,6 +3539,10 @@ msgstr "지수 (양수)"
 msgid "Deposit in progress..."
 msgstr "입금 처리 중..."
 
+#: src/domain/tpsl/utils.ts
+msgid "This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute."
+msgstr "이 조건가는 현재 청산가를 초과합니다. 이 TP/SL 주문이 실행되기 전에 포지션이 청산될 수 있습니다."
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -7861,7 +7865,6 @@ msgstr "비영구적 손실을 최소화하기 위해 능동적 헤징 및 리�
 msgid "GMX V2 actions"
 msgstr "GMX V2 활동 내역"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr ""
@@ -11046,7 +11049,6 @@ msgstr "자금 브릿징 중..."
 msgid "Network fee"
 msgstr "네트워크 수수료"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"
 msgstr ""
