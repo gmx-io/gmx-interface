@@ -1,10 +1,3 @@
-# Cloudflare Pages headers. Vite copies public/ to the build output, so this ships as build/_headers.
-# Referrer-Policy and X-Content-Type-Options are already added at the Cloudflare edge; they are left out
-# here on purpose, because Cloudflare comma-joins a header that is set in both places.
-#
-# The CSP starts as Report-Only: it logs violations without blocking anything. After validating on real
-# traffic (wallet/email/OAuth login, chart, Intercom, token icons), rename the header below to
-# `Content-Security-Policy` to enforce it. Keep it under 2000 characters per line (Cloudflare limit).
 /*
   X-Frame-Options: SAMEORIGIN
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://tag.adrsbl.io https://js.intercomcdn.com https://widget.intercom.io; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https://js.intercomcdn.com; connect-src * wss: data: blob:; frame-src 'self' https://auth.privy.io https://verify.walletconnect.com https://verify.walletconnect.org https://challenges.cloudflare.com https://intercom-sheets.com https://www.intercom-reachable.com; child-src 'self' https://auth.privy.io https://verify.walletconnect.com https://verify.walletconnect.org; worker-src 'self' blob:; media-src 'self' https://js.intercomcdn.com; manifest-src 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://tag.adrsbl.io https://cdn.id5-sync.com https://js.intercomcdn.com https://widget.intercom.io; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https://js.intercomcdn.com; connect-src * wss: data: blob:; frame-src 'self' https://auth.privy.io https://verify.walletconnect.com https://verify.walletconnect.org https://challenges.cloudflare.com https://intercom-sheets.com https://www.intercom-reachable.com; child-src 'self' https://auth.privy.io https://verify.walletconnect.com https://verify.walletconnect.org; worker-src 'self' blob:; media-src 'self' https://js.intercomcdn.com; manifest-src 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
