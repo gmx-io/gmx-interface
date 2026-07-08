@@ -9,7 +9,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
-import { useDateRange, useNormalizeDateRange } from "lib/dates";
+import { normalizeDateRange, normalizeDateRangeToUtcDays, useDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -48,17 +48,33 @@ type Props = {
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
-};
+} & (
+  | {
+      dateRange: [Date | undefined, Date | undefined];
+      onDateRangeChange: (dateRange: [Date | undefined, Date | undefined]) => void;
+    }
+  | {
+      dateRange?: undefined;
+      onDateRangeChange?: undefined;
+    }
+);
 
 export function TradeHistory(p: Props) {
   const { forAllAccounts, account, hideDashboardLink = false } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
-  const [startDate, endDate, setDateRange] = useDateRange();
+  const [localStartDate, localEndDate, setLocalDateRange] = useDateRange();
+  const hasExternalDateRange = p.dateRange !== undefined;
+  const [startDate, endDate] = hasExternalDateRange ? p.dateRange : [localStartDate, localEndDate];
+  const setDateRange = hasExternalDateRange ? p.onDateRangeChange : setLocalDateRange;
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
 
-  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
+  const [fromTxTimestamp, toTxTimestamp] = useMemo(
+    () =>
+      hasExternalDateRange ? normalizeDateRangeToUtcDays(startDate, endDate) : normalizeDateRange(startDate, endDate),
+    [endDate, hasExternalDateRange, startDate]
+  );
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};
@@ -82,12 +98,26 @@ export function TradeHistory(p: Props) {
   const isLoading = (forAllAccounts || isConnected) && (minCollateralUsd === undefined || isHistoryLoading);
 
   const isEmpty = !isLoading && !tradeActions?.length;
+  const paginationKey = useMemo(
+    () =>
+      JSON.stringify({
+        account,
+        actionFilter,
+        chainId,
+        forAllAccounts,
+        fromTxTimestamp,
+        marketsDirectionsFilter,
+        toTxTimestamp,
+      }),
+    [account, actionFilter, chainId, forAllAccounts, fromTxTimestamp, marketsDirectionsFilter, toTxTimestamp]
+  );
+
   const {
     currentPage,
     setCurrentPage,
     currentData: currentPageData,
     pageCount,
-  } = usePagination([account, forAllAccounts].toString(), tradeActions, ENTITIES_PER_PAGE);
+  } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE);
 
   const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
 
