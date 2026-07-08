@@ -1,3 +1,4 @@
+import { i18n } from "@lingui/core";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
@@ -11,12 +12,15 @@ import {
   buildPositionsBodyText,
   computeAffectedLiquidityMarkets,
   computeAffectedPositionMarkets,
-  getDelistingAnnouncementActions,
+  getActiveDelistingAnnouncements,
   getDelistingMarketLabel,
   joinMarketNames,
   shouldShowDelistingAnnouncement,
   writeDismissal,
 } from "./delistingExitAnnouncementsLogic";
+
+i18n.load({ en: {} });
+i18n.activate("en");
 
 describe("joinMarketNames", () => {
   it("joins one name", () => expect(joinMarketNames(["TON/USD"])).toBe("TON/USD"));
@@ -139,7 +143,7 @@ describe("dismissal", () => {
   });
 });
 
-describe("getDelistingAnnouncementActions", () => {
+describe("getActiveDelistingAnnouncements", () => {
   const TON = "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c";
   const KTA = "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d";
 
@@ -154,67 +158,62 @@ describe("getDelistingAnnouncementActions", () => {
   });
 
   it("shows only the positions toast when the user has a delisting position", () => {
-    const result = getDelistingAnnouncementActions({
+    const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
       positionsInfoData: { k: { marketAddress: TON } } as any,
       depositMarketTokensData: undefined,
       marketsInfoData,
       now: 1000,
     });
-    expect(result.toShow.map((t) => t.id)).toEqual([POSITIONS_TOAST_ID]);
-    expect(result.toShow[0].markets).toEqual([TON]);
-    expect(result.toShow[0].title).toBe("Market delistings");
-    expect(result.toShow[0].link).toBeUndefined();
-    expect(result.toDismiss).toEqual([LIQUIDITY_TOAST_ID]);
+    expect(result.map((item) => item.id)).toEqual([POSITIONS_TOAST_ID]);
+    expect(result[0].markets).toEqual([TON]);
+    expect(result[0].title).toBe("Market delistings");
+    expect(result[0].link).toBeUndefined();
   });
 
   it("shows only the liquidity toast (with the Manage liquidity link) for direct GM holders", () => {
-    const result = getDelistingAnnouncementActions({
+    const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
       positionsInfoData: undefined,
       depositMarketTokensData: { [KTA]: { symbol: "GM", balance: 1n } } as any,
       marketsInfoData,
       now: 1000,
     });
-    expect(result.toShow.map((t) => t.id)).toEqual([LIQUIDITY_TOAST_ID]);
-    expect(result.toShow[0].link).toEqual({ text: "Manage liquidity", href: "/pools" });
-    expect(result.toDismiss).toEqual([POSITIONS_TOAST_ID]);
+    expect(result.map((item) => item.id)).toEqual([LIQUIDITY_TOAST_ID]);
+    expect(result[0].link).toEqual({ text: "Manage liquidity", href: "/pools" });
   });
 
-  it("dismisses both toasts when there is no exposure", () => {
-    const result = getDelistingAnnouncementActions({
+  it("shows nothing when there is no exposure", () => {
+    const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
       positionsInfoData: undefined,
       depositMarketTokensData: undefined,
       marketsInfoData,
       now: 1000,
     });
-    expect(result.toShow).toEqual([]);
-    expect(result.toDismiss).toEqual([POSITIONS_TOAST_ID, LIQUIDITY_TOAST_ID]);
+    expect(result).toEqual([]);
   });
 
-  it("does not re-show a dismissed toast within the cooldown, and does not dismiss it either", () => {
+  it("does not re-show a dismissed toast within the cooldown", () => {
     writeDismissal(POSITIONS_TOAST_ID, [TON], 1000);
-    const result = getDelistingAnnouncementActions({
+    const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
       positionsInfoData: { k: { marketAddress: TON } } as any,
       depositMarketTokensData: undefined,
       marketsInfoData,
       now: 2000,
     });
-    expect(result.toShow).toEqual([]);
-    expect(result.toDismiss).toEqual([LIQUIDITY_TOAST_ID]); // positions set non-empty → suppressed, not dismissed
+    expect(result).toEqual([]);
   });
 
   it("waits when marketsInfoData has not loaded (cannot label)", () => {
-    const result = getDelistingAnnouncementActions({
+    const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
       positionsInfoData: { k: { marketAddress: TON } } as any,
       depositMarketTokensData: undefined,
       marketsInfoData: undefined,
       now: 1000,
     });
-    expect(result.toShow).toEqual([]);
-    expect(result.toDismiss).toEqual([LIQUIDITY_TOAST_ID]);
+    expect(result).toEqual([]);
   });
 });

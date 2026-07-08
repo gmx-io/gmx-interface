@@ -1,3 +1,5 @@
+import { plural, t } from "@lingui/macro";
+
 import { DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX } from "config/localStorage";
 import { isDelistingMarket } from "config/static/markets";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
@@ -28,14 +30,16 @@ export function joinMarketNames(names: string[]): string {
 }
 
 export function buildPositionsBodyText(marketNames: string[], positionCount: number): string {
-  const verb = marketNames.length === 1 ? "is" : "are";
-  const positionNoun = positionCount === 1 ? "position" : "positions";
-  return `${joinMarketNames(marketNames)} ${verb} being delisted. Close your existing ${positionNoun} as remaining positions may be auto-closed.`;
+  const markets = joinMarketNames(marketNames);
+  const verb = plural(marketNames.length, { one: "is", other: "are" });
+  const positionNoun = plural(positionCount, { one: "position", other: "positions" });
+  return t`${markets} ${verb} being delisted. Close your existing ${positionNoun} as remaining positions may be auto-closed.`;
 }
 
 export function buildLiquidityBodyText(poolNames: string[]): string {
-  const verb = poolNames.length === 1 ? "is" : "are";
-  return `${joinMarketNames(poolNames)} ${verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning.`;
+  const pools = joinMarketNames(poolNames);
+  const verb = plural(poolNames.length, { one: "is", other: "are" });
+  return t`${pools} ${verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning.`;
 }
 
 export function computeAffectedPositionMarkets(
@@ -112,7 +116,6 @@ export function shouldShowDelistingAnnouncement(toastId: string, affectedAddress
 
 export const POSITIONS_TOAST_ID = "delisting-positions";
 export const LIQUIDITY_TOAST_ID = "delisting-liquidity";
-export const DELISTING_ANNOUNCEMENT_TITLE = "Market delistings";
 
 export type DelistingToast = {
   id: string;
@@ -122,17 +125,17 @@ export type DelistingToast = {
   link?: { text: string; href: string };
 };
 
-export function getDelistingAnnouncementActions(params: {
+export function getActiveDelistingAnnouncements(params: {
   chainId: number;
   positionsInfoData: PositionsInfoData | undefined;
   depositMarketTokensData: TokensData | undefined;
   marketsInfoData: MarketsInfoData | undefined;
   now: number;
-}): { toShow: DelistingToast[]; toDismiss: string[] } {
+}): DelistingToast[] {
   const { chainId, positionsInfoData, depositMarketTokensData, marketsInfoData, now } = params;
 
   const toShow: DelistingToast[] = [];
-  const toDismiss: string[] = [];
+  const title = t`Market delistings`;
 
   const labelOf = (addresses: string[]): string[] =>
     addresses
@@ -141,40 +144,29 @@ export function getDelistingAnnouncementActions(params: {
       .map(getDelistingMarketLabel);
 
   // Positions
-  const { marketAddresses: positionMarkets, positionCount } = computeAffectedPositionMarkets(
-    chainId,
-    positionsInfoData
-  );
-  if (positionMarkets.length === 0) {
-    toDismiss.push(POSITIONS_TOAST_ID);
-  } else {
-    const names = labelOf(positionMarkets);
-    if (names.length > 0 && shouldShowDelistingAnnouncement(POSITIONS_TOAST_ID, positionMarkets, now)) {
-      toShow.push({
-        id: POSITIONS_TOAST_ID,
-        title: DELISTING_ANNOUNCEMENT_TITLE,
-        bodyText: buildPositionsBodyText(names, positionCount),
-        markets: positionMarkets,
-      });
-    }
+  const { marketAddresses: positionMarkets, positionCount } = computeAffectedPositionMarkets(chainId, positionsInfoData);
+  const positionNames = labelOf(positionMarkets);
+  if (positionNames.length > 0 && shouldShowDelistingAnnouncement(POSITIONS_TOAST_ID, positionMarkets, now)) {
+    toShow.push({
+      id: POSITIONS_TOAST_ID,
+      title,
+      bodyText: buildPositionsBodyText(positionNames, positionCount),
+      markets: positionMarkets,
+    });
   }
 
   // Liquidity
   const liquidityMarkets = computeAffectedLiquidityMarkets(chainId, depositMarketTokensData);
-  if (liquidityMarkets.length === 0) {
-    toDismiss.push(LIQUIDITY_TOAST_ID);
-  } else {
-    const names = labelOf(liquidityMarkets);
-    if (names.length > 0 && shouldShowDelistingAnnouncement(LIQUIDITY_TOAST_ID, liquidityMarkets, now)) {
-      toShow.push({
-        id: LIQUIDITY_TOAST_ID,
-        title: DELISTING_ANNOUNCEMENT_TITLE,
-        bodyText: buildLiquidityBodyText(names),
-        markets: liquidityMarkets,
-        link: { text: "Manage liquidity", href: "/pools" },
-      });
-    }
+  const liquidityNames = labelOf(liquidityMarkets);
+  if (liquidityNames.length > 0 && shouldShowDelistingAnnouncement(LIQUIDITY_TOAST_ID, liquidityMarkets, now)) {
+    toShow.push({
+      id: LIQUIDITY_TOAST_ID,
+      title,
+      bodyText: buildLiquidityBodyText(liquidityNames),
+      markets: liquidityMarkets,
+      link: { text: t`Manage liquidity`, href: "/pools" },
+    });
   }
 
-  return { toShow, toDismiss };
+  return toShow;
 }
