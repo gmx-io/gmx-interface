@@ -282,6 +282,11 @@ export const selectPositionSellerFees = createSelector((q) => {
 });
 
 export const selectPositionSellerReceiveToken = createSelector((q) => {
+  // TWAP has no receive-token selector and its legs/UI assume collateral — pin it to collateral.
+  if (q(selectPositionSellerOrderOption) === OrderOption.Twap) {
+    return q(selectPositionSellerPosition)?.collateralToken;
+  }
+
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
   const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
