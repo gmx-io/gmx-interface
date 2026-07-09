@@ -488,15 +488,15 @@ msgstr "Saldo de GMX Account"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr "Buscar en mercados perpetuos<<<<<<< HEAD"
+msgstr "Buscar en mercados perpetuos"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr "¡Dirección copiada!======="
+msgstr "¡Dirección copiada!"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
-msgstr "Liquidado porque se superó el apalancamiento máximo permitido al considerar las comisiones.>>>>>>> release"
+msgstr "Liquidado porque se superó el apalancamiento máximo permitido al considerar las comisiones."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"

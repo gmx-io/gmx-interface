@@ -488,15 +488,15 @@ msgstr "GMX Account残高"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr "無期限市場を検索<<<<<<< HEAD"
+msgstr "無期限市場を検索"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr "アドレスがコピーされました！======="
+msgstr "アドレスがコピーされました！"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
-msgstr "手数料を考慮した結果、最大許容レバレッジを超えたため清算されました。>>>>>>> release"
+msgstr "手数料を考慮した結果、最大許容レバレッジを超えたため清算されました。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"

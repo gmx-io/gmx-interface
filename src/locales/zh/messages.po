@@ -488,15 +488,15 @@ msgstr "GMX Account 余额"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr "搜索永续合约市场<<<<<<< HEAD"
+msgstr "搜索永续合约市场"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr "地址已复制！======="
+msgstr "地址已复制！"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
-msgstr "在计入费用后超出最大允许杠杆，仓位已被清算。>>>>>>> release"
+msgstr "在计入费用后超出最大允许杠杆，仓位已被清算。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"

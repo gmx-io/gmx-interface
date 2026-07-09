@@ -488,15 +488,15 @@ msgstr "GMX Account 잔액"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr "무기한 시장 검색<<<<<<< HEAD"
+msgstr "무기한 시장 검색"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr "주소가 복사되었습니다!======="
+msgstr "주소가 복사되었습니다!"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
-msgstr "수수료를 고려했을 때 최대 허용 레버리지를 초과하여 청산되었습니다.>>>>>>> release"
+msgstr "수수료를 고려했을 때 최대 허용 레버리지를 초과하여 청산되었습니다."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"

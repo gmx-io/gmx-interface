@@ -488,7 +488,7 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr "[!! Search in perpetuals markets !!]<<<<<<< HEAD"
+msgstr "[!! Search in perpetuals markets !!]"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"

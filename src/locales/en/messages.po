@@ -488,15 +488,15 @@ msgstr "GMX Account balance"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr "Search in perpetuals markets<<<<<<< HEAD"
+msgstr "Search in perpetuals markets"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr "Address copied!======="
+msgstr "Address copied!"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
-msgstr "Liquidated as the max allowed leverage was exceeded when accounting for fees.>>>>>>> release"
+msgstr "Liquidated as the max allowed leverage was exceeded when accounting for fees."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"

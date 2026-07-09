@@ -488,15 +488,15 @@ msgstr "GMX Account Guthaben"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr "In Perpetual-Märkten suchen<<<<<<< HEAD"
+msgstr "In Perpetual-Märkten suchen"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr "Adresse kopiert!======="
+msgstr "Adresse kopiert!"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
-msgstr "Liquidiert, da der maximal zulässige Hebel unter Berücksichtigung der Gebühren überschritten wurde.>>>>>>> release"
+msgstr "Liquidiert, da der maximal zulässige Hebel unter Berücksichtigung der Gebühren überschritten wurde."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"

@@ -488,15 +488,15 @@ msgstr "Баланс GMX Account"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr "Поиск на рынках бессрочных контрактов<<<<<<< HEAD"
+msgstr "Поиск на рынках бессрочных контрактов"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
-msgstr "Адрес скопирован!======="
+msgstr "Адрес скопирован!"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as the max allowed leverage was exceeded when accounting for fees."
-msgstr "Ликвидировано, так как максимальное допустимое кредитное плечо было превышено с учётом комиссий.>>>>>>> release"
+msgstr "Ликвидировано, так как максимальное допустимое кредитное плечо было превышено с учётом комиссий."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
