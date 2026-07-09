@@ -954,7 +954,21 @@ export const WithdrawalView = () => {
     networkFeeUsd,
     networkFeeInGasPaymentToken,
     wntFeeUsd,
+    someGasPaymentTokenAmount,
   });
+
+  useEffect(
+    function resetLastValidNetworkFeesOnContextChange() {
+      setLastValidNetworkFees({
+        wntFee: undefined,
+        networkFeeUsd: undefined,
+        networkFeeInGasPaymentToken: undefined,
+        wntFeeUsd: undefined,
+        someGasPaymentTokenAmount: undefined,
+      });
+    },
+    [selectedTokenAddress, withdrawalViewChain, gasPaymentToken?.address]
+  );
 
   useEffect(() => {
     if (
@@ -963,14 +977,21 @@ export const WithdrawalView = () => {
       wntFeeUsd !== undefined &&
       networkFeeInGasPaymentToken !== undefined
     ) {
-      setLastValidNetworkFees({
+      setLastValidNetworkFees((prev) => ({
+        ...prev,
         wntFee,
         networkFeeUsd,
         networkFeeInGasPaymentToken,
         wntFeeUsd,
-      });
+      }));
     }
   }, [wntFee, networkFeeUsd, networkFeeInGasPaymentToken, wntFeeUsd]);
+
+  useEffect(() => {
+    if (someGasPaymentTokenAmount !== undefined) {
+      setLastValidNetworkFees((prev) => ({ ...prev, someGasPaymentTokenAmount }));
+    }
+  }, [someGasPaymentTokenAmount]);
 
   const showWntWarning = useMemo(() => {
     if (
@@ -1016,7 +1037,7 @@ export const WithdrawalView = () => {
     if (selectedToken?.isWrapped) {
       return {
         gasPaymentTokenForMax: selectedToken,
-        gasPaymentTokenAmountForMax: wntFee,
+        gasPaymentTokenAmountForMax: wntFee ?? lastValidNetworkFees.wntFee,
         gasPaymentTokenBalanceForMax: getBalanceByBalanceType(selectedToken, TokenBalanceType.GmxAccount),
       };
     }
@@ -1024,19 +1045,31 @@ export const WithdrawalView = () => {
     if (gasPaymentToken?.isWrapped) {
       return {
         gasPaymentTokenForMax: gasPaymentToken,
-        gasPaymentTokenAmountForMax: networkFeeInGasPaymentToken,
+        gasPaymentTokenAmountForMax: networkFeeInGasPaymentToken ?? lastValidNetworkFees.networkFeeInGasPaymentToken,
         gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
       };
     }
 
     return {
       gasPaymentTokenForMax: gasPaymentToken,
-      gasPaymentTokenAmountForMax: someGasPaymentTokenAmount,
+      gasPaymentTokenAmountForMax: someGasPaymentTokenAmount ?? lastValidNetworkFees.someGasPaymentTokenAmount,
       gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
     };
-  }, [gasPaymentToken, isSameChain, networkFeeInGasPaymentToken, selectedToken, someGasPaymentTokenAmount, wntFee]);
+  }, [
+    gasPaymentToken,
+    isSameChain,
+    lastValidNetworkFees.networkFeeInGasPaymentToken,
+    lastValidNetworkFees.someGasPaymentTokenAmount,
+    lastValidNetworkFees.wntFee,
+    networkFeeInGasPaymentToken,
+    selectedToken,
+    someGasPaymentTokenAmount,
+    wntFee,
+  ]);
 
-  const isLoadingWithdrawalMax = isSameChain ? false : expressTxnParamsAsyncResult.isLoading;
+  const isLoadingWithdrawalMax = isSameChain
+    ? false
+    : expressTxnParamsAsyncResult.isLoading && gasPaymentTokenAmountForMax === undefined;
 
   const withdrawalMaxDetails = useMaxAvailableAmount({
     fromToken: selectedToken,
@@ -1333,20 +1366,32 @@ export const WithdrawalView = () => {
       );
     }
 
-    if (networkFeeUsd === undefined || gasPaymentToken === undefined) {
+    const someNetworkFeeUsd = networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd;
+    const someNetworkFeeInGasPaymentToken =
+      networkFeeInGasPaymentToken ?? lastValidNetworkFees.networkFeeInGasPaymentToken;
+
+    if (someNetworkFeeUsd === undefined || gasPaymentToken === undefined) {
       return "...";
     }
 
     return (
       <AmountWithUsdBalance
         className="leading-1"
-        amount={networkFeeInGasPaymentToken}
+        amount={someNetworkFeeInGasPaymentToken}
         decimals={gasPaymentToken.decimals}
-        usd={networkFeeUsd}
+        usd={someNetworkFeeUsd}
         symbol={gasPaymentToken.symbol}
       />
     );
-  }, [gasPaymentToken, isSameChain, networkFeeInGasPaymentToken, networkFeeUsd, sameChainNetworkFeeDetails]);
+  }, [
+    gasPaymentToken,
+    isSameChain,
+    lastValidNetworkFees.networkFeeInGasPaymentToken,
+    lastValidNetworkFees.networkFeeUsd,
+    networkFeeInGasPaymentToken,
+    networkFeeUsd,
+    sameChainNetworkFeeDetails,
+  ]);
 
   const withdrawFeeValue = useMemo(() => {
     if (isSameChain) {
