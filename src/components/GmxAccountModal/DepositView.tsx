@@ -77,6 +77,7 @@ import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { TokenBalanceType, TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
@@ -446,18 +447,20 @@ export const DepositView = () => {
     async ({ params }) => {
       const client = getPublicClientWithRpc(params.settlementChainId);
 
+      const token = getByKey(settlementChainTokensData, params.depositViewTokenAddress);
+      if (token === undefined) {
+        return undefined;
+      }
+
       let inputAmount = params.inputAmount ?? 0n;
       if (inputAmount === 0n) {
-        const token = getByKey(settlementChainTokensData, params.depositViewTokenAddress);
-        if (token === undefined) {
-          return undefined;
-        }
-
         inputAmount = convertToTokenAmount(
           expandDecimals(10, USD_DECIMALS),
           token.decimals,
           getMidPrice(token.prices)
         )!;
+      } else {
+        inputAmount = bigMath.min(inputAmount, token.walletBalance ?? inputAmount);
       }
 
       return estimateSameChainDepositGas({
@@ -481,8 +484,6 @@ export const DepositView = () => {
       withLoading: false,
     }
   );
-  const isSameChainNetworkFeeLoading = sameChainNetworkFeeAsyncResult.data === undefined;
-
   const sameChainNetworkFeeDetails = useMemo(
     () =>
       calculateNetworkFeeDetails({
@@ -492,6 +493,9 @@ export const DepositView = () => {
       }),
     [sameChainNetworkFeeAsyncResult.data, gasPrice, settlementChainTokensData]
   );
+
+  const isSameChainNetworkFeeLoading =
+    sameChainNetworkFeeDetails === undefined && sameChainNetworkFeeAsyncResult.error === undefined;
 
   const paymentToken = useMemo((): TokenData | undefined => {
     if (selectedTokenData === undefined) {
@@ -1122,6 +1126,13 @@ export const DepositView = () => {
     depositViewChain !== undefined &&
     networkFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) > nativeTokenSourceChainBalance;
 
+  const isInsufficientSameChainNativeGasBalance =
+    depositViewChain === settlementChainId &&
+    gasPaymentTokenBalanceForDeposit !== undefined &&
+    sameChainNetworkFeeDetails?.amount !== undefined &&
+    sameChainNetworkFeeDetails.amount + (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount ?? 0n : 0n) >
+      gasPaymentTokenBalanceForDeposit;
+
   let buttonState: {
     text: React.ReactNode;
     bannerErrorName?: ValidationBannerErrorName;
@@ -1188,6 +1199,11 @@ export const DepositView = () => {
     buttonState = {
       text: getDefaultInsufficientGasMessage(),
       bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
+      disabled: true,
+    };
+  } else if (isInsufficientSameChainNativeGasBalance) {
+    buttonState = {
+      text: getDefaultInsufficientGasMessage(),
       disabled: true,
     };
   } else if (isNetworkFeeLoading) {
@@ -1259,7 +1275,7 @@ export const DepositView = () => {
 
     if (depositViewChain === settlementChainId) {
       if (!sameChainNetworkFeeDetails) {
-        return "...";
+        return sameChainNetworkFeeAsyncResult.error !== undefined ? "-" : "...";
       }
 
       return (
@@ -1293,6 +1309,7 @@ export const DepositView = () => {
     settlementChainId,
     networkFeeUsd,
     sameChainNetworkFeeDetails,
+    sameChainNetworkFeeAsyncResult.error,
   ]);
 
   const isDepositFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
