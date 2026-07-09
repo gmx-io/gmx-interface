@@ -288,7 +288,7 @@ export function WalletSendView() {
   const hasCrossChainQuoteError =
     quoteOftError !== undefined || quoteSendError !== undefined || baseQuoteSendError !== undefined;
 
-  const { networkFee, networkFeeUsd } = useMultichainQuoteFeeUsd({
+  const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
     quoteSendNativeFee: quoteSendNativeFee ?? baseQuoteSendData?.nativeFee,
     quoteOft,
     unwrappedTokenAddress: selectedToken?.address,
@@ -597,6 +597,44 @@ export function WalletSendView() {
     hasCrossChainQuoteError,
   ]);
 
+  const isSendFeeLoading = !isSameChain && (isQuoteOftLoading || isQuoteSendLoading || isBaseQuoteSendLoading);
+
+  const sendFeeValue = useMemo(() => {
+    if (isSameChain) {
+      return <Trans>No fee</Trans>;
+    }
+
+    if (isDestinationUnsupported) {
+      return "-";
+    }
+
+    if (protocolFeeAmount === undefined || selectedToken?.decimals === undefined) {
+      if (hasCrossChainQuoteError) {
+        return "-";
+      }
+
+      return "...";
+    }
+
+    return (
+      <AmountWithUsdBalance
+        className="leading-1"
+        amount={protocolFeeAmount}
+        decimals={selectedToken.decimals}
+        usd={protocolFeeUsd}
+        symbol={selectedToken.symbol}
+      />
+    );
+  }, [
+    isSameChain,
+    isDestinationUnsupported,
+    protocolFeeAmount,
+    selectedToken?.decimals,
+    selectedToken?.symbol,
+    protocolFeeUsd,
+    hasCrossChainQuoteError,
+  ]);
+
   let buttonState: { text: ReactNode; disabled?: boolean; onClick?: () => void } = {
     text: t`Send`,
     onClick: handleSend,
@@ -780,6 +818,7 @@ export function WalletSendView() {
             label={<Trans>Network fee</Trans>}
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
+          <SyntheticsInfoRow label={<Trans>Send fee</Trans>} value={isSendFeeLoading ? valueSkeleton : sendFeeValue} />
           <SyntheticsInfoRow
             label={<Trans>Wallet balance</Trans>}
             value={<ValueTransition from={formatUsd(walletBalanceUsd)} to={formatUsd(nextWalletBalanceUsd)} />}
