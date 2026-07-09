@@ -137,7 +137,10 @@ export function getActiveDelistingAnnouncements(params: {
       .map(getDelistingMarketLabel);
 
   // Positions
-  const { marketAddresses: positionMarkets, positionCount } = computeAffectedPositionMarkets(chainId, positionsInfoData);
+  const { marketAddresses: positionMarkets, positionCount } = computeAffectedPositionMarkets(
+    chainId,
+    positionsInfoData
+  );
   const positionNames = labelOf(positionMarkets);
   if (positionNames.length > 0 && shouldShowDelistingAnnouncement(POSITIONS_TOAST_ID, positionMarkets, now)) {
     toShow.push({

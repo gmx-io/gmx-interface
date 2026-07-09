@@ -5,7 +5,13 @@ import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBa
 
 import { DelistingToast } from "./delistingExitAnnouncementsLogic";
 
-export function DelistingBanner({ item, onDismiss }: { item: DelistingToast; onDismiss: (item: DelistingToast) => void }) {
+export function DelistingBanner({
+  item,
+  onDismiss,
+}: {
+  item: DelistingToast;
+  onDismiss: (item: DelistingToast) => void;
+}) {
   const handleClose = useCallback(() => onDismiss(item), [item, onDismiss]);
 
   return (

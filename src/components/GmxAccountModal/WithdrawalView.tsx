@@ -294,7 +294,7 @@ function useWithdrawViewTransactions({
           callback: (txnEvent) => {
             if (txnEvent.event === TxnEventName.Sent) {
               helperToast.success("Withdrawal sent", { toastId: "same-chain-gmx-account-withdrawal" });
-              setIsVisibleOrView("main");
+              setIsVisibleOrView("transferHistory");
               setIsSubmitting(false);
 
               if (txnEvent.data.type === "wallet") {
@@ -445,7 +445,7 @@ function useWithdrawViewTransactions({
 
         sendOrderTxnSubmittedMetric(metricData.metricId);
 
-        setIsVisibleOrView("main");
+        setIsVisibleOrView("transferHistory");
 
         const txResult = await receipt.wait();
 
@@ -536,6 +536,11 @@ export const WithdrawalView = () => {
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
 
+  const isInsufficientBalance =
+    selectedToken?.gmxAccountBalance !== undefined &&
+    inputAmount !== undefined &&
+    inputAmount > selectedToken.gmxAccountBalance;
+
   const filteredNetworks = useMemo(
     () =>
       getFilteredNetworks({
@@ -551,14 +556,19 @@ export const WithdrawalView = () => {
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo(() => {
-    if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
+    if (
+      selectedToken === undefined ||
+      inputAmount === undefined ||
+      inputAmountUsd === undefined ||
+      isInsufficientBalance
+    ) {
       return { nextGmxAccountBalanceUsd: undefined };
     }
 
     const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) - inputAmountUsd;
 
     return { nextGmxAccountBalanceUsd };
-  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd]);
+  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd, isInsufficientBalance]);
 
   const sendParamsWithoutSlippage: SendParam | undefined = useMemo(() => {
     if (
@@ -591,6 +601,7 @@ export const WithdrawalView = () => {
     amountLD: inputAmount,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSettlementChainTokenId?.decimals,
+    symbol: selectedToken?.symbol,
     enabled: !isSameChain,
   });
 
@@ -1133,10 +1144,6 @@ export const WithdrawalView = () => {
   }, [withdrawalMaxDetails.formattedMaxAvailableAmount, setInputValue]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
-  const isInsufficientBalance =
-    selectedToken?.gmxAccountBalance !== undefined &&
-    inputAmount !== undefined &&
-    inputAmount > selectedToken.gmxAccountBalance;
 
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
@@ -1196,7 +1203,7 @@ export const WithdrawalView = () => {
       text: t`Enter withdrawal amount`,
       disabled: true,
     };
-  } else if (selectedToken?.gmxAccountBalance !== undefined && inputAmount > selectedToken.gmxAccountBalance) {
+  } else if (isInsufficientBalance) {
     buttonState = {
       text: t`Insufficient balance`,
       disabled: true,
@@ -1542,7 +1549,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4" hideClose>
               <div>
                 <Trans>
-                  Amount exceeds the withdrawal limit. Try an amount smaller than{" "}
+                  GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than{" "}
                   <span className="numbers">{upperLimitFormatted}</span>.
                 </Trans>
               </div>
