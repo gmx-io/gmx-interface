@@ -4265,7 +4265,6 @@ msgid "Show rPnL after fees"
 msgstr "Показывать rPnL за вычетом комиссий"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "Открытый интерес"
@@ -8153,6 +8152,7 @@ msgstr "Сумма"
 msgid "Show line values in USD"
 msgstr "Показать значения линий в USD"
 
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Открытый интерес (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"

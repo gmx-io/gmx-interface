@@ -4265,7 +4265,6 @@ msgid "Show rPnL after fees"
 msgstr "显示扣除费用后的已实现 PnL"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "未平仓量"
@@ -8153,6 +8152,7 @@ msgstr "金额"
 msgid "Show line values in USD"
 msgstr "以 USD 显示线条数值"
 
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "未平仓量（<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>）"
