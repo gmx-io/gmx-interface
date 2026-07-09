@@ -49,7 +49,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   const { setPendingTxns } = usePendingTxns();
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
   const { stakingPowerData, isLoading: isStakingPowerLoading } = useStakingPowerData(chainId, { account });
-  const { data: buybackWeeklyStatsData, isLoading: isBuybackStatsLoading } = useBuybackWeeklyStats();
+  const { data: buybackWeeklyStatsData, isLoading: isBuybackStatsLoading } = useBuybackWeeklyStats(chainId);
 
   const [isGmxStakeModalVisible, setIsGmxStakeModalVisible] = useState(false);
   const [gmxStakeValue, setGmxStakeValue] = useState("");
@@ -149,7 +149,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
     ]
   );
 
-  const isUserEstimatedAprLoading = isStakingPowerLoading || isBuybackStatsLoading;
+  const isUserEstimatedAprLoading = Boolean(account) && (isStakingPowerLoading || isBuybackStatsLoading);
 
   const handleOpenGmxStakeModal = () => {
     sendEarnPortfolioItemClickEvent({ item: "GMX", type: "stake" });

@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 
+import { ARBITRUM } from "config/chains";
 import { useBuybackChartData } from "domain/buyback/useBuybackChartData";
 import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
 import { useGmxDailyPrices } from "domain/buyback/useGmxDailyPrices";
@@ -12,7 +13,7 @@ import { BuybackChart } from "./BuybackChart";
 import { BuybackMetricsHeader } from "./BuybackMetricsHeader";
 
 export function BuybackDashboard({ totalGmxSupply }: { totalGmxSupply: bigint | undefined }) {
-  const { data, isLoading: isStatsLoading, error: statsError } = useBuybackWeeklyStats();
+  const { data, isLoading: isStatsLoading, error: statsError } = useBuybackWeeklyStats(ARBITRUM);
   const { candles, isLoading: isCandlesLoading, error: candlesError } = useGmxDailyPrices(data?.weeks?.[0]?.weekStart);
 
   const isLoading = isStatsLoading || isCandlesLoading;
