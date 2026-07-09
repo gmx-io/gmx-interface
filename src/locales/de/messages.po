@@ -705,7 +705,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "Orderausführungspreis"
 
@@ -1472,6 +1471,7 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order"
 msgstr "Markpreis der Order"
 
@@ -1877,7 +1877,6 @@ msgstr "In Liquidität"
 msgid "Not supported"
 msgstr "Nicht unterstützt"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3321,6 +3320,10 @@ msgstr ""
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Failed to load trade history"
+msgstr "Handelsverlauf konnte nicht geladen werden"
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
@@ -3767,6 +3770,7 @@ msgid "Failed to update orders"
 msgstr "Orders konnten nicht aktualisiert werden"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin delta"
 msgstr ""
 
@@ -5644,6 +5648,10 @@ msgstr ""
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Beanspruchungen auf Avalanche Fuji nicht verfügbar"
 
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "Clear position history filter"
+msgstr "Positionsverlaufsfilter löschen"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
 msgstr "Benutzer"
@@ -6740,6 +6748,7 @@ msgstr "Trades"
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Der Handel ist möglicherweise vorübergehend nicht verfügbar. Unser Team arbeitet an der Behebung des Problems."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9572,6 +9581,12 @@ msgstr "/USD"
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
 
+#: src/components/PositionDropdown/PositionDropdown.tsx
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "View position history"
+msgstr "Positionsverlauf anzeigen"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "GM Token repräsentieren Anteile an einem Liquiditätspool für einen einzelnen GMX Markt. Kaufen Sie GM, um Liquidität bereitzustellen und Gebühren aus dem Hebelhandel, Tauschgeschäften und Market-Making-Aktivitäten auf diesem spezifischen Markt zu verdienen. Alle Belohnungen werden automatisch reinvestiert."
@@ -10553,6 +10568,10 @@ msgstr "Token-Permit-Tests"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "Ungültiger Liquidationspreis"
+
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
+msgstr "{count, plural, one {# Aktion in diesem Lebenszyklus} other {# Aktionen in diesem Lebenszyklus}}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"

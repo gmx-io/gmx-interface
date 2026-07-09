@@ -705,7 +705,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "注文約定価格"
 
@@ -1472,6 +1471,7 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order"
 msgstr "この注文のマーク価格"
 
@@ -1877,7 +1877,6 @@ msgstr "流動性プール内"
 msgid "Not supported"
 msgstr "サポートされていません"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3321,6 +3320,10 @@ msgstr ""
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Failed to load trade history"
+msgstr "取引履歴の読み込みに失敗しました"
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
@@ -3767,6 +3770,7 @@ msgid "Failed to update orders"
 msgstr "注文の更新に失敗しました"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin delta"
 msgstr ""
 
@@ -5644,6 +5648,10 @@ msgstr ""
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji では受け取りをご利用いただけません"
 
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "Clear position history filter"
+msgstr "ポジション履歴フィルターをクリア"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
 msgstr "ユーザー"
@@ -6740,6 +6748,7 @@ msgstr "取引"
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "取引が一時的に利用できない場合があります。チームが問題の解決に取り組んでおります。"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9572,6 +9581,12 @@ msgstr "/USD"
 msgid "Express + One-Click"
 msgstr "エクスプレス + ワンクリック"
 
+#: src/components/PositionDropdown/PositionDropdown.tsx
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "View position history"
+msgstr "ポジション履歴を表示"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "GMトークンは、単一のGMXマーケットの流動性プールにおけるシェアを表します。GMを購入して流動性を提供し、そのマーケットにおけるレバレッジ取引、スワップ、マーケットメイキング活動から手数料を獲得できます。すべての報酬は自動的に複利運用されます。"
@@ -10553,6 +10568,10 @@ msgstr "トークンパーミットテスト"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "無効な清算価格"
+
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
+msgstr "{count, plural, other {このライフサイクル内の#件のアクション}}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"

@@ -705,7 +705,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "주문 체결가"
 
@@ -1472,6 +1471,7 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order"
 msgstr "해당 주문의 기준가"
 
@@ -1877,7 +1877,6 @@ msgstr "유동성 내"
 msgid "Not supported"
 msgstr "지원되지 않음"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3321,6 +3320,10 @@ msgstr ""
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Failed to load trade history"
+msgstr "거래 내역을 불러오지 못했습니다"
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
@@ -3767,6 +3770,7 @@ msgid "Failed to update orders"
 msgstr "주문 업데이트에 실패했습니다"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin delta"
 msgstr ""
 
@@ -5644,6 +5648,10 @@ msgstr ""
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji에서는 수령이 불가합니다"
 
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "Clear position history filter"
+msgstr "포지션 내역 필터 지우기"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
 msgstr "사용자"
@@ -6740,6 +6748,7 @@ msgstr "거래"
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "거래가 일시적으로 불가할 수 있습니다. 팀에서 문제 해결을 위해 작업 중입니다."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9572,6 +9581,12 @@ msgstr "/USD"
 msgid "Express + One-Click"
 msgstr "익스프레스 + 원클릭"
 
+#: src/components/PositionDropdown/PositionDropdown.tsx
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "View position history"
+msgstr "포지션 내역 보기"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "GM 토큰은 단일 GMX 시장의 유동성 풀 지분을 나타냅니다. GM을 구매하여 유동성을 제공하고 해당 시장의 레버리지 거래, 스왑, 마켓 메이킹 활동에서 발생하는 수수료를 받으십시오. 모든 보상은 자동으로 재투자됩니다."
@@ -10553,6 +10568,10 @@ msgstr "토큰 허용 테스트"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "유효하지 않은 청산가"
+
+#: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
+msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
+msgstr "{count, plural, other {이 수명 주기의 액션 #개}}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"
