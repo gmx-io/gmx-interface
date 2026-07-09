@@ -421,7 +421,8 @@ function getIsMaxLeverageError({
     amountIn: order.initialCollateralDeltaAmount,
     isLimit: false,
     findSwapPath,
-    uiFeeFactor,
+    // execution charges the factor snapshotted on the order, not the live one
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     marketsInfoData: undefined,
     externalSwapQuoteParams: undefined,
     chainId,
