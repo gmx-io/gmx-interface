@@ -51,11 +51,9 @@ export const appEventsData: EventData[] = [
     endDate: "01 Aug 2026, 0:00",
     chains: [BOTANIX],
     title: "Botanix network is shutting down",
+    summary: <>Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.</>,
     description: (
       <>
-        Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.
-        <br />
-        <br />
         In the swap interface, swap pBTC to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC
         directly on Botanix. Move your BTC off the network before the deadline.
         <br />
@@ -103,32 +101,35 @@ export const appEventsData: EventData[] = [
     endDate: "31 Dec 2026, 0:00",
     chains: [MEGAETH],
     title: "Earn points on GMX MegaETH",
+    summary: (
+      <>
+        Earn points each epoch across four activities: trading, referral volume, trader PnL, and GLV{" "}
+        <span className="text-slate-100">[USDM-USDM]</span> liquidity.
+      </>
+    ),
     description: (
-      <span className="block">
-        <span className="mb-12 block text-slate-100">Earn points each epoch across four activities:</span>
-        <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Trading activity</span>
-            <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+      <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Trading activity</span>
+          <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Referral volume</span>
+          <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Trader PnL</span>
+          <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">
+            GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
           </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Referral volume</span>
-            <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
-          </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Trader PnL</span>
-            <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
-          </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">
-              GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
-            </span>
-            <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
-          </span>
+          <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
         </span>
       </span>
     ),

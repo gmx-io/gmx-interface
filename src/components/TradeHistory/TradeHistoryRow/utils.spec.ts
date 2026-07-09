@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { OrderType } from "domain/synthetics/orders";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
-import { MaxUint256 } from "lib/numbers";
+import { MaxUint256, PRECISION, applyFactor, formatUsd } from "lib/numbers";
 
 import {
   cancelOrderIncreaseLong,
@@ -440,7 +440,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": [
           "Mark price for the liquidation",
           "",
-          "Liquidated as max leverage of 0.0x was exceeded when accounting for fees.",
+          "Liquidated as the max allowed leverage was exceeded when accounting for fees.",
           "",
           {
             "key": "Initial margin",
@@ -475,10 +475,7 @@ describe("TradeHistoryRow helpers", () => {
             },
           },
           "",
-          {
-            "key": "Minimum required margin",
-            "value": "< $ 0.01",
-          },
+          undefined,
           {
             "key": "Margin at liquidation",
             "value": "$ 83.95",
@@ -801,6 +798,58 @@ describe("TradeHistoryRow helpers", () => {
       sizeDeltaUsd: MaxUint256,
     };
     expect(formatPositionMessage(fullCloseStopLoss, minCollateralUsd).size).toBe("Full position close");
+  });
+
+  it("formatPositionMessage uses block-time minCollateralFactorForLiquidation for liquidations", () => {
+    const currentFactor = PRECISION / 200n;
+    const blockTimeFactor = PRECISION / 100n;
+
+    const historicalLiquidation = {
+      ...liquidated,
+      marketInfo: {
+        ...liquidated.marketInfo,
+        minCollateralFactorForLiquidation: currentFactor,
+      },
+      minCollateralFactorForLiquidation: blockTimeFactor,
+    };
+
+    const details = formatPositionMessage(historicalLiquidation, minCollateralUsd);
+
+    expect(details.priceComment).toContainEqual(
+      "Liquidated as max leverage of 100.0x was exceeded when accounting for fees."
+    );
+
+    const expectedMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, blockTimeFactor));
+    const currentConfigMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, currentFactor));
+    expect(expectedMinMargin).not.toBe(currentConfigMinMargin);
+    expect(details.priceComment).toContainEqual({ key: "Minimum required margin", value: expectedMinMargin });
+  });
+
+  it("formatPositionMessage hides factor-derived rows when the block-time factor is unresolved", () => {
+    for (const unresolved of [undefined, 0n]) {
+      const oldLiquidation = {
+        ...liquidated,
+        marketInfo: {
+          ...liquidated.marketInfo,
+          minCollateralFactorForLiquidation: PRECISION / 100n,
+        },
+        minCollateralFactorForLiquidation: unresolved,
+      };
+
+      const details = formatPositionMessage(oldLiquidation, minCollateralUsd);
+      const rowKeys = (details.priceComment ?? [])
+        .filter((line) => typeof line === "object" && line !== null && "key" in line)
+        .map((line) => (line as { key: string }).key);
+
+      expect(details.priceComment).toContainEqual(
+        "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+      );
+      expect(details.priceComment).not.toContainEqual(
+        "Liquidated as max leverage of 0.0x was exceeded when accounting for fees."
+      );
+      expect(rowKeys).not.toContain("Minimum required margin");
+      expect(rowKeys).toContain("Margin at liquidation");
+    }
   });
 
   it("formatPositionMessage includes indexed trader discounts in the fee breakdown", () => {
