@@ -1,20 +1,17 @@
 import { afterEach, describe, expect, it, vi, type Mock } from "vitest";
 
-// Exercises the raw service worker (public/sw.js) by loading it with mocked
-// service-worker globals and invoking the captured install/activate/fetch handlers.
-
 const ORIGIN = "https://app.gmx.io";
-const SHELL_CACHE = "gmx-shell-v1";
-const ASSET_CACHE = "gmx-assets-v1";
-// Keep in sync with MAX_ASSET_ENTRIES in public/sw.js
+const SHELL_CACHE = "gmx-pwa-shell-v1";
+const ASSET_CACHE = "gmx-pwa-assets-v1";
+// Must match public/sw.js.
 const MAX_ASSET_ENTRIES = 64;
 
 type UrlLike = string | { url: string };
 
 interface MockResponse {
   ok: boolean;
-  status: number;
   clone(): MockResponse;
+  text(): Promise<string>;
 }
 
 interface MockRequest {
@@ -25,11 +22,11 @@ interface MockRequest {
 
 type SwHandlers = Record<string, (event: unknown) => void>;
 
-function makeResponse(ok = true, status = ok ? 200 : 500): MockResponse {
+function makeResponse(ok = true, body = ""): MockResponse {
   const response: MockResponse = {
     ok,
-    status,
-    clone: () => response,
+    clone: vi.fn(() => response),
+    text: vi.fn(async () => body),
   };
   return response;
 }
@@ -40,7 +37,7 @@ function keyToUrl(key: UrlLike): string {
 
 function createCaches() {
   const stores = new Map<string, Map<string, MockResponse>>();
-  const putSpy = vi.fn();
+  const failedPutUrls = new Set<string>();
   const deleteCacheSpy = vi.fn();
 
   const ensure = (name: string) => {
@@ -56,9 +53,13 @@ function createCaches() {
     const store = ensure(name);
     return {
       put: async (request: UrlLike, response: MockResponse) => {
-        putSpy(name, keyToUrl(request));
-        store.set(keyToUrl(request), response);
+        const url = keyToUrl(request);
+        if (failedPutUrls.has(url)) {
+          throw new Error(`Failed to cache ${url}`);
+        }
+        store.set(url, response);
       },
+      match: async (request: UrlLike) => store.get(keyToUrl(request)),
       keys: async () => [...store.keys()].map((url) => ({ url })),
       delete: async (request: UrlLike) => store.delete(keyToUrl(request)),
     };
@@ -66,8 +67,10 @@ function createCaches() {
 
   return {
     stores,
-    putSpy,
     deleteCacheSpy,
+    failPut(url: string) {
+      failedPutUrls.add(url);
+    },
     seed(name: string, url: string, response: MockResponse) {
       ensure(name).set(url, response);
     },
@@ -76,16 +79,6 @@ function createCaches() {
     delete: async (name: string) => {
       deleteCacheSpy(name);
       return stores.delete(name);
-    },
-    match: async (request: UrlLike) => {
-      const url = keyToUrl(request);
-      for (const store of stores.values()) {
-        const hit = store.get(url);
-        if (hit) {
-          return hit;
-        }
-      }
-      return undefined;
     },
   };
 }
@@ -97,7 +90,7 @@ function createSelf() {
     addEventListener: (type: string, handler: (event: unknown) => void) => {
       handlers[type] = handler;
     },
-    skipWaiting: vi.fn(),
+    skipWaiting: vi.fn(async () => undefined),
     clients: { claim: vi.fn(async () => undefined) },
     location: { origin: ORIGIN },
   };
@@ -149,7 +142,7 @@ async function loadServiceWorker(): Promise<SwHandlers> {
   vi.stubGlobal("caches", cachesMock);
   vi.stubGlobal("fetch", fetchMock);
   vi.resetModules();
-  // @ts-expect-error public/sw.js is a classic (non-module) service worker script, loaded for its side effects
+  // @ts-expect-error sw.js is a classic worker script
   await import("../../../public/sw.js");
   return selfMock.handlers;
 }
@@ -160,12 +153,48 @@ describe("service worker (public/sw.js)", () => {
     vi.clearAllMocks();
   });
 
-  it("skips waiting on install so a new worker activates immediately", async () => {
+  it("pre-caches the app shell and skips waiting on install", async () => {
     const handlers = await loadServiceWorker();
+    const shell = makeResponse(
+      true,
+      '<script src="/assets/app.js"></script><link rel="stylesheet" href="/assets/app.css">'
+    );
+    const script = makeResponse();
+    const styles = makeResponse();
+    fetchMock.mockResolvedValueOnce(shell).mockResolvedValueOnce(script).mockResolvedValueOnce(styles);
 
-    handlers.install({});
+    const event = createLifecycleEvent();
+    handlers.install(event);
+    await event.settle();
 
     expect(selfMock.skipWaiting).toHaveBeenCalledTimes(1);
+    expect(shell.clone).toHaveBeenCalledTimes(1);
+    expect(cachesMock.stores.get(SHELL_CACHE)?.get("/index.html")).toBe(shell);
+    expect(cachesMock.stores.get(SHELL_CACHE)?.get(`${ORIGIN}/assets/app.js`)).toBe(script);
+    expect(cachesMock.stores.get(SHELL_CACHE)?.get(`${ORIGIN}/assets/app.css`)).toBe(styles);
+  });
+
+  it("does not install when the app shell cannot be fetched", async () => {
+    const handlers = await loadServiceWorker();
+    fetchMock.mockResolvedValueOnce(makeResponse(false));
+
+    const event = createLifecycleEvent();
+    handlers.install(event);
+
+    await expect(event.settle()).rejects.toThrow("Failed to fetch the app shell");
+    expect(cachesMock.stores.has(SHELL_CACHE)).toBe(false);
+  });
+
+  it("does not install a partial app shell", async () => {
+    const handlers = await loadServiceWorker();
+    const shell = makeResponse(true, '<script src="/assets/app.js"></script>');
+    fetchMock.mockResolvedValueOnce(shell).mockResolvedValueOnce(makeResponse(false));
+
+    const event = createLifecycleEvent();
+    handlers.install(event);
+
+    await expect(event.settle()).rejects.toThrow("Failed to fetch app shell asset");
+    expect(cachesMock.stores.has(SHELL_CACHE)).toBe(false);
   });
 
   it("deletes unknown caches, keeps the shell/asset caches, and claims clients on activate", async () => {
@@ -173,6 +202,7 @@ describe("service worker (public/sw.js)", () => {
     cachesMock.seed(SHELL_CACHE, "/index.html", makeResponse());
     cachesMock.seed(ASSET_CACHE, `${ORIGIN}/assets/app.js`, makeResponse());
     cachesMock.seed("gmx-pwa-v1", "/legacy", makeResponse());
+    cachesMock.seed("other-app-v1", "/index.html", makeResponse());
 
     const event = createLifecycleEvent();
     handlers.activate(event);
@@ -181,6 +211,7 @@ describe("service worker (public/sw.js)", () => {
     expect(cachesMock.deleteCacheSpy).toHaveBeenCalledWith("gmx-pwa-v1");
     expect(cachesMock.deleteCacheSpy).not.toHaveBeenCalledWith(SHELL_CACHE);
     expect(cachesMock.deleteCacheSpy).not.toHaveBeenCalledWith(ASSET_CACHE);
+    expect(cachesMock.deleteCacheSpy).not.toHaveBeenCalledWith("other-app-v1");
     expect(selfMock.clients.claim).toHaveBeenCalledTimes(1);
   });
 
@@ -222,12 +253,45 @@ describe("service worker (public/sw.js)", () => {
 
     await expect(event.getResponse()).resolves.toBe(networkResponse);
     await event.settle();
+    expect(networkResponse.clone).toHaveBeenCalledTimes(2);
     expect(cachesMock.stores.get(SHELL_CACHE)?.get("/index.html")).toBe(networkResponse);
+  });
+
+  it("navigation: keeps the previous shell when a new shell asset cannot be fetched", async () => {
+    const handlers = await loadServiceWorker();
+    const previousShell = makeResponse();
+    const networkResponse = makeResponse(true, '<script src="/assets/new.js"></script>');
+    cachesMock.seed(SHELL_CACHE, "/index.html", previousShell);
+    fetchMock.mockResolvedValueOnce(networkResponse).mockResolvedValueOnce(makeResponse(false));
+    const event = createFetchEvent({ method: "GET", url: `${ORIGIN}/trade`, mode: "navigate" });
+
+    handlers.fetch(event);
+
+    await expect(event.getResponse()).resolves.toBe(networkResponse);
+    await event.settle();
+    expect(cachesMock.stores.get(SHELL_CACHE)?.get("/index.html")).toBe(previousShell);
+  });
+
+  it("navigation: keeps the previous shell when a new shell asset cannot be cached", async () => {
+    const handlers = await loadServiceWorker();
+    const previousShell = makeResponse();
+    const networkResponse = makeResponse(true, '<script src="/assets/new.js"></script>');
+    const assetUrl = `${ORIGIN}/assets/new.js`;
+    cachesMock.seed(SHELL_CACHE, "/index.html", previousShell);
+    cachesMock.failPut(assetUrl);
+    fetchMock.mockResolvedValueOnce(networkResponse).mockResolvedValueOnce(makeResponse());
+    const event = createFetchEvent({ method: "GET", url: `${ORIGIN}/trade`, mode: "navigate" });
+
+    handlers.fetch(event);
+
+    await expect(event.getResponse()).resolves.toBe(networkResponse);
+    await event.settle();
+    expect(cachesMock.stores.get(SHELL_CACHE)?.get("/index.html")).toBe(previousShell);
   });
 
   it("navigation: does not cache a non-ok network response", async () => {
     const handlers = await loadServiceWorker();
-    fetchMock.mockResolvedValueOnce(makeResponse(false, 500));
+    fetchMock.mockResolvedValueOnce(makeResponse(false));
     const event = createFetchEvent({ method: "GET", url: `${ORIGIN}/trade`, mode: "navigate" });
 
     handlers.fetch(event);
@@ -251,6 +315,7 @@ describe("service worker (public/sw.js)", () => {
 
   it("navigation: rejects when the network fails and no shell is cached", async () => {
     const handlers = await loadServiceWorker();
+    cachesMock.seed("other-app-v1", "/index.html", makeResponse());
     fetchMock.mockRejectedValueOnce(new Error("offline"));
     const event = createFetchEvent({ method: "GET", url: `${ORIGIN}/trade`, mode: "navigate" });
 
@@ -277,18 +342,20 @@ describe("service worker (public/sw.js)", () => {
     const networkResponse = makeResponse(true);
     fetchMock.mockResolvedValueOnce(networkResponse);
     const url = `${ORIGIN}/assets/app.def456.js`;
+    cachesMock.seed("other-app-v1", url, makeResponse());
     const event = createFetchEvent({ method: "GET", url, mode: "cors" });
 
     handlers.fetch(event);
 
     await expect(event.getResponse()).resolves.toBe(networkResponse);
     await event.settle();
+    expect(networkResponse.clone).toHaveBeenCalledTimes(1);
     expect(cachesMock.stores.get(ASSET_CACHE)?.get(url)).toBe(networkResponse);
   });
 
   it("asset: does not cache a non-ok response", async () => {
     const handlers = await loadServiceWorker();
-    fetchMock.mockResolvedValueOnce(makeResponse(false, 404));
+    fetchMock.mockResolvedValueOnce(makeResponse(false));
     const url = `${ORIGIN}/assets/missing.js`;
     const event = createFetchEvent({ method: "GET", url, mode: "cors" });
 

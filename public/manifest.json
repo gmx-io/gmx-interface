@@ -1,7 +1,7 @@
 {
   "name": "GMX | Decentralized Perpetual Exchange",
   "short_name": "GMX",
-  "description": "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche.",
+  "description": "Trade spot or perpetual with up to 100x leverage directly from your wallet.",
   "id": "/",
   "start_url": "/",
   "scope": "/",

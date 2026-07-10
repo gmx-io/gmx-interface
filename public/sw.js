@@ -1,16 +1,14 @@
-// GMX PWA service worker.
-// Navigations are network-first so new deployments are picked up immediately.
-// Only immutable hashed build files under /assets/ are served cache-first.
-const SHELL_CACHE = "gmx-shell-v1";
-const ASSET_CACHE = "gmx-assets-v1";
+const CACHE_PREFIX = "gmx-pwa-";
+// Bump when the precached shell changes.
+const SHELL_CACHE = "gmx-pwa-shell-v1";
+const ASSET_CACHE = "gmx-pwa-assets-v1";
 const KNOWN_CACHES = [SHELL_CACHE, ASSET_CACHE];
+const APP_SHELL_URL = "/";
 const OFFLINE_SHELL_KEY = "/index.html";
-// Hashed assets are immutable, so old deployments' files are never requested again.
-// Cap the asset cache so those stale entries can't grow without bound.
 const MAX_ASSET_ENTRIES = 64;
 
-self.addEventListener("install", () => {
-  self.skipWaiting();
+self.addEventListener("install", (event) => {
+  event.waitUntil(Promise.all([self.skipWaiting(), cacheAppShell()]));
 });
 
 self.addEventListener("activate", (event) => {
@@ -18,7 +16,11 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((cacheNames) =>
-        Promise.all(cacheNames.filter((name) => !KNOWN_CACHES.includes(name)).map((name) => caches.delete(name)))
+        Promise.all(
+          cacheNames
+            .filter((name) => name.startsWith(CACHE_PREFIX) && !KNOWN_CACHES.includes(name))
+            .map((name) => caches.delete(name))
+        )
       )
       .then(() => self.clients.claim())
   );
@@ -29,10 +31,58 @@ async function putInCache(cacheName, request, response) {
   await cache.put(request, response);
 }
 
+async function getFromCache(cacheName, request) {
+  const cache = await caches.open(cacheName);
+  return cache.match(request);
+}
+
+function getAppShellAssetUrls(html) {
+  const assetUrls = new Set();
+
+  for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
+    const url = new URL(match[1], self.location.origin);
+
+    if (url.origin === self.location.origin && url.pathname.startsWith("/assets/")) {
+      assetUrls.add(url.href);
+    }
+  }
+
+  return [...assetUrls];
+}
+
+async function cacheAppShellResponse(response) {
+  if (!response.ok) {
+    throw new Error("Failed to fetch the app shell");
+  }
+
+  const html = await response.clone().text();
+  const assetUrls = getAppShellAssetUrls(html);
+  const assets = await Promise.all(
+    assetUrls.map(async (url) => {
+      const assetResponse = await fetch(url);
+
+      if (!assetResponse.ok) {
+        throw new Error(`Failed to fetch app shell asset: ${url}`);
+      }
+
+      return [url, assetResponse];
+    })
+  );
+
+  const cache = await caches.open(SHELL_CACHE);
+  await Promise.all(assets.map(([url, assetResponse]) => cache.put(url, assetResponse)));
+  await cache.put(OFFLINE_SHELL_KEY, response);
+}
+
+async function cacheAppShell() {
+  const response = await fetch(APP_SHELL_URL);
+  await cacheAppShellResponse(response);
+}
+
 async function trimCache(cacheName, maxEntries) {
   const cache = await caches.open(cacheName);
   const keys = await cache.keys();
-  // keys() preserves insertion order, so the oldest entries come first.
+  // Cache.keys() returns entries in insertion order.
   for (let index = 0; index < keys.length - maxEntries; index++) {
     await cache.delete(keys[index]);
   }
@@ -42,11 +92,15 @@ async function handleNavigation(event) {
   try {
     const response = await fetch(event.request);
     if (response.ok) {
-      event.waitUntil(putInCache(SHELL_CACHE, OFFLINE_SHELL_KEY, response.clone()));
+      event.waitUntil(
+        cacheAppShellResponse(response.clone()).catch(() => {
+          // Keep the previous complete shell.
+        })
+      );
     }
     return response;
   } catch (error) {
-    const offlineShell = await caches.match(OFFLINE_SHELL_KEY);
+    const offlineShell = await getFromCache(SHELL_CACHE, OFFLINE_SHELL_KEY);
     if (offlineShell) {
       return offlineShell;
     }
@@ -55,7 +109,7 @@ async function handleNavigation(event) {
 }
 
 async function handleStaticAsset(event) {
-  const cached = await caches.match(event.request);
+  const cached = (await getFromCache(SHELL_CACHE, event.request)) ?? (await getFromCache(ASSET_CACHE, event.request));
   if (cached) {
     return cached;
   }

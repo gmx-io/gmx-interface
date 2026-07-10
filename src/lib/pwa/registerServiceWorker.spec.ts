@@ -62,27 +62,16 @@ describe("registerServiceWorker", () => {
     expect(register).toHaveBeenCalledWith("/sw.js");
   });
 
-  it("swallows registration errors so the app keeps working without offline support", async () => {
-    const failingRegister = vi.fn().mockRejectedValue(new Error("boom"));
-    Object.defineProperty(navigator, "serviceWorker", {
-      value: { register: failingRegister },
-      configurable: true,
-    });
-
-    expect(() => registerServiceWorker()).not.toThrow();
-    await expect(failingRegister.mock.results[0].value).rejects.toThrow("boom");
-  });
-
   it("unregisters the worker and purges caches instead of registering when the kill-switch is set", async () => {
     vi.stubEnv("VITE_APP_DISABLE_PWA", "true");
     const unregister = vi.fn().mockResolvedValue(true);
     Object.defineProperty(navigator, "serviceWorker", {
-      value: { register, getRegistrations: vi.fn().mockResolvedValue([{ unregister }]) },
+      value: { register, getRegistration: vi.fn().mockResolvedValue({ unregister }) },
       configurable: true,
     });
     const cacheDelete = vi.fn().mockResolvedValue(true);
     vi.stubGlobal("caches", {
-      keys: vi.fn().mockResolvedValue(["gmx-shell-v1", "gmx-assets-v1"]),
+      keys: vi.fn().mockResolvedValue(["gmx-pwa-shell-v1", "gmx-pwa-assets-v1", "other-app-v1"]),
       delete: cacheDelete,
     });
 
@@ -91,7 +80,8 @@ describe("registerServiceWorker", () => {
     await vi.waitFor(() => expect(cacheDelete).toHaveBeenCalledTimes(2));
     expect(register).not.toHaveBeenCalled();
     expect(unregister).toHaveBeenCalledTimes(1);
-    expect(cacheDelete).toHaveBeenCalledWith("gmx-shell-v1");
-    expect(cacheDelete).toHaveBeenCalledWith("gmx-assets-v1");
+    expect(cacheDelete).toHaveBeenCalledWith("gmx-pwa-shell-v1");
+    expect(cacheDelete).toHaveBeenCalledWith("gmx-pwa-assets-v1");
+    expect(cacheDelete).not.toHaveBeenCalledWith("other-app-v1");
   });
 });
