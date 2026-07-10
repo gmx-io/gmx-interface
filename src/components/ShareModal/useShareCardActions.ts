@@ -125,13 +125,19 @@ export function useShareCardActions({
       { instantSend: true }
     );
 
-    const url = await uploadAndGetShareUrl();
-    if (!url) {
-      return;
+    // Reserve the tab while the click still has browser user activation, then navigate it after upload.
+    const shareWindow = window.open("about:blank", "_blank");
+    if (shareWindow) {
+      shareWindow.opener = null;
     }
 
+    const url = await uploadAndGetShareUrl();
     const tweetLink = getTwitterIntentURL(tweetText, url);
-    window.open(tweetLink, "_blank", "noopener,noreferrer");
+    if (shareWindow) {
+      shareWindow.location.replace(tweetLink);
+    } else {
+      window.open(tweetLink, "_blank", "noopener,noreferrer");
+    }
   }, [hasReferralCode, onShareAction, source, tweetText, uploadAndGetShareUrl]);
 
   return { isUploading, uploadError, handleCopy, handleCopyImage, handleShareTwitter };
