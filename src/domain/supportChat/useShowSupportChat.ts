@@ -1,23 +1,17 @@
-import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 export function useShowSupportChat() {
-  const { address: account, isConnected, isConnecting, isReconnecting } = useAccount();
-  const { ready: isPrivyReady } = usePrivy();
-  const { ready: isWalletsReady, wallets } = useWallets();
+  const { isConnected } = useAccount();
+  const isWalletInitializing = useIsWalletInitializing();
   const [lastConnectedState, setLastConnectedState] = useLocalStorageSerializeKey<boolean>(
     SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY,
     false
   );
-
-  // @privy-io/wagmi forces reconnectOnMount: false, so while Privy restores the session on page load
-  // wagmi reports plain "disconnected" (never "reconnecting")
-  const isWalletInitializing =
-    !isPrivyReady || !isWalletsReady || (wallets.length > 0 && !account) || isConnecting || isReconnecting;
 
   const showWhileConnecting = isWalletInitializing && lastConnectedState;
 
