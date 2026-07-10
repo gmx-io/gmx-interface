@@ -8,7 +8,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { selectGlvInfo, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getSubsquidGraphClient } from "lib/indexers";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import { ContractCallConfig, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import type { ClaimableAmount } from "sdk/codegen/subsquid";
 import { ContractsChainId } from "sdk/configs/chains";
 import { queryPaginated } from "sdk/utils/indexers";
@@ -17,12 +17,6 @@ import { convertToUsd } from "sdk/utils/tokens";
 
 import { useMarketTokensData } from "../markets";
 import { TokenData } from "../tokens";
-import {
-  GLP_DISTRIBUTION_ID,
-  GLP_DISTRIBUTION_TEST_ID,
-  GLV_BONUS_INCENTIVE_DISTRIBUTION_ID,
-  GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID,
-} from "./constants";
 
 export type ClaimableAmountsData = {
   amounts: { title: string; usd: bigint; amount: bigint; token: TokenData }[];
@@ -37,56 +31,17 @@ export type DistributionConfiguration = {
 };
 export type ClaimsConfigurationData = Record<string, DistributionConfiguration>;
 
-type ClaimsConfigurationRequestConfig = MulticallRequestConfig<{
-  claimTermsGlpDistribution: {
-    calls: {
-      getClaimTerms: {
-        methodName: string;
-        params: [string];
+type ClaimsConfigurationRequestConfig = MulticallRequestConfig<
+  Record<
+    string,
+    {
+      calls: {
+        claimTerms: ContractCallConfig;
+        claimsDisabled: ContractCallConfig;
       };
-    };
-  };
-  claimsDisabledGlpDistribution: {
-    calls: {
-      getClaimsDisabled: {
-        methodName: string;
-        params: [string];
-      };
-    };
-  };
-  claimTermsGlpDistributionTest: {
-    calls: {
-      getClaimTerms: {
-        methodName: string;
-        params: [string];
-      };
-    };
-  };
-  claimTermsGlvBonusIncentiveDistribution: {
-    calls: {
-      getClaimTerms: {
-        methodName: string;
-        params: [string];
-      };
-    };
-  };
-  claimTermsGlvBonusIncentiveDistributionTest: {
-    calls: {
-      getClaimTerms: {
-        methodName: string;
-        params: [string];
-      };
-    };
-  };
-  claimsDisabledGlvBonusIncentiveDistribution: {
-    calls: {
-      getClaimsDisabled: {
-        methodName: string;
-        params: [string];
-      };
-    };
-  };
-}>;
+    }
+  >
+>;
 
 interface ClaimableAmountsResult {
   claimsConfigByDistributionId?: ClaimsConfigurationData;
@@ -103,69 +58,6 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
   const tokensData = useTokensData();
 
   const [claimedDistributionIds, setClaimedDistributionIds] = useState<string[]>([]);
-
-  const claimableAmountsRequests: ClaimsConfigurationRequestConfig = {
-    claimTermsGlpDistribution: {
-      contractAddress: getContract(chainId, "DataStore"),
-      abiId: "DataStore",
-      calls: {
-        getClaimTerms: {
-          methodName: "getString",
-          params: [claimTermsKey(GLP_DISTRIBUTION_ID)],
-        },
-      },
-    },
-    claimsDisabledGlpDistribution: {
-      contractAddress: getContract(chainId, "DataStore"),
-      abiId: "DataStore",
-      calls: {
-        getClaimsDisabled: {
-          methodName: "getBool",
-          params: [claimsDisabledKey(GLP_DISTRIBUTION_ID)],
-        },
-      },
-    },
-    claimsDisabledGlvBonusIncentiveDistribution: {
-      contractAddress: getContract(chainId, "DataStore"),
-      abiId: "DataStore",
-      calls: {
-        getClaimsDisabled: {
-          methodName: "getBool",
-          params: [claimsDisabledKey(GLV_BONUS_INCENTIVE_DISTRIBUTION_ID)],
-        },
-      },
-    },
-    claimTermsGlvBonusIncentiveDistribution: {
-      contractAddress: getContract(chainId, "DataStore"),
-      abiId: "DataStore",
-      calls: {
-        getClaimTerms: {
-          methodName: "getString",
-          params: [claimTermsKey(GLV_BONUS_INCENTIVE_DISTRIBUTION_ID)],
-        },
-      },
-    },
-    claimTermsGlpDistributionTest: {
-      contractAddress: getContract(chainId, "DataStore"),
-      abiId: "DataStore",
-      calls: {
-        getClaimTerms: {
-          methodName: "getString",
-          params: [claimTermsKey(GLP_DISTRIBUTION_TEST_ID)],
-        },
-      },
-    },
-    claimTermsGlvBonusIncentiveDistributionTest: {
-      contractAddress: getContract(chainId, "DataStore"),
-      abiId: "DataStore",
-      calls: {
-        getClaimTerms: {
-          methodName: "getString",
-          params: [claimTermsKey(GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID)],
-        },
-      },
-    },
-  };
 
   const { data: claimableAmounts, isLoading: isClaimableAmountsLoading } = useSWR([account, chainId], async () => {
     const subsquidClient = getSubsquidGraphClient(chainId);
@@ -190,6 +82,46 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
     return amounts;
   });
 
+  const distributionIds = useMemo(() => {
+    const ids = new Set(claimableAmounts?.map((claimableAmount) => claimableAmount.distributionId.toString()));
+    return Array.from(ids).sort();
+  }, [claimableAmounts]);
+
+  const { data: claimsConfigByDistributionId, isLoading: isClaimsConfigLoading } = useMulticall<
+    ClaimsConfigurationRequestConfig,
+    ClaimsConfigurationData
+  >(chainId, "claims-configuration", {
+    key: distributionIds.length > 0 ? [distributionIds.join("-")] : undefined,
+    request: () =>
+      distributionIds.reduce((request, distributionId) => {
+        request[distributionId] = {
+          contractAddress: getContract(chainId, "DataStore"),
+          abiId: "DataStore",
+          calls: {
+            claimTerms: {
+              methodName: "getString",
+              params: [claimTermsKey(BigInt(distributionId))],
+            },
+            claimsDisabled: {
+              methodName: "getBool",
+              params: [claimsDisabledKey(BigInt(distributionId))],
+            },
+          },
+        };
+
+        return request;
+      }, {} as ClaimsConfigurationRequestConfig),
+    parseResponse: (result) =>
+      Object.entries(result.data).reduce((acc, [distributionId, calls]) => {
+        acc[distributionId] = {
+          claimTerms: calls.claimTerms.returnValues[0],
+          claimsDisabled: Boolean(calls.claimsDisabled.returnValues[0]),
+        };
+
+        return acc;
+      }, {} as ClaimsConfigurationData),
+  });
+
   const claimableAmountsDataByDistributionId = useMemo(() => {
     const result: ClaimableAmountsDataByDistributionId = {};
 
@@ -208,6 +140,11 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
       const { token, amount, distributionId } = claimableAmount;
 
       if (claimedDistributionIds.includes(distributionId)) {
+        return;
+      }
+
+      const distributionConfiguration = claimsConfigByDistributionId?.[distributionId];
+      if (!distributionConfiguration || distributionConfiguration.claimsDisabled) {
         return;
       }
 
@@ -266,50 +203,8 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
     isClaimableAmountsLoading,
     marketTokensData,
     claimedDistributionIds,
+    claimsConfigByDistributionId,
   ]);
-
-  const { data: claimsConfigByDistributionId, isLoading: isClaimsConfigLoading } = useMulticall<
-    ClaimsConfigurationRequestConfig,
-    ClaimsConfigurationData
-  >(chainId, "glp-distribution", {
-    key: account ? [account] : undefined,
-    request: claimableAmountsRequests,
-    parseResponse: (result) => {
-      const claimTermsGlpDistribution = result.data.claimTermsGlpDistribution.getClaimTerms.returnValues[0];
-      const claimsDisabledGlpDistribution = Boolean(
-        result.data.claimsDisabledGlpDistribution.getClaimsDisabled.returnValues[0]
-      );
-      const claimsDisabledGlvBonusIncentiveDistribution = Boolean(
-        result.data.claimsDisabledGlvBonusIncentiveDistribution.getClaimsDisabled.returnValues[0]
-      );
-
-      const claimTermsGlvBonusIncentiveDistribution =
-        result.data.claimTermsGlvBonusIncentiveDistribution.getClaimTerms.returnValues[0];
-
-      const claimTermsGlpDistributionTest = result.data.claimTermsGlpDistributionTest.getClaimTerms.returnValues[0];
-      const claimTermsGlvBonusIncentiveDistributionTest =
-        result.data.claimTermsGlvBonusIncentiveDistributionTest.getClaimTerms.returnValues[0];
-
-      return {
-        [GLP_DISTRIBUTION_ID.toString()]: {
-          claimTerms: claimTermsGlpDistribution,
-          claimsDisabled: claimsDisabledGlpDistribution,
-        },
-        [GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString()]: {
-          claimTerms: claimTermsGlvBonusIncentiveDistribution,
-          claimsDisabled: claimsDisabledGlvBonusIncentiveDistribution,
-        },
-        [GLP_DISTRIBUTION_TEST_ID.toString()]: {
-          claimTerms: claimTermsGlpDistributionTest,
-          claimsDisabled: false,
-        },
-        [GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID.toString()]: {
-          claimTerms: claimTermsGlvBonusIncentiveDistributionTest,
-          claimsDisabled: false,
-        },
-      };
-    },
-  });
 
   const isLoading =
     isClaimableAmountsLoading || isClaimsConfigLoading || !glvsInfo || !marketsInfo || !tokensData || !marketTokensData;

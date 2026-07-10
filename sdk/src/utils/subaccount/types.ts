@@ -36,6 +36,27 @@ export type SignedSubaccountApproval = SubaccountApproval & {
   subaccountRouterAddress: string;
 };
 
+export type EmptySubaccountApproval = SubaccountApproval & { signature: string };
+
+export type SdkSubaccountApproval = SignedSubaccountApproval | EmptySubaccountApproval;
+
+export type SdkSubaccountStatus = SubaccountOnchainData & {
+  remainingActions: bigint;
+};
+
+export type StoredSubaccountApproval = {
+  message: SignedSubaccountApproval;
+  submittedRequestId?: string;
+};
+
+export type SubaccountState = {
+  account?: string;
+  address: string;
+  approval?: StoredSubaccountApproval;
+  onchainData?: SdkSubaccountStatus;
+  lastStatusFetchedAt?: number;
+};
+
 export type Subaccount = {
   address: string;
   chainId: ContractsChainId;

@@ -72,6 +72,7 @@ export function getGasPaymentValidations({
   const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasTokenAmountWithBuffer;
 
   const tokenBalance = isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance;
+  const isGasPaymentTokenBalanceLoaded = tokenBalance !== undefined;
   const isOutGasTokenBalance = tokenBalance === undefined || totalGasPaymentTokenAmount > tokenBalance;
 
   const needGasPaymentTokenApproval = isGmxAccount
@@ -79,6 +80,7 @@ export function getGasPaymentValidations({
     : getNeedTokenApprove(gasPaymentAllowanceData, gasPaymentToken.address, totalGasPaymentTokenAmount, tokenPermits);
 
   return {
+    isGasPaymentTokenBalanceLoaded,
     isOutGasTokenBalance,
     needGasPaymentTokenApproval,
     isValid: !isOutGasTokenBalance && !needGasPaymentTokenApproval,

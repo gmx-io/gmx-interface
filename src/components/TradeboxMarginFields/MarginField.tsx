@@ -1,8 +1,9 @@
 import { t } from "@lingui/macro";
 import { ChangeEvent, useCallback, useRef } from "react";
 
-import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, SourceChainId } from "config/chains";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { isSettlementChain } from "config/multichain";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -16,7 +17,6 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
@@ -32,7 +32,6 @@ type Props = {
   inputValue: string;
   onInputValueChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
-  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
   onMaxClick?: () => void;
   onFocus?: () => void;
   qa?: string;
@@ -42,7 +41,6 @@ export function MarginField({
   inputValue,
   onInputValueChange,
   onSelectFromTokenAddress,
-  onDepositTokenAddress,
   onMaxClick,
   onFocus,
   qa,
@@ -148,7 +146,6 @@ export function MarginField({
                 qa="margin-collateral-selector"
                 tokensData={tokensData}
                 multichainTokens={multichainTokens}
-                onDepositTokenAddress={onDepositTokenAddress}
                 payChainId={isFromTokenGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : undefined}
               />
             ))}

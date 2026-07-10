@@ -7,7 +7,7 @@ import { zeroAddress } from "viem";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
-import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -37,6 +37,7 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxFees,
+  selectTradeboxFormState,
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
@@ -45,12 +46,12 @@ import {
   selectTradeboxMarkPrice,
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxNextPositionValues,
+  selectTradeboxOffHoursLiqRisk,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
-  selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxSwapTokens,
   selectTradeboxTradeFlags,
@@ -59,7 +60,8 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
+import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
+import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
@@ -90,7 +92,6 @@ import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -139,6 +140,8 @@ import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
 
 import "./TradeBox.scss";
 
+const TRADEBOX_INPUT_PLACEHOLDER = "0.00";
+
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
@@ -174,8 +177,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const walletIconUrls = useWalletIconUrls();
 
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
-
-  const onDepositTokenAddress = useOpenMultichainDepositModal();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -214,7 +215,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
-  } = useSelector(selectTradeboxState);
+  } = useSelector(selectTradeboxFormState);
 
   const isTwapModeAvailable = useMemo(
     () =>
@@ -253,6 +254,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
+  const offHoursLiqRisk = useSelector(selectTradeboxOffHoursLiqRisk);
+  const showOffHoursWarning = offHoursLiqRisk.shouldWarn;
   const fees = useSelector(selectTradeboxFees);
   const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
@@ -355,16 +358,24 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       return undefined;
     }
 
-    const storedGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+    const storedExpressParams = submitButtonState.expressParams;
     if (
-      storedGasPaymentParams === undefined ||
-      storedGasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
+      storedExpressParams === undefined ||
+      storedExpressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
     ) {
       return undefined;
     }
 
-    return storedGasPaymentParams.gasPaymentTokenAmount;
-  }, [expressOrdersEnabledForMax, submitButtonState.expressParams?.gasPaymentParams, gasPaymentTokenAddress]);
+    return getPrimaryOrderGasPaymentTokenAmount({
+      expressParams: storedExpressParams,
+      primaryExecutionFeeAmount: submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    });
+  }, [
+    expressOrdersEnabledForMax,
+    submitButtonState.expressParams,
+    submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    gasPaymentTokenAddress,
+  ]);
 
   const treatMinimalBufferAsEnough =
     isSwap &&
@@ -376,7 +387,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
-    : submitButtonState.totalExecutionFee?.feeTokenAmount;
+    : submitButtonState.primaryExecutionFee?.feeTokenAmount;
 
   const fallbackSwapExecutionFeeAmount = useMemo(() => {
     if (!isSwap || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
@@ -747,6 +758,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
           maxDecimals={fromToken?.decimals}
+          placeholder={TRADEBOX_INPUT_PLACEHOLDER}
         >
           {fromTokenAddress &&
             (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
@@ -780,7 +792,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 qa="collateral-selector"
                 tokensData={tokensData}
                 multichainTokens={multichainTokens}
-                onDepositTokenAddress={onDepositTokenAddress}
               />
             ))}
         </BuyInputSection>
@@ -835,6 +846,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 qa="swap-receive"
                 isDisabled={isTwap}
                 maxDecimals={toToken?.decimals}
+                placeholder={TRADEBOX_INPUT_PLACEHOLDER}
               >
                 {toTokenAddress && (
                   <TokenSelector
@@ -873,6 +885,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             onInputValueChange={handleToInputTokenChange}
             qa="buy"
             maxDecimals={toToken?.decimals}
+            placeholder={TRADEBOX_INPUT_PLACEHOLDER}
           >
             {toTokenAddress && (
               <MarketSelector
@@ -969,6 +982,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleTriggerPriceInputChange}
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
+        placeholder={TRADEBOX_INPUT_PLACEHOLDER}
       >
         {t`USD`}
       </BuyInputSection>
@@ -986,6 +1000,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleTriggerRatioInputChange}
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
+        placeholder={TRADEBOX_INPUT_PLACEHOLDER}
       >
         {markRatio && (
           <>
@@ -1106,7 +1121,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isIncrease && (
                 <TradeboxMarginFields
                   onSelectFromTokenAddress={handleSelectFromTokenAddress}
-                  onDepositTokenAddress={onDepositTokenAddress}
                   fromTokenInputValue={fromTokenInputValue}
                   setFromTokenInputValue={setFromTokenInputValue}
                   setFocusedInput={setFocusedInput}
@@ -1225,6 +1239,24 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           {gasPaymentTokenWarningContent && (
             <AlertInfoCard hideClose type="warning">
               {gasPaymentTokenWarningContent}
+            </AlertInfoCard>
+          )}
+          {showOffHoursWarning && (
+            <AlertInfoCard hideClose type="warning">
+              <div className="flex flex-col gap-8">
+                <div>
+                  <Trans>
+                    Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation.
+                    Consider lowering leverage or adding margin.
+                  </Trans>
+                </div>
+                <div>
+                  <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
+                </div>
+                <ExternalLink href={OFF_HOURS_DOCS_URL} newTab>
+                  <Trans>Read more</Trans>
+                </ExternalLink>
+              </div>
             </AlertInfoCard>
           )}
 

@@ -2,9 +2,9 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useAccountStats } from "domain/synthetics/accountStats/useAccountStats";
 import { useChainId } from "lib/chains";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import { userAnalytics } from ".";

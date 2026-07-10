@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { useIsApiHealthy } from "domain/api/apiHealthTracker";
 import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
@@ -57,19 +58,13 @@ export function usePositionsInfoRequest(
     tokensData?: TokensData;
     showPnlInLeverage: boolean;
     skipLocalReferralCode?: boolean;
-    skipFallbackCounter?: boolean;
   }
 ): PositionsInfoResult {
-  const {
-    showPnlInLeverage,
-    marketsInfoData,
-    tokensData,
-    account,
-    skipLocalReferralCode = false,
-    skipFallbackCounter = false,
-  } = p;
+  const { showPnlInLeverage, marketsInfoData, tokensData, account, skipLocalReferralCode = false } = p;
 
-  const isApiSdkEnabled = useIsApiSdkEnabled(API_UI_FLAGS.positions);
+  // Stale markets ⇒ gmx-api unhealthy ⇒ positions fall back to RPC globally too.
+  const isApiHealthy = useIsApiHealthy(chainId);
+  const isApiSdkEnabled = useIsApiSdkEnabled(API_UI_FLAGS.positions) && isApiHealthy;
 
   const {
     positionsInfoData: apiPositionsInfoData,
@@ -91,6 +86,7 @@ export function usePositionsInfoRequest(
     account,
     marketsData: p.marketsData,
     tokensData,
+    enabled: shouldFallbackToRpc,
   });
 
   const { positionsConstants, error: positionsConstantsError } = usePositionsConstantsRequest(chainId);
@@ -244,7 +240,7 @@ export function usePositionsInfoRequest(
   useApiDataFallbackCounter({
     domain: "positions",
     chainId,
-    apiEnabled: !skipFallbackCounter && isApiSdkEnabled,
+    apiEnabled: isApiSdkEnabled,
     apiData: apiPositionsInfoData,
     isApiStale,
     apiError,

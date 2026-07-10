@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { REFERRALS_DOCS_URL } from "config/links";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
   useAffiliateTier,
   useCodeOwner,
@@ -13,7 +14,6 @@ import {
 } from "domain/referrals";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
-import { useConnectModal } from "lib/wallets/useConnectModal";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -62,8 +62,8 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
   const { codeOwner } = useCodeOwner(chainId, address, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(chainId, codeOwner);
-  const { totalRebate } = useTiers(chainId, traderTier);
-  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
+  const { totalRebate, discountShare: tierDiscountShare } = useTiers(chainId, traderTier);
+  const currentTierDiscount = getSharePercentage(discountShare, tierDiscountShare, totalRebate);
 
   const [joinReferralWizardStep, setJoinReferralWizardStep] = useState(JoinReferralWizardStep.ConnectWallet);
   const [userReferralCodeString, setUserReferralCodeString] = useState("");

@@ -33,6 +33,7 @@ import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError } from "lib/useHasOutdatedUi";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
 import {
@@ -50,6 +51,7 @@ export enum ValidationButtonTooltipName {
   maxLeverage = "maxLeverage",
   liqPriceGtMarkPrice = "liqPrice > markPrice",
   noSwapPath = "noSwapPath",
+  minDeposit = "minDeposit",
 }
 
 export enum ValidationBannerErrorName {
@@ -154,6 +156,7 @@ export function getSwapError(p: {
   isExternalSwapLoading: boolean;
   isWrapOrUnwrap: boolean;
   isStakeOrUnstake: boolean;
+  isFromTokenGmxAccount: boolean;
   swapLiquidity: bigint | undefined;
   isTwap: boolean;
   numberOfParts: number;
@@ -170,6 +173,7 @@ export function getSwapError(p: {
     fees,
     isWrapOrUnwrap,
     isStakeOrUnstake,
+    isFromTokenGmxAccount,
     swapLiquidity,
     swapPathStats,
     externalSwapQuote,
@@ -180,6 +184,15 @@ export function getSwapError(p: {
 
   if (!fromToken || !toToken) {
     return { buttonErrorMessage: t`Select a token` };
+  }
+
+  if (isFromTokenGmxAccount && (fromToken.isNative || toToken.isNative)) {
+    const wrappedToken = getWrappedToken(p.chainId);
+    const nativeToken = fromToken.isNative ? fromToken : toToken;
+
+    return {
+      buttonErrorMessage: t`GMX Account swaps cannot use native ${nativeToken.symbol}. Select ${wrappedToken.symbol} or withdraw to wallet first.`,
+    };
   }
 
   if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount <= 0 || fromUsd <= 0) {
@@ -661,6 +674,7 @@ export function getEditCollateralError(p: {
   isDeposit: boolean;
   depositToken: TokenData | undefined;
   depositAmount: bigint | undefined;
+  minDepositUsd: bigint | undefined;
   marketInfo: MarketInfo | undefined;
   maxWithdrawAmount: bigint | undefined;
 }): ValidationResult {
@@ -673,6 +687,7 @@ export function getEditCollateralError(p: {
     isDeposit,
     depositToken,
     depositAmount,
+    minDepositUsd,
     marketInfo,
     maxWithdrawAmount,
   } = p;
@@ -694,6 +709,13 @@ export function getEditCollateralError(p: {
 
   if (isDeposit && depositToken && depositAmount !== undefined && depositAmount > (depositToken.balance ?? 0)) {
     return { buttonErrorMessage: t`Insufficient ${depositToken.symbol} balance` };
+  }
+
+  if (isDeposit && minDepositUsd !== undefined && minDepositUsd > 0 && collateralDeltaUsd < minDepositUsd) {
+    return {
+      buttonErrorMessage: t`Min deposit: ${formatUsd(minDepositUsd)}`,
+      buttonTooltipName: ValidationButtonTooltipName.minDeposit,
+    };
   }
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
@@ -890,8 +912,18 @@ export function getGmSwapError(p: {
       const maxShortExceeded =
         shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount;
 
-      if (maxLongExceeded || maxShortExceeded) {
-        return { buttonErrorMessage: t`Max GM buyable amount reached`, buttonTooltipMessage: glvTooltipMessage };
+      if (maxLongExceeded) {
+        return {
+          buttonErrorMessage: t`Max ${longToken?.symbol} amount exceeded`,
+          buttonTooltipMessage: glvTooltipMessage,
+        };
+      }
+
+      if (maxShortExceeded) {
+        return {
+          buttonErrorMessage: t`Max ${shortToken?.symbol} amount exceeded`,
+          buttonTooltipMessage: glvTooltipMessage,
+        };
       }
     } else {
       const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);

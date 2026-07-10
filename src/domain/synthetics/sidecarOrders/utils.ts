@@ -3,7 +3,7 @@ import uniqueId from "lodash/uniqueId";
 
 import { USD_DECIMALS } from "config/factors";
 import { PositionOrderInfo } from "domain/synthetics/orders";
-import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
+import { getTpSlLiqPriceWarning, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
@@ -109,6 +109,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   entry: T,
   type: "sl" | "tp",
   {
+    liqPrice,
     triggerPrice,
     markPrice,
     isLong,
@@ -174,10 +175,20 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     percentageError = t`Size percentage required`;
   }
 
+  let priceWarning: string | null = null;
+  if (!priceError) {
+    priceWarning =
+      getTpSlLiqPriceWarning({
+        triggerPrice: inputPrice ?? undefined,
+        liquidationPrice: liqPrice,
+        isLong: Boolean(isLong),
+      }) ?? null;
+  }
+
   return {
     ...entry,
     sizeUsd: { ...entry.sizeUsd, error: sizeError },
-    price: { ...entry.price, error: priceError },
+    price: { ...entry.price, error: priceError, warning: priceWarning },
     percentage: { ...entry.percentage, error: percentageError },
   };
 }

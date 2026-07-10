@@ -80,16 +80,17 @@ export function GmList({
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { active } = useWallet();
-  const { userEarnings } = useUserEarnings(chainId, srcChainId);
+  const {
+    userEarnings,
+    isLoading: isUserEarningsLoading,
+    isUnavailable: isUserEarningsUnavailable,
+    isEstimated365dFeesLoading,
+    isEstimated365dFeesUnavailable,
+  } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
-  const {
-    topLevelTab,
-    subCategoryTab,
-    setSubCategoryTab,
-    favoriteTokens,
-    toggleFavoriteToken,
-  } = useTokensFavorites("gm-list");
+  const { topLevelTab, subCategoryTab, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
+    useTokensFavorites("gm-list");
   const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
 
   const { listingDateByIndexToken } = useMarketsListingDates(chainId);
@@ -123,7 +124,7 @@ export function GmList({
   const populatedTradfiSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
     if (!marketsInfo) return set;
-    for (const cat of ["pre-ipo", "commodities", "stocks", "indices", "fx"] as const) {
+    for (const cat of ["stocks", "pre-ipo", "commodities", "indices", "fx"] as const) {
       const found = Object.values(marketsInfo).some(
         (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken?.categories?.includes(cat)
       );
@@ -209,6 +210,11 @@ export function GmList({
           isRecentlyListed={isRecentlyListed}
           isFavorite={favoriteTokens.includes(token.address)}
           onFavoriteClick={toggleFavoriteToken}
+          userEarnings={userEarnings}
+          isUserEarningsLoading={isUserEarningsLoading}
+          isUserEarningsUnavailable={isUserEarningsUnavailable}
+          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
         />
       );
     });
@@ -314,6 +320,10 @@ export function GmList({
                           balance={userTotalGmInfo?.balance}
                           balanceUsd={userTotalGmInfo?.balanceUsd}
                           userEarnings={userEarnings}
+                          isUserEarningsLoading={isUserEarningsLoading}
+                          isUserEarningsUnavailable={isUserEarningsUnavailable}
+                          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+                          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
                           label={t`BALANCE`}
                         />
                       </Sorter>

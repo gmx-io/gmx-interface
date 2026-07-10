@@ -1,6 +1,5 @@
 import { ChangeEvent, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import { SourceChainId } from "config/chains";
 import { TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -28,7 +27,6 @@ import { useTradeboxManualLeverageSizeSlider } from "./useTradeboxManualLeverage
 type Props = {
   maxAvailableAmount: bigint;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
-  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
   fromTokenInputValue: string;
   setFromTokenInputValue: (value: string, resetPriceImpact?: boolean) => void;
   setFocusedInput: (input: "from" | "to") => void;
@@ -42,7 +40,6 @@ type Props = {
 export function TradeboxMarginFields({
   maxAvailableAmount,
   onSelectFromTokenAddress,
-  onDepositTokenAddress,
   fromTokenInputValue,
   setFromTokenInputValue,
   setFocusedInput,
@@ -293,7 +290,6 @@ export function TradeboxMarginFields({
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputChange}
           onSelectFromTokenAddress={onSelectFromTokenAddress}
-          onDepositTokenAddress={onDepositTokenAddress}
           onMaxClick={() => handleMarginPercentageChange(100)}
           onFocus={() => setFocusedInput("from")}
           qa="margin"

@@ -189,8 +189,8 @@ export function SyntheticsStateContextProvider({
 
   const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
   const isTradePage = pageType === "trade";
-  const shouldFetchJitLiquidity = isTradePage || pageType === "tradingCosts";
   const isAccountPage = pageType === "accounts";
+  const shouldFetchJitLiquidity = isTradePage || isAccountPage || pageType === "tradingCosts";
 
   const account = isAccountPage ? checkSummedAccount : walletAccount;
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);

@@ -15,6 +15,7 @@ export const IS_AUTO_CANCEL_TPSL_KEY = "is-auto-cancel-tpsl";
 export const DISABLE_ORDER_VALIDATION_KEY = "disable-order-validation";
 export const DISABLE_SHARE_MODAL_PNL_CHECK_KEY = "disable-share-modal-pnl-check";
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines-key";
+export const BUY_SELL_ICONS_MODE_KEY = "Exchange-swap-should-show-buy-sell-icons-key";
 export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const PENDING_REFERRAL_CODE_KEY = "GMX-pending-referral-code";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
@@ -46,7 +47,6 @@ const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-pri
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
-export const LAST_EARN_TAB_KEY = "last-earn-tab";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY = "synthetics-collateral-edit-token-map";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY = "synthetics-collateral-edit-token-is-from-gmx-account";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
@@ -58,6 +58,8 @@ export const DEBUG_SWAP_MARKETS_CONFIG_KEY = "debug-swap-markets-config";
 const ONE_CLICK_TRADING_PROMO_HIDDEN_KEY = "one-click-trading-promo-hidden";
 export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-native-token-warn-hidden";
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
+export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
+export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
@@ -71,6 +73,9 @@ export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
+export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
+
+export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
 
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 export const PERMITS_DISABLED_KEY = "permits-disabled";
@@ -86,6 +91,8 @@ export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 export const TRADEBOX_SIZE_DENOMINATION_KEY = "tradebox-size-denomination";
 
 export const CLOSE_SIZE_DENOMINATION_KEY = "close-size-in-tokens";
+
+export const CHART_LINES_SIZE_DENOMINATION_KEY = "chart-lines-size-in-tokens";
 
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 

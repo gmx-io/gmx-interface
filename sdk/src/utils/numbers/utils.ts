@@ -79,12 +79,39 @@ export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRou
   return result;
 }
 
+export function formatBasisPoints(bpsValue: bigint | undefined): string | undefined {
+  if (bpsValue === undefined) {
+    return undefined;
+  }
+
+  const sign = getPlusOrMinusSymbol(bpsValue);
+
+  return `${sign}${formatAmount(bigMath.abs(bpsValue), 0, 0, true)} bps`;
+}
+
+export function formatPriceImpactBps(priceImpactUsd: bigint | undefined, sizeUsd: bigint): string | undefined {
+  return formatBasisPoints(
+    priceImpactUsd !== undefined && sizeUsd > 0n ? getBasisPoints(priceImpactUsd, sizeUsd) : undefined
+  );
+}
+
 export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
   if (a < 0n) {
     return (a - b + 1n) / b;
   }
 
   return (a + b - 1n) / b;
+}
+
+// True when the amount would render as zero at displayDecimals.
+export function roundsToZero(amount: bigint, decimals: number, displayDecimals: number) {
+  const hiddenDecimals = decimals - displayDecimals;
+
+  if (hiddenDecimals <= 0) {
+    return false;
+  }
+
+  return bigMath.abs(amount) < 10n ** BigInt(hiddenDecimals);
 }
 
 export function applyFactor(value: bigint, factor: bigint) {
@@ -240,13 +267,27 @@ export function formatDeltaUsd(
 
 export function formatPercentage(
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean; showPlus?: boolean } = {}
+  opts: {
+    fallbackToZero?: boolean;
+    signed?: boolean;
+    displayDecimals?: number;
+    bps?: boolean;
+    showPlus?: boolean;
+    useCommas?: boolean;
+  } = {}
 ) {
-  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true, showPlus = true } = opts;
+  const {
+    fallbackToZero = false,
+    signed = false,
+    displayDecimals = 2,
+    bps = true,
+    showPlus = true,
+    useCommas = false,
+  } = opts;
 
   if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals, useCommas)}%`;
     }
 
     return undefined;
@@ -255,7 +296,7 @@ export function formatPercentage(
   const sign = signed ? `${getPlusOrMinusSymbol(percentage)}` : "";
   const displaySign = !showPlus && sign === "+" ? "" : `${sign}`;
 
-  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals, useCommas)}%`;
 }
 
 export function formatTokenAmount(
