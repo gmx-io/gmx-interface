@@ -8,6 +8,8 @@ import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import release117PositionFilterPoster from "img/release-117-position-filter-poster.webp";
+import release117PositionFilterDemo from "img/release-117-position-filter.mp4";
 import sparkleIcon from "img/sparkle.svg";
 
 export type AnnouncementType = "listing" | "delisting" | "update" | "maintenance";
@@ -45,9 +47,69 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-117-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "09 Jul 2026, 14:00",
+    endDate: "16 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: PnL Charts, Trade History, and Wallet functionality",
+    summary: (
+      <>
+        Analyze your PnL in more detail, follow any position's full history, and manage funds without leaving the app.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> the PnL chart now supports
+          daily, weekly, and monthly views, zoom and pan (pinch on mobile), and shares its date range with Trade
+          History. Performance details now show your trader rank and a full breakdown of realized and unrealized PnL and
+          fees.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trade History:</span> filter by position to follow every
+          action in a position's lifecycle, from open to full close.
+        </span>
+        <video
+          aria-label="Filter Trade History by position"
+          className="h-auto w-full rounded-8"
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster={release117PositionFilterPoster}
+          preload="metadata"
+          width={800}
+          height={250}
+        >
+          <source src={release117PositionFilterDemo} type="video/mp4" />
+        </video>
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> new Send and Receive buttons for your
+          connected wallet. Receive shows your address as a QR code to copy or scan, and Send transfers tokens to any
+          address, with the network fee shown before you confirm.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">GMX Account:</span> deposits now start by picking the
+          asset you want to move, and each deposit's progress is tracked in Transfer history.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">TP/SL orders:</span> the app now warns when a TP or SL
+          trigger price is beyond your liquidation price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Additional bug fixes:</span> market orders no longer get
+          stuck as pending after executing, and GM pool fee data loads reliably again in Pools and Earn.
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "botanix-withdraw-deadline",
     type: "delisting",
     isActive: true,
+    startDate: "24 Jun 2026, 17:44",
     endDate: "01 Aug 2026, 0:00",
     chains: [BOTANIX],
     title: "Botanix network is shutting down",
