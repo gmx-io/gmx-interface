@@ -6,6 +6,8 @@ import { useLocation } from "react-router-dom";
 import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
+import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
+import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
 
 import { useWhatsNewAnnouncements } from "./useWhatsNewAnnouncements";
 import { WhatsNewToast } from "./WhatsNewToast";
@@ -29,6 +31,7 @@ const MOTION_EXIT = {
 export function WhatsNewToastContainer() {
   const activeUiFlagEvents = useUiFlagEvents();
   const { cards, dismiss } = useWhatsNewAnnouncements();
+  const { announcements: delistingAnnouncements, dismiss: dismissDelisting } = useDelistingExitAnnouncements();
   const [isScrolled, setIsScrolled] = useState(false);
   const { pathname } = useLocation();
 
@@ -62,6 +65,13 @@ export function WhatsNewToastContainer() {
     >
       <div className="flex w-[400px] max-w-[calc(100vw-46px)] flex-col">
         <AnimatePresence initial={false}>
+          {delistingAnnouncements.map((item) => (
+            <motion.div key={item.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <DelistingBanner item={item} onDismiss={dismissDelisting} />
+              </div>
+            </motion.div>
+          ))}
           {activeUiFlagEvents.map((event) => (
             <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <div className="pb-12">

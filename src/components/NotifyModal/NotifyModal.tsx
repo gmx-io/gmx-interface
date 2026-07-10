@@ -18,7 +18,7 @@ export function NotifyModal() {
   const { notifyModalOpen, setNotifyModalOpen } = useNotifyModalState();
 
   return (
-    <ModalWithPortal isVisible={notifyModalOpen} setIsVisible={setNotifyModalOpen} label={t`GMX alerts`}>
+    <ModalWithPortal isVisible={notifyModalOpen} setIsVisible={setNotifyModalOpen} label={t`GMX alerts`} zIndex={1002}>
       <div className="NotifyModal">
         <p className="text-body-medium">
           <Trans>Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more</Trans>

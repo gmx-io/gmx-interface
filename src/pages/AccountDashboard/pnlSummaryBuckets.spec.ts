@@ -1,18 +1,16 @@
 import { sub } from "date-fns";
 import { describe, expect, it } from "vitest";
 
-import { getPnlSummaryBucketForFromDate } from "./pnlSummaryBuckets";
+import { getPnlSummaryBucketForDateRange } from "./pnlSummaryBuckets";
 
 const utcDayStart = (date: Date) => Math.trunc(date.getTime() / 1000 / 86400) * 86400;
 
-// `now` is passed explicitly so the cases are deterministic. Dates are built with the local
-// `new Date(y, m, d, ...)` constructor, mirroring DateSelect (calendar picks are local midnight,
-// presets are `sub(new Date(), duration)`), so these assertions hold under any machine timezone.
-describe("getPnlSummaryBucketForFromDate", () => {
-  const now = new Date(2026, 5, 15, 14, 30); // Jun 15 2026, 14:30 local
+describe("getPnlSummaryBucketForDateRange", () => {
+  const now = new Date("2026-06-15T14:30:00.000Z");
+  const today = new Date(2026, 5, 15);
 
-  it("falls back to all time when no date is selected", () => {
-    expect(getPnlSummaryBucketForFromDate(undefined, now)).toEqual({
+  it("matches all time when no range is selected", () => {
+    expect(getPnlSummaryBucketForDateRange(undefined, undefined, now)).toEqual({
       bucketLabel: "all",
       fromTimestamp: undefined,
       toTimestamp: undefined,
@@ -20,73 +18,81 @@ describe("getPnlSummaryBucketForFromDate", () => {
     });
   });
 
-  it("matches a same-local-day pick to today", () => {
-    const fromDate = new Date(2026, 5, 15); // local midnight today
-    const bucket = getPnlSummaryBucketForFromDate(fromDate, now);
-    expect(bucket.bucketLabel).toBe("today");
-    expect(bucket.fromTimestamp).toBe(utcDayStart(now));
-    expect(bucket.toTimestamp).toBeUndefined();
-    expect(bucket.isFallback).toBe(false);
+  it("matches the exact UTC today and yesterday ranges", () => {
+    expect(getPnlSummaryBucketForDateRange(today, today, now)).toEqual({
+      bucketLabel: "today",
+      fromTimestamp: utcDayStart(now),
+      toTimestamp: undefined,
+      isFallback: false,
+    });
+
+    const yesterday = new Date(2026, 5, 14);
+    expect(getPnlSummaryBucketForDateRange(yesterday, yesterday, now)).toEqual({
+      bucketLabel: "yesterday",
+      fromTimestamp: utcDayStart(now) - 86400,
+      toTimestamp: utcDayStart(now) - 1,
+      isFallback: false,
+    });
   });
 
-  it("matches yesterday", () => {
-    const fromDate = new Date(2026, 5, 14);
-    const bucket = getPnlSummaryBucketForFromDate(fromDate, now);
-    expect(bucket.bucketLabel).toBe("yesterday");
-    expect(bucket.fromTimestamp).toBe(utcDayStart(now) - 86400);
-    expect(bucket.toTimestamp).toBe(utcDayStart(now) - 1);
-    expect(bucket.isFallback).toBe(false);
+  it("matches the exact 7d, 30d, and year ranges", () => {
+    expect(getPnlSummaryBucketForDateRange(new Date(2026, 5, 8), today, now).bucketLabel).toBe("week");
+    expect(getPnlSummaryBucketForDateRange(new Date(2026, 4, 16), today, now).bucketLabel).toBe("month");
+
+    const year = getPnlSummaryBucketForDateRange(new Date(2026, 0, 1), today, now);
+    expect(year).toEqual({
+      bucketLabel: "year",
+      fromTimestamp: Date.UTC(2026, 0, 1) / 1000,
+      toTimestamp: undefined,
+      isFallback: false,
+    });
   });
 
-  // Calendar picks are local midnight, so matching must count local calendar days: a pick exactly
-  // 7/30 days ago maps to week/month even for UTC-ahead users (UTC-day truncation would drift by
-  // one and fall back to all time). These cases pin that regression.
-  it("matches local-midnight calendar picks 7 and 30 days ago to week and month", () => {
-    expect(getPnlSummaryBucketForFromDate(new Date(2026, 5, 8), now).bucketLabel).toBe("week");
-    expect(getPnlSummaryBucketForFromDate(new Date(2026, 4, 16), now).bucketLabel).toBe("month");
+  it("uses UTC boundaries even when the local calendar day differs", () => {
+    const nearUtcMidnight = new Date("2026-06-15T23:30:00.000Z");
+
+    expect(getPnlSummaryBucketForDateRange(today, today, nearUtcMidnight)).toEqual({
+      bucketLabel: "today",
+      fromTimestamp: Date.UTC(2026, 5, 15) / 1000,
+      toTimestamp: undefined,
+      isFallback: false,
+    });
   });
 
-  // Presets keep local wall-clock time, so matching must stay stable across DST transitions too.
-  it("matches the 7d and 30d presets to week and month", () => {
-    expect(getPnlSummaryBucketForFromDate(sub(now, { days: 7 }), now).bucketLabel).toBe("week");
-    expect(getPnlSummaryBucketForFromDate(sub(now, { days: 30 }), now).bucketLabel).toBe("month");
-  });
-
-  it("matches a local Jan 1 pick to the year bucket", () => {
-    const fromDate = new Date(2026, 0, 1);
-    const bucket = getPnlSummaryBucketForFromDate(fromDate, now);
-    expect(bucket.bucketLabel).toBe("year");
-    expect(bucket.fromTimestamp).toBe(Date.UTC(now.getUTCFullYear(), 0, 1) / 1000);
-    expect(bucket.toTimestamp).toBeUndefined();
-    expect(bucket.isFallback).toBe(false);
-  });
-
-  it("uses the nearest available bucket for unmatched selections", () => {
-    // The 30d bucket starts closer to the 90d preset than the start of the year.
-    expect(getPnlSummaryBucketForFromDate(sub(now, { days: 90 }), now)).toEqual({
+  it("uses the nearest available bucket for unmatched ranges", () => {
+    expect(getPnlSummaryBucketForDateRange(sub(today, { days: 90 }), today, now)).toEqual({
       bucketLabel: "month",
       fromTimestamp: utcDayStart(now) - 30 * 86400,
       toTimestamp: undefined,
       isFallback: true,
     });
 
-    // The start of the year is closer than the 30d bucket to this calendar pick.
-    expect(getPnlSummaryBucketForFromDate(new Date(2026, 1, 15), now)).toEqual({
+    expect(getPnlSummaryBucketForDateRange(new Date(2026, 1, 15), today, now)).toEqual({
       bucketLabel: "year",
-      fromTimestamp: Date.UTC(now.getUTCFullYear(), 0, 1) / 1000,
+      fromTimestamp: Date.UTC(2026, 0, 1) / 1000,
       toTimestamp: undefined,
       isFallback: true,
     });
 
-    expect(getPnlSummaryBucketForFromDate(sub(now, { days: 365 }), now)).toEqual({
+    expect(getPnlSummaryBucketForDateRange(sub(today, { days: 365 }), today, now)).toEqual({
       bucketLabel: "year",
-      fromTimestamp: Date.UTC(now.getUTCFullYear(), 0, 1) / 1000,
+      fromTimestamp: Date.UTC(2026, 0, 1) / 1000,
       toTimestamp: undefined,
       isFallback: true,
     });
+  });
 
-    // Future dates (DateSelect MAX_DATE allows them) use today as the nearest bucket.
-    expect(getPnlSummaryBucketForFromDate(new Date(2026, 5, 20), now)).toEqual({
+  it("marks a historical range as a fallback even when its start matches a bucket", () => {
+    expect(getPnlSummaryBucketForDateRange(new Date(2026, 4, 16), new Date(2026, 4, 20), now)).toEqual({
+      bucketLabel: "month",
+      fromTimestamp: utcDayStart(now) - 30 * 86400,
+      toTimestamp: undefined,
+      isFallback: true,
+    });
+  });
+
+  it("uses today as the nearest bucket for a future range", () => {
+    expect(getPnlSummaryBucketForDateRange(new Date(2026, 5, 20), new Date(2026, 5, 25), now)).toEqual({
       bucketLabel: "today",
       fromTimestamp: utcDayStart(now),
       toTimestamp: undefined,
@@ -94,26 +100,26 @@ describe("getPnlSummaryBucketForFromDate", () => {
     });
   });
 
-  it("prefers the broader period when two buckets are equally near", () => {
-    expect(getPnlSummaryBucketForFromDate(sub(now, { days: 4 }), now)).toEqual({
-      bucketLabel: "week",
-      fromTimestamp: utcDayStart(now) - 7 * 86400,
+  it("falls back to all time only when the selected range exceeds 18 months", () => {
+    expect(getPnlSummaryBucketForDateRange(sub(today, { months: 18 }), today, now)).toEqual({
+      bucketLabel: "year",
+      fromTimestamp: Date.UTC(2026, 0, 1) / 1000,
+      toTimestamp: undefined,
+      isFallback: true,
+    });
+
+    expect(getPnlSummaryBucketForDateRange(sub(today, { months: 18, days: 1 }), today, now)).toEqual({
+      bucketLabel: "all",
+      fromTimestamp: undefined,
       toTimestamp: undefined,
       isFallback: true,
     });
   });
 
-  it("falls back to all time only for selections older than 18 months", () => {
-    expect(getPnlSummaryBucketForFromDate(sub(now, { months: 18 }), now)).toEqual({
+  it("does not use all time for a short historical range older than 18 months", () => {
+    expect(getPnlSummaryBucketForDateRange(new Date(2024, 0, 1), new Date(2024, 0, 2), now)).toEqual({
       bucketLabel: "year",
-      fromTimestamp: Date.UTC(now.getUTCFullYear(), 0, 1) / 1000,
-      toTimestamp: undefined,
-      isFallback: true,
-    });
-
-    expect(getPnlSummaryBucketForFromDate(sub(now, { months: 18, days: 1 }), now)).toEqual({
-      bucketLabel: "all",
-      fromTimestamp: undefined,
+      fromTimestamp: Date.UTC(2026, 0, 1) / 1000,
       toTimestamp: undefined,
       isFallback: true,
     });

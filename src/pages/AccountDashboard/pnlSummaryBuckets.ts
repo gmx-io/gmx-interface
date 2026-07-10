@@ -1,10 +1,11 @@
 import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
-import { differenceInCalendarDays, startOfYear, sub } from "date-fns";
+import { sub } from "date-fns";
 
-import { SECONDS_IN_DAY, toUtcDayStart } from "lib/dates";
+import type { PnlSummaryBucketLabel } from "domain/synthetics/accountStats/usePnlSummaryData";
+import { SECONDS_IN_DAY, toUtcDayStartByCalendarDate } from "lib/dates";
 
-export const PNL_SUMMARY_BUCKET_LABELS: Record<string, MessageDescriptor> = {
+export const PNL_SUMMARY_BUCKET_LABELS: Record<PnlSummaryBucketLabel, MessageDescriptor> = {
   today: msg`Today`,
   yesterday: msg`Yesterday`,
   week: msg`Last 7d`,
@@ -14,7 +15,7 @@ export const PNL_SUMMARY_BUCKET_LABELS: Record<string, MessageDescriptor> = {
 };
 
 export type PnlSummaryBucket = {
-  bucketLabel: string;
+  bucketLabel: PnlSummaryBucketLabel;
   fromTimestamp: number | undefined;
   toTimestamp: number | undefined;
   isFallback: boolean;
@@ -22,55 +23,92 @@ export type PnlSummaryBucket = {
 
 const ALL_TIME_FALLBACK_MONTHS = 18;
 
-// DateSelect presets and calendar picks are both local time, so compare by local calendar
-// day (not UTC) to keep bucket matching stable across timezones and DST transitions.
-export function getPnlSummaryBucketForFromDate(fromDate: Date | undefined, now = new Date()): PnlSummaryBucket {
-  if (!fromDate) {
+type AvailableBucket = {
+  bucketLabel: Exclude<PnlSummaryBucketLabel, "all">;
+  fromTimestamp: number;
+  toDayTimestamp: number;
+  toTimestamp: number | undefined;
+};
+
+export function getPnlSummaryBucketForDateRange(
+  fromDate: Date | undefined,
+  toDate: Date | undefined,
+  now = new Date()
+): PnlSummaryBucket {
+  if (!fromDate && !toDate) {
     return { bucketLabel: "all", fromTimestamp: undefined, toTimestamp: undefined, isFallback: false };
   }
 
-  const allTimeFallbackDate = sub(now, { months: ALL_TIME_FALLBACK_MONTHS });
-  if (differenceInCalendarDays(fromDate, allTimeFallbackDate) < 0) {
+  const rangeEndDate = toDate ?? now;
+  const selectedFromTimestamp = toUtcDayStartByCalendarDate(fromDate ?? rangeEndDate);
+  const selectedToTimestamp = toUtcDayStartByCalendarDate(rangeEndDate);
+  const allTimeFallbackDate = sub(rangeEndDate, { months: ALL_TIME_FALLBACK_MONTHS });
+
+  if (selectedFromTimestamp < toUtcDayStartByCalendarDate(allTimeFallbackDate)) {
     return { bucketLabel: "all", fromTimestamp: undefined, toTimestamp: undefined, isFallback: true };
   }
 
-  const utcTodayStart = toUtcDayStart(now);
-  const availableBuckets = [
-    { bucketLabel: "today", fromDate: now, fromTimestamp: utcTodayStart },
+  const utcTodayStart = Math.trunc(now.getTime() / 1000 / SECONDS_IN_DAY) * SECONDS_IN_DAY;
+  const availableBuckets: AvailableBucket[] = [
+    {
+      bucketLabel: "today",
+      fromTimestamp: utcTodayStart,
+      toDayTimestamp: utcTodayStart,
+      toTimestamp: undefined,
+    },
     {
       bucketLabel: "yesterday",
-      fromDate: sub(now, { days: 1 }),
       fromTimestamp: utcTodayStart - SECONDS_IN_DAY,
+      toDayTimestamp: utcTodayStart - SECONDS_IN_DAY,
+      toTimestamp: utcTodayStart - 1,
     },
-    { bucketLabel: "week", fromDate: sub(now, { days: 7 }), fromTimestamp: utcTodayStart - 7 * SECONDS_IN_DAY },
-    { bucketLabel: "month", fromDate: sub(now, { days: 30 }), fromTimestamp: utcTodayStart - 30 * SECONDS_IN_DAY },
+    {
+      bucketLabel: "week",
+      fromTimestamp: utcTodayStart - 7 * SECONDS_IN_DAY,
+      toDayTimestamp: utcTodayStart,
+      toTimestamp: undefined,
+    },
+    {
+      bucketLabel: "month",
+      fromTimestamp: utcTodayStart - 30 * SECONDS_IN_DAY,
+      toDayTimestamp: utcTodayStart,
+      toTimestamp: undefined,
+    },
     {
       bucketLabel: "year",
-      fromDate: startOfYear(now),
       fromTimestamp: Date.UTC(now.getUTCFullYear(), 0, 1) / 1000,
+      toDayTimestamp: utcTodayStart,
+      toTimestamp: undefined,
     },
   ];
 
   const nearestBucket = availableBuckets.reduce((nearest, candidate) => {
-    const nearestDistance = Math.abs(differenceInCalendarDays(fromDate, nearest.fromDate));
-    const candidateDistance = Math.abs(differenceInCalendarDays(fromDate, candidate.fromDate));
+    const nearestDistance = getBucketDistance(selectedFromTimestamp, selectedToTimestamp, nearest);
+    const candidateDistance = getBucketDistance(selectedFromTimestamp, selectedToTimestamp, candidate);
 
     if (candidateDistance < nearestDistance) {
       return candidate;
     }
 
-    if (candidateDistance === nearestDistance && candidate.fromDate < nearest.fromDate) {
+    const nearestDuration = nearest.toDayTimestamp - nearest.fromTimestamp;
+    const candidateDuration = candidate.toDayTimestamp - candidate.fromTimestamp;
+    if (candidateDistance === nearestDistance && candidateDuration > nearestDuration) {
       return candidate;
     }
 
     return nearest;
   });
-  const isFallback = differenceInCalendarDays(fromDate, nearestBucket.fromDate) !== 0;
+  const isFallback =
+    selectedFromTimestamp !== nearestBucket.fromTimestamp || selectedToTimestamp !== nearestBucket.toDayTimestamp;
 
   return {
     bucketLabel: nearestBucket.bucketLabel,
     fromTimestamp: nearestBucket.fromTimestamp,
-    toTimestamp: nearestBucket.bucketLabel === "yesterday" ? utcTodayStart - 1 : undefined,
+    toTimestamp: nearestBucket.toTimestamp,
     isFallback,
   };
+}
+
+function getBucketDistance(fromTimestamp: number, toTimestamp: number, bucket: AvailableBucket) {
+  return Math.abs(fromTimestamp - bucket.fromTimestamp) + Math.abs(toTimestamp - bucket.toDayTimestamp);
 }

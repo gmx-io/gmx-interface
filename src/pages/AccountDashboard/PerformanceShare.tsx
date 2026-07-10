@@ -21,7 +21,7 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import shareBgImg from "img/performance-share-bg.png";
 
 import { PerformanceShareCard } from "./PerformanceShareCard";
-import { PNL_SUMMARY_BUCKET_LABELS, getPnlSummaryBucketForFromDate } from "./pnlSummaryBuckets";
+import { PNL_SUMMARY_BUCKET_LABELS, getPnlSummaryBucketForDateRange } from "./pnlSummaryBuckets";
 import { usePnlHistoricalData } from "./usePnlHistoricalData";
 
 type Props = {
@@ -29,6 +29,7 @@ type Props = {
   walletChainId: ContractsChainId;
   account: Address;
   fromDate: Date | undefined;
+  toDate: Date | undefined;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   createdReferralCode: string | null;
@@ -41,6 +42,7 @@ export function PerformanceShare({
   walletChainId,
   account,
   fromDate,
+  toDate,
   isOpen,
   setIsOpen,
   createdReferralCode,
@@ -81,7 +83,7 @@ export function PerformanceShare({
     onUploadingChange,
   });
 
-  const bucket = useMemo(() => getPnlSummaryBucketForFromDate(fromDate), [fromDate]);
+  const bucket = useMemo(() => getPnlSummaryBucketForDateRange(fromDate, toDate), [fromDate, toDate]);
   const periodLabel = _(PNL_SUMMARY_BUCKET_LABELS[bucket.bucketLabel]);
 
   const { data: pnlSummaryData, error: summaryError, loading: isSummaryLoading } = usePnlSummaryData(chainId, account);
