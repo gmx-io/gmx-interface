@@ -33,6 +33,9 @@ import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { TradingCostsPage } from "pages/TradingCosts/TradingCosts";
+import WhalesAccountPage from "pages/Whales/WhalesAccountPage";
+import WhalesMarketPage from "pages/Whales/WhalesMarketPage";
+import WhalesPage from "pages/Whales/WhalesPage";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { EarnRedirect } from "components/Earn/EarnRedirect";
@@ -337,6 +340,21 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/gmx-execution-costs" key="gmx-execution-costs">
           <GmxExecutionCostsPage />
+        </Route>,
+        <Route exact path="/whales" key="whales">
+          <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stats">
+            <WhalesPage />
+          </SyntheticsStateContextProvider>
+        </Route>,
+        <Route exact path="/whales/market/:market" key="whales-market">
+          <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stats">
+            <WhalesMarketPage />
+          </SyntheticsStateContextProvider>
+        </Route>,
+        <Route exact path="/whales/account/:account" key="whales-account">
+          <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stats">
+            <WhalesAccountPage />
+          </SyntheticsStateContextProvider>
         </Route>,
       ]}
       <Route path="*">

@@ -220,6 +220,12 @@ export function MenuSection({
             key: "gmxExecutionCosts",
             to: "/gmx-execution-costs",
           },
+          {
+            icon: <DashboardIcon className="size-20" />,
+            label: t`Whales`,
+            key: "whales",
+            to: "/whales",
+          },
         ]
       : []),
   ];
