@@ -73,7 +73,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
                 );
               }}
             >
-              <Button variant="ghost" to={platform.link} newTab>
+              <Button variant="ghost" to={platform.link} newTab aria-label={platform.name}>
                 <div className="size-16">{platform.icon}</div>
               </Button>
             </TrackingLink>
