@@ -15,6 +15,7 @@ import {
 import type { Address } from "viem";
 
 import type { ContractsChainId } from "config/chains";
+import { useChainId } from "lib/chains";
 import { toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
@@ -79,9 +80,12 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
 
   const { account: connectedAccount } = useWallet();
   const isOwnAccount = connectedAccount === account;
+  const { chainId: walletChainId } = useChainId();
 
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isShareModalMounted, setIsShareModalMounted] = useState(false);
+  const [isShareModalUploading, setIsShareModalUploading] = useState(false);
+  const [createdReferralCode, setCreatedReferralCode] = useState<string | null>(null);
 
   const handleShareClick = useCallback(() => {
     userAnalytics.pushEvent<SharePositionClickEvent>({
@@ -99,21 +103,25 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
   // queries) stop running in the background. The delay lets the close animation finish, and
   // remounting on reopen recomputes the period bucket against the current time.
   useEffect(() => {
-    if (isShareModalOpen || !isShareModalMounted) {
+    if (isShareModalOpen || !isShareModalMounted || isShareModalUploading) {
       return;
     }
     const timeoutId = setTimeout(() => setIsShareModalMounted(false), 300);
     return () => clearTimeout(timeoutId);
-  }, [isShareModalOpen, isShareModalMounted]);
+  }, [isShareModalOpen, isShareModalMounted, isShareModalUploading]);
+
+  useEffect(() => {
+    setCreatedReferralCode(null);
+  }, [account, walletChainId]);
 
   // Reset when viewing someone else's account (e.g. wallet disconnect) so the modal does not
   // linger or auto-reopen when the account becomes own again.
   useEffect(() => {
-    if (!isOwnAccount) {
+    if (!isOwnAccount && !isShareModalUploading) {
       setIsShareModalOpen(false);
       setIsShareModalMounted(false);
     }
-  }, [isOwnAccount]);
+  }, [isOwnAccount, isShareModalUploading]);
 
   const { isMobile } = useBreakpoints();
 
@@ -136,7 +144,9 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
   );
 
   const chartMargin = useMemo(() => {
-    const maxValue = Math.max(...clusteredPnlData.map((point) => Math.max(point.cumulativePnlFloat, point.pnlFloat)));
+    const maxValue = Math.max(
+      ...clusteredPnlData.map((point) => Math.max(point.cumulativePnlFloat ?? 0, point.pnlFloat ?? 0))
+    );
     const stringValue = Math.ceil(maxValue).toString();
     return { ...CHART_MARGIN, left: stringValue.length * 4 };
   }, [clusteredPnlData]);
@@ -248,13 +258,17 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
 
       {isMobile && <div className="flex justify-around border-t-1/2 border-slate-600 px-16 py-12">{buttons}</div>}
 
-      {isOwnAccount && isShareModalMounted && (
+      {isShareModalMounted && (isOwnAccount || isShareModalUploading) && (
         <PerformanceShare
           chainId={chainId}
+          walletChainId={walletChainId}
           account={account}
           fromDate={fromDate}
           isOpen={isShareModalOpen}
           setIsOpen={setIsShareModalOpen}
+          createdReferralCode={createdReferralCode}
+          setCreatedReferralCode={setCreatedReferralCode}
+          onUploadingChange={setIsShareModalUploading}
         />
       )}
     </div>
@@ -263,9 +277,9 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: Contracts
 
 function renderPnlBar(entry: AccountPnlHistoryPoint) {
   let fill: string;
-  if (entry.pnl > 0n) {
+  if (entry.pnl !== undefined && entry.pnl > 0n) {
     fill = "var(--color-green-500)";
-  } else if (entry.pnl < 0n) {
+  } else if (entry.pnl !== undefined && entry.pnl < 0n) {
     fill = "var(--color-red-500)";
   } else {
     fill = "var(--color-gray-900)";

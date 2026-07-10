@@ -41,7 +41,7 @@ export function ShareCardActionButtons({
       </Button>
       <Button
         variant="secondary"
-        disabled={disabled}
+        disabled={disabled || isUploading}
         onClick={interceptOnClick ?? onCopyImage}
         size="medium"
         className="grow !text-14"

@@ -12,12 +12,26 @@ type Params = {
   account: string | undefined;
   isOpen: boolean;
   source: SharePositionActionSource;
+  createdReferralCode?: string | null;
+  setCreatedReferralCode?: (code: string | null) => void;
 };
 
-export function useShareReferralCodeState({ chainId, account, isOpen, source }: Params) {
+export function useShareReferralCodeState({
+  chainId,
+  account,
+  isOpen,
+  source,
+  createdReferralCode: controlledCreatedReferralCode,
+  setCreatedReferralCode: setControlledCreatedReferralCode,
+}: Params) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account);
-  const [createdReferralCode, setCreatedReferralCode] = useState<string | null>(null);
+  const [internalCreatedReferralCode, setInternalCreatedReferralCode] = useState<string | null>(null);
+  const isCreatedReferralCodeControlled = controlledCreatedReferralCode !== undefined;
+  const createdReferralCode = isCreatedReferralCodeControlled
+    ? controlledCreatedReferralCode
+    : internalCreatedReferralCode;
+  const setCreatedReferralCode = setControlledCreatedReferralCode ?? setInternalCreatedReferralCode;
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
   const [isCreateReferralCodeInfoMessageClosed, setIsCreateReferralCodeInfoMessageClosed] = useLocalStorageSerializeKey(
     "is-create-referral-code-info-message-closed",
@@ -44,14 +58,16 @@ export function useShareReferralCodeState({ chainId, account, isOpen, source }: 
   }, [hasReferralCode, shareAffiliateCode?.code, usedReferralCode]);
 
   useEffect(() => {
-    setCreatedReferralCode(null);
-  }, [account, chainId]);
+    if (!isCreatedReferralCodeControlled) {
+      setInternalCreatedReferralCode(null);
+    }
+  }, [account, chainId, isCreatedReferralCodeControlled]);
 
   useEffect(() => {
     if (userAffiliateCode.code) {
       setCreatedReferralCode(null);
     }
-  }, [userAffiliateCode.code]);
+  }, [setCreatedReferralCode, userAffiliateCode.code]);
 
   useEffect(() => {
     if (prevIsOpen && !isOpen) {
@@ -72,7 +88,7 @@ export function useShareReferralCodeState({ chainId, account, isOpen, source }: 
         },
       });
     },
-    [source]
+    [setCreatedReferralCode, source]
   );
 
   const handlePromptToCreateReferralCode = useCallback((e: React.MouseEvent<unknown>) => {

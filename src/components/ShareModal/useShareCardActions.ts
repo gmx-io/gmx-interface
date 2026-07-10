@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import type { AffiliateCodesState } from "domain/referrals";
@@ -18,6 +18,7 @@ type Params = {
   fileName: string;
   tweetText: string;
   onShareAction?: () => void;
+  onUploadingChange?: (isUploading: boolean) => void;
 };
 
 export function useShareCardActions({
@@ -27,18 +28,34 @@ export function useShareCardActions({
   fileName,
   tweetText,
   onShareAction,
+  onUploadingChange,
 }: Params) {
   const hasReferralCode = Boolean(shareAffiliateCode.code);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [, copyToClipboard] = useCopyToClipboard();
   const { isMobile } = useBreakpoints();
+  const pendingOperationsCount = useRef(0);
+
+  const startOperation = useCallback(() => {
+    pendingOperationsCount.current += 1;
+    setIsUploading(true);
+    onUploadingChange?.(true);
+  }, [onUploadingChange]);
+
+  const finishOperation = useCallback(() => {
+    pendingOperationsCount.current = Math.max(0, pendingOperationsCount.current - 1);
+    if (pendingOperationsCount.current === 0) {
+      setIsUploading(false);
+      onUploadingChange?.(false);
+    }
+  }, [onUploadingChange]);
 
   const uploadAndGetShareUrl = useCallback(async (): Promise<string | undefined> => {
     const element = cardRef.current;
     if (!element) return undefined;
 
-    setIsUploading(true);
+    startOperation();
     setUploadError(null);
     element.classList.add("image-capture-in-progress");
     try {
@@ -50,9 +67,9 @@ export function useShareCardActions({
       return undefined;
     } finally {
       element.classList.remove("image-capture-in-progress");
-      setIsUploading(false);
+      finishOperation();
     }
-  }, [cardRef, shareAffiliateCode]);
+  }, [cardRef, finishOperation, shareAffiliateCode, startOperation]);
 
   const handleCopyImage = useCallback(async () => {
     const element = cardRef.current;
@@ -67,8 +84,13 @@ export function useShareCardActions({
       },
     });
 
-    await shareOrCopyElementAsImage({ element, isMobile, fileName });
-  }, [cardRef, fileName, hasReferralCode, isMobile, onShareAction, source]);
+    startOperation();
+    try {
+      await shareOrCopyElementAsImage({ element, isMobile, fileName });
+    } finally {
+      finishOperation();
+    }
+  }, [cardRef, fileName, finishOperation, hasReferralCode, isMobile, onShareAction, source, startOperation]);
 
   const handleCopy = useCallback(async () => {
     onShareAction?.();

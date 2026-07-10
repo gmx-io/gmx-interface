@@ -5434,6 +5434,10 @@ msgstr "PnL 分析"
 msgid "Failed to claim funds"
 msgstr "領取資金失敗"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing the nearest available period instead."
+msgstr "所選時間段的統計數據不可用。改為顯示最接近的可用時間段。"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
 msgstr ""
@@ -6587,6 +6591,10 @@ msgstr "DeFi 投資組合追蹤器"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "交易"
+
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing your all-time performance instead."
+msgstr "所選時間段的統計數據不可用。改為顯示您所有時間的表現。"
 
 #: src/config/uiFlagEvents.tsx
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."

@@ -5434,6 +5434,10 @@ msgstr "Анализ PnL"
 msgid "Failed to claim funds"
 msgstr "Не удалось клеймить средства"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing the nearest available period instead."
+msgstr "Статистика за выбранный период недоступна. Вместо него показан ближайший доступный период."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
 msgstr ""
@@ -6587,6 +6591,10 @@ msgstr "Трекер DeFi-портфеля"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Торги"
+
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing your all-time performance instead."
+msgstr "Статистика за выбранный период недоступна. Вместо этого показаны результаты за все время."
 
 #: src/config/uiFlagEvents.tsx
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."

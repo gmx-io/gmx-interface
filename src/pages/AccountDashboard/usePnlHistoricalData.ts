@@ -14,12 +14,13 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { DEBUG_FIELDS, DEV_QUERY, type AccountPnlHistoryPointDebugFields } from "./dailyAndCumulativePnLDebug";
 
 export type AccountPnlHistoryPoint = {
+  timestamp: number;
   date: string;
   dateCompact: string;
-  pnlFloat: number;
-  pnl: bigint;
-  cumulativePnlFloat: number;
-  cumulativePnl: bigint;
+  pnlFloat: number | undefined;
+  pnl: bigint | undefined;
+  cumulativePnlFloat: number | undefined;
+  cumulativePnl: bigint | undefined;
 } & AccountPnlHistoryPointDebugFields;
 
 export type PnlHistoricalData = FromOldToNewArray<AccountPnlHistoryPoint>;
@@ -36,7 +37,18 @@ const PROD_QUERY = gql`
 
 const MINIMUM_DATA_POINTS = 7;
 
-export function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: number | undefined) {
+type RawAccountPnlHistoryPoint = {
+  cumulativePnl: string;
+  pnl: string;
+  timestamp: number;
+} & Partial<Record<(typeof DEBUG_FIELDS)[number], string>>;
+
+export function usePnlHistoricalData(
+  chainId: number,
+  account: Address,
+  fromTimestamp: number | undefined,
+  toTimestamp?: number
+) {
   const showDebugValues = useShowDebugValues();
   const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
     client: getSubsquidGraphClient(chainId)!,
@@ -45,34 +57,36 @@ export function usePnlHistoricalData(chainId: number, account: Address, fromTime
 
   const transformedData: PnlHistoricalData = useMemo(() => {
     let dataPoints =
-      res.data?.accountPnlHistoryStats?.map((row: any) => {
-        const parsedDebugFields = showDebugValues
-          ? DEBUG_FIELDS.reduce(
-              (acc, key) => {
-                const raw = row[key];
+      res.data?.accountPnlHistoryStats
+        ?.filter((row: RawAccountPnlHistoryPoint) => toTimestamp === undefined || row.timestamp <= toTimestamp)
+        .map((row: RawAccountPnlHistoryPoint) => {
+          const parsedDebugFields = showDebugValues
+            ? DEBUG_FIELDS.reduce(
+                (acc, key) => {
+                  const raw = row[key];
 
-                const bn = raw ? BigInt(raw) : 0n;
-                acc[key] = bn;
-                acc[`${key}Float`] = bigintToNumber(bn, USD_DECIMALS);
-                return acc;
-              },
-              {} as Record<string, bigint | number>
-            )
-          : EMPTY_OBJECT;
+                  const bn = raw ? BigInt(raw) : 0n;
+                  acc[key] = bn;
+                  acc[`${key}Float`] = bigintToNumber(bn, USD_DECIMALS);
+                  return acc;
+                },
+                {} as Record<string, bigint | number>
+              )
+            : EMPTY_OBJECT;
 
-        return {
-          date: showDebugValues
-            ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + SECONDS_IN_DAY) + " local"
-            : formatDate(row.timestamp),
-          dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
-          timestamp: row.timestamp,
-          pnl: BigInt(row.pnl),
-          pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
-          cumulativePnl: BigInt(row.cumulativePnl),
-          cumulativePnlFloat: bigintToNumber(BigInt(row.cumulativePnl), USD_DECIMALS),
-          ...parsedDebugFields,
-        };
-      }) || EMPTY_ARRAY;
+          return {
+            date: showDebugValues
+              ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + SECONDS_IN_DAY) + " local"
+              : formatDate(row.timestamp),
+            dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
+            timestamp: row.timestamp,
+            pnl: BigInt(row.pnl),
+            pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
+            cumulativePnl: BigInt(row.cumulativePnl),
+            cumulativePnlFloat: bigintToNumber(BigInt(row.cumulativePnl), USD_DECIMALS),
+            ...parsedDebugFields,
+          };
+        }) || EMPTY_ARRAY;
 
     if (dataPoints.length === 0) {
       return EMPTY_ARRAY;
@@ -85,6 +99,7 @@ export function usePnlHistoricalData(chainId: number, account: Address, fromTime
       for (let i = pointsLength; i < MINIMUM_DATA_POINTS; i++) {
         const newTimestamp = lastTimestamp - SECONDS_IN_DAY * (i - pointsLength + 1);
         const emptyPoint = {
+          timestamp: newTimestamp,
           date: showDebugValues
             ? formatDateTime(newTimestamp) + " - " + formatDateTime(newTimestamp + SECONDS_IN_DAY) + " local"
             : formatDate(newTimestamp),
@@ -110,7 +125,7 @@ export function usePnlHistoricalData(chainId: number, account: Address, fromTime
     }
 
     return dataPoints;
-  }, [res.data?.accountPnlHistoryStats, showDebugValues]);
+  }, [res.data?.accountPnlHistoryStats, showDebugValues, toTimestamp]);
 
   return { data: transformedData, error: res.error, loading: res.loading };
 }

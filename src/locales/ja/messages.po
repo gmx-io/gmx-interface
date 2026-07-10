@@ -5434,6 +5434,10 @@ msgstr "PnL 分析"
 msgid "Failed to claim funds"
 msgstr "資金の請求に失敗しました"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing the nearest available period instead."
+msgstr "選択した期間の統計は利用できません。代わりに最も近い利用可能な期間を表示します。"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
 msgstr ""
@@ -6587,6 +6591,10 @@ msgstr "DeFiポートフォリオトラッカー"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "取引"
+
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing your all-time performance instead."
+msgstr "選択した期間の統計は利用できません。代わりに全期間のパフォーマンスを表示します。"
 
 #: src/config/uiFlagEvents.tsx
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."

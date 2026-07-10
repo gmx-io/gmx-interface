@@ -5434,6 +5434,10 @@ msgstr "Análisis de PnL"
 msgid "Failed to claim funds"
 msgstr "Falló la reclamación de fondos"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing the nearest available period instead."
+msgstr "Las estadísticas del período seleccionado no están disponibles. En su lugar, se muestra el período disponible más cercano."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
 msgstr ""
@@ -6587,6 +6591,10 @@ msgstr "Rastreador de cartera DeFi"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Operaciones"
+
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing your all-time performance instead."
+msgstr "Las estadísticas del período seleccionado no están disponibles. En su lugar, se muestra su rendimiento de todo el tiempo."
 
 #: src/config/uiFlagEvents.tsx
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."

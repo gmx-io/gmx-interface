@@ -1,11 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type { Address } from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { usePnlSummaryData } from "domain/synthetics/accountStats";
-import { useChainId } from "lib/chains";
 import useLoadImage from "lib/useLoadImage";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -27,18 +26,28 @@ import { usePnlHistoricalData } from "./usePnlHistoricalData";
 
 type Props = {
   chainId: ContractsChainId;
+  walletChainId: ContractsChainId;
   account: Address;
   fromDate: Date | undefined;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  createdReferralCode: string | null;
+  setCreatedReferralCode: (code: string | null) => void;
+  onUploadingChange: (isUploading: boolean) => void;
 };
 
-export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen }: Props) {
+export function PerformanceShare({
+  chainId,
+  walletChainId,
+  account,
+  fromDate,
+  isOpen,
+  setIsOpen,
+  createdReferralCode,
+  setCreatedReferralCode,
+  onUploadingChange,
+}: Props) {
   const { _ } = useLingui();
-
-  // Referral codes are looked up and created on the connected wallet chain, which can differ
-  // from the dashboard's ?network= chain used for the PnL stats below.
-  const { chainId: walletChainId } = useChainId();
 
   const [showPnlAmounts, setShowPnlAmounts] = useState(true);
   const sharePerformanceBgImg = useLoadImage(shareBgImg);
@@ -59,6 +68,8 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
     account,
     isOpen,
     source: "account-dashboard",
+    createdReferralCode,
+    setCreatedReferralCode,
   });
 
   const { isUploading, uploadError, handleCopy, handleCopyImage, handleShareTwitter } = useShareCardActions({
@@ -67,6 +78,7 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
     source: "account-dashboard",
     fileName: "GMX Performance.png",
     tweetText: `Trading performance on @GMX_IO`,
+    onUploadingChange,
   });
 
   const bucket = useMemo(() => getPnlSummaryBucketForFromDate(fromDate), [fromDate]);
@@ -81,17 +93,27 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
     data: pnlHistory,
     error: historyError,
     loading: isHistoryLoading,
-  } = usePnlHistoricalData(chainId, account, bucket.fromTimestamp);
+  } = usePnlHistoricalData(chainId, account, bucket.fromTimestamp, bucket.toTimestamp);
 
   const error = summaryError ?? historyError;
   const isDataLoading = isSummaryLoading || isHistoryLoading;
   const hasData = pnlHistory.length > 0 && summaryRow !== undefined;
+  const handleVisibilityChange = useCallback(
+    (nextIsOpen: boolean) => {
+      if (!nextIsOpen && isUploading) {
+        return;
+      }
+
+      setIsOpen(nextIsOpen);
+    },
+    [isUploading, setIsOpen]
+  );
 
   return (
     <ModalWithPortal
       contentClassName="md:!max-w-[500px]"
       isVisible={isOpen}
-      setIsVisible={setIsOpen}
+      setIsVisible={handleVisibilityChange}
       label={t`Share your PnL`}
       contentPadding={false}
       withMobileBottomPosition
@@ -131,6 +153,17 @@ export function PerformanceShare({ chainId, account, fromDate, isOpen, setIsOpen
             </ShareCardFrame>
           )}
         </div>
+        {hasData && bucket.isFallback && (
+          <AlertInfoCard type="warning" hideClose>
+            {bucket.bucketLabel === "all" ? (
+              <Trans>Stats for the selected period aren't available. Showing your all-time performance instead.</Trans>
+            ) : (
+              <Trans>
+                Stats for the selected period aren't available. Showing the nearest available period instead.
+              </Trans>
+            )}
+          </AlertInfoCard>
+        )}
         {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}
       </div>
       <div className="flex flex-col gap-12 p-20 pb-0">
