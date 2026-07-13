@@ -59,11 +59,11 @@ export const CONTRACTS = {
     SubaccountGelatoRelayRouter: "0x517602BaC704B72993997820981603f5E4901273",
 
     MultichainClaimsRouter: "0x277B4c0e8A76Fa927C9881967a4475Fd6E234e95",
-    MultichainGlvRouter: "0xabcBbe23BD8E0dDD344Ff5fd1439b785B828cD2d",
-    MultichainGmRouter: "0xC6782854A8639cC3b40f9497797d6B33797CA592",
-    MultichainOrderRouter: "0xD38111f8aF1A7Cd809457C8A2303e15aE2170724",
+    MultichainGlvRouter: "0x871771ed6b9dE9AFb405D7E2B1421a7DC2e604C1",
+    MultichainGmRouter: "0xe2E71B46D767Da4BF6267EF283302cd5F0A707A2",
+    MultichainOrderRouter: "0xf2946C57f5b5911021b0AFA3a561f110b4123c52",
     MultichainSubaccountRouter: "0x70AaAd50d53732b2D5534bb57332D00aE20cAd36",
-    MultichainTransferRouter: "0xfaBEb65bB877600be3A2C2a03aA56a95F9f845B9",
+    MultichainTransferRouter: "0xE8FB64bAaA7bAf3453A282A1Eaa8Ec2aE11a66Ba",
     MultichainVault: "0xCeaadFAf6A8C489B250e407987877c5fDfcDBE6E",
     LayerZeroProvider: "0xB6DE222dAef5029f31b8fABE498D34f3c491Ef85",
 
