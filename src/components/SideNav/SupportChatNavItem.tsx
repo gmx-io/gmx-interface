@@ -1,5 +1,5 @@
 import { show } from "@intercom/messenger-js-sdk";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback } from "react";
 
@@ -27,12 +27,15 @@ function getUnreadCountLabel(unreadCount: number) {
   return unreadCount > MAX_UNREAD_COUNT ? `${MAX_UNREAD_COUNT}+` : unreadCount;
 }
 
-function UnreadCountBadge({ unreadCount, className }: { unreadCount: number; className?: string }) {
+function UnreadCountBadge({ unreadCount, isCollapsed = false }: { unreadCount: number; isCollapsed?: boolean }) {
   return (
     <span
+      aria-hidden={isCollapsed || undefined}
       className={cx(
-        "support-chat-unread-count leading-none text-body-small flex size-20 shrink-0 items-center justify-center rounded-full font-medium",
-        className
+        "text-body-small flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-300 font-medium text-white dark:text-black",
+        isCollapsed
+          ? "absolute -right-10 -top-8 size-16 outline outline-2 outline-[var(--color-slate-950)] group-hover:hidden"
+          : "size-20"
       )}
     >
       {getUnreadCountLabel(unreadCount)}
@@ -50,6 +53,18 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
   const hasUnreadMessages = supportChatUnreadCount > 0;
   const shouldShowNewBadge = !supportChatWasEverClicked && !hasUnreadMessages;
   const shouldShowCollapsedGradient = isCollapsed && shouldShowNewBadge;
+  let collapsedAriaLabel: string | undefined;
+
+  if (isCollapsed) {
+    const supportLabel = t`Support`;
+    collapsedAriaLabel = supportLabel;
+
+    if (hasUnreadMessages) {
+      collapsedAriaLabel = `${supportLabel}: ${getUnreadCountLabel(supportChatUnreadCount)}`;
+    } else if (shouldShowNewBadge) {
+      collapsedAriaLabel = `${supportLabel}: ${t`New`}`;
+    }
+  }
 
   const handleClick = useCallback(() => {
     setSupportChatWasEverClicked(true);
@@ -63,8 +78,9 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
 
   return (
     <NavItem
+      ariaLabel={collapsedAriaLabel}
       icon={
-        <span className="relative">
+        <span className="relative inline-flex">
           {shouldShowCollapsedGradient && (
             <svg className="support-chat-icon-gradient-defs" aria-hidden="true" width="0" height="0" focusable="false">
               <defs>
@@ -88,28 +104,23 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
               "support-chat-icon-collapsed": shouldShowCollapsedGradient,
             })}
           />
-          {hasUnreadMessages && (
-            <>
-              <span className="support-chat-unread-dot absolute -right-2 -top-3 size-8 animate-pulse rounded-full bg-red-400" />
-              {isCollapsed && (
-                <UnreadCountBadge className="absolute -bottom-5 -right-8" unreadCount={supportChatUnreadCount} />
-              )}
-            </>
-          )}
+          {hasUnreadMessages && isCollapsed && <UnreadCountBadge unreadCount={supportChatUnreadCount} isCollapsed />}
         </span>
       }
       label={
-        <span className="inline-flex items-center gap-6">
+        <span className="inline-flex items-center gap-6 leading-[1]">
           <Trans>Support</Trans>
-          {hasUnreadMessages
-            ? !isCollapsed && <UnreadCountBadge unreadCount={supportChatUnreadCount} />
-            : shouldShowNewBadge && (
-                <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
-                  <AnimatedGradientText className="inline-block font-medium">
-                    <Trans>New</Trans>
-                  </AnimatedGradientText>
-                </span>
-              )}
+          {hasUnreadMessages ? (
+            <UnreadCountBadge unreadCount={supportChatUnreadCount} />
+          ) : (
+            shouldShowNewBadge && (
+              <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
+                <AnimatedGradientText className="inline-block font-medium">
+                  <Trans>New</Trans>
+                </AnimatedGradientText>
+              </span>
+            )
+          )}
         </span>
       }
       isCollapsed={isCollapsed}
