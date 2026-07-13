@@ -10,6 +10,11 @@
   fill: url(#support-chat-icon-collapsed-gradient);
 }
 
+.support-chat-unread-count {
+  color: #090a14;
+  background: linear-gradient(135deg, var(--color-blue-100), var(--color-blue-300));
+}
+
 .image-capture-in-progress,
 .image-capture-in-progress * {
   animation: none !important;

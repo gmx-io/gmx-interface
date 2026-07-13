@@ -21,6 +21,25 @@ interface SupportChatNavItemProps {
   onClick?: () => void;
 }
 
+const MAX_UNREAD_COUNT = 9;
+
+function getUnreadCountLabel(unreadCount: number) {
+  return unreadCount > MAX_UNREAD_COUNT ? `${MAX_UNREAD_COUNT}+` : unreadCount;
+}
+
+function UnreadCountBadge({ unreadCount, className }: { unreadCount: number; className?: string }) {
+  return (
+    <span
+      className={cx(
+        "support-chat-unread-count leading-none text-body-small flex size-20 shrink-0 items-center justify-center rounded-full font-medium",
+        className
+      )}
+    >
+      {getUnreadCountLabel(unreadCount)}
+    </span>
+  );
+}
+
 export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemProps) {
   const { shouldShowSupportChat } = useShowSupportChat();
   const [supportChatWasEverClicked, setSupportChatWasEverClicked] = useLocalStorageSerializeKey<boolean>(
@@ -28,7 +47,9 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
     false
   );
   const [supportChatUnreadCount] = useSupportChatUnreadCount();
-  const shouldShowCollapsedGradient = isCollapsed && !supportChatWasEverClicked;
+  const hasUnreadMessages = supportChatUnreadCount > 0;
+  const shouldShowNewBadge = !supportChatWasEverClicked && !hasUnreadMessages;
+  const shouldShowCollapsedGradient = isCollapsed && shouldShowNewBadge;
 
   const handleClick = useCallback(() => {
     setSupportChatWasEverClicked(true);
@@ -67,22 +88,29 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
               "support-chat-icon-collapsed": shouldShowCollapsedGradient,
             })}
           />
-          {supportChatUnreadCount > 0 && (
-            <span className="absolute -right-2 -top-3 size-8 animate-pulse rounded-full bg-red-400" />
+          {hasUnreadMessages && (
+            <>
+              <span className="support-chat-unread-dot absolute -right-2 -top-3 size-8 animate-pulse rounded-full bg-red-400" />
+              {isCollapsed && (
+                <UnreadCountBadge className="absolute -bottom-5 -right-8" unreadCount={supportChatUnreadCount} />
+              )}
+            </>
           )}
         </span>
       }
       label={
-        <>
-          <Trans>Support</Trans>{" "}
-          {!supportChatWasEverClicked && (
-            <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
-              <AnimatedGradientText className="inline-block font-medium">
-                <Trans>New</Trans>
-              </AnimatedGradientText>
-            </span>
-          )}
-        </>
+        <span className="inline-flex items-center gap-6">
+          <Trans>Support</Trans>
+          {hasUnreadMessages
+            ? !isCollapsed && <UnreadCountBadge unreadCount={supportChatUnreadCount} />
+            : shouldShowNewBadge && (
+                <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
+                  <AnimatedGradientText className="inline-block font-medium">
+                    <Trans>New</Trans>
+                  </AnimatedGradientText>
+                </span>
+              )}
+        </span>
       }
       isCollapsed={isCollapsed}
       onClick={handleClick}
