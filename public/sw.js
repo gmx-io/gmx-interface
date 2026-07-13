@@ -36,6 +36,11 @@ async function getFromCache(cacheName, request) {
   return cache.match(request);
 }
 
+function isCacheableAssetResponse(response) {
+  const contentType = response.headers?.get?.("content-type")?.toLowerCase();
+  return response.ok && !contentType?.includes("text/html");
+}
+
 function getAppShellAssetUrls(html) {
   const assetUrls = new Set();
 
@@ -61,7 +66,7 @@ async function cacheAppShellResponse(response) {
     assetUrls.map(async (url) => {
       const assetResponse = await fetch(url);
 
-      if (!assetResponse.ok) {
+      if (!isCacheableAssetResponse(assetResponse)) {
         throw new Error(`Failed to fetch app shell asset: ${url}`);
       }
 
@@ -115,7 +120,7 @@ async function handleStaticAsset(event) {
   }
 
   const response = await fetch(event.request);
-  if (response.ok) {
+  if (isCacheableAssetResponse(response)) {
     event.waitUntil(
       putInCache(ASSET_CACHE, event.request, response.clone()).then(() => trimCache(ASSET_CACHE, MAX_ASSET_ENTRIES))
     );
