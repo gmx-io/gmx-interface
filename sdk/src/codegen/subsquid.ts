@@ -10936,13 +10936,15 @@ export interface TradeAction {
   isLong?: Maybe<Scalars["Boolean"]["output"]>;
   liquidationFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   marketAddress?: Maybe<Scalars["String"]["output"]>;
+  minCollateralFactorForLiquidation?: Maybe<Scalars["BigInt"]["output"]>;
   minOutputAmount?: Maybe<Scalars["BigInt"]["output"]>;
   numberOfParts?: Maybe<Scalars["Int"]["output"]>;
   orderKey: Scalars["String"]["output"];
   orderType: Scalars["Int"]["output"];
   pnlUsd?: Maybe<Scalars["BigInt"]["output"]>;
-  positionFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   positionKey?: Maybe<Scalars["String"]["output"]>;
+  positionLifecycleId?: Maybe<Scalars["String"]["output"]>;
+  positionFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   positionSizeInTokens?: Maybe<Scalars["BigInt"]["output"]>;
   positionSizeInUsd?: Maybe<Scalars["BigInt"]["output"]>;
   priceImpactAmount?: Maybe<Scalars["BigInt"]["output"]>;
@@ -11100,6 +11102,12 @@ export enum TradeActionOrderByInput {
   marketAddress_DESC = "marketAddress_DESC",
   marketAddress_DESC_NULLS_FIRST = "marketAddress_DESC_NULLS_FIRST",
   marketAddress_DESC_NULLS_LAST = "marketAddress_DESC_NULLS_LAST",
+  minCollateralFactorForLiquidation_ASC = "minCollateralFactorForLiquidation_ASC",
+  minCollateralFactorForLiquidation_ASC_NULLS_FIRST = "minCollateralFactorForLiquidation_ASC_NULLS_FIRST",
+  minCollateralFactorForLiquidation_ASC_NULLS_LAST = "minCollateralFactorForLiquidation_ASC_NULLS_LAST",
+  minCollateralFactorForLiquidation_DESC = "minCollateralFactorForLiquidation_DESC",
+  minCollateralFactorForLiquidation_DESC_NULLS_FIRST = "minCollateralFactorForLiquidation_DESC_NULLS_FIRST",
+  minCollateralFactorForLiquidation_DESC_NULLS_LAST = "minCollateralFactorForLiquidation_DESC_NULLS_LAST",
   minOutputAmount_ASC = "minOutputAmount_ASC",
   minOutputAmount_ASC_NULLS_FIRST = "minOutputAmount_ASC_NULLS_FIRST",
   minOutputAmount_ASC_NULLS_LAST = "minOutputAmount_ASC_NULLS_LAST",
@@ -11496,6 +11504,15 @@ export interface TradeActionWhereInput {
   marketAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   marketAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   marketAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  minCollateralFactorForLiquidation_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minCollateralFactorForLiquidation_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  minCollateralFactorForLiquidation_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   minOutputAmount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   minOutputAmount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   minOutputAmount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;

@@ -294,7 +294,7 @@ function useWithdrawViewTransactions({
           callback: (txnEvent) => {
             if (txnEvent.event === TxnEventName.Sent) {
               helperToast.success("Withdrawal sent", { toastId: "same-chain-gmx-account-withdrawal" });
-              setIsVisibleOrView("main");
+              setIsVisibleOrView("transferHistory");
               setIsSubmitting(false);
 
               if (txnEvent.data.type === "wallet") {
@@ -445,7 +445,7 @@ function useWithdrawViewTransactions({
 
         sendOrderTxnSubmittedMetric(metricData.metricId);
 
-        setIsVisibleOrView("main");
+        setIsVisibleOrView("transferHistory");
 
         const txResult = await receipt.wait();
 
@@ -536,6 +536,11 @@ export const WithdrawalView = () => {
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
 
+  const isInsufficientBalance =
+    selectedToken?.gmxAccountBalance !== undefined &&
+    inputAmount !== undefined &&
+    inputAmount > selectedToken.gmxAccountBalance;
+
   const filteredNetworks = useMemo(
     () =>
       getFilteredNetworks({
@@ -551,14 +556,19 @@ export const WithdrawalView = () => {
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo(() => {
-    if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
+    if (
+      selectedToken === undefined ||
+      inputAmount === undefined ||
+      inputAmountUsd === undefined ||
+      isInsufficientBalance
+    ) {
       return { nextGmxAccountBalanceUsd: undefined };
     }
 
     const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) - inputAmountUsd;
 
     return { nextGmxAccountBalanceUsd };
-  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd]);
+  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd, isInsufficientBalance]);
 
   const sendParamsWithoutSlippage: SendParam | undefined = useMemo(() => {
     if (
@@ -591,6 +601,7 @@ export const WithdrawalView = () => {
     amountLD: inputAmount,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSettlementChainTokenId?.decimals,
+    symbol: selectedToken?.symbol,
     enabled: !isSameChain,
   });
 
@@ -954,7 +965,21 @@ export const WithdrawalView = () => {
     networkFeeUsd,
     networkFeeInGasPaymentToken,
     wntFeeUsd,
+    someGasPaymentTokenAmount,
   });
+
+  useEffect(
+    function resetLastValidNetworkFeesOnContextChange() {
+      setLastValidNetworkFees({
+        wntFee: undefined,
+        networkFeeUsd: undefined,
+        networkFeeInGasPaymentToken: undefined,
+        wntFeeUsd: undefined,
+        someGasPaymentTokenAmount: undefined,
+      });
+    },
+    [selectedTokenAddress, withdrawalViewChain, gasPaymentToken?.address]
+  );
 
   useEffect(() => {
     if (
@@ -963,14 +988,21 @@ export const WithdrawalView = () => {
       wntFeeUsd !== undefined &&
       networkFeeInGasPaymentToken !== undefined
     ) {
-      setLastValidNetworkFees({
+      setLastValidNetworkFees((prev) => ({
+        ...prev,
         wntFee,
         networkFeeUsd,
         networkFeeInGasPaymentToken,
         wntFeeUsd,
-      });
+      }));
     }
   }, [wntFee, networkFeeUsd, networkFeeInGasPaymentToken, wntFeeUsd]);
+
+  useEffect(() => {
+    if (someGasPaymentTokenAmount !== undefined) {
+      setLastValidNetworkFees((prev) => ({ ...prev, someGasPaymentTokenAmount }));
+    }
+  }, [someGasPaymentTokenAmount]);
 
   const showWntWarning = useMemo(() => {
     if (
@@ -1016,7 +1048,7 @@ export const WithdrawalView = () => {
     if (selectedToken?.isWrapped) {
       return {
         gasPaymentTokenForMax: selectedToken,
-        gasPaymentTokenAmountForMax: wntFee,
+        gasPaymentTokenAmountForMax: wntFee ?? lastValidNetworkFees.wntFee,
         gasPaymentTokenBalanceForMax: getBalanceByBalanceType(selectedToken, TokenBalanceType.GmxAccount),
       };
     }
@@ -1024,19 +1056,31 @@ export const WithdrawalView = () => {
     if (gasPaymentToken?.isWrapped) {
       return {
         gasPaymentTokenForMax: gasPaymentToken,
-        gasPaymentTokenAmountForMax: networkFeeInGasPaymentToken,
+        gasPaymentTokenAmountForMax: networkFeeInGasPaymentToken ?? lastValidNetworkFees.networkFeeInGasPaymentToken,
         gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
       };
     }
 
     return {
       gasPaymentTokenForMax: gasPaymentToken,
-      gasPaymentTokenAmountForMax: someGasPaymentTokenAmount,
+      gasPaymentTokenAmountForMax: someGasPaymentTokenAmount ?? lastValidNetworkFees.someGasPaymentTokenAmount,
       gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
     };
-  }, [gasPaymentToken, isSameChain, networkFeeInGasPaymentToken, selectedToken, someGasPaymentTokenAmount, wntFee]);
+  }, [
+    gasPaymentToken,
+    isSameChain,
+    lastValidNetworkFees.networkFeeInGasPaymentToken,
+    lastValidNetworkFees.someGasPaymentTokenAmount,
+    lastValidNetworkFees.wntFee,
+    networkFeeInGasPaymentToken,
+    selectedToken,
+    someGasPaymentTokenAmount,
+    wntFee,
+  ]);
 
-  const isLoadingWithdrawalMax = isSameChain ? false : expressTxnParamsAsyncResult.isLoading;
+  const isLoadingWithdrawalMax = isSameChain
+    ? false
+    : expressTxnParamsAsyncResult.isLoading && gasPaymentTokenAmountForMax === undefined;
 
   const withdrawalMaxDetails = useMaxAvailableAmount({
     fromToken: selectedToken,
@@ -1100,10 +1144,6 @@ export const WithdrawalView = () => {
   }, [withdrawalMaxDetails.formattedMaxAvailableAmount, setInputValue]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
-  const isInsufficientBalance =
-    selectedToken?.gmxAccountBalance !== undefined &&
-    inputAmount !== undefined &&
-    inputAmount > selectedToken.gmxAccountBalance;
 
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
@@ -1163,7 +1203,7 @@ export const WithdrawalView = () => {
       text: t`Enter withdrawal amount`,
       disabled: true,
     };
-  } else if (selectedToken?.gmxAccountBalance !== undefined && inputAmount > selectedToken.gmxAccountBalance) {
+  } else if (isInsufficientBalance) {
     buttonState = {
       text: t`Insufficient balance`,
       disabled: true,
@@ -1333,20 +1373,32 @@ export const WithdrawalView = () => {
       );
     }
 
-    if (networkFeeUsd === undefined || gasPaymentToken === undefined) {
+    const someNetworkFeeUsd = networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd;
+    const someNetworkFeeInGasPaymentToken =
+      networkFeeInGasPaymentToken ?? lastValidNetworkFees.networkFeeInGasPaymentToken;
+
+    if (someNetworkFeeUsd === undefined || gasPaymentToken === undefined) {
       return "...";
     }
 
     return (
       <AmountWithUsdBalance
         className="leading-1"
-        amount={networkFeeInGasPaymentToken}
+        amount={someNetworkFeeInGasPaymentToken}
         decimals={gasPaymentToken.decimals}
-        usd={networkFeeUsd}
+        usd={someNetworkFeeUsd}
         symbol={gasPaymentToken.symbol}
       />
     );
-  }, [gasPaymentToken, isSameChain, networkFeeInGasPaymentToken, networkFeeUsd, sameChainNetworkFeeDetails]);
+  }, [
+    gasPaymentToken,
+    isSameChain,
+    lastValidNetworkFees.networkFeeInGasPaymentToken,
+    lastValidNetworkFees.networkFeeUsd,
+    networkFeeInGasPaymentToken,
+    networkFeeUsd,
+    sameChainNetworkFeeDetails,
+  ]);
 
   const withdrawFeeValue = useMemo(() => {
     if (isSameChain) {
@@ -1497,7 +1549,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4" hideClose>
               <div>
                 <Trans>
-                  Amount exceeds the withdrawal limit. Try an amount smaller than{" "}
+                  GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than{" "}
                   <span className="numbers">{upperLimitFormatted}</span>.
                 </Trans>
               </div>

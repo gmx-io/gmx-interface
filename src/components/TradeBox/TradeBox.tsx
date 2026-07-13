@@ -8,7 +8,6 @@ import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
-import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -62,6 +61,7 @@ import { selectTradeboxIncreaseLiquidationRiskWarning } from "context/Synthetics
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
+import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
@@ -179,8 +179,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const walletIconUrls = useWalletIconUrls();
 
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
-
-  const onDepositTokenAddress = useOpenMultichainDepositModal();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -363,16 +361,24 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       return undefined;
     }
 
-    const storedGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+    const storedExpressParams = submitButtonState.expressParams;
     if (
-      storedGasPaymentParams === undefined ||
-      storedGasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
+      storedExpressParams === undefined ||
+      storedExpressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
     ) {
       return undefined;
     }
 
-    return storedGasPaymentParams.gasPaymentTokenAmount;
-  }, [expressOrdersEnabledForMax, submitButtonState.expressParams?.gasPaymentParams, gasPaymentTokenAddress]);
+    return getPrimaryOrderGasPaymentTokenAmount({
+      expressParams: storedExpressParams,
+      primaryExecutionFeeAmount: submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    });
+  }, [
+    expressOrdersEnabledForMax,
+    submitButtonState.expressParams,
+    submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    gasPaymentTokenAddress,
+  ]);
 
   const treatMinimalBufferAsEnough =
     isSwap &&
@@ -384,7 +390,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
-    : submitButtonState.totalExecutionFee?.feeTokenAmount;
+    : submitButtonState.primaryExecutionFee?.feeTokenAmount;
 
   const fallbackSwapExecutionFeeAmount = useMemo(() => {
     if (!isSwap || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
@@ -789,7 +795,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 qa="collateral-selector"
                 tokensData={tokensData}
                 multichainTokens={multichainTokens}
-                onDepositTokenAddress={onDepositTokenAddress}
               />
             ))}
         </BuyInputSection>
@@ -1119,7 +1124,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isIncrease && (
                 <TradeboxMarginFields
                   onSelectFromTokenAddress={handleSelectFromTokenAddress}
-                  onDepositTokenAddress={onDepositTokenAddress}
                   fromTokenInputValue={fromTokenInputValue}
                   setFromTokenInputValue={setFromTokenInputValue}
                   setFocusedInput={setFocusedInput}

@@ -10,6 +10,7 @@ const UTC_DATE_FORMAT_OPTIONS = { in: tz("UTC") };
 
 export const SECONDS_IN_DAY = 86400;
 export const ONE_YEAR_SECONDS = SECONDS_IN_DAY * 365;
+export const DAY_MS = SECONDS_IN_DAY * 1000;
 
 type DateFormatOptions = {
   timezone?: "utc" | "device";

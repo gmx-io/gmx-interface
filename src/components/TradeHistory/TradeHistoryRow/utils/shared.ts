@@ -46,6 +46,7 @@ export type TooltipString =
       text: string | undefined;
       state?: TooltipState;
     };
+export type TooltipValue = TooltipString | TooltipString[];
 
 export function numberToState(value: bigint | undefined): TooltipState {
   if (value === undefined) {
@@ -66,13 +67,13 @@ export type Line =
   | TooltipString[]
   | {
       key: string;
-      value: TooltipString;
+      value: TooltipValue;
     };
 export type TooltipContent = Line[];
 export function lines(...args: TooltipContent): TooltipContent {
   return args;
 }
-export function infoRow(key: string, value: TooltipString): Line {
+export function infoRow(key: string, value: TooltipValue): Line {
   return {
     key,
     value,
@@ -94,6 +95,7 @@ export type RowDetails = {
     poolName: string;
   }[];
   size: string;
+  sizeComment?: TooltipContent;
   price: string;
   priceComment: TooltipContent | null;
   pnl?: string;

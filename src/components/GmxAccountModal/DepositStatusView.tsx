@@ -56,7 +56,7 @@ export const DepositStatusView = () => {
             event: "OneClickPromotion",
             data: { action: "EnableOneClickSuccess" },
           });
-          setIsVisibleOrView("main");
+          setIsVisibleOrView("transferHistory");
         }
       })
       .finally(() => {
@@ -69,7 +69,7 @@ export const DepositStatusView = () => {
       event: "OneClickPromotion",
       data: { action: "UserRejected" },
     });
-    setIsVisibleOrView("main");
+    setIsVisibleOrView("transferHistory");
   };
 
   const token = transfer ? getToken(transfer.settlementChainId, transfer.token) : undefined;

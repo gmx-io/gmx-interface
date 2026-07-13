@@ -27,8 +27,15 @@ export function useAnnouncementsUiFlags() {
       const merged: UiFlags = {};
       for (const result of results) {
         if (result.status !== "fulfilled") continue;
-        for (const [flag, value] of Object.entries(result.value)) {
-          merged[flag] = merged[flag] || value;
+        for (const [flag, meta] of Object.entries(result.value)) {
+          const prev = merged[flag];
+          const enabled = (prev?.enabled ?? false) || meta.enabled;
+          // createdAt = earliest activation among chains where the flag is enabled (true first go-live)
+          let createdAt = prev?.createdAt;
+          if (meta.enabled && (createdAt === undefined || new Date(meta.createdAt) < new Date(createdAt))) {
+            createdAt = meta.createdAt;
+          }
+          merged[flag] = { enabled, createdAt: createdAt ?? meta.createdAt, updatedAt: meta.updatedAt };
         }
       }
 
