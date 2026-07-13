@@ -6393,7 +6393,6 @@ msgid "Buy order cancelled"
 msgstr "Ордер на покупку отменён"
 
 #: src/components/SideNav/SupportChatNavItem.tsx
-#: src/components/SideNav/SupportChatNavItem.tsx
 msgid "Support"
 msgstr "Поддержка"
 
@@ -8512,7 +8511,6 @@ msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-C
 msgstr "Срок действия nonce подтверждения One-Click Trading истёк. Подпишите повторно, чтобы продолжить использовать One-Click Trading."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
-#: src/components/SideNav/SupportChatNavItem.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
 msgstr "Новое"

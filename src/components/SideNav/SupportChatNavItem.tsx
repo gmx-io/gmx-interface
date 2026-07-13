@@ -1,5 +1,6 @@
 import { show } from "@intercom/messenger-js-sdk";
-import { t, Trans } from "@lingui/macro";
+import { msg } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useCallback } from "react";
 
@@ -22,6 +23,8 @@ interface SupportChatNavItemProps {
 }
 
 const MAX_UNREAD_COUNT = 9;
+const SUPPORT_LABEL = msg`Support`;
+const NEW_LABEL = msg`New`;
 
 function getUnreadCountLabel(unreadCount: number) {
   return unreadCount > MAX_UNREAD_COUNT ? `${MAX_UNREAD_COUNT}+` : unreadCount;
@@ -44,6 +47,7 @@ function UnreadCountBadge({ unreadCount, isCollapsed = false }: { unreadCount: n
 }
 
 export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemProps) {
+  const { _ } = useLingui();
   const { shouldShowSupportChat } = useShowSupportChat();
   const [supportChatWasEverClicked, setSupportChatWasEverClicked] = useLocalStorageSerializeKey<boolean>(
     SUPPORT_CHAT_WAS_EVER_CLICKED_KEY,
@@ -53,16 +57,17 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
   const hasUnreadMessages = supportChatUnreadCount > 0;
   const shouldShowNewBadge = !supportChatWasEverClicked && !hasUnreadMessages;
   const shouldShowCollapsedGradient = isCollapsed && shouldShowNewBadge;
+  const supportLabel = _(SUPPORT_LABEL);
+  const newLabel = _(NEW_LABEL);
   let collapsedAriaLabel: string | undefined;
 
   if (isCollapsed) {
-    const supportLabel = t`Support`;
     collapsedAriaLabel = supportLabel;
 
     if (hasUnreadMessages) {
       collapsedAriaLabel = `${supportLabel}: ${getUnreadCountLabel(supportChatUnreadCount)}`;
     } else if (shouldShowNewBadge) {
-      collapsedAriaLabel = `${supportLabel}: ${t`New`}`;
+      collapsedAriaLabel = `${supportLabel}: ${newLabel}`;
     }
   }
 
@@ -109,15 +114,13 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
       }
       label={
         <span className="inline-flex items-center gap-6 leading-[1]">
-          <Trans>Support</Trans>
+          {supportLabel}
           {hasUnreadMessages ? (
             <UnreadCountBadge unreadCount={supportChatUnreadCount} />
           ) : (
             shouldShowNewBadge && (
               <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
-                <AnimatedGradientText className="inline-block font-medium">
-                  <Trans>New</Trans>
-                </AnimatedGradientText>
+                <AnimatedGradientText className="inline-block font-medium">{newLabel}</AnimatedGradientText>
               </span>
             )
           )}

@@ -6393,7 +6393,6 @@ msgid "Buy order cancelled"
 msgstr "구매 주문 취소됨"
 
 #: src/components/SideNav/SupportChatNavItem.tsx
-#: src/components/SideNav/SupportChatNavItem.tsx
 msgid "Support"
 msgstr "지원"
 
@@ -8512,7 +8511,6 @@ msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-C
 msgstr "One-Click Trading 승인 nonce가 만료되었습니다. One-Click Trading을 계속 사용하려면 다시 서명하십시오."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
-#: src/components/SideNav/SupportChatNavItem.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
 msgstr "새로운"
