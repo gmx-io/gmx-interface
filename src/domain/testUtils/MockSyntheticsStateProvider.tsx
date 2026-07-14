@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from "react";
 
-import { ARBITRUM, ContractsChainId } from "config/chains";
+import { ARBITRUM } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -38,7 +38,6 @@ const EMPTY_ORDERS_INFO_DATA: OrdersInfoData = {};
 
 export type MockSyntheticsStateProviderProps = {
   children: ReactNode;
-  chainId?: ContractsChainId;
   tokensData?: TokensData;
   marketsInfoData?: MarketsInfoData;
   positionsInfoData?: PositionsInfoData;
@@ -54,7 +53,6 @@ export type MockSyntheticsStateProviderProps = {
  */
 export function MockSyntheticsStateProvider({
   children,
-  chainId = ARBITRUM,
   tokensData = DEFAULT_MOCK_TOKENS_DATA,
   marketsInfoData = DEFAULT_MOCK_MARKETS_INFO_DATA,
   positionsInfoData = EMPTY_POSITIONS_INFO_DATA,
@@ -62,6 +60,7 @@ export function MockSyntheticsStateProvider({
   uiFeeFactor = 0n,
   isFirstOrder = false,
 }: MockSyntheticsStateProviderProps) {
+  const chainId = ARBITRUM;
   const { account, signer } = useWallet();
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
@@ -110,7 +109,7 @@ export function MockSyntheticsStateProvider({
         depositMarketTokensData: undefined,
         progressiveDepositMarketTokensData: undefined,
         multichainMarketTokensBalancesResult: { tokenBalances: {}, isLoading: false },
-        glvInfo: { glvData: undefined, isLoading: false } as SyntheticsState["globals"]["glvInfo"],
+        glvInfo: { glvs: undefined, glvData: undefined, isLoading: false },
         botanixStakingAssetsPerShare: undefined,
 
         closingPositionKey: undefined,
@@ -137,7 +136,7 @@ export function MockSyntheticsStateProvider({
 
         oracleSettings: undefined,
 
-        jitLiquidityData: {} as SyntheticsState["globals"]["jitLiquidityData"],
+        jitLiquidityData: { jitLiquidityMap: undefined },
       },
       claims: { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] },
       // page-scoped, unrelated to trading widgets

@@ -21,6 +21,7 @@ import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/T
 import type { MarketsInfoData } from "domain/synthetics/markets";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
+import type { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS, SECOND_ETH_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
 import {
@@ -29,7 +30,7 @@ import {
   mockWagmiConfig as wagmiConfig,
 } from "domain/testUtils/mockSyntheticsState";
 import { MockSyntheticsStateProvider, DEFAULT_MOCK_TOKENS_DATA } from "domain/testUtils/MockSyntheticsStateProvider";
-import { ETH_ADDRESS, ETH_TOKEN, NATIVE_ETH_ADDRESS } from "domain/testUtils/mockTokens";
+import { ETH_ADDRESS, ETH_TOKEN, NATIVE_ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
@@ -120,8 +121,8 @@ export type TradeBoxStoryProps = {
   withWethCollateralPosition?: boolean;
   /** Zero out all wallet balances */
   zeroBalances?: boolean;
-  /** Seed the stored trade mode (e.g. "Trigger" to probe close mode) */
-  seedTradeMode?: string;
+  /** Seed the stored trade mode */
+  seedTradeMode?: TradeMode;
   /** Seed stored trade options with native ETH as the pay token (Long/Market) */
   seedPayNativeEth?: boolean;
   /** Seed stored trade options with a native ETH -> WETH swap (wrap) */
@@ -153,10 +154,23 @@ export function TradeBoxStory({
 }: TradeBoxStoryProps) {
   const isConnected = connected || withPosition || withWethCollateralPosition;
 
+  const positionMarketInfo = useMemo(() => {
+    if (!withPosition && !withWethCollateralPosition) {
+      return undefined;
+    }
+
+    return createMockMarketInfo(undefined, {
+      longInterestUsd: expandDecimals(2000, 30),
+      longInterestInTokens: expandDecimals(1, 18),
+    });
+  }, [withPosition, withWethCollateralPosition]);
+
   const marketsInfoData = useMemo<MarketsInfoData | undefined>(() => {
+    const primaryMarket = positionMarketInfo ?? createMockMarketInfo();
+
     if (marketScenario === "cappedLongOI") {
       const data: MarketsInfoData = {
-        [MOCK_MARKET_ADDRESS]: createMockMarketInfo(undefined, { maxOpenInterestLong: expandDecimals(1500, 30) }),
+        [MOCK_MARKET_ADDRESS]: { ...primaryMarket, maxOpenInterestLong: expandDecimals(1500, 30) },
       };
       return data;
     }
@@ -168,20 +182,27 @@ export function TradeBoxStory({
         shortToken: ETH_TOKEN,
         isSameCollaterals: true,
         name: "ETH/USD [WETH-WETH]",
+        shortPoolAmount: expandDecimals(1000, 18),
+        maxShortPoolAmount: expandDecimals(10000, 18),
         // cheaper than the default pool
+        positionFeeFactorForBalanceWasImproved: expandDecimals(1, 25),
         positionFeeFactorForBalanceWasNotImproved: expandDecimals(2, 25),
         positionImpactFactorNegative: 0n,
         swapImpactFactorNegative: 0n,
       });
       const data: MarketsInfoData = {
-        [MOCK_MARKET_ADDRESS]: createMockMarketInfo(),
+        [MOCK_MARKET_ADDRESS]: primaryMarket,
         [SECOND_ETH_MARKET_ADDRESS]: secondPool,
       };
       return data;
     }
 
+    if (positionMarketInfo) {
+      return { [MOCK_MARKET_ADDRESS]: positionMarketInfo };
+    }
+
     return undefined;
-  }, [marketScenario, withSecondEthPool]);
+  }, [marketScenario, positionMarketInfo, withSecondEthPool]);
 
   const tokensData: TokensData | undefined = useMemo(() => {
     if (!zeroBalances) {
@@ -202,21 +223,23 @@ export function TradeBoxStory({
     }
     const position = createMockPositionInfo({
       account: MOCK_ACCOUNT,
+      marketInfo: positionMarketInfo,
       collateralToken: withWethCollateralPosition ? ETH_TOKEN : undefined,
     });
     return { [position.key]: position };
-  }, [withPosition, withWethCollateralPosition]);
+  }, [positionMarketInfo, withPosition, withWethCollateralPosition]);
 
   const seedEntries = useMemo(() => {
     const entries: Array<[string, string]> = [];
 
     if (seedPayNativeEth || seedSwapWrap || seedTradeMode !== undefined) {
-      const storedOptions = {
+      const fromTokenAddress = seedPayNativeEth || seedSwapWrap ? NATIVE_ETH_ADDRESS : USDC_ADDRESS;
+      const storedOptions: StoredTradeOptions = {
         tradeType: seedSwapWrap ? TradeType.Swap : TradeType.Long,
         tradeMode: seedTradeMode ?? TradeMode.Market,
         tokens: seedSwapWrap
           ? { fromTokenAddress: NATIVE_ETH_ADDRESS, swapToTokenAddress: ETH_ADDRESS, indexTokenAddress: ETH_ADDRESS }
-          : { fromTokenAddress: NATIVE_ETH_ADDRESS, indexTokenAddress: ETH_ADDRESS },
+          : { fromTokenAddress, indexTokenAddress: ETH_ADDRESS },
         markets: { [ETH_ADDRESS]: { long: MOCK_MARKET_ADDRESS, short: MOCK_MARKET_ADDRESS } },
         collaterals: {},
         isFromTokenGmxAccount: false,

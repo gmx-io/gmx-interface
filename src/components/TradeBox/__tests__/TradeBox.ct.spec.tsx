@@ -2,6 +2,7 @@ import type { Locator } from "@playwright/experimental-ct-core";
 import { test, expect } from "@playwright/experimental-ct-react";
 
 import { getDataQALocator } from "lib/__tests__/testUtils";
+import { TradeMode } from "sdk/utils/trade/types";
 
 import { TradeBoxStory } from "./TradeBox.ct.stories";
 
@@ -11,8 +12,6 @@ type PageLike = {
 };
 
 test.beforeEach(async ({ page }) => {
-  // eslint-disable-next-line no-console
-  page.on("pageerror", (err) => console.log("PAGEERROR:", err.stack ?? err.message));
   // Hermetic: fixtures provide all data, requests to real backends are dropped
   await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
 });
@@ -720,7 +719,7 @@ test.describe("TradeBox", () => {
 
   test.describe("Trade mode fallback", () => {
     test("seeded Trigger mode falls back to Market (close flow lives outside TradeBox)", async ({ mount, page }) => {
-      await mount(<TradeBoxStory withPosition seedTradeMode="Trigger" />);
+      await mount(<TradeBoxStory withPosition seedTradeMode={TradeMode.Trigger} />);
 
       // Trigger is not in AVAILABLE_TRADE_MODES, updateTradeMode resets it
       await expect(page.locator(getDataQALocator("margin-input"))).toBeVisible();
