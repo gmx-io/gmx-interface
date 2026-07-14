@@ -299,7 +299,6 @@ export function DateSelect({
       <Popover.Button className={handleClassName}>
         <Button variant="ghost" className="flex items-center gap-4">
           <CalendarIcon className="size-16" />
-
           <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
         </Button>
       </Popover.Button>
