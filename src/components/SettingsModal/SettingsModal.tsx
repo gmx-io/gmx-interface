@@ -271,6 +271,7 @@ export function SettingsModal({
       qa="settings-modal"
       className="text-body-medium text-typography-secondary"
       desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
+      desktopZIndex={1002}
     >
       <div className="flex flex-col gap-8">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />

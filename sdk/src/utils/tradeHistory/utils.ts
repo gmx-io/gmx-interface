@@ -105,6 +105,10 @@ export function createRawTradeActionTransformer(
         srcChainId: rawAction.srcChainId ? Number(rawAction.srcChainId) : undefined,
         indexToken,
         swapPath,
+        positionKey: rawAction.positionKey ?? undefined,
+        positionLifecycleId: rawAction.positionLifecycleId ?? undefined,
+        positionSizeInUsd: rawAction.positionSizeInUsd ? toBigInt(rawAction.positionSizeInUsd) : undefined,
+        positionSizeInTokens: rawAction.positionSizeInTokens ? toBigInt(rawAction.positionSizeInTokens) : undefined,
         initialCollateralTokenAddress,
         initialCollateralToken,
         targetCollateralToken,
@@ -151,6 +155,9 @@ export function createRawTradeActionTransformer(
         fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
         swapFeeUsd: rawAction.swapFeeUsd ? BigInt(rawAction.swapFeeUsd) : undefined,
         liquidationFeeAmount: rawAction.liquidationFeeAmount ? BigInt(rawAction.liquidationFeeAmount) : undefined,
+        minCollateralFactorForLiquidation: rawAction.minCollateralFactorForLiquidation
+          ? BigInt(rawAction.minCollateralFactorForLiquidation)
+          : undefined,
 
         reason: rawAction.reason ?? undefined,
         reasonBytes: rawAction.reasonBytes ?? undefined,

@@ -23,6 +23,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   variant,
   itemDisabled,
   itemDisabledMessage,
+  buttonRef,
 }: {
   value: Id | undefined;
   onChange: (value: Id) => void;
@@ -34,11 +35,13 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   variant?: "ghost";
   itemDisabled?: (option: Option) => boolean;
   itemDisabledMessage?: (option: Option) => string;
+  buttonRef?: React.Ref<HTMLButtonElement>;
 } & WithConditionalItemKey<Id, Option>) => {
   return (
     <Listbox value={value ?? null} onChange={onChange}>
       <div className="relative">
         <Listbox.Button
+          ref={buttonRef}
           className={({ open }) =>
             cx(
               "flex w-full items-center justify-between rounded-8",

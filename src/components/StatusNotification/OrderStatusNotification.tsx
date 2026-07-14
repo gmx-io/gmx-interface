@@ -257,7 +257,9 @@ function OrderStatusNotification({
     let isCompleted = false;
 
     if (orderData?.txnType === "create") {
-      isCompleted = Boolean(orderStatus?.createdTxnHash);
+      isCompleted = Boolean(
+        orderStatus?.createdTxnHash ?? orderStatus?.executedTxnHash ?? orderStatus?.cancelledTxnHash
+      );
     } else if (orderData?.txnType === "update") {
       isCompleted = Boolean(orderStatus?.updatedTxnHash);
     } else if (orderData?.txnType === "cancel") {
@@ -286,6 +288,7 @@ function OrderStatusNotification({
     orderData?.txnType,
     isGelatoTaskFailed,
     orderStatus?.createdTxnHash,
+    orderStatus?.executedTxnHash,
     orderStatus?.updatedTxnHash,
     orderStatus?.cancelledTxnHash,
     tenderlyAccountSlug,

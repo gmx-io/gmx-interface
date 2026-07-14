@@ -73,6 +73,9 @@ export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
+export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
+
+export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
 
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 export const PERMITS_DISABLED_KEY = "permits-disabled";
@@ -81,7 +84,7 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const API_ROLLOUT_BUCKET_KEY = "api-rollout-bucket";
 
-export const API_UI_FLAGS_CACHE_KEY = "api-ui-flags-cache";
+export const API_UI_FLAGS_CACHE_KEY = "api-ui-flags-cache-v2";
 
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 

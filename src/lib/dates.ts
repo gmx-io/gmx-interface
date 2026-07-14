@@ -3,10 +3,14 @@ import { t } from "@lingui/macro";
 import { format as formatDateFn, isToday, isYesterday, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
 
+export type DateRange = [startDate: Date | undefined, endDate: Date | undefined];
+export type SetDateRange = (dateRange: DateRange) => void;
+
 const UTC_DATE_FORMAT_OPTIONS = { in: tz("UTC") };
 
 export const SECONDS_IN_DAY = 86400;
 export const ONE_YEAR_SECONDS = SECONDS_IN_DAY * 365;
+export const DAY_MS = SECONDS_IN_DAY * 1000;
 
 type DateFormatOptions = {
   timezone?: "utc" | "device";
@@ -63,6 +67,14 @@ export function getTimestampByDaysAgo(daysAgo: number) {
 export function getDaysAgo(timestamp: number) {
   const diff = Date.now() / 1000 - timestamp;
   return Math.floor(diff / 86400);
+}
+
+export function toUtcDayStartByCalendarDate(date: Date) {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 1000;
+}
+
+export function toUtcDayEndByCalendarDate(date: Date) {
+  return toUtcDayStartByCalendarDate(date) + SECONDS_IN_DAY - 1;
 }
 
 function toSeconds(date: Date) {
@@ -128,10 +140,7 @@ export function useNormalizeDateRange(
  * By default, the date range is undefined
  */
 export function useDateRange() {
-  const [dateRange, setDateRange] = useState<[startDate: Date | undefined, endDate: Date | undefined]>([
-    undefined,
-    undefined,
-  ]);
+  const [dateRange, setDateRange] = useState<DateRange>([undefined, undefined]);
 
   const startDate = dateRange[0];
   const endDate = dateRange[1];
