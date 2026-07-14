@@ -38,7 +38,11 @@ export async function unregisterServiceWorker() {
   try {
     const registration = await navigator.serviceWorker.getRegistration("/");
     await registration?.unregister();
+  } catch {
+    // Cleanup is best-effort.
+  }
 
+  try {
     if (typeof caches !== "undefined") {
       const cacheNames = await caches.keys();
       await Promise.all(
