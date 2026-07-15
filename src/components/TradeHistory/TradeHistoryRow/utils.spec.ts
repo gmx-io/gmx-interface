@@ -865,7 +865,7 @@ describe("TradeHistoryRow helpers", () => {
       ]);
     });
 
-    it("shows the received value in USD when the collateral was swapped on close", () => {
+    it("marks the USD received value as an estimate when the collateral was swapped on close", () => {
       const swappedAction = {
         ...fullCloseAction,
         swapPath: ["0x0000000000000000000000000000000000000001"],
@@ -875,7 +875,30 @@ describe("TradeHistoryRow helpers", () => {
         (line) => line !== undefined
       );
 
-      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "$ 1,326.31" });
+      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$ 1,326.31" });
+    });
+
+    it("includes the liquidation fee in the settlement for liquidation actions", () => {
+      const liquidationAction = {
+        ...fullCloseAction,
+        orderType: OrderType.Liquidation,
+        liquidationFeeAmount: 1000000n,
+      } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+
+      const result = getSettlementTooltipLines(liquidationAction, closeChange, openChange).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        { key: "Initial margin", value: "1,000.00\u00a0USDC" },
+        { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 34.58", state: "success" } },
+        { key: "Wallet received", value: "~1,325.64\u00a0USDC" },
+      ]);
     });
   });
 });

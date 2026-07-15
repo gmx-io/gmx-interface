@@ -819,7 +819,8 @@ export function getSettlementTooltipLines(
       (tradeAction.swapImpactUsd !== undefined && tradeAction.swapImpactUsd !== 0n);
 
     if (isCollateralSwapped) {
-      walletReceived = formatUsd(receivedUsd);
+      const formattedReceivedUsd = formatUsd(receivedUsd);
+      walletReceived = formattedReceivedUsd === undefined ? undefined : `~${formattedReceivedUsd}`;
     } else {
       const receivedAmount = convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice);
       const formattedReceived = formatCollateralAmount(receivedAmount!);

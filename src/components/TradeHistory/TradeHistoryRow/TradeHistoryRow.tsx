@@ -8,7 +8,7 @@ import { getChainSlug, getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isDecreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { isDecreaseOrderType, isLiquidationOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import {
   isPositionTradeAction,
   PositionTradeAction,
@@ -119,28 +119,39 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
   );
 }
 
+function getFullCloseCandidate(tradeAction: TradeAction): PositionTradeAction | undefined {
+  if (!isPositionTradeAction(tradeAction)) {
+    return undefined;
+  }
+
+  const isFullCloseCandidate =
+    tradeAction.eventName === TradeActionType.OrderExecuted &&
+    (isDecreaseOrderType(tradeAction.orderType) || isLiquidationOrderType(tradeAction.orderType)) &&
+    tradeAction.sizeDeltaUsd > 0n;
+
+  return isFullCloseCandidate ? tradeAction : undefined;
+}
+
 function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeAction; feesLines: TooltipContent }) {
   const chainId = useSelector(selectChainId);
 
-  const positionTradeAction = isPositionTradeAction(tradeAction) ? tradeAction : undefined;
-  const isFullCloseCandidate =
-    positionTradeAction !== undefined &&
-    positionTradeAction.eventName === TradeActionType.OrderExecuted &&
-    isDecreaseOrderType(positionTradeAction.orderType) &&
-    positionTradeAction.sizeDeltaUsd > 0n;
+  const fullCloseCandidate = getFullCloseCandidate(tradeAction);
 
-  const { settlement, isLoading } = useCloseSettlement(chainId, isFullCloseCandidate ? positionTradeAction : undefined);
+  const { settlement, isLoading } = useCloseSettlement(chainId, fullCloseCandidate);
 
   const content = useMemo(() => {
-    if (!positionTradeAction || !settlement?.isFullClose || !settlement.closeChange) {
+    if (!fullCloseCandidate || !settlement?.isFullClose || !settlement.closeChange) {
       return feesLines;
     }
 
-    return [
-      ...feesLines,
-      ...getSettlementTooltipLines(positionTradeAction, settlement.closeChange, settlement.openChange),
-    ];
-  }, [feesLines, positionTradeAction, settlement]);
+    const settlementLines = getSettlementTooltipLines(fullCloseCandidate, settlement.closeChange, settlement.openChange);
+
+    if (feesLines.length === 0) {
+      return settlementLines[0] === "" ? settlementLines.slice(1) : settlementLines;
+    }
+
+    return [...feesLines, ...settlementLines];
+  }, [feesLines, fullCloseCandidate, settlement]);
 
   return (
     <>
@@ -248,6 +259,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     isDecreaseOrderType(tradeAction.orderType) &&
     tradeAction.eventName === TradeActionType.OrderExecuted &&
     account === tradeAction.account;
+
+  const isFullCloseSettlementCandidate = getFullCloseCandidate(tradeAction) !== undefined;
 
   return (
     <>
@@ -375,13 +388,19 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </TableTd>
         <TableTd>
-          {!msg.fees ? (
-            <span className="text-typography-secondary">-</span>
-          ) : msg.feesTooltip && msg.feesTooltip.length > 0 ? (
+          {(msg.feesTooltip && msg.feesTooltip.length > 0) || isFullCloseSettlementCandidate ? (
             <TooltipWithPortal
-              handle={<span className="numbers">{msg.fees}</span>}
+              handle={
+                msg.fees ? (
+                  <span className="numbers">{msg.fees}</span>
+                ) : (
+                  <span className="text-typography-secondary">-</span>
+                )
+              }
               renderContent={renderFeesTooltipContent}
             />
+          ) : !msg.fees ? (
+            <span className="text-typography-secondary">-</span>
           ) : (
             <span className="numbers">{msg.fees}</span>
           )}
