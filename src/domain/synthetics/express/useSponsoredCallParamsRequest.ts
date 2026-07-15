@@ -13,6 +13,12 @@ export type SponsoredCallBalanceData = {
   isSponsoredCallAllowed: boolean;
 };
 
+function getIsTransportError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+
+  return /failed to fetch|networkerror|load failed|network request failed/i.test(message);
+}
+
 export function useIsSponsoredCallBalanceAvailable(chainId: number): SponsoredCallBalanceData {
   const { data: isSponsoredCallAllowed } = useSWR<boolean>([chainId, "isSponsoredCallAllowed"], {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
@@ -30,7 +36,10 @@ export function useIsSponsoredCallBalanceAvailable(chainId: number): SponsoredCa
 
         return gasTankBalance.balance > MIN_GELATO_USD_BALANCE;
       } catch (error) {
-        metrics.pushError(error, "expressOrders.useIsSponsoredCallBalanceAvailable");
+        // Frequent poll: a transport failure is a client connection blip that floods Datadog at fleet scale
+        if (!getIsTransportError(error)) {
+          metrics.pushError(error, "expressOrders.useIsSponsoredCallBalanceAvailable");
+        }
         return false;
       }
     },

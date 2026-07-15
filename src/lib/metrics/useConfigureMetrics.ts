@@ -18,7 +18,7 @@ import { metrics } from "./Metrics";
 export function useConfigureMetrics() {
   const { chainId, srcChainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
-  const { active } = useWallet();
+  const { active, account } = useWallet();
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const isMobileMetamask = useIsMetamaskMobile();
   const isWindowVisible = useIsWindowVisible();
@@ -60,9 +60,11 @@ export function useConfigureMetrics() {
       platform: bowser?.platform.type,
       isInited: Boolean(bowser),
       srcChainId,
+      account,
     });
   }, [
     active,
+    account,
     isMobileMetamask,
     isWindowVisible,
     isLargeAccount,

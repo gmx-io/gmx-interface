@@ -1,7 +1,8 @@
 export function createTimeoutSignal(timeout: number): AbortSignal {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
-    controller.abort();
+    // abort(reason) so consumers can tell a timeout from a user-initiated abort (plain AbortError)
+    controller.abort(new DOMException(`Timed out after ${timeout}ms`, "TimeoutError"));
   }, timeout);
 
   controller.signal.addEventListener("abort", () => {

@@ -21,6 +21,8 @@ export type GlobalMetricData = {
   platform?: string;
   isInited?: boolean;
   srcChainId?: SourceChainId;
+  // Lets support match a user's report to their event timeline in Datadog
+  account?: string;
 };
 
 export enum OrderStage {
@@ -566,7 +568,7 @@ export type MulticallBatchedTiming = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -611,7 +613,7 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -620,7 +622,7 @@ export type MulticallBatchedErrorCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 

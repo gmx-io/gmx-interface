@@ -342,21 +342,26 @@ export class Multicall {
             // eslint-disable-next-line no-console
             console.groupEnd();
 
-            emitMetricEvent<MulticallErrorEvent>({
-              event: "multicall.error",
-              isError: true,
-              data: {
+            // The timeout branch above has already reported this failure (multicall.timeout event + timeout counter)
+            const isTimeoutError = _viemError.message === "multicall timeout";
+
+            if (!isTimeoutError) {
+              emitMetricEvent<MulticallErrorEvent>({
+                event: "multicall.error",
+                isError: true,
+                data: {
+                  requestType: isFallback ? "retry" : "initial",
+                  rpcProvider: rpcProviderName,
+                  isInMainThread: !isWebWorker,
+                  errorMessage: _viemError.message,
+                },
+              });
+
+              sendCounterEvent("error", {
                 requestType: isFallback ? "retry" : "initial",
                 rpcProvider: rpcProviderName,
-                isInMainThread: !isWebWorker,
-                errorMessage: _viemError.message,
-              },
-            });
-
-            sendCounterEvent("error", {
-              requestType: "initial",
-              rpcProvider: rpcProviderName,
-            });
+              });
+            }
 
             sendDebugEvent(isFallback ? "fallback-failed" : "primary-failed", { providerUrl });
 

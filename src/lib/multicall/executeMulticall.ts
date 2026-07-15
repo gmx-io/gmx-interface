@@ -77,6 +77,16 @@ function executeChainsMulticalls() {
   return Promise.allSettled(tasks);
 }
 
+// Exact counts as metric tags create a unique server-side metric key per value — report the magnitude class instead
+function getCallsCountBucket(callsCount: number): string {
+  if (callsCount <= 10) return "1-10";
+  if (callsCount <= 50) return "11-50";
+  if (callsCount <= 100) return "51-100";
+  if (callsCount <= 200) return "101-200";
+  if (callsCount <= 500) return "201-500";
+  return "500+";
+}
+
 async function executeChainMulticall(
   chainId: AnyChainId,
   calls: MulticallFetcherConfig[number],
@@ -97,7 +107,7 @@ async function executeChainMulticall(
     data: {
       chainId,
       priority,
-      callsCount: totalCallsCount,
+      callsCountBucket: getCallsCountBucket(totalCallsCount),
     },
   });
 
@@ -132,7 +142,7 @@ async function executeChainMulticall(
         data: {
           chainId,
           priority,
-          callsCount: callCount,
+          callsCountBucket: getCallsCountBucket(callCount),
         },
       });
     } else {
@@ -141,7 +151,7 @@ async function executeChainMulticall(
         data: {
           chainId,
           priority,
-          callsCount: callCount,
+          callsCountBucket: getCallsCountBucket(callCount),
         },
       });
     }

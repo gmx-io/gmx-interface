@@ -30,6 +30,15 @@ export class HttpError extends Error {
   }
 }
 
+// Passed to abort() so a timed-out request rejects with a distinguishable error instead of a
+// generic AbortError, which error reporting treats as a user-initiated abort and drops
+export class HttpTimeoutError extends Error {
+  constructor(timeoutMs: number, url: string) {
+    super(`HTTP timeout after ${timeoutMs}ms: ${url}`);
+    this.name = "HttpTimeoutError";
+  }
+}
+
 function throwHttpError(statusCode: number, statusText: string, errorBody?: Record<string, any>): never {
   let errorMessage = `HTTP ${statusCode}: ${statusText}`;
 
@@ -58,7 +67,7 @@ export class HttpClient implements IHttp {
     const url = buildUrl(this.url, path, query);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+    const timeoutId = setTimeout(() => controller.abort(new HttpTimeoutError(this.timeoutMs, url)), this.timeoutMs);
 
     try {
       const response = await fetch(url, {
@@ -98,7 +107,7 @@ export class HttpClient implements IHttp {
     const url = buildUrl(this.url, path);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+    const timeoutId = setTimeout(() => controller.abort(new HttpTimeoutError(this.timeoutMs, url)), this.timeoutMs);
 
     try {
       const response = await fetch(url, {

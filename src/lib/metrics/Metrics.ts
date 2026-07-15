@@ -12,7 +12,7 @@ import { sleep } from "lib/sleep";
 import { getRawSessionId } from "lib/userAnalytics/sessionId";
 import { getAppVersion } from "lib/version";
 import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
-import { ErrorLike, parseError } from "sdk/utils/errors";
+import { ErrorData, ErrorLike, parseError } from "sdk/utils/errors";
 
 import { _debugMetrics } from "./_debug";
 import {
@@ -39,9 +39,32 @@ const BATCH_INTERVAL_MS = 3000;
 const BANNED_CUSTOM_FIELDS = ["metricId"];
 const BAD_REQUEST_ERROR = "BadRequest";
 
+const COALESCE_WINDOW_MS = 60_000;
+
+// Infra events that flood Datadog in identical storms (broken RPC, flapping endpoints).
+// Values are the data fields defining a "distinct" occurrence — only identical repeats are folded.
+const COALESCED_EVENTS: { [event: string]: string[] } = {
+  "multicall.timeout": ["metricType", "rpcProvider", "requestType", "isInMainThread"],
+  "multicall.error": ["errorMessage", "rpcProvider", "requestType", "isInMainThread"],
+  "worker.multicall.error": ["errorMessage"],
+  "rpcTracker.endpoint.updated": ["chainId", "primary", "secondary"],
+  error: ["errorName", "errorMessage", "errorSource"],
+};
+
+// Non-actionable browser noise: user-initiated fetch aborts (navigation/refresh) and Firefox "dead object" artifacts
+const IGNORED_ERROR_PATTERNS = [/user aborted a request/i, /operation was aborted/i, /can't access dead object/i];
+
 type CachedMetricData = { _metricDataCreated: number; metricId: string };
 type CachedMetricsData = { [key: string]: CachedMetricData };
 type Timers = { [key: string]: number };
+
+type CoalescedBucket = {
+  suppressedCount: number;
+  firstSuppressedAt: number;
+  lastSuppressedAt: number;
+  lastParams: MetricEventParams;
+  timeoutId: number;
+};
 
 class Metrics {
   fetcher?: OracleFetcher;
@@ -101,8 +124,92 @@ class Metrics {
     return this.fetcher.fetchPostBatchReport({ items });
   };
 
+  coalescedBuckets: Map<string, CoalescedBucket> = new Map();
+
   // Require Generic type to be specified
   pushEvent = <T extends MetricEventParams = never>(params: T) => {
+    if (this._coalesceEvent(params)) {
+      return;
+    }
+
+    this._pushEventImmediate(params);
+  };
+
+  _coalesceEvent = (params: MetricEventParams): boolean => {
+    const keyFields = COALESCED_EVENTS[params.event];
+
+    if (!keyFields) {
+      return false;
+    }
+
+    const data = (params.data ?? {}) as Record<string, unknown>;
+    const key = [params.event, ...keyFields.map((field) => String(data[field]))].join("|");
+    const bucket = this.coalescedBuckets.get(key);
+    const now = Date.now();
+
+    if (bucket) {
+      bucket.suppressedCount += 1;
+      // The bucket is created for an event that was sent, so the first *suppressed* one is timestamped here
+      if (bucket.suppressedCount === 1) {
+        bucket.firstSuppressedAt = now;
+      }
+      bucket.lastSuppressedAt = now;
+      bucket.lastParams = params;
+      return true;
+    }
+
+    const newBucket: CoalescedBucket = {
+      suppressedCount: 0,
+      firstSuppressedAt: now,
+      lastSuppressedAt: now,
+      lastParams: params,
+      timeoutId: window.setTimeout(() => this._flushCoalescedBucket(key), COALESCE_WINDOW_MS),
+    };
+
+    this.coalescedBuckets.set(key, newBucket);
+
+    // Hidden tabs are the main storm source (background polling of a broken RPC) — hold even
+    // the first occurrence; the visibilitychange flush will deliver it
+    if (document.visibilityState === "hidden") {
+      newBucket.suppressedCount = 1;
+      return true;
+    }
+
+    return false;
+  };
+
+  _flushCoalescedBucket = (key: string) => {
+    const bucket = this.coalescedBuckets.get(key);
+
+    if (!bucket) {
+      return;
+    }
+
+    window.clearTimeout(bucket.timeoutId);
+    this.coalescedBuckets.delete(key);
+
+    if (bucket.suppressedCount === 0) {
+      return;
+    }
+
+    this._pushEventImmediate({
+      ...bucket.lastParams,
+      data: {
+        ...((bucket.lastParams.data ?? {}) as object),
+        repeatCount: bucket.suppressedCount,
+        firstSuppressedAt: bucket.firstSuppressedAt,
+        lastSuppressedAt: bucket.lastSuppressedAt,
+      },
+    });
+  };
+
+  flushAllCoalesced = () => {
+    for (const key of Array.from(this.coalescedBuckets.keys())) {
+      this._flushCoalescedBucket(key);
+    }
+  };
+
+  _pushEventImmediate = (params: MetricEventParams) => {
     const { time, isError, data, event } = params;
 
     const payload: EventPayload = {
@@ -177,6 +284,10 @@ class Metrics {
       return;
     }
 
+    if (this._isIgnoredError(errorData)) {
+      return;
+    }
+
     const event: ErrorEvent = {
       event: "error",
       isError: true,
@@ -189,6 +300,16 @@ class Metrics {
     _debugMetrics?.logError(event);
 
     this.pushEvent(event);
+  };
+
+  _isIgnoredError = (errorData: ErrorData) => {
+    if (errorData.errorName === "AbortError") {
+      return true;
+    }
+
+    return IGNORED_ERROR_PATTERNS.some(
+      (pattern) => errorData.errorMessage !== undefined && pattern.test(errorData.errorMessage)
+    );
   };
 
   _processQueue = async (retryNumber = 0): Promise<void> => {
@@ -264,6 +385,8 @@ class Metrics {
     window.addEventListener(METRIC_TIMING_DISPATCH_NAME, this.handleWindowTiming);
     window.addEventListener("error", this.handleError);
     window.addEventListener("unhandledrejection", this.handleUnhandledRejection);
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+    window.addEventListener("pagehide", this.handlePageHide);
     this.subscribeToLongTasks();
   };
 
@@ -273,6 +396,9 @@ class Metrics {
     window.removeEventListener(METRIC_TIMING_DISPATCH_NAME, this.handleWindowTiming);
     window.removeEventListener("error", this.handleError);
     window.removeEventListener("unhandledrejection", this.handleUnhandledRejection);
+    document.removeEventListener("visibilitychange", this.handleVisibilityChange);
+    window.removeEventListener("pagehide", this.handlePageHide);
+    this.flushAllCoalesced();
     this.performanceObserver?.disconnect();
   };
 
@@ -338,6 +464,16 @@ class Metrics {
     if (error) {
       this.pushError(error, "unhandledRejection");
     }
+  };
+
+  handleVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      this.flushAllCoalesced();
+    }
+  };
+
+  handlePageHide = () => {
+    this.flushAllCoalesced();
   };
 
   // Require Generic type to be specified
