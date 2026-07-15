@@ -4,7 +4,7 @@ import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
-import { defineConfig, type PluginOption } from "vite";
+import { defineConfig, loadEnv, type PluginOption } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -49,6 +49,23 @@ const APP_SRC_DIR = path.resolve(__dirname, "src");
 const SDK_SRC_DIR = path.resolve(__dirname, "sdk/src");
 const SOLANA_SYSTEM_MODULE_ID = "@solana-program/system";
 const SOLANA_SYSTEM_STUB_ID = "\0gmx:solana-system-stub";
+const PWA_METADATA_PLACEHOLDER = "<!-- gmx-pwa-metadata -->";
+
+function pwaMetadata(buildId: string, isEnabled: boolean): PluginOption {
+  return {
+    name: "gmx-pwa-metadata",
+    transformIndexHtml(html) {
+      const metadata = [
+        `<meta name="gmx-pwa-build-id" content="${buildId}" />`,
+        isEnabled ? '<meta name="gmx-pwa-enabled" content="true" />' : undefined,
+      ]
+        .filter(Boolean)
+        .join("\n    ");
+
+      return html.replace(PWA_METADATA_PLACEHOLDER, metadata);
+    },
+  };
+}
 
 function normalizePath(id: string) {
   return id.replace(/\\/g, "/");
@@ -178,6 +195,14 @@ function optionalSolanaSystemStub(): PluginOption {
 }
 
 export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  const pwaBuildId = env.VITE_APP_PWA_GENERATION || Date.now().toString();
+
+  const pwaGeneration = Number(pwaBuildId);
+  if (!/^\d+$/.test(pwaBuildId) || !Number.isSafeInteger(pwaGeneration) || pwaGeneration <= 0) {
+    throw new Error("VITE_APP_PWA_GENERATION must be a positive integer");
+  }
+
   return {
     worker: {
       format: "es",
@@ -201,6 +226,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
+      pwaMetadata(pwaBuildId, env.VITE_APP_DISABLE_PWA !== "true"),
       svgr({
         include: "**/*.svg?react",
       }),

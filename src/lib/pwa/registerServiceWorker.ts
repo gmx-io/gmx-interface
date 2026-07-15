@@ -1,5 +1,40 @@
-const SERVICE_WORKER_URL = "/sw.js";
 const PWA_CACHE_PREFIX = "gmx-pwa-";
+const PWA_CONTROL_CACHE = "gmx-pwa-control-v2";
+const PWA_DISABLED_KEY_PREFIX = "/__gmx_pwa_disabled__/";
+
+function shouldDeletePwaCache(cacheName: string, disabledGeneration: number | undefined) {
+  if (!cacheName.startsWith(PWA_CACHE_PREFIX) || cacheName === PWA_CONTROL_CACHE) {
+    return false;
+  }
+  if (disabledGeneration === undefined) {
+    return true;
+  }
+
+  const match = cacheName.match(/^gmx-pwa-(?:shell|assets|chart|stage)-v2-(\d+)/);
+  if (!match) {
+    return true;
+  }
+  const cacheGeneration = Number(match[1]);
+  return !Number.isSafeInteger(cacheGeneration) || cacheGeneration <= disabledGeneration;
+}
+
+function getServiceWorkerGeneration(worker: ServiceWorker | null) {
+  if (!worker) {
+    return undefined;
+  }
+  const buildId = new URL(worker.scriptURL).searchParams.get("build");
+  const generation = buildId && /^\d+$/.test(buildId) ? Number(buildId) : undefined;
+  return Number.isSafeInteger(generation) ? generation : undefined;
+}
+
+function isRegistrationSuperseded(registration: ServiceWorkerRegistration, disabledGeneration: number | undefined) {
+  if (disabledGeneration === undefined) {
+    return false;
+  }
+  return [registration.installing, registration.waiting, registration.active]
+    .map(getServiceWorkerGeneration)
+    .some((generation) => generation !== undefined && generation > disabledGeneration);
+}
 
 export function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) {
@@ -17,7 +52,13 @@ export function registerServiceWorker() {
   }
 
   const register = () => {
-    navigator.serviceWorker.register(SERVICE_WORKER_URL).catch(() => {
+    const buildId = document.querySelector<HTMLMetaElement>('meta[name="gmx-pwa-build-id"]')?.content;
+    if (!buildId) {
+      return;
+    }
+
+    const serviceWorkerUrl = `/sw.js?build=${encodeURIComponent(buildId)}`;
+    navigator.serviceWorker.register(serviceWorkerUrl).catch(() => {
       // Registration failure must not block the app.
     });
   };
@@ -35,9 +76,28 @@ export async function unregisterServiceWorker() {
     return;
   }
 
+  const buildId = document.querySelector<HTMLMetaElement>('meta[name="gmx-pwa-build-id"]')?.content;
+  const disabledGeneration = buildId && /^\d+$/.test(buildId) ? Number(buildId) : undefined;
+
+  try {
+    if (typeof caches !== "undefined") {
+      if (disabledGeneration !== undefined && Number.isSafeInteger(disabledGeneration)) {
+        const controlCache = await caches.open(PWA_CONTROL_CACHE);
+        await controlCache.put(
+          `${PWA_DISABLED_KEY_PREFIX}${buildId}`,
+          new Response("disabled", { headers: { "content-type": "text/plain" } })
+        );
+      }
+    }
+  } catch {
+    // Cleanup is best-effort.
+  }
+
   try {
     const registration = await navigator.serviceWorker.getRegistration("/");
-    await registration?.unregister();
+    if (registration && !isRegistrationSuperseded(registration, disabledGeneration)) {
+      await registration.unregister();
+    }
   } catch {
     // Cleanup is best-effort.
   }
@@ -46,7 +106,7 @@ export async function unregisterServiceWorker() {
     if (typeof caches !== "undefined") {
       const cacheNames = await caches.keys();
       await Promise.all(
-        cacheNames.filter((name) => name.startsWith(PWA_CACHE_PREFIX)).map((name) => caches.delete(name))
+        cacheNames.filter((name) => shouldDeletePwaCache(name, disabledGeneration)).map((name) => caches.delete(name))
       );
     }
   } catch {
