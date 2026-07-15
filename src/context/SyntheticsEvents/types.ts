@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
-import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import type { DecreasePositionSwapType, OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubaccountApproval } from "domain/synthetics/subaccount";
 import type { OrderMetricId } from "lib/metrics/types";
 import type { StatusCode } from "sdk/utils/gelatoRelay";
@@ -225,6 +225,7 @@ export type OrderCreatedEventData = {
   minOutputAmount: bigint;
   updatedAtBlock: bigint;
   orderType: OrderType;
+  decreasePositionSwapType: DecreasePositionSwapType;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
   externalSwapQuote: undefined;
@@ -249,6 +250,7 @@ export type PendingOrderData = {
   expectedOutputAmount?: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;
+  decreasePositionSwapType: DecreasePositionSwapType;
   shouldUnwrapNativeToken: boolean;
   orderType: OrderType;
   referralCode?: string;

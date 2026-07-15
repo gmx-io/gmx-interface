@@ -20,6 +20,7 @@ export function getPendingOrderKey(
     data.shouldUnwrapNativeToken,
     data.isLong,
     data.orderType,
+    data.decreasePositionSwapType,
   ].join(":");
 }
 

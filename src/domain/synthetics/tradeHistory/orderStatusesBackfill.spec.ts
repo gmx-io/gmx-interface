@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { PendingOrderData, OrderStatuses } from "context/SyntheticsEvents/types";
 import { getPendingOrderKey } from "context/SyntheticsEvents/utils";
 import { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
-import { OrderType } from "sdk/utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "sdk/utils/orders/types";
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
@@ -34,6 +34,7 @@ function makePendingOrder(overrides: Partial<PendingOrderData> = {}): PendingOrd
     autoCancel: false,
     isLong: true,
     orderType: OrderType.MarketIncrease,
+    decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     shouldUnwrapNativeToken: false,
     externalSwapQuote: undefined,
     txnType: "create",
@@ -56,6 +57,7 @@ function makeRawAction(overrides: Partial<RawTradeAction> = {}): RawTradeAction 
     triggerPrice: "0",
     swapPath: [],
     orderType: OrderType.MarketIncrease,
+    decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     orderKey: "0xorder",
     isLong: true,
     shouldUnwrapNativeToken: false,
@@ -160,6 +162,26 @@ describe("getOrderBackfillMatches", () => {
 
     expect(getMatches([pendingOrder], [createdAction])[0]?.eventName).toBe(TradeActionType.OrderCreated);
     expect(getMatches([pendingOrder], [{ ...createdAction, triggerPrice: "1501" }])).toEqual([]);
+  });
+
+  it("does not match a previous create with a different decrease swap type", () => {
+    const pendingOrder = makePendingOrder({
+      orderType: OrderType.LimitDecrease,
+      triggerPrice: 1500n,
+      decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+    });
+    const previousCreate = makeRawAction({
+      eventName: TradeActionType.OrderCreated,
+      orderType: OrderType.LimitDecrease,
+      triggerPrice: "1500",
+      decreasePositionSwapType: DecreasePositionSwapType.SwapPnlTokenToCollateralToken,
+      timestamp: Math.floor(pendingOrder.createdAt / 1000) - 10,
+    });
+
+    expect(getMatches([pendingOrder], [previousCreate])).toEqual([]);
+    expect(
+      getMatches([pendingOrder], [{ ...previousCreate, decreasePositionSwapType: DecreasePositionSwapType.NoSwap }])
+    ).toHaveLength(1);
   });
 
   it("does not match executed or cancelled actions to a pending limit create", () => {

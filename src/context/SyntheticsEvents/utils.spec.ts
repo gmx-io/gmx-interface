@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { OrderType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 
 import type { OrderCreatedEventData, OrderStatus, PendingOrderData } from "./types";
 import { findMatchedOrderStatus, findOrderStatusForAllocation } from "./utils";
@@ -20,6 +20,7 @@ function makePendingOrder(overrides: Partial<PendingOrderData> = {}): PendingOrd
     minOutputAmount: 0n,
     sizeDeltaUsd: 100n,
     isLong: true,
+    decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     shouldUnwrapNativeToken: false,
     orderType: OrderType.LimitDecrease,
     createdAt: 10,
@@ -46,6 +47,7 @@ function makeOrderData(overrides: Partial<OrderCreatedEventData> = {}): OrderCre
     minOutputAmount: 0n,
     updatedAtBlock: 1n,
     orderType: OrderType.LimitDecrease,
+    decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: true,
     shouldUnwrapNativeToken: false,
     externalSwapQuote: undefined,
@@ -97,6 +99,14 @@ describe("findMatchedOrderStatus", () => {
     expect(findOrderStatusForAllocation([replacementCreatedStatus, oldCancelledStatus], pendingCreate)).toBe(
       replacementCreatedStatus
     );
+  });
+
+  it("does not match a replacement create with a different decrease swap type", () => {
+    const oldSingleTokenStatus = makeOrderStatus({
+      data: makeOrderData({ decreasePositionSwapType: DecreasePositionSwapType.SwapPnlTokenToCollateralToken }),
+    });
+
+    expect(findOrderStatusForAllocation([oldSingleTokenStatus], pendingCreate)).toBeUndefined();
   });
 
   it("matches a create status received before the wallet pending order is recorded", () => {

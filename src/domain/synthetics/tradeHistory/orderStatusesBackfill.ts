@@ -3,7 +3,7 @@ import { zeroAddress } from "viem";
 import { OrderCreatedEventData, OrderStatus, OrderStatuses, PendingOrderData } from "context/SyntheticsEvents/types";
 import { setByKey, updateByKey } from "lib/objects";
 import { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
-import { OrderType } from "sdk/utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "sdk/utils/orders/types";
 import { isMarketOrderType, isSwapOrderType } from "sdk/utils/orders/utils";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
@@ -180,6 +180,7 @@ function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pend
     isAfterSubmission &&
     isAmountsMatch &&
     rawAction.orderType === pendingOrder.orderType &&
+    (rawAction.decreasePositionSwapType ?? DecreasePositionSwapType.NoSwap) === pendingOrder.decreasePositionSwapType &&
     (rawAction.isLong ?? pendingOrder.isLong) === pendingOrder.isLong &&
     (rawAction.shouldUnwrapNativeToken ?? false) === pendingOrder.shouldUnwrapNativeToken &&
     rawAction.account === pendingOrder.account &&
@@ -211,6 +212,7 @@ export function getOrderCreatedDataFromPendingOrder(
     minOutputAmount: pendingOrder.minOutputAmount,
     updatedAtBlock: 0n,
     orderType: pendingOrder.orderType,
+    decreasePositionSwapType: pendingOrder.decreasePositionSwapType,
     isLong: pendingOrder.isLong,
     shouldUnwrapNativeToken: pendingOrder.shouldUnwrapNativeToken,
     isFrozen: false,
