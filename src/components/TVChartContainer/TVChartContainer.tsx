@@ -5,7 +5,7 @@ import { useLatest, useLocalStorage, useMedia } from "react-use";
 import { isAddressEqual, type Address } from "viem";
 
 import { colors } from "config/colors";
-import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
+import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
@@ -50,7 +50,6 @@ import type { OpenChartTPSLModalParams } from "./useChartContextMenu";
 import { useChartContextMenu } from "./useChartContextMenu";
 import { useCrosshairPercentage } from "./useCrosshairPercentage";
 import type {
-  ChartData,
   ChartingLibraryWidgetOptions,
   IChartingLibraryWidget,
   PlusClickParams,
@@ -131,7 +130,6 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   const [isChartChangingSymbol, setIsChartChangingSymbol] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
-  const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
   const [wasChartOverridden, setWasChartOverridden] = useLocalStorage<boolean>(WAS_TV_CHART_OVERRIDDEN_KEY, false);
 
   const { theme } = useTheme();
@@ -823,14 +821,17 @@ export default function TVChartContainer({
       custom_formatters: defaultChartProps.custom_formatters,
       load_last_chart: true,
       auto_save_delay: 1,
-      save_load_adapter: new SaveLoadAdapter(tvCharts, setTvCharts),
+      save_load_adapter: new SaveLoadAdapter(),
     };
-    tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+    const widget = new window.TradingView.widget(widgetOptions);
 
     let didTriggerOnChartReady = { current: false };
 
-    tvWidgetRef.current!.onChartReady(function () {
+    widget.onChartReady(function () {
       didTriggerOnChartReady.current = true;
+      // Publish only once the widget can serve API calls: effects with a stale chartReady=true
+      // would otherwise hit activeChart() on a not-yet-ready widget, which throws
+      tvWidgetRef.current = widget;
       setChartReady(true);
 
       const savedPeriod = tvWidgetRef.current?.activeChart().resolution();
@@ -913,12 +914,10 @@ export default function TVChartContainer({
 
     return () => {
       clearTimeout(forceInitTimeout);
-      if (tvWidgetRef.current) {
-        tvWidgetRef.current.remove();
-        tvWidgetRef.current = null;
-        setChartReady(false);
-        setChartDataLoading(true);
-      }
+      widget.remove();
+      tvWidgetRef.current = null;
+      setChartReady(false);
+      setChartDataLoading(true);
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -932,9 +931,14 @@ export default function TVChartContainer({
   return (
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
-      <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content">
-        {chartReady && <CrosshairPercentageLabel state={crosshairPercentageState} />}
-      </div>
+      <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
+      {/* Outside of chartContainerRef: the TV widget constructor wipes all container children,
+          and React crashes unmounting the detached nodes */}
+      {chartReady && (
+        <div style={style} className="ExchangeChart-bottom-content pointer-events-none">
+          <CrosshairPercentageLabel state={crosshairPercentageState} />
+        </div>
+      )}
       {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (
         <>
           <StaticLines tvWidgetRef={tvWidgetRef} chartLines={stackedStaticLines} bodyFontSizePt={bodyFontSizePt} />
