@@ -8,6 +8,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
@@ -33,6 +34,7 @@ import {
   getIncreaseError,
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
+import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 
 const selectTradeboxSwapTradeError = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -44,6 +46,7 @@ const selectTradeboxSwapTradeError = createSelector((q) => {
   const { isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
   const isStakeOrUnstake = q(selectTradeboxIsStakeOrUnstake);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
   const { triggerRatio, markRatio } = q(selectTradeboxTradeRatios);
   const fees = q(selectTradeboxFees);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
@@ -64,6 +67,7 @@ const selectTradeboxSwapTradeError = createSelector((q) => {
     isLimit,
     isWrapOrUnwrap,
     isStakeOrUnstake,
+    isFromTokenGmxAccount,
     triggerRatio,
     markRatio,
     fees,
@@ -174,4 +178,27 @@ export const selectTradeboxTradeTypeError = createSelector((q) => {
   }
 
   return tradeError;
+});
+
+export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) => {
+  const { isIncrease, isLimit, isLong } = q(selectTradeboxTradeFlags);
+
+  if (!isIncrease || !isLimit) {
+    return false;
+  }
+
+  if (q(selectTradeboxIncreaseTradeError).buttonErrorMessage) {
+    return false;
+  }
+
+  const existingPosition = q(selectTradeboxSelectedPosition);
+  const triggerPrice = q(selectTradeboxTriggerPrice);
+  const nextPositionValues = q(selectTradeboxNextPositionValues);
+
+  return getIsIncreaseResultingPositionLiquidatable({
+    currentLiqPrice: existingPosition?.liquidationPrice,
+    nextLiqPrice: nextPositionValues?.nextLiqPrice,
+    triggerPrice,
+    isLong,
+  });
 });

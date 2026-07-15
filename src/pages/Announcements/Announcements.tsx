@@ -84,8 +84,8 @@ export default function AnnouncementsPage() {
       .filter((event) => isEventActiveByFlag(event, uiFlags))
       .filter((event) => hasEventStarted(event, now))
       .sort((a, b) => {
-        const aTime = getEventSortDate(a).getTime();
-        const bTime = getEventSortDate(b).getTime();
+        const aTime = getEventSortDate(a, uiFlags).getTime();
+        const bTime = getEventSortDate(b, uiFlags).getTime();
         if (aTime !== bTime) return bTime - aTime;
         return a.id.localeCompare(b.id);
       });
@@ -96,7 +96,7 @@ export default function AnnouncementsPage() {
   const filteredExceptTab = useMemo<EventData[]>(() => {
     return allEligible.filter((event) => {
       if (selectedChainId !== null && (!event.chains || !event.chains.includes(selectedChainId))) return false;
-      const eventTime = getEventSortDate(event).getTime();
+      const eventTime = getEventSortDate(event, uiFlags).getTime();
       if (fromTimestamp !== undefined && eventTime < fromTimestamp * 1000) return false;
       if (toTimestamp !== undefined && eventTime > toTimestamp * 1000) return false;
       if (searchTokens.length > 0) {
@@ -107,7 +107,7 @@ export default function AnnouncementsPage() {
       }
       return true;
     });
-  }, [allEligible, selectedChainId, fromTimestamp, toTimestamp, searchTokens]);
+  }, [allEligible, selectedChainId, fromTimestamp, toTimestamp, searchTokens, uiFlags]);
 
   const typeCounts = useMemo<Record<AnnouncementType | "all", number>>(() => {
     const counts: Record<AnnouncementType | "all", number> = {
@@ -236,6 +236,7 @@ export default function AnnouncementsPage() {
                 <AnnouncementCard
                   key={event.id}
                   event={event}
+                  uiFlags={uiFlags}
                   searchTokens={searchTokens}
                   isHighlighted={event.id === highlightedId}
                 />

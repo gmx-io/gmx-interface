@@ -119,6 +119,7 @@ type TradeboxButtonState = {
   isExpressLoading: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
+  primaryExecutionFee?: ExecutionFee;
 };
 
 export function useTradeboxButtonState({
@@ -176,6 +177,7 @@ export function useTradeboxButtonState({
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    primaryExecutionFee,
   } = useTradeboxTransactions({
     setPendingTxns,
   });
@@ -498,6 +500,7 @@ export function useTradeboxButtonState({
       expressParams,
       batchParams,
       totalExecutionFee,
+      primaryExecutionFee,
       isExpressLoading,
     };
 
@@ -655,6 +658,7 @@ export function useTradeboxButtonState({
     expressParams,
     batchParams,
     totalExecutionFee,
+    primaryExecutionFee,
     isExpressLoading,
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,

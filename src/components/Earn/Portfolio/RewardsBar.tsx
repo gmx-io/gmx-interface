@@ -14,6 +14,7 @@ import { StakingProcessedData } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import { EarningUnavailableNote, EarningValue } from "components/EarningValue/EarningValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -33,7 +34,11 @@ function RewardsBar({
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
-  const { userEarnings, isLoading: isUserEarningsLoading } = useUserEarnings(chainId, srcChainId);
+  const {
+    userEarnings,
+    isLoading: isUserEarningsLoading,
+    isUnavailable: isUserEarningsUnavailable,
+  } = useUserEarnings(chainId, srcChainId);
 
   const totalGmInfo = useMemo(
     () => getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances }),
@@ -78,6 +83,7 @@ function RewardsBar({
                   nativeTokenSymbol={nativeTokenSymbol}
                   userEarnings={userEarnings}
                   isUserEarningsLoading={isUserEarningsLoading}
+                  isUserEarningsUnavailable={isUserEarningsUnavailable}
                   chainId={chainId}
                 />
               </div>
@@ -115,12 +121,14 @@ function TotalEarned({
   nativeTokenSymbol,
   userEarnings,
   isUserEarningsLoading,
+  isUserEarningsUnavailable,
   chainId,
 }: {
   processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
   userEarnings: UserEarningsData | null;
   isUserEarningsLoading: boolean;
+  isUserEarningsUnavailable: boolean;
   chainId: ContractsChainId;
 }) {
   const earnedTooltipContent = useMemo(() => {
@@ -197,7 +205,7 @@ function TotalEarned({
       );
     }
 
-    if (userEarnings && userEarnings.allMarkets.total > 0n) {
+    if (userEarnings || isUserEarningsLoading || isUserEarningsUnavailable) {
       tooltipSections.push(
         <div key="lp" className="flex flex-col gap-8">
           <span className="text-body-medium font-medium text-typography-secondary">
@@ -207,7 +215,15 @@ function TotalEarned({
             <StatsTooltipRow
               label={<Trans>GM pools:</Trans>}
               showDollar={false}
-              value={<span className="text-body-medium numbers">{formatUsd(userEarnings.allMarkets.total)}</span>}
+              value={
+                <EarningValue
+                  value={userEarnings?.allMarkets.total}
+                  isLoading={!userEarnings && isUserEarningsLoading}
+                  isAvailable={Boolean(userEarnings) || !isUserEarningsUnavailable}
+                >
+                  {(value) => <span className="text-body-medium numbers">{formatUsd(value)}</span>}
+                </EarningValue>
+              }
             />
             <StatsTooltipRow
               label={<Trans>GLV vaults:</Trans>}
@@ -219,6 +235,7 @@ function TotalEarned({
               }
             />
           </div>
+          {isUserEarningsUnavailable && <EarningUnavailableNote />}
         </div>
       );
     }
@@ -228,17 +245,22 @@ function TotalEarned({
     }
 
     return <div className="flex flex-col gap-8">{tooltipSections}</div>;
-  }, [nativeTokenSymbol, processedData, userEarnings, chainId]);
+  }, [nativeTokenSymbol, processedData, userEarnings, isUserEarningsLoading, isUserEarningsUnavailable, chainId]);
 
-  const totalEarnedUsd = (processedData?.cumulativeTotalRewardsUsd ?? 0n) + (userEarnings?.allMarkets.total ?? 0n);
+  const stakingEarnedUsd = processedData?.cumulativeTotalRewardsUsd ?? 0n;
+  const totalEarnedUsd =
+    processedData === undefined ? undefined : stakingEarnedUsd + (userEarnings?.allMarkets.total ?? 0n);
   const isLoading = processedData === undefined || isUserEarningsLoading;
+  const isUserEarningsMissing = !isLoading && !userEarnings && isUserEarningsUnavailable;
 
   const valueElement = (
     <span className="text-body-large font-medium numbers">
-      {isLoading ? (
-        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={65} className="leading-base" />
+      {isUserEarningsMissing ? (
+        <>{formatUsd(stakingEarnedUsd)}</>
       ) : (
-        formatUsd(totalEarnedUsd)
+        <EarningValue value={totalEarnedUsd} isLoading={isLoading} isAvailable={true} skeletonWidth={65}>
+          {(value) => formatUsd(value)}
+        </EarningValue>
       )}
     </span>
   );

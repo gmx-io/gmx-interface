@@ -28,9 +28,15 @@ import { isDevelopment } from "config/env";
 import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
 import { getContract } from "sdk/configs/contracts";
-import { CHAIN_ID_TO_ENDPOINT_ID, isSettlementChain, isSourceChain, LayerZeroEndpointId } from "sdk/configs/multichain";
+import {
+  CHAIN_ID_TO_ENDPOINT_ID,
+  isSettlementChain,
+  isSourceChain,
+  isSourceChainForAnySettlementChain,
+  LayerZeroEndpointId,
+} from "sdk/configs/multichain";
 import { getMultichainTokenGroups, MultichainTokenGroups, MultichainTokenId } from "sdk/configs/multichainTokens";
-import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 
 export * from "sdk/configs/multichain";
 export type { MultichainTokenId } from "sdk/configs/multichainTokens";
@@ -53,6 +59,31 @@ export type MultichainTokenMapping = Record<
 export const SETTLEMENT_CHAINS: SettlementChainId[] = isDevelopment()
   ? (SETTLEMENT_CHAIN_IDS_DEV as unknown as SettlementChainId[])
   : (SETTLEMENT_CHAIN_IDS as unknown as SettlementChainId[]);
+
+export function isValidVisualSettlementChain(chainId: number): boolean {
+  return isSettlementChain(chainId) && chainId !== AVALANCHE;
+}
+
+export function isValidVisualSourceChain(chainId: number): boolean {
+  return isSourceChainForAnySettlementChain(chainId) && chainId !== AVALANCHE;
+}
+
+export type AccountModalMode = "walletAndGmxAccount" | "gmxAccount" | "walletOnly";
+
+export function getAccountModalMode(
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined
+): AccountModalMode {
+  if (!isValidVisualSettlementChain(chainId)) {
+    return "walletOnly";
+  }
+
+  if (srcChainId !== undefined) {
+    return "gmxAccount";
+  }
+
+  return "walletAndGmxAccount";
+}
 
 const TOKEN_GROUPS: MultichainTokenGroups = getMultichainTokenGroups({ includeTestnets: isDevelopment() });
 
@@ -173,6 +204,29 @@ export const RANDOM_WALLET: ISigner = ISigner.fromPrivateKeyAccount(RANDOM_ACCOU
  * Uses maxUint256 / 100n to avoid number overflows in EVM operations.
  */
 export const SIMULATED_MULTICHAIN_BALANCE = maxUint256 / 100n;
+
+export function getDepositTokenSymbolsForNetwork(settlementChainId: SettlementChainId, network: number): string[] {
+  const depositTradeTokens = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId] ?? [];
+
+  const tokenAddresses =
+    network === settlementChainId
+      ? depositTradeTokens
+      : Object.values(MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[network as SourceChainId] ?? {})
+          .map((mapping) => mapping.settlementChainTokenAddress)
+          // The mapping also contains platform tokens (GLV/GM), which getToken doesn't know about
+          .filter((address) => depositTradeTokens.includes(address));
+
+  const symbols: string[] = [];
+
+  for (const tokenAddress of tokenAddresses) {
+    const symbol = getToken(settlementChainId, tokenAddress).symbol;
+    if (!symbols.includes(symbol)) {
+      symbols.push(symbol);
+    }
+  }
+
+  return symbols;
+}
 
 export function getSourceChainDecimalsMapped(
   chainId: ContractsChainId,

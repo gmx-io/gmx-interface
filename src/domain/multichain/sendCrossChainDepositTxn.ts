@@ -31,7 +31,7 @@ export async function sendCrossChainDepositTxn({
   const isNative = tokenAddress === zeroAddress;
   const value = quoteSendNativeFee + (isNative ? amount : 0n);
 
-  await sendWalletTransaction({
+  return await sendWalletTransaction({
     chainId: chainId,
     to: stargateAddress,
     signer: signer,

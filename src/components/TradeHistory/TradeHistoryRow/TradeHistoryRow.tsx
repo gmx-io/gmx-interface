@@ -32,6 +32,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import FilterHistoryIcon from "img/ic_filter_history.svg?react";
 import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -47,6 +48,7 @@ type Props = {
   minCollateralUsd: bigint;
   shouldDisplayAccount?: boolean;
   showDebugValues?: boolean;
+  onSelectPositionLifecycle?: (tradeAction: PositionTradeAction) => void;
 };
 
 function LineSpan({ span }: { span: TooltipString }) {
@@ -106,7 +108,14 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
         }
 
         if ("key" in line && "value" in line) {
-          return <StatsTooltipRow key={i} label={line.key} value={<LineSpan span={line.value} />} showDollar={false} />;
+          return (
+            <StatsTooltipRow
+              key={i}
+              label={line.key}
+              value={Array.isArray(line.value) ? <LineSpans spans={line.value} /> : <LineSpan span={line.value} />}
+              showDollar={false}
+            />
+          );
         }
 
         return (
@@ -167,7 +176,13 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
 
 const PRICE_TOOLTIP_WIDTH = 400;
 
-export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAccount, showDebugValues }: Props) {
+export function TradeHistoryRow({
+  minCollateralUsd,
+  tradeAction,
+  shouldDisplayAccount,
+  showDebugValues,
+  onSelectPositionLifecycle,
+}: Props) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const marketsInfoData = useMarketsInfoData();
@@ -217,6 +232,11 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     [msg.priceComment]
   );
 
+  const renderSizeContent = useCallback(
+    () => <TooltipContentComponent content={msg.sizeComment ?? EMPTY_ARRAY} />,
+    [msg.sizeComment]
+  );
+
   const renderActionTooltipContent = useCallback(
     () => <TooltipContentComponent content={msg.actionComment!} />,
     [msg.actionComment]
@@ -261,6 +281,17 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     account === tradeAction.account;
 
   const isFullCloseSettlementCandidate = getFullCloseCandidate(tradeAction) !== undefined;
+
+  const shouldDisplayPositionLifecycleButton =
+    isPositionTradeAction(tradeAction) &&
+    Boolean(tradeAction.positionLifecycleId) &&
+    Boolean(onSelectPositionLifecycle);
+
+  const handleSelectPositionLifecycleClick = useCallback(() => {
+    if (isPositionTradeAction(tradeAction)) {
+      onSelectPositionLifecycle?.(tradeAction);
+    }
+  }, [onSelectPositionLifecycle, tradeAction]);
 
   return (
     <>
@@ -333,17 +364,23 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           />
         </TableTd>
         <TableTd>
-          <span className="numbers">
-            {msg.swapFromTokenSymbol ? (
+          {msg.swapFromTokenSymbol ? (
+            <span className="numbers">
               <Trans>
                 {msg.swapFromTokenAmount} <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} />
                 <span> to </span>
                 {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} />
               </Trans>
-            ) : (
-              msg.size
-            )}
-          </span>
+            </span>
+          ) : msg.sizeComment ? (
+            <TooltipWithPortal
+              variant="none"
+              handle={<span className="numbers">{msg.size}</span>}
+              renderContent={renderSizeContent}
+            />
+          ) : (
+            <span className="numbers">{msg.size}</span>
+          )}
         </TableTd>
         <TableTd>
           {msg.priceComment ? (
@@ -406,12 +443,37 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </TableTd>
         <TableTd>
-          {shouldDisplayShareButton ? (
-            <Button variant="ghost" onClick={handleShareClick}>
-              <NewLinkIconThin className="size-16" />
-              <Trans>Share</Trans>
-            </Button>
-          ) : null}
+          <div className="flex items-center justify-end gap-4">
+            {shouldDisplayShareButton ? (
+              <Button variant="ghost" onClick={handleShareClick}>
+                <NewLinkIconThin className="size-16" />
+                <Trans>Share</Trans>
+              </Button>
+            ) : null}
+            {shouldDisplayPositionLifecycleButton ? (
+              <TooltipWithPortal
+                variant="none"
+                position="bottom-end"
+                shouldPreventDefault={false}
+                handle={
+                  <Button
+                    variant="ghost"
+                    onClick={handleSelectPositionLifecycleClick}
+                    className="!min-h-28 !px-8 !py-6"
+                    aria-label={t`View position history`}
+                  >
+                    <FilterHistoryIcon className="size-14" />
+                  </Button>
+                }
+                content={<Trans>View position history</Trans>}
+              />
+            ) : (
+              // Reserve the button's space so the Share button and layout don't shift between rows/states.
+              <Button variant="ghost" className="invisible !min-h-28 !px-8 !py-6">
+                <FilterHistoryIcon className="size-14" />
+              </Button>
+            )}
+          </div>
         </TableTd>
       </TableTr>
       {isPositionTradeAction(tradeAction) ? (
