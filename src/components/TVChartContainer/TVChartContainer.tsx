@@ -829,8 +829,6 @@ export default function TVChartContainer({
 
     widget.onChartReady(function () {
       didTriggerOnChartReady.current = true;
-      // Publish only once the widget can serve API calls: effects with a stale chartReady=true
-      // would otherwise hit activeChart() on a not-yet-ready widget, which throws
       tvWidgetRef.current = widget;
       setChartReady(true);
 
@@ -932,8 +930,6 @@ export default function TVChartContainer({
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
       <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
-      {/* Outside of chartContainerRef: the TV widget constructor wipes all container children,
-          and React crashes unmounting the detached nodes */}
       {chartReady && (
         <div style={style} className="ExchangeChart-bottom-content pointer-events-none">
           <CrosshairPercentageLabel state={crosshairPercentageState} />

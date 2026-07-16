@@ -39,9 +39,8 @@ function readJson(storageKey: string): unknown {
 function writeJson(storageKey: string, value: unknown) {
   try {
     localStorage.setItem(storageKey, JSON.stringify(value));
-  } catch {
-    // localStorage is unavailable or full
-  }
+    // eslint-disable-next-line no-empty
+  } catch {}
 }
 
 function readStoredCharts(storageKey: string): ChartDataInfo[] | undefined {
@@ -56,7 +55,6 @@ function getLatestValidChart(charts: ChartDataInfo[] | undefined) {
     .at(0);
 }
 
-/** Persists the chart layout — including all drawings and studies — in localStorage */
 export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
   private charts: ChartDataInfo[];
 
