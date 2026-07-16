@@ -355,6 +355,10 @@ msgstr "GMX Accountは{chainName}では利用できません。GMX Accountを使
 msgid "settings"
 msgstr "設定"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Est. APR"
+msgstr "推定 APR"
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Price impact rebates ready to claim. <0>Read more</0>."
 msgstr "価格への影響のリベートを受け取る準備ができました。<0>詳細はこちら</0>。"
@@ -1463,6 +1467,10 @@ msgstr "反映まで数分かかる場合があります。後ほどご確認く
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
+msgstr "直近のGMXバイバックペース、あなたのステーキングパワーの割合、現在ステーキング中のGMX + esGMXに基づく、ウォレット固有の推定年率です。実際の分配はDAOガバナンスにより決定されます。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
