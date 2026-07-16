@@ -1,5 +1,9 @@
+import { maxUint256 } from "viem";
+
 import type { ContractsChainId } from "configs/chains";
 import { IHttp } from "utils/http/types";
+import { parseTradingCapacity } from "utils/markets/api";
+import type { TradingCapacity } from "utils/markets/types";
 import type { IAbstractSigner, TypedDataDomain, TypedDataTypes } from "utils/signer";
 
 import { validateOrderTypedData } from "./validateTypedData";
@@ -43,7 +47,20 @@ export type OrderEstimates = {
   positionFeeUsd: bigint;
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
+  tradingCapacity?: TradingCapacity;
 };
+
+export type OrderValidationWarning =
+  | {
+      code: "INSUFFICIENT_LIQUIDITY";
+      message: string;
+      details: TradingCapacity & { requestedSizeUsd: bigint };
+    }
+  | {
+      code: "TRADING_CAPACITY_UNAVAILABLE";
+      message: string;
+      details: { reason: "STALE_MARKET_DATA" | "JIT_DATA_UNAVAILABLE" };
+    };
 
 export type PrepareOrderResponse = {
   requestId: string;
@@ -54,6 +71,7 @@ export type PrepareOrderResponse = {
   estimates?: OrderEstimates;
   expiresAt?: number;
   warnings?: string[];
+  validationWarnings?: OrderValidationWarning[];
   traceId?: string;
 };
 
@@ -154,6 +172,12 @@ export type PrepareCollateralRequest = {
 
 function parseEstimates(raw: any): OrderEstimates | undefined {
   if (!raw) return undefined;
+
+  const tradingCapacity = raw.tradingCapacity === undefined ? undefined : parseTradingCapacity(raw.tradingCapacity);
+  if (raw.tradingCapacity !== undefined && !tradingCapacity) {
+    throw new Error("Invalid trading capacity in prepare response");
+  }
+
   return {
     positionPriceImpactDeltaUsd: BigInt(raw.positionPriceImpactDeltaUsd ?? "0"),
     swapPriceImpactDeltaUsd: BigInt(raw.swapPriceImpactDeltaUsd ?? "0"),
@@ -163,11 +187,64 @@ function parseEstimates(raw: any): OrderEstimates | undefined {
     positionFeeUsd: BigInt(raw.positionFeeUsd ?? "0"),
     borrowingFeeUsd: BigInt(raw.borrowingFeeUsd ?? "0"),
     fundingFeeUsd: BigInt(raw.fundingFeeUsd ?? "0"),
+    tradingCapacity,
   };
 }
 
+function parseValidationWarning(raw: any): OrderValidationWarning {
+  if (raw?.code === "INSUFFICIENT_LIQUIDITY") {
+    const capacity = parseTradingCapacity(raw.details);
+    if (!capacity || raw.details?.requestedSizeUsd === undefined || typeof raw.message !== "string") {
+      throw new Error("Invalid insufficient-liquidity warning in prepare response");
+    }
+
+    const requestedSizeUsd = BigInt(raw.details.requestedSizeUsd);
+    if (requestedSizeUsd < 0n || requestedSizeUsd > maxUint256) {
+      throw new Error("Invalid insufficient-liquidity warning in prepare response");
+    }
+
+    return {
+      code: raw.code,
+      message: raw.message,
+      details: {
+        ...capacity,
+        requestedSizeUsd,
+      },
+    };
+  }
+
+  if (
+    raw?.code === "TRADING_CAPACITY_UNAVAILABLE" &&
+    typeof raw.message === "string" &&
+    (raw.details?.reason === "STALE_MARKET_DATA" || raw.details?.reason === "JIT_DATA_UNAVAILABLE")
+  ) {
+    return {
+      code: raw.code,
+      message: raw.message,
+      details: { reason: raw.details.reason },
+    };
+  }
+
+  throw new Error("Invalid validation warning in prepare response");
+}
+
+function parseValidationWarnings(raw: unknown): OrderValidationWarning[] | undefined {
+  if (raw === undefined) {
+    return undefined;
+  }
+  if (!Array.isArray(raw)) {
+    throw new Error("Invalid validation warnings in prepare response");
+  }
+
+  return raw.map(parseValidationWarning);
+}
+
 function parsePrepareResponse(raw: any): PrepareOrderResponse {
-  return { ...raw, estimates: parseEstimates(raw.estimates) };
+  return {
+    ...raw,
+    estimates: parseEstimates(raw.estimates),
+    validationWarnings: parseValidationWarnings(raw.validationWarnings),
+  };
 }
 
 export async function prepareOrder(ctx: { api: IHttp }, request: PrepareOrderRequest): Promise<PrepareOrderResponse> {

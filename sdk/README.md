@@ -230,3 +230,34 @@ sdk.orders.swap({
 ```
 
 Note the distinction between `payTokenAddress` and `collateralTokenAddress`. These represent the ERC20 token addresses for payment and collateral respectively. Some markets use synthetic tokens, so you'll need to provide the correct underlying token address. For example, the BTC/USD [WETH-USDC] market has a synthetic BTC token as its `indexTokenAddress`, so you should pass the WBTC address instead of BTC.
+
+### JIT-aware trading capacity
+
+Use the v2 API client to get the current increase-order capacity for one market side:
+
+```typescript
+import { GmxApiSdk } from "@gmx-io/sdk/v2";
+
+const api = new GmxApiSdk({ chainId: 42161 });
+const account = "0x0000000000000000000000000000000000000001"; // Replace with the trading account.
+const capacity = await api.getTradingCapacity({
+  account,
+  symbol: "ETH/USD [WETH-USDC]",
+  direction: "long",
+});
+
+if (capacity.marketDataStatus !== "fresh") {
+  throw new Error("Trading capacity is based on stale market data");
+}
+
+const maxOrderSize =
+  capacity.jitDataStatus === "available" ? capacity.availableLiquidity : capacity.baseAvailableLiquidity;
+```
+
+`availableLiquidity` includes JIT liquidity available to the supplied account and remains capped by max open interest.
+Do not size an order while `marketDataStatus` is `stale`; wait for fresh market data. When market data is fresh, use
+`availableLiquidity` only if `jitDataStatus` is `available`, and otherwise fall back to `baseAvailableLiquidity`.
+Order preparation remains authoritative because collateral swaps can change the executable capacity.
+
+Deployment order for self-hosted stacks is keeper `/jit/eligibility`, then the compatible `gmx-api` capacity endpoint,
+then this SDK version. The raw JIT method remains available for advanced integrations.
