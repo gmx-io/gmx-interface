@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import useSWR from "swr";
 
 import { getUiApiCacheKey } from "config/api";
@@ -43,7 +43,7 @@ export function useJitLiquidityRequest(chainId: ContractsChainId, options?: { en
     }
   );
 
-  const [, expireSnapshot] = useReducer((value) => value + 1, 0);
+  const [snapshotRevision, expireSnapshot] = useReducer((value) => value + 1, 0);
   useEffect(() => {
     if (data?.apiVersion !== "v2") {
       return;
@@ -58,12 +58,14 @@ export function useJitLiquidityRequest(chainId: ContractsChainId, options?: { en
     return () => clearTimeout(timeout);
   }, [data]);
 
-  return {
-    jitLiquidityMap:
-      error || !data
-        ? undefined
-        : data.apiVersion === "v2"
-          ? getSafeJitLiquidityMap(data.snapshot)
-          : data.jitLiquidityMap,
-  };
+  const jitLiquidityMap = useMemo(() => {
+    void snapshotRevision;
+    return error || !data
+      ? undefined
+      : data.apiVersion === "v2"
+        ? getSafeJitLiquidityMap(data.snapshot)
+        : data.jitLiquidityMap;
+  }, [data, error, snapshotRevision]);
+
+  return useMemo(() => ({ jitLiquidityMap }), [jitLiquidityMap]);
 }

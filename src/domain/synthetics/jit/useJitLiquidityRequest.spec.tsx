@@ -31,6 +31,7 @@ vi.mock("../uiFlags/useUiFlagsRequest", () => ({
 }));
 
 const MARKET = "0x2222222222222222222222222222222222222222";
+const TEST_SWR_CONFIG = { provider: () => new Map(), dedupingInterval: 0 };
 
 function buildSnapshot(generatedAt = Date.now()): JitLiquiditySnapshot {
   return {
@@ -56,23 +57,32 @@ function buildSnapshot(generatedAt = Date.now()): JitLiquiditySnapshot {
 function renderJitLiquidityRequest() {
   let latestState: JitLiquidityData | undefined;
   let mutate: ReturnType<typeof useSWRConfig>["mutate"] | undefined;
+  let renderRevision = 0;
 
-  function TestComponent() {
+  function TestComponent({ revision }: { revision: number }) {
+    void revision;
     latestState = useJitLiquidityRequest(42161);
     mutate = useSWRConfig().mutate;
     return null;
   }
 
-  render(
-    // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-    <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
-      <TestComponent />
+  const view = render(
+    <SWRConfig value={TEST_SWR_CONFIG}>
+      <TestComponent revision={renderRevision} />
     </SWRConfig>
   );
 
   return {
     getState: () => latestState!,
     revalidate: async () => mutate!(["jitLiquidity", "test-api", "v2"]),
+    rerender: () => {
+      renderRevision++;
+      view.rerender(
+        <SWRConfig value={TEST_SWR_CONFIG}>
+          <TestComponent revision={renderRevision} />
+        </SWRConfig>
+      );
+    },
   };
 }
 
@@ -144,5 +154,21 @@ describe("useJitLiquidityRequest", () => {
       await rendered.revalidate();
     });
     expect(rendered.getState().jitLiquidityMap).toHaveProperty(MARKET);
+  });
+
+  it("keeps stable data identity across unrelated renders", async () => {
+    mocks.fetchJitLiquiditySnapshot.mockResolvedValueOnce(buildSnapshot()).mockImplementation(() => new Promise(noop));
+    const rendered = renderJitLiquidityRequest();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    const initialState = rendered.getState();
+    const initialMap = initialState.jitLiquidityMap;
+
+    rendered.rerender();
+
+    expect(rendered.getState()).toBe(initialState);
+    expect(rendered.getState().jitLiquidityMap).toBe(initialMap);
   });
 });
