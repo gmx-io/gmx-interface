@@ -81,6 +81,7 @@ const BAR_CATEGORY_GAP = "25%";
 const DEBUG_BAR_CATEGORY_GAP = "10%";
 const BAR_GAP = 4;
 const DEBUG_BAR_GAP = -2;
+const SINGLE_POINT_BAR_SIZE = 48;
 const DRAGGING_DATA_ATTRIBUTE = "dragging";
 const SUPPRESS_HOVER_DATA_ATTRIBUTE = "suppressHover";
 const ZOOM_INTERACTION_RESET_DELAY = 250;
@@ -629,6 +630,7 @@ export function DailyAndCumulativePnLChart({
               yAxisId="periodPnl"
               minPointSize={1}
               radius={2}
+              barSize={chartPnlData.length <= 1 ? SINGLE_POINT_BAR_SIZE : undefined}
               isAnimationActive={isBarAnimationActive}
             >
               {pnlBarCells}
