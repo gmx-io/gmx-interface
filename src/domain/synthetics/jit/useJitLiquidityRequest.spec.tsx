@@ -116,6 +116,25 @@ describe("useJitLiquidityRequest", () => {
     expect(rendered.getState().jitLiquidityMap).toEqual({});
   });
 
+  it("revalidates an aged healthy snapshot at its local freshness boundary", async () => {
+    mocks.fetchJitLiquiditySnapshot
+      .mockResolvedValueOnce(buildSnapshot(Date.now() - 3_000))
+      .mockImplementationOnce(async () => buildSnapshot());
+    const rendered = renderJitLiquidityRequest();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(rendered.getState().jitLiquidityMap).toHaveProperty(MARKET);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(JIT_LIQUIDITY_MAX_FRESH_AGE_MS - 3_000 + 1);
+    });
+
+    expect(mocks.fetchJitLiquiditySnapshot).toHaveBeenCalledTimes(2);
+    expect(rendered.getState().jitLiquidityMap).toHaveProperty(MARKET);
+  });
+
   it("expires a snapshot received exactly at the freshness boundary", async () => {
     mocks.fetchJitLiquiditySnapshot
       .mockResolvedValueOnce(buildSnapshot(Date.now() - JIT_LIQUIDITY_MAX_FRESH_AGE_MS))

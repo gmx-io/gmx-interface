@@ -25,7 +25,7 @@ export function useJitLiquidityRequest(chainId: ContractsChainId, options?: { en
   const sdk = useGmxSdk(chainId);
   const apiCacheKey = getUiApiCacheKey(chainId);
 
-  const { data, error } = useSWR<JitLiquidityRequestResult | undefined>(
+  const { data, error, mutate } = useSWR<JitLiquidityRequestResult | undefined>(
     enabled && sdk ? ["jitLiquidity", apiCacheKey, apiVersion] : null,
     async () => {
       try {
@@ -54,9 +54,12 @@ export function useJitLiquidityRequest(chainId: ContractsChainId, options?: { en
       return;
     }
 
-    const timeout = setTimeout(expireSnapshot, expiresIn + 1);
+    const timeout = setTimeout(() => {
+      expireSnapshot();
+      void mutate();
+    }, expiresIn + 1);
     return () => clearTimeout(timeout);
-  }, [data]);
+  }, [data, mutate]);
 
   const jitLiquidityMap = useMemo(() => {
     void snapshotRevision;
