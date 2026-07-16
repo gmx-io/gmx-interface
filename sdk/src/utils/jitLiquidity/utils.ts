@@ -1,3 +1,5 @@
+import { getAddress, isAddress, isAddressEqual, maxUint256, zeroAddress } from "viem";
+
 import { getRecord, getString, isRecord } from "utils/objects";
 
 import {
@@ -7,6 +9,8 @@ import {
   JitLiquiditySnapshot,
   JitLiquidityUnavailableSide,
 } from "./types";
+
+const JIT_LIQUIDITY_MAX_ENTRIES = 512;
 
 export function getJitLiquidityInfo(
   jitLiquidityMap: JitLiquidityMap | undefined,
@@ -75,29 +79,133 @@ export function parseJitLiquiditySnapshotResponse(response: unknown): JitLiquidi
     typeof generatedAt !== "number" ||
     !Number.isSafeInteger(generatedAt) ||
     generatedAt < 0 ||
+    generatedAt > Date.now() + 60_000 ||
     (status !== "available" && status !== "stale") ||
     !Array.isArray(response.liquidityInfos) ||
+    response.liquidityInfos.length > JIT_LIQUIDITY_MAX_ENTRIES ||
     !Array.isArray(unavailableMarkets) ||
-    unavailableMarkets.some((market) => typeof market !== "string" || market.length === 0) ||
-    !Array.isArray(unavailableSides)
+    unavailableMarkets.length > JIT_LIQUIDITY_MAX_ENTRIES ||
+    !Array.isArray(unavailableSides) ||
+    unavailableSides.length > JIT_LIQUIDITY_MAX_ENTRIES * 2
   ) {
     throw new Error("Invalid JIT liquidity snapshot response");
   }
 
+  const parsedUnavailableMarkets = unavailableMarkets.map(parseStrictAddress);
   const parsedUnavailableSides: JitLiquidityUnavailableSide[] = unavailableSides.map((side) => {
-    if (!isRecord(side) || typeof side.market !== "string" || !side.market || typeof side.isLong !== "boolean") {
+    if (!isRecord(side) || typeof side.isLong !== "boolean") {
       throw new Error("Invalid JIT liquidity snapshot response");
     }
-    return { market: side.market, isLong: side.isLong };
+    return { market: parseStrictAddress(side.market), isLong: side.isLong };
   });
 
   return {
-    jitLiquidityMap: parseJitLiquidityResponse(response, true),
+    jitLiquidityMap: parseStrictV2JitLiquidityResponse(response.liquidityInfos),
     generatedAt,
     status,
-    unavailableMarkets,
+    unavailableMarkets: parsedUnavailableMarkets,
     unavailableSides: parsedUnavailableSides,
   };
+}
+
+function parseStrictV2JitLiquidityResponse(liquidityInfos: unknown[]): JitLiquidityMap {
+  const result: JitLiquidityMap = {};
+  const markets = new Set<string>();
+
+  for (const rawInfo of liquidityInfos) {
+    if (!isRecord(rawInfo)) {
+      throw new Error("Invalid JIT liquidity snapshot response");
+    }
+
+    const glv = parseStrictAddress(rawInfo.glv);
+    const market = parseStrictAddress(rawInfo.market);
+    const marketKey = getAddress(market);
+    if (markets.has(marketKey)) {
+      throw new Error("Invalid JIT liquidity snapshot response");
+    }
+    markets.add(marketKey);
+
+    const longInfo = parseStrictV2JitLiquiditySide(rawInfo.long, glv, market);
+    const shortInfo = parseStrictV2JitLiquiditySide(rawInfo.short, glv, market);
+    const glvShiftParamsLong = longInfo?.glvShiftParams ? [longInfo.glvShiftParams] : [];
+    const glvShiftParamsShort = shortInfo?.glvShiftParams ? [shortInfo.glvShiftParams] : [];
+
+    result[market] = {
+      maxReservedUsdWithJitLong: longInfo?.maxReservedUsd ?? 0n,
+      maxReservedUsdWithJitShort: shortInfo?.maxReservedUsd ?? 0n,
+      glvShiftParamsLong,
+      glvShiftParamsShort,
+      glvShiftParams: [...glvShiftParamsLong, ...glvShiftParamsShort],
+      glv,
+    };
+  }
+
+  return result;
+}
+
+function parseStrictV2JitLiquiditySide(
+  value: unknown,
+  glv: string,
+  market: string
+): { maxReservedUsd: bigint; glvShiftParams: GlvShiftParam } | null {
+  if (value === null) {
+    return null;
+  }
+  if (!isRecord(value)) {
+    throw new Error("Invalid JIT liquidity snapshot response");
+  }
+
+  const maxReservedUsd = parseStrictJitAmount(value.maxReservedUsd);
+  parseStrictJitAmount(value.maxOrderSizeUsd);
+
+  return {
+    maxReservedUsd,
+    glvShiftParams: parseStrictGlvShiftParam(value.glvShiftParams, glv, market),
+  };
+}
+
+function parseStrictGlvShiftParam(value: unknown, expectedGlv: string, expectedMarket: string): GlvShiftParam {
+  if (!isRecord(value)) {
+    throw new Error("Invalid JIT liquidity snapshot response");
+  }
+
+  const glv = parseStrictAddress(value.glv);
+  const fromMarket = parseStrictAddress(value.fromMarket);
+  const toMarket = parseStrictAddress(value.toMarket);
+  const marketTokenAmount = parseStrictJitAmount(value.marketTokenAmount);
+  const minMarketTokens = parseStrictJitAmount(value.minMarketTokens);
+
+  if (
+    !isAddressEqual(glv, expectedGlv) ||
+    isAddressEqual(fromMarket, expectedMarket) ||
+    !isAddressEqual(toMarket, expectedMarket) ||
+    marketTokenAmount === 0n
+  ) {
+    throw new Error("Invalid JIT liquidity snapshot response");
+  }
+
+  return { glv, fromMarket, toMarket, marketTokenAmount, minMarketTokens };
+}
+
+function parseStrictAddress(value: unknown): string {
+  if (typeof value !== "string" || !isAddress(value) || isAddressEqual(value, zeroAddress)) {
+    throw new Error("Invalid JIT liquidity snapshot response");
+  }
+
+  return value;
+}
+
+function parseStrictJitAmount(value: unknown): bigint {
+  if (typeof value !== "string" || value.length === 0 || value.length > 78 || !/^\d+$/.test(value)) {
+    throw new Error("Invalid JIT liquidity snapshot response");
+  }
+
+  const amount = BigInt(value);
+  if (amount > maxUint256) {
+    throw new Error("Invalid JIT liquidity snapshot response");
+  }
+
+  return amount;
 }
 
 function parseV1JitLiquidityInfo(rawInfo: Record<string, unknown>): JitLiquidityInfo {
