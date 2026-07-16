@@ -1,4 +1,5 @@
 import { ContractsChainId } from "config/chains";
+import type { UiFlag } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { withFallback } from "lib/FallbackTracker/withFallback";
@@ -229,8 +230,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
     return this.request("/performance/snapshots", { query: { period, address } });
   }
 
-  fetchUiFlags(): Promise<Record<string, boolean>> {
-    return this.request("/ui-flags", {});
+  fetchUiFlags(): Promise<Record<string, UiFlag>> {
+    return this.request("/ui-flags/v2", {});
   }
 
   fetchMarkets(): Promise<ApiMarket[]> {

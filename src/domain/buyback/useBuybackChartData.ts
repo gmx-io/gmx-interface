@@ -81,6 +81,21 @@ function computeWeeklyUsdSeries(
   });
 }
 
+export function getRecentAvgWeeklyBuybackGmx(data: BuybackWeeklyStatsResponse | undefined): number | undefined {
+  if (!data?.weeks) return undefined;
+
+  const nonZeroCompletedWeeks = data.weeks.filter(
+    (w) => w.weekEnd - w.weekStart >= SECONDS_PER_WEEK && BigInt(w.weeklyAccrued) > 0n
+  );
+  const rateWindow = nonZeroCompletedWeeks.slice(-RATE_WINDOW_WEEKS);
+
+  if (rateWindow.length < RATE_WINDOW_WEEKS) return undefined;
+
+  return (
+    rateWindow.reduce((sum, w) => sum + bigintToNumber(BigInt(w.weeklyAccrued), GMX_DECIMALS), 0) / rateWindow.length
+  );
+}
+
 export function useBuybackChartData(
   data: BuybackWeeklyStatsResponse | undefined,
   candles: readonly Bar[] | undefined,
@@ -121,19 +136,10 @@ export function useBuybackChartData(
 
     const totalBoughtGmx = bigintToNumber(BigInt(data.summary.totalAccrued), GMX_DECIMALS);
     const totalBoughtUsd = weeklyUsdSeries.at(-1)?.cumulativeUsd;
-
-    // The API may append the current partial bucket (weekEnd = serverNow) as the last entry.
-    // Only count buckets aligned to a full week so the rate window is stable across refreshes.
-    const nonZeroCompletedWeeks = data.weeks.filter(
-      (w) => w.weekEnd - w.weekStart >= SECONDS_PER_WEEK && BigInt(w.weeklyAccrued) > 0n
-    );
-    const rateWindow = nonZeroCompletedWeeks.slice(-RATE_WINDOW_WEEKS);
+    const avgWeeklyBoughtGmx = getRecentAvgWeeklyBuybackGmx(data);
 
     let annualizedRate: number | undefined;
-    if (rateWindow.length >= RATE_WINDOW_WEEKS && totalGmxSupply !== undefined && totalGmxSupply > 0) {
-      const avgWeeklyBoughtGmx =
-        rateWindow.reduce((sum, w) => sum + bigintToNumber(BigInt(w.weeklyAccrued), GMX_DECIMALS), 0) /
-        rateWindow.length;
+    if (avgWeeklyBoughtGmx !== undefined && totalGmxSupply !== undefined && totalGmxSupply > 0) {
       annualizedRate = (avgWeeklyBoughtGmx * 52) / totalGmxSupply;
     }
 

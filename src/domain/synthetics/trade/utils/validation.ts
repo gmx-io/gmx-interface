@@ -45,6 +45,7 @@ import {
   TriggerThresholdType,
 } from "sdk/utils/trade/types";
 
+import { getIsPositionLiquidatableAtPrice } from "./warnings";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
 export enum ValidationButtonTooltipName {
@@ -493,20 +494,14 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Min position size: ${formatUsd(minPositionSizeUsd)}` };
   }
 
-  if (nextPositionValues?.nextLiqPrice !== undefined && markPrice !== undefined) {
-    if (isLong && nextPositionValues.nextLiqPrice > markPrice) {
-      return {
-        buttonErrorMessage: t`Invalid liquidation price`,
-        buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
-      };
-    }
-
-    if (!isLong && nextPositionValues.nextLiqPrice < markPrice) {
-      return {
-        buttonErrorMessage: t`Invalid liquidation price`,
-        buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
-      };
-    }
+  if (
+    !isLimit &&
+    getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong })
+  ) {
+    return {
+      buttonErrorMessage: t`Invalid liquidation price`,
+      buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
+    };
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {

@@ -34,6 +34,7 @@ import {
   getIncreaseError,
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
+import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 
 const selectTradeboxSwapTradeError = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -177,4 +178,27 @@ export const selectTradeboxTradeTypeError = createSelector((q) => {
   }
 
   return tradeError;
+});
+
+export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) => {
+  const { isIncrease, isLimit, isLong } = q(selectTradeboxTradeFlags);
+
+  if (!isIncrease || !isLimit) {
+    return false;
+  }
+
+  if (q(selectTradeboxIncreaseTradeError).buttonErrorMessage) {
+    return false;
+  }
+
+  const existingPosition = q(selectTradeboxSelectedPosition);
+  const triggerPrice = q(selectTradeboxTriggerPrice);
+  const nextPositionValues = q(selectTradeboxNextPositionValues);
+
+  return getIsIncreaseResultingPositionLiquidatable({
+    currentLiqPrice: existingPosition?.liquidationPrice,
+    nextLiqPrice: nextPositionValues?.nextLiqPrice,
+    triggerPrice,
+    isLong,
+  });
 });

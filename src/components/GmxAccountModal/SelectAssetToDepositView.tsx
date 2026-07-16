@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
@@ -22,7 +22,7 @@ import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
-import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
+import { useGmxAccountDepositEligibility, useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
@@ -187,6 +187,16 @@ export const SelectAssetToDepositView = () => {
 
   const { tokenChainDataArray } = useMultichainTradeTokensRequest(chainId, account);
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { hasAnyDepositFunds, isEligibilityLoading } = useGmxAccountDepositEligibility();
+
+  useEffect(
+    function redirectToDepositOnEmptyWallet() {
+      if (!isEligibilityLoading && !hasAnyDepositFunds) {
+        setIsVisibleOrView("deposit");
+      }
+    },
+    [hasAnyDepositFunds, isEligibilityLoading, setIsVisibleOrView]
+  );
 
   const networksFilter = useMemo(() => {
     const wildCard = { id: "all" as const, name: t`All networks` };

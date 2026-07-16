@@ -23,6 +23,10 @@ export type PositionTradeAction = {
   targetCollateralToken: TokenData;
   indexToken: TokenData;
   swapPath: string[];
+  positionKey?: string;
+  positionLifecycleId?: string;
+  positionSizeInUsd?: bigint;
+  positionSizeInTokens?: bigint;
   initialCollateralDeltaAmount: bigint;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens?: bigint;
@@ -52,6 +56,7 @@ export type PositionTradeAction = {
   shouldUnwrapNativeToken: boolean;
   totalImpactUsd?: bigint;
   liquidationFeeAmount?: bigint;
+  minCollateralFactorForLiquidation?: bigint;
   twapParams:
     | {
         twapGroupId: string;

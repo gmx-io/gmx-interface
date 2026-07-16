@@ -91,15 +91,7 @@ export function getPositionOrderError({
       return t`Max close amount exceeded`;
     }
 
-    if (existingPosition?.liquidationPrice) {
-      if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
-        return t`Set trigger price above liquidation price`;
-      }
-
-      if (!existingPosition.isLong && triggerPrice >= existingPosition?.liquidationPrice) {
-        return t`Set trigger price below liquidation price`;
-      }
-    }
+    // Beyond-liq trigger price surfaces as a non-blocking warning (getTpSlLiqPriceWarning), not a block here.
 
     if (positionOrder.isLong) {
       if (positionOrder.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {
