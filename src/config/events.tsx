@@ -50,7 +50,7 @@ export const appEventsData: EventData[] = [
     id: "release-118-highlights",
     type: "update",
     isActive: true,
-    startDate: "17 Jul 2026, 14:00",
+    startDate: "16 Jul 2026, 12:00",
     endDate: "24 Jul 2026, 14:00",
     variant: "info",
     title: "App Update: Passkey Login, Wallet Funding, and Performance Sharing",
