@@ -60,6 +60,11 @@ export type OrderValidationWarning =
       code: "TRADING_CAPACITY_UNAVAILABLE";
       message: string;
       details: { reason: "STALE_MARKET_DATA" | "JIT_DATA_UNAVAILABLE" };
+    }
+  | {
+      code: string;
+      message: string;
+      details?: unknown;
     };
 
 export type PrepareOrderResponse = {
@@ -225,7 +230,15 @@ function parseValidationWarning(raw: any): OrderValidationWarning {
     };
   }
 
-  throw new Error("Invalid validation warning in prepare response");
+  if (typeof raw?.code !== "string" || raw.code.length === 0 || typeof raw.message !== "string") {
+    throw new Error("Invalid validation warning in prepare response");
+  }
+
+  return {
+    code: raw.code,
+    message: raw.message,
+    ...(raw.details === undefined ? {} : { details: raw.details }),
+  };
 }
 
 function parseValidationWarnings(raw: unknown): OrderValidationWarning[] | undefined {

@@ -259,5 +259,6 @@ Do not size an order while `marketDataStatus` is `stale`; wait for fresh market 
 `availableLiquidity` only if `jitDataStatus` is `available`, and otherwise fall back to `baseAvailableLiquidity`.
 Order preparation remains authoritative because collateral swaps can change the executable capacity.
 
-Deployment order for self-hosted stacks is keeper `/jit/eligibility`, then the compatible `gmx-api` capacity endpoint,
-then this SDK version. The raw JIT method remains available for advanced integrations.
+Deployment order for self-hosted stacks is keeper `/jit/liquidity_info/v2` (including `maxOrderSizeUsd` and snapshot
+status fields) plus `/jit/eligibility`, then the compatible `gmx-api` capacity endpoint, then this SDK version. The raw
+JIT method remains available for advanced integrations.

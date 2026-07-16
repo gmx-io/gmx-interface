@@ -254,4 +254,41 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
       })
     ).rejects.toThrow("Invalid insufficient-liquidity warning in prepare response");
   });
+
+  it("preserves unknown validation warnings for forward compatibility", async () => {
+    const sdk = new GmxApiSdk({
+      chainId: ARBITRUM,
+      api: new PrepareCapacityApi({
+        requestId: "request-1",
+        payloadType: "transaction",
+        mode: "classic",
+        payload: {},
+        validationWarnings: [
+          {
+            code: "FUTURE_WARNING",
+            message: "A newer API warning",
+            details: { retryAfter: 10 },
+          },
+        ],
+      }),
+    });
+
+    const prepared = await sdk.prepareOrder({
+      kind: "increase",
+      symbol: SYMBOL,
+      direction: "long",
+      orderType: "limit",
+      size: 1n,
+      mode: "classic",
+      from: ACCOUNT,
+    });
+
+    expect(prepared.validationWarnings).toEqual([
+      {
+        code: "FUTURE_WARNING",
+        message: "A newer API warning",
+        details: { retryAfter: 10 },
+      },
+    ]);
+  });
 });
