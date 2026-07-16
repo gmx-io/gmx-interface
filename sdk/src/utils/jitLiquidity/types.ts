@@ -15,6 +15,8 @@ export type GlvShiftParam = {
 export type JitLiquidityInfo = {
   maxReservedUsdWithJitLong: bigint;
   maxReservedUsdWithJitShort: bigint;
+  maxOrderSizeUsdLong?: bigint;
+  maxOrderSizeUsdShort?: bigint;
   glvShiftParamsLong: GlvShiftParam[];
   glvShiftParamsShort: GlvShiftParam[];
   glvShiftParams: GlvShiftParam[];

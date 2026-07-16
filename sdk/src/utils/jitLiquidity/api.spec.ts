@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 
 import type { IHttp } from "utils/http/types";
 
-import { fetchApiJitLiquidityInfo, fetchApiJitLiquiditySnapshot } from "./api";
+import { fetchApiJitLiquidityInfo, fetchApiJitLiquiditySnapshot, getSafeJitLiquidityMap } from "./api";
+import { JIT_LIQUIDITY_MAX_FRESH_AGE_MS, parseJitLiquiditySnapshotResponse } from "./utils";
 
 const GLV_ADDRESS = "0x1111111111111111111111111111111111111111";
 const MARKET_ADDRESS = "0x2222222222222222222222222222222222222222";
@@ -60,7 +61,7 @@ function buildV2Entry(overrides: Record<string, unknown> = {}) {
 function buildV2Snapshot(overrides: Record<string, unknown> = {}) {
   return {
     liquidityInfos: [buildV2Entry()],
-    generatedAt: 1_000,
+    generatedAt: Date.now(),
     status: "available",
     unavailableMarkets: [],
     unavailableSides: [],
@@ -72,6 +73,7 @@ describe("JIT liquidity snapshot API", () => {
   it("preserves v2 freshness and completeness metadata", async () => {
     const api = new JitApi(
       buildV2Snapshot({
+        generatedAt: 1_000,
         status: "stale",
         unavailableMarkets: [UNAVAILABLE_MARKET_ADDRESS],
         unavailableSides: [{ market: MARKET_ADDRESS, isLong: false }],
@@ -87,6 +89,8 @@ describe("JIT liquidity snapshot API", () => {
         [MARKET_ADDRESS]: {
           maxReservedUsdWithJitLong: 300n,
           maxReservedUsdWithJitShort: 400n,
+          maxOrderSizeUsdLong: 100n,
+          maxOrderSizeUsdShort: 200n,
         },
       },
     });
@@ -101,6 +105,24 @@ describe("JIT liquidity snapshot API", () => {
       MARKET_ADDRESS
     );
     await expect(fetchApiJitLiquidityInfo({ api: staleApi }, { apiVersion: "v2" })).resolves.toEqual({});
+  });
+
+  it("does not expose an available snapshot beyond the local freshness window", () => {
+    const now = 100_000;
+    const snapshot = parseJitLiquiditySnapshotResponse(
+      buildV2Snapshot({ generatedAt: now - JIT_LIQUIDITY_MAX_FRESH_AGE_MS })
+    );
+
+    expect(getSafeJitLiquidityMap(snapshot, now)).toHaveProperty(MARKET_ADDRESS);
+    expect(
+      getSafeJitLiquidityMap(
+        {
+          ...snapshot,
+          generatedAt: now - JIT_LIQUIDITY_MAX_FRESH_AGE_MS - 1,
+        },
+        now
+      )
+    ).toEqual({});
   });
 
   it("removes unavailable markets from the legacy v2 map", async () => {

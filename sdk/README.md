@@ -262,5 +262,7 @@ Order preparation remains authoritative because collateral swaps can change the 
 Deployment order for self-hosted stacks is keeper `/jit/liquidity_info/v2` (including `maxOrderSizeUsd` and snapshot
 status fields) plus `/jit/eligibility`, then the compatible `gmx-api` capacity endpoint, then this SDK version. For raw
 JIT integrations, use `fetchJitLiquiditySnapshot()` and inspect `status`, `unavailableMarkets`, and `unavailableSides`.
-The legacy v2 map helper returns an empty map for stale snapshots and removes unavailable markets or sides so consumers
-cannot retain invalidated JIT capacity. It should not be used for order sizing.
+The snapshot map also preserves `maxOrderSizeUsdLong` and `maxOrderSizeUsdShort`, the exact per-side ceilings tested by
+the keeper. The legacy v2 map helper returns an empty map when the snapshot is stale or older than six seconds and
+removes unavailable markets or sides so consumers cannot retain invalidated JIT capacity. It should not be used for
+order sizing.

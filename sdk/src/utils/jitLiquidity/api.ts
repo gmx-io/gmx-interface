@@ -3,7 +3,7 @@ import { getAddress } from "viem";
 import { IHttp } from "utils/http/types";
 
 import { FetchJitLiquidityInfoParams, JitLiquidityApiVersion, JitLiquidityMap, JitLiquiditySnapshot } from "./types";
-import { parseJitLiquidityResponse, parseJitLiquiditySnapshotResponse } from "./utils";
+import { JIT_LIQUIDITY_MAX_FRESH_AGE_MS, parseJitLiquidityResponse, parseJitLiquiditySnapshotResponse } from "./utils";
 
 export async function fetchApiJitLiquidityInfo(
   ctx: { api: IHttp },
@@ -27,8 +27,9 @@ function getJitLiquidityApiPath(apiVersion: JitLiquidityApiVersion) {
   return `/${apiVersion}/jit/liquidity_info`;
 }
 
-function getSafeJitLiquidityMap(snapshot: JitLiquiditySnapshot): JitLiquidityMap {
-  if (snapshot.status === "stale") {
+export function getSafeJitLiquidityMap(snapshot: JitLiquiditySnapshot, now = Date.now()): JitLiquidityMap {
+  const age = now - snapshot.generatedAt;
+  if (snapshot.status === "stale" || age < 0 || age > JIT_LIQUIDITY_MAX_FRESH_AGE_MS) {
     return {};
   }
 
@@ -55,6 +56,8 @@ function getSafeJitLiquidityMap(snapshot: JitLiquiditySnapshot): JitLiquidityMap
       ...info,
       maxReservedUsdWithJitLong: flags?.long ? 0n : info.maxReservedUsdWithJitLong,
       maxReservedUsdWithJitShort: flags?.short ? 0n : info.maxReservedUsdWithJitShort,
+      maxOrderSizeUsdLong: flags?.long ? undefined : info.maxOrderSizeUsdLong,
+      maxOrderSizeUsdShort: flags?.short ? undefined : info.maxOrderSizeUsdShort,
       glvShiftParamsLong,
       glvShiftParamsShort,
       glvShiftParams: [...glvShiftParamsLong, ...glvShiftParamsShort],

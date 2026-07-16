@@ -11,6 +11,7 @@ import {
 } from "./types";
 
 const JIT_LIQUIDITY_MAX_ENTRIES = 512;
+export const JIT_LIQUIDITY_MAX_FRESH_AGE_MS = 6_000;
 
 export function getJitLiquidityInfo(
   jitLiquidityMap: JitLiquidityMap | undefined,
@@ -133,6 +134,8 @@ function parseStrictV2JitLiquidityResponse(liquidityInfos: unknown[]): JitLiquid
     result[market] = {
       maxReservedUsdWithJitLong: longInfo?.maxReservedUsd ?? 0n,
       maxReservedUsdWithJitShort: shortInfo?.maxReservedUsd ?? 0n,
+      maxOrderSizeUsdLong: longInfo?.maxOrderSizeUsd,
+      maxOrderSizeUsdShort: shortInfo?.maxOrderSizeUsd,
       glvShiftParamsLong,
       glvShiftParamsShort,
       glvShiftParams: [...glvShiftParamsLong, ...glvShiftParamsShort],
@@ -147,7 +150,7 @@ function parseStrictV2JitLiquiditySide(
   value: unknown,
   glv: string,
   market: string
-): { maxReservedUsd: bigint; glvShiftParams: GlvShiftParam } | null {
+): { maxReservedUsd: bigint; maxOrderSizeUsd: bigint; glvShiftParams: GlvShiftParam } | null {
   if (value === null) {
     return null;
   }
@@ -156,10 +159,11 @@ function parseStrictV2JitLiquiditySide(
   }
 
   const maxReservedUsd = parseStrictJitAmount(value.maxReservedUsd);
-  parseStrictJitAmount(value.maxOrderSizeUsd);
+  const maxOrderSizeUsd = parseStrictJitAmount(value.maxOrderSizeUsd);
 
   return {
     maxReservedUsd,
+    maxOrderSizeUsd,
     glvShiftParams: parseStrictGlvShiftParam(value.glvShiftParams, glv, market),
   };
 }
@@ -235,6 +239,8 @@ function parseV2JitLiquidityInfo(rawInfo: Record<string, unknown>): JitLiquidity
   return {
     maxReservedUsdWithJitLong: parseJitAmount(longInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitLong),
     maxReservedUsdWithJitShort: parseJitAmount(shortInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitShort),
+    maxOrderSizeUsdLong: longInfo ? parseJitAmount(longInfo.maxOrderSizeUsd) : undefined,
+    maxOrderSizeUsdShort: shortInfo ? parseJitAmount(shortInfo.maxOrderSizeUsd) : undefined,
     glvShiftParamsLong,
     glvShiftParamsShort,
     glvShiftParams: [...glvShiftParamsLong, ...glvShiftParamsShort],
