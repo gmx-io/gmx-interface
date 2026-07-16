@@ -68,6 +68,10 @@ msgstr "Valeur positive : les traders reçoivent du financement"
 msgid "Funding exponent factor"
 msgstr "Facteur d'exposant de financement"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfers from another chain are currently unavailable. Use <0>Receive to this wallet</0> instead."
+msgstr "Les transferts depuis une autre chaîne ne sont actuellement pas disponibles. Utilisez plutôt <0>Recevoir sur ce portefeuille</0>."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
 msgstr "Demande de dépôt"
@@ -1286,6 +1290,10 @@ msgstr "Produits de rendement décentralisés"
 msgid "{0} price"
 msgstr "Prix de {0}"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buying with card is currently unavailable for your region or configuration. Use <0>Receive to this wallet</0> instead."
+msgstr "L'achat par carte n'est actuellement pas disponible pour votre région ou votre configuration. Utilisez plutôt <0>Recevoir sur ce portefeuille</0>."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "Montant achetable max {0} dépassé"
@@ -1361,6 +1369,11 @@ msgstr "Maximum {allowedAutoCancelOrdersNumber} ordres TP/SL à annulation autom
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
 msgstr "Page de vote des propositions GMX"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+msgid "Receive funds"
+msgstr "Recevoir des fonds"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
@@ -2037,6 +2050,10 @@ msgstr ""
 msgid "Order is already frozen"
 msgstr "L'ordre est déjà gelé"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Copy your wallet address or scan a QR code."
+msgstr "Copiez l'adresse de votre portefeuille ou scannez un code QR."
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -2246,6 +2263,10 @@ msgstr "Sécurisé et sans autorisation"
 msgid "Register an affiliate code to access distributions"
 msgstr ""
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX Account, deposit the funds to it as a separate step once they arrive."
+msgstr "Les fonds arrivent sur votre portefeuille connecté sur {chainName}, et non sur votre Compte GMX. Pour trader avec votre Compte GMX, déposez-y les fonds dans une étape séparée une fois qu'ils sont arrivés."
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code."
 msgstr "Ce compte n'a pas de code de parrainage actif."
@@ -2306,6 +2327,10 @@ msgstr "L'affichage peut prendre quelques minutes. Veuillez vérifier ultérieur
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "Dépôt échoué"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Use debit/credit card, Apple Pay, or Google Pay where supported."
+msgstr "Utilisez une carte de débit/crédit, Apple Pay ou Google Pay là où c'est pris en charge."
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -3061,6 +3086,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized PnL"
 msgstr "PnL non réalisé de départ"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfer from another chain"
+msgstr "Transférer depuis une autre chaîne"
 
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
@@ -4043,6 +4072,10 @@ msgstr "Envoi de la demande d'ordre…"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Vente de {0}{1}<1>{poolName}</1></0>"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}."
+msgstr "Les fonds arrivent sur votre portefeuille connecté sur {chainName}."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -5371,6 +5404,10 @@ msgstr "Définir TP/SL"
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "Max {MAX_REFERRAL_CODE_LENGTH} caractères"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buy with card"
+msgstr "Acheter par carte"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "Fournir de la liquidité isolée par marché"
@@ -5386,6 +5423,10 @@ msgstr "Utiliser les positions ouvertes en tokens pour le solde"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "Trading fluide"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Deposit from another wallet, exchange, or chain."
+msgstr "Déposez depuis un autre portefeuille, une plateforme d'échange ou une autre chaîne."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
@@ -7652,6 +7693,10 @@ msgstr "Liquidation"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "Ajouter TP/SL"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "How would you like to add funds?"
+msgstr "Comment souhaitez-vous ajouter des fonds ?"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -10361,6 +10406,10 @@ msgstr "{balanceFormatted} retiré vers le compte principal"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
 msgstr "Le règlement de {positionName} a échoué"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Receive to this wallet"
+msgstr "Recevoir sur ce portefeuille"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"

@@ -68,6 +68,10 @@ msgstr "Положительное значение: трейдеры получ
 msgid "Funding exponent factor"
 msgstr "Фактор экспоненты фандинга"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfers from another chain are currently unavailable. Use <0>Receive to this wallet</0> instead."
+msgstr "Переводы из другой сети сейчас недоступны. Вместо этого используйте <0>Получить на этот кошелёк</0>."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
 msgstr "Запрос на депозит"
@@ -1286,6 +1290,10 @@ msgstr "Децентрализованные продукты доходност
 msgid "{0} price"
 msgstr "Цена {0}"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buying with card is currently unavailable for your region or configuration. Use <0>Receive to this wallet</0> instead."
+msgstr "Покупка картой сейчас недоступна для вашего региона или конфигурации. Вместо этого используйте <0>Получить на этот кошелёк</0>."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "Максимальная сумма покупки {0} превышена"
@@ -1361,6 +1369,11 @@ msgstr "Максимум {allowedAutoCancelOrdersNumber} автоотменяе�
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
 msgstr "Страница голосования по предложениям GMX"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+msgid "Receive funds"
+msgstr "Получить средства"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
@@ -2037,6 +2050,10 @@ msgstr ""
 msgid "Order is already frozen"
 msgstr "Ордер уже заморожен"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Copy your wallet address or scan a QR code."
+msgstr "Скопируйте адрес кошелька или отсканируйте QR-код."
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -2246,6 +2263,10 @@ msgstr "Безопасный и без разрешений"
 msgid "Register an affiliate code to access distributions"
 msgstr ""
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX Account, deposit the funds to it as a separate step once they arrive."
+msgstr "Средства поступают на ваш подключённый кошелёк в сети {chainName}, а не на счёт GMX. Чтобы торговать со счёта GMX, внесите на него средства отдельным шагом после их поступления."
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code."
 msgstr "У этого аккаунта нет активного реферального кода."
@@ -2306,6 +2327,10 @@ msgstr "Может потребоваться несколько минут. П�
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "Депозит не выполнен"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Use debit/credit card, Apple Pay, or Google Pay where supported."
+msgstr "Используйте дебетовую/кредитную карту, Apple Pay или Google Pay, где это поддерживается."
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -3061,6 +3086,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized PnL"
 msgstr "Начальный нереализованный PnL"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfer from another chain"
+msgstr "Перевести из другой сети"
 
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
@@ -4043,6 +4072,10 @@ msgstr "Отправка запроса ордера…"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Продажа {0}{1}<1>{poolName}</1></0>"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}."
+msgstr "Средства поступают на ваш подключённый кошелёк в сети {chainName}."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -5371,6 +5404,10 @@ msgstr "Установить TP/SL"
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "Максимум {MAX_REFERRAL_CODE_LENGTH} символов"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buy with card"
+msgstr "Купить картой"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "Предоставление изолированной ликвидности для каждого рынка"
@@ -5386,6 +5423,10 @@ msgstr "Использовать открытый интерес в токена
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "Бесшовная торговля"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Deposit from another wallet, exchange, or chain."
+msgstr "Внесите средства из другого кошелька, с биржи или из другой сети."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
@@ -7652,6 +7693,10 @@ msgstr "Ликвидация"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "Добавить TP/SL"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "How would you like to add funds?"
+msgstr "Как вы хотите добавить средства?"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -10361,6 +10406,10 @@ msgstr "Выведено {balanceFormatted} на основной аккаунт
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
 msgstr "{positionName} — ошибка расчёта"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Receive to this wallet"
+msgstr "Получить на этот кошелёк"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"
