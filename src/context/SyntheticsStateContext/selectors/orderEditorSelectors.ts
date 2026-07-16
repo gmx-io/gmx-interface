@@ -136,7 +136,8 @@ const selectOrderEditorSwapFees = createSelector((q) => {
     feeDiscountUsd: 0n,
     swapProfitFeeUsd: 0n,
     swapProfitUsdIn: 0n,
-    uiFeeFactor,
+    // execution charges the factor snapshotted on the order, not the live one
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     externalSwapQuote: undefined,
     type: "increase",
   });
@@ -397,7 +398,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
     userReferralInfo,
     minCollateralUsd,
     minPositionSizeUsd,
-    uiFeeFactor,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
     isSetAcceptablePriceImpactEnabled,
   });
@@ -666,7 +667,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     position: existingPosition,
     findSwapPath,
     userReferralInfo,
-    uiFeeFactor,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     strategy: "independent",
     marketsInfoData,
     chainId,
