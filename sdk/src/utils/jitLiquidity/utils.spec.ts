@@ -93,6 +93,8 @@ describe("parseJitLiquidityResponse", () => {
 
     expect(result["0xMarket"].maxReservedUsdWithJitLong).toBe(300n);
     expect(result["0xMarket"].maxReservedUsdWithJitShort).toBe(400n);
+    expect(result["0xMarket"].maxOrderSizeUsdLong).toBeUndefined();
+    expect(result["0xMarket"].maxOrderSizeUsdShort).toBeUndefined();
     expect(getJitGlvShiftParams(result, "0xMarket", true)).toEqual([
       {
         glv: "0xGlv",

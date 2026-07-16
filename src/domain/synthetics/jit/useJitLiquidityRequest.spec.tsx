@@ -106,6 +106,23 @@ describe("useJitLiquidityRequest", () => {
     expect(rendered.getState().jitLiquidityMap).toEqual({});
   });
 
+  it("expires a snapshot received exactly at the freshness boundary", async () => {
+    mocks.fetchJitLiquiditySnapshot
+      .mockResolvedValueOnce(buildSnapshot(Date.now() - JIT_LIQUIDITY_MAX_FRESH_AGE_MS))
+      .mockImplementation(() => new Promise(noop));
+    const rendered = renderJitLiquidityRequest();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(rendered.getState().jitLiquidityMap).toHaveProperty(MARKET);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1);
+    });
+    expect(rendered.getState().jitLiquidityMap).toEqual({});
+  });
+
   it("hides SWR-retained data after an error and restores it after recovery", async () => {
     vi.spyOn(console, "error").mockImplementation(noop);
     mocks.fetchJitLiquiditySnapshot.mockResolvedValueOnce(buildSnapshot());

@@ -239,8 +239,9 @@ function parseV2JitLiquidityInfo(rawInfo: Record<string, unknown>): JitLiquidity
   return {
     maxReservedUsdWithJitLong: parseJitAmount(longInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitLong),
     maxReservedUsdWithJitShort: parseJitAmount(shortInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitShort),
-    maxOrderSizeUsdLong: longInfo ? parseJitAmount(longInfo.maxOrderSizeUsd) : undefined,
-    maxOrderSizeUsdShort: shortInfo ? parseJitAmount(shortInfo.maxOrderSizeUsd) : undefined,
+    maxOrderSizeUsdLong: longInfo?.maxOrderSizeUsd === undefined ? undefined : parseJitAmount(longInfo.maxOrderSizeUsd),
+    maxOrderSizeUsdShort:
+      shortInfo?.maxOrderSizeUsd === undefined ? undefined : parseJitAmount(shortInfo.maxOrderSizeUsd),
     glvShiftParamsLong,
     glvShiftParamsShort,
     glvShiftParams: [...glvShiftParamsLong, ...glvShiftParamsShort],

@@ -11,7 +11,7 @@ import { JIT_LIQUIDITY_MAX_FRESH_AGE_MS } from "sdk/utils/jitLiquidity/utils";
 import { getIsV2JitLiquidityInfoEnabled, useUiFlagsRequest } from "../uiFlags/useUiFlagsRequest";
 
 const JIT_LIQUIDITY_UPDATE_INTERVAL = 30 * 1000;
-const JIT_LIQUIDITY_V2_UPDATE_INTERVAL = 2 * 1000;
+const JIT_LIQUIDITY_V2_UPDATE_INTERVAL = 5 * 1000;
 
 type JitLiquidityRequestResult =
   | { apiVersion: "v1"; jitLiquidityMap: JitLiquidityMap }
@@ -50,7 +50,7 @@ export function useJitLiquidityRequest(chainId: ContractsChainId, options?: { en
     }
 
     const expiresIn = data.snapshot.generatedAt + JIT_LIQUIDITY_MAX_FRESH_AGE_MS - Date.now();
-    if (expiresIn <= 0) {
+    if (expiresIn < 0) {
       return;
     }
 
