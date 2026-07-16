@@ -1,4 +1,4 @@
-import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { autoUpdate, flip, offset, shift, type Placement, useFloating } from "@floating-ui/react";
 import { Popover, Portal } from "@headlessui/react";
 import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
@@ -46,6 +46,8 @@ type Props = {
   endDate?: Date;
   onChange: (date: DateRange) => void;
   handleClassName?: string;
+  buttonVariant?: "ghost" | "secondary";
+  popupPlacement?: Placement;
   buttonTextClassName?: string;
   renderHandle?: (params: { buttonText: string; open: boolean }) => React.ReactNode;
 };
@@ -89,12 +91,14 @@ export function DateRangeSelect({
   endDate,
   onChange,
   handleClassName,
+  buttonVariant = "ghost",
+  popupPlacement = "top-start",
   buttonTextClassName,
   renderHandle,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
-    placement: "top-start",
+    placement: popupPlacement,
     whileElementsMounted: autoUpdate,
   });
 
@@ -169,7 +173,7 @@ export function DateRangeSelect({
             {renderHandle ? (
               renderHandle({ buttonText, open })
             ) : (
-              <Button variant="ghost" className="flex items-center gap-4">
+              <Button variant={buttonVariant} className="flex items-center gap-4">
                 <CalendarIcon className="size-16" />
 
                 <span className={buttonTextClassName ?? "text-body-small whitespace-nowrap font-medium"}>
@@ -223,11 +227,13 @@ export function DateSelect({
   onChange,
   handleClassName,
   buttonTextPrefix,
+  buttonVariant = "ghost",
 }: {
   date: Date | undefined;
   onChange: (date: Date | undefined) => void;
   handleClassName?: string;
   buttonTextPrefix?: string;
+  buttonVariant?: "ghost" | "secondary";
 }) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
@@ -297,7 +303,7 @@ export function DateSelect({
   return (
     <Popover className="DateRangeSelect-anchor" ref={refs.setReference}>
       <Popover.Button className={handleClassName}>
-        <Button variant="ghost" className="flex items-center gap-4">
+        <Button variant={buttonVariant} className="flex items-center gap-4">
           <div className="size-16">
             <CalendarIcon />
           </div>
