@@ -8728,13 +8728,13 @@ msgstr "不明な値"
 msgid "Start unrealized fees"
 msgstr "未実現手数料開始"
 
-#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
-msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr "このオーダーは現在のポジション状態では約定しない可能性があります。トリガー前に担保を追加するか、レバレッジを下げてください。"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Accountへの入金はStargateブリッジの流動性により制限されています。<0>{upperLimitFormatted}</0>より少ない金額でお試しください。"
+
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
+msgstr "このオーダーは現在のポジション状態では約定しない可能性があります。トリガー前に担保を追加するか、レバレッジを下げてください。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8927,6 +8927,7 @@ msgstr "<0>{0}</0> を請求"
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx

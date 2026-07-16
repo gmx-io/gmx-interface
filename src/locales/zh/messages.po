@@ -8728,13 +8728,13 @@ msgstr "未知值"
 msgid "Start unrealized fees"
 msgstr "起始未实现费用"
 
-#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
-msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr "在当前仓位状态下，此订单可能无法成交。请在触发前增加抵押品或降低杠杆。"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account 存款受 Stargate 跨链桥流动性限制。请尝试小于 <0>{upperLimitFormatted}</0> 的金额。"
+
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
+msgstr "在当前仓位状态下，此订单可能无法成交。请在触发前增加抵押品或降低杠杆。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8927,6 +8927,7 @@ msgstr "领取 <0>{0}</0>"
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx

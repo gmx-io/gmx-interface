@@ -1,15 +1,17 @@
 import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "config/factors";
-import type { PositionOrderInfo } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, type PositionOrderInfo } from "domain/synthetics/orders";
+import type { PositionInfo } from "domain/synthetics/positions";
 import { expandDecimals, MaxUint256 } from "lib/numbers";
 
 import type { SidecarSlTpOrderEntry } from "../types";
 import {
+  getDefaultEntryField,
+  getInlineDecreaseSwapType,
+  handleEntryError,
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
-  getDefaultEntryField,
-  handleEntryError,
   prepareInitialEntries,
 } from "../utils";
 
@@ -49,6 +51,25 @@ describe("prepareInitialEntries", () => {
     expect(entries).toHaveLength(1);
     expect(entries?.[0].percentage?.value).toBe(MAX_PERCENTAGE);
     expect(entries?.[0].mode).toBe("keepPercentage");
+  });
+});
+
+describe("getInlineDecreaseSwapType", () => {
+  const tokenA = { address: "0x0000000000000000000000000000000000000001", symbol: "A" };
+  const tokenB = { address: "0x0000000000000000000000000000000000000002", symbol: "B" };
+  const splitablePosition = { pnlToken: tokenA, collateralToken: tokenB } as unknown as PositionInfo;
+  const sameTokenPosition = { pnlToken: tokenA, collateralToken: tokenA } as unknown as PositionInfo;
+
+  it("returns NoSwap when PnL and collateral tokens differ", () => {
+    expect(getInlineDecreaseSwapType(splitablePosition)).toBe(DecreasePositionSwapType.NoSwap);
+  });
+
+  it("returns undefined when PnL and collateral tokens are equivalent", () => {
+    expect(getInlineDecreaseSwapType(sameTokenPosition)).toBeUndefined();
+  });
+
+  it("returns undefined when the position is undefined", () => {
+    expect(getInlineDecreaseSwapType(undefined)).toBeUndefined();
   });
 });
 

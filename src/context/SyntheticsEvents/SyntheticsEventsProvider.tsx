@@ -20,6 +20,7 @@ import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/market
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
+  DecreasePositionSwapType,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLiquidationOrderType,
@@ -220,6 +221,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         minOutputAmount: eventData.uintItems.items.minOutputAmount,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
         orderType: Number(eventData.uintItems.items.orderType),
+        decreasePositionSwapType: Number(
+          eventData.uintItems.items.decreasePositionSwapType ?? DecreasePositionSwapType.NoSwap
+        ) as DecreasePositionSwapType,
         isLong: eventData.boolItems.items.isLong,
         shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
         isFrozen: eventData.boolItems.items.isFrozen,
