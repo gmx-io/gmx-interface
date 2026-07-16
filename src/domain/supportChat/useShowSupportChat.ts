@@ -3,23 +3,25 @@ import { useAccount } from "wagmi";
 
 import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 export function useShowSupportChat() {
-  const { isConnected, isConnecting, isReconnecting } = useAccount();
+  const { isConnected } = useAccount();
+  const isWalletInitializing = useIsWalletInitializing();
   const [lastConnectedState, setLastConnectedState] = useLocalStorageSerializeKey<boolean>(
     SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY,
     false
   );
 
-  const showWhileConnecting = (isConnecting || isReconnecting) && lastConnectedState;
+  const showWhileConnecting = isWalletInitializing && lastConnectedState;
 
   const shouldShowSupportChat = isConnected || showWhileConnecting;
 
   useEffect(() => {
-    if (!isConnecting && !isReconnecting) {
+    if (!isWalletInitializing) {
       setLastConnectedState(isConnected);
     }
-  }, [isConnecting, isReconnecting, isConnected, setLastConnectedState]);
+  }, [isWalletInitializing, isConnected, setLastConnectedState]);
 
   return {
     shouldShowSupportChat,

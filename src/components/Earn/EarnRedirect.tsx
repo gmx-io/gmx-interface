@@ -1,4 +1,3 @@
-import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useMemo } from "react";
 
 import { MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
@@ -14,6 +13,7 @@ import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import type { SettlementChainId } from "sdk/configs/chains";
 
@@ -23,9 +23,8 @@ import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuer
 import EarnPageLayout from "../../pages/Earn/EarnPageLayout";
 
 export function EarnRedirect() {
-  const { account, status } = useWallet();
-  const { ready: isPrivyReady } = usePrivy();
-  const { ready: isWalletsReady, wallets } = useWallets();
+  const { account } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
   const { chainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
@@ -53,13 +52,6 @@ export function EarnRedirect() {
   const hasAnyEarnHoldings = hasGmxAssets || hasGmGlvAssets;
 
   const platformTokens = MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined;
-
-  const isWalletInitializing =
-    !isPrivyReady ||
-    !isWalletsReady ||
-    (wallets.length > 0 && !account) ||
-    status === "connecting" ||
-    status === "reconnecting";
 
   const processedDataReady = processedData !== undefined;
   const marketsInfoReady = marketsInfoData !== undefined;
