@@ -64,7 +64,7 @@ export const appEventsData: EventData[] = [
     type: "update",
     isActive: true,
     startDate: "09 Jul 2026, 14:00",
-    endDate: "16 Jul 2026, 14:00",
+    endDate: "20 Jul 2026, 14:00",
     variant: "info",
     title: "App Update: PnL Charts, Trade History, and Wallet functionality",
     summary: (
@@ -88,6 +88,7 @@ export const appEventsData: EventData[] = [
           aria-label="Filter Trade History by position"
           className="h-auto w-full rounded-8"
           autoPlay
+          controls
           loop
           muted
           playsInline
