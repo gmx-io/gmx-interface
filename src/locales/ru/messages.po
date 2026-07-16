@@ -1187,6 +1187,10 @@ msgstr "Достигнута максимальная сумма пула"
 msgid "Partnerships and integrations"
 msgstr "Партнёрства и интеграции"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Margin at close"
+msgstr "Маржа при закрытии"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Недостаточный баланс Gas. Пополните ETH."
@@ -1433,8 +1437,9 @@ msgid "Threshold for stable funding"
 msgstr "Порог стабильного фандинга"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Initial margin"
-msgstr ""
+msgstr "Начальная маржа"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
@@ -1716,6 +1721,7 @@ msgid "0x"
 msgstr "0x"
 
 #: src/components/TradeHistory/TradeHistory.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "RPNL"
 msgstr "RPNL"
 
@@ -3722,6 +3728,10 @@ msgstr "Установить мин. депозит"
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "При срабатывании возможна недостаточная ликвидность для части этого ордера"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Settlement"
+msgstr "Расчёт"
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "Что делает GMX более экономичным, чем другие перпетуальные платформы?"
@@ -3798,6 +3808,10 @@ msgstr "Чистое влияние на цену / комиссии"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "Ордер отменён"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Original margin reconciliation requires the opening row."
+msgstr "Для сверки исходной маржи требуется строка открытия."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM pool liquidity"
@@ -6252,6 +6266,10 @@ msgstr ""
 msgid "Decrease"
 msgstr "Уменьшить"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Wallet received"
+msgstr "Получено на кошелёк"
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above mark price"
 msgstr ""
@@ -7234,6 +7252,10 @@ msgstr ""
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
 msgstr "Нет открытых позиций"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Open fee / discount"
+msgstr "Комиссия за открытие / скидка"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
@@ -9446,6 +9468,10 @@ msgstr "Perfectswap"
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Referral code"
 msgstr "Реферальный код"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Net close fees / impact"
+msgstr "Чистые комиссии / влияние при закрытии"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

@@ -10,8 +10,9 @@ import {
   isLiquidationOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
+import type { SettlementPositionChange } from "domain/synthetics/tradeHistory/useCloseSettlement";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import {
@@ -781,6 +782,71 @@ function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint;
   const breakdownLines: Line[] = items.map((item) => infoRow(item.label, formatDeltaUsd(item.amountUsd)));
 
   return { totalUsd, lines: breakdownLines };
+}
+
+export function getSettlementTooltipLines(
+  tradeAction: PositionTradeAction,
+  closeChange: SettlementPositionChange,
+  openChange: SettlementPositionChange | undefined
+): Line[] {
+  const collateralToken = tradeAction.initialCollateralToken;
+  const collateralPrice = tradeAction.collateralTokenPriceMin;
+  const breakdown = getFeesBreakdown(tradeAction);
+
+  const formatCollateralAmount = (amount: bigint) =>
+    formatTokenAmount(amount, collateralToken.decimals, collateralToken.symbol, {
+      useCommas: true,
+      displayDecimals: calculateDisplayDecimals(amount, collateralToken.decimals, undefined, collateralToken.isStable),
+      isStable: collateralToken.isStable,
+    });
+
+  const marginAtCloseAmount = closeChange.collateralDeltaAmount;
+  const marginAtCloseUsd = convertToUsd(marginAtCloseAmount, collateralToken.decimals, collateralPrice);
+
+  let walletReceived: string | undefined;
+  if (marginAtCloseUsd !== undefined && tradeAction.basePnlUsd !== undefined) {
+    const receivedUsd = bigMath.max(0n, marginAtCloseUsd + tradeAction.basePnlUsd + breakdown.totalUsd);
+    const isCollateralSwapped = tradeAction.swapPath.length > 0;
+    const isPnlSwapInvolved =
+      (tradeAction.swapFeeUsd !== undefined && tradeAction.swapFeeUsd !== 0n) ||
+      (tradeAction.swapImpactUsd !== undefined && tradeAction.swapImpactUsd !== 0n);
+
+    if (isCollateralSwapped) {
+      const formattedReceivedUsd = formatUsd(receivedUsd);
+      walletReceived = formattedReceivedUsd === undefined ? undefined : `~${formattedReceivedUsd}`;
+    } else {
+      const receivedAmount = convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice);
+      const formattedReceived = formatCollateralAmount(receivedAmount!);
+      walletReceived =
+        isPnlSwapInvolved && formattedReceived !== undefined ? `~${formattedReceived}` : formattedReceived;
+    }
+  }
+
+  return lines(
+    "",
+    t`Settlement`,
+    openChange
+      ? infoRow(t`Initial margin`, formatCollateralAmount(openChange.collateralDeltaAmount + openChange.feesAmount))
+      : undefined,
+    openChange ? infoRow(t`Open fee / discount`, formatCollateralAmount(-openChange.feesAmount)) : undefined,
+    infoRow(t`Margin at close`, formatCollateralAmount(marginAtCloseAmount)),
+    infoRow(t`RPNL`, {
+      text: formatDeltaUsd(tradeAction.basePnlUsd),
+      state: numberToState(tradeAction.basePnlUsd),
+    }),
+    infoRow(t`Net close fees / impact`, {
+      text: formatDeltaUsd(breakdown.totalUsd),
+      state: numberToState(breakdown.totalUsd),
+    }),
+    walletReceived === undefined ? undefined : infoRow(t`Wallet received`, walletReceived),
+    openChange ? undefined : "",
+    openChange
+      ? undefined
+      : {
+          text: t`Original margin reconciliation requires the opening row.`,
+          state: "muted" as const,
+        }
+  );
 }
 
 function getPriceImpactLines(tradeAction: PositionTradeAction) {
