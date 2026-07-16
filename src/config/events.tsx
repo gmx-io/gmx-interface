@@ -47,6 +47,40 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-118-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "17 Jul 2026, 14:00",
+    endDate: "24 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: Passkey Login, Wallet Funding, and Performance Sharing",
+    summary: (
+      <>
+        Sign in with a passkey, fund your wallet with a card, share your performance, and skip swap fees on TP/SL
+        closes.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          Create a GMX wallet with just a passkey. Face ID, Touch ID, Windows Hello, or Android biometrics get you
+          trading, with no email or seed phrase required. Funding is built into the Receive flow: buy crypto with a
+          card, Apple Pay, or Google Pay, or transfer from another wallet, exchange, or chain.
+        </span>
+        <span>
+          Share your results: the Account Dashboard now generates a performance card with your PnL, win rate, and
+          cumulative PnL curve, carrying your referral code.
+        </span>
+        <span>
+          TP/SL and TWAP close orders can now return profit and collateral separately, skipping the internal swap and
+          its fee. The app also warns you if a resting increase order would be liquidatable at its trigger price.
+        </span>
+        <span>Your TradingView chart drawings and tool settings now survive refreshes.</span>
+        <span>The Support menu now shows how many replies came in while you were away.</span>
+      </span>
+    ),
+  },
+  {
     id: "release-117-highlights",
     type: "update",
     isActive: true,
