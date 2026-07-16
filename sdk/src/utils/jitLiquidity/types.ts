@@ -23,6 +23,19 @@ export type JitLiquidityInfo = {
 
 export type JitLiquidityMap = Record<string, JitLiquidityInfo>;
 
+export type JitLiquidityUnavailableSide = {
+  market: string;
+  isLong: boolean;
+};
+
+export type JitLiquiditySnapshot = {
+  jitLiquidityMap: JitLiquidityMap;
+  generatedAt: number;
+  status: "available" | "stale";
+  unavailableMarkets: string[];
+  unavailableSides: JitLiquidityUnavailableSide[];
+};
+
 export type JitLiquidityData = {
   jitLiquidityMap: JitLiquidityMap | undefined;
 };

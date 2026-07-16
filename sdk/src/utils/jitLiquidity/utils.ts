@@ -1,6 +1,12 @@
 import { getRecord, getString, isRecord } from "utils/objects";
 
-import { GlvShiftParam, JitLiquidityInfo, JitLiquidityMap } from "./types";
+import {
+  GlvShiftParam,
+  JitLiquidityInfo,
+  JitLiquidityMap,
+  JitLiquiditySnapshot,
+  JitLiquidityUnavailableSide,
+} from "./types";
 
 export function getJitLiquidityInfo(
   jitLiquidityMap: JitLiquidityMap | undefined,
@@ -54,6 +60,44 @@ export function parseJitLiquidityResponse(response: unknown, isV2JitLiquidityInf
   }
 
   return result;
+}
+
+export function parseJitLiquiditySnapshotResponse(response: unknown): JitLiquiditySnapshot {
+  if (!isRecord(response)) {
+    throw new Error("Invalid JIT liquidity snapshot response");
+  }
+
+  const generatedAt = response.generatedAt;
+  const status = response.status;
+  const unavailableMarkets = response.unavailableMarkets;
+  const unavailableSides = response.unavailableSides;
+  if (
+    typeof generatedAt !== "number" ||
+    !Number.isSafeInteger(generatedAt) ||
+    generatedAt < 0 ||
+    (status !== "available" && status !== "stale") ||
+    !Array.isArray(response.liquidityInfos) ||
+    !Array.isArray(unavailableMarkets) ||
+    unavailableMarkets.some((market) => typeof market !== "string" || market.length === 0) ||
+    !Array.isArray(unavailableSides)
+  ) {
+    throw new Error("Invalid JIT liquidity snapshot response");
+  }
+
+  const parsedUnavailableSides: JitLiquidityUnavailableSide[] = unavailableSides.map((side) => {
+    if (!isRecord(side) || typeof side.market !== "string" || !side.market || typeof side.isLong !== "boolean") {
+      throw new Error("Invalid JIT liquidity snapshot response");
+    }
+    return { market: side.market, isLong: side.isLong };
+  });
+
+  return {
+    jitLiquidityMap: parseJitLiquidityResponse(response, true),
+    generatedAt,
+    status,
+    unavailableMarkets,
+    unavailableSides: parsedUnavailableSides,
+  };
 }
 
 function parseV1JitLiquidityInfo(rawInfo: Record<string, unknown>): JitLiquidityInfo {

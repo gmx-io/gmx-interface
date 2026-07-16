@@ -62,7 +62,8 @@ export type OrderValidationWarning =
       details: { reason: "STALE_MARKET_DATA" | "JIT_DATA_UNAVAILABLE" };
     }
   | {
-      code: string;
+      code: "UNKNOWN_VALIDATION_WARNING";
+      originalCode: string;
       message: string;
       details?: unknown;
     };
@@ -235,7 +236,8 @@ function parseValidationWarning(raw: any): OrderValidationWarning {
   }
 
   return {
-    code: raw.code,
+    code: "UNKNOWN_VALIDATION_WARNING",
+    originalCode: raw.code,
     message: raw.message,
     ...(raw.details === undefined ? {} : { details: raw.details }),
   };

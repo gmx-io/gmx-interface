@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import type { IHttp } from "utils/http/types";
 
-import { GmxApiSdk } from "../index";
+import { GmxApiSdk, type OrderValidationWarning } from "../index";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const SYMBOL = "ETH/USD [WETH-USDC]";
@@ -285,10 +285,21 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
 
     expect(prepared.validationWarnings).toEqual([
       {
-        code: "FUTURE_WARNING",
+        code: "UNKNOWN_VALIDATION_WARNING",
+        originalCode: "FUTURE_WARNING",
         message: "A newer API warning",
         details: { retryAfter: 10 },
       },
     ]);
+  });
+
+  it("keeps known warning codes as a discriminated union", () => {
+    type InsufficientLiquidityWarning = Extract<OrderValidationWarning, { code: "INSUFFICIENT_LIQUIDITY" }>;
+    type UnavailableWarning = Extract<OrderValidationWarning, { code: "TRADING_CAPACITY_UNAVAILABLE" }>;
+
+    expectTypeOf<InsufficientLiquidityWarning["details"]["requestedSizeUsd"]>().toEqualTypeOf<bigint>();
+    expectTypeOf<UnavailableWarning["details"]["reason"]>().toEqualTypeOf<
+      "STALE_MARKET_DATA" | "JIT_DATA_UNAVAILABLE"
+    >();
   });
 });
