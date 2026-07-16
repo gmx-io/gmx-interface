@@ -326,7 +326,7 @@ export const selectOrderEditorNextPositionValuesForIncrease = createSelector((q)
   return q(selector);
 });
 
-const makeSelectOrderEditorNextPositionValuesForIncrease = createSelectorFactory(
+export const makeSelectOrderEditorNextPositionValuesForIncrease = createSelectorFactory(
   (orderKey: string, triggerPrice: bigint) =>
     createSelector((q) => {
       const args = q(makeSelectOrderEditorNextPositionValuesForIncreaseArgs(orderKey, triggerPrice));

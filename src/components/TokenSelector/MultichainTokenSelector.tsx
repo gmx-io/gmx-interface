@@ -32,6 +32,7 @@ import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
 import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
+import { useOpenWalletReceive } from "components/GmxAccountModal/hooks";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
@@ -95,6 +96,7 @@ export function MultichainTokenSelector({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
+  const openWalletReceive = useOpenWalletReceive();
   let token: Token | undefined = isMarketTokenAddress(chainId, tokenAddress)
     ? getToken(chainId, GM_STUB_ADDRESS)
     : getToken(chainId, tokenAddress);
@@ -174,7 +176,12 @@ export function MultichainTokenSelector({
 
   const handleFooterClick = () => {
     setIsModalVisible(false);
-    setGmxAccountModalOpen(activeFilter === "gmxAccount" ? "deposit" : "walletReceive");
+
+    if (activeFilter === "gmxAccount") {
+      setGmxAccountModalOpen("deposit");
+    } else {
+      openWalletReceive();
+    }
   };
 
   const modalFooter =

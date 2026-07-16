@@ -18,8 +18,6 @@ import {
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelectedTransferGuid,
-  useGmxAccountWalletReceiveViewBackTo,
-  useGmxAccountWalletReceiveViewChain,
 } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
@@ -67,7 +65,11 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 import WithdrawIcon from "img/ic_withdraw.svg?react";
 
-import { useAvailableToTradeAssetSettlementChain, useGmxAccountDepositEligibility } from "./hooks";
+import {
+  useAvailableToTradeAssetSettlementChain,
+  useGmxAccountDepositEligibility,
+  useOpenWalletReceive,
+} from "./hooks";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
 
 function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () => void }) {
@@ -101,8 +103,6 @@ function WalletBlock({ account }: { account: string }) {
 
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setAvailableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
-  const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
-  const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
   const { ensName } = useENS(account);
   const [, copyToClipboard] = useCopyToClipboard();
   const [isCopied, setIsCopied] = useState(false);
@@ -111,11 +111,10 @@ function WalletBlock({ account }: { account: string }) {
   const { walletUsd } = useAvailableToTradeAssetSettlementChain();
   const { wallets } = useWallets();
   const { exportWallet } = useExportWallet();
+  const openWalletReceive = useOpenWalletReceive();
 
   const handleOpenWalletReceive = () => {
-    setWalletReceiveViewChain(undefined);
-    setWalletReceiveViewBackTo(undefined);
-    setIsVisibleOrView("walletReceive");
+    openWalletReceive();
   };
 
   const embeddedWallet = getEmbeddedConnectedWallet(wallets);

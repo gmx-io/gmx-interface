@@ -21,7 +21,6 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-import type { AccountPnlHistoryPoint } from "./DailyAndCumulativePnL";
 import {
   formatPnlChartYAxisTick,
   getPnlChartDragPanSpeed,
@@ -44,6 +43,7 @@ import {
   getDebugPeriodPnlYAxisValues,
   renderDebugLines,
 } from "./dailyAndCumulativePnLDebug";
+import type { AccountPnlHistoryPoint } from "./usePnlHistoricalData";
 
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 

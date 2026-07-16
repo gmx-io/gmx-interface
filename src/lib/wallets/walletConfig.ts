@@ -38,7 +38,7 @@ export const PRIVY_WALLET_LIST = [
   "wallet_connect",
 ] as const;
 
-export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord"] as const;
+export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord", "passkey"] as const;
 
 const PRIVY_WALLET_REQUEST_TIMEOUT_MS = SECONDS_IN_DAY * 1000;
 

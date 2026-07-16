@@ -11,6 +11,7 @@ import { DateRangeSelect } from "components/DateRangeSelect/DateRangeSelect";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 
 import DownloadIcon from "img/ic_download2.svg?react";
+import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg?react";
 
 import type { PnlChartGrouping } from "./DailyAndCumulativePnL.utils";
 
@@ -30,6 +31,7 @@ export function DailyAndCumulativePnLControls({
   onDateRangeChange,
   onGroupingChange,
   onImageDownload,
+  onShare,
 }: {
   startDate?: Date;
   endDate?: Date;
@@ -38,6 +40,7 @@ export function DailyAndCumulativePnLControls({
   onDateRangeChange: SetDateRange;
   onGroupingChange: (grouping: PnlChartGrouping) => void;
   onImageDownload: () => void;
+  onShare?: () => void;
 }) {
   return (
     <div data-exclude className="flex flex-wrap items-stretch justify-end gap-8">
@@ -45,6 +48,12 @@ export function DailyAndCumulativePnLControls({
         <DownloadIcon className="size-16 shrink-0" />
         <Trans>PNG</Trans>
       </Button>
+      {onShare && (
+        <Button variant="ghost" className="inline-flex items-center gap-4" data-exclude onClick={onShare}>
+          <ShareArrowOutlineIcon className="size-16 shrink-0" />
+          <Trans>Share PnL</Trans>
+        </Button>
+      )}
       <PnlChartGroupingSelect
         grouping={grouping}
         onChange={onGroupingChange}

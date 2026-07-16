@@ -3,6 +3,7 @@ import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useS
 import { RemoveScroll } from "react-remove-scroll";
 
 import { useBreakpoints } from "lib/useBreakpoints";
+import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
 import Portal from "components/Portal/Portal";
 
@@ -262,7 +263,7 @@ function MobileSlideModal({
         onTransitionEnd={handleTransitionEnd}
         onClick={handleClose}
       />
-      <RemoveScroll enabled={isOpen}>
+      <RemoveScroll enabled={isOpen} shards={PRIVY_DIALOG_SCROLL_SHARDS}>
         <div
           data-qa={qa}
           ref={setCurtainRef}

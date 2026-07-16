@@ -8,7 +8,7 @@ import { getChainSlug, getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isDecreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { isDecreaseOrderType, isLiquidationOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import {
   isPositionTradeAction,
   PositionTradeAction,
@@ -16,6 +16,7 @@ import {
   TradeAction,
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
+import { useCloseSettlement } from "domain/synthetics/tradeHistory/useCloseSettlement";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -33,9 +34,10 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import FilterHistoryIcon from "img/ic_filter_history.svg?react";
 import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import ShareClosedPosition from "./ShareClosedPosition";
-import { formatPositionMessage } from "./utils/position";
+import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
@@ -126,6 +128,52 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
   );
 }
 
+function getFullCloseCandidate(tradeAction: TradeAction): PositionTradeAction | undefined {
+  if (!isPositionTradeAction(tradeAction)) {
+    return undefined;
+  }
+
+  const isFullCloseCandidate =
+    tradeAction.eventName === TradeActionType.OrderExecuted &&
+    (isDecreaseOrderType(tradeAction.orderType) || isLiquidationOrderType(tradeAction.orderType)) &&
+    tradeAction.sizeDeltaUsd > 0n;
+
+  return isFullCloseCandidate ? tradeAction : undefined;
+}
+
+function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeAction; feesLines: TooltipContent }) {
+  const chainId = useSelector(selectChainId);
+
+  const fullCloseCandidate = getFullCloseCandidate(tradeAction);
+
+  const { settlement, isLoading } = useCloseSettlement(chainId, fullCloseCandidate);
+
+  const content = useMemo(() => {
+    if (!fullCloseCandidate || !settlement?.isFullClose || !settlement.closeChange) {
+      return feesLines;
+    }
+
+    const settlementLines = getSettlementTooltipLines(fullCloseCandidate, settlement.closeChange, settlement.openChange);
+
+    if (feesLines.length === 0) {
+      return settlementLines[0] === "" ? settlementLines.slice(1) : settlementLines;
+    }
+
+    return [...feesLines, ...settlementLines];
+  }, [feesLines, fullCloseCandidate, settlement]);
+
+  return (
+    <>
+      <TooltipContentComponent content={content} />
+      {isLoading ? (
+        <div className="mt-8">
+          <SpinnerIcon className="size-12 animate-spin" />
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 const PRICE_TOOLTIP_WIDTH = 400;
 
 export function TradeHistoryRow({
@@ -195,8 +243,8 @@ export function TradeHistoryRow({
   );
 
   const renderFeesTooltipContent = useCallback(
-    () => <TooltipContentComponent content={msg.feesTooltip ?? EMPTY_ARRAY} />,
-    [msg.feesTooltip]
+    () => <FeesTooltipContent tradeAction={tradeAction} feesLines={msg.feesTooltip ?? EMPTY_ARRAY} />,
+    [msg.feesTooltip, tradeAction]
   );
 
   const marketTooltipHandle = useMemo(
@@ -231,6 +279,8 @@ export function TradeHistoryRow({
     isDecreaseOrderType(tradeAction.orderType) &&
     tradeAction.eventName === TradeActionType.OrderExecuted &&
     account === tradeAction.account;
+
+  const isFullCloseSettlementCandidate = getFullCloseCandidate(tradeAction) !== undefined;
 
   const shouldDisplayPositionLifecycleButton =
     isPositionTradeAction(tradeAction) &&
@@ -375,13 +425,19 @@ export function TradeHistoryRow({
           )}
         </TableTd>
         <TableTd>
-          {!msg.fees ? (
-            <span className="text-typography-secondary">-</span>
-          ) : msg.feesTooltip && msg.feesTooltip.length > 0 ? (
+          {(msg.feesTooltip && msg.feesTooltip.length > 0) || isFullCloseSettlementCandidate ? (
             <TooltipWithPortal
-              handle={<span className="numbers">{msg.fees}</span>}
+              handle={
+                msg.fees ? (
+                  <span className="numbers">{msg.fees}</span>
+                ) : (
+                  <span className="text-typography-secondary">-</span>
+                )
+              }
               renderContent={renderFeesTooltipContent}
             />
+          ) : !msg.fees ? (
+            <span className="text-typography-secondary">-</span>
           ) : (
             <span className="numbers">{msg.fees}</span>
           )}

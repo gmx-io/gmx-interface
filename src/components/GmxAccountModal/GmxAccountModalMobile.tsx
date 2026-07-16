@@ -22,8 +22,10 @@ import {
   TransferHistoryTitle,
   WithdrawalScreen,
 } from "./GmxAccountModalShared";
+import { useIsActiveAccountEmbeddedWallet } from "./hooks";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
+import { WalletReceiveOptionsView } from "./WalletReceiveOptionsView";
 import { WalletReceiveView } from "./WalletReceiveView";
 import { WalletSendView } from "./WalletSendView";
 
@@ -59,11 +61,22 @@ function SelectAssetToDepositTitle() {
   );
 }
 
-function ReceiveToWalletTitle() {
+function ReceiveFundsTitle() {
   const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
 
   return (
     <TitleWithBack backTo={walletReceiveViewBackTo ?? "main"}>
+      <Trans>Receive funds</Trans>
+    </TitleWithBack>
+  );
+}
+
+function ReceiveToWalletTitle() {
+  const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
+
+  return (
+    <TitleWithBack backTo={isEmbeddedWallet ? "walletReceiveOptions" : walletReceiveViewBackTo ?? "main"}>
       <Trans>Receive to Wallet</Trans>
     </TitleWithBack>
   );
@@ -85,6 +98,7 @@ const SLIDE_MODAL_LABELS: Record<Exclude<GmxAccountModalView, "depositStatus">, 
   deposit: <DepositTitle />,
   withdraw: <WithdrawTitle />,
   selectAssetToDeposit: <SelectAssetToDepositTitle />,
+  walletReceiveOptions: <ReceiveFundsTitle />,
   walletReceive: <ReceiveToWalletTitle />,
   walletSend: <SendFromWalletTitle />,
 };
@@ -128,6 +142,7 @@ export function GmxAccountModalMobile({ account }: { account: string }) {
         {view === "deposit" && <DepositView />}
         {view === "selectAssetToDeposit" && <SelectAssetToDepositView />}
         {view === "withdraw" && <WithdrawalScreen />}
+        {view === "walletReceiveOptions" && <WalletReceiveOptionsView />}
         {view === "walletReceive" && <WalletReceiveView />}
         {view === "walletSend" && <WalletSendView />}
       </SlideModal>

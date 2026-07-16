@@ -1,5 +1,6 @@
 import type { Address } from "viem";
 
+import type { UiFlag } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { FromNewToOldArray, Bar } from "domain/tradingview/types";
 
 /** Single entry from the OracleKeeper `/markets` endpoint. */
@@ -137,7 +138,7 @@ export interface OracleFetcher {
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
-  fetchUiFlags(): Promise<Record<string, boolean>>;
+  fetchUiFlags(): Promise<Record<string, UiFlag>>;
   fetchMarkets(): Promise<ApiMarket[]>;
   handleFailure(method: string): void;
 }
