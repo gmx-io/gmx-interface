@@ -15,8 +15,6 @@ export type GlvShiftParam = {
 export type JitLiquidityInfo = {
   maxReservedUsdWithJitLong: bigint;
   maxReservedUsdWithJitShort: bigint;
-  maxOrderSizeUsdLong?: bigint;
-  maxOrderSizeUsdShort?: bigint;
   glvShiftParamsLong: GlvShiftParam[];
   glvShiftParamsShort: GlvShiftParam[];
   glvShiftParams: GlvShiftParam[];
@@ -24,19 +22,6 @@ export type JitLiquidityInfo = {
 };
 
 export type JitLiquidityMap = Record<string, JitLiquidityInfo>;
-
-export type JitLiquidityUnavailableSide = {
-  market: string;
-  isLong: boolean;
-};
-
-export type JitLiquiditySnapshot = {
-  jitLiquidityMap: JitLiquidityMap;
-  generatedAt: number;
-  status: "available" | "stale";
-  unavailableMarkets: string[];
-  unavailableSides: JitLiquidityUnavailableSide[];
-};
 
 export type JitLiquidityData = {
   jitLiquidityMap: JitLiquidityMap | undefined;

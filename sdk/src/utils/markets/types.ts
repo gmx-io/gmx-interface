@@ -319,7 +319,6 @@ export type TradingCapacity = {
 };
 
 export type GetTradingCapacityParams = {
-  account: string;
   symbol: string;
   direction: "long" | "short";
 };

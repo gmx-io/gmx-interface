@@ -41,8 +41,8 @@ import {
 import { HttpClient } from "utils/http/http";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
 import { IHttp } from "utils/http/types";
-import { fetchApiJitLiquidityInfo, fetchApiJitLiquiditySnapshot } from "utils/jitLiquidity/api";
-import { FetchJitLiquidityInfoParams, JitLiquidityMap, JitLiquiditySnapshot } from "utils/jitLiquidity/types";
+import { fetchApiJitLiquidityInfo } from "utils/jitLiquidity/api";
+import { FetchJitLiquidityInfoParams, JitLiquidityMap } from "utils/jitLiquidity/types";
 import {
   fetchApiMarkets,
   fetchApiMarketsConfig,
@@ -154,8 +154,6 @@ export type {
   JitLiquidityData,
   JitLiquidityInfo,
   JitLiquidityMap,
-  JitLiquiditySnapshot,
-  JitLiquidityUnavailableSide,
 } from "utils/jitLiquidity/types";
 export type { StakingPowerResponse } from "utils/staking/types";
 export type {
@@ -353,10 +351,6 @@ export class GmxApiSdk {
 
   fetchJitLiquidityInfo(params?: FetchJitLiquidityInfoParams): Promise<JitLiquidityMap> {
     return fetchApiJitLiquidityInfo(this.ctx, params);
-  }
-
-  fetchJitLiquiditySnapshot(): Promise<JitLiquiditySnapshot> {
-    return fetchApiJitLiquiditySnapshot(this.ctx);
   }
 
   fetchStakingPower(params: { address: string }): Promise<StakingPowerResponse> {

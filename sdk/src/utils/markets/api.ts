@@ -91,9 +91,9 @@ export async function fetchApiTradingCapacity(
   ctx: { api: IHttp },
   params: GetTradingCapacityParams
 ): Promise<TradingCapacity> {
-  const capacity: unknown = await ctx.api.fetchJson("/v1/markets/trading-capacity", {
-    query: params,
-  });
+  const tickers = await fetchApiMarketsTickers(ctx, { symbols: [params.symbol] });
+  const ticker = tickers.length === 1 ? tickers[0] : undefined;
+  const capacity: unknown = params.direction === "long" ? ticker?.capacityLong : ticker?.capacityShort;
   const parsed = parseTradingCapacity(capacity);
   if (!parsed) {
     throw new Error(`Invalid trading capacity response for symbol: ${params.symbol}`);

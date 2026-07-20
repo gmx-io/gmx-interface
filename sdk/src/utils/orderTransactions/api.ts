@@ -59,7 +59,9 @@ export type OrderValidationWarning =
   | {
       code: "TRADING_CAPACITY_UNAVAILABLE";
       message: string;
-      details: { reason: "STALE_MARKET_DATA" | "JIT_DATA_UNAVAILABLE" };
+      details: {
+        reason: "STALE_MARKET_DATA" | "JIT_DATA_UNAVAILABLE" | "JIT_ACCOUNT_ELIGIBILITY_UNKNOWN" | "COLLATERAL_SWAP";
+      };
     }
   | {
       code: "UNKNOWN_VALIDATION_WARNING";
@@ -222,7 +224,9 @@ function parseValidationWarning(raw: any): OrderValidationWarning {
   if (
     raw?.code === "TRADING_CAPACITY_UNAVAILABLE" &&
     typeof raw.message === "string" &&
-    (raw.details?.reason === "STALE_MARKET_DATA" || raw.details?.reason === "JIT_DATA_UNAVAILABLE")
+    ["STALE_MARKET_DATA", "JIT_DATA_UNAVAILABLE", "JIT_ACCOUNT_ELIGIBILITY_UNKNOWN", "COLLATERAL_SWAP"].includes(
+      raw.details?.reason
+    )
   ) {
     return {
       code: raw.code,

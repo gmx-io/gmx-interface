@@ -239,9 +239,7 @@ Use the v2 API client to get the current increase-order capacity for one market 
 import { GmxApiSdk } from "@gmx-io/sdk/v2";
 
 const api = new GmxApiSdk({ chainId: 42161 });
-const account = "0x0000000000000000000000000000000000000001"; // Replace with the trading account.
 const capacity = await api.getTradingCapacity({
-  account,
   symbol: "ETH/USD [WETH-USDC]",
   direction: "long",
 });
@@ -250,19 +248,16 @@ if (capacity.marketDataStatus !== "fresh") {
   throw new Error("Trading capacity is based on stale market data");
 }
 
-const maxOrderSize =
+const safeAccountAgnosticSize = capacity.baseAvailableLiquidity;
+const indicativeGlobalCapacity =
   capacity.jitDataStatus === "available" ? capacity.availableLiquidity : capacity.baseAvailableLiquidity;
 ```
 
-`availableLiquidity` includes JIT liquidity available to the supplied account and remains capped by max open interest.
-Do not size an order while `marketDataStatus` is `stale`; wait for fresh market data. When market data is fresh, use
-`availableLiquidity` only if `jitDataStatus` is `available`, and otherwise fall back to `baseAvailableLiquidity`.
-Order preparation remains authoritative because collateral swaps can change the executable capacity.
+`availableLiquidity` is the current global JIT-aware capacity and remains capped by max open interest.
+It is indicative because the keeper can restrict JIT by account. `baseAvailableLiquidity` is the native capacity without
+JIT and is the safe account-agnostic sizing value. Do not size an order while `marketDataStatus` is `stale`; only use the
+global JIT uplift when eligibility is known separately. Order preparation returns a typed validation warning when JIT
+capacity is not authoritative for the specific request.
 
-Deployment order for self-hosted stacks is keeper `/jit/liquidity_info/v2` (including `maxOrderSizeUsd` and snapshot
-status fields) plus `/jit/eligibility`, then the compatible `gmx-api` capacity endpoint, then this SDK version. For raw
-JIT integrations, use `fetchJitLiquiditySnapshot()` and inspect `status`, `unavailableMarkets`, and `unavailableSides`.
-The snapshot map also preserves `maxOrderSizeUsdLong` and `maxOrderSizeUsdShort`, the exact per-side ceilings tested by
-the keeper. The legacy v2 map helper returns an empty map when the snapshot is stale or older than six seconds and
-removes unavailable markets or sides so consumers cannot retain invalidated JIT capacity. It should not be used for
-order sizing.
+The helper uses the capacity returned by `/v1/markets/tickers`. Existing raw JIT access through
+`fetchJitLiquidityInfo()` remains available for integrations that need shift data.
