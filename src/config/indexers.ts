@@ -54,7 +54,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 
   [MEGAETH]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth@6230c4/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-megaeth@v22cme/api/graphql",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-megaeth-stats/master-260120151613-540f334/gn",
     referrals:
