@@ -6,6 +6,7 @@ import type {
   LineToolsAndGroupsState,
   StudyTemplateMetaInfo,
 } from "charting_library";
+import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 
 type ChartDataInfo = ChartData & {
   appVersion?: number;
@@ -18,35 +19,64 @@ function isValidChartId(id: string | number | undefined) {
   return id === V1_CHART_ID || id === V2_CHART_ID;
 }
 
+function readJson(storageKey: string): unknown {
+  let raw: string | null = null;
+  try {
+    raw = localStorage.getItem(storageKey);
+  } catch {
+    return undefined;
+  }
+
+  if (!raw) return undefined;
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return undefined;
+  }
+}
+
+function writeJson(storageKey: string, value: unknown) {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(value));
+    // eslint-disable-next-line no-empty
+  } catch {}
+}
+
+function readStoredCharts(storageKey: string): ChartDataInfo[] | undefined {
+  const parsed = readJson(storageKey);
+  return Array.isArray(parsed) ? parsed : undefined;
+}
+
+function getLatestValidChart(charts: ChartDataInfo[] | undefined) {
+  return charts
+    ?.filter((chart) => chart && chart.id === V2_CHART_ID)
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .at(0);
+}
+
 export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
-  private charts: ChartDataInfo[] | undefined;
-  private setTvCharts: (a: ChartDataInfo[]) => void;
+  private charts: ChartDataInfo[];
 
-  constructor(charts: ChartDataInfo[] | undefined, setTvCharts: (a: ChartDataInfo[]) => void) {
-    this.charts = charts;
-    this.setTvCharts = setTvCharts;
+  constructor() {
+    const validChart = getLatestValidChart(readStoredCharts(TV_SAVE_LOAD_CHARTS_KEY));
+    this.charts = validChart ? [validChart] : [];
+    this.persistCharts();
+  }
 
-    const validCharts = this.charts
-      ?.filter((chart) => chart.id === V2_CHART_ID)
-      .sort((a, b) => b.timestamp - a.timestamp)
-      .at(0);
-
-    this.charts = [validCharts].filter(Boolean) as ChartDataInfo[];
-    this.setTvCharts(this.charts);
+  private persistCharts() {
+    writeJson(TV_SAVE_LOAD_CHARTS_KEY, this.charts);
   }
 
   getAllCharts(): Promise<ChartMetaInfo[]> {
-    const charts = this.charts || [];
-    const filteredCharts = charts.filter((chart) => chart.id && isValidChartId(chart.id)) as ChartMetaInfo[];
+    const filteredCharts = this.charts.filter((chart) => chart.id && isValidChartId(chart.id)) as ChartMetaInfo[];
 
     return Promise.resolve(filteredCharts);
   }
 
   removeChart(id: string) {
-    if (!this.charts) return Promise.reject();
-
     this.charts = this.charts.filter((chart) => chart.id !== id);
-    this.setTvCharts(this.charts);
+    this.persistCharts();
 
     return Promise.resolve();
   }
@@ -60,26 +90,21 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
       chartData.appVersion = 2;
     }
 
-    if (this.charts) {
-      this.charts = this.charts.filter((chart) => isValidChartId(chart.id) && chart.id !== chartData.id);
-      this.charts.push(chartData);
-
-      this.setTvCharts(this.charts);
-    }
+    this.charts = this.charts.filter((chart) => isValidChartId(chart.id) && chart.id !== chartData.id);
+    this.charts.push(chartData);
+    this.persistCharts();
 
     return Promise.resolve(chartData.id);
   }
 
   getChartContent(id: string) {
-    if (!this.charts) return Promise.reject();
-    for (let i = 0; i < this.charts.length; ++i) {
-      if (this.charts[i].id === id) {
-        const { content } = this.charts[i];
+    const chart = this.charts.find((c) => c.id === id);
 
-        return Promise.resolve(content);
-      }
+    if (!chart) {
+      return Promise.reject();
     }
-    return Promise.reject();
+
+    return Promise.resolve(chart.content);
   }
 
   // Dummy implementations to satisfy the interface

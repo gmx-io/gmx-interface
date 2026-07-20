@@ -29,6 +29,11 @@ export default function TradesHistorySkeletonStructure(props: Props) {
       <TableTd>
         <Skeleton width={60} />
       </TableTd>
+      <TableTd>
+        <div className="flex justify-end">
+          <Skeleton width={96} />
+        </div>
+      </TableTd>
     </TableTr>
   );
 }

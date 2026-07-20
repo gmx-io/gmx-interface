@@ -31,9 +31,11 @@ import {
   getMaxAllowedLeverage,
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
+  isOffHoursMarket,
 } from "domain/synthetics/markets";
 import { PreferredTradeTypePickStrategy, chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { isTradeboxOffHoursLiqRisk } from "domain/synthetics/positions";
 import {
   TokenData,
   TokensRatio,
@@ -82,6 +84,7 @@ import {
   selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
+  selectPositionConstants,
   selectPositionsInfoData,
   selectSubaccountForChainAction,
   selectTokensData,
@@ -453,12 +456,16 @@ export const selectTradeboxSwapTokens = createSelector((q) => {
   const { swapTokens } = q(selectTradeboxAvailableTokensOptions);
   const { isSwap } = q(selectTradeboxTradeFlags);
   const chainId = q(selectChainId);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
+
+  // Native token is wallet-only, so it is hidden for GMX Account swaps.
+  const sourceTokens = isFromTokenGmxAccount ? swapTokens.filter((token) => !token.isNative) : swapTokens;
 
   if (isSwap || chainId !== MEGAETH) {
-    return swapTokens;
+    return sourceTokens;
   }
 
-  return swapTokens.filter((token) => !token.isNative && !token.isWrapped);
+  return sourceTokens.filter((token) => !token.isNative && !token.isWrapped);
 });
 
 export const selectTradeboxFromTokenInputValue = (s: SyntheticsState) => s.tradebox.fromTokenInputValue;
@@ -564,8 +571,14 @@ export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
   const toToken = q(selectTradeboxToToken);
   const tradeFlags = q(selectTradeboxTradeFlags);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
 
   if (!tradeFlags.isSwap) {
+    return false;
+  }
+
+  // Wrap/unwrap uses the wallet signer, not the GMX Account balance.
+  if (isFromTokenGmxAccount) {
     return false;
   }
 
@@ -1643,6 +1656,30 @@ export const selectTradeboxNextLeverageWithoutPnl = createSelector((q) => {
 export const selectTradeboxNextPositionValues = createSelector((q) => {
   const { isIncrease } = q(selectTradeboxTradeFlags);
   return isIncrease ? q(selectTradeboxNextPositionValuesForIncrease) : q(selectTradeboxNextPositionValuesForDecrease);
+});
+
+export const selectTradeboxOffHoursLiqRisk = createSelector((q) => {
+  const { isPosition, isIncrease, isTwap, isLong } = q(selectTradeboxTradeFlags);
+  const chainId = q(selectChainId);
+  const marketInfo = q(selectTradeboxMarketInfo);
+
+  if (!isPosition || !isIncrease || isTwap || !isOffHoursMarket(chainId, marketInfo?.marketTokenAddress)) {
+    return { shouldWarn: false };
+  }
+
+  const nextPositionValues = q(selectTradeboxNextPositionValues);
+  const { minCollateralUsd } = q(selectPositionConstants);
+
+  const shouldWarn = isTradeboxOffHoursLiqRisk({
+    chainId,
+    marketInfo,
+    isLong,
+    nextSizeInUsd: nextPositionValues?.nextSizeUsd,
+    nextCollateralUsd: nextPositionValues?.nextCollateralUsd,
+    minCollateralUsd,
+  });
+
+  return { shouldWarn };
 });
 
 export const selectTradeboxSelectedPositionKey = createSelector((q) => {

@@ -4,6 +4,7 @@ import { ARBITRUM } from "config/chains";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
+import { TriggerThresholdType } from "sdk/utils/trade/types";
 
 import { getEditCollateralError, getIncreaseError, getSwapError, ValidationButtonTooltipName } from "../validation";
 
@@ -33,6 +34,7 @@ const baseSwapParams = {
   isExternalSwapLoading: false,
   isWrapOrUnwrap: false,
   isStakeOrUnstake: false,
+  isFromTokenGmxAccount: false,
   swapLiquidity: 0n, // < toUsd → triggers Insufficient liquidity by default
   isTwap: false,
   numberOfParts: 1,
@@ -145,6 +147,79 @@ describe("getIncreaseError — isExternalSwapLoading gate", () => {
       } as any,
     });
     expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity to swap collateral");
+  });
+});
+
+describe("getIncreaseError — increase liquidation guard is Market-only", () => {
+  const liqGuardParams = {
+    ...baseIncreaseParams,
+    initialCollateralToken: toToken,
+    targetCollateralToken: toToken,
+    initialCollateralAmount: expandDecimals(1000, 6),
+    collateralLiquidity: expandDecimals(1_000_000, 30),
+    nextPositionValues: {
+      nextCollateralUsd: expandDecimals(1000, 30),
+      nextLiqPrice: expandDecimals(60000, 30),
+    } as any,
+    markPrice: expandDecimals(50000, 30),
+    isLong: true,
+  };
+
+  it("Market Increase: blocks with 'Invalid liquidation price' when liquidatable at mark", () => {
+    const result = getIncreaseError({ ...liqGuardParams, isLimit: false, triggerPrice: undefined });
+    expect(result.buttonErrorMessage).toBe("Invalid liquidation price");
+  });
+
+  it("Limit Increase: does NOT block with 'Invalid liquidation price'", () => {
+    const result = getIncreaseError({
+      ...liqGuardParams,
+      isLimit: true,
+      triggerPrice: expandDecimals(49000, 30),
+      thresholdType: TriggerThresholdType.Below,
+    });
+    expect(result.buttonErrorMessage).not.toBe("Invalid liquidation price");
+  });
+});
+
+describe("getSwapError — GMX Account native token guard", () => {
+  const nativeEth = { ...tokensData.ETH, isNative: true, balance: expandDecimals(100, 18) };
+  const weth = {
+    ...tokensData.ETH,
+    address: "WETH",
+    symbol: "WETH",
+    isWrapped: true,
+    balance: expandDecimals(100, 18),
+  };
+
+  // balance/liquidity pass, so only the GMX Account guard is under test
+  const unwrapParams = {
+    ...baseSwapParams,
+    fromToken: weth,
+    toToken: nativeEth,
+    isWrapOrUnwrap: true,
+    swapLiquidity: expandDecimals(1_000_000, 30),
+  };
+
+  const expectedMessage = "GMX Account swaps cannot use native ETH. Select WETH or withdraw to wallet first.";
+
+  it("allows wallet WETH -> ETH unwrap", () => {
+    const result = getSwapError({ ...unwrapParams, isFromTokenGmxAccount: false });
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+
+  it("blocks GMX Account WETH -> ETH unwrap with clear copy", () => {
+    const result = getSwapError({ ...unwrapParams, isFromTokenGmxAccount: true });
+    expect(result.buttonErrorMessage).toBe(expectedMessage);
+  });
+
+  it("blocks GMX Account ETH -> WETH wrap with clear copy", () => {
+    const result = getSwapError({
+      ...unwrapParams,
+      fromToken: nativeEth,
+      toToken: weth,
+      isFromTokenGmxAccount: true,
+    });
+    expect(result.buttonErrorMessage).toBe(expectedMessage);
   });
 });
 

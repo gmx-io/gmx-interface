@@ -1,0 +1,1210 @@
+{
+  "markets": [
+    {
+      "name": "SWAP-ONLY [USDC-USDT]",
+      "marketToken": "0xB686BcB112660343E6d15BDb65297e110C8311c4",
+      "indexToken": "0x0000000000000000000000000000000000000000",
+      "longToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "shortToken": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "DOT/USD [WBTC.b-USDC]",
+      "marketToken": "0x7B2D09fca2395713dcc2F67323e4876F27b9ecB2",
+      "indexToken": "0xE958f107b467d5172573F761d26931D658C1b436",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-28T00:00:00.000Z"
+    },
+    {
+      "name": "SOL/USD [WBTC.b-USDC]",
+      "marketToken": "0xcf083d35AD306A042d4Fb312fCdd8228b52b82f8",
+      "indexToken": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-09-25T00:00:00.000Z"
+    },
+    {
+      "name": "BTC/USD [WBTC.b-USDC]",
+      "marketToken": "0x47c031236e19d024b42f8AE6780E44A573170703",
+      "indexToken": "0x47904963fc8b2340414262125aF798B9655E58Cd",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "WIF/USD [WIF-USDC]",
+      "marketToken": "0x0418643F94Ef14917f1345cE5C460C37dE463ef7",
+      "indexToken": "0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d",
+      "longToken": "0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-07-17T00:00:00.000Z"
+    },
+    {
+      "name": "APE/USD [APE-USDC]",
+      "marketToken": "0xdAB21c4d1F569486334C93685Da2b3F9b0A078e8",
+      "indexToken": "0x7f9FBf9bDd3F4105C478b996B648FE6e828a1e98",
+      "longToken": "0x7f9FBf9bDd3F4105C478b996B648FE6e828a1e98",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-24T00:00:00.000Z"
+    },
+    {
+      "name": "WLD/USD [ETH-USDC]",
+      "marketToken": "0x872b5D567a2469Ed92D252eaCB0EB3BB0769e05b",
+      "indexToken": "0x75B9AdD873641b253718810E6c65dB6d72311FD0",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-15T00:00:00.000Z"
+    },
+    {
+      "name": "CRV/USD [ETH-USDC]",
+      "marketToken": "0x0e46941F9bfF8d0784BFfa3d0D7883CDb82D7aE7",
+      "indexToken": "0xe5f01aeAcc8288E9838A60016AB00d7b6675900b",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-06-02T00:00:00.000Z"
+    },
+    {
+      "name": "NATGAS/USD [ETH-USDC]",
+      "marketToken": "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b",
+      "indexToken": "0x620aC65BE29066Bb9D1E92C65b35B9fD321Fb963",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-04-23T00:00:00.000Z"
+    },
+    {
+      "name": "ARB/USD [ARB-USDC]",
+      "marketToken": "0xC25cEf6061Cf5dE5eb761b50E4743c1F5D7E5407",
+      "indexToken": "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      "longToken": "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "ONDO/USD [ETH-USDC]",
+      "marketToken": "0xa8A455Ed94b315460CfF7d96966d91330f6A3bA0",
+      "indexToken": "0xEcFB4718aD19b626A77491895a2f99ea0cedEd08",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-20T00:00:00.000Z"
+    },
+    {
+      "name": "PUMP/USD [WBTC.b-USDC]",
+      "marketToken": "0x4C0Bb704529Fa49A26bD854802d70206982c6f1B",
+      "indexToken": "0x9c060B2fA953b5f69879a8B7B81f62BFfEF360be",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-07-15T00:00:00.000Z"
+    },
+    {
+      "name": "BERA/USD [ETH-USDC]",
+      "marketToken": "0x876Ff160d63809674e03f82DC4D3C3Ae8B0acF28",
+      "indexToken": "0x67ADABbAd211eA9b3B4E2fd0FD165E593De1e983",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-07T00:00:00.000Z"
+    },
+    {
+      "name": "SYRUP/USD [ETH-USDC]",
+      "marketToken": "0x8965e821c7C8c09c6eB3Cb9cCf7Eb6f386441EA2",
+      "indexToken": "0x9759C297fb6C91e252c7292cECa30a509558E5De",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-01-09T00:00:00.000Z"
+    },
+    {
+      "name": "DOLO/USD [ETH-USDC]",
+      "marketToken": "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4",
+      "indexToken": "0x97Ce1F309B949f7FBC4f58c5cb6aa417A5ff8964",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-04-24T00:00:00.000Z"
+    },
+    {
+      "name": "POL/USD [ETH-USDC]",
+      "marketToken": "0xD0a1AFDDE31Eb51e8b53bdCE989EB8C2404828a4",
+      "indexToken": "0x9c74772b713a1B032aEB173E28683D937E51921c",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-17T00:00:00.000Z"
+    },
+    {
+      "name": "ICP/USD [WBTC.b-USDC]",
+      "marketToken": "0xdc4e96A251Ff43Eeac710462CD8A9D18Dc802F18",
+      "indexToken": "0xdaf0A71608938F762e37eC5F72F670Cc44703454",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-28T00:00:00.000Z"
+    },
+    {
+      "name": "ANIME/USD [ANIME-USDC]",
+      "marketToken": "0x5707673D95a8fD317e2745C4217aCD64ca021B68",
+      "indexToken": "0x37a645648dF29205C6261289983FB04ECD70b4B3",
+      "longToken": "0x37a645648dF29205C6261289983FB04ECD70b4B3",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-01-30T00:00:00.000Z"
+    },
+    {
+      "name": "BNB/USD [WBTC.b-USDC]",
+      "marketToken": "0x065577D05c3D4C11505ed7bc97BBF85d462A6A6f",
+      "indexToken": "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-09-25T00:00:00.000Z"
+    },
+    {
+      "name": "PENGU/USD [WBTC.b-USDC]",
+      "marketToken": "0x0c11Ed89889Fd03394E8d9d685cC5b85be569C99",
+      "indexToken": "0x4C1dac9b6eAf122Fe3DE824c1C2220413F3aC197",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-13T00:00:00.000Z"
+    },
+    {
+      "name": "LINEA/USD [ETH-USDC]",
+      "marketToken": "0x6d9430A116ed4d4FC6FE1996A5493662d555b07E",
+      "indexToken": "0xc4017CFe7D7eaBDE63d3252caBF26A286fE2B1E0",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-10-09T00:00:00.000Z"
+    },
+    {
+      "name": "LIT/USD [ETH-USDC]",
+      "marketToken": "0x044dFE01863CE85f9ECd5639eE5485c90AC320FC",
+      "indexToken": "0xE6172EecBB07F197F52bb73d74daa0e19C31c4Db",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-01-23T00:00:00.000Z"
+    },
+    {
+      "name": "STX/USD [WBTC.b-USDC]",
+      "marketToken": "0xD9377d9B9a2327C7778867203deeA73AB8a68b6B",
+      "indexToken": "0xBaf07cF91D413C0aCB2b7444B9Bf13b4e03c9D71",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-08-14T00:00:00.000Z"
+    },
+    {
+      "name": "AR/USD [WBTC.b-USDC]",
+      "marketToken": "0xfa19f7d23a475575BD0270AE7de4FC6852442945",
+      "indexToken": "0x4b9a2b862E1a30e6E844c991D31Dc6387c9d65D5",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-01-09T00:00:00.000Z"
+    },
+    {
+      "name": "LTC/USD [ETH-USDC]",
+      "marketToken": "0xD9535bB5f58A1a75032416F2dFe7880C30575a41",
+      "indexToken": "0xB46A094Bc4B0adBD801E14b9DB95e05E28962764",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "JTO/USD [WBTC.b-USDC]",
+      "marketToken": "0x3B4689d69516b9D4b1aaf7545c6fC4d3ED70b70b",
+      "indexToken": "0xF01D2AA2f3f903A93D57c4Bf672C8096DE485FA7",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-01-09T00:00:00.000Z"
+    },
+    {
+      "name": "WTIOIL/USD [ETH-USDC]",
+      "marketToken": "0xda81cdd397210C08cFc567f93982E148A3aac8a6",
+      "indexToken": "0xa8Ffb545d5cBF1F44E3eBA123D60372cD267D73c",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-04-23T00:00:00.000Z"
+    },
+    {
+      "name": "ADA/USD [WBTC.b-USDC]",
+      "marketToken": "0xcaCb964144f9056A8f99447a303E60b4873Ca9B4",
+      "indexToken": "0x53186c8419BEB83fE4Da74F7875041a1287337ED",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-28T00:00:00.000Z"
+    },
+    {
+      "name": "ARB/USD [ARB-ARB]",
+      "marketToken": "0x672fEA44f4583DdaD620d60C1Ac31021F47558Cb",
+      "indexToken": "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      "longToken": "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      "shortToken": "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      "isListed": true,
+      "listingDate": "2025-07-17T00:00:00.000Z"
+    },
+    {
+      "name": "SILVER/USD [ETH-USDC]",
+      "marketToken": "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc",
+      "indexToken": "0xE41902f9aD379A8CC34A34efa00F5c3EE5112bC8",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-04-09T00:00:00.000Z"
+    },
+    {
+      "name": "SEI/USD [ETH-USDC]",
+      "marketToken": "0xB489711B1cB86afDA48924730084e23310EB4883",
+      "indexToken": "0x55e85A147a1029b985384822c0B2262dF8023452",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-24T00:00:00.000Z"
+    },
+    {
+      "name": "XRP/USD [ETH-USDC]",
+      "marketToken": "0x0CCB4fAa6f1F1B30911619f1184082aB4E25813c",
+      "indexToken": "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "SOL/USD [SOL-SOL]",
+      "marketToken": "0xf22CFFA7B4174554FF9dBf7B5A8c01FaaDceA722",
+      "indexToken": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      "longToken": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      "shortToken": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      "isListed": true,
+      "listingDate": "2024-11-29T00:00:00.000Z"
+    },
+    {
+      "name": "XLM/USD [WBTC.b-USDC]",
+      "marketToken": "0xe902D1526c834D5001575b2d0Ef901dfD0aa097A",
+      "indexToken": "0xc5dbD52Ae5a927Cf585B884011d0C7631C9974c6",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-29T00:00:00.000Z"
+    },
+    {
+      "name": "SOL/USD [SOL-USDC]",
+      "marketToken": "0x09400D9DB990D5ed3f35D7be61DfAEB900Af03C9",
+      "indexToken": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      "longToken": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "PEPE/USD [ETH-USDC]",
+      "marketToken": "0x0Bb2a83F995E1E1eae9D7fDCE68Ab1ac55b2cc85",
+      "indexToken": "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-17T00:00:00.000Z"
+    },
+    {
+      "name": "MON/USD [ETH-USDC]",
+      "marketToken": "0x66AB9D61A0124b61C8892A4ac687Ac48DbA8ff2c",
+      "indexToken": "0xB96e60CA3a7677b29f1e10dd109E952B275038Be",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-12-22T00:00:00.000Z"
+    },
+    {
+      "name": "LINK/USD [LINK-USDC]",
+      "marketToken": "0x7f1fa204bb700853D36994DA19F830b6Ad18455C",
+      "indexToken": "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+      "longToken": "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "MEME/USD [WBTC.b-USDC]",
+      "marketToken": "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C",
+      "indexToken": "0xaF770F03518686a365300ab35AD860e99967B2f0",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-21T00:00:00.000Z"
+    },
+    {
+      "name": "UNI/USD [UNI-USDC]",
+      "marketToken": "0xc7Abb2C5f3BF3CEB389dF0Eecd6120D451170B50",
+      "indexToken": "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+      "longToken": "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "MET/USD [WBTC.b-USDC]",
+      "marketToken": "0xbA30e198CFFeBEf0A84D6943cC8B2e356E324112",
+      "indexToken": "0x84D523493Aac127025AC770981a54C9601326A41",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-02-12T00:00:00.000Z"
+    },
+    {
+      "name": "CC/USD [WBTC.b-USDC]",
+      "marketToken": "0x45F0331a6e175B556Bc7d28E0A1c349525006d4E",
+      "indexToken": "0x7F2A3967bd0999A860E13Ab8DC34aF98675CC208",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-02-12T00:00:00.000Z"
+    },
+    {
+      "name": "ETH/USD [wstETH-USDe]",
+      "marketToken": "0x0Cf1fb4d1FF67A3D8Ca92c9d6643F8F9be8e03E5",
+      "indexToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "longToken": "0x5979D7b546E38E414F7E9822514be443A4800529",
+      "shortToken": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+      "isListed": true,
+      "listingDate": "2024-07-31T00:00:00.000Z"
+    },
+    {
+      "name": "ALGO/USD [WBTC.b-USDC]",
+      "marketToken": "0x3B7f4e4Cf2fa43df013d2B32673e6A01d29ab2Ac",
+      "indexToken": "0x72Cd3a21aA7A898028d9501868Fbe6dED0020434",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-13T00:00:00.000Z"
+    },
+    {
+      "name": "DOGE/USD [ETH-USDC]",
+      "marketToken": "0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4",
+      "indexToken": "0xC4da4c24fd591125c3F47b340b6f4f76111883d8",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "ORDI/USD [WBTC.b-USDC]",
+      "marketToken": "0x93385F7C646A3048051914BDFaC25F4d620aeDF1",
+      "indexToken": "0x1E15d08f3CA46853B692EE28AE9C7a0b88a9c994",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-08-14T00:00:00.000Z"
+    },
+    {
+      "name": "FIL/USD [WBTC.b-USDC]",
+      "marketToken": "0x262B5203f0fe00D9fe86ffecE01D0f54fC116180",
+      "indexToken": "0x3AeBb98f57081DcBEb0B8EA823Cf84900A31e5D8",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-12-12T00:00:00.000Z"
+    },
+    {
+      "name": "EIGEN/USD [ETH-USDC]",
+      "marketToken": "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791",
+      "indexToken": "0x606C3e5075e5555e79Aa15F1E9FACB776F96C248",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-10T00:00:00.000Z"
+    },
+    {
+      "name": "APE_deprecated (deprecated)/USD [APE_deprecated (deprecated)-USDC]",
+      "marketToken": "0xdf034cd3df9a80eABFA0556232a91E03Ca67D5Cb",
+      "indexToken": "0x74885b4D524d497261259B38900f54e6dbAd2210",
+      "longToken": "0x74885b4D524d497261259B38900f54e6dbAd2210",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": false,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "KAS/USD [WBTC.b-USDC]",
+      "marketToken": "0x4024418592450E4d62faB15e2f833FC03A3447dc",
+      "indexToken": "0x91c6a8F6aFAC036F4ABf1bA55f4E76892E865E4a",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-21T00:00:00.000Z"
+    },
+    {
+      "name": "HBAR/USD [WBTC.b-USDC]",
+      "marketToken": "0x9f0849FB830679829d1FB759b11236D375D15C78",
+      "indexToken": "0xEb2A83b973f4dbB9511D92dd40d2ba4C683f0971",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-13T00:00:00.000Z"
+    },
+    {
+      "name": "SPCX/USD [ETH-USDC]",
+      "marketToken": "0x470128853D74dab7423904a20eA5AA230e9e561B",
+      "indexToken": "0x8CBd0d5d81e7957123E6D8fFaE657a40bDC5691b",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-06-08T00:00:00.000Z"
+    },
+    {
+      "name": "SPX6900/USD [ETH-USDC]",
+      "marketToken": "0x8263bC3766a09f6dD4Bab04b4bf8D45F2B0973FF",
+      "indexToken": "0xb736be525A65326513351058427d1f47B0CfB045",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-06T00:00:00.000Z"
+    },
+    {
+      "name": "VVV/USD [ETH-USDC]",
+      "marketToken": "0x947C521E44f727219542B0f91a85182193c1D2ad",
+      "indexToken": "0xB79Eb5BA64A167676694bB41bc1640F95d309a2F",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-09-04T00:00:00.000Z"
+    },
+    {
+      "name": "GOLD/USD [ETH-USDC]",
+      "marketToken": "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f",
+      "indexToken": "0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-04-09T00:00:00.000Z"
+    },
+    {
+      "name": "ASTER/USD [WBTC.b-USDC]",
+      "marketToken": "0x0164B6c847c65e07C9F6226149ADBFA7C1dE40Cf",
+      "indexToken": "0x2aAB60E62f05d17e58dEc982870bfAdc7F4e7ADF",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-10-09T00:00:00.000Z"
+    },
+    {
+      "name": "INJ/USD [WBTC.b-USDC]",
+      "marketToken": "0x16466a03449CB9218EB6A980Aa4a44aaCEd27C25",
+      "indexToken": "0xfdE73EddbE6c5712A12B72c470F8FE5c77A7fF17",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-12-26T00:00:00.000Z"
+    },
+    {
+      "name": "AERO/USD [ETH-USDC]",
+      "marketToken": "0xfaEaE570B07618D3F10360608E43c241181c4614",
+      "indexToken": "0xEcc5eb985Ddbb8335b175b0A2A1144E4c978F1f6",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-27T00:00:00.000Z"
+    },
+    {
+      "name": "PENDLE/USD [PENDLE-USDC]",
+      "marketToken": "0x784292E87715d93afD7cb8C941BacaFAAA9A5102",
+      "indexToken": "0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8",
+      "longToken": "0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-22T00:00:00.000Z"
+    },
+    {
+      "name": "SKY/USD [ETH-USDC]",
+      "marketToken": "0x00310c6d8A9F821e3FE991f4835f2cA4d87034Cf",
+      "indexToken": "0xeeA41ceA2204D1156De1BDF2CF4ab6184d17f90B",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-12-22T00:00:00.000Z"
+    },
+    {
+      "name": "GMX/USD [GMX-GMX]",
+      "marketToken": "0xbD48149673724f9cAeE647bb4e9D9dDaF896Efeb",
+      "indexToken": "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+      "longToken": "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+      "shortToken": "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+      "isListed": true,
+      "listingDate": "2024-11-22T00:00:00.000Z"
+    },
+    {
+      "name": "MKR/USD [ETH-USDC]",
+      "marketToken": "0x2aE5c5Cd4843cf588AA8D1289894318130acc823",
+      "indexToken": "0x8904De84c3bB3B7D2383F934Af40FcB3Ef82F28b",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-03-13T00:00:00.000Z"
+    },
+    {
+      "name": "ETH/USD [ETH-USDC]",
+      "marketToken": "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+      "indexToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "GMX/USD [GMX-USDC]",
+      "marketToken": "0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da",
+      "indexToken": "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+      "longToken": "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-06-04T00:00:00.000Z"
+    },
+    {
+      "name": "HYPE/USD [WBTC.b-USDC]",
+      "marketToken": "0xBcb8FE13d02b023e8f94f6881Cc0192fd918A5C0",
+      "indexToken": "0xfDFA0A749dA3bCcee20aE0B4AD50E39B26F58f7C",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-03-06T00:00:00.000Z"
+    },
+    {
+      "name": "AVAX/USD [AVAX-USDC]",
+      "marketToken": "0x7BbBf946883a5701350007320F525c5379B8178A",
+      "indexToken": "0x565609fAF65B92F7be02468acF86f8979423e514",
+      "longToken": "0x565609fAF65B92F7be02468acF86f8979423e514",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-03-08T00:00:00.000Z"
+    },
+    {
+      "name": "AAVE/USD [ETH-USDC]",
+      "marketToken": "0x77B2eC357b56c7d05a87971dB0188DBb0C7836a5",
+      "indexToken": "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-17T00:00:00.000Z"
+    },
+    {
+      "name": "WLFI/USD [ETH-USDC]",
+      "marketToken": "0xb3588455858a49D3244237CEe00880CcB84b91Dd",
+      "indexToken": "0xC5799ab6E2818fD8d0788dB8D156B0c5db1Bf97b",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-09-01T00:00:00.000Z"
+    },
+    {
+      "name": "DYDX/USD [WBTC.b-USDC]",
+      "marketToken": "0x467C4A46287F6C4918dDF780D4fd7b46419c2291",
+      "indexToken": "0x0739Ad7AeA69aD36EdEb91b0e55cAC140427c632",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-12-26T00:00:00.000Z"
+    },
+    {
+      "name": "BRENTOIL/USD [ETH-USDC]",
+      "marketToken": "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74",
+      "indexToken": "0x9C5C4b9BA1fEBA72186f50d8Ae7C58b1D7f0B12F",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-04-23T00:00:00.000Z"
+    },
+    {
+      "name": "FLOKI/USD [WBTC.b-USDC]",
+      "marketToken": "0xfD46a5702D4d97cE0164375744c65F0c31A3901b",
+      "indexToken": "0x6792c5B8962ffbDD020c6b6FD0Be7b182e0e33a3",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-21T00:00:00.000Z"
+    },
+    {
+      "name": "OKB/USD [ETH-USDC]",
+      "marketToken": "0x2a331e51a3D17211852d8625a1029898450e539B",
+      "indexToken": "0xd37F01A3379f052FEF70F63c0Be27931891aa2B9",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-21T00:00:00.000Z"
+    },
+    {
+      "name": "MEW/USD [WBTC.b-USDC]",
+      "marketToken": "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244",
+      "indexToken": "0x5503CF72f54b6d692d36BBCD391516A7dE068687",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-21T00:00:00.000Z"
+    },
+    {
+      "name": "SWAP-ONLY [USDC-DAI]",
+      "marketToken": "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665",
+      "indexToken": "0x0000000000000000000000000000000000000000",
+      "longToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "shortToken": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "KTA/USD [ETH-USDC]",
+      "marketToken": "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d",
+      "indexToken": "0x96Ee343E36E8642627FAEa235D57a9FEC8a6e34f",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-09-18T00:00:00.000Z"
+    },
+    {
+      "name": "CHZ/USD [ETH-USDC]",
+      "marketToken": "0x3600592DdEd7e6E0B05029DfB637fFc5A85D6f6B",
+      "indexToken": "0x5dB4692926C8ceebF6Da0995358Bbc438F3fd80C",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-01-09T00:00:00.000Z"
+    },
+    {
+      "name": "ZORA/USD [ETH-USDC]",
+      "marketToken": "0xac484106d935f0f20F1485b631fA6F65AeEff550",
+      "indexToken": "0xc5ff0eB026dB972F95DF3dfF04e697d8b660092a",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-09-18T00:00:00.000Z"
+    },
+    {
+      "name": "VIRTUAL/USD [WBTC.b-USDC]",
+      "marketToken": "0x75F190E0Be6E8B933A01423EFE398c6C721A5CfF",
+      "indexToken": "0xB6672496214C90134A9223894e709F26A5eED362",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-13T00:00:00.000Z"
+    },
+    {
+      "name": "MEGA/USD [ETH-USDC]",
+      "marketToken": "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1",
+      "indexToken": "0x13983f27Ce9365055a6a553233c49fE28e70103e",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-04-30T00:00:00.000Z"
+    },
+    {
+      "name": "RENDER/USD [ETH-USDC]",
+      "marketToken": "0x4c505e0062459cf8F60FfF13279c92ea15aE6e2D",
+      "indexToken": "0x82BB89fcc64c5d4016C5Ed1AB016bB0D1C20D6C3",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-29T00:00:00.000Z"
+    },
+    {
+      "name": "XAUT.v2/USD [WBTC.b-USDC]",
+      "marketToken": "0xeb28aD1a2e497F4Acc5D9b87e7B496623C93061E",
+      "indexToken": "0x7624cccCc59361D583F28BEC40D37e7771d2ef5D",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-01-23T00:00:00.000Z"
+    },
+    {
+      "name": "MNT/USD [ETH-USDC]",
+      "marketToken": "0x40dAEAc02dCf6b3c51F9151f532C21DCEF2F7E63",
+      "indexToken": "0x955cd91eEaE618F5a7b49E1e3c7482833B10DAb4",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-06T00:00:00.000Z"
+    },
+    {
+      "name": "XPL/USD [WBTC.b-USDC]",
+      "marketToken": "0x4b67aa8F754b17b1029Ad2DB4fb6a276CCe350c4",
+      "indexToken": "0x2e73bDBee83D91623736D514b0BB41f2afd9C7Fd",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-09-25T00:00:00.000Z"
+    },
+    {
+      "name": "PEPE/USD [PEPE-USDC]",
+      "marketToken": "0x2b477989A149B17073D9C9C82eC9cB03591e20c6",
+      "indexToken": "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+      "longToken": "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-07-17T00:00:00.000Z"
+    },
+    {
+      "name": "AI16Z/USD [WBTC.b-USDC]",
+      "marketToken": "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169",
+      "indexToken": "0xBb69bd9dc152C2c0F083507641a46193d2B61EBb",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-01-30T00:00:00.000Z"
+    },
+    {
+      "name": "CVX/USD [ETH-USDC]",
+      "marketToken": "0x41E3bC5B72384C8B26b559B7d16C2B81Fd36fbA2",
+      "indexToken": "0x3B6f801C0052Dfe0Ac80287D611F31B7c47B9A6b",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-21T00:00:00.000Z"
+    },
+    {
+      "name": "SUI/USD [ETH-USDC]",
+      "marketToken": "0x6Ecf2133E2C9751cAAdCb6958b9654baE198a797",
+      "indexToken": "0x197aa2DE1313c7AD50184234490E12409B2a1f95",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-24T00:00:00.000Z"
+    },
+    {
+      "name": "AIXBT/USD [ETH-USDC]",
+      "marketToken": "0x04DecfB37e46075189324817df80a32D22b9eD8D",
+      "indexToken": "0xcA543Cb8bCC76e4E0A034F56EB40a1029bDFd70E",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-27T00:00:00.000Z"
+    },
+    {
+      "name": "DASH/USD [WBTC.b-USDC]",
+      "marketToken": "0x728Ff0679c89267434D6EF1824c8C8eED4aC3DBC",
+      "indexToken": "0x426FE015a5F4E6Ad4E6497ad79265D07EA9F121e",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-01-09T00:00:00.000Z"
+    },
+    {
+      "name": "WIF/USD [WBTC.b-USDC]",
+      "marketToken": "0x3f649eab7f4CE4945F125939C64429Be2C5d0cB4",
+      "indexToken": "0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-21T00:00:00.000Z"
+    },
+    {
+      "name": "MELANIA/USD [ETH-USDC]",
+      "marketToken": "0x12fD1A4BdB96219E637180Ff5293409502b2951D",
+      "indexToken": "0xfa4F8E582214eBCe1A08eB2a65e08082053E441F",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-01-23T00:00:00.000Z"
+    },
+    {
+      "name": "AVNT/USD [ETH-USDC]",
+      "marketToken": "0xCEff9D261A96Cb78Df35f9333ba9F2F4CFcb8a68",
+      "indexToken": "0xdB58EB7f408EbA2176eCb44A4696292605cCEB39",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-10-09T00:00:00.000Z"
+    },
+    {
+      "name": "IP/USD [WBTC.b-USDC]",
+      "marketToken": "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a",
+      "indexToken": "0xe7304E9F4ca383BD6312a5179cdC7B40B96A6F5a",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2026-01-23T00:00:00.000Z"
+    },
+    {
+      "name": "LINK/USD [ETH-USDC]",
+      "marketToken": "0xF913B4748031EF569898ED91e5BA0d602bB93298",
+      "indexToken": "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "UNI/USD [ETH-USDC]",
+      "marketToken": "0xD8471b9Ea126272E6d32B5e4782Ed76DB7E554a4",
+      "indexToken": "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-17T00:00:00.000Z"
+    },
+    {
+      "name": "TRUMP/USD [ETH-USDC]",
+      "marketToken": "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636",
+      "indexToken": "0x30021aFA4767Ad66aA52A06dF8a5AB3acA9371fD",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-01-20T00:00:00.000Z"
+    },
+    {
+      "name": "CRO/USD [WBTC.b-USDC]",
+      "marketToken": "0xa29FfE4152B65A0347512Ae5c6A4Bbc7a3d6d51B",
+      "indexToken": "0xB7EfE7c7f059E84Ab87A83A169c583Fb4A54fAc3",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-13T00:00:00.000Z"
+    },
+    {
+      "name": "TAO/USD [WBTC.b-USDC]",
+      "marketToken": "0xe55e1A29985488A2c8846a91E925c2B7C6564db1",
+      "indexToken": "0x938aef36CAaFbcB37815251B602168087eC14648",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-15T00:00:00.000Z"
+    },
+    {
+      "name": "MORPHO/USD [ETH-USDC]",
+      "marketToken": "0x4De268aC68477f794C3eAC5A419Cbcffc2cD5e02",
+      "indexToken": "0xF67b2a901D674B443Fa9f6DB2A689B37c07fD4fE",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-09-04T00:00:00.000Z"
+    },
+    {
+      "name": "FET/USD [ETH-USDC]",
+      "marketToken": "0x970e578fF01589Bb470CE38a2f1753152A009366",
+      "indexToken": "0x83D5944E7f5EF1d8432002d3cb062e1012f6F8e6",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-20T00:00:00.000Z"
+    },
+    {
+      "name": "BNB/USD [BNB-USDC]",
+      "marketToken": "0x2d340912Aa47e33c90Efb078e69E70EFe2B34b9B",
+      "indexToken": "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      "longToken": "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-01-25T00:00:00.000Z"
+    },
+    {
+      "name": "0G/USD [WBTC.b-USDC]",
+      "marketToken": "0xe024188850A822409F362209C1EF2cFdc7c4DE4C",
+      "indexToken": "0x95c317066CF214b2E6588B2685D949384504F51e",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-10-09T00:00:00.000Z"
+    },
+    {
+      "name": "XMR/USD [WBTC.b-USDC]",
+      "marketToken": "0x7c54D547FAD72f8AFbf6E5b04403A0168b654C6f",
+      "indexToken": "0x13674172E6E44D31d4bE489d5184f3457c40153A",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-06-02T00:00:00.000Z"
+    },
+    {
+      "name": "TRX/USD [ETH-USDC]",
+      "marketToken": "0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1",
+      "indexToken": "0xb06aa7E4af937C130dDade66f6ed7642716fe07A",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-07T00:00:00.000Z"
+    },
+    {
+      "name": "BOME/USD [WBTC.b-USDC]",
+      "marketToken": "0x71237F8C3d1484495A136022E16840b70fF84a69",
+      "indexToken": "0x3Eea56A1ccCdbfB70A26aD381C71Ee17E4c8A15F",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-21T00:00:00.000Z"
+    },
+    {
+      "name": "MOODENG/USD [WBTC.b-USDC]",
+      "marketToken": "0x2523B89298908FEf4c5e5bd6F55F20926e22058f",
+      "indexToken": "0xd3898c6570974AEca38a8ACf22fd60739e528A99",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-06-02T00:00:00.000Z"
+    },
+    {
+      "name": "ZEC/USD [WBTC.b-USDC]",
+      "marketToken": "0x587759c237acCa739bCE3911647BacF56C876E60",
+      "indexToken": "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-12-22T00:00:00.000Z"
+    },
+    {
+      "name": "ENA/USD [ETH-USDC]",
+      "marketToken": "0x9F159014CC218e942E9E9481742fE5BFa9ac5A2C",
+      "indexToken": "0xfe1Aac2CD9C5cC77b58EeCfE75981866ed0c8b7a",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-01-23T00:00:00.000Z"
+    },
+    {
+      "name": "ATOM/USD [ETH-USDC]",
+      "marketToken": "0x248C35760068cE009a13076D573ed3497A47bCD4",
+      "indexToken": "0x7D7F1765aCbaF847b9A1f7137FE8Ed4931FbfEbA",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-03-03T00:00:00.000Z"
+    },
+    {
+      "name": "TIA/USD [ETH-USDC]",
+      "marketToken": "0xBeB1f4EBC9af627Ca1E5a75981CE1AE97eFeDA22",
+      "indexToken": "0x38676f62d166f5CE7De8433F51c6B3D6D9d66C19",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-31T00:00:00.000Z"
+    },
+    {
+      "name": "XAUT (deprecated)/USD [WBTC.b-USDC]",
+      "marketToken": "0xAbDb2530E24f0736DfbF6dA2600B52Bd6455acDd",
+      "indexToken": "0xcF558864c6B130Ce76d20641D008ebd4871eDED0",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": false,
+      "listingDate": "2026-01-23T00:00:00.000Z"
+    },
+    {
+      "name": "NEAR/USD [ETH-USDC]",
+      "marketToken": "0x63Dc80EE90F26363B3FCD609007CC9e14c8991BE",
+      "indexToken": "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-03-03T00:00:00.000Z"
+    },
+    {
+      "name": "PI/USD [WBTC.b-USDC]",
+      "marketToken": "0x39AC3C494950A4363D739201BA5A0861265C9ae5",
+      "indexToken": "0xd1738d37401a0A71f7E382d2cFeCD3ab69687017",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-06-02T00:00:00.000Z"
+    },
+    {
+      "name": "APT/USD [ETH-USDC]",
+      "marketToken": "0x66A69c8eb98A7efE22A22611d1967dfec786a708",
+      "indexToken": "0x3f8f0dCE4dCE4d0D1d0871941e79CDA82cA50d0B",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-31T00:00:00.000Z"
+    },
+    {
+      "name": "BONK/USD [ETH-USDC]",
+      "marketToken": "0xFaC5fF56c269432706d47DC82Ab082E9AE7D989E",
+      "indexToken": "0x1FD10E767187A92f0AB2ABDEEF4505e319cA06B2",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-15T00:00:00.000Z"
+    },
+    {
+      "name": "AAVE/USD [AAVE-USDC]",
+      "marketToken": "0x1CbBa6346F110c8A5ea739ef2d1eb182990e4EB2",
+      "indexToken": "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+      "longToken": "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-02-29T00:00:00.000Z"
+    },
+    {
+      "name": "BCH/USD [WBTC.b-USDC]",
+      "marketToken": "0x62feB8Ec060A7dE5b32BbbF4AC70050f8a043C17",
+      "indexToken": "0xc33D9C096e74aa4f571E9417b69a19C4A1e72ef2",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-28T00:00:00.000Z"
+    },
+    {
+      "name": "FARTCOIN/USD [WBTC.b-USDC]",
+      "marketToken": "0xe2730Ffe2136aA549327EBce93D58160df7821CB",
+      "indexToken": "0xaca341E61aB6177B0b0Df46a612e4311F8a7605f",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-01-30T00:00:00.000Z"
+    },
+    {
+      "name": "ZRO/USD [ETH-USDC]",
+      "marketToken": "0x9e79146b3A022Af44E0708c6794F03Ef798381A5",
+      "indexToken": "0xa8193C55C34Ed22e1Dbe73FD5Adc668E51578a67",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-05-08T00:00:00.000Z"
+    },
+    {
+      "name": "S/USD [WBTC.b-USDC]",
+      "marketToken": "0x4d9bA415649c4B3c703562770C8ff3033478Cea1",
+      "indexToken": "0x8F6cCb99d4Fd0B4095915147b5ae3bbDb8075394",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-27T00:00:00.000Z"
+    },
+    {
+      "name": "CAKE/USD [WBTC.b-USDC]",
+      "marketToken": "0xdE967676db7b1ccdBA2bD94B01B5b19DE4b563e4",
+      "indexToken": "0x580b373Ac16803BB0133356F470f3c7EEF54151B",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-27T00:00:00.000Z"
+    },
+    {
+      "name": "JUP/USD [WBTC.b-USDC]",
+      "marketToken": "0x7DE8E1A1fbA845A330A6bD91118AfDA09610fB02",
+      "indexToken": "0xfEd500Df379427Fbc48BDaf3b511b519c7eCCD26",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-03-06T00:00:00.000Z"
+    },
+    {
+      "name": "TON/USD [ETH-USDC]",
+      "marketToken": "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c",
+      "indexToken": "0xB2f7cefaeEb08Aa347705ac829a7b8bE2FB560f3",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-11-07T00:00:00.000Z"
+    },
+    {
+      "name": "OP/USD [OP-USDC]",
+      "marketToken": "0x4fDd333FF9cA409df583f306B6F5a7fFdE790739",
+      "indexToken": "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
+      "longToken": "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-03-20T00:00:00.000Z"
+    },
+    {
+      "name": "BRETT/USD [ETH-USDC]",
+      "marketToken": "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50",
+      "indexToken": "0x4249F6e0808bEfF7368AaAD3F7A3Fd511F61Ee60",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-08-27T00:00:00.000Z"
+    },
+    {
+      "name": "LDO/USD [ETH-USDC]",
+      "marketToken": "0xE61e608Ba010fF48A7dcE8eDd8B906744263d33E",
+      "indexToken": "0x9D678B4Dd38a6E01df8090aEB7974aD71142b05f",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2025-02-07T00:00:00.000Z"
+    },
+    {
+      "name": "BTC/USD [tBTC-tBTC]",
+      "marketToken": "0xd62068697bCc92AF253225676D618B0C9f17C663",
+      "indexToken": "0x47904963fc8b2340414262125aF798B9655E58Cd",
+      "longToken": "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
+      "shortToken": "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
+      "isListed": true,
+      "listingDate": "2024-09-11T00:00:00.000Z"
+    },
+    {
+      "name": "BTC/USD [WBTC.b-WBTC.b]",
+      "marketToken": "0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77",
+      "indexToken": "0x47904963fc8b2340414262125aF798B9655E58Cd",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "isListed": true,
+      "listingDate": "2024-04-13T00:00:00.000Z"
+    },
+    {
+      "name": "ETH/USD [ETH-ETH]",
+      "marketToken": "0x450bb6774Dd8a756274E0ab4107953259d2ac541",
+      "indexToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "isListed": true,
+      "listingDate": "2024-04-13T00:00:00.000Z"
+    },
+    {
+      "name": "SHIB/USD [ETH-USDC]",
+      "marketToken": "0xB62369752D8Ad08392572db6d0cc872127888beD",
+      "indexToken": "0x3E57D02f9d196873e55727382974b02EdebE6bfd",
+      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-08-07T00:00:00.000Z"
+    },
+    {
+      "name": "SWAP-ONLY [USDe-USDC]",
+      "marketToken": "0x45aD16Aaa28fb66Ef74d5ca0Ab9751F2817c81a4",
+      "indexToken": "0x0000000000000000000000000000000000000000",
+      "longToken": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-07-31T00:00:00.000Z"
+    },
+    {
+      "name": "SWAP-ONLY [USDC-USDC.e]",
+      "marketToken": "0x9C2433dFD71096C435Be9465220BB2B189375eA7",
+      "indexToken": "0x0000000000000000000000000000000000000000",
+      "longToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "shortToken": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      "isListed": true,
+      "listingDate": "2023-08-08T00:00:00.000Z"
+    },
+    {
+      "name": "SATS/USD [WBTC.b-USDC]",
+      "marketToken": "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366",
+      "indexToken": "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
+      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isListed": true,
+      "listingDate": "2024-10-10T00:00:00.000Z"
+    },
+    {
+      "name": "SWAP-ONLY [wstETH-ETH]",
+      "marketToken": "0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8",
+      "indexToken": "0x0000000000000000000000000000000000000000",
+      "longToken": "0x5979D7b546E38E414F7E9822514be443A4800529",
+      "shortToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "isListed": true,
+      "listingDate": "2024-07-31T00:00:00.000Z"
+    }
+  ]
+}

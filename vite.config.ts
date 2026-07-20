@@ -126,15 +126,22 @@ function manualChunks(id: string) {
   return undefined;
 }
 
-function sdkViemDedupe(): PluginOption {
+// sdk/node_modules has its own copies of these; bundling both breaks instanceof checks (e.g. SimulationFailedRpcError)
+const SDK_DEDUPED_PACKAGES = ["viem", "@gelatocloud/gasless"];
+
+function isSdkDedupedSource(source: string) {
+  return SDK_DEDUPED_PACKAGES.some((packageName) => source === packageName || source.startsWith(`${packageName}/`));
+}
+
+function sdkDedupe(): PluginOption {
   const normalizedSdkSrcDir = normalizePath(SDK_SRC_DIR);
-  const appResolverImporter = path.join(APP_SRC_DIR, "__sdk-viem-dedupe.ts");
+  const appResolverImporter = path.join(APP_SRC_DIR, "__sdk-dedupe.ts");
 
   return {
-    name: "gmx-sdk-viem-dedupe",
+    name: "gmx-sdk-dedupe",
     enforce: "pre",
     async resolveId(source, importer, options) {
-      if (!importer || (source !== "viem" && !source.startsWith("viem/"))) {
+      if (!importer || !isSdkDedupedSource(source)) {
         return null;
       }
 
@@ -205,7 +212,7 @@ export default defineConfig(({ mode }) => {
         include: "**/*.svg?react",
       }),
       optionalSolanaSystemStub(),
-      sdkViemDedupe(),
+      sdkDedupe(),
       tsconfigPaths(),
       react({
         babel: {
