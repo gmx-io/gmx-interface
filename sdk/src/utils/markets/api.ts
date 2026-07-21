@@ -1,5 +1,3 @@
-import { maxUint256 } from "viem";
-
 import { IHttp } from "utils/http/types";
 import { deserializeBigIntsInObject } from "utils/numbers";
 import { TokenData } from "utils/tokens/types";
@@ -52,61 +50,19 @@ export async function fetchApiMarketsTickers(
   return tickers.map((t) => deserializeBigIntsInObject(t, { handleInts: true })) as MarketTickerWithCapacity[];
 }
 
-function isTradingCapacity(value: unknown): value is TradingCapacity {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return false;
-  }
-
-  const capacity = value as Record<string, unknown>;
-  const availableLiquidity = capacity.availableLiquidity;
-  const baseAvailableLiquidity = capacity.baseAvailableLiquidity;
-  const jitAvailableLiquidity = capacity.jitAvailableLiquidity;
-  const limitingFactor = capacity.limitingFactor;
-  const jitDataStatus = capacity.jitDataStatus;
-  const marketDataStatus = capacity.marketDataStatus;
-  return (
-    typeof availableLiquidity === "bigint" &&
-    typeof baseAvailableLiquidity === "bigint" &&
-    typeof jitAvailableLiquidity === "bigint" &&
-    availableLiquidity >= 0n &&
-    baseAvailableLiquidity >= 0n &&
-    jitAvailableLiquidity >= 0n &&
-    availableLiquidity <= maxUint256 &&
-    baseAvailableLiquidity <= maxUint256 &&
-    jitAvailableLiquidity <= maxUint256 &&
-    baseAvailableLiquidity + jitAvailableLiquidity === availableLiquidity &&
-    typeof limitingFactor === "string" &&
-    ["reserve", "openInterest", "both", "notApplicable"].includes(limitingFactor) &&
-    typeof jitDataStatus === "string" &&
-    ["available", "stale", "unavailable"].includes(jitDataStatus) &&
-    typeof marketDataStatus === "string" &&
-    ["fresh", "stale"].includes(marketDataStatus)
-  );
-}
-
-export function parseTradingCapacity(value: unknown): TradingCapacity | undefined {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return undefined;
-  }
-
-  const parsed = deserializeBigIntsInObject(value, { handleInts: true });
-  return isTradingCapacity(parsed) ? parsed : undefined;
+export function parseTradingCapacity(raw: any): TradingCapacity {
+  return deserializeBigIntsInObject(raw, { handleInts: true }) as TradingCapacity;
 }
 
 export async function fetchApiTradingCapacity(
   ctx: { api: IHttp },
   params: GetTradingCapacityParams
 ): Promise<TradingCapacity> {
-  const response: unknown = await ctx.api.fetchJson("/v1/markets/trading-capacity", {
+  return ctx.api.fetchJson<TradingCapacity>("/v1/markets/trading-capacity", {
     query: {
       symbol: params.symbol,
       direction: params.direction,
     },
+    transform: parseTradingCapacity,
   });
-  const parsed = parseTradingCapacity(response);
-  if (!parsed) {
-    throw new Error(`Invalid trading capacity response for symbol: ${params.symbol}`);
-  }
-
-  return parsed;
 }

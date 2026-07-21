@@ -299,10 +299,6 @@ export class GmxApiSdk {
   }
 
   async getTradingCapacity(params: GetTradingCapacityParams): Promise<TradingCapacity> {
-    if (params.direction !== "long" && params.direction !== "short") {
-      throw new Error(`Invalid trading direction: ${String(params.direction)}`);
-    }
-
     return fetchApiTradingCapacity(this.ctx, params);
   }
 

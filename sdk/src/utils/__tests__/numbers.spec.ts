@@ -19,7 +19,10 @@ import {
   formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
+  isUint256,
+  MaxUint256,
   numberToBigint,
+  parseUint256DecimalString,
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
   PRECISION_DECIMALS,
@@ -39,6 +42,31 @@ describe("numbers utils", () => {
     expect(BN_ZERO).toBe(0n);
     expect(BN_ONE).toBe(1n);
     expect(BN_NEGATIVE_ONE).toBe(-1n);
+  });
+
+  describe("uint256", () => {
+    it.each([
+      ["0", 0n],
+      ["1", 1n],
+      [MaxUint256.toString(), MaxUint256],
+    ])("parses the canonical decimal string %s", (value, expected) => {
+      expect(parseUint256DecimalString(value)).toBe(expected);
+    });
+
+    it.each([undefined, null, 1, 1n, "", "-1", "+1", "01", "1.0", "0x10", (MaxUint256 + 1n).toString()])(
+      "rejects the non-uint256 decimal value %s",
+      (value) => {
+        expect(parseUint256DecimalString(value)).toBeUndefined();
+      }
+    );
+
+    it("recognizes uint256 bigint values", () => {
+      expect(isUint256(0n)).toBe(true);
+      expect(isUint256(MaxUint256)).toBe(true);
+      expect(isUint256(-1n)).toBe(false);
+      expect(isUint256(MaxUint256 + 1n)).toBe(false);
+      expect(isUint256("1")).toBe(false);
+    });
   });
 
   describe("expandDecimals", () => {

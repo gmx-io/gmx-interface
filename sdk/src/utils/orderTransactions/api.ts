@@ -1,10 +1,9 @@
-import { maxUint256 } from "viem";
-
 import type { ContractsChainId } from "configs/chains";
 import { HttpError } from "utils/http/http";
 import { IHttp } from "utils/http/types";
 import { parseTradingCapacity } from "utils/markets/api";
 import type { TradingCapacity } from "utils/markets/types";
+import { isUint256, parseUint256DecimalString } from "utils/numbers";
 import type { IAbstractSigner, TypedDataDomain, TypedDataTypes } from "utils/signer";
 
 import { validateOrderTypedData } from "./validateTypedData";
@@ -215,21 +214,6 @@ const PREPARE_ORDER_ERROR_CODES: readonly PrepareOrderErrorCode[] = [
   "POSITION_NOT_FOUND",
 ];
 
-const UINT_DECIMAL_STRING_REGEX = /^(0|[1-9]\d*)$/;
-
-function parseUint256DecimalString(value: unknown): bigint | undefined {
-  if (typeof value !== "string" || !UINT_DECIMAL_STRING_REGEX.test(value)) {
-    return undefined;
-  }
-
-  const parsed = BigInt(value);
-  return parsed <= maxUint256 ? parsed : undefined;
-}
-
-function isUint256(value: unknown): value is bigint {
-  return typeof value === "bigint" && value >= 0n && value <= maxUint256;
-}
-
 function isParsedTradingCapacity(value: unknown): value is TradingCapacity {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return false;
@@ -240,7 +224,9 @@ function isParsedTradingCapacity(value: unknown): value is TradingCapacity {
     typeof capacity.availableLiquidity === "bigint" &&
     typeof capacity.baseAvailableLiquidity === "bigint" &&
     typeof capacity.jitAvailableLiquidity === "bigint" &&
-    parseTradingCapacity(value) !== undefined
+    typeof capacity.limitingFactor === "string" &&
+    typeof capacity.jitDataStatus === "string" &&
+    typeof capacity.marketDataStatus === "string"
   );
 }
 
@@ -268,7 +254,7 @@ function parsePrepareOrderErrorBody(value: unknown): PrepareOrderError | undefin
     const capacity = parseTradingCapacity(body.details);
     const details = body.details as Record<string, unknown> | null | undefined;
     const requestedSizeUsd = parseUint256DecimalString(details?.requestedSizeUsd);
-    if (!capacity || requestedSizeUsd === undefined || typeof body.message !== "string") {
+    if (!isParsedTradingCapacity(capacity) || requestedSizeUsd === undefined || typeof body.message !== "string") {
       return undefined;
     }
 
@@ -342,9 +328,6 @@ function parseEstimates(raw: any): OrderEstimates | undefined {
   if (!raw) return undefined;
 
   const tradingCapacity = raw.tradingCapacity === undefined ? undefined : parseTradingCapacity(raw.tradingCapacity);
-  if (raw.tradingCapacity !== undefined && !tradingCapacity) {
-    throw new Error("Invalid trading capacity in prepare response");
-  }
 
   return {
     positionPriceImpactDeltaUsd: BigInt(raw.positionPriceImpactDeltaUsd ?? "0"),
@@ -363,7 +346,7 @@ function parseValidationWarning(raw: any): OrderValidationWarning {
   if (raw?.code === "INSUFFICIENT_LIQUIDITY") {
     const capacity = parseTradingCapacity(raw.details);
     const requestedSizeUsd = parseUint256DecimalString(raw.details?.requestedSizeUsd);
-    if (!capacity || requestedSizeUsd === undefined || typeof raw.message !== "string") {
+    if (!isParsedTradingCapacity(capacity) || requestedSizeUsd === undefined || typeof raw.message !== "string") {
       throw new Error("Invalid insufficient-liquidity warning in prepare response");
     }
 

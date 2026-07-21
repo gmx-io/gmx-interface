@@ -115,16 +115,6 @@ describe("GmxApiSdk.getTradingCapacity", () => {
     ]);
   });
 
-  it("rejects an invalid runtime direction before fetching", async () => {
-    const api = new TradingCapacityApi(buildCapacity());
-    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api });
-
-    await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "invalid" as "long" })).rejects.toThrow(
-      "Invalid trading direction: invalid"
-    );
-    expect(api.fetchCalls).toEqual([]);
-  });
-
   it("propagates API errors", async () => {
     const sdk = new GmxApiSdk({
       chainId: ARBITRUM,
@@ -132,25 +122,6 @@ describe("GmxApiSdk.getTradingCapacity", () => {
     });
 
     await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" })).rejects.toThrow("Market not found");
-  });
-
-  it.each([
-    null,
-    [],
-    {},
-    { ...buildCapacity(), availableLiquidity: "invalid" },
-    { ...buildCapacity(), availableLiquidity: "-1", baseAvailableLiquidity: "-3" },
-    { ...buildCapacity(), availableLiquidity: (MAX_UINT256 + 1n).toString() },
-    { ...buildCapacity(), jitAvailableLiquidity: "3" },
-    { ...buildCapacity(), limitingFactor: ["reserve"] },
-    { ...buildCapacity(), jitDataStatus: ["available"] },
-    { ...buildCapacity(), marketDataStatus: ["fresh"] },
-  ])("rejects a malformed capacity response", async (response) => {
-    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: new TradingCapacityApi(response) });
-
-    await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" })).rejects.toThrow(
-      `Invalid trading capacity response for symbol: ${SYMBOL}`
-    );
   });
 });
 
