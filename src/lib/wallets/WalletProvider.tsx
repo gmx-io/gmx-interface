@@ -2,12 +2,14 @@ import { PrivyProvider } from "@privy-io/react-auth";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { StyleSheetManager } from "styled-components";
 
 import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import gmxLogo from "img/logo-icon.svg";
 
+import { PRIVY_STYLIS_PLUGINS } from "./privyUiCompat";
 import {
   getWagmiConfig,
   getSupportedChains,
@@ -52,10 +54,12 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   );
 
   return (
-    <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
-      <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>
-      </QueryClientProvider>
-    </PrivyProvider>
+    <StyleSheetManager stylisPlugins={PRIVY_STYLIS_PLUGINS}>
+      <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
+        <QueryClientProvider client={queryClient}>
+          <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>
+        </QueryClientProvider>
+      </PrivyProvider>
+    </StyleSheetManager>
   );
 }

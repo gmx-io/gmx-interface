@@ -68,6 +68,10 @@ msgstr "Positiver Wert: Trader erhalten Funding"
 msgid "Funding exponent factor"
 msgstr "Funding-Exponentfaktor"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfers from another chain are currently unavailable. Use <0>Receive to this wallet</0> instead."
+msgstr "Überweisungen von einer anderen Chain sind derzeit nicht verfügbar. Nutzen Sie stattdessen <0>Auf diese Wallet empfangen</0>."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
 msgstr "Einzahlung anfordern"
@@ -1286,6 +1290,10 @@ msgstr "Dezentrale Renditeprodukte"
 msgid "{0} price"
 msgstr "{0}-Preis"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buying with card is currently unavailable for your region or configuration. Use <0>Receive to this wallet</0> instead."
+msgstr "Der Kauf mit Karte ist für Ihre Region oder Konfiguration derzeit nicht verfügbar. Nutzen Sie stattdessen <0>Auf diese Wallet empfangen</0>."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "Max. {0} kaufbarer Betrag überschritten"
@@ -1361,6 +1369,11 @@ msgstr "Maximal {allowedAutoCancelOrdersNumber} automatisch stornierbare TP/SL-O
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
 msgstr "GMX-Abstimmungsseite für Vorschläge"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+msgid "Receive funds"
+msgstr "Gelder empfangen"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
@@ -2037,6 +2050,10 @@ msgstr ""
 msgid "Order is already frozen"
 msgstr "Die Order ist bereits eingefroren"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Copy your wallet address or scan a QR code."
+msgstr "Kopieren Sie Ihre Wallet-Adresse oder scannen Sie einen QR-Code."
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -2246,6 +2263,10 @@ msgstr "Sicher & genehmigungsfrei"
 msgid "Register an affiliate code to access distributions"
 msgstr ""
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX Account, deposit the funds to it as a separate step once they arrive."
+msgstr "Gelder gehen in Ihrer verbundenen Wallet auf {chainName} ein, nicht auf Ihrem GMX-Konto. Um mit Ihrem GMX-Konto zu handeln, zahlen Sie die Gelder nach deren Eingang in einem separaten Schritt dort ein."
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code."
 msgstr "Dieses Konto hat keinen aktiven Empfehlungscode."
@@ -2306,6 +2327,10 @@ msgstr "Es kann einige Minuten dauern, bis die Anzeige erscheint. Versuchen Sie 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "Fehlgeschlagene Einzahlung"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Use debit/credit card, Apple Pay, or Google Pay where supported."
+msgstr "Nutzen Sie Debit-/Kreditkarte, Apple Pay oder Google Pay, sofern unterstützt."
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -3061,6 +3086,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized PnL"
 msgstr "Anfänglicher unrealisierter PnL"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfer from another chain"
+msgstr "Von einer anderen Chain übertragen"
 
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
@@ -4043,6 +4072,10 @@ msgstr "Order-Anfrage wird gesendet…"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Verkaufen von {0}{1}<1>{poolName}</1></0>"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}."
+msgstr "Gelder gehen in Ihrer verbundenen Wallet auf {chainName} ein."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -5371,6 +5404,10 @@ msgstr "TP/SL setzen"
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "Maximal {MAX_REFERRAL_CODE_LENGTH} Zeichen"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buy with card"
+msgstr "Mit Karte kaufen"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "Isolierte Liquidität pro Markt bereitstellen"
@@ -5386,6 +5423,10 @@ msgstr "Open Interest in Token für Guthaben verwenden"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "Nahtloser Handel"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Deposit from another wallet, exchange, or chain."
+msgstr "Einzahlung von einer anderen Wallet, Börse oder Chain."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
@@ -7652,6 +7693,10 @@ msgstr "Liquidation"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "TP/SL hinzufügen"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "How would you like to add funds?"
+msgstr "Wie möchten Sie Gelder hinzufügen?"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -10361,6 +10406,10 @@ msgstr "{balanceFormatted} auf das Hauptkonto abgehoben"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
 msgstr "Abrechnung von {positionName} fehlgeschlagen"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Receive to this wallet"
+msgstr "Auf diese Wallet empfangen"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"
