@@ -22,7 +22,8 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-260605170830-1049f5c/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@6230c4/api/graphql",
+    // TODO: revert to https://gmx.squids.live/gmx-synthetics-arbitrum@6230c4/api/graphql before merge (BEDEV-272 test deployment)
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@be272/api/graphql",
   },
 
   [AVALANCHE]: {
