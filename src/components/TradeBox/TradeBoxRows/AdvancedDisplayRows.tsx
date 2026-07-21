@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
+import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import {
   selectIsSetAcceptablePriceImpactEnabled,
   selectShowDebugValues,
@@ -44,6 +45,7 @@ import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { NextStoredImpactRows } from "./NextStoredImpactRows";
+import { RewardsHintRow } from "./RewardsHintRow";
 import { SwapDebugRow } from "./SwapDebugRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
@@ -141,6 +143,7 @@ export function TradeBoxAdvancedGroups({
   gasPaymentParams: GasPaymentParams | undefined;
   totalExecutionFee: ExecutionFee | undefined;
 }) {
+  const { isActive: incentivesV2Active } = useIncentivesV2State();
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -193,7 +196,7 @@ export function TradeBoxAdvancedGroups({
   const isVisible = options.advancedDisplay;
   const markPrice = useSelector(selectTradeboxMarkPrice);
 
-  return (
+  const executionDetails = (
     <ExpandableRow
       open={isVisible}
       title={t`Execution details`}
@@ -249,4 +252,15 @@ export function TradeBoxAdvancedGroups({
       )}
     </ExpandableRow>
   );
+
+  if (incentivesV2Active && (feesType === "increase" || feesType === "decrease")) {
+    return (
+      <div className="rounded-8 bg-slate-700/50">
+        {executionDetails}
+        <RewardsHintRow feesType={feesType} />
+      </div>
+    );
+  }
+
+  return executionDetails;
 }

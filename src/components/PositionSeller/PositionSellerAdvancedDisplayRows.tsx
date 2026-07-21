@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 
+import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectPositionSellerDecreaseAmounts,
@@ -23,12 +24,13 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { ExitPriceRow } from "../ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
-import { ExitPriceRow } from "../ExitPriceRow/ExitPriceRow";
+import { RewardsHintRow } from "../TradeBox/TradeBoxRows/RewardsHintRow";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 export type Props = {
   triggerPriceInputValue: string;
@@ -37,6 +39,7 @@ export type Props = {
 };
 
 export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId, gasPaymentParams }: Props) {
+  const { isActive: incentivesV2Active } = useIncentivesV2State();
   const [open, setOpen] = useLocalStorageSerializeKey("position-seller-advanced-display-rows-open", false);
   const position = useSelector(selectPositionSellerPosition);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
@@ -98,7 +101,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     return null;
   }
 
-  return (
+  const executionDetails = (
     <ExpandableRow
       title={t`Execution details`}
       open={open}
@@ -168,4 +171,15 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       )}
     </ExpandableRow>
   );
+
+  if (incentivesV2Active) {
+    return (
+      <div className="rounded-8 bg-slate-700/50">
+        {executionDetails}
+        <RewardsHintRow feesType="decrease" />
+      </div>
+    );
+  }
+
+  return executionDetails;
 }

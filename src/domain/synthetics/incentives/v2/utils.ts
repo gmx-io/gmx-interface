@@ -1,0 +1,107 @@
+import { ONE_YEAR_SECONDS, SECONDS_IN_DAY } from "lib/dates";
+import { formatAmount, formatUsd, PRECISION, USD_DECIMALS } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
+
+export function formatEpochLabel(epochTimestamp: number, epochDuration: number, locale?: string): string {
+  const safeEpochDuration = Math.max(epochDuration, 1);
+  const start = new Date(epochTimestamp * 1000);
+  const wholeDays = safeEpochDuration / SECONDS_IN_DAY;
+
+  if (Number.isInteger(wholeDays) && wholeDays >= 1) {
+    const endDate = new Date(start);
+    endDate.setDate(endDate.getDate() + wholeDays - 1);
+
+    if (wholeDays === 1) {
+      return new Intl.DateTimeFormat(locale, {
+        month: "short",
+        day: "numeric",
+      }).format(start);
+    }
+
+    if (safeEpochDuration < ONE_YEAR_SECONDS) {
+      return new Intl.DateTimeFormat(locale, {
+        month: "short",
+        day: "numeric",
+      }).formatRange(start, endDate);
+    }
+
+    return new Intl.DateTimeFormat(locale, {
+      month: "short",
+      year: "numeric",
+    }).formatRange(start, endDate);
+  }
+
+  const endInclusive = new Date((epochTimestamp + safeEpochDuration - 1) * 1000);
+
+  if (safeEpochDuration < SECONDS_IN_DAY) {
+    return new Intl.DateTimeFormat(locale, {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    }).formatRange(start, endInclusive);
+  }
+
+  if (safeEpochDuration < ONE_YEAR_SECONDS) {
+    return new Intl.DateTimeFormat(locale, {
+      month: "short",
+      day: "numeric",
+    }).formatRange(start, endInclusive);
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    year: "numeric",
+  }).formatRange(start, endInclusive);
+}
+
+export function formatMultiplier(multiplier: bigint, multiplierDecimals: bigint, displayDecimals = 2) {
+  if (multiplierDecimals <= 0n) return "-";
+
+  const displayPrecision = 10n ** BigInt(displayDecimals);
+  const scaledMultiplier = (multiplier * displayPrecision + multiplierDecimals / 2n) / multiplierDecimals;
+  const formatted = formatAmount(scaledMultiplier, displayDecimals, displayDecimals, false, {
+    trimTrailingZeros: true,
+  });
+
+  return `${formatted}x`;
+}
+
+export function formatMultiplierAdjustment(multiplier: bigint, multiplierDecimals: bigint, displayDecimals = 2) {
+  const formatted = formatMultiplier(multiplier, multiplierDecimals, displayDecimals);
+
+  return multiplier > 0n && formatted !== "-" ? `+${formatted}` : formatted;
+}
+
+export function formatFactorPercentage(factor: bigint, displayDecimals = 0) {
+  return `${formatAmount(factor * 100n, USD_DECIMALS, displayDecimals, false, {
+    trimTrailingZeros: true,
+  })}%`;
+}
+
+export function getMaxRewardRateFactor(config: {
+  feeShareFactor: bigint;
+  esGmxShareFactor: bigint;
+  gtShareFactor: bigint;
+  maxMultiplier: bigint;
+  multiplierDecimals: bigint;
+}) {
+  if (config.multiplierDecimals <= 0n) return 0n;
+
+  const combinedTokenShareFactor = config.esGmxShareFactor + config.gtShareFactor;
+  const rewardShareFactor = bigMath.mulDiv(config.feeShareFactor, combinedTokenShareFactor, PRECISION);
+
+  return bigMath.mulDiv(rewardShareFactor, config.maxMultiplier, config.multiplierDecimals);
+}
+
+export function getRewardsHistoryStatus(epoch: number, epochDuration: number, nowSeconds = Date.now() / 1000) {
+  return nowSeconds < epoch + epochDuration ? ("ongoing" as const) : ("finished" as const);
+}
+
+export function formatManualAllocationVolumeRange(minVolume: bigint, maxVolume: bigint | null) {
+  const minimum = formatUsd(minVolume, { displayDecimals: 0 }) ?? "-";
+
+  if (maxVolume === null) return `${minimum}+`;
+
+  return `${minimum} – ${formatUsd(maxVolume, { displayDecimals: 0 }) ?? "-"}`;
+}

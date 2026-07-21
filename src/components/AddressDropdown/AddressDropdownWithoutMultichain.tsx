@@ -25,6 +25,9 @@ import CopyIcon from "img/ic_copy.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
+import { IcMultiplier as MultiplierIcon } from "img/IcMultiplier";
+
+import { useHeaderIncentivesMultiplier } from "./useHeaderIncentivesMultiplier";
 
 import "./AddressDropdownWithoutMultichain.scss";
 
@@ -37,6 +40,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
 
   const { chainId } = useChainId();
   const isBotanix = chainId === BOTANIX;
+  const formattedMultiplier = useHeaderIncentivesMultiplier({ account, chainId });
 
   const accountUrl = getAccountUrl(chainId, account);
   const handleDisconnect = useDisconnectAndClose();
@@ -52,6 +56,13 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               <span className="text-body-medium font-medium text-typography-primary">
                 {shortenAddressOrEns(ensName || account, displayAddressLength)}
               </span>
+
+              {formattedMultiplier ? (
+                <span className="text-caption flex items-center gap-2 rounded-4 bg-green-500/15 px-6 py-2 font-semibold text-green-500">
+                  <MultiplierIcon className="size-12" />
+                  {formattedMultiplier}
+                </span>
+              ) : null}
 
               <ChevronDownIcon className={cx("block size-20", { "rotate-180": open })} />
             </Button>

@@ -3,7 +3,7 @@ import { ColorTree } from "lib/generateColorConfig";
 export const colors = {
   blue: {
     100: { light: "#A4C3F9", dark: "#A4C3F9" },
-    300: { light: "#7885FF", dark: "#7885FF" },
+    300: { light: "#2D42FC", dark: "#7885FF" },
     400: { light: "#2D42FC", dark: "#2D42FC" },
     500: { light: "#3d51ff", dark: "#3d51ff" },
     600: { light: "#2d42fc", dark: "#2d42fc" },
@@ -81,6 +81,7 @@ export const colors = {
     primary: { light: "#000000", dark: "#ffffff" },
     secondary: { light: "#696D96", dark: "#a0a3c4" },
     inactive: { light: "#C4C4D5", dark: "#3E4361" },
+    disabled: { light: "#646A8F", dark: "#646A8F" },
   },
   stroke: {
     primary: { light: "#D4D4E2", dark: "#363a59" },

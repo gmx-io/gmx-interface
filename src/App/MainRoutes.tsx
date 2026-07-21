@@ -28,6 +28,7 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import { INCENTIVES_ROUTE_PATHS, IncentivesRoute } from "pages/RewardsPage/IncentivesRoute";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
@@ -79,6 +80,15 @@ const LazyDecodeError = lazy(() =>
 const DecodeErrorPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyDecodeError />
+  </Suspense>
+);
+
+const LazyIncentivesAudit = lazy(() =>
+  import("pages/IncentivesDebug/IncentivesAuditPage").then((module) => ({ default: module.IncentivesAuditPage }))
+);
+const IncentivesAuditPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyIncentivesAudit />
   </Suspense>
 );
 
@@ -172,6 +182,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/announcements">
         <AnnouncementsPage />
       </Route>
+      <Route path={INCENTIVES_ROUTE_PATHS}>
+        <IncentivesRoute />
+      </Route>
       <Route path="/leaderboard/">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
           <LeaderboardPage />
@@ -238,6 +251,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/decode-error" key="decode-error">
           <DecodeErrorPage />
+        </Route>,
+        <Route path="/incentives-audit/:account?" key="incentives-audit">
+          <IncentivesAuditPage />
         </Route>,
       ]}
       <Route path="*">

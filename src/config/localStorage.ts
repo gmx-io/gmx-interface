@@ -72,6 +72,8 @@ export const SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY = "support-chat-last-connecte
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
+export const REWARDS_NAV_NEW_BADGE_CLICKED_KEY = "rewards-nav-new-badge-clicked";
+
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
 

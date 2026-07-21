@@ -4,10 +4,13 @@ import cx from "classnames";
 import { ReactNode, useCallback, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import { REWARDS_NAV_NEW_BADGE_CLICKED_KEY } from "config/localStorage";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
+import { AnimatedGradientText } from "components/AnimatedGradientText/AnimatedGradientText";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
@@ -19,6 +22,7 @@ import EcosystemIcon from "img/ecosystem.svg?react";
 import AnnouncementsIcon from "img/ic_announcement.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
 import ReferralsIcon from "img/ic_referrals.svg?react";
+import { IcMultiplier as RewardsIcon } from "img/IcMultiplier";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
 import LogoText from "img/logo-text.svg?react";
@@ -26,6 +30,7 @@ import sparkleIcon from "img/sparkle.svg";
 import TradeIcon from "img/trade.svg?react";
 
 import { BottomMenuSection } from "./BottomMenuSection";
+import { resolveIncentivesNavItem } from "./incentivesNavItem";
 
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
@@ -181,6 +186,9 @@ export function MenuSection({
   isCollapsed: boolean | undefined;
   onMenuItemClick?: () => void;
 }) {
+  const { chainId } = useChainId();
+  const incentivesNavItem = resolveIncentivesNavItem(chainId);
+  const [rewardsClicked, setRewardsClicked] = useLocalStorageSerializeKey(REWARDS_NAV_NEW_BADGE_CLICKED_KEY, false);
   const isMegaethPointsActive = useMegaethPointsActive();
 
   const withMegaethSparkle = (label: string) =>
@@ -214,6 +222,24 @@ export function MenuSection({
       key: "referrals",
       to: "/referrals",
     },
+    ...(incentivesNavItem
+      ? [
+          {
+            icon: <RewardsIcon className="size-20" />,
+            label: (
+              <span className="inline-flex items-center gap-6 leading-[1]">
+                {t`Rewards`}
+                {!rewardsClicked && (
+                  <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
+                    <AnimatedGradientText className="inline-block font-medium">{t`New`}</AnimatedGradientText>
+                  </span>
+                )}
+              </span>
+            ),
+            ...incentivesNavItem,
+          },
+        ]
+      : []),
     { icon: <LeaderboardIcon className="size-20" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
     { icon: <EcosystemIcon className="size-20" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
     {
@@ -226,6 +252,17 @@ export function MenuSection({
 
   const { pathname } = useLocation();
 
+  const handleItemClick = useCallback(
+    (key: string) => {
+      if (key === "rewards" && !rewardsClicked) {
+        setRewardsClicked(true);
+      }
+
+      onMenuItemClick?.();
+    },
+    [onMenuItemClick, rewardsClicked, setRewardsClicked]
+  );
+
   return (
     <ul className="flex list-none flex-col px-0">
       {mainNavItems.map((item) => (
@@ -236,7 +273,7 @@ export function MenuSection({
           isActive={pathname === item.to || pathname.startsWith(`${item.to}/`)}
           isCollapsed={isCollapsed}
           to={item.to}
-          onClick={onMenuItemClick}
+          onClick={() => handleItemClick(item.key)}
         />
       ))}
     </ul>
