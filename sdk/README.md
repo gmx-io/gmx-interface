@@ -255,9 +255,25 @@ const indicativeGlobalCapacity =
 
 `availableLiquidity` is the current global JIT-aware capacity and remains capped by max open interest.
 It is indicative because the keeper can restrict JIT by account. `baseAvailableLiquidity` is the native capacity without
-JIT and is the safe account-agnostic sizing value. Do not size an order while `marketDataStatus` is `stale`; only use the
-global JIT uplift when eligibility is known separately. Order preparation returns a typed validation warning when JIT
-capacity is not authoritative for the specific request.
+JIT, but it is still a market-level snapshot: a collateral swap or intervening market state can reduce the capacity
+available to a specific order. Do not size an order while `marketDataStatus` is `stale`; only use the global JIT uplift
+when eligibility is known separately. Treat `prepareOrder` as the final request-aware validation; it returns a typed
+warning when capacity is not authoritative for the specific request.
 
-The helper uses the capacity returned by `/v1/markets/tickers`. Existing raw JIT access through
+Prepare failures can be narrowed to the typed API contract:
+
+```typescript
+import { parsePrepareOrderError } from "@gmx-io/sdk/v2";
+
+try {
+  await api.prepareOrder(request);
+} catch (error) {
+  const prepareError = parsePrepareOrderError(error);
+  if (prepareError?.code === "INSUFFICIENT_LIQUIDITY") {
+    console.log(prepareError.details.availableLiquidity, prepareError.details.requestedSizeUsd);
+  }
+}
+```
+
+The helper uses the capacity returned by `/v1/markets/trading-capacity`. Existing raw JIT access through
 `fetchJitLiquidityInfo()` remains available for integrations that need shift data.

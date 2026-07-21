@@ -61,6 +61,9 @@ function isTradingCapacity(value: unknown): value is TradingCapacity {
   const availableLiquidity = capacity.availableLiquidity;
   const baseAvailableLiquidity = capacity.baseAvailableLiquidity;
   const jitAvailableLiquidity = capacity.jitAvailableLiquidity;
+  const limitingFactor = capacity.limitingFactor;
+  const jitDataStatus = capacity.jitDataStatus;
+  const marketDataStatus = capacity.marketDataStatus;
   return (
     typeof availableLiquidity === "bigint" &&
     typeof baseAvailableLiquidity === "bigint" &&
@@ -72,9 +75,12 @@ function isTradingCapacity(value: unknown): value is TradingCapacity {
     baseAvailableLiquidity <= maxUint256 &&
     jitAvailableLiquidity <= maxUint256 &&
     baseAvailableLiquidity + jitAvailableLiquidity === availableLiquidity &&
-    ["reserve", "openInterest", "both", "notApplicable"].includes(String(capacity.limitingFactor)) &&
-    ["available", "stale", "unavailable"].includes(String(capacity.jitDataStatus)) &&
-    ["fresh", "stale"].includes(String(capacity.marketDataStatus))
+    typeof limitingFactor === "string" &&
+    ["reserve", "openInterest", "both", "notApplicable"].includes(limitingFactor) &&
+    typeof jitDataStatus === "string" &&
+    ["available", "stale", "unavailable"].includes(jitDataStatus) &&
+    typeof marketDataStatus === "string" &&
+    ["fresh", "stale"].includes(marketDataStatus)
   );
 }
 
@@ -91,10 +97,13 @@ export async function fetchApiTradingCapacity(
   ctx: { api: IHttp },
   params: GetTradingCapacityParams
 ): Promise<TradingCapacity> {
-  const tickers = await fetchApiMarketsTickers(ctx, { symbols: [params.symbol] });
-  const ticker = tickers.length === 1 ? tickers[0] : undefined;
-  const capacity: unknown = params.direction === "long" ? ticker?.capacityLong : ticker?.capacityShort;
-  const parsed = parseTradingCapacity(capacity);
+  const response: unknown = await ctx.api.fetchJson("/v1/markets/trading-capacity", {
+    query: {
+      symbol: params.symbol,
+      direction: params.direction,
+    },
+  });
+  const parsed = parseTradingCapacity(response);
   if (!parsed) {
     throw new Error(`Invalid trading capacity response for symbol: ${params.symbol}`);
   }

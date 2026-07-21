@@ -1,6 +1,7 @@
 import { maxUint256 } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
+import { HttpError } from "utils/http/http";
 import { IHttp } from "utils/http/types";
 import { parseTradingCapacity } from "utils/markets/api";
 import type { TradingCapacity } from "utils/markets/types";
@@ -68,6 +69,34 @@ export type OrderValidationWarning =
       originalCode: string;
       message: string;
       details?: unknown;
+    };
+
+export type PrepareOrderErrorCode =
+  | "INVALID_PARAMS"
+  | "MARKET_NOT_FOUND"
+  | "TOKEN_NOT_FOUND"
+  | "NO_SWAP_PATH"
+  | "POSITION_NOT_FOUND";
+
+export type PrepareOrderFieldValidationErrors = Record<string, { message: string; value?: unknown }>;
+
+export type PrepareOrderError =
+  | {
+      code: "INSUFFICIENT_LIQUIDITY";
+      message: string;
+      details: TradingCapacity & { requestedSizeUsd: bigint };
+    }
+  | {
+      code: PrepareOrderErrorCode;
+      message: string;
+    }
+  | {
+      code?: undefined;
+      message: string;
+    }
+  | {
+      code?: undefined;
+      message: PrepareOrderFieldValidationErrors;
     };
 
 export type PrepareOrderResponse = {
@@ -178,6 +207,137 @@ export type PrepareCollateralRequest = {
   subaccountApproval?: Record<string, any>;
 };
 
+const PREPARE_ORDER_ERROR_CODES: readonly PrepareOrderErrorCode[] = [
+  "INVALID_PARAMS",
+  "MARKET_NOT_FOUND",
+  "TOKEN_NOT_FOUND",
+  "NO_SWAP_PATH",
+  "POSITION_NOT_FOUND",
+];
+
+const UINT_DECIMAL_STRING_REGEX = /^(0|[1-9]\d*)$/;
+
+function parseUint256DecimalString(value: unknown): bigint | undefined {
+  if (typeof value !== "string" || !UINT_DECIMAL_STRING_REGEX.test(value)) {
+    return undefined;
+  }
+
+  const parsed = BigInt(value);
+  return parsed <= maxUint256 ? parsed : undefined;
+}
+
+function isUint256(value: unknown): value is bigint {
+  return typeof value === "bigint" && value >= 0n && value <= maxUint256;
+}
+
+function isParsedTradingCapacity(value: unknown): value is TradingCapacity {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  const capacity = value as Record<string, unknown>;
+  return (
+    typeof capacity.availableLiquidity === "bigint" &&
+    typeof capacity.baseAvailableLiquidity === "bigint" &&
+    typeof capacity.jitAvailableLiquidity === "bigint" &&
+    parseTradingCapacity(value) !== undefined
+  );
+}
+
+function isPrepareOrderFieldValidationErrors(value: unknown): value is PrepareOrderFieldValidationErrors {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  return Object.values(value).every(
+    (fieldError) =>
+      typeof fieldError === "object" &&
+      fieldError !== null &&
+      !Array.isArray(fieldError) &&
+      typeof (fieldError as Record<string, unknown>).message === "string"
+  );
+}
+
+function parsePrepareOrderErrorBody(value: unknown): PrepareOrderError | undefined {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+
+  const body = value as Record<string, unknown>;
+  if (body.code === "INSUFFICIENT_LIQUIDITY") {
+    const capacity = parseTradingCapacity(body.details);
+    const details = body.details as Record<string, unknown> | null | undefined;
+    const requestedSizeUsd = parseUint256DecimalString(details?.requestedSizeUsd);
+    if (!capacity || requestedSizeUsd === undefined || typeof body.message !== "string") {
+      return undefined;
+    }
+
+    return {
+      code: body.code,
+      message: body.message,
+      details: {
+        ...capacity,
+        requestedSizeUsd,
+      },
+    };
+  }
+
+  if (PREPARE_ORDER_ERROR_CODES.includes(body.code as PrepareOrderErrorCode) && typeof body.message === "string") {
+    return {
+      code: body.code as PrepareOrderErrorCode,
+      message: body.message,
+    };
+  }
+
+  if (body.code !== undefined) {
+    return undefined;
+  }
+
+  if (typeof body.message === "string") {
+    return { message: body.message };
+  }
+
+  if (isPrepareOrderFieldValidationErrors(body.message)) {
+    return { message: body.message };
+  }
+
+  return undefined;
+}
+
+export function parsePrepareOrderError(error: unknown): PrepareOrderError | undefined {
+  if (!(error instanceof HttpError) || error.statusCode !== 400) {
+    return undefined;
+  }
+
+  return parsePrepareOrderErrorBody(error.body);
+}
+
+/** Validates an already deserialized prepare error. Use parsePrepareOrderError for a caught HttpError. */
+export function isPrepareOrderError(value: unknown): value is PrepareOrderError {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  const error = value as Record<string, unknown>;
+  if (error.code === "INSUFFICIENT_LIQUIDITY") {
+    const details = error.details as Record<string, unknown> | null | undefined;
+    return Boolean(
+      isParsedTradingCapacity(error.details) &&
+        isUint256(details?.requestedSizeUsd) &&
+        typeof error.message === "string"
+    );
+  }
+
+  if (PREPARE_ORDER_ERROR_CODES.includes(error.code as PrepareOrderErrorCode)) {
+    return typeof error.message === "string";
+  }
+
+  return (
+    error.code === undefined &&
+    (typeof error.message === "string" || isPrepareOrderFieldValidationErrors(error.message))
+  );
+}
+
 function parseEstimates(raw: any): OrderEstimates | undefined {
   if (!raw) return undefined;
 
@@ -202,12 +362,8 @@ function parseEstimates(raw: any): OrderEstimates | undefined {
 function parseValidationWarning(raw: any): OrderValidationWarning {
   if (raw?.code === "INSUFFICIENT_LIQUIDITY") {
     const capacity = parseTradingCapacity(raw.details);
-    if (!capacity || raw.details?.requestedSizeUsd === undefined || typeof raw.message !== "string") {
-      throw new Error("Invalid insufficient-liquidity warning in prepare response");
-    }
-
-    const requestedSizeUsd = BigInt(raw.details.requestedSizeUsd);
-    if (requestedSizeUsd < 0n || requestedSizeUsd > maxUint256) {
+    const requestedSizeUsd = parseUint256DecimalString(raw.details?.requestedSizeUsd);
+    if (!capacity || requestedSizeUsd === undefined || typeof raw.message !== "string") {
       throw new Error("Invalid insufficient-liquidity warning in prepare response");
     }
 

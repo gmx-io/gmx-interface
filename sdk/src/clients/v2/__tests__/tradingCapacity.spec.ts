@@ -68,21 +68,17 @@ function buildCapacity() {
   };
 }
 
-function buildTicker(capacity: unknown = buildCapacity()) {
-  return [{ symbol: SYMBOL, capacityLong: capacity, capacityShort: capacity }];
-}
-
 describe("GmxApiSdk.getTradingCapacity", () => {
-  it("reads global capacity from the market ticker and parses bigint values", async () => {
-    const api = new TradingCapacityApi(buildTicker());
+  it("reads the dedicated capacity endpoint and parses bigint values", async () => {
+    const api = new TradingCapacityApi(buildCapacity());
     const sdk = new GmxApiSdk({ chainId: ARBITRUM, api });
 
     const capacity = await sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" });
 
     expect(api.fetchCalls).toEqual([
       {
-        path: "/v1/markets/tickers",
-        query: { addresses: undefined, symbols: [SYMBOL] },
+        path: "/v1/markets/trading-capacity",
+        query: { symbol: SYMBOL, direction: "long" },
       },
     ]);
     expect(capacity).toEqual({
@@ -97,35 +93,30 @@ describe("GmxApiSdk.getTradingCapacity", () => {
 
   it.each(["available", "stale", "unavailable"] as const)("preserves the %s JIT status", async (jitDataStatus) => {
     const response = { ...buildCapacity(), jitDataStatus };
-    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: new TradingCapacityApi(buildTicker(response)) });
+    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: new TradingCapacityApi(response) });
 
     const capacity = await sdk.getTradingCapacity({ symbol: SYMBOL, direction: "short" });
 
     expect(capacity.jitDataStatus).toBe(jitDataStatus);
   });
 
-  it("accepts an API-resolved market alias returning the canonical symbol", async () => {
-    const api = new TradingCapacityApi([{ ...buildTicker()[0], symbol: "ETH/USD [WETH-USDC.e]" }]);
+  it("passes a market alias to the dedicated endpoint", async () => {
+    const api = new TradingCapacityApi(buildCapacity());
     const sdk = new GmxApiSdk({ chainId: ARBITRUM, api });
 
     await expect(sdk.getTradingCapacity({ symbol: "ETH/USD", direction: "long" })).resolves.toMatchObject({
       availableLiquidity: MAX_UINT256,
     });
+    expect(api.fetchCalls).toEqual([
+      {
+        path: "/v1/markets/trading-capacity",
+        query: { symbol: "ETH/USD", direction: "long" },
+      },
+    ]);
   });
 
-  it.each([{ response: [] }, { response: [buildTicker()[0], buildTicker()[0]] }])(
-    "rejects an ambiguous ticker response",
-    async ({ response }) => {
-      const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: new TradingCapacityApi(response) });
-
-      await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" })).rejects.toThrow(
-        `Invalid trading capacity response for symbol: ${SYMBOL}`
-      );
-    }
-  );
-
   it("rejects an invalid runtime direction before fetching", async () => {
-    const api = new TradingCapacityApi(buildTicker());
+    const api = new TradingCapacityApi(buildCapacity());
     const sdk = new GmxApiSdk({ chainId: ARBITRUM, api });
 
     await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "invalid" as "long" })).rejects.toThrow(
@@ -151,8 +142,11 @@ describe("GmxApiSdk.getTradingCapacity", () => {
     { ...buildCapacity(), availableLiquidity: "-1", baseAvailableLiquidity: "-3" },
     { ...buildCapacity(), availableLiquidity: (MAX_UINT256 + 1n).toString() },
     { ...buildCapacity(), jitAvailableLiquidity: "3" },
+    { ...buildCapacity(), limitingFactor: ["reserve"] },
+    { ...buildCapacity(), jitDataStatus: ["available"] },
+    { ...buildCapacity(), marketDataStatus: ["fresh"] },
   ])("rejects a malformed capacity response", async (response) => {
-    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: new TradingCapacityApi(buildTicker(response)) });
+    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: new TradingCapacityApi(response) });
 
     await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" })).rejects.toThrow(
       `Invalid trading capacity response for symbol: ${SYMBOL}`

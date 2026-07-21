@@ -77,8 +77,13 @@ import {
   prepareCancelOrder,
   prepareCollateral,
   fetchOrderStatus as fetchOrderStatusRaw,
+  isPrepareOrderError,
+  parsePrepareOrderError,
 } from "utils/orderTransactions/api";
 import type {
+  PrepareOrderError,
+  PrepareOrderErrorCode,
+  PrepareOrderFieldValidationErrors,
   PrepareOrderRequest,
   PrepareOrderResponse,
   OrderValidationWarning,
@@ -167,6 +172,9 @@ export type {
   TradesListResponse,
 } from "utils/trades/types";
 export type {
+  PrepareOrderError,
+  PrepareOrderErrorCode,
+  PrepareOrderFieldValidationErrors,
   PrepareOrderRequest,
   PrepareOrderResponse,
   OrderValidationWarning,
@@ -178,6 +186,7 @@ export type {
   OrderStatusRequest,
   OrderStatusResponse,
 };
+export { isPrepareOrderError, parsePrepareOrderError };
 export type {
   WalletBalance,
   TokenAllowance,
