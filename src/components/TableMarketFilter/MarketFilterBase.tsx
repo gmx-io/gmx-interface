@@ -28,8 +28,6 @@ export type MarketFilterBaseProps = {
    * If `true`, the filter will be active regardless of the selected value
    */
   forceIsActive?: boolean;
-  asButton?: boolean;
-  availableMarketAddresses?: string[];
 };
 
 export function MarketFilterBase({
@@ -38,8 +36,6 @@ export function MarketFilterBase({
   excludeSpotOnly,
   beforeContent,
   forceIsActive,
-  asButton,
-  availableMarketAddresses,
 }: MarketFilterBaseProps) {
   const marketsInfoData = useMarketsInfoData();
   const chainId = useSelector(selectChainId);
@@ -47,23 +43,11 @@ export function MarketFilterBase({
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: false,
-    enabled: availableMarketAddresses === undefined,
   });
   const { marketsInfo: markets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
-  const availableMarkets = useMemo(() => {
-    if (availableMarketAddresses === undefined) {
-      return markets;
-    }
-
-    return availableMarketAddresses.flatMap((address) => {
-      const market = marketsInfoData?.[address];
-      return market ? [market] : [];
-    });
-  }, [availableMarketAddresses, markets, marketsInfoData]);
-
   const marketsOptions = useMemo<Item<string>[]>(() => {
-    return availableMarkets
+    return markets
       .filter((market) => {
         if (excludeSpotOnly !== undefined) {
           return !market.isSpotOnly;
@@ -77,7 +61,7 @@ export function MarketFilterBase({
           data: getGlvOrMarketAddress(market),
         };
       });
-  }, [availableMarkets, excludeSpotOnly]);
+  }, [excludeSpotOnly, markets]);
 
   const ItemComponent = useCallback(
     (props: { item: string }) => {
@@ -117,7 +101,6 @@ export function MarketFilterBase({
       ItemComponent={ItemComponent}
       value={value}
       forceIsActive={forceIsActive}
-      asButton={asButton}
     />
   );
 }

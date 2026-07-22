@@ -35,7 +35,12 @@ export type MarketFilterLongShortProps = {
   onChange: (value: MarketFilterLongShortItemData[]) => void;
   withPositions?: "all" | "withOrders";
   asButton?: boolean;
+  label?: string;
+  availableMarketAddresses?: string[];
+  allowedDirections?: readonly Exclude<MarketFilterLongShortDirection, "any">[];
 };
+
+const DEFAULT_DIRECTIONS: readonly Exclude<MarketFilterLongShortDirection, "any">[] = ["long", "short", "swap"];
 
 const selectPositionsWithOrders = createSelector((q) => {
   const positions = q(selectPositionsInfoDataSortedByMarket);
@@ -48,7 +53,15 @@ const selectPositionsWithOrders = createSelector((q) => {
   });
 });
 
-export function MarketFilterLongShort({ value, onChange, withPositions, asButton }: MarketFilterLongShortProps) {
+export function MarketFilterLongShort({
+  value,
+  onChange,
+  withPositions,
+  asButton,
+  label,
+  availableMarketAddresses,
+  allowedDirections = DEFAULT_DIRECTIONS,
+}: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useMarketsInfoData();
@@ -57,8 +70,20 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: false,
+    enabled: availableMarketAddresses === undefined,
   });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
+
+  const availableMarkets = useMemo(() => {
+    if (availableMarketAddresses === undefined) {
+      return allMarkets;
+    }
+
+    return availableMarketAddresses.flatMap((address) => {
+      const market = marketsInfoData?.[address];
+      return market ? [market] : [];
+    });
+  }, [allMarkets, availableMarketAddresses, marketsInfoData]);
 
   const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
     let strippedOpenPositions: Item<MarketFilterLongShortItemData>[] | undefined = undefined;
@@ -74,7 +99,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       }));
     }
 
-    const strippedMarkets: Item<MarketFilterLongShortItemData>[] = allMarkets.map((market) => {
+    const strippedMarkets: Item<MarketFilterLongShortItemData>[] = availableMarkets.map((market) => {
       return {
         text: "any " + market.name,
         data: {
@@ -84,31 +109,35 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       };
     });
 
+    const directionItems: Item<MarketFilterLongShortItemData>[] = [
+      {
+        text: t`Longs`,
+        data: {
+          marketAddress: "any",
+          direction: "long",
+        },
+      },
+      {
+        text: t`Shorts`,
+        data: {
+          marketAddress: "any",
+          direction: "short",
+        },
+      },
+      {
+        text: t`Swaps`,
+        data: {
+          marketAddress: "any",
+          direction: "swap",
+        },
+      },
+    ];
+
     const anyMarketDirectedGroup: Group<MarketFilterLongShortItemData> = {
       groupName: t`Direction`,
-      items: [
-        {
-          text: t`Longs`,
-          data: {
-            marketAddress: "any",
-            direction: "long",
-          },
-        },
-        {
-          text: t`Shorts`,
-          data: {
-            marketAddress: "any",
-            direction: "short",
-          },
-        },
-        {
-          text: t`Swaps`,
-          data: {
-            marketAddress: "any",
-            direction: "swap",
-          },
-        },
-      ],
+      items: directionItems.filter((item) =>
+        allowedDirections.includes(item.data.direction as Exclude<MarketFilterLongShortDirection, "any">)
+      ),
     };
 
     if (withPositions) {
@@ -132,7 +161,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
         items: strippedMarkets,
       },
     ];
-  }, [allMarkets, allPositions, filteredPositions, withPositions]);
+  }, [allPositions, allowedDirections, availableMarkets, filteredPositions, withPositions]);
 
   const ItemComponent = useCallback(
     (props: { item: MarketFilterLongShortItemData }) => {
@@ -204,7 +233,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
   return (
     <TableOptionsFilter<MarketFilterLongShortItemData>
       multiple
-      label={t`Market`}
+      label={label ?? t`Market`}
       placeholder={t`Search market`}
       onChange={onChange}
       options={marketsOptions}

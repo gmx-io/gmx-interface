@@ -11,27 +11,33 @@ const positions = [
 
 describe("filterLeaderboardPositions", () => {
   it("filters by exact market address without including another pool for the same index asset", () => {
-    expect(filterLeaderboardPositions(positions, ["0xEthMarket"], undefined).map((position) => position.key)).toEqual([
-      "eth-long",
-      "eth-short",
-    ]);
+    expect(
+      filterLeaderboardPositions(positions, [{ marketAddress: "0xEthMarket", direction: "any" }]).map(
+        (position) => position.key
+      )
+    ).toEqual(["eth-long", "eth-short"]);
   });
 
   it("combines multiple markets with a side", () => {
     expect(
-      filterLeaderboardPositions(positions, ["0xEthMarket", "0xBtcMarket"], "short").map((position) => position.key)
+      filterLeaderboardPositions(positions, [
+        { marketAddress: "0xEthMarket", direction: "any" },
+        { marketAddress: "0xBtcMarket", direction: "any" },
+        { marketAddress: "any", direction: "short" },
+      ]).map((position) => position.key)
     ).toEqual(["eth-short", "btc-short"]);
   });
 
   it("filters long positions without a market selection", () => {
-    expect(filterLeaderboardPositions(positions, [], "long").map((position) => position.key)).toEqual([
-      "eth-long",
-      "eth-alt-pool-long",
-    ]);
+    expect(
+      filterLeaderboardPositions(positions, [{ marketAddress: "any", direction: "long" }]).map(
+        (position) => position.key
+      )
+    ).toEqual(["eth-long", "eth-alt-pool-long"]);
   });
 
   it("restores all positions when filters are cleared", () => {
-    expect(filterLeaderboardPositions(positions, [], undefined)).toEqual(positions);
+    expect(filterLeaderboardPositions(positions, [])).toEqual(positions);
   });
 
   it("filters the complete result set before table pagination", () => {
@@ -41,7 +47,10 @@ describe("filterLeaderboardPositions", () => {
       isLong: false,
     }));
 
-    const firstPage = filterLeaderboardPositions(resultSet, ["0xBtcMarket"], undefined).slice(0, 20);
+    const firstPage = filterLeaderboardPositions(resultSet, [{ marketAddress: "0xBtcMarket", direction: "any" }]).slice(
+      0,
+      20
+    );
 
     expect(firstPage.map((position) => position.key)).toEqual(["position-20"]);
   });

@@ -30,15 +30,16 @@ import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
-import { MarketFilter } from "components/TableMarketFilter/MarketFilter";
-import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
+import {
+  MarketFilterLongShort,
+  MarketFilterLongShortItemData,
+} from "components/TableMarketFilter/MarketFilterLongShort";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { filterLeaderboardPositions } from "./leaderboardPositionFilters";
-import type { LeaderboardPositionSide } from "./leaderboardPositionFilters";
 import { formatDelta, getSignedValueClassName } from "./shared";
 
 function getWinnerRankClassname(rank: number | null) {
@@ -51,6 +52,7 @@ function getWinnerRankClassname(rank: number | null) {
 type LeaderboardPositionField = keyof LeaderboardPosition;
 
 const PER_PAGE = 20;
+const LEADERBOARD_POSITION_FILTER_DIRECTIONS = ["long", "short"] as const;
 
 export function LeaderboardPositionsTable({
   positions,
@@ -61,8 +63,7 @@ export function LeaderboardPositionsTable({
 }) {
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
-  const [marketAddresses, setMarketAddresses] = useState<string[]>([]);
-  const [side, setSide] = useState<LeaderboardPositionSide>();
+  const [positionFilters, setPositionFilters] = useState<MarketFilterLongShortItemData[]>([]);
   const chainId = useLeaderboardChainId();
   const availableMarketAddresses = useMemo(() => Array.from(new Set(data.map((position) => position.market))), [data]);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>(
@@ -79,17 +80,12 @@ export function LeaderboardPositionsTable({
   }, [term]);
 
   useEffect(() => {
-    setMarketAddresses((current) => (current.length ? [] : current));
+    setPositionFilters((current) => (current.length ? [] : current));
     setPage(1);
   }, [chainId]);
 
-  const handleMarketAddressesChange = useCallback((nextMarketAddresses: string[]) => {
-    setMarketAddresses(nextMarketAddresses);
-    setPage(1);
-  }, []);
-
-  const handleSideChange = useCallback((nextSide: LeaderboardPositionSide | undefined) => {
-    setSide(nextSide);
+  const handlePositionFiltersChange = useCallback((nextPositionFilters: MarketFilterLongShortItemData[]) => {
+    setPositionFilters(nextPositionFilters);
     setPage(1);
   }, []);
 
@@ -112,15 +108,15 @@ export function LeaderboardPositionsTable({
     });
   }, [data, direction, orderBy]);
 
-  const marketAndSideFilteredStats = useMemo(
-    () => filterLeaderboardPositions(sorted, marketAddresses, side),
-    [marketAddresses, side, sorted]
+  const positionFilteredStats = useMemo(
+    () => filterLeaderboardPositions(sorted, positionFilters),
+    [positionFilters, sorted]
   );
 
   const filteredStats = useMemo(() => {
     const q = term.toLowerCase().trim();
-    return marketAndSideFilteredStats.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
-  }, [marketAndSideFilteredStats, term]);
+    return positionFilteredStats.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
+  }, [positionFilteredStats, term]);
 
   const indexFrom = (page - 1) * PER_PAGE;
   const rowsData = useMemo(
@@ -152,16 +148,6 @@ export function LeaderboardPositionsTable({
 
   return (
     <div className="rounded-b-8 bg-slate-900">
-      <div className="flex flex-wrap items-center gap-8 border-b-1/2 border-slate-600 px-20 py-12 max-md:px-12">
-        <MarketFilter
-          asButton
-          excludeSpotOnly
-          availableMarketAddresses={availableMarketAddresses}
-          value={marketAddresses}
-          onChange={handleMarketAddressesChange}
-        />
-        <SideFilter value={side} onChange={handleSideChange} />
-      </div>
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1024px] table-fixed">
           <thead>
@@ -192,7 +178,15 @@ export function LeaderboardPositionsTable({
                 tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees.`}
                 tooltipPosition="bottom-end"
               />
-              <TableHeaderCell title={t`POSITION`} width={12} tooltipPosition="bottom-end" />
+              <TableTh className="w-[12%]">
+                <MarketFilterLongShort
+                  label={t`POSITION`}
+                  allowedDirections={LEADERBOARD_POSITION_FILTER_DIRECTIONS}
+                  availableMarketAddresses={availableMarketAddresses}
+                  value={positionFilters}
+                  onChange={handlePositionFiltersChange}
+                />
+              </TableTh>
               <TableHeaderCell {...getSorterProps("entryPrice")} title={t`ENTRY PRICE`} width={10} />
               <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`SIZE`} width={12} />
               <TableHeaderCell {...getSorterProps("leverage")} title={t`LEV.`} width={4} />
@@ -204,36 +198,6 @@ export function LeaderboardPositionsTable({
       </TableScrollFadeContainer>
       <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
-  );
-}
-
-function SideFilter({
-  value,
-  onChange,
-}: {
-  value: LeaderboardPositionSide | undefined;
-  onChange: (value: LeaderboardPositionSide | undefined) => void;
-}) {
-  const longLabel = t`Long`;
-  const shortLabel = t`Short`;
-  const options = useMemo(
-    () => [
-      { text: longLabel, data: "long" as const },
-      { text: shortLabel, data: "short" as const },
-    ],
-    [longLabel, shortLabel]
-  );
-
-  return (
-    <TableOptionsFilter<LeaderboardPositionSide>
-      label={t`Side`}
-      placeholder={t`Search`}
-      value={value}
-      options={options}
-      onChange={onChange}
-      popupPlacement="bottom-start"
-      asButton
-    />
   );
 }
 
