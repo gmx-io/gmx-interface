@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
-import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
+import { AVALANCHE, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
@@ -25,7 +25,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
-  selectMarketsInfoData,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -40,7 +39,6 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIsFromTokenGmxAccount,
-  selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsTPSLEnabled,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxAllowedLeverage,
@@ -56,7 +54,6 @@ import {
   selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
-import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
@@ -149,12 +146,10 @@ export function useTradeboxButtonState({
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
   const fromToken = useSelector(selectTradeboxFromToken);
-  const toToken = useSelector(selectTradeboxToToken);
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
   const tokensData = useSelector(selectTokensData);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
-  const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const gasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
@@ -167,7 +162,6 @@ export function useTradeboxButtonState({
 
   const {
     onSubmitWrapOrUnwrap,
-    onSubmitStakeOrUnstake,
     onSubmitSwap,
     onSubmitIncreaseOrder,
     onSubmitDecreaseOrder,
@@ -313,12 +307,7 @@ export function useTradeboxButtonState({
         }
         case ValidationButtonTooltipName.noSwapPath: {
           tooltipContent = (
-            <NoSwapPathTooltipContent
-              collateralToken={collateralToken}
-              fromToken={fromToken}
-              chainId={chainId}
-              toToken={toToken}
-            />
+            <NoSwapPathTooltipContent collateralToken={collateralToken} fromToken={fromToken} chainId={chainId} />
           );
           break;
         }
@@ -352,7 +341,6 @@ export function useTradeboxButtonState({
     nativeGasError,
     collateralToken,
     fromToken,
-    toToken,
     isLeverageSliderEnabled,
     detectAndSetAvailableMaxLeverage,
   ]);
@@ -435,9 +423,7 @@ export function useTradeboxButtonState({
 
     let txnPromise: Promise<any>;
 
-    if (isStakeOrUnstake) {
-      txnPromise = onSubmitStakeOrUnstake();
-    } else if (isWrapOrUnwrap) {
+    if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
     } else if (isSwap) {
       txnPromise = onSubmitSwap();
@@ -471,12 +457,10 @@ export function useTradeboxButtonState({
     isApproving,
     isFromTokenGmxAccount,
     isIncrease,
-    isStakeOrUnstake,
     isSwap,
     isWrapOrUnwrap,
     onSubmitDecreaseOrder,
     onSubmitIncreaseOrder,
-    onSubmitStakeOrUnstake,
     onSubmitSwap,
     onSubmitWrapOrUnwrap,
     openConnectModal,
@@ -717,9 +701,6 @@ function useDetectAndSetAvailableMaxLeverage({
   const userReferralInfo = useUserReferralInfo();
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
-  const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
-  const chainId = useSelector(selectChainId);
-  const marketsInfoData = useSelector(selectMarketsInfoData);
 
   return useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
@@ -748,9 +729,6 @@ function useDetectAndSetAvailableMaxLeverage({
           fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
           leverage,
           triggerPrice,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams,
           isSetAcceptablePriceImpactEnabled,
         });
 
@@ -814,9 +792,6 @@ function useDetectAndSetAvailableMaxLeverage({
     findSwapPath,
     fromToken,
     externalSwapQuote,
-    externalSwapQuoteParams,
-    chainId,
-    marketsInfoData,
     fromTokenAmount,
     isLeverageSliderEnabled,
     isLong,
@@ -840,12 +815,10 @@ function NoSwapPathTooltipContent({
   collateralToken,
   fromToken,
   chainId,
-  toToken,
 }: {
   collateralToken: TokenData | undefined;
   fromToken: TokenData | undefined;
   chainId: number;
-  toToken: TokenData | undefined;
 }) {
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
 
@@ -861,31 +834,6 @@ function NoSwapPathTooltipContent({
 
   if (!fromToken) {
     return <Trans>No swap path available</Trans>;
-  }
-
-  if (chainId === BOTANIX) {
-    if (collateralToken) {
-      return (
-        <Trans>
-          No swap path available.{" "}
-          <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
-            Swap {fromToken.symbol} to STBTC
-          </span>{" "}
-          to use {collateralToken.symbol} as collateral.
-        </Trans>
-      );
-    }
-
-    const swapToTokenSymbol = fromToken.symbol === "STBTC" ? "PBTC" : "STBTC";
-    return (
-      <Trans>
-        No swap path available.{" "}
-        <span onClick={makeHandleSwapClick(fromToken.symbol, swapToTokenSymbol)} className="Tradebox-handle">
-          Swap {fromToken.symbol} to {swapToTokenSymbol}
-        </span>
-        , then to {toToken?.symbol}.
-      </Trans>
-    );
   }
 
   const collateralSymbol = collateralToken?.assetSymbol ?? collateralToken?.symbol;

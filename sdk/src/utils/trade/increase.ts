@@ -9,7 +9,7 @@ import {
   getPriceImpactForPosition,
   getTotalSwapVolumeFromSwapStats,
 } from "utils/fees";
-import { MarketInfo, MarketsInfoData } from "utils/markets/types";
+import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
 import {
@@ -34,7 +34,6 @@ import { TokenData, TokensRatio } from "utils/tokens/types";
 
 import {
   ExternalSwapQuote,
-  ExternalSwapQuoteParams,
   FindSwapPath,
   IncreasePositionAmounts,
   NextPositionValues,
@@ -61,12 +60,7 @@ type IncreasePositionParams = {
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
-  marketsInfoData: MarketsInfoData | undefined;
-  chainId: number;
-  externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
-  disabledMarkets?: string[];
-  manualPath?: string[];
 };
 
 export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreasePositionAmounts {
@@ -89,12 +83,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     userReferralInfo,
     uiFeeFactor,
     strategy,
-    marketsInfoData,
-    chainId,
-    externalSwapQuoteParams,
     isSetAcceptablePriceImpactEnabled,
-    disabledMarkets,
-    manualPath,
   } = p;
 
   const swapStrategy: NoSwapStrategy = {
@@ -207,12 +196,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         findSwapPath,
         uiFeeFactor,
         swapOptimizationOrder,
-        marketsInfoData,
-        chainId,
-        externalSwapQuoteParams,
         allowSameTokenSwap: false,
-        disabledMarkets,
-        manualPath,
       });
 
       values.swapStrategy = swapAmounts.swapStrategy;
@@ -304,12 +288,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         isLimit: false,
         findSwapPath,
         uiFeeFactor,
-        marketsInfoData,
-        chainId,
-        externalSwapQuoteParams,
         allowSameTokenSwap: false,
-        disabledMarkets,
-        manualPath,
       });
       values.swapStrategy = swapAmounts.swapStrategy;
     }
@@ -361,12 +340,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           findSwapPath,
           uiFeeFactor,
           swapOptimizationOrder,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams,
           allowSameTokenSwap: false,
-          disabledMarkets,
-          manualPath,
         });
         values.swapStrategy = swapAmounts.swapStrategy;
       }

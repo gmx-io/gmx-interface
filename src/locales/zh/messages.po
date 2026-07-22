@@ -2373,8 +2373,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "未找到交换路径"
 
@@ -3001,10 +2999,6 @@ msgstr "签名无效。请重新签署请求"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "搜索地址"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
-msgstr "没有可用交换路径。<0>交换 {0} 到 STBTC</0> 以使用 {1} 作为抵押品。"
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -3776,10 +3770,6 @@ msgstr ""
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
 msgstr ""
-
-#: src/components/BotanixShutdownBanner/BotanixShutdownBanner.tsx
-msgid "Botanix is shutting down. Do not open new positions. Close existing positions and withdraw funds from Botanix."
-msgstr "Botanix 正在关闭。请勿开设新仓位。请平掉现有仓位并从 Botanix 提取资金。"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -5009,10 +4999,6 @@ msgstr "订单生命周期"
 msgid "Permit supported:"
 msgstr "Permit 支持："
 
-#: src/pages/ParseTransaction/ParseTransaction.tsx
-msgid "Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-msgstr "请指定网络：arbitrum、avalanche、fuji、botanix、arbitrum-sepolia"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr "购买 {nativeTokenSymbol}"
@@ -5169,10 +5155,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "取消新订单"
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to unstake"
-msgstr "解除质押失败"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -5658,10 +5640,6 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL 分析"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
-msgstr "无可用交换路径。<0>将 {0} 交换到 {swapToTokenSymbol}</0>，然后到 {1}。"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -8208,10 +8186,6 @@ msgstr "做空未平仓量储备系数"
 msgid "Insufficient pool liquidity"
 msgstr "池流动性不足"
 
-#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
-msgid "No opportunities on Botanix yet"
-msgstr "Botanix 上暂无机会"
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1> 的 OI 看起来很棒</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>查看更多: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -8375,10 +8349,6 @@ msgstr "净费率"
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "转账地址无效。请检查 URL。"
 
-#: src/components/StatusNotification/StakeNotification.tsx
-msgid "Swap {fromAmount} for {toAmount}"
-msgstr "将 {fromAmount} 交换为 {toAmount}"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
@@ -8504,10 +8474,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to stake"
-msgstr "质押失败"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -8762,7 +8728,6 @@ msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "（{operationText}金额的 <0>{0}</0>）"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
@@ -10682,6 +10647,10 @@ msgstr "代币许可测试"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "无效的清算价格"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+msgstr "请指定网络：arbitrum、avalanche、fuji、megaeth、arbitrum-sepolia"
 
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"

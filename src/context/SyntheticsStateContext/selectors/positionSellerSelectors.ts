@@ -217,10 +217,10 @@ export const selectPositionSellerMarkPrice = createSelector((q) => {
 export const selectPositionSellerFees = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+  const chainId = q(selectChainId);
   const gasLimits = q(selectGasLimits);
   const tokensData = q(selectTokensData);
   const gasPrice = q(selectGasPrice);
-  const chainId = q(selectChainId);
   const swapAmounts = q(selectPositionSellerSwapAmounts);
   const uiFeeFactor = q(selectUiFeeFactor);
   const orderOption = q(selectPositionSellerOrderOption);
@@ -394,7 +394,6 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
   const uiFeeFactor = q(selectUiFeeFactor);
   const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
   const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
-  const chainId = q(selectChainId);
   const isReceiveSeparated = q(selectPositionSellerIsReceiveSeparated);
 
   const {
@@ -465,8 +464,6 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
     forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
     findSwapPath,
     findSwapPathFromPnl,
-    marketsInfoData,
-    chainId,
   });
 
   return result;

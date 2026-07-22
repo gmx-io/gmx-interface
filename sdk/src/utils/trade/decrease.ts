@@ -1,7 +1,7 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee } from "utils/fees";
-import { MarketInfo, MarketsInfoData } from "utils/markets/types";
+import { MarketInfo } from "utils/markets/types";
 import {
   applyFactor,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -891,8 +891,6 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
   forceDecreaseSwapType?: DecreasePositionSwapType;
   findSwapPath: FindSwapPath;
   findSwapPathFromPnl: FindSwapPath;
-  marketsInfoData: MarketsInfoData | undefined;
-  chainId: number;
 }): {
   decreaseAmounts: DecreasePositionAmounts;
   swapAmounts: SwapAmounts | undefined;
@@ -917,8 +915,6 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     forceDecreaseSwapType,
     findSwapPath,
     findSwapPathFromPnl,
-    marketsInfoData,
-    chainId,
   } = p;
 
   const decreaseBaseParams = {
@@ -970,9 +966,6 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
           isLimit: false,
           findSwapPath,
           uiFeeFactor,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams: undefined,
           allowSameTokenSwap: false,
         })
       : undefined;
@@ -1007,9 +1000,6 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     isLimit: false,
     findSwapPath: findSwapPathFromPnl,
     uiFeeFactor,
-    marketsInfoData,
-    chainId,
-    externalSwapQuoteParams: undefined,
     allowSameTokenSwap: false,
   });
 

@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, BOTANIX, getExecutionFeeConfig } from "config/chains";
+import { ARBITRUM, getExecutionFeeConfig } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
@@ -425,8 +425,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       gmxAccountGasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress!,
       setGmxAccountGasPaymentTokenAddress,
 
-      // External swaps are enabled by default on Botanix
-      externalSwapsEnabled: chainId === BOTANIX || externalSwapsEnabled!,
+      externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -494,7 +493,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setGasPaymentTokenAddress,
     gmxAccountGasPaymentTokenAddress,
     setGmxAccountGasPaymentTokenAddress,
-    chainId,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,

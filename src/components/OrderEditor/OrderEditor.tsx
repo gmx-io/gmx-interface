@@ -293,9 +293,6 @@ export function OrderEditor(p: Props) {
           externalSwapQuote: undefined,
           leverage,
           triggerPrice,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams: undefined,
           isSetAcceptablePriceImpactEnabled,
         });
 
@@ -355,8 +352,6 @@ export function OrderEditor(p: Props) {
     savedAcceptablePriceImpactBuffer,
     acceptablePriceImpactBps,
     triggerPrice,
-    marketsInfoData,
-    chainId,
     isSetAcceptablePriceImpactEnabled,
     setSizeInputValue,
   ]);

@@ -2373,8 +2373,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "Kein Swap-Pfad gefunden"
 
@@ -3001,10 +2999,6 @@ msgstr "Ungültige Signatur. Versuchen Sie, die Anfrage erneut zu signieren"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "Adresse suchen"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
-msgstr "Kein Swap-Pfad verfügbar. <0>Swappe {0} zu STBTC</0>, um {1} als Kollateral zu verwenden."
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -3776,10 +3770,6 @@ msgstr ""
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
 msgstr ""
-
-#: src/components/BotanixShutdownBanner/BotanixShutdownBanner.tsx
-msgid "Botanix is shutting down. Do not open new positions. Close existing positions and withdraw funds from Botanix."
-msgstr "Botanix wird eingestellt. Eröffnen Sie keine neuen Positionen. Schließen Sie bestehende Positionen und ziehen Sie Ihre Gelder von Botanix ab."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -5009,10 +4999,6 @@ msgstr "Orderlebenszyklus"
 msgid "Permit supported:"
 msgstr "Permit unterstützt:"
 
-#: src/pages/ParseTransaction/ParseTransaction.tsx
-msgid "Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-msgstr "Netzwerk angeben: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr "Kaufe {nativeTokenSymbol}"
@@ -5169,10 +5155,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Neue Orders abbrechen"
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to unstake"
-msgstr "Entstaken fehlgeschlagen"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -5658,10 +5640,6 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL-Analyse"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
-msgstr "Kein Tauschpfad verfügbar. <0>Tausche {0} zu {swapToTokenSymbol}</0>, dann zu {1}."
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -8208,10 +8186,6 @@ msgstr "Open Interest Reservefaktor Shorts"
 msgid "Insufficient pool liquidity"
 msgstr "Unzureichende Pool-Liquidität"
 
-#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
-msgid "No opportunities on Botanix yet"
-msgstr "Noch keine Möglichkeiten auf Botanix"
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>'s OI sieht großartig aus</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Mehr prüfen: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -8375,10 +8349,6 @@ msgstr "Nettorate"
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "Ungültige Übertragungsadressen. Überprüfen Sie die URL."
 
-#: src/components/StatusNotification/StakeNotification.tsx
-msgid "Swap {fromAmount} for {toAmount}"
-msgstr "Swap {fromAmount} für {toAmount}"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
@@ -8504,10 +8474,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to stake"
-msgstr "Staken fehlgeschlagen"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -8762,7 +8728,6 @@ msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "(<0>{0}</0> des {operationText}-Betrags)"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
@@ -10682,6 +10647,10 @@ msgstr "Token-Permit-Tests"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "Ungültiger Liquidationspreis"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+msgstr "Netzwerk angeben: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
 
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"

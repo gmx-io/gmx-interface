@@ -1,6 +1,6 @@
 import { type Address, zeroAddress } from "viem";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "./chains";
 
 export const CONTRACTS = {
   [ARBITRUM]: {
@@ -153,84 +153,6 @@ export const CONTRACTS = {
     ArbitrumNodeInterface: zeroAddress,
     LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
     GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
-  },
-  [BOTANIX]: {
-    // Synthetics
-    DataStore: "0xA23B81a89Ab9D7D89fF8fc1b5d8508fB75Cc094d",
-    EventEmitter: "0xAf2E131d483cedE068e21a9228aD91E623a989C2",
-    SubaccountRouter: "0xa1793126B6Dc2f7F254a6c0E2F8013D2180C0D10",
-    ExchangeRouter: "0xBCB5eA3a84886Ce45FBBf09eBF0e883071cB2Dc8",
-    DepositVault: "0x4D12C3D3e750e051e87a2F3f7750fBd94767742c",
-    WithdrawalVault: "0x46BAeAEdbF90Ce46310173A04942e2B3B781Bf0e",
-    OrderVault: "0xe52B3700D17B45dE9de7205DEe4685B4B9EC612D",
-    ShiftVault: "0xa7EE2737249e0099906cB079BCEe85f0bbd837d4",
-
-    SyntheticsReader: "0x922766ca6234cD49A483b5ee8D86cA3590D0Fb0E",
-    SyntheticsRouter: "0x3d472afcd66F954Fe4909EEcDd5c940e9a99290c",
-
-    GlvReader: "0x955Aa50d2ecCeffa59084BE5e875eb676FfAFa98",
-    GlvRouter: "0xC92741F0a0D20A95529873cBB3480b1f8c228d9F",
-    GlvVault: "0xd336087512BeF8Df32AF605b492f452Fd6436CD8",
-
-    GelatoRelayRouter: "0x98e86155abf8bCbA566b4a909be8cF4e3F227FAf",
-    SubaccountGelatoRelayRouter: "0xd6b16f5ceE328310B1cf6d8C0401C23dCd3c40d4",
-
-    MultichainClaimsRouter: "0x421eB756B8f887f036e7332801288BC2bbA600aC",
-    MultichainGlvRouter: "0x9C11DFa4DAFA9227Ef172cc1d87D4D5008804C47",
-    MultichainGmRouter: "0x6a960F397eB8F2300F9FfA746F11375A613C5027",
-    MultichainOrderRouter: "0xbC074fF8b85f9b66884E1EdDcE3410fde96bd798",
-    MultichainSubaccountRouter: "0x8138Ce254Bc0AfE40369FDC2D1e46cE90944406d",
-    MultichainTransferRouter: "0x844D38f2c3875b8351feB4764718E1c64bD55c46",
-    MultichainVault: "0x9a535f9343434D96c4a39fF1d90cC685A4F6Fb20",
-    LayerZeroProvider: "0x9E721ef9b908B4814Aa18502692E4c5666d1942e",
-
-    ChainlinkPriceFeedProvider: "0xDc613305e9267f0770072dEaB8c03162e0554b2d",
-    ClaimHandler: "0x162e3a5B47C9a45ff762E5b4b23D048D6780C14e",
-
-    // External
-    ExternalHandler: "0x36b906eA6AE7c74aeEE8cDE66D01B3f1f8843872",
-    KyberSwapRouter: zeroAddress,
-    Multicall: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
-    LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
-    ArbitrumNodeInterface: zeroAddress,
-    GelatoRelayAddress: "0x61aCe8fBA7B80AEf8ED67f37CB60bE00180872aD",
-
-    Vault: zeroAddress,
-    Reader: zeroAddress,
-    PositionRouter: zeroAddress,
-    ReferralStorage: zeroAddress,
-    VaultReader: zeroAddress,
-    GlpManager: zeroAddress,
-    RewardRouter: zeroAddress,
-    RewardReader: zeroAddress,
-    GlpRewardRouter: zeroAddress,
-    StakedGmxTracker: zeroAddress,
-    FeeGmxTracker: zeroAddress,
-    GLP: zeroAddress,
-    GMX: zeroAddress,
-    ES_GMX: zeroAddress,
-    BN_GMX: zeroAddress,
-    USDG: zeroAddress,
-    BonusGmxTracker: zeroAddress,
-    StakedGlpTracker: zeroAddress,
-    FeeGlpTracker: zeroAddress,
-    ExtendedGmxTracker: zeroAddress,
-    StakedGmxDistributor: zeroAddress,
-    StakedGlpDistributor: zeroAddress,
-    GmxVester: zeroAddress,
-    GlpVester: zeroAddress,
-    AffiliateVester: zeroAddress,
-    Router: zeroAddress,
-    GovToken: zeroAddress,
-    ES_GMX_IOU: zeroAddress,
-    OrderBook: zeroAddress,
-
-    UniswapGmxEthPool: zeroAddress,
-
-    // botanix specific
-    NATIVE_TOKEN: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-    StBTC: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
-    PBTC: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
   },
   [MEGAETH]: {
     // Synthetics

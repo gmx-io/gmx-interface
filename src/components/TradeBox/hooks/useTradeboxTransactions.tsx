@@ -48,7 +48,6 @@ import {
 import { getJitGlvShiftParams } from "domain/synthetics/jit/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
-import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { useWrapOrUnwrapExecutionFee } from "domain/synthetics/orders/estimateWrapOrUnwrapExecutionFee";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -432,26 +431,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     });
   }
 
-  function onSubmitStakeOrUnstake() {
-    if (!account || !swapAmounts || !fromToken || !signer || !toToken) {
-      return Promise.reject();
-    }
-
-    return createStakeOrUnstakeTxn(chainId, signer, {
-      amount: swapAmounts.amountIn,
-      isStake: Boolean(toToken.isStaking),
-      isWrapBeforeStake: Boolean(fromToken.isNative),
-      isUnwrapAfterStake: Boolean(toToken.isNative),
-      setPendingTxns,
-    });
-  }
-
   return {
     onSubmitSwap: onSubmitOrder,
     onSubmitIncreaseOrder: onSubmitOrder,
     onSubmitDecreaseOrder: onSubmitOrder,
     onSubmitWrapOrUnwrap,
-    onSubmitStakeOrUnstake,
     slippageInputId,
     expressParams,
     batchParams,

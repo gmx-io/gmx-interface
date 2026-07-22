@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
@@ -379,16 +379,13 @@ export function TradingSettings({
           />
         </ToggleSwitch>
 
-        {/* External swaps are enabled by default on Botanix */}
-        {chainId !== BOTANIX && (
-          <ToggleSwitch
-            isChecked={settings.externalSwapsEnabled}
-            setIsChecked={settings.setExternalSwapsEnabled}
-            className="font-medium"
-          >
-            <Trans>Enable external swaps</Trans>
-          </ToggleSwitch>
-        )}
+        <ToggleSwitch
+          isChecked={settings.externalSwapsEnabled}
+          setIsChecked={settings.setExternalSwapsEnabled}
+          className="font-medium"
+        >
+          <Trans>Enable external swaps</Trans>
+        </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.isSetAcceptablePriceImpactEnabled}

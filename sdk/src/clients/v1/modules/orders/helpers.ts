@@ -185,9 +185,6 @@ export async function increaseOrderHelper(
     acceptablePriceImpactBuffer: params.acceptablePriceImpactBuffer,
     fixedAcceptablePriceImpactBps: params.fixedAcceptablePriceImpactBps,
     externalSwapQuote: undefined,
-    marketsInfoData,
-    chainId: sdk.chainId,
-    externalSwapQuoteParams: undefined,
     isSetAcceptablePriceImpactEnabled: false,
   });
 
@@ -340,9 +337,6 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       uiFeeFactor,
       swapOptimizationOrder,
       allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
-      marketsInfoData,
-      chainId: sdk.chainId,
-      externalSwapQuoteParams: undefined,
       allowSameTokenSwap: true,
     });
   } else {
@@ -356,9 +350,6 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       uiFeeFactor,
       swapOptimizationOrder,
       allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
-      marketsInfoData,
-      chainId: sdk.chainId,
-      externalSwapQuoteParams: undefined,
       allowSameTokenSwap: true,
     });
   }
