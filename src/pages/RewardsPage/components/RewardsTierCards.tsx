@@ -12,7 +12,12 @@ import type {
   IncentivesConfig,
   StakingTierId,
 } from "domain/synthetics/incentives/v2/types";
-import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
+import {
+  formatFactorPercentage,
+  formatMultiplier,
+  formatRewardUsd,
+  getMaxRewardRateFactor,
+} from "domain/synthetics/incentives/v2/utils";
 import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -22,6 +27,7 @@ import ArrowRight from "img/ic_arrow_right.svg?react";
 import BatterySvg from "img/ic_battery.svg?react";
 import BoostSvg from "img/ic_boost.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
+import PlusIcon from "img/ic_plus.svg?react";
 import StatsSvg from "img/ic_stats.svg?react";
 
 import { BoostTierIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
@@ -33,10 +39,18 @@ export function RewardsTierCards({
   config,
   status,
   statusState,
+  account,
+  walletGmx,
+  recentActivityRewardEstimateUsd,
+  promoActivityLoading,
 }: {
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
   statusState: AccountDataState;
+  account?: string;
+  walletGmx?: bigint;
+  recentActivityRewardEstimateUsd?: bigint;
+  promoActivityLoading: boolean;
 }) {
   if (statusState === "loading") return <TierCardsSkeleton />;
   if (statusState === "unavailable") return <TierCardsUnavailable />;
@@ -52,7 +66,17 @@ export function RewardsTierCards({
     },
     {
       key: "staking",
-      content: <StakingCard config={config} status={status} active={stakingActive} />,
+      content: (
+        <StakingCard
+          config={config}
+          status={status}
+          active={stakingActive}
+          account={account}
+          walletGmx={walletGmx}
+          recentActivityRewardEstimateUsd={recentActivityRewardEstimateUsd}
+          promoActivityLoading={promoActivityLoading}
+        />
+      ),
     },
     {
       key: "boosts",
@@ -303,12 +327,16 @@ function VolumeCard({
                 as="div"
                 className="group/volume-bar flex items-center py-5"
                 handle={
-                  <div className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-cold-blue-700">
+                  <button
+                    type="button"
+                    aria-label={t`Volume Tier`}
+                    className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/volume-bar:scale-y-150 group-focus-within/volume-bar:bg-cold-blue-700 group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-cold-blue-700"
+                  >
                     <div
                       className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color,width] duration-300 ease-out"
                       style={progressStyle}
                     />
-                  </div>
+                  </button>
                 }
                 content={progressTooltipContent}
                 variant="none"
@@ -372,10 +400,18 @@ function StakingCard({
   config,
   status,
   active,
+  account,
+  walletGmx,
+  recentActivityRewardEstimateUsd,
+  promoActivityLoading,
 }: {
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
   active: boolean;
+  account?: string;
+  walletGmx?: bigint;
+  recentActivityRewardEstimateUsd?: bigint;
+  promoActivityLoading: boolean;
 }) {
   const stakingTier = status?.stakingTier;
   const displayTier = stakingTier ?? status?.projectedStakingTier;
@@ -397,6 +433,7 @@ function StakingCard({
       ? nextTierConfig.threshold - gmxStaked
       : 0n;
   const isMaxTier = active && displayTierIndex >= 0 && !nextTierConfig;
+  const maxRewardRate = formatFactorPercentage(getMaxRewardRateFactor(config));
   const stakingTooltip = projectedTierConfig ? (
     <MultiplierChangeTooltip
       isDecrease={Boolean(displayTierConfig && projectedTierConfig.multiplier < displayTierConfig.multiplier)}
@@ -461,7 +498,7 @@ function StakingCard({
                 </span>
               </Trans>
               {requiredToNextTier > 0n ? (
-                <Link to="/earn" className="inline-flex items-center gap-2 text-13 font-medium text-blue-300">
+                <Link to="/earn/portfolio" className="inline-flex items-center gap-2 text-13 font-medium text-blue-300">
                   <Trans>Manage staking</Trans> <GmxIcon className="size-12" />
                 </Link>
               ) : null}
@@ -491,18 +528,62 @@ function StakingCard({
           </div>
         </>
       ) : (
-        <div className="flex flex-1 flex-col justify-end gap-8">
-          <h3 className="text-h3 font-medium text-typography-primary">
-            <Trans>Stake to Boost Rewards</Trans>
-          </h3>
-          <div className="text-13 font-medium text-typography-secondary">
-            <Trans>Stake GMX or esGMX to unlock a Staking Tier and increase your rewards multiplier.</Trans>
-          </div>
-          <Link to="/earn" className="flex items-center gap-4 text-13 font-medium text-blue-300">
-            <Trans>Manage staking</Trans> <GmxIcon className="size-16" />
-          </Link>
-        </div>
+        <InactiveStakingCardContent
+          account={account}
+          walletGmx={walletGmx}
+          maxRewardRate={maxRewardRate}
+          hasManualAllocation={(status?.manualRewardRemainingUsd ?? 0n) > 0n}
+          recentActivityRewardEstimateUsd={recentActivityRewardEstimateUsd}
+          promoActivityLoading={promoActivityLoading}
+        />
       )}
+    </div>
+  );
+}
+
+function InactiveStakingCardContent({
+  account,
+  walletGmx,
+  maxRewardRate,
+  hasManualAllocation,
+  recentActivityRewardEstimateUsd,
+  promoActivityLoading,
+}: {
+  account?: string;
+  walletGmx?: bigint;
+  maxRewardRate: string;
+  hasManualAllocation: boolean;
+  recentActivityRewardEstimateUsd?: bigint;
+  promoActivityLoading: boolean;
+}) {
+  const hasWalletGmx = (walletGmx ?? 0n) > 0n;
+  const showStaticCopy = !account || promoActivityLoading;
+  const estimatedRewards =
+    recentActivityRewardEstimateUsd === undefined ? undefined : formatRewardUsd(recentActivityRewardEstimateUsd);
+
+  return (
+    <div className="flex flex-1 flex-col justify-end gap-8">
+      <h3 className="text-h3 font-medium text-typography-primary">
+        {showStaticCopy ? <Trans>Stake to Boost Rewards</Trans> : <Trans>Earn rewards</Trans>}
+      </h3>
+      <div className="text-13 font-medium text-typography-secondary">
+        {showStaticCopy ? (
+          <Trans>Stake GMX and receive up to {maxRewardRate} of your fees as rewards.</Trans>
+        ) : estimatedRewards !== undefined && !hasManualAllocation ? (
+          <Trans>
+            With your recent activity, staking GMX could have earned you up to {estimatedRewards} in rewards.
+          </Trans>
+        ) : (
+          <Trans>Stake GMX and receive up to {maxRewardRate} of your fees back.</Trans>
+        )}
+      </div>
+      <Link
+        to={hasWalletGmx ? "/earn/portfolio" : "/buy_gmx"}
+        className="flex items-center gap-4 text-13 font-medium text-blue-300"
+      >
+        {hasWalletGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
+        {hasWalletGmx ? <GmxIcon className="size-16" /> : <PlusIcon className="size-16" />}
+      </Link>
     </div>
   );
 }
@@ -538,14 +619,15 @@ function StakingProgressBar({
   const nextTierProgressStyle = useMemo(() => ({ width: `${nextTierProgress}%` }), [nextTierProgress]);
 
   return (
-    <div
-      className="-my-5 flex h-16 gap-[3px] rounded-8"
-      role="progressbar"
-      aria-label={t`Staking tier levels`}
-      aria-valuemin={0}
-      aria-valuemax={config.stakingTiers.length}
-      aria-valuenow={completedTierCount}
-    >
+    <div className="-my-5 flex h-16 gap-[3px] rounded-8" role="group" aria-label={t`Staking tiers`}>
+      <span
+        className="sr-only"
+        role="progressbar"
+        aria-label={t`Staking tier levels`}
+        aria-valuemin={0}
+        aria-valuemax={config.stakingTiers.length}
+        aria-valuenow={completedTierCount}
+      />
       {config.stakingTiers.map((tier, index) => {
         const completed = index < completedTierCount;
         const nextWithProgress = index === nextIndex && nextTierProgress > 0;
@@ -563,7 +645,7 @@ function StakingProgressBar({
                 </span>
                 <span className="text-11"> / </span>
                 <span className="text-typography-primary">
-                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} GMX
+                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} GMX + esGMX
                 </span>
               </Trans>
             </div>
@@ -577,20 +659,31 @@ function StakingProgressBar({
             className="group/segment flex flex-1 items-center py-5"
             handle={
               nextWithProgress ? (
-                <div className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-y-150 group-hover/segment:bg-cold-blue-700">
+                <button
+                  type="button"
+                  className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/segment:scale-y-150 group-focus-within/segment:bg-cold-blue-700 group-hover/segment:scale-y-150 group-hover/segment:bg-cold-blue-700"
+                >
                   <div className="absolute left-0 top-0 h-full rounded-8 bg-blue-300" style={nextTierProgressStyle} />
-                </div>
+                  <span className="sr-only">
+                    {stakingTierLabels[tier.tier]} <Trans>Staking tier</Trans>
+                  </span>
+                </button>
               ) : (
-                <div
+                <button
+                  type="button"
                   className={cx(
-                    "h-6 w-full rounded-8 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-x-105 group-hover/segment:scale-y-150",
+                    "h-6 w-full rounded-8 transition-[background-color,transform] duration-150 ease-out group-focus-within/segment:scale-x-105 group-focus-within/segment:scale-y-150 group-hover/segment:scale-x-105 group-hover/segment:scale-y-150",
                     completed
                       ? isMaxTier
                         ? "bg-green-300"
                         : "bg-blue-300"
-                      : "bg-cold-blue-900 group-hover/segment:bg-cold-blue-700"
+                      : "bg-cold-blue-900 group-focus-within/segment:bg-cold-blue-700 group-hover/segment:bg-cold-blue-700"
                   )}
-                />
+                >
+                  <span className="sr-only">
+                    {stakingTierLabels[tier.tier]} <Trans>Staking tier</Trans>
+                  </span>
+                </button>
               )
             }
             content={tooltipContent}
@@ -765,7 +858,7 @@ function BoostsCard({
 
       {!hasStatus ? (
         <div className="overflow-hidden">
-          <div className="flex w-max animate-marquee gap-8">
+          <div className="flex w-max animate-marquee gap-8 motion-reduce:animate-none">
             {[...config.boosts, ...config.boosts].map((boost, index) => (
               <span
                 key={`${boost.boost}-${index}`}

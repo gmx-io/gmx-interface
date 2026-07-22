@@ -25,6 +25,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import ExpiresInIcon from "img/ic_clock_dashed.svg?react";
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 import { BoostTierIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
 import {
@@ -443,11 +444,14 @@ function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: num
 
   return (
     <TooltipWithPortal
-      variant="iconStroke"
+      variant="none"
       handle={
-        <span>
-          <Trans>Featured markets:</Trans> {items.map((item) => item.symbol ?? item.address).join(", ")}.
-        </span>
+        <button type="button" className="inline-flex items-center gap-2 text-left">
+          <span>
+            <Trans>Featured markets:</Trans> {items.map((item) => item.symbol ?? item.address).join(", ")}.
+          </span>
+          <InfoIconStroke className="size-16 shrink-0" />
+        </button>
       }
       content={
         <div className="flex flex-col gap-8">
@@ -497,8 +501,16 @@ function DowngradingCoefficientsTooltip({
 
   return (
     <TooltipWithPortal
-      variant="iconStroke"
-      handle={null}
+      variant="none"
+      handle={
+        <button
+          type="button"
+          aria-label={t`Trading volume on configured markets is counted with a reduced coefficient`}
+          className="flex size-16 items-center justify-center"
+        >
+          <InfoIconStroke className="size-16" />
+        </button>
+      }
       tooltipClassName="!max-w-[280px]"
       className="h-16"
       position="bottom-start"

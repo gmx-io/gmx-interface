@@ -23,8 +23,18 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByText("Rewards")).toBeDefined();
     expect(screen.getAllByText("—").length).toBeGreaterThan(0);
 
+    const flow = screen.getByTestId("rewards-vesting-flow");
+    expect(flow.className.split(/\s+/)).toContain("max-lg:grid-rows-[1fr_40px_1fr_40px_1fr]");
+
     const unavailableActions = screen.getAllByRole("button", { name: "Coming soon" });
     expect(unavailableActions).toHaveLength(3);
-    unavailableActions.forEach((button) => expect(button.hasAttribute("disabled")).toBe(true));
+    unavailableActions.forEach((button) => {
+      const panelClassNames = button.parentElement?.className.split(/\s+/) ?? [];
+
+      expect(button.hasAttribute("disabled")).toBe(true);
+      expect(panelClassNames).toContain("min-h-[132px]");
+      expect(panelClassNames).toContain("grow");
+      expect(panelClassNames).not.toContain("h-[132px]");
+    });
   });
 });

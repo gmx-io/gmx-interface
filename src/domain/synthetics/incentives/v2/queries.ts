@@ -49,6 +49,17 @@ export const ACCOUNT_INCENTIVE_STATUS_QUERY = `
   }
 `;
 
+export const REWARDS_PROMO_ACTIVITY_QUERY = `
+  query RewardsPromoActivity($account: String!) {
+    accountNetPositionFeesLast4Months(account: $account) {
+      netPositionFeeUsd
+    }
+    tradeActions(limit: 1, where: { account_eq: $account }, orderBy: timestamp_ASC) {
+      timestamp
+    }
+  }
+`;
+
 export const ACCOUNT_REWARDS_HISTORY_QUERY = `
   query AccountRewardsHistory($account: String!, $limit: Int, $offset: Int) {
     accountRewardsHistory(account: $account, limit: $limit, offset: $offset) {

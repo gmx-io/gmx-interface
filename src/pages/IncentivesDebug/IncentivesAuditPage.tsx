@@ -14,6 +14,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import { IncentivesAuditDetail } from "./IncentivesAuditDetail";
 import { IncentivesAuditList } from "./IncentivesAuditList";
 import { IncentivesConfigSnapshot } from "./IncentivesConfigSnapshot";
+import { getAuditEpochCount } from "./utils";
 
 function useQueryParam(key: string): [string | undefined, (value: string | undefined) => void] {
   const { search } = useLocation();
@@ -57,9 +58,9 @@ export function IncentivesAuditPage() {
   }, [config?.epochTimestamp, epochParam]);
 
   const epochs = useMemo(() => {
-    if (!config || config.epochDuration <= 0 || config.programStartTimestamp > config.epochTimestamp) return [];
+    if (!config) return [];
 
-    const epochCount = Math.floor((config.epochTimestamp - config.programStartTimestamp) / config.epochDuration) + 1;
+    const epochCount = getAuditEpochCount(config);
 
     return Array.from({ length: epochCount }, (_, index) => {
       const timestamp = config.epochTimestamp - index * config.epochDuration;

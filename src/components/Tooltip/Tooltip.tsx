@@ -11,6 +11,7 @@ import {
   useClick,
   useDismiss,
   useFloating,
+  useFocus,
   useHover,
   useInteractions,
 } from "@floating-ui/react";
@@ -172,6 +173,9 @@ export default function Tooltip<T extends ElementType>({
       close: closeDelay,
     },
   });
+  const focus = useFocus(context, {
+    enabled: !disabled,
+  });
   const click = useClick(context, {
     enabled: !disabled && !disableClickToggle && closeOnDoubleClick,
     toggle: closeOnDoubleClick,
@@ -180,7 +184,7 @@ export default function Tooltip<T extends ElementType>({
     enabled: !disabled,
   });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, click, dismiss]);
 
   const preventClick = useCallback(
     (event: MouseEvent) => {

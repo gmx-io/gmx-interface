@@ -18,6 +18,12 @@ vi.mock("components/TableScrollFade/TableScrollFade", () => ({
   TableScrollFadeContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+vi.mock("img/ic_calendar.svg?react", () => ({
+  default: ({ className }: { className?: string }) => (
+    <svg className={className} data-testid="all-time-calendar-icon" />
+  ),
+}));
+
 type LeaderboardParams = {
   epoch?: number;
   where?: { account?: string };
@@ -163,6 +169,8 @@ describe("RewardsLeaderboardTab", () => {
 
   it("coerces multiplier sorting and removes the multiplier option and column for all time", async () => {
     renderLeaderboard();
+
+    expect(within(screen.getByRole("button", { name: "All-time" })).getByTestId("all-time-calendar-icon")).toBeTruthy();
 
     fireEvent.click(getSortButton("Multiplier"));
 

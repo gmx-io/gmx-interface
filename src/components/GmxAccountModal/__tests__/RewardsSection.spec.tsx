@@ -12,7 +12,7 @@ import type { IncentivesAvailability } from "domain/synthetics/incentives/v2/ava
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
 import { useChainId } from "lib/chains";
-import { formatUsd, PRECISION } from "lib/numbers";
+import { PRECISION } from "lib/numbers";
 
 import { RewardsSection } from "../RewardsSection";
 
@@ -70,14 +70,16 @@ describe("RewardsSection", () => {
 
   afterEach(cleanup);
 
-  it("renders current V2 rewards and a config-scaled multiplier", () => {
+  it("links to V2 rewards and renders a config-scaled multiplier without the removed current-epoch summary", () => {
     renderSection();
 
-    const link = screen.getByRole("link", { name: /Current epoch rewards/ });
+    const link = screen.getByRole("link", { name: /Rewards/ });
     expect(link.getAttribute("href")).toBe("/rewards");
-    expect(link.textContent).toContain(formatUsd(STATUS.rewardsUsd, { fallbackToZero: true }));
+    expect(link.textContent).toContain("Multiplier");
     expect(link.textContent).toContain("2.5x");
-    expect(link.textContent).toContain("Provisional");
+    expect(link.textContent).not.toContain("Provisional");
+    expect(link.textContent).not.toContain("Current epoch rewards");
+    expect(link.textContent).not.toContain("Persistent multiplier");
     expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
       account: ACCOUNT,
       enabled: true,
@@ -85,6 +87,19 @@ describe("RewardsSection", () => {
 
     fireEvent.click(link);
     expect(setOpen).toHaveBeenCalledWith(false);
+  });
+
+  it("keeps the generic rewards link while the multiplier is loading", () => {
+    mockUseAccountIncentiveStatus.mockReturnValue({ data: undefined, loading: true } as ReturnType<
+      typeof useAccountIncentiveStatus
+    >);
+
+    renderSection();
+
+    const link = screen.getByRole("link", { name: /Rewards/ });
+    expect(link.textContent).toContain("Rewards");
+    expect(link.textContent).toContain("…");
+    expect(link.textContent).not.toContain("Current epoch rewards");
   });
 
   it("does not render or request account data on unsupported chains", () => {

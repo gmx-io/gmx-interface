@@ -92,6 +92,7 @@ export function useLocalStorageSerializeKeySafe<
 ): [T | undefined, (value: React.SetStateAction<T | undefined>) => void] {
   const serializedKey = JSON.stringify(key);
   const shouldSkipKey = getShouldSkipKey(key);
+  const initialValueRef = useRef(initialValue);
   const [valueMap, setValueMap] = useState<Record<string, T>>(() => {
     if (shouldSkipKey) {
       return EMPTY_OBJECT;
@@ -102,15 +103,18 @@ export function useLocalStorageSerializeKeySafe<
 
   const prevShouldSkip = usePrevious(shouldSkipKey);
   useEffect(() => {
-    if (prevShouldSkip && !shouldSkipKey) {
-      const item = tryGetLocalStorageItem<T>(serializedKey);
-      if (item) {
-        setValueMap((prev) => {
-          const newMap = { ...prev, [serializedKey]: item };
-          return newMap;
-        });
-      }
+    if (shouldSkipKey) {
+      return;
     }
+
+    setValueMap((prev) => {
+      if (serializedKey in prev && !prevShouldSkip) {
+        return prev;
+      }
+
+      const item = tryGetLocalStorageItem<T>(serializedKey) ?? initialValueRef.current;
+      return { ...prev, [serializedKey]: item };
+    });
   }, [prevShouldSkip, serializedKey, shouldSkipKey]);
 
   const setValue = useCallback(
@@ -129,7 +133,11 @@ export function useLocalStorageSerializeKeySafe<
     [serializedKey, shouldSkipKey]
   );
 
-  const value = shouldSkipKey ? undefined : valueMap[serializedKey];
+  const value = shouldSkipKey
+    ? undefined
+    : serializedKey in valueMap
+      ? valueMap[serializedKey]
+      : tryGetLocalStorageItem<T>(serializedKey) ?? initialValueRef.current;
 
   return [value, setValue] as const;
 }

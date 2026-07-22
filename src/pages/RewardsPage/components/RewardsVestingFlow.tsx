@@ -31,8 +31,8 @@ function AmountHeader({ step, label, unit }: { step: number; label: React.ReactN
 
 function FlowArrow() {
   return (
-    <div className="flex w-40 shrink-0 items-center justify-center rounded-8 bg-slate-900/90 max-xl:h-40 max-xl:w-full">
-      <ArrowRightIcon className="size-20 text-typography-secondary max-xl:rotate-90" />
+    <div className="flex w-40 shrink-0 items-center justify-center rounded-8 bg-slate-900/90 max-lg:h-40 max-lg:w-full">
+      <ArrowRightIcon className="size-20 text-typography-secondary max-lg:rotate-90" />
     </div>
   );
 }
@@ -40,12 +40,12 @@ function FlowArrow() {
 export function RewardsVestingFlow() {
   return (
     <div
-      className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_40px_minmax(0,1fr)] items-stretch gap-8 max-xl:grid-cols-1"
+      className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_40px_minmax(0,1fr)] items-stretch gap-8 max-lg:grid-cols-1 max-lg:grid-rows-[1fr_40px_1fr_40px_1fr]"
       data-testid="rewards-vesting-flow"
     >
       <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
         <AmountHeader step={1} label={<Trans>Available esGMX</Trans>} unit="esGMX" />
-        <div className="flex h-[132px] w-full flex-col gap-12 rounded-12 border-1/2 border-slate-600 bg-slate-950/50 p-12 backdrop-blur-[50px]">
+        <div className="flex min-h-[132px] w-full grow flex-col gap-12 rounded-12 border-1/2 border-slate-600 bg-slate-950/50 p-12 backdrop-blur-[50px]">
           <div className="flex grow items-center gap-8 px-4">
             <InfoIcon className="size-20 shrink-0 text-blue-300" />
             <div className="flex min-w-0 flex-col gap-2 text-left">
@@ -68,7 +68,7 @@ export function RewardsVestingFlow() {
 
       <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
         <AmountHeader step={2} label={<Trans>Vesting esGMX</Trans>} unit={<Trans>esGMX left</Trans>} />
-        <div className="flex h-[132px] w-full flex-col gap-12 rounded-12 border-1/2 border-slate-600 bg-slate-950/50 p-12 backdrop-blur-[50px]">
+        <div className="flex min-h-[132px] w-full grow flex-col gap-12 rounded-12 border-1/2 border-slate-600 bg-slate-950/50 p-12 backdrop-blur-[50px]">
           <div className="flex grow flex-col gap-4 px-4">
             <div className="flex items-center justify-between gap-8 text-14">
               <span className="font-medium text-typography-secondary">
@@ -89,7 +89,7 @@ export function RewardsVestingFlow() {
 
       <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
         <AmountHeader step={3} label={<Trans>Rewards</Trans>} unit={<Trans>GMX Claimable</Trans>} />
-        <div className="flex h-[132px] w-full flex-col gap-12 rounded-12 border-1/2 border-slate-600 bg-slate-950/50 p-12 backdrop-blur-[50px]">
+        <div className="flex min-h-[132px] w-full grow flex-col gap-12 rounded-12 border-1/2 border-slate-600 bg-slate-950/50 p-12 backdrop-blur-[50px]">
           <div className="flex grow flex-col px-4">
             <div className="flex h-24 items-center justify-between gap-8 text-14">
               <span className="font-medium text-typography-secondary">

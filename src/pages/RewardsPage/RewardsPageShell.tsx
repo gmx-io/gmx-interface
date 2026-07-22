@@ -22,7 +22,7 @@ export function RewardsPageLoadingShell() {
   return (
     <RewardsPageLayout>
       <div
-        className="mt-12 flex min-h-[280px] items-center justify-center rounded-8 bg-slate-900"
+        className="mt-12 flex min-h-[280px] grow items-center justify-center rounded-8 bg-slate-900"
         data-testid="rewards-loading-shell"
       >
         <Loader />

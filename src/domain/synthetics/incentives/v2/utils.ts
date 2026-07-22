@@ -94,6 +94,30 @@ export function getMaxRewardRateFactor(config: {
   return bigMath.mulDiv(rewardShareFactor, config.maxMultiplier, config.multiplierDecimals);
 }
 
+const RECENT_ACTIVITY_FEE_THRESHOLD_USD = 20n * PRECISION;
+const NEW_TRADER_WINDOW_SECONDS = 14 * SECONDS_IN_DAY;
+
+export function getRecentActivityRewardEstimateUsd({
+  netPositionFeeUsd,
+  firstTradeTimestamp,
+  maxRewardRateFactor,
+  nowSeconds = Math.floor(Date.now() / 1000),
+}: {
+  netPositionFeeUsd: bigint;
+  firstTradeTimestamp?: number;
+  maxRewardRateFactor: bigint;
+  nowSeconds?: number;
+}) {
+  const hasEstablishedTradingHistory =
+    firstTradeTimestamp !== undefined && nowSeconds - firstTradeTimestamp >= NEW_TRADER_WINDOW_SECONDS;
+
+  if (!hasEstablishedTradingHistory || netPositionFeeUsd < RECENT_ACTIVITY_FEE_THRESHOLD_USD) {
+    return undefined;
+  }
+
+  return bigMath.mulDiv(netPositionFeeUsd, maxRewardRateFactor, PRECISION);
+}
+
 export function getRewardsHistoryStatus(epoch: number, epochDuration: number, nowSeconds = Date.now() / 1000) {
   return nowSeconds < epoch + epochDuration ? ("ongoing" as const) : ("finished" as const);
 }
@@ -104,4 +128,10 @@ export function formatManualAllocationVolumeRange(minVolume: bigint, maxVolume: 
   if (maxVolume === null) return `${minimum}+`;
 
   return `${minimum} – ${formatUsd(maxVolume, { displayDecimals: 0 }) ?? "-"}`;
+}
+
+export function formatRewardUsd(value: bigint, displayDecimals = 0) {
+  if (value > 0n && value < PRECISION) return "< $1";
+
+  return formatUsd(value, { displayDecimals }) ?? "-";
 }

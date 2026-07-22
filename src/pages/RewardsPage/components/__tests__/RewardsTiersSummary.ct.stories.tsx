@@ -33,11 +33,15 @@ const allTimeSummary: LeaderboardEntry = {
   multiplier: null,
 };
 
-export function RewardsTiersSummaryStory() {
+export function RewardsTiersSummaryStory({
+  summaryState = "ready",
+}: {
+  summaryState?: React.ComponentProps<typeof RewardsTiersSummary>["summaryState"];
+}) {
   return (
     <I18nProvider i18n={testI18n}>
       <MemoryRouter>
-        <RewardsTiersSummary allTimeSummary={allTimeSummary} summaryState="ready" vestingState="unavailable" />
+        <RewardsTiersSummary allTimeSummary={allTimeSummary} summaryState={summaryState} vestingState="unavailable" />
       </MemoryRouter>
     </I18nProvider>
   );

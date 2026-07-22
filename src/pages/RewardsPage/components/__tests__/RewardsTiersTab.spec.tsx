@@ -1,12 +1,14 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { AccountIncentiveStatus, IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
+import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
 import {
   formatFactorPercentage,
   formatMultiplier,
@@ -18,6 +20,14 @@ import { RewardsTiersTab } from "../RewardsTiersTab";
 
 vi.mock("components/AppCard/AppCard", () => ({
   AppCard: ({ children }: { children: React.ReactNode }) => <section>{children}</section>,
+}));
+
+vi.mock("domain/stake/useStakingProcessedData", () => ({
+  useStakingProcessedData: vi.fn(),
+}));
+
+vi.mock("domain/synthetics/incentives/v2/useRewardsPromoActivity", () => ({
+  useRewardsPromoActivity: vi.fn(),
 }));
 
 vi.mock("components/Table/Table", () => ({
@@ -55,6 +65,8 @@ vi.mock("components/Tabs/Tabs", () => ({
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
 const GMX_UNIT = 10n ** BigInt(ES_GMX_DECIMALS);
 const GT_UNIT = 10n ** BigInt(GT_DECIMALS);
+const mockUseStakingProcessedData = vi.mocked(useStakingProcessedData);
+const mockUseRewardsPromoActivity = vi.mocked(useRewardsPromoActivity);
 
 function usd(value: bigint) {
   return value * PRECISION;
@@ -155,6 +167,25 @@ function renderTab(overrides: Partial<RewardsTiersTabProps> = {}) {
   );
 }
 
+beforeEach(() => {
+  mockUseStakingProcessedData.mockReturnValue({
+    data: {
+      gmxBalance: 0n,
+      esGmxBalance: 0n,
+      gmxAprForEsGmx: 0n,
+      gmxAprForNativeToken: 0n,
+      isRewardsSuspended: false,
+    },
+    mutate: vi.fn(),
+  });
+  mockUseRewardsPromoActivity.mockReturnValue({
+    data: undefined,
+    error: undefined,
+    loading: false,
+    endpoint: "https://example.com/graphql",
+  });
+});
+
 afterEach(() => {
   vi.restoreAllMocks();
   cleanup();
@@ -215,6 +246,129 @@ describe("RewardsTiersTab", () => {
     expect(document.body.textContent).toContain(
       "Increase your staked GMX or esGMX balance by 200 to get Advocate status"
     );
+  });
+
+  it("makes tier and featured-market details keyboard focusable", () => {
+    renderTab();
+
+    expect(screen.getByRole("button", { name: "Volume Tier" })).toBeDefined();
+    expect(screen.getAllByRole("button", { name: /Staking tier$/ })).toHaveLength(config.stakingTiers.length);
+    expect(screen.getByRole("button", { name: "Supporter Staking tier" })).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+    expect(screen.getByRole("button", { name: /Featured markets:/ })).toBeDefined();
+  });
+
+  it("renders the config-derived maximum reward rate in the inactive staking banner", () => {
+    const bannerConfig: IncentivesConfig = {
+      ...config,
+      esGmxShareFactor: PRECISION,
+      gtShareFactor: PRECISION / 5n,
+    };
+
+    renderTab({
+      config: bannerConfig,
+      status: {
+        ...status,
+        stakingTier: null,
+        projectedStakingTier: null,
+      },
+    });
+
+    expect(screen.getByText(/Stake GMX and receive up to/).textContent).toContain(
+      formatFactorPercentage(getMaxRewardRateFactor(bannerConfig))
+    );
+  });
+
+  it("personalizes the inactive staking card and chooses the wallet action", () => {
+    mockUseStakingProcessedData.mockReturnValue({
+      data: {
+        gmxBalance: 5n * GMX_UNIT,
+        esGmxBalance: 0n,
+        gmxAprForEsGmx: 0n,
+        gmxAprForNativeToken: 0n,
+        isRewardsSuspended: false,
+      },
+      mutate: vi.fn(),
+    });
+    mockUseRewardsPromoActivity.mockReturnValue({
+      data: {
+        netPositionFeeUsd: usd(100n),
+        firstTradeTimestamp: Math.floor(Date.now() / 1000) - 15 * 24 * 60 * 60,
+      },
+      error: undefined,
+      loading: false,
+      endpoint: "https://example.com/graphql",
+    });
+
+    renderTab({
+      status: {
+        ...status,
+        stakingTier: null,
+        projectedStakingTier: null,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const stakingCard = screen.getByText(/With your recent activity, staking GMX could have earned/).closest(".group");
+    expect(stakingCard).not.toBeNull();
+    expect(
+      within(stakingCard as HTMLElement)
+        .getByRole("link", { name: /^Stake GMX/ })
+        .getAttribute("href")
+    ).toBe("/earn/portfolio");
+    expect(mockUseRewardsPromoActivity).toHaveBeenLastCalledWith(ARBITRUM, {
+      account: CHECKSUMMED_ACCOUNT,
+      enabled: true,
+    });
+  });
+
+  it("keeps the generic staking copy for manual allocations without loading promo activity", () => {
+    mockUseRewardsPromoActivity.mockReturnValue({
+      data: {
+        netPositionFeeUsd: usd(100n),
+        firstTradeTimestamp: Math.floor(Date.now() / 1000) - 15 * 24 * 60 * 60,
+      },
+      error: undefined,
+      loading: false,
+      endpoint: "https://example.com/graphql",
+    });
+
+    renderTab({
+      status: {
+        ...status,
+        stakingTier: null,
+        projectedStakingTier: null,
+      },
+    });
+
+    expect(screen.getByText(/Stake GMX and receive up to .* of your fees back/)).toBeDefined();
+    expect(screen.queryByText(/With your recent activity, staking GMX could have earned/)).toBeNull();
+    expect(mockUseRewardsPromoActivity).toHaveBeenLastCalledWith(ARBITRUM, {
+      account: CHECKSUMMED_ACCOUNT,
+      enabled: false,
+    });
+  });
+
+  it("labels staking progress as the combined GMX and esGMX balance", async () => {
+    renderTab();
+
+    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    const tierProgress = within(stakingCard as HTMLElement).getByRole("progressbar", {
+      name: "Staking tier levels",
+    });
+    const tierGroup = within(stakingCard as HTMLElement).getByRole("group", { name: "Staking tiers" });
+    const firstSegment = within(tierGroup).getByRole("button", { name: "Supporter Staking tier" }).closest(".Tooltip");
+
+    expect(tierProgress).toBeDefined();
+    expect(firstSegment).not.toBeNull();
+    fireEvent.mouseEnter(firstSegment as Element);
+
+    await waitFor(() => {
+      const tooltip = document.querySelector(".Tooltip-popup");
+      expect(tooltip).not.toBeNull();
+      expect(tooltip!.textContent).toContain("GMX + esGMX");
+    });
   });
 
   it("prefixes multiplier adjustments with a plus sign", () => {
@@ -327,6 +481,17 @@ describe("RewardsTiersTab", () => {
 
   it("renders config-derived reward economics", () => {
     renderTab();
+
+    fireEvent.click(screen.getByRole("button", { name: "How does it work?" }));
+    expect(document.body.textContent).toContain("Trade & Stake to Earn Your Tiers");
+    expect(document.body.textContent).toContain("Your weekly trading volume sets your volume tier");
+    expect(document.body.textContent).toContain(
+      `You receive ${formatFactorPercentage(config.esGmxShareFactor)} of your rewards in esGMX`
+    );
+    expect(document.body.textContent).toContain(
+      `plus an additional ${formatFactorPercentage(config.gtShareFactor)} in GT tokens`
+    );
+
     fireEvent.click(screen.getByRole("button", { name: "How are rewards calculated?" }));
 
     expect(screen.getByText("Eligible fee share").parentElement?.textContent).toContain(

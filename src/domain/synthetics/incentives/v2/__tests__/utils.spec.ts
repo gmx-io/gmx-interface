@@ -9,7 +9,9 @@ import {
   formatManualAllocationVolumeRange,
   formatMultiplier,
   formatMultiplierAdjustment,
+  formatRewardUsd,
   getMaxRewardRateFactor,
+  getRecentActivityRewardEstimateUsd,
   getRewardsHistoryStatus,
 } from "../utils";
 
@@ -48,6 +50,36 @@ describe("Incentives V2 formatting", () => {
     expect(formatFactorPercentage(factor)).toBe("120%");
   });
 
+  it("estimates recent-activity rewards only for established traders with meaningful fees", () => {
+    const nowSeconds = 2_000_000;
+    const establishedTradeTimestamp = nowSeconds - 15 * SECONDS_IN_DAY;
+
+    expect(
+      getRecentActivityRewardEstimateUsd({
+        netPositionFeeUsd: 100n * PRECISION,
+        firstTradeTimestamp: establishedTradeTimestamp,
+        maxRewardRateFactor: (PRECISION * 12n) / 10n,
+        nowSeconds,
+      })
+    ).toBe(120n * PRECISION);
+    expect(
+      getRecentActivityRewardEstimateUsd({
+        netPositionFeeUsd: 19n * PRECISION,
+        firstTradeTimestamp: establishedTradeTimestamp,
+        maxRewardRateFactor: PRECISION,
+        nowSeconds,
+      })
+    ).toBeUndefined();
+    expect(
+      getRecentActivityRewardEstimateUsd({
+        netPositionFeeUsd: 100n * PRECISION,
+        firstTradeTimestamp: nowSeconds - SECONDS_IN_DAY,
+        maxRewardRateFactor: PRECISION,
+        nowSeconds,
+      })
+    ).toBeUndefined();
+  });
+
   it("derives history status from the epoch end", () => {
     expect(getRewardsHistoryStatus(1_000, 100, 1_099)).toBe("ongoing");
     expect(getRewardsHistoryStatus(1_000, 100, 1_100)).toBe("finished");
@@ -56,6 +88,12 @@ describe("Incentives V2 formatting", () => {
   it("formats bounded and open-ended manual allocation ranges without converting BigInts to numbers", () => {
     expect(formatManualAllocationVolumeRange(10_000n * PRECISION, 250_000n * PRECISION)).toContain("250,000");
     expect(formatManualAllocationVolumeRange(750_000_000n * PRECISION, null)).toMatch(/750,000,000\+$/);
+  });
+
+  it("keeps positive sub-dollar reward balances visible", () => {
+    expect(formatRewardUsd(PRECISION - 1n)).toBe("< $1");
+    expect(formatRewardUsd(PRECISION).replace(/\s/g, "")).toContain("$1");
+    expect(formatRewardUsd(0n).replace(/\s/g, "")).toContain("$0");
   });
 
   it("formats one-day epochs as a single date", () => {

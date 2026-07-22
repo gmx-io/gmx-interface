@@ -1,5 +1,7 @@
-import type { BoostId, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/v2/types";
+import type { BoostId, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
+
+const MAX_AUDIT_EPOCH_OPTIONS = 1_000;
 
 const volumeTierNames: Record<VolumeTierId, string> = {
   Tier1: "Tier1 · Ranked",
@@ -46,4 +48,26 @@ export function formatStakingTier(tier: StakingTierId | null) {
 
 export function formatBoosts(boostIds: BoostId[]) {
   return boostIds.length ? boostIds.map((boost) => boostNames[boost]).join(", ") : "-";
+}
+
+export function getAuditEpochCount({
+  epochTimestamp,
+  programStartTimestamp,
+  epochDuration,
+}: Pick<IncentivesConfig, "epochTimestamp" | "programStartTimestamp" | "epochDuration">) {
+  if (
+    !Number.isSafeInteger(epochTimestamp) ||
+    !Number.isSafeInteger(programStartTimestamp) ||
+    !Number.isSafeInteger(epochDuration) ||
+    epochTimestamp <= 0 ||
+    programStartTimestamp < 0 ||
+    epochDuration <= 0 ||
+    programStartTimestamp > epochTimestamp
+  ) {
+    return 0;
+  }
+
+  const epochCount = Math.floor((epochTimestamp - programStartTimestamp) / epochDuration) + 1;
+
+  return Math.min(epochCount, MAX_AUDIT_EPOCH_OPTIONS);
 }

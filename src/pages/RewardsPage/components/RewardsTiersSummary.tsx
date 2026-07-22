@@ -6,6 +6,8 @@ import { formatAmount, formatUsd } from "lib/numbers";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
+
 import { AccountValue, type AccountDataState } from "./rewardsTiersShared";
 
 function AllTimeRewardsTooltip({ allTimeSummary }: { allTimeSummary?: LeaderboardEntry }) {
@@ -68,10 +70,20 @@ export function RewardsTiersSummary({
           <TooltipWithPortal
             content={<AllTimeRewardsTooltip allTimeSummary={allTimeSummary} />}
             contentClassName="!gap-4"
-            handle={<Trans>All-time Rewards</Trans>}
+            disabled={summaryState !== "ready"}
+            handle={
+              <button
+                type="button"
+                disabled={summaryState !== "ready"}
+                className="inline-flex items-center gap-2 text-left"
+              >
+                <Trans>All-time Rewards</Trans>
+                <InfoIconStroke className="size-16" />
+              </button>
+            }
             handleClassName="text-12 font-medium text-typography-secondary"
             position="bottom-start"
-            variant="iconStroke"
+            variant="none"
           />
         </div>
 
@@ -81,27 +93,38 @@ export function RewardsTiersSummary({
           <TooltipWithPortal
             content={<Trans>esGMX available to begin vesting.</Trans>}
             contentClassName="!gap-4"
-            handle={<Trans>Vestable esGMX</Trans>}
+            handle={
+              <button type="button" className="inline-flex items-center gap-2 text-left">
+                <Trans>Vestable esGMX</Trans>
+                <InfoIconStroke className="size-16" />
+              </button>
+            }
             handleClassName="text-12 font-medium text-typography-secondary"
             position="bottom-start"
-            variant="iconStroke"
+            variant="none"
           />
           <div className="flex items-end gap-6 max-sm:flex-wrap">
-            <span className="text-16 font-medium leading-[1.25] numbers">
-              <AccountValue state={vestingState}>
-                {formatAmount(vestableEsGmx ?? 0n, ES_GMX_DECIMALS, 2, true)}
-              </AccountValue>
-            </span>
-            <div className="flex items-start gap-4 py-1 text-12 font-medium leading-[1.25]">
-              <span className="text-typography-secondary numbers">
-                <AccountValue state={vestingUsdState}>
-                  {formatUsd(vestableEsGmxUsd, { fallbackToZero: true })}
-                </AccountValue>
+            {vestingState === "ready" ? (
+              <>
+                <span className="text-16 font-medium leading-[1.25] numbers">
+                  {formatAmount(vestableEsGmx ?? 0n, ES_GMX_DECIMALS, 2, true)}
+                </span>
+                <div className="flex items-start gap-4 py-1 text-12 font-medium leading-[1.25]">
+                  <span className="text-typography-secondary numbers">
+                    <AccountValue state={vestingUsdState}>
+                      {formatUsd(vestableEsGmxUsd, { fallbackToZero: true })}
+                    </AccountValue>
+                  </span>
+                  <span className="inline-flex items-center pr-2 text-typography-disabled">
+                    <Trans>Coming soon</Trans>
+                  </span>
+                </div>
+              </>
+            ) : (
+              <span className="text-16 font-medium leading-[1.25] numbers">
+                <AccountValue state={vestingState}>-</AccountValue>
               </span>
-              <span className="inline-flex items-center pr-2 text-typography-disabled">
-                <Trans>Coming soon</Trans>
-              </span>
-            </div>
+            )}
           </div>
         </div>
       </div>

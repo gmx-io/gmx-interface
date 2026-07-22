@@ -70,6 +70,10 @@ vi.mock("pages/RewardsPage/components/RewardsVestingFlow", () => ({
   RewardsVestingFlow: () => <div data-testid="vesting-flow" />,
 }));
 
+vi.mock("pages/RewardsPage/components/RewardsPromotionalBanners", () => ({
+  RewardsPromotionalBanners: () => <div data-testid="promotional-banners" />,
+}));
+
 vi.mock("pages/RewardsPage/components/RewardsLeaderboardTab", () => ({
   RewardsLeaderboardTab: () => <div data-testid="leaderboard-tab" />,
 }));
@@ -156,6 +160,7 @@ describe("RewardsPage", () => {
     expect(screen.getByTestId("page-layout")).toBeDefined();
     expect(screen.getByTestId("rewards-loader")).toBeDefined();
     expect(screen.getByTestId("rewards-loading-shell").className).toContain("bg-slate-900");
+    expect(screen.getByTestId("rewards-loading-shell").className).toContain("grow");
     expect(screen.queryByTestId("history-tab")).toBeNull();
   });
 

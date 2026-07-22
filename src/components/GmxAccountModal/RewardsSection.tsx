@@ -7,7 +7,6 @@ import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Co
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
 
 import ChevronRight from "img/ic_chevron_right.svg?react";
 
@@ -33,15 +32,13 @@ export function RewardsSection() {
     >
       <div className="flex flex-col items-start gap-2">
         <span className="text-13 font-medium text-typography-primary">
-          <Trans>Current epoch rewards</Trans>{" "}
-          {currentStatus ? formatUsd(currentStatus.rewardsUsd, { fallbackToZero: true }) : loading ? "…" : "-"}
+          <Trans>Rewards</Trans>
         </span>
         <span className="text-12 text-typography-secondary">
           {currentStatus && config ? (
-            <Trans>
-              Persistent multiplier {formatMultiplier(currentStatus.multiplier, config.multiplierDecimals)} ·
-              Provisional
-            </Trans>
+            <Trans>Multiplier {formatMultiplier(currentStatus.multiplier, config.multiplierDecimals)}</Trans>
+          ) : loading ? (
+            "…"
           ) : (
             <Trans>View tiers and indexed rewards</Trans>
           )}

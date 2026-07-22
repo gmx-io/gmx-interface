@@ -14,6 +14,38 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
   const items: FaqItem[] = useMemo(
     () => [
       {
+        title: t`How does it work?`,
+        content: (
+          <div className="flex flex-col gap-12">
+            <div className="flex flex-col gap-4">
+              <div className="font-medium text-typography-primary">
+                <Trans>Trade & Stake to Earn Your Tiers</Trans>
+              </div>
+              <p>
+                <Trans>
+                  Trade and optionally stake GMX or esGMX to increase your earning power. Your weekly trading volume
+                  sets your volume tier, and the amount you stake sets your staking tier – together they form your
+                  reward multiplier. The higher your tiers, the more you earn on your trading fees.
+                </Trans>
+              </p>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div className="font-medium text-typography-primary">
+                <Trans>Receive Rewards</Trans>
+              </div>
+              <p>
+                <Trans>
+                  You receive {formatFactorPercentage(config.esGmxShareFactor)} of your rewards in esGMX, plus an
+                  additional {formatFactorPercentage(config.gtShareFactor)} in GT tokens. esGMX can be vested into
+                  liquid GMX over time. GT has not yet undergone its TGE, allowing holders to benefit from potential
+                  token appreciation.
+                </Trans>
+              </p>
+            </div>
+          </div>
+        ),
+      },
+      {
         title: t`How are rewards calculated?`,
         content: (
           <div>

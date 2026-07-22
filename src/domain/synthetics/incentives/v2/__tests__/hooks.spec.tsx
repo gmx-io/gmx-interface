@@ -16,10 +16,12 @@ import {
   ACCOUNT_INCENTIVE_STATUS_QUERY,
   ACCOUNT_REWARDS_HISTORY_QUERY,
   INCENTIVES_LEADERBOARD_QUERY,
+  REWARDS_PROMO_ACTIVITY_QUERY,
 } from "../queries";
 import { useAccountIncentiveStatus } from "../useAccountIncentiveStatus";
 import { useAccountRewardsHistory } from "../useAccountRewardsHistory";
 import { useIncentivesLeaderboard } from "../useIncentivesLeaderboard";
+import { useRewardsPromoActivity } from "../useRewardsPromoActivity";
 
 const ENDPOINT = "https://example.com/incentives/graphql";
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
@@ -104,6 +106,25 @@ describe("Incentives V2 hooks", () => {
     });
   });
 
+  it("loads recent activity with the original account casing", async () => {
+    mockFetchIncentivesGraphql.mockResolvedValue({
+      accountNetPositionFeesLast4Months: { netPositionFeeUsd: "123" },
+      tradeActions: [{ timestamp: 456 }],
+    });
+
+    function TestComponent() {
+      const { data } = useRewardsPromoActivity(ARBITRUM, { account: CHECKSUMMED_ACCOUNT });
+      return <div>{data ? `${data.netPositionFeeUsd}:${data.firstTradeTimestamp}` : "loading"}</div>;
+    }
+
+    renderWithSWR(<TestComponent />);
+
+    expect(await screen.findByText("123:456")).toBeTruthy();
+    expect(mockFetchIncentivesGraphql).toHaveBeenCalledWith(ENDPOINT, REWARDS_PROMO_ACTIVITY_QUERY, {
+      account: CHECKSUMMED_ACCOUNT,
+    });
+  });
+
   it("uses direct history pagination with the original account casing", async () => {
     mockFetchIncentivesGraphql.mockResolvedValue({
       accountRewardsHistory: { totalCount: 1, items: [rawHistoryEntry] },
@@ -157,6 +178,7 @@ describe("Incentives V2 hooks", () => {
       useAccountIncentiveStatus(ARBITRUM, { account: CHECKSUMMED_ACCOUNT, enabled: false });
       useAccountRewardsHistory(ARBITRUM, { account: "invalid", limit: 20, offset: 0 });
       useIncentivesLeaderboard(ARBITRUM, { where: { account: "invalid" }, limit: 20, offset: 0 });
+      useRewardsPromoActivity(ARBITRUM, { account: "invalid" });
       return null;
     }
 

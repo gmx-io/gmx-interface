@@ -26,7 +26,7 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 
-import AllTimeIcon from "img/ic_clock_dashed.svg?react";
+import AllTimeIcon from "img/ic_calendar.svg?react";
 
 const PAGE_SIZE = 20;
 
