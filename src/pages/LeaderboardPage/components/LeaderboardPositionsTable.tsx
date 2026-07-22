@@ -4,7 +4,10 @@ import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "reac
 
 import type { SortDirection } from "context/SorterContext/types";
 import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
+import {
+  useLeaderboardChainId,
+  useLeaderboardIsCompetition,
+} from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   selectPositionConstants,
@@ -27,11 +30,15 @@ import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { MarketFilter } from "components/TableMarketFilter/MarketFilter";
+import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { filterLeaderboardPositions } from "./leaderboardPositionFilters";
+import type { LeaderboardPositionSide } from "./leaderboardPositionFilters";
 import { formatDelta, getSignedValueClassName } from "./shared";
 
 function getWinnerRankClassname(rank: number | null) {
@@ -54,6 +61,10 @@ export function LeaderboardPositionsTable({
 }) {
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
+  const [marketAddresses, setMarketAddresses] = useState<string[]>([]);
+  const [side, setSide] = useState<LeaderboardPositionSide>();
+  const chainId = useLeaderboardChainId();
+  const availableMarketAddresses = useMemo(() => Array.from(new Set(data.map((position) => position.market))), [data]);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>(
     "leaderboard-positions-table",
     {
@@ -66,6 +77,21 @@ export function LeaderboardPositionsTable({
   useEffect(() => {
     setPage(1);
   }, [term]);
+
+  useEffect(() => {
+    setMarketAddresses((current) => (current.length ? [] : current));
+    setPage(1);
+  }, [chainId]);
+
+  const handleMarketAddressesChange = useCallback((nextMarketAddresses: string[]) => {
+    setMarketAddresses(nextMarketAddresses);
+    setPage(1);
+  }, []);
+
+  const handleSideChange = useCallback((nextSide: LeaderboardPositionSide | undefined) => {
+    setSide(nextSide);
+    setPage(1);
+  }, []);
 
   const sorted = useMemo(() => {
     return [...data].sort((a, b) => {
@@ -86,10 +112,15 @@ export function LeaderboardPositionsTable({
     });
   }, [data, direction, orderBy]);
 
+  const marketAndSideFilteredStats = useMemo(
+    () => filterLeaderboardPositions(sorted, marketAddresses, side),
+    [marketAddresses, side, sorted]
+  );
+
   const filteredStats = useMemo(() => {
     const q = term.toLowerCase().trim();
-    return sorted.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
-  }, [sorted, term]);
+    return marketAndSideFilteredStats.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
+  }, [marketAndSideFilteredStats, term]);
 
   const indexFrom = (page - 1) * PER_PAGE;
   const rowsData = useMemo(
@@ -121,6 +152,16 @@ export function LeaderboardPositionsTable({
 
   return (
     <div className="rounded-b-8 bg-slate-900">
+      <div className="flex flex-wrap items-center gap-8 border-b-1/2 border-slate-600 px-20 py-12 max-md:px-12">
+        <MarketFilter
+          asButton
+          excludeSpotOnly
+          availableMarketAddresses={availableMarketAddresses}
+          value={marketAddresses}
+          onChange={handleMarketAddressesChange}
+        />
+        <SideFilter value={side} onChange={handleSideChange} />
+      </div>
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1024px] table-fixed">
           <thead>
@@ -163,6 +204,36 @@ export function LeaderboardPositionsTable({
       </TableScrollFadeContainer>
       <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
+  );
+}
+
+function SideFilter({
+  value,
+  onChange,
+}: {
+  value: LeaderboardPositionSide | undefined;
+  onChange: (value: LeaderboardPositionSide | undefined) => void;
+}) {
+  const longLabel = t`Long`;
+  const shortLabel = t`Short`;
+  const options = useMemo(
+    () => [
+      { text: longLabel, data: "long" as const },
+      { text: shortLabel, data: "short" as const },
+    ],
+    [longLabel, shortLabel]
+  );
+
+  return (
+    <TableOptionsFilter<LeaderboardPositionSide>
+      label={t`Side`}
+      placeholder={t`Search`}
+      value={value}
+      options={options}
+      onChange={onChange}
+      popupPlacement="bottom-start"
+      asButton
+    />
   );
 }
 
