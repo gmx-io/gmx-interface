@@ -196,6 +196,7 @@ describe("RewardsTiersTab", () => {
     renderTab({ account: undefined });
 
     expect(screen.getByText("All-time Rewards")).toBeDefined();
+    expect(screen.queryByTestId("rewards-promotional-banners")).toBeNull();
     expect(document.body.textContent).not.toContain(formatUsd(0n, { fallbackToZero: true }));
     expect(screen.queryByText("Inactive")).toBeNull();
     expect(screen.queryByText("0 qualified this epoch")).toBeNull();
@@ -231,6 +232,30 @@ describe("RewardsTiersTab", () => {
     expect(activityCard).not.toBeNull();
     expect(volumeCard!.compareDocumentPosition(stakingCard!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(stakingCard!.compareDocumentPosition(activityCard!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("places the FAQ and promotional banner in the responsive right sidebar", () => {
+    renderTab();
+
+    const layout = screen.getByTestId("rewards-tiers-layout");
+    const content = screen.getByTestId("rewards-tiers-content");
+    const sidebar = screen.getByTestId("rewards-tiers-sidebar");
+    const faq = screen.getByTestId("rewards-tiers-faq");
+    const banner = screen.getByTestId("rewards-promotional-banners");
+
+    expect(layout.className).toContain("grid-cols-[minmax(0,1fr)_40rem]");
+    expect(layout.className).toContain("max-xl:grid-cols-1");
+    expect(layout.firstElementChild).toBe(content);
+    expect(layout.lastElementChild).toBe(sidebar);
+    expect(content.className).toContain("max-xl:order-2");
+    expect(sidebar.className).toContain("sticky");
+    expect(sidebar.className).toContain("max-xl:contents");
+    expect(sidebar.contains(faq)).toBe(true);
+    expect(sidebar.contains(banner)).toBe(true);
+    expect(faq.className).toContain("max-xl:order-3");
+    expect(banner.className).toContain("max-xl:order-1");
+    expect(faq.compareDocumentPosition(banner) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getAllByTestId("rewards-promotional-banners")).toHaveLength(1);
   });
 
   it("renders config-derived volume and staking targets", () => {

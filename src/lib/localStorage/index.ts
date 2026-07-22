@@ -65,7 +65,7 @@ export function hasStoredLocalStorageValue(key: LocalStorageKey | LocalStorageKe
   }
 }
 
-function tryGetLocalStorageItem<T>(key: string): T | undefined {
+export function tryGetLocalStorageItem<T>(key: string): T | undefined {
   const item = localStorage.getItem(key);
   if (!item) {
     return undefined;

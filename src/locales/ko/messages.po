@@ -403,10 +403,6 @@ msgstr "탐색"
 msgid "GM airdrop"
 msgstr "GM 에어드롭"
 
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Pause banner rotation"
-msgstr "배너 순환 일시 중지"
-
 #: src/pages/Dashboard/StatsCard.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -566,6 +562,12 @@ msgstr ""
 msgid "Failed to claim affiliate rewards"
 msgstr "제휴 보상 수령에 실패했습니다"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX was staked. Review the updated collateral and continue vesting."
+msgstr "GMX가 스테이킹되었습니다. 업데이트된 담보를 확인하고 베스팅을 계속하세요."
+
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "decrease"
 msgstr ""
@@ -715,6 +717,7 @@ msgid "sell"
 msgstr "판매"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
+#: src/pages/RewardsPage/components/RewardsVestingChainGuard.tsx
 msgid "Switch to {0}"
 msgstr "{0}으로 전환"
 
@@ -809,6 +812,10 @@ msgstr ""
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "No"
 msgstr "아니오"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "This ends your current vesting. So far {0} GMX has vested and is yours to keep. The remaining {1} esGMX would keep converting to GMX if you wait — stopping now returns it to your wallet unvested."
+msgstr "현재 베스팅을 종료합니다. 지금까지 {0} GMX가 베스팅되어 그대로 보유할 수 있습니다. 남은 {1} esGMX는 기다리면 계속 GMX로 전환되지만, 지금 중지하면 베스팅되지 않은 상태로 지갑에 반환됩니다."
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -940,6 +947,10 @@ msgstr "알 수 없는 오류"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "마켓 스왑"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "GMX claimed"
+msgstr "GMX 수령 완료"
 
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Last epoch"
@@ -1089,10 +1100,6 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "{chainName}에서 {nativeTokenSymbol}을(를) 구매할 수 있는 옵션이 없습니다"
 
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Your GMX collateral stays locked until it's done."
-msgstr "절차가 완료될 때까지 GMX 담보는 잠금 상태로 유지됩니다."
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "수수료 값은 수익 발생 시점에 계산됩니다. 인센티브는 제외됩니다."
@@ -1104,10 +1111,6 @@ msgstr ""
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "금고 및 풀의 TVL"
-
-#: src/components/TradeBox/TradeBoxRows/RewardsHintRow.tsx
-msgid "Earn esGMX and GT rewards from eligible trading activity"
-msgstr "적격 거래 활동으로 esGMX 및 GT 보상을 받으세요"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1610,6 +1613,10 @@ msgstr "최초 마진"
 msgid "Competition airdrop"
 msgstr "대회 에어드롭"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Keep vesting"
+msgstr "베스팅 계속"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings update failed"
 msgstr "설정 업데이트 실패"
@@ -1795,6 +1802,10 @@ msgstr "점검"
 msgid "Swap fee"
 msgstr "스왑 수수료"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Your GMX collateral stays locked until it’s done."
+msgstr "GMX 담보는 베스팅이 완료될 때까지 잠긴 상태로 유지됩니다."
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
 msgstr "익스프레스"
@@ -1890,7 +1901,7 @@ msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting turns esGMX into GMX over 12 months."
-msgstr "베스팅을 통해 12개월에 걸쳐 esGMX가 GMX로 전환됩니다."
+msgstr "베스팅을 통해 esGMX가 12개월에 걸쳐 GMX로 전환됩니다."
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
@@ -2161,6 +2172,11 @@ msgstr "오류 숨기기"
 #: src/components/AlertInfo/AlertInfo.tsx
 msgid "Alert icon"
 msgstr "알림 아이콘"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vest {0} esGMX"
+msgstr "{0} esGMX 베스팅"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
@@ -2482,6 +2498,7 @@ msgstr "시프트 오류"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claim failed"
 msgstr "수령 실패"
 
@@ -2606,6 +2623,10 @@ msgstr "지원되는 경우 직불/신용카드, Apple Pay 또는 Google Pay를 
 msgid "2nd place"
 msgstr "2위"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Your {0} GMX collateral will be unlocked"
+msgstr "{0} GMX 담보가 잠금 해제됩니다"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr "부분 수는 {MIN_TWAP_NUMBER_OF_PARTS}와 {MAX_TWAP_NUMBER_OF_PARTS} 사이여야 함"
@@ -2713,9 +2734,6 @@ msgstr "GM: {indexName}"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Coming soon"
 msgstr "출시 예정"
 
@@ -3005,6 +3023,10 @@ msgstr "등급은 달성한 에포크와 이후 {0}개 에포크 동안 적용�
 msgid "Debug RPC endpoints ({0})"
 msgstr "RPC 엔드포인트 디버그 ({0})"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting stopped"
+msgstr "베스팅이 중지되었습니다"
+
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "우리 커뮤니티에 의해 주도됨"
@@ -3068,6 +3090,7 @@ msgstr "{txnTypeText} {0} 주문"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max"
 msgstr "최대"
 
@@ -3285,6 +3308,10 @@ msgstr "상장"
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr "{gmOrGlvLabel} 판매에 실패했습니다. 자금은 GMX Account에 안전하게 보관되어 있습니다. 정산 체인으로 전환하고 {indexName} 풀로 이동하여 {gmOrGlvLabel} 토큰을 판매하십시오."
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting submitted"
+msgstr "베스팅 요청이 제출되었습니다"
+
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "One-Click settings"
 msgstr "One-Click Trading 설정"
@@ -3344,6 +3371,10 @@ msgstr "구매 수수료"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Claimable collateral reduction factor"
 msgstr "청구 가능 담보 감소 비율"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Buy {0} GMX to vest {depositAmountLabel}"
+msgstr "{depositAmountLabel} 베스팅을 위해 {0} GMX 구매"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
@@ -3441,13 +3472,25 @@ msgstr "누적 LP 보상"
 msgid "Invalid decrease size"
 msgstr "유효하지 않은 감소 규모"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stake & vest esGMX"
+msgstr "GMX 스테이킹 및 esGMX 베스팅"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "구독"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vest {0} esGMX with your {1} GMX"
+msgstr "보유한 {1} GMX로 {0} esGMX 베스팅"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized finance dashboard"
 msgstr "탈중앙화 금융 대시보드"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Yes, stop vesting"
+msgstr "예, 베스팅 중지"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending PnL from all open positions"
@@ -3530,6 +3573,7 @@ msgid "Allow {0} to be spent"
 msgstr "{0} 지출 허용"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stake submitted"
 msgstr "스테이킹이 제출되었습니다"
 
@@ -3603,6 +3647,10 @@ msgstr "주문 유형"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
+
+#: src/components/GmxAccountModal/RewardsSection.tsx
+msgid "Your multiplier"
+msgstr "내 배수"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
@@ -4024,6 +4072,10 @@ msgstr "기준가가 변경되었습니다. 허용 슬리피지를 높여 주십
 msgid "Maximum pool capacity reached"
 msgstr "최대 풀 용량 도달"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Nothing to claim"
+msgstr "수령할 보상이 없습니다"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed"
 msgstr "허가 서명 완료"
@@ -4331,6 +4383,10 @@ msgstr "누적 손익 <0>{0}</0>"
 msgid "Points are based on the total notional trading volume on GMX MegaETH generated by wallets using your onchain referral code"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Claim {0} GMX"
+msgstr "{0} GMX 수령"
+
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum days before reauthorization required"
 msgstr "재인증이 필요하기까지의 최대 일수"
@@ -4446,6 +4502,10 @@ msgstr "{sourceChainName}에 연결됨"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Rewards history is temporarily unavailable. Please try again later."
 msgstr "보상 내역을 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요."
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No esGMX is currently vesting. Stake GMX to start vesting your esGMX and gradually convert it into liquid GMX."
+msgstr "현재 베스팅 중인 esGMX가 없습니다. GMX를 스테이킹하여 esGMX 베스팅을 시작하고 유동 GMX로 점진적으로 전환하세요."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5168,6 +5228,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claiming..."
 msgstr "수령중..."
 
@@ -5350,6 +5411,10 @@ msgstr "현재 보상 프로그램이 활성화되어 있지 않습니다"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "순수 {indexSymbol} 숏. 익스포저는 포지션에서만 발생합니다."
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Learn how"
+msgstr "자세히 알아보기"
 
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Read more</1>."
@@ -5659,6 +5724,10 @@ msgstr "아직 요청을 취소할 수 없습니다. 취소 지연 시간이 지
 msgid "Update {orderTypeName}"
 msgstr "{orderTypeName} 업데이트"
 
+#: src/components/GmxAccountModal/RewardsSection.tsx
+msgid "You are already at the highest staking tier"
+msgstr "이미 가장 높은 스테이킹 티어에 도달했습니다"
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Opening..."
@@ -5772,6 +5841,10 @@ msgstr "숏"
 msgid "Last 180d"
 msgstr "최근 180일"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Earn esGMX rewards from eligible trading activity."
+msgstr "적격 거래 활동으로 esGMX 보상을 받으세요."
+
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Positive funding fees"
@@ -5869,6 +5942,10 @@ msgstr "Bond Protocol에서 짧은 베스팅 기간으로 GMX 채권을 할인 �
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Vesting completed"
+msgstr "베스팅 완료"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -5998,6 +6075,10 @@ msgstr "최대 {MAX_REFERRAL_CODE_LENGTH}자"
 msgid "Buy with card"
 msgstr "카드로 구매"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stop vesting 100% of these rewards?"
+msgstr "이 보상의 베스팅을 100% 중지하시겠습니까?"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "마켓별 격리 유동성 제공"
@@ -6025,10 +6106,6 @@ msgstr ""
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "지갑에서"
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Resume banner rotation"
-msgstr "배너 순환 재개"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
@@ -6095,6 +6172,10 @@ msgstr "가격 입력"
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Updating..."
 msgstr "업데이트 중…"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Vest more"
+msgstr "추가 베스팅"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
@@ -6298,6 +6379,10 @@ msgstr "트랜잭션:"
 msgid "EXECUTION PRICE"
 msgstr "체결가"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Vesting data is temporarily unavailable."
+msgstr "베스팅 데이터를 일시적으로 사용할 수 없습니다."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "spinner"
 msgstr "로딩 중"
@@ -6357,6 +6442,10 @@ msgstr "관리인"
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
 msgstr "사용자"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vest esGMX"
+msgstr "esGMX 베스팅"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -6475,6 +6564,14 @@ msgstr "다음 {2} 동안 {3}에 대해 각 {1}의 {0} {type} 주문을 {numberO
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "문서"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Staking collateral..."
+msgstr "담보 스테이킹 중..."
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vestable: {0} esGMX"
+msgstr "베스팅 가능: {0} esGMX"
 
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Toggle reward details"
@@ -6634,6 +6731,10 @@ msgstr "코드 입력"
 msgid "Details"
 msgstr "상세"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting failed"
+msgstr "베스팅 실패"
+
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Titan"
 msgstr "타이탄"
@@ -6683,6 +6784,7 @@ msgid "High execution reliability using premium RPCs"
 msgstr "프리미엄 RPC를 통한 높은 체결 안정성"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stake failed"
 msgstr "스테이킹 실패"
 
@@ -6804,6 +6906,7 @@ msgstr "포지션 선택"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Connect wallet"
 msgstr "지갑 연결"
 
@@ -6826,6 +6929,10 @@ msgstr ""
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Unlocking..."
+msgstr "잠금 해제 중..."
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -6877,6 +6984,10 @@ msgstr "ODOS"
 msgid "GMX Substack"
 msgstr "GMX Substack"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stop vesting?"
+msgstr "베스팅을 중지하시겠습니까?"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
 msgstr "조건가에서 지불-담보 스왑을 위한 유동성 부족"
@@ -6892,6 +7003,10 @@ msgstr ""
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "This is an external swap routed through KyberSwap. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Unlock failed"
+msgstr "잠금 해제 실패"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stryke"
@@ -6912,6 +7027,10 @@ msgstr "허용된 작업"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr "최대 펀딩 계수"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Loading allowance..."
+msgstr "승인 정보 불러오는 중..."
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
@@ -7108,6 +7227,10 @@ msgstr ""
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
 msgstr "구성"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "New esGMX keeps accruing while a vest is active"
+msgstr "베스팅이 진행되는 동안에도 새로운 esGMX가 계속 적립됩니다"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -7347,9 +7470,17 @@ msgstr ""
 msgid "Send from Wallet"
 msgstr "지갑에서 보내기"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "{0, plural, one {# day left} other {# days left}}"
+msgstr "{0, plural, one {#일 남음} other {#일 남음}}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "담보를 출금할 수 없습니다. 잔여 담보가 최소 기준 미만이 됩니다"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral this vest locks"
+msgstr "이번 베스팅으로 잠기는 담보"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -7814,6 +7945,10 @@ msgstr ""
 msgid "Lend your tokens or borrow against them"
 msgstr "토큰을 대출하거나 담보로 차입하십시오"
 
+#: src/components/TradeBox/TradeBoxRows/RewardsHintRow.tsx
+msgid "<0>Trade or stake</0> to unlock your rewards multiplier"
+msgstr "<0>거래 또는 스테이킹하여</0> 보상 배수 잠금 해제"
+
 #: src/components/AppHeader/AppHeaderLogo.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -7889,6 +8024,10 @@ msgstr "사용 자본"
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "{chainName} address"
 msgstr "{chainName} 주소"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Complete"
+msgstr "완료"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Current endpoints ({0})"
@@ -7984,6 +8123,10 @@ msgstr "자신 있게 거래"
 msgid "Receiver has staked GMX/GLP"
 msgstr "수신자가 GMX/GLP를 스테이킹하고 있습니다"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX staked"
+msgstr "GMX 스테이킹 완료"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order type unavailable for creation"
 msgstr ""
@@ -8007,6 +8150,10 @@ msgstr "GMX trading stats"
 msgid "High leverage increases liquidation risk"
 msgstr "높은 레버리지는 청산 위험을 증가시킵니다"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stopping..."
+msgstr "중지 중..."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr "{orderText} 취소됨"
@@ -8019,6 +8166,10 @@ msgstr "최대 대여 가능 영향 계수"
 #: src/pages/RpcDebug/parts.tsx
 msgid "BANNED"
 msgstr "BANNED"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting needs GMX staked as collateral, but you have no GMX to stake."
+msgstr "베스팅하려면 GMX를 담보로 스테이킹해야 하지만, 스테이킹할 GMX가 없습니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
@@ -8044,6 +8195,10 @@ msgstr "LONG LIQ."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "입금할 자산을 선택하십시오"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Already staked & free"
+msgstr "스테이킹 완료 및 미사용"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -8221,6 +8376,10 @@ msgstr "계정 확인"
 msgid "Trading settings"
 msgstr "거래 설정"
 
+#: src/components/GmxAccountModal/RewardsSection.tsx
+msgid "Trade or stake to unlock your rewards multiplier"
+msgstr "거래 또는 스테이킹하여 보상 배수 잠금 해제"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpie"
 msgstr "Perpie"
@@ -8269,6 +8428,7 @@ msgstr "Solv Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claim submitted"
 msgstr "수령 제출됨"
 
@@ -8352,6 +8512,7 @@ msgstr "적격 거래 활동에서 발생한 인덱싱된 esGMX 누적액과 GT 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Cancel"
 msgstr "취소"
 
@@ -8434,6 +8595,10 @@ msgstr ""
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "<0>To </0><1>{0}</1>"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Buy {0} GMX and vest all {depositAmountLabel}"
+msgstr "{0} GMX를 구매하고 {depositAmountLabel} 전액 베스팅"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "FX"
@@ -8555,6 +8720,7 @@ msgstr "{tokenSymbol} 보상 스테이킹"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
 
@@ -9042,10 +9208,6 @@ msgstr ""
 msgid "Staked GMX"
 msgstr "스테이킹된 GMX"
 
-#: src/components/GmxAccountModal/RewardsSection.tsx
-msgid "Multiplier {0}"
-msgstr "배수 {0}"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor shorts"
 msgstr "숏 미결제약정 준비금 비율"
@@ -9101,6 +9263,8 @@ msgid "Execution prices for increasing shorts<0/>and decreasing longs"
 msgstr "숏 증가 및 롱 감소에<0/>대한 체결 가격"
 
 #: src/components/GmxAccountModal/RewardsSection.tsx
+#: src/components/GmxAccountModal/RewardsSection.tsx
+#: src/components/TradeBox/TradeBoxRows/RewardsHintRow.tsx
 msgid "View tiers and indexed rewards"
 msgstr "등급 및 인덱싱된 보상 보기"
 
@@ -9137,6 +9301,7 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Approve GMX"
 msgstr "GMX 승인"
 
@@ -9364,6 +9529,10 @@ msgstr "총 성과 APY"
 msgid "No tokens on {0} for deposit"
 msgstr "{0}에 입금 가능한 토큰이 없습니다"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Nothing to vest"
+msgstr "베스팅할 esGMX가 없습니다"
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "총 수령 금액"
@@ -9425,6 +9594,7 @@ msgstr "24시간 거래량"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Enter an amount"
 msgstr "금액 입력"
 
@@ -9441,6 +9611,10 @@ msgstr ""
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
 msgstr "{comment}에 대해"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Adding esGMX extends your current vesting: your existing tokens will finish converting on <0>{0} instead of {1}</0>."
+msgstr "esGMX를 추가하면 현재 베스팅 기간이 연장됩니다. 기존 토큰은 <0>{1}이 아닌 {0}에 전환이 완료됩니다</0>."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
@@ -9753,6 +9927,10 @@ msgstr "숏 포지션"
 msgid "FEES"
 msgstr "수수료"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Stop vesting"
+msgstr "베스팅 중지"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -9768,6 +9946,10 @@ msgstr "{0} 수령"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing exponent short"
 msgstr "차입 지수 (숏)"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "adding it will extend your unlock date."
+msgstr "추가하면 잠금 해제일이 연장됩니다."
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -9811,6 +9993,10 @@ msgstr "100배 레버리지로"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "가격 영향 없음. 이 규모에서 롱 증가 또는<0/>숏 감소 시 단일 체결가가<1/>적용됩니다."
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "it stays staked, it is not unstaked."
+msgstr "스테이킹 상태로 유지되며 언스테이킹되지 않습니다."
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Manage staking"
@@ -9999,6 +10185,10 @@ msgstr "풀 롱 수량"
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
 msgstr "볼트"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX was staked, but vesting did not start. Review the updated collateral and try again."
+msgstr "GMX가 스테이킹되었지만 베스팅이 시작되지 않았습니다. 업데이트된 담보를 확인하고 다시 시도하세요."
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Looping"
@@ -10377,6 +10567,10 @@ msgstr "현재 가격에서 포지션이 청산될 수 있습니다"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징 파트너로 LayerZero를 선택했습니다! 이 통합은 GMX에:</0><1><2>125+ 체인으로 확장 능력</2><3>모든 계약 및 보안의 완전 소유권</3><4>빠르고 제로 슬리피지 전송</4><5>수십억 달러 자산과 수백 개 애플리케이션에서 이미 신뢰받는 전투 테스트된 레일... <6>더 보기</6></5></1>"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stop vesting submitted"
+msgstr "베스팅 중지 요청이 제출되었습니다"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr ""
@@ -10537,6 +10731,10 @@ msgstr "Swap TWAP: 지정된 시간에 걸쳐 균등 분할로 토큰을 스왑�
 msgid "Pending transfer from {sender}"
 msgstr "{sender}로부터의 대기 중인 전송"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Start vesting"
+msgstr "베스팅 시작"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "{0} tokens reserved for vesting"
 msgstr "베스팅을 위해 {0} 토큰이 예약되어 있습니다"
@@ -10591,6 +10789,10 @@ msgstr "스탑 마켓"
 msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
 msgstr "선택한 포지션 중 일부는 미지급 차입 수수료와 펀딩 수수료를 차감하면 마진이 마이너스이므로 정산이 실패할 가능성이 높습니다. 플러스 펀딩은 정산이 성공한 후에만 수령할 수 있습니다. 마진을 추가하거나, 실현 이익이 부족분을 충당할 수 있도록 해당 포지션을 충분히 축소하거나 종료하세요."
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Unlock submitted"
+msgstr "잠금 해제 요청 제출됨"
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
 msgstr "롱 포지션 증가<0/>및 숏 포지션 감소의 체결 가격"
@@ -10623,6 +10825,10 @@ msgstr "유형 검색"
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
 msgstr "시장가 주문"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stop vesting failed"
+msgstr "베스팅 중지 실패"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -10796,6 +11002,10 @@ msgstr "비너스"
 msgid "No swap route available"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Collateral unlocked"
+msgstr "담보 잠금 해제됨"
+
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on {0}."
 msgstr ""
@@ -10803,6 +11013,10 @@ msgstr ""
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open {marketName} in explorer"
 msgstr "{marketName}을(를) 탐색기에서 열기"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting {0} esGMX needs {1} more GMX staked as collateral. You hold {2} unreserved GMX in the wallet. You can either:"
+msgstr "{0} esGMX를 베스팅하려면 담보로 {1} GMX를 추가로 스테이킹해야 합니다. 지갑에 미예약 GMX가 {2} 있습니다. 다음 중 하나를 선택할 수 있습니다:"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GMX?"
@@ -10830,6 +11044,10 @@ msgstr "수익률 볼트"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Connect wallet to view vesting rewards."
+msgstr "베스팅 보상을 확인하려면 지갑을 연결하세요."
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
@@ -11087,6 +11305,10 @@ msgstr "청산 수수료를 포함한 모든 수수료를 순가치 및 PnL 표�
 msgid "Claim price impact rebates"
 msgstr "가격 영향 리베이트 수령"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting started"
+msgstr "베스팅이 시작되었습니다"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "시프트 요청을 실행하는 중…"
@@ -11193,6 +11415,10 @@ msgstr "GMX + esGMX 기준값"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit price"
 msgstr "지정가"
+
+#: src/components/GmxAccountModal/RewardsSection.tsx
+msgid "Stake {0} GMX or esGMX more to get {1} next epoch"
+msgstr "GMX 또는 esGMX {0}을(를) 추가로 스테이킹하면 다음 에포크에 {1}을 받을 수 있습니다"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power"
@@ -11314,6 +11540,10 @@ msgstr "수수료 APY"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trading pair price alerts"
 msgstr "거래 쌍 가격 알림"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Unlock collateral"
+msgstr "담보 잠금 해제"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
@@ -11591,6 +11821,10 @@ msgstr "트리거 가격 입력"
 msgid "Total stats"
 msgstr "종합 통계"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "We’ll stake it from your wallet, then start vesting."
+msgstr "지갑의 GMX를 스테이킹한 후 베스팅을 시작합니다."
+
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Your trading volume this epoch exceeds the threshold for the next tier."
 msgstr "이번 에포크의 거래량이 다음 등급 기준값을 초과했습니다."
@@ -11769,6 +12003,10 @@ msgstr "토큰 허용 테스트"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "유효하지 않은 청산가"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Approving GMX..."
+msgstr "GMX 승인 중..."
 
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
@@ -12237,6 +12475,10 @@ msgstr "1시간"
 msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account."
 msgstr "지갑 또는 GMX Account의 자금을 사용하여 GMX에서 격리 포지션을 개설할 수 있습니다."
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "You need {0} more GMX staked as collateral."
+msgstr "담보로 {0} GMX를 추가로 스테이킹해야 합니다."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs"
 msgstr ""
@@ -12244,6 +12486,10 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 3월 20-27일"
+
+#: src/components/TradeBox/TradeBoxRows/RewardsHintRow.tsx
+msgid "<0>Current multiplier</0> · Earn rewards on eligible trades"
+msgstr "<0>현재 배수</0> · 적격 거래로 보상 받기"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -12720,6 +12966,10 @@ msgstr "공유 위치"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "파생상품 포트폴리오 트래커"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting..."
+msgstr "베스팅 중..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming"

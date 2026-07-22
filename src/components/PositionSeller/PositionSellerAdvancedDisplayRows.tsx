@@ -174,7 +174,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
   if (incentivesV2Active) {
     return (
-      <div className="rounded-8 bg-slate-700/50">
+      <div className="rounded-8 bg-fill-surfaceElevated50">
         {executionDetails}
         <RewardsHintRow feesType="decrease" />
       </div>

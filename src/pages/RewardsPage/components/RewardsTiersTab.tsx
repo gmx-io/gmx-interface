@@ -62,23 +62,43 @@ export function RewardsTiersTab({
   const vestingState: AccountDataState = !account ? "disconnected" : "unavailable";
 
   return (
-    <div className="flex min-w-0 flex-col gap-8">
-      <RewardsPromotionalBanners account={account} config={config} status={status} stakingData={stakingData} />
-      <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-12" data-testid="rewards-tiers-overview">
-        <RewardsTiersSummary allTimeSummary={allTimeSummary} summaryState={summaryState} vestingState={vestingState} />
-        <RewardsTierCards
-          config={config}
-          status={status}
-          statusState={statusState}
-          account={account}
-          walletGmx={stakingData?.gmxBalance}
-          recentActivityRewardEstimateUsd={recentActivityRewardEstimateUsd}
-          promoActivityLoading={promoActivityLoading}
-        />
+    <div
+      className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1480px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1"
+      data-testid="rewards-tiers-layout"
+    >
+      <div className="flex min-w-0 flex-col gap-8 max-xl:order-2" data-testid="rewards-tiers-content">
+        <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-12" data-testid="rewards-tiers-overview">
+          <RewardsTiersSummary
+            allTimeSummary={allTimeSummary}
+            summaryState={summaryState}
+            vestingState={vestingState}
+          />
+          <RewardsTierCards
+            config={config}
+            status={status}
+            statusState={statusState}
+            account={account}
+            walletGmx={stakingData?.gmxBalance}
+            recentActivityRewardEstimateUsd={recentActivityRewardEstimateUsd}
+            promoActivityLoading={promoActivityLoading}
+          />
+        </div>
+
+        <RewardsTierTables chainId={chainId} config={config} status={status} statusState={statusState} />
       </div>
 
-      <RewardsTierTables chainId={chainId} config={config} status={status} statusState={statusState} />
-      <RewardsTiersFaq config={config} />
+      <div className="sticky top-8 flex min-w-0 flex-col gap-8 max-xl:contents" data-testid="rewards-tiers-sidebar">
+        <div className="min-w-0 max-xl:order-3" data-testid="rewards-tiers-faq">
+          <RewardsTiersFaq config={config} />
+        </div>
+        <RewardsPromotionalBanners
+          account={account}
+          config={config}
+          status={status}
+          stakingData={stakingData}
+          className="max-xl:order-1"
+        />
+      </div>
     </div>
   );
 }

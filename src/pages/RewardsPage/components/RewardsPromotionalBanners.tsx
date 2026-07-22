@@ -42,6 +42,7 @@ type RewardsBannerContent = {
 };
 
 type DismissedRewardsBanners = Partial<Record<RewardsBannerType, boolean>>;
+type BannerAnimationDirection = "left" | "right";
 
 const AUTO_ROTATE_MS = 6000;
 const SWIPE_THRESHOLD_PX = 40;
@@ -174,11 +175,13 @@ export function RewardsPromotionalBanners({
   config,
   status,
   stakingData,
+  className,
 }: {
   account?: string;
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
   stakingData?: Pick<StakingProcessedData, "gmxBalance" | "esGmxBalance">;
+  className?: string;
 }) {
   const allBanners = useMemo(
     () => getRewardsPromotionalBannerContent({ config, status, stakingData }),
@@ -193,8 +196,8 @@ export function RewardsPromotionalBanners({
     [allBanners, dismissedBanners]
   );
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isInteractionPaused, setIsInteractionPaused] = useState(false);
-  const [isRotationPaused, setIsRotationPaused] = useState(
+  const [animationDirection, setAnimationDirection] = useState<BannerAnimationDirection>("right");
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
     () => typeof window !== "undefined" && Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
   );
   const swipeStartRef = useRef<{ pointerId: number; x: number; y: number }>();
@@ -202,6 +205,7 @@ export function RewardsPromotionalBanners({
   const goToRelativeIndex = useCallback(
     (offset: number) => {
       if (banners.length <= 1) return;
+      setAnimationDirection(offset > 0 ? "right" : "left");
       setCurrentIndex((current) => (current + offset + banners.length) % banners.length);
     },
     [banners.length]
@@ -215,22 +219,32 @@ export function RewardsPromotionalBanners({
   }, [banners.length]);
 
   useEffect(() => {
-    if (banners.length <= 1 || isInteractionPaused || isRotationPaused) return;
+    if (banners.length <= 1 || prefersReducedMotion) return;
 
     const timeout = window.setTimeout(() => goToRelativeIndex(1), AUTO_ROTATE_MS);
     return () => window.clearTimeout(timeout);
-  }, [banners.length, current?.type, goToRelativeIndex, isInteractionPaused, isRotationPaused]);
+  }, [banners.length, current?.type, goToRelativeIndex, prefersReducedMotion]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mediaQuery) return;
 
     const handleChange = (event: MediaQueryListEvent) => {
-      if (event.matches) setIsRotationPaused(true);
+      setPrefersReducedMotion(event.matches);
     };
     mediaQuery.addEventListener?.("change", handleChange);
     return () => mediaQuery.removeEventListener?.("change", handleChange);
   }, []);
+
+  const bannerAnimationClass =
+    animationDirection === "left" ? "animate-rewards-banner-slide-in-left" : "animate-rewards-banner-slide-in-right";
+
+  const handleDotClick = (index: number) => {
+    if (index === selectedIndex) return;
+
+    setAnimationDirection(index > selectedIndex ? "right" : "left");
+    setCurrentIndex(index);
+  };
 
   if (!account || !current) return null;
 
@@ -255,37 +269,34 @@ export function RewardsPromotionalBanners({
     if (Math.abs(deltaX) < SWIPE_THRESHOLD_PX || Math.abs(deltaX) <= Math.abs(deltaY)) return;
     if (Math.abs(deltaX) < Math.abs(deltaY) * SWIPE_DIRECTION_LOCK_RATIO) return;
     event.preventDefault();
-    setIsRotationPaused(true);
     goToRelativeIndex(deltaX < 0 ? 1 : -1);
   };
 
   return (
     <div
-      className="flex flex-col items-center"
+      className={cx("flex min-w-0 flex-col items-center", className)}
       role={banners.length > 1 ? "region" : undefined}
       aria-roledescription={banners.length > 1 ? "carousel" : undefined}
       aria-label={banners.length > 1 ? t`Rewards opportunities` : undefined}
       tabIndex={banners.length > 1 ? 0 : undefined}
-      onMouseEnter={() => setIsInteractionPaused(true)}
-      onMouseLeave={() => setIsInteractionPaused(false)}
-      onFocus={() => setIsInteractionPaused(true)}
-      onBlur={() => setIsInteractionPaused(false)}
       onKeyDown={(event) => {
         if (event.key === "ArrowRight") {
           event.preventDefault();
-          setIsRotationPaused(true);
           goToRelativeIndex(1);
         }
         if (event.key === "ArrowLeft") {
           event.preventDefault();
-          setIsRotationPaused(true);
           goToRelativeIndex(-1);
         }
       }}
       data-testid="rewards-promotional-banners"
     >
       <div
-        className="relative grid min-h-[110px] w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-950 p-16 [touch-action:pan-y]"
+        key={current.type}
+        className={cx(
+          "relative grid min-h-[110px] w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-950 p-16 [touch-action:pan-y]",
+          !prefersReducedMotion && bannerAnimationClass
+        )}
         style={rewardsBannerStyles}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
@@ -293,11 +304,7 @@ export function RewardsPromotionalBanners({
           swipeStartRef.current = undefined;
         }}
       >
-        <div
-          className="relative z-10 flex min-w-0 flex-col gap-4 pr-4"
-          aria-live={isRotationPaused || isInteractionPaused ? "polite" : "off"}
-          aria-atomic="true"
-        >
+        <div className="relative z-10 flex min-w-0 flex-col gap-4 pr-4" aria-live="off" aria-atomic="true">
           <div className="flex flex-col gap-2">
             <h3 className="text-16 font-medium text-typography-primary">{current.title}</h3>
             <p className="text-13 text-typography-secondary">{current.description}</p>
@@ -326,42 +333,19 @@ export function RewardsPromotionalBanners({
       </div>
 
       {banners.length > 1 ? (
-        <div className="flex items-center justify-center gap-4 py-8">
-          <button
-            type="button"
-            aria-label={isRotationPaused ? t`Resume banner rotation` : t`Pause banner rotation`}
-            aria-pressed={isRotationPaused}
-            className="flex size-24 items-center justify-center rounded-full text-blue-300 opacity-70 hover:opacity-100"
-            onClick={() => setIsRotationPaused((paused) => !paused)}
-          >
-            {isRotationPaused ? (
-              <span className="border-y-transparent border-l-current ml-2 size-0 border-y-[4px] border-l-[7px]" />
-            ) : (
-              <span className="flex gap-2" aria-hidden="true">
-                <span className="bg-current h-8 w-2 rounded-full" />
-                <span className="bg-current h-8 w-2 rounded-full" />
-              </span>
-            )}
-          </button>
+        <div className="flex items-center justify-center gap-8 py-12">
           {banners.map((banner, index) => (
             <button
               key={banner.type}
               type="button"
               aria-label={t`Go to slide ${index + 1}`}
               aria-current={index === selectedIndex}
-              className="flex size-24 items-center justify-center rounded-full"
-              onClick={() => {
-                setIsRotationPaused(true);
-                setCurrentIndex(index);
-              }}
-            >
-              <span
-                className={cx(
-                  "size-8 rounded-full bg-blue-300 transition-opacity",
-                  index === selectedIndex ? "opacity-100" : "opacity-40 hover:opacity-70"
-                )}
-              />
-            </button>
+              className={cx(
+                "size-8 rounded-full bg-blue-300 transition-opacity",
+                index === selectedIndex ? "opacity-100" : "opacity-40 hover:opacity-70"
+              )}
+              onClick={() => handleDotClick(index)}
+            />
           ))}
         </div>
       ) : null}

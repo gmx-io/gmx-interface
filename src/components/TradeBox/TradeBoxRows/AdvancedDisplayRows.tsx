@@ -255,7 +255,7 @@ export function TradeBoxAdvancedGroups({
 
   if (incentivesV2Active && (feesType === "increase" || feesType === "decrease")) {
     return (
-      <div className="rounded-8 bg-slate-700/50">
+      <div className="rounded-8 bg-fill-surfaceElevated50">
         {executionDetails}
         <RewardsHintRow feesType={feesType} />
       </div>

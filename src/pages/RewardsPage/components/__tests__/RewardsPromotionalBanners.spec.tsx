@@ -1,8 +1,8 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { USD_DECIMALS } from "lib/numbers";
@@ -42,6 +42,13 @@ const status: AccountIncentiveStatus = {
   manualRewardRemainingUsd: 400n * USD_UNIT,
 };
 const tinyManualStatus = { ...status, manualRewardRemainingUsd: USD_UNIT / 2n };
+const singleBannerConfig: IncentivesConfig = { ...config, featuredMarketIndexTokens: [] };
+const singleBannerStatus: AccountIncentiveStatus = {
+  ...status,
+  tierVolume: 0n,
+  boostIds: ["FeaturedMarkets"],
+  manualRewardRemainingUsd: 0n,
+};
 
 i18n.load({ en: {} });
 i18n.activate("en");
@@ -62,7 +69,10 @@ function normalizeText(element: HTMLElement) {
 
 describe("RewardsPromotionalBanners", () => {
   beforeEach(() => localStorage.clear());
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    vi.useRealTimers();
+  });
 
   it("builds banners only from V2 status and config fields", () => {
     const banners = getRewardsPromotionalBannerContent({ config, status });
@@ -125,21 +135,70 @@ describe("RewardsPromotionalBanners", () => {
   });
 
   it("supports carousel navigation and dismisses only the selected opportunity", () => {
-    renderBanners();
+    const { container } = renderBanners();
 
     const carousel = screen.getByRole("region", { name: "Rewards opportunities" });
     const liveRegion = carousel.querySelector("[aria-live]");
+    const dots = screen.getAllByRole("button", { name: /Go to slide/ });
+
     expect(liveRegion?.getAttribute("aria-live")).toBe("off");
-    expect(screen.getByRole("button", { name: "Pause banner rotation" })).toBeDefined();
+    expect(dots).toHaveLength(4);
+    expect(dots[0].getAttribute("aria-current")).toBe("true");
+    expect(screen.queryByRole("button", { name: /banner rotation/i })).toBeNull();
     expect(fireEvent.keyDown(carousel, { key: "ArrowRight" })).toBe(false);
     expect(screen.getByText("Almost at the next tier")).toBeDefined();
-    expect(liveRegion?.getAttribute("aria-live")).toBe("polite");
-    expect(screen.getByRole("button", { name: "Resume banner rotation" })).toBeDefined();
+    expect(container.querySelector(".animate-rewards-banner-slide-in-right")).not.toBeNull();
+    expect(dots[1].getAttribute("aria-current")).toBe("true");
     expect(screen.getByRole("link", { name: /Trade/ }).getAttribute("href")).toBe("/trade");
 
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.getByText("Activate Pair Boosts")).toBeDefined();
     expect(screen.queryByText("Almost at the next tier")).toBeNull();
+  });
+
+  it("chooses the slide direction when navigating with dots", () => {
+    const { container } = renderBanners();
+    const dots = screen.getAllByRole("button", { name: /Go to slide/ });
+
+    fireEvent.click(dots[3]);
+    expect(screen.getByText("Restake your rewards and earn more")).toBeDefined();
+    expect(container.querySelector(".animate-rewards-banner-slide-in-right")).not.toBeNull();
+
+    fireEvent.click(dots[0]);
+    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
+    expect(container.querySelector(".animate-rewards-banner-slide-in-left")).not.toBeNull();
+  });
+
+  it("restarts automatic rotation after manual navigation", () => {
+    vi.useFakeTimers();
+    renderBanners();
+    const dots = screen.getAllByRole("button", { name: /Go to slide/ });
+
+    act(() => vi.advanceTimersByTime(5999));
+    fireEvent.click(dots[3]);
+    expect(screen.getByText("Restake your rewards and earn more")).toBeDefined();
+
+    act(() => vi.advanceTimersByTime(1));
+    expect(screen.getByText("Restake your rewards and earn more")).toBeDefined();
+
+    act(() => vi.advanceTimersByTime(5999));
+    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
+  });
+
+  it("navigates in both directions with touch swipes", () => {
+    const { container } = renderBanners();
+    let banner = container.querySelector(".animate-rewards-banner-slide-in-right") as HTMLElement;
+
+    fireEvent.pointerDown(banner, { pointerType: "touch", pointerId: 1, clientX: 200, clientY: 20 });
+    fireEvent.pointerUp(banner, { pointerType: "touch", pointerId: 1, clientX: 120, clientY: 25 });
+    expect(screen.getByText("Almost at the next tier")).toBeDefined();
+    expect(container.querySelector(".animate-rewards-banner-slide-in-right")).not.toBeNull();
+
+    banner = container.querySelector(".animate-rewards-banner-slide-in-right") as HTMLElement;
+    fireEvent.pointerDown(banner, { pointerType: "touch", pointerId: 2, clientX: 120, clientY: 20 });
+    fireEvent.pointerUp(banner, { pointerType: "touch", pointerId: 2, clientX: 200, clientY: 25 });
+    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
+    expect(container.querySelector(".animate-rewards-banner-slide-in-left")).not.toBeNull();
   });
 
   it("does not start a swipe from an interactive control", () => {
@@ -163,6 +222,20 @@ describe("RewardsPromotionalBanners", () => {
     );
 
     expect(view.getByRole("heading", { name: /You've received bonus of < \$1/ })).toBeDefined();
+  });
+
+  it("hides carousel controls when only one opportunity is available", () => {
+    render(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <RewardsPromotionalBanners account={ACCOUNT} config={singleBannerConfig} status={singleBannerStatus} />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+
+    expect(screen.getByText("Restake your rewards and earn more")).toBeDefined();
+    expect(screen.queryByRole("region", { name: "Rewards opportunities" })).toBeNull();
+    expect(screen.queryByRole("button", { name: /Go to slide/ })).toBeNull();
   });
 
   it("does not render personalized opportunities without a connected account or status", () => {

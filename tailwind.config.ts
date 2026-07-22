@@ -212,9 +212,19 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        "rewards-banner-slide-in-right": {
+          "0%": { opacity: "0", transform: "translateX(18px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        "rewards-banner-slide-in-left": {
+          "0%": { opacity: "0", transform: "translateX(-18px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
       },
       animation: {
         marquee: "marquee 30s linear infinite",
+        "rewards-banner-slide-in-right": "rewards-banner-slide-in-right 260ms ease-out",
+        "rewards-banner-slide-in-left": "rewards-banner-slide-in-left 260ms ease-out",
       },
     },
   },
