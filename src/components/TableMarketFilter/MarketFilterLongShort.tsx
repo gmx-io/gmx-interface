@@ -11,6 +11,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import type { MarketInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { isOrderForPosition } from "domain/synthetics/orders";
@@ -42,6 +44,10 @@ export type MarketFilterLongShortProps = {
 
 const DEFAULT_DIRECTIONS: readonly Exclude<MarketFilterLongShortDirection, "any">[] = ["long", "short", "swap"];
 
+function getMarketGroupKey(market: MarketInfo) {
+  return market.isSpotOnly ? market.marketTokenAddress : market.indexTokenAddress;
+}
+
 const selectPositionsWithOrders = createSelector((q) => {
   const positions = q(selectPositionsInfoDataSortedByMarket);
   const ordersInfoData = q(selectOrdersInfoData);
@@ -70,7 +76,6 @@ export function MarketFilterLongShort({
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: false,
-    enabled: availableMarketAddresses === undefined,
   });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
@@ -79,10 +84,34 @@ export function MarketFilterLongShort({
       return allMarkets;
     }
 
-    return availableMarketAddresses.flatMap((address) => {
+    const availableMarketAddressesSet = new Set(availableMarketAddresses);
+    const sortedAvailableMarkets = allMarkets.filter((market): market is MarketInfo => {
+      return !isGlvInfo(market) && availableMarketAddressesSet.has(getGlvOrMarketAddress(market));
+    });
+    const sortedMarketAddresses = new Set(sortedAvailableMarkets.map((market) => getGlvOrMarketAddress(market)));
+    const missingAvailableMarkets = availableMarketAddresses.flatMap((address) => {
+      if (sortedMarketAddresses.has(address)) {
+        return [];
+      }
+
       const market = marketsInfoData?.[address];
       return market ? [market] : [];
     });
+
+    missingAvailableMarkets.forEach((market) => {
+      const marketGroupKey = getMarketGroupKey(market);
+      const groupEndIndex = sortedAvailableMarkets.findLastIndex(
+        (sortedMarket) => getMarketGroupKey(sortedMarket) === marketGroupKey
+      );
+
+      if (groupEndIndex === -1) {
+        sortedAvailableMarkets.push(market);
+      } else {
+        sortedAvailableMarkets.splice(groupEndIndex + 1, 0, market);
+      }
+    });
+
+    return sortedAvailableMarkets;
   }, [allMarkets, availableMarketAddresses, marketsInfoData]);
 
   const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
