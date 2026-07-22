@@ -28,15 +28,15 @@ import Tabs from "components/Tabs/Tabs";
 
 import AllTimeIcon from "img/ic_clock_dashed.svg?react";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 const COL_RANK: CSSProperties = { width: "8%" };
 const COL_ADDRESS: CSSProperties = { width: "18%" };
 const COL_TRADING_VOLUME: CSSProperties = { width: "14%" };
 const COL_REFERRAL_VOLUME: CSSProperties = { width: "14%" };
 const COL_ES_GMX: CSSProperties = { width: "12%" };
-const COL_GT: CSSProperties = { width: "10%" };
-const COL_REWARDS: CSSProperties = { width: "14%" };
+const COL_GT: CSSProperties = { width: "12%" };
+const COL_REWARDS: CSSProperties = { width: "12%" };
 const COL_MULTIPLIER: CSSProperties = { width: "10%" };
 const LEADERBOARD_ROW_CLASS_NAME = "h-40";
 const LEADERBOARD_TD_CLASS_NAME = "!py-8";

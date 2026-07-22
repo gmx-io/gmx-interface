@@ -6,13 +6,14 @@ import Skeleton from "react-loading-skeleton";
 import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type {
   AccountIncentiveStatus,
+  BoostConfig,
   DowngradingCoefficient,
   IncentivesConfig,
 } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier, formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { useMarkets } from "domain/synthetics/markets";
 import { getMarketIndexName } from "domain/synthetics/markets/utils";
-import { formatAmount, formatAmountHuman, USD_DECIMALS } from "lib/numbers";
+import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { convertTokenAddress, getNormalizedTokenSymbol, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 
@@ -25,10 +26,16 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import ExpiresInIcon from "img/ic_clock_dashed.svg?react";
 
-import { StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
-import { type AccountDataState, stakingTierLabels, StatusLabel, volumeTierLabels } from "./rewardsTiersShared";
+import { BoostTierIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
+import {
+  type AccountDataState,
+  boostLabels,
+  stakingTierLabels,
+  StatusLabel,
+  volumeTierLabels,
+} from "./rewardsTiersShared";
 
-type TierTab = "volume" | "staking";
+type TierTab = "volume" | "staking" | "boosts";
 
 const tierLevelTableClassName =
   "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:first-child]:!pl-8 [&_th:first-child]:!pl-8";
@@ -62,6 +69,7 @@ export function RewardsTierTables({
     () => [
       { value: "volume" as const, label: <Trans>Volume Tiers</Trans> },
       { value: "staking" as const, label: <Trans>Staking Tiers</Trans> },
+      { value: "boosts" as const, label: <Trans>Activity Boosts</Trans> },
     ],
     []
   );
@@ -75,8 +83,12 @@ export function RewardsTierTables({
         short: t`Your Staking Tier increases your rewards multiplier based on staked GMX and esGMX.`,
         long: t`The combined indexed GMX and esGMX balance determines the tier projected for the next epoch. A higher staked balance unlocks higher tiers and larger multiplier adjustments.`,
       },
+      boosts: {
+        short: t`Activity Boosts are multiplier adjustments earned through qualifying activity.`,
+        long: t`Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at ${formatMultiplier(config.maxMultiplier, config.multiplierDecimals)}.`,
+      },
     }),
-    [config.volumeTierPersistenceEpochs]
+    [config.maxMultiplier, config.multiplierDecimals, config.volumeTierPersistenceEpochs]
   );
 
   return (
@@ -157,8 +169,10 @@ export function RewardsTierTables({
         <div className="overflow-x-auto px-12 pb-8">
           {activeTab === "volume" ? (
             <VolumeTiersTable config={config} status={status} statusState={statusState} />
-          ) : (
+          ) : activeTab === "staking" ? (
             <StakingTiersTable config={config} status={status} statusState={statusState} />
+          ) : (
+            <BoostsTable chainId={chainId} config={config} status={status} statusState={statusState} />
           )}
         </div>
       </div>
@@ -305,6 +319,147 @@ function StakingTiersTable({
         )}
       </tbody>
     </table>
+  );
+}
+
+function BoostsTable({
+  chainId,
+  config,
+  status,
+  statusState,
+}: {
+  chainId: number;
+  config: IncentivesConfig;
+  status?: AccountIncentiveStatus;
+  statusState: AccountDataState;
+}) {
+  const visibleBoosts = config.boosts.filter((boost) => boost.boost !== "ManualAllocation");
+
+  return (
+    <table className={cx(tierLevelTableClassName, "min-w-[820px]")}>
+      <thead>
+        <TableTheadTr>
+          <TableTh width="20%" padding="compact">
+            <Trans>Boost Name</Trans>
+          </TableTh>
+          <TableTh width="40%" padding="compact">
+            <Trans>About</Trans>
+          </TableTh>
+          <TableTh width="15%" padding="compact">
+            <Trans>Multiplier</Trans>
+          </TableTh>
+          <TableTh width="15%" padding="compact">
+            <Trans>Status</Trans>
+          </TableTh>
+        </TableTheadTr>
+      </thead>
+      <tbody>
+        {statusState === "loading" ? (
+          <TableListSkeleton count={visibleBoosts.length} Structure={TierLevelsSkeletonRow} />
+        ) : (
+          visibleBoosts.map((boost) => {
+            const transient = boost.boost === "FeaturedMarkets" || boost.boost === "BalancingTrades";
+            const listed = Boolean(status?.boostIds.includes(boost.boost));
+
+            return (
+              <TierLevelTableTr key={boost.boost}>
+                <TableTd padding="compact" className="text-typography-primary">
+                  <span className="flex items-center gap-8 font-medium">
+                    <div className="p-1">
+                      <BoostTierIcon boostId={boost.boost} active={listed} />
+                    </div>
+                    {boostLabels[boost.boost]}
+                  </span>
+                </TableTd>
+                <TableTd padding="compact" className="text-typography-secondary">
+                  <BoostDescription chainId={chainId} boost={boost} config={config} />
+                </TableTd>
+                <TableTd padding="compact" className="text-typography-primary">
+                  {formatMultiplierAdjustment(boost.multiplier, config.multiplierDecimals)}
+                </TableTd>
+                <TableTd padding="compact">
+                  <StatusLabel
+                    state={statusState}
+                    active={!transient && listed}
+                    qualified={transient ? listed : undefined}
+                  />
+                </TableTd>
+              </TierLevelTableTr>
+            );
+          })
+        )}
+      </tbody>
+    </table>
+  );
+}
+
+function BoostDescription({
+  chainId,
+  boost,
+  config,
+}: {
+  chainId: number;
+  boost: BoostConfig;
+  config: IncentivesConfig;
+}) {
+  if (boost.boost === "FeaturedMarkets") {
+    return (
+      <>
+        <Trans>Applies to eligible trades in the configured featured markets.</Trans>{" "}
+        {config.featuredMarketIndexTokens.length ? (
+          <FeaturedMarketsTooltip chainId={chainId} indexTokenAddresses={config.featuredMarketIndexTokens} />
+        ) : null}
+      </>
+    );
+  }
+
+  if (boost.boost === "BalancingTrades") {
+    return (
+      <Trans>
+        Applies to qualifying balancing position increases of at least{" "}
+        {formatUsd(config.balancingTradesThreshold, { displayDecimals: 0 })}.
+      </Trans>
+    );
+  }
+
+  if (boost.boost === "LifetimeTrading") {
+    return (
+      <Trans>
+        Permanent after reaching {formatUsd(config.lifetimeVolumeThreshold, { displayDecimals: 0 })} in lifetime volume.
+      </Trans>
+    );
+  }
+
+  return null;
+}
+
+function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: number; indexTokenAddresses: string[] }) {
+  const items = indexTokenAddresses.map((address) => {
+    if (!isValidTokenSafe(chainId, address)) return { address, symbol: undefined };
+
+    const token = getToken(chainId, address);
+    return { address, symbol: getNormalizedTokenSymbol(token.symbol) ?? token.symbol };
+  });
+
+  return (
+    <TooltipWithPortal
+      variant="iconStroke"
+      handle={
+        <span>
+          <Trans>Featured markets:</Trans> {items.map((item) => item.symbol ?? item.address).join(", ")}.
+        </span>
+      }
+      content={
+        <div className="flex flex-col gap-8">
+          {items.map(({ address, symbol }) => (
+            <div key={address} className="flex items-center gap-4 text-12 font-medium text-typography-primary">
+              {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
+              {symbol ?? address}
+            </div>
+          ))}
+        </div>
+      }
+    />
   );
 }
 

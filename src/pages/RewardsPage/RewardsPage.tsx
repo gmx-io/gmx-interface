@@ -10,6 +10,8 @@ import Button from "components/Button/Button";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 import Tabs from "components/Tabs/Tabs";
 
+import RewardsIcon from "img/ic_rewards.svg?react";
+
 import { RewardsHistoryTab } from "./components/RewardsHistoryTab";
 import { RewardsLeaderboardTab } from "./components/RewardsLeaderboardTab";
 import { RewardsTiersTab } from "./components/RewardsTiersTab";
@@ -28,7 +30,7 @@ export function RewardsPage() {
   const tabOptions = useMemo(
     () => [
       { value: "tiers" as const, label: <Trans>Tiers</Trans> },
-      { value: "history" as const, label: <Trans>Rewards</Trans> },
+      { value: "history" as const, label: <Trans>Rewards</Trans>, icon: <RewardsIcon className="size-16" /> },
       { value: "leaderboard" as const, label: <Trans>Leaderboard</Trans> },
     ],
     []

@@ -4989,6 +4989,10 @@ msgstr "{gmOrGlvLabel} 구매에 성공했지만 {0}(으)로의 브리지에 실
 msgid "Full position close"
 msgstr "포지션 전체 청산"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts"
+msgstr "활동 부스트"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
@@ -5536,6 +5540,10 @@ msgstr "모든 거래"
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "대체 링크는 <0>문서</0>에서 확인할 수 있습니다.<1/><2/>동의를 클릭하면 <3>이용약관</3> 및 <4>추천 이용약관</4>에 동의하게 됩니다.<5/><6/>"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts are multiplier adjustments earned through qualifying activity."
+msgstr "활동 부스트는 적격 활동을 통해 획득하는 배수 조정값입니다."
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
@@ -7010,6 +7018,7 @@ msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "{chainName}에서 직접 {nativeTokenSymbol}을(를) 구매하거나 전송하십시오"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to eligible trades in the configured featured markets."
 msgstr "설정된 주요 시장의 적격 거래에 적용됩니다."
 
@@ -8580,6 +8589,7 @@ msgid "({0} of {1})"
 msgstr "({1}의 {0})"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to qualifying balancing position increases of at least {0}."
 msgstr "최소 {0} 이상의 적격 균형 조정 포지션 증액에 적용됩니다."
 
@@ -9541,10 +9551,6 @@ msgstr "보기"
 msgid "Execute Stop Market"
 msgstr "스톱 마켓 실행"
 
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Unavailable"
-msgstr "이용 불가"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
 msgstr ""
@@ -9712,6 +9718,7 @@ msgid "Decentralized options strategies"
 msgstr "탈중앙화 옵션 전략"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}."
 msgstr "회원님의 보상 배수는 거래량 등급, 스테이킹 등급 및 적용 가능한 활동 부스트를 합산합니다. 전체 배수는 {0}로 제한됩니다."
 
@@ -10151,6 +10158,7 @@ msgid "Reserved {directionLabel}"
 msgstr "예약 {directionLabel}"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Permanent after reaching {0} in lifetime volume."
 msgstr "누적 거래량 {0}에 도달하면 영구 적용됩니다."
 
@@ -10880,6 +10888,10 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM은 단일 시장에서 수수료를 획득합니다. GLV는 여러 GM 토큰을 보유하며 관련 시장 간 자동 리밸런싱을 수행합니다. 두 토큰 모두 수익을 자동으로 재투자합니다. 단일 시장 익스포저를 원하면 GM을, 여러 풀에 분산 투자하려면 GLV를 선택하십시오."
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Featured markets:"
+msgstr "주요 시장:"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -11677,6 +11689,7 @@ msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 예치할 수 없으�
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Status"
 msgstr "상태"
@@ -11795,6 +11808,7 @@ msgstr "음의 펀딩 수수료"
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "About"
 msgstr "소개"
 
@@ -11942,6 +11956,10 @@ msgstr "GMX V1 액션"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "지수"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Boost Name"
+msgstr "부스트 이름"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -12735,6 +12753,7 @@ msgstr "규모 확대 (Stop Market)"
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Multiplier"

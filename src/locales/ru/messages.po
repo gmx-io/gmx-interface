@@ -4989,6 +4989,10 @@ msgstr "{gmOrGlvLabel} успешно куплен, но бридж в {0} не 
 msgid "Full position close"
 msgstr "Полное закрытие позиции"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts"
+msgstr "Бусты активности"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
@@ -5536,6 +5540,10 @@ msgstr "Все сделки"
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Альтернативные ссылки находятся в <0>документации</0>.<1/><2/>Нажимая «Принять», вы соглашаетесь с <3>Условиями использования</3> и <4>Условиями реферальной программы</4>.<5/><6/>"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts are multiplier adjustments earned through qualifying activity."
+msgstr "Бусты активности — это прибавки к множителю, получаемые за соответствующую требованиям активность."
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
@@ -7010,6 +7018,7 @@ msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "Купите {nativeTokenSymbol} напрямую на {chainName} или переведите его туда"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to eligible trades in the configured featured markets."
 msgstr "Применяется к учитываемым сделкам на настроенных Featured Markets."
 
@@ -8580,6 +8589,7 @@ msgid "({0} of {1})"
 msgstr "({0} от {1})"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to qualifying balancing position increases of at least {0}."
 msgstr "Применяется к квалифицируемым увеличениям балансирующих позиций не менее {0}."
 
@@ -9541,10 +9551,6 @@ msgstr "Просмотр"
 msgid "Execute Stop Market"
 msgstr "Выполнить стоп-маркет"
 
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Unavailable"
-msgstr "Недоступно"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
 msgstr ""
@@ -9712,6 +9718,7 @@ msgid "Decentralized options strategies"
 msgstr "Децентрализованные опционные стратегии"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}."
 msgstr "Ваш множитель наград объединяет уровень объёма, уровень стейкинга и применимые бусты активности. Итоговый множитель ограничен значением {0}."
 
@@ -10151,6 +10158,7 @@ msgid "Reserved {directionLabel}"
 msgstr "Зарезервировано {directionLabel}"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Permanent after reaching {0} in lifetime volume."
 msgstr "Становится постоянным после достижения объёма за всё время {0}."
 
@@ -10880,6 +10888,10 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM получает комиссии с одного рынка. GLV содержит несколько токенов GM и автоматически ребалансирует их между связанными рынками. Оба варианта автоматически реинвестируют доход. Выбирайте GM для экспозиции к одному рынку или GLV для диверсификации по нескольким пулам."
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Featured markets:"
+msgstr "Избранные рынки:"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -11677,6 +11689,7 @@ msgstr "{pools} {verb} из листинга. Выведите ликвидно�
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Status"
 msgstr "Статус"
@@ -11795,6 +11808,7 @@ msgstr "Отрицательные комиссии за финансирова�
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "About"
 msgstr "О нас"
 
@@ -11942,6 +11956,10 @@ msgstr "GMX V1 действия"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "Индексы"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Boost Name"
+msgstr "Название буста"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -12735,6 +12753,7 @@ msgstr "Увеличить размер (Stop Market)"
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Multiplier"

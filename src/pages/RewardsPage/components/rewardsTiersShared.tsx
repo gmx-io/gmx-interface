@@ -29,7 +29,7 @@ export const boostLabels: Record<BoostId, React.ReactNode> = {
 
 export function AccountValue({ state, children }: { state: AccountDataState; children: React.ReactNode }) {
   if (state === "loading") return <>…</>;
-  if (state === "unavailable") return <Trans>Unavailable</Trans>;
+  if (state === "unavailable") return <>-</>;
   if (state === "disconnected") return <>-</>;
 
   return <>{children}</>;

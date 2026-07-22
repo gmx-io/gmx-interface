@@ -4989,6 +4989,10 @@ msgstr "{gmOrGlvLabel} acheté avec succès, mais le bridge vers {0} a échoué.
 msgid "Full position close"
 msgstr "Fermeture complète de la position"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts"
+msgstr "Boosts d’activité"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
@@ -5536,6 +5540,10 @@ msgstr "Toutes les transactions"
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Des liens alternatifs sont disponibles dans la <0>documentation</0>.<1/><2/>En cliquant sur Accepter, vous acceptez les <3>CGU</3> et les <4>CGU de parrainage</4>.<5/><6/>"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts are multiplier adjustments earned through qualifying activity."
+msgstr "Les boosts d’activité sont des ajustements du multiplicateur obtenus grâce à une activité éligible."
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
@@ -7010,6 +7018,7 @@ msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "Achetez {nativeTokenSymbol} directement sur {chainName} ou transférez-le là-bas"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to eligible trades in the configured featured markets."
 msgstr "S’applique aux trades éligibles sur les marchés en vedette configurés."
 
@@ -8580,6 +8589,7 @@ msgid "({0} of {1})"
 msgstr "({0} de {1})"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to qualifying balancing position increases of at least {0}."
 msgstr "S’applique aux augmentations de position d’équilibrage éligibles d’au moins {0}."
 
@@ -9541,10 +9551,6 @@ msgstr "Voir"
 msgid "Execute Stop Market"
 msgstr "Exécuter Stop Market"
 
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Unavailable"
-msgstr "Indisponible"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
 msgstr ""
@@ -9712,6 +9718,7 @@ msgid "Decentralized options strategies"
 msgstr "Stratégies d'options décentralisées"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}."
 msgstr "Votre multiplicateur de récompenses combine votre niveau de volume, votre niveau de staking et les boosts d’activité applicables. Le multiplicateur total est plafonné à {0}."
 
@@ -10151,6 +10158,7 @@ msgid "Reserved {directionLabel}"
 msgstr "Réservé {directionLabel}"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Permanent after reaching {0} in lifetime volume."
 msgstr "Permanent après avoir atteint {0} de volume cumulé."
 
@@ -10880,6 +10888,10 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM perçoit des frais d'un seul marché. GLV détient plusieurs tokens GM et se rééquilibre automatiquement entre les marchés liés. Les deux réinvestissent automatiquement les rendements. Choisissez GM pour une exposition à un seul marché ou GLV pour diversifier entre plusieurs pools."
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Featured markets:"
+msgstr "Marchés en vedette :"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -11677,6 +11689,7 @@ msgstr "{pools} {verb} en cours de retrait. Retirez votre liquidité, car les d�
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Status"
 msgstr "Statut"
@@ -11795,6 +11808,7 @@ msgstr "Frais de financement négatifs"
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "About"
 msgstr "À propos"
 
@@ -11942,6 +11956,10 @@ msgstr "Actions GMX V1"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "Indices"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Boost Name"
+msgstr "Nom du boost"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -12735,6 +12753,7 @@ msgstr "Augmenter la taille (Stop Market)"
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Multiplier"

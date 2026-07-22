@@ -4989,6 +4989,10 @@ msgstr "{gmOrGlvLabel} 購買成功，但跨鏈至 {0} 失敗。您的資金安�
 msgid "Full position close"
 msgstr "完全平倉"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts"
+msgstr "活動加成"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
@@ -5536,6 +5540,10 @@ msgstr "所有交易"
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "替代連結請參閱<0>文件</0>。<1/><2/>點擊「同意」即表示您接受<3>條款與細則</3>及<4>推薦條款與細則</4>。<5/><6/>"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts are multiplier adjustments earned through qualifying activity."
+msgstr "活動加成是透過符合資格的活動獲得的乘數調整。"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
@@ -7010,6 +7018,7 @@ msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "直接在 {chainName} 上購買 {nativeTokenSymbol} 或將其轉入"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to eligible trades in the configured featured markets."
 msgstr "適用於已設定精選市場中的符合資格交易。"
 
@@ -8580,6 +8589,7 @@ msgid "({0} of {1})"
 msgstr "（{0}，佔 {1}）"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to qualifying balancing position increases of at least {0}."
 msgstr "適用於至少 {0} 的符合資格平衡增倉交易。"
 
@@ -9541,10 +9551,6 @@ msgstr "查看"
 msgid "Execute Stop Market"
 msgstr "執行停損市價單"
 
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Unavailable"
-msgstr "無法使用"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
 msgstr ""
@@ -9712,6 +9718,7 @@ msgid "Decentralized options strategies"
 msgstr "去中心化選擇權策略"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}."
 msgstr "您的獎勵倍率結合了交易量等級、質押等級和適用的活動加成。總倍率上限為 {0}。"
 
@@ -10151,6 +10158,7 @@ msgid "Reserved {directionLabel}"
 msgstr "已保留 {directionLabel}"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Permanent after reaching {0} in lifetime volume."
 msgstr "終身交易量達到 {0} 後永久生效。"
 
@@ -10880,6 +10888,10 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM 從單一市場賺取手續費。GLV 持有多種 GM 代幣，並在相關市場間自動再平衡。兩者均自動複投收益。選擇 GM 獲取單一市場曝險，或選擇 GLV 分散投資於多個池。"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Featured markets:"
+msgstr "精選市場："
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -11677,6 +11689,7 @@ msgstr "{pools} {verb}下架。存入已不可用，請提取您的流動性，�
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Status"
 msgstr "狀態"
@@ -11795,6 +11808,7 @@ msgstr "負資金費用"
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "About"
 msgstr "關於"
 
@@ -11942,6 +11956,10 @@ msgstr "GMX V1 操作"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "指數"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Boost Name"
+msgstr "加成名稱"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -12735,6 +12753,7 @@ msgstr "加倉（止損市價單）"
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Multiplier"

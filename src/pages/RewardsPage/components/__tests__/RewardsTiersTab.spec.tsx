@@ -236,6 +236,43 @@ describe("RewardsTiersTab", () => {
 
     expect(screen.getByRole("heading", { name: "1 qualified this epoch" })).toBeDefined();
     expect(screen.queryByRole("heading", { name: /active boost/ })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+
+    const featuredMarketsRow = screen.getByRole("row", { name: /Featured Markets/ });
+    const balancingTradesRow = screen.getByRole("row", { name: /Balancing Trades/ });
+    const lifetimeVolumeRow = screen.getByRole("row", { name: /Lifetime Volume/ });
+
+    expect(within(featuredMarketsRow).getByText("Qualified this epoch")).toBeDefined();
+    expect(within(balancingTradesRow).getByText("Not qualified this epoch")).toBeDefined();
+    expect(within(lifetimeVolumeRow).getByText("Inactive")).toBeDefined();
+    expect(screen.queryByRole("row", { name: /Manual Allocation/ })).toBeNull();
+  });
+
+  it("renders config-derived activity boost levels", () => {
+    renderTab({
+      status: {
+        ...status,
+        boostIds: ["FeaturedMarkets", "LifetimeTrading", "ManualAllocation"],
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+
+    const featuredMarketsRow = screen.getByRole("row", { name: /Featured Markets/ });
+    const balancingTradesRow = screen.getByRole("row", { name: /Balancing Trades/ });
+    const lifetimeVolumeRow = screen.getByRole("row", { name: /Lifetime Volume/ });
+
+    expect(featuredMarketsRow.textContent).toContain("GMX");
+    expect(within(featuredMarketsRow).getByText("+0.25x")).toBeDefined();
+    expect(balancingTradesRow.textContent).toContain(
+      formatUsd(config.balancingTradesThreshold, { displayDecimals: 0 })
+    );
+    expect(within(balancingTradesRow).getByText("+0.5x")).toBeDefined();
+    expect(lifetimeVolumeRow.textContent).toContain(formatUsd(config.lifetimeVolumeThreshold, { displayDecimals: 0 }));
+    expect(within(lifetimeVolumeRow).getByText("+1x")).toBeDefined();
+    expect(within(lifetimeVolumeRow).getByText("Active")).toBeDefined();
+    expect(screen.queryByRole("row", { name: /Manual Allocation/ })).toBeNull();
   });
 
   it("includes manual allocation in the summed persistent boost badge", () => {
@@ -334,13 +371,12 @@ describe("RewardsTiersTab", () => {
     expect(screen.queryByText("Trade More. Earn More.")).toBeNull();
   });
 
-  it("does not render the removed account sidebar sections", () => {
+  it("does not render the removed account sidebar or manual allocation sections", () => {
     renderTab();
 
     expect(screen.queryByText("Current status")).toBeNull();
     expect(screen.queryByText("Current epoch rewards")).toBeNull();
     expect(screen.queryByText("Activity boosts")).toBeNull();
-    expect(screen.queryByRole("button", { name: "Activity Boosts" })).toBeNull();
     expect(screen.queryByText("Manual allocation")).toBeNull();
     expect(screen.queryByText("Manual allocation ranges")).toBeNull();
     expect(screen.queryByText("Consumed")).toBeNull();

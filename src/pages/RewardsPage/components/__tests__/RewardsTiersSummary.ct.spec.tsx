@@ -10,6 +10,8 @@ test.describe("RewardsTiersSummary", () => {
     await expect(component.getByText("Vestable esGMX")).toBeVisible();
     await expect(component.getByText(/500/)).toBeVisible();
     await expect(component.getByText("Coming soon")).toBeVisible();
+    await expect(component.getByText("-", { exact: true })).toHaveCount(2);
+    await expect(component.getByText("Unavailable", { exact: true })).toHaveCount(0);
 
     const summaryBox = await component.boundingBox();
     const allTimeBox = await component.getByTestId("rewards-all-time-summary").boundingBox();
