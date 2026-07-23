@@ -68,6 +68,10 @@ msgstr "Valor positivo: los operadores reciben financiación"
 msgid "Funding exponent factor"
 msgstr "Factor exponente de financiación"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfers from another chain are currently unavailable. Use <0>Receive to this wallet</0> instead."
+msgstr "Las transferencias desde otra cadena no están disponibles actualmente. Use <0>Recibir en este monedero</0> en su lugar."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
 msgstr "Solicitar depósito"
@@ -560,7 +564,7 @@ msgstr "Seleccionar token"
 msgid "Crypto"
 msgstr "Cripto"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "La generación de la imagen ha fallado. Actualice la página e inténtelo de nuevo."
 
@@ -948,7 +952,7 @@ msgstr "Impacto en la posición"
 msgid "Insufficient staked tokens"
 msgstr "Tokens stakeados insuficientes"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "Creando código..."
 
@@ -1096,9 +1100,9 @@ msgstr "Operativa fluida con la fiabilidad de Express"
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> a </1>{1} <2/>"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr "No se ha podido verificar la disponibilidad del código en {0}. Aún puede crear el código, pero es posible que ya esté en uso en esas redes."
 
@@ -1265,7 +1269,7 @@ msgstr "Valor de deslizamiento no válido"
 msgid "Invalid collateral token for this market"
 msgstr "Token de garantía no válido para este mercado"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "Obtén un 5 % de reembolso y da a tu comunidad un 5 % de descuento en cada operación. Los niveles de referidos más altos desbloquean aún más. <0>Más información</0>."
 
@@ -1286,6 +1290,10 @@ msgstr "Productos de rendimiento descentralizados"
 msgid "{0} price"
 msgstr "Precio de {0}"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buying with card is currently unavailable for your region or configuration. Use <0>Receive to this wallet</0> instead."
+msgstr "La compra con tarjeta no está disponible actualmente para su región o configuración. Use <0>Recibir en este monedero</0> en su lugar."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "Cantidad máxima comprable de {0} superada"
@@ -1294,10 +1302,10 @@ msgstr "Cantidad máxima comprable de {0} superada"
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
 msgstr ""
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Code already taken"
 msgstr "Código ya cogido"
 
@@ -1335,8 +1343,8 @@ msgstr ""
 msgid "Pay"
 msgstr "Pagar"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating referral code..."
 msgstr "Creando código de referido..."
 
@@ -1361,6 +1369,11 @@ msgstr "Se permiten un máximo de {allowedAutoCancelOrdersNumber} órdenes TP/SL
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
 msgstr "Página de votación de propuestas de GMX"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+msgid "Receive funds"
+msgstr "Recibir fondos"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
@@ -2037,6 +2050,10 @@ msgstr ""
 msgid "Order is already frozen"
 msgstr "La orden ya está congelada"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Copy your wallet address or scan a QR code."
+msgstr "Copie la dirección de su monedero o escanee un código QR."
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -2246,6 +2263,10 @@ msgstr "Seguro y sin permisos"
 msgid "Register an affiliate code to access distributions"
 msgstr ""
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX Account, deposit the funds to it as a separate step once they arrive."
+msgstr "Los fondos llegan a su monedero conectado en {chainName}, no a su Cuenta GMX. Para operar con su Cuenta GMX, deposítelos en ella como un paso separado una vez que lleguen."
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code."
 msgstr "Esta cuenta no tiene un código de referido activo."
@@ -2299,13 +2320,17 @@ msgstr "Buscar pools"
 msgid "Funding increase factor"
 msgstr "Factor de incremento de financiación"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "May take a few minutes to appear. Check back later"
 msgstr "Puede tardar unos minutos en aparecer. Vuelva a comprobarlo más tarde"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "Depósito fallido"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Use debit/credit card, Apple Pay, or Google Pay where supported."
+msgstr "Use tarjeta de débito/crédito, Apple Pay o Google Pay donde esté disponible."
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -2693,7 +2718,7 @@ msgstr "Confirmar compensación"
 msgid "Protocol risk explorer and stats"
 msgstr "Explorador de riesgos de protocolo y estadísticas"
 
-#: src/components/PositionShare/PositionShareCard.tsx
+#: src/components/ShareModal/ShareCardFrame.tsx
 msgid "Generating shareable image..."
 msgstr "Generando imagen para compartir..."
 
@@ -2723,11 +2748,11 @@ msgstr "Anuncios técnicos de GMX"
 msgid "All Announcements"
 msgstr "Todos los anuncios"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Checking code..."
 msgstr "Verificando código…"
 
@@ -2770,6 +2795,10 @@ msgstr "Excluye incentivos"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "Comprando {symbol}..."
+
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Show PnL amounts"
+msgstr "Mostrar importes de PnL"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
@@ -2832,12 +2861,12 @@ msgstr "Ver en explorador"
 msgid "System"
 msgstr "Sistema"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/ShareModal/SkipReferralCodeBanner.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "Obtenga recompensas compartiendo su código de referencia"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
 msgstr "¡Gana recompensas compartiendo tu código!"
 
@@ -2949,10 +2978,6 @@ msgstr "Factor de reducción de garantía reclamable"
 msgid "Slippage too low"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Net referred traders in the selected period (gained - lost)"
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "Vault de tokens GM con reequilibrio automático que acumula comisiones del trading con apalancamiento y los intercambios. Respaldado por {0} y {1}."
@@ -3058,6 +3083,10 @@ msgstr ""
 msgid "Start unrealized PnL"
 msgstr "PnL no realizado inicial"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfer from another chain"
+msgstr "Transferir desde otra cadena"
+
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
 msgstr "Take-Profit / Stop-Loss"
@@ -3126,7 +3155,7 @@ msgstr "Stake enviado"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
-msgstr ""
+msgstr "Neto"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
@@ -3447,8 +3476,8 @@ msgstr "Insuficiente {wrappedNativeTokenSymbol} para gas en tu Cuenta GMX."
 msgid "TRANSACTION"
 msgstr "TRANSACCIÓN"
 
-#: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy image"
 msgstr ""
 
@@ -3615,9 +3644,9 @@ msgid "This trigger price is beyond the current liquidation price. Your position
 msgstr "Este precio de activación supera el precio de liquidación actual. Tu posición podría liquidarse antes de que esta orden TP/SL pueda ejecutarse."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating..."
 msgstr "Creando…"
 
@@ -4040,6 +4069,10 @@ msgstr "Enviando solicitud de orden…"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Vendiendo {0}{1}<1>{poolName}</1></0>"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}."
+msgstr "Los fondos llegan a su monedero conectado en {chainName}."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "Stop-Loss Decrease"
@@ -4319,11 +4352,11 @@ msgstr "Se ejecuta cuando el precio del oráculo es {0} {1}"
 msgid "Withdrawal from subaccount"
 msgstr "Retiro de subcuenta"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/ReferralCodeInput.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Enter referral code"
 msgstr "Ingresa código de referencia"
 
@@ -4442,6 +4475,7 @@ msgstr "Copiar usuarios"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap impact"
 msgstr "Impacto de intercambio realizado"
 
@@ -4754,6 +4788,7 @@ msgid "Enter receiver address"
 msgstr "Introduzca la dirección del destinatario"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Period"
 msgstr "Período"
 
@@ -4881,8 +4916,8 @@ msgstr "Impacto en el precio almacenado"
 msgid "Arguments"
 msgstr "Argumentos"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "Necesitas USDC y {0} en {1} para crear un código de referido a través de la Cuenta GMX. Deposita fondos o cambia a una red diferente."
 
@@ -5162,6 +5197,7 @@ msgstr "Últimos 180d"
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Positive funding fees"
 msgstr "Comisiones de financiación positivas"
 
@@ -5366,6 +5402,10 @@ msgstr "Establecer TP/SL"
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "Máximo {MAX_REFERRAL_CODE_LENGTH} caracteres"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buy with card"
+msgstr "Comprar con tarjeta"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "Proporcione liquidez aislada por mercado"
@@ -5381,6 +5421,10 @@ msgstr "Usar interés abierto en tokens para el saldo"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "Trading sin interrupciones"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Deposit from another wallet, exchange, or chain."
+msgstr "Deposite desde otro monedero, exchange o cadena."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
@@ -5593,6 +5637,10 @@ msgstr "Análisis de PnL"
 msgid "Failed to claim funds"
 msgstr "Falló la reclamación de fondos"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing the nearest available period instead."
+msgstr "Las estadísticas del período seleccionado no están disponibles. En su lugar, se muestra el período disponible más cercano."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
 msgstr ""
@@ -5752,9 +5800,9 @@ msgstr "Toros"
 msgid "Select market"
 msgstr "Seleccionar mercado"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code creation failed"
 msgstr "Error al crear el código de referido"
 
@@ -5933,12 +5981,12 @@ msgstr "GLV (GMX Liquidity Vault) contiene diversos tokens GM, ofreciéndole una
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "La red de compensación se ha cambiado a Arbitrum, pero quedan $12.50 en su GMX Account de Base"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Enter a code"
 msgstr "Ingresa un código"
 
@@ -6081,14 +6129,14 @@ msgstr "Seleccionar posiciones"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6292,6 +6340,11 @@ msgstr "Solicitar compensación de comisiones de financiación"
 msgid "Withdrawn"
 msgstr "Retirado"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated"
+msgstr "Graduados"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
@@ -6349,6 +6402,10 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "Cambiando de <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> a <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Share your PnL"
+msgstr "Comparta su PnL"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
@@ -6391,6 +6448,7 @@ msgstr "Venda GM por {0} y {1} hasta los límites que se indican a continuación
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "All time"
 msgstr "Todo el tiempo"
 
@@ -6433,7 +6491,7 @@ msgstr "Margen insuficiente. Las comisiones se deducen de la garantía depositad
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
-msgstr ""
+msgstr "Perdidos"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
@@ -6592,9 +6650,9 @@ msgstr "No se puede retirar la garantía. La garantía restante quedaría por de
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Aprobando..."
@@ -6709,13 +6767,13 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/charts/TraderReferralChartContainer.tsx
 #: src/components/Referrals/shared/charts/TradersVolumeChartContainer.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6736,11 +6794,11 @@ msgstr "Operar ahora"
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr ""
 
-#: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/ShareModal/ShareCardActionButtons.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Share"
 msgstr "Compartir"
@@ -6770,9 +6828,14 @@ msgid "DeFi portfolio tracker"
 msgstr "Rastreador de cartera DeFi"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Operaciones"
+
+#: src/pages/AccountDashboard/PerformanceShare.tsx
+msgid "Stats for the selected period aren't available. Showing your all-time performance instead."
+msgstr "Las estadísticas del período seleccionado no están disponibles. En su lugar, se muestra su rendimiento de todo el tiempo."
 
 #: src/config/uiFlagEvents.tsx
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."
@@ -7179,6 +7242,7 @@ msgid "Order type unavailable for creation"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win rate"
 msgstr "Tasa de victoria"
@@ -7633,6 +7697,10 @@ msgstr "Liquidación"
 msgid "Add TP/SL"
 msgstr "Añadir TP/SL"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "How would you like to add funds?"
+msgstr "¿Cómo desea añadir fondos?"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
 msgstr "El destinatario nunca ha hecho staking de tokens GLP"
@@ -7766,6 +7834,7 @@ msgstr "Mantener el apalancamiento en {currentLeverage}"
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Today"
 msgstr "Hoy"
 
@@ -7924,8 +7993,8 @@ msgstr "Ingresa cantidad de depósito"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Approve {0}"
 msgstr "Aprobar {0}"
 
@@ -8294,6 +8363,7 @@ msgid "Save settings"
 msgstr "Guardar configuración"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7d"
 msgstr "Últimos 7d"
@@ -8717,8 +8787,8 @@ msgstr ""
 msgid "AI"
 msgstr "IA"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code submitted"
 msgstr "Código de referido enviado"
 
@@ -9022,9 +9092,9 @@ msgstr "Meme"
 msgid "Accumulate GMX rewards by staking"
 msgstr ""
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Create code"
 msgstr "Crear código"
 
@@ -9182,9 +9252,9 @@ msgstr "Envío fallido"
 msgid "Invalid Ethereum address"
 msgstr "Dirección de Ethereum no válida"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "No se ha podido verificar la disponibilidad del código en {0}. Aún puede crear el código, pero es posible que ya esté en uso en esa red."
 
@@ -9465,7 +9535,7 @@ msgstr "Transacción enviada"
 msgid "Perfectswap"
 msgstr "Perfectswap"
 
-#: src/components/PositionShare/PositionShareCard.tsx
+#: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "Código de referencia"
 
@@ -9845,7 +9915,7 @@ msgstr "Introduzca un nuevo importe o precio"
 msgid "Stake {tokenSymbol}"
 msgstr "Hacer staking de {tokenSymbol}"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "Enlace copiado al portapapeles"
 
@@ -10058,7 +10128,7 @@ msgstr "Grupo de Telegram (portugués)"
 msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "Posición largo pura en {indexSymbol}. La exposición proviene únicamente de la posición."
 
-#: src/components/PositionShare/PositionShareCard.tsx
+#: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Used referral code"
 msgstr ""
 
@@ -10144,7 +10214,7 @@ msgstr "V1 no compatible en {chainName}. Cambie a Arbitrum para utilizar V1."
 msgid "Completed"
 msgstr "Completado"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/ShareModal/SkipReferralCodeBanner.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Skip creating a referral code?"
 msgstr "¿Omitir la creación de un código de referido?"
@@ -10161,8 +10231,8 @@ msgstr ""
 msgid "Deposit ETH"
 msgstr "Depositar ETH"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "No tokens on source chain"
 msgstr "Sin tokens en la cadena de origen"
 
@@ -10340,6 +10410,10 @@ msgstr "{balanceFormatted} retirados a la cuenta principal"
 msgid "{positionName} failed to settle"
 msgstr "{positionName} no se ha podido liquidar"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Receive to this wallet"
+msgstr "Recibir en este monedero"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"
 msgstr "Proyectos del ecosistema"
@@ -10402,7 +10476,7 @@ msgstr "Temas"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
-msgstr ""
+msgstr "Ganados"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -10564,6 +10638,7 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/PerformanceShare.tsx
 msgid "No data available"
 msgstr "No hay datos disponibles"
 
@@ -10978,6 +11053,7 @@ msgid "Request withdraw"
 msgstr "Solicitar retirada"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
@@ -11086,6 +11162,10 @@ msgstr ""
 msgid "Set short Take-Profit @ {0}"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+msgid "Share PnL"
+msgstr "Compartir PnL"
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "TRANSACTION ID"
@@ -11184,6 +11264,7 @@ msgid "Transaction hash copied to clipboard"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "Este año"
 
@@ -11212,6 +11293,10 @@ msgstr "Transacción cancelada"
 msgid "Request Market Decrease"
 msgstr "Solicitar Disminución de Mercado"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+msgstr "Traders referidos netos en el período seleccionado (ganados - graduados - perdidos). Los traders graduados alcanzaron el umbral de graduación del programa de referidos y fueron trasladados a un código del protocolo GMX: conservan su descuento en comisiones, pero ya no generan recompensas de afiliado. <0>Más información</0>"
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"
 msgstr "Bóvedas delta neutral"
@@ -11225,6 +11310,7 @@ msgid "PNG"
 msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap fees"
 msgstr "Comisiones de intercambio realizadas"
 
@@ -11258,6 +11344,7 @@ msgstr "Comprar en otras plataformas"
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Yesterday"
 msgstr "Ayer"
 
@@ -11285,15 +11372,15 @@ msgstr "No hay distribuciones para reclamar"
 msgid "Receive {tokensList} into your wallet on {networkName}, or choose another network."
 msgstr "Recibe {tokensList} en tu billetera en {networkName} o elige otra red."
 
-#: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy link"
 msgstr "Copiar enlace"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "Código de referido creado"
 
@@ -11311,10 +11398,10 @@ msgstr "Fondos transfiriéndose a..."
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
+#: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Network fee"
 msgstr "Comisión de red"
 
@@ -11451,8 +11538,8 @@ msgstr "Uniswap"
 msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderAcceptablePriceImpact}) below market ({formattedCurrentAcceptablePriceImpact}). Click \"Edit\"."
 msgstr "La orden podría no ejecutarse a {priceText}: impacto aceptable ({formattedOrderAcceptablePriceImpact}) por debajo del mercado ({formattedCurrentAcceptablePriceImpact}). Haga clic en \"Edit\"."
 
-#: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
 msgstr "Compartir en"
 
@@ -11496,6 +11583,10 @@ msgstr "Cerrar"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Link"
 msgstr "Enlace"
+
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
+msgstr "Los traders graduados fueron trasladados a un código del protocolo GMX tras alcanzar el umbral de graduación del programa de referidos."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

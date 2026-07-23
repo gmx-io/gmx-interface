@@ -17,6 +17,7 @@ export type GmxAccountModalView =
   | "selectAssetToDeposit"
   | "withdraw"
   | "transferHistory"
+  | "walletReceiveOptions"
   | "walletReceive"
   | "walletSend";
 

@@ -4,11 +4,12 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
-import { isDevelopment } from "config/env";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import release117PositionFilterPoster from "img/release-117-position-filter-poster.webp";
+import release117PositionFilterDemo from "img/release-117-position-filter.mp4";
 import sparkleIcon from "img/sparkle.svg";
 
 export type AnnouncementType = "listing" | "delisting" | "update" | "maintenance";
@@ -44,19 +45,109 @@ export type EventData = {
   requiresOpenPosition?: string;
 };
 
-const testEvent: EventData = {
-  id: "test-event-flag",
-  type: "update",
-  flagId: "testEventFlagId",
-  endDate: "31 Dec 2026, 0:00",
-  title: "Test announcement",
-  description: (
-    <>Test announcement gated by the testEventFlagId KLI flag; its start date comes from the flag's createdAt.</>
-  ),
-};
-
 export const appEventsData: EventData[] = [
-  ...(isDevelopment() ? [testEvent] : []),
+  {
+    id: "release-118-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "16 Jul 2026, 12:00",
+    endDate: "24 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: Passkey Login, Wallet Funding, and Performance Sharing",
+    summary: (
+      <>
+        Sign in with a passkey, fund your wallet with a card, share your performance, and skip swap fees on TP/SL
+        closes.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> create a wallet with just a passkey. Face
+          ID, Touch ID, Windows Hello, or Android biometrics get you trading, with no email or seed phrase required.
+          Funding is built into the Receive flow: buy crypto with a card, Apple Pay, or Google Pay, or transfer from
+          another wallet, exchange, or chain.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> share your results with a
+          performance card showing your PnL, win rate, and cumulative PnL curve, carrying your referral code.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now return
+          profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a resting
+          increase order would be liquidatable at its trigger price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool settings
+          now survive refreshes.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Support:</span> the menu now shows how many replies came
+          in while you were away.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "release-117-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "09 Jul 2026, 14:00",
+    endDate: "20 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: PnL Charts, Trade History, and Wallet functionality",
+    summary: (
+      <>
+        Analyze your PnL in more detail, follow any position's full history, and manage funds without leaving the app.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> the PnL chart now supports
+          daily, weekly, and monthly views, zoom and pan (pinch on mobile), and shares its date range with Trade
+          History. Performance details now show your trader rank and a full breakdown of realized and unrealized PnL and
+          fees.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trade History:</span> filter by position to follow every
+          action in a position's lifecycle, from open to full close.
+        </span>
+        <video
+          aria-label="Filter Trade History by position"
+          className="h-auto w-full rounded-8"
+          autoPlay
+          controls
+          loop
+          muted
+          playsInline
+          poster={release117PositionFilterPoster}
+          preload="metadata"
+          width={800}
+          height={250}
+        >
+          <source src={release117PositionFilterDemo} type="video/mp4" />
+        </video>
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> new Send and Receive buttons for your
+          connected wallet. Receive shows your address as a QR code to copy or scan, and Send transfers tokens to any
+          address, with the network fee shown before you confirm.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">GMX Account:</span> deposits now start by picking the
+          asset you want to move, and each deposit's progress is tracked in Transfer history.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">TP/SL orders:</span> the app now warns when a TP or SL
+          trigger price is beyond your liquidation price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Additional bug fixes:</span> market orders no longer get
+          stuck as pending after executing, and GM pool fee data loads reliably again in Pools and Earn.
+        </span>
+      </span>
+    ),
+  },
   {
     id: "botanix-withdraw-deadline",
     type: "delisting",

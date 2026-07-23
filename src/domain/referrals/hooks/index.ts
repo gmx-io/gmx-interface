@@ -410,7 +410,7 @@ type AffiliateCodesQueryResponse = {
   affiliateStats: Array<{ referralCode: Hash }>;
 };
 
-type AffiliateCodesState = {
+export type AffiliateCodesState = {
   code: string | null;
   success: boolean;
 };

@@ -6490,6 +6490,8 @@ export interface PeriodAccountStatObject {
   losses: Scalars["Float"]["output"];
   maxCapital: Scalars["BigInt"]["output"];
   netCapital: Scalars["BigInt"]["output"];
+  /** Positive funding accrued as claimable in the period (claimed or not) */
+  positiveFundingFeesUsd: Scalars["BigInt"]["output"];
   realizedFees: Scalars["BigInt"]["output"];
   realizedPnl: Scalars["BigInt"]["output"];
   realizedPriceImpact: Scalars["BigInt"]["output"];
