@@ -256,9 +256,10 @@ const indicativeGlobalCapacity =
 `availableLiquidity` is the current global JIT-aware capacity and remains capped by max open interest.
 It is indicative because the keeper can restrict JIT by account. `baseAvailableLiquidity` is the native capacity without
 JIT, but it is still a market-level snapshot: a collateral swap or intervening market state can reduce the capacity
-available to a specific order. Do not size an order while `marketDataStatus` is `stale`; only use the global JIT uplift
-when eligibility is known separately. Treat `prepareOrder` as the final request-aware validation; it returns a typed
-warning when capacity is not authoritative for the specific request.
+available to a specific order. Use the global JIT uplift only for JIT-capable market increases when eligibility is known
+separately; use `baseAvailableLiquidity` for limit, stop-market, and TWAP increases. Do not size an order while
+`marketDataStatus` is `stale`. Treat `prepareOrder` as the final request-aware validation; it returns a typed warning when
+capacity is not authoritative for the specific request.
 
 Prepare failures can be narrowed to the typed API contract:
 
