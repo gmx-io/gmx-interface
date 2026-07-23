@@ -6,7 +6,9 @@ import { useSubaccountContext } from "context/SubaccountContext/SubaccountContex
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { latestStateRef, StateCtx } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import type { SponsoredCallBalanceData } from "domain/synthetics/express/useSponsoredCallParamsRequest";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
+import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import type { MarketsInfoData } from "domain/synthetics/markets";
 import type { OrdersInfoData } from "domain/synthetics/orders";
 import { useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
@@ -44,6 +46,9 @@ export type MockSyntheticsStateProviderProps = {
   ordersInfoData?: OrdersInfoData;
   uiFeeFactor?: bigint;
   isFirstOrder?: boolean;
+  features?: FeaturesSettings;
+  sponsoredCallBalanceData?: SponsoredCallBalanceData;
+  subaccount?: SyntheticsState["subaccountState"]["subaccount"];
 };
 
 /**
@@ -59,11 +64,18 @@ export function MockSyntheticsStateProvider({
   ordersInfoData = EMPTY_ORDERS_INFO_DATA,
   uiFeeFactor = 0n,
   isFirstOrder = false,
+  features,
+  sponsoredCallBalanceData,
+  subaccount,
 }: MockSyntheticsStateProviderProps) {
   const chainId = ARBITRUM;
   const { account, signer } = useWallet();
   const settings = useSettings();
-  const subaccountState = useSubaccountContext();
+  const realSubaccountState = useSubaccountContext();
+  const subaccountState = useMemo(
+    () => (subaccount ? { ...realSubaccountState, subaccount } : realSubaccountState),
+    [realSubaccountState, subaccount]
+  );
   const tokenPermitsState = useTokenPermitsContext();
   const externalSwapState = useInitExternalSwapState();
   const orderEditorState = useOrderEditorState(ordersInfoData);
@@ -151,10 +163,9 @@ export function MockSyntheticsStateProvider({
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
       poolsDetails: undefined,
-      // populate if the component under test grows feature-gated or oracle-based behavior
-      features: undefined,
+      features,
       uiFlags: undefined,
-      sponsoredCallBalanceData: undefined,
+      sponsoredCallBalanceData,
       gasPaymentTokenAllowance: undefined,
       l1ExpressOrderGasReference: undefined,
     };
@@ -171,6 +182,8 @@ export function MockSyntheticsStateProvider({
     ordersInfoData,
     uiFeeFactor,
     isFirstOrder,
+    features,
+    sponsoredCallBalanceData,
     settings,
     subaccountState,
     tokenPermitsState,

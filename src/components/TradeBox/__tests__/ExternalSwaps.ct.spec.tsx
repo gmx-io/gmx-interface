@@ -28,14 +28,30 @@ const ROUTE_SUMMARY = {
   route: [[]],
 };
 
+// 1 WETH -> 2000 USDC
+const WETH_TO_USDC_SUMMARY: Partial<typeof ROUTE_SUMMARY> = {
+  tokenIn: WETH_ADDRESS,
+  amountIn: "1000000000000000000",
+  amountInUsd: "2000",
+  tokenOut: USDC_ADDRESS,
+  amountOut: "2000000000",
+  amountOutUsd: "2000",
+};
+
 async function mockKyberSuccess(
   page: Page,
-  { delayMs = 0, amountOut, amountOutUsd }: { delayMs?: number; amountOut?: string; amountOutUsd?: string } = {}
+  {
+    delayMs = 0,
+    amountOut,
+    amountOutUsd,
+    summary: summaryOverride,
+  }: { delayMs?: number; amountOut?: string; amountOutUsd?: string; summary?: Partial<typeof ROUTE_SUMMARY> } = {}
 ) {
   const summary = {
     ...ROUTE_SUMMARY,
-    amountOut: amountOut ?? ROUTE_SUMMARY.amountOut,
-    amountOutUsd: amountOutUsd ?? ROUTE_SUMMARY.amountOutUsd,
+    ...summaryOverride,
+    ...(amountOut !== undefined ? { amountOut } : {}),
+    ...(amountOutUsd !== undefined ? { amountOutUsd } : {}),
   };
   const counters = { routes: 0 };
   await page.route(KYBER_ROUTES_URL, async (route: Route) => {
@@ -106,12 +122,10 @@ test.describe("External swaps", () => {
     await openSwap(page);
     await page.locator(getDataQALocator("pay-input")).fill("1000");
 
-    // The quote (debounce + two-step Kyber request) lands in the store and drives the receive amount.
     const receiveInput = page.locator(getDataQALocator("swap-receive-input"));
     await expect(receiveInput).toHaveValue("0.5", { timeout: 15_000 });
 
-    // The route source lives in the collapsed "Execution details" section.
-    await page.getByText("Execution details").click();
+    await openExecutionDetails(page);
     await expect(page.getByText("Swap route")).toBeVisible();
     await expect(page.getByText("KyberSwap (external)")).toBeVisible();
   });
@@ -149,7 +163,6 @@ test.describe("External swaps", () => {
       page.getByText("TWAP swaps use GMX pool liquidity only", { exact: false })
     ).toBeVisible({ timeout: 15_000 });
 
-    // The disabled button explains the same block and offers the same escape in its tooltip.
     const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
     await expect(submitButton).toHaveText("Insufficient GMX pool liquidity");
     await submitButton.hover({ force: true });
@@ -157,7 +170,6 @@ test.describe("External swaps", () => {
 
     await page.getByText("Switch to market order", { exact: true }).click();
 
-    // Back on Market the external quote applies again and the warning goes away.
     await expect(page.getByText("TWAP swaps use GMX pool liquidity only")).not.toBeVisible();
     await expect(page.locator(getDataQALocator("swap-receive-input"))).toHaveValue("0.5", { timeout: 15_000 });
   });
@@ -170,7 +182,6 @@ test.describe("External swaps", () => {
     await openSwap(page);
     await page.locator(getDataQALocator("pay-input")).fill("1000");
 
-    // ~0.5 ETH minus internal swap fees and impact
     const receiveInput = page.locator(getDataQALocator("swap-receive-input"));
     await expect(receiveInput).not.toHaveValue("");
 
@@ -221,12 +232,10 @@ test.describe("External swaps", () => {
     await openSwap(page);
     await page.locator(getDataQALocator("pay-input")).fill("1000");
 
-    // The internal route can serve the trade, so the in-flight external quote must not gate the button.
     const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
     await expect(submitButton).toBeEnabled({ timeout: 10_000 });
     await expect(submitButton).not.toHaveText("Loading swap path…");
 
-    // Once the better quote arrives it silently takes over the route.
     await openExecutionDetails(page);
     await expect(page.getByText("KyberSwap (external)")).toBeVisible({ timeout: 15_000 });
     await expect(submitButton).toBeEnabled();
@@ -262,7 +271,6 @@ test.describe("External swaps", () => {
     await openSwap(page);
     await page.locator(getDataQALocator("pay-input")).fill("1000");
 
-    // The expensive internal route makes the external one optional, and the better Kyber quote wins.
     await openExecutionDetails(page);
     await expect(page.getByText("KyberSwap (external)")).toBeVisible({ timeout: 15_000 });
 
@@ -278,14 +286,73 @@ test.describe("External swaps", () => {
     await expect(page.getByText("KyberSwap (external)")).toBeVisible({ timeout: 15_000 });
   });
 
-  // Not covered here: the "Retry external route" tooltip (manual case C4). It needs an "optional"
-  // desirability together with an insufficient-liquidity validation, which requires the swap-path
-  // builder and the validation to disagree about available liquidity (OI reservations) — not
-  // reachable with these fixtures. The underlying latch block-reason is unit-tested in
-  // externalSwapSelectors.spec.ts.
+  test("a latched optional route raises the paused banner, and its Retry brings the external route back", async ({
+    mount,
+    page,
+  }) => {
+    await mockKyberSuccess(page);
+    await mount(
+      <TradeBoxStory withExternalSwapHandler withExternalSwapLatchControl marketScenario="expensiveInternalSwap" />
+    );
+
+    await openSwap(page);
+    await page.locator(getDataQALocator("pay-input")).fill("1000");
+
+    await openExecutionDetails(page);
+    await expect(page.getByText("KyberSwap (external)")).toBeVisible({ timeout: 15_000 });
+
+    await armLatch(page);
+    await expect(page.getByText("Retry to check for a better rate", { exact: false })).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(page.getByText("GMX pools", { exact: true })).toBeVisible();
+
+    await page.getByText("Retry external route").click();
+
+    await expect(page.getByText("Retry to check for a better rate")).not.toBeVisible();
+    await expect(page.getByText("KyberSwap (external)")).toBeVisible({ timeout: 15_000 });
+  });
+
+  test("after dismissing the paused banner the Swap route row still explains and retries the pause", async ({
+    mount,
+    page,
+  }) => {
+    await mockKyberSuccess(page);
+    await mount(
+      <TradeBoxStory withExternalSwapHandler withExternalSwapLatchControl marketScenario="expensiveInternalSwap" />
+    );
+
+    await openSwap(page);
+    await page.locator(getDataQALocator("pay-input")).fill("1000");
+
+    await openExecutionDetails(page);
+    await expect(page.getByText("KyberSwap (external)")).toBeVisible({ timeout: 15_000 });
+
+    await armLatch(page);
+    await expect(page.getByText("Retry to check for a better rate", { exact: false })).toBeVisible({
+      timeout: 15_000,
+    });
+
+    // The close button is icon-only (no accessible name).
+    await page
+      .locator("div.border-l-2", { hasText: "Retry to check for a better rate" })
+      .locator("button")
+      .filter({ hasText: /^$/ })
+      .click();
+    await expect(page.getByText("Retry to check for a better rate")).not.toBeVisible();
+
+    const routeValue = page.getByText("GMX pools", { exact: true });
+    await expect(routeValue).toBeVisible();
+    await routeValue.hover();
+    await expect(
+      page.getByText("External routing is temporarily paused after a failed attempt", { exact: false })
+    ).toBeVisible();
+    await page.getByText("Retry external route").click();
+
+    await expect(page.getByText("KyberSwap (external)")).toBeVisible({ timeout: 15_000 });
+  });
 
   test("the drained pool rescue keeps working while the latch is armed (required route)", async ({ mount, page }) => {
-    // Kyber quotes fine, but the pool itself can't fill the swap: the trade stays rescuable.
     await mockKyberSuccess(page);
     await mount(
       <TradeBoxStory
@@ -331,6 +398,195 @@ test.describe("External swaps", () => {
     await expect(aggregatorLink).toHaveAttribute("href", "https://1inch.com/swap?src=42161:USDC&dst=42161:ETH");
   });
 
+  test.describe("Position increase with a collateral swap", () => {
+    test("a required external route rescues the increase", async ({ mount, page }) => {
+      await mockKyberSuccess(page, { summary: WETH_TO_USDC_SUMMARY });
+      await mount(
+        <TradeBoxStory connected withExternalSwapHandler seedIncreaseCollateralSwap marketScenario="drainedUsdcPool" />
+      );
+
+      await page.locator(getDataQALocator("margin-input")).fill("1");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toBeEnabled({ timeout: 15_000 });
+      await expect(submitButton).not.toHaveText("Insufficient liquidity to swap collateral");
+    });
+
+    test("with no external route either, the increase blocks and raises the no-route banner", async ({
+      mount,
+      page,
+    }) => {
+      await mockKyberNoRoute(page);
+      await mount(
+        <TradeBoxStory connected withExternalSwapHandler seedIncreaseCollateralSwap marketScenario="drainedUsdcPool" />
+      );
+
+      await page.locator(getDataQALocator("margin-input")).fill("1");
+
+      await expect(
+        page.getByText("GMX pools can't fill this swap, and no external route is currently available", { exact: false })
+      ).toBeVisible({ timeout: 15_000 });
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toBeDisabled();
+    });
+  });
+
+  // Express is available (feature flags + sponsored calls mocked on), the default gas payment token
+  // on Arbitrum is USDC, and the swap receives USDC — the gas-conflict scenarios out of the box.
+  test.describe("Gas conflict (express)", () => {
+    const WETH_TO_USDC_PAIR = { from: WETH_ADDRESS, to: USDC_ADDRESS };
+
+    test("silently auto-switches the conflicting gas token and keeps the entered amount", async ({ mount, page }) => {
+      await mockKyberSuccess(page, { summary: WETH_TO_USDC_SUMMARY });
+      await mount(
+        <TradeBoxStory
+          connected
+          withExternalSwapHandler
+          expressOn
+          hugeGasTokenBalances
+          marketScenario="drainedUsdcPool"
+          seedSwapPair={WETH_TO_USDC_PAIR}
+        />
+      );
+
+      const payInput = page.locator(getDataQALocator("pay-input"));
+      await payInput.fill("1");
+
+      await expect(
+        page.getByText("Gas token switched to ETH to enable external swap routing")
+      ).toBeVisible({ timeout: 15_000 });
+
+      // The regression this flow was built around: the switch must NOT clear the pay input.
+      await expect(payInput).toHaveValue("1");
+      await expect(page.locator(getDataQALocator("swap-receive-input"))).toHaveValue("2000", { timeout: 15_000 });
+    });
+
+    test("re-picking the conflicting gas token shows the red banner instead of fighting the user", async ({
+      mount,
+      page,
+    }) => {
+      await mockKyberSuccess(page, { summary: WETH_TO_USDC_SUMMARY });
+      await mount(
+        <TradeBoxStory
+          connected
+          withExternalSwapHandler
+          withGasTokenControl
+          expressOn
+          hugeGasTokenBalances
+          marketScenario="drainedUsdcPool"
+          seedSwapPair={WETH_TO_USDC_PAIR}
+        />
+      );
+
+      const receiveInput = page.locator(getDataQALocator("swap-receive-input"));
+      await page.locator(getDataQALocator("pay-input")).fill("1");
+
+      // First the silent auto-switch resolves the conflict (spends its one attempt for this pair)...
+      await expect(
+        page.getByText("Gas token switched to ETH to enable external swap routing")
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(receiveInput).toHaveValue("2000", { timeout: 15_000 });
+
+      await page.locator(getDataQALocator("test-set-conflicting-gas-token")).click();
+
+      await expect(
+        page.getByText("This swap requires external routing. Pay gas in ETH to enable it.")
+      ).toBeVisible({ timeout: 15_000 });
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Insufficient GMX pool liquidity");
+      await submitButton.hover({ force: true });
+      await expect(page.getByText("gas payment token matches the token you're swapping to", { exact: false })).toBeVisible();
+
+      await page.getByText("Use ETH for gas").click();
+
+      await expect(
+        page.getByText("This swap requires external routing. Pay gas in ETH to enable it.")
+      ).not.toBeVisible();
+      await expect(receiveInput).toHaveValue("2000", { timeout: 15_000 });
+    });
+
+    test("with no viable gas-token candidate offers the Classic Trading escape", async ({ mount, page }) => {
+      await mockKyberSuccess(page, { summary: WETH_TO_USDC_SUMMARY });
+      await mount(
+        <TradeBoxStory
+          connected
+          withExternalSwapHandler
+          expressOn
+          zeroWethBalance
+          marketScenario="drainedUsdcPool"
+          seedSwapPair={WETH_TO_USDC_PAIR}
+        />
+      );
+
+      await page.locator(getDataQALocator("pay-input")).fill("1");
+
+      await expect(
+        page.getByText("no other gas token has sufficient balance", { exact: false })
+      ).toBeVisible({ timeout: 15_000 });
+
+      await page.getByText("Switch to Classic Trading").click();
+
+      // Classic transactions don't pay gas through the relay, so the conflict is gone and the quote lands.
+      await expect(page.locator(getDataQALocator("swap-receive-input"))).toHaveValue("2000", { timeout: 15_000 });
+    });
+
+    test("optional route blocked by the gas conflict shows the better-rate hint", async ({ mount, page }) => {
+      await mockKyberSuccess(page, { summary: WETH_TO_USDC_SUMMARY });
+      await mount(
+        <TradeBoxStory
+          connected
+          withExternalSwapHandler
+          expressOn
+          hugeGasTokenBalances
+          marketScenario="expensiveInternalSwap"
+          seedSwapPair={WETH_TO_USDC_PAIR}
+        />
+      );
+
+      await page.locator(getDataQALocator("pay-input")).fill("1");
+
+      await expect(
+        page.getByText("Paying gas in ETH may give a better rate on this swap")
+      ).toBeVisible({ timeout: 15_000 });
+
+      await page.getByText("Use ETH for gas").click();
+
+      await openExecutionDetails(page);
+      await expect(page.getByText("KyberSwap (external)")).toBeVisible({ timeout: 15_000 });
+    });
+
+    test("One-Click Trading takes priority over the gas conflict and explains itself", async ({ mount, page }) => {
+      await mockKyberSuccess(page, { summary: WETH_TO_USDC_SUMMARY });
+      await mount(
+        <TradeBoxStory
+          connected
+          withExternalSwapHandler
+          expressOn
+          withOneClickSubaccount
+          hugeGasTokenBalances
+          marketScenario="drainedUsdcPool"
+          seedSwapPair={WETH_TO_USDC_PAIR}
+        />
+      );
+
+      await page.locator(getDataQALocator("pay-input")).fill("1");
+
+      await expect(
+        page.getByText("This swap requires external routing, which isn't available with One-Click Trading", {
+          exact: false,
+        })
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByText("Disable One-Click Trading")).toBeVisible();
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Insufficient GMX pool liquidity");
+      await submitButton.hover({ force: true });
+      await expect(page.getByText("Disable One-Click Trading to proceed", { exact: false })).toBeVisible();
+    });
+  });
+
   test("with the External swaps setting off the aggregator is never asked", async ({ mount, page }) => {
     const kyber = await mockKyberSuccess(page);
     await mount(<TradeBoxStory connected withExternalSwapHandler externalSwapsSettingOff marketScenario="drainedEthPool" />);
@@ -344,7 +600,6 @@ test.describe("External swaps", () => {
       page.getByText("GMX pools can't fill this swap, and no external route is currently available", { exact: false })
     ).not.toBeVisible();
 
-    // No external-swap machinery involved: the tooltip is the generic liquidity one.
     await submitButton.hover({ force: true });
     await expect(
       page.getByText("GMX pools don't have enough liquidity for this swap size", { exact: false })
