@@ -25,16 +25,19 @@ import {
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
+import { getExpressAccountUnavailableMessage } from "domain/synthetics/express/getExpressAccountUnavailableMessage";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
+import { useExpressAccountSupport } from "lib/wallets/useAccountType";
 import {
   convertTokenAddress,
   getTokenVisualMultiplier,
@@ -71,6 +74,7 @@ import "./PositionEditor.scss";
 export function PositionEditor() {
   const { chainId, srcChainId } = useChainId();
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
+  const { isExpressAccountSupported, unavailableReason: expressAccountUnavailableReason } = useExpressAccountSupport();
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -93,6 +97,11 @@ export function PositionEditor() {
 
   const handleSetCollateralAddress = useCallback(
     (tokenAddress: string, isGmxAccount?: boolean) => {
+      if (isGmxAccount && !isExpressAccountSupported) {
+        helperToast.error(getExpressAccountUnavailableMessage(expressAccountUnavailableReason));
+        return;
+      }
+
       if (isGmxAccount && !expressOrdersEnabled) {
         setExpressOrdersEnabled(true);
         toastEnableExpress(() => setIsSettingsVisible(true));
@@ -105,6 +114,8 @@ export function PositionEditor() {
     },
     [
       expressOrdersEnabled,
+      expressAccountUnavailableReason,
+      isExpressAccountSupported,
       setSelectedCollateralAddress,
       setExpressOrdersEnabled,
       setIsSettingsVisible,

@@ -3049,6 +3049,10 @@ msgstr "累計 LP 獎勵"
 msgid "Invalid decrease size"
 msgstr "無效的減少規模"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "此錢包無法簽署 Express 或 One-Click 訂單。請改用 Classic 交易。"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "訂閱"
@@ -4349,12 +4353,6 @@ msgstr "輸入推薦碼"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "智能錢包不支援 Express Trading 或 One-Click Trading"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -10730,6 +10728,10 @@ msgstr "此代幣已停用 Permit 授權。"
 msgid "LAST PRICE"
 msgstr "最新價格"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "此智慧錢包無法在此網路上使用 Express 或 One-Click。請切換到 Arbitrum 或使用 Classic 交易。"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "正在取消 {orderText}..."
@@ -11352,6 +11354,10 @@ msgstr "複製連結"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "推薦碼已建立"
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "無法驗證錢包簽名支援。請使用 Classic 交易並稍後再試。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

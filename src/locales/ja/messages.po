@@ -3049,6 +3049,10 @@ msgstr "累計LP報酬"
 msgid "Invalid decrease size"
 msgstr "無効な減少サイズ"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "このウォレットではExpressまたはOne-Click注文に署名できません。代わりにクラシック取引を使用してください。"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "購読"
@@ -4349,12 +4353,6 @@ msgstr "リファラルコードを入力"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "スマートウォレットは Express Trading および One-Click Trading に対応していません"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -10730,6 +10728,10 @@ msgstr "このトークンではパーミット承認が無効になっていま
 msgid "LAST PRICE"
 msgstr "最終価格"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "このスマートウォレットでは、このネットワーク上でExpressまたはOne-Clickを使用できません。Arbitrumに切り替えるか、クラシック取引を使用してください。"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "{orderText}をキャンセル中…"
@@ -11352,6 +11354,10 @@ msgstr "リンクをコピー"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "リファラルコードが作成されました"
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "ウォレットの署名対応を確認できませんでした。クラシック取引を使用し、後でもう一度お試しください。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

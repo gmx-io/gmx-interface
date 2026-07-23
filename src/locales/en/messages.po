@@ -3049,6 +3049,10 @@ msgstr "Lifetime LP rewards"
 msgid "Invalid decrease size"
 msgstr "Invalid decrease size"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "Subscribe"
@@ -4349,12 +4353,6 @@ msgstr "Enter referral code"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr "Referral link copied to clipboard"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "Smart wallets are not supported on Express Trading or One-Click Trading"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -10730,6 +10728,10 @@ msgstr "Permit approvals are disabled for this token."
 msgid "LAST PRICE"
 msgstr "LAST PRICE"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "Cancelling {orderText}..."
@@ -11352,6 +11354,10 @@ msgstr "Copy link"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "Referral code created"
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "Wallet signing support could not be verified. Use Classic Trading and try again later."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

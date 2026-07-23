@@ -1,6 +1,6 @@
 import { getAccount, getChainId, getWalletClient } from "@wagmi/core";
-import { AbstractSigner, type Wallet } from "ethers";
-import { hashTypedData, withRetry, type Hex } from "viem";
+import { AbstractSigner, TypedDataEncoder, type Wallet } from "ethers";
+import { type Address, isAddressEqual, withRetry } from "viem";
 
 import { parseError } from "lib/errors";
 import { ISigner } from "lib/transactions/iSigner";
@@ -26,35 +26,74 @@ export type SignTypedDataParams = {
   domain: SignatureDomain;
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
-  /** Chain the on-chain verifier runs on; smart wallets must sign with their wallet on this chain. */
   verificationChainId?: number;
 };
 
+type ProviderSigner = WalletSigner | Wallet | AbstractSigner | ISigner;
 type RpcSendable = Pick<WalletSigner["provider"], "send">;
 
-type AnySigner = WalletSigner | Wallet | AbstractSigner | ISigner;
+export function shouldSwitchToVerificationChain({
+  currentChainId,
+  verificationChainId,
+  hasCodeOnCurrentChain,
+  hasCodeOnVerificationChain,
+  isKnownSmartAccount,
+}: {
+  currentChainId: number;
+  verificationChainId: number | undefined;
+  hasCodeOnCurrentChain: boolean;
+  hasCodeOnVerificationChain: boolean;
+  isKnownSmartAccount: boolean;
+}): boolean {
+  return Boolean(
+    verificationChainId !== undefined &&
+      verificationChainId !== currentChainId &&
+      (hasCodeOnCurrentChain || hasCodeOnVerificationChain || isKnownSmartAccount)
+  );
+}
+
+async function hasCode(chainId: number, address: string): Promise<boolean> {
+  const code = await getPublicClientWithRpc(chainId).getCode({ address });
+  return Boolean(code && code !== "0x");
+}
 
 async function needsChainSwapForSmartWallet({
   address,
   currentChainId,
-  targetChainId,
+  verificationChainId,
+  isKnownSmartAccount,
 }: {
   address: string;
   currentChainId: number;
-  targetChainId: number | undefined;
+  verificationChainId: number | undefined;
+  isKnownSmartAccount: boolean;
 }): Promise<boolean> {
-  if (targetChainId === undefined || targetChainId === currentChainId) {
+  if (verificationChainId === undefined || verificationChainId === currentChainId) {
     return false;
   }
-  try {
-    const code = await getPublicClientWithRpc(currentChainId).getCode({ address });
-    return Boolean(code && code !== "0x");
-  } catch {
-    return false;
+
+  if (isKnownSmartAccount) {
+    return true;
   }
+
+  const [currentChainCodeResult, verificationChainCodeResult] = await Promise.allSettled([
+    hasCode(currentChainId, address),
+    hasCode(verificationChainId, address),
+  ]);
+  const hasCodeOnCurrentChain = currentChainCodeResult.status === "fulfilled" && currentChainCodeResult.value;
+  const hasCodeOnVerificationChain =
+    verificationChainCodeResult.status === "fulfilled" && verificationChainCodeResult.value;
+
+  return shouldSwitchToVerificationChain({
+    currentChainId,
+    verificationChainId,
+    hasCodeOnCurrentChain,
+    hasCodeOnVerificationChain,
+    isKnownSmartAccount,
+  });
 }
 
-function providerSendSign(signer: AnySigner, from: string, eip712: object) {
+function providerSendSign(signer: ProviderSigner, from: string, eip712: object) {
   return withRetry<string>(
     () => (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]),
     {
@@ -72,60 +111,45 @@ async function withSmartWalletChainSwap<T>(
   {
     signer,
     address,
-    targetChainId,
+    verificationChainId,
   }: {
-    signer: AnySigner;
+    signer: ProviderSigner;
     address: string;
-    targetChainId: number | undefined;
+    verificationChainId: number | undefined;
   },
-  action: (signer: AnySigner) => Promise<T>
+  action: (signer: ProviderSigner) => Promise<T>
 ): Promise<T> {
   const config = getWagmiConfig();
   const startingChainId = getChainId(config);
-  const needsSwap = await needsChainSwapForSmartWallet({
+  const needsChainSwap = await needsChainSwapForSmartWallet({
     address,
     currentChainId: startingChainId,
-    targetChainId,
+    verificationChainId,
+    isKnownSmartAccount: "isSmartAccount" in signer && signer.isSmartAccount === true,
   });
 
-  if (!needsSwap) return action(signer);
+  if (!needsChainSwap) {
+    return action(signer);
+  }
 
-  await switchNetwork(targetChainId!, true);
-  const account = getAccount(config).address;
-  if (!account) throw new Error("No account after chain swap");
-  const swappedWalletClient = await getWalletClient(config);
-  const swappedSigner = clientToSigner(swappedWalletClient, account);
+  await switchNetwork(verificationChainId!, true);
+
   try {
-    return await action(swappedSigner);
+    const account = getAccount(config).address;
+    if (!account) {
+      throw new Error("Wallet disconnected while switching to the Express signing network");
+    }
+    if (!isAddressEqual(account, address as Address)) {
+      throw new Error("Wallet account changed while switching to the Express signing network");
+    }
+
+    const walletClient = await getWalletClient(config);
+    const chainSigner = clientToSigner(walletClient, account);
+
+    return await action(chainSigner);
   } finally {
-    await switchNetwork(startingChainId, true).catch(() => {
-      // restoring is best-effort
-    });
+    await switchNetwork(startingChainId, true).catch(() => undefined);
   }
-}
-
-// TODO: it this needed or we can just use [0] as primaryType?
-function hashTypedDataWithViem({
-  domain,
-  types,
-  message,
-}: {
-  domain: SignatureDomain;
-  types: SignatureTypes;
-  message: Record<string, any>;
-}): Hex {
-  const primaryType = Object.keys(types).find((t) => t !== "EIP712Domain");
-
-  if (!primaryType) {
-    throw new Error("Unable to determine EIP-712 primary type");
-  }
-
-  return hashTypedData({
-    domain,
-    types,
-    primaryType,
-    message,
-  });
 }
 
 export async function signTypedData({
@@ -161,11 +185,7 @@ export async function signTypedData({
   let messageToSign = typedData;
 
   if (minified) {
-    const digest = hashTypedDataWithViem({
-      domain,
-      types,
-      message: typedData,
-    });
+    const digest = TypedDataEncoder.hash(domain, types, typedData);
     const minifiedTypes = {
       Minified: [{ name: "digest", type: "bytes32" }],
     };
@@ -201,15 +221,23 @@ export async function signTypedData({
     message: messageToSign,
   };
 
-  return withSmartWalletChainSwap({ signer, address: from, targetChainId: verificationChainId }, (signWith) => {
-    if (shouldUseSignerMethod && signWith.signTypedData) {
-      return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {
-        if (!e.message.includes("requires a provider")) throw e;
-        return providerSendSign(signWith, from, eip712);
-      });
+  return withSmartWalletChainSwap(
+    { signer, address: from, verificationChainId },
+    async (signerForVerificationChain) => {
+      if (shouldUseSignerMethod && signerForVerificationChain.signTypedData) {
+        try {
+          return await signerForVerificationChain.signTypedData(domain, typesToSign, messageToSign);
+        } catch (error) {
+          if (!(error instanceof Error) || !error.message.includes("requires a provider")) {
+            throw error;
+          }
+        }
+      }
+
+      const signingAddress = await signerForVerificationChain.getAddress();
+      return providerSendSign(signerForVerificationChain, signingAddress, eip712);
     }
-    return providerSendSign(signWith, from, eip712);
-  });
+  );
 }
 
 export function splitSignature(signature: string): { r: string; s: string; v: number } {

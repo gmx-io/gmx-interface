@@ -3049,6 +3049,10 @@ msgstr "Recompensas LP acumuladas"
 msgid "Invalid decrease size"
 msgstr "Tamaño de reducción no válido"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "Esta billetera no puede firmar órdenes Express ni One-Click. Usa el trading clásico en su lugar."
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "Suscribirse"
@@ -4349,12 +4353,6 @@ msgstr "Ingresa código de referencia"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "Los monederos inteligentes no son compatibles con Express Trading ni con One-Click Trading"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -10730,6 +10728,10 @@ msgstr "Las aprobaciones con permiso están desactivadas para este token."
 msgid "LAST PRICE"
 msgstr "ÚLTIMO PRECIO"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "Esta billetera inteligente no puede usar Express ni One-Click en esta red. Cambia a Arbitrum o usa el trading clásico."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "Cancelando {orderText}…"
@@ -11352,6 +11354,10 @@ msgstr "Copiar enlace"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "Código de referido creado"
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "No se pudo verificar la compatibilidad de firma de la billetera. Usa el trading clásico e inténtalo de nuevo más tarde."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

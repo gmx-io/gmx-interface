@@ -6,7 +6,7 @@ import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useChainId } from "lib/chains";
-import { useNonSigningAccount } from "lib/wallets/useAccountType";
+import { useExpressAccountSupport } from "lib/wallets/useAccountType";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
@@ -20,15 +20,15 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
     false
   );
 
-  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
+  const { isExpressAccountSupported } = useExpressAccountSupport();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
-  const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && !isNonEoaAccountOnAnyChain;
+  const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && isExpressAccountSupported;
 
   const onClickEnable = useCallback(() => {
     openSettings();
 
-    if (isOutOfGasPaymentBalance) {
+    if (isOutOfGasPaymentBalance || !isExpressAccountSupported) {
       return;
     }
 
@@ -36,7 +36,13 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
       setExpressOrdersEnabled(true);
       setIsOneClickPromoHidden(true);
     }, 500);
-  }, [isOutOfGasPaymentBalance, openSettings, setExpressOrdersEnabled, setIsOneClickPromoHidden]);
+  }, [
+    isExpressAccountSupported,
+    isOutOfGasPaymentBalance,
+    openSettings,
+    setExpressOrdersEnabled,
+    setIsOneClickPromoHidden,
+  ]);
 
   if (!shouldShow) {
     return null;

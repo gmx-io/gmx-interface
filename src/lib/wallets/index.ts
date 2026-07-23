@@ -10,6 +10,7 @@ import { getWagmiConfig } from "./walletConfig";
 
 export type WalletSigner = UncheckedJsonRpcSigner & {
   address: string;
+  isSmartAccount?: boolean;
 };
 
 function selectNetworkInApp(chainId: number) {

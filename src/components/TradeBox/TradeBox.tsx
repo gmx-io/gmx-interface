@@ -62,6 +62,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
+import { getExpressAccountUnavailableMessage } from "domain/synthetics/express/getExpressAccountUnavailableMessage";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
@@ -92,7 +93,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
-import { useNonSigningAccount } from "lib/wallets/useAccountType";
+import { useExpressAccountSupport } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -660,11 +661,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFocusedInput, setToTokenInputValue]
   );
-  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
+  const { isExpressAccountSupported, unavailableReason: expressAccountUnavailableReason } = useExpressAccountSupport();
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
-      if (isGmxAccount && isNonEoaAccountOnAnyChain) {
-        helperToast.error(t`Smart wallets are not supported on Express Trading or One-Click Trading`);
+      if (isGmxAccount && !isExpressAccountSupported) {
+        helperToast.error(getExpressAccountUnavailableMessage(expressAccountUnavailableReason));
         return;
       }
 
@@ -679,7 +680,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [
       expressOrdersEnabled,
-      isNonEoaAccountOnAnyChain,
+      expressAccountUnavailableReason,
+      isExpressAccountSupported,
       onSelectFromTokenAddress,
       setExpressOrdersEnabled,
       setIsFromTokenGmxAccount,
@@ -764,7 +766,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           placeholder={TRADEBOX_INPUT_PLACEHOLDER}
         >
           {fromTokenAddress &&
-            (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
+            (!isSettlementChain(chainId) || !isExpressAccountSupported ? (
               <TokenSelector
                 label={t`Pay`}
                 chainId={chainId}

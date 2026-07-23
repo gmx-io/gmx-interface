@@ -2,7 +2,12 @@ import type { ConnectedWallet } from "@privy-io/react-auth";
 import { describe, expect, it, vi } from "vitest";
 import type { Config } from "wagmi";
 
-import { disconnectPrivyWalletsFromWagmi, getPrivyWagmiConnectorId } from "./privyWagmi";
+import {
+  disconnectPrivyWalletsFromWagmi,
+  getConnectedPrivyWallet,
+  getIsKnownSmartWalletClient,
+  getPrivyWagmiConnectorId,
+} from "./privyWagmi";
 
 function createWallet({
   address = "0x0000000000000000000000000000000000000001",
@@ -41,6 +46,30 @@ describe("privyWagmi", () => {
     });
 
     expect(getPrivyWagmiConnectorId(wallet)).toBe("io.phantom");
+  });
+
+  it("finds the active Privy wallet by address and connector", () => {
+    const inactiveWallet = createWallet({ metaId: "io.metamask" });
+    const activeWallet = createWallet({
+      metaId: "io.coinbase.smart-wallet",
+      walletClientType: "coinbase_smart_wallet",
+    });
+
+    expect(
+      getConnectedPrivyWallet(
+        [inactiveWallet, activeWallet],
+        "0x0000000000000000000000000000000000000001",
+        "io.coinbase.smart-wallet"
+      )
+    ).toBe(activeWallet);
+  });
+
+  it("distinguishes known smart-wallet clients from regular Coinbase Wallet", () => {
+    expect(getIsKnownSmartWalletClient("safe")).toBe(true);
+    expect(getIsKnownSmartWalletClient("coinbase_smart_wallet")).toBe(true);
+    expect(getIsKnownSmartWalletClient("base_account")).toBe(true);
+    expect(getIsKnownSmartWalletClient("coinbase_wallet")).toBe(false);
+    expect(getIsKnownSmartWalletClient("metamask")).toBe(false);
   });
 
   it("marks all Privy-backed wagmi connectors disconnected", async () => {

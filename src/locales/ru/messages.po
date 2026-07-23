@@ -3049,6 +3049,10 @@ msgstr "Совокупные вознаграждения LP"
 msgid "Invalid decrease size"
 msgstr "Недопустимый размер уменьшения"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "Этот кошелёк не может подписывать ордера Express или One-Click. Используйте классический режим торговли."
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "Подписаться"
@@ -4349,12 +4353,6 @@ msgstr "Введите реферальный код"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "Смарт-кошельки не поддерживаются в Express Trading и One-Click Trading"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -10730,6 +10728,10 @@ msgstr "Одобрения через permit отключены для этог�
 msgid "LAST PRICE"
 msgstr "ПОСЛЕДНЯЯ ЦЕНА"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "Этот смарт-кошелёк не может использовать Express или One-Click в этой сети. Переключитесь на Arbitrum или используйте классический режим торговли."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "Отмена {orderText}…"
@@ -11352,6 +11354,10 @@ msgstr "Скопировать ссылку"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "Реферальный код создан"
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "Не удалось проверить поддержку подписей кошельком. Используйте классический режим торговли и повторите попытку позже."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

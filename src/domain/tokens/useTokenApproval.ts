@@ -6,6 +6,7 @@ import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermits
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { EMPTY_ARRAY } from "lib/objects";
 import type { WalletSigner } from "lib/wallets";
+import { useExpressAccountSupport } from "lib/wallets/useAccountType";
 import type { AnyChainId } from "sdk/configs/chains";
 
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
@@ -39,6 +40,18 @@ interface UseTokenApprovalReturn {
   handleApprove: (options?: HandleApproveOptions) => void;
 }
 
+export function getShouldAllowPermit({
+  allowPermit,
+  isSmartAccount,
+  isAccountTypeUnavailable,
+}: {
+  allowPermit: boolean;
+  isSmartAccount: boolean;
+  isAccountTypeUnavailable: boolean;
+}): boolean {
+  return allowPermit && !isSmartAccount && !isAccountTypeUnavailable;
+}
+
 export function useTokenApproval({
   chainId,
   spenderAddress,
@@ -50,6 +63,12 @@ export function useTokenApproval({
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
   const { tokenPermits, addTokenPermit, isPermitsDisabled, setIsPermitsDisabled } = useTokenPermitsContext();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
+  const { isSmartAccount, isExpressAccountSupported, isLoading: isAccountTypeLoading } = useExpressAccountSupport();
+  const shouldAllowPermit = getShouldAllowPermit({
+    allowPermit,
+    isSmartAccount,
+    isAccountTypeUnavailable: isAccountTypeLoading || !isExpressAccountSupported,
+  });
 
   const mergedTokens = useMemo(() => {
     const map = new Map<string, bigint>();
@@ -78,7 +97,7 @@ export function useTokenApproval({
   const isAllowanceLoading = nothingToCheck ? false : isAllowanceLoadingRaw;
   const isAllowanceLoaded = nothingToCheck ? true : isAllowanceLoadedRaw;
 
-  const permitsOrEmpty = allowPermit && !isPermitsDisabled && tokenPermits ? tokenPermits : EMPTY_ARRAY;
+  const permitsOrEmpty = shouldAllowPermit && !isPermitsDisabled && tokenPermits ? tokenPermits : EMPTY_ARRAY;
 
   const tokensToApprove = useMemo(
     () =>
@@ -106,7 +125,7 @@ export function useTokenApproval({
       const tokenAddress = tokensToApprove[0];
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
-      const permitParams = allowPermit ? { addTokenPermit, setIsPermitsDisabled, isPermitsDisabled } : undefined;
+      const permitParams = shouldAllowPermit ? { addTokenPermit, setIsPermitsDisabled, isPermitsDisabled } : undefined;
 
       const doApprove = async (signerToUse: WalletSigner) => {
         setApprovingToken(tokenAddress);
@@ -134,13 +153,13 @@ export function useTokenApproval({
     },
     [
       addTokenPermit,
-      allowPermit,
       approveAmount,
       chainId,
       isApproving,
       isPermitsDisabled,
       setIsPermitsDisabled,
       setSettlementChainId,
+      shouldAllowPermit,
       spenderAddress,
       tokensToApprove,
     ]

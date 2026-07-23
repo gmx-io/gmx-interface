@@ -141,6 +141,7 @@ async function signRemoveSubaccountPayload({
     types,
     typedData,
     domain,
+    verificationChainId: chainId,
   });
 }
 

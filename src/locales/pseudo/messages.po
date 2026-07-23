@@ -3049,6 +3049,10 @@ msgstr ""
 msgid "Invalid decrease size"
 msgstr ""
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "Ţĥĩš ŵåļļéţ çåññöţ šĩĝñ Éхþŕéšš öŕ Öñé-Çļĩçķ öŕðéŕš. Ůšé Çļåššĩç Ţŕåðĩñĝ ĩñšţéåð."
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr ""
@@ -4348,12 +4352,6 @@ msgstr ""
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
-msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -10730,6 +10728,10 @@ msgstr ""
 msgid "LAST PRICE"
 msgstr ""
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "Ţĥĩš šmåŕţ ŵåļļéţ çåññöţ ůšé Éхþŕéšš öŕ Öñé-Çļĩçķ öñ ţĥĩš ñéţŵöŕķ. Šŵĩţçĥ ţö Åŕбĩţŕům öŕ ůšé Çļåššĩç Ţŕåðĩñĝ."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr ""
@@ -11352,6 +11354,10 @@ msgstr ""
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr ""
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "Ŵåļļéţ šĩĝñĩñĝ šůþþöŕţ çöůļð ñöţ бé véŕĩƒĩéð. Ůšé Çļåššĩç Ţŕåðĩñĝ åñð ţŕý åĝåĩñ ļåţéŕ."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

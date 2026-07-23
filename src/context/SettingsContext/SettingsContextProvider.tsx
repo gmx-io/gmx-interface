@@ -4,6 +4,7 @@ import { ReactNode, createContext, useContext, useEffect, useMemo, useState } fr
 import { ARBITRUM, BOTANIX, getExecutionFeeConfig } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { getIsExpressSupported } from "config/features";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
   BUY_SELL_ICONS_MODE_KEY,
@@ -33,9 +34,9 @@ import {
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { useChainId } from "lib/chains";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { hasStoredLocalStorageValue, useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
-import { useNonSigningAccount } from "lib/wallets/useAccountType";
+import { useExpressAccountSupport } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
@@ -142,7 +143,11 @@ export function useSettings() {
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { isLoading: isNonEoaLoading } = useNonSigningAccount();
+  const {
+    isExpressAccountSupported,
+    isLoading: isExpressAccountSupportLoading,
+    unavailableReason: expressAccountUnavailableReason,
+  } = useExpressAccountSupport();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -216,6 +221,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(expressOrdersEnabledKey, false);
+  const effectiveExpressOrdersEnabled = Boolean(
+    expressOrdersEnabled && isExpressAccountSupported && !isExpressAccountSupportLoading
+  );
 
   const [receiveToGmxAccount, setReceiveToGmxAccount] = useLocalStorageSerializeKey<boolean | null>(
     getCollateralCloseDestinationKey(chainId, account),
@@ -323,12 +331,64 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   ]);
 
   useEffect(
+    function defaultExpressForSupportedWallets() {
+      if (
+        !account ||
+        expressOrdersEnabled ||
+        !isExpressAccountSupported ||
+        isExpressAccountSupportLoading ||
+        !getIsExpressSupported(chainId) ||
+        hasStoredLocalStorageValue(expressOrdersEnabledKey)
+      ) {
+        return;
+      }
+
+      setExpressOrdersEnabled(true);
+    },
+    [
+      chainId,
+      account,
+      expressOrdersEnabled,
+      expressOrdersEnabledKey,
+      isExpressAccountSupported,
+      isExpressAccountSupportLoading,
+      setExpressOrdersEnabled,
+    ]
+  );
+
+  useEffect(
     function fallbackMultichain() {
-      if (srcChainId && !expressOrdersEnabled && !isNonEoaLoading) {
+      if (srcChainId && !expressOrdersEnabled && isExpressAccountSupported && !isExpressAccountSupportLoading) {
         setExpressOrdersEnabled(true);
       }
     },
-    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId, isNonEoaLoading]
+    [
+      expressOrdersEnabled,
+      isExpressAccountSupportLoading,
+      isExpressAccountSupported,
+      setExpressOrdersEnabled,
+      srcChainId,
+    ]
+  );
+
+  useEffect(
+    function disableExpressForUnsupportedWallets() {
+      if (
+        !isExpressAccountSupportLoading &&
+        !isExpressAccountSupported &&
+        expressAccountUnavailableReason !== "capabilityCheckFailed" &&
+        expressOrdersEnabled
+      ) {
+        setExpressOrdersEnabled(false);
+      }
+    },
+    [
+      expressAccountUnavailableReason,
+      expressOrdersEnabled,
+      isExpressAccountSupportLoading,
+      isExpressAccountSupported,
+      setExpressOrdersEnabled,
+    ]
   );
 
   const contextState: SettingsContextType = useMemo(() => {
@@ -379,7 +439,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
-      expressOrdersEnabled: expressOrdersEnabled!,
+      expressOrdersEnabled: effectiveExpressOrdersEnabled,
       setExpressOrdersEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
@@ -449,7 +509,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
-    expressOrdersEnabled,
+    effectiveExpressOrdersEnabled,
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,

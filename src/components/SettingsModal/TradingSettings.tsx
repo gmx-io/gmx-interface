@@ -13,6 +13,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { SettlementChainWarningContainer } from "domain/multichain/SettlementChainWarningContainer";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
+import { getExpressAccountUnavailableMessage } from "domain/synthetics/express/getExpressAccountUnavailableMessage";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { getBalanceByBalanceType } from "domain/synthetics/tokens";
@@ -21,7 +22,7 @@ import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useNonSigningAccount } from "lib/wallets/useAccountType";
+import { useExpressAccountSupport } from "lib/wallets/useAccountType";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
 
@@ -67,10 +68,20 @@ export function TradingSettings({
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
+  const {
+    isExpressAccountSupported,
+    unavailableReason: expressAccountUnavailableReason,
+    isLoading: isExpressAccountSupportLoading,
+  } = useExpressAccountSupport();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
-  const isExpressTradingDisabled = (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain;
+  const isExpressTradingDisabled =
+    (isOutOfGasPaymentBalance && srcChainId === undefined) ||
+    !isExpressAccountSupported ||
+    isExpressAccountSupportLoading;
+  const expressAccountUnavailableMessage = expressAccountUnavailableReason
+    ? getExpressAccountUnavailableMessage(expressAccountUnavailableReason)
+    : undefined;
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
@@ -149,11 +160,7 @@ export function TradingSettings({
               }
               icon={<ExpressIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
-              disabledTooltip={
-                isNonEoaAccountOnAnyChain ? (
-                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
-                ) : undefined
-              }
+              disabledTooltip={expressAccountUnavailableMessage}
               chip={
                 <Chip color="gray">
                   <Trans>Optimal</Trans>
@@ -168,11 +175,7 @@ export function TradingSettings({
               description={<Trans>Seamless trading with Express reliability</Trans>}
               icon={<OneClickIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
-              disabledTooltip={
-                isNonEoaAccountOnAnyChain ? (
-                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
-                ) : undefined
-              }
+              disabledTooltip={expressAccountUnavailableMessage}
               info={
                 <Trans>
                   GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
@@ -191,7 +194,7 @@ export function TradingSettings({
               onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
             />
 
-            {isOutOfGasPaymentBalance && !isNonEoaAccountOnAnyChain && (
+            {isOutOfGasPaymentBalance && isExpressAccountSupported && (
               <ExpressTradingOutOfGasBanner onClose={onClose} />
             )}
 

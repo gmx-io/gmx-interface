@@ -3049,6 +3049,10 @@ msgstr "LP Belohnungen insgesamt"
 msgid "Invalid decrease size"
 msgstr "Ungültige Verringerungsgröße"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "Dieses Wallet kann Express- oder One-Click-Orders nicht signieren. Verwende stattdessen den klassischen Handel."
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "Abonnieren"
@@ -4349,12 +4353,6 @@ msgstr "Empfehlungscode eingeben"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "Smart Wallets werden bei Express Trading oder One-Click Trading nicht unterstützt"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -10730,6 +10728,10 @@ msgstr "Permit-Genehmigungen sind für diesen Token deaktiviert."
 msgid "LAST PRICE"
 msgstr "LETZTER PREIS"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "Dieses Smart Wallet kann Express oder One-Click in diesem Netzwerk nicht verwenden. Wechsle zu Arbitrum oder verwende den klassischen Handel."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "{orderText} wird storniert…"
@@ -11352,6 +11354,10 @@ msgstr "Link kopieren"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "Empfehlungscode erstellt"
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "Die Wallet-Signaturunterstützung konnte nicht überprüft werden. Verwende den klassischen Handel und versuche es später erneut."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

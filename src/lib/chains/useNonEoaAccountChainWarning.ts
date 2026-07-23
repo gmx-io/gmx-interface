@@ -23,22 +23,22 @@ const toastGetSnapshot = () => toast.isActive(NON_EOA_ACCOUNT_CHAIN_WARNING_TOAS
 
 export function useNonEoaAccountChainWarning() {
   const { srcChainId } = useChainId();
-  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
+  const { isNonSigningAccountOnAnyChain } = useNonSigningAccount();
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 
   useEffect(() => {
-    if (srcChainId && isNonEoaAccountOnAnyChain) {
+    if (srcChainId && isNonSigningAccountOnAnyChain) {
       toast.error(getNonEoaAccountChainWarningToastContent(srcChainId), {
         toastId: NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID,
         autoClose: false,
         closeButton: false,
         delay: 2000,
       });
-    } else if (!srcChainId || !isNonEoaAccountOnAnyChain) {
+    } else if (!srcChainId || !isNonSigningAccountOnAnyChain) {
       toast.dismiss(NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID);
     }
-  }, [isActive, isNonEoaAccountOnAnyChain, srcChainId]);
+  }, [isActive, isNonSigningAccountOnAnyChain, srcChainId]);
 
   useEffect(() => {
     return () => {

@@ -121,8 +121,8 @@ function WalletBlock({ account }: { account: string }) {
   const embeddedWallet = getEmbeddedConnectedWallet(wallets);
   const canExport = Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
 
-  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
-  const canSend = !isNonEoaAccountOnAnyChain;
+  const { isNonSigningAccountOnAnyChain } = useNonSigningAccount();
+  const canSend = !isNonSigningAccountOnAnyChain;
 
   const accountUrl = !account || !chainId ? "" : `${getExplorerUrl(chainId)}address/${account}`;
 

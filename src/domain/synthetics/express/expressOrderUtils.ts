@@ -305,6 +305,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       typedData: typedData.message,
       domain: typedData.domain,
       shouldUseSignerMethod: subaccount !== undefined,
+      verificationChainId: chainId,
     };
 
     signature = await signTypedData(signatureParams);
@@ -482,7 +483,7 @@ async function signBridgeOutPayload({
 
   const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainTransferRouter"));
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId });
 }
 
 export async function signSetTraderReferralCode({
@@ -513,7 +514,7 @@ export async function signSetTraderReferralCode({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }
 
 export async function signRegisterCode({
@@ -544,7 +545,7 @@ export async function signRegisterCode({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }
 
 async function validateSignature({

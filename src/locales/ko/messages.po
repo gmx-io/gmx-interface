@@ -3049,6 +3049,10 @@ msgstr "누적 LP 보상"
 msgid "Invalid decrease size"
 msgstr "유효하지 않은 감소 규모"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "이 지갑은 Express 또는 One-Click 주문에 서명할 수 없습니다. 대신 클래식 트레이딩을 사용하세요."
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "구독"
@@ -4349,12 +4353,6 @@ msgstr "추천 코드 입력"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "스마트 지갑은 Express Trading 또는 One-Click Trading에서 지원되지 않습니다"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -10730,6 +10728,10 @@ msgstr "이 토큰의 퍼밋 승인은 비활성화되어 있습니다."
 msgid "LAST PRICE"
 msgstr "최종 가격"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "이 스마트 지갑은 이 네트워크에서 Express 또는 One-Click을 사용할 수 없습니다. Arbitrum으로 전환하거나 클래식 트레이딩을 사용하세요."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "{orderText} 취소 중…"
@@ -11352,6 +11354,10 @@ msgstr "링크 복사"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "추천 코드가 생성되었습니다"
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "지갑의 서명 지원 여부를 확인할 수 없습니다. 클래식 트레이딩을 사용하고 나중에 다시 시도하세요."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

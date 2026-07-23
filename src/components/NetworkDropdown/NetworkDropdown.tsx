@@ -74,7 +74,7 @@ export default function NetworkDropdown({
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const { isNonEoaAccountOnAnyChain } = useNonSigningAccount();
+  const { isNonSigningAccountOnAnyChain } = useNonSigningAccount();
 
   const [disabledNetworks, enabledNetworks] = partition(
     networkOptions,
@@ -82,7 +82,7 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
       // True is passed to filter both dev and prod contracts chains
       !isContractsChain(network.value, true) &&
       isSourceChainForAnySettlementChain(network.value) &&
-      isNonEoaAccountOnAnyChain
+      isNonSigningAccountOnAnyChain
   );
 
   const walletAndGmxAccountNetworks = enabledNetworks.filter(

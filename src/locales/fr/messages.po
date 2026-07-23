@@ -3049,6 +3049,10 @@ msgstr "Récompenses LP cumulées"
 msgid "Invalid decrease size"
 msgstr "Taille de réduction invalide"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This wallet cannot sign Express or One-Click orders. Use Classic Trading instead."
+msgstr "Ce portefeuille ne peut pas signer les ordres Express ou One-Click. Utilisez plutôt le trading classique."
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "S'abonner"
@@ -4349,12 +4353,6 @@ msgstr "Entrez le code de parrainage"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "Les portefeuilles intelligents ne sont pas pris en charge avec Express Trading ou One-Click Trading"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -10730,6 +10728,10 @@ msgstr "Les approbations par permis sont désactivées pour ce token."
 msgid "LAST PRICE"
 msgstr "DERNIER PRIX"
 
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "This smart wallet cannot use Express or One-Click on this network. Switch to Arbitrum or use Classic Trading."
+msgstr "Ce portefeuille intelligent ne peut pas utiliser Express ou One-Click sur ce réseau. Passez à Arbitrum ou utilisez le trading classique."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "Annulation de {orderText}…"
@@ -11352,6 +11354,10 @@ msgstr "Copier le lien"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code created"
 msgstr "Code de parrainage créé"
+
+#: src/domain/synthetics/express/getExpressAccountUnavailableMessage.ts
+msgid "Wallet signing support could not be verified. Use Classic Trading and try again later."
+msgstr "La prise en charge de la signature du portefeuille n’a pas pu être vérifiée. Utilisez le trading classique et réessayez plus tard."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
