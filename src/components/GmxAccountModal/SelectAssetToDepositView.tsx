@@ -201,15 +201,16 @@ export const SelectAssetToDepositView = () => {
   const networksFilter = useMemo(() => {
     const wildCard = { id: "all" as const, name: t`All networks` };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId] ?? EMPTY_OBJECT)
-      .map((sourceChainId) => ({
-        id: parseInt(sourceChainId),
-        name: getChainName(parseInt(sourceChainId)),
-      }))
-      .concat({
+    const chainFilters = [
+      {
         id: chainId,
         name: getChainName(chainId),
-      });
+      },
+      ...Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
+        id: parseInt(sourceChainId),
+        name: getChainName(parseInt(sourceChainId)),
+      })),
+    ];
 
     return [wildCard, ...chainFilters];
   }, [chainId]);

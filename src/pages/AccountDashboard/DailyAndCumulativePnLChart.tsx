@@ -112,6 +112,7 @@ export function DailyAndCumulativePnLChart({
   resetKey: string;
 }) {
   const [zoomWindow, setZoomWindow] = useState<PnlZoomWindow | undefined>();
+  const [isBarAnimationActive, setIsBarAnimationActive] = useState(true);
   const showDebugValues = useShowDebugValues();
   const chartInteractionRef = useRef<HTMLDivElement>(null);
   const lastTouchTapRef = useRef(0);
@@ -125,6 +126,7 @@ export function DailyAndCumulativePnLChart({
   const zoomWindowRef = useRef<PnlZoomWindow | undefined>(undefined);
   const applyZoomWindow = useCallback((nextWindow: PnlZoomWindow | undefined) => {
     zoomWindowRef.current = nextWindow;
+    setIsBarAnimationActive(false);
     setZoomWindow(nextWindow);
   }, []);
 
@@ -188,12 +190,13 @@ export function DailyAndCumulativePnLChart({
 
   const isZoomed = Boolean(normalizedZoomWindow);
   const canZoom = groupedPnlData.length > 2;
-  const isBarAnimationActive = !isZoomed;
 
   useEffect(() => {
-    applyZoomWindow(undefined);
+    zoomWindowRef.current = undefined;
+    setZoomWindow(undefined);
+    setIsBarAnimationActive(true);
     wheelZoomAccumulatorRef.current = { value: 0 };
-  }, [applyZoomWindow, resetKey]);
+  }, [resetKey]);
 
   useEffect(() => {
     const element = chartInteractionRef.current;
