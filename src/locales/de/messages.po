@@ -359,6 +359,10 @@ msgstr "GMX Account ist auf {chainName} nicht verfügbar. Wechseln Sie zu Arbitr
 msgid "settings"
 msgstr "Einstellungen"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external routes."
+msgstr "TWAP-Swaps nutzen nur die Liquidität der GMX-Pools, die für diese Ordergröße nicht ausreicht. Verwenden Sie eine Market-Order, um externe Routen zu aktivieren."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Est. APR"
 msgstr "Gesch. APR"
@@ -656,6 +660,10 @@ msgstr "Keine Mittel für eine Einzahlung von {networkName} verfügbar"
 msgid "sell"
 msgstr "verkaufen"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GMX pool liquidity"
+msgstr "Unzureichende GMX-Pool-Liquidität"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "Wechseln zu {0}"
@@ -724,6 +732,10 @@ msgstr "Orderausführungspreis"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to Classic Trading"
+msgstr "Zu Classic Trading wechseln"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -753,6 +765,10 @@ msgstr "Nein"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "..."
 msgstr "..."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Swap on an external aggregator"
+msgstr "Auf einem externen Aggregator swappen"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
@@ -907,6 +923,10 @@ msgstr "GMX auf zentralen Börsen kaufen"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
 msgstr "Verfügbare Liquidität"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
+msgstr "Die GMX-Pools können diesen Swap nicht ausführen, und derzeit ist keine externe Route verfügbar. Versuchen Sie, den Betrag zu reduzieren."
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
@@ -1394,7 +1414,7 @@ msgstr "Externer Tausch {0} zu {1}"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
-msgstr ""
+msgstr "{0} für Gas verwenden"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Earn up to 15% in<0/> rebates as an affiliate"
@@ -1870,6 +1890,10 @@ msgstr ""
 msgid "No fee"
 msgstr "Keine Gebühr"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to market order"
+msgstr "Zu Market-Order wechseln"
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Warning: may not execute due to low liquidity at your min. receive price"
 msgstr ""
@@ -1964,6 +1988,10 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr "Leihgebühr / Tag"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
+msgstr "Die GMX-Pools haben nicht genügend Liquidität für diese Swap-Größe. Versuchen Sie, den Betrag zu reduzieren."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "Sie haben esGMX-Token im Affiliate Vault. Heben Sie diese ab, um sie auf das neue Konto zu übertragen."
@@ -2010,6 +2038,10 @@ msgstr "Erhalte Stimmrechte und nimm an der Governance teil"
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
+msgstr "Keine GMX-Swap-Route von {0} zu {1} gefunden. Versuchen Sie <0>einen externen Aggregator</0>."
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "RECEIVE"
 msgstr "ERHALTEN"
@@ -2032,6 +2064,10 @@ msgstr "Sie verlassen GMX.io und werden zu einer Drittanbieter-Website weitergel
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
 msgstr ""
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
+msgstr "Dieser Swap benötigt externes Routing, das nicht verfügbar ist, solange der Gas-Token dem Token entspricht, den Sie erhalten, und kein anderer Gas-Token über ausreichend Guthaben verfügt."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -2194,6 +2230,10 @@ msgstr "Verkaufsanfrage wird gesendet…"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "ZWECK"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "GMX pools"
+msgstr "GMX-Pools"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2422,6 +2462,10 @@ msgstr "{orderTypeText} {0} für {1}"
 msgid "Job openings at GMX"
 msgstr "Stellenangebote bei GMX"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount."
+msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen, und derzeit ist keine externe Route verfügbar. Versuchen Sie, den Betrag zu reduzieren."
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -2435,6 +2479,10 @@ msgstr "Demnächst verfügbar"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
 msgstr "Stop-Loss aktualisieren"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size.<0/><1/><2>Switch to a market order</2> to enable external routes."
+msgstr "TWAP-Swaps nutzen nur die Liquidität der GMX-Pools, die für diese Ordergröße nicht ausreicht.<0/><1/><2>Wechseln Sie zu einer Market-Order</2>, um externe Routen zu aktivieren."
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
@@ -2600,6 +2648,10 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
 msgstr "{0}-Ausgaben erlauben"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
+msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen. Es wird eine externe Route benötigt, die mit One-Click Trading nicht verfügbar ist. Deaktivieren Sie One-Click Trading, um fortzufahren."
 
 #: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
 msgid "Swap debug"
@@ -3087,6 +3139,10 @@ msgstr ""
 msgid "Start unrealized PnL"
 msgstr "Anfänglicher unrealisierter PnL"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "Swap route"
+msgstr "Swap-Route"
+
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Transfer from another chain"
 msgstr "Von einer anderen Chain übertragen"
@@ -3358,6 +3414,10 @@ msgstr "Kaufe GMX von zentralisierten Diensten"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
 msgstr "Primär fehlgeschlagen"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}."
+msgstr "Keine GMX-Swap-Route von {0} zu {1} gefunden."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
@@ -4741,6 +4801,10 @@ msgstr ""
 msgid "Cancel Limit"
 msgstr "Limit abbrechen"
 
+#: src/domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap.ts
+msgid "Gas token switched to {toSymbol} to enable external swap routing"
+msgstr "Gas-Token wurde zu {toSymbol} gewechselt, um externes Swap-Routing zu ermöglichen"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -4798,6 +4862,10 @@ msgstr "Zeitraum"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "Market Swap: Tauschen Sie Token zum aktuellen Marktpreis"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available while the gas payment token matches the token you're swapping to. Change the gas payment token to proceed."
+msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen. Es wird eine externe Route benötigt, die nicht verfügbar ist, solange der Gas-Token dem Ziel-Token des Swaps entspricht. Ändern Sie den Gas-Token, um fortzufahren."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Per 1h"
@@ -6172,7 +6240,7 @@ msgstr "Kauf-/Verkaufssymbole im Chart anzeigen"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
-msgstr ""
+msgstr "Dieser Swap erfordert externes Routing. Zahlen Sie Gas in {0}, um es zu aktivieren."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -7593,7 +7661,6 @@ msgstr "Tradao"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "Unzureichende Liquidität"
 
@@ -8146,6 +8213,10 @@ msgstr "Kontotyp"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Collateral in"
 msgstr "Sicherheit in"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
+msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen, und derzeit ist keine externe Route verfügbar. Versuchen Sie, den Betrag zu reduzieren, oder <0>swappen Sie auf einem externen Aggregator</0>."
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
@@ -9347,6 +9418,10 @@ msgstr "30 Tage nicht anzeigen"
 msgid "GMX rewards:"
 msgstr "GMX-Belohnungen:"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and external routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen, und das externe Routing ist nach einem fehlgeschlagenen Versuch vorübergehend pausiert.<0/><1/><2>Externe Route erneut versuchen</2>"
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "Nur Wallet-Trading auf diesen Netzwerken"
@@ -10361,6 +10436,10 @@ msgstr "Was ist GM?"
 msgid "Delisting"
 msgstr "Delisting"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "{0} (external)"
+msgstr "{0} (extern)"
+
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
@@ -10706,6 +10785,10 @@ msgstr "Empfehlungscodes"
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code updated"
 msgstr "Empfehlungscode aktualisiert"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "GMX pools + {0}"
+msgstr "GMX-Pools + {0}"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
@@ -11280,6 +11363,10 @@ msgstr "{count, plural, one {Order} other {# Orders}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Avalanche Handelsanreize"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routes are only used for market swaps."
+msgstr "Externe Routen werden nur für Market-Swaps verwendet."
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx

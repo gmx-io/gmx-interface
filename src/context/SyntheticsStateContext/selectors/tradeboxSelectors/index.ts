@@ -9,6 +9,7 @@ import {
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import type { ExternalSwapBlockReason } from "domain/synthetics/externalSwaps/types";
 import {
   externalSwapRequestKeysMatch,
   getExternalSwapInputsByFromValue,
@@ -93,6 +94,7 @@ import {
 } from "../globalSelectors";
 import {
   selectDebugSwapMarketsConfig,
+  selectExternalSwapsEnabledSetting,
   selectIsLeverageSliderEnabled,
   selectIsPnlInLeverage,
   selectShowDebugValues,
@@ -225,7 +227,9 @@ export const selectExternalSwapQuote = createSelector((q) => {
   )
     return undefined;
 
-  if (shouldFallbackToInternalSwap && !shouldForceExternalSwap) return undefined;
+  if (shouldFallbackToInternalSwap && !shouldForceExternalSwap && q(selectExternalSwapDesirability) !== "required") {
+    return undefined;
+  }
 
   const baseOutput = result.quote;
   let amountIn = baseOutput.amountIn;
@@ -270,9 +274,6 @@ export const selectExternalSwapQuote = createSelector((q) => {
   return quote;
 });
 
-const selectExternalSwapsEnabled = (s: SyntheticsState) =>
-  s.settings.externalSwapsEnabled && !s.externalSwap.shouldFallbackToInternalSwap;
-
 const selectDebugForceExternalSwaps = createSelector((q) => {
   const isNeedSwap = q(selectTradeboxIsNeedSwap);
   const swapDebugSettings = getSwapDebugSettings();
@@ -303,14 +304,10 @@ export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) =>
   return conflictToken !== undefined && gasPaymentToken.address === conflictToken.address;
 });
 
-export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
-  const tradeMode = q(selectTradeboxTradeMode);
-  const tradeType = q(selectTradeboxTradeType);
-  const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isMarket) return "not_wanted";
-
-  if (!q(selectExternalSwapsEnabled)) return "not_wanted";
-
+// Pure route economics, ignoring order-type/settings/latch gates: whether an external swap
+// is the only way to fill the trade (required), better than the internal route (optional),
+// or pointless (not_wanted). Computable for any trade mode, including Limit/TWAP.
+export const selectRawExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
   const externalSwapInputs = q(selectExternalSwapInputs);
   if (!externalSwapInputs || externalSwapInputs.amountIn <= 0n) return "not_wanted";
 
@@ -332,6 +329,23 @@ export const selectExternalSwapDesirability = createSelector((q): "not_wanted" |
   return internalSwapTotalFeeItem.bps < thresholdBps ? "optional" : "not_wanted";
 });
 
+export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  if (!tradeFlags.isMarket) return "not_wanted";
+
+  if (!q(selectExternalSwapsEnabledSetting)) return "not_wanted";
+
+  const rawDesirability = q(selectRawExternalSwapDesirability);
+
+  // When there is no internal route at all, the external swap is the only way to fill the trade,
+  // so the failure fallback latch must not suppress it — it only downgrades optional routes.
+  if (rawDesirability === "optional" && q(selectShouldFallbackToInternalSwap)) return "not_wanted";
+
+  return rawDesirability;
+});
+
 export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   if (q(selectIsOneClickActiveByUser)) return false;
   if (q(selectIsExternalSwapDisabledByExpressSchema)) return false;
@@ -339,6 +353,40 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   if (q(selectShouldForceExternalSwap) || q(selectDebugForceExternalSwaps)) return true;
 
   return q(selectExternalSwapDesirability) !== "not_wanted";
+});
+
+// Why the external swap machinery can't currently rescue the trade, in priority order:
+// blockers that prevent quoting entirely come before ones that only pause it, and
+// "noRouteFound" is the terminal "we tried and the aggregator had nothing" state.
+// undefined means external swaps are simply not applicable (or a quote is available/loading).
+export const selectExternalSwapBlockReason = createSelector((q): ExternalSwapBlockReason | undefined => {
+  if (!q(selectExternalSwapsEnabledSetting)) return undefined;
+
+  if (q(selectRawExternalSwapDesirability) === "not_wanted") return undefined;
+
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  if (!tradeFlags.isMarket) return "orderTypeNotSupported";
+
+  if (q(selectIsOneClickActiveByUser)) return "oneClickTrading";
+
+  if (q(selectIsExternalSwapDisabledByExpressSchema)) return "gasTokenConflict";
+
+  if (
+    q(selectShouldFallbackToInternalSwap) &&
+    !q(selectShouldForceExternalSwap) &&
+    q(selectRawExternalSwapDesirability) !== "required"
+  ) {
+    return "temporarilyDisabledByFailure";
+  }
+
+  const result = q(selectExternalSwapRequestResult);
+  if (result?.status === "failed" && externalSwapRequestKeysMatch(result.key, q(selectCurrentExternalSwapRequestKey))) {
+    return "noRouteFound";
+  }
+
+  return undefined;
 });
 
 const selectExternalSwapInputsByFromValue = createSelector((q) => {

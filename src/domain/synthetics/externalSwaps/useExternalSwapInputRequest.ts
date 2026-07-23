@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import useSWR from "swr";
 
 import { BOTANIX } from "config/chains";
@@ -12,7 +12,8 @@ import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getKyberSwapBuildFromRoute, KyberSwapQuote } from "./kyberSwap";
 import { searchAmountInForDesiredOutput } from "./searchAmountInForDesiredOutput";
-import { inflateAmountForSlippage } from "./utils";
+import { ExternalSwapRequestKey } from "./types";
+import { getExternalSwapRequestKey, inflateAmountForSlippage, isAbortError } from "./utils";
 
 class InputRequestNoResultError extends Error {
   constructor() {
@@ -21,7 +22,7 @@ class InputRequestNoResultError extends Error {
   }
 }
 
-type InputRequestData = KyberSwapQuote & { desiredAmountOut: bigint };
+type InputRequestData = KyberSwapQuote & { desiredAmountOut: bigint; requestKey: ExternalSwapRequestKey | undefined };
 
 export function useExternalSwapInputRequest({
   chainId,
@@ -61,8 +62,16 @@ export function useExternalSwapInputRequest({
 
   const debouncedKey = useDebounce(swapKey, 300);
 
+  const abortControllerRef = useRef<AbortController | undefined>(undefined);
+
+  const isDataUpToDate = debouncedKey === swapKey;
+
   const { data, error: swrError } = useSWR<InputRequestData | undefined>(debouncedKey, {
     fetcher: async () => {
+      abortControllerRef.current?.abort();
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+
       try {
         if (
           !tokenInAddress ||
@@ -91,6 +100,7 @@ export function useExternalSwapInputRequest({
           desiredAmountOut: targetAmountOut,
           initialAmountIn,
           gasPrice,
+          signal: abortController.signal,
         });
 
         if (!searchResult) {
@@ -106,15 +116,25 @@ export function useExternalSwapInputRequest({
           tokenInAddress,
           tokenOutAddress,
           gasPrice,
+          signal: abortController.signal,
         });
 
         if (!result) {
           throw new InputRequestNoResultError();
         }
 
-        return { ...result, desiredAmountOut };
+        const requestKey = getExternalSwapRequestKey({
+          fromTokenAddress: tokenInAddress,
+          toTokenAddress: tokenOutAddress,
+          strategy: "byToValue",
+          amountIn: initialAmountIn,
+          desiredAmountOut,
+          slippage,
+        });
+
+        return { ...result, desiredAmountOut, requestKey };
       } catch (error) {
-        if (!(error instanceof InputRequestNoResultError)) {
+        if (!(error instanceof InputRequestNoResultError) && !isAbortError(error)) {
           metrics.pushError(error, "externalSwap.useExternalSwapInputRequest");
         }
         throw error;
@@ -136,11 +156,11 @@ export function useExternalSwapInputRequest({
       desiredAmountOut === undefined ||
       slippage === undefined
     ) {
-      return { error: swrError };
+      return { error: swrError, isDataUpToDate };
     }
 
     if (!data || swrError) {
-      return { error: swrError };
+      return { error: swrError, isDataUpToDate };
     }
 
     const needSpenderApproval = getNeedTokenApprove(
@@ -174,7 +194,7 @@ export function useExternalSwapInputRequest({
       },
     };
 
-    return { quote, error: swrError };
+    return { quote, requestKey: data.requestKey, error: swrError, isDataUpToDate };
   }, [
     tokenInAddress,
     tokenOutAddress,
@@ -186,5 +206,6 @@ export function useExternalSwapInputRequest({
     swrError,
     tokensAllowanceData,
     chainId,
+    isDataUpToDate,
   ]);
 }

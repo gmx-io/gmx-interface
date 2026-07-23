@@ -1213,6 +1213,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
             disabled={shouldShowDepositButton}
             isGmxAccount={isFromTokenGmxAccount}
+            showExternalSwapWarnings={tradeFlags.isSwap || tradeFlags.isIncrease}
           />
           {twapRecommendation && !twapRecommendationDismissed && (
             <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>

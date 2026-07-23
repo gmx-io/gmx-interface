@@ -1,5 +1,6 @@
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { getExternalAggregatorSwapUrlFromAddresses } from "config/links";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
@@ -9,11 +10,13 @@ import { SwapStrategyForSwapOrders } from "sdk/utils/swap/types";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import { TokenData } from "sdk/utils/tokens/types";
 import {
+  ExternalSwapAggregator,
   ExternalSwapCalculationStrategy,
   ExternalSwapInputs,
   ExternalSwapQuote,
   SwapAmounts,
 } from "sdk/utils/trade/types";
+import { mustNeverExist } from "sdk/utils/types";
 
 import {
   FindSwapPath,
@@ -271,6 +274,7 @@ export function getExternalSwapRequestKey(params: {
   return {
     structuralKey: `${fromTokenAddress}:${toTokenAddress}:${strategy}:${slippage}`,
     amount,
+    strategy,
   };
 }
 
@@ -289,7 +293,9 @@ export function externalSwapRequestKeysMatch(
   b: ExternalSwapRequestKey | undefined
 ): boolean {
   if (!a || !b) return false;
-  return a.structuralKey === b.structuralKey && isAmountWithinKeyTolerance(a.amount, b.amount);
+  if (a.structuralKey !== b.structuralKey) return false;
+
+  return a.strategy === "leverageBySize" ? isAmountWithinKeyTolerance(a.amount, b.amount) : a.amount === b.amount;
 }
 
 export function getBestSwapStrategy({
@@ -337,5 +343,38 @@ export function getBestSwapStrategy({
     };
   } else {
     return undefined;
+  }
+}
+
+export function isAbortError(e: unknown): boolean {
+  return (e as Error | undefined)?.name === "AbortError";
+}
+
+export function getExternalAggregatorSwapUrl({
+  chainId,
+  isFromTokenGmxAccount,
+  fromTokenAddress,
+  toTokenAddress,
+}: {
+  chainId: number;
+  isFromTokenGmxAccount: boolean;
+  fromTokenAddress: string | undefined;
+  toTokenAddress: string | undefined;
+}): string | undefined {
+  if (isFromTokenGmxAccount) {
+    return undefined;
+  }
+
+  return getExternalAggregatorSwapUrlFromAddresses(chainId, fromTokenAddress, toTokenAddress);
+}
+
+export function getExternalSwapAggregatorLabel(aggregator: ExternalSwapAggregator): string {
+  switch (aggregator) {
+    case ExternalSwapAggregator.KyberSwap:
+      return "KyberSwap";
+    case ExternalSwapAggregator.BotanixStaking:
+      return "Botanix Staking";
+    default:
+      return mustNeverExist(aggregator);
   }
 }

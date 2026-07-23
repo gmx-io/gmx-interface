@@ -359,6 +359,10 @@ msgstr "{chainName}에서는 GMX Account를 사용할 수 없습니다. GMX Acco
 msgid "settings"
 msgstr "설정"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external routes."
+msgstr "TWAP 스왑은 GMX 풀 유동성만 사용하므로 이 주문 규모를 체결할 수 없습니다. 외부 경로를 활성화하려면 시장가 주문을 사용하세요."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Est. APR"
 msgstr "예상 APR"
@@ -656,6 +660,10 @@ msgstr "{networkName}에서 입금할 수 있는 자금이 없습니다"
 msgid "sell"
 msgstr "판매"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GMX pool liquidity"
+msgstr "GMX 풀 유동성 부족"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "{0}으로 전환"
@@ -724,6 +732,10 @@ msgstr "주문 체결가"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to Classic Trading"
+msgstr "Classic Trading으로 전환"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -753,6 +765,10 @@ msgstr "아니오"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "..."
 msgstr "..."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Swap on an external aggregator"
+msgstr "외부 애그리게이터에서 스왑"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
@@ -907,6 +923,10 @@ msgstr "중앙화 거래소에서 GMX 구매"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
 msgstr "가용 유동성"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
+msgstr "GMX 풀에서 이 스왑을 체결할 수 없으며, 현재 사용 가능한 외부 경로가 없습니다. 금액을 줄여보세요."
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
@@ -1394,7 +1414,7 @@ msgstr "외부 스왑 {0} → {1}"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
-msgstr ""
+msgstr "가스로 {0} 사용"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Earn up to 15% in<0/> rebates as an affiliate"
@@ -1870,6 +1890,10 @@ msgstr ""
 msgid "No fee"
 msgstr "수수료 없음"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to market order"
+msgstr "시장가 주문으로 전환"
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Warning: may not execute due to low liquidity at your min. receive price"
 msgstr ""
@@ -1964,6 +1988,10 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr "차입 수수료 / 일"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
+msgstr "GMX 풀에 이 스왑 규모를 위한 유동성이 부족합니다. 금액을 줄여보세요."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "Affiliate 볼트에 esGMX 토큰이 있습니다. 새 계정으로 전송하려면 출금하십시오."
@@ -2010,6 +2038,10 @@ msgstr "투표권 획득 및 거버넌스 참여"
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
+msgstr "{0}에서 {1}(으)로의 GMX 스왑 경로를 찾을 수 없습니다. <0>외부 애그리게이터</0>를 사용해 보세요."
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "RECEIVE"
 msgstr "수령"
@@ -2032,6 +2064,10 @@ msgstr "GMX.io를 떠나 외부 웹사이트로 이동합니다"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
 msgstr ""
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
+msgstr "이 스왑에는 외부 라우팅이 필요하지만 가스 결제 토큰이 수령할 토큰과 같은 동안에는 사용할 수 없으며, 잔액이 충분한 다른 가스 토큰도 없습니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -2194,6 +2230,10 @@ msgstr "매도 요청을 전송하는 중…"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "용도"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "GMX pools"
+msgstr "GMX 풀"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2422,6 +2462,10 @@ msgstr "{orderTypeText} {0}을 {1}로"
 msgid "Job openings at GMX"
 msgstr "GMX 채용 공고"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount."
+msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 현재 사용 가능한 외부 경로가 없습니다. 금액을 줄여보세요."
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -2435,6 +2479,10 @@ msgstr "출시 예정"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
 msgstr "손절매 업데이트"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size.<0/><1/><2>Switch to a market order</2> to enable external routes."
+msgstr "TWAP 스왑은 GMX 풀 유동성만 사용하므로 이 주문 규모를 체결할 수 없습니다.<0/><1/><2>시장가 주문으로 전환</2>하여 외부 경로를 활성화하세요."
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
@@ -2600,6 +2648,10 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
 msgstr "{0} 지출 허용"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
+msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없습니다. 외부 경로가 필요하지만 One-Click Trading에서는 사용할 수 없습니다. 계속하려면 One-Click Trading을 비활성화하세요."
 
 #: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
 msgid "Swap debug"
@@ -3087,6 +3139,10 @@ msgstr ""
 msgid "Start unrealized PnL"
 msgstr "시작 미실현 PnL"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "Swap route"
+msgstr "스왑 경로"
+
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Transfer from another chain"
 msgstr "다른 체인에서 전송"
@@ -3358,6 +3414,10 @@ msgstr "중앙화 서비스에서 GMX 구매"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
 msgstr "기본 실패"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}."
+msgstr "{0}에서 {1}(으)로의 GMX 스왑 경로를 찾을 수 없습니다."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
@@ -4741,6 +4801,10 @@ msgstr ""
 msgid "Cancel Limit"
 msgstr "지정가 취소"
 
+#: src/domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap.ts
+msgid "Gas token switched to {toSymbol} to enable external swap routing"
+msgstr "외부 스왑 라우팅을 활성화하기 위해 가스 토큰이 {toSymbol}(으)로 전환되었습니다"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -4798,6 +4862,10 @@ msgstr "기간"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "Market Swap: 현재 시장 가격으로 토큰을 스왑합니다"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available while the gas payment token matches the token you're swapping to. Change the gas payment token to proceed."
+msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없습니다. 외부 경로가 필요하지만 가스 결제 토큰이 스왑 대상 토큰과 같은 동안에는 사용할 수 없습니다. 계속하려면 가스 결제 토큰을 변경하세요."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Per 1h"
@@ -6172,7 +6240,7 @@ msgstr "차트에 매수/매도 아이콘 표시"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
-msgstr ""
+msgstr "이 스왑에는 외부 라우팅이 필요합니다. 활성화하려면 {0}(으)로 가스를 결제하세요."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -7593,7 +7661,6 @@ msgstr "Tradao"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "유동성 부족"
 
@@ -8146,6 +8213,10 @@ msgstr "계정 유형"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Collateral in"
 msgstr "담보 입금"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
+msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 현재 사용 가능한 외부 경로가 없습니다. 금액을 줄이거나 <0>외부 애그리게이터에서 스왑</0>해 보세요."
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
@@ -9347,6 +9418,10 @@ msgstr "30일 동안 표시하지 않음"
 msgid "GMX rewards:"
 msgstr "GMX 보상:"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and external routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 실패한 시도 이후 외부 라우팅이 일시적으로 중지되었습니다.<0/><1/><2>외부 경로 재시도</2>"
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "해당 네트워크에서는 지갑 거래만 가능합니다"
@@ -10361,6 +10436,10 @@ msgstr "GM이란 무엇인가요?"
 msgid "Delisting"
 msgstr "상장 폐지"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "{0} (external)"
+msgstr "{0} (외부)"
+
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
@@ -10706,6 +10785,10 @@ msgstr "추천 코드"
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code updated"
 msgstr "추천 코드가 업데이트되었습니다"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "GMX pools + {0}"
+msgstr "GMX 풀 + {0}"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
@@ -11280,6 +11363,10 @@ msgstr "{count, plural, one {주문} other {# 주문}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Avalanche 트레이딩 인센티브"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routes are only used for market swaps."
+msgstr "외부 경로는 시장가 스왑에만 사용됩니다."
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
