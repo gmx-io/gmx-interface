@@ -8,7 +8,7 @@ import { noopMetrics } from "utils/metrics";
 import type { BatchOrderTxnParams, CreateOrderPayload } from "utils/orderTransactions";
 import type { IRpc } from "utils/rpc";
 import { nowInSeconds } from "utils/time";
-import { setUiFeeReceiverIsExpress } from "utils/twap/uiFeeReceiver";
+import { setOrderDataListMetadataIsExpress } from "utils/twap/uiFeeReceiver";
 
 import type { BuiltGlobalExpressParams } from "./globalExpressParams";
 import { getGelatoRelayRouterDomain, getExpressContractAddress, hashRelayParams } from "./relayParamsUtils";
@@ -209,7 +209,7 @@ export function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
       shouldUnwrapNativeToken: p.orderPayload.shouldUnwrapNativeToken,
       autoCancel: p.orderPayload.autoCancel,
       referralCode: p.orderPayload.referralCode,
-      dataList: p.orderPayload.dataList,
+      dataList: setOrderDataListMetadataIsExpress(p.orderPayload.dataList, true),
     })),
     updateOrderParamsList: batchParams.updateOrderParams.map((p) => ({
       key: p.updatePayload.orderKey,
@@ -229,7 +229,6 @@ function updateExpressOrdersAddresses(addresses: CreateOrderPayload["addresses"]
   return {
     ...addresses,
     receiver: addresses.receiver ?? zeroAddress,
-    uiFeeReceiver: setUiFeeReceiverIsExpress(addresses.uiFeeReceiver, true),
   };
 }
 

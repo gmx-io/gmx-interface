@@ -11,6 +11,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import type { MarketInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { isOrderForPosition } from "domain/synthetics/orders";
@@ -35,7 +37,16 @@ export type MarketFilterLongShortProps = {
   onChange: (value: MarketFilterLongShortItemData[]) => void;
   withPositions?: "all" | "withOrders";
   asButton?: boolean;
+  label?: string;
+  availableMarketAddresses?: string[];
+  allowedDirections?: readonly Exclude<MarketFilterLongShortDirection, "any">[];
 };
+
+const DEFAULT_DIRECTIONS: readonly Exclude<MarketFilterLongShortDirection, "any">[] = ["long", "short", "swap"];
+
+function getMarketGroupKey(market: MarketInfo) {
+  return market.isSpotOnly ? market.marketTokenAddress : market.indexTokenAddress;
+}
 
 const selectPositionsWithOrders = createSelector((q) => {
   const positions = q(selectPositionsInfoDataSortedByMarket);
@@ -48,7 +59,15 @@ const selectPositionsWithOrders = createSelector((q) => {
   });
 });
 
-export function MarketFilterLongShort({ value, onChange, withPositions, asButton }: MarketFilterLongShortProps) {
+export function MarketFilterLongShort({
+  value,
+  onChange,
+  withPositions,
+  asButton,
+  label,
+  availableMarketAddresses,
+  allowedDirections = DEFAULT_DIRECTIONS,
+}: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useMarketsInfoData();
@@ -59,6 +78,41 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
     withGlv: false,
   });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
+
+  const availableMarkets = useMemo(() => {
+    if (availableMarketAddresses === undefined) {
+      return allMarkets;
+    }
+
+    const availableMarketAddressesSet = new Set(availableMarketAddresses);
+    const sortedAvailableMarkets = allMarkets.filter((market): market is MarketInfo => {
+      return !isGlvInfo(market) && availableMarketAddressesSet.has(getGlvOrMarketAddress(market));
+    });
+    const sortedMarketAddresses = new Set(sortedAvailableMarkets.map((market) => getGlvOrMarketAddress(market)));
+    const missingAvailableMarkets = availableMarketAddresses.flatMap((address) => {
+      if (sortedMarketAddresses.has(address)) {
+        return [];
+      }
+
+      const market = marketsInfoData?.[address];
+      return market ? [market] : [];
+    });
+
+    missingAvailableMarkets.forEach((market) => {
+      const marketGroupKey = getMarketGroupKey(market);
+      const groupEndIndex = sortedAvailableMarkets.findLastIndex(
+        (sortedMarket) => getMarketGroupKey(sortedMarket) === marketGroupKey
+      );
+
+      if (groupEndIndex === -1) {
+        sortedAvailableMarkets.push(market);
+      } else {
+        sortedAvailableMarkets.splice(groupEndIndex + 1, 0, market);
+      }
+    });
+
+    return sortedAvailableMarkets;
+  }, [allMarkets, availableMarketAddresses, marketsInfoData]);
 
   const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {
     let strippedOpenPositions: Item<MarketFilterLongShortItemData>[] | undefined = undefined;
@@ -74,7 +128,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       }));
     }
 
-    const strippedMarkets: Item<MarketFilterLongShortItemData>[] = allMarkets.map((market) => {
+    const strippedMarkets: Item<MarketFilterLongShortItemData>[] = availableMarkets.map((market) => {
       return {
         text: "any " + market.name,
         data: {
@@ -84,31 +138,35 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       };
     });
 
+    const directionItems: Item<MarketFilterLongShortItemData>[] = [
+      {
+        text: t`Longs`,
+        data: {
+          marketAddress: "any",
+          direction: "long",
+        },
+      },
+      {
+        text: t`Shorts`,
+        data: {
+          marketAddress: "any",
+          direction: "short",
+        },
+      },
+      {
+        text: t`Swaps`,
+        data: {
+          marketAddress: "any",
+          direction: "swap",
+        },
+      },
+    ];
+
     const anyMarketDirectedGroup: Group<MarketFilterLongShortItemData> = {
       groupName: t`Direction`,
-      items: [
-        {
-          text: t`Longs`,
-          data: {
-            marketAddress: "any",
-            direction: "long",
-          },
-        },
-        {
-          text: t`Shorts`,
-          data: {
-            marketAddress: "any",
-            direction: "short",
-          },
-        },
-        {
-          text: t`Swaps`,
-          data: {
-            marketAddress: "any",
-            direction: "swap",
-          },
-        },
-      ],
+      items: directionItems.filter((item) =>
+        allowedDirections.includes(item.data.direction as Exclude<MarketFilterLongShortDirection, "any">)
+      ),
     };
 
     if (withPositions) {
@@ -132,7 +190,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
         items: strippedMarkets,
       },
     ];
-  }, [allMarkets, allPositions, filteredPositions, withPositions]);
+  }, [allPositions, allowedDirections, availableMarkets, filteredPositions, withPositions]);
 
   const ItemComponent = useCallback(
     (props: { item: MarketFilterLongShortItemData }) => {
@@ -204,7 +262,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
   return (
     <TableOptionsFilter<MarketFilterLongShortItemData>
       multiple
-      label={t`Market`}
+      label={label ?? t`Market`}
       placeholder={t`Search market`}
       onChange={onChange}
       options={marketsOptions}

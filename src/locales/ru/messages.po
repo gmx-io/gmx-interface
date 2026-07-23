@@ -68,6 +68,10 @@ msgstr "Положительное значение: трейдеры получ
 msgid "Funding exponent factor"
 msgstr "Фактор экспоненты фандинга"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfers from another chain are currently unavailable. Use <0>Receive to this wallet</0> instead."
+msgstr "Переводы из другой сети сейчас недоступны. Вместо этого используйте <0>Получить на этот кошелёк</0>."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
 msgstr "Запрос на депозит"
@@ -1294,6 +1298,10 @@ msgstr "Децентрализованные продукты доходност
 msgid "{0} price"
 msgstr "Цена {0}"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buying with card is currently unavailable for your region or configuration. Use <0>Receive to this wallet</0> instead."
+msgstr "Покупка картой сейчас недоступна для вашего региона или конфигурации. Вместо этого используйте <0>Получить на этот кошелёк</0>."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "Максимальная сумма покупки {0} превышена"
@@ -1369,6 +1377,11 @@ msgstr "Максимум {allowedAutoCancelOrdersNumber} автоотменяе�
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
 msgstr "Страница голосования по предложениям GMX"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+msgid "Receive funds"
+msgstr "Получить средства"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
@@ -2046,6 +2059,10 @@ msgstr ""
 msgid "Order is already frozen"
 msgstr "Ордер уже заморожен"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Copy your wallet address or scan a QR code."
+msgstr "Скопируйте адрес кошелька или отсканируйте QR-код."
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -2255,6 +2272,10 @@ msgstr "Безопасный и без разрешений"
 msgid "Register an affiliate code to access distributions"
 msgstr ""
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX Account, deposit the funds to it as a separate step once they arrive."
+msgstr "Средства поступают на ваш подключённый кошелёк в сети {chainName}, а не на счёт GMX. Чтобы торговать со счёта GMX, внесите на него средства отдельным шагом после их поступления."
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code."
 msgstr "У этого аккаунта нет активного реферального кода."
@@ -2315,6 +2336,10 @@ msgstr "Может потребоваться несколько минут. П�
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "Депозит не выполнен"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Use debit/credit card, Apple Pay, or Google Pay where supported."
+msgstr "Используйте дебетовую/кредитную карту, Apple Pay или Google Pay, где это поддерживается."
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -2962,10 +2987,6 @@ msgstr "Фактор уменьшения востребуемого обесп�
 msgid "Slippage too low"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Net referred traders in the selected period (gained - lost)"
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "Автоматически ребалансируемое хранилище GM токенов, которое накапливает комиссии от торговли с кредитным плечом и свопов. Обеспечено {0} и {1}."
@@ -3071,6 +3092,10 @@ msgstr ""
 msgid "Start unrealized PnL"
 msgstr "Начальный нереализованный PnL"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfer from another chain"
+msgstr "Перевести из другой сети"
+
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
 msgstr "Тейк-профит / Стоп-лосс"
@@ -3139,7 +3164,7 @@ msgstr "Запрос на стейкинг отправлен"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
-msgstr ""
+msgstr "Итого"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
@@ -4058,6 +4083,10 @@ msgstr "Отправка запроса ордера…"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Продажа {0}{1}<1>{poolName}</1></0>"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}."
+msgstr "Средства поступают на ваш подключённый кошелёк в сети {chainName}."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "Stop-Loss Decrease"
@@ -4460,6 +4489,7 @@ msgstr "Копировать пользователей"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap impact"
 msgstr "Реализованное влияние свопа"
 
@@ -5185,6 +5215,7 @@ msgstr "Последние 180д"
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Positive funding fees"
 msgstr "Положительные комиссии за финансирование"
 
@@ -5393,6 +5424,10 @@ msgstr "Установить TP/SL"
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "Максимум {MAX_REFERRAL_CODE_LENGTH} символов"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buy with card"
+msgstr "Купить картой"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "Предоставление изолированной ликвидности для каждого рынка"
@@ -5408,6 +5443,10 @@ msgstr "Использовать открытый интерес в токена
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "Бесшовная торговля"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Deposit from another wallet, exchange, or chain."
+msgstr "Внесите средства из другого кошелька, с биржи или из другой сети."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
@@ -6319,6 +6358,11 @@ msgstr "Запрос расчёта комиссий за финансирова
 msgid "Withdrawn"
 msgstr "Выведено"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated"
+msgstr "Завершившие"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
@@ -6465,7 +6509,7 @@ msgstr "Недостаточно маржи. Комиссии вычитаютс
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
-msgstr ""
+msgstr "Потерянные"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
@@ -7666,6 +7710,10 @@ msgstr "Ликвидация"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "Добавить TP/SL"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "How would you like to add funds?"
+msgstr "Как вы хотите добавить средства?"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -10384,6 +10432,10 @@ msgstr "Выведено {balanceFormatted} на основной аккаунт
 msgid "{positionName} failed to settle"
 msgstr "{positionName} — ошибка расчёта"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Receive to this wallet"
+msgstr "Получить на этот кошелёк"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"
 msgstr "Проекты экосистемы"
@@ -10446,7 +10498,7 @@ msgstr "Топики"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
-msgstr ""
+msgstr "Привлечённые"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -11263,6 +11315,10 @@ msgstr "Транзакция отменена"
 msgid "Request Market Decrease"
 msgstr "Запрос на рыночное уменьшение"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+msgstr "Чистое число привлечённых трейдеров за выбранный период (привлечённые - завершившие - потерянные). Завершившие трейдеры достигли порога завершения реферальной программы и были переведены на протокольный код GMX: они сохраняют скидку на комиссии, но больше не приносят партнёрские вознаграждения. <0>Подробнее</0>"
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"
 msgstr "Дельта-нейтральные хранилища"
@@ -11281,6 +11337,7 @@ msgid "PNG"
 msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap fees"
 msgstr "Реализованные комиссии за своп"
 
@@ -11557,6 +11614,10 @@ msgstr "Ссылка"
 #: src/components/TradeHistory/keys.ts
 msgid "Expired Market Swap"
 msgstr ""
+
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
+msgstr "Завершившие трейдеры были переведены на протокольный код GMX после достижения порога завершения реферальной программы."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

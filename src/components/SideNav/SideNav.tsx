@@ -126,7 +126,7 @@ export function NavItem({
   const button = (
     <button
       aria-label={ariaLabel}
-      className={cx("group cursor-pointer select-none py-1", { "w-full": !isCollapsed })}
+      className={cx("group cursor-pointer select-none py-1 text-left", { "w-full": !isCollapsed })}
       onClick={onClick}
     >
       <div

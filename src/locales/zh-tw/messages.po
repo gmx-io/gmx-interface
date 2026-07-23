@@ -68,6 +68,10 @@ msgstr "正值：交易者收取資金費用"
 msgid "Funding exponent factor"
 msgstr "資金指數因子"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfers from another chain are currently unavailable. Use <0>Receive to this wallet</0> instead."
+msgstr "從其他鏈轉帳目前不可用。請改用<0>接收至此錢包</0>。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
 msgstr "請求存入"
@@ -1294,6 +1298,10 @@ msgstr "去中心化收益產品"
 msgid "{0} price"
 msgstr "{0} 價格"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buying with card is currently unavailable for your region or configuration. Use <0>Receive to this wallet</0> instead."
+msgstr "銀行卡購買目前不適用於您的地區或設定。請改用<0>接收至此錢包</0>。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "已超過 {0} 可購買上限"
@@ -1369,6 +1377,11 @@ msgstr "最多允許 {allowedAutoCancelOrdersNumber} 個自動取消的 TP/SL �
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
 msgstr "GMX 提案投票頁面"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+msgid "Receive funds"
+msgstr "接收資金"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
@@ -2046,6 +2059,10 @@ msgstr ""
 msgid "Order is already frozen"
 msgstr "訂單已被凍結"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Copy your wallet address or scan a QR code."
+msgstr "複製您的錢包地址或掃描 QR Code。"
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}，-{0}"
@@ -2255,6 +2272,10 @@ msgstr "安全且無需許可"
 msgid "Register an affiliate code to access distributions"
 msgstr ""
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX Account, deposit the funds to it as a separate step once they arrive."
+msgstr "資金將到達您在 {chainName} 上連接的錢包，而非您的 GMX Account。要使用 GMX Account 交易，請在資金到帳後另行將其存入 GMX Account。"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code."
 msgstr "此帳戶沒有使用中的推薦碼。"
@@ -2315,6 +2336,10 @@ msgstr "可能需要幾分鐘才會顯示。請稍後再查看"
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "存入失敗"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Use debit/credit card, Apple Pay, or Google Pay where supported."
+msgstr "在支援的地區使用簽帳金融卡/信用卡、Apple Pay 或 Google Pay。"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -2962,10 +2987,6 @@ msgstr "可領取抵押品削減因子"
 msgid "Slippage too low"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Net referred traders in the selected period (gained - lost)"
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "自動再平衡的 GM 代幣金庫，從槓桿交易和兌換中累積手續費。由 {0} 和 {1} 支持。"
@@ -3071,6 +3092,10 @@ msgstr ""
 msgid "Start unrealized PnL"
 msgstr "期初未實現盈虧"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfer from another chain"
+msgstr "從其他鏈轉帳"
+
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
 msgstr "止盈 / 止損"
@@ -3139,7 +3164,7 @@ msgstr "質押已提交"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
-msgstr ""
+msgstr "淨變化"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
@@ -4058,6 +4083,10 @@ msgstr "正在提交訂單請求..."
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>賣出 {0}{1}<1>{poolName}</1></0>"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}."
+msgstr "資金將到達您在 {chainName} 上連接的錢包。"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "止損減倉"
@@ -4460,6 +4489,7 @@ msgstr "複製使用者"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap impact"
 msgstr "已實現兌換影響"
 
@@ -5185,6 +5215,7 @@ msgstr "近 180 天"
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Positive funding fees"
 msgstr "正向資金費用"
 
@@ -5393,6 +5424,10 @@ msgstr "設定 TP/SL"
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "最多 {MAX_REFERRAL_CODE_LENGTH} 個字元"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buy with card"
+msgstr "使用銀行卡購買"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "為每個市場提供逐倉流動性"
@@ -5408,6 +5443,10 @@ msgstr "使用代幣未平倉量計算餘額"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "無縫交易"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Deposit from another wallet, exchange, or chain."
+msgstr "從其他錢包、交易所或鏈存入。"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
@@ -6319,6 +6358,11 @@ msgstr "請求結算資金費率"
 msgid "Withdrawn"
 msgstr "已提取"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated"
+msgstr "畢業"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
@@ -6465,7 +6509,7 @@ msgstr "保證金不足。費用會在存入的抵押品改善倉位保證金之
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
-msgstr ""
+msgstr "流失"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
@@ -7666,6 +7710,10 @@ msgstr "清算"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "新增 TP/SL"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "How would you like to add funds?"
+msgstr "您想以哪種方式新增資金？"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -10384,6 +10432,10 @@ msgstr "已提取 {balanceFormatted} 至主帳戶"
 msgid "{positionName} failed to settle"
 msgstr "{positionName} 結算失敗"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Receive to this wallet"
+msgstr "接收至此錢包"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"
 msgstr "生態系統專案"
@@ -10446,7 +10498,7 @@ msgstr "主題"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
-msgstr ""
+msgstr "新增"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -11263,6 +11315,10 @@ msgstr "交易已取消"
 msgid "Request Market Decrease"
 msgstr "申請 Market Decrease"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+msgstr "所選期間的淨推薦交易者數量（新增 - 畢業 - 流失）。畢業的交易者達到了推薦計畫的畢業門檻，並已被轉移至 GMX 協議碼：他們保留手續費折扣，但不再產生聯盟獎勵。<0>瞭解更多</0>"
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"
 msgstr "Delta 中性金庫"
@@ -11281,6 +11337,7 @@ msgid "PNG"
 msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap fees"
 msgstr "已實現兌換費用"
 
@@ -11557,6 +11614,10 @@ msgstr "連結"
 #: src/components/TradeHistory/keys.ts
 msgid "Expired Market Swap"
 msgstr ""
+
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
+msgstr "畢業的交易者在達到推薦計畫的畢業門檻後，已被轉移至 GMX 協議碼。"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

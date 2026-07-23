@@ -4,7 +4,6 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
-import { isDevelopment } from "config/env";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -46,19 +45,49 @@ export type EventData = {
   requiresOpenPosition?: string;
 };
 
-const testEvent: EventData = {
-  id: "test-event-flag",
-  type: "update",
-  flagId: "testEventFlagId",
-  endDate: "31 Dec 2026, 0:00",
-  title: "Test announcement",
-  description: (
-    <>Test announcement gated by the testEventFlagId KLI flag; its start date comes from the flag's createdAt.</>
-  ),
-};
-
 export const appEventsData: EventData[] = [
-  ...(isDevelopment() ? [testEvent] : []),
+  {
+    id: "release-118-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "16 Jul 2026, 12:00",
+    endDate: "24 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: Passkey Login, Wallet Funding, and Performance Sharing",
+    summary: (
+      <>
+        Sign in with a passkey, fund your wallet with a card, share your performance, and skip swap fees on TP/SL
+        closes.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> create a wallet with just a passkey. Face
+          ID, Touch ID, Windows Hello, or Android biometrics get you trading, with no email or seed phrase required.
+          Funding is built into the Receive flow: buy crypto with a card, Apple Pay, or Google Pay, or transfer from
+          another wallet, exchange, or chain.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> share your results with a
+          performance card showing your PnL, win rate, and cumulative PnL curve, carrying your referral code.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now
+          return profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a
+          resting increase order would be liquidatable at its trigger price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool
+          settings now survive refreshes.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Support:</span> the menu now shows how many replies came
+          in while you were away.
+        </span>
+      </span>
+    ),
+  },
   {
     id: "release-117-highlights",
     type: "update",
