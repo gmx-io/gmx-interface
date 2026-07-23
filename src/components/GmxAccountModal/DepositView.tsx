@@ -564,6 +564,7 @@ export const DepositView = () => {
     gasPaymentTokenBalance: gasPaymentTokenBalanceForDeposit,
     gasPaymentTokenAmount: gasPaymentTokenAmountForDepositView,
     ignoreGasPaymentToken,
+    useMinimalBuffer: depositViewChain !== undefined && depositViewChain !== settlementChainId,
   });
 
   const handleMaxButtonClick = useCallback(() => {
