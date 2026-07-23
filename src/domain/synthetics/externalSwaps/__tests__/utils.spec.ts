@@ -307,6 +307,12 @@ describe("externalSwapRequestKeysMatch", () => {
     expect(externalSwapRequestKeysMatch(key(10_000_000n), key(20_000_000n))).toBe(false);
   });
 
+  it("requires an exact amount for manual-input strategies — tolerance only applies to leverageBySize", () => {
+    const manualKey = (amountIn: bigint) => key(amountIn, { strategy: "byFromValue" });
+    expect(externalSwapRequestKeysMatch(manualKey(10_000_000n), manualKey(10_030_000n))).toBe(false);
+    expect(externalSwapRequestKeysMatch(manualKey(10_000_000n), manualKey(10_000_000n))).toBe(true);
+  });
+
   it("requires exact match on the structural parts (tokens / strategy / slippage)", () => {
     expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n, { toTokenAddress: "0xother" }))).toBe(false);
     expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n, { slippage: 100 }))).toBe(false);

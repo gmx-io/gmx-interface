@@ -18,6 +18,9 @@ import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountC
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import type { MarketsInfoData } from "domain/synthetics/markets";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
@@ -51,6 +54,39 @@ function AutoConnect({ children }: { children: ReactNode }) {
 
   // mount children only when connected so effects don't run twice
   if (status !== "connected") {
+    return null;
+  }
+
+  return <>{children}</>;
+}
+
+/** Mounts the external swap quote machinery, which lives in SyntheticsPage rather than TradeBox. */
+function ExternalSwapHandlerHost() {
+  useExternalSwapHandler();
+  return null;
+}
+
+/** Test backdoor: arms the internal-swap fallback latch, which in prod is set by a failed external-swap order. */
+function ExternalSwapLatchControl() {
+  const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  return (
+    <button data-qa="test-external-swap-latch" onClick={() => setShouldFallbackToInternalSwap(true)}>
+      arm external swap latch
+    </button>
+  );
+}
+
+/** Turns the "External swaps" setting off through the real settings context. */
+function ExternalSwapsSettingOff({ children }: { children: ReactNode }) {
+  const { externalSwapsEnabled, setExternalSwapsEnabled } = useSettings();
+
+  useEffect(() => {
+    if (externalSwapsEnabled) {
+      setExternalSwapsEnabled(false);
+    }
+  }, [externalSwapsEnabled, setExternalSwapsEnabled]);
+
+  if (externalSwapsEnabled) {
     return null;
   }
 
@@ -113,8 +149,18 @@ export type TradeBoxStoryProps = {
   manualLeverage?: boolean;
   /** Enable the "set acceptable price impact" setting (off by default) */
   acceptableImpactSetting?: boolean;
-  /** Market fixture variant: capped long open interest ($1500) */
-  marketScenario?: "cappedLongOI";
+  /**
+   * Market fixture variant: capped long open interest ($1500); a drained ETH side (no internal USDC->ETH swap
+   * liquidity -> external route required); an expensive internal swap (~30bps fees -> external route optional);
+   * or expensive + partial ETH side (internal route exists but can't fill $1000 -> external route rescues it)
+   */
+  marketScenario?: "cappedLongOI" | "drainedEthPool" | "expensiveInternalSwap" | "expensivePartialEthPool";
+  /** Mount useExternalSwapHandler (lives in SyntheticsPage, not TradeBox), enabling external swap quoting */
+  withExternalSwapHandler?: boolean;
+  /** Render a test button that arms the internal-swap fallback latch (prod sets it on a failed external-swap order) */
+  withExternalSwapLatchControl?: boolean;
+  /** Turn the "External swaps" setting off (on by default) */
+  externalSwapsSettingOff?: boolean;
   /** Add a second ETH/USD pool (WETH-WETH, cheaper fees) next to the default one */
   withSecondEthPool?: boolean;
   /** Seed an existing long that uses WETH collateral (selected default is USDC); implies connected */
@@ -143,6 +189,9 @@ export function TradeBoxStory({
   manualLeverage = false,
   acceptableImpactSetting = false,
   marketScenario,
+  withExternalSwapHandler = false,
+  withExternalSwapLatchControl = false,
+  externalSwapsSettingOff = false,
   withSecondEthPool = false,
   withWethCollateralPosition = false,
   zeroBalances = false,
@@ -171,6 +220,32 @@ export function TradeBoxStory({
     if (marketScenario === "cappedLongOI") {
       const data: MarketsInfoData = {
         [MOCK_MARKET_ADDRESS]: { ...primaryMarket, maxOpenInterestLong: expandDecimals(1500, 30) },
+      };
+      return data;
+    }
+
+    if (marketScenario === "drainedEthPool") {
+      // No ETH in the pool: the internal USDC->ETH swap route can't fill anything -> external route is required.
+      const data: MarketsInfoData = {
+        [MOCK_MARKET_ADDRESS]: { ...primaryMarket, longPoolAmount: 0n },
+      };
+      return data;
+    }
+
+    if (marketScenario === "expensiveInternalSwap" || marketScenario === "expensivePartialEthPool") {
+      // ~30bps swap fee: the internal route's total fees breach the -15bps external-swap
+      // threshold, so the external route becomes "optional" (used when it quotes better).
+      const expensiveFees = {
+        swapFeeFactorForBalanceWasImproved: expandDecimals(3, 27),
+        swapFeeFactorForBalanceWasNotImproved: expandDecimals(3, 27),
+      };
+      const data: MarketsInfoData = {
+        [MOCK_MARKET_ADDRESS]: {
+          ...primaryMarket,
+          ...expensiveFees,
+          // Partial variant: 0.2 ETH in the pool can't fill a $1000 swap -> only the external route can.
+          ...(marketScenario === "expensivePartialEthPool" ? { longPoolAmount: expandDecimals(2, 17) } : {}),
+        },
       };
       return data;
     }
@@ -264,6 +339,8 @@ export function TradeBoxStory({
       marketsInfoData={marketsInfoData}
       tokensData={tokensData}
     >
+      {withExternalSwapHandler && <ExternalSwapHandlerHost />}
+      {withExternalSwapLatchControl && <ExternalSwapLatchControl />}
       <div className="text-body-medium flex flex-col rounded-8">
         <TradeBoxHeaderTabs />
         <TradeBox isMobile={false} />
@@ -277,6 +354,10 @@ export function TradeBoxStory({
 
   if (manualLeverage) {
     content = <ManualLeverageMode>{content}</ManualLeverageMode>;
+  }
+
+  if (externalSwapsSettingOff) {
+    content = <ExternalSwapsSettingOff>{content}</ExternalSwapsSettingOff>;
   }
 
   if (acceptableImpactSetting) {
