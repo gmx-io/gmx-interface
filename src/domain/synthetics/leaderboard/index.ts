@@ -25,6 +25,9 @@ type LeaderboardAccountsJson = {
     realizedPnl: string;
     realizedPriceImpact: string;
     realizedFees: string;
+    realizedSwapFees: string;
+    realizedSwapImpact: string;
+    positiveFundingFeesUsd: string;
 
     startUnrealizedPnl: string;
     startUnrealizedPriceImpact: string;
@@ -49,6 +52,9 @@ type LeaderboardAccountsJson = {
     realizedPnl: string;
     realizedPriceImpact: string;
     realizedFees: string;
+    realizedSwapFees: string;
+    realizedSwapImpact: string;
+    positiveFundingFeesUsd: string;
 
     startUnrealizedPnl: string;
     startUnrealizedPriceImpact: string;
@@ -76,6 +82,9 @@ type LeaderboardAccountBase = {
   realizedPriceImpact: bigint;
   realizedFees: bigint;
   realizedPnl: bigint;
+  realizedSwapFees: bigint;
+  realizedSwapImpact: bigint;
+  positiveFundingFeesUsd: bigint;
 
   startUnrealizedPnl: bigint;
   startUnrealizedPriceImpact: bigint;
@@ -156,6 +165,9 @@ const fetchAccounts = async (
           netCapital
           realizedFees
           realizedPnl
+          realizedSwapFees
+          realizedSwapImpact
+          positiveFundingFeesUsd
           volume
           wins
           startUnrealizedPnl
@@ -174,6 +186,9 @@ const fetchAccounts = async (
           netCapital
           realizedFees
           realizedPnl
+          realizedSwapFees
+          realizedSwapImpact
+          positiveFundingFeesUsd
           volume
           wins
           startUnrealizedPnl
@@ -209,6 +224,9 @@ const fetchAccounts = async (
       realizedPnl: BigInt(p.realizedPnl),
       realizedPriceImpact: BigInt(p.realizedPriceImpact),
       realizedFees: BigInt(p.realizedFees),
+      realizedSwapFees: BigInt(p.realizedSwapFees),
+      realizedSwapImpact: BigInt(p.realizedSwapImpact),
+      positiveFundingFeesUsd: BigInt(p.positiveFundingFeesUsd),
 
       startUnrealizedPnl: BigInt(p.startUnrealizedPnl),
       startUnrealizedPriceImpact: BigInt(p.startUnrealizedPriceImpact),
