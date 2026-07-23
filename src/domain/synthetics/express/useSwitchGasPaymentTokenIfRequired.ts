@@ -68,8 +68,6 @@ export function findNextGasPaymentToken({
   });
 }
 
-// Fallback for when the required gas amount is unknown (no express params yet):
-// the first gas payment token with any positive balance, minus the excluded ones.
 export function findGasPaymentTokenWithPositiveBalance({
   chainId,
   tokensData,

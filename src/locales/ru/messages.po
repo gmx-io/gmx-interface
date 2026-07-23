@@ -4749,6 +4749,10 @@ msgstr "Редактировать {0}"
 msgid "Swap to"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+msgstr "Внешняя маршрутизация временно приостановлена после неудачной попытки.<0/><1/><2>Повторить внешний маршрут</2>"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>Купить</0> {wrappedNativeTokenSymbol}."
@@ -8946,6 +8950,10 @@ msgstr "Экспонента заимствования шорт"
 msgid "Price impact"
 msgstr "Влияние на цену"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Retry external route"
+msgstr "Повторить внешний маршрут"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
 msgstr ""
@@ -9417,10 +9425,6 @@ msgstr "Не показывать 30 дней"
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GMX rewards:"
 msgstr "Награды GMX:"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "GMX pools can't fill this swap size, and external routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
-msgstr "Пулы GMX не могут исполнить своп такого размера, а внешняя маршрутизация временно приостановлена после неудачной попытки.<0/><1/><2>Повторить внешний маршрут</2>"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
@@ -10661,6 +10665,10 @@ msgstr "Прошло времени"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "Подписывайте транзакции вне сети. Премиальные RPC обеспечивают надёжность при перегрузке сети.<0/><1/>Оплата Gas в {gasPaymentTokensText}."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
+msgstr "Внешняя маршрутизация временно приостановлена после неудачной попытки. Повторите, чтобы проверить более выгодный курс."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"

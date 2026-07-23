@@ -1,6 +1,9 @@
 import { t, Trans } from "@lingui/macro";
+import { useCallback } from "react";
 
 import {
+  selectExternalSwapBlockReason,
+  selectSetShouldFallbackToInternalSwap,
   selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxSwapAmounts,
@@ -17,6 +20,12 @@ export function SwapRouteRow() {
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
+  const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
+  const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+
+  const handleRetryExternalSwap = useCallback(() => {
+    setShouldFallbackToInternalSwap(false);
+  }, [setShouldFallbackToInternalSwap]);
 
   const { isSwap, isMarket } = tradeFlags;
 
@@ -39,6 +48,9 @@ export function SwapRouteRow() {
     value = t`GMX pools`;
   }
 
+  const isExternalRoutePausedByFailure =
+    swapStrategy.type === "internalSwap" && isMarket && externalSwapBlockReason === "temporarilyDisabledByFailure";
+
   return (
     <SyntheticsInfoRow label={t`Swap route`}>
       {swapStrategy.type === "internalSwap" && !isMarket ? (
@@ -46,6 +58,21 @@ export function SwapRouteRow() {
           position="bottom-end"
           handle={value}
           renderContent={() => <Trans>External routes are only used for market swaps.</Trans>}
+        />
+      ) : isExternalRoutePausedByFailure ? (
+        <Tooltip
+          position="bottom-end"
+          handle={value}
+          renderContent={() => (
+            <Trans>
+              External routing is temporarily paused after a failed attempt.
+              <br />
+              <br />
+              <span onClick={handleRetryExternalSwap} className="Tradebox-handle">
+                Retry external route
+              </span>
+            </Trans>
+          )}
         />
       ) : (
         value

@@ -17,6 +17,7 @@ import {
   selectUpdateSubaccountSettings,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectSetShouldFallbackToInternalSwap,
   selectTradeboxCollateralToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIsFromTokenGmxAccount,
@@ -146,6 +147,12 @@ export function ExpressTradingWarningCard({
     onAfterAction?.();
   }, [setTradeMode, onAfterAction]);
 
+  const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const handleRetryExternalSwap = useCallback(() => {
+    setShouldFallbackToInternalSwap(false);
+    onAfterAction?.();
+  }, [setShouldFallbackToInternalSwap, onAfterAction]);
+
   const {
     shouldShowAllowedActionsWarning,
     shouldShowNativeTokenWarning,
@@ -157,6 +164,7 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapSubaccountBlockedWarning,
     shouldShowExternalSwapGasConflictRequiredWarning,
     shouldShowExternalSwapGasConflictOptionalWarning,
+    shouldShowExternalSwapPausedByFailureWarning,
     shouldShowExternalSwapNoRouteWarning,
     shouldShowExternalSwapTwapNotSupportedWarning,
     dismissExpiredSubaccountWarning,
@@ -266,6 +274,7 @@ export function ExpressTradingWarningCard({
   const prevShouldShowExternalSwapGasConflictOptionalWarning = usePrevious(
     shouldShowExternalSwapGasConflictOptionalWarning
   );
+  const prevShouldShowExternalSwapPausedByFailureWarning = usePrevious(shouldShowExternalSwapPausedByFailureWarning);
   const prevShouldShowExternalSwapNoRouteWarning = usePrevious(shouldShowExternalSwapNoRouteWarning);
   const prevShouldShowExternalSwapTwapNotSupportedWarning = usePrevious(shouldShowExternalSwapTwapNotSupportedWarning);
   useEffect(() => {
@@ -275,6 +284,7 @@ export function ExpressTradingWarningCard({
       (!prevShouldShowExternalSwapSubaccountBlockedWarning && shouldShowExternalSwapSubaccountBlockedWarning) ||
       (!prevShouldShowExternalSwapGasConflictRequiredWarning && shouldShowExternalSwapGasConflictRequiredWarning) ||
       (!prevShouldShowExternalSwapGasConflictOptionalWarning && shouldShowExternalSwapGasConflictOptionalWarning) ||
+      (!prevShouldShowExternalSwapPausedByFailureWarning && shouldShowExternalSwapPausedByFailureWarning) ||
       (!prevShouldShowExternalSwapNoRouteWarning && shouldShowExternalSwapNoRouteWarning) ||
       (!prevShouldShowExternalSwapTwapNotSupportedWarning && shouldShowExternalSwapTwapNotSupportedWarning);
     if (transitionedToTrue) {
@@ -290,6 +300,8 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapGasConflictRequiredWarning,
     prevShouldShowExternalSwapGasConflictOptionalWarning,
     shouldShowExternalSwapGasConflictOptionalWarning,
+    prevShouldShowExternalSwapPausedByFailureWarning,
+    shouldShowExternalSwapPausedByFailureWarning,
     prevShouldShowExternalSwapNoRouteWarning,
     shouldShowExternalSwapNoRouteWarning,
     prevShouldShowExternalSwapTwapNotSupportedWarning,
@@ -436,6 +448,14 @@ export function ExpressTradingWarningCard({
     content = <Trans>Paying gas in {gasTokenCandidate.symbol} may give a better rate on this swap</Trans>;
     buttonText = <Trans>Use {gasTokenCandidate.symbol} for gas</Trans>;
     onClick = () => handleSwitchGasToken(candidateAddress);
+  } else if (shouldShowExternalSwapPausedByFailureWarning) {
+    icon = ExpressIcon;
+    onCloseClick = () => setIsVisible(false);
+    content = (
+      <Trans>External routing is temporarily paused after a failed attempt. Retry to check for a better rate.</Trans>
+    );
+    buttonText = <Trans>Retry external route</Trans>;
+    onClick = handleRetryExternalSwap;
   } else {
     return null;
   }

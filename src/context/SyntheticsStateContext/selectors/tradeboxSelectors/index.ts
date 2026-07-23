@@ -304,9 +304,6 @@ export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) =>
   return conflictToken !== undefined && gasPaymentToken.address === conflictToken.address;
 });
 
-// Pure route economics, ignoring order-type/settings/latch gates: whether an external swap
-// is the only way to fill the trade (required), better than the internal route (optional),
-// or pointless (not_wanted). Computable for any trade mode, including Limit/TWAP.
 export const selectRawExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
   const externalSwapInputs = q(selectExternalSwapInputs);
   if (!externalSwapInputs || externalSwapInputs.amountIn <= 0n) return "not_wanted";
@@ -339,8 +336,6 @@ export const selectExternalSwapDesirability = createSelector((q): "not_wanted" |
 
   const rawDesirability = q(selectRawExternalSwapDesirability);
 
-  // When there is no internal route at all, the external swap is the only way to fill the trade,
-  // so the failure fallback latch must not suppress it — it only downgrades optional routes.
   if (rawDesirability === "optional" && q(selectShouldFallbackToInternalSwap)) return "not_wanted";
 
   return rawDesirability;
@@ -355,10 +350,6 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   return q(selectExternalSwapDesirability) !== "not_wanted";
 });
 
-// Why the external swap machinery can't currently rescue the trade, in priority order:
-// blockers that prevent quoting entirely come before ones that only pause it, and
-// "noRouteFound" is the terminal "we tried and the aggregator had nothing" state.
-// undefined means external swaps are simply not applicable (or a quote is available/loading).
 export const selectExternalSwapBlockReason = createSelector((q): ExternalSwapBlockReason | undefined => {
   if (!q(selectExternalSwapsEnabledSetting)) return undefined;
 

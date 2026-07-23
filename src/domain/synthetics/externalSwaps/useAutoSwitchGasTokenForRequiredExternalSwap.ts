@@ -71,11 +71,6 @@ export function getExternalSwapGasTokenToSwitchTo({
   });
 }
 
-// When the external route is the only way to fill the trade and the gas payment token conflicts
-// with the swap output, silently switch to the first non-conflicting gas token with a positive
-// balance (precedent: useSwitchGasPaymentTokenIfRequired). Amount sufficiency is enforced after
-// the switch by useSwitchGasPaymentTokenIfRequired itself once express params become computable;
-// when no token has any balance we don't switch — the warning banner offers the Classic-mode escape.
 export function useAutoSwitchGasTokenForRequiredExternalSwap() {
   const chainId = useSelector(selectChainId);
   const tokensData = useSelector(selectTokensData);
@@ -92,7 +87,6 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
   const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
 
-  // One attempt per chain and token pair, so a user who switches the gas token back isn't fought.
   const attemptedKeysRef = useRef(new Set<string>());
 
   const conflictToken = tradeFlags?.isSwap ? swapToToken : collateralToken;
@@ -121,6 +115,7 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
       if (attemptedKeysRef.current.has(attemptKey)) return;
       attemptedKeysRef.current.add(attemptKey);
 
+      // No "gasPaymentTokenChanged" dispatch — its listener clears the pay input the auto-switch is meant to unblock.
       if (isFromTokenGmxAccount) {
         setGmxAccountGasPaymentTokenAddress(targetAddress);
       } else {

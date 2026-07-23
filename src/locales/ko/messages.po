@@ -4749,6 +4749,10 @@ msgstr "{0} 편집"
 msgid "Swap to"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+msgstr "실패한 시도 이후 외부 라우팅이 일시적으로 중지되었습니다.<0/><1/><2>외부 경로 재시도</2>"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>{wrappedNativeTokenSymbol} 구매</0>."
@@ -8946,6 +8950,10 @@ msgstr "차입 지수 (숏)"
 msgid "Price impact"
 msgstr "가격 영향"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Retry external route"
+msgstr "외부 경로 재시도"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
 msgstr ""
@@ -9417,10 +9425,6 @@ msgstr "30일 동안 표시하지 않음"
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GMX rewards:"
 msgstr "GMX 보상:"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "GMX pools can't fill this swap size, and external routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
-msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 실패한 시도 이후 외부 라우팅이 일시적으로 중지되었습니다.<0/><1/><2>외부 경로 재시도</2>"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
@@ -10661,6 +10665,10 @@ msgstr "경과 시간"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "오프체인으로 거래에 서명합니다. 프리미엄 RPC가 네트워크 혼잡 시 안정성을 보장합니다.<0/><1/>Gas 결제는 {gasPaymentTokensText}로 이루어집니다."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
+msgstr "실패한 시도 이후 외부 라우팅이 일시적으로 중지되었습니다. 더 나은 환율을 확인하려면 재시도하세요."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"

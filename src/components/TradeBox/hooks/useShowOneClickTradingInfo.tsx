@@ -157,6 +157,8 @@ export function useExpressTradingWarnings({
       externalSwapDesirability === "optional" &&
       !isOneClickActiveByUser &&
       isExternalSwapBlockedByGasConflict,
+    shouldShowExternalSwapPausedByFailureWarning:
+      showExternalSwapWarnings && externalSwapBlockReason === "temporarilyDisabledByFailure",
     shouldShowExternalSwapNoRouteWarning:
       showExternalSwapWarnings &&
       rawExternalSwapDesirability === "required" &&

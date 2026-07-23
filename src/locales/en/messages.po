@@ -4749,6 +4749,10 @@ msgstr "Edit {0}"
 msgid "Swap to"
 msgstr "Swap to"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+msgstr "External routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>Buy</0> {wrappedNativeTokenSymbol}."
@@ -8946,6 +8950,10 @@ msgstr "Borrowing exponent short"
 msgid "Price impact"
 msgstr "Price impact"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Retry external route"
+msgstr "Retry external route"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
 msgstr "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -9417,10 +9425,6 @@ msgstr "Don't show for 30 days"
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GMX rewards:"
 msgstr "GMX rewards:"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "GMX pools can't fill this swap size, and external routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
-msgstr "GMX pools can't fill this swap size, and external routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
@@ -10661,6 +10665,10 @@ msgstr "Time elapsed"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
+msgstr "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"

@@ -37,7 +37,6 @@ import {
   selectIsExternalSwapDisabledByExpressSchema,
   selectIsOneClickActiveByUser,
   selectIsWaitingForExternalSwapQuote,
-  selectSetShouldFallbackToInternalSwap,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxSelectSwapToToken,
@@ -848,15 +847,10 @@ function useDetectAndSetAvailableMaxLeverage({
 function InsufficientGmxPoolLiquidityTooltipContent() {
   const chainId = useSelector(selectChainId);
   const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
-  const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
   const fromToken = useSelector(selectTradeboxFromToken);
   const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const { setTradeMode } = useSelector(selectTradeboxState);
-
-  const handleRetryExternalSwap = useCallback(() => {
-    setShouldFallbackToInternalSwap(false);
-  }, [setShouldFallbackToInternalSwap]);
 
   const handleSwitchToMarketOrder = useCallback(() => {
     setTradeMode(TradeMode.Market);
@@ -875,17 +869,6 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
         <Trans>
           GMX pools can't fill this swap size. It needs an external route, which isn't available while the gas payment
           token matches the token you're swapping to. Change the gas payment token to proceed.
-        </Trans>
-      );
-    case "temporarilyDisabledByFailure":
-      return (
-        <Trans>
-          GMX pools can't fill this swap size, and external routing is temporarily paused after a failed attempt.
-          <br />
-          <br />
-          <span onClick={handleRetryExternalSwap} className="Tradebox-handle">
-            Retry external route
-          </span>
         </Trans>
       );
     case "orderTypeNotSupported":
