@@ -11,28 +11,13 @@ const APP_ROOT_MARKER = 'id="root"';
 const PWA_SHELL_MARKER = 'name="gmx-pwa-enabled" content="true"';
 const PWA_BUILD_ID_PATTERN = /<meta\s+name=["']gmx-pwa-build-id["']\s+content=["']([^"']+)["'][^>]*>/i;
 const BUILD_ID_PATTERN = /^\d+$/;
-const CHART_LIBRARY_PATH = "/charting_library/";
-const CHART_SAME_ORIGIN_PATH = "/charting_library/sameorigin.html";
-const CHART_STYLES_PATH = "/tradingview-chart.css";
-const CHART_BOOTSTRAP_PATHS = [
-  "/charting_library/charting_library.standalone.js",
-  CHART_SAME_ORIGIN_PATH,
-  "/charting_library/bundles/runtime.4d986d07cb97d8edacba.js",
-  "/charting_library/bundles/en.4026.6f886b4ecb915f046a50.js",
-  "/charting_library/bundles/9662.03109f673cda5962c847.css",
-  "/charting_library/bundles/7346.a2efeed47130dd4e832c.js",
-  "/charting_library/bundles/library.f5eaeb6901219f861981.js",
-  CHART_STYLES_PATH,
-];
 const MAX_SHELL_GENERATIONS = 2;
 const MAX_ASSET_ENTRIES = 64;
-const MAX_CHART_ENTRIES = 96;
 const workerBuildId = new URL(self.location.href).searchParams.get("build");
 const workerGeneration = workerBuildId && BUILD_ID_PATTERN.test(workerBuildId) ? Number(workerBuildId) : undefined;
 const hasValidWorkerBuildId = Number.isSafeInteger(workerGeneration) && workerGeneration > 0;
 const SHELL_CACHE = `${SHELL_CACHE_PREFIX}${workerBuildId}`;
 const ASSET_CACHE = `${ASSET_CACHE_PREFIX}${workerBuildId}`;
-const CHART_CACHE = `${CHART_CACHE_PREFIX}${workerBuildId}`;
 let cacheMutationTail = Promise.resolve();
 let isDecommissioning = false;
 let decommissionPromise;
@@ -89,47 +74,8 @@ function isCacheableAssetResponse(response, url) {
   return false;
 }
 
-function isCacheableChartResponse(response, url) {
-  const contentType = getContentType(response);
-  if (!response.ok || !contentType) {
-    return false;
-  }
-
-  if (url.pathname === CHART_SAME_ORIGIN_PATH) {
-    return contentType.includes("text/html");
-  }
-
-  const extension = url.pathname.split(".").pop()?.toLowerCase();
-  switch (extension) {
-    case "js":
-      return contentType.includes("javascript");
-    case "css":
-      return contentType.includes("text/css");
-    case "json":
-      return contentType.includes("application/json");
-    case "woff":
-    case "woff2":
-    case "ttf":
-      return contentType.startsWith("font/") || contentType.includes("font-");
-    case "png":
-    case "svg":
-    case "cur":
-      return contentType.startsWith("image/");
-    case "wasm":
-      return contentType.includes("application/wasm");
-    default:
-      return false;
-  }
-}
-
-function isCacheableShellAssetResponse(response, url) {
-  return url.pathname.startsWith(CHART_LIBRARY_PATH) || url.pathname === CHART_STYLES_PATH
-    ? isCacheableChartResponse(response, url)
-    : isCacheableAssetResponse(response, url);
-}
-
 function getAppShellAssetUrls(html) {
-  const assetUrls = new Set(CHART_BOOTSTRAP_PATHS.map((path) => new URL(path, self.location.origin).href));
+  const assetUrls = new Set();
 
   for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
     const url = new URL(match[1], self.location.origin);
@@ -230,7 +176,7 @@ async function cleanupCachesOnActivate() {
         }
         const chartGeneration = getGenerationFromCacheName(name, CHART_CACHE_PREFIX);
         if (chartGeneration !== undefined) {
-          return chartGeneration <= workerGeneration && !retainedBuildIds.has(chartGeneration);
+          return chartGeneration <= workerGeneration;
         }
         return true;
       })
@@ -379,7 +325,7 @@ async function cacheAppShell() {
     for (const assetUrl of assetUrls) {
       const assetResponse = await fetch(assetUrl);
       const url = new URL(assetUrl);
-      if (!isCacheableShellAssetResponse(assetResponse, url)) {
+      if (!isCacheableAssetResponse(assetResponse, url)) {
         throw new Error(`Failed to fetch app shell asset: ${assetUrl}`);
       }
       await stagingCache.put(assetUrl, assetResponse);
@@ -496,15 +442,14 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) {
     return;
   }
-  if (request.mode === "navigate" && request.destination === "document") {
-    event.respondWith(handleNavigation(event));
+  if (request.mode === "navigate") {
+    if (request.destination === "document") {
+      event.respondWith(handleNavigation(event));
+    }
     return;
   }
   if (url.pathname.startsWith("/assets/")) {
     event.respondWith(handleCachedResource(event, ASSET_CACHE, MAX_ASSET_ENTRIES, isCacheableAssetResponse));
     return;
-  }
-  if (url.pathname.startsWith(CHART_LIBRARY_PATH) || url.pathname === CHART_STYLES_PATH) {
-    event.respondWith(handleCachedResource(event, CHART_CACHE, MAX_CHART_ENTRIES, isCacheableChartResponse));
   }
 });
