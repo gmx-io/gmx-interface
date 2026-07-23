@@ -11,7 +11,7 @@ type Props<V extends BaseOptionValue> = {
   options: Option<V>[];
   selectedValue: V | undefined;
   onChange?: (value: V) => void;
-  type?: "inline" | "block" | "inline-primary";
+  type?: "inline" | "block" | "inline-primary" | "underline";
   className?: string;
   tabsWrapperClassName?: string;
   regularOptionClassname?: string;
@@ -46,6 +46,7 @@ export default function Tabs<V extends string | number>({
           "flex w-full",
           {
             "gap-8": type === "inline" || type === "inline-primary",
+            "-mx-6": type === "underline",
           },
           tabsWrapperClassName
         )}

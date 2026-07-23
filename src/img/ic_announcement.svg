@@ -1,0 +1,20 @@
+<svg width="1em" height="1em" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(3.516 1.764)">
+    <path d="M0.650002 5.20201C0.650002 3.05617 0.650002 1.98325 1.38223 1.31663C2.11447 0.650001 3.29298 0.650001 5.65 0.650001H7.31667C9.67369 0.650001 10.8522 0.650001 11.5844 1.31663C12.3167 1.98325 12.3167 3.05617 12.3167 5.20201V11.2714C12.3167 13.4172 12.3167 14.4901 11.5844 15.1567C10.8522 15.8234 9.67369 15.8234 7.31667 15.8234H5.65C3.29298 15.8234 2.11447 15.8234 1.38223 15.1567C0.650002 14.4901 0.650002 13.4172 0.650002 11.2714V5.20201Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(6.85 6.464)">
+    <path d="M0.65 0.65H5.65" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(6.85 9.35)">
+    <path d="M0.65 0.65H5.65" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(6.85 12.236)">
+    <path d="M0.65 0.65H3.15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(0.35 5.466)">
+    <path d="M0.65 8.41774V0.65" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(18.35 5.466)">
+    <path d="M0.65 8.41774V0.65" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+  </g>
+</svg>

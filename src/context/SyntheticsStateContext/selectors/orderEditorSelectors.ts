@@ -14,6 +14,7 @@ import {
   isLimitSwapOrderType,
   isSwapOrder,
   isSwapOrderType,
+  isTriggerDecreaseOrderType,
   OrderInfo,
   OrderType,
   PositionOrderInfo,
@@ -37,6 +38,7 @@ import {
   TradeMode,
   TradeType,
 } from "domain/synthetics/trade";
+import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
 import { getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -136,7 +138,8 @@ const selectOrderEditorSwapFees = createSelector((q) => {
     feeDiscountUsd: 0n,
     swapProfitFeeUsd: 0n,
     swapProfitUsdIn: 0n,
-    uiFeeFactor,
+    // execution charges the factor snapshotted on the order, not the live one
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     externalSwapQuote: undefined,
     type: "increase",
   });
@@ -324,7 +327,7 @@ export const selectOrderEditorNextPositionValuesForIncrease = createSelector((q)
   return q(selector);
 });
 
-const makeSelectOrderEditorNextPositionValuesForIncrease = createSelectorFactory(
+export const makeSelectOrderEditorNextPositionValuesForIncrease = createSelectorFactory(
   (orderKey: string, triggerPrice: bigint) =>
     createSelector((q) => {
       const args = q(makeSelectOrderEditorNextPositionValuesForIncreaseArgs(orderKey, triggerPrice));
@@ -397,7 +400,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
     userReferralInfo,
     minCollateralUsd,
     minPositionSizeUsd,
-    uiFeeFactor,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
     isSetAcceptablePriceImpactEnabled,
   });
@@ -666,7 +669,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     position: existingPosition,
     findSwapPath,
     userReferralInfo,
-    uiFeeFactor,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     strategy: "independent",
     marketsInfoData,
     chainId,
@@ -739,6 +742,23 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     existingPosition,
     nextPositionValuesForIncrease,
     maxAllowedLeverage,
+  });
+});
+
+export const selectOrderEditorTpSlLiqPriceWarning = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  if (!order || !isTriggerDecreaseOrderType(order.orderType)) {
+    return undefined;
+  }
+
+  const triggerPrice = q(selectOrderEditorTriggerPrice);
+  const existingPosition = q(selectOrderEditorExistingPosition);
+
+  return getTpSlLiqPriceWarning({
+    triggerPrice,
+    liquidationPrice: existingPosition?.liquidationPrice,
+    isLong: Boolean(existingPosition?.isLong),
   });
 });
 

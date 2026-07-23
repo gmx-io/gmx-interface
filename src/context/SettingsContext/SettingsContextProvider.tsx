@@ -6,6 +6,8 @@ import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
+  BUY_SELL_ICONS_MODE_KEY,
+  CHART_LINES_SIZE_DENOMINATION_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
@@ -39,6 +41,16 @@ import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
+export type BuySellIconsMode = "off" | "current" | "all";
+
+const DEFAULT_BUY_SELL_ICONS_MODE: BuySellIconsMode = "current";
+
+function getBuySellIconsMode(savedValue: BuySellIconsMode | boolean | undefined): BuySellIconsMode {
+  if (savedValue === false) return "off";
+  if (savedValue === true) return "all";
+  return savedValue ?? DEFAULT_BUY_SELL_ICONS_MODE;
+}
+
 export type SettingsContextType = {
   showDebugValues: boolean;
   setShowDebugValues: (val: boolean) => void;
@@ -61,6 +73,8 @@ export type SettingsContextType = {
   setShouldDisableShareModalPnlCheck: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
+  buySellIconsMode: BuySellIconsMode;
+  setBuySellIconsMode: (val: BuySellIconsMode) => void;
   isAutoCancelTPSL: boolean;
   setIsAutoCancelTPSL: (val: boolean) => void;
   isLeverageSliderEnabled: boolean;
@@ -114,6 +128,9 @@ export type SettingsContextType = {
 
   showCloseSizeInTokens: boolean;
   setShowCloseSizeInTokens: (val: boolean) => void;
+
+  chartLinesSizeInTokens: boolean;
+  setChartLinesSizeInTokens: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -256,6 +273,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     true
   );
 
+  const [savedBuySellIconsModeRaw, setSavedBuySellIconsModeRaw] = useLocalStorageSerializeKey<
+    BuySellIconsMode | boolean
+  >([chainId, BUY_SELL_ICONS_MODE_KEY], DEFAULT_BUY_SELL_ICONS_MODE);
+
+  const savedBuySellIconsMode = useMemo(
+    () => getBuySellIconsMode(savedBuySellIconsModeRaw),
+    [savedBuySellIconsModeRaw]
+  );
+
   const [savedTwapNumberOfParts, setSavedTWAPNumberOfParts] = useLocalStorageSerializeKey(
     [chainId, TWAP_NUMBER_OF_PARTS_KEY],
     DEFAULT_TWAP_NUMBER_OF_PARTS
@@ -263,6 +289,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [showCloseSizeInTokens, setShowCloseSizeInTokens] = useLocalStorageSerializeKey(
     CLOSE_SIZE_DENOMINATION_KEY,
+    false
+  );
+
+  const [chartLinesSizeInTokens, setChartLinesSizeInTokens] = useLocalStorageSerializeKey(
+    CHART_LINES_SIZE_DENOMINATION_KEY,
     false
   );
 
@@ -323,6 +354,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableShareModalPnlCheck: setSavedShouldDisableShareModalPnlCheck,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
+      buySellIconsMode: savedBuySellIconsMode!,
+      setBuySellIconsMode: setSavedBuySellIconsModeRaw,
       isAutoCancelTPSL: savedIsAutoCancelTPSL!,
       setIsAutoCancelTPSL: setIsAutoCancelTPSL,
       isLeverageSliderEnabled: isLeverageSliderEnabled!,
@@ -371,6 +404,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       showCloseSizeInTokens: showCloseSizeInTokens!,
       setShowCloseSizeInTokens,
+
+      chartLinesSizeInTokens: chartLinesSizeInTokens!,
+      setChartLinesSizeInTokens,
     };
   }, [
     showDebugValues,
@@ -394,6 +430,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableShareModalPnlCheck,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
+    savedBuySellIconsMode,
+    setSavedBuySellIconsModeRaw,
     savedIsAutoCancelTPSL,
     setIsAutoCancelTPSL,
     isLeverageSliderEnabled,
@@ -430,6 +468,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setReceiveToGmxAccount,
     showCloseSizeInTokens,
     setShowCloseSizeInTokens,
+    chartLinesSizeInTokens,
+    setChartLinesSizeInTokens,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

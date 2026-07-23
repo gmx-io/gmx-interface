@@ -290,6 +290,7 @@ export function useUserReferralCode(
     userReferralCodeString,
     attachedOnChain,
     referralCodeForTxn,
+    isLoading: referralCodeResult.isLoading,
   };
 }
 
@@ -409,7 +410,7 @@ type AffiliateCodesQueryResponse = {
   affiliateStats: Array<{ referralCode: Hash }>;
 };
 
-type AffiliateCodesState = {
+export type AffiliateCodesState = {
   code: string | null;
   success: boolean;
 };

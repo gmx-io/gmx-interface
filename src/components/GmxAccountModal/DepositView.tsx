@@ -16,6 +16,7 @@ import {
   MULTI_CHAIN_DEPOSIT_TRADE_TOKENS,
   RANDOM_ACCOUNT,
   StargateErrorsAbi,
+  getDepositTokenSymbolsForNetwork,
   getMappedTokenId,
 } from "config/multichain";
 import {
@@ -26,6 +27,8 @@ import {
   useGmxAccountSelectedTransferGuid,
   useGmxAccountSelector,
   useGmxAccountSettlementChainId,
+  useGmxAccountWalletReceiveViewBackTo,
+  useGmxAccountWalletReceiveViewChain,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
@@ -54,6 +57,7 @@ import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedList } from "lib/i18n";
 import {
   OrderMetricId,
   initMultichainDepositMetricData,
@@ -72,12 +76,14 @@ import { useNonSigningAccount } from "lib/wallets/useAccountType";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { TokenBalanceType, TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
+import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -90,7 +96,12 @@ import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { calculateNetworkFeeDetails } from "./calculateNetworkFeeDetails";
-import { useAvailableToTradeAssetMultichain, useMultichainTradeTokensRequest } from "./hooks";
+import {
+  useAvailableToTradeAssetMultichain,
+  useGmxAccountDepositEligibility,
+  useGmxAccountDepositNetworks,
+  useMultichainTradeTokensRequest,
+} from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
 const valueSkeleton = (
@@ -148,6 +159,13 @@ export const DepositView = () => {
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(settlementChainId, depositViewChain);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
+
+  const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
+  const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+
+  const depositNetworks = useGmxAccountDepositNetworks();
+  const { hasAnyDepositFunds, hasDepositFundsOnChain, isEligibilityLoading } = useGmxAccountDepositEligibility();
+  const fromNetworkButtonRef = useRef<HTMLButtonElement>(null);
 
   const { setMultichainSubmittedDeposit, setMultichainFundingPendingId } = useSyntheticsEvents();
 
@@ -370,6 +388,7 @@ export const DepositView = () => {
     amountLD,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSourceChainTokenId?.decimals,
+    symbol: selectedToken?.symbol,
     enabled: depositViewChain !== settlementChainId,
   });
 
@@ -427,18 +446,20 @@ export const DepositView = () => {
     async ({ params }) => {
       const client = getPublicClientWithRpc(params.settlementChainId);
 
+      const token = getByKey(settlementChainTokensData, params.depositViewTokenAddress);
+      if (token === undefined) {
+        return undefined;
+      }
+
       let inputAmount = params.inputAmount ?? 0n;
       if (inputAmount === 0n) {
-        const token = getByKey(settlementChainTokensData, params.depositViewTokenAddress);
-        if (token === undefined) {
-          return undefined;
-        }
-
         inputAmount = convertToTokenAmount(
           expandDecimals(10, USD_DECIMALS),
           token.decimals,
           getMidPrice(token.prices)
         )!;
+      } else {
+        inputAmount = bigMath.min(inputAmount, token.walletBalance ?? inputAmount);
       }
 
       return estimateSameChainDepositGas({
@@ -462,8 +483,6 @@ export const DepositView = () => {
       withLoading: false,
     }
   );
-  const isSameChainNetworkFeeLoading = sameChainNetworkFeeAsyncResult.data === undefined;
-
   const sameChainNetworkFeeDetails = useMemo(
     () =>
       calculateNetworkFeeDetails({
@@ -473,6 +492,9 @@ export const DepositView = () => {
       }),
     [sameChainNetworkFeeAsyncResult.data, gasPrice, settlementChainTokensData]
   );
+
+  const isSameChainNetworkFeeLoading =
+    sameChainNetworkFeeDetails === undefined && sameChainNetworkFeeAsyncResult.error === undefined;
 
   const paymentToken = useMemo((): TokenData | undefined => {
     if (selectedTokenData === undefined) {
@@ -569,7 +591,7 @@ export const DepositView = () => {
 
       if (txnEvent.event === TxnEventName.Sent) {
         helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
-        setIsVisibleOrView("main");
+        setIsVisibleOrView("transferHistory");
         setIsSubmitting(false);
 
         const sizeInUsdValue = latestInputAmountUsd.current;
@@ -753,7 +775,7 @@ export const DepositView = () => {
             if (!subaccountState.subaccount && !isExpressTradingDisabled) {
               setIsVisibleOrView("depositStatus");
             } else {
-              setIsVisibleOrView("main");
+              setIsVisibleOrView("transferHistory");
             }
           }
         } else if (txnEvent.event === TxnEventName.Simulated) {
@@ -870,11 +892,9 @@ export const DepositView = () => {
         return;
       }
 
-      if (srcChainId !== undefined) {
-        setDepositViewChain(srcChainId);
-      }
+      setDepositViewChain(srcChainId ?? (settlementChainId as SourceChainId));
     },
-    [depositViewChain, isVisibleOrView, setDepositViewChain, srcChainId, walletChainId]
+    [depositViewChain, isVisibleOrView, setDepositViewChain, settlementChainId, srcChainId, walletChainId]
   );
 
   useEffect(
@@ -956,7 +976,137 @@ export const DepositView = () => {
     ]
   );
 
+  useEffect(
+    function fallbackTokenOnSettlementChain() {
+      if (isVisibleOrView === false || depositViewChain !== settlementChainId) {
+        return;
+      }
+
+      const depositTradeTokens = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId as SettlementChainId];
+
+      const isInvalidTokenAddress =
+        depositViewTokenAddress === undefined ||
+        !depositTradeTokens.includes(depositViewTokenAddress as NativeTokenSupportedAddress) ||
+        (getByKey(settlementChainTokensData, depositViewTokenAddress)?.walletBalance ?? 0n) === 0n;
+
+      if (!isInvalidTokenAddress) {
+        return;
+      }
+
+      const preferredTokenAddress = CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[settlementChainId as SettlementChainId];
+      const preferredTokenBalance = getByKey(settlementChainTokensData, preferredTokenAddress)?.walletBalance;
+
+      if (preferredTokenBalance !== undefined && preferredTokenBalance > 0n) {
+        setInputValue(undefined);
+        setDepositViewTokenAddress(preferredTokenAddress);
+        return;
+      }
+
+      let maxBalanceTokenAddress: string | undefined = undefined;
+      let maxBalanceUsd: bigint | undefined = undefined;
+
+      for (const tokenAddress of depositTradeTokens) {
+        const tokenData = getByKey(settlementChainTokensData, tokenAddress);
+
+        if (tokenData?.walletBalance === undefined || tokenData.walletBalance === 0n) {
+          continue;
+        }
+
+        const balanceUsd = convertToUsd(tokenData.walletBalance, tokenData.decimals, getMidPrice(tokenData.prices));
+
+        if (
+          balanceUsd !== undefined &&
+          (maxBalanceTokenAddress === undefined || maxBalanceUsd === undefined || balanceUsd > maxBalanceUsd)
+        ) {
+          maxBalanceTokenAddress = tokenAddress;
+          maxBalanceUsd = balanceUsd;
+        }
+      }
+
+      if (maxBalanceTokenAddress !== undefined) {
+        setInputValue(undefined);
+        setDepositViewTokenAddress(maxBalanceTokenAddress);
+      }
+    },
+    [
+      depositViewChain,
+      depositViewTokenAddress,
+      isVisibleOrView,
+      setDepositViewTokenAddress,
+      setInputValue,
+      settlementChainId,
+      settlementChainTokensData,
+    ]
+  );
+
   const isAvalancheSettlement = settlementChainId === AVALANCHE;
+
+  const isGlobalEmpty = !isEligibilityLoading && !hasAnyDepositFunds;
+  const isSelectedNetworkEmpty =
+    !isEligibilityLoading &&
+    !isGlobalEmpty &&
+    depositViewChain !== undefined &&
+    !hasDepositFundsOnChain(depositViewChain);
+  const showEmptyState = (isGlobalEmpty || isSelectedNetworkEmpty) && !isAvalancheSettlement;
+
+  const networkName = depositViewChain !== undefined ? getChainName(depositViewChain) : undefined;
+
+  const depositTokenSymbols = useMemo(
+    () =>
+      depositViewChain !== undefined
+        ? getDepositTokenSymbolsForNetwork(settlementChainId as SettlementChainId, depositViewChain)
+        : EMPTY_ARRAY,
+    [depositViewChain, settlementChainId]
+  );
+  const tokensList = useLocalizedList(depositTokenSymbols);
+  const networksList = useLocalizedList(
+    useMemo(() => depositNetworks.map((network) => network.name), [depositNetworks])
+  );
+
+  const handleDepositNetworkChange = useCallback(
+    (networkId: number) => {
+      if (networkId === depositViewChain) {
+        return;
+      }
+
+      const newChain = networkId as SourceChainId;
+
+      const isSelectedTokenAvailableOnNewChain =
+        depositViewTokenAddress !== undefined &&
+        (newChain === (settlementChainId as number)
+          ? (getByKey(settlementChainTokensData, depositViewTokenAddress)?.walletBalance ?? 0n) > 0n
+          : multichainTokens.some(
+              (token) => token.address === depositViewTokenAddress && token.sourceChainId === newChain
+            ));
+
+      setDepositViewChain(newChain);
+      setInputValue(undefined);
+
+      if (!isSelectedTokenAvailableOnNewChain) {
+        setDepositViewTokenAddress(undefined);
+      }
+    },
+    [
+      depositViewChain,
+      depositViewTokenAddress,
+      multichainTokens,
+      setDepositViewChain,
+      setDepositViewTokenAddress,
+      setInputValue,
+      settlementChainId,
+      settlementChainTokensData,
+    ]
+  );
+
+  const handleReceiveToWallet = useCallback(() => {
+    setWalletReceiveViewChain(depositViewChain ?? (settlementChainId as SourceChainId));
+    setWalletReceiveViewBackTo("deposit");
+    setIsVisibleOrView("walletReceive");
+  }, [depositViewChain, setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain, settlementChainId]);
+
+  const handleChangeNetworkClick = useCallback(() => {
+    fromNetworkButtonRef.current?.click();
+  }, []);
 
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
@@ -973,6 +1123,13 @@ export const DepositView = () => {
     networkFee !== undefined &&
     depositViewChain !== undefined &&
     networkFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) > nativeTokenSourceChainBalance;
+
+  const isInsufficientSameChainNativeGasBalance =
+    depositViewChain === settlementChainId &&
+    gasPaymentTokenBalanceForDeposit !== undefined &&
+    sameChainNetworkFeeDetails?.amount !== undefined &&
+    sameChainNetworkFeeDetails.amount + (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount ?? 0n : 0n) >
+      gasPaymentTokenBalanceForDeposit;
 
   let buttonState: {
     text: React.ReactNode;
@@ -1040,6 +1197,11 @@ export const DepositView = () => {
     buttonState = {
       text: getDefaultInsufficientGasMessage(),
       bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
+      disabled: true,
+    };
+  } else if (isInsufficientSameChainNativeGasBalance) {
+    buttonState = {
+      text: getDefaultInsufficientGasMessage(),
       disabled: true,
     };
   } else if (isNetworkFeeLoading) {
@@ -1111,7 +1273,7 @@ export const DepositView = () => {
 
     if (depositViewChain === settlementChainId) {
       if (!sameChainNetworkFeeDetails) {
-        return "...";
+        return sameChainNetworkFeeAsyncResult.error !== undefined ? "-" : "...";
       }
 
       return (
@@ -1145,6 +1307,7 @@ export const DepositView = () => {
     settlementChainId,
     networkFeeUsd,
     sameChainNetworkFeeDetails,
+    sameChainNetworkFeeAsyncResult.error,
   ]);
 
   const isDepositFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
@@ -1154,113 +1317,160 @@ export const DepositView = () => {
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-[--padding-adaptive]">
-        <div className="flex flex-col gap-6">
-          <div className="text-body-medium text-typography-secondary">
-            <Trans>Asset</Trans>
-          </div>
-
-          <div
-            tabIndex={0}
-            role="button"
-            onClick={() => {
-              setIsVisibleOrView("selectAssetToDeposit");
-            }}
-            className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 gmx-hover:bg-fill-surfaceElevatedHover"
-          >
-            <div className="flex items-center gap-8">
-              {selectedToken ? (
-                <>
-                  <TokenIcon symbol={selectedToken.symbol} displaySize={20} />
-                  <span className="text-16 leading-base">{selectedToken.symbol}</span>
-                </>
-              ) : depositViewChain !== undefined ? (
-                <>
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
-                </>
-              ) : (
-                <span className="text-typography-secondary">
-                  <Trans>Select an asset to deposit</Trans>
-                </span>
-              )}
-            </div>
-            <ChevronRightIcon className="size-14 text-typography-secondary" />
-          </div>
-        </div>
-        {depositViewChain !== undefined && (
+        {!showEmptyState && (
           <div className="flex flex-col gap-6">
             <div className="text-body-medium text-typography-secondary">
-              <Trans>From network</Trans>
+              <Trans>Asset</Trans>
             </div>
-            <div className="flex items-center gap-8 rounded-8 border border-slate-600 px-14 py-13">
-              <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
-              <span className="text-16 leading-base text-typography-secondary">{getChainName(depositViewChain)}</span>
+            <div
+              tabIndex={0}
+              role="button"
+              onClick={() => {
+                setIsVisibleOrView("selectAssetToDeposit");
+              }}
+              className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 gmx-hover:bg-fill-surfaceElevatedHover"
+            >
+              <div className="flex items-center gap-8">
+                {selectedToken ? (
+                  <>
+                    <TokenIcon symbol={selectedToken.symbol} displaySize={20} />
+                    <span className="text-16 leading-base">{selectedToken.symbol}</span>
+                  </>
+                ) : depositViewChain !== undefined ? (
+                  <>
+                    <Skeleton
+                      baseColor="#B4BBFF1A"
+                      highlightColor="#B4BBFF1A"
+                      width={20}
+                      height={20}
+                      borderRadius={10}
+                    />
+                    <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
+                  </>
+                ) : (
+                  <span className="text-typography-secondary">
+                    <Trans>Select an asset to deposit</Trans>
+                  </span>
+                )}
+              </div>
+              <ChevronRightIcon className="size-14 text-typography-secondary" />
             </div>
           </div>
         )}
-
-        <div className={cx("flex flex-col gap-6", { invisible: depositViewTokenAddress === undefined })}>
-          <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
-            <Trans>Deposit</Trans>
-            {selectedToken !== undefined && (
-              <div>
-                <Trans>Available:</Trans>{" "}
-                <span className="text-typography-primary">
-                  <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
-                </span>
-              </div>
-            )}
+        <div className="flex flex-col gap-6">
+          <div className="text-body-medium text-typography-secondary">
+            <Trans>From network</Trans>
           </div>
-          <div className="relative text-16 leading-base">
-            <NumberInput
-              value={inputValue}
-              onValueChange={(e) => setInputValue(e.target.value)}
-              className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-12 pr-96 text-16 leading-base
-                         focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
-              placeholder="0.00"
-              maxDecimals={selectedTokenSourceChainDecimals}
-            />
-            <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
-              <span className="text-typography-secondary">{selectedToken?.symbol}</span>
-              {depositMaxDetails.showClickMax && (
-                <button
-                  className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
-                             hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
-                  type="button"
-                  onClick={handleMaxButtonClick}
-                >
-                  <Trans>Max</Trans>
-                </button>
+          <DropdownSelector
+            value={depositViewChain}
+            onChange={handleDepositNetworkChange}
+            placeholder={t`Select network`}
+            buttonRef={fromNetworkButtonRef}
+            button={
+              depositViewChain !== undefined ? (
+                <div className="flex items-center gap-8">
+                  <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
+                  <span className="text-16 leading-base">{getChainName(depositViewChain)}</span>
+                </div>
+              ) : undefined
+            }
+            options={depositNetworks}
+            item={DepositNetworkItem}
+            itemKey={depositNetworkItemKey}
+          />
+        </div>
+
+        {!showEmptyState && (
+          <div className={cx("flex flex-col gap-6", { invisible: depositViewTokenAddress === undefined })}>
+            <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
+              <Trans>Deposit</Trans>
+              {selectedToken !== undefined && (
+                <div>
+                  <Trans>Available</Trans>{" "}
+                  <span className="text-typography-primary">
+                    <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
+                  </span>
+                </div>
               )}
             </div>
+            <div className="relative text-16 leading-base">
+              <NumberInput
+                value={inputValue}
+                onValueChange={(e) => setInputValue(e.target.value)}
+                className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-12 pr-96 text-16 leading-base
+                         focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+                placeholder="0.00"
+                maxDecimals={selectedTokenSourceChainDecimals}
+              />
+              <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
+                <span className="text-typography-secondary">{selectedToken?.symbol}</span>
+                {depositMaxDetails.showClickMax && (
+                  <button
+                    className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
+                             hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
+                    type="button"
+                    onClick={handleMaxButtonClick}
+                  >
+                    <Trans>Max</Trans>
+                  </button>
+                )}
+              </div>
+            </div>
+            {!selectedToken?.isStable && (
+              <div className="text-body-medium text-typography-secondary numbers">
+                {formatUsd(inputAmountUsd ?? 0n)}
+              </div>
+            )}
+            {isAboveLimit && (
+              <AlertInfoCard type="warning" className="mt-8" hideClose>
+                <div>
+                  <Trans>
+                    GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than{" "}
+                    <span className="numbers">{upperLimitFormatted}</span>.
+                  </Trans>
+                </div>
+              </AlertInfoCard>
+            )}
+            {isBelowLimit && (
+              <AlertInfoCard type="warning" className="mt-8" hideClose>
+                <div>
+                  <Trans>
+                    Amount is below the deposit limit. Try an amount larger than{" "}
+                    <span className="numbers">{lowerLimitFormatted}</span>.
+                  </Trans>
+                </div>
+              </AlertInfoCard>
+            )}
           </div>
-          <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
-          {isAboveLimit && (
-            <AlertInfoCard type="warning" className="mt-8" hideClose>
-              <div>
-                <Trans>
-                  Amount exceeds the deposit limit. Try an amount smaller than{" "}
-                  <span className="numbers">{upperLimitFormatted}</span>.
-                </Trans>
-              </div>
-            </AlertInfoCard>
-          )}
-          {isBelowLimit && (
-            <AlertInfoCard type="warning" className="mt-8" hideClose>
-              <div>
-                <Trans>
-                  Amount is below the deposit limit. Try an amount larger than{" "}
-                  <span className="numbers">{lowerLimitFormatted}</span>.
-                </Trans>
-              </div>
-            </AlertInfoCard>
-          )}
-        </div>
+        )}
       </div>
 
-      <div className="h-32 shrink-0 grow" />
+      {showEmptyState ? (
+        <div className="flex shrink-0 grow flex-col items-center justify-center gap-8 py-32 text-center">
+          <div className="text-body-large font-medium">
+            {isGlobalEmpty ? (
+              <Trans>No funds available for GMX Account deposit</Trans>
+            ) : (
+              <Trans>No funds available to deposit from {networkName}</Trans>
+            )}
+          </div>
+          <div className="text-body-medium text-typography-secondary">
+            {isGlobalEmpty ? (
+              <Trans>
+                Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account.
+              </Trans>
+            ) : (
+              <Trans>
+                Receive {tokensList} into your wallet on {networkName}, or choose another network.
+              </Trans>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="h-32 shrink-0 grow" />
+      )}
 
-      {depositViewTokenAddress && (
+      {!showEmptyState && depositViewTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
           <SyntheticsInfoRow label={<Trans>Estimated time</Trans>} value={estimatedTimeValue} />
           <SyntheticsInfoRow
@@ -1285,22 +1495,59 @@ export const DepositView = () => {
       )}
 
       <div className="sticky bottom-0 z-10 flex shrink-0 flex-col gap-10 bg-slate-900 pt-8">
-        {buttonState.bannerErrorName && (
-          <AlertInfoCard type="error" hideClose>
-            <ValidationBannerErrorContent
-              validationBannerErrorName={buttonState.bannerErrorName}
-              chainId={settlementChainId}
-              srcChainId={depositViewChain as SourceChainId | undefined}
-            />
-          </AlertInfoCard>
-        )}
+        {showEmptyState ? (
+          <>
+            <Button variant="primary-action" className="w-full shrink-0" type="button" onClick={handleReceiveToWallet}>
+              <Trans>Receive to Wallet</Trans>
+            </Button>
+            <Button
+              variant="secondary"
+              size="medium"
+              className="w-full shrink-0"
+              type="button"
+              onClick={handleChangeNetworkClick}
+            >
+              <Trans>Change network</Trans>
+            </Button>
+          </>
+        ) : (
+          <>
+            {buttonState.bannerErrorName && (
+              <AlertInfoCard type="error" hideClose>
+                <ValidationBannerErrorContent
+                  validationBannerErrorName={buttonState.bannerErrorName}
+                  chainId={settlementChainId}
+                  srcChainId={depositViewChain as SourceChainId | undefined}
+                />
+              </AlertInfoCard>
+            )}
 
-        <ButtonTooltipWrapper content={buttonState.errorDescription}>
-          <Button variant="primary-action" className="w-full shrink-0" type="submit" disabled={buttonState.disabled}>
-            {buttonState.text}
-          </Button>
-        </ButtonTooltipWrapper>
+            <ButtonTooltipWrapper content={buttonState.errorDescription}>
+              <Button
+                variant="primary-action"
+                className="w-full shrink-0"
+                type="submit"
+                disabled={buttonState.disabled}
+              >
+                {buttonState.text}
+              </Button>
+            </ButtonTooltipWrapper>
+          </>
+        )}
       </div>
     </form>
   );
 };
+
+function depositNetworkItemKey(option: { id: number; name: string }) {
+  return option.id;
+}
+
+function DepositNetworkItem({ option }: { option: { id: number; name: string } }) {
+  return (
+    <div className="flex items-center gap-8">
+      <img src={getChainIcon(option.id)} alt={option.name} className="size-20" />
+      <span className="text-body-large">{option.name}</span>
+    </div>
+  );
+}

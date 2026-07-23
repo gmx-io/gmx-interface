@@ -2,11 +2,17 @@ import { t } from "@lingui/macro";
 import uniqueId from "lodash/uniqueId";
 
 import { USD_DECIMALS } from "config/factors";
-import { PositionOrderInfo } from "domain/synthetics/orders";
-import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
+import { DecreasePositionSwapType, PositionOrderInfo } from "domain/synthetics/orders";
+import type { PositionInfo } from "domain/synthetics/positions";
+import { getTpSlLiqPriceWarning, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
+import { getCanSplitReceive } from "sdk/utils/trade/decreaseOutputs";
 
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
+
+export function getInlineDecreaseSwapType(position: PositionInfo | undefined): DecreasePositionSwapType | undefined {
+  return getCanSplitReceive(position) ? DecreasePositionSwapType.NoSwap : undefined;
+}
 
 export const MAX_PERCENTAGE = 100n;
 export const PERCENTAGE_DECIMALS = 0;
@@ -109,6 +115,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   entry: T,
   type: "sl" | "tp",
   {
+    liqPrice,
     triggerPrice,
     markPrice,
     isLong,
@@ -174,10 +181,20 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     percentageError = t`Size percentage required`;
   }
 
+  let priceWarning: string | null = null;
+  if (!priceError) {
+    priceWarning =
+      getTpSlLiqPriceWarning({
+        triggerPrice: inputPrice ?? undefined,
+        liquidationPrice: liqPrice,
+        isLong: Boolean(isLong),
+      }) ?? null;
+  }
+
   return {
     ...entry,
     sizeUsd: { ...entry.sizeUsd, error: sizeError },
-    price: { ...entry.price, error: priceError },
+    price: { ...entry.price, error: priceError, warning: priceWarning },
     percentage: { ...entry.percentage, error: percentageError },
   };
 }

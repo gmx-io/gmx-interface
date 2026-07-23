@@ -15,7 +15,12 @@ export type GmxAccountModalView =
   | "deposit"
   | "depositStatus"
   | "selectAssetToDeposit"
-  | "withdraw";
+  | "withdraw"
+  | "transferHistory"
+  | "walletReceive"
+  | "walletSend";
+
+export type GmxAccountAvailableAssetsFilter = "wallet" | "gmxAccount";
 
 export type GmxAccountContext = {
   modalOpen: boolean | GmxAccountModalView;
@@ -46,10 +51,23 @@ export type GmxAccountContext = {
   withdrawalViewTokenInputValue: string | undefined;
   setWithdrawalViewTokenInputValue: (value: string | undefined) => void;
 
+  // wallet receive view
+
+  walletReceiveViewChain: SourceChainId | undefined;
+  setWalletReceiveViewChain: (chain: SourceChainId | undefined) => void;
+
+  walletReceiveViewBackTo: GmxAccountModalView | undefined;
+  setWalletReceiveViewBackTo: (view: GmxAccountModalView | undefined) => void;
+
   // funding history
 
   selectedTransferGuid: string | undefined;
   setSelectedTransferGuid: React.Dispatch<React.SetStateAction<string | undefined>>;
+
+  // available assets view
+
+  availableAssetsFilter: GmxAccountAvailableAssetsFilter;
+  setAvailableAssetsFilter: (filter: GmxAccountAvailableAssetsFilter) => void;
 };
 
 export const context = createContext<GmxAccountContext | null>(null);
@@ -114,8 +132,16 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const [withdrawalViewTokenInputValue, setWithdrawalViewTokenInputValue] =
     useState<GmxAccountContext["withdrawalViewTokenInputValue"]>(undefined);
 
+  const [walletReceiveViewChain, setWalletReceiveViewChain] =
+    useState<GmxAccountContext["walletReceiveViewChain"]>(undefined);
+  const [walletReceiveViewBackTo, setWalletReceiveViewBackTo] =
+    useState<GmxAccountContext["walletReceiveViewBackTo"]>(undefined);
+
   const [selectedTransferGuid, setSelectedTransferGuid] =
     useState<GmxAccountContext["selectedTransferGuid"]>(undefined);
+
+  const [availableAssetsFilter, setAvailableAssetsFilter] =
+    useState<GmxAccountContext["availableAssetsFilter"]>("gmxAccount");
 
   const handleSetModalOpen = useCallback((newModalOpen: boolean | GmxAccountModalView) => {
     setModalOpen(newModalOpen);
@@ -128,7 +154,12 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       setWithdrawalViewTokenAddress(undefined);
       setWithdrawalViewTokenInputValue(undefined);
 
+      setWalletReceiveViewChain(undefined);
+      setWalletReceiveViewBackTo(undefined);
+
       setSelectedTransferGuid(undefined);
+
+      setAvailableAssetsFilter("gmxAccount");
     }
   }, []);
 
@@ -158,10 +189,22 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       withdrawalViewTokenInputValue,
       setWithdrawalViewTokenInputValue,
 
+      // wallet receive view
+
+      walletReceiveViewChain,
+      setWalletReceiveViewChain,
+      walletReceiveViewBackTo,
+      setWalletReceiveViewBackTo,
+
       // funding history
 
       selectedTransferGuid,
       setSelectedTransferGuid,
+
+      // available assets view
+
+      availableAssetsFilter,
+      setAvailableAssetsFilter,
     }),
     [
       modalOpen,
@@ -174,7 +217,10 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       withdrawalViewChain,
       withdrawalViewTokenAddress,
       withdrawalViewTokenInputValue,
+      walletReceiveViewChain,
+      walletReceiveViewBackTo,
       selectedTransferGuid,
+      availableAssetsFilter,
     ]
   );
 

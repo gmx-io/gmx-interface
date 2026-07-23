@@ -1,9 +1,12 @@
 import { Trans } from "@lingui/macro";
 import { type JSX } from "react";
 
-export type UiFlagEventVariant = "info" | "warning";
+import { AnnouncementVariant } from "config/events";
+import { DAY_MS } from "lib/dates";
 
-const DEFAULT_DISMISS_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24h
+export type UiFlagEventVariant = AnnouncementVariant;
+
+const DEFAULT_DISMISS_COOLDOWN_MS = DAY_MS;
 
 export type UiFlagEventData = {
   id: string;
@@ -18,9 +21,9 @@ export const uiFlagEventsData: UiFlagEventData[] = [
   {
     id: "service-disruption",
     flagName: "showServiceDisruptionBanner",
-    title: <Trans>Service disruption</Trans>,
+    title: <Trans>Service Disruption</Trans>,
     content: <Trans>Trading may be temporarily unavailable. Our team is working to resolve the issue.</Trans>,
-    variant: "warning",
+    variant: "error",
   },
 ];
 

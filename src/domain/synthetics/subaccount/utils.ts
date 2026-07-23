@@ -76,7 +76,7 @@ export function getSubaccountSigner(config: SubaccountSerializedConfig, account:
   return wallet;
 }
 
-function getMaxSubaccountActions(subaccount: {
+export function getMaxSubaccountActions(subaccount: {
   onchainData: SubaccountOnchainData;
   signedApproval: SignedSubaccountApproval | undefined;
 }): bigint {
@@ -87,7 +87,7 @@ function getMaxSubaccountActions(subaccount: {
   return subaccount.onchainData.maxAllowedCount;
 }
 
-function getSubaccountExpiresAt(subaccount: {
+export function getSubaccountExpiresAt(subaccount: {
   onchainData: SubaccountOnchainData;
   signedApproval: SignedSubaccountApproval | undefined;
 }): bigint {

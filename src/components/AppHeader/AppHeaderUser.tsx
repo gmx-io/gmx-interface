@@ -6,7 +6,7 @@ import { useChainId } from "lib/chains";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 
-import { OneClickButton } from "components/OneClickButton/OneClickButton";
+import { SettingsButton } from "components/SettingsButton/SettingsButton";
 
 import { AddressDropdown } from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../ConnectWalletButton/ConnectWalletButton";
@@ -35,7 +35,7 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
         >
           <Trans>Connect wallet</Trans>
         </ConnectWalletButton>
-        <OneClickButton openSettings={openSettings} />
+        <SettingsButton openSettings={openSettings} />
         <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
         {menuToggle ? menuToggle : null}
       </div>
@@ -47,7 +47,7 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
       <div data-qa="user-address">
         <AddressDropdown account={account} />
       </div>
-      <OneClickButton openSettings={openSettings} />
+      <SettingsButton openSettings={openSettings} />
       <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
       {menuToggle ? menuToggle : null}
     </div>

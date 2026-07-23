@@ -1,4 +1,4 @@
-import Intercom, { onUnreadCountChange, shutdown, update } from "@intercom/messenger-js-sdk";
+import Intercom, { boot, onUnreadCountChange, shutdown, update } from "@intercom/messenger-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
 import { useAccount } from "wagmi";
 
@@ -34,6 +34,10 @@ export function useSupportChat() {
   const { themeMode } = useTheme();
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
+  const wasIntercomInitialized = useRef(false);
+  const themeModeRef = useRef(themeMode);
+  themeModeRef.current = themeMode;
+  const lastSentIntercomTheme = useRef<ReturnType<typeof themeToIntercomTheme> | undefined>(undefined);
 
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain({
     enabled: shouldShowSupportChat,
@@ -97,7 +101,7 @@ export function useSupportChat() {
 
     const supportChatUserId = getOrCreateSupportChatUserId();
 
-    Intercom({
+    const intercomSettings = {
       app_id: INTERCOM_APP_ID,
       alignment: "left",
       horizontal_padding: 20,
@@ -105,7 +109,19 @@ export function useSupportChat() {
       hide_default_launcher: true,
       hide_notifications: false,
       user_id: supportChatUserId,
-    });
+      // theme goes into the boot settings: update({ theme_mode }) during the boot window
+      // suppresses the initial unread count delivery in the Intercom widget
+      theme_mode: themeToIntercomTheme(themeModeRef.current),
+    };
+    lastSentIntercomTheme.current = intercomSettings.theme_mode;
+
+    if (wasIntercomInitialized.current) {
+      // Intercom() is a no-op after the first call; after shutdown() only boot() revives the messenger
+      boot(intercomSettings);
+    } else {
+      Intercom(intercomSettings);
+      wasIntercomInitialized.current = true;
+    }
 
     onUnreadCountChange((unreadCount: number) => {
       setSupportChatUnreadCount(unreadCount);
@@ -113,6 +129,7 @@ export function useSupportChat() {
 
     return () => {
       shutdown();
+      initializedAddress.current = undefined;
     };
   }, [shouldShowSupportChat, setSupportChatUnreadCount]);
 
@@ -121,8 +138,17 @@ export function useSupportChat() {
       return;
     }
 
+    const intercomTheme = themeToIntercomTheme(themeMode);
+
+    // only on actual theme switches: an update({ theme_mode }) right after boot suppresses
+    // the initial unread count delivery in the Intercom widget
+    if (lastSentIntercomTheme.current === intercomTheme) {
+      return;
+    }
+
+    lastSentIntercomTheme.current = intercomTheme;
     update({
-      theme_mode: themeToIntercomTheme(themeMode),
+      theme_mode: intercomTheme,
     });
   }, [shouldShowSupportChat, themeMode]);
 
