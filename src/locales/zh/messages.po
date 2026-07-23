@@ -1669,6 +1669,7 @@ msgid "Action(s)"
 msgstr "操作"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
 msgstr "Gas 余额不足。请存入更多 {gasPaymentTokensText}。"
 

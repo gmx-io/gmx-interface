@@ -75,15 +75,16 @@ export function TradingSettings({
   } = useExpressAccountSupport();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
-  const isExpressTradingDisabled =
-    (isOutOfGasPaymentBalance && srcChainId === undefined) ||
-    !isExpressAccountSupported ||
-    isExpressAccountSupportLoading;
-  const expressAccountUnavailableMessage = expressAccountUnavailableReason
-    ? getExpressAccountUnavailableMessage(expressAccountUnavailableReason)
-    : undefined;
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
+  const isWalletGasPaymentBalanceInsufficient = isOutOfGasPaymentBalance && srcChainId === undefined;
+  const isExpressTradingDisabled =
+    isWalletGasPaymentBalanceInsufficient || !isExpressAccountSupported || isExpressAccountSupportLoading;
+  const expressTradingDisabledTooltip = expressAccountUnavailableReason
+    ? getExpressAccountUnavailableMessage(expressAccountUnavailableReason)
+    : isWalletGasPaymentBalanceInsufficient
+      ? t`Insufficient gas balance. Deposit more ${gasPaymentTokensText}.`
+      : undefined;
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const gasPaymentTokens = getGasPaymentTokens(chainId);
 
@@ -160,7 +161,7 @@ export function TradingSettings({
               }
               icon={<ExpressIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
-              disabledTooltip={expressAccountUnavailableMessage}
+              disabledTooltip={expressTradingDisabledTooltip}
               chip={
                 <Chip color="gray">
                   <Trans>Optimal</Trans>
@@ -175,7 +176,7 @@ export function TradingSettings({
               description={<Trans>Seamless trading with Express reliability</Trans>}
               icon={<OneClickIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
-              disabledTooltip={expressAccountUnavailableMessage}
+              disabledTooltip={expressTradingDisabledTooltip}
               info={
                 <Trans>
                   GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
