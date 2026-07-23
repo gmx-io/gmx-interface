@@ -254,6 +254,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     fastExpressParams,
     asyncExpressParams,
     expressParamsPromise,
+    shouldUseExpress,
   } = useExpressOrdersParams({
     label: "Position Editor",
     orderParams: batchParams,
@@ -530,6 +531,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       provider,
       batchParams,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      requireExpress: shouldUseExpress,
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined

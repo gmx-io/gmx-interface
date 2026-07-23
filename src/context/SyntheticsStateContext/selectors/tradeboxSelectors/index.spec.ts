@@ -10,6 +10,8 @@ import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 
 import { selectIsOneClickActiveByUser } from ".";
+import { selectIsExpressTransactionAvailable } from "../expressSelectors";
+import { selectExpressOrdersEnabled } from "../settingsSelectors";
 
 const subaccountRouterAddress = getContract(AVALANCHE, "SubaccountGelatoRelayRouter");
 
@@ -75,6 +77,7 @@ function createState(subaccount: Subaccount | undefined): SyntheticsState {
     },
     settings: {
       expressOrdersEnabled: true,
+      isExpressOrdersAvailable: true,
     },
     features: {
       relayRouterEnabled: true,
@@ -120,6 +123,15 @@ describe("tradeboxSelectors", () => {
   });
 
   describe("selectIsOneClickActiveByUser", () => {
+    it("keeps the saved Express preference separate from temporary availability", () => {
+      const state = createState(createSubaccount());
+      state.settings.isExpressOrdersAvailable = false;
+
+      expect(selectExpressOrdersEnabled(state)).toBe(true);
+      expect(selectIsExpressTransactionAvailable(state)).toBe(false);
+      expect(selectIsOneClickActiveByUser(state)).toBe(false);
+    });
+
     it("returns true only for a valid One-Click subaccount", () => {
       expect(selectIsOneClickActiveByUser(createState(createSubaccount()))).toBe(true);
     });

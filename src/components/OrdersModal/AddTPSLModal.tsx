@@ -768,7 +768,7 @@ export function AddTPSLModal({
     return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
   }, [batchParams, chainId, tokensData]);
 
-  const { expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const { expressParamsPromise, isMultichainSubmitDisabled, shouldUseExpress } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
@@ -837,6 +837,7 @@ export function AddTPSLModal({
         signer,
         batchParams,
         expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+        requireExpress: shouldUseExpress,
         simulationParams: shouldDisableValidationForTesting
           ? undefined
           : {
@@ -867,6 +868,7 @@ export function AddTPSLModal({
     shouldDisableValidationForTesting,
     blockTimestampData,
     makeOrderTxnCallback,
+    shouldUseExpress,
     position.collateralToken.symbol,
     srcChainId,
     setIsVisible,

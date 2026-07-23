@@ -9,6 +9,8 @@ export const selectIsPnlInLeverage = (s: SyntheticsState) => s.settings.isPnlInL
 export const selectShowPnlAfterFees = (s: SyntheticsState) => s.settings.showPnlAfterFees;
 export const selectIsLeverageSliderEnabled = (s: SyntheticsState) => s.settings.isLeverageSliderEnabled;
 export const selectExpressOrdersEnabled = (s: SyntheticsState) => s.settings.expressOrdersEnabled;
+export const selectIsExpressOrdersAvailable = (s: SyntheticsState) => s.settings.isExpressOrdersAvailable;
+export const selectIsExpressAccountSupportLoading = (s: SyntheticsState) => s.settings.isExpressAccountSupportLoading;
 export const selectSetExpressOrdersEnabled = (s: SyntheticsState) => s.settings.setExpressOrdersEnabled;
 export const selectGasPaymentTokenAddress = (s: SyntheticsState) => s.settings.gasPaymentTokenAddress;
 export const selectSetGasPaymentTokenAddress = (s: SyntheticsState) => s.settings.setGasPaymentTokenAddress;

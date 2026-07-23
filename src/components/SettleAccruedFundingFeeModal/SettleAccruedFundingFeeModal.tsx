@@ -155,7 +155,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     allowedSlippage,
   ]);
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled, shouldUseExpress } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
     isGmxAccount: srcChainId !== undefined,
@@ -280,6 +280,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         signer,
         batchParams,
         expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+        requireExpress: shouldUseExpress,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({
           metricId: undefined,
@@ -307,6 +308,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     makeOrderTxnCallback,
     provider,
     signer,
+    shouldUseExpress,
     srcChainId,
     tokensData,
     tokensToApprove,

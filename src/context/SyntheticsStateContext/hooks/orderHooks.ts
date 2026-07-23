@@ -19,6 +19,7 @@ import {
   makeSelectOrdersWithErrorsByPositionKey,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
+import { selectExpressOrdersEnabled } from "../selectors/settingsSelectors";
 import { useSelector } from "../utils";
 
 export const useOrderErrors = (orderKey: string) => {
@@ -41,6 +42,7 @@ export function useCancelOrder(order: OrderInfo) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -83,6 +85,7 @@ export function useCancelOrder(order: OrderInfo) {
         signer,
         batchParams,
         expressParams,
+        requireExpress: expressOrdersEnabled || srcChainId !== undefined,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({
           actionName: "Cancel Order",
@@ -96,6 +99,7 @@ export function useCancelOrder(order: OrderInfo) {
     },
     [
       chainId,
+      expressOrdersEnabled,
       globalExpressParams,
       hasOutdatedUi,
       makeOrderTxnCallback,

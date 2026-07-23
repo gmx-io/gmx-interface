@@ -107,6 +107,27 @@ function providerSendSign(signer: ProviderSigner, from: string, eip712: object) 
   );
 }
 
+export async function withNetworkRestoration<T>({
+  action,
+  restore,
+}: {
+  action: () => Promise<T>;
+  restore: () => Promise<void>;
+}): Promise<T> {
+  let result: T;
+
+  try {
+    result = await action();
+  } catch (actionError) {
+    await restore().catch(() => undefined);
+    throw actionError;
+  }
+
+  await restore();
+
+  return result;
+}
+
 async function withSmartWalletChainSwap<T>(
   {
     signer,
@@ -134,22 +155,23 @@ async function withSmartWalletChainSwap<T>(
 
   await switchNetwork(verificationChainId!, true);
 
-  try {
-    const account = getAccount(config).address;
-    if (!account) {
-      throw new Error("Wallet disconnected while switching to the Express signing network");
-    }
-    if (!isAddressEqual(account, address as Address)) {
-      throw new Error("Wallet account changed while switching to the Express signing network");
-    }
+  return withNetworkRestoration({
+    action: async () => {
+      const account = getAccount(config).address;
+      if (!account) {
+        throw new Error("Wallet disconnected while switching to the Express signing network");
+      }
+      if (!isAddressEqual(account, address as Address)) {
+        throw new Error("Wallet account changed while switching to the Express signing network");
+      }
 
-    const walletClient = await getWalletClient(config);
-    const chainSigner = clientToSigner(walletClient, account);
+      const walletClient = await getWalletClient(config);
+      const chainSigner = clientToSigner(walletClient, account);
 
-    return await action(chainSigner);
-  } finally {
-    await switchNetwork(startingChainId, true).catch(() => undefined);
-  }
+      return action(chainSigner);
+    },
+    restore: () => switchNetwork(startingChainId, true),
+  });
 }
 
 export async function signTypedData({

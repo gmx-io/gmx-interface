@@ -15,6 +15,7 @@ import {
   selectSubaccountForChainAction,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
@@ -97,6 +98,7 @@ export function OrdersModal({
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const subaccount = useSelector(selectSubaccountForChainAction);
 
   const effectivePositionKey = position?.key ?? positionKeyProp;
@@ -212,6 +214,7 @@ export function OrdersModal({
         signer,
         batchParams,
         expressParams,
+        requireExpress: expressOrdersEnabled || srcChainId !== undefined,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({
           actionName: "Cancel Order",
@@ -230,6 +233,7 @@ export function OrdersModal({
     displayedOrders,
     setCancellingOrdersKeys,
     globalExpressParams,
+    expressOrdersEnabled,
     chainId,
     srcChainId,
     subaccount,

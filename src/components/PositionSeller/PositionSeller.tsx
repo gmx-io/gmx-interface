@@ -461,6 +461,7 @@ export function PositionSeller() {
     expressParamsPromise,
     fastExpressParams,
     asyncExpressParams,
+    shouldUseExpress,
   } = useExpressOrdersParams({
     label: "Position Seller",
     orderParams: batchParams,
@@ -679,6 +680,7 @@ export function PositionSeller() {
       batchParams,
       isGmxAccount,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      requireExpress: shouldUseExpress,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {

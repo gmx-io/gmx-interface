@@ -431,7 +431,7 @@ export function OrderEditor(p: Props) {
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled, shouldUseExpress } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
@@ -558,6 +558,7 @@ export function OrderEditor(p: Props) {
       signer,
       batchParams,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      requireExpress: shouldUseExpress,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({
         actionName: "Update Order",
@@ -597,6 +598,7 @@ export function OrderEditor(p: Props) {
     chainId,
     makeOrderTxnCallback,
     srcChainId,
+    shouldUseExpress,
     expressParams?.subaccount,
     p,
     market,

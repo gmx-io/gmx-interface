@@ -175,6 +175,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     expressParamsPromise,
     isLoading: isExpressLoading,
     isMultichainSubmitDisabled,
+    shouldUseExpress,
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
@@ -367,6 +368,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       batchParams,
       isGmxAccount: isFromTokenGmxAccount,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      requireExpress: shouldUseExpress,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -415,6 +417,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     setShouldFallbackToInternalSwap,
     setShouldForceExternalSwap,
     shouldDisableValidationForTesting,
+    shouldUseExpress,
     signer,
     slippageInputId,
     tokensData,

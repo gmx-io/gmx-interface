@@ -7,7 +7,7 @@ import { Config, useAccount, useConnectorClient } from "wagmi";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 import { WalletSigner } from ".";
-import { getConnectedPrivyWallet, getIsKnownSmartWalletClient } from "./privyWagmi";
+import { getConnectedPrivyWallet, getIsSmartWalletClient } from "./privyWagmi";
 
 export function clientToSigner(
   client: Client<Transport, Chain, Account>,
@@ -38,7 +38,7 @@ export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
   const { wallets } = useWallets();
   const { data: client } = useConnectorClient<Config>({ chainId });
   const connectedWallet = getConnectedPrivyWallet(wallets, address, connector?.id);
-  const isSmartAccount = getIsKnownSmartWalletClient(connectedWallet?.walletClientType);
+  const isSmartAccount = getIsSmartWalletClient(connectedWallet?.walletClientType);
 
   return useMemo(() => {
     if (!address || !client?.account) {

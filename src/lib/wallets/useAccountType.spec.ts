@@ -1,15 +1,39 @@
-import { ContractFunctionRevertedError, ContractFunctionZeroDataError, type PublicClient } from "viem";
+import { ContractFunctionRevertedError, ContractFunctionZeroDataError, type Hex, type PublicClient } from "viem";
 import { describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  SOURCE_BASE_MAINNET,
+  SOURCE_SEPOLIA,
+} from "config/chains";
 import { abis } from "sdk/abis";
 
-import { AccountType, fetchIsErc1271, getAccountCapabilities, getExpressAccountSupport } from "./useAccountType";
+import {
+  AccountType,
+  fetchIsErc1271,
+  getAccountCapabilities,
+  getAccountCapabilityChainIds,
+  getAccountType,
+  getExpressAccountSupport,
+} from "./useAccountType";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
+const SAFE_SINGLETON = "0x3e5c63644e683549055b9be8653de26e0b4cd36e";
+const SAFE_COMPATIBILITY_FALLBACK_HANDLER = "0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99";
 
 function createClient(readContract: PublicClient["readContract"]): PublicClient {
-  return { readContract } as PublicClient;
+  return {
+    readContract,
+    getCode: vi.fn().mockResolvedValue("0x6000"),
+    getStorageAt: vi.fn().mockResolvedValue(undefined),
+  } as unknown as PublicClient;
+}
+
+function addressStorageValue(address: string): Hex {
+  return `0x${"0".repeat(24)}${address.slice(2)}` as Hex;
 }
 
 describe("fetchIsErc1271", () => {
@@ -19,13 +43,25 @@ describe("fetchIsErc1271", () => {
     await expect(fetchIsErc1271(client, ACCOUNT)).resolves.toBe(true);
   });
 
-  it("accepts a contract that rejects an invalid signature with revert data", async () => {
+  it("does not treat an arbitrary contract revert as ERC-1271 support", async () => {
     const error = new ContractFunctionRevertedError({
       abi: abis.SmartAccount,
       data: "0x12345678",
       functionName: "isValidSignature",
     });
     const client = createClient(vi.fn().mockRejectedValue(error));
+
+    await expect(fetchIsErc1271(client, ACCOUNT)).resolves.toBe(false);
+  });
+
+  it("accepts a reverting contract with an ERC-1271 implementation", async () => {
+    const error = new ContractFunctionRevertedError({
+      abi: abis.SmartAccount,
+      data: "0x12345678",
+      functionName: "isValidSignature",
+    });
+    const client = createClient(vi.fn().mockRejectedValue(error));
+    vi.mocked(client.getCode).mockResolvedValue("0x631626ba7e");
 
     await expect(fetchIsErc1271(client, ACCOUNT)).resolves.toBe(true);
   });
@@ -41,6 +77,44 @@ describe("fetchIsErc1271", () => {
     const client = createClient(vi.fn().mockRejectedValue(new Error("RPC unavailable")));
 
     await expect(fetchIsErc1271(client, ACCOUNT)).rejects.toThrow("RPC unavailable");
+  });
+});
+
+describe("getAccountType", () => {
+  it("supports a Safe with a compatible signature fallback handler", async () => {
+    const client = {
+      getCode: vi.fn().mockResolvedValue("0x1234"),
+      getStorageAt: vi
+        .fn()
+        .mockResolvedValueOnce(addressStorageValue(SAFE_SINGLETON))
+        .mockResolvedValueOnce(addressStorageValue(SAFE_COMPATIBILITY_FALLBACK_HANDLER)),
+      readContract: vi.fn(),
+    } as unknown as PublicClient;
+
+    await expect(getAccountType(ACCOUNT, client)).resolves.toBe(AccountType.Safe);
+  });
+
+  it("blocks a Safe without a compatible signature fallback handler", async () => {
+    const client = {
+      getCode: vi.fn().mockResolvedValue("0x1234"),
+      getStorageAt: vi
+        .fn()
+        .mockResolvedValueOnce(addressStorageValue(SAFE_SINGLETON))
+        .mockResolvedValueOnce(addressStorageValue("0x0000000000000000000000000000000000000000")),
+      readContract: vi.fn(),
+    } as unknown as PublicClient;
+
+    await expect(getAccountType(ACCOUNT, client)).resolves.toBe(AccountType.SmartAccount);
+  });
+
+  it("supports a generic contract with a decoded ERC-1271 response", async () => {
+    const client = {
+      getCode: vi.fn().mockResolvedValue("0x1234"),
+      getStorageAt: vi.fn().mockResolvedValue(addressStorageValue("0x0000000000000000000000000000000000000000")),
+      readContract: vi.fn().mockResolvedValue("0xffffffff"),
+    } as unknown as PublicClient;
+
+    await expect(getAccountType(ACCOUNT, client)).resolves.toBe(AccountType.ERC1271);
   });
 });
 
@@ -64,6 +138,28 @@ describe("getAccountCapabilities", () => {
       isSmartAccount: true,
       isNonSigningAccountOnAnyChain: true,
     });
+  });
+});
+
+describe("getAccountCapabilityChainIds", () => {
+  it("includes every production account chain before the wallet switches", () => {
+    const chainIds = getAccountCapabilityChainIds(ARBITRUM);
+
+    expect(chainIds).toContain(ARBITRUM);
+    expect(chainIds).toContain(AVALANCHE);
+    expect(chainIds).toContain(SOURCE_BASE_MAINNET);
+    expect(chainIds).not.toContain(ARBITRUM_SEPOLIA);
+    expect(chainIds).not.toContain(AVALANCHE_FUJI);
+  });
+
+  it("keeps testnet capability checks separate from production", () => {
+    const chainIds = getAccountCapabilityChainIds(ARBITRUM_SEPOLIA);
+
+    expect(chainIds).toContain(ARBITRUM_SEPOLIA);
+    expect(chainIds).toContain(AVALANCHE_FUJI);
+    expect(chainIds).toContain(SOURCE_SEPOLIA);
+    expect(chainIds).not.toContain(ARBITRUM);
+    expect(chainIds).not.toContain(SOURCE_BASE_MAINNET);
   });
 });
 

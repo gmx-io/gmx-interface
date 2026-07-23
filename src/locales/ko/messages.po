@@ -8517,6 +8517,10 @@ msgstr ""
 msgid "for {comment}"
 msgstr "{comment}에 대해"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Checking wallet signing support..."
+msgstr "지갑 서명 지원 여부를 확인하는 중..."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "사용 자본 = max(열린 포지션 담보 합계 - 실현 PnL + 시작 보류 PnL)."

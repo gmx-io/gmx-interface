@@ -10,6 +10,10 @@ import {
   selectRawSubaccountForMultichainAction,
   selectRawSubaccountForSettlementChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectExpressOrdersEnabled,
+  selectIsExpressAccountSupportLoading,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { FAST_EXPRESS_PARAMS_TIMEOUT_ERROR } from "lib/errors/customErrors";
@@ -41,6 +45,7 @@ export type ExpressOrdersParamsResult = {
   expressParamsPromise: Promise<ExpressTxnParams | undefined> | undefined;
   isLoading: boolean;
   isMultichainSubmitDisabled: boolean;
+  shouldUseExpress: boolean;
 };
 
 export function useExpressOrdersParams({
@@ -63,6 +68,10 @@ export function useExpressOrdersParams({
     isGmxAccount ? selectRawSubaccountForMultichainAction : selectRawSubaccountForSettlementChainAction
   );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const isExpressAccountSupportLoading = useSelector(selectIsExpressAccountSupportLoading);
+  const hasExpressCompatibleOrder = orderParams && !getBatchIsNativePayment(orderParams);
+  const shouldUseExpress = Boolean((expressOrdersEnabled || isGmxAccount) && hasExpressCompatibleOrder);
 
   const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
 
@@ -183,9 +192,10 @@ export function useExpressOrdersParams({
         expressEstimateMethod: undefined,
         fastExpressParams: undefined,
         asyncExpressParams: undefined,
-        isLoading: false,
-        isMultichainSubmitDisabled: false,
+        isLoading: shouldUseExpress && isExpressAccountSupportLoading,
+        isMultichainSubmitDisabled: shouldUseExpress && !isExpressAccountSupportLoading && !isExpressAvailable,
         expressParamsPromise: undefined,
+        shouldUseExpress,
       };
     }
 
@@ -208,6 +218,7 @@ export function useExpressOrdersParams({
       isLoading,
       isMultichainSubmitDisabled,
       expressParamsPromise,
+      shouldUseExpress,
     };
   }, [
     isAvailable,
@@ -219,6 +230,9 @@ export function useExpressOrdersParams({
     orderParams,
     fastExpressError,
     isGmxAccount,
+    isExpressAvailable,
+    isExpressAccountSupportLoading,
+    shouldUseExpress,
   ]);
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({

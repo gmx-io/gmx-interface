@@ -80,11 +80,13 @@ export function TradingSettings({
   const isWalletGasPaymentBalanceInsufficient = isOutOfGasPaymentBalance && srcChainId === undefined;
   const isExpressTradingDisabled =
     isWalletGasPaymentBalanceInsufficient || !isExpressAccountSupported || isExpressAccountSupportLoading;
-  const expressTradingDisabledTooltip = expressAccountUnavailableReason
-    ? getExpressAccountUnavailableMessage(expressAccountUnavailableReason)
-    : isWalletGasPaymentBalanceInsufficient
-      ? t`Insufficient gas balance. Deposit more ${gasPaymentTokensText}.`
-      : undefined;
+  const expressTradingDisabledTooltip = isExpressAccountSupportLoading
+    ? t`Checking wallet signing support...`
+    : expressAccountUnavailableReason
+      ? getExpressAccountUnavailableMessage(expressAccountUnavailableReason)
+      : isWalletGasPaymentBalanceInsufficient
+        ? t`Insufficient gas balance. Deposit more ${gasPaymentTokensText}.`
+        : undefined;
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const gasPaymentTokens = getGasPaymentTokens(chainId);
 

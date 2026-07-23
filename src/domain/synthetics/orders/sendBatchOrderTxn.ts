@@ -42,6 +42,24 @@ export type BatchOrderTxnCtx = {
 
 const DEFAULT_RUN_SIMULATION = () => Promise.resolve(undefined);
 
+export function assertExpressParams({
+  expressParams,
+  isGmxAccount,
+  requireExpress,
+}: {
+  expressParams: ExpressTxnParams | undefined;
+  isGmxAccount: boolean;
+  requireExpress: boolean;
+}): void {
+  if (requireExpress && !expressParams) {
+    throw new Error("Express parameters are required for the selected trading mode");
+  }
+
+  if (isGmxAccount && !expressParams) {
+    throw new Error("Multichain orders are only supported with express params");
+  }
+}
+
 export async function sendBatchOrderTxn({
   chainId,
   signer,
@@ -49,6 +67,7 @@ export async function sendBatchOrderTxn({
   provider,
   batchParams,
   expressParams,
+  requireExpress = false,
   simulationParams,
   callback,
 }: {
@@ -58,6 +77,7 @@ export async function sendBatchOrderTxn({
   provider: Provider;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
+  requireExpress?: boolean;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
@@ -69,9 +89,7 @@ export async function sendBatchOrderTxn({
   });
 
   try {
-    if (isGmxAccount && !expressParams) {
-      throw new Error("Multichain orders are only supported with express params");
-    }
+    assertExpressParams({ expressParams, isGmxAccount, requireExpress });
 
     if (isGmxAccount && !provider) {
       throw new Error("provider is required for multichain txns");

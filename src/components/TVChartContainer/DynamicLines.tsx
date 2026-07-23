@@ -104,6 +104,7 @@ export function DynamicLines({
         signer,
         batchParams,
         expressParams,
+        requireExpress: true,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({
           actionName: "Cancel Order",

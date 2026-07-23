@@ -24,9 +24,9 @@ import {
 import {
   selectDebugSwapMarketsConfig,
   selectExecutionFeeBufferBps,
-  selectExpressOrdersEnabled,
   selectGasPaymentTokenAddress,
   selectGmxAccountGasPaymentTokenAddress,
+  selectIsExpressOrdersAvailable,
 } from "./settingsSelectors";
 import { selectTokenPermits } from "./tokenPermitsSelectors";
 import { selectGasEstimationParams } from "./tradeSelectors";
@@ -50,7 +50,7 @@ export const selectGasPaymentToken = createSelector((q) => {
 });
 
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
-  const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
+  const isExpressOrdersEnabledSetting = q(selectIsExpressOrdersAvailable);
   const isRelayRouterEnabled = q(selectIsRelayRouterEnabled);
   const isSponsoredCallAvailable = q(selectIsSponsoredCallAvailable);
 

@@ -8,16 +8,27 @@ import {
   ContractFunctionZeroDataError,
   isAddressEqual,
   type Hex,
+  keccak256,
   type PublicClient,
+  stringToHex,
+  toFunctionSelector,
+  toHex,
   zeroHash,
 } from "viem";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA } from "config/chains";
+import {
+  type AnyChainId,
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  CONTRACTS_CHAIN_IDS,
+  isTestnetChain,
+  SOURCE_CHAIN_IDS,
+} from "config/chains";
 import { useChainId } from "lib/chains";
 import { abis } from "sdk/abis";
 
-import { getConnectedPrivyWallet, getIsKnownSmartWalletClient } from "./privyWagmi";
+import { getConnectedPrivyWallet, getIsSmartWalletClient } from "./privyWagmi";
 import { getPublicClientWithRpc } from "./walletConfig";
 
 export enum AccountType {
@@ -44,6 +55,19 @@ const KNOWN_SAFE_SINGLETONS: Address[] = [
   "0x29fcb43b46531bca003ddc8fcb67ffe91900c762",
 ];
 
+const KNOWN_SAFE_COMPATIBILITY_FALLBACK_HANDLERS: Address[] = [
+  "0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4", // v1.3.0 canonical
+  "0x017062a1dE2FE6b99BE3d9d37841FeD19F573804", // v1.3.0 EIP-155
+  "0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99", // v1.4.1 canonical
+];
+
+const SAFE_FALLBACK_HANDLER_STORAGE_SLOT = keccak256(stringToHex("fallback_manager.handler.address"));
+const EIP_1967_IMPLEMENTATION_STORAGE_SLOT = toHex(
+  BigInt(keccak256(stringToHex("eip1967.proxy.implementation"))) - 1n,
+  { size: 32 }
+);
+const ERC1271_IS_VALID_SIGNATURE_SELECTOR = toFunctionSelector("isValidSignature(bytes32,bytes)");
+
 async function isSafeAccount(bytecode: Hex, address: Address, client: PublicClient): Promise<boolean> {
   if (bytecode === "0x") {
     return false;
@@ -57,6 +81,44 @@ async function isSafeAccount(bytecode: Hex, address: Address, client: PublicClie
   const masterCopy = `0x${storage.slice(-40)}` as Address;
 
   return KNOWN_SAFE_SINGLETONS.some((singleton) => isAddressEqual(singleton, masterCopy));
+}
+
+async function hasSupportedSafeFallbackHandler(address: Address, client: PublicClient): Promise<boolean> {
+  const storage = await client.getStorageAt({ address, slot: SAFE_FALLBACK_HANDLER_STORAGE_SLOT });
+  if (!storage || storage === "0x") {
+    return false;
+  }
+
+  const fallbackHandler = `0x${storage.slice(-40)}` as Address;
+
+  return KNOWN_SAFE_COMPATIBILITY_FALLBACK_HANDLERS.some((handler) => isAddressEqual(handler, fallbackHandler));
+}
+
+function bytecodeHasErc1271Selector(bytecode: Hex): boolean {
+  return bytecode.includes(`63${ERC1271_IS_VALID_SIGNATURE_SELECTOR.slice(2)}`);
+}
+
+async function hasErc1271Implementation(bytecode: Hex, address: Address, client: PublicClient): Promise<boolean> {
+  if (bytecodeHasErc1271Selector(bytecode)) {
+    return true;
+  }
+
+  if (await isSafeAccount(bytecode, address, client)) {
+    return hasSupportedSafeFallbackHandler(address, client);
+  }
+
+  const implementationStorage = await client.getStorageAt({
+    address,
+    slot: EIP_1967_IMPLEMENTATION_STORAGE_SLOT,
+  });
+  if (!implementationStorage || implementationStorage === "0x") {
+    return false;
+  }
+
+  const implementationAddress = `0x${implementationStorage.slice(-40)}` as Address;
+  const implementationBytecode = await client.getCode({ address: implementationAddress });
+
+  return Boolean(implementationBytecode && bytecodeHasErc1271Selector(implementationBytecode));
 }
 
 function findError<TError extends Error>(
@@ -75,7 +137,7 @@ function findError<TError extends Error>(
   return undefined;
 }
 
-export async function fetchIsErc1271(client: PublicClient, address: Address): Promise<boolean> {
+export async function fetchIsErc1271(client: PublicClient, address: Address, bytecode?: Hex): Promise<boolean> {
   try {
     await client.readContract({
       address,
@@ -89,9 +151,10 @@ export async function fetchIsErc1271(client: PublicClient, address: Address): Pr
       return false;
     }
 
-    const revertedError = findError(error, ContractFunctionRevertedError);
-    if (revertedError) {
-      return true;
+    if (findError(error, ContractFunctionRevertedError)) {
+      const accountBytecode = bytecode ?? (await client.getCode({ address }));
+
+      return Boolean(accountBytecode && (await hasErc1271Implementation(accountBytecode, address, client)));
     }
 
     throw error;
@@ -109,10 +172,10 @@ export async function getAccountType(address: Address, client: PublicClient): Pr
   }
 
   if (await isSafeAccount(bytecode, address, client)) {
-    return AccountType.Safe;
+    return (await hasSupportedSafeFallbackHandler(address, client)) ? AccountType.Safe : AccountType.SmartAccount;
   }
 
-  if (await fetchIsErc1271(client, address)) {
+  if (await fetchIsErc1271(client, address, bytecode)) {
     return AccountType.ERC1271;
   }
 
@@ -131,27 +194,34 @@ export function getAccountCapabilities(accountTypes: AccountType[]): AccountCapa
   };
 }
 
+export function getAccountCapabilityChainIds(currentChainId: number): AnyChainId[] {
+  const isCurrentChainTestnet = isTestnetChain(currentChainId);
+
+  return uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]).filter(
+    (chainId) => isTestnetChain(chainId) === isCurrentChainTestnet
+  );
+}
+
 function useAccountCapabilities(): AccountCapabilities & {
   isLoading: boolean;
   hasError: boolean;
   hasUnsupportedSigningProvider: boolean;
 } {
-  const { address, chainId: connectedChainId, connector } = useAccount();
+  const { address, connector } = useAccount();
   const { wallets, ready: areWalletsReady } = useWallets();
-  const { chainId: settlementChainId } = useChainId();
+  const { chainId } = useChainId();
   const connectedWallet = getConnectedPrivyWallet(wallets, address, connector?.id);
   const walletClientType = connectedWallet?.walletClientType;
+  const isCurrentChainTestnet = isTestnetChain(chainId);
 
   const { data, error, isLoading } = useSWR<AccountCapabilities>(
-    address && [address, connectedChainId, walletClientType, settlementChainId, "detectAccountCapabilities"],
+    address && [address, isCurrentChainTestnet, "detectAccountCapabilities"],
     {
       fetcher: async () => {
-        const chainIds = uniq(
-          [settlementChainId, connectedChainId].filter((chainId): chainId is number => chainId !== undefined)
-        );
-
         const accountTypes = await Promise.all(
-          chainIds.map((chainId) => getAccountType(address!, getPublicClientWithRpc(chainId)))
+          getAccountCapabilityChainIds(chainId).map((accountChainId) =>
+            getAccountType(address!, getPublicClientWithRpc(accountChainId))
+          )
         );
 
         return getAccountCapabilities(accountTypes);
@@ -164,7 +234,7 @@ function useAccountCapabilities(): AccountCapabilities & {
   );
 
   return {
-    isSmartAccount: (data?.isSmartAccount ?? false) || getIsKnownSmartWalletClient(walletClientType),
+    isSmartAccount: (data?.isSmartAccount ?? false) || getIsSmartWalletClient(walletClientType),
     isNonSigningAccountOnAnyChain: data?.isNonSigningAccountOnAnyChain ?? false,
     isLoading: isLoading || (address !== undefined && !areWalletsReady),
     hasError: Boolean(error),

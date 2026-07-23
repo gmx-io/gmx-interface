@@ -8517,6 +8517,10 @@ msgstr ""
 msgid "for {comment}"
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Checking wallet signing support..."
+msgstr "Çĥéçķĩñĝ ŵåļļéţ šĩĝñĩñĝ šûþþöŕţ..."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "[!! Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL). !!]"

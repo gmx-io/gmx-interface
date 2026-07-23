@@ -97,6 +97,9 @@ export type SettingsContextType = {
   setIsSettingsVisible: (val: boolean) => void;
 
   expressOrdersEnabled: boolean;
+  isExpressOrdersAvailable: boolean;
+  isExpressAccountSupportLoading: boolean;
+  isExpressAccountSupportResolved: boolean;
   setExpressOrdersEnabled: (val: boolean) => void;
 
   gasPaymentTokenAddress: string;
@@ -219,10 +222,12 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
-  const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
+  const expressOrdersEnabledKey = useMemo(() => getExpressOrdersEnabledKey(chainId, account), [account, chainId]);
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(expressOrdersEnabledKey, false);
-  const effectiveExpressOrdersEnabled = Boolean(
-    expressOrdersEnabled && isExpressAccountSupported && !isExpressAccountSupportLoading
+  const isExpressAccountSupportResolved =
+    !isExpressAccountSupportLoading && expressAccountUnavailableReason !== "capabilityCheckFailed";
+  const isExpressOrdersAvailable = Boolean(
+    expressOrdersEnabled && isExpressAccountSupported && isExpressAccountSupportResolved
   );
 
   const [receiveToGmxAccount, setReceiveToGmxAccount] = useLocalStorageSerializeKey<boolean | null>(
@@ -358,13 +363,13 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(
     function fallbackMultichain() {
-      if (srcChainId && !expressOrdersEnabled && isExpressAccountSupported && !isExpressAccountSupportLoading) {
+      if (srcChainId && !expressOrdersEnabled && isExpressAccountSupported && isExpressAccountSupportResolved) {
         setExpressOrdersEnabled(true);
       }
     },
     [
       expressOrdersEnabled,
-      isExpressAccountSupportLoading,
+      isExpressAccountSupportResolved,
       isExpressAccountSupported,
       setExpressOrdersEnabled,
       srcChainId,
@@ -439,7 +444,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
-      expressOrdersEnabled: effectiveExpressOrdersEnabled,
+      expressOrdersEnabled: Boolean(expressOrdersEnabled),
+      isExpressOrdersAvailable,
+      isExpressAccountSupportLoading,
+      isExpressAccountSupportResolved,
       setExpressOrdersEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
@@ -509,7 +517,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
-    effectiveExpressOrdersEnabled,
+    expressOrdersEnabled,
+    isExpressOrdersAvailable,
+    isExpressAccountSupportLoading,
+    isExpressAccountSupportResolved,
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,

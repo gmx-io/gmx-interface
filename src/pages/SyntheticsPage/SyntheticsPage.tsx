@@ -711,6 +711,7 @@ function useOrdersControl() {
         chainId,
         signer,
         expressParams,
+        requireExpress: true,
         batchParams,
         simulationParams: undefined,
         provider,
@@ -779,6 +780,7 @@ function useOrdersControl() {
         signer,
         provider,
         expressParams,
+        requireExpress: true,
         batchParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({

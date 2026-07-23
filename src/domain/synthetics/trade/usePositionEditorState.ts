@@ -16,7 +16,7 @@ export type PositionEditorState = ReturnType<typeof usePositionEditorState>;
 
 export function usePositionEditorState(chainId: ContractsChainId, srcChainId: SourceChainId | undefined) {
   // const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
-  const { expressOrdersEnabled } = useSettings();
+  const { expressOrdersEnabled, isExpressAccountSupportResolved } = useSettings();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const [collateralInputValue, setCollateralInputValue] = useState("");
   const [selectedCollateralAddressMap, setSelectedCollateralAddressMap] = useLocalStorageSerializeKey<
@@ -53,15 +53,20 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
 
   useEffect(
     function fallbackIsCollateralTokenFromGmxAccount() {
-      if (expressOrdersEnabled) {
+      if (expressOrdersEnabled || !isExpressAccountSupportResolved) {
         return;
       }
 
-      if (isCollateralTokenFromGmxAccount && !expressOrdersEnabled) {
+      if (isCollateralTokenFromGmxAccount) {
         setIsCollateralTokenFromGmxAccount(false);
       }
     },
-    [expressOrdersEnabled, isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount]
+    [
+      expressOrdersEnabled,
+      isCollateralTokenFromGmxAccount,
+      isExpressAccountSupportResolved,
+      setIsCollateralTokenFromGmxAccount,
+    ]
   );
 
   return useMemo(

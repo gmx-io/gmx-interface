@@ -301,6 +301,7 @@ describe("externalSwapSelectors", () => {
         settings: {
           ...defaultState.settings,
           expressOrdersEnabled: true,
+          isExpressOrdersAvailable: true,
           gasPaymentTokenAddress: tokensData.USDC.address,
         },
         features: {

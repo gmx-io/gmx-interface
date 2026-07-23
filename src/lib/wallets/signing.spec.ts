@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { shouldSwitchToVerificationChain } from "./signing";
+import { shouldSwitchToVerificationChain, withNetworkRestoration } from "./signing";
 
 describe("shouldSwitchToVerificationChain", () => {
   it("switches when a smart wallet is deployed on the verification chain", () => {
@@ -61,5 +61,43 @@ describe("shouldSwitchToVerificationChain", () => {
         isKnownSmartAccount: true,
       })
     ).toBe(true);
+  });
+});
+
+describe("withNetworkRestoration", () => {
+  it("returns the action result after restoring the original network", async () => {
+    const restore = vi.fn().mockResolvedValue(undefined);
+
+    await expect(
+      withNetworkRestoration({
+        action: () => Promise.resolve("signature"),
+        restore,
+      })
+    ).resolves.toBe("signature");
+    expect(restore).toHaveBeenCalledOnce();
+  });
+
+  it("surfaces a restoration failure after a successful action", async () => {
+    const restoreError = new Error("User rejected network restoration");
+
+    await expect(
+      withNetworkRestoration({
+        action: () => Promise.resolve("signature"),
+        restore: () => Promise.reject(restoreError),
+      })
+    ).rejects.toBe(restoreError);
+  });
+
+  it("preserves the action error if restoration also fails", async () => {
+    const actionError = new Error("Signing failed");
+    const restore = vi.fn().mockRejectedValue(new Error("Restoration failed"));
+
+    await expect(
+      withNetworkRestoration({
+        action: () => Promise.reject(actionError),
+        restore,
+      })
+    ).rejects.toBe(actionError);
+    expect(restore).toHaveBeenCalledOnce();
   });
 });

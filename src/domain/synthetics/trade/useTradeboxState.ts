@@ -183,7 +183,8 @@ export function useTradeboxState(
     [chainId, latestEnabled, latestHistory]
   );
 
-  const { savedAllowedSlippage, savedTwapNumberOfParts, expressOrdersEnabled } = useSettings();
+  const { savedAllowedSlippage, savedTwapNumberOfParts, expressOrdersEnabled, isExpressAccountSupportResolved } =
+    useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
   const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
 
@@ -714,11 +715,20 @@ export function useTradeboxState(
 
   useEffect(
     function fallbackIsFromTokenGmxAccount() {
-      if (isFromTokenGmxAccount && (!expressOrdersEnabled || isEmptyAvalancheGmxAccount)) {
+      if (
+        isFromTokenGmxAccount &&
+        ((!expressOrdersEnabled && isExpressAccountSupportResolved) || isEmptyAvalancheGmxAccount)
+      ) {
         setIsFromTokenGmxAccount(false);
       }
     },
-    [expressOrdersEnabled, isEmptyAvalancheGmxAccount, isFromTokenGmxAccount, setIsFromTokenGmxAccount]
+    [
+      expressOrdersEnabled,
+      isEmptyAvalancheGmxAccount,
+      isExpressAccountSupportResolved,
+      isFromTokenGmxAccount,
+      setIsFromTokenGmxAccount,
+    ]
   );
 
   return {
