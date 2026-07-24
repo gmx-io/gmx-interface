@@ -232,6 +232,13 @@ export function RewardsVestingModal({
     isUndelegatedGovToken,
   };
 
+  useEffect(
+    () => () => {
+      transactionSessionRef.current += 1;
+    },
+    []
+  );
+
   const effectiveRemainingAmount = useMemo(() => getEffectiveRemainingAmount(data), [data]);
   const vestingLimit = useMemo(() => getVestingLimit(data), [data]);
   const depositAmount = useMemo(() => parseValue(value, GMX_DECIMALS), [value]);
@@ -862,6 +869,7 @@ export function RewardsStopVestingModal({
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const hasMultipleWalletExtensionsChainError = Boolean(multipleWalletExtensionsChainError.buttonErrorMessage);
   const [isStopping, setIsStopping] = useState(false);
+  const transactionSessionRef = useRef(0);
   const walletStateRef = useRef({
     account,
     walletChainId,
@@ -874,6 +882,12 @@ export function RewardsStopVestingModal({
     hasOutdatedUi,
     hasMultipleWalletExtensionsChainError,
   };
+  useEffect(
+    () => () => {
+      transactionSessionRef.current += 1;
+    },
+    []
+  );
   const effectiveRemainingAmount = getEffectiveRemainingAmount(data);
   const convertedAmount = data.vestingInfo.vestedAmount - effectiveRemainingAmount;
 
@@ -896,25 +910,29 @@ export function RewardsStopVestingModal({
       return;
     }
 
-    setIsStopping(true);
     const submittedAccount = account;
     const submittedData = data;
+    const transactionSession = ++transactionSessionRef.current;
+    const hasCurrentTransactionSession = () => transactionSessionRef.current === transactionSession;
+    const hasCurrentWalletState = () =>
+      walletStateRef.current.account === submittedAccount &&
+      walletStateRef.current.walletChainId === ARBITRUM &&
+      !walletStateRef.current.hasOutdatedUi &&
+      !walletStateRef.current.hasMultipleWalletExtensionsChainError;
+    setIsStopping(true);
     let submittedAmount: bigint | undefined;
     try {
       let refreshedData;
       try {
         refreshedData = await mutate();
       } catch {
+        if (!hasCurrentTransactionSession()) return;
         helperToast.error(t`Unable to refresh vesting details. Please try again.`);
         return;
       }
 
-      if (
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
+      if (!hasCurrentTransactionSession()) return;
+      if (!hasCurrentWalletState()) {
         helperToast.info(t`Wallet or network changed. Review your vesting details before stopping.`);
         return;
       }
@@ -939,13 +957,16 @@ export function RewardsStopVestingModal({
 
       submittedAmount = refreshedRemainingAmount;
       const gmxVester = new ethers.Contract(getContract(ARBITRUM, "GmxVester"), abis.Vester, signer);
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       const transaction = await callContract(ARBITRUM, gmxVester, "withdraw", [], {
         sentMsg: t`Stop vesting submitted`,
         failMsg: t`Stop vesting failed`,
         successMsg: t`Vesting stopped`,
         setPendingTxns,
       });
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       await transaction?.wait();
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       sendRewardsTransactionResultEvent({
         transaction: "StopVesting",
         result: "Success",
@@ -954,17 +975,22 @@ export function RewardsStopVestingModal({
       setIsVisible(false);
       try {
         await mutate();
+        if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       } catch {
+        if (!hasCurrentTransactionSession()) return;
         helperToast.info(t`Vesting was stopped. Balances will refresh shortly.`);
       }
     } catch {
+      if (!hasCurrentTransactionSession()) return;
       sendRewardsTransactionResultEvent({
         transaction: "StopVesting",
         result: "Fail",
         amount: submittedAmount,
       });
     } finally {
-      setIsStopping(false);
+      if (hasCurrentTransactionSession()) {
+        setIsStopping(false);
+      }
     }
   };
 

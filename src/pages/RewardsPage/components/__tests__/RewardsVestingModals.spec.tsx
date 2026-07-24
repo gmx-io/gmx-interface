@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
@@ -676,6 +676,45 @@ describe("RewardsVestingModal", () => {
     );
     expect(mockCallContract).toHaveBeenCalledTimes(1);
     expect(mockCallContract.mock.calls[0][2]).toBe("stakeGmx");
+  });
+
+  it("does not deposit after the vesting modal unmounts during the post-stake refresh", async () => {
+    const initialData = {
+      ...baseData,
+      freePairAmount: 0n,
+      walletGmxBalance: 100n * TOKEN_UNIT,
+    };
+    const refreshedData = {
+      ...initialData,
+      freePairAmount: 100n * TOKEN_UNIT,
+      walletGmxBalance: 0n,
+      stakedGmxBalance: 100n * TOKEN_UNIT,
+    };
+    let resolveMutate: ((data: RewardsVestingData) => void) | undefined;
+    mockUseTokensAllowanceData.mockReturnValue({
+      tokensAllowanceData: { [getContract(ARBITRUM, "GMX")]: 100n * TOKEN_UNIT },
+      isLoading: false,
+      isLoaded: true,
+    });
+    mockCallContract.mockResolvedValueOnce({ wait: vi.fn(async () => undefined) } as any);
+    mutate.mockResolvedValueOnce(initialData).mockImplementationOnce(
+      () =>
+        new Promise<RewardsVestingData>((resolve) => {
+          resolveMutate = resolve;
+        })
+    );
+    const view = renderVestModal(initialData);
+
+    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(2));
+
+    view.unmount();
+    await act(async () => {
+      resolveMutate?.(refreshedData);
+      await Promise.resolve();
+    });
+
+    expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["stakeGmx"]);
   });
 
   it("reports partial completion when staking succeeds but vesting fails", async () => {

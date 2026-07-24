@@ -505,12 +505,12 @@ describe("RewardsTiersTab", () => {
 
     expect(featuredMarketsRow.textContent).toContain("GMX");
     expect(within(featuredMarketsRow).getByText("+0.25x")).toBeDefined();
-    expect(within(featuredMarketsRow).getByText("Active")).toBeDefined();
+    expect(within(featuredMarketsRow).getByText("Qualified this epoch")).toBeDefined();
     expect(balancingTradesRow.textContent).toContain(
       formatUsd(config.balancingTradesThreshold, { displayDecimals: 0 })
     );
     expect(within(balancingTradesRow).getByText("+0.5x")).toBeDefined();
-    expect(within(balancingTradesRow).getByText("Inactive")).toBeDefined();
+    expect(within(balancingTradesRow).getByText("Not qualified this epoch")).toBeDefined();
     expect(lifetimeVolumeRow.textContent).toContain(formatUsd(config.lifetimeVolumeThreshold, { displayDecimals: 0 }));
     expect(within(lifetimeVolumeRow).getByText("+1x")).toBeDefined();
     expect(within(lifetimeVolumeRow).getByText("Active")).toBeDefined();

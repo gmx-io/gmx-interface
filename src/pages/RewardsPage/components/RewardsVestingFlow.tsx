@@ -228,6 +228,8 @@ export function RewardsVestingFlow() {
   const [isClaiming, setIsClaiming] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const hasHandledStartActionRef = useRef(false);
+  const transactionSessionRef = useRef(0);
+  const isVestingActionPendingRef = useRef(false);
   const walletStateRef = useRef({
     account,
     walletChainId,
@@ -240,6 +242,13 @@ export function RewardsVestingFlow() {
     hasOutdatedUi,
     hasMultipleWalletExtensionsChainError,
   };
+
+  useEffect(
+    () => () => {
+      transactionSessionRef.current += 1;
+    },
+    []
+  );
 
   const isDisconnected = !account && !isDebugFixture;
   const isInitialLoading = !isDisconnected && isLoading && !data && !error;
@@ -323,6 +332,8 @@ export function RewardsVestingFlow() {
       walletChainId !== ARBITRUM ||
       claimableAmount === 0n ||
       isClaiming ||
+      isUnlocking ||
+      isVestingActionPendingRef.current ||
       hasOutdatedUi ||
       hasMultipleWalletExtensionsChainError ||
       isDebugFixture
@@ -330,24 +341,29 @@ export function RewardsVestingFlow() {
       return;
     }
 
-    setIsClaiming(true);
     const submittedAccount = account;
+    const transactionSession = ++transactionSessionRef.current;
+    const hasCurrentTransactionSession = () => transactionSessionRef.current === transactionSession;
+    const hasCurrentWalletState = () =>
+      walletStateRef.current.account === submittedAccount &&
+      walletStateRef.current.walletChainId === ARBITRUM &&
+      !walletStateRef.current.hasOutdatedUi &&
+      !walletStateRef.current.hasMultipleWalletExtensionsChainError;
+    isVestingActionPendingRef.current = true;
+    setIsClaiming(true);
     let submittedAmount: bigint | undefined;
     try {
       let refreshedData;
       try {
         refreshedData = await mutate();
       } catch {
+        if (!hasCurrentTransactionSession()) return;
         helperToast.error(t`Unable to refresh claimable rewards. Please try again.`);
         return;
       }
 
-      if (
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
+      if (!hasCurrentTransactionSession()) return;
+      if (!hasCurrentWalletState()) {
         helperToast.info(t`Wallet or network changed. Review your rewards before claiming.`);
         return;
       }
@@ -363,13 +379,16 @@ export function RewardsVestingFlow() {
       }
 
       const gmxVester = new ethers.Contract(getContract(ARBITRUM, "GmxVester"), abis.Vester, signer);
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       const transaction = await callContract(ARBITRUM, gmxVester, "claim", [], {
         sentMsg: t`Claim submitted`,
         failMsg: t`Claim failed`,
         successMsg: t`GMX claimed`,
         setPendingTxns,
       });
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       await transaction?.wait();
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       sendRewardsTransactionResultEvent({
         transaction: "ClaimVestedGmx",
         result: "Success",
@@ -377,17 +396,23 @@ export function RewardsVestingFlow() {
       });
       try {
         await mutate();
+        if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       } catch {
+        if (!hasCurrentTransactionSession()) return;
         helperToast.info(t`GMX was claimed. Balances will refresh shortly.`);
       }
     } catch {
+      if (!hasCurrentTransactionSession()) return;
       sendRewardsTransactionResultEvent({
         transaction: "ClaimVestedGmx",
         result: "Fail",
         amount: submittedAmount,
       });
     } finally {
-      setIsClaiming(false);
+      if (hasCurrentTransactionSession()) {
+        isVestingActionPendingRef.current = false;
+        setIsClaiming(false);
+      }
     }
   };
 
@@ -400,6 +425,8 @@ export function RewardsVestingFlow() {
       !isVestingComplete ||
       (vestingInfo?.pairAmount ?? 0n) === 0n ||
       isUnlocking ||
+      isClaiming ||
+      isVestingActionPendingRef.current ||
       hasOutdatedUi ||
       hasMultipleWalletExtensionsChainError ||
       isDebugFixture
@@ -407,25 +434,30 @@ export function RewardsVestingFlow() {
       return;
     }
 
-    setIsUnlocking(true);
     const submittedAccount = account;
     const submittedData = data;
+    const transactionSession = ++transactionSessionRef.current;
+    const hasCurrentTransactionSession = () => transactionSessionRef.current === transactionSession;
+    const hasCurrentWalletState = () =>
+      walletStateRef.current.account === submittedAccount &&
+      walletStateRef.current.walletChainId === ARBITRUM &&
+      !walletStateRef.current.hasOutdatedUi &&
+      !walletStateRef.current.hasMultipleWalletExtensionsChainError;
+    isVestingActionPendingRef.current = true;
+    setIsUnlocking(true);
     let submittedAmount: bigint | undefined;
     try {
       let refreshedData;
       try {
         refreshedData = await mutate();
       } catch {
+        if (!hasCurrentTransactionSession()) return;
         helperToast.error(t`Unable to refresh vesting details. Please try again.`);
         return;
       }
 
-      if (
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
+      if (!hasCurrentTransactionSession()) return;
+      if (!hasCurrentWalletState()) {
         helperToast.info(t`Wallet or network changed. Review your vesting details before unlocking collateral.`);
         return;
       }
@@ -449,13 +481,16 @@ export function RewardsVestingFlow() {
 
       submittedAmount = refreshedInfo.pairAmount;
       const gmxVester = new ethers.Contract(getContract(ARBITRUM, "GmxVester"), abis.Vester, signer);
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       const transaction = await callContract(ARBITRUM, gmxVester, "withdraw", [], {
         sentMsg: t`Unlock submitted`,
         failMsg: t`Unlock failed`,
         successMsg: t`Collateral unlocked`,
         setPendingTxns,
       });
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       await transaction?.wait();
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       sendRewardsTransactionResultEvent({
         transaction: "UnlockCollateral",
         result: "Success",
@@ -463,17 +498,23 @@ export function RewardsVestingFlow() {
       });
       try {
         await mutate();
+        if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       } catch {
+        if (!hasCurrentTransactionSession()) return;
         helperToast.info(t`Collateral was unlocked. Balances will refresh shortly.`);
       }
     } catch {
+      if (!hasCurrentTransactionSession()) return;
       sendRewardsTransactionResultEvent({
         transaction: "UnlockCollateral",
         result: "Fail",
         amount: submittedAmount,
       });
     } finally {
-      setIsUnlocking(false);
+      if (hasCurrentTransactionSession()) {
+        isVestingActionPendingRef.current = false;
+        setIsUnlocking(false);
+      }
     }
   };
 
@@ -643,6 +684,7 @@ export function RewardsVestingFlow() {
                       onClick={handleUnlock}
                       disabled={
                         isUnlocking ||
+                        isClaiming ||
                         !signer ||
                         hasOutdatedUi ||
                         hasMultipleWalletExtensionsChainError ||
@@ -710,6 +752,7 @@ export function RewardsVestingFlow() {
                       onClick={handleClaim}
                       disabled={
                         isClaiming ||
+                        isUnlocking ||
                         !signer ||
                         hasOutdatedUi ||
                         hasMultipleWalletExtensionsChainError ||

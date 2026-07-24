@@ -362,6 +362,7 @@ function BoostsTable({
           <TableListSkeleton count={visibleBoosts.length} Structure={TierLevelsSkeletonRow} />
         ) : (
           visibleBoosts.map((boost) => {
+            const transient = boost.boost === "FeaturedMarkets" || boost.boost === "BalancingTrades";
             const listed = Boolean(status?.boostIds.includes(boost.boost));
 
             return (
@@ -381,7 +382,11 @@ function BoostsTable({
                   {formatMultiplierAdjustment(boost.multiplier, config.multiplierDecimals)}
                 </TableTd>
                 <TableTd padding="compact">
-                  <StatusLabel state={statusState} active={listed} />
+                  <StatusLabel
+                    state={statusState}
+                    active={!transient && listed}
+                    qualified={transient ? listed : undefined}
+                  />
                 </TableTd>
               </TierLevelTableTr>
             );
