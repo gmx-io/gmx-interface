@@ -1434,6 +1434,7 @@ msgstr "Код уже занят"
 msgid "{0} swapped to {1} when executed"
 msgstr "{0} будет обменено на {1} при исполнении"
 
+#: src/components/RewardsShare/RewardsShareCard.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -1595,6 +1596,10 @@ msgstr "Ожидание подтверждения перевода..."
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr "Симулированный вид книги ордеров ликвидности GMX. Открытие исполняется по расчётной цене без влияния на цену. Чистое влияние на цену применяется только при закрытии (ограничено, обычно 0,5%). <0>Подробнее</0>."
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "rewards"
+msgstr "награды"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable share modal PnL check"
@@ -3692,6 +3697,10 @@ msgstr "Очистить выбор"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "Экспозиция к PnL рыночных трейдеров"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "{0} of eligible position fee"
+msgstr "{0} от учитываемой комиссии за позицию"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL before fees, discounts and price impact."
@@ -6527,6 +6536,11 @@ msgstr "Не удалось создать реферальный код"
 msgid "Withdraw fee"
 msgstr "Комиссия за вывод"
 
+#: src/components/TradeBox/TradeBoxRows/RewardsHintRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Estimated rewards"
+msgstr "Расчётные награды"
+
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -7193,6 +7207,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "{balanceFormatted} остаётся на старом субаккаунте 1CT"
 
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
+#: src/components/RewardsShare/RewardsShare.tsx
 msgid "Share your rewards"
 msgstr "Поделиться наградами"
 
@@ -7563,6 +7578,7 @@ msgstr ""
 msgid "Reward cap"
 msgstr "Лимит награды"
 
+#: src/components/RewardsShare/RewardsShareCard.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -7646,6 +7662,7 @@ msgstr ""
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Share"
 msgstr "Поделиться"
 
@@ -9756,6 +9773,10 @@ msgstr ""
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV"
 msgstr "Не удалось скачать CSV истории сделок"
+
+#: src/components/RewardsShare/RewardsShareCard.tsx
+msgid "I'm ranked #{rank} on GMX."
+msgstr "Я занимаю #{rank}-е место на GMX."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -12365,6 +12386,10 @@ msgstr "Мониторинг Oracle keeper"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "Введите новый размер или цену"
+
+#: src/components/RewardsShare/RewardsShareCard.tsx
+msgid "Start trading with me."
+msgstr "Начните торговать вместе со мной."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TVChartContainer/constants.ts

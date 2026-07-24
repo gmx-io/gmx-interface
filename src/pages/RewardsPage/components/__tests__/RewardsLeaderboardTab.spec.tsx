@@ -18,10 +18,35 @@ vi.mock("components/TableScrollFade/TableScrollFade", () => ({
   TableScrollFadeContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+const rewardsShareMock = vi.hoisted(() => ({
+  props: [] as {
+    isOpen: boolean;
+    account: string;
+    chainId: number;
+    entry: LeaderboardEntry;
+  }[],
+}));
+
+vi.mock("components/RewardsShare/RewardsShare", () => ({
+  RewardsShare: (props: { isOpen: boolean; account: string; chainId: number; entry: LeaderboardEntry }) => {
+    rewardsShareMock.props.push(props);
+
+    return props.isOpen ? (
+      <div data-testid="rewards-share-modal" data-account={props.account} data-chain-id={props.chainId}>
+        {props.entry.rank}
+      </div>
+    ) : null;
+  },
+}));
+
 vi.mock("img/ic_calendar.svg?react", () => ({
   default: ({ className }: { className?: string }) => (
     <svg className={className} data-testid="all-time-calendar-icon" />
   ),
+}));
+
+vi.mock("img/ic_share_arrow_filled.svg?react", () => ({
+  default: ({ className }: { className?: string }) => <svg className={className} data-testid="share-icon" />,
 }));
 
 type LeaderboardParams = {
@@ -111,11 +136,11 @@ function makeEntry(address: string, rank: number): LeaderboardEntry {
 const pageEntry = makeEntry("0xde709f2102306220921060314715629080e2fb77", 1);
 const pinnedEntry = makeEntry(CHECKSUMMED_ACCOUNT, 47);
 
-function renderLeaderboard(activeConfig = config) {
+function renderLeaderboard(activeConfig = config, account: string | undefined = CHECKSUMMED_ACCOUNT) {
   return render(
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
-        <RewardsLeaderboardTab chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} config={activeConfig} />
+        <RewardsLeaderboardTab chainId={ARBITRUM} account={account} config={activeConfig} />
       </MemoryRouter>
     </I18nProvider>
   );
@@ -160,6 +185,7 @@ describe("RewardsLeaderboardTab", () => {
     leaderboardMock.pinnedMutate.mockReset();
     leaderboardMock.pageParams.length = 0;
     leaderboardMock.pinnedParams.length = 0;
+    rewardsShareMock.props.length = 0;
   });
 
   afterEach(() => {
@@ -187,6 +213,7 @@ describe("RewardsLeaderboardTab", () => {
     });
     expect(screen.queryByRole("columnheader", { name: "Multiplier" })).toBeNull();
     expect(within(screen.getByTestId("leaderboard-pinned-row")).queryByText("2.5x")).toBeNull();
+    expect(within(screen.getByTestId("leaderboard-pinned-row")).getByRole("button", { name: "Share" })).toBeTruthy();
   });
 
   it("renders the exact-cased connected account with its indexed values and global volume rank", () => {
@@ -214,6 +241,66 @@ describe("RewardsLeaderboardTab", () => {
 
     const pinnedParams = leaderboardMock.pinnedParams[leaderboardMock.pinnedParams.length - 1];
     expect(pinnedParams.where).toEqual({ account: CHECKSUMMED_ACCOUNT });
+  });
+
+  it("opens the rewards share modal from the connected account's pinned row", () => {
+    renderLeaderboard();
+
+    const pinnedRow = screen.getByTestId("leaderboard-pinned-row");
+    const shareButton = within(pinnedRow).getByRole("button", { name: "Share" });
+    expect(within(shareButton).getByTestId("share-icon")).toBeTruthy();
+
+    fireEvent.click(shareButton);
+
+    expect(screen.getByTestId("rewards-share-modal").textContent).toBe(String(pinnedEntry.rank));
+    expect(rewardsShareMock.props.at(-1)).toMatchObject({
+      isOpen: true,
+      account: CHECKSUMMED_ACCOUNT,
+      chainId: ARBITRUM,
+      entry: pinnedEntry,
+    });
+  });
+
+  it("opens sharing from the connected account's inline row without duplicating the action", () => {
+    leaderboardMock.data = [pageEntry, pinnedEntry];
+    renderLeaderboard();
+
+    expect(screen.queryByTestId("leaderboard-pinned-row")).toBeNull();
+    const accountRow = screen.getByTitle(CHECKSUMMED_ACCOUNT).closest("tr");
+    if (!accountRow) throw new Error("Connected account row not found");
+
+    fireEvent.click(within(accountRow).getByRole("button", { name: "Share" }));
+
+    expect(screen.getAllByRole("button", { name: "Share" })).toHaveLength(1);
+    expect(rewardsShareMock.props.at(-1)?.entry).toBe(pinnedEntry);
+    expect(screen.getByTestId("rewards-share-modal")).toBeTruthy();
+  });
+
+  it("does not offer sharing for other accounts or an unranked connected account", () => {
+    leaderboardMock.pinnedData = [];
+    renderLeaderboard();
+
+    expect(within(screen.getByTestId("leaderboard-pinned-row")).getByText("N/A")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Share" })).toBeNull();
+    expect(screen.queryByTestId("rewards-share-modal")).toBeNull();
+  });
+
+  it("does not offer sharing without a connected account", () => {
+    leaderboardMock.pinnedData = undefined;
+    renderLeaderboard(config, undefined);
+
+    expect(screen.queryByRole("button", { name: "Share" })).toBeNull();
+    expect(screen.queryByTestId("rewards-share-modal")).toBeNull();
+  });
+
+  it("closes a cached share card when the leaderboard period changes", async () => {
+    renderLeaderboard();
+    fireEvent.click(within(screen.getByTestId("leaderboard-pinned-row")).getByRole("button", { name: "Share" }));
+    expect(screen.getByTestId("rewards-share-modal")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Last epoch" }));
+
+    await waitFor(() => expect(screen.queryByTestId("rewards-share-modal")).toBeNull());
   });
 
   it("keeps the connected account pinned across pages unless it is already in the visible page data", async () => {

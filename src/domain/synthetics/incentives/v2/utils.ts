@@ -2,6 +2,9 @@ import { ONE_YEAR_SECONDS, SECONDS_IN_DAY } from "lib/dates";
 import { formatAmount, formatUsd, PRECISION, USD_DECIMALS } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { ES_GMX_DECIMALS, GT_DECIMALS } from "./constants";
+import type { EstimatedTradeRewards } from "./tradeRewardEstimate";
+
 export function formatEpochLabel(epochTimestamp: number, epochDuration: number, locale?: string): string {
   const safeEpochDuration = Math.max(epochDuration, 1);
   const start = new Date(epochTimestamp * 1000);
@@ -134,4 +137,19 @@ export function formatRewardUsd(value: bigint, displayDecimals = 0) {
   if (value > 0n && value < PRECISION) return "< $1";
 
   return formatUsd(value, { displayDecimals }) ?? "-";
+}
+
+export function formatEstimatedTradeRewards(rewards: EstimatedTradeRewards) {
+  if (rewards.esGmxRewards !== undefined && rewards.gtRewards !== undefined) {
+    const esGmxRewards = formatAmount(rewards.esGmxRewards, ES_GMX_DECIMALS, 4, true, {
+      trimTrailingZeros: true,
+    });
+    const gtRewards = formatAmount(rewards.gtRewards, GT_DECIMALS, 4, true, {
+      trimTrailingZeros: true,
+    });
+
+    return `${esGmxRewards} esGMX + ${gtRewards} GT`;
+  }
+
+  return formatUsd(rewards.rewardsUsd, { displayDecimals: 2 }) ?? "-";
 }

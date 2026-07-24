@@ -7,6 +7,7 @@ import { isAddress } from "viem";
 
 import "./RewardsLeaderboardTab.scss";
 
+import type { ContractsChainId } from "config/chains";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
@@ -19,6 +20,7 @@ import { formatAmount, formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import { RewardsShare } from "components/RewardsShare/RewardsShare";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TableListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter } from "components/Sorter/Sorter";
@@ -27,17 +29,19 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import Tabs from "components/Tabs/Tabs";
 
 import AllTimeIcon from "img/ic_calendar.svg?react";
+import ShareIcon from "img/ic_share_arrow_filled.svg?react";
 
 const PAGE_SIZE = 20;
 
-const COL_RANK: CSSProperties = { width: "8%" };
-const COL_ADDRESS: CSSProperties = { width: "18%" };
-const COL_TRADING_VOLUME: CSSProperties = { width: "14%" };
-const COL_REFERRAL_VOLUME: CSSProperties = { width: "14%" };
+const COL_RANK: CSSProperties = { width: "7%" };
+const COL_ADDRESS: CSSProperties = { width: "17%" };
+const COL_TRADING_VOLUME: CSSProperties = { width: "13%" };
+const COL_REFERRAL_VOLUME: CSSProperties = { width: "13%" };
 const COL_ES_GMX: CSSProperties = { width: "12%" };
-const COL_GT: CSSProperties = { width: "12%" };
+const COL_GT: CSSProperties = { width: "10%" };
 const COL_REWARDS: CSSProperties = { width: "12%" };
-const COL_MULTIPLIER: CSSProperties = { width: "10%" };
+const COL_MULTIPLIER: CSSProperties = { width: "8%" };
+const COL_SHARE: CSSProperties = { width: "8%" };
 const LEADERBOARD_ROW_CLASS_NAME = "h-40";
 const LEADERBOARD_TD_CLASS_NAME = "!py-8";
 const CURRENT_ACCOUNT_ROW_CLASS_NAME =
@@ -98,6 +102,9 @@ function RewardsLeaderboardSkeletonRow({
           <Skeleton width={56} inline />
         </TableTd>
       ) : null}
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
+        <Skeleton width={56} inline />
+      </TableTd>
     </tr>
   );
 }
@@ -131,12 +138,14 @@ function LeaderboardRow({
   account,
   config,
   showMultiplier,
+  onShare,
   pinned = false,
 }: {
   entry: LeaderboardEntry;
   account?: string;
   config: IncentivesConfig;
   showMultiplier: boolean;
+  onShare?: (entry: LeaderboardEntry) => void;
   pinned?: boolean;
 }) {
   const isAccount = entry.address === account;
@@ -180,6 +189,18 @@ function LeaderboardRow({
           {entry.multiplier !== null ? formatMultiplier(entry.multiplier, config.multiplierDecimals) : "-"}
         </TableTd>
       ) : null}
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
+        {isAccount && onShare ? (
+          <button
+            type="button"
+            onClick={() => onShare(entry)}
+            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+          >
+            <ShareIcon className="size-12" />
+            <Trans>Share</Trans>
+          </button>
+        ) : null}
+      </TableTd>
     </TableTr>
   );
 }
@@ -202,6 +223,7 @@ function EmptyPinnedLeaderboardRow({ account, showMultiplier }: { account: strin
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>-</TableTd>
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>-</TableTd>
       {showMultiplier ? <TableTd className={LEADERBOARD_TD_CLASS_NAME}>-</TableTd> : null}
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME} />
     </TableTr>
   );
 }
@@ -211,7 +233,7 @@ export function RewardsLeaderboardTab({
   account,
   config,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   account?: string;
   config: IncentivesConfig;
 }) {
@@ -219,6 +241,8 @@ export function RewardsLeaderboardTab({
   const [orderBy, setOrderBy] = useState<IncentivesLeaderboardOrderBy>("tradingVolume_DESC");
   const [page, setPage] = useState(1);
   const [searchAddress, setSearchAddress] = useState("");
+  const [shareEntry, setShareEntry] = useState<LeaderboardEntry | null>(null);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const searchAccount = useMemo(() => {
     const value = searchAddress.trim();
 
@@ -273,6 +297,11 @@ export function RewardsLeaderboardTab({
   const hasNoSearchMatch = Boolean(searchAccount && !loading && data !== undefined && data.length === 0);
 
   useEffect(() => setPage(1), [account, effectiveOrderBy, period, searchAccount]);
+
+  useEffect(() => {
+    setIsShareOpen(false);
+    setShareEntry(null);
+  }, [account, config.epochTimestamp, period]);
 
   useEffect(() => {
     if (!showMultiplier && orderBy.startsWith("multiplier_")) {
@@ -352,6 +381,10 @@ export function RewardsLeaderboardTab({
     const normalizedValue = value.trim();
     if (!normalizedValue || isAddress(normalizedValue)) setPage(1);
   }, []);
+  const handleShare = useCallback((entry: LeaderboardEntry) => {
+    setShareEntry(entry);
+    setIsShareOpen(true);
+  }, []);
   const getSorterProps = useCallback(
     (field: LeaderboardSortField) => {
       const direction: SortDirection = effectiveOrderBy.startsWith(`${field}_`)
@@ -389,7 +422,14 @@ export function RewardsLeaderboardTab({
         }
       />
     ) : showPinnedRow && pinnedEntry ? (
-      <LeaderboardRow entry={pinnedEntry} account={account} config={config} showMultiplier={showMultiplier} pinned />
+      <LeaderboardRow
+        entry={pinnedEntry}
+        account={account}
+        config={config}
+        showMultiplier={showMultiplier}
+        onShare={handleShare}
+        pinned
+      />
     ) : showEmptyPinnedRow && account ? (
       <EmptyPinnedLeaderboardRow account={account} showMultiplier={showMultiplier} />
     ) : null;
@@ -455,7 +495,7 @@ export function RewardsLeaderboardTab({
             <table
               className={cx(
                 "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:last-child]:!text-left [&_th:last-child]:!text-left",
-                showMultiplier ? "min-w-[1080px]" : "min-w-[920px]"
+                showMultiplier ? "min-w-[1160px]" : "min-w-[1000px]"
               )}
             >
               <colgroup>
@@ -467,6 +507,7 @@ export function RewardsLeaderboardTab({
                 <col style={COL_GT} />
                 <col style={COL_REWARDS} />
                 {showMultiplier ? <col style={COL_MULTIPLIER} /> : null}
+                <col style={COL_SHARE} />
               </colgroup>
               <thead>
                 <TableTheadTr>
@@ -508,6 +549,7 @@ export function RewardsLeaderboardTab({
                       </Sorter>
                     </TableTh>
                   ) : null}
+                  <TableTh />
                 </TableTheadTr>
               </thead>
               <tbody>
@@ -527,7 +569,7 @@ export function RewardsLeaderboardTab({
                     {hasNoSearchMatch ? (
                       <TableTr className={LEADERBOARD_ROW_CLASS_NAME}>
                         <TableTd
-                          colSpan={showMultiplier ? 8 : 7}
+                          colSpan={showMultiplier ? 9 : 8}
                           className={cx(LEADERBOARD_TD_CLASS_NAME, "text-typography-secondary")}
                         >
                           <div className="text-center">
@@ -543,6 +585,7 @@ export function RewardsLeaderboardTab({
                         account={account}
                         config={config}
                         showMultiplier={showMultiplier}
+                        onShare={handleShare}
                       />
                     ))}
                     {data !== undefined && visibleMainRowCount < PAGE_SIZE ? (
@@ -574,6 +617,15 @@ export function RewardsLeaderboardTab({
           </div>
         </div>
       )}
+      {shareEntry && account ? (
+        <RewardsShare
+          isOpen={isShareOpen}
+          setIsOpen={setIsShareOpen}
+          account={account}
+          chainId={chainId}
+          entry={shareEntry}
+        />
+      ) : null}
     </div>
   );
 }

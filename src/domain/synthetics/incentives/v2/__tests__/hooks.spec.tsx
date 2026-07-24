@@ -16,11 +16,13 @@ import {
   ACCOUNT_INCENTIVE_STATUS_QUERY,
   ACCOUNT_REWARDS_HISTORY_QUERY,
   INCENTIVES_LEADERBOARD_QUERY,
+  LATEST_GT_PRICE_QUERY,
   REWARDS_PROMO_ACTIVITY_QUERY,
 } from "../queries";
 import { useAccountIncentiveStatus } from "../useAccountIncentiveStatus";
 import { useAccountRewardsHistory } from "../useAccountRewardsHistory";
 import { useIncentivesLeaderboard } from "../useIncentivesLeaderboard";
+import { useLatestGtPrice } from "../useLatestGtPrice";
 import { useRewardsPromoActivity } from "../useRewardsPromoActivity";
 
 const ENDPOINT = "https://example.com/incentives/graphql";
@@ -125,6 +127,47 @@ describe("Incentives V2 hooks", () => {
     });
   });
 
+  it("loads and parses the latest GT price independently", async () => {
+    mockFetchIncentivesGraphql.mockResolvedValue({
+      gtPrices: [{ priceUsd: "1804826760162400000000000000000", timestamp: 1_784_073_600 }],
+    });
+
+    function TestComponent() {
+      const { data } = useLatestGtPrice(ARBITRUM);
+      return <div>{data ? `${data.priceUsd}:${data.timestamp}` : "loading"}</div>;
+    }
+
+    renderWithSWR(<TestComponent />);
+
+    expect(await screen.findByText("1804826760162400000000000000000:1784073600")).toBeTruthy();
+    expect(mockFetchIncentivesGraphql).toHaveBeenCalledWith(ENDPOINT, LATEST_GT_PRICE_QUERY);
+  });
+
+  it("exposes an unavailable GT price without failing other incentives requests", async () => {
+    mockFetchIncentivesGraphql.mockImplementation(async (_endpoint, query) => {
+      if (query === LATEST_GT_PRICE_QUERY) {
+        throw new Error("GraphQL error: Cannot query field gtPrices");
+      }
+
+      return { accountIncentiveStatus: rawStatus };
+    });
+
+    function TestComponent() {
+      const { error: priceError } = useLatestGtPrice(ARBITRUM);
+      const { data: status } = useAccountIncentiveStatus(ARBITRUM, { account: CHECKSUMMED_ACCOUNT });
+
+      return (
+        <div>
+          {priceError?.message ?? "no price error"}:{status?.multiplier.toString() ?? "loading status"}
+        </div>
+      );
+    }
+
+    renderWithSWR(<TestComponent />);
+
+    expect(await screen.findByText("GraphQL error: Cannot query field gtPrices:100")).toBeTruthy();
+  });
+
   it("uses direct history pagination with the original account casing", async () => {
     mockFetchIncentivesGraphql.mockResolvedValue({
       accountRewardsHistory: { totalCount: 1, items: [rawHistoryEntry] },
@@ -178,6 +221,7 @@ describe("Incentives V2 hooks", () => {
       useAccountIncentiveStatus(ARBITRUM, { account: CHECKSUMMED_ACCOUNT, enabled: false });
       useAccountRewardsHistory(ARBITRUM, { account: "invalid", limit: 20, offset: 0 });
       useIncentivesLeaderboard(ARBITRUM, { where: { account: "invalid" }, limit: 20, offset: 0 });
+      useLatestGtPrice(ARBITRUM, { enabled: false });
       useRewardsPromoActivity(ARBITRUM, { account: "invalid" });
       return null;
     }

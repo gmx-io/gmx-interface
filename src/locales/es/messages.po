@@ -1434,6 +1434,7 @@ msgstr "Código ya cogido"
 msgid "{0} swapped to {1} when executed"
 msgstr "{0} se intercambia por {1} cuando se ejecuta"
 
+#: src/components/RewardsShare/RewardsShareCard.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -1595,6 +1596,10 @@ msgstr "Aprobación de transferencia pendiente..."
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr "Vista simulada del libro de órdenes de la liquidez de GMX. Las aperturas se ejecutan al precio de referencia sin impacto. El impacto neto en el precio se aplica solo en los cierres (limitado, normalmente al 0,5%). <0>Más información</0>."
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "rewards"
+msgstr "recompensas"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable share modal PnL check"
@@ -3692,6 +3697,10 @@ msgstr "Limpiar selección"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "Exposición al PnL de los operadores del mercado"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "{0} of eligible position fee"
+msgstr "{0} de la comisión de posición elegible"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL before fees, discounts and price impact."
@@ -6527,6 +6536,11 @@ msgstr "Error al crear el código de referido"
 msgid "Withdraw fee"
 msgstr "Comisión de retirada"
 
+#: src/components/TradeBox/TradeBoxRows/RewardsHintRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Estimated rewards"
+msgstr "Recompensas estimadas"
+
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -7193,6 +7207,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "{balanceFormatted} restante en la subcuenta 1CT antigua"
 
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
+#: src/components/RewardsShare/RewardsShare.tsx
 msgid "Share your rewards"
 msgstr "Comparte tus recompensas"
 
@@ -7563,6 +7578,7 @@ msgstr ""
 msgid "Reward cap"
 msgstr "Límite de recompensa"
 
+#: src/components/RewardsShare/RewardsShareCard.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -7646,6 +7662,7 @@ msgstr ""
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Share"
 msgstr "Compartir"
 
@@ -9756,6 +9773,10 @@ msgstr ""
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV"
 msgstr "Error al descargar el CSV del historial de operaciones"
+
+#: src/components/RewardsShare/RewardsShareCard.tsx
+msgid "I'm ranked #{rank} on GMX."
+msgstr "Estoy en el puesto #{rank} en GMX."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -12365,6 +12386,10 @@ msgstr "Monitorización del Oracle keeper"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "Ingresa un nuevo tamaño o precio"
+
+#: src/components/RewardsShare/RewardsShareCard.tsx
+msgid "Start trading with me."
+msgstr "Empieza a operar conmigo."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TVChartContainer/constants.ts

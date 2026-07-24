@@ -1434,6 +1434,7 @@ msgstr "이미 사용된 코드입니다"
 msgid "{0} swapped to {1} when executed"
 msgstr "체결 시 {0}이(가) {1}(으)로 스왑됩니다"
 
+#: src/components/RewardsShare/RewardsShareCard.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -1595,6 +1596,10 @@ msgstr "전송 승인 대기 중..."
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr "GMX 유동성의 시뮬레이션 호가창 뷰입니다. 진입 시 기준가로 체결되며 가격 영향이 없습니다. 순 가격 영향은 청산 시에만 적용됩니다 (상한 있음, 통상 0.5%). <0>자세히 보기</0>."
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "rewards"
+msgstr "보상"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable share modal PnL check"
@@ -3692,6 +3697,10 @@ msgstr "선택 해제"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "마켓 트레이더 PnL에 대한 노출"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "{0} of eligible position fee"
+msgstr "적격 포지션 수수료의 {0}"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL before fees, discounts and price impact."
@@ -6527,6 +6536,11 @@ msgstr "추천 코드 생성에 실패했습니다"
 msgid "Withdraw fee"
 msgstr "출금 수수료"
 
+#: src/components/TradeBox/TradeBoxRows/RewardsHintRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Estimated rewards"
+msgstr "예상 보상"
+
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -7193,6 +7207,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "기존 1CT 서브계정에 {balanceFormatted} 잔여"
 
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
+#: src/components/RewardsShare/RewardsShare.tsx
 msgid "Share your rewards"
 msgstr "보상 공유"
 
@@ -7563,6 +7578,7 @@ msgstr ""
 msgid "Reward cap"
 msgstr "보상 한도"
 
+#: src/components/RewardsShare/RewardsShareCard.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -7646,6 +7662,7 @@ msgstr ""
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Share"
 msgstr "공유"
 
@@ -9756,6 +9773,10 @@ msgstr ""
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV"
 msgstr "거래 내역 CSV 다운로드에 실패했습니다"
+
+#: src/components/RewardsShare/RewardsShareCard.tsx
+msgid "I'm ranked #{rank} on GMX."
+msgstr "GMX에서 #{rank}위입니다."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -12365,6 +12386,10 @@ msgstr "Oracle keeper 모니터링"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "새 크기 또는 가격 입력"
+
+#: src/components/RewardsShare/RewardsShareCard.tsx
+msgid "Start trading with me."
+msgstr "저와 함께 거래를 시작하세요."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TVChartContainer/constants.ts

@@ -1434,6 +1434,7 @@ msgstr "代码已被使用"
 msgid "{0} swapped to {1} when executed"
 msgstr "执行时 {0} 将兑换为 {1}"
 
+#: src/components/RewardsShare/RewardsShareCard.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -1595,6 +1596,10 @@ msgstr "等待转账审批..."
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr "GMX 流动性的模拟订单簿视图。开仓以标记价格执行，无价格影响。净价格影响仅适用于平仓（有上限，通常为 0.5%）。<0>了解更多</0>。"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "rewards"
+msgstr "奖励"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable share modal PnL check"
@@ -3692,6 +3697,10 @@ msgstr "清除选择"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "承担市场交易者的 PnL 敞口"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "{0} of eligible position fee"
+msgstr "符合条件的仓位费用的 {0}"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL before fees, discounts and price impact."
@@ -6527,6 +6536,11 @@ msgstr "推荐码创建失败"
 msgid "Withdraw fee"
 msgstr "提取费用"
 
+#: src/components/TradeBox/TradeBoxRows/RewardsHintRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Estimated rewards"
+msgstr "预计奖励"
+
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -7193,6 +7207,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "旧 One-Click Trading 子账户中剩余 {balanceFormatted}"
 
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
+#: src/components/RewardsShare/RewardsShare.tsx
 msgid "Share your rewards"
 msgstr "分享您的奖励"
 
@@ -7563,6 +7578,7 @@ msgstr ""
 msgid "Reward cap"
 msgstr "奖励上限"
 
+#: src/components/RewardsShare/RewardsShareCard.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -7646,6 +7662,7 @@ msgstr ""
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Share"
 msgstr "分享"
 
@@ -9756,6 +9773,10 @@ msgstr ""
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV"
 msgstr "交易历史 CSV 下载失败"
+
+#: src/components/RewardsShare/RewardsShareCard.tsx
+msgid "I'm ranked #{rank} on GMX."
+msgstr "我在 GMX 上排名第 #{rank}。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -12365,6 +12386,10 @@ msgstr "Oracle keeper 监控"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "输入新规模或价格"
+
+#: src/components/RewardsShare/RewardsShareCard.tsx
+msgid "Start trading with me."
+msgstr "和我一起开始交易吧。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TVChartContainer/constants.ts

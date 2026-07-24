@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 
-import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectPositionSellerDecreaseAmounts,
@@ -14,6 +13,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
+import { useTradeRewardsEstimate } from "domain/synthetics/incentives/v2/useTradeRewardsEstimate";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -39,7 +39,6 @@ export type Props = {
 };
 
 export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId, gasPaymentParams }: Props) {
-  const { isActive: incentivesV2Active } = useIncentivesV2State();
   const [open, setOpen] = useLocalStorageSerializeKey("position-seller-advanced-display-rows-open", false);
   const position = useSelector(selectPositionSellerPosition);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
@@ -60,6 +59,14 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
+  const rewardEstimate = useTradeRewardsEstimate({
+    fees,
+    feesType: "decrease",
+    marketInfo: position?.marketInfo,
+    isLong: position?.isLong,
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+    shouldEstimate: !isTwap,
+  });
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
@@ -110,7 +117,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       contentClassName="flex flex-col gap-14"
     >
       <ExitPriceRow isSwap={false} fees={fees} price={position.markPrice} isLong={position.isLong} />
-      <TradeFeesRow {...fees} feesType="decrease" />
+      <TradeFeesRow {...fees} feesType="decrease" estimatedRewards={rewardEstimate.estimatedRewards} />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap ? (
@@ -172,11 +179,11 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     </ExpandableRow>
   );
 
-  if (incentivesV2Active) {
+  if (rewardEstimate.enabled) {
     return (
       <div className="rounded-8 bg-fill-surfaceElevated50">
         {executionDetails}
-        <RewardsHintRow feesType="decrease" />
+        <RewardsHintRow rewardEstimate={rewardEstimate} />
       </div>
     );
   }

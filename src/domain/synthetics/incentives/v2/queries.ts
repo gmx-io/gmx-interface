@@ -24,6 +24,15 @@ export const INCENTIVES_CONFIG_QUERY = `
   }
 `;
 
+export const LATEST_GT_PRICE_QUERY = `
+  query LatestGtPrice {
+    gtPrices(limit: 1, orderBy: timestamp_DESC) {
+      priceUsd
+      timestamp
+    }
+  }
+`;
+
 export const ACCOUNT_INCENTIVE_STATUS_QUERY = `
   query AccountIncentiveStatus($account: String!) {
     accountIncentiveStatus(account: $account) {

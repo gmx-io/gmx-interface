@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import {
   selectIsSetAcceptablePriceImpactEnabled,
   selectShowDebugValues,
@@ -13,6 +12,7 @@ import {
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarkPrice,
+  selectTradeboxMarketInfo,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
@@ -26,6 +26,7 @@ import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateConte
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
+import { useTradeRewardsEstimate } from "domain/synthetics/incentives/v2/useTradeRewardsEstimate";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
@@ -143,7 +144,6 @@ export function TradeBoxAdvancedGroups({
   gasPaymentParams: GasPaymentParams | undefined;
   totalExecutionFee: ExecutionFee | undefined;
 }) {
-  const { isActive: incentivesV2Active } = useIncentivesV2State();
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -155,7 +155,16 @@ export function TradeBoxAdvancedGroups({
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
+  const rewardEstimate = useTradeRewardsEstimate({
+    fees,
+    feesType,
+    marketInfo,
+    isLong,
+    sizeDeltaUsd: feesType === "increase" ? increaseAmounts?.sizeDeltaUsd : decreaseAmounts?.sizeDeltaUsd,
+    shouldEstimate: !isTwap,
+  });
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -228,7 +237,7 @@ export function TradeBoxAdvancedGroups({
         </>
       )}
 
-      <TradeFeesRow {...fees} feesType={feesType} />
+      <TradeFeesRow {...fees} feesType={feesType} estimatedRewards={rewardEstimate.estimatedRewards} />
       {showDebugValues && <SwapDebugRow />}
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
@@ -253,11 +262,11 @@ export function TradeBoxAdvancedGroups({
     </ExpandableRow>
   );
 
-  if (incentivesV2Active && (feesType === "increase" || feesType === "decrease")) {
+  if (rewardEstimate.enabled) {
     return (
       <div className="rounded-8 bg-fill-surfaceElevated50">
         {executionDetails}
-        <RewardsHintRow feesType={feesType} />
+        <RewardsHintRow rewardEstimate={rewardEstimate} />
       </div>
     );
   }
