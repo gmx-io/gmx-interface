@@ -3439,10 +3439,6 @@ msgstr "{0} GMX kaufen, um {depositAmountLabel} zu vesten"
 msgid "Slippage too low"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Net referred traders in the selected period (gained - lost)"
-msgstr "Netto geworbene Trader im ausgewählten Zeitraum (gewonnen – verloren)"
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "Automatisch rebalancierender Vault von GM-Token, der Gebühren aus Hebelhandel und Tauschgeschäften ansammelt. Gedeckt durch {0} und {1}."
@@ -3638,7 +3634,7 @@ msgstr "Staken gesendet"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
-msgstr ""
+msgstr "Netto"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
@@ -5108,6 +5104,7 @@ msgstr "Ihre Staking-Stufe erhöht Ihren Belohnungsmultiplikator basierend auf g
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap impact"
 msgstr "Realisierter Swap-Einfluss"
 
@@ -5933,6 +5930,7 @@ msgstr "Verdienen Sie esGMX-Belohnungen durch berechtigte Handelsaktivitäten."
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Positive funding fees"
 msgstr "Positive Finanzierungsgebühren"
 
@@ -7240,6 +7238,11 @@ msgstr "Abwicklung der Finanzierungsgebühren anfordern"
 msgid "Withdrawn"
 msgstr "Abgehoben"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated"
+msgstr "Abgeschlossen"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
@@ -7416,7 +7419,7 @@ msgstr "Unzureichende Margin. Gebühren werden vom eingezahlten Kollateral abgez
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
-msgstr ""
+msgstr "Verloren"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
@@ -11922,7 +11925,7 @@ msgstr "Themen"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
-msgstr ""
+msgstr "Gewonnen"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -12850,6 +12853,10 @@ msgstr "Transaktion abgebrochen"
 msgid "Request Market Decrease"
 msgstr "Marktverringerungsanfrage"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+msgstr "Netto geworbene Trader im ausgewählten Zeitraum (gewonnen - abgeschlossen - verloren). Abgeschlossene Trader haben die Abschluss-Schwelle des Empfehlungsprogramms erreicht und wurden auf einen GMX-Protokollcode umgestellt: Sie behalten ihren Gebührenrabatt, generieren aber keine Affiliate-Belohnungen mehr. <0>Mehr erfahren</0>"
+
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -12874,6 +12881,7 @@ msgid "PNG"
 msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap fees"
 msgstr "Realisierte Swap-Gebühren"
 
@@ -13172,6 +13180,10 @@ msgstr "Link"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Your multiplier will increase next epoch."
 msgstr "Ihr Multiplikator steigt in der nächsten Epoche."
+
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
+msgstr "Abgeschlossene Trader wurden auf einen GMX-Protokollcode umgestellt, nachdem sie die Abschluss-Schwelle des Empfehlungsprogramms erreicht haben."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

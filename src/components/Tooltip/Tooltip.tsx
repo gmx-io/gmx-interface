@@ -177,7 +177,8 @@ export default function Tooltip<T extends ElementType>({
     enabled: !disabled,
   });
   const click = useClick(context, {
-    enabled: !disabled && !disableClickToggle && closeOnDoubleClick,
+    // `undefined` would fall back to the floating-ui default (true)
+    enabled: Boolean(!disabled && !disableClickToggle && closeOnDoubleClick),
     toggle: closeOnDoubleClick,
   });
   const dismiss = useDismiss(context, {
@@ -206,9 +207,11 @@ export default function Tooltip<T extends ElementType>({
 
       // If element was blurred, allow some time so that activeElement is updated
       requestAnimationFrame(() => {
-        const focusWithin = (refs.reference.current as HTMLElement)?.contains(document.activeElement);
+        const activeElement = document.activeElement;
+        const focusWithin = (refs.reference.current as HTMLElement)?.contains(activeElement);
 
-        if (focusWithin) {
+        // :focus-visible check filters out handles focused by a pointer click
+        if (focusWithin && activeElement && matchesFocusVisible(activeElement)) {
           setVisible(true);
         }
       });
@@ -292,4 +295,12 @@ export default function Tooltip<T extends ElementType>({
       {visible && !withPortal && tooltipContent}
     </span>
   );
+}
+
+function matchesFocusVisible(element: Element): boolean {
+  try {
+    return element.matches(":focus-visible");
+  } catch {
+    return true;
+  }
 }

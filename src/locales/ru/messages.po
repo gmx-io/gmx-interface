@@ -3439,10 +3439,6 @@ msgstr "Купить {0} GMX, чтобы отправить {depositAmountLabel}
 msgid "Slippage too low"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Net referred traders in the selected period (gained - lost)"
-msgstr "Чистое число привлечённых трейдеров за выбранный период (новые − ушедшие)"
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "Автоматически ребалансируемое хранилище GM токенов, которое накапливает комиссии от торговли с кредитным плечом и свопов. Обеспечено {0} и {1}."
@@ -3638,7 +3634,7 @@ msgstr "Запрос на стейкинг отправлен"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
-msgstr ""
+msgstr "Итого"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
@@ -5108,6 +5104,7 @@ msgstr "Ваш уровень стейкинга повышает множите
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap impact"
 msgstr "Реализованное влияние свопа"
 
@@ -5933,6 +5930,7 @@ msgstr "Получайте награды esGMX за учитываемую то
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Positive funding fees"
 msgstr "Положительные комиссии за финансирование"
 
@@ -7240,6 +7238,11 @@ msgstr "Запрос расчёта комиссий за финансирова
 msgid "Withdrawn"
 msgstr "Выведено"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated"
+msgstr "Завершившие"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
@@ -7416,7 +7419,7 @@ msgstr "Недостаточно маржи. Комиссии вычитаютс
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
-msgstr ""
+msgstr "Потерянные"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
@@ -11922,7 +11925,7 @@ msgstr "Топики"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
-msgstr ""
+msgstr "Привлечённые"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -12850,6 +12853,10 @@ msgstr "Транзакция отменена"
 msgid "Request Market Decrease"
 msgstr "Запрос на рыночное уменьшение"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+msgstr "Чистое число привлечённых трейдеров за выбранный период (привлечённые - завершившие - потерянные). Завершившие трейдеры достигли порога завершения реферальной программы и были переведены на протокольный код GMX: они сохраняют скидку на комиссии, но больше не приносят партнёрские вознаграждения. <0>Подробнее</0>"
+
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -12874,6 +12881,7 @@ msgid "PNG"
 msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap fees"
 msgstr "Реализованные комиссии за своп"
 
@@ -13172,6 +13180,10 @@ msgstr "Ссылка"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Your multiplier will increase next epoch."
 msgstr "В следующей эпохе ваш множитель увеличится."
+
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
+msgstr "Завершившие трейдеры были переведены на протокольный код GMX после достижения порога завершения реферальной программы."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

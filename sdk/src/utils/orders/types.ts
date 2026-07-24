@@ -161,4 +161,5 @@ export type ApiOrderInfo = {
   shouldUnwrapNativeToken: boolean;
   isFrozen: boolean;
   autoCancel: boolean;
+  dataList: string[];
 };

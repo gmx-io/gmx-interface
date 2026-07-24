@@ -3439,10 +3439,6 @@ msgstr "{depositAmountLabel} 베스팅을 위해 {0} GMX 구매"
 msgid "Slippage too low"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Net referred traders in the selected period (gained - lost)"
-msgstr "선택한 기간의 순 추천 트레이더 수(유입 - 이탈)"
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "레버리지 거래 및 스왑 수수료를 축적하는 GM 토큰 자동 리밸런싱 볼트입니다. {0} 및 {1}로 담보됩니다."
@@ -3638,7 +3634,7 @@ msgstr "스테이킹이 제출되었습니다"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
-msgstr ""
+msgstr "순변동"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
@@ -5108,6 +5104,7 @@ msgstr "스테이킹 등급은 스테이킹된 GMX 및 esGMX에 따라 보상 �
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap impact"
 msgstr "실현된 스왑 영향"
 
@@ -5933,6 +5930,7 @@ msgstr "적격 거래 활동으로 esGMX 보상을 받으세요."
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Positive funding fees"
 msgstr "양의 펀딩 수수료"
 
@@ -7240,6 +7238,11 @@ msgstr "펀딩 수수료 정산 요청"
 msgid "Withdrawn"
 msgstr "출금 완료"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated"
+msgstr "졸업"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
@@ -7416,7 +7419,7 @@ msgstr "마진이 부족합니다. 수수료는 예치된 담보가 포지션의
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
-msgstr ""
+msgstr "상실"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
@@ -11922,7 +11925,7 @@ msgstr "토픽"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
-msgstr ""
+msgstr "획득"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -12850,6 +12853,10 @@ msgstr "거래가 취소되었습니다"
 msgid "Request Market Decrease"
 msgstr "시장 감소 요청"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+msgstr "선택한 기간의 순 추천 트레이더 수(획득 - 졸업 - 상실)입니다. 졸업한 트레이더는 추천 프로그램의 졸업 기준에 도달하여 GMX 프로토콜 코드로 이동되었으며, 수수료 할인은 유지되지만 더 이상 제휴 보상이 발생하지 않습니다. <0>자세히 보기</0>"
+
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -12874,6 +12881,7 @@ msgid "PNG"
 msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap fees"
 msgstr "실현 스왑 수수료"
 
@@ -13172,6 +13180,10 @@ msgstr "링크"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Your multiplier will increase next epoch."
 msgstr "다음 에포크에 회원님의 배수가 증가합니다."
+
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
+msgstr "졸업한 트레이더는 추천 프로그램의 졸업 기준에 도달하여 GMX 프로토콜 코드로 이동되었습니다."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

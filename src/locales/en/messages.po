@@ -3439,10 +3439,6 @@ msgstr "Buy {0} GMX to vest {depositAmountLabel}"
 msgid "Slippage too low"
 msgstr "Slippage too low"
 
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Net referred traders in the selected period (gained - lost)"
-msgstr "Net referred traders in the selected period (gained - lost)"
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -5108,6 +5104,7 @@ msgstr "Your Staking Tier increases your rewards multiplier based on staked GMX 
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap impact"
 msgstr "Realized swap impact"
 
@@ -5933,6 +5930,7 @@ msgstr "Earn esGMX rewards from eligible trading activity."
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Positive funding fees"
 msgstr "Positive funding fees"
 
@@ -7239,6 +7237,11 @@ msgstr "Request settlement of funding fees"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "Withdrawn"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated"
+msgstr "Graduated"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -12850,6 +12853,10 @@ msgstr "Transaction canceled"
 msgid "Request Market Decrease"
 msgstr "Request Market Decrease"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+msgstr "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -12874,6 +12881,7 @@ msgid "PNG"
 msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap fees"
 msgstr "Realized swap fees"
 
@@ -13172,6 +13180,10 @@ msgstr "Link"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Your multiplier will increase next epoch."
 msgstr "Your multiplier will increase next epoch."
+
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
+msgstr "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
