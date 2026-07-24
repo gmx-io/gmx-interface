@@ -8,11 +8,7 @@ import { selectExpressGlobalParams } from "context/SyntheticsStateContext/select
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import { removeSubaccountExpressTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
-import type {
-  SignedSubaccountApproval,
-  Subaccount,
-  SubaccountSerializedConfig,
-} from "domain/synthetics/subaccount";
+import type { SignedSubaccountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import {
   deserializeSubaccountApproval,
@@ -32,12 +28,15 @@ import {
   signUpdatedSubaccountSettings,
 } from "domain/synthetics/subaccount/utils";
 import { useChainId } from "lib/chains";
+import { type ErrorLike, parseError, TxErrorType } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
+import { getNativeToken } from "sdk/configs/tokens";
+import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
 import { StatusNotification } from "components/StatusNotification/StatusNotification";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
@@ -50,10 +49,49 @@ enum SubaccountActivationState {
   Success = 4,
 }
 
-enum SubaccountDeactivationState {
+export enum SubaccountDeactivationState {
   Deactivating = 0,
   Error = 1,
   Success = 2,
+}
+
+export enum SubaccountDeactivationFailureReason {
+  Rejected = "rejected",
+  InsufficientGasPaymentTokenBalance = "insufficientGasPaymentTokenBalance",
+  InsufficientNativeTokenBalance = "insufficientNativeTokenBalance",
+  ExpressParamsNotReady = "expressParamsNotReady",
+  Unknown = "unknown",
+}
+
+function getSubaccountDeactivationFailureReason(
+  error: unknown,
+  isExpressPath: boolean
+): SubaccountDeactivationFailureReason {
+  if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
+    return SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance;
+  }
+
+  const errorData = parseError(error as ErrorLike);
+
+  if (errorData?.isUserRejectedError) {
+    return SubaccountDeactivationFailureReason.Rejected;
+  }
+
+  if (
+    errorData?.contractError === "InsufficientMultichainBalance" ||
+    errorData?.contractError === "InsufficientRelayFee" ||
+    errorData?.contractError === "InsufficientFunds"
+  ) {
+    return SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance;
+  }
+
+  if (errorData?.txErrorType === TxErrorType.NotEnoughFunds) {
+    return isExpressPath
+      ? SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance
+      : SubaccountDeactivationFailureReason.InsufficientNativeTokenBalance;
+  }
+
+  return SubaccountDeactivationFailureReason.Unknown;
 }
 
 export type SubaccountState = {
@@ -61,6 +99,7 @@ export type SubaccountState = {
   subaccount: Subaccount | undefined;
   subaccountActivationState: SubaccountActivationState | undefined;
   subaccountDeactivationState: SubaccountDeactivationState | undefined;
+  subaccountDeactivationFailureReason: SubaccountDeactivationFailureReason | undefined;
   updateSubaccountSettings: (params: {
     nextRemainigActions?: bigint;
     nextRemainingSeconds?: bigint;
@@ -104,6 +143,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const [subaccountDeactivationState, setSubaccountDeactivationState] = useState<
     SubaccountDeactivationState | undefined
+  >(undefined);
+
+  const [subaccountDeactivationFailureReason, setSubaccountDeactivationFailureReason] = useState<
+    SubaccountDeactivationFailureReason | undefined
   >(undefined);
 
   const { subaccountData, refreshSubaccountData } = useSubaccountOnchainData(chainId, {
@@ -314,19 +357,24 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       toastId,
     });
 
+    setSubaccountDeactivationFailureReason(undefined);
     setSubaccountDeactivationState(SubaccountDeactivationState.Deactivating);
 
-    let removeSubaccount: () => Promise<void>;
+    try {
+      if (srcChainId !== undefined) {
+        const globalExpressParams = calcSelector(selectExpressGlobalParams);
 
-    if (srcChainId !== undefined) {
-      const globalExpressParams = calcSelector(selectExpressGlobalParams);
+        if (!provider || !globalExpressParams) {
+          metrics.pushError(
+            new Error("Missing provider or globalExpressParams for subaccount deactivation"),
+            "subaccount.tryDisableSubaccount"
+          );
+          setSubaccountDeactivationFailureReason(SubaccountDeactivationFailureReason.ExpressParamsNotReady);
+          setSubaccountDeactivationState(SubaccountDeactivationState.Error);
+          return false;
+        }
 
-      if (!provider || !globalExpressParams) {
-        return false;
-      }
-
-      removeSubaccount = () =>
-        removeSubaccountExpressTxn({
+        await removeSubaccountExpressTxn({
           chainId,
           provider,
           account,
@@ -334,13 +382,11 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           signer,
           subaccount,
           globalExpressParams,
+          cachedOnchainActive: subaccount.onchainData.active,
         });
-    } else {
-      removeSubaccount = () => removeSubaccountWalletTxn(chainId, signer, subaccount.address);
-    }
-
-    try {
-      await removeSubaccount();
+      } else {
+        await removeSubaccountWalletTxn(chainId, signer, subaccount.address, subaccount.onchainData.active);
+      }
 
       setSubaccountDeactivationState(SubaccountDeactivationState.Success);
 
@@ -352,6 +398,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       // eslint-disable-next-line no-console
       console.error(error);
       metrics.pushError(error, "subaccount.tryDisableSubaccount");
+      setSubaccountDeactivationFailureReason(getSubaccountDeactivationFailureReason(error, srcChainId !== undefined));
       setSubaccountDeactivationState(SubaccountDeactivationState.Error);
       return false;
     }
@@ -383,6 +430,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       subaccount,
       subaccountActivationState,
       subaccountDeactivationState,
+      subaccountDeactivationFailureReason,
       updateSubaccountSettings,
       resetSubaccountApproval,
       tryEnableSubaccount,
@@ -394,6 +442,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccount,
     subaccountActivationState,
     subaccountDeactivationState,
+    subaccountDeactivationFailureReason,
     updateSubaccountSettings,
     resetSubaccountApproval,
     tryEnableSubaccount,
@@ -480,7 +529,8 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
 }
 
 function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
-  const { subaccountDeactivationState } = useSubaccountContext();
+  const { subaccountDeactivationState, subaccountDeactivationFailureReason } = useSubaccountContext();
+  const { chainId } = useChainId();
 
   const dismissTimerId = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -503,6 +553,36 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
 
     return <TransactionStatus status={status} text={text} />;
   }, [subaccountDeactivationState]);
+
+  const failureReasonStatus = useMemo(() => {
+    if (!hasError || !subaccountDeactivationFailureReason) {
+      return undefined;
+    }
+
+    let text: string;
+
+    switch (subaccountDeactivationFailureReason) {
+      case SubaccountDeactivationFailureReason.Rejected:
+        text = t`The signature request was rejected in your wallet. Retry and confirm the request to deactivate.`;
+        break;
+      case SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance:
+        text = t`Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry.`;
+        break;
+      case SubaccountDeactivationFailureReason.InsufficientNativeTokenBalance: {
+        const nativeTokenSymbol = getNativeToken(chainId).symbol;
+        text = t`Insufficient ${nativeTokenSymbol} balance to cover network fees. Add funds and retry.`;
+        break;
+      }
+      case SubaccountDeactivationFailureReason.ExpressParamsNotReady:
+        text = t`Express transaction data is still loading. Please retry in a few seconds.`;
+        break;
+      default:
+        text = t`An unexpected error occurred. Please retry.`;
+        break;
+    }
+
+    return <div className="text-body-small mt-4 text-typography-secondary">{text}</div>;
+  }, [chainId, hasError, subaccountDeactivationFailureReason]);
 
   useEffect(() => {
     if (hasError) {
@@ -528,7 +608,12 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
     [isCompleted, subaccountDeactivationState, toastId]
   );
 
-  return <StatusNotification title={t`Deactivate 1CT`}>{deactivatingStatus}</StatusNotification>;
+  return (
+    <StatusNotification title={t`Deactivate 1CT`}>
+      {deactivatingStatus}
+      {failureReasonStatus}
+    </StatusNotification>
+  );
 }
 
 function useStoredSubaccountData(

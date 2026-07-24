@@ -1,5 +1,5 @@
 import { ethers, Provider, Signer } from "ethers";
-import { encodeFunctionData } from "viem";
+import { decodeFunctionResult, encodeFunctionData, isHex } from "viem";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import {
@@ -15,7 +15,12 @@ import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import SubaccountRouterAbi from "sdk/abis/SubaccountRouter";
 import { getContract } from "sdk/configs/contracts";
+import { subaccountListKey } from "sdk/configs/dataStore";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import {
+  ExpressEstimationInsufficientGasPaymentTokenBalanceError,
+  getIsConfirmedOutOfGasPaymentTokenBalance,
+} from "sdk/utils/express";
 import { nowInSeconds } from "sdk/utils/time";
 
 import {
@@ -32,16 +37,67 @@ import { Subaccount } from "../subaccount";
 export async function removeSubaccountWalletTxn(
   chainId: ContractsChainId,
   signer: Signer,
-  subaccountAddress: string
+  subaccountAddress: string,
+  cachedOnchainActive?: boolean
 ): Promise<void> {
+  const account = await signer.getAddress();
+  const freshOnchainActive = signer.provider
+    ? await getIsSubaccountActiveOnchain({ chainId, provider: signer.provider, account, subaccountAddress })
+    : undefined;
+
+  if (freshOnchainActive === false && cachedOnchainActive === false) {
+    return;
+  }
+
   const subaccountRouter = new ethers.Contract(getContract(chainId, "SubaccountRouter"), SubaccountRouterAbi, signer);
 
-  return callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
+  const res = await callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
     value: 0n,
     hideSuccessMsg: true,
     hideSentMsg: true,
     hideErrorMsg: true,
   });
+
+  await res?.wait();
+}
+
+export async function getIsSubaccountActiveOnchain({
+  chainId,
+  provider,
+  account,
+  subaccountAddress,
+}: {
+  chainId: ContractsChainId;
+  provider: Provider;
+  account: string;
+  subaccountAddress: string;
+}): Promise<boolean | undefined> {
+  try {
+    const callData = encodeFunctionData({
+      abi: abis.DataStore,
+      functionName: "containsAddress",
+      args: [subaccountListKey(account), subaccountAddress],
+    });
+
+    const result = await provider.call({
+      to: getContract(chainId, "DataStore"),
+      data: callData,
+    });
+
+    if (!isHex(result)) {
+      return undefined;
+    }
+
+    return decodeFunctionResult({
+      abi: abis.DataStore,
+      functionName: "containsAddress",
+      data: result,
+    }) as boolean;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    return undefined;
+  }
 }
 
 async function buildAndSignRemoveSubaccountTxn({
@@ -152,6 +208,7 @@ export async function removeSubaccountExpressTxn({
   signer,
   subaccount,
   globalExpressParams,
+  cachedOnchainActive,
 }: {
   chainId: ContractsChainId;
   provider: Provider;
@@ -160,9 +217,21 @@ export async function removeSubaccountExpressTxn({
   signer: WalletSigner;
   subaccount: Subaccount;
   globalExpressParams: GlobalExpressParams;
+  cachedOnchainActive?: boolean;
 }) {
   if (!provider || !account) {
     throw new Error("No provider or account");
+  }
+
+  const freshOnchainActive = await getIsSubaccountActiveOnchain({
+    chainId,
+    provider,
+    account,
+    subaccountAddress: subaccount.address,
+  });
+
+  if (freshOnchainActive === false && cachedOnchainActive === false) {
+    return;
   }
 
   const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = getRawBaseRelayerParams({
@@ -213,7 +282,7 @@ export async function removeSubaccountExpressTxn({
     throw new Error("No relay fee amount");
   }
 
-  const { relayFeeParams, relayParamsPayload } = getArbitraryRelayParamsAndPayload({
+  const { relayFeeParams, relayParamsPayload, gasPaymentValidations } = getArbitraryRelayParamsAndPayload({
     chainId,
     account,
     isGmxAccount: srcChainId !== undefined,
@@ -224,6 +293,16 @@ export async function removeSubaccountExpressTxn({
 
   if (!relayFeeParams || !relayParamsPayload) {
     throw new Error("No relayFeeParams or relayParamsPayload");
+  }
+
+  if (getIsConfirmedOutOfGasPaymentTokenBalance(gasPaymentValidations)) {
+    throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError({
+      balance:
+        srcChainId !== undefined
+          ? globalExpressParams.gasPaymentToken.gmxAccountBalance
+          : globalExpressParams.gasPaymentToken.walletBalance,
+      requiredAmount: relayFeeParams.gasPaymentParams.totalRelayerFeeTokenAmount,
+    });
   }
 
   const txnData = await buildAndSignRemoveSubaccountTxn({
@@ -243,8 +322,14 @@ export async function removeSubaccountExpressTxn({
     throw new Error("No txnData");
   }
 
-  await sendExpressTransaction({
+  const txnResult = await sendExpressTransaction({
     chainId,
     txnData,
   });
+
+  const receipt = await txnResult.wait();
+
+  if (receipt.status === "failed") {
+    throw new Error(`Remove subaccount transaction failed: ${receipt.relayStatus?.message ?? "reverted"}`);
+  }
 }

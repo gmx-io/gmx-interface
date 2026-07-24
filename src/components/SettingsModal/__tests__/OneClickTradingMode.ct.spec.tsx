@@ -56,6 +56,159 @@ function readLocalStorage(page: PageLike, key: unknown): Promise<string | null> 
 const CONFIG_KEY = getSubaccountConfigKey(ARBITRUM, MOCK_ACCOUNT);
 const SETTLEMENT_APPROVAL_KEY = getSubaccountApprovalKey(ARBITRUM, MOCK_ACCOUNT, undefined);
 
+test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133)", () => {
+  test("failed deactivation keeps Express+1CT with an actionable reason; fixing the cause and retrying succeeds", async ({
+    mount,
+    page,
+  }) => {
+    const chain = new MockChain({
+      walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
+      subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
+      onchain: {
+        active: true,
+        maxAllowedCount: 10n,
+        currentActionsCount: 0n,
+        expiresAt: FAR_FUTURE,
+      },
+    });
+    chain.estimateGasError = INSUFFICIENT_FUNDS_RPC_ERROR;
+    await installMockChain(page, chain);
+
+    await mount(
+      <OneClickTradingModeStory
+        expressEnabled
+        seedSubaccountAddress={SEEDED_SUBACCOUNT_ADDRESS}
+        seedSubaccountPrivateKey={SEEDED_SUBACCOUNT_PRIVATE_KEY}
+      />
+    );
+
+    await expectModeActive(modeButton(page, "Express + One-Click"));
+
+    await modeButton(page, "Express").click();
+
+    await expect(page.getByText("Deactivation failed")).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText("Insufficient ETH balance to cover network fees. Add funds and retry.")).toBeVisible();
+
+    await expectModeActive(modeButton(page, "Express + One-Click"));
+    await expectModeInactive(modeButton(page, "Express"));
+    expect(await readLocalStorage(page, CONFIG_KEY)).toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    expect(chain.sentTransactions).toHaveLength(0);
+
+    chain.estimateGasError = undefined;
+
+    await modeButton(page, "Express").click();
+
+    await expect(page.getByText("Deactivated")).toBeVisible({ timeout: 20_000 });
+
+    expect(chain.sentTransactions).toHaveLength(1);
+    expect(chain.sentTransactions[0].to && ethers.getAddress(chain.sentTransactions[0].to)).toBe(
+      ARBITRUM_CONTRACTS.SubaccountRouter
+    );
+
+    await expectModeActive(modeButton(page, "Express"));
+    await expectModeInactive(modeButton(page, "Express + One-Click"));
+
+    expect(await readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    expect(await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
+  });
+
+  test("rejecting the deactivation transaction in the wallet keeps Express+1CT retryable; confirming on retry deactivates", async ({
+    mount,
+    page,
+  }) => {
+    const chain = new MockChain({
+      walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
+      subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
+      onchain: {
+        active: true,
+        maxAllowedCount: 10n,
+        currentActionsCount: 0n,
+        expiresAt: FAR_FUTURE,
+      },
+    });
+    chain.rejectSendTransaction = true;
+    await installMockChain(page, chain);
+
+    await mount(
+      <OneClickTradingModeStory
+        expressEnabled
+        seedSubaccountAddress={SEEDED_SUBACCOUNT_ADDRESS}
+        seedSubaccountPrivateKey={SEEDED_SUBACCOUNT_PRIVATE_KEY}
+      />
+    );
+
+    await expectModeActive(modeButton(page, "Express + One-Click"));
+
+    const configBefore = await readLocalStorage(page, CONFIG_KEY);
+    expect(configBefore).toContain(SEEDED_SUBACCOUNT_ADDRESS);
+
+    await modeButton(page, "Express").click();
+
+    await expect(page.getByText("Deactivation failed")).toBeVisible({ timeout: 20_000 });
+    await expect(
+      page.getByText("The signature request was rejected in your wallet. Retry and confirm the request to deactivate.")
+    ).toBeVisible();
+
+    const sendRequests = chain.rpcLog.filter((e) => e.method === "eth_sendTransaction");
+    expect(sendRequests).toHaveLength(1);
+    expect(sendRequests[0].error).toBe("User rejected the request.");
+    expect(chain.sentTransactions).toHaveLength(0);
+
+    await expectModeActive(modeButton(page, "Express + One-Click"));
+    await expectModeInactive(modeButton(page, "Express"));
+    expect(await readLocalStorage(page, CONFIG_KEY)).toBe(configBefore);
+
+    chain.rejectSendTransaction = false;
+
+    await modeButton(page, "Express").click();
+
+    await expect(page.getByText("Deactivated")).toBeVisible({ timeout: 20_000 });
+
+    expect(chain.sentTransactions).toHaveLength(1);
+    expect(chain.sentTransactions[0].to && ethers.getAddress(chain.sentTransactions[0].to)).toBe(
+      ARBITRUM_CONTRACTS.SubaccountRouter
+    );
+
+    await expectModeActive(modeButton(page, "Express"));
+    await expectModeInactive(modeButton(page, "Express + One-Click"));
+
+    expect(await readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    expect(await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
+  });
+
+  test("deactivating a subaccount that is not registered on-chain skips the wallet transaction", async ({
+    mount,
+    page,
+  }) => {
+    const chain = new MockChain({
+      walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
+      subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
+      onchain: { active: false },
+    });
+    await installMockChain(page, chain);
+
+    await mount(
+      <OneClickTradingModeStory
+        expressEnabled
+        seedSubaccountAddress={SEEDED_SUBACCOUNT_ADDRESS}
+        seedSubaccountPrivateKey={SEEDED_SUBACCOUNT_PRIVATE_KEY}
+        seedSettlementApproval
+      />
+    );
+
+    await expectModeActive(modeButton(page, "Express + One-Click"));
+
+    await modeButton(page, "Express").click();
+
+    await expect(page.getByText("Deactivated")).toBeVisible({ timeout: 20_000 });
+    await expectModeActive(modeButton(page, "Express"));
+
+    expect(chain.sentTransactions).toHaveLength(0);
+    expect(await readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    expect(await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
+  });
+});
+
 test.describe("Trading Settings: enabling One-Click with real signatures (FEDEV-2132)", () => {
   test("rejecting the approval re-sign for an already stored subaccount keeps the stored config byte-for-byte", async ({
     mount,
