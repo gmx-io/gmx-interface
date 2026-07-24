@@ -1,7 +1,8 @@
 import { t } from "@lingui/macro";
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -13,11 +14,20 @@ import type {
   SubaccountSerializedConfig,
 } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
+import {
+  deserializeSubaccountApproval,
+  findFallbackSubaccountApproval,
+  migrateLegacySubaccountApprovalSlot,
+  removeAllStoredSubaccountApprovals,
+  serializeSubaccountApproval,
+  writeStoredSubaccountApproval,
+} from "domain/synthetics/subaccount/subaccountApprovalStorage";
 import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import {
   getActualApproval,
   getInitialSubaccountApproval,
   getIsSubaccountActive,
+  getSubaccountApprovalContextSrcChainId,
   getSubaccountSigner,
   signUpdatedSubaccountSettings,
 } from "domain/synthetics/subaccount/utils";
@@ -81,11 +91,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   const {
     subaccountConfig,
     signedApproval,
+    fallbackSignedApproval,
     setSubaccountConfig,
     setSignedApproval,
     resetStoredApproval,
     resetStoredConfig,
-  } = useStoredSubaccountData(chainId, signer?.address);
+  } = useStoredSubaccountData(chainId, srcChainId, signer?.address);
 
   const [subaccountActivationState, setSubaccountActivationState] = useState<SubaccountActivationState | undefined>(
     undefined
@@ -108,6 +119,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     const subaccountSigner = getSubaccountSigner(subaccountConfig, signer?.address, signer?.provider);
 
+    const contextSignedApproval = signedApproval ?? (subaccountData.active ? undefined : fallbackSignedApproval);
+
     const composedSubacсount: Subaccount = {
       address: subaccountConfig.address,
       signer: subaccountSigner,
@@ -116,7 +129,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         chainId,
         address: subaccountConfig.address,
         onchainData: subaccountData,
-        signedApproval,
+        signedApproval: contextSignedApproval,
       }),
       chainId,
       signerChainId: srcChainId ?? chainId,
@@ -127,7 +140,16 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     }
 
     return composedSubacсount;
-  }, [chainId, signedApproval, signer?.address, signer?.provider, srcChainId, subaccountConfig, subaccountData]);
+  }, [
+    chainId,
+    fallbackSignedApproval,
+    signedApproval,
+    signer?.address,
+    signer?.provider,
+    srcChainId,
+    subaccountConfig,
+    subaccountData,
+  ]);
 
   const calcSelector = useCalcSelector();
 
@@ -509,7 +531,15 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
   return <StatusNotification title={t`Deactivate 1CT`}>{deactivatingStatus}</StatusNotification>;
 }
 
-function useStoredSubaccountData(chainId: number, account: string | undefined) {
+function useStoredSubaccountData(
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined,
+  account: string | undefined
+) {
+  useMemo(() => migrateLegacySubaccountApprovalSlot(chainId, account), [chainId, account]);
+
+  const [storageRevision, bumpStorageRevision] = useReducer((revision: number) => revision + 1, 0);
+
   const [subaccountConfig, setSubaccountConfig] = useLocalStorageSerializeKey<SubaccountSerializedConfig | undefined>(
     getSubaccountConfigKey(chainId, account),
     undefined,
@@ -542,42 +572,53 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
     }
   );
 
-  const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubaccountApproval | undefined>(
-    getSubaccountApprovalKey(chainId, account),
-    undefined,
-    {
-      raw: false,
-      serializer: (val) => {
-        if (!val) {
-          return "";
-        }
+  const [rawStoredSignedApproval, setStoredSignedApproval] = useLocalStorageSerializeKey<
+    SignedSubaccountApproval | undefined
+  >(getSubaccountApprovalKey(chainId, account, srcChainId), undefined, {
+    raw: false,
+    serializer: serializeSubaccountApproval,
+    deserializer: deserializeSubaccountApproval,
+  });
 
-        return JSON.stringify(val);
-      },
-      deserializer: (stored) => {
-        if (!stored) {
-          return undefined;
-        }
+  const storedSignedApproval =
+    rawStoredSignedApproval && rawStoredSignedApproval.subaccount === subaccountConfig?.address
+      ? rawStoredSignedApproval
+      : undefined;
 
-        try {
-          const parsed = JSON.parse(stored);
-          return {
-            ...parsed,
-            maxAllowedCount: BigInt(parsed.maxAllowedCount),
-            expiresAt: BigInt(parsed.expiresAt),
-            deadline: BigInt(parsed.deadline),
-            nonce: BigInt(parsed.nonce),
-          };
-        } catch (e) {
-          return undefined;
-        }
-      },
-    }
+  const fallbackSignedApproval = useMemo(
+    () => {
+      if (storedSignedApproval || !account || !subaccountConfig?.address) {
+        return undefined;
+      }
+
+      return findFallbackSubaccountApproval(chainId, account, subaccountConfig.address);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [account, chainId, storedSignedApproval, subaccountConfig?.address, storageRevision]
+  );
+
+  const setSignedApproval = useCallback(
+    (approval: SignedSubaccountApproval) => {
+      if (account && getSubaccountApprovalContextSrcChainId(chainId, approval) !== srcChainId) {
+        writeStoredSubaccountApproval(chainId, account, approval);
+        bumpStorageRevision();
+        return;
+      }
+
+      setStoredSignedApproval(approval);
+    },
+    [account, chainId, srcChainId, setStoredSignedApproval]
   );
 
   const resetStoredApproval = useCallback(() => {
-    setSignedApproval(null as any);
-  }, [setSignedApproval]);
+    setStoredSignedApproval(null as any);
+
+    if (account) {
+      removeAllStoredSubaccountApprovals(chainId, account);
+    }
+
+    bumpStorageRevision();
+  }, [account, chainId, setStoredSignedApproval]);
 
   const resetStoredConfig = useCallback(() => {
     setSubaccountConfig(null as any);
@@ -586,7 +627,8 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
   return useMemo(() => {
     return {
       subaccountConfig,
-      signedApproval,
+      signedApproval: storedSignedApproval,
+      fallbackSignedApproval,
       setSubaccountConfig,
       setSignedApproval,
       resetStoredApproval,
@@ -594,7 +636,8 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
     };
   }, [
     subaccountConfig,
-    signedApproval,
+    storedSignedApproval,
+    fallbackSignedApproval,
     setSubaccountConfig,
     setSignedApproval,
     resetStoredApproval,

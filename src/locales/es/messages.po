@@ -6002,6 +6002,10 @@ msgstr "Incentivo adicional GLV"
 msgid "Lifetime staking rewards"
 msgstr "Recompensas de staking acumuladas"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "Sus fondos están seguros en LayerZero en la cadena de destino. Reintente la transacción de recepción en LayerZero Scan o contacte con soporte."
@@ -10765,6 +10769,7 @@ msgstr "ÚLTIMO PRECIO"
 msgid "Cancelling {orderText}..."
 msgstr "Cancelando {orderText}…"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
