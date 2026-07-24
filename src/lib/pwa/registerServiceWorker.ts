@@ -51,10 +51,6 @@ export function registerServiceWorker() {
     return;
   }
 
-  if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.addEventListener("controllerchange", () => window.location.reload(), { once: true });
-  }
-
   const register = () => {
     const buildId = document.querySelector<HTMLMetaElement>('meta[name="gmx-pwa-build-id"]')?.content;
     if (!buildId) {
