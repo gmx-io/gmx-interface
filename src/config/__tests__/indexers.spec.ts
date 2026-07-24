@@ -40,11 +40,11 @@ describe("incentives indexer URL", () => {
     );
   });
 
-  it("does not repoint the generic Arbitrum Subsquid endpoint", () => {
+  it("uses the ivtest generic Arbitrum Subsquid endpoint", () => {
     mockIsDevelopment.mockReturnValue(false);
 
     expect(getIndexerUrl(ARBITRUM, "subsquid")).toBe(
-      "https://gmx.squids.live/gmx-synthetics-arbitrum@9c4ad1/api/graphql"
+      "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivtest/api/graphql"
     );
   });
 });
