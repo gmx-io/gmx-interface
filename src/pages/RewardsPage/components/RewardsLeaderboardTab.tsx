@@ -17,6 +17,7 @@ import {
 } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { formatAmount, formatUsd } from "lib/numbers";
+import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -28,7 +29,6 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 
-import AllTimeIcon from "img/ic_calendar.svg?react";
 import ShareIcon from "img/ic_share_arrow_filled.svg?react";
 
 const PAGE_SIZE = 20;
@@ -136,14 +136,14 @@ function toLeaderboardOrderBy(
 function LeaderboardRow({
   entry,
   account,
-  config,
+  multiplierDecimals,
   showMultiplier,
   onShare,
   pinned = false,
 }: {
   entry: LeaderboardEntry;
   account?: string;
-  config: IncentivesConfig;
+  multiplierDecimals?: bigint;
   showMultiplier: boolean;
   onShare?: (entry: LeaderboardEntry) => void;
   pinned?: boolean;
@@ -186,7 +186,9 @@ function LeaderboardRow({
       </TableTd>
       {showMultiplier ? (
         <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
-          {entry.multiplier !== null ? formatMultiplier(entry.multiplier, config.multiplierDecimals) : "-"}
+          {entry.multiplier !== null && multiplierDecimals !== undefined
+            ? formatMultiplier(entry.multiplier, multiplierDecimals)
+            : "-"}
         </TableTd>
       ) : null}
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
@@ -235,26 +237,30 @@ export function RewardsLeaderboardTab({
 }: {
   chainId: ContractsChainId;
   account?: string;
-  config: IncentivesConfig;
+  config?: IncentivesConfig;
 }) {
-  const [period, setPeriod] = useState<LeaderboardPeriod>("current");
+  const [period, setPeriod] = useState<LeaderboardPeriod>(() => (config ? "current" : "all"));
   const [orderBy, setOrderBy] = useState<IncentivesLeaderboardOrderBy>("tradingVolume_DESC");
   const [page, setPage] = useState(1);
   const [searchAddress, setSearchAddress] = useState("");
   const [shareEntry, setShareEntry] = useState<LeaderboardEntry | null>(null);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const hadConfigRef = useRef(Boolean(config));
+  const hasSelectedPeriodRef = useRef(false);
   const searchAccount = useMemo(() => {
     const value = searchAddress.trim();
 
     return isAddress(value) ? value : undefined;
   }, [searchAddress]);
-  const epoch =
-    period === "current"
+  const selectedPeriod = config ? period : "all";
+  const epoch = !config
+    ? undefined
+    : selectedPeriod === "current"
       ? config.epochTimestamp
-      : period === "previous"
+      : selectedPeriod === "previous"
         ? config.epochTimestamp - config.epochDuration
         : undefined;
-  const showMultiplier = period !== "all";
+  const showMultiplier = selectedPeriod !== "all";
   const effectiveOrderBy =
     !showMultiplier && orderBy.startsWith("multiplier_")
       ? orderBy.endsWith("_ASC")
@@ -266,7 +272,7 @@ export function RewardsLeaderboardTab({
     epoch,
     where: searchAccount ? { account: searchAccount } : undefined,
     orderBy: effectiveOrderBy,
-    isMutable: period !== "previous",
+    isMutable: selectedPeriod !== "previous",
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
   });
@@ -280,7 +286,7 @@ export function RewardsLeaderboardTab({
     where: account ? { account } : undefined,
     orderBy: effectiveOrderBy,
     enabled: Boolean(account),
-    isMutable: period !== "previous",
+    isMutable: selectedPeriod !== "previous",
     limit: 1,
     offset: 0,
   });
@@ -296,12 +302,25 @@ export function RewardsLeaderboardTab({
     !isPinnedEntryVisible;
   const hasNoSearchMatch = Boolean(searchAccount && !loading && data !== undefined && data.length === 0);
 
-  useEffect(() => setPage(1), [account, effectiveOrderBy, period, searchAccount]);
+  useEffect(() => setPage(1), [account, effectiveOrderBy, searchAccount, selectedPeriod]);
 
   useEffect(() => {
     setIsShareOpen(false);
     setShareEntry(null);
-  }, [account, config.epochTimestamp, period]);
+  }, [account, config?.epochTimestamp, selectedPeriod]);
+
+  useEffect(() => {
+    if (!config && period !== "all") setPeriod("all");
+  }, [config, period]);
+
+  useEffect(() => {
+    if (config && !hadConfigRef.current && !hasSelectedPeriodRef.current) {
+      setPeriod("current");
+      setPage(1);
+    }
+
+    hadConfigRef.current = Boolean(config);
+  }, [config]);
 
   useEffect(() => {
     if (!showMultiplier && orderBy.startsWith("multiplier_")) {
@@ -309,14 +328,14 @@ export function RewardsLeaderboardTab({
     }
   }, [orderBy, showMultiplier]);
 
-  const epochTimestampRef = useRef(config.epochTimestamp);
+  const epochTimestampRef = useRef(config?.epochTimestamp);
 
   useEffect(() => {
-    if (epochTimestampRef.current === config.epochTimestamp) return;
+    if (epochTimestampRef.current === config?.epochTimestamp) return;
 
-    epochTimestampRef.current = config.epochTimestamp;
-    if (period !== "all") setPage(1);
-  }, [config.epochTimestamp, period]);
+    epochTimestampRef.current = config?.epochTimestamp;
+    if (selectedPeriod !== "all") setPage(1);
+  }, [config?.epochTimestamp, selectedPeriod]);
 
   const revalidateMutableLeaderboard = useCallback(
     () => Promise.allSettled([mutate(), mutatePinned()]),
@@ -324,14 +343,30 @@ export function RewardsLeaderboardTab({
   );
 
   useEpochRolloverRevalidation({
-    epochTimestamp: period !== "previous" ? config.epochTimestamp : undefined,
-    enabled: period !== "previous" && page === 1,
-    scopeKey: `${chainId}:${account ?? ""}:${period}:${effectiveOrderBy}:${searchAccount ?? ""}:${endpoint ?? ""}`,
+    epochTimestamp: selectedPeriod !== "previous" ? config?.epochTimestamp : undefined,
+    enabled: Boolean(config) && selectedPeriod !== "previous" && page === 1,
+    scopeKey: `${chainId}:${account ?? ""}:${selectedPeriod}:${effectiveOrderBy}:${searchAccount ?? ""}:${endpoint ?? ""}`,
     revalidate: revalidateMutableLeaderboard,
   });
 
-  const periodOptions = useMemo(
-    () => [
+  const periodOptions = useMemo(() => {
+    const allTimeOption = {
+      value: "all" as const,
+      label: (
+        <span title={t`All-time totals include the provisional current epoch.`}>
+          <Trans>All-time</Trans>
+        </span>
+      ),
+      className: {
+        active: "!rounded-full !bg-fill-accent !text-typography-primary",
+        regular:
+          "!rounded-full !border-1/2 !border-solid !border-fill-accent !bg-transparent !text-typography-secondary",
+      },
+    };
+
+    if (!config) return [allTimeOption];
+
+    return [
       {
         value: "current" as const,
         label: (
@@ -354,24 +389,11 @@ export function RewardsLeaderboardTab({
             "!rounded-full !border-1/2 !border-solid !border-fill-accent !bg-transparent !text-typography-secondary",
         },
       },
-      {
-        value: "all" as const,
-        label: (
-          <span title={t`All-time totals include the provisional current epoch.`}>
-            <Trans>All-time</Trans>
-          </span>
-        ),
-        icon: <AllTimeIcon className="size-12" />,
-        className: {
-          active: "!rounded-full !bg-fill-accent !text-typography-primary",
-          regular:
-            "!rounded-full !border-1/2 !border-solid !border-fill-accent !bg-transparent !text-typography-secondary",
-        },
-      },
-    ],
-    []
-  );
+      allTimeOption,
+    ];
+  }, [config]);
   const handlePeriodChange = useCallback((value: LeaderboardPeriod) => {
+    hasSelectedPeriodRef.current = true;
     setPeriod(value);
     setPage(1);
   }, []);
@@ -381,10 +403,14 @@ export function RewardsLeaderboardTab({
     const normalizedValue = value.trim();
     if (!normalizedValue || isAddress(normalizedValue)) setPage(1);
   }, []);
-  const handleShare = useCallback((entry: LeaderboardEntry) => {
-    setShareEntry(entry);
-    setIsShareOpen(true);
-  }, []);
+  const handleShare = useCallback(
+    (entry: LeaderboardEntry) => {
+      sendRewardsLeaderboardShareClickEvent(selectedPeriod);
+      setShareEntry(entry);
+      setIsShareOpen(true);
+    },
+    [selectedPeriod]
+  );
   const getSorterProps = useCallback(
     (field: LeaderboardSortField) => {
       const direction: SortDirection = effectiveOrderBy.startsWith(`${field}_`)
@@ -425,7 +451,7 @@ export function RewardsLeaderboardTab({
       <LeaderboardRow
         entry={pinnedEntry}
         account={account}
-        config={config}
+        multiplierDecimals={config?.multiplierDecimals}
         showMultiplier={showMultiplier}
         onShare={handleShare}
         pinned
@@ -445,7 +471,7 @@ export function RewardsLeaderboardTab({
           <Tabs<LeaderboardPeriod>
             type="inline"
             options={periodOptions}
-            selectedValue={period}
+            selectedValue={selectedPeriod}
             onChange={handlePeriodChange}
             className="shrink-0"
           />
@@ -583,7 +609,7 @@ export function RewardsLeaderboardTab({
                         key={entry.address}
                         entry={entry}
                         account={account}
-                        config={config}
+                        multiplierDecimals={config?.multiplierDecimals}
                         showMultiplier={showMultiplier}
                         onShare={handleShare}
                       />

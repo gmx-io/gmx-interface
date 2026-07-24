@@ -9,6 +9,7 @@ import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDeb
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
+import { RewardsActionSettings } from "./RewardsActionSettings";
 import { RpcDebugSettings } from "./RpcDebugSettings";
 import { SettingsSection } from "./shared";
 
@@ -46,6 +47,8 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         >
           <Trans>Disable share modal PnL check</Trans>
         </ToggleSwitch>
+
+        <RewardsActionSettings />
 
         <AbFlagSettings />
 

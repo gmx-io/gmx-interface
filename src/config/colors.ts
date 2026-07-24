@@ -3,11 +3,14 @@ import { ColorTree } from "lib/generateColorConfig";
 export const colors = {
   blue: {
     100: { light: "#A4C3F9", dark: "#A4C3F9" },
-    300: { light: "#2D42FC", dark: "#7885FF" },
+    300: { light: "#7885FF", dark: "#7885FF" },
     400: { light: "#2D42FC", dark: "#2D42FC" },
     500: { light: "#3d51ff", dark: "#3d51ff" },
     600: { light: "#2d42fc", dark: "#2d42fc" },
     700: { light: "#2e3dcd", dark: "#2e3dcd" },
+  },
+  "rewards-blue": {
+    300: { light: "#2D42FC", dark: "#7885FF" },
   },
   "cold-blue": {
     500: { light: "#3a3f79", dark: "#3a3f79" },

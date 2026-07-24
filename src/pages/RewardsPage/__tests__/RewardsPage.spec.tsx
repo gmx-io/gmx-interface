@@ -9,8 +9,13 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
+import { getRewardsDebugConfig, type RewardsDebugMode } from "../rewardsDebug";
 import { RewardsPage } from "../RewardsPage";
 import { useRewardsPageData } from "../useRewardsPageData";
+
+const rewardsAnalyticsMock = vi.hoisted(() => ({
+  sendRewardsPageViewEvent: vi.fn(),
+}));
 
 vi.mock("lib/chains", () => ({
   useChainId: vi.fn(),
@@ -23,6 +28,8 @@ vi.mock("lib/wallets/useWallet", () => ({
 vi.mock("pages/RewardsPage/useRewardsPageData", () => ({
   useRewardsPageData: vi.fn(),
 }));
+
+vi.mock("lib/userAnalytics/rewardsEvents", () => rewardsAnalyticsMock);
 
 vi.mock("components/AppPageLayout/AppPageLayout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div data-testid="page-layout">{children}</div>,
@@ -55,14 +62,37 @@ vi.mock("components/Tabs/Tabs", () => ({
 }));
 
 vi.mock("pages/RewardsPage/components/RewardsTiersTab", () => ({
-  RewardsTiersTab: ({ summaryUnavailable }: { summaryUnavailable: boolean }) => (
-    <div data-summary-unavailable={String(summaryUnavailable)} data-testid="tiers-tab" />
+  RewardsTiersTab: ({
+    config,
+    summaryUnavailable,
+  }: {
+    config: { epochTimestamp?: number };
+    summaryUnavailable: boolean;
+  }) => (
+    <div
+      data-config-epoch={config.epochTimestamp}
+      data-summary-unavailable={String(summaryUnavailable)}
+      data-testid="tiers-tab"
+    />
   ),
 }));
 
 vi.mock("pages/RewardsPage/components/RewardsHistoryTab", () => ({
-  RewardsHistoryTab: ({ chainId, account }: { chainId: number; account?: string }) => (
-    <div data-account={account} data-chain-id={chainId} data-testid="history-tab" />
+  RewardsHistoryTab: ({
+    chainId,
+    account,
+    config,
+  }: {
+    chainId: number;
+    account?: string;
+    config: { epochTimestamp?: number };
+  }) => (
+    <div
+      data-account={account}
+      data-chain-id={chainId}
+      data-config-epoch={config.epochTimestamp}
+      data-testid="history-tab"
+    />
   ),
 }));
 
@@ -75,7 +105,9 @@ vi.mock("pages/RewardsPage/components/RewardsPromotionalBanners", () => ({
 }));
 
 vi.mock("pages/RewardsPage/components/RewardsLeaderboardTab", () => ({
-  RewardsLeaderboardTab: () => <div data-testid="leaderboard-tab" />,
+  RewardsLeaderboardTab: ({ config }: { config?: unknown }) => (
+    <div data-config={config ? "active" : "all-time-only"} data-testid="leaderboard-tab" />
+  ),
 }));
 
 const mockUseChainId = vi.mocked(useChainId);
@@ -93,6 +125,7 @@ function getPageData(
   return {
     availability,
     config: availability.status === "active" ? availability.config : undefined,
+    canLoadAllTimeLeaderboard: availability.status !== "unsupported-chain",
     accountStatus: undefined,
     allTimeSummary: undefined,
     allTimeSummaryLoaded: false,
@@ -159,9 +192,23 @@ describe("RewardsPage", () => {
 
     expect(screen.getByTestId("page-layout")).toBeDefined();
     expect(screen.getByTestId("rewards-loader")).toBeDefined();
-    expect(screen.getByTestId("rewards-loading-shell").className).toContain("bg-slate-900");
-    expect(screen.getByTestId("rewards-loading-shell").className).toContain("grow");
+    expect(screen.getByTestId("tabs").textContent).toBe("history");
     expect(screen.queryByTestId("history-tab")).toBeNull();
+  });
+
+  it.each([
+    ["loading", { status: "loading" } as const],
+    ["error", { status: "error", error: new Error("Unavailable") } as const],
+    ["inactive", { status: "inactive" } as const],
+  ])("keeps the all-time leaderboard available while config is %s", (_label, availability) => {
+    mockUseRewardsPageData.mockReturnValue(getPageData(availability));
+
+    renderPage("/rewards/leaderboard");
+
+    expect(screen.getByTestId("tabs").textContent).toBe("leaderboard");
+    expect(screen.getByTestId("leaderboard-tab").getAttribute("data-config")).toBe("all-time-only");
+    expect(screen.queryByTestId("rewards-loader")).toBeNull();
+    expect(screen.queryByText("Rewards are temporarily unavailable")).toBeNull();
   });
 
   it("renders a retryable error state", () => {
@@ -203,7 +250,80 @@ describe("RewardsPage", () => {
     expect(screen.getByTestId("history-tab").getAttribute("data-chain-id")).toBe(String(ARBITRUM));
     expect(screen.getByTestId("history-tab").getAttribute("data-account")).toBe("0x123");
     expect(screen.getByTestId("vesting-flow")).toBeDefined();
-    expect(mockUseRewardsPageData).toHaveBeenCalledWith({ chainId: ARBITRUM, account: "0x123" });
+    expect(mockUseRewardsPageData).toHaveBeenCalledWith({
+      chainId: ARBITRUM,
+      account: "0x123",
+      loadTierAccountData: false,
+    });
+  });
+
+  it.each([["loading"], ["error"], ["empty"]])("renders the development-only %s page fixture", (mode) => {
+    renderPage(`/rewards/leaderboard?rewardsDebug=${mode}`);
+
+    if (mode === "loading") expect(screen.getByTestId("rewards-loader")).toBeDefined();
+    if (mode === "empty") expect(screen.getByText("No rewards")).toBeDefined();
+    if (mode === "error") {
+      expect(screen.getByText("Rewards are temporarily unavailable")).toBeDefined();
+      fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+      expect(mockRetry).not.toHaveBeenCalled();
+    }
+    expect(screen.queryByTestId("leaderboard-tab")).toBeNull();
+  });
+
+  it.each([
+    ["loading", { status: "loading" } as const],
+    ["error", { status: "error", error: new Error("Unavailable") } as const],
+    ["inactive", { status: "inactive" } as const],
+  ])("renders the deterministic banner fixture while live config is %s", (_label, availability) => {
+    mockUseRewardsPageData.mockReturnValue(getPageData(availability));
+
+    renderPage("/rewards?rewardsDebug=banners");
+
+    const debugConfig = getRewardsDebugConfig("banners");
+    expect(screen.getByTestId("tiers-tab").getAttribute("data-config-epoch")).toBe(String(debugConfig?.epochTimestamp));
+    expect(screen.queryByTestId("rewards-loader")).toBeNull();
+    expect(screen.queryByText("Rewards are temporarily unavailable")).toBeNull();
+    expect(screen.queryByText("The Rewards program is not currently active")).toBeNull();
+  });
+
+  const vestingDebugModes = [
+    "vesting-idle",
+    "vesting-active",
+    "vesting-complete",
+    "vesting-error",
+    "vesting-loading",
+  ] satisfies RewardsDebugMode[];
+  const unavailableConfigStates = [
+    ["loading", { status: "loading" } as const],
+    ["error", { status: "error", error: new Error("Unavailable") } as const],
+    ["inactive", { status: "inactive" } as const],
+  ] as const;
+
+  it.each(
+    unavailableConfigStates.flatMap(([availabilityLabel, availability]) =>
+      vestingDebugModes.map((mode) => [mode, availabilityLabel, availability] as const)
+    )
+  )("renders the %s fixture while live config is %s", (mode, _availabilityLabel, availability) => {
+    mockUseRewardsPageData.mockReturnValue(getPageData(availability));
+
+    renderPage(`/rewards/history?rewardsDebug=${mode}`);
+
+    const debugConfig = getRewardsDebugConfig(mode);
+    expect(screen.getByTestId("vesting-flow")).toBeDefined();
+    expect(screen.getByTestId("history-tab").getAttribute("data-config-epoch")).toBe(
+      String(debugConfig?.epochTimestamp)
+    );
+    expect(screen.queryByTestId("rewards-loader")).toBeNull();
+    expect(screen.queryByText("Rewards are temporarily unavailable")).toBeNull();
+    expect(screen.queryByText("The Rewards program is not currently active")).toBeNull();
+  });
+
+  it("tracks active tab views using rewards analytics tab names", async () => {
+    renderPage("/rewards/history");
+
+    await waitFor(() => {
+      expect(rewardsAnalyticsMock.sendRewardsPageViewEvent).toHaveBeenCalledWith("rewards");
+    });
   });
 
   it("keeps a loaded empty all-time summary available after a refresh error", () => {

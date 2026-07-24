@@ -183,6 +183,10 @@ msgstr "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgid "Create TWAP Swap"
 msgstr "Create TWAP Swap"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX approval failed"
+msgstr "GMX approval failed"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -193,6 +197,10 @@ msgstr "Estimated time"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "GMX Account swaps cannot use native {0}. Select {1} or withdraw to wallet first."
 msgstr "GMX Account swaps cannot use native {0}. Select {1} or withdraw to wallet first."
+
+#: src/components/SettingsModal/RewardsActionSettings.tsx
+msgid "Preview one-click rewards action"
+msgstr "Preview one-click rewards action"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in leverage display"
@@ -275,6 +283,10 @@ msgstr "(rebated)"
 msgid "Accumulated rewards"
 msgstr "Accumulated rewards"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Vesting details changed. Review the updated amounts before unlocking collateral."
+msgstr "Vesting details changed. Review the updated amounts before unlocking collateral."
+
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
 msgstr "Show other assets ({0})"
@@ -353,6 +365,10 @@ msgstr "Open app"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Try Express Trading"
 msgstr "Try Express Trading"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "In progress"
+msgstr "In progress"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
@@ -524,6 +540,10 @@ msgstr "Rebates are paid in the collateral tokens used by your referrals. For ex
 msgid "{0, plural, one {# active boost} other {# active boosts}}"
 msgstr "{0, plural, one {# active boost} other {# active boosts}}"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stake collateral"
+msgstr "Stake collateral"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double {indexSymbol} exposure from position and collateral. Higher liquidation price than stablecoin collateral."
 msgstr "Double {indexSymbol} exposure from position and collateral. Higher liquidation price than stablecoin collateral."
@@ -562,6 +582,8 @@ msgstr "Max TWAP parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Failed to claim affiliate rewards"
 msgstr "Failed to claim affiliate rewards"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -823,6 +845,7 @@ msgstr "This ends your current vesting. So far {0} GMX has vested and is yours t
 msgid "..."
 msgstr "..."
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Balancing Trades"
 msgstr "Balancing Trades"
@@ -858,6 +881,7 @@ msgid "NET RATE"
 msgstr "NET RATE"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/pages/RewardsPage/RewardsPage.tsx
 msgid "No rewards"
 msgstr "No rewards"
 
@@ -1406,6 +1430,10 @@ msgstr "Estimated impact rebate"
 msgid "Decentralized yield products"
 msgstr "Decentralized yield products"
 
+#: src/components/SettingsModal/RewardsActionSettings.tsx
+msgid "When enabled, the vesting button previews the planned action to claim rewards, stake the required GMX, and start vesting in one transaction. This is not supported yet. Turn this off to use the step-by-step flow."
+msgstr "When enabled, the vesting button previews the planned action to claim rewards, stake the required GMX, and start vesting in one transaction. This is not supported yet. Turn this off to use the step-by-step flow."
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/SwapCard/SwapCard.tsx
 msgid "{0} price"
@@ -1556,7 +1584,6 @@ msgid "Eligible fees on page"
 msgstr "Eligible fees on page"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Qualified this epoch"
 msgstr "Qualified this epoch"
 
@@ -1862,6 +1889,11 @@ msgstr "Session generation failed"
 msgid "Onchain quests and rewards"
 msgstr "Onchain quests and rewards"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Preview only"
+msgstr "Preview only"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "Tokens"
@@ -1971,6 +2003,7 @@ msgid "Markets"
 msgstr "Markets"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "Retry"
 msgstr "Retry"
@@ -2350,6 +2383,10 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "Keep leverage at {0}"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Pause carousel"
+msgstr "Pause carousel"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "AVAIL. LIQ."
@@ -2698,8 +2735,7 @@ msgstr "MARKETS"
 msgid "Max {0}"
 msgstr "Max {0}"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Stake GMX and receive up to {maxRewardRate} of your fees back."
 msgstr "Stake GMX and receive up to {maxRewardRate} of your fees back."
 
@@ -2738,7 +2774,6 @@ msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
-#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Coming soon"
 msgstr "Coming soon"
 
@@ -2758,6 +2793,7 @@ msgstr "Grouping"
 msgid "Switching to external swap route. Try again"
 msgstr "Switching to external swap route. Try again"
 
+#: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "Rewards are temporarily unavailable"
 msgstr "Rewards are temporarily unavailable"
@@ -3048,6 +3084,11 @@ msgstr "Shifting only available on {chainNames}. Switch networks to continue."
 msgid "Cumulative PnL"
 msgstr "Cumulative PnL"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX approved"
+msgstr "GMX approved"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Set max leverage"
@@ -3183,6 +3224,10 @@ msgstr "Swap failed"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX approval submitted"
+msgstr "GMX approval submitted"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -3333,6 +3378,11 @@ msgstr "Strictest deposit USD capacity"
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Done"
+msgstr "Done"
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Deposited {0} into {positionText}"
@@ -3349,6 +3399,10 @@ msgstr "Current price"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "Mark:"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "One-click claim, stake, and vest is not supported yet. Turn off its preview in Settings to use the step-by-step flow."
+msgstr "One-click claim, stake, and vest is not supported yet. Turn off its preview in Settings to use the step-by-step flow."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Incentivized Markets"
@@ -3698,10 +3752,6 @@ msgstr "Clear selection"
 msgid "Exposure to market traders' PnL"
 msgstr "Exposure to market traders' PnL"
 
-#: src/components/TradeFeesRow/TradeFeesRow.tsx
-msgid "{0} of eligible position fee"
-msgstr "{0} of eligible position fee"
-
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL before fees, discounts and price impact."
 msgstr "Realized PnL before fees, discounts and price impact."
@@ -3815,6 +3865,10 @@ msgstr "Primary failed"
 msgid "Commodities"
 msgstr "Commodities"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX was approved. Reconnect the original wallet to continue."
+msgstr "GMX was approved. Reconnect the original wallet to continue."
+
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
 msgstr "How to start earning?"
@@ -3873,6 +3927,7 @@ msgid "Share your referral code with friends or your community —<0/> every tra
 msgstr "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking"
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking"
 
@@ -4233,6 +4288,15 @@ msgstr "Runs entirely on public chains"
 msgid "Set min deposit"
 msgstr "Set min deposit"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Unable to refresh vesting details. Please try again."
+msgstr "Unable to refresh vesting details. Please try again."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "May lack liquidity for parts of this order when triggered"
@@ -4292,7 +4356,7 @@ msgstr "Failed TWAP Swap part"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "No events in the past {DAYS_BACK} days"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Start trading to redeem your rewards."
 msgstr "Start trading to redeem your rewards."
 
@@ -4466,8 +4530,7 @@ msgstr "Certified"
 msgid "Incorrect account"
 msgstr "Incorrect account"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "With your recent activity, staking GMX could have earned you up to {estimatedRewards} in rewards."
 msgstr "With your recent activity, staking GMX could have earned you up to {estimatedRewards} in rewards."
 
@@ -5150,6 +5213,10 @@ msgstr "Create Stop-Loss"
 msgid "Direction"
 msgstr "Direction"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Wallet or network changed. Review your vesting details before stopping."
+msgstr "Wallet or network changed. Review your vesting details before stopping."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position is currently above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
 msgstr "This position is currently above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
@@ -5273,6 +5340,10 @@ msgstr "Edit {0}"
 msgid "Swap to"
 msgstr "Swap to"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Resume carousel"
+msgstr "Resume carousel"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>Buy</0> {wrappedNativeTokenSymbol}."
@@ -5346,6 +5417,11 @@ msgstr "Select a market"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "No tokens matched"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Unable to refresh claimable rewards. Please try again."
+msgstr "Unable to refresh claimable rewards. Please try again."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error sending permit for {0}: {1}"
@@ -5562,6 +5638,7 @@ msgstr "Image copied to clipboard"
 msgid "Swap impact"
 msgstr "Swap impact"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -6182,6 +6259,7 @@ msgstr "Enter a price"
 msgid "Updating..."
 msgstr "Updating..."
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vest more"
 msgstr "Vest more"
@@ -6190,9 +6268,8 @@ msgstr "Vest more"
 msgid "Failed Market Increase"
 msgstr "Failed Market Increase"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Earn rewards"
 msgstr "Earn rewards"
 
@@ -6294,6 +6371,10 @@ msgstr "Single"
 msgid "Invest with control over risk and reward"
 msgstr "Invest with control over risk and reward"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Wallet or network changed. Review your rewards before claiming."
+msgstr "Wallet or network changed. Review your rewards before claiming."
+
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Over 100 protocols"
 msgstr "Over 100 protocols"
@@ -6355,6 +6436,7 @@ msgstr "Transferring a referral code"
 msgid "PnL Analysis"
 msgstr "PnL Analysis"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Manual Allocation"
 msgstr "Manual Allocation"
@@ -6629,6 +6711,10 @@ msgstr "({0} of swap amount)"
 msgid "How do I upgrade to a higher tier?"
 msgstr "How do I upgrade to a higher tier?"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "GMX was claimed. Balances will refresh shortly."
+msgstr "GMX was claimed. Balances will refresh shortly."
+
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Total bought GMX"
 msgstr "Total bought GMX"
@@ -6868,6 +6954,7 @@ msgstr "Activate someone's referral code to receive a permanent discount on all 
 msgid "See more"
 msgstr "See more"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Featured Markets"
 msgstr "Featured Markets"
@@ -7083,6 +7170,10 @@ msgstr "Voting"
 msgid "Update TWAP Swap part"
 msgstr "Update TWAP Swap part"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting details changed. Review the updated amounts before stopping."
+msgstr "Vesting details changed. Review the updated amounts before stopping."
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
 msgstr "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
@@ -7186,6 +7277,7 @@ msgstr "Switch to Arbitrum to view incentive tiers, rewards, and the leaderboard
 msgid "REBATE"
 msgstr "REBATE"
 
+#: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "The incentives service could not be loaded. Your trading activity is not affected."
 msgstr "The incentives service could not be loaded. Your trading activity is not affected."
@@ -7652,6 +7744,10 @@ msgstr "Loading..."
 msgid "Trade now"
 msgstr "Trade now"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Waiting for confirmation..."
+msgstr "Waiting for confirmation..."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr "Sender has withdrawn all tokens from the GMX vesting vault"
@@ -7685,6 +7781,10 @@ msgstr "Execute"
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "You've received a rewards bonus!"
 msgstr "You've received a rewards bonus!"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting was stopped. Balances will refresh shortly."
+msgstr "Vesting was stopped. Balances will refresh shortly."
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching search"
@@ -8332,6 +8432,10 @@ msgstr "No distribution history"
 msgid "Mark price"
 msgstr "Mark price"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No rewards are currently available to claim."
+msgstr "No rewards are currently available to claim."
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "You chose to send the remaining margin to your <0>{chosenLabel}</0>. Make this the default destination when closing positions?"
 msgstr "You chose to send the remaining margin to your <0>{chosenLabel}</0>. Make this the default destination when closing positions?"
@@ -8449,8 +8553,7 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "Claim submitted"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "You've received bonus of {bonus}"
 msgstr "You've received bonus of {bonus}"
 
@@ -8569,10 +8672,6 @@ msgstr "No executed or cancelled transaction yet"
 msgid "STATUS"
 msgstr "STATUS"
 
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Not qualified this epoch"
-msgstr "Not qualified this epoch"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
@@ -8607,6 +8706,10 @@ msgstr "ENTRY PRICE"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price above mark price"
 msgstr "Set stop price above mark price"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral staked"
+msgstr "Collateral staked"
 
 #. to network
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -9075,6 +9178,10 @@ msgstr "{formattedNetRate} / 1h"
 msgid "Balance"
 msgstr "Balance"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting details changed. Review the updated collateral and continue vesting."
+msgstr "Vesting details changed. Review the updated collateral and continue vesting."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting esGMX"
 msgstr "Vesting esGMX"
@@ -9172,6 +9279,10 @@ msgstr "Collateral in"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr "EVENT NAME"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Collateral was unlocked. Balances will refresh shortly."
+msgstr "Collateral was unlocked. Balances will refresh shortly."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs GM token dashboard"
@@ -9318,6 +9429,7 @@ msgstr "Long borrowing rate"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Approve GMX"
 msgstr "Approve GMX"
@@ -9762,6 +9874,11 @@ msgstr "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {s
 msgid "Active · next epoch"
 msgstr "Active · next epoch"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Wallet or network changed. Review the updated collateral and continue vesting."
+msgstr "Wallet or network changed. Review the updated collateral and continue vesting."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -9915,6 +10032,10 @@ msgstr "Net rate / 1h"
 msgid "Select language"
 msgstr "Select language"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake GMX and receive up to {0} of your fees as rewards."
+msgstr "Stake GMX and receive up to {0} of your fees as rewards."
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "Unknown value"
@@ -9983,10 +10104,6 @@ msgstr "adding it will extend your unlock date."
 msgid "Price impact"
 msgstr "Price impact"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Stake GMX and receive up to {maxRewardRate} of your fees as rewards."
-msgstr "Stake GMX and receive up to {maxRewardRate} of your fees as rewards."
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
 msgstr "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -10019,6 +10136,7 @@ msgstr "No price impact. Single execution price for<0/>increasing longs or decre
 msgid "it stays staked, it is not unstaked."
 msgstr "it stays staked, it is not unstaked."
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Manage staking"
 msgstr "Manage staking"
@@ -10752,7 +10870,9 @@ msgstr "Swap TWAP: Swap tokens in evenly distributed parts over a specified time
 msgid "Pending transfer from {sender}"
 msgstr "Pending transfer from {sender}"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Start vesting"
 msgstr "Start vesting"
 
@@ -10909,6 +11029,7 @@ msgstr "/USD"
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Lifetime Volume"
 msgstr "Lifetime Volume"
@@ -11326,6 +11447,7 @@ msgstr "Include all fees, including close fees, in net value and PnL display."
 msgid "Claim price impact rebates"
 msgstr "Claim price impact rebates"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting started"
 msgstr "Vesting started"
@@ -11891,6 +12013,10 @@ msgstr "Auto-cancel TP/SL"
 msgid "LIQUIDITY LONG"
 msgstr "LIQUIDITY LONG"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Wallet or network changed. Review your vesting details before unlocking collateral."
+msgstr "Wallet or network changed. Review your vesting details before unlocking collateral."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "PnL short"
@@ -12044,6 +12170,10 @@ msgstr "ACCEPTABLE PRICE"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "Events"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting started. Balances will refresh shortly."
+msgstr "Vesting started. Balances will refresh shortly."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
@@ -12322,6 +12452,10 @@ msgstr "Error signing permit for {0}: {1}"
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
 msgstr "Longs net rate / 1h"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "{0} of net position fee"
+msgstr "{0} of net position fee"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Complete trading activities"

@@ -1,7 +1,12 @@
 import { t, Trans } from "@lingui/macro";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { formatRewardUsd } from "domain/synthetics/incentives/v2/utils";
+import {
+  sendRewardsManualAllocationDialogActionEvent,
+  sendRewardsManualAllocationDialogShownEvent,
+} from "lib/userAnalytics/rewardsEvents";
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
@@ -29,6 +34,16 @@ export function HistoricalRewardsAllocationModal({
   const cap = rewardCapUsd === undefined ? "-" : formatRewardUsd(rewardCapUsd);
   const consumed = rewardConsumedUsd === undefined ? "-" : formatRewardUsd(rewardConsumedUsd);
   const remaining = rewardRemainingUsd === undefined ? "-" : formatRewardUsd(rewardRemainingUsd);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    sendRewardsManualAllocationDialogShownEvent({
+      rewardCapUsd,
+      rewardConsumedUsd,
+      rewardRemainingUsd,
+    });
+  }, [isVisible, rewardCapUsd, rewardConsumedUsd, rewardRemainingUsd]);
 
   return (
     <ModalWithPortal
@@ -70,12 +85,28 @@ export function HistoricalRewardsAllocationModal({
                 activate it and earn esGMX and GT rewards.
               </Trans>
             </p>
-            <Link to="/rewards" className="text-14 font-medium text-blue-300" onClick={onClose}>
+            <Link
+              to="/rewards"
+              className="text-14 font-medium text-rewards-blue-300"
+              onClick={() => {
+                sendRewardsManualAllocationDialogActionEvent("LearnMore");
+                onClose();
+              }}
+            >
               <Trans>Learn more about the rewards program</Trans> →
             </Link>
           </div>
 
-          <Button variant="primary" className="mt-8 w-full" to="/trade" size="medium" onClick={onClose}>
+          <Button
+            variant="primary"
+            className="mt-8 w-full"
+            to="/trade"
+            size="medium"
+            onClick={() => {
+              sendRewardsManualAllocationDialogActionEvent("Trade");
+              onClose();
+            }}
+          >
             <Trans>Start trading</Trans>
           </Button>
         </div>
@@ -85,7 +116,10 @@ export function HistoricalRewardsAllocationModal({
         <div className="px-adaptive pb-adaptive">
           <Link
             to="/referrals"
-            onClick={onClose}
+            onClick={() => {
+              sendRewardsManualAllocationDialogActionEvent("Share");
+              onClose();
+            }}
             className="relative grid grid-cols-[minmax(0,1fr)_72px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-950 p-12"
             style={rewardsBannerStyles}
           >
@@ -96,7 +130,7 @@ export function HistoricalRewardsAllocationModal({
               <p className="text-14 text-typography-secondary">
                 <Trans>Share the rewards program and let them check their allocation.</Trans>
               </p>
-              <span className="mt-2 flex items-center gap-4 text-14 font-medium text-blue-300">
+              <span className="mt-2 flex items-center gap-4 text-14 font-medium text-rewards-blue-300">
                 <Trans>Share your rewards</Trans>
                 <ShareIcon className="size-12" />
               </span>

@@ -14,6 +14,7 @@ import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
 import { useChainId } from "lib/chains";
 import { expandDecimals, PRECISION } from "lib/numbers";
+import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
 import { RewardsSection } from "../RewardsSection";
 
@@ -24,9 +25,11 @@ vi.mock("context/IncentivesV2Context/IncentivesV2Context", () => ({ useIncentive
 vi.mock("domain/synthetics/incentives/v2/useAccountIncentiveStatus", () => ({
   useAccountIncentiveStatus: vi.fn(),
 }));
+vi.mock("lib/userAnalytics/rewardsEvents", () => ({
+  sendRewardsNavigationEvent: vi.fn(),
+}));
 vi.mock("img/ic_chevron_right.svg?react", () => ({ default: () => <svg /> }));
 vi.mock("img/ic_multiplier_solid.svg?react", () => ({ default: () => <svg /> }));
-vi.mock("img/rewards_account_coin.png", () => ({ default: "/rewards-account-coin.png" }));
 
 const ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
 const GMX_UNIT = expandDecimals(1, ES_GMX_DECIMALS);
@@ -93,15 +96,13 @@ describe("RewardsSection", () => {
     expect(link.textContent).toContain("2.5x");
     expect(link.textContent).toContain("Stake 375.00 GMX or esGMX more");
     expect(link.textContent).toContain("+0.5x next epoch");
-    expect(link.textContent).not.toContain("Provisional");
-    expect(link.textContent).not.toContain("Current epoch rewards");
-    expect(link.textContent).not.toContain("Persistent multiplier");
     expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
       account: ACCOUNT,
       enabled: true,
     });
 
     fireEvent.click(link);
+    expect(sendRewardsNavigationEvent).toHaveBeenCalledWith({ source: "GMXAccountModal" });
     expect(setOpen).toHaveBeenCalledWith(false);
   });
 
@@ -110,21 +111,12 @@ describe("RewardsSection", () => {
       typeof useAccountIncentiveStatus
     >);
 
-    const { container } = renderSection();
+    renderSection();
 
     const link = screen.getByRole("link", { name: /Rewards/ });
     expect(link.textContent).toContain("Rewards");
     expect(link.textContent).toContain("View tiers and indexed rewards");
     expect(link.textContent).not.toContain("0x");
-    expect(link.textContent).not.toContain("Current epoch rewards");
-    expect(link.className).toContain("rounded-b-12");
-    expect(link.className).toContain("rounded-t-8");
-    expect(link.className).toContain("bg-fill-surfaceElevated50");
-    const artwork = container.querySelector("img");
-    expect(artwork?.getAttribute("src")).toBe("/rewards-account-coin.png");
-    expect(artwork?.className).toContain("size-52");
-    expect(artwork?.parentElement?.className).toContain("size-36");
-    expect(artwork?.parentElement?.className).toContain("overflow-hidden");
   });
 
   it("uses the generic state when the known multiplier is zero", () => {

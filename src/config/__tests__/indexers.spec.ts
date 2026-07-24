@@ -44,7 +44,7 @@ describe("incentives indexer URL", () => {
     mockIsDevelopment.mockReturnValue(false);
 
     expect(getIndexerUrl(ARBITRUM, "subsquid")).toBe(
-      "https://gmx.squids.live/gmx-synthetics-arbitrum@6230c4/api/graphql"
+      "https://gmx.squids.live/gmx-synthetics-arbitrum@9c4ad1/api/graphql"
     );
   });
 });

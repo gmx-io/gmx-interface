@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { SECONDS_IN_DAY } from "lib/dates";
 
 import {
+  getRewardsVestingAvailableAmount,
   getRewardsVestingDaysLeft,
   getRewardsVestingDepositCapacity,
   getRewardsVestingEffectiveRemainingAmount,
@@ -12,6 +13,48 @@ import {
   getRewardsVestingProgress,
   getRewardsVestingRemainingDuration,
 } from "./rewardsVesting";
+
+describe("getRewardsVestingAvailableAmount", () => {
+  it("returns zero when the wallet and lifetime allowance are empty", () => {
+    expect(
+      getRewardsVestingAvailableAmount({
+        walletEsGmxAmount: 0n,
+        totalVestedAmount: 0n,
+        maxVestableAmount: 0n,
+      })
+    ).toBe(0n);
+  });
+
+  it("preserves a one-wei vestable balance", () => {
+    expect(
+      getRewardsVestingAvailableAmount({
+        walletEsGmxAmount: 1n,
+        totalVestedAmount: 0n,
+        maxVestableAmount: 100n,
+      })
+    ).toBe(1n);
+  });
+
+  it("caps the wallet balance at the remaining lifetime allowance", () => {
+    expect(
+      getRewardsVestingAvailableAmount({
+        walletEsGmxAmount: 100n,
+        totalVestedAmount: 90n,
+        maxVestableAmount: 100n,
+      })
+    ).toBe(10n);
+  });
+
+  it("returns the full wallet balance when the allowance is larger", () => {
+    expect(
+      getRewardsVestingAvailableAmount({
+        walletEsGmxAmount: 100n,
+        totalVestedAmount: 90n,
+        maxVestableAmount: 1_000n,
+      })
+    ).toBe(100n);
+  });
+});
 
 describe("getRewardsVestingEffectiveRemainingAmount", () => {
   it("subtracts only the time-accrued part of claimable GMX from the stored balance", () => {

@@ -17,6 +17,7 @@ import {
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
+  REWARDS_ONE_CLICK_ACTION_ENABLED_KEY,
   SETTINGS_WARNING_DOT_VISIBLE_KEY,
   SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
@@ -133,6 +134,9 @@ export type SettingsContextType = {
 
   chartLinesSizeInTokens: boolean;
   setChartLinesSizeInTokens: (val: boolean) => void;
+
+  rewardsOneClickActionEnabled: boolean;
+  setRewardsOneClickActionEnabled: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -301,6 +305,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
+  let [rewardsOneClickActionEnabled, setRewardsOneClickActionEnabled] = useLocalStorageSerializeKey(
+    REWARDS_ONE_CLICK_ACTION_ENABLED_KEY,
+    false
+  );
+  if (!isDevelopment()) {
+    rewardsOneClickActionEnabled = false;
+    setRewardsOneClickActionEnabled = noop;
+  }
+
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
       setExecutionFeeBufferBps(defaultExecutionFeeBufferBps ?? 0);
@@ -446,6 +459,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       chartLinesSizeInTokens: chartLinesSizeInTokens!,
       setChartLinesSizeInTokens,
+
+      rewardsOneClickActionEnabled: rewardsOneClickActionEnabled!,
+      setRewardsOneClickActionEnabled,
     };
   }, [
     showDebugValues,
@@ -509,6 +525,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setShowCloseSizeInTokens,
     chartLinesSizeInTokens,
     setChartLinesSizeInTokens,
+    rewardsOneClickActionEnabled,
+    setRewardsOneClickActionEnabled,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

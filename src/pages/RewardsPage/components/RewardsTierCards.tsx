@@ -5,6 +5,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 
 import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
+import type { RewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type {
   AccountIncentiveStatus,
   BoostConfig,
@@ -12,14 +13,10 @@ import type {
   IncentivesConfig,
   StakingTierId,
 } from "domain/synthetics/incentives/v2/types";
-import {
-  formatFactorPercentage,
-  formatMultiplier,
-  formatRewardUsd,
-  getMaxRewardRateFactor,
-} from "domain/synthetics/incentives/v2/utils";
+import { formatFactorPercentage, formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 
+import { getRewardsPromoCopy } from "components/RewardsPromoBanner/rewardsPromoCopy";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import bannerGlowImg from "img/bg_banner_glow.png";
@@ -41,16 +38,16 @@ export function RewardsTierCards({
   statusState,
   account,
   walletGmx,
-  recentActivityRewardEstimateUsd,
-  promoActivityLoading,
+  walletGmxState,
+  promoSelection,
 }: {
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
   statusState: AccountDataState;
   account?: string;
   walletGmx?: bigint;
-  recentActivityRewardEstimateUsd?: bigint;
-  promoActivityLoading: boolean;
+  walletGmxState: AccountDataState;
+  promoSelection?: RewardsPromoSelection;
 }) {
   if (statusState === "loading") return <TierCardsSkeleton />;
   if (statusState === "unavailable") return <TierCardsUnavailable />;
@@ -73,8 +70,8 @@ export function RewardsTierCards({
           active={stakingActive}
           account={account}
           walletGmx={walletGmx}
-          recentActivityRewardEstimateUsd={recentActivityRewardEstimateUsd}
-          promoActivityLoading={promoActivityLoading}
+          walletGmxState={walletGmxState}
+          promoSelection={promoSelection}
         />
       ),
     },
@@ -202,7 +199,7 @@ const tierCardBase =
 const tierCardBanner = "bg-slate-950 p-16 max-lg:p-12";
 const tierCardActive = "bg-slate-950 pt-16 px-16 pb-12";
 const tierIconLarge =
-  "size-48 shrink-0 rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_8px_rgba(120,133,255,0.9)]";
+  "size-48 shrink-0 rounded-12 border-[0.8px] border-rewards-blue-300/60 drop-shadow-[0_4px_8px_rgba(120,133,255,0.9)]";
 
 function VolumeCard({
   config,
@@ -333,7 +330,7 @@ function VolumeCard({
                     className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/volume-bar:scale-y-150 group-focus-within/volume-bar:bg-cold-blue-700 group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-cold-blue-700"
                   >
                     <div
-                      className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color,width] duration-300 ease-out"
+                      className="absolute left-0 top-0 h-full rounded-8 bg-rewards-blue-300 transition-[background-color,width] duration-300 ease-out"
                       style={progressStyle}
                     />
                   </button>
@@ -346,7 +343,7 @@ function VolumeCard({
                 <div
                   className={cx(
                     "absolute left-0 top-0 h-full rounded-8 transition-[width] duration-300",
-                    showMaxTierState ? "bg-green-300" : "bg-blue-300"
+                    showMaxTierState ? "bg-green-300" : "bg-rewards-blue-300"
                   )}
                   style={progressStyle}
                 />
@@ -387,7 +384,7 @@ function VolumeCard({
           <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
             <Trans>Increase your trading volume to unlock a higher status and boost your rewards multiplier.</Trans>
           </div>
-          <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-blue-300">
+          <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300">
             <Trans>Start trading</Trans> <ArrowRight />
           </Link>
         </div>
@@ -402,16 +399,16 @@ function StakingCard({
   active,
   account,
   walletGmx,
-  recentActivityRewardEstimateUsd,
-  promoActivityLoading,
+  walletGmxState,
+  promoSelection,
 }: {
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
   active: boolean;
   account?: string;
   walletGmx?: bigint;
-  recentActivityRewardEstimateUsd?: bigint;
-  promoActivityLoading: boolean;
+  walletGmxState: AccountDataState;
+  promoSelection?: RewardsPromoSelection;
 }) {
   const stakingTier = status?.stakingTier;
   const displayTier = stakingTier ?? status?.projectedStakingTier;
@@ -433,7 +430,6 @@ function StakingCard({
       ? nextTierConfig.threshold - gmxStaked
       : 0n;
   const isMaxTier = active && displayTierIndex >= 0 && !nextTierConfig;
-  const maxRewardRate = formatFactorPercentage(getMaxRewardRateFactor(config));
   const stakingTooltip = projectedTierConfig ? (
     <MultiplierChangeTooltip
       isDecrease={Boolean(displayTierConfig && projectedTierConfig.multiplier < displayTierConfig.multiplier)}
@@ -498,7 +494,10 @@ function StakingCard({
                 </span>
               </Trans>
               {requiredToNextTier > 0n ? (
-                <Link to="/earn/portfolio" className="inline-flex items-center gap-2 text-13 font-medium text-blue-300">
+                <Link
+                  to="/earn/portfolio"
+                  className="inline-flex items-center gap-2 text-13 font-medium text-rewards-blue-300"
+                >
                   <Trans>Manage staking</Trans> <GmxIcon className="size-12" />
                 </Link>
               ) : null}
@@ -531,10 +530,8 @@ function StakingCard({
         <InactiveStakingCardContent
           account={account}
           walletGmx={walletGmx}
-          maxRewardRate={maxRewardRate}
-          hasManualAllocation={(status?.manualRewardRemainingUsd ?? 0n) > 0n}
-          recentActivityRewardEstimateUsd={recentActivityRewardEstimateUsd}
-          promoActivityLoading={promoActivityLoading}
+          walletGmxState={walletGmxState}
+          promoSelection={promoSelection}
         />
       )}
     </div>
@@ -544,46 +541,70 @@ function StakingCard({
 function InactiveStakingCardContent({
   account,
   walletGmx,
-  maxRewardRate,
-  hasManualAllocation,
-  recentActivityRewardEstimateUsd,
-  promoActivityLoading,
+  walletGmxState,
+  promoSelection,
 }: {
   account?: string;
   walletGmx?: bigint;
-  maxRewardRate: string;
-  hasManualAllocation: boolean;
-  recentActivityRewardEstimateUsd?: bigint;
-  promoActivityLoading: boolean;
+  walletGmxState: AccountDataState;
+  promoSelection?: RewardsPromoSelection;
 }) {
+  if (!promoSelection) {
+    return (
+      <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+        <div className="flex flex-1 flex-col justify-end gap-8">
+          <Skeleton width="55%" height={24} />
+          <Skeleton width="90%" height={14} />
+          <Skeleton width={88} height={16} />
+        </div>
+      </SkeletonTheme>
+    );
+  }
+
   const hasWalletGmx = (walletGmx ?? 0n) > 0n;
-  const showStaticCopy = !account || promoActivityLoading;
-  const estimatedRewards =
-    recentActivityRewardEstimateUsd === undefined ? undefined : formatRewardUsd(recentActivityRewardEstimateUsd);
+  const showStaticCopy = !account;
+  const isWalletBalanceLoading = Boolean(account && walletGmxState === "loading");
+  const isWalletBalanceUnavailable = Boolean(account && walletGmxState === "unavailable");
+  const promoCopy = getRewardsPromoCopy(promoSelection);
 
   return (
     <div className="flex flex-1 flex-col justify-end gap-8">
       <h3 className="text-h3 font-medium text-typography-primary">
-        {showStaticCopy ? <Trans>Stake to Boost Rewards</Trans> : <Trans>Earn rewards</Trans>}
+        {showStaticCopy ? <Trans>Stake to Boost Rewards</Trans> : promoCopy.title}
       </h3>
       <div className="text-13 font-medium text-typography-secondary">
         {showStaticCopy ? (
-          <Trans>Stake GMX and receive up to {maxRewardRate} of your fees as rewards.</Trans>
-        ) : estimatedRewards !== undefined && !hasManualAllocation ? (
           <Trans>
-            With your recent activity, staking GMX could have earned you up to {estimatedRewards} in rewards.
+            Stake GMX and receive up to {formatFactorPercentage(promoSelection.maxRewardRateFactor)} of your fees as
+            rewards.
           </Trans>
         ) : (
-          <Trans>Stake GMX and receive up to {maxRewardRate} of your fees back.</Trans>
+          promoCopy.body
         )}
       </div>
-      <Link
-        to={hasWalletGmx ? "/earn/portfolio" : "/buy_gmx"}
-        className="flex items-center gap-4 text-13 font-medium text-blue-300"
-      >
-        {hasWalletGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
-        {hasWalletGmx ? <GmxIcon className="size-16" /> : <PlusIcon className="size-16" />}
-      </Link>
+      {isWalletBalanceLoading ? (
+        <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+          <Skeleton width={88} height={16} />
+        </SkeletonTheme>
+      ) : (
+        <Link
+          to={hasWalletGmx || isWalletBalanceUnavailable ? "/earn/portfolio" : "/buy_gmx"}
+          className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300"
+        >
+          {isWalletBalanceUnavailable ? (
+            <Trans>Manage staking</Trans>
+          ) : hasWalletGmx ? (
+            <Trans>Stake GMX</Trans>
+          ) : (
+            <Trans>Buy GMX</Trans>
+          )}
+          {hasWalletGmx || isWalletBalanceUnavailable ? (
+            <GmxIcon className="size-16" />
+          ) : (
+            <PlusIcon className="size-16" />
+          )}
+        </Link>
+      )}
     </div>
   );
 }
@@ -663,7 +684,10 @@ function StakingProgressBar({
                   type="button"
                   className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/segment:scale-y-150 group-focus-within/segment:bg-cold-blue-700 group-hover/segment:scale-y-150 group-hover/segment:bg-cold-blue-700"
                 >
-                  <div className="absolute left-0 top-0 h-full rounded-8 bg-blue-300" style={nextTierProgressStyle} />
+                  <div
+                    className="absolute left-0 top-0 h-full rounded-8 bg-rewards-blue-300"
+                    style={nextTierProgressStyle}
+                  />
                   <span className="sr-only">
                     {stakingTierLabels[tier.tier]} <Trans>Staking tier</Trans>
                   </span>
@@ -676,7 +700,7 @@ function StakingProgressBar({
                     completed
                       ? isMaxTier
                         ? "bg-green-300"
-                        : "bg-blue-300"
+                        : "bg-rewards-blue-300"
                       : "bg-cold-blue-900 group-focus-within/segment:bg-cold-blue-700 group-hover/segment:bg-cold-blue-700"
                   )}
                 >
@@ -768,8 +792,8 @@ function BoostsCard({
         {hasStatus ? (
           <>
             <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
-              <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
-                <BoostSvg className="size-24 text-blue-300" />
+              <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-rewards-blue-300/60 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
+                <BoostSvg className="size-24 text-rewards-blue-300" />
               </div>
               <span className="flex flex-col">
                 {activePersistentBoostIds.length > 0 ? (
@@ -792,10 +816,22 @@ function BoostsCard({
                 const isActivePersistent = activePersistentBoostIds.includes(boost.boost);
                 const isQualifiedThisEpoch = qualifiedTransientBoostIds.includes(boost.boost);
                 const isHighlighted = isActivePersistent || isQualifiedThisEpoch;
+                const accessibleBoostLabel =
+                  boost.boost === "FeaturedMarkets"
+                    ? t`Featured Markets`
+                    : boost.boost === "BalancingTrades"
+                      ? t`Balancing Trades`
+                      : boost.boost === "LifetimeTrading"
+                        ? t`Lifetime Volume`
+                        : t`Manual Allocation`;
 
                 return (
                   <TooltipWithPortal
                     key={boost.boost}
+                    as="button"
+                    type="button"
+                    aria-label={accessibleBoostLabel}
+                    className="rounded-8 p-0"
                     handle={
                       <div
                         className={cx(
@@ -819,7 +855,7 @@ function BoostsCard({
                             <Trans>Active</Trans>
                           </div>
                         ) : isQualifiedThisEpoch ? (
-                          <div className="mt-4 text-13 text-blue-300">
+                          <div className="mt-4 text-13 text-rewards-blue-300">
                             <Trans>Qualified this epoch</Trans>
                           </div>
                         ) : null}
@@ -857,17 +893,30 @@ function BoostsCard({
       </div>
 
       {!hasStatus ? (
-        <div className="overflow-hidden">
-          <div className="flex w-max animate-marquee gap-8 motion-reduce:animate-none">
-            {[...config.boosts, ...config.boosts].map((boost, index) => (
-              <span
-                key={`${boost.boost}-${index}`}
-                className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
-              >
-                <BoostTierIcon boostId={boost.boost} active={false} className="size-26 shrink-0" />
-                {boostLabels[boost.boost]}
-              </span>
-            ))}
+        <div className="group overflow-hidden" tabIndex={0} aria-label={t`Activity Boost`}>
+          <div className="flex w-max animate-marquee gap-8 group-hover:[animation-play-state:paused] group-focus:[animation-play-state:paused] motion-reduce:animate-none">
+            <div className="flex gap-8">
+              {config.boosts.map((boost) => (
+                <span
+                  key={boost.boost}
+                  className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
+                >
+                  <BoostTierIcon boostId={boost.boost} active={false} className="size-26 shrink-0" />
+                  {boostLabels[boost.boost]}
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-8" aria-hidden="true">
+              {config.boosts.map((boost) => (
+                <span
+                  key={boost.boost}
+                  className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
+                >
+                  <BoostTierIcon boostId={boost.boost} active={false} className="size-26 shrink-0" />
+                  {boostLabels[boost.boost]}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       ) : null}

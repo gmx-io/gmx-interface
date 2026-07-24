@@ -183,7 +183,11 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     return (
       <div className="rounded-8 bg-fill-surfaceElevated50">
         {executionDetails}
-        <RewardsHintRow rewardEstimate={rewardEstimate} />
+        <RewardsHintRow
+          rewardEstimate={rewardEstimate}
+          marketAddress={position?.marketInfo?.marketTokenAddress}
+          marketName={position?.marketInfo?.name}
+        />
       </div>
     );
   }

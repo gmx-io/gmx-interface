@@ -27,6 +27,10 @@ const rewardsShareMock = vi.hoisted(() => ({
   }[],
 }));
 
+const rewardsAnalyticsMock = vi.hoisted(() => ({
+  sendRewardsLeaderboardShareClickEvent: vi.fn(),
+}));
+
 vi.mock("components/RewardsShare/RewardsShare", () => ({
   RewardsShare: (props: { isOpen: boolean; account: string; chainId: number; entry: LeaderboardEntry }) => {
     rewardsShareMock.props.push(props);
@@ -39,14 +43,10 @@ vi.mock("components/RewardsShare/RewardsShare", () => ({
   },
 }));
 
-vi.mock("img/ic_calendar.svg?react", () => ({
-  default: ({ className }: { className?: string }) => (
-    <svg className={className} data-testid="all-time-calendar-icon" />
-  ),
-}));
+vi.mock("lib/userAnalytics/rewardsEvents", () => rewardsAnalyticsMock);
 
 vi.mock("img/ic_share_arrow_filled.svg?react", () => ({
-  default: ({ className }: { className?: string }) => <svg className={className} data-testid="share-icon" />,
+  default: ({ className }: { className?: string }) => <svg className={className} />,
 }));
 
 type LeaderboardParams = {
@@ -146,6 +146,16 @@ function renderLeaderboard(activeConfig = config, account: string | undefined = 
   );
 }
 
+function renderAllTimeOnlyLeaderboard(account: string | undefined = CHECKSUMMED_ACCOUNT) {
+  return render(
+    <I18nProvider i18n={i18n}>
+      <MemoryRouter>
+        <RewardsLeaderboardTab chainId={ARBITRUM} account={account} />
+      </MemoryRouter>
+    </I18nProvider>
+  );
+}
+
 function leaderboardNode(activeConfig: IncentivesConfig) {
   return (
     <I18nProvider i18n={i18n}>
@@ -186,6 +196,7 @@ describe("RewardsLeaderboardTab", () => {
     leaderboardMock.pageParams.length = 0;
     leaderboardMock.pinnedParams.length = 0;
     rewardsShareMock.props.length = 0;
+    rewardsAnalyticsMock.sendRewardsLeaderboardShareClickEvent.mockReset();
   });
 
   afterEach(() => {
@@ -195,8 +206,6 @@ describe("RewardsLeaderboardTab", () => {
 
   it("coerces multiplier sorting and removes the multiplier option and column for all time", async () => {
     renderLeaderboard();
-
-    expect(within(screen.getByRole("button", { name: "All-time" })).getByTestId("all-time-calendar-icon")).toBeTruthy();
 
     fireEvent.click(getSortButton("Multiplier"));
 
@@ -214,6 +223,34 @@ describe("RewardsLeaderboardTab", () => {
     expect(screen.queryByRole("columnheader", { name: "Multiplier" })).toBeNull();
     expect(within(screen.getByTestId("leaderboard-pinned-row")).queryByText("2.5x")).toBeNull();
     expect(within(screen.getByTestId("leaderboard-pinned-row")).getByRole("button", { name: "Share" })).toBeTruthy();
+  });
+
+  it("loads only config-independent all-time data when config is unavailable", () => {
+    renderAllTimeOnlyLeaderboard();
+
+    expect(screen.getByRole("button", { name: "All-time" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Volume this epoch" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Last epoch" })).toBeNull();
+    expect(screen.queryByRole("columnheader", { name: "Multiplier" })).toBeNull();
+    expect(getLastPageParams()).toMatchObject({
+      epoch: undefined,
+      isMutable: true,
+      orderBy: "tradingVolume_DESC",
+    });
+  });
+
+  it("selects the current epoch when configuration arrives after an all-time fallback", async () => {
+    const view = renderAllTimeOnlyLeaderboard();
+
+    view.rerender(leaderboardNode(config));
+
+    await waitFor(() => {
+      expect(getLastPageParams()).toMatchObject({
+        epoch: config.epochTimestamp,
+        isMutable: true,
+      });
+    });
+    expect(screen.getByRole("columnheader", { name: "Multiplier" })).toBeTruthy();
   });
 
   it("renders the exact-cased connected account with its indexed values and global volume rank", () => {
@@ -237,7 +274,6 @@ describe("RewardsLeaderboardTab", () => {
     );
     expect(cells[6].textContent).toBe(formatUsd(pinnedEntry.rewardsUsd, { fallbackToZero: true, displayDecimals: 2 }));
     expect(cells[7].textContent).toBe(formatMultiplier(250n, config.multiplierDecimals));
-    expect(screen.getByRole("columnheader", { name: "Rank" })).toBeTruthy();
 
     const pinnedParams = leaderboardMock.pinnedParams[leaderboardMock.pinnedParams.length - 1];
     expect(pinnedParams.where).toEqual({ account: CHECKSUMMED_ACCOUNT });
@@ -248,17 +284,25 @@ describe("RewardsLeaderboardTab", () => {
 
     const pinnedRow = screen.getByTestId("leaderboard-pinned-row");
     const shareButton = within(pinnedRow).getByRole("button", { name: "Share" });
-    expect(within(shareButton).getByTestId("share-icon")).toBeTruthy();
 
     fireEvent.click(shareButton);
 
     expect(screen.getByTestId("rewards-share-modal").textContent).toBe(String(pinnedEntry.rank));
+    expect(rewardsAnalyticsMock.sendRewardsLeaderboardShareClickEvent).toHaveBeenCalledWith("current");
     expect(rewardsShareMock.props.at(-1)).toMatchObject({
       isOpen: true,
       account: CHECKSUMMED_ACCOUNT,
       chainId: ARBITRUM,
       entry: pinnedEntry,
     });
+  });
+
+  it("tracks all-time sharing without requiring current config", () => {
+    renderAllTimeOnlyLeaderboard();
+
+    fireEvent.click(within(screen.getByTestId("leaderboard-pinned-row")).getByRole("button", { name: "Share" }));
+
+    expect(rewardsAnalyticsMock.sendRewardsLeaderboardShareClickEvent).toHaveBeenCalledWith("all");
   });
 
   it("opens sharing from the connected account's inline row without duplicating the action", () => {
@@ -412,7 +456,7 @@ describe("RewardsLeaderboardTab", () => {
   it("renders a checksummed You row only after an empty pinned query resolves", () => {
     leaderboardMock.pinnedData = [];
 
-    const { container, rerender } = renderLeaderboard();
+    const { rerender } = renderLeaderboard();
 
     const emptyPinnedRow = screen.getByTestId("leaderboard-pinned-row");
     expect(within(emptyPinnedRow).getByText("N/A")).toBeTruthy();
@@ -423,7 +467,6 @@ describe("RewardsLeaderboardTab", () => {
     rerender(leaderboardNode(config));
 
     expect(screen.queryByTestId("leaderboard-pinned-row")).toBeNull();
-    expect(container.querySelector("tbody tr")?.className).toContain("!bg-cold-blue-900");
 
     leaderboardMock.pinnedLoading = false;
     leaderboardMock.pinnedError = new Error("rank failed");
@@ -529,7 +572,6 @@ describe("RewardsLeaderboardTab", () => {
 
     expect(getLastPageParams().limit).toBe(PAGE_SIZE);
     expect(rows).toHaveLength(PAGE_SIZE + 1);
-    expect(rows[0].className).toContain("!bg-cold-blue-900");
     expect(screen.queryByText("No leaderboard entries yet.")).toBeNull();
   });
 

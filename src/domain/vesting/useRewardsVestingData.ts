@@ -4,9 +4,12 @@ import { zeroAddress } from "viem";
 import { ARBITRUM, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";
+import { getRewardsVestingAvailableAmount } from "domain/vesting/rewardsVesting";
 import { useChainId } from "lib/chains";
+import { GMX_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
+import { convertToUsd } from "sdk/utils/tokens";
 
 export type VestingInfo = {
   pairAmount: bigint;
@@ -28,6 +31,15 @@ export type RewardsVestingData = {
   gmxPrice?: bigint;
 };
 
+export type RewardsVestingDataResult = {
+  data?: RewardsVestingData;
+  vestableEsGmx?: bigint;
+  vestableEsGmxUsd?: bigint;
+  isLoading: boolean;
+  error?: Error;
+  mutate: () => Promise<RewardsVestingData | undefined>;
+};
+
 type RewardsVestingContractsData = Omit<RewardsVestingData, "gmxPrice">;
 
 type RewardsVestingAddresses = {
@@ -39,7 +51,7 @@ type RewardsVestingAddresses = {
   gmxVester: string;
 };
 
-export function useRewardsVestingData(account?: string, targetChainId?: ContractsChainId) {
+export function useRewardsVestingData(account?: string, targetChainId?: ContractsChainId): RewardsVestingDataResult {
   const { chainId: currentChainId } = useChainId();
   const { active, chainId: walletChainId, signer } = useWallet();
   const chainId = targetChainId ?? currentChainId;
@@ -88,8 +100,31 @@ export function useRewardsVestingData(account?: string, targetChainId?: Contract
     };
   }, [gmxPrice, mutateContractsData, mutateGmxPrice]);
 
+  const vestableEsGmx = useMemo(
+    () =>
+      data
+        ? getRewardsVestingAvailableAmount({
+            walletEsGmxAmount: data.walletEsGmxBalance,
+            totalVestedAmount: data.vestingInfo.vestedAmount,
+            maxVestableAmount: data.vestingInfo.maxVestableAmount,
+          })
+        : undefined,
+    [data]
+  );
+  const vestableEsGmxUsd = useMemo(
+    () =>
+      vestableEsGmx === undefined
+        ? undefined
+        : vestableEsGmx === 0n
+          ? 0n
+          : convertToUsd(vestableEsGmx, GMX_DECIMALS, data?.gmxPrice),
+    [data?.gmxPrice, vestableEsGmx]
+  );
+
   return {
     data,
+    vestableEsGmx,
+    vestableEsGmxUsd,
     isLoading,
     error,
     mutate,

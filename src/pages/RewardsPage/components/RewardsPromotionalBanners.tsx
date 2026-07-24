@@ -1,17 +1,19 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { type PointerEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { REWARDS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
+import { getRewardsPromoSelection, type RewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier, formatRewardUsd } from "domain/synthetics/incentives/v2/utils";
-import type { StakingProcessedData } from "lib/legacy";
 import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
-import { formatAmount } from "lib/numbers";
+import { formatAmount, PRECISION } from "lib/numbers";
+import { sendRewardsBannerEvent, sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
 import { rewardsBannerStyles } from "components/RewardsPromoBanner/rewardsBannerStyles";
+import { getRewardsPromoCopy } from "components/RewardsPromoBanner/rewardsPromoCopy";
 
 import TradeIcon from "img/ic_candles_filled.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
@@ -21,6 +23,7 @@ import rewardsBannerCoinMultiplier from "img/rewards_banner_coin_multiplier.png"
 import rewardsBannerCoinTrade from "img/rewards_banner_coin_trade.png";
 import rewardsBannerCoinWallet from "img/rewards_banner_coin_wallet.png";
 
+import { getRewardsDebugMode } from "../rewardsDebug";
 import { volumeTierLabels } from "./rewardsTiersShared";
 
 type RewardsBannerType =
@@ -55,21 +58,24 @@ function isInteractiveElement(target: EventTarget | null) {
 export function getRewardsPromotionalBannerContent({
   config,
   status,
-  stakingData,
+  promoSelection,
+  walletGmx,
+  walletEsGmx,
 }: {
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
-  stakingData?: Pick<StakingProcessedData, "gmxBalance" | "esGmxBalance">;
+  promoSelection?: RewardsPromoSelection;
+  walletGmx?: bigint;
+  walletEsGmx?: bigint;
 }): RewardsBannerContent[] {
-  if (!status) return [];
-
+  if (!status || !promoSelection) return [];
   const banners: RewardsBannerContent[] = [];
 
-  if (status.manualRewardRemainingUsd > 0n) {
-    const bonus = formatRewardUsd(status.manualRewardRemainingUsd);
+  if (promoSelection.variant === "manual-reward") {
+    const { title } = getRewardsPromoCopy(promoSelection);
     banners.push({
       type: "manual-reward",
-      title: t`You've received bonus of ${bonus}`,
+      title,
       description: <Trans>Start trading to activate it and get your rewards.</Trans>,
       actionLabel: <Trans>Start trading</Trans>,
       actionType: "trade",
@@ -78,8 +84,10 @@ export function getRewardsPromotionalBannerContent({
     });
   }
 
-  if ((stakingData?.gmxBalance ?? 0n) > 0n) {
-    const gmxAmount = formatAmount(stakingData?.gmxBalance, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true });
+  if (!promoSelection.isActiveUser) return banners;
+
+  if ((walletGmx ?? 0n) > 0n) {
+    const gmxAmount = formatAmount(walletGmx, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true });
     banners.push({
       type: "gmx-ready-to-stake",
       title: <Trans>You have GMX ready to stake</Trans>,
@@ -91,8 +99,8 @@ export function getRewardsPromotionalBannerContent({
     });
   }
 
-  if ((stakingData?.esGmxBalance ?? 0n) > 0n) {
-    const esGmxAmount = formatAmount(stakingData?.esGmxBalance, ES_GMX_DECIMALS, 2, true, {
+  if ((walletEsGmx ?? 0n) > 0n) {
+    const esGmxAmount = formatAmount(walletEsGmx, ES_GMX_DECIMALS, 2, true, {
       trimTrailingZeros: true,
     });
     banners.push({
@@ -170,33 +178,79 @@ export function getRewardsPromotionalBannerContent({
   return banners;
 }
 
+function getRewardsPromotionalBannerDebugContent(config: IncentivesConfig) {
+  const currentVolumeTier = config.volumeTiers[0]?.tier ?? "Tier1";
+  const nextVolumeTier = config.volumeTiers[1];
+  const tierVolume =
+    nextVolumeTier && nextVolumeTier.threshold > 0n ? (nextVolumeTier.threshold * 3n) / 4n : 1n * PRECISION;
+  const status: AccountIncentiveStatus = {
+    account: "0x0000000000000000000000000000000000000001",
+    multiplier: config.volumeTiers[0]?.multiplier ?? 0n,
+    volumeTier: currentVolumeTier,
+    stakingTier: null,
+    projectedVolumeTier: currentVolumeTier,
+    projectedStakingTier: null,
+    epochTimestamp: config.epochTimestamp,
+    tradingVolume: tierVolume,
+    tierVolume,
+    referralVolume: 0n,
+    currentStakedBalance: 0n,
+    boostIds: [],
+    esGmxRewards: 0n,
+    gtRewards: 0n,
+    rewardsUsd: 0n,
+    manualRewardCapUsd: 500n * PRECISION,
+    manualRewardConsumedUsd: 300n * PRECISION,
+    manualRewardRemainingUsd: 200n * PRECISION,
+  };
+
+  return getRewardsPromotionalBannerContent({
+    config,
+    status,
+    promoSelection: getRewardsPromoSelection({ config, status }),
+    walletGmx: 100n * 10n ** BigInt(ES_GMX_DECIMALS),
+    walletEsGmx: 100n * 10n ** BigInt(ES_GMX_DECIMALS),
+  });
+}
+
 export function RewardsPromotionalBanners({
   account,
   config,
   status,
-  stakingData,
+  promoSelection,
+  walletGmx,
+  walletEsGmx,
   className,
 }: {
   account?: string;
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
-  stakingData?: Pick<StakingProcessedData, "gmxBalance" | "esGmxBalance">;
+  promoSelection?: RewardsPromoSelection;
+  walletGmx?: bigint;
+  walletEsGmx?: bigint;
   className?: string;
 }) {
+  const { search } = useLocation();
+  const showAllBanners = getRewardsDebugMode(search) === "banners";
   const allBanners = useMemo(
-    () => getRewardsPromotionalBannerContent({ config, status, stakingData }),
-    [config, stakingData, status]
+    () =>
+      showAllBanners
+        ? getRewardsPromotionalBannerDebugContent(config)
+        : getRewardsPromotionalBannerContent({ config, status, promoSelection, walletGmx, walletEsGmx }),
+    [config, promoSelection, showAllBanners, status, walletEsGmx, walletGmx]
   );
   const [dismissedBanners, setDismissedBanners] = useLocalStorageSerializeKeySafe<DismissedRewardsBanners>(
     [REWARDS_PAGE_BANNERS_DISMISSED_KEY, account],
     {}
   );
   const banners = useMemo(
-    () => allBanners.filter((banner) => !dismissedBanners?.[banner.type]),
-    [allBanners, dismissedBanners]
+    () => (showAllBanners ? allBanners : allBanners.filter((banner) => !dismissedBanners?.[banner.type])),
+    [allBanners, dismissedBanners, showAllBanners]
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [animationDirection, setAnimationDirection] = useState<BannerAnimationDirection>("right");
+  const [isAutoRotationPaused, setIsAutoRotationPaused] = useState(false);
+  const [isInteractionPaused, setIsInteractionPaused] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(
     () => typeof window !== "undefined" && Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
   );
@@ -219,11 +273,18 @@ export function RewardsPromotionalBanners({
   }, [banners.length]);
 
   useEffect(() => {
-    if (banners.length <= 1 || prefersReducedMotion) return;
+    if (banners.length <= 1 || prefersReducedMotion || isAutoRotationPaused || isInteractionPaused) return;
 
     const timeout = window.setTimeout(() => goToRelativeIndex(1), AUTO_ROTATE_MS);
     return () => window.clearTimeout(timeout);
-  }, [banners.length, current?.type, goToRelativeIndex, prefersReducedMotion]);
+  }, [
+    banners.length,
+    current?.type,
+    goToRelativeIndex,
+    isAutoRotationPaused,
+    isInteractionPaused,
+    prefersReducedMotion,
+  ]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -246,10 +307,27 @@ export function RewardsPromotionalBanners({
     setCurrentIndex(index);
   };
 
-  if (!account || !current) return null;
+  useEffect(() => {
+    if (!current || (!account && !showAllBanners)) return;
+
+    sendRewardsBannerEvent("BannerShown", current.type);
+  }, [account, current, showAllBanners]);
+
+  if ((!account && !showAllBanners) || !current) return null;
 
   const handleDismiss = () => {
+    sendRewardsBannerEvent("BannerDismiss", current.type);
+    if (showAllBanners) {
+      goToRelativeIndex(1);
+      return;
+    }
+
     setDismissedBanners((dismissed) => ({ ...dismissed, [current.type]: true }));
+  };
+
+  const handleActionClick = () => {
+    sendRewardsBannerEvent("BannerClick", current.type);
+    sendRewardsNavigationEvent({ source: "PromoBanner" });
   };
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
@@ -289,6 +367,8 @@ export function RewardsPromotionalBanners({
           goToRelativeIndex(-1);
         }
       }}
+      onMouseEnter={() => setIsInteractionPaused(true)}
+      onMouseLeave={() => setIsInteractionPaused(false)}
       data-testid="rewards-promotional-banners"
     >
       <div
@@ -309,7 +389,11 @@ export function RewardsPromotionalBanners({
             <h3 className="text-16 font-medium text-typography-primary">{current.title}</h3>
             <p className="text-13 text-typography-secondary">{current.description}</p>
           </div>
-          <Link to={current.to} className="flex w-fit items-center gap-4 text-14 font-medium text-blue-300">
+          <Link
+            to={current.to}
+            className="flex w-fit items-center gap-4 text-14 font-medium text-rewards-blue-300"
+            onClick={handleActionClick}
+          >
             {current.actionLabel}
             {current.actionType === "trade" ? <TradeIcon className="size-16" /> : <GmxIcon className="size-16" />}
           </Link>
@@ -334,18 +418,30 @@ export function RewardsPromotionalBanners({
 
       {banners.length > 1 ? (
         <div className="flex items-center justify-center gap-8 py-12">
+          <button
+            type="button"
+            aria-label={isAutoRotationPaused ? t`Resume carousel` : t`Pause carousel`}
+            className="flex size-24 items-center justify-center rounded-full text-12 text-typography-secondary hover:text-typography-primary"
+            onClick={() => setIsAutoRotationPaused((isPaused) => !isPaused)}
+          >
+            <span aria-hidden="true">{isAutoRotationPaused ? "▶" : "Ⅱ"}</span>
+          </button>
           {banners.map((banner, index) => (
             <button
               key={banner.type}
               type="button"
               aria-label={t`Go to slide ${index + 1}`}
               aria-current={index === selectedIndex}
-              className={cx(
-                "size-8 rounded-full bg-blue-300 transition-opacity",
-                index === selectedIndex ? "opacity-100" : "opacity-40 hover:opacity-70"
-              )}
+              className="flex size-24 items-center justify-center rounded-full"
               onClick={() => handleDotClick(index)}
-            />
+            >
+              <span
+                className={cx(
+                  "size-8 rounded-full bg-rewards-blue-300 transition-opacity",
+                  index === selectedIndex ? "opacity-100" : "opacity-40 hover:opacity-70"
+                )}
+              />
+            </button>
           ))}
         </div>
       ) : null}

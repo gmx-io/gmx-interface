@@ -41,6 +41,12 @@ export type RewardsVestingDepositCapacity = {
   maxDepositAmount: bigint;
 };
 
+export type RewardsVestingAvailableAmountParams = {
+  walletEsGmxAmount: bigint;
+  totalVestedAmount: bigint;
+  maxVestableAmount: bigint;
+};
+
 export type RewardsVestingProgress = {
   totalAmount: bigint;
   completedAmount: bigint;
@@ -152,6 +158,19 @@ export function getRewardsVestingDepositCapacity({
 
 export function getRewardsVestingMaxDepositAmount(params: RewardsVestingDepositCapacityParams): bigint {
   return getRewardsVestingDepositCapacity(params).maxDepositAmount;
+}
+
+export function getRewardsVestingAvailableAmount({
+  walletEsGmxAmount,
+  totalVestedAmount,
+  maxVestableAmount,
+}: RewardsVestingAvailableAmountParams): bigint {
+  const remainingVestableAmount = bigMath.max(
+    getNonNegativeAmount(maxVestableAmount) - getNonNegativeAmount(totalVestedAmount),
+    0n
+  );
+
+  return bigMath.min(getNonNegativeAmount(walletEsGmxAmount), remainingVestableAmount);
 }
 
 export function getRewardsVestingProgress({

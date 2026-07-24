@@ -18,14 +18,19 @@ export function RewardsPageLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export function RewardsPageLoadingContent() {
+  return (
+    <div className="flex min-h-[280px] grow items-center justify-center rounded-8 bg-slate-900">
+      <Loader />
+    </div>
+  );
+}
+
 export function RewardsPageLoadingShell() {
   return (
     <RewardsPageLayout>
-      <div
-        className="mt-12 flex min-h-[280px] grow items-center justify-center rounded-8 bg-slate-900"
-        data-testid="rewards-loading-shell"
-      >
-        <Loader />
+      <div className="mt-12 flex grow flex-col">
+        <RewardsPageLoadingContent />
       </div>
     </RewardsPageLayout>
   );

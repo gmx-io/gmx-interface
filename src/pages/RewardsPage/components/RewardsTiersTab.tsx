@@ -1,8 +1,13 @@
 import type { ContractsChainId } from "config/chains";
-import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
+import {
+  getStakingRewardsPromoSelection,
+  useStableRewardsPromoSelection,
+} from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
-import { getMaxRewardRateFactor, getRecentActivityRewardEstimateUsd } from "domain/synthetics/incentives/v2/utils";
+import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
+import useWallet from "lib/wallets/useWallet";
 
 import { RewardsPromotionalBanners } from "./RewardsPromotionalBanners";
 import { RewardsTierCards } from "./RewardsTierCards";
@@ -32,24 +37,40 @@ export function RewardsTiersTab({
   statusUnavailable: boolean;
   summaryUnavailable: boolean;
 }) {
-  const { data: stakingData } = useStakingProcessedData(chainId);
-  const hasActiveStakingTier = Boolean(status?.stakingTier ?? status?.projectedStakingTier);
-  const hasManualAllocation = (status?.manualRewardRemainingUsd ?? 0n) > 0n;
+  const { status: walletStatus } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
+  const {
+    data: vestingData,
+    isLoading: vestingLoading,
+    vestableEsGmx,
+    vestableEsGmxUsd,
+  } = useRewardsVestingData(account, chainId);
+  const currentStatus =
+    status && status.account === account && status.epochTimestamp === config.epochTimestamp ? status : undefined;
+  const hasActiveStakingTier = Boolean(currentStatus?.stakingTier ?? currentStatus?.projectedStakingTier);
+  const hasManualAllocation = (currentStatus?.manualRewardRemainingUsd ?? 0n) > 0n;
   const { data: promoActivity, loading: promoActivityLoading } = useRewardsPromoActivity(chainId, {
     account,
-    enabled: Boolean(account && status && !hasActiveStakingTier && !hasManualAllocation),
+    enabled: Boolean(account && currentStatus && !hasActiveStakingTier && !hasManualAllocation),
   });
-  const recentActivityRewardEstimateUsd = promoActivity
-    ? getRecentActivityRewardEstimateUsd({
-        ...promoActivity,
-        maxRewardRateFactor: getMaxRewardRateFactor(config),
-      })
-    : undefined;
+  const { selection: promoSelection } = useStableRewardsPromoSelection({
+    chainId,
+    account,
+    walletStatus,
+    isWalletInitializing,
+    enabled: true,
+    config,
+    status,
+    statusLoading,
+    activity: promoActivity,
+    activityLoading: promoActivityLoading,
+  });
+  const stakingPromoSelection = promoSelection ? getStakingRewardsPromoSelection(promoSelection) : undefined;
   const statusState: AccountDataState = !account
     ? "disconnected"
     : statusLoading
       ? "loading"
-      : statusUnavailable || !status
+      : statusUnavailable || !currentStatus
         ? "unavailable"
         : "ready";
   const summaryState: AccountDataState = !account
@@ -59,43 +80,51 @@ export function RewardsTiersTab({
       : summaryUnavailable
         ? "unavailable"
         : "ready";
-  const vestingState: AccountDataState = !account ? "disconnected" : "unavailable";
+  const vestingState: AccountDataState = !account
+    ? "disconnected"
+    : vestingData
+      ? "ready"
+      : vestingLoading
+        ? "loading"
+        : "unavailable";
 
   return (
-    <div
-      className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1480px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1"
-      data-testid="rewards-tiers-layout"
-    >
-      <div className="flex min-w-0 flex-col gap-8 max-xl:order-2" data-testid="rewards-tiers-content">
-        <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-12" data-testid="rewards-tiers-overview">
+    <div className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1480px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1">
+      <div className="flex min-w-0 flex-col gap-8 max-xl:order-2">
+        <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-12">
           <RewardsTiersSummary
             allTimeSummary={allTimeSummary}
             summaryState={summaryState}
             vestingState={vestingState}
+            vestableEsGmx={vestableEsGmx}
+            vestableEsGmxUsd={vestableEsGmxUsd}
+            hasVestingPosition={(vestingData?.vestingInfo.vestedAmount ?? 0n) > 0n}
           />
           <RewardsTierCards
             config={config}
-            status={status}
+            status={currentStatus}
             statusState={statusState}
             account={account}
-            walletGmx={stakingData?.gmxBalance}
-            recentActivityRewardEstimateUsd={recentActivityRewardEstimateUsd}
-            promoActivityLoading={promoActivityLoading}
+            walletGmx={vestingData?.walletGmxBalance}
+            walletGmxState={vestingState}
+            promoSelection={stakingPromoSelection}
           />
         </div>
 
-        <RewardsTierTables chainId={chainId} config={config} status={status} statusState={statusState} />
+        <RewardsTierTables chainId={chainId} config={config} status={currentStatus} statusState={statusState} />
       </div>
 
-      <div className="sticky top-8 flex min-w-0 flex-col gap-8 max-xl:contents" data-testid="rewards-tiers-sidebar">
-        <div className="min-w-0 max-xl:order-3" data-testid="rewards-tiers-faq">
+      <div className="sticky top-8 flex min-w-0 flex-col gap-8 max-xl:contents">
+        <div className="min-w-0 max-xl:order-3">
           <RewardsTiersFaq config={config} />
         </div>
         <RewardsPromotionalBanners
           account={account}
           config={config}
-          status={status}
-          stakingData={stakingData}
+          status={currentStatus}
+          promoSelection={promoSelection}
+          walletGmx={vestingData?.walletGmxBalance}
+          walletEsGmx={vestingData?.walletEsGmxBalance}
           className="max-xl:order-1"
         />
       </div>

@@ -7,8 +7,10 @@ import { Link, useLocation } from "react-router-dom";
 import { REWARDS_NAV_NEW_BADGE_CLICKED_KEY } from "config/localStorage";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
+import { isIncentivesEnabled } from "domain/synthetics/incentives/v2/constants";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
 import { AnimatedGradientText } from "components/AnimatedGradientText/AnimatedGradientText";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -30,7 +32,6 @@ import sparkleIcon from "img/sparkle.svg";
 import TradeIcon from "img/trade.svg?react";
 
 import { BottomMenuSection } from "./BottomMenuSection";
-import { resolveIncentivesNavItem } from "./incentivesNavItem";
 
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
@@ -187,7 +188,7 @@ export function MenuSection({
   onMenuItemClick?: () => void;
 }) {
   const { chainId } = useChainId();
-  const incentivesNavItem = resolveIncentivesNavItem(chainId);
+  const incentivesEnabled = isIncentivesEnabled(chainId);
   const [rewardsClicked, setRewardsClicked] = useLocalStorageSerializeKey(REWARDS_NAV_NEW_BADGE_CLICKED_KEY, false);
   const isMegaethPointsActive = useMegaethPointsActive();
 
@@ -222,7 +223,7 @@ export function MenuSection({
       key: "referrals",
       to: "/referrals",
     },
-    ...(incentivesNavItem
+    ...(incentivesEnabled
       ? [
           {
             icon: <RewardsIcon className="size-20" />,
@@ -236,7 +237,8 @@ export function MenuSection({
                 )}
               </span>
             ),
-            ...incentivesNavItem,
+            key: "rewards",
+            to: "/rewards",
           },
         ]
       : []),
@@ -254,8 +256,12 @@ export function MenuSection({
 
   const handleItemClick = useCallback(
     (key: string) => {
-      if (key === "rewards" && !rewardsClicked) {
-        setRewardsClicked(true);
+      if (key === "rewards") {
+        sendRewardsNavigationEvent({ source: "Menu" });
+
+        if (!rewardsClicked) {
+          setRewardsClicked(true);
+        }
       }
 
       onMenuItemClick?.();

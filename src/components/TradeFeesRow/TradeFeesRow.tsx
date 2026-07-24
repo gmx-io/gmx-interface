@@ -38,6 +38,7 @@ type FeeRow = {
   label: ReactNode;
   value: ReactNode;
   className?: string;
+  labelClassName?: string;
 };
 
 export function TradeFeesRow(p: Props) {
@@ -414,6 +415,7 @@ export function TradeFeesRow(p: Props) {
               <Trans>Estimated rewards</Trans>:
             </div>
           ),
+          labelClassName: "whitespace-nowrap text-typography-secondary",
           value: (
             <>
               <span className="text-green-500">{formatDeltaUsd(estimatedRewards.rewardsUsd)}</span>
@@ -425,7 +427,7 @@ export function TradeFeesRow(p: Props) {
                     {formatPercentage(rewardsShareBps, {
                       displayDecimals: 0,
                     })}{" "}
-                    of eligible position fee
+                    of net position fee
                   </Trans>
                   )
                 </span>
@@ -614,6 +616,7 @@ export function TradeFeesRow(p: Props) {
                 <StatsTooltipRow
                   key={feeRow.id}
                   textClassName={feeRow.className}
+                  labelClassName={feeRow.labelClassName}
                   label={feeRow.label}
                   value={feeRow.value}
                   showDollar={false}

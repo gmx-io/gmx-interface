@@ -10,6 +10,7 @@ import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAc
 import { formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount } from "lib/numbers";
+import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
 import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 
@@ -58,7 +59,10 @@ export function RewardsSection() {
   return (
     <Link
       to="/rewards"
-      onClick={() => setOpen(false)}
+      onClick={() => {
+        sendRewardsNavigationEvent({ source: "GMXAccountModal" });
+        setOpen(false);
+      }}
       className="flex items-center gap-6 overflow-hidden rounded-b-12 rounded-t-8 bg-fill-surfaceElevated50 p-12 no-underline -outline-offset-4"
     >
       <span aria-hidden="true" className="flex size-36 shrink-0 items-center justify-center overflow-hidden">

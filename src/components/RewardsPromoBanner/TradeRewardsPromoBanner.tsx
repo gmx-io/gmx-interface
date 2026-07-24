@@ -1,20 +1,17 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { type MouseEvent, useMemo } from "react";
+import { type MouseEvent, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { REWARDS_TRADE_PROMO_DISMISSED_KEY } from "config/localStorage";
 import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
+import { useStableRewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
 import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
-import {
-  formatFactorPercentage,
-  formatRewardUsd,
-  getMaxRewardRateFactor,
-  getRecentActivityRewardEstimateUsd,
-} from "domain/synthetics/incentives/v2/utils";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
+import { sendRewardsBannerEvent, sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
@@ -24,10 +21,12 @@ import rewardsBannerCoinGmx from "img/rewards_banner_coin_gmx.png";
 import rewardsBannerCoinWallet from "img/rewards_banner_coin_wallet.png";
 
 import { rewardsBannerStyles } from "./rewardsBannerStyles";
+import { getRewardsPromoCopy } from "./rewardsPromoCopy";
 
 export function TradeRewardsPromoBanner({ className }: { className?: string }) {
   const { chainId } = useChainId();
-  const { account } = useWallet();
+  const { account, status: walletStatus } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
   const { availability, isActive } = useIncentivesV2State();
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, {
     account,
@@ -41,19 +40,30 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
     [REWARDS_TRADE_PROMO_DISMISSED_KEY, chainId, account ?? "anonymous"],
     false
   );
+  const config = availability.status === "active" ? availability.config : undefined;
+  const { selection: promoSelection } = useStableRewardsPromoSelection({
+    chainId,
+    account,
+    walletStatus,
+    isWalletInitializing,
+    enabled: isActive,
+    config,
+    status,
+    statusLoading,
+    activity,
+    activityLoading,
+  });
 
   const promo = useMemo(() => {
-    if (availability.status !== "active") return undefined;
+    if (!promoSelection) return undefined;
 
-    const currentStatus = status?.epochTimestamp === availability.config.epochTimestamp ? status : undefined;
+    const copy = getRewardsPromoCopy(promoSelection);
 
-    if (currentStatus?.manualRewardRemainingUsd && currentStatus.manualRewardRemainingUsd > 0n) {
-      const bonus = formatRewardUsd(currentStatus.manualRewardRemainingUsd);
-
+    if (promoSelection.variant === "manual-reward") {
       return {
-        variant: "manual-reward" as const,
-        title: t`You've received bonus of ${bonus}`,
-        body: <Trans>Start trading to redeem your rewards.</Trans>,
+        variant: promoSelection.variant,
+        analyticsBanner: "trade-manual-reward" as const,
+        ...copy,
         actionLabel: <Trans>Learn more</Trans>,
         actionIcon: <ArrowRightIcon className="size-12" />,
         to: "/rewards",
@@ -61,25 +71,11 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
       };
     }
 
-    const maxRewardRate = formatFactorPercentage(getMaxRewardRateFactor(availability.config));
-    const estimatedRewardsUsd = activity
-      ? getRecentActivityRewardEstimateUsd({
-          ...activity,
-          maxRewardRateFactor: getMaxRewardRateFactor(availability.config),
-        })
-      : undefined;
-
-    if (estimatedRewardsUsd !== undefined) {
-      const estimatedRewards = formatRewardUsd(estimatedRewardsUsd);
-
+    if (promoSelection.variant === "recent-activity") {
       return {
-        variant: "recent-activity" as const,
-        title: t`Earn rewards`,
-        body: (
-          <Trans>
-            With your recent activity, staking GMX could have earned you up to {estimatedRewards} in rewards.
-          </Trans>
-        ),
+        variant: promoSelection.variant,
+        analyticsBanner: "trade-recent-activity" as const,
+        ...copy,
         actionLabel: <Trans>Stake GMX</Trans>,
         actionIcon: <GmxIcon className="size-16" />,
         to: "/earn/portfolio",
@@ -89,23 +85,35 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
 
     return {
       variant: "rewards-program" as const,
-      title: t`Earn rewards`,
-      body: <Trans>Stake GMX and receive up to {maxRewardRate} of your fees back.</Trans>,
+      analyticsBanner: "trade-rewards-program" as const,
+      ...copy,
       actionLabel: <Trans>Learn more</Trans>,
       actionIcon: <ArrowRightIcon className="size-12" />,
       to: "/rewards",
       coin: rewardsBannerCoinGmx,
     };
-  }, [activity, availability, status]);
+  }, [promoSelection]);
 
-  const isWaitingForPersonalization =
-    account && (statusLoading || (promo?.variant === "rewards-program" && activityLoading));
+  useEffect(() => {
+    if (!promo || isDismissed) return;
 
-  if (!promo || isWaitingForPersonalization || isDismissed) {
-    return null;
-  }
+    sendRewardsBannerEvent("BannerShown", promo.analyticsBanner);
+  }, [isDismissed, promo]);
+
+  if (!promo || isDismissed) return null;
 
   const handleDismiss = () => {
+    sendRewardsBannerEvent("BannerDismiss", promo.analyticsBanner);
+    setIsDismissed(true);
+  };
+
+  const handleActionClick = () => {
+    sendRewardsBannerEvent("BannerClick", promo.analyticsBanner);
+    sendRewardsNavigationEvent({
+      source: "TradePageBanner",
+      hasEstimatedRewards: promoSelection?.estimatedRewardsUsd !== undefined,
+      rewardsUsd: promoSelection?.estimatedRewardsUsd,
+    });
     setIsDismissed(true);
   };
 
@@ -121,13 +129,13 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
         className="relative grid min-h-[110px] w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-950 p-16"
         style={rewardsBannerStyles}
       >
-        <Link className="relative z-10 flex min-w-0 flex-col gap-4 pr-4" onClick={handleDismiss} to={promo.to}>
+        <Link className="relative z-10 flex min-w-0 flex-col gap-4 pr-4" onClick={handleActionClick} to={promo.to}>
           <div className="flex flex-col gap-2">
             <h6 className="text-16 font-medium text-typography-primary">{promo.title}</h6>
             <span className="text-13 text-typography-secondary">{promo.body}</span>
           </div>
 
-          <span className="flex items-center gap-4 text-14 font-medium text-blue-300">
+          <span className="flex items-center gap-4 text-14 font-medium text-rewards-blue-300">
             {promo.actionLabel}
             {promo.actionIcon}
           </span>

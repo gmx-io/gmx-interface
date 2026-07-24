@@ -183,6 +183,10 @@ msgstr "<0>Multichain</0><1>MegaETH対応</1><2>ジャストインタイム流�
 msgid "Create TWAP Swap"
 msgstr "TWAPスワップを作成"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX approval failed"
+msgstr "GMXの承認に失敗しました"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -193,6 +197,10 @@ msgstr "推定時間"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "GMX Account swaps cannot use native {0}. Select {1} or withdraw to wallet first."
 msgstr "GMX Accountのスワップではネイティブの{0}を使用できません。{1}を選択するか、先にウォレットへ出金してください。"
+
+#: src/components/SettingsModal/RewardsActionSettings.tsx
+msgid "Preview one-click rewards action"
+msgstr "ワンクリック報酬アクションをプレビュー"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in leverage display"
@@ -275,6 +283,10 @@ msgstr "(リベート済)"
 msgid "Accumulated rewards"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Vesting details changed. Review the updated amounts before unlocking collateral."
+msgstr "ベスティングの詳細が変更されました。担保のロックを解除する前に、更新された金額を確認してください。"
+
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
 msgstr ""
@@ -353,6 +365,10 @@ msgstr "アプリを開く"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Try Express Trading"
 msgstr "エクスプレストレーディングを試す"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "In progress"
+msgstr "処理中"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
@@ -524,6 +540,10 @@ msgstr ""
 msgid "{0, plural, one {# active boost} other {# active boosts}}"
 msgstr "{0, plural, one {有効なブースト#件} other {有効なブースト#件}}"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stake collateral"
+msgstr "担保をステーク"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double {indexSymbol} exposure from position and collateral. Higher liquidation price than stablecoin collateral."
 msgstr "ポジションと担保による{indexSymbol}の二重エクスポージャーです。ステーブルコイン担保よりも清算価格が高くなります。"
@@ -562,6 +582,8 @@ msgstr ""
 msgid "Failed to claim affiliate rewards"
 msgstr "アフィリエイト報酬の受け取りに失敗しました"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -823,6 +845,7 @@ msgstr "現在のベスティングを終了します。これまでに{0} GMX�
 msgid "..."
 msgstr "..."
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Balancing Trades"
 msgstr "バランシング取引"
@@ -858,6 +881,7 @@ msgid "NET RATE"
 msgstr "NET RATE"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/pages/RewardsPage/RewardsPage.tsx
 msgid "No rewards"
 msgstr "報酬なし"
 
@@ -1406,6 +1430,10 @@ msgstr "推定価格への影響リベート"
 msgid "Decentralized yield products"
 msgstr "分散型利回りプロダクト"
 
+#: src/components/SettingsModal/RewardsActionSettings.tsx
+msgid "When enabled, the vesting button previews the planned action to claim rewards, stake the required GMX, and start vesting in one transaction. This is not supported yet. Turn this off to use the step-by-step flow."
+msgstr "有効にすると、報酬の受け取り、必要なGMXのステーキング、ベスティングの開始を1回のトランザクションで行う予定のアクションがベスティングボタンにプレビュー表示されます。この機能はまだサポートされていません。段階的なフローを使用するには、この設定をオフにしてください。"
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/SwapCard/SwapCard.tsx
 msgid "{0} price"
@@ -1556,7 +1584,6 @@ msgid "Eligible fees on page"
 msgstr "このページの対象手数料"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Qualified this epoch"
 msgstr "今エポックに条件達成"
 
@@ -1862,6 +1889,11 @@ msgstr "セッションの生成に失敗しました"
 msgid "Onchain quests and rewards"
 msgstr "オンチェーンクエストと報酬"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Preview only"
+msgstr "プレビューのみ"
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "トークン"
@@ -1971,6 +2003,7 @@ msgid "Markets"
 msgstr "市場"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "Retry"
 msgstr "再試行"
@@ -2350,6 +2383,10 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "{0}でレバレッジを維持"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Pause carousel"
+msgstr "カルーセルを一時停止"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "利用可能流動性"
@@ -2698,8 +2735,7 @@ msgstr "マーケット"
 msgid "Max {0}"
 msgstr "最大 {0}"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Stake GMX and receive up to {maxRewardRate} of your fees back."
 msgstr "GMXをステークすると、手数料の最大{maxRewardRate}が還元されます。"
 
@@ -2738,7 +2774,6 @@ msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
-#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Coming soon"
 msgstr "近日公開"
 
@@ -2758,6 +2793,7 @@ msgstr "グループ化"
 msgid "Switching to external swap route. Try again"
 msgstr ""
 
+#: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "Rewards are temporarily unavailable"
 msgstr "報酬は一時的に利用できません"
@@ -3048,6 +3084,11 @@ msgstr "シフトは{chainNames}でのみ利用可能です。続行するには
 msgid "Cumulative PnL"
 msgstr "累積PnL"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX approved"
+msgstr "GMXを承認しました"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Set max leverage"
@@ -3183,6 +3224,10 @@ msgstr "スワップに失敗しました"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>ここで<1>@GMX_IO</1>に注目しなければなりません。DeFi全体が混乱している中、GMXはユーザー、AUM、ボリューム/手数料、オープンインタレスト、資本利用で印象的な持続パフォーマンスを示し続けています。Arbitrum上の主要資産間のスワップに最適で、Arbエアドロップへの露出</0>"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX approval submitted"
+msgstr "GMXの承認を送信しました"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -3333,6 +3378,11 @@ msgstr "最も厳しい入金USD容量"
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "手数料を考慮した結果、最大レバレッジ{formattedMaxLeverage}を超えたため清算されました。"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Done"
+msgstr "完了"
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}に{0}を入金"
@@ -3349,6 +3399,10 @@ msgstr "現在の価格"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "マーク:"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "One-click claim, stake, and vest is not supported yet. Turn off its preview in Settings to use the step-by-step flow."
+msgstr "報酬の受け取り、ステーキング、ベスティングをワンクリックで行う機能はまだサポートされていません。段階的なフローを使用するには、設定でこのプレビューをオフにしてください。"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Incentivized Markets"
@@ -3387,7 +3441,7 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Net referred traders in the selected period (gained - lost)"
-msgstr ""
+msgstr "選択期間の紹介トレーダー純増数（獲得 - 離脱）"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -3698,10 +3752,6 @@ msgstr "選択をクリア"
 msgid "Exposure to market traders' PnL"
 msgstr "マーケットトレーダーのPnLへのエクスポージャー"
 
-#: src/components/TradeFeesRow/TradeFeesRow.tsx
-msgid "{0} of eligible position fee"
-msgstr "対象ポジション手数料の{0}"
-
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL before fees, discounts and price impact."
 msgstr "手数料、割引、価格への影響を反映する前の実現PnL。"
@@ -3815,6 +3865,10 @@ msgstr "プライマリ失敗"
 msgid "Commodities"
 msgstr "コモディティ"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "GMX was approved. Reconnect the original wallet to continue."
+msgstr "GMXが承認されました。続行するには元のウォレットを再接続してください。"
+
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
 msgstr ""
@@ -3873,6 +3927,7 @@ msgid "Share your referral code with friends or your community —<0/> every tra
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking"
 msgstr ""
 
@@ -4233,6 +4288,15 @@ msgstr "完全にパブリックチェーンで実行"
 msgid "Set min deposit"
 msgstr "最小入金額を設定"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Unable to refresh vesting details. Please try again."
+msgstr "ベスティングの詳細を更新できませんでした。もう一度お試しください。"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "トリガー時に注文の一部で流動性が不足する可能性があります"
@@ -4292,7 +4356,7 @@ msgstr "TWAP スワップパート失敗"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr ""
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Start trading to redeem your rewards."
 msgstr "取引を開始して報酬を受け取りましょう。"
 
@@ -4466,8 +4530,7 @@ msgstr "認定"
 msgid "Incorrect account"
 msgstr "アカウントが一致しません"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "With your recent activity, staking GMX could have earned you up to {estimatedRewards} in rewards."
 msgstr "最近のアクティビティを基にすると、GMXをステークしていれば最大{estimatedRewards}の報酬を獲得できた可能性があります。"
 
@@ -5150,6 +5213,10 @@ msgstr "ストップロスを作成"
 msgid "Direction"
 msgstr "方向"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Wallet or network changed. Review your vesting details before stopping."
+msgstr "ウォレットまたはネットワークが変更されました。停止する前にベスティングの詳細を確認してください。"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position is currently above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
 msgstr "このポジションは現在清算リスクを上回っていますが、マーケットが時間外のリスクパラメータに切り替わると清算に近づく可能性があります。証拠金を追加するかレバレッジを下げて、バッファを増やしてください。"
@@ -5273,6 +5340,10 @@ msgstr "{0}を編集"
 msgid "Swap to"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Resume carousel"
+msgstr "カルーセルを再開"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>{wrappedNativeTokenSymbol}を購入</0>。"
@@ -5346,6 +5417,11 @@ msgstr "マーケットを選択"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "一致するトークンなし"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Unable to refresh claimable rewards. Please try again."
+msgstr "受け取り可能な報酬を更新できませんでした。もう一度お試しください。"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error sending permit for {0}: {1}"
@@ -5562,6 +5638,7 @@ msgstr ""
 msgid "Swap impact"
 msgstr "スワップへの影響"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -6182,6 +6259,7 @@ msgstr "価格を入力"
 msgid "Updating..."
 msgstr "更新中…"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vest more"
 msgstr "さらにベスティング"
@@ -6190,9 +6268,8 @@ msgstr "さらにベスティング"
 msgid "Failed Market Increase"
 msgstr "マーケット増額失敗"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Earn rewards"
 msgstr "報酬を獲得"
 
@@ -6294,6 +6371,10 @@ msgstr "シングル"
 msgid "Invest with control over risk and reward"
 msgstr "リスクと報酬をコントロールして投資"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Wallet or network changed. Review your rewards before claiming."
+msgstr "ウォレットまたはネットワークが変更されました。受け取る前に報酬を確認してください。"
+
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Over 100 protocols"
 msgstr "100以上のプロトコル"
@@ -6355,6 +6436,7 @@ msgstr ""
 msgid "PnL Analysis"
 msgstr "PnL 分析"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Manual Allocation"
 msgstr "手動割り当て"
@@ -6629,6 +6711,10 @@ msgstr "（スワップ額の {0}）"
 msgid "How do I upgrade to a higher tier?"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "GMX was claimed. Balances will refresh shortly."
+msgstr "GMXを受け取りました。残高はまもなく更新されます。"
+
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Total bought GMX"
 msgstr ""
@@ -6868,6 +6954,7 @@ msgstr ""
 msgid "See more"
 msgstr "詳細を見る"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Featured Markets"
 msgstr "注目市場"
@@ -7083,6 +7170,10 @@ msgstr "投票"
 msgid "Update TWAP Swap part"
 msgstr "TWAPスワップパートを更新"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting details changed. Review the updated amounts before stopping."
+msgstr "ベスティングの詳細が変更されました。停止する前に、更新された金額を確認してください。"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
 msgstr ""
@@ -7186,6 +7277,7 @@ msgstr "インセンティブティア、報酬、ランキングを表示する
 msgid "REBATE"
 msgstr "リベート"
 
+#: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "The incentives service could not be loaded. Your trading activity is not affected."
 msgstr "インセンティブサービスを読み込めませんでした。取引アクティビティには影響ありません。"
@@ -7652,6 +7744,10 @@ msgstr "ロード中..."
 msgid "Trade now"
 msgstr "今すぐ取引"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Waiting for confirmation..."
+msgstr "確認を待っています..."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr ""
@@ -7685,6 +7781,10 @@ msgstr "執行"
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "You've received a rewards bonus!"
 msgstr "報酬ボーナスを受け取りました！"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting was stopped. Balances will refresh shortly."
+msgstr "ベスティングを停止しました。残高はまもなく更新されます。"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching search"
@@ -8332,6 +8432,10 @@ msgstr "配分履歴なし"
 msgid "Mark price"
 msgstr "マーク価格"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No rewards are currently available to claim."
+msgstr "現在受け取り可能な報酬はありません。"
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "You chose to send the remaining margin to your <0>{chosenLabel}</0>. Make this the default destination when closing positions?"
 msgstr ""
@@ -8449,8 +8553,7 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "受け取りが送信されました"
 
-#: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+#: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "You've received bonus of {bonus}"
 msgstr "{bonus}のボーナスを受け取りました"
 
@@ -8569,10 +8672,6 @@ msgstr ""
 msgid "STATUS"
 msgstr "STATUS"
 
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Not qualified this epoch"
-msgstr "今エポックは未達成"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
@@ -8607,6 +8706,10 @@ msgstr "ENTRY PRICE"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price above mark price"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral staked"
+msgstr "担保をステークしました"
 
 #. to network
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -9075,6 +9178,10 @@ msgstr "{formattedNetRate} / 1 時間"
 msgid "Balance"
 msgstr "残高"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting details changed. Review the updated collateral and continue vesting."
+msgstr "ベスティングの詳細が変更されました。更新された担保を確認して、ベスティングを続行してください。"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting esGMX"
 msgstr "ベスティング中のesGMX"
@@ -9172,6 +9279,10 @@ msgstr "担保トークン"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr "イベント名"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Collateral was unlocked. Balances will refresh shortly."
+msgstr "担保のロックを解除しました。残高はまもなく更新されます。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs GM token dashboard"
@@ -9318,6 +9429,7 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Approve GMX"
 msgstr "GMXを承認"
@@ -9762,6 +9874,11 @@ msgstr "価格への影響が注文サイズを超えています。影響: {pri
 msgid "Active · next epoch"
 msgstr "有効 · 次のエポック"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Wallet or network changed. Review the updated collateral and continue vesting."
+msgstr "ウォレットまたはネットワークが変更されました。更新された担保を確認して、ベスティングを続行してください。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -9915,6 +10032,10 @@ msgstr "ネットレート / 1時間"
 msgid "Select language"
 msgstr "言語を選択"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake GMX and receive up to {0} of your fees as rewards."
+msgstr "GMXをステークして、手数料の最大{0}を報酬として受け取れます。"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "不明な値"
@@ -9983,10 +10104,6 @@ msgstr "追加するとロック解除日が延長されます。"
 msgid "Price impact"
 msgstr "価格への影響"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Stake GMX and receive up to {maxRewardRate} of your fees as rewards."
-msgstr "GMXをステークすると、手数料の最大{maxRewardRate}を報酬として受け取れます。"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
 msgstr ""
@@ -10019,6 +10136,7 @@ msgstr "価格への影響はありません。このサイズでの<0/>ロン�
 msgid "it stays staked, it is not unstaked."
 msgstr "ステーキングされたままで、アンステーキングされません。"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Manage staking"
 msgstr "ステーキングを管理"
@@ -10752,7 +10870,9 @@ msgstr "スワップ TWAP：トークンを指定期間にわたり均等に分�
 msgid "Pending transfer from {sender}"
 msgstr "{sender}からの保留中の送金"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Start vesting"
 msgstr "ベスティングを開始"
 
@@ -10909,6 +11029,7 @@ msgstr "/USD"
 msgid "Express + One-Click"
 msgstr "エクスプレス + ワンクリック"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Lifetime Volume"
 msgstr "生涯取引量"
@@ -11326,6 +11447,7 @@ msgstr "決済手数料を含むすべての手数料を、純価値とPnLの表
 msgid "Claim price impact rebates"
 msgstr "価格への影響リベートを受け取る"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting started"
 msgstr "ベスティングを開始しました"
@@ -11891,6 +12013,10 @@ msgstr "TP/SL自動キャンセル"
 msgid "LIQUIDITY LONG"
 msgstr "LIQUIDITY LONG"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Wallet or network changed. Review your vesting details before unlocking collateral."
+msgstr "ウォレットまたはネットワークが変更されました。担保のロックを解除する前に、ベスティングの詳細を確認してください。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "PnLショート"
@@ -12044,6 +12170,10 @@ msgstr "許容価格"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "イベント"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Vesting started. Balances will refresh shortly."
+msgstr "ベスティングを開始しました。残高はまもなく更新されます。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
@@ -12322,6 +12452,10 @@ msgstr "{0} のパーミット署名エラー: {1}"
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
 msgstr "ロング ネットレート / 1時間"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "{0} of net position fee"
+msgstr "ポジション純手数料の{0}"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Complete trading activities"

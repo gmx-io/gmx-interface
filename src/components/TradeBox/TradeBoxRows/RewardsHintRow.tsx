@@ -3,12 +3,21 @@ import { Link } from "react-router-dom";
 
 import type { TradeRewardsEstimateState } from "domain/synthetics/incentives/v2/useTradeRewardsEstimate";
 import { formatEstimatedTradeRewards } from "domain/synthetics/incentives/v2/utils";
+import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
 import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
-export function RewardsHintRow({ rewardEstimate }: { rewardEstimate: TradeRewardsEstimateState }) {
+export function RewardsHintRow({
+  rewardEstimate,
+  marketAddress,
+  marketName,
+}: {
+  rewardEstimate: TradeRewardsEstimateState;
+  marketAddress?: string;
+  marketName?: string;
+}) {
   if (!rewardEstimate.enabled) {
     return null;
   }
@@ -19,6 +28,17 @@ export function RewardsHintRow({ rewardEstimate }: { rewardEstimate: TradeReward
   return (
     <Link
       to="/rewards"
+      onClick={() =>
+        sendRewardsNavigationEvent({
+          source: "FeeBlock",
+          hasEstimatedRewards,
+          rewardsUsd: rewardEstimate.estimatedRewards?.rewardsUsd,
+          multiplier: rewardEstimate.multiplier,
+          multiplierDecimals: rewardEstimate.multiplierDecimals,
+          ...(marketAddress !== undefined ? { marketAddress } : {}),
+          ...(marketName !== undefined ? { marketName } : {}),
+        })
+      }
       className="flex items-center justify-between gap-8 rounded-8 p-8 text-12 text-typography-secondary transition-colors"
     >
       <span className="flex min-w-0 items-center gap-8">

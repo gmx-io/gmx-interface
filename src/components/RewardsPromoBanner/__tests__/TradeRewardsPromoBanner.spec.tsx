@@ -12,6 +12,7 @@ import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAc
 import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/numbers";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 
 import { TradeRewardsPromoBanner } from "../TradeRewardsPromoBanner";
@@ -26,6 +27,11 @@ vi.mock("domain/synthetics/incentives/v2/useRewardsPromoActivity", () => ({
   useRewardsPromoActivity: vi.fn(),
 }));
 vi.mock("lib/chains", () => ({ useChainId: vi.fn() }));
+vi.mock("lib/userAnalytics/rewardsEvents", () => ({
+  sendRewardsBannerEvent: vi.fn(),
+  sendRewardsNavigationEvent: vi.fn(),
+}));
+vi.mock("lib/wallets/useIsWalletInitializing", () => ({ useIsWalletInitializing: vi.fn() }));
 vi.mock("lib/wallets/useWallet", () => ({ default: vi.fn() }));
 
 const ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
@@ -38,11 +44,32 @@ const config = {
   maxMultiplier: 120n,
   multiplierDecimals: 100n,
 } as IncentivesConfig;
+const baseStatus: AccountIncentiveStatus = {
+  account: ACCOUNT,
+  multiplier: 0n,
+  volumeTier: null,
+  stakingTier: null,
+  projectedVolumeTier: null,
+  projectedStakingTier: null,
+  epochTimestamp: config.epochTimestamp,
+  tradingVolume: 0n,
+  tierVolume: 0n,
+  referralVolume: 0n,
+  currentStakedBalance: 0n,
+  boostIds: [],
+  esGmxRewards: 0n,
+  gtRewards: 0n,
+  rewardsUsd: 0n,
+  manualRewardCapUsd: 0n,
+  manualRewardConsumedUsd: 0n,
+  manualRewardRemainingUsd: 0n,
+};
 
 const mockUseIncentivesV2State = vi.mocked(useIncentivesV2State);
 const mockUseAccountIncentiveStatus = vi.mocked(useAccountIncentiveStatus);
 const mockUseRewardsPromoActivity = vi.mocked(useRewardsPromoActivity);
 const mockUseChainId = vi.mocked(useChainId);
+const mockUseIsWalletInitializing = vi.mocked(useIsWalletInitializing);
 const mockUseWallet = vi.mocked(useWallet);
 
 i18n.load({ en: {} });
@@ -64,7 +91,7 @@ function normalizeText(element: HTMLElement) {
 
 function setStatus(status?: Partial<AccountIncentiveStatus>, loading = false) {
   mockUseAccountIncentiveStatus.mockReturnValue({
-    data: status as AccountIncentiveStatus | undefined,
+    data: status ? { ...baseStatus, ...status } : undefined,
     error: undefined,
     loading,
     isValidating: false,
@@ -78,7 +105,8 @@ describe("TradeRewardsPromoBanner", () => {
     localStorage.clear();
     vi.clearAllMocks();
     mockUseChainId.mockReturnValue({ chainId: ARBITRUM } as ReturnType<typeof useChainId>);
-    mockUseWallet.mockReturnValue({ account: ACCOUNT } as ReturnType<typeof useWallet>);
+    mockUseIsWalletInitializing.mockReturnValue(false);
+    mockUseWallet.mockReturnValue({ account: ACCOUNT, status: "connected" } as ReturnType<typeof useWallet>);
     mockUseIncentivesV2State.mockReturnValue({
       availability: { status: "active", config, isStale: false },
       isActive: true,
@@ -93,7 +121,10 @@ describe("TradeRewardsPromoBanner", () => {
     });
   });
 
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    vi.useRealTimers();
+  });
 
   it("uses the config-derived maximum reward rate when no exact estimate exists", () => {
     renderBanner();
@@ -136,6 +167,7 @@ describe("TradeRewardsPromoBanner", () => {
     expect(screen.getByTestId("trade-rewards-promo")).toBeDefined();
 
     mockUseWallet.mockReturnValue({ account: otherAccount } as ReturnType<typeof useWallet>);
+    setStatus({ account: otherAccount });
     view.rerender(
       <I18nProvider i18n={i18n}>
         <MemoryRouter>
@@ -174,8 +206,39 @@ describe("TradeRewardsPromoBanner", () => {
     setStatus({ epochTimestamp: config.epochTimestamp - 1, manualRewardRemainingUsd: 500n * FACTOR });
     renderBanner();
 
-    expect(screen.getByText("Earn rewards")).toBeDefined();
+    expect(screen.queryByTestId("trade-rewards-promo")).toBeNull();
     expect(screen.queryByRole("heading", { name: /You've received bonus/ })).toBeNull();
+  });
+
+  it("hides cached personalization across an epoch rollover until current status arrives", () => {
+    setStatus({ manualRewardRemainingUsd: 500n * FACTOR });
+    const view = renderBanner();
+    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
+
+    const nextConfig = { ...config, epochTimestamp: config.epochTimestamp + 1 };
+    mockUseIncentivesV2State.mockReturnValue({
+      availability: { status: "active", config: nextConfig, isStale: false },
+      isActive: true,
+      refreshConfig: vi.fn(),
+    });
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.queryByTestId("trade-rewards-promo")).toBeNull();
+
+    setStatus({ epochTimestamp: nextConfig.epochTimestamp });
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.getByText(/receive up to 120% of your fees back/)).toBeDefined();
   });
 
   it("stays hidden while connected account status is loading or V2 is inactive", () => {
@@ -197,5 +260,113 @@ describe("TradeRewardsPromoBanner", () => {
       </I18nProvider>
     );
     expect(screen.queryByTestId("trade-rewards-promo")).toBeNull();
+  });
+
+  it("retains resolved personalization during same-account revalidation", () => {
+    setStatus({ manualRewardRemainingUsd: 500n * FACTOR });
+    const view = renderBanner();
+    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
+
+    setStatus(undefined, true);
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+
+    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
+  });
+
+  it("hides during reconnect and never reuses another account's personalization", () => {
+    const otherAccount = "0x8617E340B3D01FA5F11F306F4090FD50E238070D";
+    setStatus({ manualRewardRemainingUsd: 500n * FACTOR });
+    const view = renderBanner();
+    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
+
+    mockUseWallet.mockReturnValue({ account: undefined, status: "reconnecting" } as ReturnType<typeof useWallet>);
+    setStatus(undefined, true);
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.queryByTestId("trade-rewards-promo")).toBeNull();
+
+    mockUseWallet.mockReturnValue({ account: otherAccount, status: "connected" } as ReturnType<typeof useWallet>);
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.queryByRole("heading", { name: /You've received bonus/ })).toBeNull();
+
+    setStatus({ account: otherAccount });
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.getByText(/receive up to 120% of your fees back/)).toBeDefined();
+  });
+
+  it("stays hidden throughout a slow wallet restoration", () => {
+    mockUseWallet.mockReturnValue({ account: undefined, status: "disconnected" } as ReturnType<typeof useWallet>);
+    mockUseIsWalletInitializing.mockReturnValue(true);
+
+    const view = renderBanner();
+    expect(screen.queryByTestId("trade-rewards-promo")).toBeNull();
+
+    mockUseIsWalletInitializing.mockReturnValue(false);
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.getByText(/receive up to 120% of your fees back/)).toBeDefined();
+  });
+
+  it("waits for wallet reconnect when incentives activate after configuration loads", () => {
+    mockUseWallet.mockReturnValue({ account: undefined, status: "disconnected" } as ReturnType<typeof useWallet>);
+    mockUseIsWalletInitializing.mockReturnValue(true);
+    mockUseIncentivesV2State.mockReturnValue({
+      availability: { status: "loading" },
+      isActive: false,
+      refreshConfig: vi.fn(),
+    });
+    const view = renderBanner();
+
+    mockUseIncentivesV2State.mockReturnValue({
+      availability: { status: "active", config, isStale: false },
+      isActive: true,
+      refreshConfig: vi.fn(),
+    });
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.queryByTestId("trade-rewards-promo")).toBeNull();
+
+    mockUseIsWalletInitializing.mockReturnValue(false);
+    view.rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <TradeRewardsPromoBanner />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.getByText(/receive up to 120% of your fees back/)).toBeDefined();
   });
 });

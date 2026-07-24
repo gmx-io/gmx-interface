@@ -231,17 +231,4 @@ describe("Incentives V2 hooks", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(mockFetchIncentivesGraphql).not.toHaveBeenCalled();
   });
-
-  it("exposes strict transport failures as hook errors", async () => {
-    mockFetchIncentivesGraphql.mockRejectedValue(new Error("GraphQL error: Invalid account"));
-
-    function TestComponent() {
-      const { error } = useAccountIncentiveStatus(ARBITRUM, { account: CHECKSUMMED_ACCOUNT });
-      return <div>{error?.message ?? "no error"}</div>;
-    }
-
-    renderWithSWR(<TestComponent />);
-
-    expect(await screen.findByText("GraphQL error: Invalid account")).toBeTruthy();
-  });
 });

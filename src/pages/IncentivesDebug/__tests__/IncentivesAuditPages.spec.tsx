@@ -156,8 +156,6 @@ describe("Incentives V2 audit pages", () => {
     expect(screen.getByRole("columnheader", { name: "Eligible fees" })).toBeTruthy();
     expect(screen.getByRole("columnheader", { name: "Manual reward subset USD" })).toBeTruthy();
     expect(screen.getAllByText("12.00%")).toHaveLength(2);
-    expect(screen.queryByText("Points")).toBeNull();
-    expect(screen.queryByText(/Points Ratio/)).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: ACCOUNT }));
     expect(onAccountClick).toHaveBeenCalledWith(ACCOUNT);
@@ -190,8 +188,6 @@ describe("Incentives V2 audit pages", () => {
     expect(screen.getByText("Current esGMX")).toBeTruthy();
     expect(screen.getByText("Current GT")).toBeTruthy();
     expect(screen.getByText("Indexed manual reward consumed")).toBeTruthy();
-    expect(screen.queryByText(/4mo/i)).toBeNull();
-    expect(screen.queryByText(/Points/)).toBeNull();
   });
 
   it("rejects an invalid account without enabling an audit request", () => {

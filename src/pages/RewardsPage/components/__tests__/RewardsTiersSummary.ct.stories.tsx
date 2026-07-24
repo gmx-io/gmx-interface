@@ -13,7 +13,6 @@ const testI18n = setupI18n({
   messages: {
     en: {
       "7Y26oW": "All-time Rewards",
-      AUYALh: "Coming soon",
       c7JRfi: "All-time GT",
       HaOtg5: "Vestable esGMX",
       hkv6b4: "All-time esGMX",

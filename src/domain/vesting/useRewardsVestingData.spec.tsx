@@ -175,6 +175,8 @@ describe("useRewardsVestingData", () => {
     });
     expect(params.parseResponse(makeMulticallResult())).toEqual(contractsData);
     expect(hookResult?.data).toEqual({ ...contractsData, gmxPrice: GMX_PRICE });
+    expect(hookResult?.vestableEsGmx).toBe(22n);
+    expect(hookResult?.vestableEsGmxUsd).toBe(924_000_000_000_000n);
   });
 
   it("throws when any required return value is missing", () => {

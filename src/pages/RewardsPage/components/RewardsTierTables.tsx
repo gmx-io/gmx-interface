@@ -2,6 +2,7 @@ import { plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { type HTMLProps, useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import { Link } from "react-router-dom";
 
 import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type {
@@ -15,6 +16,7 @@ import { useMarkets } from "domain/synthetics/markets";
 import { getMarketIndexName } from "domain/synthetics/markets/utils";
 import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
+import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 import { convertTokenAddress, getNormalizedTokenSymbol, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 
 import { TableListSkeleton } from "components/Skeleton/Skeleton";
@@ -26,6 +28,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import ExpiresInIcon from "img/ic_clock_dashed.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
+import NewLinkIcon from "img/ic_new_link.svg?react";
 
 import { BoostTierIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
 import {
@@ -135,7 +138,7 @@ export function RewardsTierTables({
             </div>
           </div>
           <button
-            className="gmx-hover:text-blue-200 mt-4 inline-flex items-center gap-4 text-14 font-medium text-blue-300 transition-colors duration-200"
+            className="gmx-hover:text-blue-200 mt-4 inline-flex items-center gap-4 text-14 font-medium text-rewards-blue-300 transition-colors duration-200"
             onClick={handleToggleMore}
             aria-expanded={showMore}
             aria-label={showMore ? t`Show less` : t`Show more`}
@@ -359,7 +362,6 @@ function BoostsTable({
           <TableListSkeleton count={visibleBoosts.length} Structure={TierLevelsSkeletonRow} />
         ) : (
           visibleBoosts.map((boost) => {
-            const transient = boost.boost === "FeaturedMarkets" || boost.boost === "BalancingTrades";
             const listed = Boolean(status?.boostIds.includes(boost.boost));
 
             return (
@@ -379,11 +381,7 @@ function BoostsTable({
                   {formatMultiplierAdjustment(boost.multiplier, config.multiplierDecimals)}
                 </TableTd>
                 <TableTd padding="compact">
-                  <StatusLabel
-                    state={statusState}
-                    active={!transient && listed}
-                    qualified={transient ? listed : undefined}
-                  />
+                  <StatusLabel state={statusState} active={listed} />
                 </TableTd>
               </TierLevelTableTr>
             );
@@ -435,12 +433,30 @@ function BoostDescription({
 }
 
 function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: number; indexTokenAddresses: string[] }) {
-  const items = indexTokenAddresses.map((address) => {
-    if (!isValidTokenSafe(chainId, address)) return { address, symbol: undefined };
+  const { marketsData } = useMarkets(chainId);
+  const items = useMemo(
+    () =>
+      indexTokenAddresses.map((address) => {
+        if (!isValidTokenSafe(chainId, address)) {
+          return { address, symbol: undefined, tradeSymbol: undefined, marketAddress: undefined, name: address };
+        }
 
-    const token = getToken(chainId, address);
-    return { address, symbol: getNormalizedTokenSymbol(token.symbol) ?? token.symbol };
-  });
+        const token = getToken(chainId, address);
+        const market = Object.values(marketsData ?? {}).find(
+          (candidate) => !candidate.isSpotOnly && candidate.indexTokenAddress === address
+        );
+        const symbol = getNormalizedTokenSymbol(token.symbol) ?? token.symbol;
+
+        return {
+          address,
+          symbol,
+          tradeSymbol: market ? token.symbol : undefined,
+          marketAddress: market?.marketTokenAddress,
+          name: market ? getMarketIndexName({ indexToken: token, isSpotOnly: false }) : symbol,
+        };
+      }),
+    [chainId, indexTokenAddresses, marketsData]
+  );
 
   return (
     <TooltipWithPortal
@@ -455,12 +471,31 @@ function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: num
       }
       content={
         <div className="flex flex-col gap-8">
-          {items.map(({ address, symbol }) => (
-            <div key={address} className="flex items-center gap-4 text-12 font-medium text-typography-primary">
-              {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
-              {symbol ?? address}
-            </div>
-          ))}
+          {items.map(({ address, symbol, tradeSymbol, marketAddress, name }) =>
+            tradeSymbol ? (
+              <Link
+                key={address}
+                to={`/trade/long?market=${tradeSymbol}`}
+                onClick={() =>
+                  sendRewardsNavigationEvent({
+                    source: "FeaturedMarket",
+                    marketAddress,
+                    marketName: name,
+                  })
+                }
+                className="flex items-center gap-8 text-12 font-medium text-typography-secondary !no-underline"
+              >
+                <TokenIcon symbol={symbol} displaySize={16} />
+                <span className="text-typography-primary">{name}</span>
+                <NewLinkIcon className="size-12 shrink-0" />
+              </Link>
+            ) : (
+              <div key={address} className="flex items-center gap-4 text-12 font-medium text-typography-primary">
+                {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
+                {name}
+              </div>
+            )
+          )}
         </div>
       }
     />

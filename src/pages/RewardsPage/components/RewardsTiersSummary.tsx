@@ -1,13 +1,16 @@
 import { Trans } from "@lingui/macro";
+import { Link } from "react-router-dom";
 
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { formatAmount, formatUsd } from "lib/numbers";
+import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
+import { getStartRewardsVestingPath } from "../rewardsRoutes";
 import { AccountValue, type AccountDataState } from "./rewardsTiersShared";
 
 function AllTimeRewardsTooltip({ allTimeSummary }: { allTimeSummary?: LeaderboardEntry }) {
@@ -45,23 +48,22 @@ export function RewardsTiersSummary({
   vestingState,
   vestableEsGmx,
   vestableEsGmxUsd,
+  hasVestingPosition,
 }: {
   allTimeSummary?: LeaderboardEntry;
   summaryState: AccountDataState;
   vestingState: AccountDataState;
   vestableEsGmx?: bigint;
   vestableEsGmxUsd?: bigint;
+  hasVestingPosition?: boolean;
 }) {
   const vestingUsdState: AccountDataState =
-    vestingState === "ready" && vestableEsGmxUsd === undefined ? "loading" : vestingState;
+    vestingState === "ready" && vestableEsGmxUsd === undefined ? "unavailable" : vestingState;
 
   return (
-    <div
-      className="flex min-h-60 items-center gap-16 p-8 max-md:flex-col max-md:items-stretch"
-      data-testid="rewards-tiers-summary"
-    >
+    <div className="flex min-h-60 items-center gap-16 p-8 max-md:flex-col max-md:items-stretch">
       <div className="flex min-w-0 flex-1 items-end gap-20 max-md:flex-col max-md:items-stretch max-md:gap-12">
-        <div className="flex shrink-0 flex-col gap-2" data-testid="rewards-all-time-summary">
+        <div className="flex shrink-0 flex-col gap-2">
           <span className="text-24 font-medium leading-[1.1] numbers">
             <AccountValue state={summaryState}>
               {formatUsd(allTimeSummary?.rewardsUsd, { fallbackToZero: true, displayDecimals: 0 })}
@@ -103,22 +105,30 @@ export function RewardsTiersSummary({
             position="bottom-start"
             variant="none"
           />
-          <div className="flex items-end gap-6 max-sm:flex-wrap">
+          <div className="flex items-end gap-12 max-sm:flex-wrap">
             {vestingState === "ready" ? (
               <>
-                <span className="text-16 font-medium leading-[1.25] numbers">
-                  {formatAmount(vestableEsGmx ?? 0n, ES_GMX_DECIMALS, 2, true)}
-                </span>
-                <div className="flex items-start gap-4 py-1 text-12 font-medium leading-[1.25]">
-                  <span className="text-typography-secondary numbers">
-                    <AccountValue state={vestingUsdState}>
-                      {formatUsd(vestableEsGmxUsd, { fallbackToZero: true })}
-                    </AccountValue>
+                <div className="flex items-end gap-6">
+                  <span className="text-16 font-medium leading-[1.25] numbers">
+                    {formatAmount(vestableEsGmx ?? 0n, ES_GMX_DECIMALS, 2, true)} esGMX
                   </span>
-                  <span className="inline-flex items-center pr-2 text-typography-disabled">
-                    <Trans>Coming soon</Trans>
-                  </span>
+                  <div className="flex items-start py-1 text-12 font-medium leading-[1.25]">
+                    <span className="text-typography-secondary numbers">
+                      <AccountValue state={vestingUsdState}>
+                        {formatUsd(vestableEsGmxUsd, { fallbackToZero: true })}
+                      </AccountValue>
+                    </span>
+                  </div>
                 </div>
+                {(vestableEsGmx ?? 0n) > 0n ? (
+                  <Link
+                    to={getStartRewardsVestingPath()}
+                    className="pb-1 text-12 font-medium leading-[1.25] text-rewards-blue-300"
+                    onClick={() => sendRewardsNavigationEvent({ source: "TiersSummary" })}
+                  >
+                    {hasVestingPosition ? <Trans>Vest more</Trans> : <Trans>Start vesting</Trans>}
+                  </Link>
+                ) : null}
               </>
             ) : (
               <span className="text-16 font-medium leading-[1.25] numbers">

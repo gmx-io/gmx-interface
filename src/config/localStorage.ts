@@ -75,6 +75,7 @@ export const METRICS_TIMERS_KEY = "metrics-timers-key";
 export const REWARDS_NAV_NEW_BADGE_CLICKED_KEY = "rewards-nav-new-badge-clicked";
 export const REWARDS_TRADE_PROMO_DISMISSED_KEY = "rewards-trade-promo-dismissed-v2";
 export const REWARDS_PAGE_BANNERS_DISMISSED_KEY = "rewards-page-banners-dismissed-v2";
+export const REWARDS_ONE_CLICK_ACTION_ENABLED_KEY = "rewards-one-click-action-enabled";
 export const HISTORICAL_REWARDS_ALLOCATION_MODAL_DISMISSED_KEY = "historical-rewards-allocation-modal-dismissed-v2";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";

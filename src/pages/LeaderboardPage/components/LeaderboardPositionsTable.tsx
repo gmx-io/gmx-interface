@@ -87,8 +87,8 @@ export function LeaderboardPositionsTable({
   }, [data, direction, orderBy]);
 
   const filteredStats = useMemo(() => {
-    const q = term.toLowerCase().trim();
-    return sorted.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
+    const query = term.trim();
+    return sorted.filter((item) => item.account.includes(query));
   }, [sorted, term]);
 
   const indexFrom = (page - 1) * PER_PAGE;

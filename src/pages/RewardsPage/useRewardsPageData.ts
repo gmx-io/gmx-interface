@@ -8,14 +8,16 @@ import { useIncentivesLeaderboard } from "domain/synthetics/incentives/v2/useInc
 type RewardsPageDataParams = {
   chainId: number;
   account?: string;
+  loadTierAccountData: boolean;
 };
 
-export function useRewardsPageData({ chainId, account }: RewardsPageDataParams) {
+export function useRewardsPageData({ chainId, account, loadTierAccountData }: RewardsPageDataParams) {
   const incentivesV2State = useIncentivesV2State();
   const availability = incentivesV2State.availability;
   const mutateConfig = incentivesV2State.refreshConfig;
   const isActive = incentivesV2State.isActive;
-  const shouldLoadAccountData = isActive && Boolean(account);
+  const canLoadAllTimeLeaderboard = availability.status !== "unsupported-chain";
+  const shouldLoadAccountData = loadTierAccountData && isActive && Boolean(account);
 
   const {
     data: accountStatusData,
@@ -100,6 +102,7 @@ export function useRewardsPageData({ chainId, account }: RewardsPageDataParams) 
     () => ({
       availability,
       config,
+      canLoadAllTimeLeaderboard,
       accountStatus,
       allTimeSummary,
       allTimeSummaryLoaded,
@@ -126,6 +129,7 @@ export function useRewardsPageData({ chainId, account }: RewardsPageDataParams) 
       allTimeSummaryLoading,
       allTimeSummaryValidating,
       availability,
+      canLoadAllTimeLeaderboard,
       config,
       isMixedEpoch,
       mutateAccountStatus,

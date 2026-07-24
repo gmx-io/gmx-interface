@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -9,6 +9,10 @@ import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Co
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
 import { USD_DECIMALS } from "lib/numbers";
+import {
+  sendRewardsManualAllocationDialogActionEvent,
+  sendRewardsManualAllocationDialogShownEvent,
+} from "lib/userAnalytics/rewardsEvents";
 
 import { HistoricalRewardsAllocationModal } from "../HistoricalRewardsAllocationModal";
 import {
@@ -21,6 +25,10 @@ vi.mock("context/IncentivesV2Context/IncentivesV2Context", () => ({
 }));
 vi.mock("domain/synthetics/incentives/v2/useAccountIncentiveStatus", () => ({
   useAccountIncentiveStatus: vi.fn(),
+}));
+vi.mock("lib/userAnalytics/rewardsEvents", () => ({
+  sendRewardsManualAllocationDialogActionEvent: vi.fn(),
+  sendRewardsManualAllocationDialogShownEvent: vi.fn(),
 }));
 
 vi.mock("components/Modal/ModalWithPortal", () => ({
@@ -178,12 +186,13 @@ describe("HistoricalRewardsAllocationModal", () => {
   });
 
   it("shows cap consumption and the historical referral banner", () => {
+    const onClose = vi.fn();
     render(
       <I18nProvider i18n={i18n}>
         <MemoryRouter>
           <HistoricalRewardsAllocationModal
             isVisible
-            onClose={vi.fn()}
+            onClose={onClose}
             rewardCapUsd={activeStatus.manualRewardCapUsd}
             rewardConsumedUsd={activeStatus.manualRewardConsumedUsd}
             rewardRemainingUsd={activeStatus.manualRewardRemainingUsd}
@@ -195,6 +204,16 @@ describe("HistoricalRewardsAllocationModal", () => {
     expect(normalizeText(screen.getByText("Bonus remaining").parentElement!)).toContain("$750");
     expect(normalizeText(screen.getByText(/used out of a/))).toBe("$250usedoutofa$1,000rewardcap");
     expect(screen.getByText("Know someone who traded on GMX?")).toBeDefined();
-    expect(screen.getByRole("link", { name: /Share your rewards/ }).getAttribute("href")).toBe("/referrals");
+    expect(sendRewardsManualAllocationDialogShownEvent).toHaveBeenCalledWith({
+      rewardCapUsd: activeStatus.manualRewardCapUsd,
+      rewardConsumedUsd: activeStatus.manualRewardConsumedUsd,
+      rewardRemainingUsd: activeStatus.manualRewardRemainingUsd,
+    });
+
+    const shareLink = screen.getByRole("link", { name: /Share your rewards/ });
+    expect(shareLink.getAttribute("href")).toBe("/referrals");
+    fireEvent.click(shareLink);
+    expect(sendRewardsManualAllocationDialogActionEvent).toHaveBeenCalledWith("Share");
+    expect(onClose).toHaveBeenCalled();
   });
 });

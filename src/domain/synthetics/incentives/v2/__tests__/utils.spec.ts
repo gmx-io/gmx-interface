@@ -106,14 +106,15 @@ describe("Incentives V2 formatting", () => {
     const epoch = Date.UTC(2026, 3, 7, 0, 0, 0) / 1000;
 
     expect(normalizeRange(formatEpochLabel(epoch, 7 * SECONDS_IN_DAY, "en-US"))).toBe("Apr 7 - 13");
+    expect(normalizeRange(formatEpochLabel(1_784_678_400, 7 * SECONDS_IN_DAY, "en-US"))).toBe("Jul 22 - 28");
   });
 
-  it("includes time for sub-day epochs", () => {
+  it("formats sub-day epochs in UTC", () => {
     const epoch = Date.UTC(2026, 3, 7, 9, 0, 0) / 1000;
     const label = normalizeRange(formatEpochLabel(epoch, 60 * 60, "en-US"));
 
     expect(label).toContain("Apr 7");
-    expect(label).toContain("1:00");
-    expect(label).toContain("1:59");
+    expect(label).toContain("9:00");
+    expect(label).toContain("9:59");
   });
 });

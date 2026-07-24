@@ -93,12 +93,13 @@ function setAllTimeSummaryRequest(data: LeaderboardEntry[] | undefined, loading 
 type HarnessProps = {
   chainId: number;
   account?: string;
+  loadTierAccountData?: boolean;
 };
 
 let latestResult: ReturnType<typeof useRewardsPageData>;
 
-function Harness({ chainId, account }: HarnessProps) {
-  latestResult = useRewardsPageData({ chainId, account });
+function Harness({ chainId, account, loadTierAccountData = true }: HarnessProps) {
+  latestResult = useRewardsPageData({ chainId, account, loadTierAccountData });
   return null;
 }
 
@@ -135,11 +136,30 @@ describe("useRewardsPageData", () => {
     render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
 
     expect(latestResult.availability.status).toBe("loading");
+    expect(latestResult.canLoadAllTimeLeaderboard).toBe(true);
     expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
       account: CHECKSUMMED_ACCOUNT,
       enabled: false,
     });
     expect(mockUseIncentivesLeaderboard).toHaveBeenCalledWith(ARBITRUM, expect.objectContaining({ enabled: false }));
+  });
+
+  it("does not load tier account queries on other rewards tabs", () => {
+    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} loadTierAccountData={false} />);
+
+    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
+      account: CHECKSUMMED_ACCOUNT,
+      enabled: false,
+    });
+    expect(mockUseIncentivesLeaderboard).toHaveBeenCalledWith(
+      ARBITRUM,
+      expect.objectContaining({
+        where: { account: CHECKSUMMED_ACCOUNT },
+        enabled: false,
+      })
+    );
+    expect(latestResult.accountStatus).toBeUndefined();
+    expect(latestResult.allTimeSummary).toBeUndefined();
   });
 
   it("reports unsupported chains without loading config or account data", () => {
@@ -148,8 +168,21 @@ describe("useRewardsPageData", () => {
     render(<Harness chainId={AVALANCHE} account={CHECKSUMMED_ACCOUNT} />);
 
     expect(latestResult.availability.status).toBe("unsupported-chain");
+    expect(latestResult.canLoadAllTimeLeaderboard).toBe(false);
     expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(AVALANCHE, expect.objectContaining({ enabled: false }));
     expect(mockUseIncentivesLeaderboard).toHaveBeenCalledWith(AVALANCHE, expect.objectContaining({ enabled: false }));
+  });
+
+  it.each([
+    ["inactive", { status: "inactive" } as const],
+    ["error", { status: "error", error: new Error("Unavailable") } as const],
+  ])("allows config-independent all-time leaderboard queries while config is %s", (_label, availability) => {
+    setAvailability(availability);
+
+    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+
+    expect(latestResult.canLoadAllTimeLeaderboard).toBe(true);
+    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, expect.objectContaining({ enabled: false }));
   });
 
   it("preserves a disconnected state without reporting account loading", () => {

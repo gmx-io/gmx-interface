@@ -91,7 +91,7 @@ describe("TradeFeesRow estimated rewards", () => {
     expect(handleText).toContain("-$20.00");
     expect(handleText).toContain("(+$12.00 rewards)");
     expect(tooltipText).toContain("Estimated rewards:");
-    expect(tooltipText).toContain("+$12.00 (60% of eligible position fee)");
+    expect(tooltipText).toContain("+$12.00 (60% of net position fee)");
   });
 
   it("omits the compact and expanded reward details without an estimate", () => {
@@ -103,6 +103,6 @@ describe("TradeFeesRow estimated rewards", () => {
     expect(handleText).toBe("-$20.00");
     expect(handleText).not.toContain("rewards");
     expect(tooltipText).not.toContain("Estimated rewards");
-    expect(tooltipText).not.toContain("eligible position fee");
+    expect(tooltipText).not.toContain("position fee");
   });
 });

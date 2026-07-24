@@ -5,7 +5,6 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
-import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { AccountIncentiveStatus, IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
@@ -14,7 +13,10 @@ import {
   formatMultiplier,
   getMaxRewardRateFactor,
 } from "domain/synthetics/incentives/v2/utils";
+import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { formatUsd, PRECISION } from "lib/numbers";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
+import useWallet from "lib/wallets/useWallet";
 
 import { RewardsTiersTab } from "../RewardsTiersTab";
 
@@ -22,12 +24,25 @@ vi.mock("components/AppCard/AppCard", () => ({
   AppCard: ({ children }: { children: React.ReactNode }) => <section>{children}</section>,
 }));
 
-vi.mock("domain/stake/useStakingProcessedData", () => ({
-  useStakingProcessedData: vi.fn(),
-}));
-
 vi.mock("domain/synthetics/incentives/v2/useRewardsPromoActivity", () => ({
   useRewardsPromoActivity: vi.fn(),
+}));
+
+vi.mock("domain/vesting/useRewardsVestingData", () => ({
+  useRewardsVestingData: vi.fn(),
+}));
+
+vi.mock("lib/wallets/useIsWalletInitializing", () => ({
+  useIsWalletInitializing: vi.fn(),
+}));
+
+vi.mock("lib/wallets/useWallet", () => ({
+  default: vi.fn(),
+}));
+
+vi.mock("lib/userAnalytics/rewardsEvents", () => ({
+  sendRewardsBannerEvent: vi.fn(),
+  sendRewardsNavigationEvent: vi.fn(),
 }));
 
 vi.mock("components/Table/Table", () => ({
@@ -65,8 +80,10 @@ vi.mock("components/Tabs/Tabs", () => ({
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
 const GMX_UNIT = 10n ** BigInt(ES_GMX_DECIMALS);
 const GT_UNIT = 10n ** BigInt(GT_DECIMALS);
-const mockUseStakingProcessedData = vi.mocked(useStakingProcessedData);
 const mockUseRewardsPromoActivity = vi.mocked(useRewardsPromoActivity);
+const mockUseRewardsVestingData = vi.mocked(useRewardsVestingData);
+const mockUseIsWalletInitializing = vi.mocked(useIsWalletInitializing);
+const mockUseWallet = vi.mocked(useWallet);
 
 function usd(value: bigint) {
   return value * PRECISION;
@@ -157,8 +174,8 @@ const defaultProps: RewardsTiersTabProps = {
 i18n.load({ en: {} });
 i18n.activate("en");
 
-function renderTab(overrides: Partial<RewardsTiersTabProps> = {}) {
-  return render(
+function getTabNode(overrides: Partial<RewardsTiersTabProps> = {}) {
+  return (
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
         <RewardsTiersTab {...defaultProps} {...overrides} />
@@ -167,23 +184,52 @@ function renderTab(overrides: Partial<RewardsTiersTabProps> = {}) {
   );
 }
 
-beforeEach(() => {
-  mockUseStakingProcessedData.mockReturnValue({
+function renderTab(overrides: Partial<RewardsTiersTabProps> = {}) {
+  return render(getTabNode(overrides));
+}
+
+function getVestingDataResult(walletGmxBalance = 0n): ReturnType<typeof useRewardsVestingData> {
+  return {
     data: {
-      gmxBalance: 0n,
-      esGmxBalance: 0n,
-      gmxAprForEsGmx: 0n,
-      gmxAprForNativeToken: 0n,
-      isRewardsSuspended: false,
+      walletGmxBalance,
+      walletEsGmxBalance: 5n * GMX_UNIT,
+      stakedGmxBalance: 0n,
+      freePairAmount: 0n,
+      vestingInfo: {
+        pairAmount: 0n,
+        vestedAmount: 0n,
+        escrowedBalance: 0n,
+        claimedAmounts: 0n,
+        claimable: 0n,
+        maxVestableAmount: 5n * GMX_UNIT,
+        averageStakedAmount: 0n,
+      },
+      vestingDuration: 365n * 24n * 60n * 60n,
+      gmxPrice: 2n * PRECISION,
     },
+    vestableEsGmx: 5n * GMX_UNIT,
+    vestableEsGmxUsd: usd(10n),
+    isLoading: false,
+    error: undefined,
     mutate: vi.fn(),
-  });
+  };
+}
+
+beforeEach(() => {
+  mockUseWallet.mockReturnValue({
+    account: CHECKSUMMED_ACCOUNT,
+    status: "connected",
+    active: true,
+    chainId: ARBITRUM,
+  } as ReturnType<typeof useWallet>);
+  mockUseIsWalletInitializing.mockReturnValue(false);
   mockUseRewardsPromoActivity.mockReturnValue({
     data: undefined,
     error: undefined,
     loading: false,
     endpoint: "https://example.com/graphql",
   });
+  mockUseRewardsVestingData.mockReturnValue(getVestingDataResult());
 });
 
 afterEach(() => {
@@ -212,52 +258,6 @@ describe("RewardsTiersTab", () => {
     expect(within(projectedRow).getByText("Next epoch")).toBeDefined();
   });
 
-  it("keeps volume, staking, and activity cards in the designed order", () => {
-    renderTab({
-      status: {
-        ...status,
-        volumeTier: null,
-        projectedVolumeTier: null,
-        boostIds: [],
-        manualRewardRemainingUsd: 0n,
-      },
-    });
-
-    const volumeCard = screen.getByText("Volume Tier").closest(".group");
-    const stakingCard = screen.getByText("Staking Tier").closest(".group");
-    const activityCard = screen.getByText("Activity Boost").closest(".group");
-
-    expect(volumeCard).not.toBeNull();
-    expect(stakingCard).not.toBeNull();
-    expect(activityCard).not.toBeNull();
-    expect(volumeCard!.compareDocumentPosition(stakingCard!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(stakingCard!.compareDocumentPosition(activityCard!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  });
-
-  it("places the FAQ and promotional banner in the responsive right sidebar", () => {
-    renderTab();
-
-    const layout = screen.getByTestId("rewards-tiers-layout");
-    const content = screen.getByTestId("rewards-tiers-content");
-    const sidebar = screen.getByTestId("rewards-tiers-sidebar");
-    const faq = screen.getByTestId("rewards-tiers-faq");
-    const banner = screen.getByTestId("rewards-promotional-banners");
-
-    expect(layout.className).toContain("grid-cols-[minmax(0,1fr)_40rem]");
-    expect(layout.className).toContain("max-xl:grid-cols-1");
-    expect(layout.firstElementChild).toBe(content);
-    expect(layout.lastElementChild).toBe(sidebar);
-    expect(content.className).toContain("max-xl:order-2");
-    expect(sidebar.className).toContain("sticky");
-    expect(sidebar.className).toContain("max-xl:contents");
-    expect(sidebar.contains(faq)).toBe(true);
-    expect(sidebar.contains(banner)).toBe(true);
-    expect(faq.className).toContain("max-xl:order-3");
-    expect(banner.className).toContain("max-xl:order-1");
-    expect(faq.compareDocumentPosition(banner) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(screen.getAllByTestId("rewards-promotional-banners")).toHaveLength(1);
-  });
-
   it("renders config-derived volume and staking targets", () => {
     const progressingStatus = {
       ...status,
@@ -273,7 +273,31 @@ describe("RewardsTiersTab", () => {
     );
   });
 
-  it("makes tier and featured-market details keyboard focusable", () => {
+  it("shows vestable esGMX with its unit and opens the rewards vesting flow", () => {
+    renderTab();
+
+    const summary = screen.getByTestId("rewards-vestable-summary");
+    expect(summary.textContent).toContain("5.00 esGMX");
+    expect(summary.textContent?.replace(/\s/g, "")).toContain("$10.00");
+    expect(within(summary).getByRole("link", { name: "Start vesting" }).getAttribute("href")).toBe(
+      "/rewards/history?vesting=start"
+    );
+  });
+
+  it("shows a dash when vestable esGMX is known but its USD price is unavailable", () => {
+    const vestingResult = getVestingDataResult();
+    vestingResult.vestableEsGmxUsd = undefined;
+    vestingResult.data = vestingResult.data ? { ...vestingResult.data, gmxPrice: undefined } : undefined;
+    mockUseRewardsVestingData.mockReturnValue(vestingResult);
+
+    renderTab();
+
+    const summary = screen.getByTestId("rewards-vestable-summary");
+    expect(summary.textContent).toContain("5.00 esGMX");
+    expect(within(summary).getByText("-", { exact: true })).toBeDefined();
+  });
+
+  it("makes tier and featured-market details keyboard focusable", async () => {
     renderTab();
 
     expect(screen.getByRole("button", { name: "Volume Tier" })).toBeDefined();
@@ -281,7 +305,11 @@ describe("RewardsTiersTab", () => {
     expect(screen.getByRole("button", { name: "Supporter Staking tier" })).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
-    expect(screen.getByRole("button", { name: /Featured markets:/ })).toBeDefined();
+    const featuredMarketsButton = screen.getByRole("button", { name: /Featured markets:/ });
+    expect(featuredMarketsButton).toBeDefined();
+
+    fireEvent.mouseEnter(featuredMarketsButton.closest(".Tooltip-handle")!);
+    expect((await screen.findByRole("link", { name: /GMX\/USD/ })).getAttribute("href")).toBe("/trade/long?market=GMX");
   });
 
   it("renders the config-derived maximum reward rate in the inactive staking banner", () => {
@@ -306,16 +334,7 @@ describe("RewardsTiersTab", () => {
   });
 
   it("personalizes the inactive staking card and chooses the wallet action", () => {
-    mockUseStakingProcessedData.mockReturnValue({
-      data: {
-        gmxBalance: 5n * GMX_UNIT,
-        esGmxBalance: 0n,
-        gmxAprForEsGmx: 0n,
-        gmxAprForNativeToken: 0n,
-        isRewardsSuspended: false,
-      },
-      mutate: vi.fn(),
-    });
+    mockUseRewardsVestingData.mockReturnValue(getVestingDataResult(5n * GMX_UNIT));
     mockUseRewardsPromoActivity.mockReturnValue({
       data: {
         netPositionFeeUsd: usd(100n),
@@ -346,6 +365,80 @@ describe("RewardsTiersTab", () => {
       account: CHECKSUMMED_ACCOUNT,
       enabled: true,
     });
+  });
+
+  it("waits for the wallet GMX balance before choosing Buy or Stake, then shows Stake", () => {
+    const inactiveStatus = {
+      ...status,
+      stakingTier: null,
+      projectedStakingTier: null,
+      manualRewardRemainingUsd: 0n,
+    };
+    mockUseRewardsVestingData.mockReturnValue({
+      data: undefined,
+      vestableEsGmx: undefined,
+      vestableEsGmxUsd: undefined,
+      isLoading: true,
+      error: undefined,
+      mutate: vi.fn(),
+    });
+    const view = renderTab({ status: inactiveStatus });
+
+    expect(screen.queryByRole("link", { name: "Buy GMX" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Stake GMX" })).toBeNull();
+
+    mockUseRewardsVestingData.mockReturnValue(getVestingDataResult(5n * GMX_UNIT));
+    view.rerender(getTabNode({ status: inactiveStatus }));
+
+    const stakingCard = screen.getByText("Staking Tier").closest(".group");
+    expect(
+      within(stakingCard as HTMLElement)
+        .getByRole("link", { name: "Stake GMX" })
+        .getAttribute("href")
+    ).toBe("/earn/portfolio");
+    expect(screen.queryByRole("link", { name: "Buy GMX" })).toBeNull();
+  });
+
+  it("uses a neutral staking action when the wallet GMX balance is unavailable", () => {
+    mockUseRewardsVestingData.mockReturnValue({
+      data: undefined,
+      vestableEsGmx: undefined,
+      vestableEsGmxUsd: undefined,
+      isLoading: false,
+      error: new Error("RPC unavailable"),
+      mutate: vi.fn(),
+    });
+
+    renderTab({
+      status: {
+        ...status,
+        stakingTier: null,
+        projectedStakingTier: null,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    expect(screen.getByRole("link", { name: "Manage staking" }).getAttribute("href")).toBe("/earn/portfolio");
+    expect(screen.queryByRole("link", { name: "Buy GMX" })).toBeNull();
+  });
+
+  it("does not flash anonymous staking content while the wallet is restoring", () => {
+    mockUseWallet.mockReturnValue({
+      account: undefined,
+      status: "disconnected",
+      active: false,
+      chainId: ARBITRUM,
+    } as ReturnType<typeof useWallet>);
+    mockUseIsWalletInitializing.mockReturnValue(true);
+
+    renderTab({
+      account: undefined,
+      status: undefined,
+    });
+
+    expect(screen.queryByText("Stake to Boost Rewards")).toBeNull();
+    expect(screen.queryByText(/Stake GMX and receive up to/)).toBeNull();
+    expect(screen.queryByTestId("rewards-promotional-banners")).toBeNull();
   });
 
   it("keeps the generic staking copy for manual allocations without loading promo activity", () => {
@@ -396,38 +489,6 @@ describe("RewardsTiersTab", () => {
     });
   });
 
-  it("prefixes multiplier adjustments with a plus sign", () => {
-    renderTab();
-
-    expect(screen.getAllByText("+0.25x").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("+0.5x").length).toBeGreaterThan(0);
-  });
-
-  it("labels trade-specific boosts as qualified this epoch instead of active", () => {
-    renderTab({
-      status: {
-        ...status,
-        boostIds: ["FeaturedMarkets"],
-        manualRewardCapUsd: 0n,
-        manualRewardRemainingUsd: 0n,
-      },
-    });
-
-    expect(screen.getByRole("heading", { name: "1 qualified this epoch" })).toBeDefined();
-    expect(screen.queryByRole("heading", { name: /active boost/ })).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
-
-    const featuredMarketsRow = screen.getByRole("row", { name: /Featured Markets/ });
-    const balancingTradesRow = screen.getByRole("row", { name: /Balancing Trades/ });
-    const lifetimeVolumeRow = screen.getByRole("row", { name: /Lifetime Volume/ });
-
-    expect(within(featuredMarketsRow).getByText("Qualified this epoch")).toBeDefined();
-    expect(within(balancingTradesRow).getByText("Not qualified this epoch")).toBeDefined();
-    expect(within(lifetimeVolumeRow).getByText("Inactive")).toBeDefined();
-    expect(screen.queryByRole("row", { name: /Manual Allocation/ })).toBeNull();
-  });
-
   it("renders config-derived activity boost levels", () => {
     renderTab({
       status: {
@@ -444,10 +505,12 @@ describe("RewardsTiersTab", () => {
 
     expect(featuredMarketsRow.textContent).toContain("GMX");
     expect(within(featuredMarketsRow).getByText("+0.25x")).toBeDefined();
+    expect(within(featuredMarketsRow).getByText("Active")).toBeDefined();
     expect(balancingTradesRow.textContent).toContain(
       formatUsd(config.balancingTradesThreshold, { displayDecimals: 0 })
     );
     expect(within(balancingTradesRow).getByText("+0.5x")).toBeDefined();
+    expect(within(balancingTradesRow).getByText("Inactive")).toBeDefined();
     expect(lifetimeVolumeRow.textContent).toContain(formatUsd(config.lifetimeVolumeThreshold, { displayDecimals: 0 }));
     expect(within(lifetimeVolumeRow).getByText("+1x")).toBeDefined();
     expect(within(lifetimeVolumeRow).getByText("Active")).toBeDefined();
@@ -559,17 +622,5 @@ describe("RewardsTiersTab", () => {
     expect(screen.getAllByText("Your current status is temporarily unavailable.")).toHaveLength(3);
     expect(screen.queryByText("Inactive")).toBeNull();
     expect(screen.queryByText("Trade More. Earn More.")).toBeNull();
-  });
-
-  it("does not render the removed account sidebar or manual allocation sections", () => {
-    renderTab();
-
-    expect(screen.queryByText("Current status")).toBeNull();
-    expect(screen.queryByText("Current epoch rewards")).toBeNull();
-    expect(screen.queryByText("Activity boosts")).toBeNull();
-    expect(screen.queryByText("Manual allocation")).toBeNull();
-    expect(screen.queryByText("Manual allocation ranges")).toBeNull();
-    expect(screen.queryByText("Consumed")).toBeNull();
-    expect(screen.queryByText("Provisional")).toBeNull();
   });
 });

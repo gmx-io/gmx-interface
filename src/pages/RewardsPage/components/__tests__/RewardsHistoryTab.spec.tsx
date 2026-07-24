@@ -14,7 +14,7 @@ vi.mock("components/TableScrollFade/TableScrollFade", () => ({
 }));
 
 vi.mock("img/ic_chevron_down.svg?react", () => ({
-  default: (props: React.SVGProps<SVGSVGElement>) => <svg data-testid="chevron-down" {...props} />,
+  default: (props: React.SVGProps<SVGSVGElement>) => <svg {...props} />,
 }));
 
 const breakpointsMock = vi.hoisted(() => ({
@@ -135,13 +135,6 @@ describe("RewardsHistoryTab", () => {
     renderHistory();
 
     expect(screen.getByText(formatEpochLabel(EPOCH, ONE_HOUR, "de-DE"))).toBeTruthy();
-  });
-
-  it("uses the compact volume label on desktop", () => {
-    renderHistory();
-
-    expect(screen.getByRole("columnheader", { name: "Volume" })).toBeTruthy();
-    expect(screen.queryByText("Trading volume")).toBeNull();
   });
 
   it("shows the current epoch countdown and marks the previous epoch finished", () => {

@@ -1,17 +1,21 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { EstimatedTradeRewards } from "domain/synthetics/incentives/v2/tradeRewardEstimate";
 import type { TradeRewardsEstimateState } from "domain/synthetics/incentives/v2/useTradeRewardsEstimate";
 import { PRECISION } from "lib/numbers";
+import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
 import { RewardsHintRow } from "../RewardsHintRow";
 
 vi.mock("img/ic_multiplier_solid.svg?react", () => ({ default: () => <svg /> }));
 vi.mock("img/ic_arrow_right.svg?react", () => ({ default: () => <svg /> }));
+vi.mock("lib/userAnalytics/rewardsEvents", () => ({
+  sendRewardsNavigationEvent: vi.fn(),
+}));
 
 const ESTIMATED_REWARDS: EstimatedTradeRewards = {
   normalMultiplier: 50n,
@@ -31,11 +35,17 @@ const ESTIMATED_REWARDS: EstimatedTradeRewards = {
 i18n.load({ en: {} });
 i18n.activate("en");
 
-function renderRow(rewardEstimate: TradeRewardsEstimateState) {
+function renderRow(
+  rewardEstimate: TradeRewardsEstimateState,
+  market?: {
+    marketAddress: string;
+    marketName: string;
+  }
+) {
   return render(
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
-        <RewardsHintRow rewardEstimate={rewardEstimate} />
+        <RewardsHintRow rewardEstimate={rewardEstimate} {...market} />
       </MemoryRouter>
     </I18nProvider>
   );
@@ -45,19 +55,36 @@ describe("RewardsHintRow", () => {
   afterEach(cleanup);
 
   it("shows the effective multiplier and estimated token rewards", () => {
-    renderRow({
-      enabled: true,
-      multiplierDecimals: 100n,
-      multiplier: 50n,
-      hasKnownMultiplier: true,
-      estimatedRewards: ESTIMATED_REWARDS,
-    });
+    renderRow(
+      {
+        enabled: true,
+        multiplierDecimals: 100n,
+        multiplier: 50n,
+        hasKnownMultiplier: true,
+        estimatedRewards: ESTIMATED_REWARDS,
+      },
+      {
+        marketAddress: "0x52908400098527886E0F7030069857D2E4169EE7",
+        marketName: "ETH/USD [WETH-USDC]",
+      }
+    );
 
     const link = screen.getByRole("link", { name: /Estimated rewards/ });
     expect(link.getAttribute("href")).toBe("/rewards");
     expect(link.textContent).toContain("0.5x");
     expect(link.textContent).toContain("Estimated rewards");
     expect(link.textContent).toContain("10 esGMX + 2 GT");
+
+    fireEvent.click(link);
+    expect(sendRewardsNavigationEvent).toHaveBeenCalledWith({
+      source: "FeeBlock",
+      hasEstimatedRewards: true,
+      rewardsUsd: ESTIMATED_REWARDS.rewardsUsd,
+      multiplier: 50n,
+      multiplierDecimals: 100n,
+      marketAddress: "0x52908400098527886E0F7030069857D2E4169EE7",
+      marketName: "ETH/USD [WETH-USDC]",
+    });
   });
 
   it("falls back to the estimated USD value when token prices are unavailable", () => {
@@ -105,7 +132,6 @@ describe("RewardsHintRow", () => {
 
     const link = screen.getByRole("link", { name: /Trade or stake.*unlock your rewards multiplier/ });
     expect(link.textContent).toContain("0.0x");
-    expect(screen.getByText("0.0x").className).toContain("text-typography-disabled");
   });
 
   it("shows the neutral generic state when the multiplier is unknown", () => {

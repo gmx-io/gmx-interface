@@ -266,7 +266,11 @@ export function TradeBoxAdvancedGroups({
     return (
       <div className="rounded-8 bg-fill-surfaceElevated50">
         {executionDetails}
-        <RewardsHintRow rewardEstimate={rewardEstimate} />
+        <RewardsHintRow
+          rewardEstimate={rewardEstimate}
+          marketAddress={marketInfo?.marketTokenAddress}
+          marketName={marketInfo?.name}
+        />
       </div>
     );
   }

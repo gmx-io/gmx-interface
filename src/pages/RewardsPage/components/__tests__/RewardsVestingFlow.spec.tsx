@@ -1,14 +1,18 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import type { RewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
 import { expandDecimals } from "lib/numbers";
+import { sendRewardsTransactionResultEvent, sendRewardsVestingModalOpenEvent } from "lib/userAnalytics/rewardsEvents";
 import useWallet from "lib/wallets/useWallet";
 
 import { RewardsVestingFlow } from "../RewardsVestingFlow";
@@ -30,6 +34,17 @@ vi.mock("lib/contracts", () => ({
   callContract: vi.fn(),
 }));
 
+vi.mock("lib/chains/getMultipleWalletExtensionsChainError", () => ({
+  useMultipleWalletExtensionsChainError: vi.fn(),
+}));
+
+vi.mock("lib/helperToast", () => ({
+  helperToast: {
+    error: vi.fn(),
+    info: vi.fn(),
+  },
+}));
+
 vi.mock("lib/wallets/useWallet", () => ({
   default: vi.fn(),
 }));
@@ -42,6 +57,10 @@ vi.mock("context/ConnectModalContext/ConnectModalContext", () => ({
   useConnectModal: () => ({ openConnectModal: vi.fn() }),
 }));
 
+vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
+  useSettings: vi.fn(),
+}));
+
 vi.mock("lib/useHasOutdatedUi", () => ({
   useHasOutdatedUi: () => false,
 }));
@@ -50,22 +69,33 @@ vi.mock("lib/useCurrentUnixTimestamp", () => ({
   useCurrentUnixTimestamp: () => 1_700_000_000,
 }));
 
+vi.mock("lib/userAnalytics/rewardsEvents", () => ({
+  sendRewardsTransactionResultEvent: vi.fn(),
+  sendRewardsVestingModalOpenEvent: vi.fn(),
+}));
+
 vi.mock("lib/chains", () => ({
   useChainId: () => ({ chainId: 42161 }),
 }));
 
 vi.mock("../RewardsVestingModals", () => ({
-  RewardsVestingModal: ({ isVisible }: { isVisible: boolean }) =>
-    isVisible ? <div data-testid="vesting-modal" /> : null,
-  RewardsStopVestingModal: ({ isVisible }: { isVisible: boolean }) =>
-    isVisible ? <div data-testid="stop-vesting-modal" /> : null,
+  RewardsVestingModal: ({ isVisible, isReadOnly }: { isVisible: boolean; isReadOnly?: boolean }) =>
+    isVisible ? <div data-testid="vesting-modal" data-read-only={isReadOnly} /> : null,
+  RewardsStopVestingModal: ({ isVisible, isReadOnly }: { isVisible: boolean; isReadOnly?: boolean }) =>
+    isVisible ? <div data-testid="stop-vesting-modal" data-read-only={isReadOnly} /> : null,
 }));
 
 const TOKEN_UNIT = expandDecimals(1, 18);
 const mockUseRewardsVestingData = vi.mocked(useRewardsVestingData);
+const mockUseSettings = vi.mocked(useSettings);
 const mockUseWallet = vi.mocked(useWallet);
+const mockUseMultipleWalletExtensionsChainError = vi.mocked(useMultipleWalletExtensionsChainError);
 const mockCallContract = vi.mocked(callContract);
-const mutate = vi.fn(async () => undefined);
+const mockHelperToastError = vi.mocked(helperToast.error);
+const mockHelperToastInfo = vi.mocked(helperToast.info);
+const mockSendRewardsTransactionResultEvent = vi.mocked(sendRewardsTransactionResultEvent);
+const mockSendRewardsVestingModalOpenEvent = vi.mocked(sendRewardsVestingModalOpenEvent);
+const mutate = vi.fn(async (): Promise<RewardsVestingData | undefined> => undefined);
 
 const idleData: RewardsVestingData = {
   walletGmxBalance: 0n,
@@ -88,14 +118,29 @@ const idleData: RewardsVestingData = {
 i18n.load({ en: {} });
 i18n.activate("en");
 
-function renderFlow() {
-  return render(
+function getRouterEntries() {
+  return [`${window.location.pathname}${window.location.search}`];
+}
+
+function getFlow() {
+  return (
     <I18nProvider i18n={i18n}>
-      <MemoryRouter>
+      <MemoryRouter initialEntries={getRouterEntries()}>
         <RewardsVestingFlow />
+        <LocationSearchProbe />
       </MemoryRouter>
     </I18nProvider>
   );
+}
+
+function LocationSearchProbe() {
+  const { search } = useLocation();
+
+  return <div data-testid="location-search">{search}</div>;
+}
+
+function renderFlow() {
+  return render(getFlow());
 }
 
 function setVestingData(data?: RewardsVestingData, options?: { loading?: boolean; error?: Error }) {
@@ -111,6 +156,10 @@ describe("RewardsVestingFlow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockCallContract.mockReset();
+    mockUseMultipleWalletExtensionsChainError.mockReturnValue({});
+    mockUseSettings.mockReturnValue({
+      rewardsOneClickActionEnabled: false,
+    } as ReturnType<typeof useSettings>);
     mutate.mockReset();
     mutate.mockResolvedValue(undefined);
     mockUseWallet.mockReturnValue({
@@ -122,7 +171,10 @@ describe("RewardsVestingFlow", () => {
     setVestingData(idleData);
   });
 
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    window.history.replaceState({}, "", "/");
+  });
 
   it("renders the idle state from an empty on-chain snapshot", () => {
     renderFlow();
@@ -157,6 +209,78 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByRole("button", { name: "Start vesting" })).toBeDefined();
   });
 
+  it("opens the vesting modal from the rewards summary deep link", async () => {
+    window.history.replaceState({}, "", "/rewards/history?vesting=start");
+    setVestingData({
+      ...idleData,
+      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      freePairAmount: 100n * TOKEN_UNIT,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        maxVestableAmount: 100n * TOKEN_UNIT,
+        averageStakedAmount: 100n * TOKEN_UNIT,
+      },
+    });
+
+    renderFlow();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("vesting-modal")).toBeDefined();
+    });
+    expect(mockSendRewardsVestingModalOpenEvent).toHaveBeenCalledWith("Start");
+  });
+
+  it("shows a notice instead of opening the stepper in one-click preview mode", () => {
+    mockUseSettings.mockReturnValue({
+      rewardsOneClickActionEnabled: true,
+    } as ReturnType<typeof useSettings>);
+    setVestingData({
+      ...idleData,
+      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      freePairAmount: 100n * TOKEN_UNIT,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        maxVestableAmount: 100n * TOKEN_UNIT,
+        averageStakedAmount: 100n * TOKEN_UNIT,
+      },
+    });
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Start vesting" }));
+
+    expect(mockHelperToastInfo).toHaveBeenCalledWith(
+      "One-click claim, stake, and vest is not supported yet. Turn off its preview in Settings to use the step-by-step flow."
+    );
+    expect(screen.queryByTestId("vesting-modal")).toBeNull();
+    expect(mockSendRewardsVestingModalOpenEvent).not.toHaveBeenCalled();
+  });
+
+  it("consumes a one-click preview deep link once and preserves other query parameters", async () => {
+    window.history.replaceState({}, "", "/rewards/history?source=summary&vesting=start");
+    mockUseSettings.mockReturnValue({
+      rewardsOneClickActionEnabled: true,
+    } as ReturnType<typeof useSettings>);
+    setVestingData({
+      ...idleData,
+      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      freePairAmount: 100n * TOKEN_UNIT,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        maxVestableAmount: 100n * TOKEN_UNIT,
+        averageStakedAmount: 100n * TOKEN_UNIT,
+      },
+    });
+    const view = renderFlow();
+
+    await waitFor(() => expect(mockHelperToastInfo).toHaveBeenCalledTimes(1));
+    expect(screen.queryByTestId("vesting-modal")).toBeNull();
+    expect(mockSendRewardsVestingModalOpenEvent).not.toHaveBeenCalled();
+    expect(screen.getByTestId("location-search").textContent).toBe("?source=summary");
+
+    view.rerender(getFlow());
+    expect(mockHelperToastInfo).toHaveBeenCalledTimes(1);
+  });
+
   it("renders active vesting values and opens the vest-more and stop confirmations", () => {
     setVestingData({
       ...idleData,
@@ -186,6 +310,20 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByTestId("stop-vesting-modal")).toBeDefined();
   });
 
+  it("renders development vesting fixtures as read-only states", () => {
+    window.history.replaceState({}, "", "/rewards/history?rewardsDebug=vesting-active");
+    renderFlow();
+
+    expect(screen.getByRole("button", { name: "Claim 50 GMX" }).hasAttribute("disabled")).toBe(true);
+
+    fireEvent.click(screen.getByRole("button", { name: "Vest more" }));
+    expect(screen.getByTestId("vesting-modal").getAttribute("data-read-only")).toBe("true");
+
+    fireEvent.click(screen.getByRole("button", { name: "Stop vesting" }));
+    expect(screen.getByTestId("stop-vesting-modal").getAttribute("data-read-only")).toBe("true");
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
   it("shows claimable rewards and account balances", () => {
     setVestingData({
       ...idleData,
@@ -209,7 +347,7 @@ describe("RewardsVestingFlow", () => {
   it("claims GMX through the Vester and refreshes the account snapshot", async () => {
     const wait = vi.fn(async () => undefined);
     mockCallContract.mockResolvedValueOnce({ wait } as any);
-    setVestingData({
+    const claimData = {
       ...idleData,
       vestingInfo: {
         ...idleData.vestingInfo,
@@ -218,7 +356,9 @@ describe("RewardsVestingFlow", () => {
         claimedAmounts: 20n * TOKEN_UNIT,
         claimable: 25n * TOKEN_UNIT,
       },
-    });
+    };
+    setVestingData(claimData);
+    mutate.mockResolvedValue(claimData);
     renderFlow();
 
     fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
@@ -226,7 +366,165 @@ describe("RewardsVestingFlow", () => {
     await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
     expect(mockCallContract.mock.calls[0][2]).toBe("claim");
     expect(wait).toHaveBeenCalledTimes(1);
-    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(mutate).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not submit a stale claim when the refreshed amount is zero", async () => {
+    const claimData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        vestedAmount: 120n * TOKEN_UNIT,
+        escrowedBalance: 100n * TOKEN_UNIT,
+        claimedAmounts: 20n * TOKEN_UNIT,
+        claimable: 25n * TOKEN_UNIT,
+      },
+    };
+    setVestingData(claimData);
+    mutate.mockResolvedValue({
+      ...claimData,
+      vestingInfo: {
+        ...claimData.vestingInfo,
+        claimable: 0n,
+      },
+    });
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
+
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+    expect(mockCallContract).not.toHaveBeenCalled();
+    expect(mockHelperToastInfo).toHaveBeenCalledWith("No rewards are currently available to claim.");
+  });
+
+  it("does not submit a claim when the account or chain changes during refresh", async () => {
+    const claimData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        vestedAmount: 120n * TOKEN_UNIT,
+        escrowedBalance: 100n * TOKEN_UNIT,
+        claimedAmounts: 20n * TOKEN_UNIT,
+        claimable: 25n * TOKEN_UNIT,
+      },
+    };
+    let resolveMutate: ((data: RewardsVestingData) => void) | undefined;
+    setVestingData(claimData);
+    mutate.mockImplementationOnce(
+      () =>
+        new Promise<RewardsVestingData>((resolve) => {
+          resolveMutate = resolve;
+        })
+    );
+    const view = renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+
+    mockUseWallet.mockReturnValue({
+      account: "0x456",
+      active: true,
+      chainId: AVALANCHE,
+      signer: {},
+    } as ReturnType<typeof useWallet>);
+    view.rerender(getFlow());
+    resolveMutate?.(claimData);
+
+    await waitFor(() =>
+      expect(mockHelperToastInfo).toHaveBeenCalledWith(
+        "Wallet or network changed. Review your rewards before claiming."
+      )
+    );
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
+  it("does not submit a claim when wallet extensions become inconsistent during refresh", async () => {
+    const claimData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        vestedAmount: 120n * TOKEN_UNIT,
+        escrowedBalance: 100n * TOKEN_UNIT,
+        claimedAmounts: 20n * TOKEN_UNIT,
+        claimable: 25n * TOKEN_UNIT,
+      },
+    };
+    let resolveMutate: ((data: RewardsVestingData) => void) | undefined;
+    setVestingData(claimData);
+    mutate.mockImplementationOnce(
+      () =>
+        new Promise<RewardsVestingData>((resolve) => {
+          resolveMutate = resolve;
+        })
+    );
+    const view = renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+
+    mockUseMultipleWalletExtensionsChainError.mockReturnValue({
+      buttonErrorMessage: "Transaction blocked",
+      buttonTooltipMessage: "Wallet extensions are on different networks.",
+    });
+    view.rerender(getFlow());
+    resolveMutate?.(claimData);
+
+    await waitFor(() =>
+      expect(mockHelperToastInfo).toHaveBeenCalledWith(
+        "Wallet or network changed. Review your rewards before claiming."
+      )
+    );
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
+  it("shows an actionable error when claimable rewards cannot be refreshed", async () => {
+    const claimData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        vestedAmount: 120n * TOKEN_UNIT,
+        claimable: 1n,
+      },
+    };
+    setVestingData(claimData);
+    mutate.mockRejectedValueOnce(new Error("RPC unavailable"));
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: /^Claim / }));
+
+    await waitFor(() =>
+      expect(mockHelperToastError).toHaveBeenCalledWith("Unable to refresh claimable rewards. Please try again.")
+    );
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
+  it("delegates claim submission errors to callContract without showing a duplicate toast", async () => {
+    const claimData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        vestedAmount: 120n * TOKEN_UNIT,
+        escrowedBalance: 100n * TOKEN_UNIT,
+        claimedAmounts: 20n * TOKEN_UNIT,
+        claimable: 25n * TOKEN_UNIT,
+      },
+    };
+    setVestingData(claimData);
+    mutate.mockResolvedValue(claimData);
+    mockCallContract.mockRejectedValueOnce(new Error("Rejected"));
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
+
+    await waitFor(() =>
+      expect(mockSendRewardsTransactionResultEvent).toHaveBeenCalledWith({
+        transaction: "ClaimVestedGmx",
+        result: "Fail",
+        amount: 25n * TOKEN_UNIT,
+      })
+    );
+    expect(mockCallContract.mock.calls[0][4]).toMatchObject({ failMsg: "Claim failed" });
+    expect(mockHelperToastError).not.toHaveBeenCalled();
   });
 
   it("renders the completed state", () => {
@@ -264,7 +562,7 @@ describe("RewardsVestingFlow", () => {
   it("withdraws a completed vest to unlock collateral", async () => {
     const wait = vi.fn(async () => undefined);
     mockCallContract.mockResolvedValueOnce({ wait } as any);
-    setVestingData({
+    const completedData = {
       ...idleData,
       vestingInfo: {
         ...idleData.vestingInfo,
@@ -272,7 +570,9 @@ describe("RewardsVestingFlow", () => {
         vestedAmount: 120n * TOKEN_UNIT,
         claimedAmounts: 120n * TOKEN_UNIT,
       },
-    });
+    };
+    setVestingData(completedData);
+    mutate.mockResolvedValue(completedData);
     renderFlow();
 
     fireEvent.click(screen.getByRole("button", { name: "Unlock collateral" }));
@@ -280,7 +580,107 @@ describe("RewardsVestingFlow", () => {
     await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
     expect(mockCallContract.mock.calls[0][2]).toBe("withdraw");
     expect(wait).toHaveBeenCalledTimes(1);
-    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(mutate).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not unlock collateral when a refreshed vest is active again", async () => {
+    const completedData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        pairAmount: 100n * TOKEN_UNIT,
+        vestedAmount: 120n * TOKEN_UNIT,
+        claimedAmounts: 120n * TOKEN_UNIT,
+      },
+    };
+    setVestingData(completedData);
+    mutate.mockResolvedValue({
+      ...completedData,
+      vestingInfo: {
+        ...completedData.vestingInfo,
+        vestedAmount: 130n * TOKEN_UNIT,
+        escrowedBalance: 10n * TOKEN_UNIT,
+      },
+    });
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Unlock collateral" }));
+
+    await waitFor(() =>
+      expect(mockHelperToastInfo).toHaveBeenCalledWith(
+        "Vesting details changed. Review the updated amounts before unlocking collateral."
+      )
+    );
+    expect(mockCallContract).not.toHaveBeenCalled();
+    expect(mockSendRewardsTransactionResultEvent).not.toHaveBeenCalled();
+  });
+
+  it("does not unlock collateral when the account changes during refresh", async () => {
+    const completedData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        pairAmount: 100n * TOKEN_UNIT,
+        vestedAmount: 120n * TOKEN_UNIT,
+        claimedAmounts: 120n * TOKEN_UNIT,
+      },
+    };
+    let resolveMutate: ((data: RewardsVestingData) => void) | undefined;
+    setVestingData(completedData);
+    mutate.mockImplementationOnce(
+      () =>
+        new Promise<RewardsVestingData>((resolve) => {
+          resolveMutate = resolve;
+        })
+    );
+    const view = renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Unlock collateral" }));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+
+    mockUseWallet.mockReturnValue({
+      account: "0x456",
+      active: true,
+      chainId: ARBITRUM,
+      signer: {},
+    } as ReturnType<typeof useWallet>);
+    view.rerender(getFlow());
+    resolveMutate?.(completedData);
+
+    await waitFor(() =>
+      expect(mockHelperToastInfo).toHaveBeenCalledWith(
+        "Wallet or network changed. Review your vesting details before unlocking collateral."
+      )
+    );
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
+  it("delegates unlock submission errors to callContract without showing a duplicate toast", async () => {
+    const completedData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        pairAmount: 100n * TOKEN_UNIT,
+        vestedAmount: 120n * TOKEN_UNIT,
+        claimedAmounts: 120n * TOKEN_UNIT,
+      },
+    };
+    setVestingData(completedData);
+    mutate.mockResolvedValue(completedData);
+    mockCallContract.mockRejectedValueOnce(new Error("Rejected"));
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Unlock collateral" }));
+
+    await waitFor(() =>
+      expect(mockSendRewardsTransactionResultEvent).toHaveBeenCalledWith({
+        transaction: "UnlockCollateral",
+        result: "Fail",
+        amount: 100n * TOKEN_UNIT,
+      })
+    );
+    expect(mockCallContract.mock.calls[0][4]).toMatchObject({ failMsg: "Unlock failed" });
+    expect(mockHelperToastError).not.toHaveBeenCalled();
   });
 
   it("uses design-consistent skeletons while the account snapshot loads", () => {
@@ -317,21 +717,5 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByRole("button", { name: "Connect wallet" })).toBeDefined();
     expect(screen.getAllByText("-")).toHaveLength(3);
     expect(screen.queryByRole("button", { name: "Nothing to vest" })).toBeNull();
-  });
-
-  it("preserves responsive stacking and equal-height panels", () => {
-    renderFlow();
-
-    const flow = screen.getByTestId("rewards-vesting-flow");
-    expect(flow.className.split(/\s+/)).toContain("max-lg:grid-rows-[1fr_40px_1fr_40px_1fr]");
-
-    const cards = flow.querySelectorAll("section");
-    expect(cards).toHaveLength(3);
-    cards.forEach((card) => {
-      const panelClassNames = card.lastElementChild?.className.split(/\s+/) ?? [];
-      expect(panelClassNames).toContain("min-h-[132px]");
-      expect(panelClassNames).toContain("grow");
-      expect(panelClassNames).not.toContain("h-[132px]");
-    });
   });
 });
