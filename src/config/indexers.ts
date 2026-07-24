@@ -49,7 +49,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 
   [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@9c4ad1/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@6230c4/api/graphql",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
   },
