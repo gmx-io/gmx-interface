@@ -1,12 +1,14 @@
 import { ReactNode, useMemo } from "react";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, type SourceChainId } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { latestStateRef, StateCtx } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import type { SponsoredCallBalanceData } from "domain/synthetics/express";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
+import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import type { MarketsInfoData } from "domain/synthetics/markets";
 import type { OrdersInfoData } from "domain/synthetics/orders";
 import { useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
@@ -17,6 +19,7 @@ import { usePositionEditorState } from "domain/synthetics/trade/usePositionEdito
 import { usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useWallet from "lib/wallets/useWallet";
+import type { L1ExpressOrderGasReference } from "sdk/utils/fees/types";
 
 import { MOCK_GAS_LIMITS, MOCK_GAS_PRICE, MOCK_POSITIONS_CONSTANTS } from "./mockChainData";
 import { createMockMarketInfo, createMockMarketsData, MOCK_MARKET_ADDRESS } from "./mockMarketInfo";
@@ -44,6 +47,10 @@ export type MockSyntheticsStateProviderProps = {
   ordersInfoData?: OrdersInfoData;
   uiFeeFactor?: bigint;
   isFirstOrder?: boolean;
+  features?: FeaturesSettings;
+  sponsoredCallBalanceData?: SponsoredCallBalanceData;
+  srcChainId?: SourceChainId;
+  l1ExpressOrderGasReference?: L1ExpressOrderGasReference;
 };
 
 /**
@@ -59,6 +66,10 @@ export function MockSyntheticsStateProvider({
   ordersInfoData = EMPTY_ORDERS_INFO_DATA,
   uiFeeFactor = 0n,
   isFirstOrder = false,
+  features,
+  sponsoredCallBalanceData,
+  srcChainId,
+  l1ExpressOrderGasReference,
 }: MockSyntheticsStateProviderProps) {
   const chainId = ARBITRUM;
   const { account, signer } = useWallet();
@@ -79,7 +90,7 @@ export function MockSyntheticsStateProvider({
     tokensData,
     positionsInfoData,
     ordersInfoData,
-    srcChainId: undefined,
+    srcChainId,
     jitLiquidityMap: undefined,
   });
 
@@ -88,7 +99,7 @@ export function MockSyntheticsStateProvider({
       pageType: "trade",
       globals: {
         chainId,
-        srcChainId: undefined,
+        srcChainId,
         account,
         signer,
         markets: { marketsData, marketsAddresses: Object.keys(marketsData) },
@@ -152,16 +163,17 @@ export function MockSyntheticsStateProvider({
       confirmationBox: confirmationBoxState,
       poolsDetails: undefined,
       // populate if the component under test grows feature-gated or oracle-based behavior
-      features: undefined,
+      features,
       uiFlags: undefined,
-      sponsoredCallBalanceData: undefined,
+      sponsoredCallBalanceData,
       gasPaymentTokenAllowance: undefined,
-      l1ExpressOrderGasReference: undefined,
+      l1ExpressOrderGasReference,
     };
 
     return s;
   }, [
     chainId,
+    srcChainId,
     account,
     signer,
     marketsData,
@@ -171,6 +183,9 @@ export function MockSyntheticsStateProvider({
     ordersInfoData,
     uiFeeFactor,
     isFirstOrder,
+    features,
+    sponsoredCallBalanceData,
+    l1ExpressOrderGasReference,
     settings,
     subaccountState,
     tokenPermitsState,

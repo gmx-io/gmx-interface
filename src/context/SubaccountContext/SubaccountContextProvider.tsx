@@ -206,10 +206,13 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       toastId,
     });
 
+    let isConfigGeneratedInCurrentFlow = false;
+
     if (!config?.address) {
       try {
         setSubaccountActivationState(SubaccountActivationState.Generating);
         config = await generateSubaccount(signer);
+        isConfigGeneratedInCurrentFlow = true;
 
         setSubaccountConfig(config);
       } catch (error) {
@@ -256,6 +259,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       return true;
     } catch (error) {
+      if (isConfigGeneratedInCurrentFlow) {
+        resetStoredConfig();
+      }
+
       setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
       // eslint-disable-next-line no-console
       console.error(error);
