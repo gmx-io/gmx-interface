@@ -32,10 +32,12 @@ export function RewardsPage() {
   const tabOptions = useMemo(
     () => [
       { value: "tiers" as const, label: <Trans>Tiers</Trans> },
-      { value: "history" as const, label: <Trans>Rewards</Trans>, icon: <RewardsIcon className="size-16" /> },
+      ...(account
+        ? [{ value: "history" as const, label: <Trans>Rewards</Trans>, icon: <RewardsIcon className="size-16" /> }]
+        : []),
       { value: "leaderboard" as const, label: <Trans>Leaderboard</Trans> },
     ],
-    []
+    [account]
   );
   const debugMode = getRewardsDebugMode(search);
   const debugConfig =

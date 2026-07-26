@@ -506,6 +506,11 @@ msgstr ""
 msgid "Percentage"
 msgstr "Prozentsatz"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Return Bonus"
+msgstr "Rückkehrbonus"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "Swap-UI-Gebühr"
@@ -535,10 +540,6 @@ msgstr "Abgerechnete Fundinggebühren"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "{0, plural, one {# active boost} other {# active boosts}}"
-msgstr "{0, plural, one {# aktiver Boost} other {# aktive Boosts}}"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stake collateral"
@@ -629,6 +630,10 @@ msgstr "<0>{0}</0><1>/</1><2>{1}</2> <3>bis zum Status {2} <4>+{3}</4></3>"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "Token auswählen"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Available to eligible historical users while their return bonus cap remains."
+msgstr "Für berechtigte frühere Nutzer verfügbar, solange ihr Rückkehrbonus-Limit nicht ausgeschöpft ist."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
@@ -893,6 +898,10 @@ msgstr "ANBIETER"
 msgid "Increased {positionText}, +{0}"
 msgstr "Erhöht {positionText}, +{0}"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+msgid "Current Multiplier"
+msgstr "Aktueller Multiplikator"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fee"
 msgstr "Positive Finanzierungsgebühr"
@@ -1103,6 +1112,10 @@ msgstr "Nettopreiseinfluss und Gebühren aus Ihrem Handel. <0>Mehr erfahren</0>.
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "Preise sind volatil. <0>Erlaubte Slippage erhöhen</0>"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "{activeBoostCount, plural, one {# active boost} other {# active boosts}}"
+msgstr "{activeBoostCount, plural, one {# aktiver Boost} other {# aktive Boosts}}"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
@@ -2013,9 +2026,6 @@ msgid "Available liquidity {directionLabel}"
 msgstr "Verfügbare Liquidität {directionLabel}"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Show less"
 msgstr "Weniger anzeigen"
 
@@ -2383,10 +2393,6 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "Leverage bei {0} halten"
 
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Pause carousel"
-msgstr "Karussell pausieren"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "VERFÜGB. LIQ."
@@ -2672,11 +2678,6 @@ msgstr "Ihre als Kollateral hinterlegten {0} GMX werden freigeschaltet"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr "Anzahl der Teile muss zwischen {MIN_TWAP_NUMBER_OF_PARTS} und {MAX_TWAP_NUMBER_OF_PARTS} liegen"
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Trading volume on configured markets is counted with a reduced coefficient"
-msgstr "Das Handelsvolumen auf konfigurierten Märkten wird mit einem reduzierten Koeffizienten angerechnet"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Chinese)"
@@ -3014,10 +3015,6 @@ msgstr "Keine Liquidität verfügbar, um Longs bei<0/>dieser Größe zu erhöhen
 msgid "Transfer completed"
 msgstr "Übertragung abgeschlossen"
 
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "The combined indexed GMX and esGMX balance determines the tier projected for the next epoch. A higher staked balance unlocks higher tiers and larger multiplier adjustments."
-msgstr "Das kombinierte indexierte GMX- und esGMX-Guthaben bestimmt die für die nächste Epoche prognostizierte Stufe. Ein höheres gestaktes Guthaben schaltet höhere Stufen und größere Multiplikatoranpassungen frei."
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM-Bridging zu..."
@@ -3057,6 +3054,7 @@ msgid "Show details"
 msgstr "Details anzeigen"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "A tier applies in the epoch it is achieved and for {0} following epochs."
 msgstr "Eine Stufe gilt in der Epoche, in der sie erreicht wird, und für die {0} folgenden Epochen."
 
@@ -3337,10 +3335,6 @@ msgstr "Offene Positionen"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Your Volume Tier is based on your tier-eligible trading volume and determines your rewards multiplier."
-msgstr "Ihre Volumenstufe basiert auf Ihrem für Stufen berechtigten Handelsvolumen und bestimmt Ihren Belohnungsmultiplikator."
 
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
@@ -3726,6 +3720,7 @@ msgid "Shift order executed"
 msgstr "Shift-Order ausgeführt"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Active"
 msgstr "Aktiv"
@@ -3898,6 +3893,11 @@ msgstr "Preiseinfluss beim Tauschen ist hoch"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "Stornierbar in {minutesText}{seconds}s"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Applies to eligible trades in featured markets."
+msgstr "Gilt für berechtigte Trades in hervorgehobenen Märkten."
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4764,6 +4764,10 @@ msgstr "zahlreiche Vermögenswerte"
 msgid "Error name:"
 msgstr "Fehlername:"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Your epoch trading volume sets your Volume Tier and determines your multiplier."
+msgstr "Ihr Handelsvolumen der Epoche legt Ihre Volumenstufe fest und bestimmt Ihren Multiplikator."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "GMX Claimable"
 msgstr "Beanspruchbares GMX"
@@ -5098,10 +5102,6 @@ msgstr "Benutzer kopieren"
 msgid "Rewards opportunities"
 msgstr "Belohnungsmöglichkeiten"
 
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Your Staking Tier increases your rewards multiplier based on staked GMX and esGMX."
-msgstr "Ihre Staking-Stufe erhöht Ihren Belohnungsmultiplikator basierend auf gestaktem GMX und gestaktem esGMX."
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5336,10 +5336,6 @@ msgstr "{0} bearbeiten"
 #: src/components/Referrals/shared/modals/ClaimSwapTargetTokenSelector.tsx
 msgid "Swap to"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Resume carousel"
-msgstr "Karussell fortsetzen"
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
@@ -5766,10 +5762,6 @@ msgstr "Alle Trades"
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Alternative Links finden Sie in den <0>Docs</0>.<1/><2/>Durch Klicken auf Zustimmen akzeptieren Sie die <3>AGB</3> und die <4>Empfehlungs-AGB</4>.<5/><6/>"
 
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Activity Boosts are multiplier adjustments earned through qualifying activity."
-msgstr "Aktivitätsboosts sind Multiplikatoranpassungen, die durch qualifizierende Aktivitäten verdient werden."
-
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
 msgstr "Der Kontosnapshot konnte nicht aktualisiert werden. Der zuletzt geladene Snapshot wird angezeigt."
@@ -5858,6 +5850,10 @@ msgstr "Einstellungen aktualisieren..."
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "GMX führt Transaktionen ohne einzelne Signierung aus. Trades verwenden von GMX gesponserte Premium-RPCs für Zuverlässigkeit, auch bei Netzwerküberlastung.<0/><1/>Gaszahlungen in {gasPaymentTokensText}."
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Volume Tier details"
+msgstr "Details zur Volumenstufe"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
@@ -6119,6 +6115,10 @@ msgstr "Verdienen Sie {0}% mehr Belohnungen mit dieser Aktion"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier."
+msgstr "Ihre Staking-Stufe basiert auf gestaktem GMX und esGMX und bestimmt Ihren Staking-Multiplikator."
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
@@ -6434,11 +6434,6 @@ msgstr ""
 msgid "PnL Analysis"
 msgstr "PnL-Analyse"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Manual Allocation"
-msgstr "Manual Allocation"
-
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "How do multipliers work?"
 msgstr "Wie funktionieren Multiplikatoren?"
@@ -6674,6 +6669,10 @@ msgstr "Belohnungsdetails ein-/ausblenden"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} kann nicht an Smart-Contract-Adressen gesendet werden. Wählen Sie einen anderen Token"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Earn an additional {0} of rewards from referred traders."
+msgstr "Verdienen Sie zusätzlich {0} an Belohnungen von geworbenen Tradern."
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
@@ -7355,11 +7354,6 @@ msgstr "GMX Governance-Seite"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "Kaufen Sie {nativeTokenSymbol} direkt auf {chainName} oder übertragen Sie es dorthin"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Applies to eligible trades in the configured featured markets."
-msgstr "Gilt für berechtigte Trades in den konfigurierten Featured Markets."
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "Die maximale Netzwerkgebühr enthält einen Puffer für Gas-Spitzen. Nicht verwendete Gebühren werden erstattet."
@@ -7739,6 +7733,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Loading..."
 msgstr "Lädt..."
 
@@ -7917,10 +7912,6 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> zu </1>{toTokenIcon}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max long amount"
 msgstr "Maximaler Long-Betrag des Pools"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Available to eligible historical users while their incremental reward cap remains."
-msgstr "Für berechtigte frühere Nutzer verfügbar, solange ihre Obergrenze für zusätzliche Belohnungen noch nicht ausgeschöpft ist."
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
@@ -8243,6 +8234,7 @@ msgstr "Handeln Sie mit Vertrauen"
 msgid "Receiver has staked GMX/GLP"
 msgstr "Empfänger hat GMX/GLP gestaked"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "GMX staked"
 msgstr "GMX gestakt"
@@ -8358,10 +8350,6 @@ msgstr "Garantierte Liquidität"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Unzureichender Gas-Saldo"
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Volume on the following pairs is weighted with a reduced coefficient:"
-msgstr "Das Volumen der folgenden Paare wird mit einem reduzierten Koeffizienten gewichtet:"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
@@ -8626,10 +8614,6 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
 msgstr "Governance"
-
-#: src/pages/RewardsPage/RewardsPageShell.tsx
-msgid "Track indexed esGMX accruals and GT allocations from eligible trading activity."
-msgstr "Verfolgen Sie indexierte esGMX-Gutschriften und GT-Zuteilungen aus berechtigten Handelsaktivitäten."
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -8964,10 +8948,6 @@ msgstr "Limit-Erhöhung"
 msgid "Transferring..."
 msgstr "Übertragung läuft..."
 
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "GMX + esGMX staked"
-msgstr "Gestaktes GMX + gestaktes esGMX"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "Verkaufen von {gmOrGlvLabel} fehlgeschlagen."
@@ -9055,9 +9035,6 @@ msgid "Order uses {collateralSymbol}, but existing {longText} position uses {sym
 msgstr "Die Order verwendet {collateralSymbol}, aber die bestehende {longText}-Position verwendet {symbol} als Sicherheit"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Show more"
 msgstr "Mehr anzeigen"
 
@@ -9861,6 +9838,13 @@ msgstr "{addressLabel} auf {networkLabel}"
 msgid "Loading fees..."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Referral Boost"
+msgstr "Referral-Boost"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
 msgstr "{0} GMX"
@@ -10179,7 +10163,6 @@ msgid "Decentralized options strategies"
 msgstr "Dezentrale Optionsstrategien"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}."
 msgstr "Ihr Belohnungsmultiplikator kombiniert Ihre Volumenstufe, Staking-Stufe und anwendbare Aktivitätsboosts. Der Gesamtmultiplikator ist auf {0} begrenzt."
 
@@ -10512,6 +10495,10 @@ msgstr "Standardkonto"
 msgid "Receive (approximate)"
 msgstr "Empfangen (ungefähr)"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Activity Boosts are multiplier adjustments earned and applied exclusively to qualifying activity."
+msgstr "Aktivitäts-Boosts sind Multiplikatoranpassungen, die durch qualifizierende Aktivitäten verdient und ausschließlich auf diese angewendet werden."
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to that wallet. To use it, fund your wallet first, then deposit to your GMX Account."
 msgstr "GMX Account verwendet ein separates Handelsguthaben, das mit diesem Wallet verknüpft ist. Um es zu nutzen, zahlen Sie zunächst Guthaben auf Ihr Wallet ein und anschließend auf Ihr GMX Account."
@@ -10520,6 +10507,10 @@ msgstr "GMX Account verwendet ein separates Handelsguthaben, das mit diesem Wall
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send failed"
 msgstr "Senden fehlgeschlagen"
+
+#: src/pages/RewardsPage/RewardsPageShell.tsx
+msgid "Stake GMX, trade, and earn rewards worth up to 120% of your fees."
+msgstr "Staken Sie GMX, handeln Sie und verdienen Sie Belohnungen im Wert von bis zu 120 % Ihrer Gebühren."
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid Ethereum address"
@@ -10664,6 +10655,10 @@ msgstr ""
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Select positions where accrued funding fee exceeds the {0} gas cost to settle"
 msgstr "Wählen Sie Positionen aus, bei denen die aufgelaufene Finanzierungsgebühr die {0} Gas-Kosten für die Abwicklung übersteigt"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Trade-specific boosts apply only to qualifying trades. Lifetime Volume is permanent once earned, while a Return Bonus remains available until its reward cap is consumed."
+msgstr "Trade-spezifische Boosts gelten nur für qualifizierende Trades. Lifetime Volume ist nach dem Erreichen dauerhaft, während ein Rückkehrbonus verfügbar bleibt, bis sein Belohnungslimit ausgeschöpft ist."
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
@@ -11879,10 +11874,6 @@ msgstr "Verkaufen Sie GM für {0} bis zu den unten angegebenen Obergrenzen. Verb
 msgid "Reserved positive impact"
 msgstr "Reservierter positiver Impact"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Trade-specific boosts apply only to qualifying trades. Lifetime Volume is permanent once earned, while a manual allocation remains available until its incremental reward cap is consumed."
-msgstr "Tradespezifische Boosts gelten nur für qualifizierende Trades. Das Lebenszeitvolumen ist nach dem Erreichen dauerhaft, während eine manuelle Zuteilung verfügbar bleibt, bis ihre Obergrenze für zusätzliche Belohnungen ausgeschöpft ist."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max rate short"
@@ -12039,6 +12030,10 @@ msgstr "Orderdaten noch nicht verfügbar"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Earn fees from leverage trading, swaps, and spreads"
 msgstr "Verdiene Gebühren aus Leverage-Trading, Swaps und Spreads"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Trading volume on configured markets is counted with a reduced coefficient."
+msgstr "Das Handelsvolumen auf konfigurierten Märkten wird mit einem reduzierten Koeffizienten angerechnet."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Time elapsed"
@@ -13103,10 +13098,6 @@ msgstr "Nicht mehr anzeigen"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Great for passive users"
 msgstr "Ideal für passive Nutzer"
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Each epoch, eligible trading volume determines your Volume Tier. Once achieved, a tier remains active for the current epoch and {0} following epochs. Higher tiers increase the rewards allocated for eligible fees."
-msgstr "In jeder Epoche bestimmt das berechtigte Handelsvolumen Ihre Volumenstufe. Nach dem Erreichen bleibt eine Stufe für die aktuelle und die {0} folgenden Epochen aktiv. Höhere Stufen erhöhen die für berechtigte Gebühren zugeteilten Belohnungen."
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "NET RATE / 1H"

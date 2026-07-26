@@ -9,7 +9,7 @@ import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
 import { formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
 import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
@@ -42,14 +42,15 @@ export function RewardsSection() {
     const additionalMultiplier = nextTier.multiplier - currentTierMultiplier;
     if (additionalMultiplier <= 0n) return undefined;
 
+    const amountToNextTier = nextTier.threshold - currentStatus.currentStakedBalance;
+    const minimumDisplayAmount = expandDecimals(1, ES_GMX_DECIMALS - 2);
+
     return {
       isHighestTier: false,
-      amountLabel: formatTokenAmount(
-        nextTier.threshold - currentStatus.currentStakedBalance,
-        ES_GMX_DECIMALS,
-        undefined,
-        { displayDecimals: 2, minThreshold: "0.01", useCommas: true }
-      ),
+      amountLabel:
+        amountToNextTier < minimumDisplayAmount
+          ? "< 0.01"
+          : formatAmount(amountToNextTier, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true }),
       multiplierLabel: formatMultiplierAdjustment(additionalMultiplier, config.multiplierDecimals),
     };
   }, [config, currentStatus]);

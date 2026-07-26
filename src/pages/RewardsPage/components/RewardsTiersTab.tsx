@@ -94,6 +94,9 @@ export function RewardsTiersTab({
         <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-12">
           <RewardsTiersSummary
             allTimeSummary={allTimeSummary}
+            currentMultiplier={currentStatus?.multiplier}
+            multiplierDecimals={config.multiplierDecimals}
+            statusState={statusState}
             summaryState={summaryState}
             vestingState={vestingState}
             vestableEsGmx={vestableEsGmx}

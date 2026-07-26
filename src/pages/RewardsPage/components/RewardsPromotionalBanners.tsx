@@ -249,8 +249,6 @@ export function RewardsPromotionalBanners({
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [animationDirection, setAnimationDirection] = useState<BannerAnimationDirection>("right");
-  const [isAutoRotationPaused, setIsAutoRotationPaused] = useState(false);
-  const [isInteractionPaused, setIsInteractionPaused] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(
     () => typeof window !== "undefined" && Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
   );
@@ -273,18 +271,11 @@ export function RewardsPromotionalBanners({
   }, [banners.length]);
 
   useEffect(() => {
-    if (banners.length <= 1 || prefersReducedMotion || isAutoRotationPaused || isInteractionPaused) return;
+    if (banners.length <= 1 || prefersReducedMotion) return;
 
     const timeout = window.setTimeout(() => goToRelativeIndex(1), AUTO_ROTATE_MS);
     return () => window.clearTimeout(timeout);
-  }, [
-    banners.length,
-    current?.type,
-    goToRelativeIndex,
-    isAutoRotationPaused,
-    isInteractionPaused,
-    prefersReducedMotion,
-  ]);
+  }, [banners.length, current?.type, goToRelativeIndex, prefersReducedMotion]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -367,8 +358,6 @@ export function RewardsPromotionalBanners({
           goToRelativeIndex(-1);
         }
       }}
-      onMouseEnter={() => setIsInteractionPaused(true)}
-      onMouseLeave={() => setIsInteractionPaused(false)}
       data-testid="rewards-promotional-banners"
     >
       <div
@@ -418,30 +407,18 @@ export function RewardsPromotionalBanners({
 
       {banners.length > 1 ? (
         <div className="flex items-center justify-center gap-8 py-12">
-          <button
-            type="button"
-            aria-label={isAutoRotationPaused ? t`Resume carousel` : t`Pause carousel`}
-            className="flex size-24 items-center justify-center rounded-full text-12 text-typography-secondary hover:text-typography-primary"
-            onClick={() => setIsAutoRotationPaused((isPaused) => !isPaused)}
-          >
-            <span aria-hidden="true">{isAutoRotationPaused ? "▶" : "Ⅱ"}</span>
-          </button>
           {banners.map((banner, index) => (
             <button
               key={banner.type}
               type="button"
               aria-label={t`Go to slide ${index + 1}`}
               aria-current={index === selectedIndex}
-              className="flex size-24 items-center justify-center rounded-full"
+              className={cx(
+                "size-8 rounded-full bg-rewards-blue-300 transition-opacity",
+                index === selectedIndex ? "opacity-100" : "opacity-40 hover:opacity-70"
+              )}
               onClick={() => handleDotClick(index)}
-            >
-              <span
-                className={cx(
-                  "size-8 rounded-full bg-rewards-blue-300 transition-opacity",
-                  index === selectedIndex ? "opacity-100" : "opacity-40 hover:opacity-70"
-                )}
-              />
-            </button>
+            />
           ))}
         </div>
       ) : null}

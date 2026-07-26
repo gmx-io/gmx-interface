@@ -47,7 +47,7 @@ export function useTradeRewardsEstimate({
   const tokensData = useSelector(selectTokensData);
   const { availability, isActive } = useIncentivesV2State();
   const isEligibleTrade = feesType === "increase" || feesType === "decrease";
-  const enabled = isActive && isEligibleTrade;
+  const enabled = isActive && isEligibleTrade && Boolean(account);
   const config = availability.status === "active" ? availability.config : undefined;
   const hasEstimateInputs =
     marketInfo !== undefined &&

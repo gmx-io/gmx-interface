@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { maxUint256 } from "viem";
 
 import { ARBITRUM } from "config/chains";
@@ -206,8 +206,19 @@ export function RewardsVestingModal({
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const hasMultipleWalletExtensionsChainError = Boolean(multipleWalletExtensionsChainError.buttonErrorMessage);
-  const govTokenAmount = useGovTokenAmount(ARBITRUM);
-  const govTokenDelegatesAddress = useGovTokenDelegates(ARBITRUM);
+  const governanceReadInstanceId = useId();
+  const governanceReadSessionRef = useRef(0);
+  const governanceReadAccountRef = useRef(account);
+  if (governanceReadAccountRef.current !== account) {
+    governanceReadAccountRef.current = account;
+    governanceReadSessionRef.current += 1;
+  }
+  const governanceRequestKey = `${governanceReadInstanceId}:${governanceReadSessionRef.current}`;
+  const govTokenAmount = useGovTokenAmount(ARBITRUM, { enabled: isVisible, requestKey: governanceRequestKey });
+  const govTokenDelegatesAddress = useGovTokenDelegates(ARBITRUM, {
+    enabled: isVisible,
+    requestKey: governanceRequestKey,
+  });
   const isUndelegatedGovToken =
     govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount !== undefined && govTokenAmount > 0n;
   const [value, setValue] = useState("");
@@ -223,19 +234,30 @@ export function RewardsVestingModal({
     hasOutdatedUi,
     hasMultipleWalletExtensionsChainError,
     isUndelegatedGovToken,
+    isGovernanceDataReady: false,
   });
+
+  useEffect(
+    () => () => {
+      transactionSessionRef.current += 1;
+    },
+    []
+  );
+
+  const effectiveRemainingAmount = useMemo(() => getEffectiveRemainingAmount(data), [data]);
+  const vestingLimit = useMemo(() => getVestingLimit(data), [data]);
+  const depositAmount = useMemo(() => parseValue(value, GMX_DECIMALS), [value]);
+  const preview = useMemo(() => getVestingPreview(data, depositAmount ?? 0n), [data, depositAmount]);
+  const isGovernanceDataReady =
+    preview.stakeShortfallAmount === 0n || (govTokenAmount !== undefined && govTokenDelegatesAddress !== undefined);
   walletStateRef.current = {
     account,
     walletChainId,
     hasOutdatedUi,
     hasMultipleWalletExtensionsChainError,
     isUndelegatedGovToken,
+    isGovernanceDataReady,
   };
-
-  const effectiveRemainingAmount = useMemo(() => getEffectiveRemainingAmount(data), [data]);
-  const vestingLimit = useMemo(() => getVestingLimit(data), [data]);
-  const depositAmount = useMemo(() => parseValue(value, GMX_DECIMALS), [value]);
-  const preview = useMemo(() => getVestingPreview(data, depositAmount ?? 0n), [data, depositAmount]);
   const affordableDepositAmount = useMemo(
     () =>
       getRewardsVestingMaxDepositAmount({
@@ -256,6 +278,9 @@ export function RewardsVestingModal({
 
     if (wasVisible.current !== isVisible || accountChanged) {
       transactionSessionRef.current += 1;
+    }
+    if (wasVisible.current && !isVisible) {
+      governanceReadSessionRef.current += 1;
     }
     if (isOpening || accountChanged) {
       setValue(vestingLimit > 0n ? formatAmountFree(vestingLimit, GMX_DECIMALS, GMX_DECIMALS) : "");
@@ -287,7 +312,11 @@ export function RewardsVestingModal({
   );
   const hasActiveVesting = data.vestingInfo.vestedAmount > 0n && effectiveRemainingAmount > 0n;
   const hasValidAmount =
-    depositAmount !== undefined && depositAmount > 0n && depositAmount <= vestingLimit && hasEnoughWalletGmx;
+    depositAmount !== undefined &&
+    depositAmount > 0n &&
+    depositAmount <= vestingLimit &&
+    hasEnoughWalletGmx &&
+    isGovernanceDataReady;
 
   const currentEndTimestamp = getRewardsVestingEndTimestamp({
     currentTimestamp: BigInt(Math.floor(Date.now() / 1000)),
@@ -377,6 +406,7 @@ export function RewardsVestingModal({
       !hasValidAmount ||
       hasOutdatedUi ||
       hasMultipleWalletExtensionsChainError ||
+      !isGovernanceDataReady ||
       isStakeBlockedByUndelegatedGovToken ||
       isReadOnly ||
       transactionProgress.vesting
@@ -434,7 +464,7 @@ export function RewardsVestingModal({
       }
 
       if (preflightPreview.stakeShortfallAmount > 0n && !transactionProgress.staking) {
-        if (walletStateRef.current.isUndelegatedGovToken) {
+        if (!walletStateRef.current.isGovernanceDataReady || walletStateRef.current.isUndelegatedGovToken) {
           return;
         }
 
@@ -587,6 +617,8 @@ export function RewardsVestingModal({
     primaryText = <Trans>Max amount exceeded</Trans>;
   } else if (!hasEnoughWalletGmx) {
     primaryText = <Trans>Vest {formatTokenAmount(depositAmount)} esGMX</Trans>;
+  } else if (!isGovernanceDataReady) {
+    primaryText = <Trans>Loading...</Trans>;
   } else if (isAllowanceLoading) {
     primaryText = <Trans>Loading allowance...</Trans>;
   } else if (transactionStep === "approving") {
@@ -862,6 +894,7 @@ export function RewardsStopVestingModal({
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const hasMultipleWalletExtensionsChainError = Boolean(multipleWalletExtensionsChainError.buttonErrorMessage);
   const [isStopping, setIsStopping] = useState(false);
+  const transactionSessionRef = useRef(0);
   const walletStateRef = useRef({
     account,
     walletChainId,
@@ -874,6 +907,12 @@ export function RewardsStopVestingModal({
     hasOutdatedUi,
     hasMultipleWalletExtensionsChainError,
   };
+  useEffect(
+    () => () => {
+      transactionSessionRef.current += 1;
+    },
+    []
+  );
   const effectiveRemainingAmount = getEffectiveRemainingAmount(data);
   const convertedAmount = data.vestingInfo.vestedAmount - effectiveRemainingAmount;
 
@@ -896,25 +935,29 @@ export function RewardsStopVestingModal({
       return;
     }
 
-    setIsStopping(true);
     const submittedAccount = account;
     const submittedData = data;
+    const transactionSession = ++transactionSessionRef.current;
+    const hasCurrentTransactionSession = () => transactionSessionRef.current === transactionSession;
+    const hasCurrentWalletState = () =>
+      walletStateRef.current.account === submittedAccount &&
+      walletStateRef.current.walletChainId === ARBITRUM &&
+      !walletStateRef.current.hasOutdatedUi &&
+      !walletStateRef.current.hasMultipleWalletExtensionsChainError;
+    setIsStopping(true);
     let submittedAmount: bigint | undefined;
     try {
       let refreshedData;
       try {
         refreshedData = await mutate();
       } catch {
+        if (!hasCurrentTransactionSession()) return;
         helperToast.error(t`Unable to refresh vesting details. Please try again.`);
         return;
       }
 
-      if (
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
+      if (!hasCurrentTransactionSession()) return;
+      if (!hasCurrentWalletState()) {
         helperToast.info(t`Wallet or network changed. Review your vesting details before stopping.`);
         return;
       }
@@ -939,13 +982,16 @@ export function RewardsStopVestingModal({
 
       submittedAmount = refreshedRemainingAmount;
       const gmxVester = new ethers.Contract(getContract(ARBITRUM, "GmxVester"), abis.Vester, signer);
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       const transaction = await callContract(ARBITRUM, gmxVester, "withdraw", [], {
         sentMsg: t`Stop vesting submitted`,
         failMsg: t`Stop vesting failed`,
         successMsg: t`Vesting stopped`,
         setPendingTxns,
       });
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       await transaction?.wait();
+      if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       sendRewardsTransactionResultEvent({
         transaction: "StopVesting",
         result: "Success",
@@ -954,17 +1000,22 @@ export function RewardsStopVestingModal({
       setIsVisible(false);
       try {
         await mutate();
+        if (!hasCurrentTransactionSession() || !hasCurrentWalletState()) return;
       } catch {
+        if (!hasCurrentTransactionSession()) return;
         helperToast.info(t`Vesting was stopped. Balances will refresh shortly.`);
       }
     } catch {
+      if (!hasCurrentTransactionSession()) return;
       sendRewardsTransactionResultEvent({
         transaction: "StopVesting",
         result: "Fail",
         amount: submittedAmount,
       });
     } finally {
-      setIsStopping(false);
+      if (hasCurrentTransactionSession()) {
+        setIsStopping(false);
+      }
     }
   };
 

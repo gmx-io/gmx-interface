@@ -40,7 +40,14 @@ export function RewardsTiersSummaryStory({
   return (
     <I18nProvider i18n={testI18n}>
       <MemoryRouter>
-        <RewardsTiersSummary allTimeSummary={allTimeSummary} summaryState={summaryState} vestingState="unavailable" />
+        <RewardsTiersSummary
+          allTimeSummary={allTimeSummary}
+          currentMultiplier={175n}
+          multiplierDecimals={100n}
+          statusState={summaryState}
+          summaryState={summaryState}
+          vestingState="unavailable"
+        />
       </MemoryRouter>
     </I18nProvider>
   );

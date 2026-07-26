@@ -54,11 +54,15 @@ vi.mock("components/Loader/Loader", () => ({
 }));
 
 vi.mock("components/PageTitle/PageTitle", () => ({
-  default: () => null,
+  default: ({ subtitle }: { subtitle: React.ReactNode }) => <div data-testid="page-subtitle">{subtitle}</div>,
 }));
 
 vi.mock("components/Tabs/Tabs", () => ({
-  default: ({ selectedValue }: { selectedValue: string }) => <div data-testid="tabs">{selectedValue}</div>,
+  default: ({ selectedValue, options }: { selectedValue: string; options: { value: string }[] }) => (
+    <div data-options={options.map((option) => option.value).join(",")} data-testid="tabs">
+      {selectedValue}
+    </div>
+  ),
 }));
 
 vi.mock("pages/RewardsPage/components/RewardsTiersTab", () => ({
@@ -183,6 +187,22 @@ describe("RewardsPage", () => {
       expect(screen.getByTestId("location").textContent).toBe("/rewards?account=0x123");
     });
     expect(screen.getByTestId("tiers-tab")).toBeDefined();
+  });
+
+  it("shows the updated page description", () => {
+    renderPage("/rewards");
+
+    expect(screen.getByTestId("page-subtitle").textContent).toBe(
+      "Stake GMX, trade, and earn rewards worth up to 120% of your fees."
+    );
+  });
+
+  it("hides the Rewards tab while disconnected", () => {
+    mockUseWallet.mockReturnValue({ account: undefined } as ReturnType<typeof useWallet>);
+
+    renderPage("/rewards");
+
+    expect(screen.getByTestId("tabs").getAttribute("data-options")).toBe("tiers,leaderboard");
   });
 
   it("renders the loading shell without mounting a tab", () => {

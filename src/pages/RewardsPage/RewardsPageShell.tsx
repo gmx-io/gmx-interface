@@ -10,7 +10,7 @@ export function RewardsPageLayout({ children }: { children: React.ReactNode }) {
     <AppPageLayout title={t`Rewards`} header={<ChainContentHeader />} contentClassName="!max-w-none">
       <PageTitle
         title={t`Rewards`}
-        subtitle={<Trans>Track indexed esGMX accruals and GT allocations from eligible trading activity.</Trans>}
+        subtitle={<Trans>Stake GMX, trade, and earn rewards worth up to 120% of your fees.</Trans>}
         isTop
       />
       {children}

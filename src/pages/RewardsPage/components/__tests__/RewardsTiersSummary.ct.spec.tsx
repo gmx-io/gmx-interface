@@ -14,7 +14,15 @@ test.describe("RewardsTiersSummary", () => {
     await expect(page.getByText("150 GT")).toBeVisible();
   });
 
-  for (const summaryState of ["disconnected", "loading", "unavailable"] as const) {
+  test("hides account totals while disconnected", async ({ mount }) => {
+    const component = await mount(<RewardsTiersSummaryStory summaryState="disconnected" />);
+
+    await expect(component.getByRole("button", { name: "All-time Rewards" })).toHaveCount(0);
+    await expect(component.getByText("Current Multiplier")).toHaveCount(0);
+    await expect(component.getByText("Vestable esGMX")).toHaveCount(0);
+  });
+
+  for (const summaryState of ["loading", "unavailable"] as const) {
     test(`disables the all-time breakdown while the summary is ${summaryState}`, async ({ mount, page }) => {
       const component = await mount(<RewardsTiersSummaryStory summaryState={summaryState} />);
 

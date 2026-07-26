@@ -24,7 +24,7 @@ export const boostLabels: Record<BoostId, React.ReactNode> = {
   FeaturedMarkets: <Trans>Featured Markets</Trans>,
   BalancingTrades: <Trans>Balancing Trades</Trans>,
   LifetimeTrading: <Trans>Lifetime Volume</Trans>,
-  ManualAllocation: <Trans>Manual Allocation</Trans>,
+  ManualAllocation: <Trans>Return Bonus</Trans>,
 };
 
 export function AccountValue({ state, children }: { state: AccountDataState; children: React.ReactNode }) {

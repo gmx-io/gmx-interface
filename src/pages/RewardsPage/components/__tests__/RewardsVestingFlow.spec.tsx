@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -369,6 +369,48 @@ describe("RewardsVestingFlow", () => {
     expect(mutate).toHaveBeenCalledTimes(2);
   });
 
+  it("serializes claim and unlock actions without leaving either button busy", async () => {
+    const completedData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        pairAmount: 100n * TOKEN_UNIT,
+        vestedAmount: 120n * TOKEN_UNIT,
+        claimedAmounts: 95n * TOKEN_UNIT,
+        claimable: 25n * TOKEN_UNIT,
+      },
+    };
+    let resolveMutate: ((data: RewardsVestingData) => void) | undefined;
+    setVestingData(completedData);
+    mutate
+      .mockImplementationOnce(
+        () =>
+          new Promise<RewardsVestingData>((resolve) => {
+            resolveMutate = resolve;
+          })
+      )
+      .mockResolvedValueOnce(completedData);
+    mockCallContract.mockResolvedValueOnce({ wait: vi.fn(async () => undefined) } as any);
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+
+    const unlockButton = screen.getByRole("button", { name: "Unlock collateral" });
+    expect(unlockButton.hasAttribute("disabled")).toBe(true);
+    fireEvent.click(unlockButton);
+    expect(mutate).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolveMutate?.(completedData);
+      await Promise.resolve();
+    });
+
+    await waitFor(() => expect(screen.getByRole("button", { name: "Claim 25 GMX" })).toBeDefined());
+    expect(screen.getByRole("button", { name: "Unlock collateral" }).hasAttribute("disabled")).toBe(false);
+    expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["claim"]);
+  });
+
   it("does not submit a stale claim when the refreshed amount is zero", async () => {
     const claimData = {
       ...idleData,
@@ -652,6 +694,38 @@ describe("RewardsVestingFlow", () => {
         "Wallet or network changed. Review your vesting details before unlocking collateral."
       )
     );
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
+  it("does not unlock collateral after the flow unmounts during refresh", async () => {
+    const completedData = {
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        pairAmount: 100n * TOKEN_UNIT,
+        vestedAmount: 120n * TOKEN_UNIT,
+        claimedAmounts: 120n * TOKEN_UNIT,
+      },
+    };
+    let resolveMutate: ((data: RewardsVestingData) => void) | undefined;
+    setVestingData(completedData);
+    mutate.mockImplementationOnce(
+      () =>
+        new Promise<RewardsVestingData>((resolve) => {
+          resolveMutate = resolve;
+        })
+    );
+    const view = renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Unlock collateral" }));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+
+    view.unmount();
+    await act(async () => {
+      resolveMutate?.(completedData);
+      await Promise.resolve();
+    });
+
     expect(mockCallContract).not.toHaveBeenCalled();
   });
 
