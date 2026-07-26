@@ -72,7 +72,8 @@ export function useRewardsVestingData(account?: string, targetChainId?: Contract
   const { gmxPrice, mutate: mutateGmxPrice } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM && walletChainId === ARBITRUM ? signer : undefined },
-    active
+    active,
+    { enabled: contractsData !== undefined, fetchAllChains: false }
   );
 
   const data = useMemo<RewardsVestingData | undefined>(() => {

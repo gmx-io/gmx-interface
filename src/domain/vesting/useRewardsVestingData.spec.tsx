@@ -75,6 +75,11 @@ function Harness({
   return null;
 }
 
+function DisconnectedHarness() {
+  hookResult = useRewardsVestingData(undefined, ARBITRUM);
+  return null;
+}
+
 function getCapturedMulticallParams(): CapturedMulticallParams {
   const latestCall = mockUseMulticall.mock.calls.at(-1);
   if (!latestCall) throw new Error("useMulticall was not called");
@@ -128,7 +133,10 @@ describe("useRewardsVestingData", () => {
       "Rewards:useRewardsVestingData",
       expect.objectContaining({ key: [ACCOUNT] })
     );
-    expect(mockUseGmxPrice).toHaveBeenCalledWith(ARBITRUM, { arbitrum: SIGNER }, true);
+    expect(mockUseGmxPrice).toHaveBeenCalledWith(ARBITRUM, { arbitrum: SIGNER }, true, {
+      enabled: true,
+      fetchAllChains: false,
+    });
 
     const params = getCapturedMulticallParams();
     expect(params.request()).toEqual({
@@ -207,10 +215,29 @@ describe("useRewardsVestingData", () => {
     expect(refreshedData).toEqual({ ...refreshedContractsData, gmxPrice: GMX_PRICE });
   });
 
+  it("does not fetch a GMX price without vesting contract data", () => {
+    mockUseMulticall.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      error: undefined,
+      mutate: mockMutateContractsData,
+    } as never);
+
+    render(<DisconnectedHarness />);
+
+    expect(mockUseGmxPrice).toHaveBeenCalledWith(ARBITRUM, { arbitrum: SIGNER }, true, {
+      enabled: false,
+      fetchAllChains: false,
+    });
+  });
+
   it("does not pass the wallet signer to Arbitrum pricing for a non-Arbitrum target", () => {
     render(<Harness targetChainId={AVALANCHE} />);
 
-    expect(mockUseGmxPrice).toHaveBeenCalledWith(AVALANCHE, { arbitrum: undefined }, true);
+    expect(mockUseGmxPrice).toHaveBeenCalledWith(AVALANCHE, { arbitrum: undefined }, true, {
+      enabled: true,
+      fetchAllChains: false,
+    });
   });
 
   it("does not pass a wrong-chain wallet signer to Arbitrum pricing", () => {
@@ -222,6 +249,9 @@ describe("useRewardsVestingData", () => {
 
     render(<Harness />);
 
-    expect(mockUseGmxPrice).toHaveBeenCalledWith(ARBITRUM, { arbitrum: undefined }, true);
+    expect(mockUseGmxPrice).toHaveBeenCalledWith(ARBITRUM, { arbitrum: undefined }, true, {
+      enabled: true,
+      fetchAllChains: false,
+    });
   });
 });

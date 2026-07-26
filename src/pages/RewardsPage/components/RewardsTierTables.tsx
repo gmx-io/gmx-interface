@@ -1,6 +1,6 @@
 import { plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { type HTMLProps, useCallback, useMemo, useState } from "react";
+import { type HTMLProps, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 
@@ -14,7 +14,7 @@ import type {
 import { formatMultiplier, formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { useMarkets } from "domain/synthetics/markets";
 import { getMarketIndexName } from "domain/synthetics/markets/utils";
-import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
+import { formatAmount, formatAmountHuman, USD_DECIMALS } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 import { convertTokenAddress, getNormalizedTokenSymbol, getToken, isValidTokenSafe } from "sdk/configs/tokens";
@@ -25,7 +25,6 @@ import Tabs from "components/Tabs/Tabs";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import ExpiresInIcon from "img/ic_clock_dashed.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 import NewLinkIcon from "img/ic_new_link.svg?react";
@@ -50,7 +49,7 @@ function TierLevelTableTr({ className, ...props }: HTMLProps<HTMLTableRowElement
   return <tr {...props} className={cx(tierLevelRowClassName, className)} />;
 }
 
-function formatVolumeTierThreshold(threshold: bigint) {
+function formatCompactUsd(threshold: bigint) {
   return formatAmountHuman(threshold, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
 }
 
@@ -66,9 +65,6 @@ export function RewardsTierTables({
   statusState: AccountDataState;
 }) {
   const [activeTab, setActiveTab] = useState<TierTab>("volume");
-  const [showMore, setShowMore] = useState(false);
-  const handleToggleMore = useCallback(() => setShowMore((value) => !value), []);
-  const hasDowngradingCoefficients = config.downgradingCoefficients.length > 0;
   const tabOptions = useMemo(
     () => [
       { value: "volume" as const, label: <Trans>Volume Tiers</Trans> },
@@ -76,23 +72,6 @@ export function RewardsTierTables({
       { value: "boosts" as const, label: <Trans>Activity Boosts</Trans> },
     ],
     []
-  );
-  const descriptions: Record<TierTab, { short: string; long: string }> = useMemo(
-    () => ({
-      volume: {
-        short: t`Your Volume Tier is based on your tier-eligible trading volume and determines your rewards multiplier.`,
-        long: t`Each epoch, eligible trading volume determines your Volume Tier. Once achieved, a tier remains active for the current epoch and ${config.volumeTierPersistenceEpochs} following epochs. Higher tiers increase the rewards allocated for eligible fees.`,
-      },
-      staking: {
-        short: t`Your Staking Tier increases your rewards multiplier based on staked GMX and esGMX.`,
-        long: t`The combined indexed GMX and esGMX balance determines the tier projected for the next epoch. A higher staked balance unlocks higher tiers and larger multiplier adjustments.`,
-      },
-      boosts: {
-        short: t`Activity Boosts are multiplier adjustments earned through qualifying activity.`,
-        long: t`Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at ${formatMultiplier(config.maxMultiplier, config.multiplierDecimals)}.`,
-      },
-    }),
-    [config.maxMultiplier, config.multiplierDecimals, config.volumeTierPersistenceEpochs]
   );
 
   return (
@@ -115,59 +94,26 @@ export function RewardsTierTables({
 
       <div>
         <div className="max-w-[600px] p-20 pb-8 text-14 text-typography-secondary">
-          <p className="font-medium text-typography-primary">{descriptions[activeTab].short}</p>
-          <div
-            className={cx(
-              "grid transition-all duration-200 ease-out",
-              showMore ? "grid-rows-[1fr] opacity-100" : "pointer-events-none grid-rows-[0fr] opacity-0"
-            )}
-            aria-hidden={!showMore}
-          >
-            <div className="min-h-0 overflow-hidden">
-              <p className="mt-8">{descriptions[activeTab].long}</p>
-              {activeTab === "volume" && hasDowngradingCoefficients ? (
-                <div className="mt-8 inline-flex items-center gap-4">
-                  <Trans>Trading volume on configured markets is counted with a reduced coefficient</Trans>
-                  <DowngradingCoefficientsTooltip
-                    chainId={chainId}
-                    config={config}
-                    coefficients={config.downgradingCoefficients}
-                  />
-                </div>
-              ) : null}
+          {activeTab === "volume" ? (
+            <div className="inline-flex items-center gap-4">
+              <Trans>Your epoch trading volume sets your Volume Tier and determines your multiplier.</Trans>
+              <VolumeTierDescriptionTooltip
+                chainId={chainId}
+                config={config}
+                coefficients={config.downgradingCoefficients}
+              />
             </div>
-          </div>
-          <button
-            className="gmx-hover:text-blue-200 mt-4 inline-flex items-center gap-4 text-14 font-medium text-rewards-blue-300 transition-colors duration-200"
-            onClick={handleToggleMore}
-            aria-expanded={showMore}
-            aria-label={showMore ? t`Show less` : t`Show more`}
-          >
-            <span aria-hidden="true" className="relative inline-grid w-max justify-items-start">
-              <span className="invisible col-start-1 row-start-1 whitespace-nowrap">
-                {showMore ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}
-              </span>
-              <span
-                className={cx(
-                  "absolute left-0 top-0 whitespace-nowrap transition-all duration-200",
-                  showMore ? "-translate-y-1 opacity-0" : "translate-y-0 opacity-100"
-                )}
-              >
-                <Trans>Show more</Trans>
-              </span>
-              <span
-                className={cx(
-                  "absolute left-0 top-0 whitespace-nowrap transition-all duration-200",
-                  showMore ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
-                )}
-              >
-                <Trans>Show less</Trans>
-              </span>
-            </span>
-            <ChevronDownIcon
-              className={cx("h-16 w-16 transition-transform duration-200", { "rotate-180": showMore })}
-            />
-          </button>
+          ) : activeTab === "staking" ? (
+            <p>
+              <Trans>Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier.</Trans>
+            </p>
+          ) : (
+            <p>
+              <Trans>
+                Activity Boosts are multiplier adjustments earned and applied exclusively to qualifying activity.
+              </Trans>
+            </p>
+          )}
         </div>
 
         <div className="overflow-x-auto px-12 pb-8">
@@ -241,7 +187,7 @@ function VolumeTiersTable({
                   </span>
                 </TableTd>
                 <TableTd padding="compact" className="text-typography-primary">
-                  {formatVolumeTierThreshold(tier.threshold)}
+                  {formatCompactUsd(tier.threshold)}
                 </TableTd>
                 <TableTd padding="compact" className="text-typography-primary">
                   {formatMultiplierAdjustment(tier.multiplier, config.multiplierDecimals)}
@@ -279,7 +225,7 @@ function StakingTiersTable({
             <Trans>Tier Name</Trans>
           </TableTh>
           <TableTh width="25%" padding="compact">
-            <Trans>GMX + esGMX staked</Trans>
+            <Trans>GMX staked</Trans>
           </TableTh>
           <TableTh width="15%" padding="compact">
             <Trans>Multiplier</Trans>
@@ -309,7 +255,7 @@ function StakingTiersTable({
                   </span>
                 </TableTd>
                 <TableTd padding="compact" className="text-typography-primary">
-                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 0, true)} GMX + esGMX
+                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 0, true)} GMX
                 </TableTd>
                 <TableTd padding="compact" className="text-typography-primary">
                   {formatMultiplierAdjustment(tier.multiplier, config.multiplierDecimals)}
@@ -362,7 +308,6 @@ function BoostsTable({
           <TableListSkeleton count={visibleBoosts.length} Structure={TierLevelsSkeletonRow} />
         ) : (
           visibleBoosts.map((boost) => {
-            const transient = boost.boost === "FeaturedMarkets" || boost.boost === "BalancingTrades";
             const listed = Boolean(status?.boostIds.includes(boost.boost));
 
             return (
@@ -382,11 +327,7 @@ function BoostsTable({
                   {formatMultiplierAdjustment(boost.multiplier, config.multiplierDecimals)}
                 </TableTd>
                 <TableTd padding="compact">
-                  <StatusLabel
-                    state={statusState}
-                    active={!transient && listed}
-                    qualified={transient ? listed : undefined}
-                  />
+                  <StatusLabel state={statusState} active={listed} />
                 </TableTd>
               </TierLevelTableTr>
             );
@@ -409,7 +350,7 @@ function BoostDescription({
   if (boost.boost === "FeaturedMarkets") {
     return (
       <>
-        <Trans>Applies to eligible trades in the configured featured markets.</Trans>{" "}
+        <Trans>Applies to eligible trades in featured markets.</Trans>{" "}
         {config.featuredMarketIndexTokens.length ? (
           <FeaturedMarketsTooltip chainId={chainId} indexTokenAddresses={config.featuredMarketIndexTokens} />
         ) : null}
@@ -421,16 +362,14 @@ function BoostDescription({
     return (
       <Trans>
         Applies to qualifying balancing position increases of at least{" "}
-        {formatUsd(config.balancingTradesThreshold, { displayDecimals: 0 })}.
+        {formatCompactUsd(config.balancingTradesThreshold)}.
       </Trans>
     );
   }
 
   if (boost.boost === "LifetimeTrading") {
     return (
-      <Trans>
-        Permanent after reaching {formatUsd(config.lifetimeVolumeThreshold, { displayDecimals: 0 })} in lifetime volume.
-      </Trans>
+      <Trans>Permanent after reaching {formatCompactUsd(config.lifetimeVolumeThreshold)} in lifetime volume.</Trans>
     );
   }
 
@@ -507,7 +446,7 @@ function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: num
   );
 }
 
-function DowngradingCoefficientsTooltip({
+function VolumeTierDescriptionTooltip({
   chainId,
   config,
   coefficients,
@@ -543,11 +482,7 @@ function DowngradingCoefficientsTooltip({
     <TooltipWithPortal
       variant="none"
       handle={
-        <button
-          type="button"
-          aria-label={t`Trading volume on configured markets is counted with a reduced coefficient`}
-          className="flex size-16 items-center justify-center"
-        >
+        <button type="button" aria-label={t`Volume Tier details`} className="flex size-16 items-center justify-center">
           <InfoIconStroke className="size-16" />
         </button>
       }
@@ -555,24 +490,31 @@ function DowngradingCoefficientsTooltip({
       className="h-16"
       position="bottom-start"
       content={
-        <div>
-          <p className="mb-8 text-12 font-normal text-typography-secondary">
-            <Trans>Volume on the following pairs is weighted with a reduced coefficient:</Trans>
+        <div className="flex flex-col gap-8 text-12 font-normal text-typography-secondary">
+          <p>
+            <Trans>
+              A tier applies in the epoch it is achieved and for {config.volumeTierPersistenceEpochs} following epochs.
+            </Trans>
           </p>
-          <div className="flex flex-col gap-8">
-            {items.map(({ marketAddress, symbol, name, coefficient }) => (
-              <div
-                key={marketAddress}
-                className="flex items-center justify-between gap-16 text-12 font-medium text-typography-primary"
-              >
-                <span className="flex items-center gap-4">
-                  {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
-                  {name}
-                </span>
-                <span>{formatMultiplier(coefficient, config.multiplierDecimals)}</span>
-              </div>
-            ))}
-          </div>
+          <p>
+            <Trans>Trading volume on configured markets is counted with a reduced coefficient.</Trans>
+          </p>
+          {items.length > 0 ? (
+            <div className="flex flex-col gap-8">
+              {items.map(({ marketAddress, symbol, name, coefficient }) => (
+                <div
+                  key={marketAddress}
+                  className="flex items-center justify-between gap-16 font-medium text-typography-primary"
+                >
+                  <span className="flex items-center gap-4">
+                    {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
+                    {name}
+                  </span>
+                  <span>{formatMultiplier(coefficient, config.multiplierDecimals)}</span>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
       }
     />

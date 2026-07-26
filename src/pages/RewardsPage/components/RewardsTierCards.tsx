@@ -25,6 +25,7 @@ import BatterySvg from "img/ic_battery.svg?react";
 import BoostSvg from "img/ic_boost.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
+import ReferralsIcon from "img/ic_referrals.svg?react";
 import StatsSvg from "img/ic_stats.svg?react";
 
 import { BoostTierIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
@@ -55,14 +56,18 @@ export function RewardsTierCards({
   const volumeActive = Boolean(status?.volumeTier);
   const stakingActive = Boolean(status?.stakingTier ?? status?.projectedStakingTier);
   const { activePersistentBoostIds, qualifiedTransientBoostIds } = getBoostStatuses(status);
-  const boostsHaveStatus = activePersistentBoostIds.length > 0 || qualifiedTransientBoostIds.length > 0;
-  const cards: { key: TierCardKey; content: React.ReactNode }[] = [
+  const hasReferralBoost = (status?.referralVolume ?? 0n) > 0n;
+  const boostsHaveStatus =
+    activePersistentBoostIds.length > 0 || qualifiedTransientBoostIds.length > 0 || hasReferralBoost;
+  const cards: { key: TierCardKey; active: boolean; content: React.ReactNode }[] = [
     {
       key: "volume",
+      active: volumeActive,
       content: <VolumeCard config={config} status={status} active={volumeActive} />,
     },
     {
       key: "staking",
+      active: stakingActive,
       content: (
         <StakingCard
           config={config}
@@ -77,21 +82,24 @@ export function RewardsTierCards({
     },
     {
       key: "boosts",
+      active: boostsHaveStatus,
       content: (
         <BoostsCard
           config={config}
           status={status}
           activePersistentBoostIds={activePersistentBoostIds}
           qualifiedTransientBoostIds={qualifiedTransientBoostIds}
+          hasReferralBoost={hasReferralBoost}
           hasStatus={boostsHaveStatus}
         />
       ),
     },
   ];
+  const orderedCards = [...cards.filter((card) => card.active), ...cards.filter((card) => !card.active)];
 
   return (
     <div className="grid grid-cols-3 gap-12 max-lg:grid-cols-1">
-      {cards.map((card) => (
+      {orderedCards.map((card) => (
         <React.Fragment key={card.key}>{card.content}</React.Fragment>
       ))}
     </div>
@@ -721,44 +729,80 @@ function StakingProgressBar({
 
 function getBoostDescription(boost: BoostConfig, config: IncentivesConfig) {
   if (boost.boost === "FeaturedMarkets") {
-    return <Trans>Applies to eligible trades in the configured featured markets.</Trans>;
+    return <Trans>Applies to eligible trades in featured markets.</Trans>;
   }
   if (boost.boost === "BalancingTrades") {
     return (
       <Trans>
         Applies to qualifying balancing position increases of at least{" "}
-        {formatUsd(config.balancingTradesThreshold, { displayDecimals: 0 })}.
+        {formatCompactUsd(config.balancingTradesThreshold)}.
       </Trans>
     );
   }
   if (boost.boost === "LifetimeTrading") {
     return (
-      <Trans>
-        Permanent after reaching {formatUsd(config.lifetimeVolumeThreshold, { displayDecimals: 0 })} in lifetime volume.
-      </Trans>
+      <Trans>Permanent after reaching {formatCompactUsd(config.lifetimeVolumeThreshold)} in lifetime volume.</Trans>
     );
   }
 
-  return <Trans>Available to eligible historical users while their incremental reward cap remains.</Trans>;
+  return <Trans>Available to eligible historical users while their return bonus cap remains.</Trans>;
 }
+
+type BoostDisplayItem =
+  | {
+      type: "multiplier";
+      key: BoostId;
+      boost: BoostConfig;
+      isActivePersistent: boolean;
+      isQualifiedThisEpoch: boolean;
+      isHighlighted: boolean;
+    }
+  | {
+      type: "referral";
+      key: "ReferralBoost";
+      isHighlighted: boolean;
+    };
 
 function BoostsCard({
   config,
   status,
   activePersistentBoostIds,
   qualifiedTransientBoostIds,
+  hasReferralBoost,
   hasStatus,
 }: {
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
   activePersistentBoostIds: BoostId[];
   qualifiedTransientBoostIds: BoostId[];
+  hasReferralBoost: boolean;
   hasStatus: boolean;
 }) {
   const persistentBoostAdjustment = config.boosts.reduce(
     (total, boost) => (activePersistentBoostIds.includes(boost.boost) ? total + boost.multiplier : total),
     0n
   );
+  const activeBoostCount = activePersistentBoostIds.length + (hasReferralBoost ? 1 : 0);
+  const boostDisplayItems: BoostDisplayItem[] = [
+    ...config.boosts.map((boost) => {
+      const isActivePersistent = activePersistentBoostIds.includes(boost.boost);
+      const isQualifiedThisEpoch = qualifiedTransientBoostIds.includes(boost.boost);
+
+      return {
+        type: "multiplier" as const,
+        key: boost.boost,
+        boost,
+        isActivePersistent,
+        isQualifiedThisEpoch,
+        isHighlighted: isActivePersistent || isQualifiedThisEpoch,
+      };
+    }),
+    {
+      type: "referral" as const,
+      key: "ReferralBoost" as const,
+      isHighlighted: hasReferralBoost,
+    },
+  ].sort((left, right) => Number(right.isHighlighted) - Number(left.isHighlighted));
 
   return (
     <div
@@ -796,13 +840,11 @@ function BoostsCard({
                 <BoostSvg className="size-24 text-rewards-blue-300" />
               </div>
               <span className="flex flex-col">
-                {activePersistentBoostIds.length > 0 ? (
-                  <span>
-                    {plural(activePersistentBoostIds.length, { one: "# active boost", other: "# active boosts" })}
-                  </span>
+                {activeBoostCount > 0 ? (
+                  <span>{plural(activeBoostCount, { one: "# active boost", other: "# active boosts" })}</span>
                 ) : null}
                 {qualifiedTransientBoostIds.length > 0 ? (
-                  <span className={cx({ "text-13 text-typography-secondary": activePersistentBoostIds.length > 0 })}>
+                  <span className={cx({ "text-13 text-typography-secondary": activeBoostCount > 0 })}>
                     {plural(qualifiedTransientBoostIds.length, {
                       one: "# qualified this epoch",
                       other: "# qualified this epoch",
@@ -812,10 +854,51 @@ function BoostsCard({
               </span>
             </h3>
             <div className="flex flex-wrap gap-12">
-              {config.boosts.map((boost) => {
-                const isActivePersistent = activePersistentBoostIds.includes(boost.boost);
-                const isQualifiedThisEpoch = qualifiedTransientBoostIds.includes(boost.boost);
-                const isHighlighted = isActivePersistent || isQualifiedThisEpoch;
+              {boostDisplayItems.map((item) => {
+                if (item.type === "referral") {
+                  return (
+                    <TooltipWithPortal
+                      key={item.key}
+                      as="button"
+                      type="button"
+                      aria-label={t`Referral Boost`}
+                      className="rounded-8 p-0"
+                      handle={
+                        <div
+                          className={cx(
+                            "flex size-44 items-center justify-center rounded-8 border-1/2",
+                            item.isHighlighted
+                              ? "border-slate-600 bg-slate-800"
+                              : "border-slate-600 bg-slate-900/80 opacity-40"
+                          )}
+                        >
+                          <ReferralsIcon className="size-20" />
+                        </div>
+                      }
+                      content={
+                        <div>
+                          <div className="font-medium">
+                            <Trans>Referral Boost</Trans>
+                          </div>
+                          <div className="mt-4 text-13">
+                            <Trans>
+                              Earn an additional {formatFactorPercentage(config.referralRewardShareFactor)} of rewards
+                              from referred traders.
+                            </Trans>
+                          </div>
+                          {item.isHighlighted ? (
+                            <div className="mt-4 text-13 text-green-500">
+                              <Trans>Active</Trans>
+                            </div>
+                          ) : null}
+                        </div>
+                      }
+                      variant="none"
+                    />
+                  );
+                }
+
+                const { boost, isActivePersistent, isQualifiedThisEpoch, isHighlighted } = item;
                 const accessibleBoostLabel =
                   boost.boost === "FeaturedMarkets"
                     ? t`Featured Markets`
@@ -823,7 +906,7 @@ function BoostsCard({
                       ? t`Balancing Trades`
                       : boost.boost === "LifetimeTrading"
                         ? t`Lifetime Volume`
-                        : t`Manual Allocation`;
+                        : t`Return Bonus`;
 
                 return (
                   <TooltipWithPortal
@@ -905,6 +988,12 @@ function BoostsCard({
                   {boostLabels[boost.boost]}
                 </span>
               ))}
+              <span className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700">
+                <span className="flex size-26 shrink-0 items-center justify-center">
+                  <ReferralsIcon className="size-16" />
+                </span>
+                <Trans>Referral Boost</Trans>
+              </span>
             </div>
             <div className="flex gap-8" aria-hidden="true">
               {config.boosts.map((boost) => (
@@ -916,6 +1005,12 @@ function BoostsCard({
                   {boostLabels[boost.boost]}
                 </span>
               ))}
+              <span className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700">
+                <span className="flex size-26 shrink-0 items-center justify-center">
+                  <ReferralsIcon className="size-16" />
+                </span>
+                <Trans>Referral Boost</Trans>
+              </span>
             </div>
           </div>
         </div>

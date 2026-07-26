@@ -100,7 +100,7 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
         content: (
           <Trans>
             Trade-specific boosts apply only to qualifying trades. Lifetime Volume is permanent once earned, while a
-            manual allocation remains available until its incremental reward cap is consumed.
+            Return Bonus remains available until its reward cap is consumed.
           </Trans>
         ),
       },

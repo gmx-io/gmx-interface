@@ -74,6 +74,7 @@ vi.mock("components/SwitchToSettlementChain/SwitchToSettlementChainWarning", () 
 }));
 
 const TOKEN_UNIT = expandDecimals(1, 18);
+const DELEGATE_ADDRESS = "0x0000000000000000000000000000000000000001";
 const mockUseTokensAllowanceData = vi.mocked(useTokensAllowanceData);
 const mockUseGovTokenAmount = vi.mocked(useGovTokenAmount);
 const mockUseGovTokenDelegates = vi.mocked(useGovTokenDelegates);
@@ -108,10 +109,16 @@ const baseData: RewardsVestingData = {
 i18n.load({ en: {} });
 i18n.activate("en");
 
-function getVestModal(data: RewardsVestingData) {
+function getVestModal(data: RewardsVestingData, isVisible = true) {
   return (
     <I18nProvider i18n={i18n}>
-      <RewardsVestingModal isVisible setIsVisible={setIsVisible} data={data} mutate={mutate} onBuyGmx={onBuyGmx} />
+      <RewardsVestingModal
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        data={data}
+        mutate={mutate}
+        onBuyGmx={onBuyGmx}
+      />
     </I18nProvider>
   );
 }
@@ -137,7 +144,7 @@ describe("RewardsVestingModal", () => {
     vi.clearAllMocks();
     mutate.mockResolvedValue(undefined);
     mockUseGovTokenAmount.mockReturnValue(0n);
-    mockUseGovTokenDelegates.mockReturnValue(undefined);
+    mockUseGovTokenDelegates.mockReturnValue(DELEGATE_ADDRESS);
     mockUseMultipleWalletExtensionsChainError.mockReturnValue({});
     mockUseWallet.mockReturnValue({
       account: "0x123",
@@ -153,6 +160,47 @@ describe("RewardsVestingModal", () => {
   });
 
   afterEach(cleanup);
+
+  it("disables governance reads while hidden", () => {
+    render(getVestModal(baseData, false));
+
+    expect(mockUseGovTokenAmount).toHaveBeenCalledWith(
+      ARBITRUM,
+      expect.objectContaining({ enabled: false, requestKey: expect.any(String) })
+    );
+    expect(mockUseGovTokenDelegates).toHaveBeenCalledWith(
+      ARBITRUM,
+      expect.objectContaining({ enabled: false, requestKey: expect.any(String) })
+    );
+  });
+
+  it("uses a fresh governance cache key whenever the modal reopens", () => {
+    const view = render(getVestModal(baseData));
+    const firstRequestKey = mockUseGovTokenAmount.mock.calls.at(-1)?.[1]?.requestKey;
+
+    view.rerender(getVestModal(baseData, false));
+    view.rerender(getVestModal(baseData));
+
+    expect(mockUseGovTokenAmount.mock.calls.at(-1)?.[1]?.requestKey).not.toBe(firstRequestKey);
+    expect(mockUseGovTokenDelegates.mock.calls.at(-1)?.[1]?.requestKey).toBe(
+      mockUseGovTokenAmount.mock.calls.at(-1)?.[1]?.requestKey
+    );
+  });
+
+  it("keeps stake-capable actions disabled when the governance amount is unavailable", () => {
+    mockUseGovTokenAmount.mockReturnValue(undefined);
+
+    renderVestModal({
+      ...baseData,
+      freePairAmount: 0n,
+      walletGmxBalance: 100n * TOKEN_UNIT,
+    });
+
+    const button = screen.getByRole("button", { name: "Loading..." });
+    expect(button.hasAttribute("disabled")).toBe(true);
+    fireEvent.click(button);
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
 
   it("renders the deposit-only state when free collateral already covers the vest", () => {
     renderVestModal(baseData);

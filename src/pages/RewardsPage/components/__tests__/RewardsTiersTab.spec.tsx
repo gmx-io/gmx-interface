@@ -241,11 +241,48 @@ describe("RewardsTiersTab", () => {
   it("does not render account zeros or inactive statuses while disconnected", () => {
     renderTab({ account: undefined });
 
-    expect(screen.getByText("All-time Rewards")).toBeDefined();
+    expect(screen.queryByText("Current Multiplier")).toBeNull();
+    expect(screen.queryByText("All-time Rewards")).toBeNull();
+    expect(screen.queryByText("Vestable esGMX")).toBeNull();
     expect(screen.queryByTestId("rewards-promotional-banners")).toBeNull();
     expect(document.body.textContent).not.toContain(formatUsd(0n, { fallbackToZero: true }));
     expect(screen.queryByText("Inactive")).toBeNull();
     expect(screen.queryByText("0 qualified this epoch")).toBeNull();
+  });
+
+  it("shows the current multiplier when connected", () => {
+    renderTab();
+
+    expect(screen.getByText("Current Multiplier").parentElement?.textContent).toContain("1.75x");
+    expect(document.body.textContent?.replace(/\s/g, "")).toContain("$500");
+    expect(screen.getByText("5.00 esGMX")).toBeDefined();
+  });
+
+  it("shows the concise tier descriptions without a show-more control", async () => {
+    renderTab();
+
+    expect(
+      screen.getByText("Your epoch trading volume sets your Volume Tier and determines your multiplier.")
+    ).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Show more" })).toBeNull();
+
+    const volumeDetails = screen.getByRole("button", { name: "Volume Tier details" });
+    fireEvent.mouseEnter(volumeDetails.closest(".Tooltip-handle")!);
+    expect(
+      await screen.findByText("A tier applies in the epoch it is achieved and for 4 following epochs.")
+    ).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Staking Tiers" }));
+    expect(
+      screen.getByText("Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier.")
+    ).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+    expect(
+      screen.getByText(
+        "Activity Boosts are multiplier adjustments earned and applied exclusively to qualifying activity."
+      )
+    ).toBeDefined();
   });
 
   it("distinguishes active and projected volume tiers", () => {
@@ -489,6 +526,16 @@ describe("RewardsTiersTab", () => {
     });
   });
 
+  it("labels staking tier table thresholds in GMX", () => {
+    renderTab();
+
+    fireEvent.click(screen.getByRole("button", { name: "Staking Tiers" }));
+
+    expect(screen.getByRole("columnheader", { name: "GMX staked" })).toBeDefined();
+    expect(screen.getByRole("row", { name: /Supporter.*100 GMX/ })).toBeDefined();
+    expect(screen.queryByText(/100 GMX \+ esGMX/)).toBeNull();
+  });
+
   it("renders config-derived activity boost levels", () => {
     renderTab({
       status: {
@@ -505,19 +552,18 @@ describe("RewardsTiersTab", () => {
 
     expect(featuredMarketsRow.textContent).toContain("GMX");
     expect(within(featuredMarketsRow).getByText("+0.25x")).toBeDefined();
-    expect(within(featuredMarketsRow).getByText("Qualified this epoch")).toBeDefined();
-    expect(balancingTradesRow.textContent).toContain(
-      formatUsd(config.balancingTradesThreshold, { displayDecimals: 0 })
-    );
+    expect(within(featuredMarketsRow).getByText("Active")).toBeDefined();
+    expect(featuredMarketsRow.textContent).toContain("Applies to eligible trades in featured markets.");
+    expect(balancingTradesRow.textContent?.replace(/\s/g, "")).toContain("$10K");
     expect(within(balancingTradesRow).getByText("+0.5x")).toBeDefined();
-    expect(within(balancingTradesRow).getByText("Not qualified this epoch")).toBeDefined();
-    expect(lifetimeVolumeRow.textContent).toContain(formatUsd(config.lifetimeVolumeThreshold, { displayDecimals: 0 }));
+    expect(within(balancingTradesRow).getByText("Inactive")).toBeDefined();
+    expect(lifetimeVolumeRow.textContent?.replace(/\s/g, "")).toContain("$1M");
     expect(within(lifetimeVolumeRow).getByText("+1x")).toBeDefined();
     expect(within(lifetimeVolumeRow).getByText("Active")).toBeDefined();
-    expect(screen.queryByRole("row", { name: /Manual Allocation/ })).toBeNull();
+    expect(screen.queryByRole("row", { name: /Return Bonus/ })).toBeNull();
   });
 
-  it("includes manual allocation in the summed persistent boost badge", () => {
+  it("shows active boosts first without adding the Referral Boost to the multiplier", () => {
     renderTab({
       status: {
         ...status,
@@ -525,10 +571,36 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    const boostsHeading = screen.getByRole("heading", { name: "2 active boosts" });
+    const boostsHeading = screen.getByRole("heading", { name: "3 active boosts" });
     const boostsCard = boostsHeading.closest(".group");
     expect(boostsCard).toBeDefined();
     expect(within(boostsCard as HTMLElement).getByText("3x")).toBeDefined();
+    expect(
+      within(boostsCard as HTMLElement)
+        .getAllByRole("button")
+        .map((button) => button.getAttribute("aria-label"))
+    ).toEqual(["Lifetime Volume", "Return Bonus", "Referral Boost", "Featured Markets", "Balancing Trades"]);
+  });
+
+  it("places active tier cards before banner cards while preserving their default order", () => {
+    renderTab({
+      status: {
+        ...status,
+        volumeTier: null,
+        projectedVolumeTier: null,
+        boostIds: ["LifetimeTrading"],
+        referralVolume: 0n,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    const boostsCard = screen.getByRole("heading", { name: "1 active boost" }).closest(".group");
+    const volumeCard = screen.getByText("Volume Tier").closest(".group");
+
+    expect(stakingCard?.parentElement).toBe(volumeCard?.parentElement);
+    expect(boostsCard?.parentElement).toBe(volumeCard?.parentElement);
+    expect(Array.from(volumeCard!.parentElement!.children)).toEqual([stakingCard, boostsCard, volumeCard]);
   });
 
   it("uses the live staking tier for progress and the next target after a multi-tier jump", () => {
@@ -578,6 +650,11 @@ describe("RewardsTiersTab", () => {
     );
     expect(document.body.textContent).toContain(
       `plus an additional ${formatFactorPercentage(config.gtShareFactor)} in GT tokens`
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "How long does a volume tier remain active?" }));
+    expect(document.body.textContent).toContain(
+      "A tier applies in the epoch it is achieved and for 4 following epochs."
     );
 
     fireEvent.click(screen.getByRole("button", { name: "How are rewards calculated?" }));

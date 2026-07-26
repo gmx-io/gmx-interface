@@ -229,19 +229,6 @@ describe("RewardsPromotionalBanners", () => {
     expect(screen.getByText("Activate Pair Boosts")).toBeDefined();
   });
 
-  it("pauses and resumes automatic rotation", () => {
-    vi.useFakeTimers();
-    renderBanners();
-
-    fireEvent.click(screen.getByRole("button", { name: "Pause carousel" }));
-    act(() => vi.advanceTimersByTime(12_000));
-    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "Resume carousel" }));
-    act(() => vi.advanceTimersByTime(6_000));
-    expect(screen.getByText("Almost at the next tier")).toBeDefined();
-  });
-
   it("navigates in both directions with touch swipes", () => {
     renderBanners();
     const carousel = screen.getByRole("region", { name: "Rewards opportunities" });

@@ -258,6 +258,7 @@ describe("useTradeRewardsEstimate", () => {
       enabled: false,
     });
     expect(mockUseLatestGtPrice).toHaveBeenCalledWith(ARBITRUM, { enabled: false });
+    expect(latestResult.enabled).toBe(false);
     expect(latestResult.estimatedRewards).toBeUndefined();
   });
 
