@@ -131,10 +131,6 @@ msgstr "Не удалось обновить ордер"
 msgid "See <0>Tenderly docs</0>"
 msgstr "См. <0>документацию Tenderly</0>"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX + esGMX</2>"
-msgstr "В стейкинге: <0>{0}</0><1> / </1><2>{1} GMX + esGMX</2>"
-
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
 msgstr "Показать отладочные значения"
@@ -295,6 +291,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr "Макс. фактор для ликвидаций"
 
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "GMX threshold"
+msgstr "Порог GMX"
+
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
 msgid "The configuration could not be refreshed. Showing the latest loaded version."
 msgstr "Не удалось обновить конфигурацию. Показана последняя загруженная версия."
@@ -394,10 +394,6 @@ msgstr "GMX Account недоступен на {chainName}. Переключит�
 #: src/components/Errors/errorToasts.tsx
 msgid "settings"
 msgstr "настройки"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "{0, plural, one {# qualified this epoch} other {# qualified this epoch}}"
-msgstr "{0, plural, one {# квалификация в этой эпохе} few {# квалификации в этой эпохе} many {# квалификаций в этой эпохе} other {# квалификации в этой эпохе}}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Est. APR"
@@ -910,6 +906,10 @@ msgstr "Положительная комиссия за фондировани�
 msgid "Light"
 msgstr "Светлый"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "50% of rewards"
+msgstr "50% наград"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
 msgstr "Лонги / шорты"
@@ -1344,10 +1344,6 @@ msgstr "Маржа при закрытии"
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Недостаточный баланс Gas. Пополните ETH."
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Increase your staked GMX or esGMX balance by {0} to get {1} status <0>+{2}</0>"
-msgstr "Увеличьте баланс застейканных GMX или esGMX на {0}, чтобы получить статус {1} <0>+{2}</0>"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
 msgstr "Комиссия за исполнение слишком низкая для текущих сетевых расходов"
@@ -1597,6 +1593,7 @@ msgid "Eligible fees on page"
 msgstr "Учитываемые комиссии на странице"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Qualified this epoch"
 msgstr "Квалифицирован в этой эпохе"
 
@@ -2774,6 +2771,10 @@ msgstr "Вакансии в GMX"
 msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "GMX staked: <0>{0}</0>"
+msgstr "GMX в стейкинге: <0>{0}</0>"
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Coming soon"
 msgstr "Скоро"
@@ -3266,6 +3267,10 @@ msgstr "Начните торговать, чтобы активировать �
 msgid "Trade More. Earn More."
 msgstr "Торгуйте больше. Получайте больше."
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
+msgstr "В стейкинге: <0>{0}</0><1> / </1><2>{1} GMX</2>"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "esGMX left"
 msgstr "Осталось esGMX"
@@ -3722,6 +3727,8 @@ msgstr "Shift-ордер исполнен"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Active"
 msgstr "Активен"
 
@@ -4072,6 +4079,10 @@ msgstr "Ranked"
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1> по праву заработал титул гиганта перпетуальной торговли, и причины этого признания многообразны.</0><2><3>@GMX_IO</3> выделяется как проект, который прошел свой путь без опоры на VC-финансирование. Замечательно, что он поднялся на вершину, заняв №1 по TVL на цепи Arbitrum на $488.34M и впечатляющий общий ранг №23 на DeFiLlama... <4>см. больше</4></2>"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Referral Volume"
+msgstr "Реферальный объём"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Network status"
 msgstr "Статус сети"
@@ -4301,6 +4312,10 @@ msgstr "При срабатывании возможна недостаточн�
 msgid "Settlement"
 msgstr "Расчёт"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Increase your staked GMX balance by {0} to get {1} status <0>+{2}</0>"
+msgstr "Увеличьте баланс застейканных GMX на {0}, чтобы получить статус {1} <0>+{2}</0>"
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "Что делает GMX более экономичным, чем другие перпетуальные платформы?"
@@ -4427,10 +4442,6 @@ msgstr "Расчёт"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr ""
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Staked GMX + esGMX"
-msgstr "GMX + esGMX в стейкинге"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Insufficient gas for network fees"
@@ -6116,10 +6127,6 @@ msgstr "Получите на {0}% больше вознаграждений с 
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier."
-msgstr "Ваш уровень стейкинга зависит от застейканных GMX и esGMX и определяет множитель стейкинга."
-
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
 msgstr "Торгуйте бессрочными контрактами с кредитным плечом до 100x, а также спотовыми активами напрямую из вашего кошелька на Arbitrum, Ethereum и других сетях"
@@ -6669,10 +6676,6 @@ msgstr "Показать или скрыть детали вознагражде
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} не может быть отправлен на адреса смарт-контрактов. Выберите другой токен"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Earn an additional {0} of rewards from referred traders."
-msgstr "Получайте дополнительно {0} наград от приглашённых трейдеров."
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
@@ -7308,6 +7311,7 @@ msgstr "Поделиться наградами"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/RewardsPromoBanner/TradeRewardsPromoBanner.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Stake GMX"
 msgstr "Застейкать GMX"
@@ -8659,6 +8663,10 @@ msgstr ""
 msgid "STATUS"
 msgstr "СТАТУС"
 
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Not qualified this epoch"
+msgstr "Не квалифицирован в этой эпохе"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
@@ -8977,6 +8985,11 @@ msgstr "({0} от {1})"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Receive 50% of the rewards earned by every trader you invite."
+msgstr "Получайте 50% наград, заработанных каждым приглашённым вами трейдером."
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Applies to qualifying balancing position increases of at least {0}."
 msgstr "Применяется к квалифицируемым увеличениям балансирующих позиций не менее {0}."
 
@@ -9003,6 +9016,7 @@ msgid "Order request sent"
 msgstr "Запрос ордера отправлен"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Your multiplier will decrease next epoch."
 msgstr "В следующей эпохе ваш множитель уменьшится."
 
@@ -9313,6 +9327,7 @@ msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Staked GMX"
 msgstr "GMX в стейкинге"
 
@@ -9749,6 +9764,10 @@ msgstr "Сбой триггерных тикеров"
 msgid "Fulfilling buy request..."
 msgstr "Выполнение запроса на покупку…"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Trade and optionally stake GMX to increase your earning power. Your weekly trading volume sets your volume tier, and the amount you stake sets your staking tier – together they form your reward multiplier. The higher your tiers, the more you earn on your trading fees."
+msgstr "Торгуйте и при желании стейкайте GMX, чтобы увеличить потенциальный заработок. Еженедельный объём торгов определяет ваш уровень объёма, а сумма в стейкинге — уровень стейкинга; вместе они формируют множитель наград. Чем выше уровни, тем больше вы зарабатываете на торговых комиссиях."
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "Покупка GM не удалась"
@@ -9856,10 +9875,6 @@ msgstr "На каждую квалифицируемую сделку"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "Влияние на цену превышает размер ордера. Влияние: {priceImpactUsdText}, ордер: {sizeDeltaUsdText}"
-
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Active · next epoch"
-msgstr "Активен · следующая эпоха"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -10123,11 +10138,6 @@ msgstr "Нет влияния на цену. Единая цена исполн�
 msgid "it stays staked, it is not unstaked."
 msgstr "он останется в стейкинге и не будет выведен из него."
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Manage staking"
-msgstr "Управление стейкингом"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
 msgstr "Telegram-группа (Китайская)"
@@ -10163,6 +10173,7 @@ msgid "Decentralized options strategies"
 msgstr "Децентрализованные опционные стратегии"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}."
 msgstr "Ваш множитель наград объединяет уровень объёма, уровень стейкинга и применимые бусты активности. Итоговый множитель ограничен значением {0}."
 
@@ -10198,6 +10209,10 @@ msgstr "Запрос на продажу отправлен"
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
 msgid "Unable to load the incentives configuration."
 msgstr "Не удалось загрузить конфигурацию программы наград."
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Boost"
+msgstr "Буст"
 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
@@ -10262,6 +10277,10 @@ msgstr "глубокие ликвидные рынки"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0>"
 msgstr "Запросить <0>{0}</0>"
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Available to eligible historical users until the incremental reward cap is consumed."
+msgstr "Доступно подходящим историческим пользователям до исчерпания лимита дополнительных наград."
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -10416,6 +10435,7 @@ msgstr "Сессия сгенерирована"
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Buy GMX"
 msgstr "Купить GMX"
@@ -10672,10 +10692,6 @@ msgstr "Значения текущей эпохи являются предва
 msgid "Shift fee"
 msgstr "Комиссия за сдвиг"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Trade and optionally stake GMX or esGMX to increase your earning power. Your weekly trading volume sets your volume tier, and the amount you stake sets your staking tier – together they form your reward multiplier. The higher your tiers, the more you earn on your trading fees."
-msgstr "Торгуйте и при желании стейкайте GMX или esGMX, чтобы увеличить потенциальный заработок. Еженедельный объём торгов определяет ваш уровень объёма, а сумма в стейкинге — уровень стейкинга; вместе они формируют множитель наград. Чем выше уровни, тем больше вы зарабатываете на торговых комиссиях."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "Работает"
@@ -10691,10 +10707,6 @@ msgstr "Глубина"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 1"
 msgstr "Слой 1"
-
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Next epoch"
-msgstr "Следующая эпоха"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position would be liquidatable at current prices"
@@ -10994,10 +11006,6 @@ msgstr "Оповещения о риске ликвидации"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order key:"
 msgstr "Ключ ордера:"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "GMX + esGMX staked: <0>{0}</0>"
-msgstr "GMX + esGMX в стейкинге: <0>{0}</0>"
 
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
@@ -11306,6 +11314,10 @@ msgstr "Опционные хранилища"
 msgid "Time limit"
 msgstr "Ограничение по времени"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Your Staking Tier is based on staked GMX and determines your staking multiplier."
+msgstr "Ваш уровень стейкинга зависит от застейканных GMX и определяет множитель стейкинга."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
 msgstr "Текущий нереализованный PnL до комиссий"
@@ -11544,10 +11556,6 @@ msgstr "Общий процент PnL после комиссий и влиян�
 msgid "GMX Account"
 msgstr "Счет GMX"
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "GMX + esGMX threshold"
-msgstr "Порог GMX + esGMX"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -11556,10 +11564,6 @@ msgstr "Порог GMX + esGMX"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit price"
 msgstr "Лимитная цена"
-
-#: src/components/GmxAccountModal/RewardsSection.tsx
-msgid "Stake {0} GMX or esGMX more to get {1} next epoch"
-msgstr "Добавьте в стейкинг ещё {0} GMX или esGMX, чтобы получить {1} в следующей эпохе"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power"
@@ -11905,6 +11909,10 @@ msgstr ""
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr ""
 
+#: src/components/GmxAccountModal/RewardsSection.tsx
+msgid "Stake {0} GMX more to get {1} next epoch"
+msgstr "Добавьте в стейкинг ещё {0} GMX, чтобы получить {1} в следующей эпохе"
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>Положительные комиссии финансирования, накопленные из ваших позиций</0>"
@@ -12217,8 +12225,6 @@ msgstr "{pools} {verb} из листинга. Выведите ликвидно�
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Status"
@@ -13169,6 +13175,7 @@ msgid "Link"
 msgstr "Ссылка"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Your multiplier will increase next epoch."
 msgstr "В следующей эпохе ваш множитель увеличится."
 
@@ -13314,8 +13321,6 @@ msgstr "Увеличить размер (Stop Market)"
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Multiplier"

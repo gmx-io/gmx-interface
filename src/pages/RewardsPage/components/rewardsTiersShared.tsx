@@ -38,28 +38,20 @@ export function AccountValue({ state, children }: { state: AccountDataState; chi
 export function StatusLabel({
   state,
   active,
-  projected,
+  qualified,
 }: {
   state: AccountDataState;
   active: boolean;
-  projected?: boolean;
+  qualified?: boolean;
 }) {
   if (state === "loading") return <span className="text-typography-secondary">…</span>;
   if (state === "unavailable") return <span className="text-yellow-300">-</span>;
   if (state === "disconnected") return <span className="text-typography-secondary">-</span>;
 
-  if (active && projected) {
+  if (qualified !== undefined) {
     return (
-      <span className="text-green-500">
-        <Trans>Active · next epoch</Trans>
-      </span>
-    );
-  }
-
-  if (projected) {
-    return (
-      <span className="text-rewards-blue-300">
-        <Trans>Next epoch</Trans>
+      <span className={qualified ? "text-blue-300" : "text-typography-secondary"}>
+        {qualified ? <Trans>Qualified this epoch</Trans> : <Trans>Not qualified this epoch</Trans>}
       </span>
     );
   }

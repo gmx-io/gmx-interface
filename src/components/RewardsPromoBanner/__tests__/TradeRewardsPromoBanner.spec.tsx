@@ -200,6 +200,8 @@ describe("TradeRewardsPromoBanner", () => {
       </I18nProvider>
     );
     expect(screen.queryByRole("heading", { name: /You've received bonus/ })).toBeNull();
+    expect(mockUseAccountIncentiveStatus.mock.calls.at(-1)?.[1]).toMatchObject({ enabled: false });
+    expect(mockUseRewardsPromoActivity.mock.calls.at(-1)?.[1]).toMatchObject({ enabled: false });
   });
 
   it("does not use a manual reward cap from a different epoch", () => {

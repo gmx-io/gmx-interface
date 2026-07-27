@@ -8,6 +8,7 @@ import { isAddress } from "viem";
 import "./RewardsLeaderboardTab.scss";
 
 import type { ContractsChainId } from "config/chains";
+import { useGmxPrice } from "domain/legacy";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
@@ -15,9 +16,10 @@ import {
   type IncentivesLeaderboardOrderBy,
   useIncentivesLeaderboard,
 } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
-import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
+import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";
+import { convertToUsd } from "sdk/utils/tokens";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -34,13 +36,12 @@ import ShareIcon from "img/ic_share_arrow_filled.svg?react";
 const PAGE_SIZE = 20;
 
 const COL_RANK: CSSProperties = { width: "7%" };
-const COL_ADDRESS: CSSProperties = { width: "17%" };
-const COL_TRADING_VOLUME: CSSProperties = { width: "13%" };
-const COL_REFERRAL_VOLUME: CSSProperties = { width: "13%" };
-const COL_ES_GMX: CSSProperties = { width: "12%" };
-const COL_GT: CSSProperties = { width: "10%" };
+const COL_ADDRESS: CSSProperties = { width: "19%" };
+const COL_TRADING_VOLUME: CSSProperties = { width: "14%" };
+const COL_REFERRAL_VOLUME: CSSProperties = { width: "14%" };
+const COL_ES_GMX: CSSProperties = { width: "14%" };
+const COL_GT: CSSProperties = { width: "12%" };
 const COL_REWARDS: CSSProperties = { width: "12%" };
-const COL_MULTIPLIER: CSSProperties = { width: "8%" };
 const COL_SHARE: CSSProperties = { width: "8%" };
 const LEADERBOARD_ROW_CLASS_NAME = "h-40";
 const LEADERBOARD_TD_CLASS_NAME = "!py-8";
@@ -48,24 +49,10 @@ const CURRENT_ACCOUNT_ROW_CLASS_NAME =
   "!bg-cold-blue-900 text-blue-100 [&_.AddressView-trader-id]:!text-typography-primary [&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-100";
 
 type LeaderboardPeriod = "current" | "previous" | "all";
-type LeaderboardSortField =
-  | "tradingVolume"
-  | "referralVolume"
-  | "esGmxRewards"
-  | "gtRewards"
-  | "rewardsUsd"
-  | "multiplier";
+type LeaderboardSortField = "tradingVolume" | "referralVolume" | "esGmxRewards" | "gtRewards" | "rewardsUsd";
 type SortDirection = "asc" | "desc" | "unspecified";
 
-function RewardsLeaderboardSkeletonRow({
-  invisible,
-  showMultiplier = true,
-  pinned = false,
-}: {
-  invisible?: boolean;
-  showMultiplier?: boolean;
-  pinned?: boolean;
-}) {
+function RewardsLeaderboardSkeletonRow({ invisible, pinned = false }: { invisible?: boolean; pinned?: boolean }) {
   return (
     <tr
       className={cx(
@@ -97,11 +84,6 @@ function RewardsLeaderboardSkeletonRow({
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={90} inline />
       </TableTd>
-      {showMultiplier ? (
-        <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
-          <Skeleton width={56} inline />
-        </TableTd>
-      ) : null}
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={56} inline />
       </TableTd>
@@ -109,16 +91,8 @@ function RewardsLeaderboardSkeletonRow({
   );
 }
 
-function RewardsLeaderboardSkeletonRowWithoutMultiplier({ invisible }: { invisible?: boolean }) {
-  return <RewardsLeaderboardSkeletonRow invisible={invisible} showMultiplier={false} />;
-}
-
 function RewardsLeaderboardPinnedSkeletonRow({ invisible }: { invisible?: boolean }) {
   return <RewardsLeaderboardSkeletonRow invisible={invisible} pinned />;
-}
-
-function RewardsLeaderboardPinnedSkeletonRowWithoutMultiplier({ invisible }: { invisible?: boolean }) {
-  return <RewardsLeaderboardSkeletonRow invisible={invisible} showMultiplier={false} pinned />;
 }
 
 function getRankClassName(rank: number | null) {
@@ -133,18 +107,33 @@ function toLeaderboardOrderBy(
   return `${field}_${direction === "asc" ? "ASC" : "DESC"}` as IncentivesLeaderboardOrderBy;
 }
 
+function RewardTokenValue({ amount, decimals, price }: { amount: bigint; decimals: number; price?: bigint }) {
+  const amountUsd = convertToUsd(amount, decimals, price);
+
+  return (
+    <span className="flex items-center gap-4 whitespace-nowrap">
+      <span>{formatAmount(amount, decimals, 4, true, { trimTrailingZeros: true })}</span>
+      {amountUsd !== undefined ? (
+        <span className="text-typography-secondary">
+          ({formatUsd(amountUsd, { fallbackToZero: true, displayDecimals: 2 })})
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
 function LeaderboardRow({
   entry,
   account,
-  multiplierDecimals,
-  showMultiplier,
+  gmxPrice,
+  gtPrice,
   onShare,
   pinned = false,
 }: {
   entry: LeaderboardEntry;
   account?: string;
-  multiplierDecimals?: bigint;
-  showMultiplier: boolean;
+  gmxPrice?: bigint;
+  gtPrice?: bigint;
   onShare?: (entry: LeaderboardEntry) => void;
   pinned?: boolean;
 }) {
@@ -170,27 +159,20 @@ function LeaderboardRow({
         <AddressView size={20} address={entry.address} breakpoint="XL" />
       </TableTd>
       <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
-        {formatUsd(entry.tradingVolume, { fallbackToZero: true, displayDecimals: 2 })}
+        {formatUsd(entry.tradingVolume, { fallbackToZero: true, displayDecimals: 0 })}
       </TableTd>
       <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
-        {formatUsd(entry.referralVolume, { fallbackToZero: true, displayDecimals: 2 })}
+        {formatUsd(entry.referralVolume, { fallbackToZero: true, displayDecimals: 0 })}
       </TableTd>
       <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
-        {formatAmount(entry.esGmxRewards, ES_GMX_DECIMALS, 4, true, { trimTrailingZeros: true })}
+        <RewardTokenValue amount={entry.esGmxRewards} decimals={ES_GMX_DECIMALS} price={gmxPrice} />
       </TableTd>
       <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
-        {formatAmount(entry.gtRewards, GT_DECIMALS, 4, true, { trimTrailingZeros: true })}
+        <RewardTokenValue amount={entry.gtRewards} decimals={GT_DECIMALS} price={gtPrice} />
       </TableTd>
       <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
         {formatUsd(entry.rewardsUsd, { fallbackToZero: true, displayDecimals: 2 })}
       </TableTd>
-      {showMultiplier ? (
-        <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
-          {entry.multiplier !== null && multiplierDecimals !== undefined
-            ? formatMultiplier(entry.multiplier, multiplierDecimals)
-            : "-"}
-        </TableTd>
-      ) : null}
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         {isAccount && onShare ? (
           <button
@@ -207,7 +189,7 @@ function LeaderboardRow({
   );
 }
 
-function EmptyPinnedLeaderboardRow({ account, showMultiplier }: { account: string; showMultiplier: boolean }) {
+function EmptyPinnedLeaderboardRow({ account }: { account: string }) {
   return (
     <TableTr
       data-testid="leaderboard-pinned-row"
@@ -224,7 +206,6 @@ function EmptyPinnedLeaderboardRow({ account, showMultiplier }: { account: strin
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>-</TableTd>
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>-</TableTd>
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>-</TableTd>
-      {showMultiplier ? <TableTd className={LEADERBOARD_TD_CLASS_NAME}>-</TableTd> : null}
       <TableTd className={LEADERBOARD_TD_CLASS_NAME} />
     </TableTr>
   );
@@ -239,8 +220,10 @@ export function RewardsLeaderboardTab({
   account?: string;
   config?: IncentivesConfig;
 }) {
+  const { gmxPrice } = useGmxPrice(chainId, {}, false, { fetchAllChains: false });
+  const { data: gtPrice } = useLatestGtPrice(chainId);
   const [period, setPeriod] = useState<LeaderboardPeriod>(() => (config ? "current" : "all"));
-  const [orderBy, setOrderBy] = useState<IncentivesLeaderboardOrderBy>("tradingVolume_DESC");
+  const [orderBy, setOrderBy] = useState<IncentivesLeaderboardOrderBy>("rewardsUsd_DESC");
   const [page, setPage] = useState(1);
   const [searchAddress, setSearchAddress] = useState("");
   const [shareEntry, setShareEntry] = useState<LeaderboardEntry | null>(null);
@@ -260,18 +243,11 @@ export function RewardsLeaderboardTab({
       : selectedPeriod === "previous"
         ? config.epochTimestamp - config.epochDuration
         : undefined;
-  const showMultiplier = selectedPeriod !== "all";
-  const effectiveOrderBy =
-    !showMultiplier && orderBy.startsWith("multiplier_")
-      ? orderBy.endsWith("_ASC")
-        ? "tradingVolume_ASC"
-        : "tradingVolume_DESC"
-      : orderBy;
 
   const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useIncentivesLeaderboard(chainId, {
     epoch,
     where: searchAccount ? { account: searchAccount } : undefined,
-    orderBy: effectiveOrderBy,
+    orderBy,
     isMutable: selectedPeriod !== "previous",
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
@@ -284,7 +260,7 @@ export function RewardsLeaderboardTab({
   } = useIncentivesLeaderboard(chainId, {
     epoch,
     where: account ? { account } : undefined,
-    orderBy: effectiveOrderBy,
+    orderBy,
     enabled: Boolean(account),
     isMutable: selectedPeriod !== "previous",
     limit: 1,
@@ -302,7 +278,7 @@ export function RewardsLeaderboardTab({
     !isPinnedEntryVisible;
   const hasNoSearchMatch = Boolean(searchAccount && !loading && data !== undefined && data.length === 0);
 
-  useEffect(() => setPage(1), [account, effectiveOrderBy, searchAccount, selectedPeriod]);
+  useEffect(() => setPage(1), [account, orderBy, searchAccount, selectedPeriod]);
 
   useEffect(() => {
     setIsShareOpen(false);
@@ -322,12 +298,6 @@ export function RewardsLeaderboardTab({
     hadConfigRef.current = Boolean(config);
   }, [config]);
 
-  useEffect(() => {
-    if (!showMultiplier && orderBy.startsWith("multiplier_")) {
-      setOrderBy(orderBy.endsWith("_ASC") ? "tradingVolume_ASC" : "tradingVolume_DESC");
-    }
-  }, [orderBy, showMultiplier]);
-
   const epochTimestampRef = useRef(config?.epochTimestamp);
 
   useEffect(() => {
@@ -345,7 +315,7 @@ export function RewardsLeaderboardTab({
   useEpochRolloverRevalidation({
     epochTimestamp: selectedPeriod !== "previous" ? config?.epochTimestamp : undefined,
     enabled: Boolean(config) && selectedPeriod !== "previous" && page === 1,
-    scopeKey: `${chainId}:${account ?? ""}:${selectedPeriod}:${effectiveOrderBy}:${searchAccount ?? ""}:${endpoint ?? ""}`,
+    scopeKey: `${chainId}:${account ?? ""}:${selectedPeriod}:${orderBy}:${searchAccount ?? ""}:${endpoint ?? ""}`,
     revalidate: revalidateMutableLeaderboard,
   });
 
@@ -413,8 +383,8 @@ export function RewardsLeaderboardTab({
   );
   const getSorterProps = useCallback(
     (field: LeaderboardSortField) => {
-      const direction: SortDirection = effectiveOrderBy.startsWith(`${field}_`)
-        ? effectiveOrderBy.endsWith("_ASC")
+      const direction: SortDirection = orderBy.startsWith(`${field}_`)
+        ? orderBy.endsWith("_ASC")
           ? "asc"
           : "desc"
         : "unspecified";
@@ -422,14 +392,12 @@ export function RewardsLeaderboardTab({
       return {
         direction,
         onChange: (nextDirection: SortDirection) => {
-          setOrderBy(
-            nextDirection === "unspecified" ? "tradingVolume_DESC" : toLeaderboardOrderBy(field, nextDirection)
-          );
+          setOrderBy(nextDirection === "unspecified" ? "rewardsUsd_DESC" : toLeaderboardOrderBy(field, nextDirection));
           setPage(1);
         },
       };
     },
-    [effectiveOrderBy]
+    [orderBy]
   );
 
   const pageCount = totalCount === undefined ? page : Math.max(page, 1, Math.ceil(totalCount / PAGE_SIZE));
@@ -441,23 +409,18 @@ export function RewardsLeaderboardTab({
   const visibleMainRowCount = hasNoSearchMatch ? 1 : pageData.length;
   const pinnedRow =
     account && pinnedEntries === undefined && !pinnedError && !isPinnedEntryVisible ? (
-      <TableListSkeleton
-        count={1}
-        Structure={
-          showMultiplier ? RewardsLeaderboardPinnedSkeletonRow : RewardsLeaderboardPinnedSkeletonRowWithoutMultiplier
-        }
-      />
+      <TableListSkeleton count={1} Structure={RewardsLeaderboardPinnedSkeletonRow} />
     ) : showPinnedRow && pinnedEntry ? (
       <LeaderboardRow
         entry={pinnedEntry}
         account={account}
-        multiplierDecimals={config?.multiplierDecimals}
-        showMultiplier={showMultiplier}
+        gmxPrice={gmxPrice}
+        gtPrice={gtPrice?.priceUsd}
         onShare={handleShare}
         pinned
       />
     ) : showEmptyPinnedRow && account ? (
-      <EmptyPinnedLeaderboardRow account={account} showMultiplier={showMultiplier} />
+      <EmptyPinnedLeaderboardRow account={account} />
     ) : null;
 
   return (
@@ -518,12 +481,7 @@ export function RewardsLeaderboardTab({
           ) : null}
 
           <TableScrollFadeContainer className="grow" ariaLabel={t`Rewards leaderboard table`}>
-            <table
-              className={cx(
-                "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:last-child]:!text-left [&_th:last-child]:!text-left",
-                showMultiplier ? "min-w-[1160px]" : "min-w-[1000px]"
-              )}
-            >
+            <table className="w-full min-w-[1000px] table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:last-child]:!text-left [&_th:last-child]:!text-left">
               <colgroup>
                 <col style={COL_RANK} />
                 <col style={COL_ADDRESS} />
@@ -532,7 +490,6 @@ export function RewardsLeaderboardTab({
                 <col style={COL_ES_GMX} />
                 <col style={COL_GT} />
                 <col style={COL_REWARDS} />
-                {showMultiplier ? <col style={COL_MULTIPLIER} /> : null}
                 <col style={COL_SHARE} />
               </colgroup>
               <thead>
@@ -568,13 +525,6 @@ export function RewardsLeaderboardTab({
                       <Trans>Rewards USD</Trans>
                     </Sorter>
                   </TableTh>
-                  {showMultiplier ? (
-                    <TableTh>
-                      <Sorter {...getSorterProps("multiplier")}>
-                        <Trans>Multiplier</Trans>
-                      </Sorter>
-                    </TableTh>
-                  ) : null}
                   <TableTh />
                 </TableTheadTr>
               </thead>
@@ -582,22 +532,14 @@ export function RewardsLeaderboardTab({
                 {isInitialLoading ? (
                   <>
                     {pinnedRow}
-                    <TableListSkeleton
-                      count={PAGE_SIZE}
-                      Structure={
-                        showMultiplier ? RewardsLeaderboardSkeletonRow : RewardsLeaderboardSkeletonRowWithoutMultiplier
-                      }
-                    />
+                    <TableListSkeleton count={PAGE_SIZE} Structure={RewardsLeaderboardSkeletonRow} />
                   </>
                 ) : (
                   <>
                     {pinnedRow}
                     {hasNoSearchMatch ? (
                       <TableTr className={LEADERBOARD_ROW_CLASS_NAME}>
-                        <TableTd
-                          colSpan={showMultiplier ? 9 : 8}
-                          className={cx(LEADERBOARD_TD_CLASS_NAME, "text-typography-secondary")}
-                        >
+                        <TableTd colSpan={8} className={cx(LEADERBOARD_TD_CLASS_NAME, "text-typography-secondary")}>
                           <div className="text-center">
                             <Trans>No results found</Trans>
                           </div>
@@ -609,8 +551,8 @@ export function RewardsLeaderboardTab({
                         key={entry.address}
                         entry={entry}
                         account={account}
-                        multiplierDecimals={config?.multiplierDecimals}
-                        showMultiplier={showMultiplier}
+                        gmxPrice={gmxPrice}
+                        gtPrice={gtPrice?.priceUsd}
                         onShare={handleShare}
                       />
                     ))}
@@ -618,11 +560,7 @@ export function RewardsLeaderboardTab({
                       <TableListSkeleton
                         invisible
                         count={PAGE_SIZE - visibleMainRowCount}
-                        Structure={
-                          showMultiplier
-                            ? RewardsLeaderboardSkeletonRow
-                            : RewardsLeaderboardSkeletonRowWithoutMultiplier
-                        }
+                        Structure={RewardsLeaderboardSkeletonRow}
                       />
                     ) : null}
                   </>

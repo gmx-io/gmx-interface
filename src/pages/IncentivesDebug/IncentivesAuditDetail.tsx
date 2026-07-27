@@ -211,10 +211,10 @@ export function IncentivesAuditDetail({
                     value={formatUsd(status.referralVolume, { displayDecimals: 0 })}
                   />
                   <KV
-                    label={<Trans>Staked GMX + esGMX</Trans>}
+                    label={<Trans>Staked GMX</Trans>}
                     value={`${formatAmount(status.currentStakedBalance, ES_GMX_DECIMALS, 2, true, {
                       trimTrailingZeros: true,
-                    })} GMX + esGMX`}
+                    })} GMX`}
                   />
                   <KV
                     label={<Trans>Current esGMX</Trans>}

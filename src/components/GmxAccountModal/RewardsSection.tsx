@@ -84,8 +84,7 @@ export function RewardsSection() {
           <span className="text-12 text-typography-secondary">
             {hasMultiplier && stakingProgress?.amountLabel && stakingProgress.multiplierLabel ? (
               <Trans>
-                Stake {stakingProgress.amountLabel} GMX or esGMX more to get {stakingProgress.multiplierLabel} next
-                epoch
+                Stake {stakingProgress.amountLabel} GMX more to get {stakingProgress.multiplierLabel} next epoch
               </Trans>
             ) : hasMultiplier && stakingProgress?.isHighestTier ? (
               <Trans>You are already at the highest staking tier</Trans>

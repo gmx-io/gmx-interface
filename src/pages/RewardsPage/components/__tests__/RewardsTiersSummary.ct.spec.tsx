@@ -6,6 +6,10 @@ test.describe("RewardsTiersSummary", () => {
   test("shows indexed token totals in the all-time tooltip", async ({ mount, page }) => {
     const component = await mount(<RewardsTiersSummaryStory />);
 
+    await expect(component.getByText("1.75x")).toHaveClass(/text-24/);
+    await expect(component.getByText("1.75x")).toHaveClass(/text-green-300/);
+    await expect(component.getByText("Current Multiplier")).toBeVisible();
+
     await component.getByRole("button", { name: "All-time Rewards" }).focus();
 
     await expect(page.getByText("All-time esGMX")).toBeVisible();
@@ -20,6 +24,13 @@ test.describe("RewardsTiersSummary", () => {
     await expect(component.getByRole("button", { name: "All-time Rewards" })).toHaveCount(0);
     await expect(component.getByText("Current Multiplier")).toHaveCount(0);
     await expect(component.getByText("Vestable esGMX")).toHaveCount(0);
+  });
+
+  test("shows the V1 next-epoch multiplier transition", async ({ mount }) => {
+    const component = await mount(<RewardsTiersSummaryStory projectedMultiplier={215n} />);
+
+    await expect(component.getByText("1.75x")).toHaveClass(/text-typography-disabled/);
+    await expect(component.getByText("2.15x")).toHaveClass(/text-green-300/);
   });
 
   for (const summaryState of ["loading", "unavailable"] as const) {

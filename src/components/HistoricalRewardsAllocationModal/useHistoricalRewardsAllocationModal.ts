@@ -30,14 +30,14 @@ export function getShouldShowHistoricalRewardsAllocationModal({
 
 export function useHistoricalRewardsAllocationModal({ chainId, account }: { chainId: number; account?: string }) {
   const { availability, isActive } = useIncentivesV2State();
-  const { data: status } = useAccountIncentiveStatus(chainId, {
-    account,
-    enabled: isActive && Boolean(account),
-  });
   const [dismissed, setDismissed] = useLocalStorageSerializeKeySafe<boolean>(
     [HISTORICAL_REWARDS_ALLOCATION_MODAL_DISMISSED_KEY, chainId, account],
     false
   );
+  const { data: status } = useAccountIncentiveStatus(chainId, {
+    account,
+    enabled: isActive && Boolean(account) && dismissed === false,
+  });
   const [isVisible, setIsVisible] = useState(false);
   const activeEpochTimestamp = availability.status === "active" ? availability.config.epochTimestamp : undefined;
   const shouldShow = getShouldShowHistoricalRewardsAllocationModal({

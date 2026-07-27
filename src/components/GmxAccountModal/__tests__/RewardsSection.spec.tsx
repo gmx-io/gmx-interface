@@ -94,7 +94,7 @@ describe("RewardsSection", () => {
     const link = screen.getByRole("link", { name: /Your multiplier/ });
     expect(link.getAttribute("href")).toBe("/rewards");
     expect(link.textContent).toContain("2.5x");
-    expect(link.textContent).toContain("Stake 375 GMX or esGMX more");
+    expect(link.textContent).toContain("Stake 375 GMX more");
     expect(link.textContent).toContain("+0.5x next epoch");
     expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
       account: ACCOUNT,
@@ -179,7 +179,7 @@ describe("RewardsSection", () => {
     renderSection();
 
     const link = screen.getByRole("link", { name: /Your multiplier/ });
-    expect(link.textContent).toContain("Stake 400 GMX or esGMX more");
+    expect(link.textContent).toContain("Stake 400 GMX more");
     expect(link.textContent).toContain("+0.5x next epoch");
   });
 
@@ -197,7 +197,7 @@ describe("RewardsSection", () => {
     renderSection();
 
     const link = screen.getByRole("link", { name: /Your multiplier/ });
-    expect(link.textContent).toContain("Stake 50 GMX or esGMX more");
+    expect(link.textContent).toContain("Stake 50 GMX more");
     expect(link.textContent).toContain("+0.5x next epoch");
   });
 
@@ -215,7 +215,7 @@ describe("RewardsSection", () => {
     renderSection();
 
     const link = screen.getByRole("link", { name: /Your multiplier/ });
-    expect(link.textContent).toContain("Stake < 0.01 GMX or esGMX more");
+    expect(link.textContent).toContain("Stake < 0.01 GMX more");
     expect(link.textContent).not.toContain("Stake 0.00");
   });
 

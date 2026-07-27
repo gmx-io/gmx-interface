@@ -3,11 +3,13 @@ import type { BoostId, StakingTierId, VolumeTierId } from "domain/synthetics/inc
 import ApexActive from "img/boosts/active/ic_apex.svg?react";
 import MarketBalancerActive from "img/boosts/active/ic_market_balancer.svg?react";
 import MultichainTraderActive from "img/boosts/active/ic_multichain_trader.svg?react";
+import ReferralBoostActive from "img/boosts/active/ic_referral_boost.svg?react";
 import RiskManagedTraderActive from "img/boosts/active/ic_risk_managed_trader.svg?react";
 import RwaTraderActive from "img/boosts/active/ic_rwa_trader.svg?react";
 import ApexInactive from "img/boosts/inactive/ic_apex.svg?react";
 import MarketBalancerInactive from "img/boosts/inactive/ic_market_balancer.svg?react";
 import MultichainTraderInactive from "img/boosts/inactive/ic_multichain_trader.svg?react";
+import ReferralBoostInactive from "img/boosts/inactive/ic_referral_boost.svg?react";
 import RiskManagedTraderInactive from "img/boosts/inactive/ic_risk_managed_trader.svg?react";
 import RwaTraderInactive from "img/boosts/inactive/ic_rwa_trader.svg?react";
 import AdvocateActive from "img/staking/active/ic_advocate.svg?react";
@@ -96,6 +98,12 @@ export function BoostTierIcon({
   className?: string;
 }) {
   const Icon = active ? BOOST_ICONS[boostId].active : BOOST_ICONS[boostId].inactive;
+
+  return <Icon className={className ?? (active ? tierIconGlow : tierIconBase)} />;
+}
+
+export function ReferralBoostIcon({ active, className }: { active: boolean; className?: string }) {
+  const Icon = active ? ReferralBoostActive : ReferralBoostInactive;
 
   return <Icon className={className ?? (active ? tierIconGlow : tierIconBase)} />;
 }

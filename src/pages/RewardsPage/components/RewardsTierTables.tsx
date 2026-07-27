@@ -29,7 +29,7 @@ import ExpiresInIcon from "img/ic_clock_dashed.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 import NewLinkIcon from "img/ic_new_link.svg?react";
 
-import { BoostTierIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
+import { BoostTierIcon, ReferralBoostIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
 import {
   type AccountDataState,
   boostLabels,
@@ -43,7 +43,7 @@ type TierTab = "volume" | "staking" | "boosts";
 const tierLevelTableClassName =
   "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:first-child]:!pl-8 [&_th:first-child]:!pl-8";
 const tierLevelRowClassName =
-  "[&:nth-child(odd)>td]:bg-slate-800 [&>td]:!py-7 [&>td:first-child]:rounded-l-8 [&>td:last-child]:rounded-r-8";
+  "[&:nth-child(odd)>td]:bg-slate-800/50 [&>td]:!py-7 [&>td:first-child]:rounded-l-8 [&>td:last-child]:rounded-r-8";
 
 function TierLevelTableTr({ className, ...props }: HTMLProps<HTMLTableRowElement>) {
   return <tr {...props} className={cx(tierLevelRowClassName, className)} />;
@@ -105,7 +105,7 @@ export function RewardsTierTables({
             </div>
           ) : activeTab === "staking" ? (
             <p>
-              <Trans>Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier.</Trans>
+              <Trans>Your Staking Tier is based on staked GMX and determines your staking multiplier.</Trans>
             </p>
           ) : (
             <p>
@@ -162,9 +162,7 @@ function VolumeTiersTable({
           <TableTh width="15%" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
-          <TableTh width="160px" padding="compact">
-            <Trans>Status</Trans>
-          </TableTh>
+          <TableTh width="120px" padding="compact" />
         </TableTheadTr>
       </thead>
       <tbody>
@@ -173,8 +171,6 @@ function VolumeTiersTable({
         ) : (
           config.volumeTiers.map((tier) => {
             const active = status?.volumeTier === tier.tier;
-            const projected = status?.projectedVolumeTier === tier.tier;
-
             return (
               <TierLevelTableTr key={tier.tier}>
                 <TableTd padding="compact">
@@ -183,7 +179,11 @@ function VolumeTiersTable({
                       <VolumeTierIcon tierId={tier.tier} active={active} />
                     </div>
                     <span className="text-typography-primary">{volumeTierLabels[tier.tier]}</span>
-                    {active ? <span className="font-medium text-green-500">✓</span> : null}
+                    {active ? (
+                      <span className="font-medium text-green-500">
+                        <Trans>Active</Trans> ✓
+                      </span>
+                    ) : null}
                   </span>
                 </TableTd>
                 <TableTd padding="compact" className="text-typography-primary">
@@ -195,9 +195,7 @@ function VolumeTiersTable({
                 <TableTd padding="compact">
                   {active && isDowngrading && daysRemaining > 0 ? (
                     <ExpiresInLabel daysRemaining={daysRemaining} />
-                  ) : (
-                    <StatusLabel state={statusState} active={active} projected={projected} />
-                  )}
+                  ) : null}
                 </TableTd>
               </TierLevelTableTr>
             );
@@ -230,9 +228,7 @@ function StakingTiersTable({
           <TableTh width="15%" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
-          <TableTh width="160px" padding="compact">
-            <Trans>Status</Trans>
-          </TableTh>
+          <TableTh width="120px" padding="compact" />
         </TableTheadTr>
       </thead>
       <tbody>
@@ -241,8 +237,6 @@ function StakingTiersTable({
         ) : (
           config.stakingTiers.map((tier) => {
             const active = status?.stakingTier === tier.tier;
-            const projected = status?.projectedStakingTier === tier.tier;
-
             return (
               <TierLevelTableTr key={tier.tier}>
                 <TableTd padding="compact">
@@ -251,7 +245,11 @@ function StakingTiersTable({
                       <StakingTierIcon tierId={tier.tier} active={active} />
                     </div>
                     <span className="font-medium text-typography-primary">{stakingTierLabels[tier.tier]}</span>
-                    {active ? <span className="font-medium text-green-500">✓</span> : null}
+                    {active ? (
+                      <span className="font-medium text-green-500">
+                        <Trans>Active</Trans> ✓
+                      </span>
+                    ) : null}
                   </span>
                 </TableTd>
                 <TableTd padding="compact" className="text-typography-primary">
@@ -260,9 +258,7 @@ function StakingTiersTable({
                 <TableTd padding="compact" className="text-typography-primary">
                   {formatMultiplierAdjustment(tier.multiplier, config.multiplierDecimals)}
                 </TableTd>
-                <TableTd padding="compact">
-                  <StatusLabel state={statusState} active={active} projected={projected} />
-                </TableTd>
+                <TableTd padding="compact" />
               </TierLevelTableTr>
             );
           })
@@ -283,8 +279,6 @@ function BoostsTable({
   status?: AccountIncentiveStatus;
   statusState: AccountDataState;
 }) {
-  const visibleBoosts = config.boosts.filter((boost) => boost.boost !== "ManualAllocation");
-
   return (
     <table className={cx(tierLevelTableClassName, "min-w-[820px]")}>
       <thead>
@@ -296,7 +290,7 @@ function BoostsTable({
             <Trans>About</Trans>
           </TableTh>
           <TableTh width="15%" padding="compact">
-            <Trans>Multiplier</Trans>
+            <Trans>Boost</Trans>
           </TableTh>
           <TableTh width="15%" padding="compact">
             <Trans>Status</Trans>
@@ -305,33 +299,64 @@ function BoostsTable({
       </thead>
       <tbody>
         {statusState === "loading" ? (
-          <TableListSkeleton count={visibleBoosts.length} Structure={TierLevelsSkeletonRow} />
+          <TableListSkeleton count={config.boosts.length + 1} Structure={TierLevelsSkeletonRow} />
         ) : (
-          visibleBoosts.map((boost) => {
-            const listed = Boolean(status?.boostIds.includes(boost.boost));
+          <>
+            {config.boosts.map((boost) => {
+              const transient = boost.boost === "FeaturedMarkets" || boost.boost === "BalancingTrades";
+              const manualAvailable =
+                boost.boost !== "ManualAllocation" || (status?.manualRewardRemainingUsd ?? 0n) > 0n;
+              const isListed = Boolean(status?.boostIds.includes(boost.boost));
+              const isActivePersistent = !transient && isListed && manualAvailable;
+              const isQualifiedThisEpoch = transient && isListed;
+              const isHighlighted = isActivePersistent || isQualifiedThisEpoch;
 
-            return (
-              <TierLevelTableTr key={boost.boost}>
-                <TableTd padding="compact" className="text-typography-primary">
-                  <span className="flex items-center gap-8 font-medium">
-                    <div className="p-1">
-                      <BoostTierIcon boostId={boost.boost} active={listed} />
-                    </div>
-                    {boostLabels[boost.boost]}
-                  </span>
-                </TableTd>
-                <TableTd padding="compact" className="text-typography-secondary">
-                  <BoostDescription chainId={chainId} boost={boost} config={config} />
-                </TableTd>
-                <TableTd padding="compact" className="text-typography-primary">
-                  {formatMultiplierAdjustment(boost.multiplier, config.multiplierDecimals)}
-                </TableTd>
-                <TableTd padding="compact">
-                  <StatusLabel state={statusState} active={listed} />
-                </TableTd>
-              </TierLevelTableTr>
-            );
-          })
+              return (
+                <TierLevelTableTr key={boost.boost}>
+                  <TableTd padding="compact" className="text-typography-primary">
+                    <span className="flex items-center gap-8 font-medium">
+                      <div className="p-1">
+                        <BoostTierIcon boostId={boost.boost} active={isHighlighted} />
+                      </div>
+                      {boostLabels[boost.boost]}
+                    </span>
+                  </TableTd>
+                  <TableTd padding="compact" className="text-typography-secondary">
+                    <BoostDescription chainId={chainId} boost={boost} config={config} />
+                  </TableTd>
+                  <TableTd padding="compact" className="text-typography-primary">
+                    {formatMultiplierAdjustment(boost.multiplier, config.multiplierDecimals)}
+                  </TableTd>
+                  <TableTd padding="compact">
+                    <StatusLabel
+                      state={statusState}
+                      active={isActivePersistent}
+                      qualified={transient ? isQualifiedThisEpoch : undefined}
+                    />
+                  </TableTd>
+                </TierLevelTableTr>
+              );
+            })}
+            <TierLevelTableTr>
+              <TableTd padding="compact" className="text-typography-primary">
+                <span className="flex items-center gap-8 font-medium">
+                  <div className="p-1">
+                    <ReferralBoostIcon active={(status?.referralVolume ?? 0n) > 0n} />
+                  </div>
+                  <Trans>Referral Volume</Trans>
+                </span>
+              </TableTd>
+              <TableTd padding="compact" className="text-typography-secondary">
+                <Trans>Receive 50% of the rewards earned by every trader you invite.</Trans>
+              </TableTd>
+              <TableTd padding="compact" className="text-typography-primary">
+                <Trans>50% of rewards</Trans>
+              </TableTd>
+              <TableTd padding="compact">
+                <StatusLabel state={statusState} active={(status?.referralVolume ?? 0n) > 0n} />
+              </TableTd>
+            </TierLevelTableTr>
+          </>
         )}
       </tbody>
     </table>
@@ -373,7 +398,7 @@ function BoostDescription({
     );
   }
 
-  return null;
+  return <Trans>Available to eligible historical users until the incremental reward cap is consumed.</Trans>;
 }
 
 function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: number; indexTokenAddresses: string[] }) {
