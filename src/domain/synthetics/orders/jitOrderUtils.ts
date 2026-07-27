@@ -2,9 +2,9 @@ import { GlvShiftParam } from "domain/synthetics/jit/utils";
 import { decodeErrorFromViemError, isCustomError } from "lib/errors";
 import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams, CreateOrderPayload } from "sdk/utils/orderTransactions";
-import { setUiFeeReceiverIsJit } from "sdk/utils/twap/uiFeeReceiver";
+import { setOrderDataListMetadataIsJit } from "sdk/utils/twap/uiFeeReceiver";
 
-export function encodeJitBatchOrderUiFeeReceiver(
+export function encodeJitBatchOrderMetadata(
   batchParams: BatchOrderTxnParams,
   simulationParams?: {
     jitShiftParamsList?: GlvShiftParam[];
@@ -33,10 +33,7 @@ export function encodeJitBatchOrderUiFeeReceiver(
         ...firstCreateOrder,
         orderPayload: {
           ...firstCreateOrder.orderPayload,
-          addresses: {
-            ...firstCreateOrder.orderPayload.addresses,
-            uiFeeReceiver: setUiFeeReceiverIsJit(firstCreateOrder.orderPayload.addresses.uiFeeReceiver, true),
-          },
+          dataList: setOrderDataListMetadataIsJit(firstCreateOrder.orderPayload.dataList, true),
         },
       },
       ...batchParams.createOrderParams.slice(1),
