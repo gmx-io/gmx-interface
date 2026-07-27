@@ -110,7 +110,12 @@ export const formatSwapMessage = (
     tradeAction.swapPath
   );
 
-  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams), tradeAction.reason);
+  let actionText = getActionTitle(
+    tradeAction.orderType,
+    tradeAction.eventName,
+    Boolean(tradeAction.twapParams),
+    tradeAction.reason
+  );
 
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC">;
 

@@ -1228,13 +1228,12 @@ export function getNativeGasError(p: {
     return {};
   }
 
-  // TODO: re-enable after testnet testing
-  // if (networkFee > nativeBalance) {
-  //   return {
-  //     buttonErrorMessage: getDefaultInsufficientGasMessage(),
-  //     bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
-  //   };
-  // }
+  if (networkFee > nativeBalance) {
+    return {
+      buttonErrorMessage: getDefaultInsufficientGasMessage(),
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+    };
+  }
 
   return {};
 }

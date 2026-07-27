@@ -321,6 +321,7 @@ export function getMinCollateralUsdForLiquidationPrice(p: {
 
   let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
     fallbackToZero: true,
+    sizeDeltaInTokens: sizeInTokens,
   }).priceImpactDeltaUsd;
 
   if (priceImpactDeltaUsd > 0) {
@@ -452,6 +453,7 @@ export function getContractPositionDynamicFees({
 }: {
   position: {
     sizeInUsd: bigint;
+    sizeInTokens: bigint;
     collateralTokenAddress: string;
     isLong: boolean;
     borrowingFactor: bigint;
@@ -525,6 +527,7 @@ export function getContractPositionDynamicFees({
 
   const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
     fallbackToZero: true,
+    sizeDeltaInTokens: position.sizeInTokens,
   });
   const { positionFeeUsd, discountUsd, uiFeeUsd } = getPositionFee(
     marketInfo,

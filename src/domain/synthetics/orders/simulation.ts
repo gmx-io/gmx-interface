@@ -16,7 +16,7 @@ import { isDevelopment } from "config/env";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
-import { decodeErrorFromViemError } from "lib/errors";
+import { decodeSimulationErrorFromViemError } from "lib/errors";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -25,6 +25,7 @@ import { type ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomError, CustomErrorName, extendError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
 
 import type { GlvShiftParam } from "../jit/utils";
 import { isGlvEnabled } from "../markets/glv";
@@ -332,7 +333,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       isExpress: p.isExpress,
     });
   } else if (simulationRouterAddress) {
-    // v2.2c: create-only validation (SimulationRouter can't simulate without on-chain order)
+    simulationPayloadData.push(encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData));
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
     if (tenderlyConfig) {
@@ -344,7 +345,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
         method: "multicall",
         params: [simulationPayloadData],
         value: p.value,
-        comment: `calling create for ${method}`,
+        comment: `calling ${method}`,
       });
     }
 
@@ -357,7 +358,6 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
-      expectRevert: false,
     });
   } else {
     simulationPayloadData.push(simulateExecuteData);
@@ -390,7 +390,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
   }
 }
 
-async function simulateContractWithRetry({
+export async function simulateContractWithRetry({
   client,
   address,
   abi,
@@ -399,7 +399,6 @@ async function simulateContractWithRetry({
   account,
   blockNumber,
   isExpress,
-  expectRevert = true,
 }: {
   client: PublicClient;
   address: string;
@@ -409,7 +408,6 @@ async function simulateContractWithRetry({
   account: string;
   blockNumber: bigint | undefined;
   isExpress: boolean;
-  expectRevert?: boolean;
 }) {
   try {
     await withRetry(
@@ -432,36 +430,8 @@ async function simulateContractWithRetry({
         },
       }
     );
-
-    // No revert on create-only is fine (no EndOfOracleSimulation expected)
-    if (!expectRevert) {
-      return;
-    }
   } catch (txnError) {
-    if (!expectRevert) {
-      const decodedError = decodeErrorFromViemError(txnError);
-      const isInsufficientFunds = isInsufficientFundsError(txnError);
-      const shouldIgnoreExpressNativeTokenBalance = isInsufficientFunds && isExpress;
-
-      if (shouldIgnoreExpressNativeTokenBalance) {
-        return;
-      }
-
-      throw extendError(
-        decodedError
-          ? new CustomError({
-              name: decodedError.name,
-              message: JSON.stringify(decodedError, null, 2),
-              args: decodedError.args,
-            })
-          : txnError,
-        {
-          errorContext: "simulation",
-        }
-      );
-    }
-
-    const decodedError = decodeErrorFromViemError(txnError);
+    const decodedError = decodeSimulationErrorFromViemError(txnError);
 
     const isPassed = decodedError?.name === CustomErrorName.EndOfOracleSimulation;
 
@@ -485,6 +455,10 @@ async function simulateContractWithRetry({
       );
     }
   }
+
+  throw extendError(new Error("Execution simulation did not revert with EndOfOracleSimulation."), {
+    errorContext: "simulation",
+  });
 }
 
 export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams<any>[]) {

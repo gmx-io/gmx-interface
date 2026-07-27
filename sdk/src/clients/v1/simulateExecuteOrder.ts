@@ -1,10 +1,11 @@
-import { Abi, Address, decodeErrorResult, encodeFunctionData, withRetry } from "viem";
+import { Abi, Address, encodeFunctionData, withRetry } from "viem";
 
 import { abis } from "abis";
 import { getContract, tryGetContract } from "configs/contracts";
 import { convertTokenAddress } from "configs/tokens";
-import { extractTxnError } from "utils/errors";
+import { decodeSimulationErrorFromViemError, extractTxnError } from "utils/errors";
 import { SwapPricingType } from "utils/orders/types";
+import { encodeSimulationRouterExternalCall } from "utils/orderTransactions/simulation";
 import { convertToContractPrice, getTokenData } from "utils/tokens";
 import { TokenPrices, TokensData } from "utils/tokens/types";
 
@@ -70,6 +71,11 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
   let simulationPayloadData = [...p.createMulticallPayload];
 
   const simulationRouterAddress = tryGetContract(chainId, "SimulationRouter");
+  const simulateExecuteData = encodeFunctionData({
+    abi: abis.SimulationRouter as Abi,
+    functionName: "simulateExecuteLatestOrder",
+    args: [simulationPriceParams],
+  });
 
   const retryConfig = {
     retryCount: 2,
@@ -81,7 +87,12 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
   };
 
   if (simulationRouterAddress) {
-    // v2.2c: create-only validation (SimulationRouter can't simulate without on-chain order)
+    simulationPayloadData.push(encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData));
+  } else {
+    simulationPayloadData.push(simulateExecuteData);
+  }
+
+  try {
     await withRetry(async () => {
       return await client.simulateContract({
         address: exchangeRouterAddress,
@@ -93,83 +104,29 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
         blockNumber,
       });
     }, retryConfig);
-  } else {
-    const simulateExecuteData = encodeFunctionData({
-      abi: abis.SimulationRouter as Abi,
-      functionName: "simulateExecuteLatestOrder",
-      args: [simulationPriceParams],
-    });
-    simulationPayloadData.push(simulateExecuteData);
-
-    try {
-      await withRetry(async () => {
-        return await client.simulateContract({
-          address: exchangeRouterAddress,
-          abi: abis.ExchangeRouter as Abi,
-          functionName: "multicall",
-          args: [simulationPayloadData],
-          value: p.value,
-          account: account as Address,
-          blockNumber,
-        });
-      }, retryConfig);
-    } catch (txnError: any) {
-      handleSimulationError(txnError);
-      return;
-    }
+  } catch (txnError: any) {
+    handleSimulationError(txnError);
+    return;
   }
+
+  throw new SimulateExecuteOrderError(
+    "Execution simulation did not revert with EndOfOracleSimulation.",
+    new Error("Simulation call returned successfully.")
+  );
 }
 
 function handleSimulationError(txnError: any): void {
-  let msg: string | undefined = undefined;
-  try {
-    const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
+  const decodedError = decodeSimulationErrorFromViemError(txnError);
 
-    const error = new SimulateExecuteOrderError("No data found in error.", txnError);
+  if (!decodedError) {
+    throw new SimulateExecuteOrderError("No data found in error.", txnError);
+  }
 
-    if (!errorData) throw error;
-
-    const decodedError = decodeErrorResult<typeof abis.CustomErrors>({
-      abi: abis.CustomErrors,
-      data: errorData as Address,
-    });
-
-    const isSimulationPassed = decodedError.errorName === "EndOfOracleSimulation";
-
-    if (isSimulationPassed) {
-      return;
-    }
-
-    const parsedArgs = Object.keys(decodedError.args ?? {}).reduce(
-      (acc, k) => {
-        const args = (decodedError.args ?? {}) as unknown as Record<string, any>;
-        acc[k] = args[k]?.toString();
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-
-    msg = `${txnError?.info?.error?.message ?? decodedError.errorName ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`;
-  } catch (parsingError) {
-    /* eslint-disable-next-line */
-    console.error(parsingError);
-    msg = `Execute order simulation failed`;
-    throw new Error(msg);
+  if (decodedError.name === "EndOfOracleSimulation") {
+    return;
   }
 
   throw txnError;
-}
-
-export function extractDataFromError(errorMessage: unknown) {
-  if (typeof errorMessage !== "string") return null;
-
-  const pattern = /Unable to decode signature "([^"]+)"/;
-  const match = errorMessage.match(pattern);
-
-  if (match && match[1]) {
-    return match[1];
-  }
-  return null;
 }
 
 function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {

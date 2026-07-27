@@ -9,8 +9,8 @@ import {
   PRECISION_DECIMALS,
   roundUpMagnitudeDivision,
 } from "utils/numbers";
-import { convertToTokenAmount, convertToUsd, getMidPrice } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
+import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd, getMidPrice } from "utils/tokens/utils";
 import { TradeFees } from "utils/trade/types";
 
 export function getPriceImpactByAcceptablePrice(p: {
@@ -157,8 +157,23 @@ export function getPriceImpactForPosition(
   let effectiveUsdDelta = sizeDeltaUsd;
   if (marketInfo.useOpenInterestInTokensForBalance) {
     const midPrice = getMidPrice(marketInfo.indexToken.prices);
-    if (opts.sizeDeltaInTokens !== undefined && midPrice > 0n) {
-      effectiveUsdDelta = convertToUsd(opts.sizeDeltaInTokens, marketInfo.indexToken.decimals, midPrice)!;
+    if (midPrice > 0n) {
+      const sizeDeltaInTokens =
+        opts.sizeDeltaInTokens ??
+        (sizeDeltaUsd > 0n
+          ? convertToTokenAmountForIncrease(
+              sizeDeltaUsd,
+              marketInfo.indexToken.decimals,
+              isLong ? marketInfo.indexToken.prices.maxPrice : marketInfo.indexToken.prices.minPrice,
+              isLong
+            )
+          : convertToTokenAmountForIncrease(
+              bigMath.abs(sizeDeltaUsd),
+              marketInfo.indexToken.decimals,
+              midPrice,
+              true
+            ))!;
+      effectiveUsdDelta = convertToUsd(sizeDeltaInTokens, marketInfo.indexToken.decimals, midPrice)!;
       if (sizeDeltaUsd < 0n && effectiveUsdDelta > 0n) {
         effectiveUsdDelta = -effectiveUsdDelta;
       } else if (sizeDeltaUsd > 0n && effectiveUsdDelta < 0n) {
@@ -193,7 +208,15 @@ export function getPriceImpactForPosition(
     };
   }
 
-  if (bigMath.abs(marketInfo.virtualInventoryForPositions) <= 0) {
+  const virtualInventory = marketInfo.useOpenInterestInTokensForBalance
+    ? convertToUsd(
+        marketInfo.virtualInventoryForPositionsInTokens ?? 0n,
+        marketInfo.indexToken.decimals,
+        getMidPrice(marketInfo.indexToken.prices)
+      )!
+    : marketInfo.virtualInventoryForPositions;
+
+  if (bigMath.abs(virtualInventory) <= 0) {
     return {
       priceImpactDeltaUsd,
       balanceWasImproved,
@@ -201,30 +224,35 @@ export function getPriceImpactForPosition(
   }
 
   const virtualInventoryParams = getNextOpenInterestForVirtualInventory({
-    virtualInventory: marketInfo.virtualInventoryForPositions,
+    virtualInventory,
     usdDelta: effectiveUsdDelta,
     isLong: isLong!,
   });
 
-  const { priceImpactDeltaUsd: priceImpactUsdForVirtualInventory } = getPriceImpactUsd({
-    currentLongUsd: virtualInventoryParams.currentLongUsd,
-    currentShortUsd: virtualInventoryParams.currentShortUsd,
-    nextLongUsd: virtualInventoryParams.nextLongUsd,
-    nextShortUsd: virtualInventoryParams.nextShortUsd,
-    factorPositive: marketInfo.positionImpactFactorPositive,
-    factorNegative: marketInfo.positionImpactFactorNegative,
-    exponentFactorPositive: marketInfo.positionImpactExponentFactorPositive,
-    exponentFactorNegative: marketInfo.positionImpactExponentFactorNegative,
-    fallbackToZero: opts.fallbackToZero,
-  });
+  const { priceImpactDeltaUsd: priceImpactUsdForVirtualInventory, balanceWasImproved: virtualBalanceWasImproved } =
+    getPriceImpactUsd({
+      currentLongUsd: virtualInventoryParams.currentLongUsd,
+      currentShortUsd: virtualInventoryParams.currentShortUsd,
+      nextLongUsd: virtualInventoryParams.nextLongUsd,
+      nextShortUsd: virtualInventoryParams.nextShortUsd,
+      factorPositive: marketInfo.positionImpactFactorPositive,
+      factorNegative: marketInfo.positionImpactFactorNegative,
+      exponentFactorPositive: marketInfo.positionImpactExponentFactorPositive,
+      exponentFactorNegative: marketInfo.positionImpactExponentFactorNegative,
+      fallbackToZero: opts.fallbackToZero,
+    });
 
-  return {
-    priceImpactDeltaUsd:
-      priceImpactUsdForVirtualInventory < priceImpactDeltaUsd!
-        ? priceImpactUsdForVirtualInventory
-        : priceImpactDeltaUsd!,
-    balanceWasImproved,
-  };
+  const shouldUseVirtualInventory = priceImpactUsdForVirtualInventory < priceImpactDeltaUsd;
+
+  return shouldUseVirtualInventory
+    ? {
+        priceImpactDeltaUsd: priceImpactUsdForVirtualInventory,
+        balanceWasImproved: virtualBalanceWasImproved,
+      }
+    : {
+        priceImpactDeltaUsd,
+        balanceWasImproved,
+      };
 }
 
 export function getProportionalPendingImpactValues({

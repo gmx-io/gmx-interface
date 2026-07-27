@@ -4431,6 +4431,10 @@ msgstr ""
 msgid "Max profit limit reached"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Maximum collateral capacity reached"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
 msgstr ""
@@ -9243,6 +9247,10 @@ msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Express Trading is unavailable for wrapping or unwrapping native token ETH"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Relay fee exceeds the maximum allowed"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx

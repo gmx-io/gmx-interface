@@ -167,8 +167,10 @@ export function mockMarketsInfoData(
       virtualPoolAmountForLongToken: 0n,
       virtualPoolAmountForShortToken: 0n,
       virtualInventoryForPositions: 0n,
+      virtualInventoryForPositionsInTokens: 0n,
 
       virtualMarketId: zeroAddress,
+      virtualIndexTokenId: zeroAddress,
       virtualLongTokenId: zeroAddress,
       virtualShortTokenId: zeroAddress,
 
