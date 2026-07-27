@@ -68,6 +68,10 @@ msgstr "正の値：トレーダーがファンディングを受け取ります
 msgid "Funding exponent factor"
 msgstr "ファンディング指数ファクター"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfers from another chain are currently unavailable. Use <0>Receive to this wallet</0> instead."
+msgstr "別のチェーンからの転送は現在ご利用いただけません。代わりに<0>このウォレットで受け取る</0>をご利用ください。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
 msgstr "入金リクエスト"
@@ -1294,6 +1298,10 @@ msgstr "分散型利回りプロダクト"
 msgid "{0} price"
 msgstr "{0} 価格"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buying with card is currently unavailable for your region or configuration. Use <0>Receive to this wallet</0> instead."
+msgstr "カードでの購入は、お住まいの地域または設定では現在ご利用いただけません。代わりに<0>このウォレットで受け取る</0>をご利用ください。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "最大{0}購入可能額超過"
@@ -1369,6 +1377,11 @@ msgstr "自動キャンセル TP/SL 注文は最大 {allowedAutoCancelOrdersNumb
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
 msgstr "GMX 提案の投票ページ"
+
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+msgid "Receive funds"
+msgstr "資金を受け取る"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
@@ -2046,6 +2059,10 @@ msgstr ""
 msgid "Order is already frozen"
 msgstr "注文はすでに凍結されています"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Copy your wallet address or scan a QR code."
+msgstr "ウォレットアドレスをコピーするか、QRコードをスキャンしてください。"
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -2255,6 +2272,10 @@ msgstr "安全かつパーミッションレス"
 msgid "Register an affiliate code to access distributions"
 msgstr ""
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX Account, deposit the funds to it as a separate step once they arrive."
+msgstr "資金はGMXアカウントではなく、{chainName}上の接続済みウォレットに届きます。GMXアカウントで取引するには、資金の到着後、別の手順としてGMXアカウントに入金してください。"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code."
 msgstr "このアカウントには有効なリファラルコードがありません。"
@@ -2315,6 +2336,10 @@ msgstr "表示されるまで数分かかる場合があります。後ほどご
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "入金失敗"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Use debit/credit card, Apple Pay, or Google Pay where supported."
+msgstr "デビット/クレジットカード、Apple Pay、Google Pay（対応地域のみ）をご利用いただけます。"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -2962,10 +2987,6 @@ msgstr "請求可能な担保の削減ファクター"
 msgid "Slippage too low"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Net referred traders in the selected period (gained - lost)"
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "レバレッジ取引とスワップから手数料を蓄積するGMトークンの自動リバランスボールト。{0}と{1}によって裏付けられています。"
@@ -3071,6 +3092,10 @@ msgstr ""
 msgid "Start unrealized PnL"
 msgstr "開始時の含み損益"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Transfer from another chain"
+msgstr "別のチェーンから転送"
+
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
 msgstr "テイクプロフィット / ストップロス"
@@ -3139,7 +3164,7 @@ msgstr "ステークが送信されました"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
-msgstr ""
+msgstr "純増減"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
@@ -4054,6 +4079,10 @@ msgstr "注文リクエストを送信中…"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>{0}{1}の売却<1>{poolName}</1></0>"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Funds arrive in your connected wallet on {chainName}."
+msgstr "資金は{chainName}上の接続済みウォレットに届きます。"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
 msgstr "ストップロス Decrease"
@@ -4449,6 +4478,7 @@ msgstr "ユーザーをコピー"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap impact"
 msgstr "実現スワップインパクト"
 
@@ -5174,6 +5204,7 @@ msgstr "過去180日"
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Positive funding fees"
 msgstr "正のファンディング手数料"
 
@@ -5382,6 +5413,10 @@ msgstr "TP/SLを設定"
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "最大 {MAX_REFERRAL_CODE_LENGTH} 文字"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Buy with card"
+msgstr "カードで購入"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "マーケットごとに独立した流動性を提供"
@@ -5397,6 +5432,10 @@ msgstr "残高に建玉をトークン単位で使用"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "シームレスな取引"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Deposit from another wallet, exchange, or chain."
+msgstr "別のウォレット、取引所、またはチェーンから入金します。"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
@@ -6308,6 +6347,11 @@ msgstr "ファンディング手数料の決済をリクエスト"
 msgid "Withdrawn"
 msgstr "出金完了"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated"
+msgstr "卒業"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
@@ -6454,7 +6498,7 @@ msgstr "証拠金が不足しています。手数料は、入金された担保
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
-msgstr ""
+msgstr "喪失"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
@@ -7655,6 +7699,10 @@ msgstr "清算"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "TP/SLを追加"
+
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "How would you like to add funds?"
+msgstr "どの方法で資金を追加しますか？"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -10373,6 +10421,10 @@ msgstr "{balanceFormatted}をメインアカウントに出金しました"
 msgid "{positionName} failed to settle"
 msgstr "{positionName}の決済に失敗しました"
 
+#: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
+msgid "Receive to this wallet"
+msgstr "このウォレットで受け取る"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"
 msgstr "エコシステムプロジェクト"
@@ -10435,7 +10487,7 @@ msgstr "トピックス"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
-msgstr ""
+msgstr "獲得"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -11248,6 +11300,10 @@ msgstr "トランザクションがキャンセルされました"
 msgid "Request Market Decrease"
 msgstr "マーケット減少リクエスト"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
+msgstr "選択した期間の純紹介トレーダー数（獲得 - 卒業 - 喪失）。卒業したトレーダーは紹介プログラムの卒業しきい値に達し、GMXプロトコルコードに移行されました。手数料割引は維持されますが、アフィリエイト報酬は発生しなくなります。<0>詳細</0>"
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"
 msgstr "デルタニュートラルボールト"
@@ -11266,6 +11322,7 @@ msgid "PNG"
 msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized swap fees"
 msgstr "実現スワップ手数料"
 
@@ -11542,6 +11599,10 @@ msgstr "リンク"
 #: src/components/TradeHistory/keys.ts
 msgid "Expired Market Swap"
 msgstr ""
+
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
+msgstr "卒業したトレーダーは、紹介プログラムの卒業しきい値に達したため、GMXプロトコルコードに移行されました。"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

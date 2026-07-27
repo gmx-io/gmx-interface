@@ -17,7 +17,6 @@ import {
   SwapOrderParams,
 } from "utils/orderTransactions";
 import { ContractPrice, ERC20Address } from "utils/tokens/types";
-import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
 
 beforeAll(() => {
   // Mock Math.random to return a consistent value
@@ -365,17 +364,6 @@ describe("Swap Order Payloads", () => {
 
       const expectedOrders = Array.from({ length: twapParams.numberOfParts }, (_, i) => {
         const validFromTime = BigInt(Math.floor(startTime + intervalInSeconds * i));
-        const uiFeeReceiver = `0xff00000000000000000000000000000004800001`;
-
-        const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
-
-        expect(decoded).toEqual({
-          twapId: "8000",
-          numberOfParts: twapParams.numberOfParts,
-          isExpress: false,
-          isJit: false,
-          source: "00",
-        });
 
         return {
           orderPayload: {
@@ -383,7 +371,7 @@ describe("Swap Order Payloads", () => {
               receiver: RECEIVER,
               cancellationReceiver: zeroAddress,
               callbackContract: zeroAddress,
-              uiFeeReceiver,
+              uiFeeReceiver: UI_FEE_RECEIVER,
               market: zeroAddress,
               initialCollateralToken: WETH.address as ERC20Address,
               swapPath: [ETH_MARKET.marketTokenAddress],
@@ -404,7 +392,7 @@ describe("Swap Order Payloads", () => {
             shouldUnwrapNativeToken: true,
             autoCancel: false,
             referralCode: REFERRAL_CODE,
-            dataList: [],
+            dataList: ["0x676d786f3a313a343a383030303a30303a303a30000000000000000000000000"],
           },
           params: {
             ...params,
@@ -413,7 +401,7 @@ describe("Swap Order Payloads", () => {
             minOutputAmount: 0n,
             orderType: OrderType.LimitSwap,
             allowedSlippage: 0,
-            uiFeeReceiver,
+            uiFeeReceiver: UI_FEE_RECEIVER,
             validFromTime,
           },
           tokenTransfersParams: {

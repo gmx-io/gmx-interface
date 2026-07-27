@@ -27,8 +27,6 @@ import {
   useGmxAccountSelectedTransferGuid,
   useGmxAccountSelector,
   useGmxAccountSettlementChainId,
-  useGmxAccountWalletReceiveViewBackTo,
-  useGmxAccountWalletReceiveViewChain,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
@@ -100,6 +98,7 @@ import {
   useGmxAccountDepositEligibility,
   useGmxAccountDepositNetworks,
   useMultichainTradeTokensRequest,
+  useOpenWalletReceive,
 } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
@@ -159,8 +158,7 @@ export const DepositView = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
-  const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
-  const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+  const openWalletReceive = useOpenWalletReceive();
 
   const depositNetworks = useGmxAccountDepositNetworks();
   const { hasAnyDepositFunds, hasDepositFundsOnChain, isEligibilityLoading } = useGmxAccountDepositEligibility();
@@ -564,6 +562,7 @@ export const DepositView = () => {
     gasPaymentTokenBalance: gasPaymentTokenBalanceForDeposit,
     gasPaymentTokenAmount: gasPaymentTokenAmountForDepositView,
     ignoreGasPaymentToken,
+    useMinimalBuffer: depositViewChain !== undefined && depositViewChain !== settlementChainId,
   });
 
   const handleMaxButtonClick = useCallback(() => {
@@ -1095,10 +1094,8 @@ export const DepositView = () => {
   );
 
   const handleReceiveToWallet = useCallback(() => {
-    setWalletReceiveViewChain(depositViewChain ?? (settlementChainId as SourceChainId));
-    setWalletReceiveViewBackTo("deposit");
-    setIsVisibleOrView("walletReceive");
-  }, [depositViewChain, setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain, settlementChainId]);
+    openWalletReceive({ chain: depositViewChain ?? (settlementChainId as SourceChainId), backTo: "deposit" });
+  }, [depositViewChain, openWalletReceive, settlementChainId]);
 
   const handleChangeNetworkClick = useCallback(() => {
     fromNetworkButtonRef.current?.click();

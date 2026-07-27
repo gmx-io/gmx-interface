@@ -17,8 +17,8 @@ function offHoursMarket() {
   return {
     ...createMockMarketInfo(),
     marketTokenAddress: GOLD,
-    borrowingFactorPerSecondForLongs: expandDecimals(14, 21),
-    borrowingFactorPerSecondForShorts: expandDecimals(14, 21),
+    borrowingFactorPerSecondForLongs: expandDecimals(50, 21),
+    borrowingFactorPerSecondForShorts: expandDecimals(50, 21),
   };
 }
 

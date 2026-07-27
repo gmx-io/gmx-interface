@@ -18,7 +18,7 @@ import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 import { ExternalSwapQuote } from "utils/trade/types";
 import { getTwapValidFromTime } from "utils/twap";
 import { TwapOrderParams } from "utils/twap/types";
-import { createTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
+import { encodeOrderDataListMetadata, generateTwapId } from "utils/twap/uiFeeReceiver";
 
 export type ExchangeRouterCall = {
   method: string;
@@ -374,7 +374,20 @@ export function buildTwapOrdersPayloads<
     throw new Error(`TWAP numberOfParts must be > 0, got ${twapParams.numberOfParts}`);
   }
 
-  const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: twapParams.numberOfParts, source: twapParams.source });
+  const twapId = generateTwapId();
+  const twapDataListEntry = encodeOrderDataListMetadata({
+    numberOfParts: twapParams.numberOfParts,
+    twapId,
+    source: twapParams.source,
+  });
+
+  const withTwapMetadata = (part: CreateOrderTxnParams<T>): CreateOrderTxnParams<T> => ({
+    ...part,
+    orderPayload: {
+      ...part.orderPayload,
+      dataList: [...part.orderPayload.dataList, twapDataListEntry],
+    },
+  });
 
   if (isSwapOrderType(p.orderType)) {
     return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
@@ -400,9 +413,9 @@ export function buildTwapOrdersPayloads<
         executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
         validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
         orderType: OrderType.LimitSwap,
-        uiFeeReceiver,
+        uiFeeReceiver: params.uiFeeReceiver,
       }) as CreateOrderTxnParams<T>;
-    });
+    }).map(withTwapMetadata);
   }
 
   if (isIncreaseOrderType(p.orderType)) {
@@ -435,9 +448,9 @@ export function buildTwapOrdersPayloads<
         orderType: OrderType.LimitIncrease,
         acceptablePrice,
         triggerPrice,
-        uiFeeReceiver,
+        uiFeeReceiver: params.uiFeeReceiver,
       }) as CreateOrderTxnParams<T>;
-    });
+    }).map(withTwapMetadata);
   }
 
   return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
@@ -467,12 +480,12 @@ export function buildTwapOrdersPayloads<
       acceptablePrice,
       triggerPrice,
       allowedSlippage: 0,
-      uiFeeReceiver,
+      uiFeeReceiver: params.uiFeeReceiver,
       minOutputUsd: params.minOutputUsd / BigInt(twapParams.numberOfParts),
       receiveTokenAddress: params.receiveTokenAddress,
       decreasePositionSwapType: params.decreasePositionSwapType,
     }) as CreateOrderTxnParams<T>;
-  });
+  }).map(withTwapMetadata);
 }
 
 export function getIsTwapOrderPayload(p: CreateOrderPayload) {
