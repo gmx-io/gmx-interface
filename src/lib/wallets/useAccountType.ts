@@ -10,7 +10,7 @@ import { abis } from "sdk/abis";
 
 import { getPublicClientWithRpc } from "./walletConfig";
 
-enum AccountType {
+export enum AccountType {
   Safe,
   SmartAccount, // ERC-4337 compatible smart account
   PostEip7702EOA, // Post-EIP-7702 EOA (delegated EOA)
@@ -53,7 +53,7 @@ async function isSafeAccount(
   return KNOWN_SAFE_SINGLETONS.has(masterCopy) || safeSingletonAddresses.has(masterCopy);
 }
 
-async function getAccountType(
+export async function getAccountType(
   address: string,
   client: PublicClient,
   safeSingletonAddresses: Set<string>

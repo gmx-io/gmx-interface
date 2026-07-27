@@ -1,5 +1,5 @@
 import { AbstractSigner, Provider, Signer } from "ethers";
-import { Address, encodeFunctionData, recoverTypedDataAddress } from "viem";
+import { encodeFunctionData, isHex } from "viem";
 
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
@@ -24,7 +24,8 @@ import { getByKey } from "lib/objects";
 import { createProviderRpc } from "lib/rpc/createProviderRpc";
 import { ISigner } from "lib/transactions/iSigner";
 import { WalletSigner } from "lib/wallets";
-import { SignatureDomain, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
+import { getSignatureKind, hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
@@ -305,6 +306,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       typedData: typedData.message,
       domain: typedData.domain,
       shouldUseSignerMethod: subaccount !== undefined,
+      verificationChainId: chainId,
     };
 
     signature = await signTypedData(signatureParams);
@@ -482,7 +484,7 @@ async function signBridgeOutPayload({
 
   const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainTransferRouter"));
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId });
 }
 
 export async function signSetTraderReferralCode({
@@ -513,7 +515,7 @@ export async function signSetTraderReferralCode({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }
 
 export async function signRegisterCode({
@@ -544,8 +546,11 @@ export async function signRegisterCode({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }
+
+export const SIGNATURE_VALIDATION_FAILED_ERROR = "Signature validation failed";
+export const SIGNATURE_VALIDATION_UNAVAILABLE_ERROR = "Signature validation unavailable";
 
 async function validateSignature({
   signatureParams,
@@ -554,52 +559,51 @@ async function validateSignature({
   silent = false,
   errorSource = "validateSignature",
 }: {
-  signatureParams: {
-    domain: SignatureDomain;
-    types: Record<string, any>;
-    typedData: Record<string, any>;
-  };
+  signatureParams: Pick<SignTypedDataParams, "domain" | "types" | "typedData" | "verificationChainId">;
   signature: string;
   expectedAccount: string;
   silent?: boolean;
   errorSource?: string;
 }) {
+  const { verificationChainId } = signatureParams;
+  const signedHash = hashSignedTypedData(signatureParams);
+  const diagnostics = {
+    signedHash,
+    verificationChainId,
+    signingChainId: signatureParams.domain.chainId,
+    expectedAccount,
+    signature,
+    signatureKind: getSignatureKind(signature),
+  };
+
   try {
-    // Validate the signature
-    const recoveredAddress = await recoverTypedDataAddress({
-      domain: {
-        ...signatureParams.domain,
-        verifyingContract: signatureParams.domain.verifyingContract as Address,
-      },
-      types: signatureParams.types,
-      primaryType: "Batch",
-      message: signatureParams.typedData,
-      signature: signature as `0x${string}`,
+    if (!isHex(signature)) {
+      throw new Error("Signature is not a hex string");
+    }
+
+    // Covers EOA, ERC-1271 and ERC-6492, matching what the relay router accepts.
+    const isValid = await getPublicClientWithRpc(verificationChainId).verifyHash({
+      address: expectedAccount,
+      hash: signedHash,
+      signature,
     });
 
-    const isValid = recoveredAddress.toLowerCase() === expectedAccount.toLowerCase();
-
     if (!isValid) {
-      throw extendError(new Error("Signature validation failed"), {
-        data: {
-          recoveredAddress,
-          expectedAccount,
-          signature,
-        },
-      });
+      throw new Error(SIGNATURE_VALIDATION_FAILED_ERROR);
     }
   } catch (error) {
-    metrics.pushError(error, errorSource);
+    const isRejected = error?.message === SIGNATURE_VALIDATION_FAILED_ERROR;
+    const extended = extendError(isRejected ? error : new Error(SIGNATURE_VALIDATION_UNAVAILABLE_ERROR), {
+      errorSource,
+      data: isRejected ? diagnostics : { ...diagnostics, cause: error?.message },
+    });
+
+    metrics.pushError(extended, errorSource);
 
     if (silent) {
       return;
     }
 
-    throw extendError(error, {
-      data: {
-        signature,
-        expectedAccount,
-      },
-    });
+    throw extended;
   }
 }

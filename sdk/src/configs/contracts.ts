@@ -431,7 +431,7 @@ export const CONTRACTS = {
     LayerZeroEndpoint: "0x6EDCE65403992e310A62460808c4b910D972f10f",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
     GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
-    ExternalHandler: "0x2303b33c2895871ae45AD8fEBCB52275657c9F9d",
+    ExternalHandler: zeroAddress,
 
     GLP: zeroAddress,
     GMX: zeroAddress,

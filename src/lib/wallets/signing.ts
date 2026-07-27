@@ -1,12 +1,14 @@
 import { getAccount, getChainId, getWalletClient } from "@wagmi/core";
 import { AbstractSigner, type Wallet } from "ethers";
-import { hashTypedData, withRetry, type Hex } from "viem";
+import { hashTypedData, isHex, size, withRetry, type Hex } from "viem";
 
-import { parseError } from "lib/errors";
+import { extendError, parseError } from "lib/errors";
+import { metrics } from "lib/metrics";
 import { ISigner } from "lib/transactions/iSigner";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
+import { AccountType, getAccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
@@ -17,6 +19,7 @@ export type SignatureDomain = {
   verifyingContract: string;
 };
 
+/** WARNING: the root struct must be declared FIRST — its key is taken as the EIP-712 primary type. */
 export type SignatureTypes = Record<string, { name: string; type: string }[]>;
 
 export type SignTypedDataParams = {
@@ -27,12 +30,14 @@ export type SignTypedDataParams = {
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
   /** Chain the on-chain verifier runs on; smart wallets must sign with their wallet on this chain. */
-  verificationChainId?: number;
+  verificationChainId: number;
 };
 
 type RpcSendable = Pick<WalletSigner["provider"], "send">;
 
 type AnySigner = WalletSigner | Wallet | AbstractSigner | ISigner;
+
+const NO_SAFE_SINGLETONS = new Set<string>();
 
 async function needsChainSwapForSmartWallet({
   address,
@@ -46,12 +51,20 @@ async function needsChainSwapForSmartWallet({
   if (targetChainId === undefined || targetChainId === currentChainId) {
     return false;
   }
-  try {
-    const code = await getPublicClientWithRpc(currentChainId).getCode({ address });
-    return Boolean(code && code !== "0x");
-  } catch {
-    return false;
-  }
+
+  // Smart wallets deploy lazily per chain, so the current chain alone would misread a
+  // not-yet-deployed one as an EOA and skip the swap.
+  const accountTypes = await Promise.all(
+    [currentChainId, targetChainId].map((chainId) =>
+      getAccountType(address, getPublicClientWithRpc(chainId), NO_SAFE_SINGLETONS).catch((error) => {
+        metrics.pushError(extendError(error, { data: { chainId, address } }), "signing.accountTypeProbe");
+
+        return undefined;
+      })
+    )
+  );
+
+  return accountTypes.some((accountType) => accountType !== undefined && accountType !== AccountType.EOA);
 }
 
 function providerSendSign(signer: AnySigner, from: string, eip712: object) {
@@ -88,23 +101,29 @@ async function withSmartWalletChainSwap<T>(
     targetChainId,
   });
 
-  if (!needsSwap) return action(signer);
+  if (!needsSwap) {
+    return action(signer);
+  }
 
   await switchNetwork(targetChainId!, true);
   const account = getAccount(config).address;
-  if (!account) throw new Error("No account after chain swap");
-  const swappedWalletClient = await getWalletClient(config);
+  if (!account) {
+    throw new Error("No account after chain swap");
+  }
+  const swappedWalletClient = await getWalletClient(config, { chainId: targetChainId! });
   const swappedSigner = clientToSigner(swappedWalletClient, account);
   try {
     return await action(swappedSigner);
   } finally {
-    await switchNetwork(startingChainId, true).catch(() => {
-      // restoring is best-effort
+    await switchNetwork(startingChainId, true).catch((error) => {
+      metrics.pushError(
+        extendError(error, { data: { startingChainId, targetChainId, address } }),
+        "signing.chainSwapRestore"
+      );
     });
   }
 }
 
-// TODO: it this needed or we can just use [0] as primaryType?
 function hashTypedDataWithViem({
   domain,
   types,
@@ -126,6 +145,51 @@ function hashTypedDataWithViem({
     primaryType,
     message,
   });
+}
+
+type TypedDataToSign = { types: SignatureTypes; message: Record<string, any> };
+
+function minifyTypedData({
+  domain,
+  types,
+  message,
+}: {
+  domain: SignatureDomain;
+  types: SignatureTypes;
+  message: Record<string, any>;
+}): TypedDataToSign {
+  return {
+    types: { Minified: [{ name: "digest", type: "bytes32" }] },
+    message: { digest: hashTypedDataWithViem({ domain, types, message }) },
+  };
+}
+
+/** Trailing marker an ERC-6492 wrapper appends to a counterfactual-account signature. */
+export const ERC6492_MAGIC_SUFFIX = "6492649264926492649264926492649264926492649264926492649264926492";
+
+export type SignatureKind = "eoa" | "erc6492" | "erc1271" | "malformed";
+
+export function getSignatureKind(signature: string): SignatureKind {
+  if (!isHex(signature) || size(signature) === 0) {
+    return "malformed";
+  }
+
+  if (signature.endsWith(ERC6492_MAGIC_SUFFIX)) {
+    return "erc6492";
+  }
+
+  return size(signature) === 65 ? "eoa" : "erc1271";
+}
+
+export function hashSignedTypedData({
+  domain,
+  types,
+  typedData,
+  minified = true,
+}: Pick<SignTypedDataParams, "domain" | "types" | "typedData" | "minified">): Hex {
+  const toSign = minified ? minifyTypedData({ domain, types, message: typedData }) : { types, message: typedData };
+
+  return hashTypedDataWithViem({ domain, ...toSign });
 }
 
 export async function signTypedData({
@@ -157,23 +221,9 @@ export async function signTypedData({
     }
   }
 
-  let typesToSign = types;
-  let messageToSign = typedData;
-
-  if (minified) {
-    const digest = hashTypedDataWithViem({
-      domain,
-      types,
-      message: typedData,
-    });
-    const minifiedTypes = {
-      Minified: [{ name: "digest", type: "bytes32" }],
-    };
-    typesToSign = minifiedTypes;
-    messageToSign = {
-      digest,
-    };
-  }
+  const { types: typesToSign, message: messageToSign } = minified
+    ? minifyTypedData({ domain, types, message: typedData })
+    : { types, message: typedData };
 
   const primaryType = Object.keys(typesToSign).filter((t) => t !== "EIP712Domain")[0];
 
