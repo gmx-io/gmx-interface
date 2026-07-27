@@ -1,6 +1,7 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { bigMath } from "utils/bigmath";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
+import type { MarketsInfoData } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
 import { InternalSwapStrategy, NoSwapStrategy } from "utils/swap/types";
 import {
@@ -12,7 +13,7 @@ import {
   getIsWrap,
 } from "utils/tokens";
 import type { TokenData, TokensRatio } from "utils/tokens/types";
-import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "utils/trade/types";
+import type { ExternalSwapQuoteParams, FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "utils/trade/types";
 import { SwapRoute } from "utils/trade/types";
 
 export function getSwapAmountsByFromValue(p: {
@@ -26,6 +27,11 @@ export function getSwapAmountsByFromValue(p: {
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
   allowSameTokenSwap: boolean;
+  marketsInfoData?: MarketsInfoData;
+  chainId?: number;
+  externalSwapQuoteParams?: ExternalSwapQuoteParams;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 }): SwapAmounts {
   const {
     tokenIn,
@@ -186,11 +192,16 @@ export function getSwapAmountsByToValue(p: {
   allowedSwapSlippageBps?: bigint;
   uiFeeFactor: bigint;
   allowSameTokenSwap: boolean;
+  marketsInfoData?: MarketsInfoData;
+  chainId?: number;
+  externalSwapQuoteParams?: ExternalSwapQuoteParams;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 }): SwapAmounts {
   const {
     tokenIn,
     tokenOut,
-    amountOut,
+    amountOut: requestedAmountOut,
     triggerRatio,
     isLimit,
     findSwapPath,
@@ -203,13 +214,15 @@ export function getSwapAmountsByToValue(p: {
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
 
-  const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
-  const uiFeeUsd = applyFactor(usdOut, uiFeeFactor);
+  let amountOut = requestedAmountOut;
+  let usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
 
   let minOutputAmount = amountOut;
 
   let amountIn = 0n;
   let usdIn = 0n;
+  let swapStrategyAmountIn = amountIn;
+  let swapStrategyUsdIn = usdIn;
 
   const defaultSwapStrategy: NoSwapStrategy = {
     type: "noSwap",
@@ -273,7 +286,7 @@ export function getSwapAmountsByToValue(p: {
   }
 
   const baseUsdIn = usdOut;
-  const swapPathStats = findSwapPath(baseUsdIn, { order: swapOptimizationOrder });
+  let swapPathStats = findSwapPath(baseUsdIn, { order: swapOptimizationOrder });
 
   if (!swapPathStats) {
     return defaultAmounts;
@@ -297,10 +310,24 @@ export function getSwapAmountsByToValue(p: {
       usdIn += bigMath.mulDiv(usdIn, allowedSwapSlippageBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
     }
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
+    swapStrategyAmountIn = amountIn;
+    swapStrategyUsdIn = usdIn;
   } else {
     const adjustedUsdIn = swapPathStats.usdOut > 0 ? bigMath.mulDiv(baseUsdIn, usdOut, swapPathStats.usdOut) : 0n;
+    const adjustedSwapPathStats = findSwapPath(adjustedUsdIn, { order: swapOptimizationOrder });
 
-    usdIn = adjustedUsdIn + uiFeeUsd;
+    if (!adjustedSwapPathStats) {
+      return defaultAmounts;
+    }
+
+    swapPathStats = adjustedSwapPathStats;
+    swapStrategyUsdIn = adjustedUsdIn;
+    swapStrategyAmountIn = convertToTokenAmount(swapStrategyUsdIn, tokenIn.decimals, priceIn)!;
+    amountOut = swapPathStats.amountOut;
+    usdOut = swapPathStats.usdOut;
+
+    const uiFeeUsd = applyFactor(swapStrategyUsdIn, uiFeeFactor);
+    usdIn = swapStrategyUsdIn + uiFeeUsd;
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   }
 
@@ -313,13 +340,13 @@ export function getSwapAmountsByToValue(p: {
     type: "internalSwap",
     externalSwapQuote: undefined,
     swapPathStats,
-    amountIn,
+    amountIn: swapStrategyAmountIn,
     amountOut,
-    usdIn,
+    usdIn: swapStrategyUsdIn,
     usdOut,
     priceIn,
     priceOut,
-    feesUsd: usdIn - usdOut,
+    feesUsd: swapStrategyUsdIn - usdOut,
   };
 
   return {

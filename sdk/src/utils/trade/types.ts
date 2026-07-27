@@ -1,6 +1,7 @@
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "utils/fees/types";
 import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { SwapStrategyForIncreaseOrders } from "utils/swap/types";
+import { TokensData } from "utils/tokens/types";
 
 export enum TradeType {
   Long = "Long",
@@ -301,6 +302,19 @@ export type ExternalSwapQuote = {
     estimatedGas: bigint;
     estimatedExecutionFee: bigint;
   };
+};
+
+export type ExternalSwapPath = {
+  aggregator: ExternalSwapAggregator;
+  inTokenAddress: string;
+  outTokenAddress: string;
+};
+
+export type ExternalSwapQuoteParams = {
+  chainId: number;
+  receiverAddress: string;
+  gasPrice: bigint | undefined;
+  tokensData: TokensData | undefined;
 };
 
 export type ExternalSwapCalculationStrategy = "byFromValue" | "byToValue" | "leverageBySize";

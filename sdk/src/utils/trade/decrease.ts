@@ -1,7 +1,7 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee } from "utils/fees";
-import { MarketInfo } from "utils/markets/types";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import {
   applyFactor,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -891,6 +891,8 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
   forceDecreaseSwapType?: DecreasePositionSwapType;
   findSwapPath: FindSwapPath;
   findSwapPathFromPnl: FindSwapPath;
+  marketsInfoData?: MarketsInfoData;
+  chainId?: number;
 }): {
   decreaseAmounts: DecreasePositionAmounts;
   swapAmounts: SwapAmounts | undefined;

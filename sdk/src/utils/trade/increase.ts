@@ -9,7 +9,7 @@ import {
   getPriceImpactForPosition,
   getTotalSwapVolumeFromSwapStats,
 } from "utils/fees";
-import { MarketInfo } from "utils/markets/types";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
 import {
@@ -34,6 +34,7 @@ import { TokenData, TokensRatio } from "utils/tokens/types";
 
 import {
   ExternalSwapQuote,
+  ExternalSwapQuoteParams,
   FindSwapPath,
   IncreasePositionAmounts,
   NextPositionValues,
@@ -60,7 +61,12 @@ type IncreasePositionParams = {
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
+  marketsInfoData?: MarketsInfoData;
+  chainId?: number;
+  externalSwapQuoteParams?: ExternalSwapQuoteParams;
   isSetAcceptablePriceImpactEnabled: boolean;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 };
 
 export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreasePositionAmounts {
@@ -212,7 +218,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
     values.sizeDeltaUsd = bigMath.mulDiv(
-      baseCollateralUsd - basePositionFeeInfo.positionFeeUsd - baseUiFeeUsd - values.swapUiFeeUsd,
+      baseCollateralUsd - basePositionFeeInfo.positionFeeUsd - baseUiFeeUsd,
       leverage,
       BASIS_POINTS_DIVISOR_BIGINT
     );
@@ -225,12 +231,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
     values.collateralDeltaUsd =
-      baseCollateralUsd -
-      values.positionFeeUsd -
-      values.borrowingFeeUsd -
-      values.fundingFeeUsd -
-      values.uiFeeUsd -
-      values.swapUiFeeUsd;
+      baseCollateralUsd - values.positionFeeUsd - values.borrowingFeeUsd - values.fundingFeeUsd - values.uiFeeUsd;
 
     values.collateralDeltaAmount = convertToTokenAmount(
       values.collateralDeltaUsd,

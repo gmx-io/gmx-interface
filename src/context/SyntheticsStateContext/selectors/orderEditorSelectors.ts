@@ -267,7 +267,7 @@ const selectOrderEditorNextPositionValuesForIncreaseArgs = createSelector((q) =>
     tradeMode: isLimitOrderType(order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
     tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
-    tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
+    tokenTypeForSwapRoute: "collateralToken",
     isPnlInLeverage,
   } as const;
 });
@@ -306,7 +306,7 @@ const makeSelectOrderEditorNextPositionValuesForIncreaseArgs = createSelectorFac
         tradeMode: isLimitOrderType(order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
         tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
         triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
-        tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
+        tokenTypeForSwapRoute: "collateralToken",
         isPnlInLeverage,
       } as const;
     })
