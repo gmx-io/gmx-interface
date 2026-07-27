@@ -17,11 +17,11 @@ describe("incentives indexer URL", () => {
     mockIsDevelopment.mockReset();
   });
 
-  it("uses gmx-test ivprod for local development", () => {
+  it("uses gmx-test ivtest for local development", () => {
     mockIsDevelopment.mockReturnValue(true);
 
     expect(getIndexerUrl(ARBITRUM, "incentives")).toBe(
-      "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivprod/api/graphql"
+      "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivtest/api/graphql"
     );
   });
 
@@ -32,11 +32,11 @@ describe("incentives indexer URL", () => {
     expect(getIndexerUrl(ARBITRUM, "incentives")).toBe("https://example.com/custom/graphql");
   });
 
-  it("keeps production on the canonical endpoint", () => {
+  it("uses gmx-test ivtest in production", () => {
     mockIsDevelopment.mockReturnValue(false);
 
     expect(getIndexerUrl(ARBITRUM, "incentives")).toBe(
-      "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql"
+      "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivtest/api/graphql"
     );
   });
 
