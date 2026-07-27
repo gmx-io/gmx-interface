@@ -78,6 +78,7 @@ vi.mock("components/Tabs/Tabs", () => ({
 }));
 
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
+const SAME_ACCOUNT_DIFFERENT_CASE = "0x52908400098527886e0f7030069857d2e4169ee7";
 const GMX_UNIT = 10n ** BigInt(ES_GMX_DECIMALS);
 const GT_UNIT = 10n ** BigInt(GT_DECIMALS);
 const mockUseRewardsPromoActivity = vi.mocked(useRewardsPromoActivity);
@@ -250,16 +251,120 @@ describe("RewardsTiersTab", () => {
     expect(screen.queryByText("0 qualified this epoch")).toBeNull();
   });
 
-  it("uses the V1 current multiplier treatment when connected", () => {
+  it("uses the V1 current multiplier transition treatment when connected", () => {
     renderTab();
 
     const multiplierSummary = screen.getByTestId("rewards-current-multiplier");
+    const transitionArrow = screen.getByTestId("multiplier-transition-arrow");
     expect(multiplierSummary.textContent).toContain("1.75x");
     expect(multiplierSummary.textContent).toContain("2.15x");
     expect(within(multiplierSummary).getByText("1.75x").className).toContain("text-green-300");
     expect(within(multiplierSummary).getByText("2.15x").className).toContain("text-blue-100");
+    expect(transitionArrow.getAttribute("class")).toContain("size-16");
+    expect(transitionArrow.getAttribute("class")).toContain("rounded-full");
     expect(document.body.textContent?.replace(/\s/g, "")).toContain("$500");
     expect(screen.getByText("5.00 esGMX")).toBeDefined();
+  });
+
+  it("uses an unpadded referral glyph in the boosts card and keeps the centered table icon", () => {
+    renderTab();
+
+    const referralBoostButton = screen.getByRole("button", { name: "Referral Boost" });
+    expect(referralBoostButton.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 20 20");
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+
+    const referralVolumeRow = screen.getByRole("row", { name: /Referral Volume/ });
+    expect(referralVolumeRow.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 28 28");
+  });
+
+  it("caps the projected multiplier transition at the configured maximum", () => {
+    renderTab({ status: { ...status, multiplier: 990n } });
+
+    const multiplierSummary = screen.getByTestId("rewards-current-multiplier");
+    expect(multiplierSummary.textContent).toContain("9.9x");
+    expect(multiplierSummary.textContent).toContain("10x");
+    expect(within(multiplierSummary).getByTestId("multiplier-transition-arrow")).toBeDefined();
+  });
+
+  it("hides a projected multiplier transition when the capped value is unchanged", () => {
+    renderTab({ status: { ...status, multiplier: config.maxMultiplier } });
+
+    const multiplierSummary = screen.getByTestId("rewards-current-multiplier");
+    expect(multiplierSummary.textContent).toContain("10x");
+    expect(within(multiplierSummary).queryByTestId("multiplier-transition-arrow")).toBeNull();
+  });
+
+  it("shows multiplier transitions for tier downgrades and expirations", () => {
+    const view = renderTab({
+      status: {
+        ...status,
+        volumeTier: "Tier2",
+        stakingTier: "Tier2",
+        projectedVolumeTier: "Tier1",
+        projectedStakingTier: "Tier1",
+      },
+    });
+
+    let multiplierSummary = screen.getByTestId("rewards-current-multiplier");
+    expect(multiplierSummary.textContent).toContain("1.75x");
+    expect(multiplierSummary.textContent).toContain("1.35x");
+
+    view.rerender(
+      getTabNode({
+        status: {
+          ...status,
+          projectedVolumeTier: null,
+          projectedStakingTier: null,
+        },
+      })
+    );
+
+    multiplierSummary = screen.getByTestId("rewards-current-multiplier");
+    expect(multiplierSummary.textContent).toContain("1.75x");
+    expect(multiplierSummary.textContent).toContain("1.4x");
+  });
+
+  it("does not show a false downgrade while the persistent multiplier remains above the cap", () => {
+    const cappedConfig: IncentivesConfig = {
+      ...config,
+      maxMultiplier: 100n,
+    };
+    const cappedStatus: AccountIncentiveStatus = {
+      ...status,
+      multiplier: 100n,
+      volumeTier: "Tier2",
+      projectedVolumeTier: "Tier1",
+      stakingTier: null,
+      projectedStakingTier: null,
+      boostIds: ["LifetimeTrading"],
+      manualRewardRemainingUsd: 0n,
+    };
+    const view = renderTab({ config: cappedConfig, status: cappedStatus });
+
+    let multiplierSummary = screen.getByTestId("rewards-current-multiplier");
+    expect(multiplierSummary.textContent).toContain("1x");
+    expect(within(multiplierSummary).queryByTestId("multiplier-transition-arrow")).toBeNull();
+
+    const belowCapConfig: IncentivesConfig = {
+      ...cappedConfig,
+      boosts: cappedConfig.boosts.map((boost) =>
+        boost.boost === "LifetimeTrading" ? { ...boost, multiplier: 50n } : boost
+      ),
+    };
+    view.rerender(getTabNode({ config: belowCapConfig, status: cappedStatus }));
+
+    multiplierSummary = screen.getByTestId("rewards-current-multiplier");
+    expect(multiplierSummary.textContent).toContain("1x");
+    expect(multiplierSummary.textContent).toContain("0.75x");
+    expect(within(multiplierSummary).getByTestId("multiplier-transition-arrow")).toBeDefined();
+  });
+
+  it("accepts the same account returned with different checksum casing", () => {
+    renderTab({ account: SAME_ACCOUNT_DIFFERENT_CASE });
+
+    expect(screen.getByTestId("rewards-current-multiplier").textContent).toContain("1.75x");
+    expect(screen.queryByText("Your current status is temporarily unavailable.")).toBeNull();
   });
 
   it("uses Buy GMX or Stake GMX for the active staking card based on the wallet balance", () => {

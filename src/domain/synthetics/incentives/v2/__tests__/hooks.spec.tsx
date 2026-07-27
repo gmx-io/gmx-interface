@@ -20,7 +20,11 @@ import {
   REWARDS_PROMO_ACTIVITY_QUERY,
 } from "../queries";
 import { useAccountIncentiveStatus } from "../useAccountIncentiveStatus";
-import { useAccountRewardsHistory } from "../useAccountRewardsHistory";
+import {
+  createEmptyRewardsHistoryEntry,
+  fillRewardsHistoryPage,
+  useAccountRewardsHistory,
+} from "../useAccountRewardsHistory";
 import { useIncentivesLeaderboard } from "../useIncentivesLeaderboard";
 import { useLatestGtPrice } from "../useLatestGtPrice";
 import { useRewardsPromoActivity } from "../useRewardsPromoActivity";
@@ -82,7 +86,11 @@ const rawLeaderboardEntry: RawLeaderboardEntry = {
 };
 
 function renderWithSWR(children: React.ReactElement) {
-  return render(<SWRConfig value={swrConfig}>{children}</SWRConfig>);
+  return render(children, {
+    wrapper: ({ children: wrapperChildren }: { children?: React.ReactNode }) => (
+      <SWRConfig value={swrConfig}>{wrapperChildren}</SWRConfig>
+    ),
+  });
 }
 
 describe("Incentives V2 hooks", () => {
@@ -185,6 +193,127 @@ describe("Incentives V2 hooks", () => {
       account: CHECKSUMMED_ACCOUNT,
       limit: 20,
       offset: 40,
+    });
+  });
+
+  it("fills every skipped rewards epoch before paginating", () => {
+    const currentEntry = { ...createEmptyRewardsHistoryEntry(300), tradingVolume: 3n };
+    const firstEntry = { ...createEmptyRewardsHistoryEntry(100), tradingVolume: 1n };
+
+    const firstPage = fillRewardsHistoryPage({
+      entries: [firstEntry, currentEntry],
+      programStartTimestamp: 100,
+      currentEpoch: 300,
+      epochDuration: 100,
+      limit: 2,
+      offset: 0,
+    });
+    const secondPage = fillRewardsHistoryPage({
+      entries: [firstEntry, currentEntry],
+      programStartTimestamp: 100,
+      currentEpoch: 300,
+      epochDuration: 100,
+      limit: 2,
+      offset: 2,
+    });
+
+    expect(firstPage.entries.map((entry) => [entry.epoch, entry.tradingVolume])).toEqual([
+      [300, 3n],
+      [200, 0n],
+    ]);
+    expect(firstPage.totalCount).toBe(3);
+    expect(firstPage.hasNextPage).toBe(true);
+    expect(secondPage.entries.map((entry) => [entry.epoch, entry.tradingVolume])).toEqual([[100, 1n]]);
+    expect(secondPage.totalCount).toBe(3);
+    expect(secondPage.hasNextPage).toBe(false);
+  });
+
+  it("loads complete history when filling skipped epochs", async () => {
+    mockFetchIncentivesGraphql.mockResolvedValue({
+      accountRewardsHistory: {
+        totalCount: 2,
+        items: [
+          { ...rawHistoryEntry, epoch: 300 },
+          { ...rawHistoryEntry, epoch: 100 },
+        ],
+      },
+    });
+
+    function TestComponent({ offset }: { offset: number }) {
+      const history = useAccountRewardsHistory(ARBITRUM, {
+        account: CHECKSUMMED_ACCOUNT,
+        currentEpoch: 300,
+        programStartTimestamp: 100,
+        epochDuration: 100,
+        limit: 2,
+        offset,
+      });
+
+      return (
+        <div>
+          {history.data
+            ? `${history.data.map((entry) => entry.epoch).join(",")}:${history.totalCount}:${history.hasNextPage}`
+            : "loading"}
+        </div>
+      );
+    }
+
+    const view = renderWithSWR(<TestComponent offset={0} />);
+
+    expect(await screen.findByText("300,200:3:true")).toBeTruthy();
+    expect(mockFetchIncentivesGraphql).toHaveBeenCalledWith(ENDPOINT, ACCOUNT_REWARDS_HISTORY_QUERY, {
+      account: CHECKSUMMED_ACCOUNT,
+      limit: 1000,
+      offset: 0,
+    });
+
+    view.rerender(<TestComponent offset={2} />);
+
+    expect(await screen.findByText("100:3:false")).toBeTruthy();
+    expect(mockFetchIncentivesGraphql).toHaveBeenCalledTimes(1);
+  });
+
+  it("loads indexer history beyond the backend page limit", async () => {
+    const firstBackendPage = Array.from({ length: 1000 }, (_, index) => ({
+      ...rawHistoryEntry,
+      epoch: 1001 - index,
+    }));
+    mockFetchIncentivesGraphql.mockImplementation(async (_endpoint, query, variables) => {
+      const offset = (variables as { offset?: number } | undefined)?.offset ?? 0;
+
+      if (query !== ACCOUNT_REWARDS_HISTORY_QUERY) {
+        throw new Error("Unexpected query");
+      }
+
+      return {
+        accountRewardsHistory: {
+          totalCount: 1001,
+          items: offset === 0 ? firstBackendPage : [{ ...rawHistoryEntry, epoch: 1 }],
+        },
+      };
+    });
+
+    function TestComponent() {
+      const history = useAccountRewardsHistory(ARBITRUM, {
+        account: CHECKSUMMED_ACCOUNT,
+        currentEpoch: 1001,
+        programStartTimestamp: 1,
+        epochDuration: 1,
+        limit: 16,
+        offset: 0,
+      });
+
+      return <div>{history.data ? `${history.data[0].epoch}:${history.totalCount}` : "loading"}</div>;
+    }
+
+    renderWithSWR(<TestComponent />);
+
+    expect(await screen.findByText("1001:1001")).toBeTruthy();
+    expect(mockFetchIncentivesGraphql).toHaveBeenCalledTimes(2);
+    expect(mockFetchIncentivesGraphql).toHaveBeenLastCalledWith(ENDPOINT, ACCOUNT_REWARDS_HISTORY_QUERY, {
+      account: CHECKSUMMED_ACCOUNT,
+      limit: 1000,
+      offset: 1000,
     });
   });
 

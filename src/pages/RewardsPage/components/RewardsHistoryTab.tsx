@@ -79,6 +79,9 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
   const [page, setPage] = useState(1);
   const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useAccountRewardsHistory(chainId, {
     account,
+    currentEpoch: config.epochTimestamp,
+    programStartTimestamp: config.programStartTimestamp,
+    epochDuration: config.epochDuration,
     enabled: Boolean(account),
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
@@ -92,12 +95,10 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
     if (epochTimestampRef.current === config.epochTimestamp) return;
 
     epochTimestampRef.current = config.epochTimestamp;
-    if (page === 1) {
-      void mutate().catch(() => undefined);
-    } else {
+    if (page !== 1) {
       setPage(1);
     }
-  }, [config.epochTimestamp, mutate, page]);
+  }, [config.epochTimestamp, page]);
 
   useEpochRolloverRevalidation({
     epochTimestamp: config.epochTimestamp,
@@ -111,7 +112,7 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
   const isInitialLoading = loading && data === undefined;
   const hasInitialError = Boolean(error && data === undefined);
   const hasCachedError = Boolean(error && data !== undefined);
-  const showEmpty = !loading && data !== undefined && data.length === 0;
+  const showEmpty = !loading && data !== undefined && pageData.length === 0;
 
   if (!account) {
     return (

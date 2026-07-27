@@ -27,6 +27,9 @@ vi.mock("lib/useBreakpoints", () => ({
 
 type HistoryParams = {
   account?: string;
+  currentEpoch?: number;
+  programStartTimestamp?: number;
+  epochDuration?: number;
   enabled?: boolean;
   limit: number;
   offset: number;
@@ -63,12 +66,14 @@ import { RewardsHistoryTab } from "../RewardsHistoryTab";
 
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
 const ONE_HOUR = 3_600;
+const HISTORY_PAGE_SIZE = 16;
 const EPOCH = Date.UTC(2026, 3, 7, 9, 0, 0) / 1000;
 const ES_GMX_UNIT = 10n ** BigInt(ES_GMX_DECIMALS);
 const GT_UNIT = 10n ** BigInt(GT_DECIMALS);
 
 const config = {
   epochTimestamp: EPOCH,
+  programStartTimestamp: EPOCH - 31 * ONE_HOUR,
   epochDuration: ONE_HOUR,
 } as IncentivesConfig;
 
@@ -84,6 +89,25 @@ function makeHistoryEntry(epoch: number): RewardsHistoryEntry {
     tradingEsGmxRewards: 10n * ES_GMX_UNIT,
     tradingGtRewards: 5n * GT_UNIT,
     tradingRewardsUsd: 15n * PRECISION,
+    referralEsGmxRewards: 0n,
+    referralGtRewards: 0n,
+    referralRewardsUsd: 0n,
+    manualRewardsUsd: 0n,
+  };
+}
+
+function makeEmptyHistoryEntry(epoch: number): RewardsHistoryEntry {
+  return {
+    ...makeHistoryEntry(epoch),
+    tradingVolume: 0n,
+    tierVolume: 0n,
+    referralVolume: 0n,
+    esGmxRewards: 0n,
+    gtRewards: 0n,
+    rewardsUsd: 0n,
+    tradingEsGmxRewards: 0n,
+    tradingGtRewards: 0n,
+    tradingRewardsUsd: 0n,
     referralEsGmxRewards: 0n,
     referralGtRewards: 0n,
     referralRewardsUsd: 0n,
@@ -148,6 +172,34 @@ describe("RewardsHistoryTab", () => {
     expect(screen.getByText("Finished")).toBeTruthy();
   });
 
+  it("renders an empty current epoch supplied by the filled history", () => {
+    vi.spyOn(Date, "now").mockReturnValue((EPOCH + ONE_HOUR / 2) * 1000);
+    historyMock.data = [makeEmptyHistoryEntry(EPOCH)];
+    historyMock.totalCount = 1;
+
+    renderHistory();
+
+    const currentEpochRow = screen.getByText("Epoch ends in").closest("tr");
+
+    expect(currentEpochRow?.textContent?.replace(/\s/g, "")).toContain("$0");
+    expect(currentEpochRow?.textContent).toContain("Epoch ends in");
+    expect(screen.queryByText("No rewards history yet. Start trading to earn rewards.")).toBeNull();
+  });
+
+  it("uses the filled history pagination offsets", async () => {
+    historyMock.data = Array.from({ length: HISTORY_PAGE_SIZE }, (_, index) =>
+      makeHistoryEntry(EPOCH - index * ONE_HOUR)
+    );
+    historyMock.totalCount = HISTORY_PAGE_SIZE * 2 + 1;
+
+    renderHistory();
+
+    expect(screen.getByRole("button", { name: "3" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "2" }));
+
+    await waitFor(() => expect(getLastHistoryParams().offset).toBe(HISTORY_PAGE_SIZE));
+  });
+
   it("uses expandable reward details on mobile", () => {
     breakpointsMock.isMobile = true;
     historyMock.totalCount = 1;
@@ -188,24 +240,26 @@ describe("RewardsHistoryTab", () => {
     });
   });
 
-  it("revalidates history on config rollover when already on the first page", async () => {
+  it("relies on the new history key instead of immediately revalidating again on rollover", async () => {
     const { rerender } = renderHistory();
     const nextConfig = { ...config, epochTimestamp: config.epochTimestamp + config.epochDuration };
 
     rerender(historyNode(nextConfig));
 
-    await waitFor(() => expect(historyMock.mutate).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(getLastHistoryParams().currentEpoch).toBe(nextConfig.epochTimestamp));
+    expect(historyMock.mutate).not.toHaveBeenCalled();
   });
 
-  it("shows a refresh warning alongside a cached empty page", () => {
-    historyMock.data = [];
-    historyMock.totalCount = 0;
+  it("shows a refresh warning alongside the empty current epoch", () => {
+    historyMock.data = [makeEmptyHistoryEntry(EPOCH)];
+    historyMock.totalCount = 1;
     historyMock.error = new Error("refresh failed");
 
     renderHistory();
 
     expect(screen.getByText("Rewards history could not be refreshed. Showing the latest loaded data.")).toBeTruthy();
-    expect(screen.getByText("No rewards history yet. Start trading to earn rewards.")).toBeTruthy();
+    expect(screen.getByText("Finished")).toBeTruthy();
+    expect(screen.queryByText("No rewards history yet. Start trading to earn rewards.")).toBeNull();
   });
 
   it("keeps pagination recovery available when a later page fails", async () => {

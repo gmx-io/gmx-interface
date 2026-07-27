@@ -4,12 +4,14 @@ import ApexActive from "img/boosts/active/ic_apex.svg?react";
 import MarketBalancerActive from "img/boosts/active/ic_market_balancer.svg?react";
 import MultichainTraderActive from "img/boosts/active/ic_multichain_trader.svg?react";
 import ReferralBoostActive from "img/boosts/active/ic_referral_boost.svg?react";
+import ReferralBoostGlyphActive from "img/boosts/active/ic_referral_boost_glyph.svg?react";
 import RiskManagedTraderActive from "img/boosts/active/ic_risk_managed_trader.svg?react";
 import RwaTraderActive from "img/boosts/active/ic_rwa_trader.svg?react";
 import ApexInactive from "img/boosts/inactive/ic_apex.svg?react";
 import MarketBalancerInactive from "img/boosts/inactive/ic_market_balancer.svg?react";
 import MultichainTraderInactive from "img/boosts/inactive/ic_multichain_trader.svg?react";
 import ReferralBoostInactive from "img/boosts/inactive/ic_referral_boost.svg?react";
+import ReferralBoostGlyphInactive from "img/boosts/inactive/ic_referral_boost_glyph.svg?react";
 import RiskManagedTraderInactive from "img/boosts/inactive/ic_risk_managed_trader.svg?react";
 import RwaTraderInactive from "img/boosts/inactive/ic_rwa_trader.svg?react";
 import AdvocateActive from "img/staking/active/ic_advocate.svg?react";
@@ -102,8 +104,22 @@ export function BoostTierIcon({
   return <Icon className={className ?? (active ? tierIconGlow : tierIconBase)} />;
 }
 
-export function ReferralBoostIcon({ active, className }: { active: boolean; className?: string }) {
-  const Icon = active ? ReferralBoostActive : ReferralBoostInactive;
+export function ReferralBoostIcon({
+  active,
+  className,
+  variant = "tier",
+}: {
+  active: boolean;
+  className?: string;
+  variant?: "tier" | "glyph";
+}) {
+  const icons =
+    variant === "glyph"
+      ? { active: ReferralBoostGlyphActive, inactive: ReferralBoostGlyphInactive }
+      : { active: ReferralBoostActive, inactive: ReferralBoostInactive };
+  const Icon = active ? icons.active : icons.inactive;
 
-  return <Icon className={className ?? (active ? tierIconGlow : tierIconBase)} />;
+  return (
+    <Icon className={className ?? (variant === "glyph" ? "size-20 shrink-0" : active ? tierIconGlow : tierIconBase)} />
+  );
 }

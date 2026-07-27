@@ -101,16 +101,24 @@ export function RewardsTiersSummary({
                 <span className={hasMultiplier ? "text-green-300" : "text-blue-100"}>
                   {formatMultiplier(currentMultiplier, multiplierDecimals)}
                 </span>
-                <ArrowRightIcon className="size-12 shrink-0 text-typography-secondary" />
+                <ArrowRightIcon
+                  data-testid="multiplier-transition-arrow"
+                  className="size-16 shrink-0 rounded-full bg-slate-700 p-2 text-typography-secondary"
+                />
                 <span className="text-blue-100">{formatMultiplier(projectedMultiplier, multiplierDecimals)}</span>
               </span>
             }
             content={
-              projectedMultiplier > currentMultiplier ? (
-                <Trans>Your multiplier will increase next epoch.</Trans>
-              ) : (
-                <Trans>Your multiplier will decrease next epoch.</Trans>
-              )
+              <div className="text-12">
+                {projectedMultiplier > currentMultiplier ? (
+                  <Trans>Your multiplier will increase next epoch.</Trans>
+                ) : (
+                  <Trans>Your multiplier will decrease next epoch.</Trans>
+                )}{" "}
+                <span className="text-typography-secondary">
+                  <Trans>Due to changes in your volume and staking tiers.</Trans>
+                </span>
+              </div>
             }
             variant="none"
           />

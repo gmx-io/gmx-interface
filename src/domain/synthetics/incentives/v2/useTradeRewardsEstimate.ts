@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { isAddressEqual, type Address } from "viem";
 
 import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import { useAccount, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -66,7 +67,10 @@ export function useTradeRewardsEstimate({
   });
 
   const currentStatus =
-    status !== undefined && status.account === account && status.epochTimestamp === config?.epochTimestamp
+    status !== undefined &&
+    account !== undefined &&
+    isAddressEqual(status.account as Address, account as Address) &&
+    status.epochTimestamp === config?.epochTimestamp
       ? status
       : undefined;
   const gmxToken = getTokenBySymbolSafe(chainId, "GMX", { isSynthetic: false });

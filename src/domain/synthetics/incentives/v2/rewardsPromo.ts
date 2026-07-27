@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { isAddressEqual, type Address } from "viem";
 
 import type { AccountIncentiveStatus, IncentivesConfig } from "./types";
 import type { RewardsPromoActivity } from "./useRewardsPromoActivity";
@@ -125,8 +126,11 @@ export function useStableRewardsPromoSelection({
   const isWalletAccountSettling =
     enabled && (isWalletInitializing || walletStatus === "connecting" || walletStatus === "reconnecting");
   const sessionKey = enabled && account && config ? `${chainId}:${account}:${config.epochTimestamp}` : undefined;
-  const sessionStatus = !account || status?.account === account ? status : undefined;
-  const hasStatusFromAnotherAccount = Boolean(account && status && status.account !== account);
+  const statusMatchesAccount = Boolean(
+    !account || !status || isAddressEqual(status.account as Address, account as Address)
+  );
+  const sessionStatus = statusMatchesAccount ? status : undefined;
+  const hasStatusFromAnotherAccount = Boolean(account && status && !statusMatchesAccount);
   const hasStatusFromAnotherEpoch = Boolean(
     account && sessionStatus && config && sessionStatus.epochTimestamp !== config.epochTimestamp
   );
