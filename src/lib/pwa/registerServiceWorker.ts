@@ -87,12 +87,7 @@ export function registerServiceWorker() {
     });
   };
 
-  // Avoid competing with startup requests.
-  if (document.readyState === "complete") {
-    void register();
-  } else {
-    window.addEventListener("load", () => void register(), { once: true });
-  }
+  window.setTimeout(() => void register(), 0);
 }
 
 export async function unregisterServiceWorker() {
