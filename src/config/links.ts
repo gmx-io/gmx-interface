@@ -43,6 +43,7 @@ export const GLP_REIMBURSEMENT_TERMS_URL =
 export const GMX_DISCORD_URL = "https://discord.gg/H5PeQru3Aa";
 export const FEE_STRUCTURE_URL = "https://docs.gmx.io/docs/trading/fees-and-pricing/";
 export const REFERRALS_DOCS_URL = "https://docs.gmx.io/docs/referrals/";
+export const SAFE_MULTICHAIN_DOCS_URL = "https://help.safe.global/articles/9317165368-deploying-a-multi-chain-safe";
 
 export const REFERRALS_DOCS_SECTION_LINKS = {
   howItWorks: "https://docs.gmx.io/docs/referrals#how-it-works",

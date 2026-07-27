@@ -1,4 +1,4 @@
-import { watchAccount } from "@wagmi/core";
+import { GetAccountReturnType, watchAccount } from "@wagmi/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useAccount } from "wagmi";
 
@@ -49,6 +49,51 @@ export function getSelectedSourceChainId({
 
 export function canWalletChainUpdateSelectedNetwork(chainId: number) {
   return isContractsChain(chainId, IS_DEVELOPMENT) || isSettlementChain(chainId);
+}
+
+type WalletAccountSnapshot = Pick<GetAccountReturnType, "chainId" | "address">;
+
+/** A source chain seen at connect time is the wallet session's default, not the user's choice. */
+export function getWalletNetworkSelection({
+  account,
+  prevAccount,
+}: {
+  account: WalletAccountSnapshot;
+  prevAccount: WalletAccountSnapshot;
+}): { chainId: number; wasAppSelected: boolean } | undefined {
+  if (!account.chainId) {
+    return undefined;
+  }
+
+  if (canWalletChainUpdateSelectedNetwork(account.chainId)) {
+    return { chainId: account.chainId, wasAppSelected: false };
+  }
+
+  const isUserSwitchedChainOnSameAccount =
+    Boolean(prevAccount.chainId) &&
+    prevAccount.chainId !== account.chainId &&
+    Boolean(account.address) &&
+    account.address === prevAccount.address;
+
+  return isUserSwitchedChainOnSameAccount ? { chainId: account.chainId, wasAppSelected: true } : undefined;
+}
+
+function applyWalletNetworkSelection(account: WalletAccountSnapshot, prevAccount: WalletAccountSnapshot) {
+  const selection = getWalletNetworkSelection({ account, prevAccount });
+
+  if (!selection) {
+    return;
+  }
+
+  localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, selection.chainId.toString());
+
+  if (selection.wasAppSelected) {
+    localStorage.setItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY, "true");
+  } else {
+    localStorage.removeItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY);
+  }
+
+  document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId: selection.chainId } }));
 }
 
 /**
@@ -140,23 +185,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     mustChangeChainId,
   ]);
 
-  useEffect(() => {
-    const unsubscribe = watchAccount(getWagmiConfig(), {
-      onChange: (account) => {
-        if (!account.chainId) {
-          return;
-        }
-        if (!canWalletChainUpdateSelectedNetwork(account.chainId)) {
-          return;
-        }
-
-        localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, account.chainId.toString());
-        localStorage.removeItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY);
-      },
-    });
-
-    return unsubscribe;
-  }, [settlementChainId]);
+  useEffect(() => watchAccount(getWagmiConfig(), { onChange: applyWalletNetworkSelection }), []);
 
   if (mustChangeChainId) {
     if (isLocalStorageChainSupported) {

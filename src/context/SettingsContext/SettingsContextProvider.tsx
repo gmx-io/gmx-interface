@@ -37,6 +37,7 @@ import { useChainId } from "lib/chains";
 import { hasStoredLocalStorageValue, useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
 import useWallet from "lib/wallets/useWallet";
+import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
@@ -213,6 +214,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
+  const canSignTypedData = useWalletCanSignTypedData();
   const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(expressOrdersEnabledKey, false);
 
@@ -394,7 +396,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
-      expressOrdersEnabled: expressOrdersEnabled!,
+      expressOrdersEnabled: expressOrdersEnabled! && canSignTypedData,
       setExpressOrdersEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
@@ -465,6 +467,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlySimulationEnabled,
     isSettingsVisible,
     expressOrdersEnabled,
+    canSignTypedData,
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,

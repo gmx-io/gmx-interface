@@ -3,6 +3,7 @@ import { PublicClient } from "viem";
 import { useAccount } from "wagmi";
 
 import { useChainId } from "lib/chains";
+import { LRUCache } from "sdk/utils/LruCache";
 
 import { getPublicClientWithRpc } from "./walletConfig";
 
@@ -12,7 +13,9 @@ export enum AccountType {
   EOA,
 }
 
-export async function getAccountType(address: string, client: PublicClient): Promise<AccountType> {
+const ACCOUNT_TYPES_CACHE = new LRUCache<Promise<AccountType>>(100);
+
+async function fetchAccountType(address: string, client: PublicClient): Promise<AccountType> {
   const bytecode = await client.getCode({ address });
   if (!bytecode || bytecode === "0x") {
     return AccountType.EOA;
@@ -23,6 +26,29 @@ export async function getAccountType(address: string, client: PublicClient): Pro
   }
 
   return AccountType.SmartAccount;
+}
+
+/** Cached for the page load: signing paths await this before every wallet prompt. */
+export function getAccountType(address: string, client: PublicClient): Promise<AccountType> {
+  const chainId = client.chain?.id;
+
+  if (chainId === undefined) {
+    throw new Error("getAccountType requires a chain-bound client");
+  }
+
+  const key = `chainId:${chainId}:address:${address.toLowerCase()}`;
+  let accountTypePromise = ACCOUNT_TYPES_CACHE.get(key);
+
+  if (!accountTypePromise) {
+    accountTypePromise = fetchAccountType(address, client).catch((error) => {
+      ACCOUNT_TYPES_CACHE.delete(key);
+
+      throw error;
+    });
+    ACCOUNT_TYPES_CACHE.set(key, accountTypePromise);
+  }
+
+  return accountTypePromise;
 }
 
 /** Type of the connected account on the current chain. */

@@ -271,6 +271,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr "清算最大因子"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet cannot sign messages, which trading from this network requires"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
 msgstr ""
@@ -282,6 +286,10 @@ msgstr "Oracle keeper 事件"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -795,6 +803,10 @@ msgstr "無獎勵"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PROVIDER"
 msgstr "提供者"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
+msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -3964,6 +3976,10 @@ msgstr ""
 msgid "Enter amount"
 msgstr "請輸入金額"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Add {0} to your wallet"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "帳戶不正確"
@@ -4259,6 +4275,10 @@ msgstr "20 秒"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual market ID"
 msgstr "虛擬市場 ID"
+
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet is not connected to this network"
+msgstr "您的錢包未連線至此網路"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -5291,6 +5311,10 @@ msgstr "在 Bond Protocol 上以折扣價購買 GMX 債券，享有短期歸屬�
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -7084,6 +7108,10 @@ msgstr "借出您的代幣或以其為抵押借入"
 msgid "GMX logo"
 msgstr "GMX 標誌"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Using Safe? Learn how to add a network"
+msgstr "使用 Safe？了解如何新增網路"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
 msgstr "分鐘"
@@ -7615,6 +7643,10 @@ msgstr "狀態"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
+msgstr ""
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
@@ -8858,6 +8890,10 @@ msgstr "已歸屬 GMX 未提取"
 msgid "Short positions"
 msgstr "做空倉位"
 
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Use Classic mode to trade."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr "費用"
@@ -9051,6 +9087,10 @@ msgstr "收到"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr "端點"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Order failed: your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account the order was created with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr "<0>訂單失敗：您的錢包已切換至其他帳戶</0><1/><2>在 {0} 上簽署需要使用建立訂單時的同一帳戶。請勿選擇其他帳戶，而是在錢包中為目前帳戶新增 {1}，然後重試。</2>"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display settings"
@@ -10110,6 +10150,10 @@ msgstr "已質押"
 msgid "Traders"
 msgstr "交易者"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Wallet cannot sign messages"
+msgstr ""
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
 msgstr "更新"
@@ -10195,6 +10239,10 @@ msgstr "複製技術詳情"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "追蹤器"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"

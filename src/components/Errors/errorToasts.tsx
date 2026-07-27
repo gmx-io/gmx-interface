@@ -4,11 +4,16 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
-import { JUMPER_BRIDGE_URL } from "config/links";
+import { JUMPER_BRIDGE_URL, SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { ErrorData } from "lib/errors";
+import {
+  SMART_WALLET_ACCOUNT_CHANGED_ERROR,
+  SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_WRONG_CHAIN_ERROR,
+} from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
@@ -78,6 +83,47 @@ export function getTxnErrorToast(
         <div>Refresh and retry</div>
       </Trans>
     );
+
+    return toastParams;
+  }
+
+  if (errorData.errorMessage === SMART_WALLET_WRONG_CHAIN_ERROR) {
+    const walletName = errorData.data?.walletName || "wallet";
+
+    toastParams.errorContent = (
+      <Trans>
+        <div>Your {walletName} is on a different network</div>
+        <br />
+        <div>
+          Switch your {walletName} to {getChainName(chainId)}, then try again
+        </div>
+      </Trans>
+    );
+
+    return toastParams;
+  }
+
+  if (errorData.errorMessage === SMART_WALLET_ACCOUNT_CHANGED_ERROR) {
+    toastParams.errorContent = (
+      <>
+        <Trans>
+          <div>Order failed: your wallet switched to a different account</div>
+          <br />
+          <div>
+            Signing on {getChainName(chainId)} requires the same account the order was created with. Instead of
+            selecting another account, add {getChainName(chainId)} to your current one in your wallet, then try again.
+          </div>
+        </Trans>
+        <br />
+        <SafeAddNetworkLink />
+      </>
+    );
+
+    return toastParams;
+  }
+
+  if (errorData.errorMessage === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
+    toastParams.errorContent = getSmartWalletChainUnavailableToastContent(chainId, errorData.data?.walletName);
 
     return toastParams;
   }
@@ -275,6 +321,32 @@ export function getErrorMessage(
   }
 
   return { failMsg, autoCloseToast };
+}
+
+export function getSmartWalletChainUnavailableToastContent(chainId: number, walletName = "wallet") {
+  return (
+    <>
+      <Trans>
+        <div>
+          Your {walletName} is not available on {getChainName(chainId)}
+        </div>
+        <br />
+        <div>
+          Add {getChainName(chainId)} to your {walletName}, then reconnect and try again
+        </div>
+      </Trans>
+      <br />
+      <SafeAddNetworkLink />
+    </>
+  );
+}
+
+function SafeAddNetworkLink() {
+  return (
+    <ExternalLink href={SAFE_MULTICHAIN_DOCS_URL}>
+      <Trans>Using Safe? Learn how to add a network</Trans>
+    </ExternalLink>
+  );
 }
 
 export const INVALID_NETWORK_TOAST_ID = "invalid-network";

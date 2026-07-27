@@ -21,10 +21,12 @@ import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
 
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
+import { ExpressTradingCannotSignBanner } from "components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
@@ -65,10 +67,11 @@ export function TradingSettings({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
+  const canSignTypedData = useWalletCanSignTypedData();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
-  const isExpressTradingDisabled = isOutOfGasPaymentBalance && srcChainId === undefined;
+  const isExpressTradingDisabled = !canSignTypedData || (isOutOfGasPaymentBalance && srcChainId === undefined);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
@@ -179,7 +182,11 @@ export function TradingSettings({
               onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
             />
 
-            {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+            {canSignTypedData ? (
+              isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />
+            ) : (
+              <ExpressTradingCannotSignBanner />
+            )}
 
             <OldSubaccountWithdraw />
 

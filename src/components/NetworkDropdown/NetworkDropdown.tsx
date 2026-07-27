@@ -1,15 +1,24 @@
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
+import partition from "lodash/partition";
+import { useMemo, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
 import { isValidVisualSettlementChain, isValidVisualSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
+import { extendError } from "lib/errors";
+import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
+import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
-import { getChainName } from "sdk/configs/chains";
+import { useWalletCanSignTypedData, useWalletUnavailableChains } from "lib/wallets/useWalletSessionChains";
+import { getChainName, isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
+import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
+import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -66,13 +75,53 @@ export default function NetworkDropdown({
   );
 }
 
+type DisplayNetworkOption = NetworkOption & { disabledReason?: ReactNode };
+
+function getNetworkDisabledReason({
+  network,
+  unavailableChains,
+  canSignTypedData,
+}: {
+  network: NetworkOption;
+  unavailableChains: number[] | undefined;
+  canSignTypedData: boolean;
+}): ReactNode {
+  if (unavailableChains?.includes(network.value)) {
+    return <Trans>Your wallet is not connected to this network</Trans>;
+  }
+
+  // Source-only chains trade through the GMX Account, which is express-only and always needs a signature.
+  if (!canSignTypedData && !isContractsChain(network.value, true)) {
+    return <Trans>Your wallet cannot sign messages, which trading from this network requires</Trans>;
+  }
+
+  return undefined;
+}
+
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const walletAndGmxAccountNetworks = networkOptions.filter(
-    (network) => isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value)
-  );
-  const walletOnlyNetworks = networkOptions.filter(
-    (network) => !(isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value))
-  );
+  const { unavailableChains } = useWalletUnavailableChains(networkOptions.map((network) => network.value));
+  const canSignTypedData = useWalletCanSignTypedData();
+
+  const { walletAndGmxAccountNetworks, walletOnlyNetworks } = useMemo(() => {
+    const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => ({
+      ...network,
+      disabledReason: getNetworkDisabledReason({ network, unavailableChains, canSignTypedData }),
+    }));
+
+    // Disabled networks keep their group so a fully unavailable group still shows its heading.
+    const orderDisabledLast = (networks: DisplayNetworkOption[]) =>
+      partition(networks, (network) => !network.disabledReason).flat();
+
+    const isWalletAndGmxAccountNetwork = (network: DisplayNetworkOption) =>
+      isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value);
+
+    return {
+      walletAndGmxAccountNetworks: orderDisabledLast(displayNetworks.filter(isWalletAndGmxAccountNetwork)),
+      walletOnlyNetworks: orderDisabledLast(
+        displayNetworks.filter((network) => !isWalletAndGmxAccountNetwork(network))
+      ),
+    };
+  }, [networkOptions, unavailableChains, canSignTypedData]);
 
   return (
     <>
@@ -126,46 +175,64 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
   );
 }
 
-function NetworkMenuItem({ network, chainId }: { network: NetworkOption; chainId: number }) {
+function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; chainId: number }) {
   const { isConnected } = useAccount();
+  const disabled = Boolean(network.disabledReason);
+  const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
 
   return (
-    <Menu.Item key={network.value}>
+    <Menu.Item key={network.value} disabled={disabled}>
       {({ close }) => (
-        <div
-          className="network-dropdown-menu-item menu-item"
-          data-qa={`networks-dropdown-${network.label}`}
-          onClick={() => {
-            close();
-            switchNetwork(network.value, isConnected, { fallbackToAppSelectionOnError: true });
-          }}
-        >
-          <div className="menu-item-group">
-            <div className="menu-item-icon">
-              <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
-            </div>
-            <span
-              className={cx(
-                "network-dropdown-item-label",
-                chainId === network.value ? "text-typography-primary" : "text-typography-secondary"
+        <Wrapper variant="none" as="div" content={network.disabledReason}>
+          <div
+            className={cx("network-dropdown-menu-item menu-item", {
+              "disabled !cursor-not-allowed opacity-50": disabled,
+            })}
+            data-qa={`networks-dropdown-${network.label}`}
+            onClick={() => {
+              if (disabled) {
+                return;
+              }
+              close();
+              switchNetwork(network.value, isConnected, { fallbackToAppSelectionOnError: true }).catch((error) => {
+                if (error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
+                  helperToast.error(getSmartWalletChainUnavailableToastContent(network.value));
+                }
+
+                metrics.pushError(
+                  extendError(error, { data: { chainId: network.value } }),
+                  "networkDropdown.switchNetwork"
+                );
+              });
+            }}
+          >
+            <div className="menu-item-group">
+              <div className="menu-item-icon">
+                <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
+              </div>
+              <span
+                className={cx(
+                  "network-dropdown-item-label",
+                  chainId === network.value ? "text-typography-primary" : "text-typography-secondary"
+                )}
+              >
+                {network.label}
+              </span>
+              {isValidVisualSettlementChain(network.value) && chainId === network.value && (
+                <TooltipWithPortal
+                  handle={<WalletIcon className="size-16 text-typography-secondary" />}
+                  position="top"
+                  variant="none"
+                  className="flex"
+                  content={<Trans>Trade from wallet or GMX Account</Trans>}
+                />
               )}
-            >
-              {network.label}
-            </span>
-            {isValidVisualSettlementChain(network.value) && chainId === network.value && (
-              <TooltipWithPortal
-                handle={<WalletIcon className="size-16 text-typography-secondary" />}
-                position="top"
-                variant="none"
-                className="flex"
-                content={<Trans>Trade from wallet or GMX Account</Trans>}
-              />
+            </div>
+            {chainId === network.value && (
+              <div className="mr-[2.5px] size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]" />
             )}
           </div>
-          {chainId === network.value && (
-            <div className="mr-[2.5px] size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]" />
-          )}
-        </div>
+        </Wrapper>
       )}
     </Menu.Item>
   );

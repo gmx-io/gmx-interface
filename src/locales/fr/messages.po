@@ -271,6 +271,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr "Facteur maximum pour les liquidations"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet cannot sign messages, which trading from this network requires"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
 msgstr ""
@@ -282,6 +286,10 @@ msgstr "Événements de l'Oracle keeper"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -795,6 +803,10 @@ msgstr "Aucune récompense"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PROVIDER"
 msgstr "FOURNISSEUR"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
+msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -3964,6 +3976,10 @@ msgstr ""
 msgid "Enter amount"
 msgstr "Entrez un montant"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Add {0} to your wallet"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "Compte incorrect"
@@ -4259,6 +4275,10 @@ msgstr "20s"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual market ID"
 msgstr "ID de marché virtuel"
+
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet is not connected to this network"
+msgstr "Votre wallet n'est pas connecté à ce réseau"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -5291,6 +5311,10 @@ msgstr "Achetez des obligations GMX sur Bond Protocol avec une décote et une co
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -7084,6 +7108,10 @@ msgstr "Prêtez vos jetons ou empruntez contre eux"
 msgid "GMX logo"
 msgstr "Logo GMX"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Using Safe? Learn how to add a network"
+msgstr "Vous utilisez Safe ? Découvrez comment ajouter un réseau"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
 msgstr "Minutes"
@@ -7615,6 +7643,10 @@ msgstr "STATUT"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
+msgstr ""
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
@@ -8858,6 +8890,10 @@ msgstr "GMX en vesting non retiré"
 msgid "Short positions"
 msgstr "Positions short"
 
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Use Classic mode to trade."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr "FRAIS"
@@ -9051,6 +9087,10 @@ msgstr "Recevoir"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr "ENDPOINT"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Order failed: your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account the order was created with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr "<0>Échec de l'ordre : votre wallet a changé de compte</0><1/><2>La signature sur {0} nécessite le compte avec lequel l'ordre a été créé. Plutôt que de sélectionner un autre compte, ajoutez {1} à votre compte actuel dans votre wallet, puis réessayez.</2>"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display settings"
@@ -10110,6 +10150,10 @@ msgstr "Staké"
 msgid "Traders"
 msgstr "Traders"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Wallet cannot sign messages"
+msgstr ""
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
 msgstr "Mises à jour"
@@ -10195,6 +10239,10 @@ msgstr "Copier les détails techniques"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "TRACKER"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"

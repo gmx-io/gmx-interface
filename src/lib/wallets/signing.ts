@@ -1,8 +1,13 @@
 import { getAccount, getChainId, getWalletClient } from "@wagmi/core";
 import { AbstractSigner, type Wallet } from "ethers";
-import { hashTypedData, isHex, size, withRetry, type Hex } from "viem";
+import { hashTypedData, isAddressEqual, isHex, size, withRetry, type Hex } from "viem";
 
-import { extendError, parseError } from "lib/errors";
+import { extendError, parseError, type ErrorLike } from "lib/errors";
+import {
+  SMART_WALLET_ACCOUNT_CHANGED_ERROR,
+  SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_WRONG_CHAIN_ERROR,
+} from "lib/errors/customErrors";
 import { metrics } from "lib/metrics";
 import { ISigner } from "lib/transactions/iSigner";
 import type { IAbstractSigner } from "sdk/utils/signer";
@@ -10,6 +15,7 @@ import type { IAbstractSigner } from "sdk/utils/signer";
 import { switchNetwork, type WalletSigner } from ".";
 import { AccountType, getAccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
+import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
 import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
 export type SignatureDomain = {
@@ -37,16 +43,12 @@ type RpcSendable = Pick<WalletSigner["provider"], "send">;
 
 type AnySigner = WalletSigner | Wallet | AbstractSigner | ISigner;
 
-/**
- * Contract accounts mix the connected chainId into the hash they sign, so they only produce a valid
- * signature while the wallet sits on the chain that verifies it. Plain and 7702-delegated EOAs sign
- * with their own key, which works from any chain.
- */
+/** Contract accounts bind signatures to the connected chainId; EOAs (incl. 7702) can sign from any chain. */
 function mustSignOnVerificationChain(accountType: AccountType | undefined): boolean {
   return accountType !== undefined && accountType !== AccountType.EOA && accountType !== AccountType.PostEip7702EOA;
 }
 
-async function needsChainSwapForSmartWallet({
+async function probeChainBoundSigning({
   address,
   currentChainId,
   targetChainId,
@@ -74,6 +76,10 @@ async function needsChainSwapForSmartWallet({
   return accountTypes.some(mustSignOnVerificationChain);
 }
 
+function isUnsupportedChainError(error: ErrorLike): boolean {
+  return parseError(error)?.errorMessage?.includes("Unsupported chains") ?? false;
+}
+
 function providerSendSign(signer: AnySigner, from: string, eip712: object) {
   return withRetry<string>(
     () => (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]),
@@ -86,6 +92,27 @@ function providerSendSign(signer: AnySigner, from: string, eip712: object) {
       },
     }
   );
+}
+
+async function buildChainSwitchError({
+  address,
+  startingChainId,
+  targetChainId,
+  cause,
+}: {
+  address: string;
+  startingChainId: number;
+  targetChainId: number;
+  cause: ErrorLike;
+}) {
+  const [isMissing, walletName] = await Promise.all([
+    isAccountMissingOnChain(address, targetChainId).catch(() => false),
+    getConnectedWalletName(address).catch(() => undefined),
+  ]);
+
+  return extendError(new Error(isMissing ? SMART_WALLET_CHAIN_UNAVAILABLE_ERROR : SMART_WALLET_WRONG_CHAIN_ERROR), {
+    data: { address, startingChainId, targetChainId, walletName, cause: cause?.message },
+  });
 }
 
 async function withSmartWalletChainSwap<T>(
@@ -102,7 +129,7 @@ async function withSmartWalletChainSwap<T>(
 ): Promise<T> {
   const config = getWagmiConfig();
   const startingChainId = getChainId(config);
-  const needsSwap = await needsChainSwapForSmartWallet({
+  const needsSwap = await probeChainBoundSigning({
     address,
     currentChainId: startingChainId,
     targetChainId,
@@ -112,15 +139,36 @@ async function withSmartWalletChainSwap<T>(
     return action(signer);
   }
 
-  await switchNetwork(targetChainId!, true);
-  const account = getAccount(config).address;
-  if (!account) {
-    throw new Error("No account after chain swap");
-  }
-  const swappedWalletClient = await getWalletClient(config, { chainId: targetChainId! });
-  const swappedSigner = clientToSigner(swappedWalletClient, account);
   try {
-    return await action(swappedSigner);
+    await switchNetwork(targetChainId!, true);
+  } catch (error) {
+    throw await buildChainSwitchError({ address, startingChainId, targetChainId: targetChainId!, cause: error });
+  }
+
+  try {
+    const account = getAccount(config).address;
+
+    if (!account) {
+      throw new Error("No account after chain swap");
+    }
+
+    if (!isAddressEqual(account, address)) {
+      throw extendError(new Error(SMART_WALLET_ACCOUNT_CHANGED_ERROR), {
+        data: { expected: address, actual: account, targetChainId },
+      });
+    }
+
+    const swappedWalletClient = await getWalletClient(config, { chainId: targetChainId! });
+    const swappedSigner = clientToSigner(swappedWalletClient, account);
+    try {
+      return await action(swappedSigner);
+    } catch (error) {
+      if (!isUnsupportedChainError(error)) {
+        throw error;
+      }
+
+      throw await buildChainSwitchError({ address, startingChainId, targetChainId: targetChainId!, cause: error });
+    }
   } finally {
     await switchNetwork(startingChainId, true).catch((error) => {
       metrics.pushError(
