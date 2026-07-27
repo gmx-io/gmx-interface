@@ -51,6 +51,7 @@ vi.mock("sdk/utils/fees/priceImpact", () => ({
 }));
 
 const ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
+const SAME_ACCOUNT_DIFFERENT_CASE = "0x52908400098527886e0f7030069857d2e4169ee7";
 const GMX_TOKEN = "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a";
 const MARKET_TOKEN = "0xAbC0000000000000000000000000000000000001";
 const INDEX_TOKEN = "0xAbC0000000000000000000000000000000000002";
@@ -246,6 +247,16 @@ describe("useTradeRewardsEstimate", () => {
 
     expect(latestResult.hasKnownMultiplier).toBe(false);
     expect(latestResult.estimatedRewards).toBeUndefined();
+  });
+
+  it("uses status for the same account when checksum casing differs", () => {
+    mockUseAccount.mockReturnValue(SAME_ACCOUNT_DIFFERENT_CASE);
+
+    render(<Harness {...defaultParams} />);
+
+    expect(latestResult.hasKnownMultiplier).toBe(true);
+    expect(latestResult.multiplier).toBe(50n);
+    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(5n));
   });
 
   it("does not expose an estimate or enable account requests while disconnected", () => {

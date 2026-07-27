@@ -4377,6 +4377,10 @@ msgstr ""
 msgid "Worker thread"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+msgid "Due to changes in your volume and staking tiers."
+msgstr ""
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr ""

@@ -4377,6 +4377,10 @@ msgstr "Annualisierte Daten basierend auf den letzten 7 Tagen"
 msgid "Worker thread"
 msgstr "Worker-Thread"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+msgid "Due to changes in your volume and staking tiers."
+msgstr "Aufgrund von Änderungen an deinen Volumen- und Staking-Stufen."
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "Orders konnten nicht aktualisiert werden"

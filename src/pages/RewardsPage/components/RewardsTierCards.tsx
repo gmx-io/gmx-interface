@@ -856,7 +856,7 @@ function BoostsCard({
                               : "border-slate-600 bg-slate-900/80 opacity-40"
                           )}
                         >
-                          <ReferralBoostIcon active={item.isHighlighted} className="size-20" />
+                          <ReferralBoostIcon active={item.isHighlighted} className="size-20" variant="glyph" />
                         </div>
                       }
                       content={
@@ -971,7 +971,7 @@ function BoostsCard({
               ))}
               <span className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700">
                 <span className="flex size-26 shrink-0 items-center justify-center">
-                  <ReferralBoostIcon active={false} className="size-16" />
+                  <ReferralBoostIcon active={false} className="size-16" variant="glyph" />
                 </span>
                 <Trans>Referral Boost</Trans>
               </span>
@@ -988,7 +988,7 @@ function BoostsCard({
               ))}
               <span className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700">
                 <span className="flex size-26 shrink-0 items-center justify-center">
-                  <ReferralBoostIcon active={false} className="size-16" />
+                  <ReferralBoostIcon active={false} className="size-16" variant="glyph" />
                 </span>
                 <Trans>Referral Boost</Trans>
               </span>

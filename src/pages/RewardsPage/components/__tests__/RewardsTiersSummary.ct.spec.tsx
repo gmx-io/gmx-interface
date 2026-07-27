@@ -26,11 +26,18 @@ test.describe("RewardsTiersSummary", () => {
     await expect(component.getByText("Vestable esGMX")).toHaveCount(0);
   });
 
-  test("shows active and projected multiplier values using their summary colors", async ({ mount }) => {
+  test("shows the restored multiplier transition using the summary colors", async ({ mount, page }) => {
     const component = await mount(<RewardsTiersSummaryStory projectedMultiplier={215n} />);
 
     await expect(component.getByText("1.75x")).toHaveClass(/text-green-300/);
     await expect(component.getByText("2.15x")).toHaveClass(/text-blue-100/);
+    await expect(component.getByTestId("multiplier-transition-arrow")).toHaveClass(/size-16/);
+    await expect(component.getByTestId("multiplier-transition-arrow")).toHaveClass(/rounded-full/);
+
+    await component.getByTestId("multiplier-transition-arrow").hover();
+
+    await expect(page.getByText("Your multiplier will increase next epoch.")).toBeVisible();
+    await expect(page.getByText("Due to changes in your volume and staking tiers.")).toBeVisible();
   });
 
   test("shows an inactive multiplier in blue", async ({ mount }) => {

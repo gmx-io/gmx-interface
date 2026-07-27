@@ -4377,6 +4377,10 @@ msgstr "基于过去 7 天数据的年化计算"
 msgid "Worker thread"
 msgstr "Worker 线程"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+msgid "Due to changes in your volume and staking tiers."
+msgstr "这是由于您的交易量等级和质押等级发生变化。"
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "更新订单失败"

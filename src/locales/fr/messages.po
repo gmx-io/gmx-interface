@@ -4377,6 +4377,10 @@ msgstr "Données annualisées basées sur les 7 derniers jours"
 msgid "Worker thread"
 msgstr "Thread Worker"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+msgid "Due to changes in your volume and staking tiers."
+msgstr "En raison des changements apportés à vos niveaux de volume et de staking."
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "Échec de la mise à jour des ordres"

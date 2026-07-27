@@ -4377,6 +4377,10 @@ msgstr "최근 7일 데이터 기반 연환산"
 msgid "Worker thread"
 msgstr "워커 스레드"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+msgid "Due to changes in your volume and staking tiers."
+msgstr "거래량 및 스테이킹 티어 변경에 따른 결과입니다."
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "주문 업데이트에 실패했습니다"

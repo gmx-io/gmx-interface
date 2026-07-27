@@ -17,9 +17,12 @@ const testI18n = setupI18n({
       HaOtg5: "Vestable esGMX",
       hkv6b4: "All-time esGMX",
       "1mtXVA": "Current Multiplier",
+      fBBWWY: "Your multiplier will decrease next epoch.",
+      IHV8kS: "Due to changes in your volume and staking tiers.",
       klT8CC:
         "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}.",
       PmdsmT: "esGMX available to begin vesting.",
+      "z+UEPR": "Your multiplier will increase next epoch.",
     },
   },
 });

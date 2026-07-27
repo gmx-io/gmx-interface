@@ -1,3 +1,5 @@
+import { isAddressEqual, type Address } from "viem";
+
 import type { ContractsChainId } from "config/chains";
 import {
   getStakingRewardsPromoSelection,
@@ -5,6 +7,7 @@ import {
 } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
+import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
@@ -20,6 +23,19 @@ function getTierMultiplier(tiers: { tier: string; multiplier: bigint }[], tier: 
   return tiers.find((item) => item.tier === tier)?.multiplier ?? 0n;
 }
 
+function getPersistentBoostMultiplier(config: IncentivesConfig, status: AccountIncentiveStatus) {
+  return status.boostIds.reduce((total, boostId) => {
+    const isTransient = boostId === "FeaturedMarkets" || boostId === "BalancingTrades";
+    const isExhaustedManualAllocation = boostId === "ManualAllocation" && status.manualRewardRemainingUsd <= 0n;
+
+    if (isTransient || isExhaustedManualAllocation) {
+      return total;
+    }
+
+    return total + (config.boosts.find((item) => item.boost === boostId)?.multiplier ?? 0n);
+  }, 0n);
+}
+
 function getProjectedMultiplier(config: IncentivesConfig, status?: AccountIncentiveStatus) {
   if (!status) {
     return undefined;
@@ -29,18 +45,27 @@ function getProjectedMultiplier(config: IncentivesConfig, status?: AccountIncent
   const projectedVolumeMultiplier = getTierMultiplier(config.volumeTiers, status.projectedVolumeTier);
   const currentStakingMultiplier = getTierMultiplier(config.stakingTiers, status.stakingTier);
   const projectedStakingMultiplier = getTierMultiplier(config.stakingTiers, status.projectedStakingTier);
+  const persistentBoostMultiplier = getPersistentBoostMultiplier(config, status);
+  const currentComponentMultiplier = currentVolumeMultiplier + currentStakingMultiplier + persistentBoostMultiplier;
+  const projectedComponentMultiplier =
+    projectedVolumeMultiplier + projectedStakingMultiplier + persistentBoostMultiplier;
+  const cappedCurrentComponentMultiplier =
+    currentComponentMultiplier > config.maxMultiplier ? config.maxMultiplier : currentComponentMultiplier;
   const projectedMultiplier =
-    status.multiplier +
-    projectedVolumeMultiplier -
-    currentVolumeMultiplier +
-    projectedStakingMultiplier -
-    currentStakingMultiplier;
-
-  return projectedMultiplier === status.multiplier
-    ? undefined
-    : projectedMultiplier > config.maxMultiplier
+    cappedCurrentComponentMultiplier === status.multiplier
+      ? projectedComponentMultiplier
+      : status.multiplier + projectedComponentMultiplier - currentComponentMultiplier;
+  const cappedProjectedMultiplier =
+    projectedMultiplier > config.maxMultiplier
       ? config.maxMultiplier
-      : projectedMultiplier;
+      : projectedMultiplier < 0n
+        ? 0n
+        : projectedMultiplier;
+
+  return formatMultiplier(cappedProjectedMultiplier, config.multiplierDecimals) ===
+    formatMultiplier(status.multiplier, config.multiplierDecimals)
+    ? undefined
+    : cappedProjectedMultiplier;
 }
 
 export function RewardsTiersTab({
@@ -73,7 +98,12 @@ export function RewardsTiersTab({
     vestableEsGmxUsd,
   } = useRewardsVestingData(account, chainId);
   const currentStatus =
-    status && status.account === account && status.epochTimestamp === config.epochTimestamp ? status : undefined;
+    status &&
+    account &&
+    isAddressEqual(status.account as Address, account as Address) &&
+    status.epochTimestamp === config.epochTimestamp
+      ? status
+      : undefined;
   const hasActiveStakingTier = Boolean(currentStatus?.stakingTier ?? currentStatus?.projectedStakingTier);
   const hasManualAllocation = (currentStatus?.manualRewardRemainingUsd ?? 0n) > 0n;
   const { data: promoActivity, loading: promoActivityLoading } = useRewardsPromoActivity(chainId, {

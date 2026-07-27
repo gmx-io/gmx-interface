@@ -4377,6 +4377,10 @@ msgstr "Годовые данные на основе последних 7 дн�
 msgid "Worker thread"
 msgstr "Рабочий поток"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+msgid "Due to changes in your volume and staking tiers."
+msgstr "Из-за изменений ваших уровней объёма и стейкинга."
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "Не удалось обновить ордера"

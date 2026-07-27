@@ -4377,6 +4377,10 @@ msgstr "過去7日間に基づく年率換算データ"
 msgid "Worker thread"
 msgstr "ワーカースレッド"
 
+#: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+msgid "Due to changes in your volume and staking tiers."
+msgstr "取引量ティアとステーキングティアの変更によるものです。"
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "注文の更新に失敗しました"
