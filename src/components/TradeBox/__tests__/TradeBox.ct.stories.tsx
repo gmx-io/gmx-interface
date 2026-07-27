@@ -16,19 +16,19 @@ import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTx
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
+import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
-import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import type { MarketsInfoData } from "domain/synthetics/markets";
-import { createMockSubaccount } from "domain/testUtils/mockSubaccount";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
 import type { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS, SECOND_ETH_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
+import { createMockSubaccount } from "domain/testUtils/mockSubaccount";
 import {
   MOCK_ACCOUNT,
   mockQueryClient as queryClient,
@@ -434,7 +434,15 @@ export function TradeBoxStory({
     }
 
     return entries;
-  }, [seedSwapPair, seedIncreaseCollateralSwap, seedPayNativeEth, seedSwapWrap, seedLeverageOption, seedSizeDisplayMode, seedTradeMode]);
+  }, [
+    seedSwapPair,
+    seedIncreaseCollateralSwap,
+    seedPayNativeEth,
+    seedSwapWrap,
+    seedLeverageOption,
+    seedSizeDisplayMode,
+    seedTradeMode,
+  ]);
 
   let content = (
     <MockSyntheticsStateProvider
