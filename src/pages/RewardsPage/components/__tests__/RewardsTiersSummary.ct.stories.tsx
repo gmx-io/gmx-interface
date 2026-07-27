@@ -16,6 +16,9 @@ const testI18n = setupI18n({
       c7JRfi: "All-time GT",
       HaOtg5: "Vestable esGMX",
       hkv6b4: "All-time esGMX",
+      "1mtXVA": "Current Multiplier",
+      klT8CC:
+        "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}.",
       PmdsmT: "esGMX available to begin vesting.",
     },
   },
@@ -33,8 +36,12 @@ const allTimeSummary: LeaderboardEntry = {
 };
 
 export function RewardsTiersSummaryStory({
+  currentMultiplier = 175n,
+  projectedMultiplier,
   summaryState = "ready",
 }: {
+  currentMultiplier?: bigint;
+  projectedMultiplier?: bigint;
   summaryState?: React.ComponentProps<typeof RewardsTiersSummary>["summaryState"];
 }) {
   return (
@@ -42,7 +49,9 @@ export function RewardsTiersSummaryStory({
       <MemoryRouter>
         <RewardsTiersSummary
           allTimeSummary={allTimeSummary}
-          currentMultiplier={175n}
+          currentMultiplier={currentMultiplier}
+          projectedMultiplier={projectedMultiplier}
+          maxMultiplier={500n}
           multiplierDecimals={100n}
           statusState={summaryState}
           summaryState={summaryState}

@@ -25,10 +25,9 @@ import BatterySvg from "img/ic_battery.svg?react";
 import BoostSvg from "img/ic_boost.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
-import ReferralsIcon from "img/ic_referrals.svg?react";
 import StatsSvg from "img/ic_stats.svg?react";
 
-import { BoostTierIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
+import { BoostTierIcon, ReferralBoostIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
 import { type AccountDataState, boostLabels, stakingTierLabels, volumeTierLabels } from "./rewardsTiersShared";
 
 type TierCardKey = "volume" | "staking" | "boosts";
@@ -438,6 +437,7 @@ function StakingCard({
       ? nextTierConfig.threshold - gmxStaked
       : 0n;
   const isMaxTier = active && displayTierIndex >= 0 && !nextTierConfig;
+  const shouldStakeGmx = walletGmxState !== "ready" || (walletGmx ?? 0n) > 0n;
   const stakingTooltip = projectedTierConfig ? (
     <MultiplierChangeTooltip
       isDecrease={Boolean(displayTierConfig && projectedTierConfig.multiplier < displayTierConfig.multiplier)}
@@ -494,7 +494,7 @@ function StakingCard({
           <div className="flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center justify-between py-2 font-medium">
               <Trans>
-                GMX + esGMX staked:{" "}
+                GMX staked:{" "}
                 <span className="text-typography-primary">
                   {gmxStaked === undefined
                     ? "—"
@@ -503,10 +503,11 @@ function StakingCard({
               </Trans>
               {requiredToNextTier > 0n ? (
                 <Link
-                  to="/earn/portfolio"
+                  to={shouldStakeGmx ? "/earn/portfolio" : "/buy_gmx"}
                   className="inline-flex items-center gap-2 text-13 font-medium text-rewards-blue-300"
                 >
-                  <Trans>Manage staking</Trans> <GmxIcon className="size-12" />
+                  {shouldStakeGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
+                  {shouldStakeGmx ? <GmxIcon className="size-12" /> : <PlusIcon className="size-12" />}
                 </Link>
               ) : null}
             </div>
@@ -523,7 +524,7 @@ function StakingCard({
             ) : nextTierConfig && requiredToNextTier > 0n ? (
               <div className="flex items-center gap-4 py-2">
                 <Trans>
-                  Increase your staked GMX or esGMX balance by{" "}
+                  Increase your staked GMX balance by{" "}
                   {formatAmount(requiredToNextTier, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} to get{" "}
                   {stakingTierLabels[nextTierConfig.tier]} status{" "}
                   <span className="text-typography-primary">
@@ -573,6 +574,7 @@ function InactiveStakingCardContent({
   const showStaticCopy = !account;
   const isWalletBalanceLoading = Boolean(account && walletGmxState === "loading");
   const isWalletBalanceUnavailable = Boolean(account && walletGmxState === "unavailable");
+  const shouldStakeGmx = hasWalletGmx || isWalletBalanceUnavailable;
   const promoCopy = getRewardsPromoCopy(promoSelection);
 
   return (
@@ -596,21 +598,11 @@ function InactiveStakingCardContent({
         </SkeletonTheme>
       ) : (
         <Link
-          to={hasWalletGmx || isWalletBalanceUnavailable ? "/earn/portfolio" : "/buy_gmx"}
+          to={shouldStakeGmx ? "/earn/portfolio" : "/buy_gmx"}
           className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300"
         >
-          {isWalletBalanceUnavailable ? (
-            <Trans>Manage staking</Trans>
-          ) : hasWalletGmx ? (
-            <Trans>Stake GMX</Trans>
-          ) : (
-            <Trans>Buy GMX</Trans>
-          )}
-          {hasWalletGmx || isWalletBalanceUnavailable ? (
-            <GmxIcon className="size-16" />
-          ) : (
-            <PlusIcon className="size-16" />
-          )}
+          {shouldStakeGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
+          {shouldStakeGmx ? <GmxIcon className="size-16" /> : <PlusIcon className="size-16" />}
         </Link>
       )}
     </div>
@@ -674,7 +666,7 @@ function StakingProgressBar({
                 </span>
                 <span className="text-11"> / </span>
                 <span className="text-typography-primary">
-                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} GMX + esGMX
+                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} GMX
                 </span>
               </Trans>
             </div>
@@ -843,14 +835,6 @@ function BoostsCard({
                 {activeBoostCount > 0 ? (
                   <span>{plural(activeBoostCount, { one: "# active boost", other: "# active boosts" })}</span>
                 ) : null}
-                {qualifiedTransientBoostIds.length > 0 ? (
-                  <span className={cx({ "text-13 text-typography-secondary": activeBoostCount > 0 })}>
-                    {plural(qualifiedTransientBoostIds.length, {
-                      one: "# qualified this epoch",
-                      other: "# qualified this epoch",
-                    })}
-                  </span>
-                ) : null}
               </span>
             </h3>
             <div className="flex flex-wrap gap-12">
@@ -872,7 +856,7 @@ function BoostsCard({
                               : "border-slate-600 bg-slate-900/80 opacity-40"
                           )}
                         >
-                          <ReferralsIcon className="size-20" />
+                          <ReferralBoostIcon active={item.isHighlighted} className="size-20" />
                         </div>
                       }
                       content={
@@ -880,11 +864,8 @@ function BoostsCard({
                           <div className="font-medium">
                             <Trans>Referral Boost</Trans>
                           </div>
-                          <div className="mt-4 text-13">
-                            <Trans>
-                              Earn an additional {formatFactorPercentage(config.referralRewardShareFactor)} of rewards
-                              from referred traders.
-                            </Trans>
+                          <div className="mt-4 text-13 text-typography-secondary">
+                            <Trans>Receive 50% of the rewards earned by every trader you invite.</Trans>
                           </div>
                           {item.isHighlighted ? (
                             <div className="mt-4 text-13 text-green-500">
@@ -990,7 +971,7 @@ function BoostsCard({
               ))}
               <span className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700">
                 <span className="flex size-26 shrink-0 items-center justify-center">
-                  <ReferralsIcon className="size-16" />
+                  <ReferralBoostIcon active={false} className="size-16" />
                 </span>
                 <Trans>Referral Boost</Trans>
               </span>
@@ -1007,7 +988,7 @@ function BoostsCard({
               ))}
               <span className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700">
                 <span className="flex size-26 shrink-0 items-center justify-center">
-                  <ReferralsIcon className="size-16" />
+                  <ReferralBoostIcon active={false} className="size-16" />
                 </span>
                 <Trans>Referral Boost</Trans>
               </span>

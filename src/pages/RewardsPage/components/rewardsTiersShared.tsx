@@ -39,14 +39,24 @@ export function StatusLabel({
   state,
   active,
   projected,
+  qualified,
 }: {
   state: AccountDataState;
   active: boolean;
   projected?: boolean;
+  qualified?: boolean;
 }) {
   if (state === "loading") return <span className="text-typography-secondary">…</span>;
   if (state === "unavailable") return <span className="text-yellow-300">-</span>;
   if (state === "disconnected") return <span className="text-typography-secondary">-</span>;
+
+  if (qualified !== undefined) {
+    return (
+      <span className={qualified ? "text-blue-300" : "text-typography-secondary"}>
+        {qualified ? <Trans>Qualified this epoch</Trans> : <Trans>Not qualified this epoch</Trans>}
+      </span>
+    );
+  }
 
   if (active && projected) {
     return (

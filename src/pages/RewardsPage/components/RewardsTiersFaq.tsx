@@ -23,9 +23,9 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
               </div>
               <p>
                 <Trans>
-                  Trade and optionally stake GMX or esGMX to increase your earning power. Your weekly trading volume
-                  sets your volume tier, and the amount you stake sets your staking tier – together they form your
-                  reward multiplier. The higher your tiers, the more you earn on your trading fees.
+                  Trade and optionally stake GMX to increase your earning power. Your weekly trading volume sets your
+                  volume tier, and the amount you stake sets your staking tier – together they form your reward
+                  multiplier. The higher your tiers, the more you earn on your trading fees.
                 </Trans>
               </p>
             </div>

@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
+import { HISTORICAL_REWARDS_ALLOCATION_MODAL_DISMISSED_KEY } from "config/localStorage";
 import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
@@ -128,6 +129,17 @@ describe("HistoricalRewardsAllocationModal", () => {
         activeEpochTimestamp: 100,
       })
     ).toBe(true);
+  });
+
+  it("does not poll account status after the modal has been dismissed", () => {
+    localStorage.setItem(
+      JSON.stringify([HISTORICAL_REWARDS_ALLOCATION_MODAL_DISMISSED_KEY, ARBITRUM, ACCOUNT]),
+      JSON.stringify(true)
+    );
+
+    render(<HookHarness account={ACCOUNT} />);
+
+    expect(mockUseAccountIncentiveStatus.mock.calls.at(-1)?.[1]).toMatchObject({ enabled: false });
   });
 
   it("closes an open modal immediately when availability or account state becomes invalid", async () => {

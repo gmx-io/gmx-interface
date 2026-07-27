@@ -16,6 +16,33 @@ import type { AccountDataState } from "./rewardsTiersShared";
 import { RewardsTiersSummary } from "./RewardsTiersSummary";
 import { RewardsTierTables } from "./RewardsTierTables";
 
+function getTierMultiplier(tiers: { tier: string; multiplier: bigint }[], tier: string | null) {
+  return tiers.find((item) => item.tier === tier)?.multiplier ?? 0n;
+}
+
+function getProjectedMultiplier(config: IncentivesConfig, status?: AccountIncentiveStatus) {
+  if (!status) {
+    return undefined;
+  }
+
+  const currentVolumeMultiplier = getTierMultiplier(config.volumeTiers, status.volumeTier);
+  const projectedVolumeMultiplier = getTierMultiplier(config.volumeTiers, status.projectedVolumeTier);
+  const currentStakingMultiplier = getTierMultiplier(config.stakingTiers, status.stakingTier);
+  const projectedStakingMultiplier = getTierMultiplier(config.stakingTiers, status.projectedStakingTier);
+  const projectedMultiplier =
+    status.multiplier +
+    projectedVolumeMultiplier -
+    currentVolumeMultiplier +
+    projectedStakingMultiplier -
+    currentStakingMultiplier;
+
+  return projectedMultiplier === status.multiplier
+    ? undefined
+    : projectedMultiplier > config.maxMultiplier
+      ? config.maxMultiplier
+      : projectedMultiplier;
+}
+
 export function RewardsTiersTab({
   chainId,
   config,
@@ -89,12 +116,14 @@ export function RewardsTiersTab({
         : "unavailable";
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1480px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1">
+    <div className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1620px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1">
       <div className="flex min-w-0 flex-col gap-8 max-xl:order-2">
         <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-12">
           <RewardsTiersSummary
             allTimeSummary={allTimeSummary}
             currentMultiplier={currentStatus?.multiplier}
+            projectedMultiplier={getProjectedMultiplier(config, currentStatus)}
+            maxMultiplier={config.maxMultiplier}
             multiplierDecimals={config.multiplierDecimals}
             statusState={statusState}
             summaryState={summaryState}

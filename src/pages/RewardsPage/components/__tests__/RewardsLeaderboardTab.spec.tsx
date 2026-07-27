@@ -7,8 +7,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ARBITRUM } from "config/chains";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
-import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { formatAmount, formatUsd, PRECISION } from "lib/numbers";
+import { convertToUsd } from "sdk/utils/tokens";
 
 vi.mock("components/AddressView/AddressView", () => ({
   default: ({ address }: { address: string }) => <span>{address}</span>,
@@ -29,6 +29,24 @@ const rewardsShareMock = vi.hoisted(() => ({
 
 const rewardsAnalyticsMock = vi.hoisted(() => ({
   sendRewardsLeaderboardShareClickEvent: vi.fn(),
+}));
+
+const rewardsPricesMock = vi.hoisted(() => ({
+  gmxPrice: undefined as bigint | undefined,
+  gtPrice: undefined as bigint | undefined,
+}));
+
+vi.mock("domain/legacy", () => ({
+  useGmxPrice: () => ({ gmxPrice: rewardsPricesMock.gmxPrice }),
+}));
+
+vi.mock("domain/synthetics/incentives/v2/useLatestGtPrice", () => ({
+  useLatestGtPrice: () => ({
+    data:
+      rewardsPricesMock.gtPrice === undefined
+        ? undefined
+        : { priceUsd: rewardsPricesMock.gtPrice, timestamp: 1_784_073_600 },
+  }),
 }));
 
 vi.mock("components/RewardsShare/RewardsShare", () => ({
@@ -197,6 +215,8 @@ describe("RewardsLeaderboardTab", () => {
     leaderboardMock.pinnedParams.length = 0;
     rewardsShareMock.props.length = 0;
     rewardsAnalyticsMock.sendRewardsLeaderboardShareClickEvent.mockReset();
+    rewardsPricesMock.gmxPrice = 2n * PRECISION;
+    rewardsPricesMock.gtPrice = 3n * PRECISION;
   });
 
   afterEach(() => {
@@ -204,24 +224,20 @@ describe("RewardsLeaderboardTab", () => {
     vi.useRealTimers();
   });
 
-  it("coerces multiplier sorting and removes the multiplier option and column for all time", async () => {
+  it("does not show the multiplier column for any period", async () => {
     renderLeaderboard();
 
-    fireEvent.click(getSortButton("Multiplier"));
-
-    await waitFor(() => expect(getLastPageParams().orderBy).toBe("multiplier_DESC"));
-    expect(screen.getByRole("columnheader", { name: "Multiplier" })).toBeTruthy();
+    expect(screen.queryByRole("columnheader", { name: "Multiplier" })).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "All-time" }));
 
     await waitFor(() => {
       expect(getLastPageParams()).toMatchObject({
         epoch: undefined,
-        orderBy: "tradingVolume_DESC",
+        orderBy: "rewardsUsd_DESC",
       });
     });
     expect(screen.queryByRole("columnheader", { name: "Multiplier" })).toBeNull();
-    expect(within(screen.getByTestId("leaderboard-pinned-row")).queryByText("2.5x")).toBeNull();
     expect(within(screen.getByTestId("leaderboard-pinned-row")).getByRole("button", { name: "Share" })).toBeTruthy();
   });
 
@@ -235,7 +251,7 @@ describe("RewardsLeaderboardTab", () => {
     expect(getLastPageParams()).toMatchObject({
       epoch: undefined,
       isMutable: true,
-      orderBy: "tradingVolume_DESC",
+      orderBy: "rewardsUsd_DESC",
     });
   });
 
@@ -250,7 +266,7 @@ describe("RewardsLeaderboardTab", () => {
         isMutable: true,
       });
     });
-    expect(screen.getByRole("columnheader", { name: "Multiplier" })).toBeTruthy();
+    expect(screen.queryByRole("columnheader", { name: "Multiplier" })).toBeNull();
   });
 
   it("renders the exact-cased connected account with its indexed values and global volume rank", () => {
@@ -260,20 +276,33 @@ describe("RewardsLeaderboardTab", () => {
     const cells = within(row).getAllByRole("cell");
     expect(within(row).getByText("47")).toBeTruthy();
     expect(within(row).getByTitle(CHECKSUMMED_ACCOUNT).textContent).toBe(CHECKSUMMED_ACCOUNT);
+    expect(cells).toHaveLength(8);
     expect(cells[2].textContent).toBe(
-      formatUsd(pinnedEntry.tradingVolume, { fallbackToZero: true, displayDecimals: 2 })
+      formatUsd(pinnedEntry.tradingVolume, { fallbackToZero: true, displayDecimals: 0 })
     );
     expect(cells[3].textContent).toBe(
-      formatUsd(pinnedEntry.referralVolume, { fallbackToZero: true, displayDecimals: 2 })
+      formatUsd(pinnedEntry.referralVolume, { fallbackToZero: true, displayDecimals: 0 })
     );
-    expect(cells[4].textContent).toBe(
-      formatAmount(pinnedEntry.esGmxRewards, ES_GMX_DECIMALS, 4, true, { trimTrailingZeros: true })
+    expect(
+      within(cells[4] as HTMLElement).getByText(
+        formatAmount(pinnedEntry.esGmxRewards, ES_GMX_DECIMALS, 4, true, { trimTrailingZeros: true })
+      )
+    ).toBeTruthy();
+    const esGmxRewardsUsd = convertToUsd(pinnedEntry.esGmxRewards, ES_GMX_DECIMALS, rewardsPricesMock.gmxPrice);
+    const esGmxUsdLabel = (cells[4] as HTMLElement).querySelector(".text-typography-secondary");
+    expect(esGmxUsdLabel?.textContent).toBe(
+      `(${formatUsd(esGmxRewardsUsd, { fallbackToZero: true, displayDecimals: 2 })})`
     );
-    expect(cells[5].textContent).toBe(
-      formatAmount(pinnedEntry.gtRewards, GT_DECIMALS, 4, true, { trimTrailingZeros: true })
-    );
+    expect(
+      within(cells[5] as HTMLElement).getByText(
+        formatAmount(pinnedEntry.gtRewards, GT_DECIMALS, 4, true, { trimTrailingZeros: true })
+      )
+    ).toBeTruthy();
+    const gtRewardsUsd = convertToUsd(pinnedEntry.gtRewards, GT_DECIMALS, rewardsPricesMock.gtPrice);
+    const gtUsdLabel = (cells[5] as HTMLElement).querySelector(".text-typography-secondary");
+    expect(gtUsdLabel?.textContent).toBe(`(${formatUsd(gtRewardsUsd, { fallbackToZero: true, displayDecimals: 2 })})`);
     expect(cells[6].textContent).toBe(formatUsd(pinnedEntry.rewardsUsd, { fallbackToZero: true, displayDecimals: 2 }));
-    expect(cells[7].textContent).toBe(formatMultiplier(250n, config.multiplierDecimals));
+    expect(within(cells[7] as HTMLElement).getByRole("button", { name: "Share" })).toBeTruthy();
 
     const pinnedParams = leaderboardMock.pinnedParams[leaderboardMock.pinnedParams.length - 1];
     expect(pinnedParams.where).toEqual({ account: CHECKSUMMED_ACCOUNT });
@@ -371,7 +400,7 @@ describe("RewardsLeaderboardTab", () => {
     expect(within(screen.getByTestId("leaderboard-pinned-row")).getByText("N/A")).toBeTruthy();
   });
 
-  it("supports ascending sorting and resets pagination when direction changes", async () => {
+  it("supports column sorting and resets pagination when the field changes", async () => {
     renderLeaderboard();
 
     fireEvent.click(screen.getByRole("button", { name: "2" }));
@@ -380,7 +409,7 @@ describe("RewardsLeaderboardTab", () => {
 
     await waitFor(() => {
       expect(getLastPageParams()).toMatchObject({
-        orderBy: "tradingVolume_ASC",
+        orderBy: "tradingVolume_DESC",
         offset: 0,
       });
     });

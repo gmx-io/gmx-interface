@@ -250,12 +250,37 @@ describe("RewardsTiersTab", () => {
     expect(screen.queryByText("0 qualified this epoch")).toBeNull();
   });
 
-  it("shows the current multiplier when connected", () => {
+  it("uses the V1 current multiplier treatment when connected", () => {
     renderTab();
 
-    expect(screen.getByText("Current Multiplier").parentElement?.textContent).toContain("1.75x");
+    const multiplierSummary = screen.getByTestId("rewards-current-multiplier");
+    expect(multiplierSummary.textContent).toContain("1.75x");
+    expect(multiplierSummary.textContent).toContain("2.15x");
+    expect(within(multiplierSummary).getByText("1.75x").className).toContain("text-green-300");
+    expect(within(multiplierSummary).getByText("2.15x").className).toContain("text-blue-100");
     expect(document.body.textContent?.replace(/\s/g, "")).toContain("$500");
     expect(screen.getByText("5.00 esGMX")).toBeDefined();
+  });
+
+  it("uses Buy GMX or Stake GMX for the active staking card based on the wallet balance", () => {
+    const view = renderTab();
+
+    let stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    expect(
+      within(stakingCard as HTMLElement)
+        .getByRole("link", { name: "Buy GMX" })
+        .getAttribute("href")
+    ).toBe("/buy_gmx");
+
+    mockUseRewardsVestingData.mockReturnValue(getVestingDataResult(5n * GMX_UNIT));
+    view.rerender(getTabNode());
+
+    stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    expect(
+      within(stakingCard as HTMLElement)
+        .getByRole("link", { name: "Stake GMX" })
+        .getAttribute("href")
+    ).toBe("/earn/portfolio");
   });
 
   it("shows the concise tier descriptions without a show-more control", async () => {
@@ -274,7 +299,7 @@ describe("RewardsTiersTab", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Staking Tiers" }));
     expect(
-      screen.getByText("Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier.")
+      screen.getByText("Your Staking Tier is based on staked GMX and determines your staking multiplier.")
     ).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
@@ -285,7 +310,7 @@ describe("RewardsTiersTab", () => {
     ).toBeDefined();
   });
 
-  it("distinguishes active and projected volume tiers", () => {
+  it("shows active and projected statuses for volume and staking tiers", () => {
     renderTab();
 
     const activeRow = screen.getByRole("row", { name: /Ranked.*Active/ });
@@ -293,6 +318,19 @@ describe("RewardsTiersTab", () => {
 
     expect(within(activeRow).getByText("Active")).toBeDefined();
     expect(within(projectedRow).getByText("Next epoch")).toBeDefined();
+    const multiplierWidth = screen.getByRole("columnheader", { name: "Multiplier" }).getAttribute("width");
+    const statusWidth = screen.getByRole("columnheader", { name: "Status" }).getAttribute("width");
+
+    fireEvent.click(screen.getByRole("button", { name: "Staking Tiers" }));
+
+    expect(screen.getByRole("row", { name: /Supporter.*Active/ })).toBeDefined();
+    expect(screen.getByRole("row", { name: /Advocate.*Next epoch/ })).toBeDefined();
+    expect(screen.getByRole("columnheader", { name: "Status" })).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+
+    expect(screen.getByRole("columnheader", { name: "Boost" }).getAttribute("width")).toBe(multiplierWidth);
+    expect(screen.getByRole("columnheader", { name: "Status" }).getAttribute("width")).toBe(statusWidth);
   });
 
   it("renders config-derived volume and staking targets", () => {
@@ -305,9 +343,7 @@ describe("RewardsTiersTab", () => {
     renderTab({ status: progressingStatus });
 
     expect(document.body.textContent).toMatch(/Trade .* more to unlock Certified status/);
-    expect(document.body.textContent).toContain(
-      "Increase your staked GMX or esGMX balance by 200 to get Advocate status"
-    );
+    expect(document.body.textContent).toContain("Increase your staked GMX balance by 200 to get Advocate status");
   });
 
   it("shows vestable esGMX with its unit and opens the rewards vesting flow", () => {
@@ -436,7 +472,7 @@ describe("RewardsTiersTab", () => {
     expect(screen.queryByRole("link", { name: "Buy GMX" })).toBeNull();
   });
 
-  it("uses a neutral staking action when the wallet GMX balance is unavailable", () => {
+  it("uses the staking action when the wallet GMX balance is unavailable", () => {
     mockUseRewardsVestingData.mockReturnValue({
       data: undefined,
       vestableEsGmx: undefined,
@@ -455,7 +491,7 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    expect(screen.getByRole("link", { name: "Manage staking" }).getAttribute("href")).toBe("/earn/portfolio");
+    expect(screen.getByRole("link", { name: "Stake GMX" }).getAttribute("href")).toBe("/earn/portfolio");
     expect(screen.queryByRole("link", { name: "Buy GMX" })).toBeNull();
   });
 
@@ -505,7 +541,7 @@ describe("RewardsTiersTab", () => {
     });
   });
 
-  it("labels staking progress as the combined GMX and esGMX balance", async () => {
+  it("labels staking progress as GMX staked", async () => {
     renderTab();
 
     const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
@@ -517,12 +553,14 @@ describe("RewardsTiersTab", () => {
 
     expect(tierProgress).toBeDefined();
     expect(firstSegment).not.toBeNull();
+    expect(within(stakingCard as HTMLElement).getByText(/GMX staked:/)).toBeDefined();
     fireEvent.mouseEnter(firstSegment as Element);
 
     await waitFor(() => {
       const tooltip = document.querySelector(".Tooltip-popup");
       expect(tooltip).not.toBeNull();
-      expect(tooltip!.textContent).toContain("GMX + esGMX");
+      expect(tooltip!.textContent).toContain("GMX");
+      expect(tooltip!.textContent).not.toContain("esGMX");
     });
   });
 
@@ -549,18 +587,60 @@ describe("RewardsTiersTab", () => {
     const featuredMarketsRow = screen.getByRole("row", { name: /Featured Markets/ });
     const balancingTradesRow = screen.getByRole("row", { name: /Balancing Trades/ });
     const lifetimeVolumeRow = screen.getByRole("row", { name: /Lifetime Volume/ });
+    const returnBonusRow = screen.getByRole("row", { name: /Return Bonus/ });
+    const referralVolumeRow = screen.getByRole("row", { name: /Referral Volume/ });
 
+    expect(screen.getByRole("columnheader", { name: "Boost" })).toBeDefined();
+    expect(screen.queryByRole("columnheader", { name: "Multiplier" })).toBeNull();
     expect(featuredMarketsRow.textContent).toContain("GMX");
     expect(within(featuredMarketsRow).getByText("+0.25x")).toBeDefined();
-    expect(within(featuredMarketsRow).getByText("Active")).toBeDefined();
+    expect(within(featuredMarketsRow).getByText("Qualified this epoch")).toBeDefined();
     expect(featuredMarketsRow.textContent).toContain("Applies to eligible trades in featured markets.");
     expect(balancingTradesRow.textContent?.replace(/\s/g, "")).toContain("$10K");
     expect(within(balancingTradesRow).getByText("+0.5x")).toBeDefined();
-    expect(within(balancingTradesRow).getByText("Inactive")).toBeDefined();
+    expect(within(balancingTradesRow).getByText("Not qualified this epoch")).toBeDefined();
     expect(lifetimeVolumeRow.textContent?.replace(/\s/g, "")).toContain("$1M");
     expect(within(lifetimeVolumeRow).getByText("+1x")).toBeDefined();
     expect(within(lifetimeVolumeRow).getByText("Active")).toBeDefined();
-    expect(screen.queryByRole("row", { name: /Return Bonus/ })).toBeNull();
+    expect(within(returnBonusRow).getByText("+2x")).toBeDefined();
+    expect(within(returnBonusRow).getByText("Active")).toBeDefined();
+    expect(returnBonusRow.textContent).toContain(
+      "Available to eligible historical users until the incremental reward cap is consumed."
+    );
+    expect(referralVolumeRow.textContent).toContain("Receive 50% of the rewards earned by every trader you invite.");
+    expect(within(referralVolumeRow).getByText("50% of rewards")).toBeDefined();
+    expect(within(referralVolumeRow).getByText("Active")).toBeDefined();
+    expect(referralVolumeRow.querySelector("svg path")?.getAttribute("fill")).toBe("#7885FF");
+  });
+
+  it("uses the inactive referral icon without referral volume", () => {
+    renderTab({
+      status: {
+        ...status,
+        referralVolume: 0n,
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+
+    const referralVolumeRow = screen.getByRole("row", { name: /Referral Volume/ });
+    expect(within(referralVolumeRow).getByText("Inactive")).toBeDefined();
+    expect(referralVolumeRow.querySelector("svg path")?.getAttribute("fill")).toBe("#A0A3C4");
+  });
+
+  it("marks the Return Bonus inactive when its incremental reward cap is consumed", () => {
+    renderTab({
+      status: {
+        ...status,
+        boostIds: ["ManualAllocation"],
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+
+    const returnBonusRow = screen.getByRole("row", { name: /Return Bonus/ });
+    expect(within(returnBonusRow).getByText("Inactive")).toBeDefined();
   });
 
   it("shows active boosts first without adding the Referral Boost to the multiplier", () => {
@@ -580,6 +660,37 @@ describe("RewardsTiersTab", () => {
         .getAllByRole("button")
         .map((button) => button.getAttribute("aria-label"))
     ).toEqual(["Lifetime Volume", "Return Bonus", "Referral Boost", "Featured Markets", "Balancing Trades"]);
+    expect(within(boostsCard as HTMLElement).queryByText("1 qualified this epoch")).toBeNull();
+  });
+
+  it("uses muted text for the Referral Boost description", async () => {
+    renderTab();
+
+    const referralBoost = screen.getByRole("button", { name: "Referral Boost" });
+    fireEvent.mouseEnter(referralBoost);
+
+    const description = await screen.findByText("Receive 50% of the rewards earned by every trader you invite.");
+    expect(description.className).toContain("text-typography-secondary");
+  });
+
+  it("uses active and inactive referral artwork in the boosts card", () => {
+    const view = renderTab();
+
+    let referralBoost = screen.getByRole("button", { name: "Referral Boost" });
+    expect(referralBoost.querySelector("svg path")?.getAttribute("fill")).toBe("#7885FF");
+
+    view.rerender(
+      getTabNode({
+        status: {
+          ...status,
+          boostIds: ["LifetimeTrading"],
+          referralVolume: 0n,
+        },
+      })
+    );
+
+    referralBoost = screen.getByRole("button", { name: "Referral Boost" });
+    expect(referralBoost.querySelector("svg path")?.getAttribute("fill")).toBe("#A0A3C4");
   });
 
   it("places active tier cards before banner cards while preserving their default order", () => {
@@ -628,9 +739,7 @@ describe("RewardsTiersTab", () => {
     const stakingCard = stakingHeading.closest(".group");
     expect(stakingCard).toBeDefined();
     expect(stakingCard!.textContent).toContain("0.1x →0.5x");
-    expect(stakingCard!.textContent).toContain(
-      "Increase your staked GMX or esGMX balance by 800 to get Steward status"
-    );
+    expect(stakingCard!.textContent).toContain("Increase your staked GMX balance by 800 to get Steward status");
 
     const tierProgress = within(stakingCard as HTMLElement).getByRole("progressbar", {
       name: "Staking tier levels",

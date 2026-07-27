@@ -28,25 +28,26 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
   const { account, status: walletStatus } = useWallet();
   const isWalletInitializing = useIsWalletInitializing();
   const { availability, isActive } = useIncentivesV2State();
-  const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, {
-    account,
-    enabled: isActive && Boolean(account),
-  });
-  const { data: activity, loading: activityLoading } = useRewardsPromoActivity(chainId, {
-    account,
-    enabled: isActive && Boolean(account),
-  });
   const [isDismissed, setIsDismissed] = useLocalStorageSerializeKeySafe<boolean>(
     [REWARDS_TRADE_PROMO_DISMISSED_KEY, chainId, account ?? "anonymous"],
     false
   );
+  const shouldLoadPersonalization = isActive && Boolean(account) && isDismissed === false;
+  const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, {
+    account,
+    enabled: shouldLoadPersonalization,
+  });
+  const { data: activity, loading: activityLoading } = useRewardsPromoActivity(chainId, {
+    account,
+    enabled: shouldLoadPersonalization,
+  });
   const config = availability.status === "active" ? availability.config : undefined;
   const { selection: promoSelection } = useStableRewardsPromoSelection({
     chainId,
     account,
     walletStatus,
     isWalletInitializing,
-    enabled: isActive,
+    enabled: isActive && isDismissed === false,
     config,
     status,
     statusLoading,

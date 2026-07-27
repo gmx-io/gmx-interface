@@ -89,14 +89,14 @@ export function IncentivesConfigSnapshot({ config, endpoint }: { config: Incenti
           <ConfigTable
             title={<Trans>Staking tiers</Trans>}
             firstHeader={<Trans>Tier</Trans>}
-            secondHeader={<Trans>GMX + esGMX threshold</Trans>}
+            secondHeader={<Trans>GMX threshold</Trans>}
             thirdHeader={<Trans>Multiplier</Trans>}
           >
             {config.stakingTiers.map((tier) => (
               <TableTr key={tier.tier}>
                 <TableTd padding="compact">{tier.tier}</TableTd>
                 <TableTd padding="compact">
-                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} GMX + esGMX
+                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} GMX
                 </TableTd>
                 <TableTd padding="compact">{formatMultiplier(tier.multiplier, config.multiplierDecimals)}</TableTd>
               </TableTr>
