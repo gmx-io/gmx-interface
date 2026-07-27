@@ -256,8 +256,8 @@ describe("RewardsTiersTab", () => {
     const multiplierSummary = screen.getByTestId("rewards-current-multiplier");
     expect(multiplierSummary.textContent).toContain("1.75x");
     expect(multiplierSummary.textContent).toContain("2.15x");
-    expect(within(multiplierSummary).getByText("1.75x").className).toContain("text-typography-disabled");
-    expect(within(multiplierSummary).getByText("2.15x").className).toContain("text-green-300");
+    expect(within(multiplierSummary).getByText("1.75x").className).toContain("text-green-300");
+    expect(within(multiplierSummary).getByText("2.15x").className).toContain("text-blue-100");
     expect(document.body.textContent?.replace(/\s/g, "")).toContain("$500");
     expect(screen.getByText("5.00 esGMX")).toBeDefined();
   });
@@ -310,15 +310,27 @@ describe("RewardsTiersTab", () => {
     ).toBeDefined();
   });
 
-  it("matches the V1 volume tier status layout", () => {
+  it("shows active and projected statuses for volume and staking tiers", () => {
     renderTab();
 
     const activeRow = screen.getByRole("row", { name: /Ranked.*Active/ });
-    const projectedRow = screen.getByRole("row", { name: /Certified/ });
+    const projectedRow = screen.getByRole("row", { name: /Certified.*Next epoch/ });
 
-    expect(within(activeRow).getByText(/Active/)).toBeDefined();
-    expect(within(projectedRow).queryByText("Next epoch")).toBeNull();
-    expect(screen.queryByRole("columnheader", { name: "Status" })).toBeNull();
+    expect(within(activeRow).getByText("Active")).toBeDefined();
+    expect(within(projectedRow).getByText("Next epoch")).toBeDefined();
+    const multiplierWidth = screen.getByRole("columnheader", { name: "Multiplier" }).getAttribute("width");
+    const statusWidth = screen.getByRole("columnheader", { name: "Status" }).getAttribute("width");
+
+    fireEvent.click(screen.getByRole("button", { name: "Staking Tiers" }));
+
+    expect(screen.getByRole("row", { name: /Supporter.*Active/ })).toBeDefined();
+    expect(screen.getByRole("row", { name: /Advocate.*Next epoch/ })).toBeDefined();
+    expect(screen.getByRole("columnheader", { name: "Status" })).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+
+    expect(screen.getByRole("columnheader", { name: "Boost" }).getAttribute("width")).toBe(multiplierWidth);
+    expect(screen.getByRole("columnheader", { name: "Status" }).getAttribute("width")).toBe(statusWidth);
   });
 
   it("renders config-derived volume and staking targets", () => {
@@ -785,8 +797,7 @@ describe("RewardsTiersTab", () => {
     });
 
     expect(screen.getByRole("row", { name: /Certified.*Expires in/ })).toBeDefined();
-    expect(screen.getByRole("row", { name: /Ranked/ })).toBeDefined();
-    expect(screen.queryByText("Next epoch")).toBeNull();
+    expect(screen.getByRole("row", { name: /Ranked.*Next epoch/ })).toBeDefined();
     expect(document.body.textContent).toContain("0.5x →0.25x");
     expect(document.body.textContent).toMatch(/Trade .* more to keep Certified status/);
     expect(screen.queryByText("Max tier reached ✓")).toBeNull();

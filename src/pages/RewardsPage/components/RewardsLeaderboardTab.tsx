@@ -481,7 +481,7 @@ export function RewardsLeaderboardTab({
           ) : null}
 
           <TableScrollFadeContainer className="grow" ariaLabel={t`Rewards leaderboard table`}>
-            <table className="w-full min-w-[1000px] table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:last-child]:!text-left [&_th:last-child]:!text-left">
+            <table className="w-full min-w-[1000px] table-fixed border-separate border-spacing-0 [&_td:last-child]:!text-left [&_th:last-child]:!text-left">
               <colgroup>
                 <col style={COL_RANK} />
                 <col style={COL_ADDRESS} />

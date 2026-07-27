@@ -36,9 +36,11 @@ const allTimeSummary: LeaderboardEntry = {
 };
 
 export function RewardsTiersSummaryStory({
+  currentMultiplier = 175n,
   projectedMultiplier,
   summaryState = "ready",
 }: {
+  currentMultiplier?: bigint;
   projectedMultiplier?: bigint;
   summaryState?: React.ComponentProps<typeof RewardsTiersSummary>["summaryState"];
 }) {
@@ -47,7 +49,7 @@ export function RewardsTiersSummaryStory({
       <MemoryRouter>
         <RewardsTiersSummary
           allTimeSummary={allTimeSummary}
-          currentMultiplier={175n}
+          currentMultiplier={currentMultiplier}
           projectedMultiplier={projectedMultiplier}
           maxMultiplier={500n}
           multiplierDecimals={100n}

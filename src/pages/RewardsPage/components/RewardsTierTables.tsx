@@ -41,7 +41,7 @@ import {
 type TierTab = "volume" | "staking" | "boosts";
 
 const tierLevelTableClassName =
-  "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:first-child]:!pl-8 [&_th:first-child]:!pl-8";
+  "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:first-child]:!pl-8 [&_td:last-child]:!text-left [&_th:first-child]:!pl-8 [&_th:last-child]:!text-left";
 const tierLevelRowClassName =
   "[&:nth-child(odd)>td]:bg-slate-800/50 [&>td]:!py-7 [&>td:first-child]:rounded-l-8 [&>td:last-child]:rounded-r-8";
 
@@ -93,7 +93,7 @@ export function RewardsTierTables({
       />
 
       <div>
-        <div className="max-w-[600px] p-20 pb-8 text-14 text-typography-secondary">
+        <div className="max-w-[620px] p-20 pb-8 text-14 text-typography-secondary">
           {activeTab === "volume" ? (
             <div className="inline-flex items-center gap-4">
               <Trans>Your epoch trading volume sets your Volume Tier and determines your multiplier.</Trans>
@@ -162,7 +162,9 @@ function VolumeTiersTable({
           <TableTh width="15%" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
-          <TableTh width="120px" padding="compact" />
+          <TableTh width="160px" padding="compact">
+            <Trans>Status</Trans>
+          </TableTh>
         </TableTheadTr>
       </thead>
       <tbody>
@@ -171,6 +173,8 @@ function VolumeTiersTable({
         ) : (
           config.volumeTiers.map((tier) => {
             const active = status?.volumeTier === tier.tier;
+            const projected = status?.projectedVolumeTier === tier.tier;
+
             return (
               <TierLevelTableTr key={tier.tier}>
                 <TableTd padding="compact">
@@ -179,11 +183,7 @@ function VolumeTiersTable({
                       <VolumeTierIcon tierId={tier.tier} active={active} />
                     </div>
                     <span className="text-typography-primary">{volumeTierLabels[tier.tier]}</span>
-                    {active ? (
-                      <span className="font-medium text-green-500">
-                        <Trans>Active</Trans> ✓
-                      </span>
-                    ) : null}
+                    {active ? <span className="font-medium text-green-500">✓</span> : null}
                   </span>
                 </TableTd>
                 <TableTd padding="compact" className="text-typography-primary">
@@ -195,7 +195,9 @@ function VolumeTiersTable({
                 <TableTd padding="compact">
                   {active && isDowngrading && daysRemaining > 0 ? (
                     <ExpiresInLabel daysRemaining={daysRemaining} />
-                  ) : null}
+                  ) : (
+                    <StatusLabel state={statusState} active={active} projected={projected} />
+                  )}
                 </TableTd>
               </TierLevelTableTr>
             );
@@ -228,7 +230,9 @@ function StakingTiersTable({
           <TableTh width="15%" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
-          <TableTh width="120px" padding="compact" />
+          <TableTh width="160px" padding="compact">
+            <Trans>Status</Trans>
+          </TableTh>
         </TableTheadTr>
       </thead>
       <tbody>
@@ -237,6 +241,8 @@ function StakingTiersTable({
         ) : (
           config.stakingTiers.map((tier) => {
             const active = status?.stakingTier === tier.tier;
+            const projected = status?.projectedStakingTier === tier.tier;
+
             return (
               <TierLevelTableTr key={tier.tier}>
                 <TableTd padding="compact">
@@ -245,11 +251,7 @@ function StakingTiersTable({
                       <StakingTierIcon tierId={tier.tier} active={active} />
                     </div>
                     <span className="font-medium text-typography-primary">{stakingTierLabels[tier.tier]}</span>
-                    {active ? (
-                      <span className="font-medium text-green-500">
-                        <Trans>Active</Trans> ✓
-                      </span>
-                    ) : null}
+                    {active ? <span className="font-medium text-green-500">✓</span> : null}
                   </span>
                 </TableTd>
                 <TableTd padding="compact" className="text-typography-primary">
@@ -258,7 +260,9 @@ function StakingTiersTable({
                 <TableTd padding="compact" className="text-typography-primary">
                   {formatMultiplierAdjustment(tier.multiplier, config.multiplierDecimals)}
                 </TableTd>
-                <TableTd padding="compact" />
+                <TableTd padding="compact">
+                  <StatusLabel state={statusState} active={active} projected={projected} />
+                </TableTd>
               </TierLevelTableTr>
             );
           })
@@ -286,13 +290,13 @@ function BoostsTable({
           <TableTh width="20%" padding="compact">
             <Trans>Boost Name</Trans>
           </TableTh>
-          <TableTh width="40%" padding="compact">
+          <TableTh width="45%" padding="compact">
             <Trans>About</Trans>
           </TableTh>
           <TableTh width="15%" padding="compact">
             <Trans>Boost</Trans>
           </TableTh>
-          <TableTh width="15%" padding="compact">
+          <TableTh width="160px" padding="compact">
             <Trans>Status</Trans>
           </TableTh>
         </TableTheadTr>
