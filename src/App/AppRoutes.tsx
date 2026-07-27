@@ -10,7 +10,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useSupportChat } from "domain/supportChat/useSupportChat";
-import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
 import { getAppBaseUrl, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -140,7 +139,6 @@ export function AppRoutes() {
   }, [isEarnPage]);
 
   useRealChainIdWarning();
-  useNonEoaAccountChainWarning();
 
   return (
     <>

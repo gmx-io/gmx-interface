@@ -37,7 +37,14 @@ type RpcSendable = Pick<WalletSigner["provider"], "send">;
 
 type AnySigner = WalletSigner | Wallet | AbstractSigner | ISigner;
 
-const NO_SAFE_SINGLETONS = new Set<string>();
+/**
+ * Contract accounts mix the connected chainId into the hash they sign, so they only produce a valid
+ * signature while the wallet sits on the chain that verifies it. Plain and 7702-delegated EOAs sign
+ * with their own key, which works from any chain.
+ */
+function mustSignOnVerificationChain(accountType: AccountType | undefined): boolean {
+  return accountType !== undefined && accountType !== AccountType.EOA && accountType !== AccountType.PostEip7702EOA;
+}
 
 async function needsChainSwapForSmartWallet({
   address,
@@ -56,7 +63,7 @@ async function needsChainSwapForSmartWallet({
   // not-yet-deployed one as an EOA and skip the swap.
   const accountTypes = await Promise.all(
     [currentChainId, targetChainId].map((chainId) =>
-      getAccountType(address, getPublicClientWithRpc(chainId), NO_SAFE_SINGLETONS).catch((error) => {
+      getAccountType(address, getPublicClientWithRpc(chainId)).catch((error) => {
         metrics.pushError(extendError(error, { data: { chainId, address } }), "signing.accountTypeProbe");
 
         return undefined;
@@ -64,7 +71,7 @@ async function needsChainSwapForSmartWallet({
     )
   );
 
-  return accountTypes.some((accountType) => accountType !== undefined && accountType !== AccountType.EOA);
+  return accountTypes.some(mustSignOnVerificationChain);
 }
 
 function providerSendSign(signer: AnySigner, from: string, eip712: object) {

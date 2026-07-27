@@ -278,7 +278,6 @@ export function getErrorMessage(
 }
 
 export const INVALID_NETWORK_TOAST_ID = "invalid-network";
-export const NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID = "non-eoa-account-chain-warning";
 
 export function getInvalidNetworkToastContent(chainId: number) {
   return (
@@ -314,16 +313,6 @@ export function getMultipleWalletsConnectedToastContent(
         disable other wallet extensions in your browser settings.
       </Trans>
     </div>
-  );
-}
-
-export function getNonEoaAccountChainWarningToastContent(chainId: number) {
-  return (
-    <Trans>
-      <div>Smart wallets not supported on {getChainName(chainId)}</div>
-      <br />
-      <div>Switch to a different network or use an EOA wallet</div>
-    </Trans>
   );
 }
 

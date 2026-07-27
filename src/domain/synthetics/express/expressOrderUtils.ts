@@ -566,20 +566,14 @@ async function validateSignature({
   errorSource?: string;
 }) {
   const { verificationChainId } = signatureParams;
-  const signedHash = hashSignedTypedData(signatureParams);
-  const diagnostics = {
-    signedHash,
-    verificationChainId,
-    signingChainId: signatureParams.domain.chainId,
-    expectedAccount,
-    signature,
-    signatureKind: getSignatureKind(signature),
-  };
+  let signedHash: string | undefined;
 
   try {
     if (!isHex(signature)) {
       throw new Error("Signature is not a hex string");
     }
+
+    signedHash = hashSignedTypedData(signatureParams);
 
     // Covers EOA, ERC-1271 and ERC-6492, matching what the relay router accepts.
     const isValid = await getPublicClientWithRpc(verificationChainId).verifyHash({
@@ -593,6 +587,14 @@ async function validateSignature({
     }
   } catch (error) {
     const isRejected = error?.message === SIGNATURE_VALIDATION_FAILED_ERROR;
+    const diagnostics = {
+      signedHash,
+      verificationChainId,
+      signingChainId: signatureParams.domain.chainId,
+      expectedAccount,
+      signature,
+      signatureKind: getSignatureKind(signature),
+    };
     const extended = extendError(isRejected ? error : new Error(SIGNATURE_VALIDATION_UNAVAILABLE_ERROR), {
       errorSource,
       data: isRejected ? diagnostics : { ...diagnostics, cause: error?.message },
