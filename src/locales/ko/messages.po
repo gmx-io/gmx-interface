@@ -329,11 +329,6 @@ msgstr "총 크기"
 msgid "Open app"
 msgstr "앱 열기"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr "익스프레스 트레이딩 시도"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "포지션에 대한 가상 재고"
@@ -2775,10 +2770,6 @@ msgstr "제휴사"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "글로벌 네트워크"
-
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
-msgstr "익스프레스 시도"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"

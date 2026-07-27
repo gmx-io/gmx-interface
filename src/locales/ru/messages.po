@@ -329,11 +329,6 @@ msgstr "Общий размер"
 msgid "Open app"
 msgstr "Открыть приложение"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr "Попробовать экспресс-трейдинг"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "Виртуальный инвентарь для позиций"
@@ -2775,10 +2770,6 @@ msgstr "Аффилиаты"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "Глобальная сеть"
-
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
-msgstr "Попробовать экспресс"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"

@@ -329,11 +329,6 @@ msgstr "总规模"
 msgid "Open app"
 msgstr "打开应用"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr "尝试快速交易"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "仓位虚拟库存"
@@ -2775,10 +2770,6 @@ msgstr "附属"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "全球网络"
-
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
-msgstr "尝试快速"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"

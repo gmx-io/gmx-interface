@@ -329,11 +329,6 @@ msgstr "Tamaño total"
 msgid "Open app"
 msgstr "Abrir aplicación"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr "Prueba Trading Express"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "Inventario virtual para posiciones"
@@ -2775,10 +2770,6 @@ msgstr "Afiliados"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "Red global"
-
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
-msgstr "Prueba Express"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"

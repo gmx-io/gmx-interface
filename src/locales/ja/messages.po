@@ -329,11 +329,6 @@ msgstr "合計サイズ"
 msgid "Open app"
 msgstr "アプリを開く"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr "エクスプレストレーディングを試す"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "ポジションのバーチャルインベントリ"
@@ -2775,10 +2770,6 @@ msgstr "アフィリエイト"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "グローバルネットワーク"
-
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
-msgstr "エクスプレスを試す"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"
