@@ -267,7 +267,7 @@ const selectOrderEditorNextPositionValuesForIncreaseArgs = createSelector((q) =>
     tradeMode: isLimitOrderType(order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
     tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
-    tokenTypeForSwapRoute: "collateralToken",
+    tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
     isPnlInLeverage,
   } as const;
 });
@@ -306,7 +306,7 @@ const makeSelectOrderEditorNextPositionValuesForIncreaseArgs = createSelectorFac
         tradeMode: isLimitOrderType(order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
         tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
         triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
-        tokenTypeForSwapRoute: "collateralToken",
+        tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
         isPnlInLeverage,
       } as const;
     })
@@ -644,6 +644,8 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
+  const marketsInfoData = q(selectMarketsInfoData);
+  const chainId = q(selectChainId);
 
   const positionOrder = order as PositionOrderInfo;
   const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
@@ -668,6 +670,9 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     userReferralInfo,
     uiFeeFactor,
     strategy: "independent",
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
     isSetAcceptablePriceImpactEnabled,
   });
 });

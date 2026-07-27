@@ -25,6 +25,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
+  selectMarketsInfoData,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -54,6 +55,7 @@ import {
   selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
@@ -701,6 +703,9 @@ function useDetectAndSetAvailableMaxLeverage({
   const userReferralInfo = useUserReferralInfo();
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
+  const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
+  const chainId = useSelector(selectChainId);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
 
   return useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
@@ -729,6 +734,9 @@ function useDetectAndSetAvailableMaxLeverage({
           fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
           leverage,
           triggerPrice,
+          marketsInfoData,
+          chainId,
+          externalSwapQuoteParams,
           isSetAcceptablePriceImpactEnabled,
         });
 
@@ -792,6 +800,9 @@ function useDetectAndSetAvailableMaxLeverage({
     findSwapPath,
     fromToken,
     externalSwapQuote,
+    externalSwapQuoteParams,
+    chainId,
+    marketsInfoData,
     fromTokenAmount,
     isLeverageSliderEnabled,
     isLong,

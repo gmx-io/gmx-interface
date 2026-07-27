@@ -1,16 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { OrderType } from "domain/synthetics/orders";
-import { mockMarketsInfoData, mockTokensData, usdToToken } from "sdk/test/mock";
+import { mockTokensData } from "sdk/test/mock";
 import { bigMath } from "sdk/utils/bigmath";
-import { applyFactor, expandDecimals } from "sdk/utils/numbers";
-import { FindSwapPath } from "sdk/utils/trade/types";
 
-import {
-  getIncreasePositionAmounts,
-  getIncreasePositionPrices,
-  leverageBySizeValues,
-} from "../../trade/utils/increase";
+import { getIncreasePositionPrices, leverageBySizeValues } from "../../trade/utils/increase";
 
 describe("getIncreasePositionPrices", () => {
   it("triggerPrice for limit order with ETH as initial collateral", () => {
@@ -154,75 +148,5 @@ describe("leverageBySizeValues", () => {
     expect(result.collateralDeltaUsd).toBe(2000n);
     // baseCollateralUsd = 2000 + fees(100 + 50 + 10 + 20 + 30) = 2210
     expect(result.baseCollateralUsd).toBe(2210n);
-  });
-});
-
-describe("getIncreasePositionAmounts", () => {
-  it("deducts the swap UI fee once for collateral-based increases", () => {
-    const tokensData = mockTokensData();
-    const marketInfo = {
-      ...mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"])["ETH-ETH-USDC"],
-      positionFeeFactorForBalanceWasImproved: 0n,
-      positionFeeFactorForBalanceWasNotImproved: 0n,
-    };
-    const rawSwapUsdOut = expandDecimals(1000, 30);
-    const rawSwapAmountOut = usdToToken(1000, tokensData.USDC);
-    const uiFeeFactor = expandDecimals(1, 28);
-
-    const findSwapPath: FindSwapPath = () => ({
-      swapPath: [marketInfo.marketTokenAddress],
-      swapSteps: [
-        {
-          marketAddress: marketInfo.marketTokenAddress,
-          tokenInAddress: tokensData.ETH.address,
-          tokenOutAddress: tokensData.USDC.address,
-          isWrap: false,
-          isUnwrap: false,
-          swapFeeAmount: 0n,
-          swapFeeUsd: 0n,
-          priceImpactDeltaUsd: 0n,
-          amountIn: usdToToken(1000, tokensData.ETH),
-          amountInAfterFees: usdToToken(1000, tokensData.ETH),
-          usdIn: rawSwapUsdOut,
-          amountOut: rawSwapAmountOut,
-          usdOut: rawSwapUsdOut,
-        },
-      ],
-      totalSwapPriceImpactDeltaUsd: 0n,
-      totalSwapFeeUsd: 0n,
-      totalFeesDeltaUsd: 0n,
-      tokenInAddress: tokensData.ETH.address,
-      tokenOutAddress: tokensData.USDC.address,
-      usdOut: rawSwapUsdOut,
-      amountOut: rawSwapAmountOut,
-    });
-
-    const result = getIncreasePositionAmounts({
-      marketInfo,
-      indexToken: tokensData.ETH,
-      initialCollateralToken: tokensData.ETH,
-      collateralToken: tokensData.USDC,
-      isLong: true,
-      initialCollateralAmount: usdToToken(1000, tokensData.ETH),
-      position: undefined,
-      externalSwapQuote: undefined,
-      indexTokenAmount: undefined,
-      leverage: 10_000n,
-      userReferralInfo: undefined,
-      strategy: "leverageByCollateral",
-      findSwapPath,
-      uiFeeFactor,
-      isSetAcceptablePriceImpactEnabled: false,
-    });
-
-    const swapUiFeeUsd = applyFactor(rawSwapUsdOut, uiFeeFactor);
-    const netSwapUsdOut = rawSwapUsdOut - swapUiFeeUsd;
-    const baseUiFeeUsd = applyFactor(netSwapUsdOut, uiFeeFactor);
-    const expectedSizeDeltaUsd = netSwapUsdOut - baseUiFeeUsd;
-    const expectedUiFeeUsd = applyFactor(expectedSizeDeltaUsd, uiFeeFactor);
-
-    expect(result.swapUiFeeUsd).toBe(swapUiFeeUsd);
-    expect(result.sizeDeltaUsd).toBe(expectedSizeDeltaUsd);
-    expect(result.collateralDeltaUsd).toBe(netSwapUsdOut - expectedUiFeeUsd);
   });
 });

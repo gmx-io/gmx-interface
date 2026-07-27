@@ -891,8 +891,8 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
   forceDecreaseSwapType?: DecreasePositionSwapType;
   findSwapPath: FindSwapPath;
   findSwapPathFromPnl: FindSwapPath;
-  marketsInfoData?: MarketsInfoData;
-  chainId?: number;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
 }): {
   decreaseAmounts: DecreasePositionAmounts;
   swapAmounts: SwapAmounts | undefined;
@@ -917,6 +917,8 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     forceDecreaseSwapType,
     findSwapPath,
     findSwapPathFromPnl,
+    marketsInfoData,
+    chainId,
   } = p;
 
   const decreaseBaseParams = {
@@ -968,6 +970,9 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
           isLimit: false,
           findSwapPath,
           uiFeeFactor,
+          marketsInfoData,
+          chainId,
+          externalSwapQuoteParams: undefined,
           allowSameTokenSwap: false,
         })
       : undefined;
@@ -1002,6 +1007,9 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     isLimit: false,
     findSwapPath: findSwapPathFromPnl,
     uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
     allowSameTokenSwap: false,
   });
 

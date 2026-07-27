@@ -126,6 +126,8 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
     uiFeeFactor,
     acceptablePriceImpactBuffer: 30,
     isSetAcceptablePriceImpactEnabled: true,
+    marketsInfoData: undefined,
+    chainId: 42161,
   };
 
   // Short ETH-collateral position: pnl token = USDC, position value = 0.25 ETH × $4000 = $1000

@@ -3,7 +3,7 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
-import { MarketInfo } from "sdk/utils/markets/types";
+import { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
 import { PositionInfo } from "sdk/utils/positions/types";
 import { SwapStrategyForSwapOrders } from "sdk/utils/swap/types";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
@@ -30,12 +30,16 @@ export function getExternalSwapInputsByFromValue({
   amountIn,
   findSwapPath,
   uiFeeFactor,
+  marketsInfoData,
+  chainId,
 }: {
   tokenIn: TokenData;
   tokenOut: TokenData;
   amountIn: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
 }): ExternalSwapInputs {
   const swapAmounts = getSwapAmountsByFromValue({
     tokenIn,
@@ -44,6 +48,9 @@ export function getExternalSwapInputsByFromValue({
     isLimit: false,
     findSwapPath,
     uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
     allowSameTokenSwap: false,
   });
 
@@ -72,12 +79,16 @@ export function getExternalSwapInputsByToValue({
   amountOut,
   findSwapPath,
   uiFeeFactor,
+  marketsInfoData,
+  chainId,
 }: {
   tokenIn: TokenData;
   tokenOut: TokenData;
   amountOut: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
 }): ExternalSwapInputs {
   const swapAmounts = getSwapAmountsByToValue({
     tokenIn,
@@ -86,6 +97,9 @@ export function getExternalSwapInputsByToValue({
     isLimit: false,
     findSwapPath,
     uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
     allowSameTokenSwap: false,
   });
 
@@ -125,6 +139,8 @@ export function getExternalSwapInputsByLeverageSize({
   leverage,
   isLong,
   userReferralInfo,
+  marketsInfoData,
+  chainId,
 }: {
   tokenIn: TokenData;
   collateralToken: TokenData;
@@ -137,6 +153,8 @@ export function getExternalSwapInputsByLeverageSize({
   isLong: boolean;
   findSwapPath: FindSwapPath;
   userReferralInfo: UserReferralInfo | undefined;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
 }): ExternalSwapInputs {
   const prices = getIncreasePositionPrices({
     triggerPrice,
@@ -177,6 +195,9 @@ export function getExternalSwapInputsByLeverageSize({
     isLimit: false,
     findSwapPath,
     uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
     allowSameTokenSwap: false,
   });
 

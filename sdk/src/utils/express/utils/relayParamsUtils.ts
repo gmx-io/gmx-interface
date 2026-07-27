@@ -3,6 +3,7 @@ import { encodeAbiParameters, keccak256 } from "viem";
 import { abis } from "abis";
 import type { ContractsChainId, SourceChainId } from "configs/chains";
 import { ContractName, getContract } from "configs/contracts";
+import { SwapPricingType } from "utils/orders/types";
 import {
   combineExternalCalls,
   ExternalCallsPayload,
@@ -141,7 +142,11 @@ export function getRelayerFeeParams({
         findSwapPath: findFeeSwapPath,
         swapOptimizationOrder: ["length"],
         uiFeeFactor: 0n,
+        marketsInfoData: undefined,
+        chainId,
+        externalSwapQuoteParams: undefined,
         allowSameTokenSwap: false,
+        swapPricingType: SwapPricingType.AtomicSwap,
       });
     }
 

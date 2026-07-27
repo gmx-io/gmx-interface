@@ -61,9 +61,9 @@ type IncreasePositionParams = {
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
-  marketsInfoData?: MarketsInfoData;
-  chainId?: number;
-  externalSwapQuoteParams?: ExternalSwapQuoteParams;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
+  externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
   disabledMarkets?: string[];
   manualPath?: string[];
@@ -89,7 +89,12 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     userReferralInfo,
     uiFeeFactor,
     strategy,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams,
     isSetAcceptablePriceImpactEnabled,
+    disabledMarkets,
+    manualPath,
   } = p;
 
   const swapStrategy: NoSwapStrategy = {
@@ -202,7 +207,12 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         findSwapPath,
         uiFeeFactor,
         swapOptimizationOrder,
+        marketsInfoData,
+        chainId,
+        externalSwapQuoteParams,
         allowSameTokenSwap: false,
+        disabledMarkets,
+        manualPath,
       });
 
       values.swapStrategy = swapAmounts.swapStrategy;
@@ -218,7 +228,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
     values.sizeDeltaUsd = bigMath.mulDiv(
-      baseCollateralUsd - basePositionFeeInfo.positionFeeUsd - baseUiFeeUsd,
+      baseCollateralUsd - basePositionFeeInfo.positionFeeUsd - baseUiFeeUsd - values.swapUiFeeUsd,
       leverage,
       BASIS_POINTS_DIVISOR_BIGINT
     );
@@ -231,7 +241,12 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
     values.collateralDeltaUsd =
-      baseCollateralUsd - values.positionFeeUsd - values.borrowingFeeUsd - values.fundingFeeUsd - values.uiFeeUsd;
+      baseCollateralUsd -
+      values.positionFeeUsd -
+      values.borrowingFeeUsd -
+      values.fundingFeeUsd -
+      values.uiFeeUsd -
+      values.swapUiFeeUsd;
 
     values.collateralDeltaAmount = convertToTokenAmount(
       values.collateralDeltaUsd,
@@ -289,7 +304,12 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         isLimit: false,
         findSwapPath,
         uiFeeFactor,
+        marketsInfoData,
+        chainId,
+        externalSwapQuoteParams,
         allowSameTokenSwap: false,
+        disabledMarkets,
+        manualPath,
       });
       values.swapStrategy = swapAmounts.swapStrategy;
     }
@@ -341,7 +361,12 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           findSwapPath,
           uiFeeFactor,
           swapOptimizationOrder,
+          marketsInfoData,
+          chainId,
+          externalSwapQuoteParams,
           allowSameTokenSwap: false,
+          disabledMarkets,
+          manualPath,
         });
         values.swapStrategy = swapAmounts.swapStrategy;
       }

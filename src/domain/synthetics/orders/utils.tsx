@@ -321,6 +321,7 @@ export function getOrderErrors(p: {
         position,
         findSwapPath: p.findSwapPath,
         uiFeeFactor: p.uiFeeFactor,
+        chainId: p.chainId,
       });
 
       if (isMaxLeverageError) {
@@ -430,11 +431,13 @@ function getIsMaxLeverageError({
   position,
   findSwapPath,
   uiFeeFactor,
+  chainId,
 }: {
   order: PositionOrderInfo;
   position: PositionInfo | undefined;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
+  chainId: number;
 }) {
   const swapAmounts = getSwapAmountsByFromValue({
     tokenIn: order.initialCollateralToken,
@@ -443,6 +446,9 @@ function getIsMaxLeverageError({
     isLimit: false,
     findSwapPath,
     uiFeeFactor,
+    marketsInfoData: undefined,
+    externalSwapQuoteParams: undefined,
+    chainId,
     allowSameTokenSwap: false,
   });
   const markPrice = order.marketInfo.indexToken.prices.minPrice;

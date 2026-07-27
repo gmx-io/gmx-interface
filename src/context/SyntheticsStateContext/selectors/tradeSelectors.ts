@@ -1,4 +1,5 @@
 import { ContractsChainId } from "config/chains";
+import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { DecreasePositionSwapType, OrderType, SwapPricingType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
@@ -23,7 +24,7 @@ import {
   getTokenSwapPathsForTokenPairPrebuilt,
 } from "sdk/utils/swap/swapRouting";
 import { createTradeFlags } from "sdk/utils/trade";
-import { ExternalSwapQuote } from "sdk/utils/trade/types";
+import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/utils/trade/types";
 
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
@@ -236,7 +237,10 @@ export const makeSelectIncreasePositionAmounts = ({
     const findSwapPath = q(selectFindSwapPath);
     const userReferralInfo = q(selectUserReferralInfo);
     const uiFeeFactor = q(selectUiFeeFactor);
+    const externalSwapQuoteParams = q(selectExternalSwapQuoteParams);
+    const chainId = q(selectChainId);
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
+    const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
 
     let limitOrderType: OrderType | undefined = undefined;
     if (tradeFlags.isLimit) {
@@ -277,7 +281,12 @@ export const makeSelectIncreasePositionAmounts = ({
       userReferralInfo,
       uiFeeFactor,
       strategy,
+      marketsInfoData,
+      chainId,
+      externalSwapQuoteParams,
       isSetAcceptablePriceImpactEnabled,
+      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      manualPath: debugSwapMarketsConfig?.manualPath,
     });
   });
 };
@@ -568,3 +577,16 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
       }
     })
 );
+
+export const selectExternalSwapQuoteParams = createSelector((q): ExternalSwapQuoteParams => {
+  const chainId = q(selectChainId);
+  const tokensData = q(selectTokensData);
+  const gasPrice = q(selectGasPrice);
+
+  return {
+    chainId,
+    gasPrice,
+    tokensData,
+    receiverAddress: getContract(chainId, "OrderVault"),
+  };
+});
