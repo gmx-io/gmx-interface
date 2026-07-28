@@ -15,6 +15,8 @@ import { USD_DECIMALS } from "lib/numbers";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 
+import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
+
 import { TradeRewardsPromoBanner } from "../TradeRewardsPromoBanner";
 
 vi.mock("context/IncentivesV2Context/IncentivesV2Context", () => ({
@@ -154,7 +156,7 @@ describe("TradeRewardsPromoBanner", () => {
     renderBanner();
 
     expect(normalizeText(screen.getByText(/With your recent activity/))).toContain("$120inrewards");
-    expect(screen.getByRole("link", { name: /Stake GMX/ }).getAttribute("href")).toBe("/earn/portfolio");
+    expect(screen.getByRole("link", { name: /Stake GMX/ }).getAttribute("href")).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
   });
 
   it("restores dismissals when the wallet account changes", () => {

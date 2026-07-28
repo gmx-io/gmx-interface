@@ -3499,6 +3499,10 @@ msgstr "주소 복사"
 msgid "Announcements"
 msgstr "공지사항"
 
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
+msgstr "주요 시장에서 거래하여 이 부스트를 활성화하고 해당 거래에 더 높은 배수를 적용받으세요."
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -3898,11 +3902,6 @@ msgstr "스왑 가격 영향이 높습니다"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "{minutesText}{seconds}초 후 취소 가능"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Applies to eligible trades in featured markets."
-msgstr "추천 시장의 적격 거래에 적용됩니다."
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4530,6 +4529,10 @@ msgstr ""
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
 msgstr "금액 입력"
+
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Reach {0}+ in lifetime trading volume to unlock a permanent {1} multiplier."
+msgstr "누적 거래량 {0}+를 달성하여 영구 {1} 배수를 잠금 해제하세요."
 
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Certified"
@@ -8990,11 +8993,6 @@ msgstr "({1}의 {0})"
 msgid "Receive 50% of the rewards earned by every trader you invite."
 msgstr "초대한 각 트레이더가 획득한 보상의 50%를 받으세요."
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Applies to qualifying balancing position increases of at least {0}."
-msgstr "최소 {0} 이상의 적격 균형 조정 포지션 증액에 적용됩니다."
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "수수료 및 가격 영향을 포함한 총 실현 및 미실현 PnL"
@@ -9225,6 +9223,10 @@ msgstr "구매 주문이 체결되었습니다"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your search"
 msgstr "검색 결과와 일치하는 기회가 없습니다"
+
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Place balancing position increases ({0}+) on underutilized sides to earn an additional multiplier on those trades."
+msgstr "활용도가 낮은 방향에서 균형을 맞추는 포지션 증가({0}+)를 진행하여 해당 거래에 추가 배수를 받으세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Leaderboard for traders on GMX V2"
@@ -10635,11 +10637,6 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved {directionLabel}"
 msgstr "예약 {directionLabel}"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Permanent after reaching {0} in lifetime volume."
-msgstr "누적 거래량 {0}에 도달하면 영구 적용됩니다."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Distribution rate per day, USD"
@@ -13160,6 +13157,8 @@ msgid "multiple asset classes"
 msgstr "다중 자산 클래스"
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+#: src/components/Modal/Modal.tsx
+#: src/components/Modal/SlideModal.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

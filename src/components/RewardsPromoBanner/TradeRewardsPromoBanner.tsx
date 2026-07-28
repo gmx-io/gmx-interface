@@ -14,6 +14,8 @@ import { sendRewardsBannerEvent, sendRewardsNavigationEvent } from "lib/userAnal
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 
+import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
+
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
@@ -79,7 +81,7 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
         ...copy,
         actionLabel: <Trans>Stake GMX</Trans>,
         actionIcon: <GmxIcon className="size-16" />,
-        to: "/earn/portfolio",
+        to: EARN_PORTFOLIO_STAKE_GMX_LINK,
         coin: rewardsBannerCoinGmx,
       };
     }

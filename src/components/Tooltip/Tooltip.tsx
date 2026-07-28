@@ -1,6 +1,5 @@
 import {
   FloatingArrow,
-  FloatingPortal,
   Placement,
   arrow,
   autoUpdate,
@@ -30,6 +29,8 @@ import {
 
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 import { usePrevious } from "lib/usePrevious";
+
+import FloatingPortal from "components/Portal/FloatingPortal";
 
 import InfoIcon from "img/ic_info_circle.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";

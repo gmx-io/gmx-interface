@@ -14,9 +14,12 @@ import {
   getMaxRewardRateFactor,
 } from "domain/synthetics/incentives/v2/utils";
 import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
+import { useChainId } from "lib/chains";
 import { formatUsd, PRECISION } from "lib/numbers";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
+
+import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 
 import { RewardsTiersTab } from "../RewardsTiersTab";
 
@@ -38,6 +41,10 @@ vi.mock("lib/wallets/useIsWalletInitializing", () => ({
 
 vi.mock("lib/wallets/useWallet", () => ({
   default: vi.fn(),
+}));
+
+vi.mock("lib/chains", () => ({
+  useChainId: vi.fn(),
 }));
 
 vi.mock("lib/userAnalytics/rewardsEvents", () => ({
@@ -79,15 +86,33 @@ vi.mock("components/Tabs/Tabs", () => ({
 
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
 const SAME_ACCOUNT_DIFFERENT_CASE = "0x52908400098527886e0f7030069857d2e4169ee7";
+const OTHER_CHECKSUMMED_ACCOUNT = "0x8617E340B3D01FA5F11F306F4090FD50E238070D";
 const GMX_UNIT = 10n ** BigInt(ES_GMX_DECIMALS);
 const GT_UNIT = 10n ** BigInt(GT_DECIMALS);
 const mockUseRewardsPromoActivity = vi.mocked(useRewardsPromoActivity);
 const mockUseRewardsVestingData = vi.mocked(useRewardsVestingData);
+const mockUseChainId = vi.mocked(useChainId);
 const mockUseIsWalletInitializing = vi.mocked(useIsWalletInitializing);
 const mockUseWallet = vi.mocked(useWallet);
 
 function usd(value: bigint) {
   return value * PRECISION;
+}
+
+function normalizeText(text: string | null | undefined) {
+  return text?.replace(/\s/g, "") ?? "";
+}
+
+async function expectTooltipText(text: string) {
+  const expectedText = normalizeText(text);
+
+  await waitFor(() => {
+    expect(
+      Array.from(document.querySelectorAll(".Tooltip-popup")).some((tooltip) =>
+        normalizeText(tooltip.textContent).includes(expectedText)
+      )
+    ).toBe(true);
+  });
 }
 
 const config: IncentivesConfig = {
@@ -217,6 +242,7 @@ function getVestingDataResult(walletGmxBalance = 0n): ReturnType<typeof useRewar
 }
 
 beforeEach(() => {
+  mockUseChainId.mockReturnValue({ chainId: ARBITRUM } as ReturnType<typeof useChainId>);
   mockUseWallet.mockReturnValue({
     account: CHECKSUMMED_ACCOUNT,
     status: "connected",
@@ -367,15 +393,12 @@ describe("RewardsTiersTab", () => {
     expect(screen.queryByText("Your current status is temporarily unavailable.")).toBeNull();
   });
 
-  it("uses Buy GMX or Stake GMX for the active staking card based on the wallet balance", () => {
+  it("opens Buy GMX in place or links to Stake GMX from the active staking card", () => {
     const view = renderTab();
 
     let stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
-    expect(
-      within(stakingCard as HTMLElement)
-        .getByRole("link", { name: "Buy GMX" })
-        .getAttribute("href")
-    ).toBe("/buy_gmx");
+    fireEvent.click(within(stakingCard as HTMLElement).getByRole("button", { name: "Buy GMX" }));
+    expect(screen.getByRole("button", { name: "Buy GMX on GMX swap" })).toBeDefined();
 
     mockUseRewardsVestingData.mockReturnValue(getVestingDataResult(5n * GMX_UNIT));
     view.rerender(getTabNode());
@@ -385,7 +408,36 @@ describe("RewardsTiersTab", () => {
       within(stakingCard as HTMLElement)
         .getByRole("link", { name: "Stake GMX" })
         .getAttribute("href")
-    ).toBe("/earn/portfolio");
+    ).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
+  });
+
+  it("opens Buy GMX in place from the inactive staking card", () => {
+    renderTab({
+      status: {
+        ...status,
+        stakingTier: null,
+        projectedStakingTier: null,
+      },
+    });
+
+    const stakingCard = screen.getByText("Staking Tier").closest(".group");
+    fireEvent.click(within(stakingCard as HTMLElement).getByRole("button", { name: "Buy GMX" }));
+
+    expect(screen.getByRole("button", { name: "Buy GMX on GMX swap" })).toBeDefined();
+  });
+
+  it("closes the Buy GMX modal when the account changes", async () => {
+    const view = renderTab();
+    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+
+    fireEvent.click(within(stakingCard as HTMLElement).getByRole("button", { name: "Buy GMX" }));
+    expect(screen.getByRole("button", { name: "Buy GMX on GMX swap" })).toBeDefined();
+
+    view.rerender(getTabNode({ account: OTHER_CHECKSUMMED_ACCOUNT }));
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Buy GMX on GMX swap" })).toBeNull());
+
+    view.rerender(getTabNode());
+    expect(screen.queryByRole("button", { name: "Buy GMX on GMX swap" })).toBeNull();
   });
 
   it("shows the concise tier descriptions without a show-more control", async () => {
@@ -538,7 +590,7 @@ describe("RewardsTiersTab", () => {
       within(stakingCard as HTMLElement)
         .getByRole("link", { name: /^Stake GMX/ })
         .getAttribute("href")
-    ).toBe("/earn/portfolio");
+    ).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
     expect(mockUseRewardsPromoActivity).toHaveBeenLastCalledWith(ARBITRUM, {
       account: CHECKSUMMED_ACCOUNT,
       enabled: true,
@@ -562,7 +614,7 @@ describe("RewardsTiersTab", () => {
     });
     const view = renderTab({ status: inactiveStatus });
 
-    expect(screen.queryByRole("link", { name: "Buy GMX" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Buy GMX" })).toBeNull();
     expect(screen.queryByRole("link", { name: "Stake GMX" })).toBeNull();
 
     mockUseRewardsVestingData.mockReturnValue(getVestingDataResult(5n * GMX_UNIT));
@@ -573,8 +625,8 @@ describe("RewardsTiersTab", () => {
       within(stakingCard as HTMLElement)
         .getByRole("link", { name: "Stake GMX" })
         .getAttribute("href")
-    ).toBe("/earn/portfolio");
-    expect(screen.queryByRole("link", { name: "Buy GMX" })).toBeNull();
+    ).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
+    expect(screen.queryByRole("button", { name: "Buy GMX" })).toBeNull();
   });
 
   it("uses the staking action when the wallet GMX balance is unavailable", () => {
@@ -596,8 +648,8 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    expect(screen.getByRole("link", { name: "Stake GMX" }).getAttribute("href")).toBe("/earn/portfolio");
-    expect(screen.queryByRole("link", { name: "Buy GMX" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Stake GMX" }).getAttribute("href")).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
+    expect(screen.queryByRole("button", { name: "Buy GMX" })).toBeNull();
   });
 
   it("does not flash anonymous staking content while the wallet is restoring", () => {
@@ -647,24 +699,32 @@ describe("RewardsTiersTab", () => {
   });
 
   it("labels staking progress as GMX staked", async () => {
-    renderTab();
+    renderTab({
+      status: {
+        ...status,
+        currentStakedBalance: 499n * GMX_UNIT + (6n * GMX_UNIT) / 10n,
+      },
+    });
 
     const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
     const tierProgress = within(stakingCard as HTMLElement).getByRole("progressbar", {
       name: "Staking tier levels",
     });
     const tierGroup = within(stakingCard as HTMLElement).getByRole("group", { name: "Staking tiers" });
-    const firstSegment = within(tierGroup).getByRole("button", { name: "Supporter Staking tier" }).closest(".Tooltip");
+    const nextTierSegment = within(tierGroup)
+      .getByRole("button", { name: "Advocate Staking tier" })
+      .closest(".Tooltip");
 
     expect(tierProgress).toBeDefined();
-    expect(firstSegment).not.toBeNull();
-    expect(within(stakingCard as HTMLElement).getByText(/GMX staked:/)).toBeDefined();
-    fireEvent.mouseEnter(firstSegment as Element);
+    expect(nextTierSegment).not.toBeNull();
+    expect(within(stakingCard as HTMLElement).getByText(/GMX staked:/).textContent).toContain("499");
+    expect(stakingCard?.textContent).not.toContain("499.6");
+    fireEvent.mouseEnter(nextTierSegment as Element);
 
     await waitFor(() => {
       const tooltip = document.querySelector(".Tooltip-popup");
       expect(tooltip).not.toBeNull();
-      expect(tooltip!.textContent).toContain("GMX");
+      expect(tooltip!.textContent).toContain("Staked: 499 / 500 GMX");
       expect(tooltip!.textContent).not.toContain("esGMX");
     });
   });
@@ -700,11 +760,19 @@ describe("RewardsTiersTab", () => {
     expect(featuredMarketsRow.textContent).toContain("GMX");
     expect(within(featuredMarketsRow).getByText("+0.25x")).toBeDefined();
     expect(within(featuredMarketsRow).getByText("Qualified this epoch")).toBeDefined();
-    expect(featuredMarketsRow.textContent).toContain("Applies to eligible trades in featured markets.");
-    expect(balancingTradesRow.textContent?.replace(/\s/g, "")).toContain("$10K");
+    expect(featuredMarketsRow.textContent).toContain(
+      "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
+    );
+    expect(normalizeText(balancingTradesRow.textContent)).toContain(
+      normalizeText(
+        "Place balancing position increases ($10K+) on underutilized sides to earn an additional multiplier on those trades."
+      )
+    );
     expect(within(balancingTradesRow).getByText("+0.5x")).toBeDefined();
     expect(within(balancingTradesRow).getByText("Not qualified this epoch")).toBeDefined();
-    expect(lifetimeVolumeRow.textContent?.replace(/\s/g, "")).toContain("$1M");
+    expect(normalizeText(lifetimeVolumeRow.textContent)).toContain(
+      normalizeText("Reach $1M+ in lifetime trading volume to unlock a permanent 1× multiplier.")
+    );
     expect(within(lifetimeVolumeRow).getByText("+1x")).toBeDefined();
     expect(within(lifetimeVolumeRow).getByText("Active")).toBeDefined();
     expect(within(returnBonusRow).getByText("+2x")).toBeDefined();
@@ -776,6 +844,37 @@ describe("RewardsTiersTab", () => {
 
     const description = await screen.findByText("Receive 50% of the rewards earned by every trader you invite.");
     expect(description.className).toContain("text-typography-secondary");
+  });
+
+  it("restores the V1 activity boost descriptions in the summary card", async () => {
+    renderTab();
+
+    fireEvent.mouseEnter(screen.getByRole("button", { name: "Featured Markets" }));
+    await expectTooltipText(
+      "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
+    );
+
+    fireEvent.mouseEnter(screen.getByRole("button", { name: "Balancing Trades" }));
+    await expectTooltipText(
+      "Place balancing position increases ($10K+) on underutilized sides to earn an additional multiplier on those trades."
+    );
+
+    fireEvent.mouseEnter(screen.getByRole("button", { name: "Lifetime Volume" }));
+    await expectTooltipText("Reach $1M+ in lifetime trading volume to unlock a permanent 1× multiplier.");
+  });
+
+  it("uses the configured lifetime boost multiplier in its description", async () => {
+    renderTab({
+      config: {
+        ...config,
+        boosts: config.boosts.map((boost) =>
+          boost.boost === "LifetimeTrading" ? { ...boost, multiplier: 150n } : boost
+        ),
+      },
+    });
+
+    fireEvent.mouseEnter(screen.getByRole("button", { name: "Lifetime Volume" }));
+    await expectTooltipText("Reach $1M+ in lifetime trading volume to unlock a permanent 1.5× multiplier.");
   });
 
   it("uses active and inactive referral artwork in the boosts card", () => {

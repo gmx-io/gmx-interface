@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -38,7 +38,7 @@ describe("StandaloneBuyGmxModal", () => {
 
   afterEach(cleanup);
 
-  it("opens outside synthetics context and configures the Arbitrum GMX swap", () => {
+  it("opens an accessible dialog outside synthetics context and configures the Arbitrum GMX swap", async () => {
     const history = createMemoryHistory({ initialEntries: ["/rewards/history"] });
 
     render(
@@ -48,6 +48,10 @@ describe("StandaloneBuyGmxModal", () => {
         </Router>
       </I18nProvider>
     );
+
+    const dialog = screen.getByRole("dialog", { name: "Buy GMX" });
+    expect(dialog.getAttribute("aria-modal")).toBe("true");
+    await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true));
 
     fireEvent.click(screen.getByRole("button", { name: "Buy GMX on GMX swap" }));
 

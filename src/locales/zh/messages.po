@@ -3499,6 +3499,10 @@ msgstr "复制地址"
 msgid "Announcements"
 msgstr "公告"
 
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
+msgstr "在精选市场交易即可激活此加成，并使这些交易获得更高的倍数。"
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -3898,11 +3902,6 @@ msgstr "兑换价格影响过高"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "可在 {minutesText}{seconds}s 后取消"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Applies to eligible trades in featured markets."
-msgstr "适用于精选市场中的合资格交易。"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4530,6 +4529,10 @@ msgstr ""
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
 msgstr "输入金额"
+
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Reach {0}+ in lifetime trading volume to unlock a permanent {1} multiplier."
+msgstr "终身交易量达到 {0}+，即可永久解锁 {1} 倍数。"
 
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Certified"
@@ -8990,11 +8993,6 @@ msgstr "（{0}，占 {1}）"
 msgid "Receive 50% of the rewards earned by every trader you invite."
 msgstr "获得您邀请的每位交易者所赚取奖励的 50%。"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Applies to qualifying balancing position increases of at least {0}."
-msgstr "适用于至少 {0} 的符合条件平衡仓位增加。"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "已实现和未实现盈亏总计，包含费用和价格影响"
@@ -9225,6 +9223,10 @@ msgstr "买入订单已执行"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your search"
 msgstr "没有与您的搜索匹配的机会"
+
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Place balancing position increases ({0}+) on underutilized sides to earn an additional multiplier on those trades."
+msgstr "在利用率较低的一侧增加平衡仓位（{0}+），可使这些交易获得额外倍数。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Leaderboard for traders on GMX V2"
@@ -10635,11 +10637,6 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved {directionLabel}"
 msgstr "已预留 {directionLabel}"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Permanent after reaching {0} in lifetime volume."
-msgstr "累计交易量达到 {0} 后永久生效。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Distribution rate per day, USD"
@@ -13160,6 +13157,8 @@ msgid "multiple asset classes"
 msgstr "多个资产类别"
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+#: src/components/Modal/Modal.tsx
+#: src/components/Modal/SlideModal.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

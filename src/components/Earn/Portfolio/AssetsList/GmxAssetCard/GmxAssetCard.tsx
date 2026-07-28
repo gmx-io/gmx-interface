@@ -1,10 +1,10 @@
-import { autoUpdate, flip, FloatingPortal, offset, shift, useFloating } from "@floating-ui/react";
+import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
@@ -20,6 +20,7 @@ import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
+import useSearchParams from "lib/useSearchParams";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
@@ -29,6 +30,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { VestModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal";
+import FloatingPortal from "components/Portal/FloatingPortal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -40,7 +42,12 @@ import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 import gmxIcon from "img/tokens/ic_gmx.svg";
 
-import { GMX_DAO_LINKS } from "./constants";
+import {
+  EARN_OPERATION_QUERY_PARAM,
+  EARN_OPERATION_STAKE_ES_GMX,
+  EARN_OPERATION_STAKE_GMX,
+  GMX_DAO_LINKS,
+} from "./constants";
 import { StakeModal, StakeModalTabConfig } from "./StakeModal";
 
 export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: StakingProcessedData; hasEsGmx: boolean }) {
@@ -61,6 +68,49 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
   const [isVestModalVisible, setIsVestModalVisible] = useState(false);
   const [isBuyModalVisible, setIsBuyModalVisible] = useState(false);
+
+  const history = useHistory();
+  const location = useLocation();
+  const { [EARN_OPERATION_QUERY_PARAM]: operation } = useSearchParams<{ [EARN_OPERATION_QUERY_PARAM]?: string }>();
+
+  const clearStakeOperation = useCallback(() => {
+    const nextSearch = new URLSearchParams(location.search);
+    nextSearch.delete(EARN_OPERATION_QUERY_PARAM);
+    history.replace({
+      pathname: location.pathname,
+      search: nextSearch.toString(),
+      hash: location.hash,
+      state: location.state,
+    });
+  }, [history, location.hash, location.pathname, location.search, location.state]);
+
+  const handleSetGmxStakeModalVisible = useCallback(
+    (isVisible: boolean) => {
+      setIsGmxStakeModalVisible(isVisible);
+      if (!isVisible && operation === EARN_OPERATION_STAKE_GMX) clearStakeOperation();
+    },
+    [clearStakeOperation, operation]
+  );
+
+  const handleSetEsGmxStakeModalVisible = useCallback(
+    (isVisible: boolean) => {
+      setIsEsGmxStakeModalVisible(isVisible);
+      if (!isVisible && operation === EARN_OPERATION_STAKE_ES_GMX) clearStakeOperation();
+    },
+    [clearStakeOperation, operation]
+  );
+
+  useEffect(() => {
+    if (operation !== EARN_OPERATION_STAKE_GMX && operation !== EARN_OPERATION_STAKE_ES_GMX) return;
+
+    if (operation === EARN_OPERATION_STAKE_GMX) {
+      setIsGmxStakeModalVisible(true);
+      setGmxStakeValue("");
+    } else {
+      setIsEsGmxStakeModalVisible(true);
+      setEsGmxStakeValue("");
+    }
+  }, [operation]);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
@@ -384,7 +434,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
       <StakeModal
         isVisible={isGmxStakeModalVisible}
-        setIsVisible={setIsGmxStakeModalVisible}
+        setIsVisible={handleSetGmxStakeModalVisible}
         chainId={chainId}
         signer={signer}
         tokenSymbol="GMX"
@@ -404,7 +454,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         <>
           <StakeModal
             isVisible={isEsGmxStakeModalVisible}
-            setIsVisible={setIsEsGmxStakeModalVisible}
+            setIsVisible={handleSetEsGmxStakeModalVisible}
             chainId={chainId}
             signer={signer}
             tokenSymbol="esGMX"
