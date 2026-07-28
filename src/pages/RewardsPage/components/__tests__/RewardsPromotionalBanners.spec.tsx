@@ -8,6 +8,11 @@ import { getRewardsPromoSelection } from "domain/synthetics/incentives/v2/reward
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { USD_DECIMALS } from "lib/numbers";
 
+import {
+  EARN_PORTFOLIO_STAKE_ES_GMX_LINK,
+  EARN_PORTFOLIO_STAKE_GMX_LINK,
+} from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
+
 import { getRewardsPromotionalBannerContent, RewardsPromotionalBanners } from "../RewardsPromotionalBanners";
 
 vi.mock("config/env", () => ({ isDevelopment: () => true }));
@@ -178,6 +183,9 @@ describe("RewardsPromotionalBanners", () => {
       "pair-boosts",
       "restake-rewards",
     ]);
+    expect(banners.find((banner) => banner.type === "gmx-ready-to-stake")?.to).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
+    expect(banners.find((banner) => banner.type === "esgmx-ready-to-stake")?.to).toBe(EARN_PORTFOLIO_STAKE_ES_GMX_LINK);
+    expect(banners.find((banner) => banner.type === "restake-rewards")?.to).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
   });
 
   it("never advertises a tier below a higher persisted tier", () => {

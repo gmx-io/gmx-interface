@@ -1,6 +1,14 @@
 import { Trans } from "@lingui/macro";
 
-import type { BoostId, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/v2/types";
+import type {
+  BoostConfig,
+  BoostId,
+  IncentivesConfig,
+  StakingTierId,
+  VolumeTierId,
+} from "domain/synthetics/incentives/v2/types";
+import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
+import { formatAmountHuman, USD_DECIMALS } from "lib/numbers";
 
 export type AccountDataState = "disconnected" | "loading" | "unavailable" | "ready";
 
@@ -26,6 +34,36 @@ export const boostLabels: Record<BoostId, React.ReactNode> = {
   LifetimeTrading: <Trans>Lifetime Volume</Trans>,
   ManualAllocation: <Trans>Return Bonus</Trans>,
 };
+
+function formatCompactUsd(amount: bigint) {
+  return formatAmountHuman(amount, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
+}
+
+export function BoostDescriptionText({ boost, config }: { boost: BoostConfig; config: IncentivesConfig }) {
+  if (boost.boost === "FeaturedMarkets") {
+    return <Trans>Trade featured markets to activate this boost and earn a higher multiplier for those trades.</Trans>;
+  }
+
+  if (boost.boost === "BalancingTrades") {
+    return (
+      <Trans>
+        Place balancing position increases ({formatCompactUsd(config.balancingTradesThreshold)}+) on underutilized sides
+        to earn an additional multiplier on those trades.
+      </Trans>
+    );
+  }
+
+  if (boost.boost === "LifetimeTrading") {
+    return (
+      <Trans>
+        Reach {formatCompactUsd(config.lifetimeVolumeThreshold)}+ in lifetime trading volume to unlock a permanent{" "}
+        {formatMultiplier(boost.multiplier, config.multiplierDecimals).replace("x", "×")} multiplier.
+      </Trans>
+    );
+  }
+
+  return null;
+}
 
 export function AccountValue({ state, children }: { state: AccountDataState; children: React.ReactNode }) {
   if (state === "loading") return <>…</>;

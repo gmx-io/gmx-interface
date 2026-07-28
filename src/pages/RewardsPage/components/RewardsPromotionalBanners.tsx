@@ -12,6 +12,10 @@ import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
 import { formatAmount, PRECISION } from "lib/numbers";
 import { sendRewardsBannerEvent, sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
+import {
+  EARN_PORTFOLIO_STAKE_ES_GMX_LINK,
+  EARN_PORTFOLIO_STAKE_GMX_LINK,
+} from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 import { rewardsBannerStyles } from "components/RewardsPromoBanner/rewardsBannerStyles";
 import { getRewardsPromoCopy } from "components/RewardsPromoBanner/rewardsPromoCopy";
 
@@ -94,7 +98,7 @@ export function getRewardsPromotionalBannerContent({
       description: <Trans>You have {gmxAmount} GMX unstaked - stake now to earn more rewards.</Trans>,
       actionLabel: <Trans>Stake GMX</Trans>,
       actionType: "stake",
-      to: "/earn/portfolio",
+      to: EARN_PORTFOLIO_STAKE_GMX_LINK,
       coin: rewardsBannerCoinGmx,
     });
   }
@@ -109,7 +113,7 @@ export function getRewardsPromotionalBannerContent({
       description: <Trans>You have {esGmxAmount} esGMX unstaked - stake now to earn more rewards.</Trans>,
       actionLabel: <Trans>Stake esGMX</Trans>,
       actionType: "stake",
-      to: "/earn/portfolio",
+      to: EARN_PORTFOLIO_STAKE_ES_GMX_LINK,
       coin: rewardsBannerCoinGmx,
     });
   }
@@ -171,7 +175,7 @@ export function getRewardsPromotionalBannerContent({
     ),
     actionLabel: <Trans>Stake rewards</Trans>,
     actionType: "stake",
-    to: "/earn/portfolio",
+    to: EARN_PORTFOLIO_STAKE_GMX_LINK,
     coin: rewardsBannerCoinGmx,
   });
 

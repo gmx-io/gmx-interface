@@ -1,6 +1,6 @@
 import { plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import React, { useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 
@@ -15,7 +15,9 @@ import type {
 } from "domain/synthetics/incentives/v2/types";
 import { formatFactorPercentage, formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
+import { StandaloneBuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 
+import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 import { getRewardsPromoCopy } from "components/RewardsPromoBanner/rewardsPromoCopy";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -28,7 +30,13 @@ import PlusIcon from "img/ic_plus.svg?react";
 import StatsSvg from "img/ic_stats.svg?react";
 
 import { BoostTierIcon, ReferralBoostIcon, StakingTierIcon, VolumeTierIcon } from "./RewardsTierIcons";
-import { type AccountDataState, boostLabels, stakingTierLabels, volumeTierLabels } from "./rewardsTiersShared";
+import {
+  type AccountDataState,
+  boostLabels,
+  BoostDescriptionText,
+  stakingTierLabels,
+  volumeTierLabels,
+} from "./rewardsTiersShared";
 
 type TierCardKey = "volume" | "staking" | "boosts";
 
@@ -49,6 +57,13 @@ export function RewardsTierCards({
   walletGmxState: AccountDataState;
   promoSelection?: RewardsPromoSelection;
 }) {
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
+  const openBuyGmxModal = useCallback(() => setIsBuyGmxModalVisible(true), []);
+
+  useEffect(() => {
+    setIsBuyGmxModalVisible(false);
+  }, [account, statusState]);
+
   if (statusState === "loading") return <TierCardsSkeleton />;
   if (statusState === "unavailable") return <TierCardsUnavailable />;
 
@@ -76,6 +91,7 @@ export function RewardsTierCards({
           walletGmx={walletGmx}
           walletGmxState={walletGmxState}
           promoSelection={promoSelection}
+          onBuyGmx={openBuyGmxModal}
         />
       ),
     },
@@ -97,11 +113,14 @@ export function RewardsTierCards({
   const orderedCards = [...cards.filter((card) => card.active), ...cards.filter((card) => !card.active)];
 
   return (
-    <div className="grid grid-cols-3 gap-12 max-lg:grid-cols-1">
-      {orderedCards.map((card) => (
-        <React.Fragment key={card.key}>{card.content}</React.Fragment>
-      ))}
-    </div>
+    <>
+      <StandaloneBuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
+      <div className="grid grid-cols-3 gap-12 max-lg:grid-cols-1">
+        {orderedCards.map((card) => (
+          <React.Fragment key={card.key}>{card.content}</React.Fragment>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -123,6 +142,12 @@ function getBoostStatuses(status?: AccountIncentiveStatus) {
 
 function formatCompactUsd(amount: bigint) {
   return formatAmountHuman(amount, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
+}
+
+function formatWholeGmx(amount: bigint | undefined) {
+  if (amount === undefined) return "…";
+
+  return formatAmount(amount / 10n ** BigInt(ES_GMX_DECIMALS), 0, 0, true);
 }
 
 function MultiplierBadge({
@@ -408,6 +433,7 @@ function StakingCard({
   walletGmx,
   walletGmxState,
   promoSelection,
+  onBuyGmx,
 }: {
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
@@ -416,6 +442,7 @@ function StakingCard({
   walletGmx?: bigint;
   walletGmxState: AccountDataState;
   promoSelection?: RewardsPromoSelection;
+  onBuyGmx: () => void;
 }) {
   const stakingTier = status?.stakingTier;
   const displayTier = stakingTier ?? status?.projectedStakingTier;
@@ -496,19 +523,28 @@ function StakingCard({
               <Trans>
                 GMX staked:{" "}
                 <span className="text-typography-primary">
-                  {gmxStaked === undefined
-                    ? "—"
-                    : formatAmount(gmxStaked, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })}
+                  {gmxStaked === undefined ? "—" : formatWholeGmx(gmxStaked)}
                 </span>
               </Trans>
               {requiredToNextTier > 0n ? (
-                <Link
-                  to={shouldStakeGmx ? "/earn/portfolio" : "/buy_gmx"}
-                  className="inline-flex items-center gap-2 text-13 font-medium text-rewards-blue-300"
-                >
-                  {shouldStakeGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
-                  {shouldStakeGmx ? <GmxIcon className="size-12" /> : <PlusIcon className="size-12" />}
-                </Link>
+                shouldStakeGmx ? (
+                  <Link
+                    to={EARN_PORTFOLIO_STAKE_GMX_LINK}
+                    className="inline-flex items-center gap-2 text-13 font-medium text-rewards-blue-300"
+                  >
+                    <Trans>Stake GMX</Trans>
+                    <GmxIcon className="size-12" />
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={onBuyGmx}
+                    className="inline-flex items-center gap-2 text-13 font-medium text-rewards-blue-300"
+                  >
+                    <Trans>Buy GMX</Trans>
+                    <PlusIcon className="size-12" />
+                  </button>
+                )
               ) : null}
             </div>
             <StakingProgressBar
@@ -541,6 +577,7 @@ function StakingCard({
           walletGmx={walletGmx}
           walletGmxState={walletGmxState}
           promoSelection={promoSelection}
+          onBuyGmx={onBuyGmx}
         />
       )}
     </div>
@@ -552,11 +589,13 @@ function InactiveStakingCardContent({
   walletGmx,
   walletGmxState,
   promoSelection,
+  onBuyGmx,
 }: {
   account?: string;
   walletGmx?: bigint;
   walletGmxState: AccountDataState;
   promoSelection?: RewardsPromoSelection;
+  onBuyGmx: () => void;
 }) {
   if (!promoSelection) {
     return (
@@ -596,14 +635,23 @@ function InactiveStakingCardContent({
         <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
           <Skeleton width={88} height={16} />
         </SkeletonTheme>
-      ) : (
+      ) : shouldStakeGmx ? (
         <Link
-          to={shouldStakeGmx ? "/earn/portfolio" : "/buy_gmx"}
+          to={EARN_PORTFOLIO_STAKE_GMX_LINK}
           className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300"
         >
-          {shouldStakeGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
-          {shouldStakeGmx ? <GmxIcon className="size-16" /> : <PlusIcon className="size-16" />}
+          <Trans>Stake GMX</Trans>
+          <GmxIcon className="size-16" />
         </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={onBuyGmx}
+          className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300"
+        >
+          <Trans>Buy GMX</Trans>
+          <PlusIcon className="size-16" />
+        </button>
       )}
     </div>
   );
@@ -660,14 +708,9 @@ function StakingProgressBar({
             </div>
             <div className="mt-4 text-13 text-typography-secondary">
               <Trans>
-                Staked:{" "}
-                <span className="text-typography-primary">
-                  {formatAmount(gmxStaked, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })}
-                </span>
+                Staked: <span className="text-typography-primary">{formatWholeGmx(gmxStaked)}</span>
                 <span className="text-11"> / </span>
-                <span className="text-typography-primary">
-                  {formatAmount(tier.threshold, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} GMX
-                </span>
+                <span className="text-typography-primary">{formatWholeGmx(tier.threshold)} GMX</span>
               </Trans>
             </div>
           </div>
@@ -720,21 +763,8 @@ function StakingProgressBar({
 }
 
 function getBoostDescription(boost: BoostConfig, config: IncentivesConfig) {
-  if (boost.boost === "FeaturedMarkets") {
-    return <Trans>Applies to eligible trades in featured markets.</Trans>;
-  }
-  if (boost.boost === "BalancingTrades") {
-    return (
-      <Trans>
-        Applies to qualifying balancing position increases of at least{" "}
-        {formatCompactUsd(config.balancingTradesThreshold)}.
-      </Trans>
-    );
-  }
-  if (boost.boost === "LifetimeTrading") {
-    return (
-      <Trans>Permanent after reaching {formatCompactUsd(config.lifetimeVolumeThreshold)} in lifetime volume.</Trans>
-    );
+  if (boost.boost !== "ManualAllocation") {
+    return <BoostDescriptionText boost={boost} config={config} />;
   }
 
   return <Trans>Available to eligible historical users while their return bonus cap remains.</Trans>;

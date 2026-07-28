@@ -1,6 +1,7 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
-import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
+import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useId, useMemo, useRef } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
@@ -12,6 +13,7 @@ import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 
 import "./Modal.css";
+import { ModalFocusScopeProvider, useModalFocusScope } from "./modalFocusScope";
 
 const FADE_VARIANTS: Variants = {
   hidden: { opacity: 0, pointerEvents: "none" },
@@ -74,37 +76,17 @@ export default function Modal({
   hideHeaderBorder = false,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    function close(e: KeyboardEvent) {
-      if (e.keyCode === 27 && setIsVisible) {
-        setIsVisible(false);
-      }
-    }
-    window.addEventListener("keydown", close);
-    return () => window.removeEventListener("keydown", close);
-  }, [isVisible, setIsVisible]);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const titleId = useId();
+  const focusScope = useModalFocusScope({
+    contentRef,
+    isVisible: Boolean(isVisible),
+    onClose: () => setIsVisible(false),
+  });
 
   useEffect(() => {
     if (typeof onAfterOpen === "function") onAfterOpen();
   }, [onAfterOpen]);
-
-  useEffect(
-    function blurOutsideOnVisible() {
-      if (isVisible) {
-        const focusedElement = document.activeElement;
-        const isNotBody = !document.body.isSameNode(focusedElement);
-        const isOutside = !modalRef.current?.contains(focusedElement);
-
-        if (focusedElement && isNotBody && isOutside) {
-          (focusedElement as HTMLElement).blur();
-        }
-      }
-    },
-    [isVisible]
-  );
 
   const modalStyle = useMemo(() => ({ zIndex }), [zIndex]);
 
@@ -115,79 +97,93 @@ export default function Modal({
   return (
     <AnimatePresence>
       {isVisible && (
-        <RemoveScroll shards={PRIVY_DIALOG_SCROLL_SHARDS}>
-          <motion.div
-            className={cx("Modal", className, { "max-md:!items-end": withMobileBottomPosition })}
-            ref={modalRef}
-            style={modalStyle}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={FADE_VARIANTS}
-            transition={TRANSITION}
-          >
-            <div
-              className="Modal-backdrop"
-              style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
-              onClick={() => setIsVisible(false)}
-            />
-
-            <div
-              className={cx(
-                "Modal-content flex flex-col",
-                {
-                  "gap-16": contentPadding,
-                  "max-md:w-full max-md:!rounded-t-0": withMobileBottomPosition,
-                },
-                contentClassName
-              )}
-              onClick={stopPropagation}
-              data-qa={qa}
+        <ModalFocusScopeProvider scope={focusScope}>
+          <RemoveScroll shards={PRIVY_DIALOG_SCROLL_SHARDS}>
+            <motion.div
+              className={cx("Modal", className, { "max-md:!items-end": withMobileBottomPosition })}
+              ref={modalRef}
+              style={modalStyle}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={FADE_VARIANTS}
+              transition={TRANSITION}
             >
               <div
+                className="Modal-backdrop"
+                style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
+                onClick={() => setIsVisible(false)}
+              />
+
+              <div
+                ref={contentRef}
                 className={cx(
-                  "Modal-header-wrapper flex flex-col gap-8 px-adaptive pb-12 pt-adaptive",
-                  hideHeaderBorder ? "" : "border-b-1/2 border-slate-600"
+                  "Modal-content flex flex-col",
+                  {
+                    "gap-16": contentPadding,
+                    "max-md:w-full max-md:!rounded-t-0": withMobileBottomPosition,
+                  },
+                  contentClassName
                 )}
+                onClick={stopPropagation}
+                data-qa={qa}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={label ? titleId : undefined}
+                tabIndex={-1}
               >
-                <div className="Modal-title-bar h-28">
-                  <div className="Modal-title-group">
-                    {onBack && (
-                      <Button variant="ghost" size="small" className="px-8" onClick={onBack} aria-label="Back">
-                        <ChevronLeftIcon className="size-16" />
-                      </Button>
-                    )}
-                    <div className="Modal-title font-medium text-typography-primary">{label}</div>
-                  </div>
-                  <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
-                    <CloseIcon className="Modal-close-icon size-20" />
-                  </div>
-                </div>
-                {headerContent}
-              </div>
-              <ErrorBoundary id="Modal" variant="block" wrapperClassName="rounded-t-8">
-                {disableOverflowHandling ? (
-                  children
-                ) : (
-                  <div className={cx("overflow-auto", { "flex grow flex-col": takeFullHeight })}>
-                    <div
-                      className={cx("Modal-body", {
-                        "px-adaptive": contentPadding,
-                        "pb-adaptive": contentPadding && !footerContent,
-                        "flex grow flex-col": takeFullHeight,
-                      })}
-                    >
-                      {children}
+                <div
+                  className={cx(
+                    "Modal-header-wrapper flex flex-col gap-8 px-adaptive pb-12 pt-adaptive",
+                    hideHeaderBorder ? "" : "border-b-1/2 border-slate-600"
+                  )}
+                >
+                  <div className="Modal-title-bar h-28">
+                    <div className="Modal-title-group">
+                      {onBack && (
+                        <Button variant="ghost" size="small" className="px-8" onClick={onBack} aria-label="Back">
+                          <ChevronLeftIcon className="size-16" />
+                        </Button>
+                      )}
+                      <div id={titleId} className="Modal-title font-medium text-typography-primary">
+                        {label}
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      className="Modal-close-button"
+                      onClick={() => setIsVisible(false)}
+                      aria-label={t`Close`}
+                    >
+                      <CloseIcon className="Modal-close-icon size-20" />
+                    </button>
                   </div>
-                )}
-                {footerContent && (
-                  <div className="border-t-1/2 border-slate-600 px-adaptive py-16">{footerContent}</div>
-                )}
-              </ErrorBoundary>
-            </div>
-          </motion.div>
-        </RemoveScroll>
+                  {headerContent}
+                </div>
+                <ErrorBoundary id="Modal" variant="block" wrapperClassName="rounded-t-8">
+                  {disableOverflowHandling ? (
+                    children
+                  ) : (
+                    <div className={cx("overflow-auto", { "flex grow flex-col": takeFullHeight })}>
+                      <div
+                        className={cx("Modal-body", {
+                          "px-adaptive": contentPadding,
+                          "pb-adaptive": contentPadding && !footerContent,
+                          "flex grow flex-col": takeFullHeight,
+                        })}
+                      >
+                        {children}
+                      </div>
+                    </div>
+                  )}
+                  {footerContent && (
+                    <div className="border-t-1/2 border-slate-600 px-adaptive py-16">{footerContent}</div>
+                  )}
+                </ErrorBoundary>
+              </div>
+            </motion.div>
+          </RemoveScroll>
+        </ModalFocusScopeProvider>
       )}
     </AnimatePresence>
   );

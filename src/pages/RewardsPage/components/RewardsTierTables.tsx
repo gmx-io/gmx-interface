@@ -33,6 +33,7 @@ import { BoostTierIcon, ReferralBoostIcon, StakingTierIcon, VolumeTierIcon } fro
 import {
   type AccountDataState,
   boostLabels,
+  BoostDescriptionText,
   stakingTierLabels,
   StatusLabel,
   volumeTierLabels,
@@ -376,29 +377,14 @@ function BoostDescription({
   boost: BoostConfig;
   config: IncentivesConfig;
 }) {
-  if (boost.boost === "FeaturedMarkets") {
+  if (boost.boost !== "ManualAllocation") {
     return (
       <>
-        <Trans>Applies to eligible trades in featured markets.</Trans>{" "}
-        {config.featuredMarketIndexTokens.length ? (
+        <BoostDescriptionText boost={boost} config={config} />{" "}
+        {boost.boost === "FeaturedMarkets" && config.featuredMarketIndexTokens.length ? (
           <FeaturedMarketsTooltip chainId={chainId} indexTokenAddresses={config.featuredMarketIndexTokens} />
         ) : null}
       </>
-    );
-  }
-
-  if (boost.boost === "BalancingTrades") {
-    return (
-      <Trans>
-        Applies to qualifying balancing position increases of at least{" "}
-        {formatCompactUsd(config.balancingTradesThreshold)}.
-      </Trans>
-    );
-  }
-
-  if (boost.boost === "LifetimeTrading") {
-    return (
-      <Trans>Permanent after reaching {formatCompactUsd(config.lifetimeVolumeThreshold)} in lifetime volume.</Trans>
     );
   }
 

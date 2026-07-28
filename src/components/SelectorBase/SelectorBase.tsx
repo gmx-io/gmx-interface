@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-prop-types */
-import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { Placement, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
@@ -19,6 +19,7 @@ import { useMedia } from "react-use";
 import { BREAKPOINTS } from "lib/breakpoints";
 
 import { SlideModal } from "components/Modal/SlideModal";
+import FloatingPortal from "components/Portal/FloatingPortal";
 import { TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
