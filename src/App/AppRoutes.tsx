@@ -102,7 +102,7 @@ export function AppRoutes() {
     }
   }
 
-  const { chainId, lang } = useSearchParams<{ chainId?: string; lang?: string }>();
+  const { chainId, lang, openChat } = useSearchParams<{ chainId?: string; lang?: string; openChat?: string }>();
 
   const deleteSearchParam = useCallback(
     (param: string) => {
@@ -131,6 +131,12 @@ export function AppRoutes() {
       });
     }
   }, [lang, deleteSearchParam]);
+
+  useEffect(() => {
+    if (openChat) {
+      deleteSearchParam("openChat");
+    }
+  }, [openChat, deleteSearchParam]);
 
   const isEarnPage = history.location.pathname.startsWith("/earn");
   useEffect(() => {

@@ -92,6 +92,10 @@ function useHeaderLinks() {
   return useMemo(() => {
     return [
       {
+        label: t`VIP`,
+        href: "/#/trader-affiliate-program",
+      },
+      {
         label: t`Protocol`,
         href: "https://github.com/gmx-io",
       },

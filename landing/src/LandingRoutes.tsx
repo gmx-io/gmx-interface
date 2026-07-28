@@ -5,6 +5,7 @@ import Home from "./pages/Home/Home";
 
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
+const TraderAffiliateProgram = lazy(() => import("./pages/TraderAffiliateProgram/TraderAffiliateProgram"));
 
 function TermsPageLoader() {
   return (
@@ -38,6 +39,11 @@ export function LandingRoutes() {
       <Route exact path="/terms-and-conditions">
         <Suspense fallback={<TermsPageLoader />}>
           <TermsAndConditions />
+        </Suspense>
+      </Route>
+      <Route exact path="/trader-affiliate-program">
+        <Suspense fallback={<TermsPageLoader />}>
+          <TraderAffiliateProgram />
         </Suspense>
       </Route>
       <Route path="*" render={RedirectToHomeWithSearch} />

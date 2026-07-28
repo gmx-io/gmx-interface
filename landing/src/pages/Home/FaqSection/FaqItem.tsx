@@ -5,11 +5,13 @@ import IcCross from "img/ic_cross.svg?react";
 
 type Props = {
   title: string;
+  defaultOpen?: boolean;
+  iconClassName?: string;
   children: React.ReactNode;
 };
 
-export function FaqItem({ title, children }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+export function FaqItem({ title, defaultOpen, iconClassName = "size-16", children }: Props) {
+  const [isOpen, setIsOpen] = useState(Boolean(defaultOpen));
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -24,7 +26,7 @@ export function FaqItem({ title, children }: Props) {
         <h3 className="text-heading-4">{title}</h3>
         <div className="flex size-23 flex-shrink-0 items-center justify-center">
           <IcCross
-            className={cx("duration-180 margin-auto size-16 origin-center transition-transform", {
+            className={cx("duration-180 margin-auto origin-center transition-transform", iconClassName, {
               "rotate-45": !isOpen,
             })}
           />

@@ -1,4 +1,4 @@
-import Intercom, { boot, onUnreadCountChange, shutdown, update } from "@intercom/messenger-js-sdk";
+import Intercom, { boot, onUnreadCountChange, show, shutdown, update } from "@intercom/messenger-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
 import { useAccount } from "wagmi";
 
@@ -23,7 +23,7 @@ import { useWalletPortfolioUsd } from "./useWalletPortfolioUsd";
 import { getOrCreateSupportChatUserId, themeToIntercomTheme } from "./utils";
 
 export function useSupportChat() {
-  const { shouldShowSupportChat } = useShowSupportChat();
+  const { shouldShowSupportChat, shouldOpenChatOnBoot } = useShowSupportChat();
   const { address: account, connector } = useAccount();
   const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
@@ -35,6 +35,7 @@ export function useSupportChat() {
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
   const wasIntercomInitialized = useRef(false);
+  const wasChatShownForIntent = useRef(false);
   const themeModeRef = useRef(themeMode);
   themeModeRef.current = themeMode;
   const lastSentIntercomTheme = useRef<ReturnType<typeof themeToIntercomTheme> | undefined>(undefined);
@@ -127,11 +128,16 @@ export function useSupportChat() {
       setSupportChatUnreadCount(unreadCount);
     });
 
+    if (shouldOpenChatOnBoot && !wasChatShownForIntent.current) {
+      wasChatShownForIntent.current = true;
+      show();
+    }
+
     return () => {
       shutdown();
       initializedAddress.current = undefined;
     };
-  }, [shouldShowSupportChat, setSupportChatUnreadCount]);
+  }, [shouldShowSupportChat, shouldOpenChatOnBoot, setSupportChatUnreadCount]);
 
   useEffect(() => {
     if (!shouldShowSupportChat) {
