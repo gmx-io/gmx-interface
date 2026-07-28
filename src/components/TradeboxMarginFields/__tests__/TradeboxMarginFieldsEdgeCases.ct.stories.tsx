@@ -5,6 +5,7 @@ import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { WagmiProvider } from "wagmi";
 
+import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { StateCtx } from "context/SyntheticsStateContext/utils";
 import {
@@ -26,7 +27,9 @@ function TestProviders({ state, children }: { state: SyntheticsState; children: 
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>
           <I18nProvider i18n={i18n}>
-            <StateCtx.Provider value={state}>{children}</StateCtx.Provider>
+            <GmxAccountContextProvider>
+              <StateCtx.Provider value={state}>{children}</StateCtx.Provider>
+            </GmxAccountContextProvider>
           </I18nProvider>
         </WagmiProvider>
       </QueryClientProvider>
@@ -113,7 +116,6 @@ export function EdgeCaseStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -155,7 +157,6 @@ export function UndefinedToTokenStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(10000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -197,7 +198,6 @@ export function RapidInputStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(10000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -235,7 +235,6 @@ export function LargeValuesStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(999999999, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -273,7 +272,6 @@ export function DustAmountsStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(10000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}

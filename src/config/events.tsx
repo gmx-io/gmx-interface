@@ -8,6 +8,8 @@ import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import release117PositionFilterPoster from "img/release-117-position-filter-poster.webp";
+import release117PositionFilterDemo from "img/release-117-position-filter.mp4";
 import sparkleIcon from "img/sparkle.svg";
 
 export type AnnouncementType = "listing" | "delisting" | "update" | "maintenance";
@@ -45,17 +47,118 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-118-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "16 Jul 2026, 12:00",
+    endDate: "24 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: Passkey Login, Wallet Funding, and Performance Sharing",
+    summary: (
+      <>
+        Sign in with a passkey, fund your wallet with a card, share your performance, and skip swap fees on TP/SL
+        closes.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> create a wallet with just a passkey. Face
+          ID, Touch ID, Windows Hello, or Android biometrics get you trading, with no email or seed phrase required.
+          Funding is built into the Receive flow: buy crypto with a card, Apple Pay, or Google Pay, or transfer from
+          another wallet, exchange, or chain.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> share your results with a
+          performance card showing your PnL, win rate, and cumulative PnL curve, carrying your referral code.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now return
+          profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a resting
+          increase order would be liquidatable at its trigger price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool settings
+          now survive refreshes.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Support:</span> the menu now shows how many replies came
+          in while you were away.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "release-117-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "09 Jul 2026, 14:00",
+    endDate: "20 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: PnL Charts, Trade History, and Wallet functionality",
+    summary: (
+      <>
+        Analyze your PnL in more detail, follow any position's full history, and manage funds without leaving the app.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> the PnL chart now supports
+          daily, weekly, and monthly views, zoom and pan (pinch on mobile), and shares its date range with Trade
+          History. Performance details now show your trader rank and a full breakdown of realized and unrealized PnL and
+          fees.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trade History:</span> filter by position to follow every
+          action in a position's lifecycle, from open to full close.
+        </span>
+        <video
+          aria-label="Filter Trade History by position"
+          className="h-auto w-full rounded-8"
+          autoPlay
+          controls
+          loop
+          muted
+          playsInline
+          poster={release117PositionFilterPoster}
+          preload="metadata"
+          width={800}
+          height={250}
+        >
+          <source src={release117PositionFilterDemo} type="video/mp4" />
+        </video>
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> new Send and Receive buttons for your
+          connected wallet. Receive shows your address as a QR code to copy or scan, and Send transfers tokens to any
+          address, with the network fee shown before you confirm.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">GMX Account:</span> deposits now start by picking the
+          asset you want to move, and each deposit's progress is tracked in Transfer history.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">TP/SL orders:</span> the app now warns when a TP or SL
+          trigger price is beyond your liquidation price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Additional bug fixes:</span> market orders no longer get
+          stuck as pending after executing, and GM pool fee data loads reliably again in Pools and Earn.
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "botanix-withdraw-deadline",
     type: "delisting",
     isActive: true,
+    startDate: "24 Jun 2026, 16:45",
     endDate: "01 Aug 2026, 0:00",
     chains: [BOTANIX],
     title: "Botanix network is shutting down",
+    summary: <>Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.</>,
     description: (
       <>
-        Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.
-        <br />
-        <br />
         In the swap interface, swap pBTC to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC
         directly on Botanix. Move your BTC off the network before the deadline.
         <br />
@@ -103,32 +206,35 @@ export const appEventsData: EventData[] = [
     endDate: "31 Dec 2026, 0:00",
     chains: [MEGAETH],
     title: "Earn points on GMX MegaETH",
+    summary: (
+      <>
+        Earn points each epoch across four activities: trading, referral volume, trader PnL, and GLV{" "}
+        <span className="text-slate-100">[USDM-USDM]</span> liquidity.
+      </>
+    ),
     description: (
-      <span className="block">
-        <span className="mb-12 block text-slate-100">Earn points each epoch across four activities:</span>
-        <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Trading activity</span>
-            <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+      <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Trading activity</span>
+          <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Referral volume</span>
+          <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Trader PnL</span>
+          <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">
+            GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
           </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Referral volume</span>
-            <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
-          </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Trader PnL</span>
-            <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
-          </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">
-              GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
-            </span>
-            <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
-          </span>
+          <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
         </span>
       </span>
     ),

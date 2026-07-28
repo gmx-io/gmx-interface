@@ -3,7 +3,7 @@ import { Popover, Portal } from "@headlessui/react";
 import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { sub, type Locale as DateLocale, type Duration, format, addYears } from "date-fns";
+import { addYears, format, sub, type Duration, type Locale as DateLocale } from "date-fns";
 import { de as dateDe } from "date-fns/locale/de";
 import { enUS as dateEn } from "date-fns/locale/en-US";
 import { es as dateEs } from "date-fns/locale/es";
@@ -17,6 +17,7 @@ import { useCallback, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
+import type { DateRange } from "lib/dates";
 import { type Locale } from "lib/i18n";
 
 import Button from "components/Button/Button";
@@ -43,8 +44,9 @@ export const LOCALE_DATE_LOCALE_MAP: Record<Locale, DateLocale> = {
 type Props = {
   startDate?: Date;
   endDate?: Date;
-  onChange: (date: [Date | undefined, Date | undefined]) => void;
+  onChange: (date: DateRange) => void;
   handleClassName?: string;
+  buttonTextClassName?: string;
   renderHandle?: (params: { buttonText: string; open: boolean }) => React.ReactNode;
 };
 
@@ -82,7 +84,14 @@ const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
 
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
-export function DateRangeSelect({ startDate, endDate, onChange, handleClassName, renderHandle }: Props) {
+export function DateRangeSelect({
+  startDate,
+  endDate,
+  onChange,
+  handleClassName,
+  buttonTextClassName,
+  renderHandle,
+}: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     placement: "top-start",
@@ -144,9 +153,10 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName,
         return;
       }
 
-      const res = sub(new Date(), duration);
+      const end = new Date();
+      const res = sub(end, duration);
 
-      onChange([res, new Date()]);
+      onChange([res, end]);
     },
     [onChange]
   );
@@ -162,7 +172,9 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName,
               <Button variant="ghost" className="flex items-center gap-4">
                 <CalendarIcon className="size-16" />
 
-                <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
+                <span className={buttonTextClassName ?? "text-body-small whitespace-nowrap font-medium"}>
+                  {buttonText}
+                </span>
               </Button>
             )}
           </Popover.Button>
@@ -286,9 +298,7 @@ export function DateSelect({
     <Popover className="DateRangeSelect-anchor" ref={refs.setReference}>
       <Popover.Button className={handleClassName}>
         <Button variant="ghost" className="flex items-center gap-4">
-          <div className="size-16">
-            <CalendarIcon />
-          </div>
+          <CalendarIcon className="size-16" />
           <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
         </Button>
       </Popover.Button>

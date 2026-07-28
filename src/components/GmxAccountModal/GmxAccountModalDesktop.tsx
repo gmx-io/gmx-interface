@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { useGmxAccountModalOpen, useGmxAccountWalletReceiveViewBackTo } from "context/GmxAccountContext/hooks";
 import { userAnalytics } from "lib/userAnalytics";
 import { OneClickPromotionEvent } from "lib/userAnalytics/types";
 
@@ -12,13 +12,31 @@ import { SlideModal } from "components/Modal/SlideModal";
 import { AvailableToTradeAssetsView } from "./AvailableToTradeAssetsView";
 import { DepositStatusView } from "./DepositStatusView";
 import { DepositView } from "./DepositView";
-import { AvailableToTradeAssetsTitle, TransferDetailsTitle, WithdrawalScreen } from "./GmxAccountModalShared";
+import {
+  AvailableToTradeAssetsTitle,
+  MainViewTitle,
+  TransferDetailsTitle,
+  TransferHistoryScreen,
+  TransferHistoryTitle,
+  WithdrawalScreen,
+} from "./GmxAccountModalShared";
+import { useIsActiveAccountEmbeddedWallet } from "./hooks";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
-import { TransferDetailsView } from "./TransferDetailsView";
+import { WalletReceiveOptionsView } from "./WalletReceiveOptionsView";
+import { WalletReceiveView } from "./WalletReceiveView";
+import { WalletSendView } from "./WalletSendView";
 
-const MAIN_VIEWS = ["main", "availableToTradeAssets", "transferDetails"] as const;
-const OVERLAY_VIEWS = ["deposit", "withdraw", "depositStatus", "selectAssetToDeposit"] as const;
+const MAIN_VIEWS = ["main", "availableToTradeAssets", "transferDetails", "transferHistory"] as const;
+const OVERLAY_VIEWS = [
+  "deposit",
+  "withdraw",
+  "depositStatus",
+  "selectAssetToDeposit",
+  "walletReceiveOptions",
+  "walletReceive",
+  "walletSend",
+] as const;
 
 type MainView = (typeof MAIN_VIEWS)[number];
 type OverlayView = (typeof OVERLAY_VIEWS)[number];
@@ -32,9 +50,10 @@ function isOverlayView(view: GmxAccountModalView): view is OverlayView {
 }
 
 const SLIDE_MODAL_LABELS: Record<MainView, ReactNode> = {
-  main: <Trans>GMX Account</Trans>,
+  main: <MainViewTitle />,
   availableToTradeAssets: <AvailableToTradeAssetsTitle />,
   transferDetails: <TransferDetailsTitle />,
+  transferHistory: <TransferHistoryTitle />,
 };
 
 const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
@@ -42,6 +61,9 @@ const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
   withdraw: <Trans>Withdraw from GMX Account</Trans>,
   depositStatus: <Trans>Deposit in progress...</Trans>,
   selectAssetToDeposit: <Trans>Select asset to deposit</Trans>,
+  walletReceiveOptions: <Trans>Receive funds</Trans>,
+  walletReceive: <Trans>Receive to Wallet</Trans>,
+  walletSend: <Trans>Send from Wallet</Trans>,
 };
 
 function OverlayContent({ view }: { view: OverlayView }) {
@@ -54,26 +76,47 @@ function OverlayContent({ view }: { view: OverlayView }) {
       return <DepositStatusView />;
     case "withdraw":
       return <WithdrawalScreen />;
+    case "walletReceiveOptions":
+      return <WalletReceiveOptionsView />;
+    case "walletReceive":
+      return <WalletReceiveView />;
+    case "walletSend":
+      return <WalletSendView />;
   }
 }
 
 export function GmxAccountModalDesktop({ account }: { account: string }) {
   const [modalState, setModalState] = useGmxAccountModalOpen();
+  const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
 
   const isOpen = modalState !== false;
   const view: GmxAccountModalView = typeof modalState === "string" ? modalState : "main";
 
   const slideModalLabel = isMainView(view) ? SLIDE_MODAL_LABELS[view] : SLIDE_MODAL_LABELS.main;
   const showMainViewInBackground = isOverlayView(view);
+  const isMainViewContent = view === "main" || showMainViewInBackground;
 
   const handleOverlayClose = (nextVisible: boolean) => {
     if (nextVisible) return;
+
+    if (view === "walletReceive" && isEmbeddedWallet) {
+      setModalState("walletReceiveOptions");
+      return;
+    }
+
+    if ((view === "walletReceive" || view === "walletReceiveOptions") && walletReceiveViewBackTo !== undefined) {
+      setModalState(walletReceiveViewBackTo);
+      return;
+    }
 
     if (view === "depositStatus") {
       userAnalytics.pushEvent<OneClickPromotionEvent>({
         event: "OneClickPromotion",
         data: { action: "UserRejected" },
       });
+      setModalState("transferHistory");
+      return;
     }
 
     setModalState("main");
@@ -85,16 +128,19 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
         label={slideModalLabel}
         isVisible={isOpen}
         setIsVisible={setModalState}
-        desktopContentClassName="!h-[640px] !w-[420px]"
+        desktopContentClassName={isMainViewContent ? "!w-[420px]" : "!h-[640px] !w-[420px]"}
         desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
         disableOverflowHandling={true}
         className="text-body-medium"
         contentPadding={false}
+        hideHeaderBorder
       >
         {(view === "main" || showMainViewInBackground) && <MainView account={account} />}
 
         {view === "availableToTradeAssets" && <AvailableToTradeAssetsView />}
-        {view === "transferDetails" && <TransferDetailsView />}
+        {(view === "transferHistory" || view === "transferDetails") && (
+          <TransferHistoryScreen showDetails={view === "transferDetails"} />
+        )}
       </SlideModal>
 
       {isOverlayView(view) && (
@@ -105,10 +151,11 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
           contentPadding={false}
           disableOverflowHandling={true}
           contentClassName={
-            view === "depositStatus"
+            view === "depositStatus" || view === "walletReceive" || view === "walletReceiveOptions"
               ? "!w-[420px] text-body-medium"
               : "!h-[640px] !w-[420px] !overflow-hidden text-body-medium"
           }
+          hideHeaderBorder
           zIndex={1002}
         >
           <div className="flex min-h-0 grow flex-col">

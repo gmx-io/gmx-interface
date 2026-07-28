@@ -138,6 +138,8 @@ export function SyntheticsPage(p: Props) {
     ListSection.Positions
   );
 
+  const [viewPositionKeyHistory, setViewPositionKeyHistory] = useState<string | undefined>();
+
   const tabsContentTabletRef = useRef<HTMLDivElement>(null);
 
   const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
@@ -202,6 +204,18 @@ export function SyntheticsPage(p: Props) {
     },
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
+
+  const handleViewPositionHistory = useCallback(
+    (positionKey: string) => {
+      setListSection(ListSection.Trades);
+      setViewPositionKeyHistory(positionKey);
+    },
+    [setListSection]
+  );
+
+  const handleViewPositionKeyHistoryConsumed = useCallback(() => {
+    setViewPositionKeyHistory(undefined);
+  }, []);
 
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
@@ -472,6 +486,7 @@ export function SyntheticsPage(p: Props) {
                 <ErrorBoundary id="SyntheticsPage-PositionList" variant="block">
                   <PositionList
                     onOrdersClick={handlePositionListOrdersClick}
+                    onViewPositionHistory={handleViewPositionHistory}
                     onSelectPositionClick={onSelectPositionClick}
                     onClosePositionClick={setClosingPositionKey}
                     openSettings={openSettings}
@@ -497,7 +512,11 @@ export function SyntheticsPage(p: Props) {
               )}
               {listSection === ListSection.Trades && (
                 <ErrorBoundary id="SyntheticsPage-TradeHistory" variant="block">
-                  <TradeHistory account={account} />
+                  <TradeHistory
+                    account={account}
+                    viewPositionKeyHistory={viewPositionKeyHistory}
+                    onViewPositionKeyHistoryConsumed={handleViewPositionKeyHistoryConsumed}
+                  />
                 </ErrorBoundary>
               )}
               {listSection === ListSection.Claims && (
@@ -563,6 +582,7 @@ export function SyntheticsPage(p: Props) {
               <ErrorBoundary id="SyntheticsPage-PositionList-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <PositionList
                   onOrdersClick={handlePositionListOrdersClick}
+                  onViewPositionHistory={handleViewPositionHistory}
                   onSelectPositionClick={onSelectPositionClick}
                   onClosePositionClick={setClosingPositionKey}
                   openSettings={openSettings}
@@ -588,7 +608,11 @@ export function SyntheticsPage(p: Props) {
             )}
             {listSection === ListSection.Trades && (
               <ErrorBoundary id="SyntheticsPage-TradeHistory-Mobile" variant="block" wrapperClassName="rounded-t-8">
-                <TradeHistory account={account} />
+                <TradeHistory
+                  account={account}
+                  viewPositionKeyHistory={viewPositionKeyHistory}
+                  onViewPositionKeyHistoryConsumed={handleViewPositionKeyHistoryConsumed}
+                />
               </ErrorBoundary>
             )}
             {listSection === ListSection.Claims && (

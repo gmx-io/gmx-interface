@@ -32,6 +32,7 @@ import {
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPositionOrderError,
+  selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
@@ -80,6 +81,7 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
@@ -110,6 +112,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -124,6 +127,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
+import { LiquidatableIncreaseWarningCard } from "../TradeBox/LiquidatableIncreaseWarningCard";
 
 import "./OrderEditor.scss";
 
@@ -154,6 +158,7 @@ export function OrderEditor(p: Props) {
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
+  const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
@@ -503,6 +508,26 @@ export function OrderEditor(p: Props) {
     expressParams,
     tokensData,
   ]);
+
+  const showLiquidationRiskWarning = useMemo(() => {
+    if (error || !positionOrder) {
+      return false;
+    }
+
+    const isIncreaseLimitOrStop =
+      isLimitIncreaseOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType);
+
+    if (!isIncreaseLimitOrStop) {
+      return false;
+    }
+
+    return getIsIncreaseResultingPositionLiquidatable({
+      currentLiqPrice: existingPosition?.liquidationPrice,
+      nextLiqPrice: nextPositionValuesForIncrease?.nextLiqPrice,
+      triggerPrice,
+      isLong: positionOrder.isLong,
+    });
+  }, [error, positionOrder, existingPosition, nextPositionValuesForIncrease, triggerPrice]);
 
   const onSubmit = useCallback(async () => {
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
@@ -1023,6 +1048,8 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
+          {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
+
           <ExpressTradingWarningCard
             expressParams={expressParams}
             payTokenAddress={undefined}
@@ -1030,6 +1057,12 @@ export function OrderEditor(p: Props) {
             isGmxAccount={srcChainId !== undefined}
             onAfterAction={p.onClose}
           />
+
+          {liqPriceWarning && (
+            <AlertInfoCard type="warning" hideClose>
+              {liqPriceWarning}
+            </AlertInfoCard>
+          )}
 
           {button}
         </div>

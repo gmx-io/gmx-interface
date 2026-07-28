@@ -11,11 +11,11 @@ import {
   selectChainId,
   selectGlvAndMarketsInfoData,
   selectMultichainMarketTokensBalancesIsLoading,
-  selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
+  UserEarningsData,
   getGlvDisplayName,
   getGlvOrMarketAddress,
   getMarketBadge,
@@ -26,7 +26,6 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
-import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { ProgressiveTokenData } from "domain/tokens";
 import { PRECISION_DECIMALS, bigintToNumber, formatPercentage } from "lib/numbers";
@@ -67,6 +66,11 @@ export function GmListItem({
   performance,
   performanceLoading,
   performanceSnapshots,
+  userEarnings = null,
+  isUserEarningsLoading = false,
+  isUserEarningsUnavailable = false,
+  isEstimated365dFeesLoading = false,
+  isEstimated365dFeesUnavailable = false,
 }: {
   token: ProgressiveTokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -81,12 +85,15 @@ export function GmListItem({
   performanceLoading: boolean;
   performance: PerformanceData | undefined;
   performanceSnapshots: PerformanceSnapshotsData | undefined;
+  userEarnings?: UserEarningsData | null;
+  isUserEarningsLoading?: boolean;
+  isUserEarningsUnavailable?: boolean;
+  isEstimated365dFeesLoading?: boolean;
+  isEstimated365dFeesUnavailable?: boolean;
 }) {
   const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
-  const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { showDebugValues } = useSettings();
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
@@ -217,10 +224,15 @@ export function GmListItem({
                 daysConsidered={daysConsidered}
                 earnedRecently={marketEarnings?.recent}
                 earnedTotal={marketEarnings?.total}
+                earnedExpected365d={marketEarnings?.expected365d}
                 isGlv={isGlv}
                 singleLine={true}
                 multichainBalances={multichainMarketTokenBalances}
                 isMultichainBalancesLoading={isMultichainBalancesLoading}
+                isUserEarningsLoading={isUserEarningsLoading}
+                isUserEarningsUnavailable={isUserEarningsUnavailable}
+                isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+                isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
               />
             }
           />
@@ -314,9 +326,14 @@ export function GmListItem({
           daysConsidered={daysConsidered}
           earnedRecently={marketEarnings?.recent}
           earnedTotal={marketEarnings?.total}
+          earnedExpected365d={marketEarnings?.expected365d}
           multichainBalances={multichainMarketTokenBalances}
           isGlv={isGlv}
           isMultichainBalancesLoading={isMultichainBalancesLoading}
+          isUserEarningsLoading={isUserEarningsLoading}
+          isUserEarningsUnavailable={isUserEarningsUnavailable}
+          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
         />
       </TableTdActionable>
 

@@ -8,7 +8,7 @@ import { getChainSlug, getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isDecreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { isDecreaseOrderType, isLiquidationOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import {
   isPositionTradeAction,
   PositionTradeAction,
@@ -16,6 +16,7 @@ import {
   TradeAction,
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
+import { useCloseSettlement } from "domain/synthetics/tradeHistory/useCloseSettlement";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -31,10 +32,12 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import FilterHistoryIcon from "img/ic_filter_history.svg?react";
 import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import ShareClosedPosition from "./ShareClosedPosition";
-import { formatPositionMessage } from "./utils/position";
+import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
@@ -45,6 +48,7 @@ type Props = {
   minCollateralUsd: bigint;
   shouldDisplayAccount?: boolean;
   showDebugValues?: boolean;
+  onSelectPositionLifecycle?: (tradeAction: PositionTradeAction) => void;
 };
 
 function LineSpan({ span }: { span: TooltipString }) {
@@ -104,7 +108,14 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
         }
 
         if ("key" in line && "value" in line) {
-          return <StatsTooltipRow key={i} label={line.key} value={<LineSpan span={line.value} />} showDollar={false} />;
+          return (
+            <StatsTooltipRow
+              key={i}
+              label={line.key}
+              value={Array.isArray(line.value) ? <LineSpans spans={line.value} /> : <LineSpan span={line.value} />}
+              showDollar={false}
+            />
+          );
         }
 
         return (
@@ -117,9 +128,61 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
   );
 }
 
+function getFullCloseCandidate(tradeAction: TradeAction): PositionTradeAction | undefined {
+  if (!isPositionTradeAction(tradeAction)) {
+    return undefined;
+  }
+
+  const isFullCloseCandidate =
+    tradeAction.eventName === TradeActionType.OrderExecuted &&
+    (isDecreaseOrderType(tradeAction.orderType) || isLiquidationOrderType(tradeAction.orderType)) &&
+    tradeAction.sizeDeltaUsd > 0n;
+
+  return isFullCloseCandidate ? tradeAction : undefined;
+}
+
+function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeAction; feesLines: TooltipContent }) {
+  const chainId = useSelector(selectChainId);
+
+  const fullCloseCandidate = getFullCloseCandidate(tradeAction);
+
+  const { settlement, isLoading } = useCloseSettlement(chainId, fullCloseCandidate);
+
+  const content = useMemo(() => {
+    if (!fullCloseCandidate || !settlement?.isFullClose || !settlement.closeChange) {
+      return feesLines;
+    }
+
+    const settlementLines = getSettlementTooltipLines(fullCloseCandidate, settlement.closeChange, settlement.openChange);
+
+    if (feesLines.length === 0) {
+      return settlementLines[0] === "" ? settlementLines.slice(1) : settlementLines;
+    }
+
+    return [...feesLines, ...settlementLines];
+  }, [feesLines, fullCloseCandidate, settlement]);
+
+  return (
+    <>
+      <TooltipContentComponent content={content} />
+      {isLoading ? (
+        <div className="mt-8">
+          <SpinnerIcon className="size-12 animate-spin" />
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 const PRICE_TOOLTIP_WIDTH = 400;
 
-export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAccount, showDebugValues }: Props) {
+export function TradeHistoryRow({
+  minCollateralUsd,
+  tradeAction,
+  shouldDisplayAccount,
+  showDebugValues,
+  onSelectPositionLifecycle,
+}: Props) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const marketsInfoData = useMarketsInfoData();
@@ -169,14 +232,19 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     [msg.priceComment]
   );
 
+  const renderSizeContent = useCallback(
+    () => <TooltipContentComponent content={msg.sizeComment ?? EMPTY_ARRAY} />,
+    [msg.sizeComment]
+  );
+
   const renderActionTooltipContent = useCallback(
     () => <TooltipContentComponent content={msg.actionComment!} />,
     [msg.actionComment]
   );
 
   const renderFeesTooltipContent = useCallback(
-    () => <TooltipContentComponent content={msg.feesTooltip ?? EMPTY_ARRAY} />,
-    [msg.feesTooltip]
+    () => <FeesTooltipContent tradeAction={tradeAction} feesLines={msg.feesTooltip ?? EMPTY_ARRAY} />,
+    [msg.feesTooltip, tradeAction]
   );
 
   const marketTooltipHandle = useMemo(
@@ -211,6 +279,19 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     isDecreaseOrderType(tradeAction.orderType) &&
     tradeAction.eventName === TradeActionType.OrderExecuted &&
     account === tradeAction.account;
+
+  const isFullCloseSettlementCandidate = getFullCloseCandidate(tradeAction) !== undefined;
+
+  const shouldDisplayPositionLifecycleButton =
+    isPositionTradeAction(tradeAction) &&
+    Boolean(tradeAction.positionLifecycleId) &&
+    Boolean(onSelectPositionLifecycle);
+
+  const handleSelectPositionLifecycleClick = useCallback(() => {
+    if (isPositionTradeAction(tradeAction)) {
+      onSelectPositionLifecycle?.(tradeAction);
+    }
+  }, [onSelectPositionLifecycle, tradeAction]);
 
   return (
     <>
@@ -283,17 +364,23 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           />
         </TableTd>
         <TableTd>
-          <span className="numbers">
-            {msg.swapFromTokenSymbol ? (
+          {msg.swapFromTokenSymbol ? (
+            <span className="numbers">
               <Trans>
                 {msg.swapFromTokenAmount} <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} />
                 <span> to </span>
                 {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} />
               </Trans>
-            ) : (
-              msg.size
-            )}
-          </span>
+            </span>
+          ) : msg.sizeComment ? (
+            <TooltipWithPortal
+              variant="none"
+              handle={<span className="numbers">{msg.size}</span>}
+              renderContent={renderSizeContent}
+            />
+          ) : (
+            <span className="numbers">{msg.size}</span>
+          )}
         </TableTd>
         <TableTd>
           {msg.priceComment ? (
@@ -338,24 +425,55 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </TableTd>
         <TableTd>
-          {!msg.fees ? (
-            <span className="text-typography-secondary">-</span>
-          ) : msg.feesTooltip && msg.feesTooltip.length > 0 ? (
+          {(msg.feesTooltip && msg.feesTooltip.length > 0) || isFullCloseSettlementCandidate ? (
             <TooltipWithPortal
-              handle={<span className="numbers">{msg.fees}</span>}
+              handle={
+                msg.fees ? (
+                  <span className="numbers">{msg.fees}</span>
+                ) : (
+                  <span className="text-typography-secondary">-</span>
+                )
+              }
               renderContent={renderFeesTooltipContent}
             />
+          ) : !msg.fees ? (
+            <span className="text-typography-secondary">-</span>
           ) : (
             <span className="numbers">{msg.fees}</span>
           )}
         </TableTd>
         <TableTd>
-          {shouldDisplayShareButton ? (
-            <Button variant="ghost" onClick={handleShareClick}>
-              <NewLinkIconThin className="size-16" />
-              <Trans>Share</Trans>
-            </Button>
-          ) : null}
+          <div className="flex items-center justify-end gap-4">
+            {shouldDisplayShareButton ? (
+              <Button variant="ghost" onClick={handleShareClick}>
+                <NewLinkIconThin className="size-16" />
+                <Trans>Share</Trans>
+              </Button>
+            ) : null}
+            {shouldDisplayPositionLifecycleButton ? (
+              <TooltipWithPortal
+                variant="none"
+                position="bottom-end"
+                shouldPreventDefault={false}
+                handle={
+                  <Button
+                    variant="ghost"
+                    onClick={handleSelectPositionLifecycleClick}
+                    className="!min-h-28 !px-8 !py-6"
+                    aria-label={t`View position history`}
+                  >
+                    <FilterHistoryIcon className="size-14" />
+                  </Button>
+                }
+                content={<Trans>View position history</Trans>}
+              />
+            ) : (
+              // Reserve the button's space so the Share button and layout don't shift between rows/states.
+              <Button variant="ghost" className="invisible !min-h-28 !px-8 !py-6">
+                <FilterHistoryIcon className="size-14" />
+              </Button>
+            )}
+          </div>
         </TableTd>
       </TableTr>
       {isPositionTradeAction(tradeAction) ? (
