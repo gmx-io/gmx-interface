@@ -7,8 +7,13 @@ import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localSt
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
-import { removeSubaccountExpressTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
+import {
+  getIsSubaccountRemovalRequired,
+  removeSubaccountExpressTxn,
+  removeSubaccountWalletTxn,
+} from "domain/synthetics/subaccount";
 import type { SignedSubaccountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount";
+import { SubaccountRemovalResultUnknownError } from "domain/synthetics/subaccount/errors";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import {
   deserializeSubaccountApproval,
@@ -55,11 +60,15 @@ export enum SubaccountDeactivationState {
   Success = 2,
 }
 
+const COMPLETED_DEACTIVATION_DISMISS_DELAY = 5000;
+const FAILED_DEACTIVATION_DISMISS_DELAY = 15000;
+
 export enum SubaccountDeactivationFailureReason {
   Rejected = "rejected",
   InsufficientGasPaymentTokenBalance = "insufficientGasPaymentTokenBalance",
   InsufficientNativeTokenBalance = "insufficientNativeTokenBalance",
   ExpressParamsNotReady = "expressParamsNotReady",
+  ResultUnknown = "resultUnknown",
   Unknown = "unknown",
 }
 
@@ -69,6 +78,10 @@ function getSubaccountDeactivationFailureReason(
 ): SubaccountDeactivationFailureReason {
   if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
     return SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance;
+  }
+
+  if (error instanceof SubaccountRemovalResultUnknownError) {
+    return SubaccountDeactivationFailureReason.ResultUnknown;
   }
 
   const errorData = parseError(error as ErrorLike);
@@ -361,6 +374,15 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     setSubaccountDeactivationState(SubaccountDeactivationState.Deactivating);
 
     try {
+      if (!(await getIsSubaccountRemovalRequired({ chainId, provider, signer, subaccount, account }))) {
+        setSubaccountDeactivationState(SubaccountDeactivationState.Success);
+
+        resetStoredApproval();
+        resetStoredConfig();
+        refreshSubaccountData();
+        return true;
+      }
+
       if (srcChainId !== undefined) {
         const globalExpressParams = calcSelector(selectExpressGlobalParams);
 
@@ -382,10 +404,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           signer,
           subaccount,
           globalExpressParams,
-          cachedOnchainActive: subaccount.onchainData.active,
         });
       } else {
-        await removeSubaccountWalletTxn(chainId, signer, subaccount.address, subaccount.onchainData.active);
+        await removeSubaccountWalletTxn(chainId, signer, subaccount.address);
       }
 
       setSubaccountDeactivationState(SubaccountDeactivationState.Success);
@@ -398,7 +419,14 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       // eslint-disable-next-line no-console
       console.error(error);
       metrics.pushError(error, "subaccount.tryDisableSubaccount");
-      setSubaccountDeactivationFailureReason(getSubaccountDeactivationFailureReason(error, srcChainId !== undefined));
+
+      const failureReason = getSubaccountDeactivationFailureReason(error, srcChainId !== undefined);
+
+      if (failureReason === SubaccountDeactivationFailureReason.ResultUnknown) {
+        refreshSubaccountData();
+      }
+
+      setSubaccountDeactivationFailureReason(failureReason);
       setSubaccountDeactivationState(SubaccountDeactivationState.Error);
       return false;
     }
@@ -576,6 +604,9 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
       case SubaccountDeactivationFailureReason.ExpressParamsNotReady:
         text = t`Express transaction data is still loading. Please retry in a few seconds.`;
         break;
+      case SubaccountDeactivationFailureReason.ResultUnknown:
+        text = t`The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation.`;
+        break;
       default:
         text = t`An unexpected error occurred. Please retry.`;
         break;
@@ -593,10 +624,13 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
   useEffect(
     function cleanup() {
       if (isCompleted && !dismissTimerId.current) {
-        dismissTimerId.current = setTimeout(() => {
-          toast.dismiss(toastId);
-          dismissTimerId.current = undefined;
-        }, 5000);
+        dismissTimerId.current = setTimeout(
+          () => {
+            toast.dismiss(toastId);
+            dismissTimerId.current = undefined;
+          },
+          hasError ? FAILED_DEACTIVATION_DISMISS_DELAY : COMPLETED_DEACTIVATION_DISMISS_DELAY
+        );
       }
 
       return () => {
@@ -605,7 +639,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
         }
       };
     },
-    [isCompleted, subaccountDeactivationState, toastId]
+    [hasError, isCompleted, subaccountDeactivationState, toastId]
   );
 
   return (
@@ -621,6 +655,9 @@ function useStoredSubaccountData(
   srcChainId: SourceChainId | undefined,
   account: string | undefined
 ) {
+  // Deliberately during render, not in an effect: the approval slot below is read by
+  // useLocalStorageSerializeKey in its state initializer, so the legacy slot has to be
+  // moved before that read happens. The migration is idempotent, so a repeated render is safe.
   useMemo(() => migrateLegacySubaccountApprovalSlot(chainId, account), [chainId, account]);
 
   const [storageRevision, bumpStorageRevision] = useReducer((revision: number) => revision + 1, 0);
@@ -678,6 +715,8 @@ function useStoredSubaccountData(
 
       return findFallbackSubaccountApproval(chainId, account, subaccountConfig.address);
     },
+    // The other context slots are written and cleared through plain localStorage calls, which
+    // no state subscribes to — storageRevision is bumped there to re-run this read.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [account, chainId, storedSignedApproval, subaccountConfig?.address, storageRevision]
   );

@@ -27,6 +27,7 @@ export function deserializeSubaccountApproval(stored: string): SignedSubaccountA
       expiresAt: BigInt(parsed.expiresAt),
       deadline: BigInt(parsed.deadline),
       nonce: BigInt(parsed.nonce),
+      desChainId: BigInt(parsed.desChainId),
     };
   } catch (e) {
     return undefined;
@@ -98,6 +99,10 @@ export function migrateLegacySubaccountApprovalSlot(chainId: ContractsChainId, a
 
   if (!existingContextApproval) {
     writeStoredSubaccountApproval(chainId, account, legacyApproval);
+
+    if (!readStoredSubaccountApproval(chainId, account, contextSrcChainId)) {
+      return;
+    }
   }
 
   const legacyKey = getSubaccountApprovalKey(chainId, account, undefined);

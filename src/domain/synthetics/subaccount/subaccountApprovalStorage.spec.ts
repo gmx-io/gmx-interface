@@ -1,5 +1,5 @@
 import { zeroHash } from "viem";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, SOURCE_BASE_MAINNET, SOURCE_BSC_MAINNET } from "config/chains";
 import { getSubaccountApprovalKey } from "config/localStorage";
@@ -17,6 +17,23 @@ import {
   serializeSubaccountApproval,
   writeStoredSubaccountApproval,
 } from "./subaccountApprovalStorage";
+
+vi.mock("lib/localStorage", async (importOriginal) => {
+  const original = await importOriginal<typeof import("lib/localStorage")>();
+
+  return {
+    ...original,
+    writeLocalStorageItem: (...args: Parameters<typeof original.writeLocalStorageItem>) => {
+      if (storageState.isWriteSwallowed) {
+        return;
+      }
+
+      original.writeLocalStorageItem(...args);
+    },
+  };
+});
+
+const { storageState } = vi.hoisted(() => ({ storageState: { isWriteSwallowed: false } }));
 
 const ACCOUNT = "0x000000000000000000000000000000000000AaaA";
 const SUBACCOUNT_ADDRESS = "0x0000000000000000000000000000000000000001";
@@ -70,6 +87,7 @@ function writeLegacySlot(approval: SignedSubaccountApproval) {
 
 beforeEach(() => {
   localStorage.clear();
+  storageState.isWriteSwallowed = false;
 });
 
 describe("serializeSubaccountApproval / deserializeSubaccountApproval", () => {
@@ -87,7 +105,12 @@ describe("serializeSubaccountApproval / deserializeSubaccountApproval", () => {
       expiresAt: approval.expiresAt,
       deadline: approval.deadline,
       nonce: approval.nonce,
+      desChainId: approval.desChainId,
     });
+
+    for (const field of ["maxAllowedCount", "expiresAt", "deadline", "nonce", "desChainId"] as const) {
+      expect(typeof restored?.[field], field).toBe("bigint");
+    }
   });
 
   it("deserializes an empty or broken value as undefined", () => {
@@ -171,6 +194,17 @@ describe("migrateLegacySubaccountApprovalSlot", () => {
     migrateLegacySubaccountApprovalSlot(ARBITRUM, ACCOUNT);
 
     expect(readStoredSubaccountApproval(ARBITRUM, ACCOUNT, undefined)).toBe(undefined);
+  });
+
+  it("keeps the legacy slot when the write to the context slot is lost", () => {
+    writeLegacySlot(createSourceContextApproval(SOURCE_BASE_MAINNET));
+
+    storageState.isWriteSwallowed = true;
+
+    migrateLegacySubaccountApprovalSlot(ARBITRUM, ACCOUNT);
+
+    expect(readStoredSubaccountApproval(ARBITRUM, ACCOUNT, undefined)?.signatureChainId).toBe(SOURCE_BASE_MAINNET);
+    expect(readStoredSubaccountApproval(ARBITRUM, ACCOUNT, SOURCE_BASE_MAINNET)).toBe(undefined);
   });
 });
 

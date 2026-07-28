@@ -9282,6 +9282,10 @@ msgstr "Rebates"
 msgid "Events for account:"
 msgstr "Events for account:"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
+msgstr "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr "Short funding rate"

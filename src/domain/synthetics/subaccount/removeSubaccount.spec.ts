@@ -2,8 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
+import { SubaccountRemovalResultUnknownError } from "./errors";
 import {
   getIsSubaccountActiveOnchain,
+  getIsSubaccountRemovalRequired,
   removeSubaccountExpressTxn,
   removeSubaccountWalletTxn,
 } from "./removeSubaccount";
@@ -85,6 +87,10 @@ function makeSigner(provider: any) {
 
 const subaccount = { address: SUBACCOUNT_ADDRESS } as any;
 
+function makeSubaccount(onchainActive: boolean) {
+  return { address: SUBACCOUNT_ADDRESS, onchainData: { active: onchainActive } } as any;
+}
+
 const globalExpressParams = {
   gasPaymentToken: { gmxAccountBalance: 0n, walletBalance: 0n },
 } as any;
@@ -122,47 +128,98 @@ describe("removeSubaccountWalletTxn", () => {
     vi.clearAllMocks();
   });
 
-  it("skips the wallet transaction when both the fresh read and the cached data say the subaccount is not registered on-chain", async () => {
-    const signer = makeSigner(makeProvider(ENCODED_FALSE));
-
-    await removeSubaccountWalletTxn(CHAIN_ID, signer, SUBACCOUNT_ADDRESS, false);
-
-    expect(mocks.callContract).not.toHaveBeenCalled();
-  });
-
-  it("sends the wallet transaction when the fresh read disagrees with the cached active state (lagging node)", async () => {
-    const signer = makeSigner(makeProvider(ENCODED_FALSE));
-
-    await removeSubaccountWalletTxn(CHAIN_ID, signer, SUBACCOUNT_ADDRESS, true);
-
-    expect(mocks.callContract).toHaveBeenCalledTimes(1);
-  });
-
-  it("sends the wallet transaction when the cached active state is unavailable", async () => {
-    const signer = makeSigner(makeProvider(ENCODED_FALSE));
-
-    await removeSubaccountWalletTxn(CHAIN_ID, signer, SUBACCOUNT_ADDRESS, undefined);
-
-    expect(mocks.callContract).toHaveBeenCalledTimes(1);
-  });
-
-  it("sends and awaits the wallet transaction when the subaccount is registered on-chain", async () => {
+  it("sends and awaits the wallet transaction", async () => {
     const wait = vi.fn(async () => ({}));
     mocks.callContract.mockResolvedValue({ wait });
     const signer = makeSigner(makeProvider(ENCODED_TRUE));
 
-    await removeSubaccountWalletTxn(CHAIN_ID, signer, SUBACCOUNT_ADDRESS, true);
+    await removeSubaccountWalletTxn(CHAIN_ID, signer, SUBACCOUNT_ADDRESS);
 
     expect(mocks.callContract).toHaveBeenCalledTimes(1);
     expect(wait).toHaveBeenCalledTimes(1);
   });
 
-  it("sends the wallet transaction when the on-chain activity check is unavailable", async () => {
-    const signer = makeSigner(makeProvider(new Error("rpc error")));
+  it("does not re-check the on-chain state — whether a removal is due is decided by the caller", async () => {
+    const provider = makeProvider(ENCODED_FALSE);
 
-    await removeSubaccountWalletTxn(CHAIN_ID, signer, SUBACCOUNT_ADDRESS, false);
+    await removeSubaccountWalletTxn(CHAIN_ID, makeSigner(provider), SUBACCOUNT_ADDRESS);
 
+    expect(provider.call).not.toHaveBeenCalled();
     expect(mocks.callContract).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("getIsSubaccountRemovalRequired", () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("keeps the removal without an on-chain read when the cached data says the subaccount is registered", async () => {
+    const provider = makeProvider(ENCODED_FALSE);
+
+    await expect(
+      getIsSubaccountRemovalRequired({
+        chainId: CHAIN_ID,
+        provider,
+        signer: makeSigner(undefined),
+        subaccount: makeSubaccount(true),
+        account: ACCOUNT,
+      })
+    ).resolves.toBe(true);
+
+    expect(provider.call).not.toHaveBeenCalled();
+  });
+
+  it("needs no transaction when One-Click is only enabled by a local approval", async () => {
+    await expect(
+      getIsSubaccountRemovalRequired({
+        chainId: CHAIN_ID,
+        provider: makeProvider(ENCODED_FALSE),
+        signer: makeSigner(undefined),
+        subaccount: makeSubaccount(false),
+        account: ACCOUNT,
+      })
+    ).resolves.toBe(false);
+  });
+
+  it("keeps the removal when the on-chain read is unavailable", async () => {
+    await expect(
+      getIsSubaccountRemovalRequired({
+        chainId: CHAIN_ID,
+        provider: makeProvider(new Error("rpc error")),
+        signer: makeSigner(undefined),
+        subaccount: makeSubaccount(false),
+        account: ACCOUNT,
+      })
+    ).resolves.toBe(true);
+  });
+
+  it("falls back to the signer provider when no provider is given", async () => {
+    const signerProvider = makeProvider(ENCODED_FALSE);
+
+    await expect(
+      getIsSubaccountRemovalRequired({
+        chainId: CHAIN_ID,
+        provider: undefined,
+        signer: makeSigner(signerProvider),
+        subaccount: makeSubaccount(false),
+        account: ACCOUNT,
+      })
+    ).resolves.toBe(false);
+
+    expect(signerProvider.call).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the removal when there is no provider to read with", async () => {
+    await expect(
+      getIsSubaccountRemovalRequired({
+        chainId: CHAIN_ID,
+        provider: undefined,
+        signer: makeSigner(undefined),
+        subaccount: makeSubaccount(false),
+        account: ACCOUNT,
+      })
+    ).resolves.toBe(true);
   });
 });
 
@@ -217,35 +274,20 @@ describe("removeSubaccountExpressTxn", () => {
     vi.clearAllMocks();
   });
 
-  it("skips the relay transaction when both the fresh read and the cached data say the subaccount is not registered on-chain", async () => {
+  it("does not re-check the on-chain state — whether a removal is due is decided by the caller", async () => {
+    const provider = makeProvider(ENCODED_FALSE);
+
     await removeSubaccountExpressTxn({
       chainId: CHAIN_ID,
-      provider: makeProvider(ENCODED_FALSE),
+      provider,
       account: ACCOUNT,
       srcChainId: SRC_CHAIN_ID,
       signer: makeSigner(undefined),
       subaccount,
       globalExpressParams,
-      cachedOnchainActive: false,
     });
 
-    expect(mocks.getRawBaseRelayerParams).not.toHaveBeenCalled();
-    expect(mocks.signTypedData).not.toHaveBeenCalled();
-    expect(mocks.sendExpressTransaction).not.toHaveBeenCalled();
-  });
-
-  it("sends the relay transaction when the fresh read disagrees with the cached active state (lagging node)", async () => {
-    await removeSubaccountExpressTxn({
-      chainId: CHAIN_ID,
-      provider: makeProvider(ENCODED_FALSE),
-      account: ACCOUNT,
-      srcChainId: SRC_CHAIN_ID,
-      signer: makeSigner(undefined),
-      subaccount,
-      globalExpressParams,
-      cachedOnchainActive: true,
-    });
-
+    expect(provider.call).not.toHaveBeenCalled();
     expect(mocks.getRawBaseRelayerParams).toHaveBeenCalledTimes(1);
     expect(mocks.sendExpressTransaction).toHaveBeenCalledTimes(1);
   });
@@ -262,7 +304,6 @@ describe("removeSubaccountExpressTxn", () => {
         signer: makeSigner(undefined),
         subaccount,
         globalExpressParams,
-        cachedOnchainActive: true,
       })
     ).rejects.toBeInstanceOf(ExpressEstimationInsufficientGasPaymentTokenBalanceError);
 
@@ -282,12 +323,35 @@ describe("removeSubaccountExpressTxn", () => {
       signer: makeSigner(undefined),
       subaccount,
       globalExpressParams,
-      cachedOnchainActive: true,
     });
 
     expect(mocks.signTypedData).toHaveBeenCalledTimes(1);
     expect(mocks.sendExpressTransaction).toHaveBeenCalledTimes(1);
     expect(wait).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports an unknown result when the relay outcome cannot be read back", async () => {
+    const waitError = new Error("Timeout waiting for terminal status for task-1");
+    mocks.sendExpressTransaction.mockResolvedValue({
+      taskId: "task-1",
+      wait: vi.fn(async () => {
+        throw waitError;
+      }),
+    });
+
+    const rejection = await removeSubaccountExpressTxn({
+      chainId: CHAIN_ID,
+      provider: makeProvider(ENCODED_TRUE),
+      account: ACCOUNT,
+      srcChainId: SRC_CHAIN_ID,
+      signer: makeSigner(undefined),
+      subaccount,
+      globalExpressParams,
+    }).catch((error) => error);
+
+    expect(rejection).toBeInstanceOf(SubaccountRemovalResultUnknownError);
+    expect(rejection.taskId).toBe("task-1");
+    expect(rejection.reason).toBe(waitError);
   });
 
   it("throws when the relayed transaction reverted so the local state is not reset", async () => {
@@ -305,7 +369,6 @@ describe("removeSubaccountExpressTxn", () => {
         signer: makeSigner(undefined),
         subaccount,
         globalExpressParams,
-        cachedOnchainActive: true,
       })
     ).rejects.toThrow("Remove subaccount transaction failed: execution reverted");
   });

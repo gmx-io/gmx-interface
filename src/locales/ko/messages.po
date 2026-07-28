@@ -1888,7 +1888,7 @@ msgstr "크기 (포지션의 %)"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "The signature request was rejected in your wallet. Retry and confirm the request to deactivate."
-msgstr ""
+msgstr "지갑에서 서명 요청이 거부되었습니다. 다시 시도한 후 요청을 승인하여 비활성화하세요."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "100+ crypto tokens"
@@ -2450,7 +2450,7 @@ msgstr "그룹화"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
-msgstr ""
+msgstr "네트워크 수수료를 지불할 Gas 결제 토큰 잔액이 GMX Account에 부족합니다. 자금을 입금한 후 다시 시도하세요."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
@@ -6012,7 +6012,7 @@ msgstr "누적 스테이킹 보상"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
-msgstr ""
+msgstr "One-Click Trading을 사용하려면 현재 네트워크에 대한 일회성 서명이 필요합니다. 다른 네트워크에서 서명한 승인은 영향을 받지 않습니다. 여기에서 One-Click Trading을 활성화하려면 재서명하세요."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
@@ -8717,7 +8717,7 @@ msgstr "상위 포지션"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
-msgstr ""
+msgstr "네트워크 수수료를 지불할 {nativeTokenSymbol} 잔액이 부족합니다. 자금을 추가한 후 다시 시도하세요."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -9282,6 +9282,10 @@ msgstr "리베이트"
 msgid "Events for account:"
 msgstr "계정 이벤트:"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
+msgstr "요청은 전송되었지만 결과를 확인할 수 없습니다. 이미 처리되었을 수 있습니다. 다시 시도하면 상태를 확인하고 비활성화를 완료합니다."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
@@ -9587,7 +9591,7 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "An unexpected error occurred. Please retry."
-msgstr ""
+msgstr "예기치 않은 오류가 발생했습니다. 다시 시도해 주세요."
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
@@ -10336,7 +10340,7 @@ msgstr "유효하지 않은 수신자 주소"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
-msgstr ""
+msgstr "Express 거래 데이터를 아직 불러오는 중입니다. 몇 초 후에 다시 시도해 주세요."
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

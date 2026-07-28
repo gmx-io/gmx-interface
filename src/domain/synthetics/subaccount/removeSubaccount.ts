@@ -21,6 +21,7 @@ import {
   ExpressEstimationInsufficientGasPaymentTokenBalanceError,
   getIsConfirmedOutOfGasPaymentTokenBalance,
 } from "sdk/utils/express";
+import type { Subaccount } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import {
@@ -31,24 +32,14 @@ import {
   hashRelayParams,
   RelayParamsPayload,
 } from "../express";
+import { SubaccountRemovalResultUnknownError } from "./errors";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
-import { Subaccount } from "../subaccount";
 
 export async function removeSubaccountWalletTxn(
   chainId: ContractsChainId,
   signer: Signer,
-  subaccountAddress: string,
-  cachedOnchainActive?: boolean
+  subaccountAddress: string
 ): Promise<void> {
-  const account = await signer.getAddress();
-  const freshOnchainActive = signer.provider
-    ? await getIsSubaccountActiveOnchain({ chainId, provider: signer.provider, account, subaccountAddress })
-    : undefined;
-
-  if (freshOnchainActive === false && cachedOnchainActive === false) {
-    return;
-  }
-
   const subaccountRouter = new ethers.Contract(getContract(chainId, "SubaccountRouter"), SubaccountRouterAbi, signer);
 
   const res = await callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
@@ -98,6 +89,39 @@ export async function getIsSubaccountActiveOnchain({
     console.error(error);
     return undefined;
   }
+}
+
+export async function getIsSubaccountRemovalRequired({
+  chainId,
+  provider,
+  signer,
+  subaccount,
+  account,
+}: {
+  chainId: ContractsChainId;
+  provider: Provider | undefined;
+  signer: Signer;
+  subaccount: Subaccount;
+  account: string;
+}): Promise<boolean> {
+  if (subaccount.onchainData.active) {
+    return true;
+  }
+
+  const readProvider = provider ?? signer.provider;
+
+  if (!readProvider) {
+    return true;
+  }
+
+  const freshOnchainActive = await getIsSubaccountActiveOnchain({
+    chainId,
+    provider: readProvider,
+    account,
+    subaccountAddress: subaccount.address,
+  });
+
+  return freshOnchainActive !== false;
 }
 
 async function buildAndSignRemoveSubaccountTxn({
@@ -208,7 +232,6 @@ export async function removeSubaccountExpressTxn({
   signer,
   subaccount,
   globalExpressParams,
-  cachedOnchainActive,
 }: {
   chainId: ContractsChainId;
   provider: Provider;
@@ -217,21 +240,9 @@ export async function removeSubaccountExpressTxn({
   signer: WalletSigner;
   subaccount: Subaccount;
   globalExpressParams: GlobalExpressParams;
-  cachedOnchainActive?: boolean;
 }) {
   if (!provider || !account) {
     throw new Error("No provider or account");
-  }
-
-  const freshOnchainActive = await getIsSubaccountActiveOnchain({
-    chainId,
-    provider,
-    account,
-    subaccountAddress: subaccount.address,
-  });
-
-  if (freshOnchainActive === false && cachedOnchainActive === false) {
-    return;
   }
 
   const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = getRawBaseRelayerParams({
@@ -327,7 +338,13 @@ export async function removeSubaccountExpressTxn({
     txnData,
   });
 
-  const receipt = await txnResult.wait();
+  let receipt: Awaited<ReturnType<typeof txnResult.wait>>;
+
+  try {
+    receipt = await txnResult.wait();
+  } catch (error) {
+    throw new SubaccountRemovalResultUnknownError(txnResult.taskId, error);
+  }
 
   if (receipt.status === "failed") {
     throw new Error(`Remove subaccount transaction failed: ${receipt.relayStatus?.message ?? "reverted"}`);

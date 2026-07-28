@@ -1888,7 +1888,7 @@ msgstr "Tamaño (% de la posición)"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "The signature request was rejected in your wallet. Retry and confirm the request to deactivate."
-msgstr ""
+msgstr "La solicitud de firma fue rechazada en su monedero. Vuelva a intentarlo y confirme la solicitud para desactivar."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "100+ crypto tokens"
@@ -2450,7 +2450,7 @@ msgstr "Agrupación"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
-msgstr ""
+msgstr "Saldo insuficiente del token de pago de Gas en su GMX Account para cubrir las comisiones de red. Deposite fondos e inténtelo de nuevo."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
@@ -6012,7 +6012,7 @@ msgstr "Recompensas de staking acumuladas"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
-msgstr ""
+msgstr "One-Click Trading necesita una firma única para la red actual. Las aprobaciones firmadas para otras redes no se ven afectadas. Vuelva a firmar para activar One-Click Trading aquí."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
@@ -8717,7 +8717,7 @@ msgstr "Principales posiciones"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
-msgstr ""
+msgstr "Saldo de {nativeTokenSymbol} insuficiente para cubrir las comisiones de red. Añada fondos e inténtelo de nuevo."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -9282,6 +9282,10 @@ msgstr "Reembolsos"
 msgid "Events for account:"
 msgstr "Eventos de la cuenta:"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
+msgstr "La solicitud se envió, pero no se pudo confirmar su resultado. Es posible que se haya completado: vuelva a intentarlo para comprobar y finalizar la desactivación."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
@@ -9587,7 +9591,7 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "An unexpected error occurred. Please retry."
-msgstr ""
+msgstr "Se ha producido un error inesperado. Inténtelo de nuevo."
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
@@ -10336,7 +10340,7 @@ msgstr "Dirección del destinatario no válida"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
-msgstr ""
+msgstr "Los datos de la transacción Express aún se están cargando. Inténtelo de nuevo en unos segundos."
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

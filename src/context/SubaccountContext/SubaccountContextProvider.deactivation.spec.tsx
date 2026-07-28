@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import "lib/monkeyPatching";
 import { getSubaccountConfigKey } from "config/localStorage";
+import { SubaccountRemovalResultUnknownError } from "domain/synthetics/subaccount/errors";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
 import {
@@ -15,6 +16,7 @@ import type { SubaccountState } from "./SubaccountContextProvider";
 
 const { mocks, chainState, ACCOUNT, CHAIN_ID, SRC_CHAIN_ID, SUBACCOUNT_ADDRESS } = vi.hoisted(() => ({
   mocks: {
+    getIsSubaccountRemovalRequired: vi.fn(),
     removeSubaccountExpressTxn: vi.fn(),
     removeSubaccountWalletTxn: vi.fn(),
     selectExpressGlobalParams: vi.fn(),
@@ -43,6 +45,7 @@ vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
 
 vi.mock("domain/synthetics/subaccount", async (importOriginal) => ({
   ...(await importOriginal<object>()),
+  getIsSubaccountRemovalRequired: mocks.getIsSubaccountRemovalRequired,
   removeSubaccountExpressTxn: mocks.removeSubaccountExpressTxn,
   removeSubaccountWalletTxn: mocks.removeSubaccountWalletTxn,
 }));
@@ -158,6 +161,7 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
   beforeEach(() => {
     chainState.chainId = CHAIN_ID;
     chainState.srcChainId = undefined;
+    mocks.getIsSubaccountRemovalRequired.mockResolvedValue(true);
     mocks.selectExpressGlobalParams.mockReturnValue(globalExpressParams);
     seedStoredSubaccount();
   });
@@ -232,9 +236,38 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     });
 
     expect(result).toBe(true);
-    expect(mocks.removeSubaccountWalletTxn).toHaveBeenCalledWith(CHAIN_ID, expect.anything(), SUBACCOUNT_ADDRESS, true);
+    expect(mocks.removeSubaccountWalletTxn).toHaveBeenCalledWith(CHAIN_ID, expect.anything(), SUBACCOUNT_ADDRESS);
     expect(getIsSubaccountStoredLocally()).toBe(false);
     expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Success);
+  });
+
+  it("drops the local state without a transaction when there is nothing to remove on-chain, even while the express params are not ready (multichain)", async () => {
+    chainState.srcChainId = SRC_CHAIN_ID;
+    mocks.selectExpressGlobalParams.mockReturnValue(undefined);
+    mocks.getIsSubaccountRemovalRequired.mockResolvedValue(false);
+
+    const context = setup();
+
+    let result: boolean | undefined;
+    await act(async () => {
+      result = await context.current.tryDisableSubaccount();
+    });
+
+    expect(result).toBe(true);
+    expect(mocks.getIsSubaccountRemovalRequired).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chainId: CHAIN_ID,
+        account: ACCOUNT,
+        subaccount: expect.objectContaining({ address: SUBACCOUNT_ADDRESS }),
+      })
+    );
+    expect(mocks.removeSubaccountExpressTxn).not.toHaveBeenCalled();
+    expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
+    expect(getIsSubaccountStoredLocally()).toBe(false);
+    expect(context.current.subaccount).toBeUndefined();
+    expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Success);
+    expect(context.current.subaccountDeactivationFailureReason).toBeUndefined();
+    expect(mocks.refreshSubaccountData).toHaveBeenCalled();
   });
 
   it("fails with an error state instead of hanging in the deactivating state when express params are not ready (multichain)", async () => {
@@ -254,6 +287,26 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     expect(context.current.subaccountDeactivationFailureReason).toBe(
       SubaccountDeactivationFailureReason.ExpressParamsNotReady
     );
+    expect(getIsSubaccountStoredLocally()).toBe(true);
+  });
+
+  it("keeps the local state and asks for a retry when the relay result could not be confirmed (multichain)", async () => {
+    chainState.srcChainId = SRC_CHAIN_ID;
+    mocks.removeSubaccountExpressTxn.mockRejectedValueOnce(
+      new SubaccountRemovalResultUnknownError("task-1", new Error("Timeout waiting for terminal status"))
+    );
+
+    const context = setup();
+
+    let result: boolean | undefined;
+    await act(async () => {
+      result = await context.current.tryDisableSubaccount();
+    });
+
+    expect(result).toBe(false);
+    expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Error);
+    expect(context.current.subaccountDeactivationFailureReason).toBe(SubaccountDeactivationFailureReason.ResultUnknown);
+    expect(mocks.refreshSubaccountData).toHaveBeenCalled();
     expect(getIsSubaccountStoredLocally()).toBe(true);
   });
 
@@ -277,7 +330,6 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
         account: ACCOUNT,
         srcChainId: SRC_CHAIN_ID,
         globalExpressParams,
-        cachedOnchainActive: true,
       })
     );
     expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Error);

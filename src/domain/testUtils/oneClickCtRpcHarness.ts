@@ -1,6 +1,9 @@
 /* eslint-disable no-console */
 import { ethers } from "ethers";
 
+import { ARBITRUM } from "sdk/configs/chainIds";
+import { getContract } from "sdk/configs/contracts";
+
 const abiCoder = ethers.AbiCoder.defaultAbiCoder();
 
 function hashString(value: string): string {
@@ -48,10 +51,10 @@ export function subaccountIntegrationIdKey(account: string, subaccount: string):
 }
 
 export const ARBITRUM_CONTRACTS = {
-  DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
-  SubaccountRouter: "0xdD00F639725E19a209880A44962Bc93b51B1B161",
-  SubaccountGelatoRelayRouter: "0x517602BaC704B72993997820981603f5E4901273",
-  MultichainSubaccountRouter: "0x70AaAd50d53732b2D5534bb57332D00aE20cAd36",
+  DataStore: getContract(ARBITRUM, "DataStore"),
+  SubaccountRouter: getContract(ARBITRUM, "SubaccountRouter"),
+  SubaccountGelatoRelayRouter: getContract(ARBITRUM, "SubaccountGelatoRelayRouter"),
+  MultichainSubaccountRouter: getContract(ARBITRUM, "MultichainSubaccountRouter"),
 };
 
 const IFACE = new ethers.Interface([
