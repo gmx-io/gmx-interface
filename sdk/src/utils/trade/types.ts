@@ -304,12 +304,6 @@ export type ExternalSwapQuote = {
   };
 };
 
-export type ExternalSwapPath = {
-  aggregator: ExternalSwapAggregator;
-  inTokenAddress: string;
-  outTokenAddress: string;
-};
-
 export type ExternalSwapQuoteParams = {
   chainId: number;
   receiverAddress: string;

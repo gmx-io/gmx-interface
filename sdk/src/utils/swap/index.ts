@@ -8,6 +8,4 @@ export * from "./findReachableTokens";
 export * from "./buildMarketsAdjacencyGraph";
 export * from "./swapValues";
 export * from "./preparedSwapData";
-export * from "./externalSwapPath";
-export * from "./externalSwapQuoteByPath";
 export * from "./constants";

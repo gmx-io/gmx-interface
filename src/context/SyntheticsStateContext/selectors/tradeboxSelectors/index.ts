@@ -1375,24 +1375,13 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       if (!swapAmounts.swapStrategy.swapPathStats) return undefined;
 
-      // For combined swaps, also use oracle prices for the external quote portion
-      const combinedOracleQuote = swapAmounts.swapStrategy.externalSwapQuote
-        ? overrideQuoteWithOraclePrices(swapAmounts.swapStrategy.externalSwapQuote, {
-            usdIn: swapAmounts.swapStrategy.usdIn,
-            usdOut: swapAmounts.swapStrategy.usdOut,
-            feesUsd: swapAmounts.swapStrategy.feesUsd,
-            priceIn: swapAmounts.swapStrategy.priceIn,
-            priceOut: swapAmounts.swapStrategy.priceOut,
-          })
-        : undefined;
-
       return getTradeFees({
         sizeInUsd: 0n,
         initialCollateralUsd: swapAmounts.usdIn,
         collateralDeltaUsd: 0n,
         sizeDeltaUsd: 0n,
         swapSteps: swapAmounts.swapStrategy.swapPathStats.swapSteps,
-        externalSwapQuote: combinedOracleQuote,
+        externalSwapQuote: undefined,
         positionFeeUsd: 0n,
         swapPriceImpactDeltaUsd: swapAmounts.swapStrategy.swapPathStats.totalSwapPriceImpactDeltaUsd,
         increasePositionPriceImpactDeltaUsd: 0n,
