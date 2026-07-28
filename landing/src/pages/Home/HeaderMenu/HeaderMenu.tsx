@@ -92,6 +92,10 @@ function useHeaderLinks() {
   return useMemo(() => {
     return [
       {
+        label: t`Builders`,
+        href: "/#/builders",
+      },
+      {
         label: t`Protocol`,
         href: "https://github.com/gmx-io",
       },

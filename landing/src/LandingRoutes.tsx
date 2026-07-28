@@ -3,6 +3,7 @@ import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 
+const Builders = lazy(() => import("./pages/Builders/Builders"));
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 
@@ -38,6 +39,11 @@ export function LandingRoutes() {
       <Route exact path="/terms-and-conditions">
         <Suspense fallback={<TermsPageLoader />}>
           <TermsAndConditions />
+        </Suspense>
+      </Route>
+      <Route exact path="/builders">
+        <Suspense fallback={<TermsPageLoader />}>
+          <Builders />
         </Suspense>
       </Route>
       <Route path="*" render={RedirectToHomeWithSearch} />
