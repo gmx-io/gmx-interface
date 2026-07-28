@@ -29,7 +29,7 @@ import {
   isVisibleOrder,
 } from "sdk/utils/orders";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
-import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
+import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import type {
   MarketFilterLongShortDirection,
@@ -191,7 +191,7 @@ export function useOrders(
       if (orderTypesFilter.length > 0) {
         const { type, groupType } = convertOrderTypeFilterValues(orderTypesFilter);
 
-        const twapParams = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
+        const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
         const orderGroupType = twapParams ? "twap" : "none";
         matchByOrderType = type.includes(order.orderType) && groupType.includes(orderGroupType);
       }
@@ -231,6 +231,7 @@ function convertApiOrderToOrder({
   acceptablePrice,
   cancellationReceiver: _cancellationReceiver,
   srcChainId: _srcChainId,
+  dataList,
   ...rest
 }: ApiOrderInfo): Order {
   return {
@@ -242,7 +243,7 @@ function convertApiOrderToOrder({
     marketAddress: getAddress(rest.marketAddress),
     initialCollateralTokenAddress: getAddress(rest.initialCollateralTokenAddress),
     swapPath: rest.swapPath.map((addr) => getAddress(addr)),
-    data: [],
+    data: dataList,
   };
 }
 
