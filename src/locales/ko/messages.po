@@ -159,6 +159,11 @@ msgstr "승인 서명 완료"
 msgid "You can open isolated positions on GMX using your GMX Account."
 msgstr "GMX Account를 사용하여 GMX에서 격리 포지션을 개설할 수 있습니다."
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation to execution"
+msgstr "생성부터 실행까지"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr ""
@@ -330,6 +335,10 @@ msgstr "앱 열기"
 msgid "Try Express Trading"
 msgstr "익스프레스 트레이딩 시도"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Executed / actual output"
+msgstr "실행 시간 / 실제 출력량"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "포지션에 대한 가상 재고"
@@ -400,6 +409,10 @@ msgstr "수익률 파밍"
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "로드맵"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Longest execution time first · server-paginated"
+msgstr "실행 시간이 긴 순 · 서버 페이지네이션"
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FULL MARKET"
@@ -734,6 +747,10 @@ msgstr ""
 msgid "Order execution price"
 msgstr "주문 체결가"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Type: Perp"
+msgstr "유형: 무기한"
+
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
@@ -922,6 +939,10 @@ msgstr "중앙화 거래소에서 GMX 구매"
 msgid "Available liquidity"
 msgstr "가용 유동성"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Search order categories"
+msgstr "주문 카테고리 검색"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr "이 웹사이트는 오픈소스 <0>GMX 프론트엔드</0>의 커뮤니티 배포 인스턴스로, 분산형 P2P <1>IPFS 네트워크</1>에서 호스팅됩니다"
@@ -1038,6 +1059,7 @@ msgstr ""
 msgid "Trading simulations on GMX using DOJO"
 msgstr "DOJO를 사용한 GMX 트레이딩 시뮬레이션"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Search order types"
 msgstr ""
@@ -1144,9 +1166,17 @@ msgstr "{totalUsd} 수령"
 msgid "Edit Take-Profit: {suffix}"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Order: {0}"
+msgstr "주문: {0}"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
 msgstr "Yield Yak 스왑"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No matching executions"
+msgstr "일치하는 실행 내역이 없습니다"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Vaultka"
@@ -1225,6 +1255,11 @@ msgstr "Gas 잔액이 부족합니다. ETH를 추가로 입금하십시오."
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
 msgstr "실행 수수료가 현재 네트워크 비용에 비해 너무 낮습니다"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market order execution"
+msgstr "시장가 주문 실행"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
@@ -1402,6 +1437,10 @@ msgstr "유동성은 {chainNames}에서만 이용 가능합니다. 계속하려�
 msgid "Stop-Loss"
 msgstr "손절매"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Price quality"
+msgstr "가격 품질"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "외부 스왑 {0} → {1}"
@@ -1418,6 +1457,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "{0}에서 GMX를 구매하려면 <0>네트워크를 변경하십시오</0>"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders at or above execution delay"
+msgstr "실행 지연이 다음 값 이상인 주문"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -1500,6 +1543,10 @@ msgstr "반영까지 몇 분이 소요될 수 있습니다. 나중에 다시 확
 msgid "Go to affiliate dashboard"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Shortest execution time first · server-paginated"
+msgstr "실행 시간이 짧은 순 · 서버 페이지네이션"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1526,6 +1573,10 @@ msgstr "GMX 펀더멘탈"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
 msgstr "이벤트 데이터"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Search sides"
+msgstr "포지션 방향 검색"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
@@ -1964,6 +2015,10 @@ msgstr "패시브 운용"
 msgid "Telegram groups"
 msgstr "Telegram 그룹"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Market Execution"
+msgstr "시장가 주문 실행"
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -2291,6 +2346,10 @@ msgstr "매개변수가 누락되었습니다. 새로고침 후 다시 시도하
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "tx"
+msgstr "트랜잭션"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed withdraw"
 msgstr "출금 실패"
@@ -2326,6 +2385,10 @@ msgstr "{longOrShort} 포지션은 펀딩 수수료를 지불하지 않으며, �
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr "풀 검색"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Executed / fill"
+msgstr "실행 시간 / 체결가"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding increase factor"
@@ -2459,6 +2522,10 @@ msgstr ""
 msgid "Switching to external swap route. Try again"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Worst price improvement first · server-paginated"
+msgstr "가격 개선이 낮은 순 · 서버 페이지네이션"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Unable to load rate history"
 msgstr ""
@@ -2466,6 +2533,7 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Account"
 msgstr "계정"
 
@@ -2603,6 +2671,10 @@ msgstr "롱 미결제약정 준비금 비율"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "레이어 2"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} of {1} eligible orders"
+msgstr "적격 주문 {1}건 중 {0}건"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see the exact discount percentage after the code has been applied."
@@ -2840,6 +2912,8 @@ msgstr "{chainName}에서 GMX 구매"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Size"
 msgstr "크기"
 
@@ -2898,6 +2972,10 @@ msgstr "티커 시뮬레이션"
 msgid "Position size exceeds available open interest"
 msgstr "포지션 크기가 이용 가능한 미결제약정을 초과합니다"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Executed market orders"
+msgstr "실행된 시장가 주문"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
 msgstr "STIP.b 거래 인센티브"
@@ -2920,6 +2998,10 @@ msgstr "오픈 포지션"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Created / oracle reference"
+msgstr "생성 시간 / 오라클 기준가"
 
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
@@ -3176,6 +3258,7 @@ msgstr ""
 msgid "Transaction failed.<0/><1/><2>View</2>"
 msgstr "거래에 실패했습니다.<0/><1/><2>보기</2>"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Unknown"
 msgstr ""
@@ -3476,6 +3559,10 @@ msgstr "커뮤니티 운영 Telegram 그룹"
 msgid "Change to {0}"
 msgstr "{0}으로 변경"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} with timing data"
+msgstr "타이밍 데이터 있음: {0}건"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "릴레이어 요청 실패"
@@ -3504,6 +3591,10 @@ msgstr "TRANSACTION"
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Copy image"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Choose a date range of {MAX_QUERY_RANGE_CALENDAR_DAYS} days or less."
+msgstr "{MAX_QUERY_RANGE_CALENDAR_DAYS}일 이하의 날짜 범위를 선택하세요."
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
@@ -4304,6 +4395,10 @@ msgstr ""
 msgid "Sign permit"
 msgstr "허가 서명"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Side: {0}"
+msgstr "포지션 방향: {0}"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d earned fees"
@@ -4336,6 +4431,10 @@ msgstr "탈중앙화 무기한 거래소 | GMX"
 msgid "V1"
 msgstr "V1"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market / order"
+msgstr "시장 / 주문"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr "베스팅을 위해 예약된 스테이킹 토큰"
@@ -4357,6 +4456,7 @@ msgstr ""
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/positions/utils.ts
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Market"
 msgstr "마켓"
@@ -4415,6 +4515,10 @@ msgstr "V2 거래량"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Liquidation price changes with fees and margin value."
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation oracle price"
+msgstr "생성 시점 오라클 가격"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
@@ -4561,6 +4665,11 @@ msgstr "{chainName} 데이터"
 msgid "Rank among accounts for this metric and period."
 msgstr "이 지표와 기간에 대한 계정 간 순위입니다."
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution price improvement"
+msgstr "실행 가격 개선"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -4595,6 +4704,11 @@ msgstr "포지션 전체 청산"
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Could not load market order execution analytics."
+msgstr "시장가 주문 실행 분석을 불러올 수 없습니다."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop-Loss"
 msgstr "손절매 생성"
@@ -4610,6 +4724,10 @@ msgstr "이 포지션은 현재 청산 리스크를 넘어선 상태이지만, �
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
 msgstr "롱 기본 차입 팩터"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation price is the latest V2 oracle reference available when the order was created. References older than {0} seconds are excluded. Positive execution price improvement means the execution was favorable to the trader."
+msgstr "생성 가격은 주문이 생성될 때 사용 가능한 최신 V2 오라클 기준가입니다. {0}초보다 오래된 기준가는 제외됩니다. 실행 가격 개선이 양수이면 트레이더에게 유리하게 실행되었음을 의미합니다."
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
@@ -4646,6 +4764,10 @@ msgstr "{longOrShort} 포지션은 펀딩 수수료 또는 차입 수수료를 �
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
 msgstr "{0} 내"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Full selected population with creation timestamps"
+msgstr "생성 타임스탬프가 있는 선택된 전체 데이터"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
@@ -4697,6 +4819,10 @@ msgstr "수령중..."
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr "<0><1>@GMX_IO</1>가 Token Terminal과 데이터 파트너십을 체결했습니다. GMX는 <2>@Arbitrum</2> 및 <3>@Avax</3> 기반의 선도적인 무허가형 무기한 거래소입니다.</0><4>이 프로토콜은 멀티체인 DeFi를 위한 기초 유동성 베이스레이어 역할을 합니다.</4><5>약 $2,800억의 명목 거래량을 달성한 GMX는 신뢰성 있고 데이터 기반의 이해관계자 보고의 필요성을 인식했습니다.</5>"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Compare creation-time oracle references and order timestamps with actual fills"
+msgstr "생성 시점 오라클 기준가와 주문 타임스탬프를 실제 체결과 비교"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
@@ -4705,6 +4831,7 @@ msgstr "<0><1>@GMX_IO</1>가 Token Terminal과 데이터 파트너십을 체결�
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "All"
 msgstr "모두"
 
@@ -4778,6 +4905,10 @@ msgstr ""
 msgid "Cancel Limit"
 msgstr "지정가 취소"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation timestamp available"
+msgstr "생성 타임스탬프 있음"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -4843,6 +4974,10 @@ msgstr "1시간당"
 msgid "Perpetuals aggregator"
 msgstr "무기한 선물 애그리게이터"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Type: Swap"
+msgstr "유형: 스왑"
+
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Wallet: {0}"
 msgstr ""
@@ -4850,6 +4985,10 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation → execution (seconds)"
+msgstr "생성 → 실행(초)"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -4967,6 +5106,10 @@ msgstr "인수"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "GMX 계정을 통해 추천 코드를 생성하려면 {1}에서 USDC와 {0}이(가) 필요합니다. 자금을 입금하거나 다른 네트워크로 전환하세요."
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} samples within {1} bounds"
+msgstr "{1} 범위 내 샘플 {0}개"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
@@ -5214,6 +5357,10 @@ msgstr "기타 토큰"
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution time vs price improvement"
+msgstr "실행 시간과 가격 개선"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "신규 주문 취소"
@@ -5254,6 +5401,10 @@ msgstr "최근 180일"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Positive funding fees"
 msgstr "양의 펀딩 수수료"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Cumulative share of freshness-qualified orders"
+msgstr "최신성 조건을 충족한 주문의 누적 비율"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
@@ -5530,6 +5681,8 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6061,6 +6214,10 @@ msgstr "자금은 목적지 체인의 LayerZero에 안전하게 보관되어 있
 msgid "Umami DAO"
 msgstr "Umami DAO"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Order"
+msgstr "주문"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
 msgstr "Avalanche에서 스테이킹됨"
@@ -6227,6 +6384,10 @@ msgstr ""
 msgid "GMX (Portuguese)"
 msgstr "GMX (포르투갈어)"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Swap analytics include creation-to-execution timing only. Minimum output is a protection boundary, not a creation-time market price, so it is not used to measure price quality."
+msgstr "스왑 분석에는 생성부터 실행까지의 시간만 포함됩니다. 최소 출력량은 보호 경계값이며 생성 시점의 시장 가격이 아니므로 가격 품질 측정에 사용되지 않습니다."
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
@@ -6300,6 +6461,11 @@ msgstr "허용된 작업"
 msgid "Max funding factor"
 msgstr "최대 펀딩 계수"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Filter wallet address"
+msgstr "지갑 주소로 필터링"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr ""
@@ -6308,6 +6474,10 @@ msgstr ""
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "24h"
 msgstr "24시간"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Percentile range"
+msgstr "백분위 범위"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -6319,6 +6489,10 @@ msgstr "높은 가격 영향"
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "POOL"
 msgstr "풀"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{pageFrom}-{pageTo} of {totalCount}"
+msgstr "총 {totalCount}건 중 {pageFrom}-{pageTo}"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
@@ -6344,6 +6518,10 @@ msgstr "감소 완료"
 msgid "Selling"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Median execution time"
+msgstr "실행 시간 중앙값"
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr "추천"
@@ -6362,6 +6540,9 @@ msgstr ""
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Decrease"
 msgstr "감소"
 
@@ -6506,6 +6687,10 @@ msgstr "높은 순 가격 영향"
 msgid "Claiming rewards"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Input"
+msgstr "입력"
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Same as active code"
 msgstr ""
@@ -6513,6 +6698,10 @@ msgstr ""
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order not found. May have been canceled or already executed"
 msgstr "주문을 찾을 수 없습니다. 취소되었거나 이미 체결되었을 수 있습니다"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution impact"
+msgstr "실행 영향"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
@@ -6529,6 +6718,10 @@ msgstr "지원"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them"
 msgstr "마진이 부족합니다. 수수료는 예치된 담보가 포지션의 마진을 개선하기 전에 차감되므로, 수수료를 충당하려면 더 많이 예치하세요"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "P95 execution time"
+msgstr "P95 실행 시간"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
@@ -6566,6 +6759,10 @@ msgstr "포지션 규모가 풀 가치를 초과합니다. 델타: {usdDeltaText
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display net value and PnL after all fees"
 msgstr "모든 수수료 차감 후 순가치 및 PnL 표시"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Cumulative share of all orders with timing data"
+msgstr "타이밍 데이터가 있는 모든 주문의 누적 비율"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6652,6 +6849,10 @@ msgstr ""
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
 msgstr "<0>지갑이 {0}에 연결되지 않았습니다</0><1/><2>{1}(으)로 전환</2>"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Absolute creation-to-fill difference"
+msgstr "생성 시점과 체결가의 절대 차이"
+
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/수용량"
@@ -6718,6 +6919,10 @@ msgstr "이 규모에서 롱 증가를 위한 유동성이 없습니다.<0/>최�
 msgid "Referrals"
 msgstr "추천"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} freshness-qualified orders"
+msgstr "최신성 조건을 충족한 주문 {0}건"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code"
 msgstr ""
@@ -6766,6 +6971,10 @@ msgstr "디코딩할 hex 오류 데이터를 붙여넣으십시오"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "0.0045 WETH remaining in the old 1CT subaccount"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Newest first · server-paginated"
+msgstr "최신순 · 서버 페이지네이션"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
@@ -6857,6 +7066,12 @@ msgstr "Multicall 이벤트"
 msgid "Position not found. It may have been closed"
 msgstr "포지션을 찾을 수 없습니다. 이미 종료되었을 수 있습니다"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution time"
+msgstr "실행 시간"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "실행"
@@ -6898,6 +7113,7 @@ msgstr "{updateOrdersCount}개 TP/SL 주문 업데이트 중..."
 msgid "Execution price didn't meet acceptable price"
 msgstr "체결가가 허용 가격을 충족하지 못했습니다"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Search markets"
 msgstr ""
@@ -7234,6 +7450,10 @@ msgstr ""
 msgid "Permit signed for {0}"
 msgstr "{0}에 대한 허가가 서명되었습니다"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Best price improvement first · server-paginated"
+msgstr "가격 개선이 높은 순 · 서버 페이지네이션"
+
 #: src/domain/synthetics/orders/prepareOrderTxn.ts
 msgid "Transaction failed: provider unavailable"
 msgstr "거래 실패: 공급자를 사용할 수 없습니다"
@@ -7386,6 +7606,10 @@ msgstr "보장된 유동성"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "가스 잔액 부족"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders with timing data"
+msgstr "타이밍 데이터가 있는 주문"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
@@ -7636,6 +7860,10 @@ msgstr "거버넌스"
 msgid "Cancel"
 msgstr "취소"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Created / min output"
+msgstr "생성 시간 / 최소 출력량"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
 msgstr "실시간"
@@ -7671,6 +7899,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "STATUS"
 msgstr "STATUS"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} time-stratified samples from {1} freshness-qualified orders"
+msgstr "최신성 조건을 충족한 주문 {1}건에서 시간대별 샘플 {0}개"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
@@ -8153,6 +8385,10 @@ msgstr "제휴 esGMX 토큰을 전송하지 않겠습니다"
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr "주문이 최대 레버리지를 초과합니다. 클릭하여 자동 조정하십시오."
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Oracle move"
+msgstr "오라클 가격 변동"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "사용 가능한 스왑 경로 없음"
@@ -8194,6 +8430,10 @@ msgstr "비영구적 손실을 최소화하기 위해 능동적 헤징 및 리�
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX V2 actions"
 msgstr "GMX V2 활동 내역"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay percentiles"
+msgstr "실행 지연 백분위수"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
@@ -8827,6 +9067,11 @@ msgstr "~5분"
 msgid "New tier:"
 msgstr "신규 등급:"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No paired timing data"
+msgstr "대응되는 타이밍 데이터가 없습니다"
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
 msgstr "마켓 상장 폐지"
@@ -8880,6 +9125,7 @@ msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
 msgstr "보너스 APR은 {airdropTokenTitle} 에어드롭으로 지급됩니다. <0>자세히 보기</0>."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Execution price"
 msgstr "체결가"
 
@@ -9185,6 +9431,10 @@ msgstr "최대 예약 {directionLabel}"
 msgid "Transfer {nativeTokenSymbol}"
 msgstr "{nativeTokenSymbol} 전송"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Side"
+msgstr "포지션 방향"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY SHORT"
 msgstr "유동성 숏"
@@ -9256,6 +9506,10 @@ msgstr "Permit 서명이 취소되었습니다"
 msgid "V2 rebates"
 msgstr "V2 리베이트"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Any"
+msgstr "모두"
+
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select asset to deposit"
@@ -9272,6 +9526,10 @@ msgstr "세션 생성됨"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "GMX 구매"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Enter a valid wallet address."
+msgstr "유효한 지갑 주소를 입력하세요."
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -9516,6 +9774,11 @@ msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징
 msgid "Execution cost"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No freshness-qualified price data"
+msgstr "최신성 조건을 충족한 가격 데이터가 없습니다"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr ""
@@ -9752,6 +10015,7 @@ msgid "Search type"
 msgstr "유형 검색"
 
 #: src/components/TradeHistory/filters/ActionFilter.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Market orders"
 msgstr "시장가 주문"
 
@@ -9877,6 +10141,8 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10160,6 +10426,9 @@ msgstr "거래 유형"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Increase"
 msgstr "증가"
 
@@ -10381,6 +10650,10 @@ msgstr "GMX 거래를 X에 공유하기"
 msgid "Pool short amount"
 msgstr "풀 숏 수량"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders at or above absolute creation-to-fill difference"
+msgstr "생성 시점과 체결가의 절대 차이가 다음 값 이상인 주문"
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "수수료 APY"
@@ -10434,6 +10707,10 @@ msgstr "Nonce:"
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No freshness-qualified executions for the selected filters"
+msgstr "선택한 필터에서 최신성 조건을 충족한 실행 내역이 없습니다"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RESPONSE"
@@ -10522,6 +10799,7 @@ msgstr "메인 계좌로 {balanceFormatted} 출금 완료"
 msgid "{positionName} failed to settle"
 msgstr "{positionName} 정산 실패"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Market: {0}"
 msgstr ""
@@ -10589,6 +10867,10 @@ msgstr "토픽"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Fill price"
+msgstr "체결가"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -10966,6 +11248,10 @@ msgstr "청산 확인"
 msgid "Negative funding fees"
 msgstr "음의 펀딩 수수료"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution oracle price"
+msgstr "실행 시점 오라클 가격"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -11044,6 +11330,8 @@ msgstr "높은 허용 가격 영향이 설정되었습니다. 현재 영향: {0}
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Swap"
 msgstr "스왑"
 
@@ -11111,6 +11399,11 @@ msgstr "GLV 볼트:"
 #: src/components/DownloadAsCsv/DownloadAsCsv.tsx
 msgid "Download as CSV"
 msgstr "CSV로 다운로드"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Could not load market order executions"
+msgstr "시장가 주문 실행 내역을 불러올 수 없습니다"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
@@ -11245,6 +11538,10 @@ msgstr ""
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 3월 20-27일"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Median price improvement"
+msgstr "가격 개선 중앙값"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
 msgstr "비용 절감"
@@ -11354,6 +11651,10 @@ msgstr "수익 시작"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancellation failed"
 msgstr "{orderText} 취소에 실패했습니다"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market order execution analytics are currently available on Arbitrum only."
+msgstr "시장가 주문 실행 분석은 현재 Arbitrum에서만 제공됩니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
@@ -11551,6 +11852,10 @@ msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩 수수료�
 msgid "Failed to add referral code"
 msgstr "추천 코드 추가에 실패했습니다"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Magnitude of fill price versus creation-time oracle reference"
+msgstr "생성 시점 오라클 기준가 대비 체결가 차이의 크기"
+
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"
 msgstr "{glvOrGm} 입금"
@@ -11608,6 +11913,10 @@ msgstr "유효하지 않은 수신자 주소"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted"
 msgstr "출금이 제출되었습니다"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Perp"
+msgstr "무기한"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

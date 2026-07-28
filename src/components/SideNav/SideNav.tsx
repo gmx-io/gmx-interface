@@ -219,6 +219,12 @@ export function MenuSection({
       key: "orderStats",
       to: "/order_execution_stats",
     },
+    {
+      icon: <DashboardIcon className="size-20" />,
+      label: t`Market Execution`,
+      key: "marketExecution",
+      to: "/market_order_execution",
+    },
     ...(isDevelopment()
       ? [
           {

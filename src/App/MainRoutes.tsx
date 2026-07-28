@@ -40,12 +40,30 @@ import WhalesPage from "pages/Whales/WhalesPage";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { EarnRedirect } from "components/Earn/EarnRedirect";
+import Loader from "components/Loader/Loader";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 const UiPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyUiPage />
+  </Suspense>
+);
+
+const LazyMarketOrderExecution = lazy(() =>
+  import("pages/MarketOrderExecution/MarketOrderExecution").then((module) => ({
+    default: module.MarketOrderExecution,
+  }))
+);
+const MarketOrderExecutionPage = () => (
+  <Suspense
+    fallback={
+      <div className="flex min-h-[50vh] items-center justify-center" aria-busy="true">
+        <Loader />
+      </div>
+    }
+  >
+    <LazyMarketOrderExecution />
   </Suspense>
 );
 
@@ -222,6 +240,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/order_execution_stats">
         <OrderExecutionStats />
+      </Route>
+      <Route exact path="/market_order_execution">
+        <MarketOrderExecutionPage />
       </Route>
       <Route exact path="/earn/discover">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
