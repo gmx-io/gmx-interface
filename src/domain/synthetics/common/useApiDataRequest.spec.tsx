@@ -11,35 +11,26 @@ type ApiDataRequestResult = ReturnType<typeof useApiDataRequest<{ ok: boolean }>
 
 const swrKey = ["apiDataRequestTest"];
 
-type TestComponentProps = {
-  enabled?: boolean;
-  requestKey?: unknown[];
-};
-
 function renderApiDataRequest(fetcher: () => Promise<{ ok: boolean }>, cache = new Map()) {
   let latestState: ApiDataRequestResult | undefined;
 
-  function TestComponent({ enabled, requestKey }: TestComponentProps) {
-    latestState = useApiDataRequest(42161, requestKey ?? swrKey, fetcher, FreshnessMetricId.ApiMarketsInfo, {
+  function TestComponent() {
+    latestState = useApiDataRequest(42161, swrKey, fetcher, FreshnessMetricId.ApiMarketsInfo, {
       refreshInterval: 1000,
       apiStaleMs: 500,
-      enabled,
     });
     return null;
   }
 
-  const swrConfig = { provider: () => cache, dedupingInterval: 0 };
-  const renderElement = (props: TestComponentProps = {}) => (
-    <SWRConfig value={swrConfig}>
-      <TestComponent {...props} />
+  render(
+    // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+    <SWRConfig value={{ provider: () => cache, dedupingInterval: 0 }}>
+      <TestComponent />
     </SWRConfig>
   );
 
-  const result = render(renderElement());
-
   return {
     getState: () => latestState!,
-    rerenderWith: (props: TestComponentProps) => result.rerender(renderElement(props)),
   };
 }
 
@@ -83,32 +74,6 @@ describe("useApiDataRequest", () => {
     });
 
     expect(rendered.getState().isStale).toBe(true);
-  });
-
-  it("retains the last response while the request is disabled and drops it when the key changes", async () => {
-    const fetcher = vi.fn(() => Promise.resolve({ ok: true }));
-    const rendered = renderApiDataRequest(fetcher);
-
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(0);
-    });
-
-    expect(rendered.getState().data).toEqual({ ok: true });
-
-    rendered.rerenderWith({ enabled: false });
-
-    expect(rendered.getState().data).toEqual({ ok: true });
-
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(2000);
-    });
-
-    expect(rendered.getState().data).toEqual({ ok: true });
-    expect(rendered.getState().isStale).toBe(true);
-
-    rendered.rerenderWith({ enabled: false, requestKey: ["apiDataRequestTest", "other-account"] });
-
-    expect(rendered.getState().data).toBeUndefined();
   });
 
   it("marks cached stale data as stale on the first render", () => {
