@@ -15,6 +15,8 @@ vi.mock("lib/useBreakpoints", () => ({
 i18n.load({ en: {} });
 i18n.activate("en");
 
+const INVISIBLE_STYLE = { visibility: "hidden" } as const;
+
 describe("Modal", () => {
   beforeEach(() => {
     Object.defineProperty(HTMLElement.prototype, "animate", {
@@ -38,6 +40,10 @@ describe("Modal", () => {
         <button>Background action</button>
         <Modal isVisible label="Parent modal" setIsVisible={vi.fn()}>
           <button>Dialog action</button>
+          <div aria-hidden="true">
+            <button>Hidden action</button>
+          </div>
+          <button style={INVISIBLE_STYLE}>Invisible action</button>
           <FloatingPortal>
             <button>Portalled action</button>
           </FloatingPortal>
@@ -63,6 +69,8 @@ describe("Modal", () => {
     fireEvent.keyDown(window, { key: "Tab", shiftKey: true });
     expect(document.activeElement).toBe(portalledAction);
     expect(document.activeElement).not.toBe(screen.getByRole("button", { name: "Background action" }));
+    expect(document.activeElement).not.toBe(screen.getByText("Hidden action").closest("button"));
+    expect(document.activeElement).not.toBe(screen.getByText("Invisible action").closest("button"));
   });
 
   it("lets only the topmost mobile slide modal handle Escape", () => {

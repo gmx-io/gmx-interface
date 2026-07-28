@@ -254,10 +254,6 @@ msgstr ""
 msgid "External swap temporarily disabled. Try again"
 msgstr "外部兑换暂时禁用。请重试"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "How does it work?"
-msgstr "如何运作？"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMTrade"
@@ -812,6 +808,10 @@ msgstr "订单成交价格"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "A tier applies in the epoch it is achieved and remains active for 4 following epochs."
+msgstr "等级在达成的纪元内生效，并在之后 4 个纪元内保持有效。"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -1129,6 +1129,10 @@ msgstr "Plutus"
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "What is GT token?"
+msgstr "什么是 GT 代币？"
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
 msgstr ""
@@ -1244,6 +1248,10 @@ msgstr "流畅交易，Express 级可靠性"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> 到 </1>{1} <2/>"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Rewards are distributed at the end of each epoch."
+msgstr "奖励将在每个纪元结束时发放。"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2280,6 +2288,10 @@ msgstr "提取不可用"
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "What is esGMX token?"
+msgstr "什么是 esGMX 代币？"
+
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
 msgid "current"
 msgstr "当前"
@@ -2655,6 +2667,10 @@ msgstr "资金费率增长因子"
 msgid "May take a few minutes to appear. Check back later"
 msgstr "可能需要几分钟才能显示。请稍后查看"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Stake it"
+msgstr "质押"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "存入失败"
@@ -2915,6 +2931,10 @@ msgstr ""
 msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 出售成功，但跨链至 {0} 失败。您的资金安全地保存在您的 GMX 账户中。请重试跨链，或打开 GMX 账户提取您的代币。"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Your Multiplier determines the amount of rewards you receive:"
+msgstr "您的乘数决定您获得的奖励数量："
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
@@ -3016,6 +3036,14 @@ msgstr "在此规模下无可用流动性来增加做多仓位。<0/>最大做�
 msgid "Transfer completed"
 msgstr "转账完成"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Referral Bonus"
+msgstr "推荐奖励"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM 跨链桥接至..."
@@ -3043,6 +3071,10 @@ msgstr "停用 1CT"
 msgid "Check again"
 msgstr "再次检查"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake more GMX to increase your tier and earn more rewards."
+msgstr "质押更多 GMX 以提升等级并获得更多奖励。"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -3054,7 +3086,6 @@ msgstr ""
 msgid "Show details"
 msgstr "显示详情"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "A tier applies in the epoch it is achieved and for {0} following epochs."
 msgstr "等级在达成的周期以及之后 {0} 个周期内有效。"
@@ -3166,14 +3197,6 @@ msgstr "未检测到符合条件的持仓"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "帮助我们改进 GMX。出于安全考虑，我们不会主动联系您。请向我们的官方帐号发送\"I have feedback\"："
-
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "How do activity boosts work?"
-msgstr "活动加成如何运作？"
-
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Maximum combined reward per eligible fee"
-msgstr "每笔符合条件费用的最高综合奖励"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
@@ -3332,6 +3355,11 @@ msgstr "滑点设置过高。当前兑换影响：{0}。"
 msgid "Instant"
 msgstr "立即"
 
+#: src/components/SettingsModal/IncentivesIndexerSettings.tsx
+#: src/components/SettingsModal/IncentivesIndexerSettings.tsx
+msgid "Incentives test squid"
+msgstr "激励测试 Squid"
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "未平仓位"
@@ -3437,6 +3465,10 @@ msgstr "购买 {0} GMX 以归属 {depositAmountLabel}"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Unlock bonuses and boosts and increase your rewards"
+msgstr "解锁奖励和加成并提高您的奖励"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -4076,10 +4108,6 @@ msgstr "Ranked"
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1> 理所当然地赢得了永续交易巨头的称号，其背后的原因多种多样。</0><2><3>@GMX_IO</3> 作为一个不依赖 VC 支持的项目脱颖而出。令人印象深刻的是，它已上升到首位，在 Arbitrum 链上 TVL 排名第一，为 4.8834 亿美元，在 DeFiLlama 上整体排名第 23 位... <4>查看更多</4></2>"
 
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Referral Volume"
-msgstr "推荐交易量"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Network status"
 msgstr "网络状态"
@@ -4309,10 +4337,6 @@ msgstr "触发时该订单部分子单可能流动性不足"
 msgid "Settlement"
 msgstr "结算"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Increase your staked GMX balance by {0} to get {1} status <0>+{2}</0>"
-msgstr "将您质押的 GMX 余额增加 {0}，即可达到 {1} 状态 <0>+{2}</0>"
-
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "是什么让 GMX 比其他永续平台更具成本效益？"
@@ -4367,6 +4391,10 @@ msgstr ""
 #: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Start trading to redeem your rewards."
 msgstr "开始交易以领取您的奖励。"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "esGMX Rewards = Fees × (Multiplier × 10%)"
+msgstr "esGMX 奖励 = 费用 ×（乘数 × 10%）"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days"
@@ -4808,6 +4836,10 @@ msgstr "成交详情"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "不支持自转账"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Are referral Rewards part of my multiplier?"
+msgstr "推荐奖励是否计入我的倍数？"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
@@ -5552,10 +5584,6 @@ msgstr "最近上线"
 msgid "Failed to load order data:"
 msgstr "加载订单数据失败："
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Eligible fee share"
-msgstr "符合条件的费用份额"
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
@@ -5786,10 +5814,6 @@ msgstr "无法刷新账户快照。正在显示最近加载的快照。"
 msgid "GM pools:"
 msgstr "GM 池："
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Increase your trading volume to unlock a higher status and boost your rewards multiplier."
-msgstr "提高交易量以解锁更高状态并提升您的奖励倍数。"
-
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "无价格影响。在此规模下<0/>增加做空或减少做多仓位的<1/>单一成交价格。"
@@ -5992,8 +6016,8 @@ msgid "Net value"
 msgstr "净值"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Are referral rewards part of my multiplier?"
-msgstr "推荐奖励是否计入我的倍数？"
+msgid "The total Multiplier is capped at 10×."
+msgstr "总乘数上限为 10×。"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -6119,10 +6143,6 @@ msgstr "<0>GMX 与动态平衡的流动性池执行交易，与传统订单簿�
 msgid "Read more"
 msgstr "阅读更多"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Unlock boosts and increase your rewards."
-msgstr "解锁加成并提高您的奖励。"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "通过此操作可多赚取 {0}% 的奖励"
@@ -6131,6 +6151,10 @@ msgstr "通过此操作可多赚取 {0}% 的奖励"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier."
+msgstr "您的质押等级取决于已质押的 GMX 和 esGMX，并决定您的质押倍数。"
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
@@ -6690,6 +6714,10 @@ msgstr "职位"
 msgid "Failed Stop Market"
 msgstr "止损市价失败"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "You receive 50% of all rewards earned by the traders you invite."
+msgstr "您将获得所邀请交易者赚取的全部奖励的 50%。"
+
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -6753,10 +6781,6 @@ msgstr "正在发送结算请求..."
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Sending {0} to {1} is not supported"
 msgstr "不支持将 {0} 发送至 {1}"
-
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "GT allocation share"
-msgstr "GT 分配份额"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -6880,6 +6904,10 @@ msgstr "s："
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPC 错误。<0/><1/>在设置中启用 <2>Express Trading</2> 以提高可靠性"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Each staked esGMX token provides the same staking power as one staked GMX token. It earns staking rewards and contributes toward your staking tier."
+msgstr "每个已质押的 esGMX 代币提供与一个已质押 GMX 代币相同的质押权重。它可赚取质押奖励，并计入您的质押等级。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
 msgstr "UniDex 杠杆"
@@ -6917,6 +6945,10 @@ msgstr ""
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "无开订单"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "esGMX can be used in two ways:"
+msgstr "esGMX 有两种使用方式："
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
@@ -7329,10 +7361,6 @@ msgstr "从 <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> 转移到 <3>
 msgid "Share your PnL"
 msgstr "分享您的盈亏"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "esGMX allocation share"
-msgstr "esGMX 分配份额"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
@@ -7635,6 +7663,10 @@ msgstr "正在执行卖出请求…"
 msgid "Close short"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Escrowed GMX (esGMX) is a non-transferable token distributed as a reward."
+msgstr "托管型 GMX（esGMX）是作为奖励发放的不可转让代币。"
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "{0} claimed"
 msgstr "{0} 已领取"
@@ -7719,6 +7751,7 @@ msgstr ""
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/WalletReadyContent.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/Claims.tsx
@@ -8368,6 +8401,10 @@ msgstr "V1 返佣"
 msgid "Sell GLV"
 msgstr "出售 GLV"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "You earn esGMX and GT Rewards based on the fees paid each time you increase or decrease a position."
+msgstr "每次增加或减少仓位时，您都会根据支付的费用赚取 esGMX 和 GT 奖励。"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "来自 {BLOCKCHAIN_COUNT} 个区块链"
@@ -8684,6 +8721,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL（供应量）"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Invite traders"
+msgstr "邀请交易者"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -9072,6 +9113,10 @@ msgstr "GMX 风险监控"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "需要使用至少 {0} 的资金才能参与排名"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "GT is the native token of GMTrade. It is currently distributed as a reward, while its broader utility is planned for a later stage of the platform’s development. Future GT use cases and benefits will be announced as they become available."
+msgstr "GT 是 GMTrade 的原生代币。目前它作为奖励发放，更广泛的用途计划在平台开发的后续阶段推出。未来的 GT 使用场景和权益将在可用时公布。"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9373,10 +9418,6 @@ msgstr "无法完成 Permit 授权。"
 msgid "Learn more about the rewards program"
 msgstr "进一步了解奖励计划"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Eligible fees receive the configured reward share. Applicable persistent and trade-specific multiplier adjustments are added together, then capped at the configured maximum."
-msgstr "符合条件的费用按配置获得奖励份额。适用的永久倍数调整和交易专属倍数调整相加后，以配置的最高值为上限。"
-
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
 msgstr "推荐码更新失败"
@@ -9597,10 +9638,6 @@ msgstr "{increaseOrDecreaseText}：{0} {longShortText}"
 msgid "Claim"
 msgstr "领取"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "How are rewards calculated?"
-msgstr "奖励如何计算？"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POSITION IMPACT POOL"
 msgstr "POSITION IMPACT POOL"
@@ -9740,6 +9777,10 @@ msgstr ""
 msgid "for {comment}"
 msgstr "用于 {comment}"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trade more to reach a higher tier and earn more rewards."
+msgstr "增加交易以达到更高等级并获得更多奖励。"
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Adding esGMX extends your current vesting: your existing tokens will finish converting on <0>{0} instead of {1}</0>."
 msgstr "添加 esGMX 会延长您当前的归属期：您现有的代币将于 <0>{0} 完成转换，而不是 {1}</0>。"
@@ -9784,6 +9825,10 @@ msgstr "抵押品不足以支付订单成本"
 msgid "Unknown shift GM order"
 msgstr "未知的转移 GM 订单"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to get {1} status <0>+{2}</0>"
+msgstr "再质押 {0} GMX 以获得 {1} 状态 <0>+{2}</0>"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimated fees"
@@ -9804,6 +9849,10 @@ msgstr "平仓价格影响"
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "将在新标签页中打开 GMTrade"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "How does Rewards work?"
+msgstr "Rewards 如何运作？"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
@@ -9860,13 +9909,6 @@ msgstr "{networkLabel} 上的 {addressLabel}"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Loading fees..."
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Referral Boost"
-msgstr "推荐加成"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
@@ -10042,10 +10084,6 @@ msgstr "净费率 / 1小时"
 msgid "Select language"
 msgstr "选择语言"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Stake GMX and receive up to {0} of your fees as rewards."
-msgstr "质押 GMX，最高可获得手续费 {0} 的奖励。"
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "未知值"
@@ -10180,7 +10218,6 @@ msgstr "额外返利"
 msgid "Decentralized options strategies"
 msgstr "去中心化期权策略"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}."
 msgstr "您的奖励倍数由交易量等级、质押等级和适用的活动加成组成。总倍数上限为 {0}。"
@@ -10236,6 +10273,10 @@ msgstr "去中心化、无需许可、链上交易所，具备深度流动性和
 msgid "TOTAL VOLUME"
 msgstr "TOTAL VOLUME"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "GT Rewards = 20% of esGMX Rewards"
+msgstr "GT 奖励 = esGMX 奖励的 20%"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Enable One-Click Trading"
 msgstr "启用一键交易"
@@ -10262,7 +10303,6 @@ msgid "Yes"
 msgstr "是"
 
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "Maximum multiplier"
 msgstr "最高倍数"
 
@@ -10678,10 +10718,6 @@ msgstr ""
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Select positions where accrued funding fee exceeds the {0} gas cost to settle"
 msgstr "选择累计资金费用超过 {0} Gas 结算成本的仓位"
-
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Trade-specific boosts apply only to qualifying trades. Lifetime Volume is permanent once earned, while a Return Bonus remains available until its reward cap is consumed."
-msgstr "特定交易加成仅适用于合资格交易。终身交易量一旦获得即永久有效，而回归奖励会在其奖励额度用完前保持可用。"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
@@ -11200,6 +11236,11 @@ msgstr "收益金库"
 msgid "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trading activities"
+msgstr "交易活动"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Connect wallet to view vesting rewards."
 msgstr "连接钱包以查看归属奖励。"
@@ -11320,10 +11361,6 @@ msgstr "基于期权的金库"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time limit"
 msgstr "时间限制"
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Your Staking Tier is based on staked GMX and determines your staking multiplier."
-msgstr "您的质押等级取决于已质押的 GMX，并决定您的质押倍数。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
@@ -11849,10 +11886,6 @@ msgstr "重复交易"
 msgid "Withdrawn {balanceFormatted} to main account"
 msgstr "已提取 {balanceFormatted} 至主账户"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "No. Referral rewards are an additional configured share of referred traders’ final rewards and do not contribute to trading-volume tiers."
-msgstr "否。推荐奖励是受邀交易者最终奖励中额外配置的份额，不计入交易量等级。"
-
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
 msgstr "{positionName} 结算失败"
@@ -11880,6 +11913,10 @@ msgstr "Affiliate 金库"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "卖出 GM 以获取 {0}，上限如下所示。剩余代币为未平仓仓位保留。"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Vest it into liquid GMX"
+msgstr "兑换为流动 GMX"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -12470,10 +12507,6 @@ msgstr "做多净费率 / 1h"
 msgid "{0} of net position fee"
 msgstr "净仓位手续费的 {0}"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Complete trading activities"
-msgstr "完成交易活动"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
@@ -12704,6 +12737,10 @@ msgstr "超出最大未平仓量"
 msgid "Network fees are high due to increased {chainName} network activity"
 msgstr "由于 {chainName} 网络活动增加，网络费用较高"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "No. Referral rewards are added separately and are based on the trading volume generated by your referrals."
+msgstr "否。推荐奖励会单独添加，并根据您的推荐用户产生的交易量计算。"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
 msgstr ""
@@ -12812,6 +12849,14 @@ msgstr "借出的仓位影响池金额"
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Indexed manual reward remaining"
 msgstr "剩余的索引手动奖励"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "esGMX can be vested over a one-year period and converted into transferable GMX tokens. Vesting can be managed from the Rewards page."
+msgstr "esGMX 可在一年内逐步解锁并转换为可转让的 GMX 代币。您可以在 Rewards 页面管理解锁。"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Your Multiplier is calculated as the sum of your Volume Multiplier, Staking Multiplier, and any applicable Activity Boosts."
+msgstr "您的乘数由交易量乘数、质押乘数和任何适用的活动加成相加计算得出。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
@@ -13135,6 +13180,10 @@ msgstr "订单可能无法以 {priceText} 执行：可接受影响 ({formattedOr
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
 msgstr "分享到"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "How are Rewards calculated?"
+msgstr "奖励如何计算？"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"

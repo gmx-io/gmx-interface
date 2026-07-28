@@ -4,10 +4,11 @@ import { isAddress } from "viem";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { fetchIncentivesGraphql, getIncentivesIndexerUrl } from "./client";
+import { fetchIncentivesGraphql } from "./client";
 import { parseAccountRewardsHistoryPage, type RawRewardsHistoryEntry } from "./parsers";
 import { ACCOUNT_REWARDS_HISTORY_QUERY } from "./queries";
 import type { AccountRewardsHistoryPage, RewardsHistoryEntry } from "./types";
+import { useIncentivesIndexerUrl } from "./useIncentivesIndexerUrl";
 
 const MAX_PAGE_SIZE = 1000;
 const COMPLETED_HISTORY_REFRESH_INTERVAL = 5 * CONFIG_UPDATE_INTERVAL;
@@ -126,7 +127,7 @@ export function useAccountRewardsHistory(
   }
 ) {
   const { account, currentEpoch, programStartTimestamp, epochDuration, enabled = true } = params;
-  const endpoint = getIncentivesIndexerUrl(chainId);
+  const endpoint = useIncentivesIndexerUrl(chainId);
   const validAccount = account && isAddress(account) ? account : undefined;
   const limit = Math.min(Math.max(Math.trunc(params.limit), 1), MAX_PAGE_SIZE);
   const offset = Math.max(Math.trunc(params.offset), 0);

@@ -3,7 +3,7 @@ import cx from "classnames";
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { isAddress } from "viem";
+import { isAddress, isAddressEqual } from "viem";
 
 import "./RewardsLeaderboardTab.scss";
 
@@ -51,6 +51,10 @@ const CURRENT_ACCOUNT_ROW_CLASS_NAME =
 type LeaderboardPeriod = "current" | "previous" | "all";
 type LeaderboardSortField = "tradingVolume" | "referralVolume" | "esGmxRewards" | "gtRewards" | "rewardsUsd";
 type SortDirection = "asc" | "desc" | "unspecified";
+
+function isSameAddress(first?: string, second?: string) {
+  return Boolean(first && second && isAddress(first) && isAddress(second) && isAddressEqual(first, second));
+}
 
 function RewardsLeaderboardSkeletonRow({ invisible, pinned = false }: { invisible?: boolean; pinned?: boolean }) {
   return (
@@ -137,7 +141,7 @@ function LeaderboardRow({
   onShare?: (entry: LeaderboardEntry) => void;
   pinned?: boolean;
 }) {
-  const isAccount = entry.address === account;
+  const isAccount = isSameAddress(entry.address, account);
   const isHighlighted = pinned || isAccount;
 
   return (
@@ -268,7 +272,7 @@ export function RewardsLeaderboardTab({
   });
   const pinnedEntry = pinnedEntries?.[0];
   const pageData = useMemo(() => data ?? [], [data]);
-  const isPinnedEntryVisible = Boolean(account && pageData.some((entry) => entry.address === account));
+  const isPinnedEntryVisible = Boolean(account && pageData.some((entry) => isSameAddress(entry.address, account)));
   const showPinnedRow = Boolean(pinnedEntry) && !isPinnedEntryVisible;
   const showEmptyPinnedRow =
     Boolean(account) &&
@@ -327,11 +331,6 @@ export function RewardsLeaderboardTab({
           <Trans>All-time</Trans>
         </span>
       ),
-      className: {
-        active: "!rounded-full !bg-fill-accent !text-typography-primary",
-        regular:
-          "!rounded-full !border-1/2 !border-solid !border-fill-accent !bg-transparent !text-typography-secondary",
-      },
     };
 
     if (!config) return [allTimeOption];
@@ -344,20 +343,10 @@ export function RewardsLeaderboardTab({
             <Trans>Volume this epoch</Trans>
           </span>
         ),
-        className: {
-          active: "!rounded-full !bg-fill-accent !text-typography-primary",
-          regular:
-            "!rounded-full !border-1/2 !border-solid !border-fill-accent !bg-transparent !text-typography-secondary",
-        },
       },
       {
         value: "previous" as const,
         label: <Trans>Last epoch</Trans>,
-        className: {
-          active: "!rounded-full !bg-fill-accent !text-typography-primary",
-          regular:
-            "!rounded-full !border-1/2 !border-solid !border-fill-accent !bg-transparent !text-typography-secondary",
-        },
       },
       allTimeOption,
     ];
@@ -431,13 +420,6 @@ export function RewardsLeaderboardTab({
         </h3>
 
         <div className="flex items-center justify-between gap-16 max-md:flex-col max-md:items-stretch">
-          <Tabs<LeaderboardPeriod>
-            type="inline"
-            options={periodOptions}
-            selectedValue={selectedPeriod}
-            onChange={handlePeriodChange}
-            className="shrink-0"
-          />
           <SearchInput
             value={searchAddress}
             setValue={handleSearchAddressChange}
@@ -445,6 +427,13 @@ export function RewardsLeaderboardTab({
             autoFocus={false}
             qa="rewards-leaderboard-search"
             className="w-full max-w-[260px] max-md:max-w-none"
+          />
+          <Tabs<LeaderboardPeriod>
+            type="inline"
+            options={periodOptions}
+            selectedValue={selectedPeriod}
+            onChange={handlePeriodChange}
+            className="shrink-0"
           />
         </div>
       </div>

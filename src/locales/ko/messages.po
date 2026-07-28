@@ -254,10 +254,6 @@ msgstr ""
 msgid "External swap temporarily disabled. Try again"
 msgstr "외부 스왑이 일시적으로 비활성화되었습니다. 다시 시도하십시오"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "How does it work?"
-msgstr "어떻게 작동하나요?"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMTrade"
@@ -812,6 +808,10 @@ msgstr "주문 체결가"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "A tier applies in the epoch it is achieved and remains active for 4 following epochs."
+msgstr "티어는 달성한 에포크에 적용되며 이후 4개 에포크 동안 활성 상태로 유지됩니다."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -1129,6 +1129,10 @@ msgstr "Plutus"
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "What is GT token?"
+msgstr "GT 토큰이란 무엇인가요?"
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
 msgstr ""
@@ -1244,6 +1248,10 @@ msgstr "Express의 안정성을 갖춘 매끄러운 트레이딩"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> to </1>{1} <2/>"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Rewards are distributed at the end of each epoch."
+msgstr "보상은 각 에포크가 끝날 때 분배됩니다."
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2280,6 +2288,10 @@ msgstr "출금 불가"
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "What is esGMX token?"
+msgstr "esGMX 토큰이란 무엇인가요?"
+
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
 msgid "current"
 msgstr "현재"
@@ -2655,6 +2667,10 @@ msgstr "펀딩 증가 팩터"
 msgid "May take a few minutes to appear. Check back later"
 msgstr "표시되기까지 몇 분이 소요될 수 있습니다. 잠시 후 다시 확인하십시오"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Stake it"
+msgstr "스테이킹하기"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "입금 실패"
@@ -2915,6 +2931,10 @@ msgstr ""
 msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 판매에 성공했지만 {0}(으)로의 브리지에 실패했습니다. 자금은 GMX 계정에 안전하게 보관되어 있습니다. 브리지를 다시 시도하거나 GMX 계정을 열어 토큰을 출금하세요."
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Your Multiplier determines the amount of rewards you receive:"
+msgstr "받는 보상의 양은 멀티플라이어에 따라 결정됩니다:"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
@@ -3016,6 +3036,14 @@ msgstr "이 크기에서 롱 증가를 위한 유동성이 없습니다.<0/>최�
 msgid "Transfer completed"
 msgstr "전송 완료"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Referral Bonus"
+msgstr "추천 보너스"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM 브리징 중..."
@@ -3043,6 +3071,10 @@ msgstr "1CT 비활성화"
 msgid "Check again"
 msgstr "다시 확인"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake more GMX to increase your tier and earn more rewards."
+msgstr "더 많은 GMX를 스테이킹하여 등급을 높이고 더 많은 보상을 받으세요."
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -3054,7 +3086,6 @@ msgstr ""
 msgid "Show details"
 msgstr "세부 사항 표시"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "A tier applies in the epoch it is achieved and for {0} following epochs."
 msgstr "등급은 달성한 에포크와 이후 {0}개 에포크 동안 적용됩니다."
@@ -3166,14 +3197,6 @@ msgstr "적격 보유 자산이 감지되지 않았습니다"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 먼저 연락드리지 않습니다. 공식 계정으로 \"I have feedback\"를 보내주십시오:"
-
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "How do activity boosts work?"
-msgstr "활동 부스트는 어떻게 작동하나요?"
-
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Maximum combined reward per eligible fee"
-msgstr "적격 수수료당 최대 합산 보상"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
@@ -3332,6 +3355,11 @@ msgstr "높은 슬리피지가 설정되었습니다. 현재 스왑 영향: {0}.
 msgid "Instant"
 msgstr "즉시"
 
+#: src/components/SettingsModal/IncentivesIndexerSettings.tsx
+#: src/components/SettingsModal/IncentivesIndexerSettings.tsx
+msgid "Incentives test squid"
+msgstr "인센티브 테스트 Squid"
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "오픈 포지션"
@@ -3437,6 +3465,10 @@ msgstr "{depositAmountLabel} 베스팅을 위해 {0} GMX 구매"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Unlock bonuses and boosts and increase your rewards"
+msgstr "보너스와 부스트를 해제하여 보상을 늘리세요"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -4076,10 +4108,6 @@ msgstr "순위 산정됨"
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1>는 영구 거래 거물로서의 타이틀을 정당하게 얻었으며, 이 인정 뒤에는 여러 이유가 있습니다.</0><2><3>@GMX_IO</3>는 VC 지원 없이 경로를 탐색한 프로젝트로 돋보입니다. 놀랍게도 TVL 기준 Arbitrum Chain에서 $488.34M으로 1위를 차지하고 DeFiLlama에서 전체 랭킹 23위를 차지했습니다... <4>더 보기</4></2>"
 
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Referral Volume"
-msgstr "추천 거래량"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Network status"
 msgstr "네트워크 상태"
@@ -4309,10 +4337,6 @@ msgstr "발동 시 이 주문의 일부에 대해 유동성이 부족할 수 있
 msgid "Settlement"
 msgstr "정산"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Increase your staked GMX balance by {0} to get {1} status <0>+{2}</0>"
-msgstr "스테이킹된 GMX 잔액을 {0}만큼 늘려 {1} 상태를 획득하세요 <0>+{2}</0>"
-
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "GMX가 다른 영구 플랫폼보다 비용 효율적인 이유는 무엇인가요?"
@@ -4367,6 +4391,10 @@ msgstr ""
 #: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Start trading to redeem your rewards."
 msgstr "거래를 시작하여 보상을 받으세요."
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "esGMX Rewards = Fees × (Multiplier × 10%)"
+msgstr "esGMX 보상 = 수수료 × (멀티플라이어 × 10%)"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days"
@@ -4808,6 +4836,10 @@ msgstr "체결 상세"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "자기 전송은 지원되지 않습니다"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Are referral Rewards part of my multiplier?"
+msgstr "추천 보상은 배수에 포함되나요?"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
@@ -5552,10 +5584,6 @@ msgstr "최근 상장"
 msgid "Failed to load order data:"
 msgstr "주문 데이터 로드 실패:"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Eligible fee share"
-msgstr "적격 수수료 비율"
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
@@ -5786,10 +5814,6 @@ msgstr "계정 스냅샷을 새로고침하지 못했습니다. 최근에 불러
 msgid "GM pools:"
 msgstr "GM 풀:"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Increase your trading volume to unlock a higher status and boost your rewards multiplier."
-msgstr "거래량을 늘려 더 높은 등급을 달성하고 보상 배수를 높이세요."
-
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "가격 영향 없음. 이 규모에서<0/>숏 증가 또는 롱 감소 시<1/>단일 체결가가 적용됩니다."
@@ -5992,8 +6016,8 @@ msgid "Net value"
 msgstr "순가치"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Are referral rewards part of my multiplier?"
-msgstr "추천 보상은 배수에 포함되나요?"
+msgid "The total Multiplier is capped at 10×."
+msgstr "총 멀티플라이어는 10×로 제한됩니다."
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -6119,10 +6143,6 @@ msgstr "<0>GMX는 전통적인 주문장과 달리 동적으로 균형 잡힌 �
 msgid "Read more"
 msgstr "더 알아보기"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Unlock boosts and increase your rewards."
-msgstr "부스트를 해제하고 보상을 늘리세요."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
@@ -6131,6 +6151,10 @@ msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier."
+msgstr "스테이킹 등급은 스테이킹한 GMX와 esGMX를 기준으로 하며 스테이킹 배수를 결정합니다."
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
@@ -6690,6 +6714,10 @@ msgstr "구인"
 msgid "Failed Stop Market"
 msgstr "스탑 마켓 실패"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "You receive 50% of all rewards earned by the traders you invite."
+msgstr "초대한 트레이더가 획득한 모든 보상의 50%를 받습니다."
+
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -6753,10 +6781,6 @@ msgstr "정산 요청 전송 중..."
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Sending {0} to {1} is not supported"
 msgstr "{0}을(를) {1}(으)로 보내는 것은 지원되지 않습니다"
-
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "GT allocation share"
-msgstr "GT 할당 비율"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -6880,6 +6904,10 @@ msgstr "s:"
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPC 오류.<0/><1/>안정성 향상을 위해 설정에서 <2>Express Trading</2>을 활성화하십시오"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Each staked esGMX token provides the same staking power as one staked GMX token. It earns staking rewards and contributes toward your staking tier."
+msgstr "스테이킹된 esGMX 토큰 하나는 스테이킹된 GMX 토큰 하나와 동일한 스테이킹 파워를 제공합니다. 스테이킹 보상을 획득하고 스테이킹 티어에 반영됩니다."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
 msgstr "UniDex 레버리지"
@@ -6917,6 +6945,10 @@ msgstr ""
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "열려있는 주문이 없습니다"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "esGMX can be used in two ways:"
+msgstr "esGMX는 두 가지 방법으로 사용할 수 있습니다:"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
@@ -7329,10 +7361,6 @@ msgstr "<0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0>에서 <3><4>GM: {
 msgid "Share your PnL"
 msgstr "PnL 공유하기"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "esGMX allocation share"
-msgstr "esGMX 할당 비율"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
@@ -7635,6 +7663,10 @@ msgstr "매도 요청을 실행하는 중…"
 msgid "Close short"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Escrowed GMX (esGMX) is a non-transferable token distributed as a reward."
+msgstr "Escrowed GMX(esGMX)는 보상으로 분배되는 양도 불가능한 토큰입니다."
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "{0} claimed"
 msgstr "{0} 수령 완료"
@@ -7719,6 +7751,7 @@ msgstr ""
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/WalletReadyContent.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/Claims.tsx
@@ -8368,6 +8401,10 @@ msgstr "V1 리베이트"
 msgid "Sell GLV"
 msgstr "GLV 판매"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "You earn esGMX and GT Rewards based on the fees paid each time you increase or decrease a position."
+msgstr "포지션을 늘리거나 줄일 때마다 지불한 수수료를 기준으로 esGMX 및 GT 보상을 받습니다."
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "{BLOCKCHAIN_COUNT} 블록체인에서"
@@ -8684,6 +8721,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (공급량)"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Invite traders"
+msgstr "트레이더 초대"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -9072,6 +9113,10 @@ msgstr "GMX 리스크 모니터링"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "순위 자격을 얻으려면 최소 {0}의 사용 자본이 필요합니다"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "GT is the native token of GMTrade. It is currently distributed as a reward, while its broader utility is planned for a later stage of the platform’s development. Future GT use cases and benefits will be announced as they become available."
+msgstr "GT는 GMTrade의 네이티브 토큰입니다. 현재 보상으로 분배되고 있으며, 더 광범위한 활용은 플랫폼 개발의 추후 단계에 예정되어 있습니다. 향후 GT 사용 사례와 혜택은 제공되는 대로 발표될 예정입니다."
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9373,10 +9418,6 @@ msgstr "퍼밋 승인을 완료할 수 없습니다."
 msgid "Learn more about the rewards program"
 msgstr "보상 프로그램 자세히 알아보기"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Eligible fees receive the configured reward share. Applicable persistent and trade-specific multiplier adjustments are added together, then capped at the configured maximum."
-msgstr "적격 수수료에는 설정된 보상 비율이 적용됩니다. 적용 가능한 지속형 및 거래별 배수 조정을 합산한 후 설정된 최댓값으로 제한합니다."
-
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
 msgstr "추천 코드 업데이트에 실패했습니다"
@@ -9597,10 +9638,6 @@ msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
 msgid "Claim"
 msgstr "수령"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "How are rewards calculated?"
-msgstr "보상은 어떻게 계산되나요?"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POSITION IMPACT POOL"
 msgstr "포지션 영향 풀"
@@ -9740,6 +9777,10 @@ msgstr ""
 msgid "for {comment}"
 msgstr "{comment}에 대해"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trade more to reach a higher tier and earn more rewards."
+msgstr "더 많이 거래하여 더 높은 등급을 달성하고 더 많은 보상을 받으세요."
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Adding esGMX extends your current vesting: your existing tokens will finish converting on <0>{0} instead of {1}</0>."
 msgstr "esGMX를 추가하면 현재 베스팅 기간이 연장됩니다. 기존 토큰은 <0>{1}이 아닌 {0}에 전환이 완료됩니다</0>."
@@ -9784,6 +9825,10 @@ msgstr "주문 비용을 충당할 담보가 부족합니다"
 msgid "Unknown shift GM order"
 msgstr "알 수 없는 GM 이전 주문"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to get {1} status <0>+{2}</0>"
+msgstr "{1} 상태를 얻으려면 GMX {0}개를 더 스테이킹하세요 <0>+{2}</0>"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimated fees"
@@ -9804,6 +9849,10 @@ msgstr "청산 가격 영향"
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "새 탭에서 GMTrade를 엽니다"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "How does Rewards work?"
+msgstr "Rewards는 어떻게 작동하나요?"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
@@ -9860,13 +9909,6 @@ msgstr "{networkLabel}의 {addressLabel}"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Loading fees..."
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Referral Boost"
-msgstr "추천 부스트"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
@@ -10042,10 +10084,6 @@ msgstr "순 비율 / 1시간"
 msgid "Select language"
 msgstr "언어 선택"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Stake GMX and receive up to {0} of your fees as rewards."
-msgstr "GMX를 스테이킹하고 수수료의 최대 {0}를 리워드로 받으세요."
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "알 수 없는 값"
@@ -10180,7 +10218,6 @@ msgstr "보너스 리베이트"
 msgid "Decentralized options strategies"
 msgstr "탈중앙화 옵션 전략"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total multiplier is capped at {0}."
 msgstr "회원님의 보상 배수는 거래량 등급, 스테이킹 등급 및 적용 가능한 활동 부스트를 합산합니다. 전체 배수는 {0}로 제한됩니다."
@@ -10236,6 +10273,10 @@ msgstr "2021년부터 운영되는 깊은 유동성과 저비용의 탈중앙화
 msgid "TOTAL VOLUME"
 msgstr "총 거래량"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "GT Rewards = 20% of esGMX Rewards"
+msgstr "GT 보상 = esGMX 보상의 20%"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Enable One-Click Trading"
 msgstr "원클릭 거래 활성화"
@@ -10262,7 +10303,6 @@ msgid "Yes"
 msgstr "예"
 
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "Maximum multiplier"
 msgstr "최대 배수"
 
@@ -10678,10 +10718,6 @@ msgstr ""
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Select positions where accrued funding fee exceeds the {0} gas cost to settle"
 msgstr "발생 펀딩 수수료가 정산 Gas 비용 {0}을 초과하는 포지션을 선택하십시오"
-
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "Trade-specific boosts apply only to qualifying trades. Lifetime Volume is permanent once earned, while a Return Bonus remains available until its reward cap is consumed."
-msgstr "거래별 부스트는 적격 거래에만 적용됩니다. 누적 거래량은 한 번 획득하면 영구적으로 유지되며, 리턴 보너스는 보상 한도를 모두 사용할 때까지 이용할 수 있습니다."
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
@@ -11200,6 +11236,11 @@ msgstr "수익률 볼트"
 msgid "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trading activities"
+msgstr "거래 활동"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Connect wallet to view vesting rewards."
 msgstr "베스팅 보상을 확인하려면 지갑을 연결하세요."
@@ -11320,10 +11361,6 @@ msgstr "옵션 기반 볼트"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time limit"
 msgstr "기간 제한"
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Your Staking Tier is based on staked GMX and determines your staking multiplier."
-msgstr "스테이킹 등급은 스테이킹한 GMX를 기준으로 하며 스테이킹 배수를 결정합니다."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
@@ -11849,10 +11886,6 @@ msgstr "거래 반복"
 msgid "Withdrawn {balanceFormatted} to main account"
 msgstr "메인 계좌로 {balanceFormatted} 출금 완료"
 
-#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
-msgid "No. Referral rewards are an additional configured share of referred traders’ final rewards and do not contribute to trading-volume tiers."
-msgstr "아니요. 추천 보상은 추천 트레이더의 최종 보상 중 추가로 설정된 비율이며, 거래량 등급 산정에는 반영되지 않습니다."
-
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
 msgstr "{positionName} 정산 실패"
@@ -11880,6 +11913,10 @@ msgstr "Affiliate 볼트"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "{0}에 대해 아래 한도까지 GM을 판매할 수 있습니다. 나머지 토큰은 미결 포지션을 위해 예약되어 있습니다."
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Vest it into liquid GMX"
+msgstr "유동성 GMX로 전환하기"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -12470,10 +12507,6 @@ msgstr "롱 순 비율 / 1시간"
 msgid "{0} of net position fee"
 msgstr "순 포지션 수수료의 {0}"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Complete trading activities"
-msgstr "거래 활동 완료"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
@@ -12704,6 +12737,10 @@ msgstr "최대 미결제약정을 초과했습니다"
 msgid "Network fees are high due to increased {chainName} network activity"
 msgstr "{chainName} 네트워크 활동 증가로 인해 네트워크 수수료가 높습니다"
 
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "No. Referral rewards are added separately and are based on the trading volume generated by your referrals."
+msgstr "아니요. 추천 보상은 별도로 추가되며 추천인이 생성한 거래량을 기준으로 합니다."
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
 msgstr ""
@@ -12812,6 +12849,14 @@ msgstr "포지션 영향 풀 대출 금액"
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Indexed manual reward remaining"
 msgstr "남은 인덱싱 수동 보상"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "esGMX can be vested over a one-year period and converted into transferable GMX tokens. Vesting can be managed from the Rewards page."
+msgstr "esGMX는 1년에 걸쳐 베스팅하여 양도 가능한 GMX 토큰으로 전환할 수 있습니다. 베스팅은 Rewards 페이지에서 관리할 수 있습니다."
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "Your Multiplier is calculated as the sum of your Volume Multiplier, Staking Multiplier, and any applicable Activity Boosts."
+msgstr "멀티플라이어는 볼륨 멀티플라이어, 스테이킹 멀티플라이어 및 적용 가능한 액티비티 부스트의 합으로 계산됩니다."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
@@ -13135,6 +13180,10 @@ msgstr "주문이 {priceText}에 체결되지 않을 수 있습니다: 허용 �
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
 msgstr "공유 위치"
+
+#: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+msgid "How are Rewards calculated?"
+msgstr "보상은 어떻게 계산되나요?"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"

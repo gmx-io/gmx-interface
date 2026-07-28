@@ -13,10 +13,12 @@ vi.mock("../client", () => ({
 
 import { ARBITRUM } from "config/chains";
 
+import { getIncentivesIndexerUrl } from "../client";
 import type { IncentivesConfig } from "../types";
 import { useIncentivesConfig } from "../useIncentivesConfig";
 
 const mockUseSWR = vi.mocked(useSWR);
+const mockGetIncentivesIndexerUrl = vi.mocked(getIncentivesIndexerUrl);
 const epochTimestamp = 1_000;
 const epochDuration = 100;
 const config = { epochTimestamp, epochDuration } as IncentivesConfig;
@@ -47,6 +49,7 @@ describe("useIncentivesConfig epoch boundary", () => {
     vi.useFakeTimers();
     vi.setSystemTime((epochTimestamp + 50) * 1000);
     mockUseSWR.mockReset();
+    mockGetIncentivesIndexerUrl.mockReturnValue("https://example.com/ivprod/graphql");
   });
 
   afterEach(() => {
@@ -105,5 +108,21 @@ describe("useIncentivesConfig epoch boundary", () => {
     await advanceTimers(60_000);
 
     expect(mutate).not.toHaveBeenCalled();
+  });
+
+  it("schedules boundary retries again after the selected endpoint changes", async () => {
+    vi.setSystemTime((epochTimestamp + epochDuration) * 1000);
+    const mutate = vi.fn().mockResolvedValue(config);
+    setSWRResult(mutate);
+    const view = render(<Harness />);
+
+    await advanceTimers(51_000);
+    expect(mutate).toHaveBeenCalledTimes(4);
+
+    mockGetIncentivesIndexerUrl.mockReturnValue("https://example.com/ivtest/graphql");
+    view.rerender(<Harness />);
+    await advanceTimers(1_000);
+
+    expect(mutate).toHaveBeenCalledTimes(5);
   });
 });

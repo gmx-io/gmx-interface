@@ -21,7 +21,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-const PAGE_SIZE = 16;
+const PAGE_SIZE = 10;
 
 function RewardsHistoryMobileSkeletonRow({ invisible }: { invisible?: boolean }) {
   return (

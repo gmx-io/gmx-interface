@@ -25,17 +25,27 @@ describe("incentives indexer URL", () => {
     );
   });
 
+  it("uses gmx-test ivtest when selected", () => {
+    mockIsDevelopment.mockReturnValue(true);
+
+    expect(getIndexerUrl(ARBITRUM, "incentives", { incentivesTestSquid: "ivtest" })).toBe(
+      "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivtest/api/graphql"
+    );
+  });
+
   it("prefers an explicit development override", () => {
     mockIsDevelopment.mockReturnValue(true);
     localStorage.setItem(getIndexerUrlKey(ARBITRUM, "incentives"), "https://example.com/custom/graphql");
 
-    expect(getIndexerUrl(ARBITRUM, "incentives")).toBe("https://example.com/custom/graphql");
+    expect(getIndexerUrl(ARBITRUM, "incentives", { incentivesTestSquid: "ivtest" })).toBe(
+      "https://example.com/custom/graphql"
+    );
   });
 
   it("keeps production on the canonical endpoint", () => {
     mockIsDevelopment.mockReturnValue(false);
 
-    expect(getIndexerUrl(ARBITRUM, "incentives")).toBe(
+    expect(getIndexerUrl(ARBITRUM, "incentives", { incentivesTestSquid: "ivtest" })).toBe(
       "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql"
     );
   });

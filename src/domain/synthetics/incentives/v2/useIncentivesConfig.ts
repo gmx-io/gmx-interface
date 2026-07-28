@@ -3,17 +3,18 @@ import useSWR from "swr";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { fetchIncentivesGraphql, getIncentivesIndexerUrl } from "./client";
+import { fetchIncentivesGraphql } from "./client";
 import { parseIncentivesConfig, type RawIncentivesConfig } from "./parsers";
 import { INCENTIVES_CONFIG_QUERY } from "./queries";
 import type { IncentivesConfig } from "./types";
+import { useIncentivesIndexerUrl } from "./useIncentivesIndexerUrl";
 
 const CONFIG_SAFETY_REFRESH_INTERVAL = 5 * CONFIG_UPDATE_INTERVAL;
 const BOUNDARY_RETRY_DELAYS = [5_000, 15_000, 30_000];
 
 export function useIncentivesConfig(chainId: number, params: { enabled?: boolean } = {}) {
   const { enabled = true } = params;
-  const endpoint = getIncentivesIndexerUrl(chainId);
+  const endpoint = useIncentivesIndexerUrl(chainId);
   const swrKey = enabled && endpoint ? ["useIncentivesV2Config", chainId, endpoint] : null;
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<IncentivesConfig | null>(swrKey, {
@@ -29,13 +30,15 @@ export function useIncentivesConfig(chainId: number, params: { enabled?: boolean
     revalidateOnFocus: false,
   });
 
-  const revalidatedBoundaryRef = useRef<number>();
+  const revalidatedBoundaryRef = useRef<{ boundary: number; endpoint?: string }>();
 
   useEffect(() => {
     if (!data) return;
 
     const boundary = data.epochTimestamp + data.epochDuration;
-    if (revalidatedBoundaryRef.current === boundary) return;
+    if (revalidatedBoundaryRef.current?.boundary === boundary && revalidatedBoundaryRef.current.endpoint === endpoint) {
+      return;
+    }
 
     let cancelled = false;
     let timeoutId: number;
@@ -52,13 +55,13 @@ export function useIncentivesConfig(chainId: number, params: { enabled?: boolean
       if (cancelled) return;
 
       if (nextConfig?.epochTimestamp !== data.epochTimestamp) {
-        revalidatedBoundaryRef.current = boundary;
+        revalidatedBoundaryRef.current = { boundary, endpoint };
         return;
       }
 
       const retryDelay = BOUNDARY_RETRY_DELAYS[attempt];
       if (retryDelay === undefined) {
-        revalidatedBoundaryRef.current = boundary;
+        revalidatedBoundaryRef.current = { boundary, endpoint };
         return;
       }
 
@@ -72,7 +75,7 @@ export function useIncentivesConfig(chainId: number, params: { enabled?: boolean
       cancelled = true;
       window.clearTimeout(timeoutId);
     };
-  }, [data, mutate]);
+  }, [data, endpoint, mutate]);
 
   return useMemo(
     () => ({ data, error, loading: isLoading, isValidating, mutate, endpoint }),

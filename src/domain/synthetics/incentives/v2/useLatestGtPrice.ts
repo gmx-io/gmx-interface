@@ -3,8 +3,9 @@ import useSWR from "swr";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { fetchIncentivesGraphql, getIncentivesIndexerUrl } from "./client";
+import { fetchIncentivesGraphql } from "./client";
 import { LATEST_GT_PRICE_QUERY } from "./queries";
+import { useIncentivesIndexerUrl } from "./useIncentivesIndexerUrl";
 
 type RawGtPrice = {
   priceUsd: string;
@@ -18,7 +19,7 @@ export type LatestGtPrice = {
 
 export function useLatestGtPrice(chainId: number, params: { enabled?: boolean } = {}) {
   const { enabled = true } = params;
-  const endpoint = getIncentivesIndexerUrl(chainId);
+  const endpoint = useIncentivesIndexerUrl(chainId);
   const swrKey = enabled && endpoint ? ["useLatestGtPrice", chainId, endpoint] : null;
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<LatestGtPrice | null>(swrKey, {

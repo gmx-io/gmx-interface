@@ -38,12 +38,33 @@ function getScopeRoots(scope: ModalFocusScope, contentElement: HTMLElement) {
   return [contentElement, ...scope.portalElements].filter((element) => element.isConnected);
 }
 
+function isFocusableElementVisible(element: HTMLElement) {
+  let currentElement: HTMLElement | null = element;
+
+  while (currentElement) {
+    if (currentElement.hidden || currentElement.inert || currentElement.getAttribute("aria-hidden") === "true") {
+      return false;
+    }
+
+    const style = window.getComputedStyle(currentElement);
+    if (style.display === "none" || style.visibility === "hidden") {
+      return false;
+    }
+
+    currentElement = currentElement.parentElement;
+  }
+
+  return true;
+}
+
 function getFocusableElements(scope: ModalFocusScope, contentElement: HTMLElement) {
   const roots = getScopeRoots(scope, contentElement);
   const elements = new Set<HTMLElement>();
 
   for (const root of roots) {
-    root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR).forEach((element) => elements.add(element));
+    root
+      .querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+      .forEach((element) => isFocusableElementVisible(element) && elements.add(element));
   }
 
   return Array.from(elements).sort((a, b) => {

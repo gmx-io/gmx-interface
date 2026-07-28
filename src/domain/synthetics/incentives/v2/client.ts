@@ -1,8 +1,9 @@
 import { getIndexerUrl } from "config/indexers";
+import type { IncentivesTestSquid } from "config/indexers";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
-export function getIncentivesIndexerUrl(chainId: number) {
-  return getIndexerUrl(chainId, "incentives");
+export function getIncentivesIndexerUrl(chainId: number, incentivesTestSquid?: IncentivesTestSquid) {
+  return getIndexerUrl(chainId, "incentives", { incentivesTestSquid });
 }
 
 export async function fetchIncentivesGraphql<T>(

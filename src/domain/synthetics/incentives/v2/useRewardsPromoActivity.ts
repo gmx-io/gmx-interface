@@ -4,8 +4,9 @@ import { isAddress } from "viem";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { fetchIncentivesGraphql, getIncentivesIndexerUrl } from "./client";
+import { fetchIncentivesGraphql } from "./client";
 import { REWARDS_PROMO_ACTIVITY_QUERY } from "./queries";
+import { useIncentivesIndexerUrl } from "./useIncentivesIndexerUrl";
 
 type RawRewardsPromoActivity = {
   accountNetPositionFeesLast4Months: { netPositionFeeUsd: string } | null;
@@ -19,7 +20,7 @@ export type RewardsPromoActivity = {
 
 export function useRewardsPromoActivity(chainId: number, params: { account?: string; enabled?: boolean }) {
   const { account, enabled = true } = params;
-  const endpoint = getIncentivesIndexerUrl(chainId);
+  const endpoint = useIncentivesIndexerUrl(chainId);
   const validAccount = account && isAddress(account) ? account : undefined;
   const swrKey =
     enabled && endpoint && validAccount ? ["useRewardsPromoActivity", chainId, endpoint, validAccount] : null;

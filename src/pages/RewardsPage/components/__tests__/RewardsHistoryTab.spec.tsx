@@ -66,7 +66,7 @@ import { RewardsHistoryTab } from "../RewardsHistoryTab";
 
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
 const ONE_HOUR = 3_600;
-const HISTORY_PAGE_SIZE = 16;
+const HISTORY_PAGE_SIZE = 10;
 const EPOCH = Date.UTC(2026, 3, 7, 9, 0, 0) / 1000;
 const ES_GMX_UNIT = 10n ** BigInt(ES_GMX_DECIMALS);
 const GT_UNIT = 10n ** BigInt(GT_DECIMALS);
@@ -223,7 +223,7 @@ describe("RewardsHistoryTab", () => {
     const { rerender } = renderHistory();
 
     fireEvent.click(screen.getByRole("button", { name: "2" }));
-    await waitFor(() => expect(getLastHistoryParams().offset).toBe(16));
+    await waitFor(() => expect(getLastHistoryParams().offset).toBe(HISTORY_PAGE_SIZE));
     expect(historyMock.mutate).not.toHaveBeenCalled();
 
     const nextConfig = { ...config, epochTimestamp: config.epochTimestamp + config.epochDuration };
@@ -233,7 +233,7 @@ describe("RewardsHistoryTab", () => {
       expect(getLastHistoryParams()).toMatchObject({
         account: CHECKSUMMED_ACCOUNT,
         enabled: true,
-        limit: 16,
+        limit: HISTORY_PAGE_SIZE,
         offset: 0,
       });
       expect(historyMock.mutate).not.toHaveBeenCalled();
@@ -266,7 +266,7 @@ describe("RewardsHistoryTab", () => {
     const { rerender } = renderHistory();
 
     fireEvent.click(screen.getByRole("button", { name: "2" }));
-    await waitFor(() => expect(getLastHistoryParams().offset).toBe(16));
+    await waitFor(() => expect(getLastHistoryParams().offset).toBe(HISTORY_PAGE_SIZE));
 
     historyMock.data = undefined;
     historyMock.totalCount = undefined;

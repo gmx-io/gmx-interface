@@ -9,6 +9,7 @@ import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDeb
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
+import { IncentivesIndexerSettings } from "./IncentivesIndexerSettings";
 import { RewardsActionSettings } from "./RewardsActionSettings";
 import { RpcDebugSettings } from "./RpcDebugSettings";
 import { SettingsSection } from "./shared";
@@ -49,6 +50,8 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         </ToggleSwitch>
 
         <RewardsActionSettings />
+
+        <IncentivesIndexerSettings />
 
         <AbFlagSettings />
 

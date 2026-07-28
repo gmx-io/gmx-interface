@@ -4,10 +4,11 @@ import { isAddress } from "viem";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { fetchIncentivesGraphql, getIncentivesIndexerUrl } from "./client";
+import { fetchIncentivesGraphql } from "./client";
 import { parseIncentiveAccountEpochAuditPage, type RawIncentiveAccountEpochAuditEntry } from "./parsers";
 import { INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY } from "./queries";
 import type { IncentiveAccountEpochAuditPage } from "./types";
+import { useIncentivesIndexerUrl } from "./useIncentivesIndexerUrl";
 
 const MAX_PAGE_SIZE = 1000;
 const AUDIT_REFRESH_INTERVAL = 5 * CONFIG_UPDATE_INTERVAL;
@@ -55,7 +56,7 @@ export function useIncentiveAccountEpochAudit(
   }
 ) {
   const { where, orderBy, enabled = true } = params;
-  const endpoint = getIncentivesIndexerUrl(chainId);
+  const endpoint = useIncentivesIndexerUrl(chainId);
   const validAccount = where?.account && isAddress(where.account) ? where.account : undefined;
   const hasInvalidAccount = Boolean(where?.account && !validAccount);
   const epochTimestamp = where?.epochTimestamp;

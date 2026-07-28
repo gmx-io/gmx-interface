@@ -36,6 +36,7 @@ import SEO from "components/Seo/SEO";
 
 import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";
+import { WalletReadyContent } from "./WalletReadyContent";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -58,7 +59,11 @@ function App() {
     dynamicActivate(defaultLanguage);
   }, []);
 
-  let app = <AppRoutes />;
+  let app = (
+    <WalletReadyContent>
+      <AppRoutes />
+    </WalletReadyContent>
+  );
   app = (
     <ErrorBoundary id="App" variant="app">
       {app}

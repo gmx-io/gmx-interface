@@ -311,6 +311,7 @@ function TabWrapper({
 }) {
   return (
     <div
+      aria-hidden={activeTab !== tab}
       className={cx("w-full shrink-0", {
         "max-md:hidden md:invisible": activeTab !== tab,
         "order-first": activeTab === tab,

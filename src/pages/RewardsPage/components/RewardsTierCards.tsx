@@ -13,7 +13,7 @@ import type {
   IncentivesConfig,
   StakingTierId,
 } from "domain/synthetics/incentives/v2/types";
-import { formatFactorPercentage, formatMultiplier } from "domain/synthetics/incentives/v2/utils";
+import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 import { StandaloneBuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 
@@ -34,6 +34,7 @@ import {
   type AccountDataState,
   boostLabels,
   BoostDescriptionText,
+  getBoostsInDisplayOrder,
   stakingTierLabels,
   volumeTierLabels,
 } from "./rewardsTiersShared";
@@ -345,7 +346,7 @@ function VolumeCard({
             <VolumeTierIcon tierId={volumeTier} active className={tierIconLarge} />
             {volumeTierLabels[volumeTier]}
           </h3>
-          <div className="flex flex-col gap-2 text-13 text-typography-secondary">
+          <div className="mt-auto flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center gap-4 py-2">
               <Trans>
                 Volume this epoch: <span className="text-typography-primary">{formatCompactUsd(tierVolume)}</span>
@@ -354,7 +355,7 @@ function VolumeCard({
             {progressTooltipContent ? (
               <TooltipWithPortal
                 as="div"
-                className="group/volume-bar flex items-center py-5"
+                className="group/volume-bar -my-5 flex items-center py-5"
                 handle={
                   <button
                     type="button"
@@ -371,7 +372,7 @@ function VolumeCard({
                 variant="none"
               />
             ) : (
-              <div className="relative h-6 overflow-hidden rounded-8 bg-cold-blue-900">
+              <div className="relative -my-5 h-6 overflow-hidden rounded-8 bg-cold-blue-900">
                 <div
                   className={cx(
                     "absolute left-0 top-0 h-full rounded-8 transition-[width] duration-300",
@@ -386,7 +387,7 @@ function VolumeCard({
                 <Trans>Max tier reached ✓</Trans>
               </div>
             ) : targetTierConfig ? (
-              <div className="flex items-center gap-4 py-2">
+              <div className="py-2">
                 {isPreserveMode ? (
                   <Trans>
                     Trade {formatCompactUsd(remainingToTarget)} more to keep {volumeTierLabels[targetTierConfig.tier]}{" "}
@@ -414,7 +415,7 @@ function VolumeCard({
             <Trans>Trade More. Earn More.</Trans>
           </h3>
           <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
-            <Trans>Increase your trading volume to unlock a higher status and boost your rewards multiplier.</Trans>
+            <Trans>Trade more to reach a higher tier and earn more rewards.</Trans>
           </div>
           <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300">
             <Trans>Start trading</Trans> <ArrowRight />
@@ -518,7 +519,7 @@ function StakingCard({
             <StakingTierIcon tierId={displayTier} active className={tierIconLarge} />
             {stakingTierLabels[displayTier]}
           </h3>
-          <div className="flex flex-col gap-2 text-13 text-typography-secondary">
+          <div className="mt-auto flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center justify-between py-2 font-medium">
               <Trans>
                 GMX staked:{" "}
@@ -558,11 +559,10 @@ function StakingCard({
                 <Trans>Max tier reached ✓</Trans>
               </div>
             ) : nextTierConfig && requiredToNextTier > 0n ? (
-              <div className="flex items-center gap-4 py-2">
+              <div className="py-2">
                 <Trans>
-                  Increase your staked GMX balance by{" "}
-                  {formatAmount(requiredToNextTier, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} to get{" "}
-                  {stakingTierLabels[nextTierConfig.tier]} status{" "}
+                  Stake {formatAmount(requiredToNextTier, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true })} GMX
+                  more to get {stakingTierLabels[nextTierConfig.tier]} status{" "}
                   <span className="text-typography-primary">
                     +{formatMultiplier(nextTierConfig.multiplier, config.multiplierDecimals)}
                   </span>
@@ -622,14 +622,7 @@ function InactiveStakingCardContent({
         {showStaticCopy ? <Trans>Stake to Boost Rewards</Trans> : promoCopy.title}
       </h3>
       <div className="text-13 font-medium text-typography-secondary">
-        {showStaticCopy ? (
-          <Trans>
-            Stake GMX and receive up to {formatFactorPercentage(promoSelection.maxRewardRateFactor)} of your fees as
-            rewards.
-          </Trans>
-        ) : (
-          promoCopy.body
-        )}
+        <Trans>Stake more GMX to increase your tier and earn more rewards.</Trans>
       </div>
       {isWalletBalanceLoading ? (
         <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
@@ -805,32 +798,37 @@ function BoostsCard({
     0n
   );
   const activeBoostCount = activePersistentBoostIds.length + (hasReferralBoost ? 1 : 0);
-  const boostDisplayItems: BoostDisplayItem[] = [
-    ...config.boosts.map((boost) => {
-      const isActivePersistent = activePersistentBoostIds.includes(boost.boost);
-      const isQualifiedThisEpoch = qualifiedTransientBoostIds.includes(boost.boost);
+  const includeReturnBonus = Boolean(status?.boostIds.includes("ManualAllocation"));
+  const orderedBoosts = getBoostsInDisplayOrder(config.boosts, includeReturnBonus);
+  const createMultiplierDisplayItem = (boost: BoostConfig): BoostDisplayItem => {
+    const isActivePersistent = activePersistentBoostIds.includes(boost.boost);
+    const isQualifiedThisEpoch = qualifiedTransientBoostIds.includes(boost.boost);
 
-      return {
-        type: "multiplier" as const,
-        key: boost.boost,
-        boost,
-        isActivePersistent,
-        isQualifiedThisEpoch,
-        isHighlighted: isActivePersistent || isQualifiedThisEpoch,
-      };
-    }),
+    return {
+      type: "multiplier" as const,
+      key: boost.boost,
+      boost,
+      isActivePersistent,
+      isQualifiedThisEpoch,
+      isHighlighted: isActivePersistent || isQualifiedThisEpoch,
+    };
+  };
+  const boostDisplayItems: BoostDisplayItem[] = [
+    ...orderedBoosts.filter((boost) => boost.boost === "ManualAllocation").map(createMultiplierDisplayItem),
     {
       type: "referral" as const,
       key: "ReferralBoost" as const,
       isHighlighted: hasReferralBoost,
     },
-  ].sort((left, right) => Number(right.isHighlighted) - Number(left.isHighlighted));
+    ...orderedBoosts.filter((boost) => boost.boost !== "ManualAllocation").map(createMultiplierDisplayItem),
+  ];
 
   return (
     <div
       className={cx(
         tierCardBase,
-        "justify-between !p-0 !pb-16 max-lg:!pb-12",
+        "!p-0 !pb-16 max-lg:!pb-12",
+        !hasStatus && "justify-between",
         hasStatus ? tierCardActive : tierCardBanner
       )}
     >
@@ -854,7 +852,7 @@ function BoostsCard({
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-20 px-16">
+      <div className={cx("flex flex-col gap-20 px-16", hasStatus && "flex-1")}>
         {hasStatus ? (
           <>
             <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
@@ -864,10 +862,12 @@ function BoostsCard({
               <span className="flex flex-col">
                 {activeBoostCount > 0 ? (
                   <span>{plural(activeBoostCount, { one: "# active boost", other: "# active boosts" })}</span>
-                ) : null}
+                ) : (
+                  <Trans>Trading activities</Trans>
+                )}
               </span>
             </h3>
-            <div className="flex flex-wrap gap-12">
+            <div className="mt-auto flex flex-nowrap gap-12">
               {boostDisplayItems.map((item) => {
                 if (item.type === "referral") {
                   return (
@@ -875,28 +875,34 @@ function BoostsCard({
                       key={item.key}
                       as="button"
                       type="button"
-                      aria-label={t`Referral Boost`}
-                      className="rounded-8 p-0"
+                      aria-label={t`Referral Bonus`}
+                      className="aspect-square min-w-0 max-w-44 flex-1 basis-44 rounded-8 p-0"
                       handle={
                         <div
                           className={cx(
-                            "flex size-44 items-center justify-center rounded-8 border-1/2",
+                            "flex size-full items-center justify-center rounded-8 border-1/2",
                             item.isHighlighted
                               ? "border-slate-600 bg-slate-800"
                               : "border-slate-600 bg-slate-900/80 opacity-40"
                           )}
                         >
-                          <ReferralBoostIcon active={item.isHighlighted} className="size-20" variant="glyph" />
+                          <ReferralBoostIcon active={item.isHighlighted} className="size-[45.4545%]" variant="glyph" />
                         </div>
                       }
                       content={
                         <div>
                           <div className="font-medium">
-                            <Trans>Referral Boost</Trans>
+                            <Trans>Referral Bonus</Trans>
                           </div>
                           <div className="mt-4 text-13 text-typography-secondary">
                             <Trans>Receive 50% of the rewards earned by every trader you invite.</Trans>
                           </div>
+                          <Link
+                            to="/referrals/affiliates"
+                            className="mt-4 inline-flex items-center gap-4 text-13 font-medium text-rewards-blue-300"
+                          >
+                            <Trans>Invite traders</Trans> <ArrowRight />
+                          </Link>
                           {item.isHighlighted ? (
                             <div className="mt-4 text-13 text-green-500">
                               <Trans>Active</Trans>
@@ -925,17 +931,17 @@ function BoostsCard({
                     as="button"
                     type="button"
                     aria-label={accessibleBoostLabel}
-                    className="rounded-8 p-0"
+                    className="aspect-square min-w-0 max-w-44 flex-1 basis-44 rounded-8 p-0"
                     handle={
                       <div
                         className={cx(
-                          "flex items-center justify-center rounded-8 border-1/2",
+                          "flex size-full items-center justify-center rounded-8 border-1/2",
                           isHighlighted
                             ? "border-slate-600 bg-slate-800"
                             : "border-slate-600 bg-slate-900/80 opacity-40"
                         )}
                       >
-                        <BoostTierIcon boostId={boost.boost} active={false} className="size-44" />
+                        <BoostTierIcon boostId={boost.boost} active={false} className="size-full" />
                       </div>
                     }
                     content={
@@ -977,10 +983,10 @@ function BoostsCard({
         ) : (
           <div className="flex flex-1 flex-col justify-between gap-8">
             <h3 className="text-h3 font-medium text-typography-primary">
-              <Trans>Complete trading activities</Trans>
+              <Trans>Trading activities</Trans>
             </h3>
             <p className="text-13 font-medium text-typography-secondary">
-              <Trans>Unlock boosts and increase your rewards.</Trans>
+              <Trans>Unlock bonuses and boosts and increase your rewards</Trans>
             </p>
           </div>
         )}
@@ -990,38 +996,50 @@ function BoostsCard({
         <div className="group overflow-hidden" tabIndex={0} aria-label={t`Activity Boost`}>
           <div className="flex w-max animate-marquee gap-8 group-hover:[animation-play-state:paused] group-focus:[animation-play-state:paused] motion-reduce:animate-none">
             <div className="flex gap-8">
-              {config.boosts.map((boost) => (
-                <span
-                  key={boost.boost}
-                  className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
-                >
-                  <BoostTierIcon boostId={boost.boost} active={false} className="size-26 shrink-0" />
-                  {boostLabels[boost.boost]}
-                </span>
-              ))}
-              <span className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700">
-                <span className="flex size-26 shrink-0 items-center justify-center">
-                  <ReferralBoostIcon active={false} className="size-16" variant="glyph" />
-                </span>
-                <Trans>Referral Boost</Trans>
-              </span>
+              {boostDisplayItems.map((item) =>
+                item.type === "referral" ? (
+                  <span
+                    key={item.key}
+                    className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
+                  >
+                    <span className="flex size-26 shrink-0 items-center justify-center">
+                      <ReferralBoostIcon active={false} className="size-16" variant="glyph" />
+                    </span>
+                    <Trans>Referral Bonus</Trans>
+                  </span>
+                ) : (
+                  <span
+                    key={item.key}
+                    className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
+                  >
+                    <BoostTierIcon boostId={item.boost.boost} active={false} className="size-26 shrink-0" />
+                    {boostLabels[item.boost.boost]}
+                  </span>
+                )
+              )}
             </div>
             <div className="flex gap-8" aria-hidden="true">
-              {config.boosts.map((boost) => (
-                <span
-                  key={boost.boost}
-                  className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
-                >
-                  <BoostTierIcon boostId={boost.boost} active={false} className="size-26 shrink-0" />
-                  {boostLabels[boost.boost]}
-                </span>
-              ))}
-              <span className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700">
-                <span className="flex size-26 shrink-0 items-center justify-center">
-                  <ReferralBoostIcon active={false} className="size-16" variant="glyph" />
-                </span>
-                <Trans>Referral Boost</Trans>
-              </span>
+              {boostDisplayItems.map((item) =>
+                item.type === "referral" ? (
+                  <span
+                    key={item.key}
+                    className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
+                  >
+                    <span className="flex size-26 shrink-0 items-center justify-center">
+                      <ReferralBoostIcon active={false} className="size-16" variant="glyph" />
+                    </span>
+                    <Trans>Referral Bonus</Trans>
+                  </span>
+                ) : (
+                  <span
+                    key={item.key}
+                    className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
+                  >
+                    <BoostTierIcon boostId={item.boost.boost} active={false} className="size-26 shrink-0" />
+                    {boostLabels[item.boost.boost]}
+                  </span>
+                )
+              )}
             </div>
           </div>
         </div>

@@ -8,11 +8,7 @@ import { ARBITRUM } from "config/chains";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { AccountIncentiveStatus, IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
-import {
-  formatFactorPercentage,
-  formatMultiplier,
-  getMaxRewardRateFactor,
-} from "domain/synthetics/incentives/v2/utils";
+import { formatFactorPercentage } from "domain/synthetics/incentives/v2/utils";
 import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { useChainId } from "lib/chains";
 import { formatUsd, PRECISION } from "lib/numbers";
@@ -295,13 +291,13 @@ describe("RewardsTiersTab", () => {
   it("uses an unpadded referral glyph in the boosts card and keeps the centered table icon", () => {
     renderTab();
 
-    const referralBoostButton = screen.getByRole("button", { name: "Referral Boost" });
-    expect(referralBoostButton.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 20 20");
+    const referralBonusButton = screen.getByRole("button", { name: "Referral Bonus" });
+    expect(referralBonusButton.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 20 20");
 
     fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
 
-    const referralVolumeRow = screen.getByRole("row", { name: /Referral Volume/ });
-    expect(referralVolumeRow.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 28 28");
+    const referralBonusRow = screen.getByRole("row", { name: /Referral Bonus/ });
+    expect(referralBonusRow.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 28 28");
   });
 
   it("caps the projected multiplier transition at the configured maximum", () => {
@@ -456,7 +452,7 @@ describe("RewardsTiersTab", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Staking Tiers" }));
     expect(
-      screen.getByText("Your Staking Tier is based on staked GMX and determines your staking multiplier.")
+      screen.getByText("Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier.")
     ).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
@@ -499,8 +495,29 @@ describe("RewardsTiersTab", () => {
 
     renderTab({ status: progressingStatus });
 
-    expect(document.body.textContent).toMatch(/Trade .* more to unlock Certified status/);
-    expect(document.body.textContent).toContain("Increase your staked GMX balance by 200 to get Advocate status");
+    const volumeTarget = Array.from(document.querySelectorAll("div")).find((element) =>
+      element.textContent?.match(/^Trade .* more to unlock Certified status \+0.5x$/)
+    );
+    const stakingTarget = Array.from(document.querySelectorAll("div")).find(
+      (element) => element.textContent === "Stake 200 GMX more to get Advocate status +0.25x"
+    );
+
+    expect(volumeTarget).toBeDefined();
+    expect(volumeTarget?.classList.contains("flex")).toBe(false);
+    expect(stakingTarget).toBeDefined();
+    expect(stakingTarget?.classList.contains("flex")).toBe(false);
+  });
+
+  it("uses the updated inactive tier card copy", () => {
+    renderTab({
+      account: undefined,
+      status: undefined,
+    });
+
+    expect(screen.getByText("Trade more to reach a higher tier and earn more rewards.")).toBeDefined();
+    expect(screen.getByText("Stake more GMX to increase your tier and earn more rewards.")).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Trading activities" })).toBeDefined();
+    expect(screen.getByText("Unlock bonuses and boosts and increase your rewards")).toBeDefined();
   });
 
   it("shows vestable esGMX with its unit and opens the rewards vesting flow", () => {
@@ -542,15 +559,8 @@ describe("RewardsTiersTab", () => {
     expect((await screen.findByRole("link", { name: /GMX\/USD/ })).getAttribute("href")).toBe("/trade/long?market=GMX");
   });
 
-  it("renders the config-derived maximum reward rate in the inactive staking banner", () => {
-    const bannerConfig: IncentivesConfig = {
-      ...config,
-      esGmxShareFactor: PRECISION,
-      gtShareFactor: PRECISION / 5n,
-    };
-
+  it("renders the updated guidance in the inactive staking banner", () => {
     renderTab({
-      config: bannerConfig,
       status: {
         ...status,
         stakingTier: null,
@@ -558,12 +568,10 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    expect(screen.getByText(/Stake GMX and receive up to/).textContent).toContain(
-      formatFactorPercentage(getMaxRewardRateFactor(bannerConfig))
-    );
+    expect(screen.getByText("Stake more GMX to increase your tier and earn more rewards.")).toBeDefined();
   });
 
-  it("personalizes the inactive staking card and chooses the wallet action", () => {
+  it("loads staking promo activity and chooses the wallet action", () => {
     mockUseRewardsVestingData.mockReturnValue(getVestingDataResult(5n * GMX_UNIT));
     mockUseRewardsPromoActivity.mockReturnValue({
       data: {
@@ -584,7 +592,9 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    const stakingCard = screen.getByText(/With your recent activity, staking GMX could have earned/).closest(".group");
+    const stakingCard = screen
+      .getByText("Stake more GMX to increase your tier and earn more rewards.")
+      .closest(".group");
     expect(stakingCard).not.toBeNull();
     expect(
       within(stakingCard as HTMLElement)
@@ -690,7 +700,7 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    expect(screen.getByText(/Stake GMX and receive up to .* of your fees back/)).toBeDefined();
+    expect(screen.getByText("Stake more GMX to increase your tier and earn more rewards.")).toBeDefined();
     expect(screen.queryByText(/With your recent activity, staking GMX could have earned/)).toBeNull();
     expect(mockUseRewardsPromoActivity).toHaveBeenLastCalledWith(ARBITRUM, {
       account: CHECKSUMMED_ACCOUNT,
@@ -753,7 +763,7 @@ describe("RewardsTiersTab", () => {
     const balancingTradesRow = screen.getByRole("row", { name: /Balancing Trades/ });
     const lifetimeVolumeRow = screen.getByRole("row", { name: /Lifetime Volume/ });
     const returnBonusRow = screen.getByRole("row", { name: /Return Bonus/ });
-    const referralVolumeRow = screen.getByRole("row", { name: /Referral Volume/ });
+    const referralBonusRow = screen.getByRole("row", { name: /Referral Bonus/ });
 
     expect(screen.getByRole("columnheader", { name: "Boost" })).toBeDefined();
     expect(screen.queryByRole("columnheader", { name: "Multiplier" })).toBeNull();
@@ -780,10 +790,19 @@ describe("RewardsTiersTab", () => {
     expect(returnBonusRow.textContent).toContain(
       "Available to eligible historical users until the incremental reward cap is consumed."
     );
-    expect(referralVolumeRow.textContent).toContain("Receive 50% of the rewards earned by every trader you invite.");
-    expect(within(referralVolumeRow).getByText("50% of rewards")).toBeDefined();
-    expect(within(referralVolumeRow).getByText("Active")).toBeDefined();
-    expect(referralVolumeRow.querySelector("svg path")?.getAttribute("fill")).toBe("#7885FF");
+    expect(referralBonusRow.textContent).toContain("Receive 50% of the rewards earned by every trader you invite.");
+    expect(within(referralBonusRow).getByText("50% of rewards")).toBeDefined();
+    expect(within(referralBonusRow).getByText("Active")).toBeDefined();
+    expect(referralBonusRow.querySelector("svg path")?.getAttribute("fill")).toBe("#7885FF");
+
+    const activityRows = screen.getAllByRole("row").slice(1);
+    expect(activityRows.map((row) => row.querySelector("td")?.textContent)).toEqual([
+      "Return Bonus",
+      "Referral Bonus",
+      "Balancing Trades",
+      "Featured Markets",
+      "Lifetime Volume",
+    ]);
   });
 
   it("uses the inactive referral icon without referral volume", () => {
@@ -796,9 +815,25 @@ describe("RewardsTiersTab", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
 
-    const referralVolumeRow = screen.getByRole("row", { name: /Referral Volume/ });
-    expect(within(referralVolumeRow).getByText("Inactive")).toBeDefined();
-    expect(referralVolumeRow.querySelector("svg path")?.getAttribute("fill")).toBe("#A0A3C4");
+    const referralBonusRow = screen.getByRole("row", { name: /Referral Bonus/ });
+    expect(within(referralBonusRow).getByText("Inactive")).toBeDefined();
+    expect(referralBonusRow.querySelector("svg path")?.getAttribute("fill")).toBe("#A0A3C4");
+  });
+
+  it("labels the active boosts card when only a transient activity qualifies", () => {
+    renderTab({
+      status: {
+        ...status,
+        boostIds: ["FeaturedMarkets"],
+        referralVolume: 0n,
+      },
+    });
+
+    const boostsHeading = screen.getByRole("heading", { name: "Trading activities" });
+    const boostsCard = boostsHeading.closest(".group");
+
+    expect(boostsCard).toBeDefined();
+    expect(within(boostsCard as HTMLElement).getByRole("button", { name: "Featured Markets" })).toBeDefined();
   });
 
   it("marks the Return Bonus inactive when its incremental reward cap is consumed", () => {
@@ -816,7 +851,7 @@ describe("RewardsTiersTab", () => {
     expect(within(returnBonusRow).getByText("Inactive")).toBeDefined();
   });
 
-  it("shows active boosts first without adding the Referral Boost to the multiplier", () => {
+  it("uses the requested boost order without adding the Referral Bonus to the multiplier", () => {
     renderTab({
       status: {
         ...status,
@@ -832,18 +867,54 @@ describe("RewardsTiersTab", () => {
       within(boostsCard as HTMLElement)
         .getAllByRole("button")
         .map((button) => button.getAttribute("aria-label"))
-    ).toEqual(["Lifetime Volume", "Return Bonus", "Referral Boost", "Featured Markets", "Balancing Trades"]);
+    ).toEqual(["Return Bonus", "Referral Bonus", "Balancing Trades", "Featured Markets", "Lifetime Volume"]);
     expect(within(boostsCard as HTMLElement).queryByText("1 qualified this epoch")).toBeNull();
   });
 
-  it("uses muted text for the Referral Boost description", async () => {
+  it("keeps activity boost items on one line and scales them proportionally", () => {
+    renderTab({
+      status: {
+        ...status,
+        boostIds: ["LifetimeTrading", "ManualAllocation"],
+      },
+    });
+
+    const boostsCard = screen.getByRole("heading", { name: "3 active boosts" }).closest(".group") as HTMLElement;
+    const boostButtons = within(boostsCard).getAllByRole("button");
+    const boostItemsContainer = boostButtons[0].parentElement;
+    const containerClasses = boostItemsContainer?.className.split(" ");
+
+    expect(containerClasses).toContain("flex-nowrap");
+    expect(containerClasses).not.toContain("flex-wrap");
+    boostButtons.forEach((button) => {
+      expect(button.className).toContain("aspect-square");
+      expect(button.className).toContain("flex-1");
+      expect(button.className).toContain("max-w-44");
+      expect(button.firstElementChild?.classList).toContain("size-full");
+    });
+  });
+
+  it("pins active tier and boost footer content to the bottom of each card", () => {
     renderTab();
 
-    const referralBoost = screen.getByRole("button", { name: "Referral Boost" });
-    fireEvent.mouseEnter(referralBoost);
+    const volumeCard = screen.getByRole("heading", { name: "Ranked" }).closest(".group") as HTMLElement;
+    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group") as HTMLElement;
+    const boostsCard = screen.getByRole("heading", { name: "2 active boosts" }).closest(".group") as HTMLElement;
+
+    expect(volumeCard.querySelector(".mt-auto")?.textContent).toContain("Volume this epoch");
+    expect(stakingCard.querySelector(".mt-auto")?.textContent).toContain("GMX staked");
+    expect(boostsCard.querySelector(".mt-auto")?.querySelector('[aria-label="Referral Bonus"]')).not.toBeNull();
+  });
+
+  it("uses muted text and an invite link for the Referral Bonus description", async () => {
+    renderTab();
+
+    const referralBonus = screen.getByRole("button", { name: "Referral Bonus" });
+    fireEvent.mouseEnter(referralBonus);
 
     const description = await screen.findByText("Receive 50% of the rewards earned by every trader you invite.");
     expect(description.className).toContain("text-typography-secondary");
+    expect(screen.getByRole("link", { name: "Invite traders" }).getAttribute("href")).toBe("/referrals/affiliates");
   });
 
   it("restores the V1 activity boost descriptions in the summary card", async () => {
@@ -880,8 +951,8 @@ describe("RewardsTiersTab", () => {
   it("uses active and inactive referral artwork in the boosts card", () => {
     const view = renderTab();
 
-    let referralBoost = screen.getByRole("button", { name: "Referral Boost" });
-    expect(referralBoost.querySelector("svg path")?.getAttribute("fill")).toBe("#7885FF");
+    let referralBonus = screen.getByRole("button", { name: "Referral Bonus" });
+    expect(referralBonus.querySelector("svg path")?.getAttribute("fill")).toBe("#7885FF");
 
     view.rerender(
       getTabNode({
@@ -893,8 +964,25 @@ describe("RewardsTiersTab", () => {
       })
     );
 
-    referralBoost = screen.getByRole("button", { name: "Referral Boost" });
-    expect(referralBoost.querySelector("svg path")?.getAttribute("fill")).toBe("#A0A3C4");
+    referralBonus = screen.getByRole("button", { name: "Referral Bonus" });
+    expect(referralBonus.querySelector("svg path")?.getAttribute("fill")).toBe("#A0A3C4");
+  });
+
+  it("hides the Return Bonus when it is not present for the trader", () => {
+    renderTab({
+      status: {
+        ...status,
+        boostIds: ["FeaturedMarkets", "LifetimeTrading"],
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    expect(screen.queryByRole("button", { name: "Return Bonus" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
+
+    expect(screen.queryByRole("row", { name: /Return Bonus/ })).toBeNull();
+    expect(screen.getByRole("row", { name: /Referral Bonus/ })).toBeDefined();
   });
 
   it("places active tier cards before banner cards while preserving their default order", () => {
@@ -943,7 +1031,7 @@ describe("RewardsTiersTab", () => {
     const stakingCard = stakingHeading.closest(".group");
     expect(stakingCard).toBeDefined();
     expect(stakingCard!.textContent).toContain("0.1x →0.5x");
-    expect(stakingCard!.textContent).toContain("Increase your staked GMX balance by 800 to get Steward status");
+    expect(stakingCard!.textContent).toContain("Stake 800 GMX more to get Steward status");
 
     const tierProgress = within(stakingCard as HTMLElement).getByRole("progressbar", {
       name: "Staking tier levels",
@@ -952,10 +1040,12 @@ describe("RewardsTiersTab", () => {
     expect(tierProgress.getAttribute("aria-valuemax")).toBe("4");
   });
 
-  it("renders config-derived reward economics", () => {
+  it("renders the updated rewards FAQ", () => {
     renderTab();
 
-    fireEvent.click(screen.getByRole("button", { name: "How does it work?" }));
+    expect(screen.queryByRole("button", { name: "How do activity boosts work?" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "How does Rewards work?" }));
     expect(document.body.textContent).toContain("Trade & Stake to Earn Your Tiers");
     expect(document.body.textContent).toContain("Your weekly trading volume sets your volume tier");
     expect(document.body.textContent).toContain(
@@ -965,27 +1055,49 @@ describe("RewardsTiersTab", () => {
       `plus an additional ${formatFactorPercentage(config.gtShareFactor)} in GT tokens`
     );
 
+    fireEvent.click(screen.getByRole("button", { name: "How are Rewards calculated?" }));
+    expect(document.body.textContent).toContain(
+      "You earn esGMX and GT Rewards based on the fees paid each time you increase or decrease a position."
+    );
+    expect(document.body.textContent).toContain("Your Multiplier determines the amount of rewards you receive:");
+    expect(document.body.textContent).toContain("esGMX Rewards = Fees × (Multiplier × 10%)");
+    expect(document.body.textContent).toContain("GT Rewards = 20% of esGMX Rewards");
+    expect(document.body.textContent).toContain("Rewards are distributed at the end of each epoch.");
+
+    fireEvent.click(screen.getByRole("button", { name: "How do multipliers work?" }));
+    expect(document.body.textContent).toContain(
+      "Your Multiplier is calculated as the sum of your Volume Multiplier, Staking Multiplier, and any applicable Activity Boosts."
+    );
+    expect(document.body.textContent).toContain("The total Multiplier is capped at 10×.");
+
     fireEvent.click(screen.getByRole("button", { name: "How long does a volume tier remain active?" }));
     expect(document.body.textContent).toContain(
-      "A tier applies in the epoch it is achieved and for 4 following epochs."
+      "A tier applies in the epoch it is achieved and remains active for 4 following epochs."
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "How are rewards calculated?" }));
+    fireEvent.click(screen.getByRole("button", { name: "Are referral Rewards part of my multiplier?" }));
+    expect(document.body.textContent).toContain(
+      "No. Referral rewards are added separately and are based on the trading volume generated by your referrals."
+    );
+    expect(document.body.textContent).toContain("You receive 50% of all rewards earned by the traders you invite.");
 
-    expect(screen.getByText("Eligible fee share").parentElement?.textContent).toContain(
-      formatFactorPercentage(config.feeShareFactor)
+    fireEvent.click(screen.getByRole("button", { name: "What is esGMX token?" }));
+    expect(document.body.textContent).toContain(
+      "Escrowed GMX (esGMX) is a non-transferable token distributed as a reward."
     );
-    expect(screen.getByText("esGMX allocation share").parentElement?.textContent).toContain(
-      formatFactorPercentage(config.esGmxShareFactor)
+    expect(document.body.textContent).toContain("esGMX can be used in two ways:");
+    expect(document.body.textContent).toContain("Vest it into liquid GMX");
+    expect(document.body.textContent).toContain(
+      "esGMX can be vested over a one-year period and converted into transferable GMX tokens. Vesting can be managed from the Rewards page."
     );
-    expect(screen.getByText("GT allocation share").parentElement?.textContent).toContain(
-      formatFactorPercentage(config.gtShareFactor)
+    expect(document.body.textContent).toContain("Stake it");
+    expect(document.body.textContent).toContain(
+      "Each staked esGMX token provides the same staking power as one staked GMX token. It earns staking rewards and contributes toward your staking tier."
     );
-    expect(screen.getByText("Maximum multiplier").parentElement?.textContent).toContain(
-      formatMultiplier(config.maxMultiplier, config.multiplierDecimals)
-    );
-    expect(screen.getByText("Maximum combined reward per eligible fee").parentElement?.textContent).toContain(
-      formatFactorPercentage(getMaxRewardRateFactor(config))
+
+    fireEvent.click(screen.getByRole("button", { name: "What is GT token?" }));
+    expect(document.body.textContent).toContain(
+      "GT is the native token of GMTrade. It is currently distributed as a reward, while its broader utility is planned for a later stage of the platform’s development. Future GT use cases and benefits will be announced as they become available."
     );
   });
 

@@ -35,6 +35,17 @@ export const boostLabels: Record<BoostId, React.ReactNode> = {
   ManualAllocation: <Trans>Return Bonus</Trans>,
 };
 
+const boostDisplayOrder: BoostId[] = ["ManualAllocation", "BalancingTrades", "FeaturedMarkets", "LifetimeTrading"];
+
+export function getBoostsInDisplayOrder(boosts: BoostConfig[], includeReturnBonus: boolean) {
+  return boostDisplayOrder.flatMap((boostId) => {
+    if (boostId === "ManualAllocation" && !includeReturnBonus) return [];
+
+    const boost = boosts.find((item) => item.boost === boostId);
+    return boost ? [boost] : [];
+  });
+}
+
 function formatCompactUsd(amount: bigint) {
   return formatAmountHuman(amount, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
 }

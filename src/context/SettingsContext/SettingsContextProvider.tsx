@@ -5,6 +5,7 @@ import { ARBITRUM, BOTANIX, getExecutionFeeConfig } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
+import { DEFAULT_INCENTIVES_TEST_SQUID, INCENTIVES_TEST_SQUIDS, type IncentivesTestSquid } from "config/indexers";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
   BUY_SELL_ICONS_MODE_KEY,
@@ -17,6 +18,7 @@ import {
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
+  INCENTIVES_TEST_SQUID_KEY,
   REWARDS_ONE_CLICK_ACTION_ENABLED_KEY,
   SETTINGS_WARNING_DOT_VISIBLE_KEY,
   SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY,
@@ -137,6 +139,9 @@ export type SettingsContextType = {
 
   rewardsOneClickActionEnabled: boolean;
   setRewardsOneClickActionEnabled: (val: boolean) => void;
+
+  incentivesTestSquid: IncentivesTestSquid;
+  setIncentivesTestSquid: (val: IncentivesTestSquid) => void;
 };
 
 const SettingsContext = createContext({});
@@ -305,6 +310,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
+  const [savedIncentivesTestSquid, setIncentivesTestSquid] = useLocalStorageSerializeKey<IncentivesTestSquid>(
+    INCENTIVES_TEST_SQUID_KEY,
+    DEFAULT_INCENTIVES_TEST_SQUID
+  );
+  const incentivesTestSquid = INCENTIVES_TEST_SQUIDS.includes(savedIncentivesTestSquid as IncentivesTestSquid)
+    ? savedIncentivesTestSquid!
+    : DEFAULT_INCENTIVES_TEST_SQUID;
+
   let [rewardsOneClickActionEnabled, setRewardsOneClickActionEnabled] = useLocalStorageSerializeKey(
     REWARDS_ONE_CLICK_ACTION_ENABLED_KEY,
     false
@@ -462,6 +475,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       rewardsOneClickActionEnabled: rewardsOneClickActionEnabled!,
       setRewardsOneClickActionEnabled,
+
+      incentivesTestSquid,
+      setIncentivesTestSquid,
     };
   }, [
     showDebugValues,
@@ -527,6 +543,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setChartLinesSizeInTokens,
     rewardsOneClickActionEnabled,
     setRewardsOneClickActionEnabled,
+    incentivesTestSquid,
+    setIncentivesTestSquid,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

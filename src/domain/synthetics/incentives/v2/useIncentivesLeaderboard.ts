@@ -4,10 +4,11 @@ import { isAddress } from "viem";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { fetchIncentivesGraphql, getIncentivesIndexerUrl } from "./client";
+import { fetchIncentivesGraphql } from "./client";
 import { parseIncentivesLeaderboardPage, type RawLeaderboardEntry } from "./parsers";
 import { INCENTIVES_LEADERBOARD_QUERY } from "./queries";
 import type { IncentivesLeaderboardPage } from "./types";
+import { useIncentivesIndexerUrl } from "./useIncentivesIndexerUrl";
 
 const MAX_PAGE_SIZE = 1000;
 const COMPLETED_LEADERBOARD_REFRESH_INTERVAL = 5 * CONFIG_UPDATE_INTERVAL;
@@ -39,7 +40,7 @@ export function useIncentivesLeaderboard(
   }
 ) {
   const { epoch, where, orderBy, enabled = true, isMutable = false } = params;
-  const endpoint = getIncentivesIndexerUrl(chainId);
+  const endpoint = useIncentivesIndexerUrl(chainId);
   const account = where?.account && isAddress(where.account) ? where.account : undefined;
   const hasInvalidAccount = Boolean(where?.account && !account);
   const limit = Math.min(Math.max(Math.trunc(params.limit), 1), MAX_PAGE_SIZE);

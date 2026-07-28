@@ -130,6 +130,7 @@ const GMX_UNIT = 10n ** BigInt(ES_GMX_DECIMALS);
 const GT_UNIT = 10n ** BigInt(GT_DECIMALS);
 const PAGE_SIZE = 20;
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
+const SAME_ACCOUNT_DIFFERENT_CASE = "0x52908400098527886e0f7030069857d2e4169ee7";
 const SEARCH_ACCOUNT = "0x8617E340B3D01FA5F11F306F4090FD50E238070D";
 
 const config = {
@@ -241,6 +242,19 @@ describe("RewardsLeaderboardTab", () => {
     expect(within(screen.getByTestId("leaderboard-pinned-row")).getByRole("button", { name: "Share" })).toBeTruthy();
   });
 
+  it("uses the V1 leaderboard filter layout and tab styling", () => {
+    renderLeaderboard();
+
+    const searchInput = screen.getByPlaceholderText("Search address");
+    const searchContainer = searchInput.parentElement;
+    const filtersContainer = searchContainer?.parentElement;
+    const currentEpochButton = screen.getByRole("button", { name: "Volume this epoch" });
+
+    expect(filtersContainer?.firstElementChild).toBe(searchContainer);
+    expect(filtersContainer?.lastElementChild?.contains(currentEpochButton)).toBe(true);
+    expect(currentEpochButton.className).not.toContain("rounded-full");
+  });
+
   it("loads only config-independent all-time data when config is unavailable", () => {
     renderAllTimeOnlyLeaderboard();
 
@@ -347,6 +361,20 @@ describe("RewardsLeaderboardTab", () => {
     expect(screen.getAllByRole("button", { name: "Share" })).toHaveLength(1);
     expect(rewardsShareMock.props.at(-1)?.entry).toBe(pinnedEntry);
     expect(screen.getByTestId("rewards-share-modal")).toBeTruthy();
+  });
+
+  it("matches the connected account without changing its indexed address casing", () => {
+    const differentlyCasedEntry = makeEntry(SAME_ACCOUNT_DIFFERENT_CASE, 47);
+    leaderboardMock.data = [pageEntry, differentlyCasedEntry];
+
+    renderLeaderboard();
+
+    expect(screen.queryByTestId("leaderboard-pinned-row")).toBeNull();
+    const accountRow = screen.getByTitle(SAME_ACCOUNT_DIFFERENT_CASE).closest("tr");
+    if (!accountRow) throw new Error("Connected account row not found");
+
+    expect(within(accountRow).getByRole("button", { name: "Share" })).toBeTruthy();
+    expect(within(accountRow).getByTitle(SAME_ACCOUNT_DIFFERENT_CASE).textContent).toBe(SAME_ACCOUNT_DIFFERENT_CASE);
   });
 
   it("does not offer sharing for other accounts or an unranked connected account", () => {

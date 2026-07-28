@@ -34,6 +34,7 @@ import {
   type AccountDataState,
   boostLabels,
   BoostDescriptionText,
+  getBoostsInDisplayOrder,
   stakingTierLabels,
   StatusLabel,
   volumeTierLabels,
@@ -106,7 +107,7 @@ export function RewardsTierTables({
             </div>
           ) : activeTab === "staking" ? (
             <p>
-              <Trans>Your Staking Tier is based on staked GMX and determines your staking multiplier.</Trans>
+              <Trans>Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier.</Trans>
             </p>
           ) : (
             <p>
@@ -284,6 +285,45 @@ function BoostsTable({
   status?: AccountIncentiveStatus;
   statusState: AccountDataState;
 }) {
+  const orderedBoosts = getBoostsInDisplayOrder(config.boosts, Boolean(status?.boostIds.includes("ManualAllocation")));
+  const returnBonusBoosts = orderedBoosts.filter((boost) => boost.boost === "ManualAllocation");
+  const activityBoosts = orderedBoosts.filter((boost) => boost.boost !== "ManualAllocation");
+
+  const renderBoostRow = (boost: BoostConfig) => {
+    const transient = boost.boost === "FeaturedMarkets" || boost.boost === "BalancingTrades";
+    const manualAvailable = boost.boost !== "ManualAllocation" || (status?.manualRewardRemainingUsd ?? 0n) > 0n;
+    const isListed = Boolean(status?.boostIds.includes(boost.boost));
+    const isActivePersistent = !transient && isListed && manualAvailable;
+    const isQualifiedThisEpoch = transient && isListed;
+    const isHighlighted = isActivePersistent || isQualifiedThisEpoch;
+
+    return (
+      <TierLevelTableTr key={boost.boost}>
+        <TableTd padding="compact" className="text-typography-primary">
+          <span className="flex items-center gap-8 font-medium">
+            <div className="p-1">
+              <BoostTierIcon boostId={boost.boost} active={isHighlighted} />
+            </div>
+            {boostLabels[boost.boost]}
+          </span>
+        </TableTd>
+        <TableTd padding="compact" className="text-typography-secondary">
+          <BoostDescription chainId={chainId} boost={boost} config={config} />
+        </TableTd>
+        <TableTd padding="compact" className="text-typography-primary">
+          {formatMultiplierAdjustment(boost.multiplier, config.multiplierDecimals)}
+        </TableTd>
+        <TableTd padding="compact">
+          <StatusLabel
+            state={statusState}
+            active={isActivePersistent}
+            qualified={transient ? isQualifiedThisEpoch : undefined}
+          />
+        </TableTd>
+      </TierLevelTableTr>
+    );
+  };
+
   return (
     <table className={cx(tierLevelTableClassName, "min-w-[820px]")}>
       <thead>
@@ -307,48 +347,14 @@ function BoostsTable({
           <TableListSkeleton count={config.boosts.length + 1} Structure={TierLevelsSkeletonRow} />
         ) : (
           <>
-            {config.boosts.map((boost) => {
-              const transient = boost.boost === "FeaturedMarkets" || boost.boost === "BalancingTrades";
-              const manualAvailable =
-                boost.boost !== "ManualAllocation" || (status?.manualRewardRemainingUsd ?? 0n) > 0n;
-              const isListed = Boolean(status?.boostIds.includes(boost.boost));
-              const isActivePersistent = !transient && isListed && manualAvailable;
-              const isQualifiedThisEpoch = transient && isListed;
-              const isHighlighted = isActivePersistent || isQualifiedThisEpoch;
-
-              return (
-                <TierLevelTableTr key={boost.boost}>
-                  <TableTd padding="compact" className="text-typography-primary">
-                    <span className="flex items-center gap-8 font-medium">
-                      <div className="p-1">
-                        <BoostTierIcon boostId={boost.boost} active={isHighlighted} />
-                      </div>
-                      {boostLabels[boost.boost]}
-                    </span>
-                  </TableTd>
-                  <TableTd padding="compact" className="text-typography-secondary">
-                    <BoostDescription chainId={chainId} boost={boost} config={config} />
-                  </TableTd>
-                  <TableTd padding="compact" className="text-typography-primary">
-                    {formatMultiplierAdjustment(boost.multiplier, config.multiplierDecimals)}
-                  </TableTd>
-                  <TableTd padding="compact">
-                    <StatusLabel
-                      state={statusState}
-                      active={isActivePersistent}
-                      qualified={transient ? isQualifiedThisEpoch : undefined}
-                    />
-                  </TableTd>
-                </TierLevelTableTr>
-              );
-            })}
+            {returnBonusBoosts.map(renderBoostRow)}
             <TierLevelTableTr>
               <TableTd padding="compact" className="text-typography-primary">
                 <span className="flex items-center gap-8 font-medium">
                   <div className="p-1">
                     <ReferralBoostIcon active={(status?.referralVolume ?? 0n) > 0n} />
                   </div>
-                  <Trans>Referral Volume</Trans>
+                  <Trans>Referral Bonus</Trans>
                 </span>
               </TableTd>
               <TableTd padding="compact" className="text-typography-secondary">
@@ -361,6 +367,7 @@ function BoostsTable({
                 <StatusLabel state={statusState} active={(status?.referralVolume ?? 0n) > 0n} />
               </TableTd>
             </TierLevelTableTr>
+            {activityBoosts.map(renderBoostRow)}
           </>
         )}
       </tbody>
