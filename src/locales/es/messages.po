@@ -733,6 +733,10 @@ msgstr "Expandir"
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
 
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
+msgstr "Acciones de GMX {VERSION_NAME} de todos los traders en {networkName}"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2529,7 +2533,6 @@ msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Account"
 msgstr "Cuenta"
 
@@ -3090,6 +3093,10 @@ msgstr ""
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr "Un impacto neto elevado en el precio (limitado a {formattedCap} para este mercado) puede afectar significativamente a su garantía. Considere reducir el apalancamiento. <0>Más información</0>."
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Address"
+msgstr "Dirección"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "Actualizar Take-Profit"
@@ -3475,6 +3482,13 @@ msgstr "El impacto en el precio del intercambio es alto"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "Cancelable en {minutesText}{seconds}s"
+
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "Trader activity"
+msgstr "Actividad de traders"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4773,10 +4787,6 @@ msgstr "Todos"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "Solicitar Aumento de Mercado"
-
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX {VERSION_NAME} {networkName} actions for all accounts"
-msgstr "Acciones de GMX {VERSION_NAME} en {networkName} para todas las cuentas"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
@@ -8242,11 +8252,6 @@ msgstr "REEMBOLSOS TOTALES"
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "Bóvedas de liquidez unilateral con cobertura activa y reequilibrio para minimizar la pérdida impermanente"
 
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX V2 actions"
-msgstr "Acciones de GMX V2"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr ""
@@ -8441,6 +8446,13 @@ msgstr "<0>⬡ Historia de Datos Chainlink ⬡ <1/><2>#Chainlink</2> Data Stream
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor OI long"
 msgstr "Factor de garantía mínimo OI largo"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Trader Profile"
+msgstr "Perfil del trader"
 
 #: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect your wallet to view your rebates distribution history"
@@ -10298,10 +10310,6 @@ msgstr "Porcentaje total de PnL después de comisiones e impacto en el precio. P
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "Cuenta GMX"
 
@@ -11145,11 +11153,6 @@ msgstr "Idioma"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
-
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/ActionsRouter.tsx
-msgid "GMX V1 actions"
-msgstr "Acciones de GMX V1"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"

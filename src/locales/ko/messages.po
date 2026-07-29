@@ -733,6 +733,10 @@ msgstr "확장"
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
 
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
+msgstr "{networkName}의 모든 트레이더에 대한 GMX {VERSION_NAME} 액션"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2529,7 +2533,6 @@ msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Account"
 msgstr "계정"
 
@@ -3090,6 +3093,10 @@ msgstr ""
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr "높은 잠재적 순 가격 영향({formattedCap}으로 제한됨)이 담보에 큰 영향을 미칠 수 있습니다. 레버리지를 줄이는 것을 고려하십시오. <0>자세히 보기</0>."
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Address"
+msgstr "주소"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "익절매 업데이트"
@@ -3475,6 +3482,13 @@ msgstr "스왑 가격 영향이 높습니다"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "{minutesText}{seconds}초 후 취소 가능"
+
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "Trader activity"
+msgstr "트레이더 활동"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4773,10 +4787,6 @@ msgstr "모두"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "마켓 증가 요청"
-
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX {VERSION_NAME} {networkName} actions for all accounts"
-msgstr "모든 계정의 GMX {VERSION_NAME} {networkName} 활동"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
@@ -8242,11 +8252,6 @@ msgstr "총 리베이트"
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "비영구적 손실을 최소화하기 위해 능동적 헤징 및 리밸런싱을 수행하는 단일 측면 유동성 볼트"
 
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX V2 actions"
-msgstr "GMX V2 활동 내역"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr ""
@@ -8441,6 +8446,13 @@ msgstr "<0>⬡ Chainlink 데이터 스토리 ⬡ <1/><2>#Chainlink</2> Data Stre
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor OI long"
 msgstr "롱 OI 최소 담보 비율"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Trader Profile"
+msgstr "트레이더 프로필"
 
 #: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect your wallet to view your rebates distribution history"
@@ -10298,10 +10310,6 @@ msgstr "수수료와 가격 영향을 반영한 총 PnL 비율입니다. 값을 
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX 계정"
 
@@ -11145,11 +11153,6 @@ msgstr "언어"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}초"
-
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/ActionsRouter.tsx
-msgid "GMX V1 actions"
-msgstr "GMX V1 액션"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"

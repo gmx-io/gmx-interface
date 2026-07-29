@@ -733,6 +733,10 @@ msgstr "展开"
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
 
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
+msgstr "{networkName}上所有交易者的GMX {VERSION_NAME}操作"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2529,7 +2533,6 @@ msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Account"
 msgstr "账户"
 
@@ -3090,6 +3093,10 @@ msgstr ""
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr "较高的潜在净价格影响（该市场上限为 {formattedCap}）可能会显著影响您的抵押品。建议降低杠杆。<0>了解更多</0>。"
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Address"
+msgstr "地址"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "更新止盈"
@@ -3475,6 +3482,13 @@ msgstr "兑换价格影响过高"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "可在 {minutesText}{seconds}s 后取消"
+
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "Trader activity"
+msgstr "交易者活动"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4773,10 +4787,6 @@ msgstr "全部"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "请求市场增加"
-
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX {VERSION_NAME} {networkName} actions for all accounts"
-msgstr "GMX {VERSION_NAME} {networkName} 所有账户的操作"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
@@ -8242,11 +8252,6 @@ msgstr "总返佣"
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "单边流动性金库，通过主动对冲和再平衡以最小化无常损失"
 
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX V2 actions"
-msgstr "GMX V2 操作"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr ""
@@ -8441,6 +8446,13 @@ msgstr "<0>⬡ Chainlink 数据故事 ⬡ <1/><2>#Chainlink</2> 数据流已为 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor OI long"
 msgstr "做多 OI 最小抵押品系数"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Trader Profile"
+msgstr "交易者档案"
 
 #: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect your wallet to view your rebates distribution history"
@@ -10298,10 +10310,6 @@ msgstr "扣除费用和价格影响后的总盈亏百分比。将鼠标悬停在
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX 账户"
 
@@ -11145,11 +11153,6 @@ msgstr "语言"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
-
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/ActionsRouter.tsx
-msgid "GMX V1 actions"
-msgstr "GMX V1 操作"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
