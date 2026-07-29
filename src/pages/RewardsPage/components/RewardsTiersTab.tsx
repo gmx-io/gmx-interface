@@ -117,7 +117,7 @@ export function RewardsTiersTab({
     isWalletInitializing,
     enabled: true,
     config,
-    status,
+    status: currentStatus,
     statusLoading,
     activity: promoActivity,
     activityLoading: promoActivityLoading,
@@ -180,15 +180,17 @@ export function RewardsTiersTab({
         <div className="min-w-0 max-xl:order-3">
           <RewardsTiersFaq config={config} />
         </div>
-        <RewardsPromotionalBanners
-          account={account}
-          config={config}
-          status={currentStatus}
-          promoSelection={promoSelection}
-          walletGmx={vestingData?.walletGmxBalance}
-          walletEsGmx={vestingData?.walletEsGmxBalance}
-          className="max-xl:order-1"
-        />
+        {!isWalletInitializing ? (
+          <RewardsPromotionalBanners
+            account={account}
+            config={config}
+            status={currentStatus}
+            promoSelection={promoSelection}
+            walletGmx={vestingData?.walletGmxBalance}
+            walletEsGmx={vestingData?.walletEsGmxBalance}
+            className="max-xl:order-1"
+          />
+        ) : null}
       </div>
     </div>
   );

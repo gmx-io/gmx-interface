@@ -267,7 +267,8 @@ describe("RewardsTiersTab", () => {
     expect(screen.queryByText("Current Multiplier")).toBeNull();
     expect(screen.queryByText("All-time Rewards")).toBeNull();
     expect(screen.queryByText("Vestable esGMX")).toBeNull();
-    expect(screen.queryByTestId("rewards-promotional-banners")).toBeNull();
+    const promotionalBanners = screen.getByTestId("rewards-promotional-banners");
+    expect(within(promotionalBanners).getByText("Referral Bonus")).toBeDefined();
     expect(document.body.textContent).not.toContain(formatUsd(0n, { fallbackToZero: true }));
     expect(screen.queryByText("Inactive")).toBeNull();
     expect(screen.queryByText("0 qualified this epoch")).toBeNull();
