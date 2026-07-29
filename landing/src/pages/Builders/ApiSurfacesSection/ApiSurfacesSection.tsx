@@ -13,7 +13,7 @@ export function ApiSurfacesSection() {
       title: t`Rest API`,
       description: t`Prices, markets, positions, orders — one call away.`,
       path: "docs/api/rest-api/",
-      href: "https://docs.gmx.io/docs/api/rest-api/",
+      href: "https://docs.gmx.io/docs/api/gmx-api/gmx-io-gmx-public-api/",
       highlighted: false,
     },
     {
