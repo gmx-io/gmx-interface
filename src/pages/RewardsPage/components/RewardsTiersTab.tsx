@@ -110,7 +110,7 @@ export function RewardsTiersTab({
     account,
     enabled: Boolean(account && currentStatus && !hasActiveStakingTier && !hasManualAllocation),
   });
-  const { selection: promoSelection } = useStableRewardsPromoSelection({
+  const { selection: promoSelection, isLoading: promoSelectionLoading } = useStableRewardsPromoSelection({
     chainId,
     account,
     walletStatus,
@@ -188,6 +188,7 @@ export function RewardsTiersTab({
             promoSelection={promoSelection}
             walletGmx={vestingData?.walletGmxBalance}
             walletEsGmx={vestingData?.walletEsGmxBalance}
+            isLoading={promoSelectionLoading}
             className="max-xl:order-1"
           />
         ) : null}

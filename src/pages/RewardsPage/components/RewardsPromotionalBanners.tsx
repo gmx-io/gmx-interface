@@ -223,6 +223,7 @@ export function RewardsPromotionalBanners({
   promoSelection,
   walletGmx,
   walletEsGmx,
+  isLoading = false,
   className,
 }: {
   account?: string;
@@ -231,6 +232,7 @@ export function RewardsPromotionalBanners({
   promoSelection?: RewardsPromoSelection;
   walletGmx?: bigint;
   walletEsGmx?: bigint;
+  isLoading?: boolean;
   className?: string;
 }) {
   const { search } = useLocation();
@@ -250,32 +252,43 @@ export function RewardsPromotionalBanners({
     () => (showAllBanners ? allBanners : allBanners.filter((banner) => !dismissedBanners?.[banner.type])),
     [allBanners, dismissedBanners, showAllBanners]
   );
-  const [selectedBannerType, setSelectedBannerType] = useState<RewardsBannerType | undefined>(banners[0]?.type);
+  const bannerTypesKey = banners.map((banner) => banner.type).join("|");
+  const bannerTypes = useMemo(
+    () => (bannerTypesKey ? (bannerTypesKey.split("|") as RewardsBannerType[]) : []),
+    [bannerTypesKey]
+  );
+  const audienceKey = account ?? "disconnected";
+  const [selection, setSelection] = useState<{ audienceKey: string; bannerType?: RewardsBannerType }>(() => ({
+    audienceKey,
+    bannerType: isLoading ? undefined : bannerTypes[0],
+  }));
+  const selectedBannerType = selection.audienceKey === audienceKey ? selection.bannerType : undefined;
   const [animationDirection, setAnimationDirection] = useState<BannerAnimationDirection>("right");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(
     () => typeof window !== "undefined" && Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
   );
   const swipeStartRef = useRef<{ pointerId: number; x: number; y: number }>();
 
-  const selectedBannerIndex = banners.findIndex((banner) => banner.type === selectedBannerType);
+  const selectedBannerIndex =
+    selectedBannerType === undefined ? -1 : bannerTypes.findIndex((bannerType) => bannerType === selectedBannerType);
   const selectedIndex = selectedBannerIndex === -1 ? 0 : selectedBannerIndex;
   const current = banners[selectedIndex];
   const currentType = current?.type;
 
   useEffect(() => {
-    if (currentType !== selectedBannerType) {
-      setSelectedBannerType(currentType);
+    if (!isLoading && currentType !== selectedBannerType) {
+      setSelection({ audienceKey, bannerType: currentType });
     }
-  }, [currentType, selectedBannerType]);
+  }, [audienceKey, currentType, isLoading, selectedBannerType]);
 
   const goToRelativeIndex = useCallback(
     (offset: number) => {
-      if (banners.length <= 1) return;
+      if (bannerTypes.length <= 1) return;
       setAnimationDirection(offset > 0 ? "right" : "left");
-      const nextIndex = (selectedIndex + offset + banners.length) % banners.length;
-      setSelectedBannerType(banners[nextIndex].type);
+      const nextIndex = (selectedIndex + offset + bannerTypes.length) % bannerTypes.length;
+      setSelection({ audienceKey, bannerType: bannerTypes[nextIndex] });
     },
-    [banners, selectedIndex]
+    [audienceKey, bannerTypes, selectedIndex]
   );
 
   useEffect(() => {
@@ -303,7 +316,7 @@ export function RewardsPromotionalBanners({
     if (index === selectedIndex) return;
 
     setAnimationDirection(index > selectedIndex ? "right" : "left");
-    setSelectedBannerType(banners[index].type);
+    setSelection({ audienceKey, bannerType: bannerTypes[index] });
   };
 
   useEffect(() => {
@@ -321,8 +334,8 @@ export function RewardsPromotionalBanners({
       return;
     }
 
-    const nextBanner = banners.length > 1 ? banners[(selectedIndex + 1) % banners.length] : undefined;
-    setSelectedBannerType(nextBanner?.type);
+    const nextBannerType = bannerTypes.length > 1 ? bannerTypes[(selectedIndex + 1) % bannerTypes.length] : undefined;
+    setSelection({ audienceKey, bannerType: nextBannerType });
     setDismissedBanners((dismissed) => ({ ...dismissed, [current.type]: true }));
   };
 

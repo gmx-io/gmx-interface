@@ -24,6 +24,7 @@ vi.mock("lib/userAnalytics/rewardsEvents", () => ({
 
 const USD_UNIT = 10n ** BigInt(USD_DECIMALS);
 const ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
+const OTHER_ACCOUNT = "0x8617E340B3D01FA5F11F306F4090FD50E238070D";
 
 const config = {
   epochTimestamp: 100,
@@ -59,6 +60,8 @@ const status: AccountIncentiveStatus = {
   manualRewardConsumedUsd: 100n * USD_UNIT,
   manualRewardRemainingUsd: 400n * USD_UNIT,
 };
+const otherAccountStatus = { ...status, account: OTHER_ACCOUNT };
+const refreshedStatus = { ...status, tradingVolume: status.tradingVolume + USD_UNIT };
 const tinyManualStatus = { ...status, manualRewardRemainingUsd: USD_UNIT / 2n };
 const singleBannerConfig: IncentivesConfig = { ...config, featuredMarketIndexTokens: [] };
 const REWARDS_ROUTE_ENTRIES = ["/rewards"];
@@ -265,6 +268,51 @@ describe("RewardsPromotionalBanners", () => {
     expect(screen.queryByText("You have GMX ready to stake")).toBeNull();
   });
 
+  it("resets the selected opportunity when the account changes", () => {
+    const promoSelection = getRewardsPromoSelection({ config, status });
+    const otherPromoSelection = getRewardsPromoSelection({ config, status: otherAccountStatus });
+    const { rerender } = render(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter initialEntries={REWARDS_ROUTE_ENTRIES}>
+          <RewardsPromotionalBanners
+            account={ACCOUNT}
+            config={config}
+            status={status}
+            promoSelection={promoSelection}
+          />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: /Go to slide/ })[1]);
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
+
+    rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter initialEntries={REWARDS_ROUTE_ENTRIES}>
+          <RewardsPromotionalBanners account={OTHER_ACCOUNT} config={config} isLoading />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
+
+    rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter initialEntries={REWARDS_ROUTE_ENTRIES}>
+          <RewardsPromotionalBanners
+            account={OTHER_ACCOUNT}
+            config={config}
+            status={otherAccountStatus}
+            promoSelection={otherPromoSelection}
+          />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+
+    expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
+    expect(screen.queryByText("Referral Bonus")).toBeNull();
+  });
+
   it("rotates every six seconds without user interaction", () => {
     vi.useFakeTimers();
     renderBanners();
@@ -275,6 +323,40 @@ describe("RewardsPromotionalBanners", () => {
 
     act(() => vi.advanceTimersByTime(6000));
     expect(screen.getByText("Almost at the next tier")).toBeDefined();
+  });
+
+  it("does not restart auto-rotation when banner content refreshes", () => {
+    vi.useFakeTimers();
+    const promoSelection = getRewardsPromoSelection({ config, status });
+    const { rerender } = render(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter initialEntries={REWARDS_ROUTE_ENTRIES}>
+          <RewardsPromotionalBanners
+            account={ACCOUNT}
+            config={config}
+            status={status}
+            promoSelection={promoSelection}
+          />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+
+    act(() => vi.advanceTimersByTime(5000));
+    rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter initialEntries={REWARDS_ROUTE_ENTRIES}>
+          <RewardsPromotionalBanners
+            account={ACCOUNT}
+            config={config}
+            status={refreshedStatus}
+            promoSelection={promoSelection}
+          />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+    act(() => vi.advanceTimersByTime(1000));
+
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
   });
 
   it("navigates in both directions with touch swipes", () => {
