@@ -30,7 +30,7 @@ export function BuildersFaqItem({ title, defaultOpen, children }: Props) {
       <div
         className={cx(
           "duration-180 leading-body-sm flex max-w-[600px] flex-col overflow-hidden text-16 -tracking-[0.512px] text-slate-400 transition-all ease-in-out",
-          isOpen ? "mt-2 max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+          isOpen ? "mt-12 max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
         )}
       >
         {children}
