@@ -403,6 +403,10 @@ msgstr "Reembolsos por impacto en el precio listos para reclamar. <0>Más inform
 msgid "Execute Market Swap"
 msgstr "Ejecutar Intercambio de Mercado"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
+msgstr ""
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "Descubrir"
@@ -4608,10 +4612,6 @@ msgstr "Conectado a {sourceChainName}"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Rewards history is temporarily unavailable. Please try again later."
 msgstr "El historial de recompensas no está disponible temporalmente. Inténtalo de nuevo más tarde."
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "No esGMX is currently vesting. Stake GMX to start vesting your esGMX and gradually convert it into liquid GMX."
-msgstr "Actualmente no hay esGMX en vesting. Haz staking de GMX para comenzar el vesting de tus esGMX y convertirlos gradualmente en GMX líquidos."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

@@ -403,6 +403,10 @@ msgstr "Preiseinflussrückerstattungen stehen zum Beanspruchen bereit. <0>Mehr e
 msgid "Execute Market Swap"
 msgstr "Market Swap ausführen"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
+msgstr ""
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "Entdecken"
@@ -4608,10 +4612,6 @@ msgstr "Verbunden mit {sourceChainName}"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Rewards history is temporarily unavailable. Please try again later."
 msgstr "Der Belohnungsverlauf ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "No esGMX is currently vesting. Stake GMX to start vesting your esGMX and gradually convert it into liquid GMX."
-msgstr "Derzeit befinden sich keine esGMX im Vesting. Staken Sie GMX, um mit dem Vesting Ihrer esGMX zu beginnen und sie schrittweise in liquide GMX umzuwandeln."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

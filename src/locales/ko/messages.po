@@ -403,6 +403,10 @@ msgstr "가격 영향 리베이트를 수령할 수 있습니다. <0>자세히 �
 msgid "Execute Market Swap"
 msgstr "마켓 스왑 실행"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
+msgstr ""
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "탐색"
@@ -4608,10 +4612,6 @@ msgstr "{sourceChainName}에 연결됨"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Rewards history is temporarily unavailable. Please try again later."
 msgstr "보상 내역을 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요."
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "No esGMX is currently vesting. Stake GMX to start vesting your esGMX and gradually convert it into liquid GMX."
-msgstr "현재 베스팅 중인 esGMX가 없습니다. GMX를 스테이킹하여 esGMX 베스팅을 시작하고 유동 GMX로 점진적으로 전환하세요."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

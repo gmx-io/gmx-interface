@@ -403,6 +403,10 @@ msgstr "価格への影響のリベートを受け取る準備ができました
 msgid "Execute Market Swap"
 msgstr "マーケットスワップの執行"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
+msgstr ""
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "発見"
@@ -4608,10 +4612,6 @@ msgstr "{sourceChainName}に接続済み"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Rewards history is temporarily unavailable. Please try again later."
 msgstr "報酬履歴は一時的に利用できません。後でもう一度お試しください。"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "No esGMX is currently vesting. Stake GMX to start vesting your esGMX and gradually convert it into liquid GMX."
-msgstr "現在ベスティング中のesGMXはありません。GMXをステーキングしてesGMXのベスティングを開始し、流動性のあるGMXへ徐々に変換してください。"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

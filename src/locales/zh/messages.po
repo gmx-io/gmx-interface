@@ -403,6 +403,10 @@ msgstr "价格影响返还已可领取。<0>了解更多</0>。"
 msgid "Execute Market Swap"
 msgstr "执行市场交换"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
+msgstr ""
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "发现"
@@ -4608,10 +4612,6 @@ msgstr "已连接到 {sourceChainName}"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Rewards history is temporarily unavailable. Please try again later."
 msgstr "奖励历史暂时不可用。请稍后重试。"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "No esGMX is currently vesting. Stake GMX to start vesting your esGMX and gradually convert it into liquid GMX."
-msgstr "当前没有正在归属的 esGMX。质押 GMX 以开始归属您的 esGMX，并将其逐步转换为可流通的 GMX。"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

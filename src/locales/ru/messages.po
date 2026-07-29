@@ -403,6 +403,10 @@ msgstr "Возврат за влияние на цену доступен для
 msgid "Execute Market Swap"
 msgstr "Исполнение рыночного обмена"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
+msgstr ""
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "Обзор"
@@ -4608,10 +4612,6 @@ msgstr "Подключено к {sourceChainName}"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Rewards history is temporarily unavailable. Please try again later."
 msgstr "История наград временно недоступна. Повторите попытку позже."
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "No esGMX is currently vesting. Stake GMX to start vesting your esGMX and gradually convert it into liquid GMX."
-msgstr "Сейчас esGMX не находятся в вестинге. Сделайте стейкинг GMX, чтобы начать вестинг esGMX и постепенно конвертировать их в ликвидные GMX."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

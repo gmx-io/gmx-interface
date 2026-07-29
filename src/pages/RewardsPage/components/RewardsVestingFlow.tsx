@@ -623,11 +623,9 @@ export function RewardsVestingFlow() {
             <UnavailablePanel />
           ) : !hasVestingPosition ? (
             <div className="flex min-h-[132px] w-full grow flex-col items-center justify-center gap-8 overflow-hidden rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12 text-center backdrop-blur-[50px]">
-              <VestIcon className="size-20 shrink-0 text-rewards-blue-300" />
               <p className="max-w-[330px] text-12 font-medium leading-[1.35] text-typography-secondary">
                 <Trans>
-                  No esGMX is currently vesting. Stake GMX to start vesting your esGMX and gradually convert it into
-                  liquid GMX.
+                  No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX.
                 </Trans>
               </p>
             </div>
