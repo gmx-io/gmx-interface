@@ -35,7 +35,6 @@ export function useSupportChat() {
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
   const wasIntercomInitialized = useRef(false);
-  const wasChatShownForIntent = useRef(false);
   const themeModeRef = useRef(themeMode);
   themeModeRef.current = themeMode;
   const lastSentIntercomTheme = useRef<ReturnType<typeof themeToIntercomTheme> | undefined>(undefined);
@@ -128,8 +127,9 @@ export function useSupportChat() {
       setSupportChatUnreadCount(unreadCount);
     });
 
-    if (shouldOpenChatOnBoot && !wasChatShownForIntent.current) {
-      wasChatShownForIntent.current = true;
+    // show() must run on every boot: the cleanup's shutdown() closes the messenger,
+    // so a consumed-once flag would leave the StrictMode remount without an open chat
+    if (shouldOpenChatOnBoot) {
       show();
     }
 

@@ -88,7 +88,7 @@ export function ContactSection() {
         src={contactBg}
         alt=""
         aria-hidden
-        className="pointer-events-none absolute bottom-0 left-1/2 h-[1514px] w-[1728px] max-w-none -translate-x-1/2 select-none"
+        className="pointer-events-none absolute bottom-0 left-1/2 h-[1514px] w-full min-w-[1728px] max-w-none -translate-x-1/2 select-none"
       />
       <div className="relative flex w-full flex-col items-center text-center">
         <span className="inline-flex h-24 w-fit items-center rounded-full bg-blue-300/20 px-6">

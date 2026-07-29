@@ -45,7 +45,7 @@ export function HeroSection() {
         src={heroBg}
         alt=""
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 h-[860px] w-[1728px] max-w-none -translate-x-1/2 select-none"
+        className="pointer-events-none absolute left-1/2 top-0 h-[860px] w-full min-w-[1728px] max-w-none -translate-x-1/2 select-none"
       />
       <img
         src={heroScreens}
