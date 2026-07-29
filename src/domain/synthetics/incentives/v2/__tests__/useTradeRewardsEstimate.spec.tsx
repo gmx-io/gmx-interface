@@ -26,7 +26,6 @@ vi.mock("context/SyntheticsStateContext/hooks/globalsHooks", () => ({
   useUserReferralInfo: vi.fn(),
 }));
 vi.mock("context/SyntheticsStateContext/selectors/globalSelectors", () => ({
-  selectAccountStats: (state: SyntheticsState) => state.globals.accountStats,
   selectTokensData: (state: SyntheticsState) => state.globals.tokensDataResult.tokensData,
 }));
 vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
@@ -192,7 +191,6 @@ describe("useTradeRewardsEstimate", () => {
 
     const selectorState = {
       globals: {
-        accountStats: { volume: 0n },
         tokensDataResult: {
           tokensData: {
             [GMX_TOKEN]: {

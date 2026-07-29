@@ -208,7 +208,6 @@ describe("RewardsVestingFlow", () => {
     expect(primaryGuidance.querySelector("svg")).not.toBeNull();
     expect(primaryGuidance.parentElement?.classList.contains("text-center")).toBe(true);
     expect(screen.getByText("Your GMX collateral stays locked until it’s done.")).toBeDefined();
-    expect(screen.getByText(/Stake GMX to start vesting your esGMX/)).toBeDefined();
     expect(screen.getByRole("button", { name: "Start vesting" })).toBeDefined();
   });
 

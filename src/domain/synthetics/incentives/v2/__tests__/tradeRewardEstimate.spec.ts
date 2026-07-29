@@ -87,7 +87,6 @@ function makeParams(
     positionFeeUsd: usd(100n),
     totalRebateFactor: 0n,
     sizeDeltaUsd: usd(100n),
-    marketTokenAddress: "0xAbC0000000000000000000000000000000000004",
     indexTokenAddress: "0xAbC0000000000000000000000000000000000005",
     isIncrease: true,
     balanceWasImproved: false,
@@ -125,30 +124,24 @@ describe("V2 trade reward estimate", () => {
     expect(result.gtRewards).toBe(0n);
   });
 
-  it("projects the threshold-crossing volume tier using the market coefficient", () => {
-    const result = getEstimatedTradeRewards(
+  it("does not use a crossed volume tier before it becomes active", () => {
+    const crossingTrade = getEstimatedTradeRewards(
       makeParams({
-        status: makeStatus({ tierVolume: usd(900n) }),
+        status: makeStatus({ stakingTier: "Tier1", tierVolume: usd(900n) }),
         sizeDeltaUsd: usd(200n),
-        marketTokenAddress: MARKET,
+      })
+    );
+    const activeTierTrade = getEstimatedTradeRewards(
+      makeParams({
+        status: makeStatus({ volumeTier: "Tier1", stakingTier: "Tier1", tierVolume: usd(1_000n) }),
+        sizeDeltaUsd: usd(100n),
       })
     );
 
-    expect(result.effectiveMultiplier).toBe(100n);
-    expect(result.eligibleFeeUsd).toBe(usd(100n));
-    expect(result.baseRewardUsd).toBe(usd(10n));
-  });
-
-  it("keeps a higher persisted volume tier when current-epoch volume projects a lower tier", () => {
-    const result = getTradeMultiplierEstimate({
-      ...makeParams({
-        status: makeStatus({ volumeTier: "Tier3", tierVolume: usd(900n) }),
-        sizeDeltaUsd: usd(200n),
-        marketTokenAddress: MARKET,
-      }),
-    });
-
-    expect(result.effectiveMultiplier).toBe(300n);
+    expect(crossingTrade.effectiveMultiplier).toBe(100n);
+    expect(crossingTrade.baseRewardUsd).toBe(usd(10n));
+    expect(activeTierTrade.effectiveMultiplier).toBe(200n);
+    expect(activeTierTrade.baseRewardUsd).toBe(usd(20n));
   });
 
   it("adds persistent and per-trade boosts without treating historical trade boosts as persistent", () => {
@@ -165,25 +158,25 @@ describe("V2 trade reward estimate", () => {
       }),
     });
 
-    expect(result.normalMultiplier).toBe(950n);
-    expect(result.fullMultiplier).toBe(950n);
+    expect(result.normalMultiplier).toBe(650n);
+    expect(result.fullMultiplier).toBe(650n);
   });
 
-  it("activates the lifetime boost on the threshold-crossing trade when lifetime volume is available", () => {
-    const result = getTradeMultiplierEstimate({
+  it("does not use an earned lifetime boost before it becomes active", () => {
+    const crossingTrade = getTradeMultiplierEstimate({
       ...makeParams({
-        sizeDeltaUsd: usd(100n),
-        lifetimeVolume: usd(199_999_950n),
+        status: makeStatus({ volumeTier: "Tier1" }),
+        sizeDeltaUsd: usd(200_000_000n),
+      }),
+    });
+    const activeBoostTrade = getTradeMultiplierEstimate({
+      ...makeParams({
+        status: makeStatus({ volumeTier: "Tier1", boostIds: ["LifetimeTrading"] }),
       }),
     });
 
-    expect(result.effectiveMultiplier).toBe(100n);
-  });
-
-  it("does not infer a lifetime boost when lifetime volume is unavailable", () => {
-    const result = getTradeMultiplierEstimate(makeParams());
-
-    expect(result.effectiveMultiplier).toBe(0n);
+    expect(crossingTrade.effectiveMultiplier).toBe(100n);
+    expect(activeBoostTrade.effectiveMultiplier).toBe(200n);
   });
 
   it("applies the balancing boost only to qualifying position increases", () => {

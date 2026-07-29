@@ -3,7 +3,7 @@ import { isAddressEqual, type Address } from "viem";
 
 import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import { useAccount, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectAccountStats, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TradeFees, TradeFeesType } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -44,7 +44,6 @@ export function useTradeRewardsEstimate({
   const { chainId } = useChainId();
   const account = useAccount();
   const userReferralInfo = useUserReferralInfo();
-  const accountStats = useSelector(selectAccountStats);
   const tokensData = useSelector(selectTokensData);
   const { availability, isActive } = useIncentivesV2State();
   const isEligibleTrade = feesType === "increase" || feesType === "decrease";
@@ -111,16 +110,13 @@ export function useTradeRewardsEstimate({
       positionFeeUsd: bigMath.abs(fees.positionFee.deltaUsd),
       totalRebateFactor: userReferralInfo?.totalRebateFactor ?? 0n,
       sizeDeltaUsd,
-      marketTokenAddress: marketInfo.marketTokenAddress,
       indexTokenAddress: marketInfo.indexTokenAddress,
       balanceWasImproved,
       isIncrease: feesType === "increase",
-      lifetimeVolume: accountStats?.volume,
       gmxPrice,
       gtPrice: gtPrice?.priceUsd,
     });
   }, [
-    accountStats?.volume,
     balanceWasImproved,
     canEstimate,
     config,

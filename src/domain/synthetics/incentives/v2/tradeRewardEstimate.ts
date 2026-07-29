@@ -3,26 +3,15 @@ import { applyFactor, PRECISION } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "./constants";
-import type {
-  AccountIncentiveStatus,
-  BoostId,
-  IncentivesConfig,
-  StakingTierId,
-  VolumeTierConfig,
-  VolumeTierId,
-} from "./types";
-
-const VOLUME_TIER_ORDER: VolumeTierId[] = ["Tier1", "Tier2", "Tier3", "Tier4", "Tier5"];
+import type { AccountIncentiveStatus, BoostId, IncentivesConfig, StakingTierId, VolumeTierId } from "./types";
 
 export type TradeMultiplierParams = {
   config: IncentivesConfig;
   status: AccountIncentiveStatus;
   sizeDeltaUsd: bigint;
-  marketTokenAddress: string;
   indexTokenAddress: string;
   isIncrease: boolean;
   balanceWasImproved: boolean;
-  lifetimeVolume?: bigint;
 };
 
 export type TradeMultiplierEstimate = {
@@ -112,9 +101,11 @@ export function getTradeMultiplierEstimate(params: TradeMultiplierParams): Trade
     };
   }
 
-  const volumeMultiplier = getTradeVolumeMultiplier(params);
+  const volumeMultiplier = getVolumeTierMultiplier(config, status.volumeTier);
   const stakingMultiplier = getStakingTierMultiplier(config, status.stakingTier);
-  const lifetimeMultiplier = hasLifetimeBoost(params) ? getBoostMultiplier(config, "LifetimeTrading") : 0n;
+  const lifetimeMultiplier = status.boostIds.includes("LifetimeTrading")
+    ? getBoostMultiplier(config, "LifetimeTrading")
+    : 0n;
   const featuredMultiplier = config.featuredMarketIndexTokens.includes(params.indexTokenAddress)
     ? getBoostMultiplier(config, "FeaturedMarkets")
     : 0n;
@@ -141,40 +132,8 @@ export function getTradeMultiplierEstimate(params: TradeMultiplierParams): Trade
   };
 }
 
-function getTradeVolumeMultiplier(params: TradeMultiplierParams) {
-  const { config, status, marketTokenAddress } = params;
-  const coefficient =
-    config.downgradingCoefficients.find((item) => item.market === marketTokenAddress)?.coefficient ??
-    config.multiplierDecimals;
-  const positiveSizeDeltaUsd = params.sizeDeltaUsd > 0n ? params.sizeDeltaUsd : 0n;
-  const projectedTierVolume =
-    status.tierVolume + bigMath.mulDiv(positiveSizeDeltaUsd, coefficient, config.multiplierDecimals);
-  const projectedTier = getVolumeTier(config.volumeTiers, projectedTierVolume);
-  const activeTier = getHigherVolumeTier(status.volumeTier, projectedTier?.tier);
-
-  return config.volumeTiers.find((tier) => tier.tier === activeTier)?.multiplier ?? 0n;
-}
-
-function getVolumeTier(tiers: VolumeTierConfig[], volume: bigint) {
-  let result: VolumeTierConfig | undefined;
-
-  for (const tier of tiers) {
-    if (volume >= tier.threshold && (!result || tier.threshold >= result.threshold)) {
-      result = tier;
-    }
-  }
-
-  return result;
-}
-
-function getHigherVolumeTier(
-  first: VolumeTierId | null | undefined,
-  second: VolumeTierId | null | undefined
-): VolumeTierId | null {
-  if (!first) return second ?? null;
-  if (!second) return first;
-
-  return VOLUME_TIER_ORDER.indexOf(first) >= VOLUME_TIER_ORDER.indexOf(second) ? first : second;
+function getVolumeTierMultiplier(config: IncentivesConfig, tier: VolumeTierId | null) {
+  return config.volumeTiers.find((item) => item.tier === tier)?.multiplier ?? 0n;
 }
 
 function getStakingTierMultiplier(config: IncentivesConfig, tier: StakingTierId | null) {
@@ -183,14 +142,6 @@ function getStakingTierMultiplier(config: IncentivesConfig, tier: StakingTierId 
 
 function getBoostMultiplier(config: IncentivesConfig, boost: BoostId) {
   return config.boosts.find((item) => item.boost === boost)?.multiplier ?? 0n;
-}
-
-function hasLifetimeBoost(params: TradeMultiplierParams) {
-  if (params.status.boostIds.includes("LifetimeTrading")) return true;
-  if (params.lifetimeVolume === undefined || params.config.lifetimeVolumeThreshold <= 0n) return false;
-
-  const positiveSizeDeltaUsd = params.sizeDeltaUsd > 0n ? params.sizeDeltaUsd : 0n;
-  return params.lifetimeVolume + positiveSizeDeltaUsd >= params.config.lifetimeVolumeThreshold;
 }
 
 function getBaseRewardUsd(feeUsd: bigint, multiplier: bigint, config: IncentivesConfig) {
