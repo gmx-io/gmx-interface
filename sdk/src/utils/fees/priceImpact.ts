@@ -1,3 +1,5 @@
+import { zeroHash } from "viem";
+
 import { bigMath } from "utils/bigmath";
 import { getOpenInterestForBalance, getTokenPoolType } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
@@ -153,32 +155,31 @@ export function getPriceImpactForPosition(
   const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
   const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);
 
-  // Match v2.2c contract: usdDelta = tokenDelta * midPrice for OI balance
   let effectiveUsdDelta = sizeDeltaUsd;
+
   if (marketInfo.useOpenInterestInTokensForBalance) {
+    if (sizeDeltaUsd < 0n && opts.sizeDeltaInTokens === undefined) {
+      throw new Error(`Missing sizeDeltaInTokens for token-OI decrease market ${marketInfo.marketTokenAddress}`);
+    }
+
     const midPrice = getMidPrice(marketInfo.indexToken.prices);
-    if (midPrice > 0n) {
-      const sizeDeltaInTokens =
-        opts.sizeDeltaInTokens ??
-        (sizeDeltaUsd > 0n
-          ? convertToTokenAmountForIncrease(
-              sizeDeltaUsd,
-              marketInfo.indexToken.decimals,
-              isLong ? marketInfo.indexToken.prices.maxPrice : marketInfo.indexToken.prices.minPrice,
-              isLong
-            )
-          : convertToTokenAmountForIncrease(
-              bigMath.abs(sizeDeltaUsd),
-              marketInfo.indexToken.decimals,
-              midPrice,
-              true
-            ))!;
-      effectiveUsdDelta = convertToUsd(sizeDeltaInTokens, marketInfo.indexToken.decimals, midPrice)!;
-      if (sizeDeltaUsd < 0n && effectiveUsdDelta > 0n) {
-        effectiveUsdDelta = -effectiveUsdDelta;
-      } else if (sizeDeltaUsd > 0n && effectiveUsdDelta < 0n) {
-        effectiveUsdDelta = -effectiveUsdDelta;
-      }
+    const sizeDeltaInTokens =
+      opts.sizeDeltaInTokens ??
+      (midPrice > 0n
+        ? convertToTokenAmountForIncrease(
+            sizeDeltaUsd,
+            marketInfo.indexToken.decimals,
+            isLong ? marketInfo.indexToken.prices.maxPrice : marketInfo.indexToken.prices.minPrice,
+            isLong
+          )!
+        : 0n);
+
+    effectiveUsdDelta = convertToUsd(sizeDeltaInTokens, marketInfo.indexToken.decimals, midPrice) ?? 0n;
+
+    if (sizeDeltaUsd < 0n && effectiveUsdDelta > 0n) {
+      effectiveUsdDelta = -effectiveUsdDelta;
+    } else if (sizeDeltaUsd > 0n && effectiveUsdDelta < 0n) {
+      effectiveUsdDelta = -effectiveUsdDelta;
     }
   }
 
@@ -201,22 +202,16 @@ export function getPriceImpactForPosition(
     fallbackToZero: opts.fallbackToZero,
   });
 
-  if (priceImpactDeltaUsd > 0) {
+  if (priceImpactDeltaUsd >= 0n) {
     return {
       priceImpactDeltaUsd,
       balanceWasImproved,
     };
   }
 
-  const virtualInventory = marketInfo.useOpenInterestInTokensForBalance
-    ? convertToUsd(
-        marketInfo.virtualInventoryForPositionsInTokens ?? 0n,
-        marketInfo.indexToken.decimals,
-        getMidPrice(marketInfo.indexToken.prices)
-      )!
-    : marketInfo.virtualInventoryForPositions;
+  const { hasVirtualInventory, virtualInventory } = getVirtualInventoryForPositionImpact(marketInfo);
 
-  if (bigMath.abs(virtualInventory) <= 0) {
+  if (!hasVirtualInventory) {
     return {
       priceImpactDeltaUsd,
       balanceWasImproved,
@@ -242,17 +237,47 @@ export function getPriceImpactForPosition(
       fallbackToZero: opts.fallbackToZero,
     });
 
-  const shouldUseVirtualInventory = priceImpactUsdForVirtualInventory < priceImpactDeltaUsd;
+  if (priceImpactUsdForVirtualInventory < priceImpactDeltaUsd) {
+    return {
+      priceImpactDeltaUsd: priceImpactUsdForVirtualInventory,
+      balanceWasImproved: virtualBalanceWasImproved,
+    };
+  }
 
-  return shouldUseVirtualInventory
-    ? {
-        priceImpactDeltaUsd: priceImpactUsdForVirtualInventory,
-        balanceWasImproved: virtualBalanceWasImproved,
-      }
-    : {
-        priceImpactDeltaUsd,
-        balanceWasImproved,
-      };
+  return {
+    priceImpactDeltaUsd,
+    balanceWasImproved,
+  };
+}
+
+function getVirtualInventoryForPositionImpact(marketInfo: MarketInfo) {
+  const hasConfiguredVirtualInventory =
+    typeof marketInfo.virtualIndexTokenId === "string" ? marketInfo.virtualIndexTokenId !== zeroHash : undefined;
+
+  if (hasConfiguredVirtualInventory === false) {
+    return { hasVirtualInventory: false, virtualInventory: 0n };
+  }
+
+  let virtualInventory = marketInfo.virtualInventoryForPositions;
+
+  if (marketInfo.useOpenInterestInTokensForBalance) {
+    if (typeof marketInfo.virtualInventoryForPositionsInTokens !== "bigint") {
+      throw new Error(
+        `Missing virtualInventoryForPositionsInTokens for token-OI market ${marketInfo.marketTokenAddress}`
+      );
+    }
+
+    virtualInventory = convertToUsd(
+      marketInfo.virtualInventoryForPositionsInTokens,
+      marketInfo.indexToken.decimals,
+      getMidPrice(marketInfo.indexToken.prices)
+    )!;
+  }
+
+  return {
+    hasVirtualInventory: hasConfiguredVirtualInventory ?? virtualInventory !== 0n,
+    virtualInventory,
+  };
 }
 
 export function getProportionalPendingImpactValues({
@@ -409,9 +434,9 @@ function getNextOpenInterestParams(p: {
   let nextShortUsd = currentShortUsd;
 
   if (isLong) {
-    nextLongUsd = (currentLongUsd ?? 0n) + (usdDelta ?? 0n);
+    nextLongUsd = usdDelta < 0n && -usdDelta > currentLongUsd ? 0n : currentLongUsd + usdDelta;
   } else {
-    nextShortUsd = (currentShortUsd ?? 0n) + (usdDelta ?? 0n);
+    nextShortUsd = usdDelta < 0n && -usdDelta > currentShortUsd ? 0n : currentShortUsd + usdDelta;
   }
 
   return {
@@ -478,7 +503,7 @@ export function getPriceImpactUsd(p: {
 
   const currentDiff = bigMath.abs(p.currentLongUsd - p.currentShortUsd);
   const nextDiff = bigMath.abs(nextLongUsd - nextShortUsd);
-  const isSameSideRebalance = p.currentLongUsd < p.currentShortUsd === nextLongUsd < nextShortUsd;
+  const isSameSideRebalance = p.currentLongUsd <= p.currentShortUsd === nextLongUsd <= nextShortUsd;
   const balanceWasImproved = nextDiff < currentDiff;
 
   let priceImpactDeltaUsd: bigint;

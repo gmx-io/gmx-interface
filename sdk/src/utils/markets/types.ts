@@ -134,10 +134,10 @@ export type MarketInfo = Market &
     virtualPoolAmountForLongToken: bigint;
     virtualPoolAmountForShortToken: bigint;
     virtualInventoryForPositions: bigint;
-    virtualInventoryForPositionsInTokens?: bigint;
+    virtualInventoryForPositionsInTokens: bigint;
 
     virtualMarketId: string;
-    virtualIndexTokenId?: string;
+    virtualIndexTokenId: string;
     virtualLongTokenId: string;
     virtualShortTokenId: string;
   };

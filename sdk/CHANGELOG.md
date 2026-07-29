@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.4
+
+- Added the v2.2c market and position response fields
+- Matched position impact calculations to token-denominated open interest and virtual inventory
+- Added runtime validation for v2.2c API responses
+
 ## 1.3.1
 
 - Fix calling createOrder with `dataList` in SDK

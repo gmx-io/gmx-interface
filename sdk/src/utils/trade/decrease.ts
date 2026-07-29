@@ -34,6 +34,27 @@ import { TokenData } from "utils/tokens/types";
 
 import { DecreasePositionAmounts, FindSwapPath, NextPositionValues, SwapAmounts } from "./types";
 
+export function getDecreasePositionSizeDeltaInTokens(p: {
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  sizeDeltaUsd: bigint;
+  isLong: boolean;
+}) {
+  const { sizeInUsd, sizeInTokens, sizeDeltaUsd, isLong } = p;
+
+  if (sizeInUsd <= 0n || sizeInTokens <= 0n || sizeDeltaUsd <= 0n) {
+    return 0n;
+  }
+
+  if (sizeDeltaUsd >= sizeInUsd) {
+    return sizeInTokens;
+  }
+
+  return isLong
+    ? roundUpDivision(sizeInTokens * sizeDeltaUsd, sizeInUsd)
+    : bigMath.mulDiv(sizeInTokens, sizeDeltaUsd, sizeInUsd);
+}
+
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
   collateralToken: TokenData;
@@ -155,16 +176,18 @@ export function getDecreasePositionAmounts(p: {
   values.sizeDeltaUsd = closeSizeUsd;
 
   if (!position || position.sizeInUsd <= 0 || position.sizeInTokens <= 0) {
-    applyAcceptablePrice({
-      position,
-      marketInfo,
-      isLong,
-      isTrigger,
-      fixedAcceptablePriceImpactBps,
-      acceptablePriceImpactBuffer,
-      values,
-      isSetAcceptablePriceImpactEnabled,
-    });
+    if (!marketInfo.useOpenInterestInTokensForBalance) {
+      applyAcceptablePrice({
+        position,
+        marketInfo,
+        isLong,
+        isTrigger,
+        fixedAcceptablePriceImpactBps,
+        acceptablePriceImpactBuffer,
+        values,
+        isSetAcceptablePriceImpactEnabled,
+      });
+    }
 
     const positionFeeInfo = getPositionFee(
       marketInfo,
@@ -216,14 +239,14 @@ export function getDecreasePositionAmounts(p: {
 
   if (values.isFullClose) {
     values.sizeDeltaUsd = position.sizeInUsd;
-    values.sizeDeltaInTokens = position.sizeInTokens;
-  } else {
-    if (position.isLong) {
-      values.sizeDeltaInTokens = roundUpDivision(position.sizeInTokens * values.sizeDeltaUsd, position.sizeInUsd);
-    } else {
-      values.sizeDeltaInTokens = bigMath.mulDiv(position.sizeInTokens, values.sizeDeltaUsd, position.sizeInUsd);
-    }
   }
+
+  values.sizeDeltaInTokens = getDecreasePositionSizeDeltaInTokens({
+    sizeInUsd: position.sizeInUsd,
+    sizeInTokens: position.sizeInTokens,
+    sizeDeltaUsd: values.sizeDeltaUsd,
+    isLong: position.isLong,
+  });
 
   // PNL
   values.estimatedPnl = getPositionPnlUsd({
@@ -827,6 +850,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
 
   return {
     nextSizeUsd,
+    nextSizeInTokens,
     nextCollateralUsd,
     nextLiqPrice,
     nextPnl,

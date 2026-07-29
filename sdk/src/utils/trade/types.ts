@@ -177,6 +177,7 @@ export type NextPositionValues = {
   nextLiqPrice?: bigint;
   nextCollateralUsd?: bigint;
   nextSizeUsd?: bigint;
+  nextSizeInTokens?: bigint;
   nextPnl?: bigint;
   nextPnlPercentage?: bigint;
   nextEntryPrice?: bigint;

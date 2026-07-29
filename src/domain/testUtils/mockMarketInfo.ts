@@ -125,7 +125,9 @@ export function createMockMarketInfo(
     virtualPoolAmountForLongToken: 0n,
     virtualPoolAmountForShortToken: 0n,
     virtualInventoryForPositions: 0n,
+    virtualInventoryForPositionsInTokens: 0n,
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
   } as MarketInfo;

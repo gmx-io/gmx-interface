@@ -730,6 +730,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
 
   return {
     nextSizeUsd,
+    nextSizeInTokens,
     nextCollateralUsd,
     nextEntryPrice,
     nextLeverage,
