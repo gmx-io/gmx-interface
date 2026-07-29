@@ -27,6 +27,7 @@ export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
   defaultMessage?: ReactNode;
+  userDeniedMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
   isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
@@ -40,6 +41,7 @@ export function getTxnErrorToast(
     additionalContent,
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
+    userDeniedMessage,
     isInternalSwapFallback,
     isExternalSwapFallback,
     permitIssueType,
@@ -147,7 +149,7 @@ export function getTxnErrorToast(
       toastParams.errorContent = getInvalidNetworkToastContent(chainId);
       break;
     case TxErrorType.UserDenied:
-      toastParams.errorContent = t`Transaction canceled`;
+      toastParams.errorContent = userDeniedMessage ?? t`Transaction canceled`;
       break;
     case TxErrorType.Slippage:
       toastParams.errorContent = t`Mark price changed. Increase allowed slippage`;

@@ -1351,6 +1351,10 @@ msgstr ""
 msgid "Pay"
 msgstr "Bezahlen"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Signature canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
+msgstr "Signatur abgebrochen. Wenn Trust Wallet automatisch geschlossen wurde, aktiviere „Im Seitenbereich öffnen“ in den Trust-Wallet-Einstellungen und versuche es erneut."
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating referral code..."

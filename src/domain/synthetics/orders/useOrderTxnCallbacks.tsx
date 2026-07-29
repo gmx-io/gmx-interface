@@ -46,6 +46,7 @@ import { getByKey } from "lib/objects";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
+import { useIsTrustWallet } from "lib/wallets/useIsTrustWallet";
 import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import {
@@ -65,6 +66,7 @@ import {
 import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
 
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
+import { getShouldShowTrustWalletSidePanelWarning } from "./trustWallet";
 import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
@@ -96,6 +98,7 @@ export function useOrderTxnCallbacks() {
   const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
+  const isTrustWallet = useIsTrustWallet();
 
   const batchTxnCallback = useCallback(
     (ctx: CallbackUiCtx, e: TxnEvent<BatchOrderTxnCtx>) => {
@@ -348,6 +351,16 @@ export function useOrderTxnCallbacks() {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
+            userDeniedMessage: getShouldShowTrustWalletSidePanelWarning({
+              isExpress: Boolean(expressParams),
+              isTrustWallet,
+              isUserRejectedError: Boolean(errorData?.isUserRejectedError),
+            }) ? (
+              <Trans>
+                Signature canceled. If Trust Wallet closed automatically, enable "Open in side panel" in Trust Wallet
+                settings and retry.
+              </Trans>
+            ) : undefined,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),
             permitIssueType,
@@ -417,6 +430,7 @@ export function useOrderTxnCallbacks() {
       addOptimisticTokensBalancesUpdates,
       blockNumber,
       chainId,
+      isTrustWallet,
       srcChainId,
       ordersInfoData,
       resetTokenPermits,
