@@ -1579,10 +1579,6 @@ msgstr "Stop-Loss"
 msgid "External swap {0} to {1}"
 msgstr "Échange externe de {0} vers {1}"
 
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Available esGMX"
-msgstr "esGMX disponibles"
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
@@ -3407,11 +3403,6 @@ msgstr "Capacité de dépôt USD la plus restrictive"
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "Liquidé car l'effet de levier maximum de {formattedMaxLeverage} a été dépassé après prise en compte des frais."
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Done"
-msgstr "Terminé"
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Déposé {0} dans {positionText}"
@@ -3563,10 +3554,6 @@ msgstr "Récompenses LP cumulées"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "Taille de réduction invalide"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Stake & vest esGMX"
-msgstr "Staker et vester des esGMX"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
@@ -3973,6 +3960,10 @@ msgstr "Pages de l'écosystème GMX"
 msgid "Dune Analytics for GMX"
 msgstr "Analyses Dune pour GMX"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Add to Vesting"
+msgstr "Ajouter au vesting"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Frais d'emprunt en attente de toutes les positions ouvertes"
@@ -4277,6 +4268,7 @@ msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
 msgstr "esGMX pouvant faire l’objet d’une acquisition progressive"
 
@@ -6300,7 +6292,6 @@ msgid "Updating..."
 msgstr "Mise à jour en cours…"
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vest more"
 msgstr "Vester davantage"
 
@@ -7200,6 +7191,10 @@ msgstr "Persistant"
 msgid "High price impact"
 msgstr "Impact élevé sur le prix"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral available"
+msgstr "Collatéral disponible"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staking tiers"
@@ -7385,10 +7380,6 @@ msgstr ""
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
 msgstr "COMPOSITION"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "New esGMX keeps accruing while a vest is active"
-msgstr "Les nouveaux esGMX continuent de s’accumuler pendant qu’un vesting est actif"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8361,10 +8352,6 @@ msgstr "LIQ. LONG"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "Sélectionnez un actif à déposer"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Already staked & free"
-msgstr "Déjà stakés et disponibles"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10154,10 +10141,6 @@ msgstr "Récupérer {0}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing exponent short"
 msgstr "Exposant d'emprunt short"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "adding it will extend your unlock date."
-msgstr "les ajouter prolongera votre date de déverrouillage."
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx

@@ -1579,10 +1579,6 @@ msgstr "손절매"
 msgid "External swap {0} to {1}"
 msgstr "외부 스왑 {0} → {1}"
 
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Available esGMX"
-msgstr "사용 가능한 esGMX"
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
@@ -3407,11 +3403,6 @@ msgstr "최소 입금 USD 한도"
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}을(를) 초과하여 청산되었습니다."
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Done"
-msgstr "완료"
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}에 {0} 예치"
@@ -3563,10 +3554,6 @@ msgstr "누적 LP 보상"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "유효하지 않은 감소 규모"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Stake & vest esGMX"
-msgstr "GMX 스테이킹 및 esGMX 베스팅"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
@@ -3973,6 +3960,10 @@ msgstr "GMX 생태계 페이지"
 msgid "Dune Analytics for GMX"
 msgstr "GMX를 위한 Dune 분석"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Add to Vesting"
+msgstr "베스팅에 추가"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "모든 미결 포지션의 미지급 차입 수수료"
@@ -4277,6 +4268,7 @@ msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
 msgstr "베스팅 가능 esGMX"
 
@@ -6300,7 +6292,6 @@ msgid "Updating..."
 msgstr "업데이트 중…"
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vest more"
 msgstr "추가 베스팅"
 
@@ -7200,6 +7191,10 @@ msgstr "지속형"
 msgid "High price impact"
 msgstr "높은 가격 영향"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral available"
+msgstr "사용 가능한 담보"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staking tiers"
@@ -7385,10 +7380,6 @@ msgstr ""
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
 msgstr "구성"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "New esGMX keeps accruing while a vest is active"
-msgstr "베스팅이 진행되는 동안에도 새로운 esGMX가 계속 적립됩니다"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8361,10 +8352,6 @@ msgstr "LONG LIQ."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "입금할 자산을 선택하십시오"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Already staked & free"
-msgstr "스테이킹 완료 및 미사용"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10154,10 +10141,6 @@ msgstr "{0} 수령"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing exponent short"
 msgstr "차입 지수 (숏)"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "adding it will extend your unlock date."
-msgstr "추가하면 잠금 해제일이 연장됩니다."
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx

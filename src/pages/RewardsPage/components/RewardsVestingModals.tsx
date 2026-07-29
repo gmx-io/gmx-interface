@@ -35,7 +35,7 @@ import Button from "components/Button/Button";
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { GMX_DAO_LINKS } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Modal from "components/Modal/Modal";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -130,13 +130,11 @@ type VestingTransactionStep = "approving" | "staking" | "vesting";
 type VestingTransactionProgress = {
   approval: boolean;
   staking: boolean;
-  vesting: boolean;
 };
 
 const EMPTY_TRANSACTION_PROGRESS: VestingTransactionProgress = {
   approval: false,
   staking: false,
-  vesting: false,
 };
 
 function VestingStep({
@@ -339,13 +337,10 @@ export function RewardsVestingModal({
   };
 
   const setDepositValue = (nextValue: string) => {
-    if (transactionProgress.vesting) return;
-
     setValue(nextValue);
     setTransactionProgress((current) => ({
       ...current,
       staking: false,
-      vesting: false,
     }));
   };
 
@@ -408,8 +403,7 @@ export function RewardsVestingModal({
       hasMultipleWalletExtensionsChainError ||
       !isGovernanceDataReady ||
       isStakeBlockedByUndelegatedGovToken ||
-      isReadOnly ||
-      transactionProgress.vesting
+      isReadOnly
     ) {
       return;
     }
@@ -564,14 +558,14 @@ export function RewardsVestingModal({
         amount: depositAmount,
       });
       attemptedTransaction = undefined;
-      if (
+      const shouldCloseModal =
         transactionSessionRef.current === transactionSession &&
         walletStateRef.current.account === submittedAccount &&
         walletStateRef.current.walletChainId === ARBITRUM &&
         !walletStateRef.current.hasOutdatedUi &&
-        !walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
-        setTransactionProgress((current) => ({ ...current, vesting: true }));
+        !walletStateRef.current.hasMultipleWalletExtensionsChainError;
+      if (shouldCloseModal) {
+        setIsVisible(false);
       }
       try {
         await mutate();
@@ -609,8 +603,6 @@ export function RewardsVestingModal({
     primaryText = multipleWalletExtensionsChainError.buttonErrorMessage;
   } else if (isReadOnly) {
     primaryText = <Trans>Preview only</Trans>;
-  } else if (transactionProgress.vesting) {
-    primaryText = <Trans>Done</Trans>;
   } else if (depositAmount === undefined || depositAmount === 0n) {
     primaryText = <Trans>Enter an amount</Trans>;
   } else if (depositAmount > vestingLimit) {
@@ -633,7 +625,8 @@ export function RewardsVestingModal({
     primaryText = <Trans>Vest {formatTokenAmount(depositAmount)} esGMX</Trans>;
   }
 
-  const title = hasEnoughWalletGmx ? t`Stake & vest esGMX` : t`Vest esGMX`;
+  const collateralAvailable = data.freePairAmount + data.walletGmxBalance;
+  const title = t`Vest esGMX`;
   const missingGmxAmount =
     preview.stakeShortfallAmount > data.walletGmxBalance ? preview.stakeShortfallAmount - data.walletGmxBalance : 0n;
   const depositAmountLabel = `${formatTokenAmount(depositAmount ?? 0n)} esGMX`;
@@ -675,24 +668,21 @@ export function RewardsVestingModal({
       : []),
     {
       key: "vesting",
-      status: transactionProgress.vesting
-        ? ("completed" as const)
-        : transactionStep === "vesting"
-          ? ("active" as const)
-          : ("pending" as const),
+      status: transactionStep === "vesting" ? ("active" as const) : ("pending" as const),
       label: <Trans>Start vesting</Trans>,
       completedLabel: <Trans>Vesting started</Trans>,
     },
   ];
 
   return (
-    <Modal
+    <ModalWithPortal
       isVisible={isVisible}
       setIsVisible={setModalVisible}
       label={title}
       contentPadding={false}
       hideHeaderBorder
       withMobileBottomPosition
+      keepScrollbarVisible
       contentClassName="w-[420px]"
       qa="rewards-vesting-modal"
     >
@@ -705,7 +695,7 @@ export function RewardsVestingModal({
               className="bg-transparent min-w-0 grow text-16 outline-none"
               placeholder="0"
               maxDecimals={GMX_DECIMALS}
-              isDisabled={isBusy || transactionProgress.vesting}
+              isDisabled={isBusy}
               qa="rewards-vesting-amount"
             />
             <span className="text-13 text-typography-secondary">esGMX</span>
@@ -713,7 +703,7 @@ export function RewardsVestingModal({
               type="button"
               className="rounded-full bg-slate-600 px-8 py-3 text-12 font-medium text-typography-primary hover:bg-slate-500"
               onClick={() => setDepositValue(formatAmountFree(vestingLimit, GMX_DECIMALS, GMX_DECIMALS))}
-              disabled={isBusy || transactionProgress.vesting || vestingLimit === 0n}
+              disabled={isBusy || vestingLimit === 0n}
             >
               <Trans>Max</Trans>
             </button>
@@ -728,15 +718,15 @@ export function RewardsVestingModal({
             label={<Trans>Collateral this vest locks</Trans>}
             value={
               <>
-                {formatTokenAmount(preview.additionalPairAmount)} <span className="text-typography-secondary">GMX</span>
+                {formatTokenAmount(depositAmount ?? 0n)} <span className="text-typography-secondary">GMX</span>
               </>
             }
           />
           <ModalValueRow
-            label={<Trans>Already staked & free</Trans>}
+            label={<Trans>Collateral available</Trans>}
             value={
               <>
-                {formatTokenAmount(data.freePairAmount)} <span className="text-typography-secondary">GMX</span>
+                {formatTokenAmount(collateralAvailable)} <span className="text-typography-secondary">GMX</span>
               </>
             }
           />
@@ -813,7 +803,7 @@ export function RewardsVestingModal({
           </ColorfulBanner>
         ) : null}
 
-        {hasValidAmount ? (
+        {hasValidAmount && transactionSteps.length > 1 ? (
           <div className="flex flex-col gap-16 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-12">
             {transactionSteps.map((step, index) => (
               <VestingStep
@@ -830,46 +820,40 @@ export function RewardsVestingModal({
 
         <SwitchToSettlementChainWarning topic="vesting" settlementChainId={ARBITRUM} />
         <RewardsVestingChainGuard>
-          {transactionProgress.vesting ? (
-            <Button variant="primary" size="medium" className="w-full" onClick={() => setModalVisible(false)}>
-              <Trans>Done</Trans>
-            </Button>
-          ) : (
-            <div className="grid grid-cols-2 gap-12">
-              <ButtonTooltipWrapper content={multipleWalletExtensionsChainError.buttonTooltipMessage}>
-                <Button
-                  variant="primary"
-                  size="medium"
-                  className="w-full"
-                  onClick={handleVest}
-                  disabled={
-                    !hasValidAmount ||
-                    !isWalletReady ||
-                    isBusy ||
-                    isAllowanceLoading ||
-                    hasOutdatedUi ||
-                    hasMultipleWalletExtensionsChainError ||
-                    isStakeBlockedByUndelegatedGovToken ||
-                    isReadOnly
-                  }
-                >
-                  {primaryText}
-                </Button>
-              </ButtonTooltipWrapper>
+          <div className="grid grid-cols-2 gap-12">
+            <ButtonTooltipWrapper content={multipleWalletExtensionsChainError.buttonTooltipMessage}>
               <Button
-                variant="secondary"
+                variant="primary"
                 size="medium"
                 className="w-full"
-                onClick={() => setModalVisible(false)}
-                disabled={isBusy}
+                onClick={handleVest}
+                disabled={
+                  !hasValidAmount ||
+                  !isWalletReady ||
+                  isBusy ||
+                  isAllowanceLoading ||
+                  hasOutdatedUi ||
+                  hasMultipleWalletExtensionsChainError ||
+                  isStakeBlockedByUndelegatedGovToken ||
+                  isReadOnly
+                }
               >
-                <Trans>Cancel</Trans>
+                {primaryText}
               </Button>
-            </div>
-          )}
+            </ButtonTooltipWrapper>
+            <Button
+              variant="secondary"
+              size="medium"
+              className="w-full"
+              onClick={() => setModalVisible(false)}
+              disabled={isBusy}
+            >
+              <Trans>Cancel</Trans>
+            </Button>
+          </div>
         </RewardsVestingChainGuard>
       </div>
-    </Modal>
+    </ModalWithPortal>
   );
 }
 
@@ -1020,13 +1004,14 @@ export function RewardsStopVestingModal({
   };
 
   return (
-    <Modal
+    <ModalWithPortal
       isVisible={isVisible}
       setIsVisible={setModalVisible}
       label={t`Stop vesting?`}
       contentPadding={false}
       hideHeaderBorder
       withMobileBottomPosition
+      keepScrollbarVisible
       contentClassName="w-[420px]"
       qa="rewards-stop-vesting-modal"
     >
@@ -1092,6 +1077,6 @@ export function RewardsStopVestingModal({
           </div>
         </RewardsVestingChainGuard>
       </div>
-    </Modal>
+    </ModalWithPortal>
   );
 }

@@ -1579,10 +1579,6 @@ msgstr ""
 msgid "External swap {0} to {1}"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Available esGMX"
-msgstr "[Äväïläblë ësGMX]"
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
@@ -3407,11 +3403,6 @@ msgstr ""
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Done"
-msgstr "[Dönë]"
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr ""
@@ -3563,10 +3554,6 @@ msgstr ""
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Stake & vest esGMX"
-msgstr "[Stäkë & vëst ësGMX]"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
@@ -3973,6 +3960,10 @@ msgstr ""
 msgid "Dune Analytics for GMX"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Add to Vesting"
+msgstr "[Ädd tö Vëstïng]"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr ""
@@ -4277,6 +4268,7 @@ msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
 msgstr ""
 
@@ -6300,7 +6292,6 @@ msgid "Updating..."
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vest more"
 msgstr "[Vëst mörë]"
 
@@ -7200,6 +7191,10 @@ msgstr ""
 msgid "High price impact"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral available"
+msgstr "Çóĺĺáţéŕáĺ áváíĺáƀĺé"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staking tiers"
@@ -7385,10 +7380,6 @@ msgstr ""
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
 msgstr "COMPOSITION"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "New esGMX keeps accruing while a vest is active"
-msgstr "[Nëw ësGMX këëps äccrüïng whïlë ä vëst ïs äctïvë]"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8361,10 +8352,6 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Already staked & free"
-msgstr "[Älrëädý stäkëd & frëë]"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10154,10 +10141,6 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing exponent short"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "adding it will extend your unlock date."
-msgstr "[äddïng ït wïll ëxtënd ýöür ünlöck dätë.]"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx

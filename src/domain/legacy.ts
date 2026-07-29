@@ -257,8 +257,8 @@ function useGmxPriceFromAvalanche(enabled: boolean) {
   }
 
   const mutate = useCallback(() => {
-    updateReserves(undefined, true);
-    updateAvaxPrice(undefined, true);
+    updateReserves();
+    updateAvaxPrice();
   }, [updateReserves, updateAvaxPrice]);
 
   return { data: gmxPrice, mutate };
@@ -308,8 +308,8 @@ function useGmxPriceFromArbitrum(signer: WalletSigner | undefined, active: boole
   }, [ethPrice, uniPoolSlot0, ethAddress]);
 
   const mutate = useCallback(() => {
-    updateUniPoolSlot0(undefined, true);
-    updateEthPrice(undefined, true);
+    updateUniPoolSlot0();
+    updateEthPrice();
   }, [updateEthPrice, updateUniPoolSlot0]);
 
   return { data: gmxPrice, mutate };

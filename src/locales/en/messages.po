@@ -1579,10 +1579,6 @@ msgstr "Stop-Loss"
 msgid "External swap {0} to {1}"
 msgstr "External swap {0} to {1}"
 
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Available esGMX"
-msgstr "Available esGMX"
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
@@ -3407,11 +3403,6 @@ msgstr "Strictest deposit USD capacity"
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Done"
-msgstr "Done"
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Deposited {0} into {positionText}"
@@ -3563,10 +3554,6 @@ msgstr "Lifetime LP rewards"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "Invalid decrease size"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Stake & vest esGMX"
-msgstr "Stake & vest esGMX"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
@@ -3973,6 +3960,10 @@ msgstr "GMX ecosystem pages"
 msgid "Dune Analytics for GMX"
 msgstr "Dune Analytics for GMX"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Add to Vesting"
+msgstr "Add to Vesting"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Pending borrowing fees from all open positions"
@@ -4277,6 +4268,7 @@ msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "Depositing {amountText} to {indexTokenText} Long..."
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
 msgstr "Vestable esGMX"
 
@@ -6300,7 +6292,6 @@ msgid "Updating..."
 msgstr "Updating..."
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vest more"
 msgstr "Vest more"
 
@@ -7200,6 +7191,10 @@ msgstr "Persistent"
 msgid "High price impact"
 msgstr "High price impact"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral available"
+msgstr "Collateral available"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staking tiers"
@@ -7385,10 +7380,6 @@ msgstr "Claim & swap"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
 msgstr "COMPOSITION"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "New esGMX keeps accruing while a vest is active"
-msgstr "New esGMX keeps accruing while a vest is active"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8361,10 +8352,6 @@ msgstr "LONG LIQ."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "Select an asset to deposit"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Already staked & free"
-msgstr "Already staked & free"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10154,10 +10141,6 @@ msgstr "Claim {0}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing exponent short"
 msgstr "Borrowing exponent short"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "adding it will extend your unlock date."
-msgstr "adding it will extend your unlock date."
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx

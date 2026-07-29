@@ -1579,10 +1579,6 @@ msgstr "止損"
 msgid "External swap {0} to {1}"
 msgstr "外部兌換 {0} 至 {1}"
 
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Available esGMX"
-msgstr "可用 esGMX"
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
@@ -3407,11 +3403,6 @@ msgstr "最嚴格存入 USD 容量"
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "計入費用後，超過最大槓桿 {formattedMaxLeverage}，已被清算。"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Done"
-msgstr "完成"
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "已存入 {0} 至 {positionText}"
@@ -3563,10 +3554,6 @@ msgstr "累計 LP 獎勵"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "無效的減少規模"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Stake & vest esGMX"
-msgstr "質押並歸屬 esGMX"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
@@ -3973,6 +3960,10 @@ msgstr "GMX 生態系統頁面"
 msgid "Dune Analytics for GMX"
 msgstr "Dune Analytics for GMX"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Add to Vesting"
+msgstr "新增至歸屬"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "所有未平倉倉位的待結算借貸費用"
@@ -4277,6 +4268,7 @@ msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
 msgstr "可歸屬的 esGMX"
 
@@ -6300,7 +6292,6 @@ msgid "Updating..."
 msgstr "更新中..."
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vest more"
 msgstr "歸屬更多"
 
@@ -7200,6 +7191,10 @@ msgstr "永久"
 msgid "High price impact"
 msgstr "價格影響過高"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral available"
+msgstr "可用抵押品"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staking tiers"
@@ -7385,10 +7380,6 @@ msgstr ""
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
 msgstr "組成"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "New esGMX keeps accruing while a vest is active"
-msgstr "歸屬進行期間，新的 esGMX 會持續累積"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8361,10 +8352,6 @@ msgstr "做多流動性"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "選擇要存入的資產"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Already staked & free"
-msgstr "已質押且可用"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10154,10 +10141,6 @@ msgstr "領取 {0}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing exponent short"
 msgstr "做空借貸指數"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "adding it will extend your unlock date."
-msgstr "加入它會延後您的解鎖日期。"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx

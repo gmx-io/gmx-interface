@@ -253,7 +253,6 @@ export function RewardsVestingFlow() {
   const isDisconnected = !account && !isDebugFixture;
   const isInitialLoading = !isDisconnected && isLoading && !data && !error;
   const isUnavailable = !isDisconnected && !data && (Boolean(error) || !isLoading);
-  const availableEsGmxAmount = data?.walletEsGmxBalance ?? 0n;
   const vestingInfo = data?.vestingInfo;
   const effectiveRemainingAmount = useMemo(
     () =>
@@ -534,10 +533,10 @@ export function RewardsVestingFlow() {
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
           <AmountHeader
             step={1}
-            label={<Trans>Available esGMX</Trans>}
+            label={<Trans>Vestable esGMX</Trans>}
             unit="esGMX"
-            amount={availableEsGmxAmount}
-            usd={getUsdValue(availableEsGmxAmount, data?.gmxPrice)}
+            amount={vestableAmount}
+            usd={getUsdValue(vestableAmount, data?.gmxPrice)}
             active
             loading={isInitialLoading}
             unavailable={isDisconnected || isUnavailable}
@@ -550,22 +549,11 @@ export function RewardsVestingFlow() {
             <UnavailablePanel />
           ) : (
             <div className="flex min-h-[132px] w-full grow flex-col justify-between gap-12 overflow-hidden rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12 backdrop-blur-[50px]">
-              {isVestingActive ? (
-                <ColorfulBanner
-                  color="blue"
-                  icon={InfoIcon}
-                  className="min-h-56 w-full shrink-0 !border-l-[1.5px] !px-12 !py-10 !text-14 !font-medium !leading-[1.25] [&_svg]:!p-0"
-                >
-                  <span className="text-rewards-blue-300">
-                    <Trans>New esGMX keeps accruing while a vest is active</Trans>
-                  </span>{" "}
-                  — <Trans>adding it will extend your unlock date.</Trans>
-                </ColorfulBanner>
-              ) : vestableAmount > 0n ? (
-                <div className="flex grow items-center justify-center gap-8 px-4 text-left text-13 leading-[1.35]">
-                  <InfoIcon className="size-20 shrink-0 text-rewards-blue-300" />
-                  <p>
-                    <span className="text-rewards-blue-300">
+              {vestableAmount > 0n ? (
+                <div className="flex grow items-center justify-center px-4 text-left text-13 leading-[1.5]">
+                  <p className="min-w-0 text-center">
+                    <span className="font-medium text-rewards-blue-300">
+                      <InfoIcon className="-mt-2 mr-4 inline size-16 align-middle" />
                       <Trans>Vesting turns esGMX into GMX over 12 months.</Trans>
                     </span>
                     <br />
@@ -602,7 +590,7 @@ export function RewardsVestingFlow() {
                   className="h-40 w-full shrink-0 text-14"
                   onClick={startVestingAction}
                 >
-                  {isVestingActive ? <Trans>Vest more</Trans> : <Trans>Start vesting</Trans>}
+                  {isVestingActive ? <Trans>Add to Vesting</Trans> : <Trans>Start vesting</Trans>}
                   <VestIcon className="size-16" />
                 </Button>
               ) : (

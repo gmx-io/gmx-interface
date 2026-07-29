@@ -174,6 +174,13 @@ describe("RewardsVestingModal", () => {
     );
   });
 
+  it("renders outside its caller's layout flow", () => {
+    const view = renderVestModal(baseData);
+
+    expect(view.container.querySelector('[role="dialog"]')).toBeNull();
+    expect(screen.getByRole("dialog", { name: "Vest esGMX" })).toBeDefined();
+  });
+
   it("uses a fresh governance cache key whenever the modal reopens", () => {
     const view = render(getVestModal(baseData));
     const firstRequestKey = mockUseGovTokenAmount.mock.calls.at(-1)?.[1]?.requestKey;
@@ -205,23 +212,45 @@ describe("RewardsVestingModal", () => {
   it("renders the deposit-only state when free collateral already covers the vest", () => {
     renderVestModal(baseData);
 
-    expect(screen.getByText("Stake & vest esGMX", { selector: ".Modal-title" })).toBeDefined();
+    expect(screen.getByText("Vest esGMX", { selector: ".Modal-title" })).toBeDefined();
     expect(screen.getByDisplayValue("100")).toBeDefined();
     expect(screen.getByText("Vestable: 100 esGMX")).toBeDefined();
     expect(screen.getByText("Collateral this vest locks").parentElement?.textContent?.replace(/\s/g, "")).toBe(
       "Collateralthisvestlocks100GMX"
     );
-    expect(screen.getByText("Already staked & free").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Alreadystaked&free100GMX"
+    expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralavailable100GMX"
     );
     expect(screen.queryByText(/more GMX staked as collateral/)).toBeNull();
     expect(screen.getByRole("button", { name: "Vest 100 esGMX" }).hasAttribute("disabled")).toBe(false);
     expect(screen.queryByText("Approve GMX")).toBeNull();
     expect(screen.queryByText("Stake collateral")).toBeNull();
-    expect(screen.getByText("Start vesting")).toBeDefined();
+    expect(screen.queryByText("Start vesting")).toBeNull();
 
     fireEvent.change(screen.getByDisplayValue("100"), { target: { value: "25" } });
     expect(screen.getByRole("button", { name: "Vest 25 esGMX" })).toBeDefined();
+    expect(screen.getByText("Collateral this vest locks").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralthisvestlocks25GMX"
+    );
+  });
+
+  it("rounds vestable and collateral summaries while preserving the exact input amount", () => {
+    const vestableAmount = 15_621_101_296_529_900n;
+
+    renderVestModal({
+      ...baseData,
+      walletEsGmxBalance: vestableAmount,
+      freePairAmount: vestableAmount,
+    });
+
+    expect(screen.getByDisplayValue("0.0156211012965299")).toBeDefined();
+    expect(screen.getByText("Vestable: 0.02 esGMX")).toBeDefined();
+    expect(screen.getByText("Collateral this vest locks").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralthisvestlocks0.02GMX"
+    );
+    expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralavailable0.02GMX"
+    );
   });
 
   it("shows the stake-and-vest notice when wallet GMX covers an initial vest", () => {
@@ -231,7 +260,7 @@ describe("RewardsVestingModal", () => {
       walletGmxBalance: 100n * TOKEN_UNIT,
     });
 
-    expect(screen.getByText("Stake & vest esGMX", { selector: ".Modal-title" })).toBeDefined();
+    expect(screen.getByText("Vest esGMX", { selector: ".Modal-title" })).toBeDefined();
     expect(screen.getByText(/You need 100 more GMX staked as collateral/)).toBeDefined();
     expect(screen.getByText(/then start vesting/)).toBeDefined();
     expect(screen.getAllByText("Approve GMX").length).toBeGreaterThan(0);
@@ -251,6 +280,25 @@ describe("RewardsVestingModal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Buy 50 GMX and vest all 100 esGMX" }));
     expect(onBuyGmx).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button", { name: "Vest 100 esGMX" }).hasAttribute("disabled")).toBe(true);
+  });
+
+  it("shows selected esGMX as locked collateral and combines free staked and wallet GMX", () => {
+    renderVestModal({
+      ...baseData,
+      walletGmxBalance: 25n * TOKEN_UNIT,
+      freePairAmount: 150n * TOKEN_UNIT,
+      vestingInfo: {
+        ...baseData.vestingInfo,
+        averageStakedAmount: 200n * TOKEN_UNIT,
+      },
+    });
+
+    expect(screen.getByText("Collateral this vest locks").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralthisvestlocks100GMX"
+    );
+    expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralavailable175GMX"
+    );
   });
 
   it("shows the no-GMX blocked state", () => {
@@ -313,6 +361,8 @@ describe("RewardsVestingModal", () => {
     expect(mockCallContract.mock.calls[0][2]).toBe("deposit");
     expect(wait).toHaveBeenCalledTimes(1);
     expect(mutate).toHaveBeenCalledTimes(2);
+    expect(setIsVisible).toHaveBeenCalledWith(false);
+    expect(setIsVisible.mock.invocationCallOrder[0]).toBeLessThan(mutate.mock.invocationCallOrder[1]);
   });
 
   it("does not deposit when the refreshed funding preview changed", async () => {
@@ -548,35 +598,8 @@ describe("RewardsVestingModal", () => {
     expect(stakeWait).toHaveBeenCalledTimes(1);
     expect(vestWait).toHaveBeenCalledTimes(1);
     expect(mutate).toHaveBeenCalledTimes(3);
-    await waitFor(() => expect(screen.getByRole("button", { name: "Done" })).toBeDefined());
-    expect(screen.getByText("Collateral staked")).toBeDefined();
-    expect(screen.getByText("Vesting started")).toBeDefined();
-    expect(setIsVisible).not.toHaveBeenCalled();
-
-    fireEvent.click(screen.getByRole("button", { name: "Done" }));
     expect(setIsVisible).toHaveBeenCalledWith(false);
-  });
-
-  it("resets completed vesting progress when the connected account changes", async () => {
-    const wait = vi.fn(async () => undefined);
-    mockCallContract.mockResolvedValueOnce({ wait } as any);
-    mutate.mockResolvedValueOnce(baseData).mockResolvedValueOnce(baseData);
-    const view = renderVestModal(baseData);
-
-    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
-    await waitFor(() => expect(screen.getByRole("button", { name: "Done" })).toBeDefined());
-
-    mockUseWallet.mockReturnValue({
-      account: "0x456",
-      active: true,
-      chainId: ARBITRUM,
-      signer: {},
-    } as ReturnType<typeof useWallet>);
-    view.rerender(getVestModal(baseData));
-
-    await waitFor(() => expect(screen.queryByRole("button", { name: "Done" })).toBeNull());
-    expect(screen.getByRole("button", { name: "Vest 100 esGMX" })).toBeDefined();
-    expect(screen.queryByText("Vesting started")).toBeNull();
+    expect(setIsVisible.mock.invocationCallOrder[0]).toBeLessThan(mutate.mock.invocationCallOrder[2]);
   });
 
   it("does not let a previous account vest clear the current account pending step", async () => {
@@ -613,9 +636,10 @@ describe("RewardsVestingModal", () => {
     resolveFirstVest?.();
     await waitFor(() => expect(mockSendRewardsTransactionResultEvent).toHaveBeenCalledTimes(1));
     expect(screen.getByRole("button", { name: "Vesting..." })).toBeDefined();
+    expect(setIsVisible).not.toHaveBeenCalled();
 
     resolveSecondVest?.();
-    await waitFor(() => expect(screen.getByRole("button", { name: "Done" })).toBeDefined());
+    await waitFor(() => expect(setIsVisible).toHaveBeenCalledWith(false));
   });
 
   it("does not deposit when the refreshed account still lacks collateral", async () => {

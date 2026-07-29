@@ -51,6 +51,7 @@ export type ModalProps = PropsWithChildren<{
   qa?: string;
   contentClassName?: string;
   disableOverflowHandling?: boolean;
+  keepScrollbarVisible?: boolean;
   withMobileBottomPosition?: boolean;
   takeFullHeight?: boolean;
   hideHeaderBorder?: boolean;
@@ -71,6 +72,7 @@ export default function Modal({
   qa,
   contentClassName,
   disableOverflowHandling = false,
+  keepScrollbarVisible = false,
   withMobileBottomPosition = false,
   takeFullHeight = false,
   hideHeaderBorder = false,
@@ -98,7 +100,7 @@ export default function Modal({
     <AnimatePresence>
       {isVisible && (
         <ModalFocusScopeProvider scope={focusScope}>
-          <RemoveScroll shards={PRIVY_DIALOG_SCROLL_SHARDS}>
+          <RemoveScroll shards={PRIVY_DIALOG_SCROLL_SHARDS} removeScrollBar={!keepScrollbarVisible}>
             <motion.div
               className={cx("Modal", className, { "max-md:!items-end": withMobileBottomPosition })}
               ref={modalRef}

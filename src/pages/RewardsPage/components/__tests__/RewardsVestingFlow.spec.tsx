@@ -179,7 +179,7 @@ describe("RewardsVestingFlow", () => {
   it("renders the idle state from an empty on-chain snapshot", () => {
     renderFlow();
 
-    expect(screen.getByText("Available esGMX")).toBeDefined();
+    expect(screen.getByText("Vestable esGMX")).toBeDefined();
     expect(screen.getByText("Vesting esGMX")).toBeDefined();
     expect(screen.getByText("Rewards")).toBeDefined();
     expect(screen.getAllByText("0").length).toBeGreaterThanOrEqual(3);
@@ -203,10 +203,31 @@ describe("RewardsVestingFlow", () => {
     });
     renderFlow();
 
-    expect(screen.getByText("Vesting turns esGMX into GMX over 12 months.")).toBeDefined();
+    const primaryGuidance = screen.getByText("Vesting turns esGMX into GMX over 12 months.");
+    expect(primaryGuidance).toBeDefined();
+    expect(primaryGuidance.querySelector("svg")).not.toBeNull();
+    expect(primaryGuidance.parentElement?.classList.contains("text-center")).toBe(true);
     expect(screen.getByText("Your GMX collateral stays locked until it’s done.")).toBeDefined();
     expect(screen.getByText(/Stake GMX to start vesting your esGMX/)).toBeDefined();
     expect(screen.getByRole("button", { name: "Start vesting" })).toBeDefined();
+  });
+
+  it("shows the lifetime-capped vestable amount instead of the full wallet balance", () => {
+    setVestingData({
+      ...idleData,
+      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        vestedAmount: 90n * TOKEN_UNIT,
+        maxVestableAmount: 100n * TOKEN_UNIT,
+      },
+    });
+
+    renderFlow();
+
+    expect(screen.getByText("Vestable esGMX").parentElement?.parentElement?.textContent?.replace(/\s/g, "")).toContain(
+      "10esGMX"
+    );
   });
 
   it("opens the vesting modal from the rewards summary deep link", async () => {
@@ -281,7 +302,7 @@ describe("RewardsVestingFlow", () => {
     expect(mockHelperToastInfo).toHaveBeenCalledTimes(1);
   });
 
-  it("renders active vesting values and opens the vest-more and stop confirmations", () => {
+  it("renders active vesting values and opens the add-to-vesting and stop confirmations", () => {
     setVestingData({
       ...idleData,
       walletEsGmxBalance: 42n * TOKEN_UNIT,
@@ -302,8 +323,9 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByText("120")).toBeDefined();
     expect(screen.getByText("365 days left")).toBeDefined();
     expect(screen.getAllByText("100", { selector: "span.text-typography-primary" }).length).toBeGreaterThan(0);
+    expect(screen.queryByText("New esGMX keeps accruing while a vest is active")).toBeNull();
 
-    fireEvent.click(screen.getByRole("button", { name: "Vest more" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add to Vesting" }));
     expect(screen.getByTestId("vesting-modal")).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Stop vesting" }));
@@ -316,7 +338,7 @@ describe("RewardsVestingFlow", () => {
 
     expect(screen.getByRole("button", { name: "Claim 50 GMX" }).hasAttribute("disabled")).toBe(true);
 
-    fireEvent.click(screen.getByRole("button", { name: "Vest more" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add to Vesting" }));
     expect(screen.getByTestId("vesting-modal").getAttribute("data-read-only")).toBe("true");
 
     fireEvent.click(screen.getByRole("button", { name: "Stop vesting" }));

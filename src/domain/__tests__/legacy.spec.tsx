@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import useSWR from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -30,6 +30,12 @@ function GmxPriceProbe({
   return null;
 }
 
+function GmxPriceMutateProbe() {
+  const { mutate } = useGmxPrice(ARBITRUM, {}, false, { fetchAllChains: false });
+
+  return <button onClick={mutate}>Refresh price</button>;
+}
+
 describe("useGmxPrice", () => {
   beforeEach(() => {
     mockUseSWR.mockReset();
@@ -55,5 +61,28 @@ describe("useGmxPrice", () => {
     expect(mockUseSWR).toHaveBeenCalledTimes(4);
     expect(mockUseSWR.mock.calls.slice(0, 2).every(([key]) => Array.isArray(key))).toBe(true);
     expect(mockUseSWR.mock.calls.slice(2).every(([key]) => key === null)).toBe(true);
+  });
+
+  it("keeps the previous price while revalidating", () => {
+    const mutators = Array.from({ length: 4 }, () => vi.fn());
+    mockUseSWR.mockImplementation((_, __) => {
+      const mutate = mutators.shift()!;
+
+      return {
+        data: undefined,
+        error: undefined,
+        isLoading: false,
+        isValidating: false,
+        mutate,
+      } as unknown as ReturnType<typeof useSWR>;
+    });
+    render(<GmxPriceMutateProbe />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Refresh price" }));
+
+    expect(mutators).toHaveLength(0);
+    for (const call of mockUseSWR.mock.results) {
+      expect(call.value.mutate).toHaveBeenCalledWith();
+    }
   });
 });
