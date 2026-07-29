@@ -352,13 +352,12 @@ export function useOrderTxnCallbacks() {
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             userDeniedMessage: getShouldShowTrustWalletSidePanelWarning({
-              isExpress: Boolean(expressParams),
               isTrustWallet,
               isUserRejectedError: Boolean(errorData?.isUserRejectedError),
             }) ? (
               <Trans>
-                Signature canceled. If Trust Wallet closed automatically, enable "Open in side panel" in Trust Wallet
-                settings and retry.
+                Wallet request canceled. If Trust Wallet closed automatically, enable "Open in side panel" in Trust
+                Wallet settings and retry.
               </Trans>
             ) : undefined,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),

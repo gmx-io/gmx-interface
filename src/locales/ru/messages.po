@@ -1351,10 +1351,6 @@ msgstr ""
 msgid "Pay"
 msgstr "Оплатить"
 
-#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
-msgid "Signature canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
-msgstr "Подпись отменена. Если Trust Wallet закрылся автоматически, включите «Открывать на боковой панели» в настройках Trust Wallet и повторите попытку."
-
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating referral code..."
@@ -5396,6 +5392,10 @@ msgstr "Получите на {0}% больше вознаграждений с 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr ""
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Wallet request canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
+msgstr "Запрос кошелька отменен. Если Trust Wallet закрылся автоматически, включите «Открывать на боковой панели» в настройках Trust Wallet и повторите попытку."
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"

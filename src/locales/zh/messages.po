@@ -1351,10 +1351,6 @@ msgstr ""
 msgid "Pay"
 msgstr "支付"
 
-#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
-msgid "Signature canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
-msgstr "签名已取消。如果 Trust Wallet 自动关闭，请在 Trust Wallet 设置中启用“在侧边栏中打开”，然后重试。"
-
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating referral code..."
@@ -5396,6 +5392,10 @@ msgstr "通过此操作可多赚取 {0}% 的奖励"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr ""
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Wallet request canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
+msgstr "钱包请求已取消。如果 Trust Wallet 自动关闭，请在 Trust Wallet 设置中启用“在侧边栏中打开”，然后重试。"
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"

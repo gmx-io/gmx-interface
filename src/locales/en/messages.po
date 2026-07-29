@@ -1351,10 +1351,6 @@ msgstr "Leverage for the current order. Resulting position leverage: {formattedL
 msgid "Pay"
 msgstr "Pay"
 
-#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
-msgid "Signature canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
-msgstr "Signature canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
-
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating referral code..."
@@ -5396,6 +5392,10 @@ msgstr "Earn {0}% more rewards with this action"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Wallet request canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
+msgstr "Wallet request canceled. If Trust Wallet closed automatically, enable \"Open in side panel\" in Trust Wallet settings and retry."
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
