@@ -13,12 +13,14 @@ export function RewardsHintRow({
   rewardEstimate,
   marketAddress,
   marketName,
+  hideWhenMultiplierIsZero = false,
 }: {
   rewardEstimate: TradeRewardsEstimateState;
   marketAddress?: string;
   marketName?: string;
+  hideWhenMultiplierIsZero?: boolean;
 }) {
-  if (!rewardEstimate.enabled) {
+  if (!shouldShowRewardsHintRow(rewardEstimate, hideWhenMultiplierIsZero)) {
     return null;
   }
 
@@ -81,4 +83,8 @@ export function RewardsHintRow({
       ) : null}
     </Link>
   );
+}
+
+export function shouldShowRewardsHintRow(rewardEstimate: TradeRewardsEstimateState, hideWhenMultiplierIsZero = false) {
+  return rewardEstimate.enabled && (!hideWhenMultiplierIsZero || rewardEstimate.multiplier !== 0n);
 }

@@ -991,6 +991,7 @@ describe("RewardsTiersTab", () => {
         ...status,
         volumeTier: null,
         projectedVolumeTier: null,
+        tierVolume: 0n,
         boostIds: ["LifetimeTrading"],
         referralVolume: 0n,
         manualRewardRemainingUsd: 0n,
@@ -1004,6 +1005,30 @@ describe("RewardsTiersTab", () => {
     expect(stakingCard?.parentElement).toBe(volumeCard?.parentElement);
     expect(boostsCard?.parentElement).toBe(volumeCard?.parentElement);
     expect(Array.from(volumeCard!.parentElement!.children)).toEqual([stakingCard, boostsCard, volumeCard]);
+  });
+
+  it("uses the active volume layout below the first tier once the trader has volume", () => {
+    renderTab({
+      status: {
+        ...status,
+        volumeTier: null,
+        projectedVolumeTier: null,
+        tradingVolume: usd(400n),
+        tierVolume: usd(400n),
+        boostIds: [],
+        referralVolume: 0n,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const volumeCard = screen.getByText("Volume Tier").closest(".group");
+    const volumeCardText = normalizeText(volumeCard?.textContent);
+
+    expect(volumeCard?.className).toContain("pt-16");
+    expect(volumeCardText).toContain(normalizeText("—Volume this epoch: $400"));
+    expect(volumeCardText).toContain(normalizeText("Trade $600 more to unlock Ranked status +0.25x"));
+    expect(within(volumeCard as HTMLElement).queryByText("Trade More. Earn More.")).toBeNull();
+    expect(within(volumeCard as HTMLElement).queryByRole("link", { name: "Start trading" })).toBeNull();
   });
 
   it("uses the live staking tier for progress and the next target after a multi-tier jump", () => {

@@ -68,7 +68,7 @@ export function RewardsTierCards({
   if (statusState === "loading") return <TierCardsSkeleton />;
   if (statusState === "unavailable") return <TierCardsUnavailable />;
 
-  const volumeActive = Boolean(status?.volumeTier);
+  const volumeActive = Boolean(status?.volumeTier) || (status?.tierVolume ?? 0n) > 0n;
   const stakingActive = Boolean(status?.stakingTier ?? status?.projectedStakingTier);
   const { activePersistentBoostIds, qualifiedTransientBoostIds } = getBoostStatuses(status);
   const hasReferralBoost = (status?.referralVolume ?? 0n) > 0n;
@@ -340,11 +340,11 @@ function VolumeCard({
         ) : null}
       </div>
 
-      {active && volumeTier ? (
+      {active ? (
         <>
           <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
-            <VolumeTierIcon tierId={volumeTier} active className={tierIconLarge} />
-            {volumeTierLabels[volumeTier]}
+            {volumeTier ? <VolumeTierIcon tierId={volumeTier} active className={tierIconLarge} /> : null}
+            {volumeTier ? volumeTierLabels[volumeTier] : "—"}
           </h3>
           <div className="mt-auto flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center gap-4 py-2">

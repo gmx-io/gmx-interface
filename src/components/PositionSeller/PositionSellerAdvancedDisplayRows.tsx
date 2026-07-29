@@ -29,7 +29,7 @@ import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
-import { RewardsHintRow } from "../TradeBox/TradeBoxRows/RewardsHintRow";
+import { RewardsHintRow, shouldShowRewardsHintRow } from "../TradeBox/TradeBoxRows/RewardsHintRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 export type Props = {
@@ -67,6 +67,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
     shouldEstimate: !isTwap,
   });
+  const showRewardsHint = shouldShowRewardsHintRow(rewardEstimate, true);
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
@@ -179,7 +180,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     </ExpandableRow>
   );
 
-  if (rewardEstimate.enabled) {
+  if (showRewardsHint) {
     return (
       <div className="rounded-8 bg-fill-surfaceElevated50">
         {executionDetails}
@@ -187,6 +188,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
           rewardEstimate={rewardEstimate}
           marketAddress={position?.marketInfo?.marketTokenAddress}
           marketName={position?.marketInfo?.name}
+          hideWhenMultiplierIsZero
         />
       </div>
     );

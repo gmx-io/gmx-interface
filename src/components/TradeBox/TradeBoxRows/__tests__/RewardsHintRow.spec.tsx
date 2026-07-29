@@ -40,12 +40,17 @@ function renderRow(
   market?: {
     marketAddress: string;
     marketName: string;
-  }
+  },
+  hideWhenMultiplierIsZero = false
 ) {
   return render(
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
-        <RewardsHintRow rewardEstimate={rewardEstimate} {...market} />
+        <RewardsHintRow
+          rewardEstimate={rewardEstimate}
+          {...market}
+          hideWhenMultiplierIsZero={hideWhenMultiplierIsZero}
+        />
       </MemoryRouter>
     </I18nProvider>
   );
@@ -132,6 +137,22 @@ describe("RewardsHintRow", () => {
 
     const link = screen.getByRole("link", { name: /Trade or stake.*unlock your rewards multiplier/ });
     expect(link.textContent).toContain("0.0x");
+  });
+
+  it("hides the zero-multiplier state when requested by the close flow", () => {
+    const { container } = renderRow(
+      {
+        enabled: true,
+        multiplierDecimals: 100n,
+        multiplier: 0n,
+        hasKnownMultiplier: true,
+        estimatedRewards: undefined,
+      },
+      undefined,
+      true
+    );
+
+    expect(container.innerHTML).toBe("");
   });
 
   it("shows the neutral generic state when the multiplier is unknown", () => {
