@@ -250,35 +250,40 @@ export function RewardsPromotionalBanners({
     () => (showAllBanners ? allBanners : allBanners.filter((banner) => !dismissedBanners?.[banner.type])),
     [allBanners, dismissedBanners, showAllBanners]
   );
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedBannerType, setSelectedBannerType] = useState<RewardsBannerType | undefined>(banners[0]?.type);
   const [animationDirection, setAnimationDirection] = useState<BannerAnimationDirection>("right");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(
     () => typeof window !== "undefined" && Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
   );
   const swipeStartRef = useRef<{ pointerId: number; x: number; y: number }>();
 
+  const selectedBannerIndex = banners.findIndex((banner) => banner.type === selectedBannerType);
+  const selectedIndex = selectedBannerIndex === -1 ? 0 : selectedBannerIndex;
+  const current = banners[selectedIndex];
+  const currentType = current?.type;
+
+  useEffect(() => {
+    if (currentType !== selectedBannerType) {
+      setSelectedBannerType(currentType);
+    }
+  }, [currentType, selectedBannerType]);
+
   const goToRelativeIndex = useCallback(
     (offset: number) => {
       if (banners.length <= 1) return;
       setAnimationDirection(offset > 0 ? "right" : "left");
-      setCurrentIndex((current) => (current + offset + banners.length) % banners.length);
+      const nextIndex = (selectedIndex + offset + banners.length) % banners.length;
+      setSelectedBannerType(banners[nextIndex].type);
     },
-    [banners.length]
+    [banners, selectedIndex]
   );
-
-  const selectedIndex = banners.length === 0 ? 0 : currentIndex % banners.length;
-  const current = banners[selectedIndex];
-
-  useEffect(() => {
-    setCurrentIndex((index) => (banners.length === 0 ? 0 : index % banners.length));
-  }, [banners.length]);
 
   useEffect(() => {
     if (banners.length <= 1 || prefersReducedMotion) return;
 
     const timeout = window.setTimeout(() => goToRelativeIndex(1), AUTO_ROTATE_MS);
     return () => window.clearTimeout(timeout);
-  }, [banners.length, current?.type, goToRelativeIndex, prefersReducedMotion]);
+  }, [banners.length, currentType, goToRelativeIndex, prefersReducedMotion]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -298,14 +303,14 @@ export function RewardsPromotionalBanners({
     if (index === selectedIndex) return;
 
     setAnimationDirection(index > selectedIndex ? "right" : "left");
-    setCurrentIndex(index);
+    setSelectedBannerType(banners[index].type);
   };
 
   useEffect(() => {
-    if (!current) return;
+    if (!currentType) return;
 
-    sendRewardsBannerEvent("BannerShown", current.type);
-  }, [current]);
+    sendRewardsBannerEvent("BannerShown", currentType, account ?? "disconnected");
+  }, [account, currentType]);
 
   if (!current) return null;
 
@@ -316,6 +321,8 @@ export function RewardsPromotionalBanners({
       return;
     }
 
+    const nextBanner = banners.length > 1 ? banners[(selectedIndex + 1) % banners.length] : undefined;
+    setSelectedBannerType(nextBanner?.type);
     setDismissedBanners((dismissed) => ({ ...dismissed, [current.type]: true }));
   };
 

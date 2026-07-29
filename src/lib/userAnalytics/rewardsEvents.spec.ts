@@ -68,6 +68,18 @@ describe("rewards analytics events", () => {
     );
   });
 
+  it("scopes banner impression deduplication when an audience is provided", () => {
+    sendRewardsBannerEvent("BannerShown", "referral", "disconnected");
+    sendRewardsBannerEvent("BannerShown", "referral", "0x52908400098527886E0F7030069857D2E4169EE7");
+
+    expect(mockPushEvent).toHaveBeenNthCalledWith(1, expect.anything(), {
+      dedupKey: "rewards-banner-shown-referral-disconnected",
+    });
+    expect(mockPushEvent).toHaveBeenNthCalledWith(2, expect.anything(), {
+      dedupKey: "rewards-banner-shown-referral-0x52908400098527886E0F7030069857D2E4169EE7",
+    });
+  });
+
   it("normalizes token amounts for vesting transaction results", () => {
     sendRewardsTransactionResultEvent({
       transaction: "StartVesting",

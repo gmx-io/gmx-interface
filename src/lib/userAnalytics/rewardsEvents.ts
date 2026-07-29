@@ -140,14 +140,17 @@ export function sendRewardsNavigationEvent({
 
 export function sendRewardsBannerEvent(
   action: "BannerShown" | "BannerClick" | "BannerDismiss",
-  banner: RewardsAnalyticsBanner
+  banner: RewardsAnalyticsBanner,
+  dedupScope?: string
 ) {
   userAnalytics.pushEvent<RewardsPageActionEvent>(
     {
       event: "RewardsPageAction",
       data: { action, banner },
     },
-    action === "BannerShown" ? { dedupKey: `rewards-banner-shown-${banner}` } : undefined
+    action === "BannerShown"
+      ? { dedupKey: `rewards-banner-shown-${banner}${dedupScope ? `-${dedupScope}` : ""}` }
+      : undefined
   );
 }
 

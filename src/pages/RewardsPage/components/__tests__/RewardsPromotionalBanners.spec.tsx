@@ -229,6 +229,42 @@ describe("RewardsPromotionalBanners", () => {
     expect(screen.queryByText("Referral Bonus")).toBeNull();
   });
 
+  it("keeps the selected opportunity when newly eligible banners are inserted before it", () => {
+    const promoSelection = getRewardsPromoSelection({ config, status });
+    const { rerender } = render(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter initialEntries={REWARDS_ROUTE_ENTRIES}>
+          <RewardsPromotionalBanners
+            account={ACCOUNT}
+            config={config}
+            status={status}
+            promoSelection={promoSelection}
+          />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: /Go to slide/ })[1]);
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
+
+    rerender(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter initialEntries={REWARDS_ROUTE_ENTRIES}>
+          <RewardsPromotionalBanners
+            account={ACCOUNT}
+            config={config}
+            status={status}
+            promoSelection={promoSelection}
+            walletGmx={2n * 10n ** 18n}
+          />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
+    expect(screen.queryByText("You have GMX ready to stake")).toBeNull();
+  });
+
   it("rotates every six seconds without user interaction", () => {
     vi.useFakeTimers();
     renderBanners();

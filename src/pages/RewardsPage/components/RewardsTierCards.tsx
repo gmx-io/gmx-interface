@@ -247,12 +247,18 @@ function VolumeCard({
   const tierVolume = status?.tierVolume ?? 0n;
   const currentTierIndex = config.volumeTiers.findIndex((tier) => tier.tier === volumeTier);
   const currentTierConfig = currentTierIndex >= 0 ? config.volumeTiers[currentTierIndex] : undefined;
-  const nextTierConfig = config.volumeTiers[currentTierIndex + 1];
-  const isMaxTier = active && currentTierIndex >= 0 && !nextTierConfig;
+  const projectedTierIndex = config.volumeTiers.findIndex((tier) => tier.tier === status?.projectedVolumeTier);
+  const indexedProjectedTierConfig = projectedTierIndex >= 0 ? config.volumeTiers[projectedTierIndex] : undefined;
+  const hasQualifiedProjectedUpgrade = Boolean(
+    projectedTierIndex > currentTierIndex &&
+      indexedProjectedTierConfig &&
+      tierVolume >= indexedProjectedTierConfig.threshold
+  );
+  const effectiveTierIndex = hasQualifiedProjectedUpgrade ? projectedTierIndex : currentTierIndex;
+  const nextTierConfig = config.volumeTiers[effectiveTierIndex + 1];
+  const isMaxTier = active && effectiveTierIndex >= 0 && !nextTierConfig;
   const projectedTierConfig =
-    status?.projectedVolumeTier && status.projectedVolumeTier !== volumeTier
-      ? config.volumeTiers.find((tier) => tier.tier === status.projectedVolumeTier)
-      : undefined;
+    status?.projectedVolumeTier && status.projectedVolumeTier !== volumeTier ? indexedProjectedTierConfig : undefined;
   const isProjectedDowngrade = Boolean(
     currentTierConfig && projectedTierConfig && projectedTierConfig.multiplier < currentTierConfig.multiplier
   );
@@ -323,7 +329,7 @@ function VolumeCard({
             <Trans>Volume Tier</Trans>
           </div>
         )}
-        {active && currentTierConfig ? (
+        {active && (currentTierConfig || projectedTierConfig) ? (
           <span className="inline-flex items-center gap-6">
             {status?.projectedVolumeTier === null ? (
               <span className="text-12">
@@ -332,7 +338,7 @@ function VolumeCard({
             ) : null}
             <MultiplierBadge
               config={config}
-              currentMultiplier={currentTierConfig.multiplier}
+              currentMultiplier={currentTierConfig?.multiplier ?? 0n}
               projectedMultiplier={projectedTierConfig?.multiplier}
               tooltipContent={volumeTooltip}
             />

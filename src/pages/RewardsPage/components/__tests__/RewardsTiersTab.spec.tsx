@@ -546,7 +546,7 @@ describe("RewardsTiersTab", () => {
   });
 
   it("makes tier and featured-market details keyboard focusable", async () => {
-    renderTab();
+    renderTab({ status: { ...status, tierVolume: usd(3_000n) } });
 
     expect(screen.getByRole("button", { name: "Volume Tier" })).toBeDefined();
     expect(screen.getAllByRole("button", { name: /Staking tier$/ })).toHaveLength(config.stakingTiers.length);
@@ -1030,6 +1030,29 @@ describe("RewardsTiersTab", () => {
     expect(volumeCardText).toContain(normalizeText("Trade $600 more to unlock Ranked status +0.25x"));
     expect(within(volumeCard as HTMLElement).queryByText("Trade More. Earn More.")).toBeNull();
     expect(within(volumeCard as HTMLElement).queryByRole("link", { name: "Start trading" })).toBeNull();
+  });
+
+  it("uses a projected volume tier as the baseline for the next target", () => {
+    renderTab({
+      status: {
+        ...status,
+        multiplier: 0n,
+        volumeTier: null,
+        projectedVolumeTier: "Tier1",
+        tradingVolume: usd(1_000n),
+        tierVolume: usd(1_000n),
+        boostIds: [],
+        referralVolume: 0n,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const volumeCard = screen.getByText("Volume Tier").closest(".group");
+    const volumeCardText = normalizeText(volumeCard?.textContent);
+
+    expect(volumeCardText).toContain(normalizeText("0x →0.25x"));
+    expect(volumeCardText).toContain(normalizeText("Trade $4K more to unlock Certified status +0.5x"));
+    expect(volumeCardText).not.toContain(normalizeText("Trade $0 more"));
   });
 
   it("uses the live staking tier for progress and the next target after a multi-tier jump", () => {
