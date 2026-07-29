@@ -13,10 +13,10 @@ import {
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
   SUBACCOUNT_MESSAGE,
 } from "domain/testUtils/oneClickCtRpcHarness";
+import { ARBITRUM } from "sdk/configs/chainIds";
 
 import { OneClickTradingModeStory } from "./OneClickTradingMode.ct.stories";
 
-const ARBITRUM = 42161;
 const MOCK_ACCOUNT = new ethers.Wallet(MOCK_ACCOUNT_PRIVATE_KEY).address;
 
 const FAR_FUTURE = 9999999999n;

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
 import { SubaccountRemovalResultUnknownError } from "./errors";
@@ -19,11 +20,6 @@ const { mocks } = vi.hoisted(() => ({
     estimateArbitraryRelayFee: vi.fn(),
     getArbitraryRelayParamsAndPayload: vi.fn(),
   },
-}));
-
-vi.mock("viem", async (importOriginal) => ({
-  ...(await importOriginal<object>()),
-  encodeFunctionData: vi.fn(() => "0x"),
 }));
 
 vi.mock("domain/multichain/arbitraryRelayParams", () => ({
@@ -58,10 +54,29 @@ vi.mock("domain/synthetics/express/expressOrderUtils", () => ({
   getOrderRelayRouterAddress: () => "0x0000000000000000000000000000000000000001",
 }));
 
-const CHAIN_ID = 42161 as const;
-const SRC_CHAIN_ID = 8453 as const;
+const CHAIN_ID = ARBITRUM;
+const SRC_CHAIN_ID = SOURCE_BASE_MAINNET;
 const ACCOUNT = "0x1234567890123456789012345678901234567890";
 const SUBACCOUNT_ADDRESS = "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa";
+const FEE_TOKEN_ADDRESS = "0x000000000000000000000000000000000000fee0";
+const MOCK_SIGNATURE = `0x${"11".repeat(65)}`;
+
+const RELAY_PARAMS_PAYLOAD = {
+  oracleParams: { tokens: [], providers: [], data: [] },
+  externalCalls: {
+    sendTokens: [],
+    sendAmounts: [],
+    externalCallTargets: [],
+    externalCallDataList: [],
+    refundTokens: [],
+    refundReceivers: [],
+  },
+  tokenPermits: [],
+  fee: { feeToken: FEE_TOKEN_ADDRESS, feeAmount: 5n, feeSwapPath: [] },
+  userNonce: 0n,
+  deadline: 0n,
+  desChainId: BigInt(CHAIN_ID),
+};
 
 const ENCODED_TRUE = `0x${"1".padStart(64, "0")}`;
 const ENCODED_FALSE = `0x${"0".repeat(64)}`;
@@ -97,19 +112,19 @@ const globalExpressParams = {
 
 function mockExpressEstimation({ isOutGasTokenBalance }: { isOutGasTokenBalance: boolean }) {
   mocks.getRawBaseRelayerParams.mockReturnValue({
-    rawBaseRelayParamsPayload: {},
-    baseRelayFeeSwapParams: { gasPaymentParams: { relayerFeeAmount: 1n, relayerFeeTokenAddress: "0xfee" } },
+    rawBaseRelayParamsPayload: RELAY_PARAMS_PAYLOAD,
+    baseRelayFeeSwapParams: { gasPaymentParams: { relayerFeeAmount: 1n, relayerFeeTokenAddress: FEE_TOKEN_ADDRESS } },
   });
   mocks.estimateArbitraryRelayFee.mockResolvedValue(5n);
   mocks.getArbitraryRelayParamsAndPayload.mockReturnValue({
     relayFeeParams: {
       gasPaymentParams: {
         relayerFeeAmount: 5n,
-        relayerFeeTokenAddress: "0xfee",
+        relayerFeeTokenAddress: FEE_TOKEN_ADDRESS,
         totalRelayerFeeTokenAmount: 10n,
       },
     },
-    relayParamsPayload: {},
+    relayParamsPayload: RELAY_PARAMS_PAYLOAD,
     gasPaymentValidations: {
       isGasPaymentTokenBalanceLoaded: true,
       isOutGasTokenBalance,
@@ -262,7 +277,7 @@ describe("getIsSubaccountActiveOnchain", () => {
 
 describe("removeSubaccountExpressTxn", () => {
   beforeEach(() => {
-    mocks.signTypedData.mockResolvedValue("0xsignature");
+    mocks.signTypedData.mockResolvedValue(MOCK_SIGNATURE);
     mocks.sendExpressTransaction.mockResolvedValue({
       taskId: "task-1",
       wait: vi.fn(async () => ({ status: "success" })),

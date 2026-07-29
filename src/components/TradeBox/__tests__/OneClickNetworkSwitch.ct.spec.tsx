@@ -9,11 +9,10 @@ import {
   SEEDED_SUBACCOUNT_ADDRESS,
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
 } from "domain/testUtils/oneClickCtRpcHarness";
+import { ARBITRUM, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 
 import { OneClickNetworkSwitchStory } from "./OneClickNetworkSwitch.ct.stories";
 
-const ARBITRUM = 42161;
-const SOURCE_BASE_MAINNET = 8453;
 const MOCK_ACCOUNT = new ethers.Wallet(MOCK_ACCOUNT_PRIVATE_KEY).address;
 
 const SLOT_A_KEY = getSubaccountApprovalKey(ARBITRUM, MOCK_ACCOUNT, undefined);

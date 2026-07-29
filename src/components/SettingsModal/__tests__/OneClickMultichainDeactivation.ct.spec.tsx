@@ -13,16 +13,16 @@ import {
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
 } from "domain/testUtils/oneClickCtRpcHarness";
 import MultichainSubaccountRouterAbi from "sdk/abis/MultichainSubaccountRouter";
+import { ARBITRUM, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
+import { getWrappedToken } from "sdk/configs/tokens";
 
 import { OneClickMultichainDeactivationStory } from "./OneClickMultichainDeactivation.ct.stories";
 
-const ARBITRUM = 42161;
-const SOURCE_BASE_MAINNET = 8453;
 const MOCK_ACCOUNT = new ethers.Wallet(MOCK_ACCOUNT_PRIVATE_KEY).address;
 
 const FAR_FUTURE = 9999999999n;
 
-const ARBITRUM_WETH_ADDRESS = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
+const ARBITRUM_WETH_ADDRESS = getWrappedToken(ARBITRUM).address;
 
 const MULTICHAIN_SUBACCOUNT_ROUTER_IFACE = new ethers.Interface(MultichainSubaccountRouterAbi as ethers.InterfaceAbi);
 const REMOVE_SUBACCOUNT_SELECTOR = MULTICHAIN_SUBACCOUNT_ROUTER_IFACE.getFunction("removeSubaccount")!.selector;

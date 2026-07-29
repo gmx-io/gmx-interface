@@ -205,9 +205,9 @@ export class MockChain {
   private async dispatch(method: string, params: unknown[]): Promise<unknown> {
     switch (method) {
       case "eth_chainId":
-        return "0xa4b1";
+        return "0x" + ARBITRUM.toString(16);
       case "net_version":
-        return "42161";
+        return String(ARBITRUM);
       case "eth_accounts":
         return [this.account];
       case "eth_blockNumber":
