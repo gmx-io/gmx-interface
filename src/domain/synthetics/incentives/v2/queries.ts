@@ -146,7 +146,9 @@ export const INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY = `
         tierVolume
         referralVolume
         esGmxRewards
+        referralEsGmxRewards
         gtRewards
+        referralGtRewards
         rewardsUsd
         manualRewardsUsd
         avgMultiplier

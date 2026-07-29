@@ -1871,6 +1871,8 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Loaded history"
 msgstr ""
 
@@ -5856,6 +5858,10 @@ msgstr ""
 msgid "Set short Stop-Loss @ {0}"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral esGMX on page"
+msgstr "Ŕéƒéŕŕáĺ éšGMX óń páǵé"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
 msgstr ""
@@ -6760,6 +6766,12 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral esGMX"
+msgstr "Ŕéƒéŕŕáĺ éšGMX"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
@@ -9978,6 +9990,12 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral GT"
+msgstr "Ŕéƒéŕŕáĺ GT"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr ""
@@ -13087,6 +13105,10 @@ msgstr ""
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral GT on page"
+msgstr "Ŕéƒéŕŕáĺ GT óń páǵé"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

@@ -1871,6 +1871,8 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Loaded history"
 msgstr "Historique chargé"
 
@@ -5856,6 +5858,10 @@ msgstr "Protocole de marge DeFi"
 msgid "Set short Stop-Loss @ {0}"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral esGMX on page"
+msgstr "esGMX de parrainage sur la page"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
 msgstr "Frais"
@@ -6760,6 +6766,12 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "Liquidité {0} insuffisante"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral esGMX"
+msgstr "esGMX de parrainage"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
@@ -9978,6 +9990,12 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "Acheter des GM avec {0} jusqu'aux plafonds ci-dessous"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral GT"
+msgstr "GT de parrainage"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "Analyses du protocole"
@@ -13087,6 +13105,10 @@ msgstr "Chat anonyme avec GMX"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} annulé(s)"
+
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral GT on page"
+msgstr "GT de parrainage sur la page"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

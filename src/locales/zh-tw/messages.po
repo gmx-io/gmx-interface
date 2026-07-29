@@ -1871,6 +1871,8 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Loaded history"
 msgstr "已載入的記錄"
 
@@ -5856,6 +5858,10 @@ msgstr "DeFi 保證金協議"
 msgid "Set short Stop-Loss @ {0}"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral esGMX on page"
+msgstr "本頁推薦獎勵 esGMX"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
 msgstr "費用"
@@ -6760,6 +6766,12 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "{0} 流動性不足"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral esGMX"
+msgstr "推薦獎勵 esGMX"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
@@ -9978,6 +9990,12 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "使用 {0} 購買 GM，上限如下"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral GT"
+msgstr "推薦獎勵 GT"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "協議分析"
@@ -13087,6 +13105,10 @@ msgstr "與 GMX 匿名對話"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} 已取消"
+
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Referral GT on page"
+msgstr "本頁推薦獎勵 GT"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

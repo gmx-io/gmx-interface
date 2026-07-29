@@ -39,7 +39,9 @@ export type IncentiveAuditSummary = {
   totalTierVolume: bigint;
   totalReferralVolume: bigint;
   totalEsGmxRewards: bigint;
+  totalReferralEsGmxRewards: bigint;
   totalGtRewards: bigint;
+  totalReferralGtRewards: bigint;
   totalRewardsUsd: bigint;
   totalManualRewardsUsd: bigint;
   avgEffectiveRewardsRatio: number;
@@ -106,7 +108,9 @@ export function useIncentiveAccountEpochAudit(
         totalTierVolume: result.totalTierVolume + entry.tierVolume,
         totalReferralVolume: result.totalReferralVolume + entry.referralVolume,
         totalEsGmxRewards: result.totalEsGmxRewards + entry.esGmxRewards,
+        totalReferralEsGmxRewards: result.totalReferralEsGmxRewards + entry.referralEsGmxRewards,
         totalGtRewards: result.totalGtRewards + entry.gtRewards,
+        totalReferralGtRewards: result.totalReferralGtRewards + entry.referralGtRewards,
         totalRewardsUsd: result.totalRewardsUsd + entry.rewardsUsd,
         totalManualRewardsUsd: result.totalManualRewardsUsd + entry.manualRewardsUsd,
         effectiveRewardsRatioSum: result.effectiveRewardsRatioSum + entry.effectiveRewardsRatio,
@@ -117,7 +121,9 @@ export function useIncentiveAccountEpochAudit(
         totalTierVolume: 0n,
         totalReferralVolume: 0n,
         totalEsGmxRewards: 0n,
+        totalReferralEsGmxRewards: 0n,
         totalGtRewards: 0n,
+        totalReferralGtRewards: 0n,
         totalRewardsUsd: 0n,
         totalManualRewardsUsd: 0n,
         effectiveRewardsRatioSum: 0,
@@ -131,7 +137,9 @@ export function useIncentiveAccountEpochAudit(
       totalTierVolume: totals.totalTierVolume,
       totalReferralVolume: totals.totalReferralVolume,
       totalEsGmxRewards: totals.totalEsGmxRewards,
+      totalReferralEsGmxRewards: totals.totalReferralEsGmxRewards,
       totalGtRewards: totals.totalGtRewards,
+      totalReferralGtRewards: totals.totalReferralGtRewards,
       totalRewardsUsd: totals.totalRewardsUsd,
       totalManualRewardsUsd: totals.totalManualRewardsUsd,
       avgEffectiveRewardsRatio: totals.effectiveRewardsRatioSum / data.entries.length,

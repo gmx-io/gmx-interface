@@ -30,7 +30,9 @@ const entry: IncentiveAccountEpochAuditEntry = {
   tierVolume: 40_000n * PRECISION,
   referralVolume: 5_000n * PRECISION,
   esGmxRewards: 12n * GMX_UNIT,
+  referralEsGmxRewards: 2n * GMX_UNIT,
   gtRewards: 3n * GT_UNIT,
+  referralGtRewards: 1n * GT_UNIT,
   rewardsUsd: 30n * PRECISION,
   manualRewardsUsd: 4n * PRECISION,
   avgMultiplier: 175,
@@ -61,7 +63,9 @@ vi.mock("domain/synthetics/incentives/v2/useIncentiveAccountEpochAudit", () => (
         totalTierVolume: entry.tierVolume,
         totalReferralVolume: entry.referralVolume,
         totalEsGmxRewards: entry.esGmxRewards,
+        totalReferralEsGmxRewards: entry.referralEsGmxRewards,
         totalGtRewards: entry.gtRewards,
+        totalReferralGtRewards: entry.referralGtRewards,
         totalRewardsUsd: entry.rewardsUsd,
         totalManualRewardsUsd: entry.manualRewardsUsd,
         avgEffectiveRewardsRatio: entry.effectiveRewardsRatio,
@@ -154,6 +158,12 @@ describe("Incentives V2 audit pages", () => {
       offset: 0,
     });
     expect(screen.getByRole("columnheader", { name: "Eligible fees" })).toBeTruthy();
+    expect(screen.getByRole("columnheader", { name: "Referral esGMX" })).toBeTruthy();
+    expect(screen.getByRole("columnheader", { name: "Referral GT" })).toBeTruthy();
+    expect(screen.getByText("Referral esGMX on page").parentElement?.textContent).toContain("2");
+    expect(screen.getByText("Referral GT on page").parentElement?.textContent).toContain("1");
+    expect(screen.getByRole("cell", { name: "2" })).toBeTruthy();
+    expect(screen.getByRole("cell", { name: "1" })).toBeTruthy();
     expect(screen.getByRole("columnheader", { name: "Manual reward subset USD" })).toBeTruthy();
     expect(screen.getAllByText("12.00%")).toHaveLength(2);
 
@@ -184,6 +194,16 @@ describe("Incentives V2 audit pages", () => {
     expect(screen.getByText("2x")).toBeTruthy();
     expect(screen.getAllByText("Tier2 · Certified")).toHaveLength(2);
     expect(screen.getByText("Per-epoch diagnostic audit")).toBeTruthy();
+    expect(screen.getByRole("columnheader", { name: "Referral esGMX" })).toBeTruthy();
+    expect(screen.getByRole("columnheader", { name: "Referral GT" })).toBeTruthy();
+    expect(
+      screen.getAllByText("Referral esGMX").some((element) => element.parentElement?.textContent?.includes("2"))
+    ).toBe(true);
+    expect(
+      screen.getAllByText("Referral GT").some((element) => element.parentElement?.textContent?.includes("1"))
+    ).toBe(true);
+    expect(screen.getByRole("cell", { name: "2" })).toBeTruthy();
+    expect(screen.getByRole("cell", { name: "1" })).toBeTruthy();
     expect(screen.getAllByText("FeaturedMarkets, LifetimeTrading").length).toBeGreaterThan(0);
     expect(screen.getByText("Current esGMX")).toBeTruthy();
     expect(screen.getByText("Current GT")).toBeTruthy();

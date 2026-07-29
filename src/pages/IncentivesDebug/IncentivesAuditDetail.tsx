@@ -99,7 +99,7 @@ export function IncentivesAuditDetail({
 
       {isValidAccount ? (
         <>
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 xl:grid-cols-7">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-9">
             <SummaryCard label={<Trans>Epoch rows</Trans>} value={totalCount ?? "…"} />
             <SummaryCard
               label={<Trans>Eligible fees</Trans>}
@@ -142,10 +142,36 @@ export function IncentivesAuditDetail({
               note={<Trans>Loaded history</Trans>}
             />
             <SummaryCard
+              label={<Trans>Referral esGMX</Trans>}
+              value={
+                summary
+                  ? formatAmount(summary.totalReferralEsGmxRewards, ES_GMX_DECIMALS, 4, true, {
+                      trimTrailingZeros: true,
+                    })
+                  : hasLoadedAudit
+                    ? formatAmount(0n, ES_GMX_DECIMALS, 4, true, { trimTrailingZeros: true })
+                    : "…"
+              }
+              note={<Trans>Loaded history</Trans>}
+            />
+            <SummaryCard
               label={<Trans>GT allocated</Trans>}
               value={
                 summary
                   ? formatAmount(summary.totalGtRewards, GT_DECIMALS, 4, true, { trimTrailingZeros: true })
+                  : hasLoadedAudit
+                    ? formatAmount(0n, GT_DECIMALS, 4, true, { trimTrailingZeros: true })
+                    : "…"
+              }
+              note={<Trans>Loaded history</Trans>}
+            />
+            <SummaryCard
+              label={<Trans>Referral GT</Trans>}
+              value={
+                summary
+                  ? formatAmount(summary.totalReferralGtRewards, GT_DECIMALS, 4, true, {
+                      trimTrailingZeros: true,
+                    })
                   : hasLoadedAudit
                     ? formatAmount(0n, GT_DECIMALS, 4, true, { trimTrailingZeros: true })
                     : "…"
@@ -290,7 +316,7 @@ export function IncentivesAuditDetail({
                   </div>
                 ) : null}
                 <TableScrollFadeContainer ariaLabel="Incentives V2 account epoch audit">
-                  <Table className="min-w-[1900px] [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap">
+                  <Table className="min-w-[2160px] [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap">
                     <thead>
                       <TableTheadTr>
                         <TableTh padding="compact">
@@ -312,7 +338,13 @@ export function IncentivesAuditDetail({
                           <Trans>esGMX</Trans>
                         </TableTh>
                         <TableTh padding="compact">
+                          <Trans>Referral esGMX</Trans>
+                        </TableTh>
+                        <TableTh padding="compact">
                           <Trans>GT</Trans>
+                        </TableTh>
+                        <TableTh padding="compact">
+                          <Trans>Referral GT</Trans>
                         </TableTh>
                         <TableTh padding="compact">
                           <Trans>Rewards USD</Trans>
@@ -356,7 +388,17 @@ export function IncentivesAuditDetail({
                             })}
                           </TableTd>
                           <TableTd padding="compact">
+                            {formatAmount(entry.referralEsGmxRewards, ES_GMX_DECIMALS, 4, true, {
+                              trimTrailingZeros: true,
+                            })}
+                          </TableTd>
+                          <TableTd padding="compact">
                             {formatAmount(entry.gtRewards, GT_DECIMALS, 4, true, { trimTrailingZeros: true })}
+                          </TableTd>
+                          <TableTd padding="compact">
+                            {formatAmount(entry.referralGtRewards, GT_DECIMALS, 4, true, {
+                              trimTrailingZeros: true,
+                            })}
                           </TableTd>
                           <TableTd padding="compact">{formatUsd(entry.rewardsUsd, { displayDecimals: 2 })}</TableTd>
                           <TableTd padding="compact">

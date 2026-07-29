@@ -122,7 +122,9 @@ export type IncentiveAccountEpochAuditEntry = {
   tierVolume: bigint;
   referralVolume: bigint;
   esGmxRewards: bigint;
+  referralEsGmxRewards: bigint;
   gtRewards: bigint;
+  referralGtRewards: bigint;
   rewardsUsd: bigint;
   manualRewardsUsd: bigint;
   avgMultiplier: number;

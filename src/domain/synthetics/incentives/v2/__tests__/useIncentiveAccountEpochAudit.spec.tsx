@@ -28,7 +28,9 @@ const rawEntry: RawIncentiveAccountEpochAuditEntry = {
   tierVolume: "15",
   referralVolume: "5",
   esGmxRewards: "3",
+  referralEsGmxRewards: "1",
   gtRewards: "4",
+  referralGtRewards: "2",
   rewardsUsd: "7",
   manualRewardsUsd: "2",
   avgMultiplier: 150,
@@ -92,7 +94,7 @@ describe("useIncentiveAccountEpochAudit", () => {
       return (
         <div>
           {summary
-            ? `${summary.loadedCount}:${summary.totalTradingVolume}:${summary.totalRewardsUsd}:${summary.totalManualRewardsUsd}:${summary.avgEffectiveRewardsRatio}`
+            ? `${summary.loadedCount}:${summary.totalTradingVolume}:${summary.totalReferralEsGmxRewards}:${summary.totalReferralGtRewards}:${summary.totalRewardsUsd}:${summary.totalManualRewardsUsd}:${summary.avgEffectiveRewardsRatio}`
             : "loading"}
         </div>
       );
@@ -100,7 +102,7 @@ describe("useIncentiveAccountEpochAudit", () => {
 
     renderWithSWR(<TestComponent />);
 
-    expect(await screen.findByText("2:40:14:4:0.5")).toBeTruthy();
+    expect(await screen.findByText("2:40:2:4:14:4:0.5")).toBeTruthy();
     expect(mockFetchIncentivesGraphql).toHaveBeenCalledWith(ENDPOINT, INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY, {
       limit: 1000,
       offset: 0,

@@ -109,7 +109,9 @@ export type RawIncentiveAccountEpochAuditEntry = {
   tierVolume: string;
   referralVolume: string;
   esGmxRewards: string;
+  referralEsGmxRewards: string;
   gtRewards: string;
+  referralGtRewards: string;
   rewardsUsd: string;
   manualRewardsUsd: string;
   avgMultiplier: number;
@@ -267,7 +269,9 @@ export function parseIncentiveAccountEpochAuditEntry(
     tierVolume: BigInt(entry.tierVolume),
     referralVolume: BigInt(entry.referralVolume),
     esGmxRewards: BigInt(entry.esGmxRewards),
+    referralEsGmxRewards: BigInt(entry.referralEsGmxRewards),
     gtRewards: BigInt(entry.gtRewards),
+    referralGtRewards: BigInt(entry.referralGtRewards),
     rewardsUsd: BigInt(entry.rewardsUsd),
     manualRewardsUsd: BigInt(entry.manualRewardsUsd),
     avgMultiplier: entry.avgMultiplier,
