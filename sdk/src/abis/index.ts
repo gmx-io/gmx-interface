@@ -33,7 +33,6 @@ import RewardReader from "./RewardReader";
 import RewardRouter from "./RewardRouter";
 import RewardTracker from "./RewardTracker";
 import SmartAccount from "./SmartAccount";
-import StBTC from "./StBTC";
 import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter";
 import SubaccountRouter from "./SubaccountRouter";
 import SyntheticsReader from "./SyntheticsReader";
@@ -109,7 +108,6 @@ export const abis = {
   RewardRouter,
   RewardTracker,
   SmartAccount,
-  StBTC,
   SubaccountGelatoRelayRouter,
   SubaccountRouter,
   SyntheticsReader,

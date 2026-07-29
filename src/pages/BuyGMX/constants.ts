@@ -1,12 +1,4 @@
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
-  MEGAETH,
-  ContractsChainId,
-} from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 
 const ARBITRUM_GMX = getContract(ARBITRUM, "GMX").toLowerCase();
@@ -51,12 +43,6 @@ export const EXTERNAL_LINKS: Record<
   [ARBITRUM_SEPOLIA]: {
     networkWebsite: "https://arbitrum.io/",
     buyGmx: {},
-  },
-  [BOTANIX]: {
-    networkWebsite: "https://botanixlabs.com/",
-    buyGmx: {
-      uniswap: undefined,
-    },
   },
   [MEGAETH]: {
     networkWebsite: "https://megaeth.com/",

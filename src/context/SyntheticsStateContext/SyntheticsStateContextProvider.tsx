@@ -20,7 +20,6 @@ import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/com
 import { SponsoredCallBalanceData, useIsSponsoredCallBalanceAvailable } from "domain/synthetics/express";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
-import { useBotanixStakingAssetsPerShare } from "domain/synthetics/externalSwaps/useBotanixStakingAssetsPerShare";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
@@ -113,7 +112,6 @@ export type SyntheticsState = {
     multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 
     glvInfo: ReturnType<typeof useGlvMarketsInfo>;
-    botanixStakingAssetsPerShare: bigint | undefined;
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined, orderOption?: OrderOption) => void;
@@ -374,8 +372,6 @@ export function SyntheticsStateContextProvider({
     tokenAddresses: gasPaymentTokenAllowanceAddresses,
   });
 
-  const botanixStakingAssetsPerShare = useBotanixStakingAssetsPerShare({ chainId });
-
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -389,7 +385,6 @@ export function SyntheticsStateContextProvider({
         ordersInfo,
         positionsConstants,
         glvInfo,
-        botanixStakingAssetsPerShare,
         positionsInfo: {
           isLoading,
           positionsInfoData,
@@ -478,7 +473,6 @@ export function SyntheticsStateContextProvider({
     marketsInfo,
     ordersInfo,
     positionsConstants,
-    botanixStakingAssetsPerShare,
     positionsInfoData,
     progressiveDepositMarketTokensData,
     setClosingPositionKey,
