@@ -24,11 +24,14 @@ export function getWithdrawBlockedDescription(blocker: WithdrawBlocker, chainId:
   );
 }
 
-/** Guards anything that moves funds in with a plain transaction but needs a signature to move them out. */
-export function useWithdrawBlockedError(): { text: string; disabled: true; errorDescription: ReactNode } | undefined {
+export function useWithdrawBlockedError(): { text: string; disabled: true; errorDescription?: ReactNode } | undefined {
   const { chainId } = useChainId();
-  const canSignTypedData = useWalletCanSignTypedData();
-  const { unavailableChains } = useWalletUnavailableChains([chainId]);
+  const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
+  const { unavailableChains, isLoading: isAvailabilityLoading } = useWalletUnavailableChains([chainId]);
+
+  if (isCanSignLoading || isAvailabilityLoading) {
+    return { text: t`Loading...`, disabled: true };
+  }
 
   const blocker: WithdrawBlocker | undefined = !canSignTypedData
     ? "cannot-sign"

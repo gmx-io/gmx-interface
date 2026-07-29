@@ -273,7 +273,7 @@ msgstr "Facteur maximum pour les liquidations"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet cannot sign messages, which trading from this network requires"
-msgstr ""
+msgstr "Votre wallet ne peut pas signer de messages, ce qui est nécessaire pour trader depuis ce réseau"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
@@ -289,7 +289,7 @@ msgstr "RabbitHole"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
-msgstr ""
+msgstr "<0>Votre {walletName} est sur un réseau différent</0><1/><2>Basculez votre {walletName} vers {0}, puis réessayez</2>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -806,7 +806,7 @@ msgstr "FOURNISSEUR"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
-msgstr ""
+msgstr "Le retrait nécessite une signature que ce wallet ne peut pas fournir, il est donc désactivé pour éviter de bloquer vos fonds."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -3978,7 +3978,7 @@ msgstr "Entrez un montant"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
-msgstr ""
+msgstr "Ajoutez {0} à votre wallet"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -5315,7 +5315,7 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
-msgstr ""
+msgstr "<0>Votre {walletName} n'est pas disponible sur {0}</0><1/><2>Ajoutez {1} à votre {walletName}, puis reconnectez-vous et réessayez</2>"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -6805,6 +6805,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7647,7 +7648,7 @@ msgstr ""
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
-msgstr ""
+msgstr "Votre wallet ne peut pas signer de messages. Connectez un autre wallet pour trader."
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
@@ -8892,7 +8893,7 @@ msgstr "Positions short"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
-msgstr ""
+msgstr "Votre wallet ne peut pas signer de messages. Utilisez le mode Classique pour trader."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10152,7 +10153,7 @@ msgstr "Traders"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
-msgstr ""
+msgstr "Le wallet ne peut pas signer de messages"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
@@ -10242,7 +10243,7 @@ msgstr "TRACKER"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
-msgstr ""
+msgstr "Le retrait se signe sur {0}. Ajoutez ce réseau à votre wallet et reconnectez-vous, sinon vos fonds ne pourront pas être retirés."
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"

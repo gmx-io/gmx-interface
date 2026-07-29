@@ -67,7 +67,7 @@ export function TradingSettings({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
-  const canSignTypedData = useWalletCanSignTypedData();
+  const { canSignTypedData } = useWalletCanSignTypedData();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;

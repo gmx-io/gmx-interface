@@ -214,7 +214,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
-  const canSignTypedData = useWalletCanSignTypedData();
+  const { canSignTypedData } = useWalletCanSignTypedData();
   const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(expressOrdersEnabledKey, false);
 

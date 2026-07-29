@@ -51,7 +51,6 @@ export function getAccountType(address: string, client: PublicClient): Promise<A
   return accountTypePromise;
 }
 
-/** Type of the connected account on the current chain. */
 export function useAccountType(): { accountType: AccountType | undefined; isLoading: boolean } {
   const { address } = useAccount();
   const { chainId } = useChainId();

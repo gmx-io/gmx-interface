@@ -24,7 +24,6 @@ function getProviderSession(provider: any): SessionTypes.Struct | undefined {
   return provider?.session ?? provider?.walletProvider?.session;
 }
 
-// A session can serve a different account per chain, e.g. one Safe on Arbitrum and another on Base.
 function getSessionChainsForAccount(session: SessionTypes.Struct | undefined, address: string): number[] {
   const accounts = session?.namespaces?.eip155?.accounts;
 
@@ -41,28 +40,27 @@ function getSessionChainsForAccount(session: SessionTypes.Struct | undefined, ad
   ).filter(Number.isFinite);
 }
 
-/**
- * Safe{Mobile} lists no signing methods and rejects them all with no UI shown, so express orders
- * cannot work there. Safe{Wallet} web does implement `eth_signTypedData_v4`, so this is a gap in
- * one client rather than a Safe limitation, and safe-wallet-monorepo#7178 was closed not planned.
- */
-export function useWalletCanSignTypedData(): boolean {
+/** Safe{Mobile} declares no signing methods and rejects them all with no UI: safe-wallet-monorepo#7178. */
+export function useWalletCanSignTypedData(): { canSignTypedData: boolean; isLoading: boolean } {
   const { connector, address } = useAccount();
 
-  const { data } = useSWR<boolean>(connector && address ? [connector.uid, address, "walletCanSignTypedData"] : null, {
-    fetcher: async () => {
-      const session = getProviderSession(await getConnectedProvider(connector));
-      const methods = session?.namespaces?.eip155?.methods;
+  const { data, isLoading } = useSWR<boolean>(
+    connector && address ? [connector.uid, address, "walletCanSignTypedData"] : null,
+    {
+      fetcher: async () => {
+        const session = getProviderSession(await getConnectedProvider(connector));
+        const methods = session?.namespaces?.eip155?.methods;
 
-      return !Array.isArray(methods) || methods.includes("eth_signTypedData_v4");
-    },
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    revalidateIfStale: false,
-  });
+        return !Array.isArray(methods) || methods.includes("eth_signTypedData_v4");
+      },
+      refreshInterval: 0,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    }
+  );
 
-  return data ?? true;
+  return { canSignTypedData: data ?? true, isLoading };
 }
 
 async function findConnectedSession(address: string): Promise<SessionTypes.Struct | undefined> {
@@ -97,22 +95,43 @@ function useWalletSessionChains(): { sessionChains: number[] | undefined; isLoad
   return { sessionChains: data, isLoading };
 }
 
-async function getUndeployedChains(address: string, chainIds: number[]): Promise<number[]> {
-  const isDeployed = await Promise.all(
-    chainIds.map((chainId) =>
-      withFallback(
-        getAccountType(address, getPublicClientWithRpc(chainId)).then((accountType) => accountType !== AccountType.EOA),
-        true,
-        PROBE_STALL_TIMEOUT_MS
-      )
-    )
+function probeAccountType(address: string, chainId: number): Promise<AccountType | undefined> {
+  return withFallback<AccountType | undefined>(
+    getAccountType(address, getPublicClientWithRpc(chainId)),
+    undefined,
+    PROBE_STALL_TIMEOUT_MS
   );
+}
 
-  return chainIds.filter((_, index) => !isDeployed[index]);
+/** EOAs exist on every chain, so only a contract account can be missing from one. */
+async function getIsContractAccount(address: string, knownChainIds: number[]): Promise<boolean> {
+  const accountTypes = await Promise.all(knownChainIds.map((chainId) => probeAccountType(address, chainId)));
+
+  return accountTypes.some((accountType) => accountType === AccountType.SmartAccount);
+}
+
+async function getUndeployedChains(address: string, chainIds: number[], knownChainIds: number[]): Promise<number[]> {
+  if (!chainIds.length || !(await getIsContractAccount(address, knownChainIds))) {
+    return [];
+  }
+
+  const accountTypes = await Promise.all(chainIds.map((chainId) => probeAccountType(address, chainId)));
+
+  return chainIds.filter((_, index) => accountTypes[index] === AccountType.EOA);
+}
+
+async function getKnownAccountChains(address: string): Promise<number[]> {
+  const session = await findConnectedSession(address);
+  const sessionChains = session ? getSessionChainsForAccount(session, address) : [];
+  const currentChainId = getAccount(getWagmiConfig()).chainId;
+
+  return uniq(currentChainId === undefined ? sessionChains : [...sessionChains, currentChainId]);
 }
 
 export async function isAccountMissingOnChain(address: string, chainId: number): Promise<boolean> {
-  return (await getUndeployedChains(address, [chainId])).includes(chainId);
+  const knownChainIds = (await getKnownAccountChains(address)).filter((knownChainId) => knownChainId !== chainId);
+
+  return (await getUndeployedChains(address, [chainId], knownChainIds)).includes(chainId);
 }
 
 export async function getConnectedWalletName(address: string): Promise<string | undefined> {
@@ -146,7 +165,7 @@ export function useWalletUnavailableChains(chainIds: number[]): {
   const { data, isLoading: isLoadingDeployments } = useSWR<number[] | undefined>(
     address && sessionChains ? [address, undeclaredChainIds.join(","), "walletUnavailableChains"] : null,
     {
-      fetcher: async () => getUndeployedChains(address!, undeclaredChainIds),
+      fetcher: async () => getUndeployedChains(address!, undeclaredChainIds, sessionChains!),
       refreshInterval: 0,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

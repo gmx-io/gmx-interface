@@ -273,7 +273,7 @@ msgstr "청산 최대 계수"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet cannot sign messages, which trading from this network requires"
-msgstr ""
+msgstr "지갑이 메시지에 서명할 수 없습니다. 이 네트워크에서 거래하려면 서명이 필요합니다."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
@@ -289,7 +289,7 @@ msgstr "RabbitHole"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
-msgstr ""
+msgstr "<0>{walletName}이(가) 다른 네트워크에 있습니다</0><1/><2>{walletName}을(를) {0}(으)로 전환한 후 다시 시도하세요</2>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -806,7 +806,7 @@ msgstr "PROVIDER"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
-msgstr ""
+msgstr "출금에는 이 지갑이 제공할 수 없는 서명이 필요하므로, 자금이 잠기는 것을 방지하기 위해 이 작업을 비활성화했습니다."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -3978,7 +3978,7 @@ msgstr "금액 입력"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
-msgstr ""
+msgstr "{0}을(를) 지갑에 추가"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -5315,7 +5315,7 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
-msgstr ""
+msgstr "<0>{walletName}은(는) {0}에서 사용할 수 없습니다</0><1/><2>{walletName}에 {1}을(를) 추가한 후 재연결하여 다시 시도하세요</2>"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -6805,6 +6805,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7647,7 +7648,7 @@ msgstr ""
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
-msgstr ""
+msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 다른 지갑을 연결하세요."
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
@@ -8892,7 +8893,7 @@ msgstr "숏 포지션"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
-msgstr ""
+msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 클래식 모드를 사용하세요."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10152,7 +10153,7 @@ msgstr "트레이더"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
-msgstr ""
+msgstr "지갑이 메시지에 서명할 수 없습니다"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
@@ -10242,7 +10243,7 @@ msgstr "트래커"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
-msgstr ""
+msgstr "출금은 {0}에서 서명됩니다. 해당 네트워크를 지갑에 추가하고 재연결하세요. 그렇지 않으면 자금을 출금할 수 없습니다."
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"

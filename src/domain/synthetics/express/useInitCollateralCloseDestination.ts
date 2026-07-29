@@ -53,7 +53,7 @@ export function useInitCollateralCloseDestination() {
   const tokensData = useSelector(selectTokensData);
   const isGmxAccountBalancesLoaded = useSelector(selectIsGmxAccountBalancesLoaded);
   const { accountType, isLoading: isAccountTypeLoading } = useAccountType();
-  const canSignTypedData = useWalletCanSignTypedData();
+  const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
 
   const [hadGmxAccountBalance, setHadGmxAccountBalance] = useLocalStorageSerializeKey<boolean>(
     getHadGmxAccountBalanceKey(chainId, account),
@@ -69,7 +69,8 @@ export function useInitCollateralCloseDestination() {
       chainId !== ARBITRUM ||
       !isGmxAccountBalancesLoaded ||
       !tokensData ||
-      isAccountTypeLoading
+      isAccountTypeLoading ||
+      isCanSignLoading
     )
       return;
 
@@ -80,7 +81,16 @@ export function useInitCollateralCloseDestination() {
         gmxAccountUsd: getTotalGmxAccountUsd(tokensData),
       })
     );
-  }, [settings, chainId, isGmxAccountBalancesLoaded, tokensData, accountType, isAccountTypeLoading, canSignTypedData]);
+  }, [
+    settings,
+    chainId,
+    isGmxAccountBalancesLoaded,
+    tokensData,
+    accountType,
+    isAccountTypeLoading,
+    canSignTypedData,
+    isCanSignLoading,
+  ]);
 
   useEffect(() => {
     if (chainId !== ARBITRUM || gmxAccountUsd === undefined) return;

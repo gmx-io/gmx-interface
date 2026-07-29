@@ -25,7 +25,7 @@ export type SignatureDomain = {
   verifyingContract: string;
 };
 
-/** WARNING: the root struct must be declared FIRST — its key is taken as the EIP-712 primary type. */
+/** The root struct must come FIRST — its key is taken as the EIP-712 primary type. */
 export type SignatureTypes = Record<string, { name: string; type: string }[]>;
 
 export type SignTypedDataParams = {
@@ -35,7 +35,6 @@ export type SignTypedDataParams = {
   domain: SignatureDomain;
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
-  /** Chain the on-chain verifier runs on; smart wallets must sign with their wallet on this chain. */
   verificationChainId: number;
 };
 
@@ -219,7 +218,6 @@ function minifyTypedData({
   };
 }
 
-/** Trailing marker an ERC-6492 wrapper appends to a counterfactual-account signature. */
 export const ERC6492_MAGIC_SUFFIX = "6492649264926492649264926492649264926492649264926492649264926492";
 
 export type SignatureKind = "eoa" | "erc6492" | "erc1271" | "malformed";

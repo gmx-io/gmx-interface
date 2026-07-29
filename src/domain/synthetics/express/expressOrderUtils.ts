@@ -1,5 +1,5 @@
 import { AbstractSigner, Provider, Signer } from "ethers";
-import { encodeFunctionData, isHex } from "viem";
+import { encodeFunctionData, isHex, size } from "viem";
 
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
@@ -587,17 +587,18 @@ async function validateSignature({
     }
   } catch (error) {
     const isRejected = error?.message === SIGNATURE_VALIDATION_FAILED_ERROR;
+    // No raw signature in telemetry — it authorizes the order, and viem appends it to the cause.
     const diagnostics = {
       signedHash,
       verificationChainId,
       signingChainId: signatureParams.domain.chainId,
       expectedAccount,
-      signature,
       signatureKind: getSignatureKind(signature),
+      signatureBytes: isHex(signature) ? size(signature) : undefined,
     };
     const extended = extendError(isRejected ? error : new Error(SIGNATURE_VALIDATION_UNAVAILABLE_ERROR), {
       errorSource,
-      data: isRejected ? diagnostics : { ...diagnostics, cause: error?.message },
+      data: isRejected ? diagnostics : { ...diagnostics, cause: error?.message?.split("\n")[0] },
     });
 
     metrics.pushError(extended, errorSource);

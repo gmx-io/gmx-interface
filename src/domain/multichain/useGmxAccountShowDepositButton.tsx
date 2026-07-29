@@ -9,11 +9,13 @@ export function useGmxAccountShowDepositButton() {
   const { chainId, srcChainId } = useChainId();
   const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
   const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
-  const canSignTypedData = useWalletCanSignTypedData();
-  const { unavailableChains } = useWalletUnavailableChains([chainId]);
+  const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
+  const { unavailableChains, isLoading: isAvailabilityLoading } = useWalletUnavailableChains([chainId]);
 
   const shouldShowDepositButton =
     canSignTypedData &&
+    !isCanSignLoading &&
+    !isAvailabilityLoading &&
     !unavailableChains?.includes(chainId) &&
     !isGmxAccountLoading &&
     gmxAccountUsd === 0n &&

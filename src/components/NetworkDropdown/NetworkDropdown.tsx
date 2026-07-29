@@ -100,7 +100,7 @@ function getNetworkDisabledReason({
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
   const { unavailableChains } = useWalletUnavailableChains(networkOptions.map((network) => network.value));
-  const canSignTypedData = useWalletCanSignTypedData();
+  const { canSignTypedData } = useWalletCanSignTypedData();
 
   const { walletAndGmxAccountNetworks, walletOnlyNetworks } = useMemo(() => {
     const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => ({
@@ -108,7 +108,6 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
       disabledReason: getNetworkDisabledReason({ network, unavailableChains, canSignTypedData }),
     }));
 
-    // Disabled networks keep their group so a fully unavailable group still shows its heading.
     const orderDisabledLast = (networks: DisplayNetworkOption[]) =>
       partition(networks, (network) => !network.disabledReason).flat();
 
