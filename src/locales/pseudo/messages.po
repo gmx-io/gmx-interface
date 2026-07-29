@@ -403,6 +403,10 @@ msgstr ""
 msgid "Execute Market Swap"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Trade featured pairs to boost multiplier and rewards"
+msgstr ""
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
 msgstr ""
@@ -605,6 +609,10 @@ msgstr ""
 msgid "GM"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "You have esGMX available"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
 msgstr ""
@@ -795,10 +803,6 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop Market: {suffix}"
-msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "You have {esGmxAmount} esGMX unstaked - stake now to earn more rewards."
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2037,6 +2041,7 @@ msgid "Show less"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Vest"
 msgstr ""
 
@@ -2239,10 +2244,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
-msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Restake your rewards and earn more"
 msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -3038,6 +3039,7 @@ msgstr ""
 msgid "Transfer completed"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -4580,6 +4582,7 @@ msgstr ""
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr ""
@@ -4636,6 +4639,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Stake"
 msgstr ""
 
@@ -5219,6 +5223,10 @@ msgstr ""
 msgid "Approval cancelled"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Invite"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -5800,6 +5808,10 @@ msgstr ""
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "You have {esGmxAmount} esGMX – stake it or vest to get additional rewards"
+msgstr ""
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
 msgstr ""
@@ -6026,10 +6038,6 @@ msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be immediately liquidated upon execution. Try reducing the size."
-msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "You have esGMX ready to stake"
 msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
@@ -7241,7 +7249,6 @@ msgstr ""
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Start trading"
 msgstr ""
@@ -9060,10 +9067,6 @@ msgstr ""
 msgid "Your multiplier will decrease next epoch."
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch."
-msgstr ""
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 msgid "Oracle Keeper debug"
 msgstr ""
@@ -10736,6 +10739,10 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Restake your rewards"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr ""
@@ -10758,6 +10765,10 @@ msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Restake rewards to boost earnings and unlock more GMX yield."
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -11759,7 +11770,6 @@ msgid "No markets matched."
 msgstr "[!! No markets matched. !!]"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Stake esGMX"
 msgstr ""
 
@@ -12169,10 +12179,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
-msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
 msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
@@ -13258,6 +13264,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Refer other traders and receive 50% of their rewards"
 msgstr ""
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx

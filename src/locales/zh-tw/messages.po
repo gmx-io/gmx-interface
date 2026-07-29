@@ -403,6 +403,10 @@ msgstr "價格影響回饋已可領取。<0>閱讀更多</0>。"
 msgid "Execute Market Swap"
 msgstr "執行 Market Swap"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Trade featured pairs to boost multiplier and rewards"
+msgstr "交易精選交易對以提高倍率和獎勵"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
 msgstr ""
@@ -605,6 +609,10 @@ msgstr "未實現基礎 PnL"
 msgid "GM"
 msgstr "GM"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "You have esGMX available"
+msgstr "您有可用的 esGMX"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
 msgstr "資金指數"
@@ -796,10 +804,6 @@ msgstr "展開"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "You have {esGmxAmount} esGMX unstaked - stake now to earn more rewards."
-msgstr "您有 {esGmxAmount} esGMX 尚未質押，立即質押以賺取更多獎勵。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2037,6 +2041,7 @@ msgid "Show less"
 msgstr "收起"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Vest"
 msgstr "歸屬"
 
@@ -2240,10 +2245,6 @@ msgstr "被動管理"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
 msgstr "Telegram 群組"
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Restake your rewards and earn more"
-msgstr "重新質押獎勵，賺取更多收益"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -3038,6 +3039,7 @@ msgstr "此規模下無可用流動性來加倉做多。<0/>最大做多規模�
 msgid "Transfer completed"
 msgstr "轉帳完成"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -4580,6 +4582,7 @@ msgstr "Express Trading 不支援網路原生代幣 {0}。請考慮改用 {1}。
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "交易"
@@ -4636,6 +4639,7 @@ msgstr "SL"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Stake"
 msgstr "質押"
 
@@ -5219,6 +5223,10 @@ msgstr "已清算"
 msgid "Approval cancelled"
 msgstr "授權已取消"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Invite"
+msgstr "邀請"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -5800,6 +5808,10 @@ msgstr "所有交易"
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "替代連結請參閱<0>文件</0>。<1/><2/>點擊「同意」即表示您接受<3>條款與細則</3>及<4>推薦條款與細則</4>。<5/><6/>"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "You have {esGmxAmount} esGMX – stake it or vest to get additional rewards"
+msgstr "您有 {esGmxAmount} esGMX — 進行質押或歸屬以獲得額外獎勵"
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
 msgstr "無法重新整理帳戶快照。正在顯示最近載入的快照。"
@@ -6027,10 +6039,6 @@ msgstr "賺取"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be immediately liquidated upon execution. Try reducing the size."
 msgstr "倉位在執行後將立即被清算。請嘗試減少規模。"
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "You have esGMX ready to stake"
-msgstr "您有可質押的 esGMX"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose: {0} | public: {1}"
@@ -7241,7 +7249,6 @@ msgstr "推薦"
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Start trading"
 msgstr "開始交易"
@@ -9060,10 +9067,6 @@ msgstr "訂單請求已發送"
 msgid "Your multiplier will decrease next epoch."
 msgstr "您的倍率將於下個週期降低。"
 
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch."
-msgstr "交易符合資格的交易對以解鎖倍率，並提高本週期的潛在獎勵。"
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 msgid "Oracle Keeper debug"
 msgstr "Oracle Keeper 除錯"
@@ -10736,6 +10739,10 @@ msgstr "轉換費用"
 msgid "Up"
 msgstr "正常"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Restake your rewards"
+msgstr "重新質押您的獎勵"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "將 {0} 兌換為 {1}"
@@ -10759,6 +10766,10 @@ msgstr "按目前價格，倉位將可被清算"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>以 75.5% 的多數票，GMX 選擇了 LayerZero 作為其多鏈擴展的訊息傳遞夥伴！此整合為 GMX 帶來：</0><1><2>擴展至 125+ 條鏈的能力</2><3>所有合約和安全性的完全所有權</3><4>快速、零滑點的轉帳</4><5>經過實戰檢驗的基礎設施，已獲數十億美元資產和數百個應用程式的信賴⋯⋯<6>查看更多</6></5></1>"
+
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Restake rewards to boost earnings and unlock more GMX yield."
+msgstr "重新質押獎勵以提高收益並解鎖更多 GMX 收益。"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stop vesting submitted"
@@ -11759,7 +11770,6 @@ msgid "No markets matched."
 msgstr "沒有相符的市場。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Stake esGMX"
 msgstr "質押 esGMX"
 
@@ -12170,10 +12180,6 @@ msgstr "轉帳歷史"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
-msgstr "繼續重新質押獎勵，以提高收益並解鎖 GMX 代幣的額外回報。"
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -13259,6 +13265,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
 msgstr "整體績效詳情"
+
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Refer other traders and receive 50% of their rewards"
+msgstr "推薦其他交易者並獲得其獎勵的 50%"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"

@@ -20,6 +20,7 @@ export type RewardsAnalyticsBanner =
   | "manual-reward"
   | "gmx-ready-to-stake"
   | "esgmx-ready-to-stake"
+  | "referral"
   | "next-volume-tier"
   | "pair-boosts"
   | "restake-rewards"

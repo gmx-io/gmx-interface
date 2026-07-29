@@ -19,6 +19,7 @@ import {
 import { rewardsBannerStyles } from "components/RewardsPromoBanner/rewardsBannerStyles";
 import { getRewardsPromoCopy } from "components/RewardsPromoBanner/rewardsPromoCopy";
 
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import TradeIcon from "img/ic_candles_filled.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
@@ -28,23 +29,29 @@ import rewardsBannerCoinTrade from "img/rewards_banner_coin_trade.png";
 import rewardsBannerCoinWallet from "img/rewards_banner_coin_wallet.png";
 
 import { getRewardsDebugMode } from "../rewardsDebug";
+import { getStartRewardsVestingPath } from "../rewardsRoutes";
 import { volumeTierLabels } from "./rewardsTiersShared";
 
 type RewardsBannerType =
   | "manual-reward"
   | "gmx-ready-to-stake"
   | "esgmx-ready-to-stake"
+  | "referral"
   | "next-volume-tier"
   | "pair-boosts"
   | "restake-rewards";
+
+type RewardsBannerAction = {
+  label: ReactNode;
+  type: "trade" | "stake" | "invite";
+  to: string;
+};
 
 type RewardsBannerContent = {
   type: RewardsBannerType;
   title: ReactNode;
   description: ReactNode;
-  actionLabel: ReactNode;
-  actionType: "trade" | "stake";
-  to: string;
+  actions: RewardsBannerAction[];
   coin: string;
 };
 
@@ -72,51 +79,55 @@ export function getRewardsPromotionalBannerContent({
   walletGmx?: bigint;
   walletEsGmx?: bigint;
 }): RewardsBannerContent[] {
-  if (!status || !promoSelection) return [];
   const banners: RewardsBannerContent[] = [];
 
-  if (promoSelection.variant === "manual-reward") {
+  if (promoSelection?.variant === "manual-reward") {
     const { title } = getRewardsPromoCopy(promoSelection);
     banners.push({
       type: "manual-reward",
       title,
       description: <Trans>Start trading to activate it and get your rewards.</Trans>,
-      actionLabel: <Trans>Start trading</Trans>,
-      actionType: "trade",
-      to: "/trade",
+      actions: [{ label: <Trans>Trade</Trans>, type: "trade", to: "/trade" }],
       coin: rewardsBannerCoinWallet,
     });
   }
 
-  if (!promoSelection.isActiveUser) return banners;
-
-  if ((walletGmx ?? 0n) > 0n) {
+  if (promoSelection?.isActiveUser && (walletGmx ?? 0n) > 0n) {
     const gmxAmount = formatAmount(walletGmx, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true });
     banners.push({
       type: "gmx-ready-to-stake",
       title: <Trans>You have GMX ready to stake</Trans>,
       description: <Trans>You have {gmxAmount} GMX unstaked - stake now to earn more rewards.</Trans>,
-      actionLabel: <Trans>Stake GMX</Trans>,
-      actionType: "stake",
-      to: EARN_PORTFOLIO_STAKE_GMX_LINK,
+      actions: [{ label: <Trans>Stake GMX</Trans>, type: "stake", to: EARN_PORTFOLIO_STAKE_GMX_LINK }],
       coin: rewardsBannerCoinGmx,
     });
   }
 
-  if ((walletEsGmx ?? 0n) > 0n) {
+  if (promoSelection?.isActiveUser && (walletEsGmx ?? 0n) > 0n) {
     const esGmxAmount = formatAmount(walletEsGmx, ES_GMX_DECIMALS, 2, true, {
       trimTrailingZeros: true,
     });
     banners.push({
       type: "esgmx-ready-to-stake",
-      title: <Trans>You have esGMX ready to stake</Trans>,
-      description: <Trans>You have {esGmxAmount} esGMX unstaked - stake now to earn more rewards.</Trans>,
-      actionLabel: <Trans>Stake esGMX</Trans>,
-      actionType: "stake",
-      to: EARN_PORTFOLIO_STAKE_ES_GMX_LINK,
+      title: <Trans>You have esGMX available</Trans>,
+      description: <Trans>You have {esGmxAmount} esGMX – stake it or vest to get additional rewards</Trans>,
+      actions: [
+        { label: <Trans>Stake</Trans>, type: "stake", to: EARN_PORTFOLIO_STAKE_ES_GMX_LINK },
+        { label: <Trans>Vest</Trans>, type: "stake", to: getStartRewardsVestingPath() },
+      ],
       coin: rewardsBannerCoinGmx,
     });
   }
+
+  banners.push({
+    type: "referral",
+    title: <Trans>Referral Bonus</Trans>,
+    description: <Trans>Refer other traders and receive 50% of their rewards</Trans>,
+    actions: [{ label: <Trans>Invite</Trans>, type: "invite", to: "/referrals/affiliates" }],
+    coin: rewardsBannerCoinWallet,
+  });
+
+  if (!status || !promoSelection?.isActiveUser) return banners;
 
   const activeTierIndex = config.volumeTiers.findIndex((tier) => tier.tier === status.volumeTier);
   const projectedTierIndex = config.volumeTiers.findIndex((tier) => tier.tier === status.projectedVolumeTier);
@@ -141,9 +152,7 @@ export function getRewardsPromotionalBannerContent({
             Trade {remainingVolumeLabel} more to unlock {tierLabel} status and a +{multiplierLabel} multiplier
           </Trans>
         ),
-        actionLabel: <Trans>Trade</Trans>,
-        actionType: "trade",
-        to: "/trade",
+        actions: [{ label: <Trans>Trade</Trans>, type: "trade", to: "/trade" }],
         coin: rewardsBannerCoinMultiplier,
       });
     }
@@ -155,27 +164,17 @@ export function getRewardsPromotionalBannerContent({
     banners.push({
       type: "pair-boosts",
       title: <Trans>Activate Pair Boosts</Trans>,
-      description: (
-        <Trans>Trade eligible pairs to unlock multipliers and increase your reward potential this epoch.</Trans>
-      ),
-      actionLabel: <Trans>Trade</Trans>,
-      actionType: "trade",
-      to: "/trade",
+      description: <Trans>Trade featured pairs to boost multiplier and rewards</Trans>,
+      actions: [{ label: <Trans>Trade</Trans>, type: "trade", to: "/trade" }],
       coin: rewardsBannerCoinTrade,
     });
   }
 
   banners.push({
     type: "restake-rewards",
-    title: <Trans>Restake your rewards and earn more</Trans>,
-    description: (
-      <Trans>
-        Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens.
-      </Trans>
-    ),
-    actionLabel: <Trans>Stake rewards</Trans>,
-    actionType: "stake",
-    to: EARN_PORTFOLIO_STAKE_GMX_LINK,
+    title: <Trans>Restake your rewards</Trans>,
+    description: <Trans>Restake rewards to boost earnings and unlock more GMX yield.</Trans>,
+    actions: [{ label: <Trans>Stake rewards</Trans>, type: "stake", to: EARN_PORTFOLIO_STAKE_GMX_LINK }],
     coin: rewardsBannerCoinGmx,
   });
 
@@ -244,7 +243,7 @@ export function RewardsPromotionalBanners({
     [config, promoSelection, showAllBanners, status, walletEsGmx, walletGmx]
   );
   const [dismissedBanners, setDismissedBanners] = useLocalStorageSerializeKeySafe<DismissedRewardsBanners>(
-    [REWARDS_PAGE_BANNERS_DISMISSED_KEY, account],
+    [REWARDS_PAGE_BANNERS_DISMISSED_KEY, account ?? "disconnected"],
     {}
   );
   const banners = useMemo(
@@ -303,12 +302,12 @@ export function RewardsPromotionalBanners({
   };
 
   useEffect(() => {
-    if (!current || (!account && !showAllBanners)) return;
+    if (!current) return;
 
     sendRewardsBannerEvent("BannerShown", current.type);
-  }, [account, current, showAllBanners]);
+  }, [current]);
 
-  if ((!account && !showAllBanners) || !current) return null;
+  if (!current) return null;
 
   const handleDismiss = () => {
     sendRewardsBannerEvent("BannerDismiss", current.type);
@@ -382,14 +381,31 @@ export function RewardsPromotionalBanners({
             <h3 className="text-16 font-medium text-typography-primary">{current.title}</h3>
             <p className="text-13 text-typography-secondary">{current.description}</p>
           </div>
-          <Link
-            to={current.to}
-            className="flex w-fit items-center gap-4 text-14 font-medium text-rewards-blue-300"
-            onClick={handleActionClick}
-          >
-            {current.actionLabel}
-            {current.actionType === "trade" ? <TradeIcon className="size-16" /> : <GmxIcon className="size-16" />}
-          </Link>
+          <div className="flex items-center gap-8">
+            {current.actions.map((action, index) => (
+              <div key={`${action.type}-${action.to}`} className="flex items-center gap-8">
+                {index > 0 ? (
+                  <span aria-hidden="true" className="text-typography-secondary">
+                    |
+                  </span>
+                ) : null}
+                <Link
+                  to={action.to}
+                  className="flex w-fit items-center gap-4 text-14 font-medium text-rewards-blue-300"
+                  onClick={handleActionClick}
+                >
+                  {action.label}
+                  {action.type === "trade" ? (
+                    <TradeIcon className="size-16" />
+                  ) : action.type === "invite" ? (
+                    <ArrowRightIcon className="size-16" />
+                  ) : (
+                    <GmxIcon className="size-16" />
+                  )}
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
 
         <img

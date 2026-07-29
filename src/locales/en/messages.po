@@ -403,6 +403,10 @@ msgstr "Price impact rebates ready to claim. <0>Read more</0>."
 msgid "Execute Market Swap"
 msgstr "Execute Market Swap"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Trade featured pairs to boost multiplier and rewards"
+msgstr "Trade featured pairs to boost multiplier and rewards"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
 msgstr "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
@@ -605,6 +609,10 @@ msgstr "Unrealized base PnL"
 msgid "GM"
 msgstr "GM"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "You have esGMX available"
+msgstr "You have esGMX available"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
 msgstr "Funding exponent"
@@ -796,10 +804,6 @@ msgstr "Expand"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop Market: {suffix}"
 msgstr "Edit Stop Market: {suffix}"
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "You have {esGmxAmount} esGMX unstaked - stake now to earn more rewards."
-msgstr "You have {esGmxAmount} esGMX unstaked - stake now to earn more rewards."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2037,6 +2041,7 @@ msgid "Show less"
 msgstr "Show less"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Vest"
 msgstr "Vest"
 
@@ -2240,10 +2245,6 @@ msgstr "Passive management"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
 msgstr "Telegram groups"
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Restake your rewards and earn more"
-msgstr "Restake your rewards and earn more"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -3038,6 +3039,7 @@ msgstr "No liquidity available for increasing longs at<0/>this size. Max long si
 msgid "Transfer completed"
 msgstr "Transfer completed"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -4580,6 +4582,7 @@ msgstr "Express Trading is unavailable with the network's native token {0}. Cons
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "Trade"
@@ -4636,6 +4639,7 @@ msgstr "SL"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Stake"
 msgstr "Stake"
 
@@ -5219,6 +5223,10 @@ msgstr "Liquidated"
 msgid "Approval cancelled"
 msgstr "Approval cancelled"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Invite"
+msgstr "Invite"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -5800,6 +5808,10 @@ msgstr "All trades"
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "You have {esGmxAmount} esGMX – stake it or vest to get additional rewards"
+msgstr "You have {esGmxAmount} esGMX – stake it or vest to get additional rewards"
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
 msgstr "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
@@ -6027,10 +6039,6 @@ msgstr "Earn"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be immediately liquidated upon execution. Try reducing the size."
 msgstr "Position would be immediately liquidated upon execution. Try reducing the size."
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "You have esGMX ready to stake"
-msgstr "You have esGMX ready to stake"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose: {0} | public: {1}"
@@ -7241,7 +7249,6 @@ msgstr "Recommended"
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Start trading"
 msgstr "Start trading"
@@ -9060,10 +9067,6 @@ msgstr "Order request sent"
 msgid "Your multiplier will decrease next epoch."
 msgstr "Your multiplier will decrease next epoch."
 
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch."
-msgstr "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch."
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 msgid "Oracle Keeper debug"
 msgstr "Oracle Keeper debug"
@@ -10736,6 +10739,10 @@ msgstr "Shift fee"
 msgid "Up"
 msgstr "Up"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Restake your rewards"
+msgstr "Restake your rewards"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "Swap {0} for {1}"
@@ -10759,6 +10766,10 @@ msgstr "Position would be liquidatable at current prices"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
+
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Restake rewards to boost earnings and unlock more GMX yield."
+msgstr "Restake rewards to boost earnings and unlock more GMX yield."
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stop vesting submitted"
@@ -11759,7 +11770,6 @@ msgid "No markets matched."
 msgstr "No markets matched."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Stake esGMX"
 msgstr "Stake esGMX"
 
@@ -12170,10 +12180,6 @@ msgstr "Transfer history"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
 msgstr "MegaETH"
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
-msgstr "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -13259,6 +13265,10 @@ msgstr "Include reviewed"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
 msgstr "General performance details"
+
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Refer other traders and receive 50% of their rewards"
+msgstr "Refer other traders and receive 50% of their rewards"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"

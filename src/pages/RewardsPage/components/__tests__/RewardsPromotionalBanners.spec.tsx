@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getRewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { USD_DECIMALS } from "lib/numbers";
+import { getStartRewardsVestingPath } from "pages/RewardsPage/rewardsRoutes";
 
 import {
   EARN_PORTFOLIO_STAKE_ES_GMX_LINK,
@@ -62,12 +63,6 @@ const tinyManualStatus = { ...status, manualRewardRemainingUsd: USD_UNIT / 2n };
 const singleBannerConfig: IncentivesConfig = { ...config, featuredMarketIndexTokens: [] };
 const REWARDS_ROUTE_ENTRIES = ["/rewards"];
 const REWARDS_BANNERS_DEBUG_ROUTE_ENTRIES = ["/rewards?rewardsDebug=banners"];
-const singleBannerStatus: AccountIncentiveStatus = {
-  ...status,
-  tierVolume: 0n,
-  boostIds: ["FeaturedMarkets"],
-  manualRewardRemainingUsd: 0n,
-};
 
 i18n.load({ en: {} });
 i18n.activate("en");
@@ -104,6 +99,7 @@ describe("RewardsPromotionalBanners", () => {
 
     expect(banners.map((banner) => banner.type)).toEqual([
       "manual-reward",
+      "referral",
       "next-volume-tier",
       "pair-boosts",
       "restake-rewards",
@@ -132,8 +128,8 @@ describe("RewardsPromotionalBanners", () => {
         config,
         status: inactiveStatus,
         promoSelection: getRewardsPromoSelection({ config, status: inactiveStatus }),
-      })
-    ).toEqual([]);
+      }).map((banner) => banner.type)
+    ).toEqual(["referral"]);
     const manualStatus: AccountIncentiveStatus = {
       ...inactiveStatus,
       manualRewardCapUsd: 200n * USD_UNIT,
@@ -146,7 +142,7 @@ describe("RewardsPromotionalBanners", () => {
         status: manualStatus,
         promoSelection: getRewardsPromoSelection({ config, status: manualStatus }),
       }).map((banner) => banner.type)
-    ).toEqual(["manual-reward"]);
+    ).toEqual(["manual-reward", "referral"]);
   });
 
   it("uses tierVolume for the near-tier decision and hides qualified featured markets", () => {
@@ -163,7 +159,7 @@ describe("RewardsPromotionalBanners", () => {
       promoSelection: getRewardsPromoSelection({ config, status: qualifiedStatus }),
     });
 
-    expect(banners.map((banner) => banner.type)).toEqual(["restake-rewards"]);
+    expect(banners.map((banner) => banner.type)).toEqual(["referral", "restake-rewards"]);
   });
 
   it("offers both wallet GMX and esGMX staking opportunities", () => {
@@ -179,13 +175,21 @@ describe("RewardsPromotionalBanners", () => {
       "manual-reward",
       "gmx-ready-to-stake",
       "esgmx-ready-to-stake",
+      "referral",
       "next-volume-tier",
       "pair-boosts",
       "restake-rewards",
     ]);
-    expect(banners.find((banner) => banner.type === "gmx-ready-to-stake")?.to).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
-    expect(banners.find((banner) => banner.type === "esgmx-ready-to-stake")?.to).toBe(EARN_PORTFOLIO_STAKE_ES_GMX_LINK);
-    expect(banners.find((banner) => banner.type === "restake-rewards")?.to).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
+    expect(banners.find((banner) => banner.type === "gmx-ready-to-stake")?.actions[0].to).toBe(
+      EARN_PORTFOLIO_STAKE_GMX_LINK
+    );
+    expect(banners.find((banner) => banner.type === "esgmx-ready-to-stake")?.actions).toEqual([
+      expect.objectContaining({ to: EARN_PORTFOLIO_STAKE_ES_GMX_LINK }),
+      expect.objectContaining({ to: getStartRewardsVestingPath() }),
+    ]);
+    expect(banners.find((banner) => banner.type === "restake-rewards")?.actions[0].to).toBe(
+      EARN_PORTFOLIO_STAKE_GMX_LINK
+    );
   });
 
   it("never advertises a tier below a higher persisted tier", () => {
@@ -202,7 +206,7 @@ describe("RewardsPromotionalBanners", () => {
       promoSelection: getRewardsPromoSelection({ config, status: persistedStatus }),
     });
 
-    expect(banners.map((banner) => banner.type)).toEqual(["restake-rewards"]);
+    expect(banners.map((banner) => banner.type)).toEqual(["referral", "restake-rewards"]);
   });
 
   it("supports carousel navigation and dismisses only the selected opportunity", () => {
@@ -213,16 +217,16 @@ describe("RewardsPromotionalBanners", () => {
     const dots = screen.getAllByRole("button", { name: /Go to slide/ });
 
     expect(liveRegion?.getAttribute("aria-live")).toBe("off");
-    expect(dots).toHaveLength(4);
+    expect(dots).toHaveLength(5);
     expect(dots[0].getAttribute("aria-current")).toBe("true");
     expect(fireEvent.keyDown(carousel, { key: "ArrowRight" })).toBe(false);
-    expect(screen.getByText("Almost at the next tier")).toBeDefined();
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
     expect(dots[1].getAttribute("aria-current")).toBe("true");
-    expect(screen.getByRole("link", { name: /Trade/ }).getAttribute("href")).toBe("/trade");
+    expect(screen.getByRole("link", { name: /Invite/ }).getAttribute("href")).toBe("/referrals/affiliates");
 
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
-    expect(screen.getByText("Activate Pair Boosts")).toBeDefined();
-    expect(screen.queryByText("Almost at the next tier")).toBeNull();
+    expect(screen.getByText("Almost at the next tier")).toBeDefined();
+    expect(screen.queryByText("Referral Bonus")).toBeNull();
   });
 
   it("rotates every six seconds without user interaction", () => {
@@ -231,10 +235,10 @@ describe("RewardsPromotionalBanners", () => {
     expect(screen.getByRole("heading", { name: /You've received bonus/ })).toBeDefined();
 
     act(() => vi.advanceTimersByTime(6000));
-    expect(screen.getByText("Almost at the next tier")).toBeDefined();
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
 
     act(() => vi.advanceTimersByTime(6000));
-    expect(screen.getByText("Activate Pair Boosts")).toBeDefined();
+    expect(screen.getByText("Almost at the next tier")).toBeDefined();
   });
 
   it("navigates in both directions with touch swipes", () => {
@@ -244,7 +248,7 @@ describe("RewardsPromotionalBanners", () => {
 
     fireEvent.pointerDown(banner, { pointerType: "touch", pointerId: 1, clientX: 200, clientY: 20 });
     fireEvent.pointerUp(banner, { pointerType: "touch", pointerId: 1, clientX: 120, clientY: 25 });
-    expect(screen.getByText("Almost at the next tier")).toBeDefined();
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
 
     banner = carousel.firstElementChild as HTMLElement;
     fireEvent.pointerDown(banner, { pointerType: "touch", pointerId: 2, clientX: 120, clientY: 20 });
@@ -255,7 +259,7 @@ describe("RewardsPromotionalBanners", () => {
   it("does not start a swipe from an interactive control", () => {
     renderBanners();
 
-    const action = screen.getByRole("link", { name: /Start trading/ });
+    const action = screen.getByRole("link", { name: /Trade/ });
     const banner = action.closest("[style]") as HTMLElement;
     fireEvent.pointerDown(action, { pointerType: "touch", pointerId: 1, clientX: 100, clientY: 10 });
     fireEvent.pointerUp(banner, { pointerType: "touch", pointerId: 1, clientX: 20, clientY: 10 });
@@ -282,35 +286,28 @@ describe("RewardsPromotionalBanners", () => {
   });
 
   it("hides carousel controls when only one opportunity is available", () => {
-    const promoSelection = getRewardsPromoSelection({ config: singleBannerConfig, status: singleBannerStatus });
     render(
       <I18nProvider i18n={i18n}>
         <MemoryRouter>
-          <RewardsPromotionalBanners
-            account={ACCOUNT}
-            config={singleBannerConfig}
-            status={singleBannerStatus}
-            promoSelection={promoSelection}
-          />
+          <RewardsPromotionalBanners account={ACCOUNT} config={singleBannerConfig} />
         </MemoryRouter>
       </I18nProvider>
     );
 
-    expect(screen.getByText("Restake your rewards and earn more")).toBeDefined();
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
     expect(screen.queryByRole("region", { name: "Rewards opportunities" })).toBeNull();
     expect(screen.queryByRole("button", { name: /Go to slide/ })).toBeNull();
   });
 
-  it("does not render personalized opportunities without a connected account or status", () => {
-    const promoSelection = getRewardsPromoSelection({ config, status });
+  it("keeps the referral opportunity available without status or a connected account", () => {
     const { rerender } = render(
       <I18nProvider i18n={i18n}>
         <MemoryRouter>
-          <RewardsPromotionalBanners config={config} status={status} promoSelection={promoSelection} />
+          <RewardsPromotionalBanners config={config} />
         </MemoryRouter>
       </I18nProvider>
     );
-    expect(screen.queryByTestId("rewards-promotional-banners")).toBeNull();
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
 
     rerender(
       <I18nProvider i18n={i18n}>
@@ -319,10 +316,10 @@ describe("RewardsPromotionalBanners", () => {
         </MemoryRouter>
       </I18nProvider>
     );
-    expect(screen.queryByTestId("rewards-promotional-banners")).toBeNull();
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
   });
 
-  it("shows every deterministic banner fixture in development debug mode without an account", () => {
+  it("shows every requested banner and action in development debug mode", () => {
     render(
       <I18nProvider i18n={i18n}>
         <MemoryRouter initialEntries={REWARDS_BANNERS_DEBUG_ROUTE_ENTRIES}>
@@ -332,6 +329,43 @@ describe("RewardsPromotionalBanners", () => {
     );
 
     expect(normalizeText(screen.getByRole("heading", { name: /You've received bonus/ }))).toContain("$200");
-    expect(screen.getAllByRole("button", { name: /Go to slide/ })).toHaveLength(6);
+    expect(screen.getByText("Start trading to activate it and get your rewards.")).toBeDefined();
+    expect(screen.getByRole("link", { name: "Trade" }).getAttribute("href")).toBe("/trade");
+
+    const dots = screen.getAllByRole("button", { name: /Go to slide/ });
+    expect(dots).toHaveLength(7);
+
+    fireEvent.click(dots[1]);
+    expect(screen.getByText("You have GMX ready to stake")).toBeDefined();
+    expect(screen.getByText("You have 100 GMX unstaked - stake now to earn more rewards.")).toBeDefined();
+    expect(screen.getByRole("link", { name: "Stake GMX" }).getAttribute("href")).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
+
+    fireEvent.click(dots[2]);
+    expect(screen.getByText("You have esGMX available")).toBeDefined();
+    expect(screen.getByText("You have 100 esGMX – stake it or vest to get additional rewards")).toBeDefined();
+    expect(screen.getByRole("link", { name: "Stake" }).getAttribute("href")).toBe(EARN_PORTFOLIO_STAKE_ES_GMX_LINK);
+    expect(screen.getByRole("link", { name: "Vest" }).getAttribute("href")).toBe(getStartRewardsVestingPath());
+
+    fireEvent.click(dots[3]);
+    expect(screen.getByText("Referral Bonus")).toBeDefined();
+    expect(screen.getByText("Refer other traders and receive 50% of their rewards")).toBeDefined();
+    expect(screen.getByRole("link", { name: "Invite" }).getAttribute("href")).toBe("/referrals/affiliates");
+
+    fireEvent.click(dots[4]);
+    const nextTierTitle = screen.getByText("Almost at the next tier");
+    expect(nextTierTitle.parentElement?.querySelector("p")?.textContent).toMatch(
+      /Trade .* more to unlock .* status and a \+.* multiplier/
+    );
+
+    fireEvent.click(dots[5]);
+    expect(screen.getByText("Activate Pair Boosts")).toBeDefined();
+    expect(screen.getByText("Trade featured pairs to boost multiplier and rewards")).toBeDefined();
+
+    fireEvent.click(dots[6]);
+    expect(screen.getByText("Restake your rewards")).toBeDefined();
+    expect(screen.getByText("Restake rewards to boost earnings and unlock more GMX yield.")).toBeDefined();
+    expect(screen.getByRole("link", { name: "Stake rewards" }).getAttribute("href")).toBe(
+      EARN_PORTFOLIO_STAKE_GMX_LINK
+    );
   });
 });

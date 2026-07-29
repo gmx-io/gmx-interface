@@ -403,6 +403,10 @@ msgstr "가격 영향 리베이트를 수령할 수 있습니다. <0>자세히 �
 msgid "Execute Market Swap"
 msgstr "마켓 스왑 실행"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Trade featured pairs to boost multiplier and rewards"
+msgstr "추천 페어를 거래하여 배수와 보상을 높이세요"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
 msgstr ""
@@ -605,6 +609,10 @@ msgstr "미실현 기본 PnL"
 msgid "GM"
 msgstr "GM"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "You have esGMX available"
+msgstr "사용 가능한 esGMX가 있습니다"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
 msgstr "펀딩 지수"
@@ -796,10 +804,6 @@ msgstr "확장"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "You have {esGmxAmount} esGMX unstaked - stake now to earn more rewards."
-msgstr "{esGmxAmount} esGMX가 스테이킹되지 않았습니다. 지금 스테이킹하여 더 많은 보상을 받으세요."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2037,6 +2041,7 @@ msgid "Show less"
 msgstr "적게 표시"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Vest"
 msgstr "베스트"
 
@@ -2240,10 +2245,6 @@ msgstr "패시브 운용"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
 msgstr "Telegram 그룹"
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Restake your rewards and earn more"
-msgstr "보상을 다시 스테이킹하고 더 많은 수익을 받으세요"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -3038,6 +3039,7 @@ msgstr "이 크기에서 롱 증가를 위한 유동성이 없습니다.<0/>최�
 msgid "Transfer completed"
 msgstr "전송 완료"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -4580,6 +4582,7 @@ msgstr "네트워크 기본 토큰 {0}에서는 Express Trading을 사용할 수
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "트레이드"
@@ -4636,6 +4639,7 @@ msgstr "SL"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Stake"
 msgstr "스테이킹"
 
@@ -5219,6 +5223,10 @@ msgstr "청산됨"
 msgid "Approval cancelled"
 msgstr "승인 취소됨"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Invite"
+msgstr "초대"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -5800,6 +5808,10 @@ msgstr "모든 거래"
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "대체 링크는 <0>문서</0>에서 확인할 수 있습니다.<1/><2/>동의를 클릭하면 <3>이용약관</3> 및 <4>추천 이용약관</4>에 동의하게 됩니다.<5/><6/>"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "You have {esGmxAmount} esGMX – stake it or vest to get additional rewards"
+msgstr "{esGmxAmount} esGMX가 있습니다. 스테이킹하거나 베스팅하여 추가 보상을 받으세요"
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "The account snapshot could not be refreshed. Showing the latest loaded snapshot."
 msgstr "계정 스냅샷을 새로고침하지 못했습니다. 최근에 불러온 스냅샷을 표시합니다."
@@ -6027,10 +6039,6 @@ msgstr "수익"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be immediately liquidated upon execution. Try reducing the size."
 msgstr "체결 시 포지션이 즉시 청산됩니다. 크기를 줄여보십시오."
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "You have esGMX ready to stake"
-msgstr "스테이킹 가능한 esGMX가 있습니다"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose: {0} | public: {1}"
@@ -7241,7 +7249,6 @@ msgstr "추천"
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Start trading"
 msgstr "거래 시작"
@@ -9060,10 +9067,6 @@ msgstr "주문 요청 전송됨"
 msgid "Your multiplier will decrease next epoch."
 msgstr "다음 에포크에 회원님의 배수가 감소합니다."
 
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch."
-msgstr "적격 페어를 거래하여 배수를 해제하고 이번 에포크의 보상 잠재력을 높이세요."
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 msgid "Oracle Keeper debug"
 msgstr "Oracle Keeper 디버그"
@@ -10736,6 +10739,10 @@ msgstr "시프트 수수료"
 msgid "Up"
 msgstr "정상"
 
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Restake your rewards"
+msgstr "보상을 다시 스테이킹하세요"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "{0}을 {1}로 스왑"
@@ -10759,6 +10766,10 @@ msgstr "현재 가격에서 포지션이 청산될 수 있습니다"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징 파트너로 LayerZero를 선택했습니다! 이 통합은 GMX에:</0><1><2>125+ 체인으로 확장 능력</2><3>모든 계약 및 보안의 완전 소유권</3><4>빠르고 제로 슬리피지 전송</4><5>수십억 달러 자산과 수백 개 애플리케이션에서 이미 신뢰받는 전투 테스트된 레일... <6>더 보기</6></5></1>"
+
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Restake rewards to boost earnings and unlock more GMX yield."
+msgstr "보상을 다시 스테이킹하여 수익을 높이고 더 많은 GMX 수익률을 받으세요."
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stop vesting submitted"
@@ -11759,7 +11770,6 @@ msgid "No markets matched."
 msgstr "일치하는 시장이 없습니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Stake esGMX"
 msgstr "esGMX 스테이킹"
 
@@ -12170,10 +12180,6 @@ msgstr "전송 내역"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "MegaETH"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
-msgid "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
-msgstr "보상을 계속 재스테이킹하여 수익을 높이고 GMX 토큰의 추가 수익률을 해제하세요."
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -13259,6 +13265,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
 msgstr "일반 성과 상세"
+
+#: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+msgid "Refer other traders and receive 50% of their rewards"
+msgstr "다른 트레이더를 추천하고 해당 보상의 50%를 받으세요"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
