@@ -18,12 +18,11 @@ type Project = {
 export function EcosystemSection() {
   const categories = [t`AI agents`, t`Risk / hedging`, t`Treasury`, t`Frontends`, t`Yield`, t`Infrastructure`];
 
-  // Only Toros has a verified link (reused from the Ecosystem page) — add real links for the rest before shipping.
   const projects: Project[] = [
-    { name: "PrismFi", logo: logoPrismfi },
-    { name: "Enzyme", logo: logoEnzyme },
-    { name: "Vooi", logo: logoVooi },
-    { name: "Toros", logo: logoToros, href: "https://x.com/torosfinance/" },
+    { name: "PrismFi", logo: logoPrismfi, href: "https://prismfi.cc/swap" },
+    { name: "Enzyme", logo: logoEnzyme, href: "https://enzyme.finance/" },
+    { name: "Vooi", logo: logoVooi, href: "https://vooi.io/" },
+    { name: "Toros", logo: logoToros, href: "https://toros.finance/" },
   ];
 
   const cardClassName =
