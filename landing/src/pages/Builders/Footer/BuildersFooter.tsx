@@ -19,7 +19,7 @@ export function BuildersFooter() {
             <Trans>Docs</Trans>
           </a>
           <a
-            href="https://stats.gmx.io/"
+            href="https://dune.com/gmx-io/gmx-analytics"
             target="_blank"
             rel="noopener noreferrer"
             className="duration-180 transition-colors hover:text-white/80"
