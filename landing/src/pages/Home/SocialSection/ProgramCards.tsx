@@ -60,7 +60,7 @@ export function ProgramCards() {
             </div>
             <h3 className="relative mt-20 text-[40px] font-medium leading-[48px] -tracking-[1.2px]">
               <Trans>
-                Trade big.
+                Trade size.
                 <br />
                 Or refer those who do.
               </Trans>

@@ -4599,6 +4599,10 @@ msgstr ""
 msgid "Enter recipient address"
 msgstr ""
 
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Trade size.<0/>Or refer those who do."
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
 msgstr ""
@@ -5645,6 +5649,7 @@ msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on
 msgstr ""
 
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+#: landing/src/pages/Builders/StickyApplyBar.tsx
 msgid "Apply to program"
 msgstr ""
 
@@ -5742,6 +5747,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
+msgstr ""
+
+#: landing/src/pages/Builders/StickyApplyBar.tsx
+msgid "Build on GMX. Get paid on every trade."
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9759,10 +9768,6 @@ msgstr ""
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
-msgstr ""
-
-#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
-msgid "Trade big.<0/>Or refer those who do."
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx

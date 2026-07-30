@@ -2120,7 +2120,7 @@ msgstr "가상 숏 토큰 ID"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Build on GMX. Get<0/>paid on every trade."
-msgstr ""
+msgstr "GMX 위에 구축하고<0/>모든 거래에서 수익을 얻으세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -3639,7 +3639,7 @@ msgstr "입금이 전송되었습니다"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you."
-msgstr ""
+msgstr "스테이블코인으로 받는 온체인 수익 — 자체 빌더 수수료에<0/>더해, 누군가 당신을 통해 거래할 때마다 GMX 수수료의<1/>일부도 받습니다."
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -4598,6 +4598,10 @@ msgstr "실현된 스왑 영향"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "수신자 주소 입력"
+
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Trade size.<0/>Or refer those who do."
+msgstr "크게 거래하세요.<0/>또는 그런 사람을 추천하세요."
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -5645,6 +5649,7 @@ msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on
 msgstr "최대 네트워크 수수료에는 Gas 급등에 대비한 버퍼가 포함되어 있습니다. 미사용 수수료는 체결 시 환불됩니다. <0>자세히 보기</0>."
 
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+#: landing/src/pages/Builders/StickyApplyBar.tsx
 msgid "Apply to program"
 msgstr "프로그램 지원하기"
 
@@ -5743,6 +5748,10 @@ msgstr "모든 수수료 차감 후 PnL"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "추가 예약 필요:"
+
+#: landing/src/pages/Builders/StickyApplyBar.tsx
+msgid "Build on GMX. Get paid on every trade."
+msgstr "GMX 위에 구축하고 모든 거래에서 수익을 얻으세요."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
@@ -7797,7 +7806,7 @@ msgstr "실시간"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Up to 25% off fees for high-volume traders.<0/>Up to 25% earnings for affiliates.<1/>Plus personal support."
-msgstr ""
+msgstr "대량 거래자는 수수료 최대 25% 할인.<0/>제휴자는 최대 25% 수익.<1/>여기에 개인 지원까지."
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
@@ -8180,7 +8189,7 @@ msgstr "GLP 보상금 (테스트)"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Built for those<0/>who do more."
-msgstr ""
+msgstr "더 많이 하는 이들을<0/>위해."
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
@@ -9760,10 +9769,6 @@ msgstr ""
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
 msgstr "핵심 요약"
-
-#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
-msgid "Trade big.<0/>Or refer those who do."
-msgstr "크게 거래하세요.<0/>또는 그런 사람을 추천하세요."
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

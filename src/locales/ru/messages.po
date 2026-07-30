@@ -2120,7 +2120,7 @@ msgstr "ID виртуального шорт токена"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Build on GMX. Get<0/>paid on every trade."
-msgstr ""
+msgstr "Стройте на GMX. Зарабатывайте<0/>на каждой сделке."
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -3639,7 +3639,7 @@ msgstr "Депозит отправлен"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you."
-msgstr ""
+msgstr "Ончейн-доход в стейблкоинах — ваша комиссия билдера<0/>плюс доля комиссий GMX каждый раз, когда кто-то<1/>торгует через вас."
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -4598,6 +4598,10 @@ msgstr "Реализованное влияние свопа"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "Введите адрес получателя"
+
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Trade size.<0/>Or refer those who do."
+msgstr "Торгуйте по-крупному.<0/>Или приводите тех, кто торгует."
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -5645,6 +5649,7 @@ msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on
 msgstr "Максимальная комиссия сети включает буфер на случай скачков Gas. Неиспользованные комиссии возвращаются при исполнении. <0>Подробнее</0>."
 
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+#: landing/src/pages/Builders/StickyApplyBar.tsx
 msgid "Apply to program"
 msgstr "Подать заявку"
 
@@ -5743,6 +5748,10 @@ msgstr "PnL после всех комиссий"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "Требуется дополнительный резерв:"
+
+#: landing/src/pages/Builders/StickyApplyBar.tsx
+msgid "Build on GMX. Get paid on every trade."
+msgstr "Стройте на GMX. Зарабатывайте на каждой сделке."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
@@ -7797,7 +7806,7 @@ msgstr "Сейчас"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Up to 25% off fees for high-volume traders.<0/>Up to 25% earnings for affiliates.<1/>Plus personal support."
-msgstr ""
+msgstr "Скидка до 25% на комиссии для крупных трейдеров.<0/>До 25% дохода для аффилиатов.<1/>Плюс персональная поддержка."
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
@@ -8180,7 +8189,7 @@ msgstr "Возмещение GLP (тест)"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Built for those<0/>who do more."
-msgstr ""
+msgstr "Создано для тех,<0/>кто делает больше."
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
@@ -9760,10 +9769,6 @@ msgstr ""
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
 msgstr "Коротко о главном"
-
-#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
-msgid "Trade big.<0/>Or refer those who do."
-msgstr "Торгуйте по-крупному.<0/>Или приводите тех, кто торгует."
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

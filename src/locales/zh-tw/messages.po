@@ -2120,7 +2120,7 @@ msgstr "虛擬做空代幣 ID"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Build on GMX. Get<0/>paid on every trade."
-msgstr ""
+msgstr "在 GMX 上構建。<0/>每筆交易都有收益。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -3639,7 +3639,7 @@ msgstr "存入已送出"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you."
-msgstr ""
+msgstr "以穩定幣支付的鏈上收入 — 你自己的構建者費用，<0/>加上 GMX 手續費分成，每當有人透過你<1/>交易即可獲得。"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -4598,6 +4598,10 @@ msgstr "已實現兌換影響"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "請輸入接收地址"
+
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Trade size.<0/>Or refer those who do."
+msgstr "大額交易。<0/>或推薦大額交易者。"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -5645,6 +5649,7 @@ msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on
 msgstr "最大網路費用包含 Gas 突增的緩衝。未使用的費用將在執行時退還。<0>了解更多</0>。"
 
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+#: landing/src/pages/Builders/StickyApplyBar.tsx
 msgid "Apply to program"
 msgstr "申請加入"
 
@@ -5743,6 +5748,10 @@ msgstr "扣除所有費用後的盈虧"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "額外所需預留："
+
+#: landing/src/pages/Builders/StickyApplyBar.tsx
+msgid "Build on GMX. Get paid on every trade."
+msgstr "在 GMX 上構建。每筆交易都有收益。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
@@ -7797,7 +7806,7 @@ msgstr "即時"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Up to 25% off fees for high-volume traders.<0/>Up to 25% earnings for affiliates.<1/>Plus personal support."
-msgstr ""
+msgstr "高交易量交易者最高可享 25% 手續費折扣。<0/>推廣者最高可獲 25% 收益。<1/>還有專屬支援。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
@@ -8180,7 +8189,7 @@ msgstr "GLP 補償（測試）"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Built for those<0/>who do more."
-msgstr ""
+msgstr "為做得更多的人<0/>而建。"
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
@@ -9760,10 +9769,6 @@ msgstr ""
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
 msgstr "快速要點"
-
-#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
-msgid "Trade big.<0/>Or refer those who do."
-msgstr "大額交易。<0/>或推薦大額交易者。"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

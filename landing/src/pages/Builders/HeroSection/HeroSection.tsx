@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { forwardRef } from "react";
 
 import heroGlow from "img/builders_hero_glow.svg";
 
@@ -7,7 +8,7 @@ import { BUILDER_PROGRAM_APPLY_URL, SDK_QUICKSTART_URL } from "../constants";
 import { Eyebrow } from "../Eyebrow";
 import { CodeSnippet } from "./CodeSnippet";
 
-export function HeroSection() {
+export const HeroSection = forwardRef<HTMLDivElement>(function HeroSection(_, buttonsRef) {
   return (
     <section className="relative w-full overflow-hidden bg-slate-900 px-16 pb-60 pt-80 text-white sm:px-40 sm:pb-80 sm:pt-[304px]">
       <img
@@ -30,7 +31,7 @@ export function HeroSection() {
           <p className="mt-8 max-w-[340px] text-14 -tracking-[0.448px] text-slate-400">
             <Trans>Real onchain revenue, paid in stablecoins, every time someone trades through you.</Trans>
           </p>
-          <div className="mt-[34px] flex w-full flex-col gap-12 sm:flex-row sm:gap-20">
+          <div ref={buttonsRef} className="mt-[34px] flex w-full flex-col gap-12 sm:flex-row sm:gap-20">
             <ArrowButton href={SDK_QUICKSTART_URL} variant="primary" className="sm:w-[200px]">
               <Trans>Start building</Trans>
             </ArrowButton>
@@ -43,4 +44,4 @@ export function HeroSection() {
       </div>
     </section>
   );
-}
+});
