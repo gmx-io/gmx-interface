@@ -95,6 +95,7 @@ export function getTxnErrorToast(
 
   if (smartWalletContent) {
     toastParams.errorContent = smartWalletContent;
+    toastParams.autoCloseToast = false;
 
     return toastParams;
   }

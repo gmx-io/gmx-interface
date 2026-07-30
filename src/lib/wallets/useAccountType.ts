@@ -1,3 +1,4 @@
+import { watchAccount } from "@wagmi/core";
 import useSWR from "swr";
 import { PublicClient } from "viem";
 import { useAccount } from "wagmi";
@@ -5,7 +6,7 @@ import { useAccount } from "wagmi";
 import { useChainId } from "lib/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
-import { getPublicClientWithRpc } from "./walletConfig";
+import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
 export enum AccountType {
   PostEip7702EOA, // Post-EIP-7702 EOA (delegated EOA)
@@ -14,6 +15,23 @@ export enum AccountType {
 }
 
 const ACCOUNT_TYPES_CACHE = new LRUCache<Promise<AccountType>>(100);
+
+let unwatchAccount: (() => void) | undefined;
+
+/** Reconnecting is how a user tells us they added a network, so stop trusting what we saw before it. */
+function watchForReconnect() {
+  if (unwatchAccount) {
+    return;
+  }
+
+  unwatchAccount = watchAccount(getWagmiConfig(), {
+    onChange: (account, prevAccount) => {
+      if (account.address !== prevAccount.address || account.connector?.uid !== prevAccount.connector?.uid) {
+        ACCOUNT_TYPES_CACHE.clean();
+      }
+    },
+  });
+}
 
 async function fetchAccountType(address: string, client: PublicClient): Promise<AccountType> {
   const bytecode = await client.getCode({ address });
@@ -28,13 +46,15 @@ async function fetchAccountType(address: string, client: PublicClient): Promise<
   return AccountType.SmartAccount;
 }
 
-/** Cached for the page load: signing paths await this before every wallet prompt. */
-export function getAccountType(address: string, client: PublicClient): Promise<AccountType> {
+/** Cached: signing paths await this before every wallet prompt. */
+export async function getAccountType(address: string, client: PublicClient): Promise<AccountType> {
   const chainId = client.chain?.id;
 
   if (chainId === undefined) {
     throw new Error("getAccountType requires a chain-bound client");
   }
+
+  watchForReconnect();
 
   const key = `chainId:${chainId}:address:${address.toLowerCase()}`;
   let accountTypePromise = ACCOUNT_TYPES_CACHE.get(key);
@@ -52,11 +72,11 @@ export function getAccountType(address: string, client: PublicClient): Promise<A
 }
 
 export function useAccountType(): { accountType: AccountType | undefined; isLoading: boolean } {
-  const { address } = useAccount();
+  const { address, connector } = useAccount();
   const { chainId } = useChainId();
 
   const { data: accountType, isLoading } = useSWR<AccountType | undefined>(
-    address && [address, chainId, "accountType"],
+    address && [address, chainId, connector?.uid, "accountType"],
     {
       fetcher: async () => {
         const publicClient = getPublicClientWithRpc(chainId);

@@ -99,13 +99,18 @@ function getNetworkDisabledReason({
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const { unavailableChains } = useWalletUnavailableChains(networkOptions.map((network) => network.value));
-  const { canSignTypedData } = useWalletCanSignTypedData();
+  const { unavailableChains, isLoading: isAvailabilityLoading } = useWalletUnavailableChains(
+    networkOptions.map((network) => network.value)
+  );
+  const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
+  const isVerdictPending = isAvailabilityLoading || isCanSignLoading;
 
   const { walletAndGmxAccountNetworks, walletOnlyNetworks } = useMemo(() => {
     const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => ({
       ...network,
-      disabledReason: getNetworkDisabledReason({ network, unavailableChains, canSignTypedData }),
+      disabledReason: isVerdictPending
+        ? undefined
+        : getNetworkDisabledReason({ network, unavailableChains, canSignTypedData }),
     }));
 
     const orderDisabledLast = (networks: DisplayNetworkOption[]) =>
@@ -120,7 +125,7 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
         displayNetworks.filter((network) => !isWalletAndGmxAccountNetwork(network))
       ),
     };
-  }, [networkOptions, unavailableChains, canSignTypedData]);
+  }, [networkOptions, unavailableChains, canSignTypedData, isVerdictPending]);
 
   return (
     <>

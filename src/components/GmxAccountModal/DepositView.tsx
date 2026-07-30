@@ -1163,6 +1163,13 @@ export const DepositView = () => {
       ),
       disabled: true,
     };
+  } else if (isInputEmpty) {
+    buttonState = {
+      text: t`Enter deposit amount`,
+      disabled: true,
+    };
+  } else if (withdrawBlockedError) {
+    buttonState = withdrawBlockedError;
   } else if (needTokenApprove) {
     buttonState = {
       text: t`Allow ${selectedToken?.symbol} spending`,
@@ -1176,11 +1183,6 @@ export const DepositView = () => {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      disabled: true,
-    };
-  } else if (isInputEmpty) {
-    buttonState = {
-      text: t`Enter deposit amount`,
       disabled: true,
     };
   } else if (selectedTokenBalanceForDeposit !== undefined && amountLD > selectedTokenBalanceForDeposit) {
@@ -1209,8 +1211,6 @@ export const DepositView = () => {
       ),
       disabled: true,
     };
-  } else if (withdrawBlockedError) {
-    buttonState = withdrawBlockedError;
   }
 
   const onClick = buttonState.onClick;

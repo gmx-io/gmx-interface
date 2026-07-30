@@ -16,11 +16,23 @@ import {
 } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "config/multichain";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
+import { useLatestValueRef } from "lib/useLatestValueRef";
 import { getWagmiConfig } from "lib/wallets/walletConfig";
 
 const IS_DEVELOPMENT = isDevelopment();
 
 const INITIAL_CHAIN_ID: ContractsChainId = DEFAULT_SETTLEMENT_CHAIN_ID;
+
+function isUsableSourceChain(
+  maybeSourceChainId: number | undefined,
+  settlementChainId: SettlementChainId
+): maybeSourceChainId is SourceChainId {
+  return (
+    isSourceChain(maybeSourceChainId, settlementChainId) &&
+    !isSettlementChain(maybeSourceChainId) &&
+    areChainsRelated(settlementChainId, maybeSourceChainId)
+  );
+}
 
 export function getSelectedSourceChainId({
   chainIdFromLocalStorage,
@@ -35,12 +47,7 @@ export function getSelectedSourceChainId({
     return undefined;
   }
 
-  if (
-    chainIdFromLocalStorage &&
-    isSourceChain(chainIdFromLocalStorage, settlementChainId) &&
-    !isSettlementChain(chainIdFromLocalStorage) &&
-    areChainsRelated(settlementChainId, chainIdFromLocalStorage)
-  ) {
+  if (isUsableSourceChain(chainIdFromLocalStorage, settlementChainId)) {
     return chainIdFromLocalStorage;
   }
 
@@ -57,9 +64,11 @@ type WalletAccountSnapshot = Pick<GetAccountReturnType, "chainId" | "address">;
 export function getWalletNetworkSelection({
   account,
   prevAccount,
+  settlementChainId,
 }: {
   account: WalletAccountSnapshot;
   prevAccount: WalletAccountSnapshot;
+  settlementChainId: SettlementChainId;
 }): { chainId: number; wasAppSelected: boolean } | undefined {
   if (!account.chainId) {
     return undefined;
@@ -67,6 +76,10 @@ export function getWalletNetworkSelection({
 
   if (canWalletChainUpdateSelectedNetwork(account.chainId)) {
     return { chainId: account.chainId, wasAppSelected: false };
+  }
+
+  if (!isUsableSourceChain(account.chainId, settlementChainId)) {
+    return undefined;
   }
 
   const isUserSwitchedChainOnSameAccount =
@@ -78,8 +91,12 @@ export function getWalletNetworkSelection({
   return isUserSwitchedChainOnSameAccount ? { chainId: account.chainId, wasAppSelected: true } : undefined;
 }
 
-function applyWalletNetworkSelection(account: WalletAccountSnapshot, prevAccount: WalletAccountSnapshot) {
-  const selection = getWalletNetworkSelection({ account, prevAccount });
+function applyWalletNetworkSelection(
+  account: WalletAccountSnapshot,
+  prevAccount: WalletAccountSnapshot,
+  settlementChainId: SettlementChainId
+) {
+  const selection = getWalletNetworkSelection({ account, prevAccount, settlementChainId });
 
   if (!selection) {
     return;
@@ -185,7 +202,16 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     mustChangeChainId,
   ]);
 
-  useEffect(() => watchAccount(getWagmiConfig(), { onChange: applyWalletNetworkSelection }), []);
+  const settlementChainIdRef = useLatestValueRef(settlementChainId);
+
+  useEffect(
+    () =>
+      watchAccount(getWagmiConfig(), {
+        onChange: (account, prevAccount) =>
+          applyWalletNetworkSelection(account, prevAccount, settlementChainIdRef.current),
+      }),
+    [settlementChainIdRef]
+  );
 
   if (mustChangeChainId) {
     if (isLocalStorageChainSupported) {

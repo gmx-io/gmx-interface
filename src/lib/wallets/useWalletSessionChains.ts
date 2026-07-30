@@ -12,6 +12,8 @@ import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
 const PROBE_STALL_TIMEOUT_MS = 5000;
 
+const PROBE_CHAIN_IDS = uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]);
+
 function getConnectedProvider(connector: Connector | undefined): Promise<any> {
   try {
     return Promise.resolve(connector?.getProvider()).catch(() => undefined);
@@ -107,14 +109,16 @@ function probeAccountType(address: string, chainId: number): Promise<AccountType
 /** EOAs exist on every chain, so only a contract account can be missing from one. */
 async function getIsContractAccount(address: string, referenceChainId: number): Promise<boolean> {
   const isTestnet = isTestnetChain(referenceChainId);
-  const chainIds = uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]).filter(
-    (chainId) => isTestnetChain(chainId) === isTestnet
+  const accountTypes = await Promise.all(
+    PROBE_CHAIN_IDS.filter((chainId) => isTestnetChain(chainId) === isTestnet).map((chainId) =>
+      probeAccountType(address, chainId)
+    )
   );
-  const accountTypes = await Promise.all(chainIds.map((chainId) => probeAccountType(address, chainId)));
 
   return accountTypes.some((accountType) => accountType === AccountType.SmartAccount);
 }
 
+// A chain list is all testnet or all mainnet, never mixed, so any of them names the realm to probe.
 async function getUndeployedChains(address: string, chainIds: number[]): Promise<number[]> {
   if (!chainIds.length || !(await getIsContractAccount(address, chainIds[0]))) {
     return [];

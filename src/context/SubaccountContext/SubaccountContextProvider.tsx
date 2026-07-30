@@ -385,7 +385,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     setSubaccountDeactivationState(SubaccountDeactivationState.Deactivating);
 
     try {
-      if (!(await getIsSubaccountRemovalRequired({ chainId, provider, signer, subaccount, account }))) {
+      if (!(await getIsSubaccountRemovalRequired({ chainId, subaccount, account }))) {
         setSubaccountDeactivationState(SubaccountDeactivationState.Success);
 
         resetStoredApproval();
@@ -397,9 +397,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       if (srcChainId !== undefined) {
         const globalExpressParams = calcSelector(selectExpressGlobalParams);
 
-        if (!provider || !globalExpressParams) {
+        if (!globalExpressParams) {
           metrics.pushError(
-            new Error("Missing provider or globalExpressParams for subaccount deactivation"),
+            new Error("Missing globalExpressParams for subaccount deactivation"),
             "subaccount.tryDisableSubaccount"
           );
           setSubaccountDeactivationFailureReason(SubaccountDeactivationFailureReason.ExpressParamsNotReady);
@@ -409,7 +409,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
         await removeSubaccountExpressTxn({
           chainId,
-          provider,
           account,
           srcChainId,
           signer,
@@ -447,7 +446,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     account,
     srcChainId,
     calcSelector,
-    provider,
     chainId,
     resetStoredApproval,
     resetStoredConfig,
