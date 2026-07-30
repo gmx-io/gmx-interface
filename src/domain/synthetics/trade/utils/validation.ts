@@ -156,7 +156,6 @@ export function getSwapError(p: {
   externalSwapQuote: ExternalSwapQuote | undefined;
   isExternalSwapLoading: boolean;
   isWrapOrUnwrap: boolean;
-  isStakeOrUnstake: boolean;
   isFromTokenGmxAccount: boolean;
   swapLiquidity: bigint | undefined;
   isTwap: boolean;
@@ -173,7 +172,6 @@ export function getSwapError(p: {
     markRatio,
     fees,
     isWrapOrUnwrap,
-    isStakeOrUnstake,
     isFromTokenGmxAccount,
     swapLiquidity,
     swapPathStats,
@@ -217,17 +215,10 @@ export function getSwapError(p: {
     return { buttonErrorMessage: t`Insufficient ${fromToken?.symbol} balance` };
   }
 
-  if (isWrapOrUnwrap || isStakeOrUnstake) {
+  if (isWrapOrUnwrap) {
     return {};
   }
 
-  if (fromToken.symbol === "USDC.E" && (toToken.symbol === "BTC" || toToken.symbol === "PBTC")) {
-    return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
-  }
-
-  if (fromToken.symbol === "STBTC" && toToken.symbol === "BTC") {
-    return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
-  }
   const noInternalSwap =
     !swapPathStats?.swapPath || ((!isLimit || isTwap) && swapPathStats.swapSteps.some((step) => step.isOutLiquidity));
 

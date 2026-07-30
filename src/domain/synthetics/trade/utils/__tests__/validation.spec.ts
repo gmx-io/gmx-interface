@@ -40,7 +40,6 @@ const baseSwapParams = {
   externalSwapQuote: undefined,
   isExternalSwapLoading: false,
   isWrapOrUnwrap: false,
-  isStakeOrUnstake: false,
   isFromTokenGmxAccount: false,
   swapLiquidity: 0n, // < toUsd → triggers Insufficient liquidity by default
   isTwap: false,

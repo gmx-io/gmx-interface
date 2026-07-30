@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased (next major)
+
+- Breaking: Removed Botanix chain support and the Botanix staking swap APIs. Consumers must remove Botanix chain, token, market, contract, and staking references before upgrading to the next major SDK release.
+
 ## 1.6.4
 
 - Added the v2.2c market and position response fields

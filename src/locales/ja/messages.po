@@ -2382,8 +2382,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "スワップパスが見つかりません"
 
@@ -3006,10 +3004,6 @@ msgstr "署名が無効です。リクエストに再度署名してください
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "アドレスを検索"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
-msgstr "スワップパスが利用できません。<0>{0}をSTBTCにスワップ</0>して{1}を担保として使用してください。"
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -3786,10 +3780,6 @@ msgstr ""
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
 msgstr ""
-
-#: src/components/BotanixShutdownBanner/BotanixShutdownBanner.tsx
-msgid "Botanix is shutting down. Do not open new positions. Close existing positions and withdraw funds from Botanix."
-msgstr "Botanixは終了します。新しいポジションを開かないでください。既存のポジションを決済し、Botanixから資金を出金してください。"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -5028,10 +5018,6 @@ msgstr "注文のライフサイクル"
 msgid "Permit supported:"
 msgstr "Permit対応:"
 
-#: src/pages/ParseTransaction/ParseTransaction.tsx
-msgid "Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-msgstr "ネットワークを指定してください: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr "{nativeTokenSymbol}を購入"
@@ -5188,10 +5174,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "新規注文をキャンセル"
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to unstake"
-msgstr "アンステークに失敗しました"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -5682,10 +5664,6 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL 分析"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
-msgstr "スワップパスがありません。<0>{0}を{swapToTokenSymbol}にスワップ</0>してから{1}に。"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -8233,10 +8211,6 @@ msgstr "建玉リザーブファクター（ショート）"
 msgid "Insufficient pool liquidity"
 msgstr "プールの流動性が不足しています"
 
-#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
-msgid "No opportunities on Botanix yet"
-msgstr "Botanixにはまだ機会がありません"
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>のOIは素晴らしい</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>もっと確認: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -8400,10 +8374,6 @@ msgstr "ネットレート"
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "送金アドレスが無効です。URLをご確認ください。"
 
-#: src/components/StatusNotification/StakeNotification.tsx
-msgid "Swap {fromAmount} for {toAmount}"
-msgstr "{fromAmount} を {toAmount} にスワップ"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
@@ -8529,10 +8499,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to stake"
-msgstr "ステークに失敗しました"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -8791,7 +8757,6 @@ msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "({operationText}金額の<0>{0}</0>)"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
@@ -10715,6 +10680,10 @@ msgstr "トークンパーミットテスト"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "無効な清算価格"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+msgstr "ネットワークを指定してください: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
 
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
