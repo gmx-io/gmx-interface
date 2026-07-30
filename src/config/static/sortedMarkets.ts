@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, type ContractsChainId } from "sdk/configs/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type ContractsChainId } from "sdk/configs/chains";
 
 /*
   A temporary solution before positions sorting logic is updated
@@ -177,11 +177,6 @@ export const SORTED_MARKETS: Partial<Record<ContractsChainId, string[]>> = {
     "0xeDf53322e288F597436f5d5849771662AEe16A1C",
     "0xE446E8f7074c0A97bb7cd448fA2CC3346045F514",
     "0xD996ff47A1F763E1e55415BC4437c59292D1F415",
-  ],
-  [BOTANIX]: [
-    "0x6682BB60590a045A956541B1433f016Ed22E361d",
-    "0x2f95a2529328E427d3204555F164B1102086690E",
-    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d",
   ],
   [MEGAETH]: [
     "0x31EdCc52bE2Fa55Ba68f50409F9e6b7d9EbF3D59",

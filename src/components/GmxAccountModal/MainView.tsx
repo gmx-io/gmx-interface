@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { isAddressEqual } from "viem";
 
-import { BOTANIX, getChainName, getExplorerUrl } from "config/chains";
+import { getChainName, getExplorerUrl } from "config/chains";
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY } from "config/localStorage";
@@ -396,8 +396,6 @@ function MenuList({ account }: { account: string }) {
   const { openNotifyModal } = useNotifyModalState();
   const { setIsSettingsVisible } = useSettings();
 
-  const showNotify = settlementChainId !== BOTANIX;
-
   const handleNotificationsClick = () => {
     openNotifyModal();
     setTimeout(() => {
@@ -425,13 +423,11 @@ function MenuList({ account }: { account: string }) {
         label={<Trans>PnL Analysis</Trans>}
         onClick={handlePnlAnalysisClick}
       />
-      {showNotify && (
-        <MenuRow
-          icon={<BellIcon className="size-16" />}
-          label={<Trans>Notifications</Trans>}
-          onClick={handleNotificationsClick}
-        />
-      )}
+      <MenuRow
+        icon={<BellIcon className="size-16" />}
+        label={<Trans>Notifications</Trans>}
+        onClick={handleNotificationsClick}
+      />
       <MenuRow
         icon={<SettingsIcon className="size-16" />}
         label={<Trans>Settings</Trans>}

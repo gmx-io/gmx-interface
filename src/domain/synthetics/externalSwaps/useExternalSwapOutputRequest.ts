@@ -2,16 +2,11 @@ import { useMemo, useRef } from "react";
 import { usePrevious } from "react-use";
 import useSWR from "swr";
 
-import { BOTANIX } from "config/chains";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectBotanixStakingAssetsPerShare } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { metrics, KyberSwapQuoteTiming } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { getBotanixStakingExternalSwapQuote } from "sdk/utils/swap/botanixStaking";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
@@ -73,8 +68,6 @@ export function useExternalSwapOutputRequest({
   const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
   const prevTokensKey = usePrevious(tokensKey);
   const prevAmountIn = usePrevious(amountIn);
-  const botanixAssetsPerShare = useSelector(selectBotanixStakingAssetsPerShare);
-
   const { data, error } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
     fetcher: async () => {
@@ -91,10 +84,6 @@ export function useExternalSwapOutputRequest({
         }
 
         const startTime = Date.now();
-
-        if (chainId === BOTANIX) {
-          return undefined;
-        }
 
         const result = await getKyberSwapTxnData({
           chainId,
@@ -128,28 +117,9 @@ export function useExternalSwapOutputRequest({
     tokenAddresses: enabled && tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
-  const tokensData = useTokensData();
-
   return useMemo(() => {
     if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
       return { error };
-    }
-
-    const botanixStakingQuote =
-      tokensData && botanixAssetsPerShare !== undefined && chainId === BOTANIX
-        ? getBotanixStakingExternalSwapQuote({
-            tokenInAddress,
-            tokenOutAddress,
-            amountIn,
-            gasPrice,
-            receiverAddress,
-            tokensData,
-            assetsPerShare: botanixAssetsPerShare,
-          })
-        : undefined;
-
-    if (botanixStakingQuote) {
-      return { quote: botanixStakingQuote, error };
     }
 
     if (!data) {
@@ -187,17 +157,5 @@ export function useExternalSwapOutputRequest({
     };
 
     return { quote, error };
-  }, [
-    amountIn,
-    tokenInAddress,
-    tokenOutAddress,
-    gasPrice,
-    receiverAddress,
-    tokensData,
-    botanixAssetsPerShare,
-    chainId,
-    data,
-    error,
-    tokensAllowanceData,
-  ]);
+  }, [amountIn, tokenInAddress, tokenOutAddress, gasPrice, receiverAddress, chainId, data, error, tokensAllowanceData]);
 }

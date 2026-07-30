@@ -3,7 +3,6 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   type ContractsChainId,
@@ -45,12 +44,6 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
 
   [ARBITRUM_SEPOLIA]: {
     subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@bac941/api/graphql",
-  },
-
-  [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@6230c4/api/graphql",
-    syntheticsStats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
   },
 
   [MEGAETH]: {

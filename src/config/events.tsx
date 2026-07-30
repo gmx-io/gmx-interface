@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
+import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -146,25 +146,6 @@ export const appEventsData: EventData[] = [
           stuck as pending after executing, and GM pool fee data loads reliably again in Pools and Earn.
         </span>
       </span>
-    ),
-  },
-  {
-    id: "botanix-withdraw-deadline",
-    type: "delisting",
-    isActive: true,
-    startDate: "24 Jun 2026, 16:45",
-    endDate: "01 Aug 2026, 0:00",
-    chains: [BOTANIX],
-    title: "Botanix network is shutting down",
-    summary: <>Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.</>,
-    description: (
-      <>
-        In the swap interface, swap pBTC to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC
-        directly on Botanix. Move your BTC off the network before the deadline.
-        <br />
-        <br />
-        <Link to="/pools">Withdraw liquidity</Link>
-      </>
     ),
   },
   {
@@ -503,18 +484,17 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: "aero-brett-pbtc-listing",
+    id: "aero-brett-listing",
     type: "listing",
     isActive: true,
     startDate: "28 Aug 2025, 10:00",
     endDate: "04 Sep 2025, 12:00",
-    chains: [ARBITRUM, BOTANIX],
-    title: "AERO and BRETT markets added on Arbitrum, BTC market added on Botanix",
+    chains: [ARBITRUM],
+    title: "AERO and BRETT markets added on Arbitrum",
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM{" "}
-        <span className="text-slate-100">[PBTC]</span> for BTC
+        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT
       </>
     ),
   },
