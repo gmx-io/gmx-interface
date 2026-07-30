@@ -359,6 +359,10 @@ msgstr "GMX Account 在 {chainName} 上無法使用。若要使用 GMX Account�
 msgid "settings"
 msgstr "設定"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external routes."
+msgstr "TWAP 交換僅使用 GMX 池流動性，無法完成此訂單規模。請使用市價單以啟用外部路由。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Est. APR"
 msgstr "預估 APR"
@@ -656,6 +660,10 @@ msgstr "沒有可從 {networkName} 存入的資金"
 msgid "sell"
 msgstr "賣出"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GMX pool liquidity"
+msgstr "GMX 池流動性不足"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "切換至 {0}"
@@ -724,6 +732,10 @@ msgstr "訂單成交價格"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to Classic Trading"
+msgstr "切換到 Classic Trading"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -753,6 +765,10 @@ msgstr "否"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "..."
 msgstr "..."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Swap on an external aggregator"
+msgstr "在外部聚合器上交換"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
@@ -907,6 +923,10 @@ msgstr "在中心化交易所購買 GMX"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
 msgstr "可用流動性"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
+msgstr "GMX 池無法完成此交換，且當前沒有可用的外部路由。請嘗試減少金額。"
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
@@ -1394,7 +1414,7 @@ msgstr "外部兌換 {0} 至 {1}"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
-msgstr ""
+msgstr "使用 {0} 支付 Gas"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Earn up to 15% in<0/> rebates as an affiliate"
@@ -1870,6 +1890,10 @@ msgstr ""
 msgid "No fee"
 msgstr "無手續費"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to market order"
+msgstr "切換到市價單"
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Warning: may not execute due to low liquidity at your min. receive price"
 msgstr ""
@@ -1968,6 +1992,10 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr "借貸費用 / 日"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
+msgstr "GMX 池沒有足夠的流動性來完成此規模的交換。請嘗試減少金額。"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "您在推薦人金庫中有 esGMX 代幣。請先提取後再轉帳至新帳戶。"
@@ -2014,6 +2042,10 @@ msgstr "獲得投票權並參與治理"
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
+msgstr "未找到從 {0} 到 {1} 的 GMX 交換路由。請嘗試<0>外部聚合器</0>。"
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "RECEIVE"
 msgstr "RECEIVE"
@@ -2036,6 +2068,10 @@ msgstr "即將離開 GMX.io 前往第三方網站"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
 msgstr ""
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
+msgstr "此交換需要外部路由，但當 Gas 支付代幣與您接收的代幣相同時不可用，且沒有其他 Gas 代幣有足夠餘額。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -2198,6 +2234,10 @@ msgstr "正在發送賣出請求..."
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "用途"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "GMX pools"
+msgstr "GMX 池"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2424,6 +2464,10 @@ msgstr "{orderTypeText} {0} 換取 {1}"
 msgid "Job openings at GMX"
 msgstr "GMX 職缺"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount."
+msgstr "GMX 池無法完成此規模的兌換，且當前沒有可用的外部路由。請嘗試減少金額。"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -2437,6 +2481,10 @@ msgstr "即將推出"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
 msgstr "更新止損"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size.<0/><1/><2>Switch to a market order</2> to enable external routes."
+msgstr "TWAP 交換僅使用 GMX 池流動性，無法完成此訂單規模。<0/><1/><2>切換到市價單</2>以啟用外部路由。"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
@@ -2606,6 +2654,10 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
 msgstr "授權 {0} 支出"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
+msgstr "GMX 池無法完成此規模的交換。需要外部路由，但 One-Click Trading 不支援。請停用 One-Click Trading 以繼續。"
 
 #: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
 msgid "Swap debug"
@@ -3085,6 +3137,10 @@ msgstr ""
 msgid "Start unrealized PnL"
 msgstr "期初未實現盈虧"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "Swap route"
+msgstr "交換路由"
+
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Transfer from another chain"
 msgstr "從其他鏈轉帳"
@@ -3356,6 +3412,10 @@ msgstr "從中心化服務購買 GMX"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
 msgstr "主要失敗"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}."
+msgstr "未找到從 {0} 到 {1} 的 GMX 交換路由。"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
@@ -4684,6 +4744,10 @@ msgstr "編輯 {0}"
 msgid "Swap to"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+msgstr "外部路由在一次失敗的嘗試後暫時暫停。<0/><1/><2>重試外部路由</2>"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>買入</0> {wrappedNativeTokenSymbol}。"
@@ -4735,6 +4799,10 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit"
 msgstr "取消限價單"
+
+#: src/domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap.ts
+msgid "Gas token switched to {toSymbol} to enable external swap routing"
+msgstr "Gas 代幣已切換為 {toSymbol}，以啟用外部交換路由"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4793,6 +4861,10 @@ msgstr "期間"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "Market Swap：以當前市場價格兌換代幣"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available while the gas payment token matches the token you're swapping to. Change the gas payment token to proceed."
+msgstr "GMX 池無法完成此規模的交換。需要外部路由，但當 Gas 支付代幣與交換目標代幣相同時不可用。請更改 Gas 支付代幣以繼續。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Per 1h"
@@ -6160,7 +6232,7 @@ msgstr "在圖表上顯示買/賣圖示"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
-msgstr ""
+msgstr "此交換需要外部路由。請用 {0} 支付 Gas 以啟用。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -7586,7 +7658,6 @@ msgstr "Tradao"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
 
@@ -8139,6 +8210,10 @@ msgstr "帳戶類型"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Collateral in"
 msgstr "轉入抵押品"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
+msgstr "GMX 池無法完成此規模的兌換，且當前沒有可用的外部路由。請嘗試減少金額，或<0>在外部聚合器上交換</0>。"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
@@ -8858,6 +8933,10 @@ msgstr "做空借貸指數"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "價格影響"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Retry external route"
+msgstr "重試外部路由"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -10357,6 +10436,10 @@ msgstr "什麼是 GM？"
 msgid "Delisting"
 msgstr "下架"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "{0} (external)"
+msgstr "{0}（外部）"
+
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
@@ -10578,6 +10661,10 @@ msgstr "已經過時間"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "鏈下簽署交易。優質 RPC 確保在網路擁塞時的可靠性。<0/><1/>以 {gasPaymentTokensText} 支付 Gas 費用。"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
+msgstr "外部路由在一次失敗的嘗試後暫時暫停。請重試以檢查是否有更優匯率。"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
@@ -11281,6 +11368,10 @@ msgstr "{count, plural, one {訂單} other {# 筆訂單}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Avalanche 交易獎勵"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routes are only used for market swaps."
+msgstr "外部路由僅用於市價交換。"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx

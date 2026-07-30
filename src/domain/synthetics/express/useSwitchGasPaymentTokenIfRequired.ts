@@ -38,6 +38,7 @@ export function findNextGasPaymentToken({
   gasPaymentTokenAmount,
   payAmounts,
   isGmxAccount,
+  excludeTokenAddresses,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
@@ -45,11 +46,14 @@ export function findNextGasPaymentToken({
   gasPaymentTokenAmount: bigint;
   payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
+  excludeTokenAddresses?: string[];
 }): string | undefined {
   const usdValue = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
   if (usdValue === undefined) return undefined;
 
   return getGasPaymentTokens(chainId).find((tokenAddress) => {
+    if (excludeTokenAddresses?.includes(tokenAddress)) return false;
+
     const tokenData = getByKey(tokensData, tokenAddress);
     if (!tokenData || tokenData.address === gasPaymentToken.address) return false;
 
@@ -61,6 +65,28 @@ export function findNextGasPaymentToken({
 
     const candidatePayOverlap = payAmounts[tokenAddress] ?? 0n;
     return balance > candidatePayOverlap + applyMinimalBuffer(requiredGasAmount);
+  });
+}
+
+export function findGasPaymentTokenWithPositiveBalance({
+  chainId,
+  tokensData,
+  isGmxAccount,
+  excludeTokenAddresses,
+}: {
+  chainId: number;
+  tokensData: TokensData | undefined;
+  isGmxAccount: boolean;
+  excludeTokenAddresses?: string[];
+}): string | undefined {
+  return getGasPaymentTokens(chainId).find((tokenAddress) => {
+    if (excludeTokenAddresses?.includes(tokenAddress)) return false;
+
+    const tokenData = getByKey(tokensData, tokenAddress);
+    if (!tokenData) return false;
+
+    const balance = isGmxAccount ? tokenData.gmxAccountBalance : tokenData.walletBalance;
+    return (balance ?? 0n) > 0n;
   });
 }
 

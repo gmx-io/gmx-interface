@@ -49,6 +49,7 @@ export type MockSyntheticsStateProviderProps = {
   isFirstOrder?: boolean;
   features?: FeaturesSettings;
   sponsoredCallBalanceData?: SponsoredCallBalanceData;
+  subaccount?: SyntheticsState["subaccountState"]["subaccount"];
   srcChainId?: SourceChainId;
   l1ExpressOrderGasReference?: L1ExpressOrderGasReference;
 };
@@ -68,13 +69,18 @@ export function MockSyntheticsStateProvider({
   isFirstOrder = false,
   features,
   sponsoredCallBalanceData,
+  subaccount,
   srcChainId,
   l1ExpressOrderGasReference,
 }: MockSyntheticsStateProviderProps) {
   const chainId = ARBITRUM;
   const { account, signer } = useWallet();
   const settings = useSettings();
-  const subaccountState = useSubaccountContext();
+  const realSubaccountState = useSubaccountContext();
+  const subaccountState = useMemo(
+    () => (subaccount ? { ...realSubaccountState, subaccount } : realSubaccountState),
+    [realSubaccountState, subaccount]
+  );
   const tokenPermitsState = useTokenPermitsContext();
   const externalSwapState = useInitExternalSwapState();
   const orderEditorState = useOrderEditorState(ordersInfoData);

@@ -73,13 +73,13 @@ export const appEventsData: EventData[] = [
           performance card showing your PnL, win rate, and cumulative PnL curve, carrying your referral code.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now return
-          profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a resting
-          increase order would be liquidatable at its trigger price.
+          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now
+          return profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a
+          resting increase order would be liquidatable at its trigger price.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool settings
-          now survive refreshes.
+          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool
+          settings now survive refreshes.
         </span>
         <span>
           <span className="font-medium text-typography-primary">Support:</span> the menu now shows how many replies came
