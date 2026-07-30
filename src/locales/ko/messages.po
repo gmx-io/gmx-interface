@@ -2413,8 +2413,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "스왑 경로 없음"
 
@@ -3049,10 +3047,6 @@ msgstr "서명이 유효하지 않습니다. 요청에 다시 서명해 주세�
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "주소 검색"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
-msgstr "스왑 경로 없음. {1}을 담보로 사용하려면 <0>{0}을 STBTC로 스왑</0>."
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -3832,10 +3826,6 @@ msgstr ""
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
 msgstr ""
-
-#: src/components/BotanixShutdownBanner/BotanixShutdownBanner.tsx
-msgid "Botanix is shutting down. Do not open new positions. Close existing positions and withdraw funds from Botanix."
-msgstr "Botanix가 종료됩니다. 신규 포지션을 개설하지 마세요. 기존 포지션을 종료하고 Botanix에서 자금을 출금하세요."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -5078,10 +5068,6 @@ msgstr "주문 수명 주기"
 msgid "Permit supported:"
 msgstr "Permit 지원 여부:"
 
-#: src/pages/ParseTransaction/ParseTransaction.tsx
-msgid "Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-msgstr "네트워크를 지정하십시오: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr "{nativeTokenSymbol} 구매"
@@ -5238,10 +5224,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "신규 주문 취소"
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to unstake"
-msgstr "언스테이킹 실패"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -5728,10 +5710,6 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL 분석"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
-msgstr "스왑 경로 없음. <0>{0}을 {swapToTokenSymbol}로 스왑</0>, 그 다음 {1}로."
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -8286,10 +8264,6 @@ msgstr "숏 미결제약정 준비금 비율"
 msgid "Insufficient pool liquidity"
 msgstr "풀 유동성 부족"
 
-#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
-msgid "No opportunities on Botanix yet"
-msgstr "Botanix에서 아직 사용 가능한 기회가 없습니다"
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>의 OI가 훌륭합니다</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>더 확인: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -8453,10 +8427,6 @@ msgstr "순 비율"
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "전송 주소가 유효하지 않습니다. URL을 확인하십시오."
 
-#: src/components/StatusNotification/StakeNotification.tsx
-msgid "Swap {fromAmount} for {toAmount}"
-msgstr "{fromAmount}을 {toAmount}으로 스왑"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
@@ -8582,10 +8552,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to stake"
-msgstr "스테이킹에 실패했습니다"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -8840,7 +8806,6 @@ msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "({operationText} 금액의 <0>{0}</0>)"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
@@ -10773,6 +10738,10 @@ msgstr "토큰 허용 테스트"
 msgid "Invalid liquidation price"
 msgstr "유효하지 않은 청산가"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+msgstr "네트워크를 지정하십시오: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
 msgstr "{count, plural, other {이 수명 주기의 액션 #개}}"
@@ -10796,10 +10765,6 @@ msgstr "추천 코드"
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code updated"
 msgstr "추천 코드가 업데이트되었습니다"
-
-#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
-msgid "GMX pools + {0}"
-msgstr "GMX 풀 + {0}"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx

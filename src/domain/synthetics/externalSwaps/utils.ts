@@ -372,8 +372,6 @@ export function getExternalSwapAggregatorLabel(aggregator: ExternalSwapAggregato
   switch (aggregator) {
     case ExternalSwapAggregator.KyberSwap:
       return "KyberSwap";
-    case ExternalSwapAggregator.BotanixStaking:
-      return "Botanix Staking";
     default:
       return mustNeverExist(aggregator);
   }

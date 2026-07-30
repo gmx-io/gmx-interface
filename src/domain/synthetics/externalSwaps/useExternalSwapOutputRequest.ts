@@ -1,16 +1,11 @@
 import { useMemo, useRef } from "react";
 import useSWR from "swr";
 
-import { BOTANIX } from "config/chains";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectBotanixStakingAssetsPerShare } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { metrics, KyberSwapQuoteTiming } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { getBotanixStakingExternalSwapQuote } from "sdk/utils/swap/botanixStaking";
 import { ExternalSwapAggregator, ExternalSwapCalculationStrategy, ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
@@ -90,8 +85,6 @@ export function useExternalSwapOutputRequest({
 
   const isDataUpToDate = debouncedKey === swapKey;
 
-  const botanixAssetsPerShare = useSelector(selectBotanixStakingAssetsPerShare);
-
   const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   const { data, error } = useSWR<OutputRequestData | undefined>(debouncedKey, {
@@ -113,10 +106,6 @@ export function useExternalSwapOutputRequest({
         }
 
         const startTime = Date.now();
-
-        if (chainId === BOTANIX) {
-          return undefined;
-        }
 
         const result = await getKyberSwapTxnData({
           chainId,
@@ -163,36 +152,9 @@ export function useExternalSwapOutputRequest({
     tokenAddresses: enabled && tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
-  const tokensData = useTokensData();
-
   return useMemo(() => {
     if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
       return { error, isDataUpToDate };
-    }
-
-    const botanixStakingQuote =
-      tokensData && botanixAssetsPerShare !== undefined && chainId === BOTANIX
-        ? getBotanixStakingExternalSwapQuote({
-            tokenInAddress,
-            tokenOutAddress,
-            amountIn,
-            gasPrice,
-            receiverAddress,
-            tokensData,
-            assetsPerShare: botanixAssetsPerShare,
-          })
-        : undefined;
-
-    if (botanixStakingQuote) {
-      const requestKey = getExternalSwapRequestKey({
-        fromTokenAddress: tokenInAddress,
-        toTokenAddress: tokenOutAddress,
-        strategy,
-        amountIn,
-        desiredAmountOut: undefined,
-        slippage,
-      });
-      return { quote: botanixStakingQuote, requestKey, error, isDataUpToDate };
     }
 
     if (!data) {
@@ -236,10 +198,6 @@ export function useExternalSwapOutputRequest({
     tokenOutAddress,
     gasPrice,
     receiverAddress,
-    slippage,
-    strategy,
-    tokensData,
-    botanixAssetsPerShare,
     chainId,
     data,
     error,

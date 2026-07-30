@@ -1,7 +1,6 @@
 import { useMemo, useRef } from "react";
 import useSWR from "swr";
 
-import { BOTANIX } from "config/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { metrics } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -82,10 +81,6 @@ export function useExternalSwapInputRequest({
           slippage === undefined ||
           gasPrice === undefined
         ) {
-          return undefined;
-        }
-
-        if (chainId === BOTANIX) {
           return undefined;
         }
 

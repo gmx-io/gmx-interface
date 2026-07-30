@@ -33,7 +33,6 @@ const baseSwapParams = {
   externalSwapQuote: undefined,
   isExternalSwapLoading: false,
   isWrapOrUnwrap: false,
-  isStakeOrUnstake: false,
   isFromTokenGmxAccount: false,
   swapLiquidity: 0n, // < toUsd → triggers Insufficient liquidity by default
   isTwap: false,
@@ -67,11 +66,6 @@ describe("getSwapError — isExternalSwapLoading gate", () => {
 
   it("ignores liquidity check for wrap/unwrap", () => {
     const result = getSwapError({ ...baseSwapParams, isWrapOrUnwrap: true });
-    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
-  });
-
-  it("ignores liquidity check for stake/unstake", () => {
-    const result = getSwapError({ ...baseSwapParams, isStakeOrUnstake: true });
     expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
   });
 });

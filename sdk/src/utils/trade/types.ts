@@ -277,7 +277,6 @@ export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export enum ExternalSwapAggregator {
   KyberSwap = "kyberSwap",
-  BotanixStaking = "botanixStaking",
 }
 
 export type ExternalSwapQuote = {
@@ -305,18 +304,11 @@ export type ExternalSwapQuote = {
   };
 };
 
-export type ExternalSwapPath = {
-  aggregator: ExternalSwapAggregator;
-  inTokenAddress: string;
-  outTokenAddress: string;
-};
-
 export type ExternalSwapQuoteParams = {
   chainId: number;
   receiverAddress: string;
   gasPrice: bigint | undefined;
   tokensData: TokensData | undefined;
-  botanixStakingAssetsPerShare: bigint | undefined;
 };
 
 export type ExternalSwapCalculationStrategy = "byFromValue" | "byToValue" | "leverageBySize";

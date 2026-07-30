@@ -4,7 +4,6 @@ import { useCallback } from "react";
 import {
   selectExternalSwapBlockReason,
   selectSetShouldFallbackToInternalSwap,
-  selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxSwapAmounts,
   selectTradeboxTradeFlags,
@@ -19,7 +18,6 @@ export function SwapRouteRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
-  const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -29,7 +27,7 @@ export function SwapRouteRow() {
 
   const { isSwap, isMarket } = tradeFlags;
 
-  if (!isSwap || isWrapOrUnwrap || isStakeOrUnstake || !swapAmounts) {
+  if (!isSwap || isWrapOrUnwrap || !swapAmounts) {
     return null;
   }
 
@@ -42,8 +40,6 @@ export function SwapRouteRow() {
   let value: string;
   if (swapStrategy.type === "externalSwap") {
     value = t`${getExternalSwapAggregatorLabel(swapStrategy.externalSwapQuote.aggregator)} (external)`;
-  } else if (swapStrategy.type === "combinedSwap") {
-    value = t`GMX pools + ${getExternalSwapAggregatorLabel(swapStrategy.externalSwapQuote.aggregator)}`;
   } else {
     value = t`GMX pools`;
   }

@@ -41,8 +41,6 @@ import {
   TokenData,
   TokensRatio,
   convertToUsd,
-  getIsStake,
-  getIsUnstake,
   getIsUnwrap,
   getIsWrap,
   getTokensRatioByPrice,
@@ -63,7 +61,7 @@ import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { BOTANIX, MEGAETH } from "sdk/configs/chains";
+import { MEGAETH } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
@@ -622,18 +620,6 @@ export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   }
 
   return Boolean(fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken)));
-});
-
-export const selectTradeboxIsStakeOrUnstake = createSelector((q) => {
-  const fromToken = q(selectTradeboxFromToken);
-  const toToken = q(selectTradeboxToToken);
-  const tradeFlags = q(selectTradeboxTradeFlags);
-
-  if (!tradeFlags.isSwap) {
-    return false;
-  }
-
-  return Boolean(fromToken && toToken && (getIsStake(fromToken, toToken) || getIsUnstake(fromToken, toToken)));
 });
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
@@ -1232,14 +1218,11 @@ export const selectTradeboxTradeFeesType = createSelector(
   function selectTradeboxTradeFeesType(q): TradeFeesType | null {
     const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
 
-    const chainId = q(selectChainId);
-    const isBotanix = chainId === BOTANIX;
-
     if (isSwap) {
       const swapAmounts = q(selectTradeboxSwapAmounts);
       const swapPathStats = swapAmounts?.swapStrategy.swapPathStats;
       const isExternalSwap = swapAmounts?.swapStrategy.type === "externalSwap";
-      if (swapPathStats || isExternalSwap || (isBotanix && swapAmounts)) return "swap";
+      if (swapPathStats || isExternalSwap) return "swap";
     }
 
     if (isIncrease) {
@@ -1431,24 +1414,13 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       if (!swapAmounts.swapStrategy.swapPathStats) return undefined;
 
-      // For combined swaps, also use oracle prices for the external quote portion
-      const combinedOracleQuote = swapAmounts.swapStrategy.externalSwapQuote
-        ? overrideQuoteWithOraclePrices(swapAmounts.swapStrategy.externalSwapQuote, {
-            usdIn: swapAmounts.swapStrategy.usdIn,
-            usdOut: swapAmounts.swapStrategy.usdOut,
-            feesUsd: swapAmounts.swapStrategy.feesUsd,
-            priceIn: swapAmounts.swapStrategy.priceIn,
-            priceOut: swapAmounts.swapStrategy.priceOut,
-          })
-        : undefined;
-
       return getTradeFees({
         sizeInUsd: 0n,
         initialCollateralUsd: swapAmounts.usdIn,
         collateralDeltaUsd: 0n,
         sizeDeltaUsd: 0n,
         swapSteps: swapAmounts.swapStrategy.swapPathStats.swapSteps,
-        externalSwapQuote: combinedOracleQuote,
+        externalSwapQuote: undefined,
         positionFeeUsd: 0n,
         swapPriceImpactDeltaUsd: swapAmounts.swapStrategy.swapPathStats.totalSwapPriceImpactDeltaUsd,
         increasePositionPriceImpactDeltaUsd: 0n,

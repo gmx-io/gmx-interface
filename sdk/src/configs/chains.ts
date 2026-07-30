@@ -19,7 +19,6 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
@@ -32,7 +31,6 @@ export {
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   ARBITRUM_SEPOLIA,
   SOURCE_ETHEREUM_MAINNET,
@@ -42,7 +40,7 @@ export {
   SOURCE_SEPOLIA,
 };
 
-export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, BOTANIX, MEGAETH] as const;
+export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, MEGAETH] as const;
 export const CONTRACTS_CHAIN_IDS_DEV = [...CONTRACTS_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA] as const;
 export const SETTLEMENT_CHAIN_IDS = [ARBITRUM, AVALANCHE] as const;
 export const SETTLEMENT_CHAIN_IDS_DEV = [...SETTLEMENT_CHAIN_IDS, ARBITRUM_SEPOLIA, AVALANCHE_FUJI] as const;
@@ -144,30 +142,6 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n,
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
-    residualGasUsd: undefined,
-    gasPriceBuffer: undefined,
-    isDisabled: false,
-  },
-  [BOTANIX]: {
-    chainId: BOTANIX,
-    name: "Botanix",
-    slug: "botanix",
-    explorerUrl: "https://botanixscan.io/",
-    nativeTokenSymbol: "BTC",
-    wrappedTokenSymbol: "PBTC",
-    defaultCollateralSymbol: "USDC.E",
-    highExecutionFee: 5,
-    shouldUseMaxPriorityFeePerGas: true,
-    defaultExecutionFeeBufferBps: 3000, // 30%
-    maxFeePerGas: 20n,
-    gasPricePremium: undefined,
-    maxPriorityFeePerGas: 7n,
-    excessiveExecutionFee: 10, // 10 USD
-    /**
-     * avoid botanix gas spikes when chain is not actively used
-     * if set, execution fee value should not be less than this in USD equivalent
-     */
-    minExecutionFee: 1000000000000000000000000000n, // 1e27 $0.001
     residualGasUsd: undefined,
     gasPriceBuffer: undefined,
     isDisabled: false,
@@ -280,37 +254,6 @@ export type ContractsChainSlug = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof C
 export type SourceChainSlug = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["slug"];
 export type ChainSlug = ContractsChainSlug | SourceChainSlug | "unknown";
 
-export const botanix: Chain = defineChain({
-  id: BOTANIX,
-  name: "Botanix",
-  nativeCurrency: {
-    name: "Bitcoin",
-    symbol: "BTC",
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: {
-      http: [
-        // this rpc returns incorrect gas price
-        // "https://rpc.botanixlabs.com",
-
-        "https://rpc.ankr.com/botanix_mainnet",
-      ],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: "BotanixScan",
-      url: "https://botanixscan.io",
-    },
-  },
-  contracts: {
-    multicall3: {
-      address: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
-    },
-  },
-});
-
 export const megaeth: Chain = defineChain({
   id: MEGAETH,
   name: "MegaETH",
@@ -342,7 +285,6 @@ export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
-  [BOTANIX]: botanix,
   [MEGAETH]: megaeth,
   [SOURCE_ETHEREUM_MAINNET]: mainnet,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,

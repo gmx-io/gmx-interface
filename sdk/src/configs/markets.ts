@@ -6,7 +6,7 @@ import { zeroAddress } from "viem";
 
 import type { ERC20Address, NativeTokenSupportedAddress, Token } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "./chains";
 import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
@@ -1316,29 +1316,6 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       indexTokenAddress: "0xC371020838605F2150b0C3C8E2f872c13C3F1d5b",
       longTokenAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
       shortTokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
-    },
-  },
-  [BOTANIX]: {
-    // BTC/USD [stBTC-stBTC]
-    "0x6682BB60590a045A956541B1433f016Ed22E361d": {
-      marketTokenAddress: "0x6682BB60590a045A956541B1433f016Ed22E361d",
-      indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
-      longTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
-      shortTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
-    },
-    // BTC/USD [stBTC-USDC.E]
-    "0x2f95a2529328E427d3204555F164B1102086690E": {
-      marketTokenAddress: "0x2f95a2529328E427d3204555F164B1102086690E",
-      indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
-      longTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
-      shortTokenAddress: "0x29eE6138DD4C9815f46D34a4A1ed48F46758A402",
-    },
-    // BTC/USD [PBTC-PBTC]
-    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
-      marketTokenAddress: "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d",
-      indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
-      longTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-      shortTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
     },
   },
   [MEGAETH]: {

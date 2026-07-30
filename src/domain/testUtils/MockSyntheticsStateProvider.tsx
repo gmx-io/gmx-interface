@@ -122,7 +122,6 @@ export function MockSyntheticsStateProvider({
         progressiveDepositMarketTokensData: undefined,
         multichainMarketTokensBalancesResult: { tokenBalances: {}, isLoading: false },
         glvInfo: { glvs: undefined, glvData: undefined, isLoading: false },
-        botanixStakingAssetsPerShare: undefined,
 
         closingPositionKey: undefined,
         setClosingPositionKey: noop,

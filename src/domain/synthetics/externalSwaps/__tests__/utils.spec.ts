@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM, BOTANIX, MEGAETH } from "config/chains";
+import { ARBITRUM, AVALANCHE_FUJI, MEGAETH } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { JUMPER_EXCHANGE_URL } from "config/links";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
@@ -365,7 +365,7 @@ describe("getExternalAggregatorSwapUrl", () => {
   it("returns no link on a chain without a configured aggregator", () => {
     expect(
       getExternalAggregatorSwapUrl({
-        chainId: BOTANIX,
+        chainId: AVALANCHE_FUJI,
         isFromTokenGmxAccount: false,
         fromTokenAddress: undefined,
         toTokenAddress: undefined,
