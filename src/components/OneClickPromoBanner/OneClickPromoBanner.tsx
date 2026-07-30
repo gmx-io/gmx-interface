@@ -6,6 +6,7 @@ import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useChainId } from "lib/chains";
+import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
@@ -20,8 +21,9 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
   );
 
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
+  const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
 
-  const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled;
+  const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && canSignTypedData && !isCanSignLoading;
 
   const onClickEnable = useCallback(() => {
     openSettings();

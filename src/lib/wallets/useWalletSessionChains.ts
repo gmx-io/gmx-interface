@@ -4,6 +4,7 @@ import uniq from "lodash/uniq";
 import useSWR from "swr";
 import { useAccount, type Connector } from "wagmi";
 
+import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } from "config/chains";
 import { withFallback } from "lib/withFallback";
 
 import { AccountType, getAccountType } from "./useAccountType";
@@ -104,14 +105,18 @@ function probeAccountType(address: string, chainId: number): Promise<AccountType
 }
 
 /** EOAs exist on every chain, so only a contract account can be missing from one. */
-async function getIsContractAccount(address: string, knownChainIds: number[]): Promise<boolean> {
-  const accountTypes = await Promise.all(knownChainIds.map((chainId) => probeAccountType(address, chainId)));
+async function getIsContractAccount(address: string, referenceChainId: number): Promise<boolean> {
+  const isTestnet = isTestnetChain(referenceChainId);
+  const chainIds = uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]).filter(
+    (chainId) => isTestnetChain(chainId) === isTestnet
+  );
+  const accountTypes = await Promise.all(chainIds.map((chainId) => probeAccountType(address, chainId)));
 
   return accountTypes.some((accountType) => accountType === AccountType.SmartAccount);
 }
 
-async function getUndeployedChains(address: string, chainIds: number[], knownChainIds: number[]): Promise<number[]> {
-  if (!chainIds.length || !(await getIsContractAccount(address, knownChainIds))) {
+async function getUndeployedChains(address: string, chainIds: number[]): Promise<number[]> {
+  if (!chainIds.length || !(await getIsContractAccount(address, chainIds[0]))) {
     return [];
   }
 
@@ -120,18 +125,8 @@ async function getUndeployedChains(address: string, chainIds: number[], knownCha
   return chainIds.filter((_, index) => accountTypes[index] === AccountType.EOA);
 }
 
-async function getKnownAccountChains(address: string): Promise<number[]> {
-  const session = await findConnectedSession(address);
-  const sessionChains = session ? getSessionChainsForAccount(session, address) : [];
-  const currentChainId = getAccount(getWagmiConfig()).chainId;
-
-  return uniq(currentChainId === undefined ? sessionChains : [...sessionChains, currentChainId]);
-}
-
 export async function isAccountMissingOnChain(address: string, chainId: number): Promise<boolean> {
-  const knownChainIds = (await getKnownAccountChains(address)).filter((knownChainId) => knownChainId !== chainId);
-
-  return (await getUndeployedChains(address, [chainId], knownChainIds)).includes(chainId);
+  return (await getUndeployedChains(address, [chainId])).includes(chainId);
 }
 
 export async function getConnectedWalletName(address: string): Promise<string | undefined> {
@@ -160,12 +155,13 @@ export function useWalletUnavailableChains(chainIds: number[]): {
   const { address } = useAccount();
   const { sessionChains, isLoading: isLoadingSession } = useWalletSessionChains();
 
+  // Unavailable needs both: the session will not route there and the account is not deployed there.
   const undeclaredChainIds = sessionChains ? chainIds.filter((chainId) => !sessionChains.includes(chainId)) : [];
 
   const { data, isLoading: isLoadingDeployments } = useSWR<number[] | undefined>(
     address && sessionChains ? [address, undeclaredChainIds.join(","), "walletUnavailableChains"] : null,
     {
-      fetcher: async () => getUndeployedChains(address!, undeclaredChainIds, sessionChains!),
+      fetcher: async () => getUndeployedChains(address!, undeclaredChainIds),
       refreshInterval: 0,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

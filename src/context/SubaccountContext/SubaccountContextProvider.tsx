@@ -18,6 +18,7 @@ import {
   signUpdatedSubaccountSettings,
 } from "domain/synthetics/subaccount/utils";
 import { useChainId } from "lib/chains";
+import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
@@ -25,6 +26,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
+import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
 import { StatusNotification } from "components/StatusNotification/StatusNotification";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
@@ -205,7 +207,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     if (!config?.address) {
       try {
         setSubaccountActivationState(SubaccountActivationState.Generating);
-        config = await generateSubaccount(signer);
+        config = await generateSubaccount(signer, chainId);
 
         setSubaccountConfig(config);
       } catch (error) {
@@ -214,6 +216,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
         setSubaccountActivationState(SubaccountActivationState.GeneratingError);
         metrics.pushError(error, "subaccount.generateSubaccount");
+
+        if (error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
+          toast.dismiss(toastId);
+          helperToast.error(getSmartWalletChainUnavailableToastContent(chainId, error.data?.walletName));
+        }
+
         return false;
       }
     }

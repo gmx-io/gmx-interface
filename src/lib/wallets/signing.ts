@@ -114,17 +114,17 @@ async function buildChainSwitchError({
   });
 }
 
-async function withSmartWalletChainSwap<T>(
+async function withSmartWalletChainSwap<T, S extends AnySigner>(
   {
     signer,
     address,
     targetChainId,
   }: {
-    signer: AnySigner;
+    signer: S;
     address: string;
     targetChainId: number | undefined;
   },
-  action: (signer: AnySigner) => Promise<T>
+  action: (signer: S | WalletSigner) => Promise<T>
 ): Promise<T> {
   const config = getWagmiConfig();
   const startingChainId = getChainId(config);
@@ -243,6 +243,22 @@ export function hashSignedTypedData({
   const toSign = minified ? minifyTypedData({ domain, types, message: typedData }) : { types, message: typedData };
 
   return hashTypedDataWithViem({ domain, ...toSign });
+}
+
+export async function signMessage({
+  signer,
+  message,
+  verificationChainId,
+}: {
+  signer: WalletSigner | Wallet | AbstractSigner;
+  message: string;
+  verificationChainId: number;
+}): Promise<string> {
+  const from = await signer.getAddress();
+
+  return withSmartWalletChainSwap({ signer, address: from, targetChainId: verificationChainId }, (signWith) =>
+    signWith.signMessage(message)
+  );
 }
 
 export async function signTypedData({

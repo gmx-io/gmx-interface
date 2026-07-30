@@ -24,7 +24,7 @@ import { getWillChainSwitchChangeAccount, isAccountMissingOnChain } from "./useW
 
 const ACCOUNT = "0x865386FCB1bbD2A75364c40AdabD4B1062FfFFd2";
 const ARBITRUM = 42161;
-const BASE = 8453;
+const BASE = 8453; // SOURCE_BASE_MAINNET
 
 function mockSession(chainIds: number[]) {
   getAccountMock.mockReturnValue({
@@ -34,6 +34,13 @@ function mockSession(chainIds: number[]) {
         session: { namespaces: { eip155: { accounts: chainIds.map((chainId) => `eip155:${chainId}:${ACCOUNT}`) } } },
       }),
     },
+  });
+}
+
+function mockUnreadableSession(currentChainId: number) {
+  getAccountMock.mockReturnValue({
+    chainId: currentChainId,
+    connector: { getProvider: async () => ({}) },
   });
 }
 
@@ -70,6 +77,14 @@ describe("isAccountMissingOnChain", () => {
     mockAccountTypes({ [ARBITRUM]: AccountType.SmartAccount, [BASE]: AccountType.SmartAccount });
 
     await expect(isAccountMissingOnChain(ACCOUNT, BASE)).resolves.toBe(false);
+  });
+
+  it("still detects a missing smart wallet once the wallet has swapped to the target chain", async () => {
+    // What buildChainSwitchError sees: session unreadable (Privy proxy) and wagmi already on the target.
+    mockUnreadableSession(ARBITRUM);
+    mockAccountTypes({ [BASE]: AccountType.SmartAccount, [ARBITRUM]: AccountType.EOA });
+
+    await expect(isAccountMissingOnChain(ACCOUNT, ARBITRUM)).resolves.toBe(true);
   });
 
   it("does not block a chain the session already declares", async () => {
