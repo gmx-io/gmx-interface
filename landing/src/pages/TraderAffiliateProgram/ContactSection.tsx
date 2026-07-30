@@ -1,6 +1,11 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { GRADIENT_TEXT_CLASS, VIP_CONTACT_FORM_URL } from "landing/components/TraderAffiliateWidget/constants";
+import {
+  GRADIENT_TEXT_CLASS,
+  VIP_CALL_BOOKING_URL,
+  VIP_CONTACT_FORM_URL,
+  VIP_TELEGRAM_URL,
+} from "landing/components/TraderAffiliateWidget/constants";
 import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
 import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
 import { getLandingReferralCode } from "landing/utils/referralCode";
@@ -98,7 +103,7 @@ export function ContactSection() {
         </span>
         <h2 className="text-50 leading-heading-lg lg:text-100 mt-28 font-medium -tracking-[2.6px] lg:-tracking-[5.2px]">
           <Trans>
-            Let's get you
+            Lock in
             <br />
             <span className={GRADIENT_TEXT_CLASS}>a better rate.</span>
           </Trans>
@@ -126,14 +131,14 @@ export function ContactSection() {
             title={t`Message us on Telegram`}
             description={t`Fastest — chat with the desk directly`}
             buttonLabel={t`Open Telegram`}
-            href={VIP_CONTACT_FORM_URL}
+            href={VIP_TELEGRAM_URL}
           />
           <ContactRow
             icon={icContactCall}
-            title={t`Book a 20-min call`}
+            title={t`Book a 30-min call`}
             description={t`Walk through tiers & onboarding live`}
             buttonLabel={t`Pick a time`}
-            href={VIP_CONTACT_FORM_URL}
+            href={VIP_CALL_BOOKING_URL}
           />
         </div>
 

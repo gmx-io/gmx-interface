@@ -4358,10 +4358,6 @@ msgstr "Плечо"
 msgid "Accrued price impact rebates"
 msgstr "Накопленные возвраты за влияние на цену"
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Your income (at 20%)"
-msgstr "Ваш доход (при 20%)"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "Общий объём"
@@ -7937,10 +7933,6 @@ msgstr "Стейкать вознаграждения {tokenSymbol}"
 msgid "Max amount exceeded"
 msgstr "Максимальная сумма превышена"
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Book a 20-min call"
-msgstr "Запланировать 20-минутный звонок"
-
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -8027,6 +8019,10 @@ msgstr "Ссылка скопирована"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr "РАЗМЕР"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Book a 30-min call"
+msgstr "Запишитесь на 30-минутный звонок"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -8585,10 +8581,6 @@ msgstr "Показать значения линий в USD"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Открытый интерес (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Let's get you<0/><1>a better rate.</1>"
-msgstr "Мы подберём вам<0/><1>ставку получше.</1>"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText}: {0} {longShortText}"
@@ -9337,6 +9329,10 @@ msgstr "Структура обеспечения"
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "Доступные к получению скидки"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Lock in<0/><1>a better rate.</1>"
+msgstr "Зафиксируйте<0/><1>ставку получше.</1>"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -11765,6 +11761,10 @@ msgstr "лимит"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
 msgstr "Исполнение части TWAP-обмена"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your income (at 25%)"
+msgstr "Ваш доход (при 25%)"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed"

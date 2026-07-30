@@ -234,7 +234,7 @@ export function TraderAffiliateWidget() {
               ))}
             </div>
             <div className={cx("mt-24 w-fit text-12 tracking-[0.024px]", GRADIENT_TEXT_CLASS)}>
-              <Trans>Your income (at 20%)</Trans>
+              <Trans>Your income (at 25%)</Trans>
             </div>
             <div className="mt-12 flex items-baseline gap-8">
               <span className={cx("text-[68px] font-medium leading-[1] -tracking-[3.4px]", GRADIENT_TEXT_CLASS)}>

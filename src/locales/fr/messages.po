@@ -4358,10 +4358,6 @@ msgstr "Levier"
 msgid "Accrued price impact rebates"
 msgstr "Remises accumulées sur l'impact sur le prix"
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Your income (at 20%)"
-msgstr "Vos revenus (à 20%)"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "Volume total"
@@ -7937,10 +7933,6 @@ msgstr "Staker les récompenses {tokenSymbol}"
 msgid "Max amount exceeded"
 msgstr "Montant maximal dépassé"
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Book a 20-min call"
-msgstr "Réservez un appel de 20 minutes"
-
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -8027,6 +8019,10 @@ msgstr "Lien copié"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr "TAILLE"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Book a 30-min call"
+msgstr "Réservez un appel de 30 min"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -8585,10 +8581,6 @@ msgstr "Afficher les valeurs de ligne en USD"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Positions ouvertes (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Let's get you<0/><1>a better rate.</1>"
-msgstr "Obtenons-vous<0/><1>un meilleur taux.</1>"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText}: {0} {longShortText}"
@@ -9337,6 +9329,10 @@ msgstr "Composition de l'adossement"
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "Remises réclamables"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Lock in<0/><1>a better rate.</1>"
+msgstr "Verrouillez<0/><1>un meilleur taux.</1>"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -11765,6 +11761,10 @@ msgstr "limite"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
 msgstr "Exécuter une partie du TWAP Swap"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your income (at 25%)"
+msgstr "Vos revenus (à 25%)"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed"

@@ -4358,10 +4358,6 @@ msgstr ""
 msgid "Accrued price impact rebates"
 msgstr ""
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Your income (at 20%)"
-msgstr ""
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr ""
@@ -7937,10 +7933,6 @@ msgstr ""
 msgid "Max amount exceeded"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Book a 20-min call"
-msgstr ""
-
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -8026,6 +8018,10 @@ msgstr ""
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
+msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Book a 30-min call"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -8584,10 +8580,6 @@ msgstr ""
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-msgstr ""
-
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Let's get you<0/><1>a better rate.</1>"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -9336,6 +9328,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
+msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Lock in<0/><1>a better rate.</1>"
 msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
@@ -11764,6 +11760,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
+msgstr ""
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your income (at 25%)"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
