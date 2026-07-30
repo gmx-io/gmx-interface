@@ -110,6 +110,24 @@ export function useExpressTradingWarnings({
     [account, chainId, isGmxAccount, rawSubaccount]
   );
 
+  const isSubaccountApprovalInvalid = Boolean(
+    isExpressTransactionAvailable &&
+      rawSubaccount &&
+      (subaccountValidations?.isApprovalInvalid ??
+        getIsSubaccountApprovalInvalid({
+          chainId,
+          signedApproval: rawSubaccount.signedApproval,
+          subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
+          onchainData: rawSubaccount.onchainData,
+          signerChainId: srcChainId ?? chainId,
+        }))
+  );
+
+  const isSubaccountApprovalForAnotherNetwork =
+    isSubaccountApprovalInvalid &&
+    rawSubaccount !== undefined &&
+    rawSubaccount.signedApproval.signatureChainId !== rawSubaccount.signerChainId;
+
   const conditions = {
     shouldShowWrapOrUnwrapWarning: isExpressTransactionAvailable && isWrapOrUnwrap && !wrapOrUnwrapWarningHidden,
     shouldShowNativeTokenWarning:
@@ -134,17 +152,8 @@ export function useExpressTradingWarnings({
       !isGmxAccount &&
       nativeToken?.walletBalance !== undefined &&
       nativeToken.walletBalance > expressParams.gasPaymentParams.totalRelayerFeeTokenAmount,
-    shouldShowSubaccountApprovalInvalidWarning:
-      isExpressTransactionAvailable &&
-      rawSubaccount &&
-      (subaccountValidations?.isApprovalInvalid ??
-        getIsSubaccountApprovalInvalid({
-          chainId,
-          signedApproval: rawSubaccount.signedApproval,
-          subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
-          onchainData: rawSubaccount.onchainData,
-          signerChainId: srcChainId ?? chainId,
-        })),
+    shouldShowSubaccountApprovalInvalidWarning: isSubaccountApprovalInvalid && !isSubaccountApprovalForAnotherNetwork,
+    shouldShowSubaccountApprovalForAnotherNetworkWarning: isSubaccountApprovalForAnotherNetwork,
     shouldShowExternalSwapSubaccountBlockedWarning:
       showExternalSwapWarnings && externalSwapDesirability === "required" && isOneClickActiveByUser,
     shouldShowExternalSwapGasConflictRequiredWarning:

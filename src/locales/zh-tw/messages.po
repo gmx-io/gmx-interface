@@ -1910,6 +1910,10 @@ msgstr "正在取消 {ordersText}..."
 msgid "Size (% of position)"
 msgstr "規模（倉位 %）"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signature request was rejected in your wallet. Retry and confirm the request to deactivate."
+msgstr "簽名請求已在您的錢包中被拒絕。請重試並確認請求以停用。"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "100+ crypto tokens"
 msgstr "100+ 種加密代幣"
@@ -2489,6 +2493,10 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
 msgstr "分組"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
+msgstr "您的 GMX Account 中 Gas 支付代幣餘額不足，無法支付網路費用。請存入資金後重試。"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
@@ -6052,6 +6060,10 @@ msgstr "GLV 額外激勵"
 msgid "Lifetime staking rewards"
 msgstr "終身質押獎勵"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
+msgstr "One-Click Trading 需要針對目前網路進行一次性簽署。為其他網路簽署的授權不受影響。請重新簽署以在此啟用 One-Click Trading。"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "您的資金安全存放在目標鏈上的 LayerZero 中。請在 LayerZero Scan 重試接收交易或聯繫客服。"
@@ -8744,6 +8756,10 @@ msgstr "透過 One-Click Trading 和 Express Trading，享受無摩擦的交易�
 msgid "Top positions"
 msgstr "熱門倉位"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
+msgstr "{nativeTokenSymbol} 餘額不足，無法支付網路費用。請新增資金後重試。"
+
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
@@ -9310,6 +9326,10 @@ msgstr "返利"
 msgid "Events for account:"
 msgstr "帳戶事件："
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
+msgstr "請求已送出，但無法確認其結果。它可能已經完成 — 請重試以檢查並完成停用。"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
@@ -9612,6 +9632,10 @@ msgstr "{0} 代幣已保留用於歸屬"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1y"
 msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "An unexpected error occurred. Please retry."
+msgstr "發生意外錯誤。請重試。"
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
@@ -10358,6 +10382,10 @@ msgstr "橋接轉入失敗"
 msgid "Invalid recipient address"
 msgstr "接收地址無效"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Express transaction data is still loading. Please retry in a few seconds."
+msgstr "Express 交易資料仍在載入中。請於數秒後重試。"
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
@@ -10821,6 +10849,7 @@ msgstr "最新價格"
 msgid "Cancelling {orderText}..."
 msgstr "正在取消 {orderText}..."
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"

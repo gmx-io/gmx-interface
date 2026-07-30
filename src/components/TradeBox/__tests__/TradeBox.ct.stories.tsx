@@ -1,39 +1,20 @@
-import { i18n } from "@lingui/core";
-import { I18nProvider } from "@lingui/react";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { MemoryRouter } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { useAccount, useConnect, WagmiProvider } from "wagmi";
 
 import { ARBITRUM } from "config/chains";
 import { getLeverageKey, getSyntheticsTradeOptionsKey, TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
-import { ChainContextProvider } from "context/ChainContext/ChainContext";
-import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
-import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
-import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
-import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
-import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import type { MarketsInfoData } from "domain/synthetics/markets";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
 import type { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
+import { CtAppProviders } from "domain/testUtils/CtAppProviders";
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS, SECOND_ETH_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
 import { createMockSubaccount } from "domain/testUtils/mockSubaccount";
-import {
-  MOCK_ACCOUNT,
-  mockQueryClient as queryClient,
-  mockWagmiConfig as wagmiConfig,
-} from "domain/testUtils/mockSyntheticsState";
+import { MOCK_ACCOUNT, mockWagmiConfig as wagmiConfig } from "domain/testUtils/mockSyntheticsState";
 import { MockSyntheticsStateProvider, DEFAULT_MOCK_TOKENS_DATA } from "domain/testUtils/MockSyntheticsStateProvider";
 import { ETH_ADDRESS, ETH_TOKEN, NATIVE_ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
@@ -42,28 +23,8 @@ import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import { TradeBox } from "../TradeBox";
 import { TradeBoxHeaderTabs } from "../TradeBoxHeaderTabs";
 
-const INITIAL_ENTRIES = ["/trade"];
-
 const EXPRESS_ON_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
 const EXPRESS_ON_SPONSORED_CALL = { isSponsoredCallAllowed: true };
-
-function AutoConnect({ children }: { children: ReactNode }) {
-  const { connect, connectors } = useConnect();
-  const { status } = useAccount();
-
-  useEffect(() => {
-    if (status === "disconnected") {
-      connect({ connector: connectors[0] });
-    }
-  }, [status, connect, connectors]);
-
-  // mount children only when connected so effects don't run twice
-  if (status !== "connected") {
-    return null;
-  }
-
-  return <>{children}</>;
-}
 
 /** Mounts the external swap quote machinery, which lives in SyntheticsPage rather than TradeBox. */
 function ExternalSwapHandlerHost() {
@@ -456,7 +417,6 @@ export function TradeBoxStory({
       {withExternalSwapHandler && <ExternalSwapHandlerHost />}
       {withExternalSwapLatchControl && <ExternalSwapLatchControl />}
       {withGasTokenControl && <SetConflictingGasTokenControl />}
-      <ToastContainer />
       <div className="text-body-medium flex flex-col rounded-8">
         <TradeBoxHeaderTabs />
         <TradeBox isMobile={false} />
@@ -480,39 +440,9 @@ export function TradeBoxStory({
     content = <AcceptablePriceImpactSetting>{content}</AcceptablePriceImpactSetting>;
   }
 
-  if (isConnected) {
-    content = <AutoConnect>{content}</AutoConnect>;
-  }
-
   return (
-    <MemoryRouter initialEntries={INITIAL_ENTRIES}>
-      <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={wagmiConfig}>
-          <GmxAccountContextProvider>
-            <ChainContextProvider>
-              <GlobalStateProvider>
-                <SettingsContextProvider>
-                  <PendingTxnsContextProvider>
-                    <I18nProvider i18n={i18n}>
-                      <ConnectModalProvider>
-                        <TokensBalancesContextProvider>
-                          <TokenPermitsContextProvider>
-                            <SubaccountContextProvider>
-                              <TokensFavoritesContextProvider>
-                                <SorterContextProvider>{content}</SorterContextProvider>
-                              </TokensFavoritesContextProvider>
-                            </SubaccountContextProvider>
-                          </TokenPermitsContextProvider>
-                        </TokensBalancesContextProvider>
-                      </ConnectModalProvider>
-                    </I18nProvider>
-                  </PendingTxnsContextProvider>
-                </SettingsContextProvider>
-              </GlobalStateProvider>
-            </ChainContextProvider>
-          </GmxAccountContextProvider>
-        </WagmiProvider>
-      </QueryClientProvider>
-    </MemoryRouter>
+    <CtAppProviders wagmiConfig={wagmiConfig} autoConnect={isConnected}>
+      {content}
+    </CtAppProviders>
   );
 }
