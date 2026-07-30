@@ -130,10 +130,7 @@ test.describe("External swaps", () => {
     await expect(page.getByText("KyberSwap (external)")).toBeVisible();
   });
 
-  test("shows the no-route banner with an aggregator escape when Kyber has nothing either", async ({
-    mount,
-    page,
-  }) => {
+  test("shows the no-route banner with an aggregator escape when Kyber has nothing either", async ({ mount, page }) => {
     await mockKyberNoRoute(page);
     await mount(<TradeBoxStory connected withExternalSwapHandler marketScenario="drainedEthPool" />);
 
@@ -159,9 +156,9 @@ test.describe("External swaps", () => {
     await page.locator(getDataQALocator("trade-mode")).getByRole("button", { name: "TWAP", exact: true }).click();
     await page.locator(getDataQALocator("pay-input")).fill("1000");
 
-    await expect(
-      page.getByText("TWAP swaps use GMX pool liquidity only", { exact: false })
-    ).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("TWAP swaps use GMX pool liquidity only", { exact: false })).toBeVisible({
+      timeout: 15_000,
+    });
 
     const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
     await expect(submitButton).toHaveText("Insufficient GMX pool liquidity");
@@ -453,9 +450,9 @@ test.describe("External swaps", () => {
       const payInput = page.locator(getDataQALocator("pay-input"));
       await payInput.fill("1");
 
-      await expect(
-        page.getByText("Gas token switched to ETH to enable external swap routing")
-      ).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByText("Gas token switched to ETH to enable external swap routing")).toBeVisible({
+        timeout: 15_000,
+      });
 
       // The regression this flow was built around: the switch must NOT clear the pay input.
       await expect(payInput).toHaveValue("1");
@@ -483,21 +480,23 @@ test.describe("External swaps", () => {
       await page.locator(getDataQALocator("pay-input")).fill("1");
 
       // First the silent auto-switch resolves the conflict (spends its one attempt for this pair)...
-      await expect(
-        page.getByText("Gas token switched to ETH to enable external swap routing")
-      ).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByText("Gas token switched to ETH to enable external swap routing")).toBeVisible({
+        timeout: 15_000,
+      });
       await expect(receiveInput).toHaveValue("2000", { timeout: 15_000 });
 
       await page.locator(getDataQALocator("test-set-conflicting-gas-token")).click();
 
-      await expect(
-        page.getByText("This swap requires external routing. Pay gas in ETH to enable it.")
-      ).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByText("This swap requires external routing. Pay gas in ETH to enable it.")).toBeVisible({
+        timeout: 15_000,
+      });
 
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
       await expect(submitButton).toHaveText("Insufficient GMX pool liquidity");
       await submitButton.hover({ force: true });
-      await expect(page.getByText("gas payment token matches the token you're swapping to", { exact: false })).toBeVisible();
+      await expect(
+        page.getByText("gas payment token matches the token you're swapping to", { exact: false })
+      ).toBeVisible();
 
       await page.getByText("Use ETH for gas").click();
 
@@ -522,9 +521,9 @@ test.describe("External swaps", () => {
 
       await page.locator(getDataQALocator("pay-input")).fill("1");
 
-      await expect(
-        page.getByText("no other gas token has sufficient balance", { exact: false })
-      ).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByText("no other gas token has sufficient balance", { exact: false })).toBeVisible({
+        timeout: 15_000,
+      });
 
       await page.getByText("Switch to Classic Trading").click();
 
@@ -547,9 +546,9 @@ test.describe("External swaps", () => {
 
       await page.locator(getDataQALocator("pay-input")).fill("1");
 
-      await expect(
-        page.getByText("Paying gas in ETH may give a better rate on this swap")
-      ).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByText("Paying gas in ETH may give a better rate on this swap")).toBeVisible({
+        timeout: 15_000,
+      });
 
       await page.getByText("Use ETH for gas").click();
 
@@ -589,7 +588,9 @@ test.describe("External swaps", () => {
 
   test("with the External swaps setting off the aggregator is never asked", async ({ mount, page }) => {
     const kyber = await mockKyberSuccess(page);
-    await mount(<TradeBoxStory connected withExternalSwapHandler externalSwapsSettingOff marketScenario="drainedEthPool" />);
+    await mount(
+      <TradeBoxStory connected withExternalSwapHandler externalSwapsSettingOff marketScenario="drainedEthPool" />
+    );
 
     await openSwap(page);
     await page.locator(getDataQALocator("pay-input")).fill("1000");

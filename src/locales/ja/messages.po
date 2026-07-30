@@ -461,6 +461,10 @@ msgstr "GLVとは？"
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr "期限切れのマーケット増加"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "割合"
@@ -995,6 +999,10 @@ msgstr "GMXアラート"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "お取引による価格への影響とフィーの差引額です。<0>詳細はこちら</0>。"
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
+msgstr "期限切れの市場減少"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1939,6 +1947,7 @@ msgstr "サポートされていません"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -3594,6 +3603,7 @@ msgstr "予約済みポジティブインパクト差引後のインパクトプ
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText}から{toMinText}へ"
 
@@ -3822,6 +3832,10 @@ msgstr "トリガー時に注文の一部で流動性が不足する可能性が
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Settlement"
 msgstr "精算"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr "最小ファンディングファクター（ロング）"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
@@ -4475,6 +4489,10 @@ msgstr "詳細を表示"
 msgid "Max profit limit reached"
 msgstr "最大利益上限に達しました"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Maximum collateral capacity reached"
+msgstr "担保上限に達しました"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
 msgstr "スワップの仮想インベントリ（ロング / ショート）"
@@ -4548,6 +4566,10 @@ msgstr "価格への影響の内訳を表示"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
 msgstr "受取パラメータが不足しています。数秒後に再試行してください"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
+msgstr "最大ファンディングファクター（ショート）"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
@@ -5365,6 +5387,10 @@ msgstr "ロング純レート / 1H"
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
 msgstr "パーミット署名を検証できませんでした。"
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
+msgstr "期限切れの出金"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6307,10 +6333,6 @@ msgstr "デコードするには上記にhexエラーデータを入力してく
 msgid "Allowed actions"
 msgstr "許可されたアクション"
 
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr "最大ファンディングファクター"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr ""
@@ -7005,10 +7027,6 @@ msgstr "プール最大ロング数量"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "GLVより積極的な管理が必要です"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
-msgstr "最小ファンディングファクター"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -8232,6 +8250,10 @@ msgstr "建玉"
 msgid "Begin transfer"
 msgstr "送金を開始"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr "最小ファンディングファクター（ショート）"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "市場"
@@ -8629,6 +8651,10 @@ msgstr "買いリクエストを実行中…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "GMの購入に失敗しました"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
+msgstr "最大ファンディングファクター（ロング）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
@@ -9282,6 +9308,10 @@ msgstr "{0} 残高の不足"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Express Trading is unavailable for wrapping or unwrapping native token ETH"
 msgstr "Express Tradingはネイティブトークン ETHのラップおよびアンラップには対応していません"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Relay fee exceeds the maximum allowed"
+msgstr "リレー手数料が許容上限を超えています"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
@@ -11394,6 +11424,11 @@ msgstr "デルタニュートラルボールト"
 msgid "Sending shift request..."
 msgstr "シフトリクエストを送信中…"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr "注文は実行前に期限切れになりました"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -11673,6 +11708,10 @@ msgstr "クローズ"
 msgid "Link"
 msgstr "リンク"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr "期限切れの市場スワップ"
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "卒業したトレーダーは、紹介プログラムの卒業しきい値に達したため、GMXプロトコルコードに移行されました。"
@@ -11692,6 +11731,10 @@ msgstr "全般パフォーマンス詳細"
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
 msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
+msgstr "期限切れの入金"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

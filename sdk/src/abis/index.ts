@@ -32,6 +32,7 @@ import RelayParams from "./RelayParams";
 import RewardReader from "./RewardReader";
 import RewardRouter from "./RewardRouter";
 import RewardTracker from "./RewardTracker";
+import SimulationRouter from "./SimulationRouter";
 import SmartAccount from "./SmartAccount";
 import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter";
 import SubaccountRouter from "./SubaccountRouter";
@@ -107,6 +108,7 @@ export const abis = {
   RewardReader,
   RewardRouter,
   RewardTracker,
+  SimulationRouter,
   SmartAccount,
   SubaccountGelatoRelayRouter,
   SubaccountRouter,

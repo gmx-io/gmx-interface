@@ -461,6 +461,10 @@ msgstr "什么是 GLV？"
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr "已过期的市价增仓"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "百分比"
@@ -995,6 +999,10 @@ msgstr "GMX 通知"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "您交易的净价格影响和费用。<0>了解更多</0>。"
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
+msgstr "已过期的市价减仓"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1939,6 +1947,7 @@ msgstr "不支持"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -3594,6 +3603,7 @@ msgstr "扣除预留正向影响后的影响池"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} 到 {toMinText}"
 
@@ -3822,6 +3832,10 @@ msgstr "触发时该订单部分子单可能流动性不足"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Settlement"
 msgstr "结算"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr "最小资金费率因子（多头）"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
@@ -4475,6 +4489,10 @@ msgstr "更多详情"
 msgid "Max profit limit reached"
 msgstr "已达到最大利润上限"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Maximum collateral capacity reached"
+msgstr "已达到抵押品容量上限"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
 msgstr "兑换虚拟库存（做多 / 做空）"
@@ -4548,6 +4566,10 @@ msgstr "分解净价格影响"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
 msgstr "缺少领取参数。请稍后重试"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
+msgstr "最大资金费率因子（空头）"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
@@ -5365,6 +5387,10 @@ msgstr "做多净费率 / 1H"
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
 msgstr "无法验证 Permit 签名。"
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
+msgstr "已过期的提取"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6307,10 +6333,6 @@ msgstr "在上方输入十六进制错误数据以解码"
 msgid "Allowed actions"
 msgstr "允许的操作"
 
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr "最大资金费率因子"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr ""
@@ -7005,10 +7027,6 @@ msgstr "池最大做多数量"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "比 GLV 需要更多的主动管理"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
-msgstr "最低资金费率因子"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -8232,6 +8250,10 @@ msgstr "未平仓合约"
 msgid "Begin transfer"
 msgstr "开始转账"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr "最小资金费率因子（空头）"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "市场"
@@ -8629,6 +8651,10 @@ msgstr "正在执行买入请求…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "买入 GM 失败"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
+msgstr "最大资金费率因子（多头）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
@@ -9282,6 +9308,10 @@ msgstr "{0} 余额不足"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Express Trading is unavailable for wrapping or unwrapping native token ETH"
 msgstr "Express Trading 不支持原生代币 ETH 的包装或解包装操作"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Relay fee exceeds the maximum allowed"
+msgstr "中继费用超过允许上限"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
@@ -11394,6 +11424,11 @@ msgstr "Delta 中性金库"
 msgid "Sending shift request..."
 msgstr "正在发送转移请求…"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr "订单在执行前已过期"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -11673,6 +11708,10 @@ msgstr "关闭"
 msgid "Link"
 msgstr "链接"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr "已过期的市场交换"
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "毕业的交易者在达到推荐计划的毕业门槛后，已被转移至 GMX 协议码。"
@@ -11692,6 +11731,10 @@ msgstr "总体绩效详情"
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
 msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
+msgstr "已过期的存入"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

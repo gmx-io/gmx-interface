@@ -2,14 +2,30 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { RawMarketConfig, RawMarketValues } from "sdk/utils/markets/types";
 
-import { MARKETS_STALE_THRESHOLD_MS, hasStaleMarketValues } from "./useApiMarketsInfoRequest";
+import {
+  MARKETS_STALE_THRESHOLD_MS,
+  hasIncompleteMarketValues,
+  hasStaleMarketValues,
+} from "./useApiMarketsInfoRequest";
 
 function value(marketTokenAddress: string, updatedAt: number | null): RawMarketValues {
-  return { marketTokenAddress, updatedAt } as RawMarketValues;
+  return {
+    marketTokenAddress,
+    updatedAt,
+    virtualInventoryForPositionsInTokens: 0n,
+  } as RawMarketValues;
 }
 
 function config(marketTokenAddress: string, isDisabled = false): RawMarketConfig {
-  return { marketTokenAddress, isDisabled } as RawMarketConfig;
+  return {
+    marketTokenAddress,
+    isDisabled,
+    virtualIndexTokenId: "0x00",
+    maxCollateralSumLongTokenLong: 0n,
+    maxCollateralSumLongTokenShort: 0n,
+    maxCollateralSumShortTokenLong: 0n,
+    maxCollateralSumShortTokenShort: 0n,
+  } as RawMarketConfig;
 }
 
 describe("hasStaleMarketValues", () => {
@@ -39,6 +55,37 @@ describe("hasStaleMarketValues", () => {
 
   it("flags an enabled market with null updatedAt as stale", () => {
     expect(hasStaleMarketValues([config("0xa")], [value("0xa", null)], new Set())).toBe(true);
+  });
+
+  it("flags v2.2c API payloads with missing config or values fields as stale", () => {
+    const incompleteConfig = {
+      ...config("0xa"),
+      virtualIndexTokenId: undefined,
+    } as unknown as RawMarketConfig;
+    const incompleteValue = {
+      ...value("0xa", Date.now()),
+      virtualInventoryForPositionsInTokens: undefined,
+    } as unknown as RawMarketValues;
+
+    expect(hasStaleMarketValues([incompleteConfig], [value("0xa", Date.now())], new Set())).toBe(true);
+    expect(hasStaleMarketValues([config("0xa")], [incompleteValue], new Set())).toBe(true);
+  });
+
+  it("distinguishes structurally incomplete API payloads from ordinary staleness", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000_000);
+
+    expect(
+      hasIncompleteMarketValues([config("0xa")], [value("0xa", 1_000_000 - MARKETS_STALE_THRESHOLD_MS - 1)], new Set())
+    ).toBe(false);
+    expect(
+      hasIncompleteMarketValues(
+        [{ ...config("0xa"), maxCollateralSumLongTokenLong: undefined } as unknown as RawMarketConfig],
+        [value("0xa", 1_000_000)],
+        new Set()
+      )
+    ).toBe(true);
+    expect(hasIncompleteMarketValues([config("0xa")], [], new Set())).toBe(true);
   });
 
   it("ignores disabled markets even when their values are null or stale", () => {

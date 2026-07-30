@@ -461,6 +461,10 @@ msgstr "¿Qué es GLV?"
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr "Aumento de mercado vencido"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "Porcentaje"
@@ -995,6 +999,10 @@ msgstr "Alertas de GMX"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "Impacto en el precio neto y comisiones de su operación. <0>Más información</0>."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
+msgstr "Disminución de mercado vencida"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1939,6 +1947,7 @@ msgstr "No compatible"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -3594,6 +3603,7 @@ msgstr "Pool de impacto tras el impacto positivo reservado"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} a {toMinText}"
 
@@ -3822,6 +3832,10 @@ msgstr "Puede haber liquidez insuficiente para partes de esta orden cuando se ej
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Settlement"
 msgstr "Liquidación del cierre"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr "Factor de financiación mínimo (largo)"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
@@ -4475,6 +4489,10 @@ msgstr "Más detalles"
 msgid "Max profit limit reached"
 msgstr "Límite máximo de beneficio alcanzado"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Maximum collateral capacity reached"
+msgstr "Se alcanzó la capacidad máxima de garantía"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
 msgstr "Inventario virtual para intercambios (largo / corto)"
@@ -4548,6 +4566,10 @@ msgstr "Desglosar impacto neto en el precio"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
 msgstr "Faltan parámetros de reclamación. Reintente en unos segundos"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
+msgstr "Factor de financiación máximo (corto)"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
@@ -5365,6 +5387,10 @@ msgstr "TASA NETA LARGOS / 1H"
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
 msgstr "No se pudo validar la firma del permiso."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
+msgstr "Retiro vencido"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6307,10 +6333,6 @@ msgstr "Introduzca los datos de error en hexadecimal arriba para decodificarlos"
 msgid "Allowed actions"
 msgstr "Acciones permitidas"
 
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr "Factor máximo de financiación"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr ""
@@ -7005,10 +7027,6 @@ msgstr "Cantidad máxima largo del pool"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "Requiere una gestión más activa que GLV"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
-msgstr "Factor de financiación mínimo"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -8232,6 +8250,10 @@ msgstr "INTERÉS ABIERTO"
 msgid "Begin transfer"
 msgstr "Iniciar transferencia"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr "Factor de financiación mínimo (corto)"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "mercado"
@@ -8629,6 +8651,10 @@ msgstr "Ejecutando solicitud de compra…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "La compra de GM ha fallado"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
+msgstr "Factor de financiación máximo (largo)"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
@@ -9282,6 +9308,10 @@ msgstr "Balance {0} insuficiente"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Express Trading is unavailable for wrapping or unwrapping native token ETH"
 msgstr "Express Trading no está disponible para envolver o desenvolver el token nativo ETH"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Relay fee exceeds the maximum allowed"
+msgstr "La comisión de retransmisión supera el máximo permitido"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
@@ -11394,6 +11424,11 @@ msgstr "Bóvedas delta neutral"
 msgid "Sending shift request..."
 msgstr "Enviando solicitud de cambio…"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr "La orden venció antes de que pudiera ejecutarse"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -11673,6 +11708,10 @@ msgstr "Cerrar"
 msgid "Link"
 msgstr "Enlace"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr "Intercambio de mercado vencido"
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "Los traders graduados fueron trasladados a un código del protocolo GMX tras alcanzar el umbral de graduación del programa de referidos."
@@ -11692,6 +11731,10 @@ msgstr "Detalles de rendimiento general"
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
 msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
+msgstr "Depósito vencido"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

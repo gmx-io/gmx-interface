@@ -1,10 +1,7 @@
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  selectGasPrice,
-  selectRawSubaccount,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGasPrice, selectRawSubaccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectExternalSwapInputs,

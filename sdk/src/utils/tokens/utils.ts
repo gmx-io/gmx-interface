@@ -2,7 +2,7 @@ import { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
 import { GLV_STUB_ADDRESS, getToken, NATIVE_TOKEN_ADDRESS, GM_STUB_ADDRESS } from "configs/tokens";
 import { bigMath } from "utils/bigmath";
-import { adjustForDecimals, expandDecimals, PRECISION } from "utils/numbers";
+import { adjustForDecimals, expandDecimals, PRECISION, roundUpMagnitudeDivision } from "utils/numbers";
 
 import { ContractPrice, Token, TokenData, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "./types";
 
@@ -31,6 +31,21 @@ export function convertToTokenAmount(
   }
 
   return (usd * expandDecimals(1, tokenDecimals)) / price;
+}
+
+export function convertToTokenAmountForIncrease(
+  usd: bigint | undefined,
+  tokenDecimals: number | undefined,
+  price: bigint | undefined,
+  isLong: boolean
+) {
+  if (usd === undefined || typeof tokenDecimals !== "number" || price === undefined || price <= 0) {
+    return undefined;
+  }
+
+  const numerator = usd * expandDecimals(1, tokenDecimals);
+
+  return isLong ? numerator / price : roundUpMagnitudeDivision(numerator, price);
 }
 
 export function convertToUsd(

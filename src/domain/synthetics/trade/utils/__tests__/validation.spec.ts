@@ -6,7 +6,14 @@ import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { TriggerThresholdType } from "sdk/utils/trade/types";
 
-import { getEditCollateralError, getIncreaseError, getSwapError, ValidationButtonTooltipName } from "../validation";
+import {
+  getEditCollateralError,
+  getIncreaseError,
+  getNativeGasError,
+  getSwapError,
+  ValidationBannerErrorName,
+  ValidationButtonTooltipName,
+} from "../validation";
 
 const tokensData = mockTokensData({
   ETH: { balance: expandDecimals(100, 18) },
@@ -277,5 +284,23 @@ describe("getEditCollateralError — min deposit covering pending fees", () => {
       maxWithdrawAmount: expandDecimals(100, 6),
     });
     expect(result.buttonErrorMessage).toBeUndefined();
+  });
+});
+
+describe("getNativeGasError", () => {
+  it("skips validation while the fee or balance is loading", () => {
+    expect(getNativeGasError({ networkFee: undefined, nativeBalance: 0n })).toEqual({});
+    expect(getNativeGasError({ networkFee: 1n, nativeBalance: undefined })).toEqual({});
+  });
+
+  it("allows a balance equal to the network fee", () => {
+    expect(getNativeGasError({ networkFee: 1n, nativeBalance: 1n })).toEqual({});
+  });
+
+  it("returns the native-token balance error when the fee exceeds the balance", () => {
+    expect(getNativeGasError({ networkFee: 2n, nativeBalance: 1n })).toEqual({
+      buttonErrorMessage: "Insufficient gas balance",
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+    });
   });
 });
