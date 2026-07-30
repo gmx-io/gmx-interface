@@ -1686,6 +1686,7 @@ export const selectTradeboxOffHoursLiqRisk = createSelector((q) => {
     marketInfo,
     isLong,
     nextSizeInUsd: nextPositionValues?.nextSizeUsd,
+    nextSizeInTokens: nextPositionValues?.nextSizeInTokens,
     nextCollateralUsd: nextPositionValues?.nextCollateralUsd,
     minCollateralUsd,
   });

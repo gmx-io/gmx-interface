@@ -61,11 +61,11 @@ describe("hasStaleMarketValues", () => {
     const incompleteConfig = {
       ...config("0xa"),
       virtualIndexTokenId: undefined,
-    };
+    } as unknown as RawMarketConfig;
     const incompleteValue = {
       ...value("0xa", Date.now()),
       virtualInventoryForPositionsInTokens: undefined,
-    };
+    } as unknown as RawMarketValues;
 
     expect(hasStaleMarketValues([incompleteConfig], [value("0xa", Date.now())], new Set())).toBe(true);
     expect(hasStaleMarketValues([config("0xa")], [incompleteValue], new Set())).toBe(true);

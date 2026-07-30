@@ -1,4 +1,4 @@
-import { zeroAddress } from "viem";
+import { zeroHash } from "viem";
 
 import { USD_DECIMALS } from "configs/factors";
 import { usdToToken } from "test/mock";
@@ -169,10 +169,10 @@ export function mockMarketsInfoData(
       virtualInventoryForPositions: 0n,
       virtualInventoryForPositionsInTokens: 0n,
 
-      virtualMarketId: zeroAddress,
-      virtualIndexTokenId: zeroAddress,
-      virtualLongTokenId: zeroAddress,
-      virtualShortTokenId: zeroAddress,
+      virtualMarketId: zeroHash,
+      virtualIndexTokenId: zeroHash,
+      virtualLongTokenId: zeroHash,
+      virtualShortTokenId: zeroHash,
 
       ...(overrides[key] || {}),
     };
