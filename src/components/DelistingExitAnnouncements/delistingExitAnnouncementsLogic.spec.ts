@@ -179,7 +179,7 @@ describe("getActiveDelistingAnnouncements", () => {
     expect(result.map((item) => item.id)).toEqual([POSITIONS_TOAST_ID]);
     expect(result[0].markets).toEqual([TON]);
     expect(result[0].title).toBe("Final notice: market delistings");
-    expect(result[0].link).toBeUndefined();
+    expect(result[0].link).toEqual({ text: "Close positions", href: "/trade" });
   });
 
   it("shows only the liquidity toast (with the Withdraw liquidity link) for direct GM holders", () => {

@@ -5436,6 +5436,7 @@ msgstr "<0>GMX исполняет сделки против динамическ
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
+#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -9004,6 +9005,7 @@ msgstr "с 100x левериджем"
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "Нет влияния на цену. Единая цена исполнения для<0/>увеличения лонг-позиций или уменьшения шорт-позиций<1/>данного размера."
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
 msgid "Close positions"
 msgstr "Закрыть позиции"

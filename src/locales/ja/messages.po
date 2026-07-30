@@ -5436,6 +5436,7 @@ msgstr "<0>GMXは伝統的な注文ブックとは異なり、動的にバラン
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
+#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -9004,6 +9005,7 @@ msgstr "100倍レバレッジで"
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "価格への影響はありません。このサイズでの<0/>ロング増加またはショート減少は<1/>単一の約定価格です。"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
 msgid "Close positions"
 msgstr "ポジションをクローズ"

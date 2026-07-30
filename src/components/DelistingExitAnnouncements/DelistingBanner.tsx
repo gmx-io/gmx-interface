@@ -1,9 +1,16 @@
+import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 import { Link } from "react-router-dom";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
 
 import { DelistingToast } from "./delistingExitAnnouncementsLogic";
+import { PERSONAL_DELISTING_ANNOUNCEMENT_ID } from "./personalDelistingAnnouncement";
+
+const READ_MORE_LINK = {
+  text: <Trans>Read more</Trans>,
+  to: `/announcements?id=${encodeURIComponent(PERSONAL_DELISTING_ANNOUNCEMENT_ID)}`,
+};
 
 export function DelistingBanner({
   item,
@@ -22,13 +29,16 @@ export function DelistingBanner({
       headerIcon="alert"
       truncateHeader={false}
       onClose={handleClose}
+      footerLink={READ_MORE_LINK}
     >
       {item.link ? (
         <>
           {item.bodyText}
           <br />
           <br />
-          <Link to={item.link.href}>{item.link.text}</Link>
+          <Link className="font-medium" to={item.link.href}>
+            {item.link.text}
+          </Link>
         </>
       ) : (
         item.bodyText

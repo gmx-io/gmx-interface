@@ -1,6 +1,8 @@
+import { i18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { DelistingBanner } from "./DelistingBanner";
 import type { DelistingToast } from "./delistingExitAnnouncementsLogic";
@@ -16,17 +18,29 @@ const ITEM: DelistingToast = {
 
 const onDismiss = vi.fn();
 
+beforeAll(() => {
+  i18n.load("en", {});
+  i18n.activate("en");
+});
+
 describe("DelistingBanner", () => {
   it("renders the full final notice with error styling", () => {
     const { container } = render(
-      <MemoryRouter>
-        <DelistingBanner item={ITEM} onDismiss={onDismiss} />
-      </MemoryRouter>
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <DelistingBanner item={ITEM} onDismiss={onDismiss} />
+        </MemoryRouter>
+      </I18nProvider>
     );
 
     expect(container.querySelector('[data-qa="announcement-banner"]')?.classList.contains("bg-red-900/90")).toBe(true);
     expect(screen.getByText(ITEM.title).classList.contains("truncate")).toBe(false);
     expect(screen.getByText(ITEM.bodyText)).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Withdraw liquidity" }).getAttribute("href")).toBe("/pools");
+    const actionLink = screen.getByRole("link", { name: "Withdraw liquidity" });
+    expect(actionLink.getAttribute("href")).toBe("/pools");
+    expect(actionLink.classList.contains("font-medium")).toBe(true);
+    expect(screen.getByRole("link", { name: "Read more" }).getAttribute("href")).toBe(
+      "/announcements?id=personal-delisting-final-notice"
+    );
   });
 });

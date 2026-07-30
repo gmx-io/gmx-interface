@@ -5436,6 +5436,7 @@ msgstr "<0>GMX는 전통적인 주문장과 달리 동적으로 균형 잡힌 �
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
+#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -9004,6 +9005,7 @@ msgstr "100배 레버리지로"
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "가격 영향 없음. 이 규모에서 롱 증가 또는<0/>숏 감소 시 단일 체결가가<1/>적용됩니다."
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
 msgid "Close positions"
 msgstr "포지션 종료"

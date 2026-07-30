@@ -5436,6 +5436,7 @@ msgstr "<0>GMX 与动态平衡的流动性池执行交易，与传统订单簿�
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
+#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -9004,6 +9005,7 @@ msgstr "使用 100 倍杠杆"
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "无价格影响。在此规模下增加做多<0/>或减少做空仓位的<1/>单一成交价格。"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
 msgid "Close positions"
 msgstr "平仓"

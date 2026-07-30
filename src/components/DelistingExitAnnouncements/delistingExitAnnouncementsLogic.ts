@@ -169,6 +169,7 @@ export function getActiveDelistingAnnouncementsForExposure(
       title,
       bodyText: buildPositionsBodyText(positionNames, positionCount),
       markets: positionMarkets,
+      link: { text: t`Close positions`, href: "/trade" },
     });
   }
 
