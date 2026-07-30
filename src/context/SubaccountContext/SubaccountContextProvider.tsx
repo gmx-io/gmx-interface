@@ -18,7 +18,6 @@ import {
   signUpdatedSubaccountSettings,
 } from "domain/synthetics/subaccount/utils";
 import { useChainId } from "lib/chains";
-import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
@@ -26,7 +25,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
-import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
+import { getSmartWalletErrorToastContent } from "components/Errors/errorToasts";
 import { StatusNotification } from "components/StatusNotification/StatusNotification";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
@@ -48,6 +47,7 @@ export type SubaccountState = {
   subaccountConfig: SubaccountSerializedConfig | undefined;
   subaccount: Subaccount | undefined;
   subaccountActivationState: SubaccountActivationState | undefined;
+  subaccountActivationError: { message?: string; walletName?: string } | undefined;
   subaccountDeactivationState: SubaccountDeactivationState | undefined;
   updateSubaccountSettings: (params: {
     nextRemainigActions?: bigint;
@@ -88,6 +88,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   const [subaccountActivationState, setSubaccountActivationState] = useState<SubaccountActivationState | undefined>(
     undefined
   );
+
+  const [subaccountActivationError, setSubaccountActivationError] = useState<
+    { message?: string; walletName?: string } | undefined
+  >(undefined);
 
   const [subaccountDeactivationState, setSubaccountDeactivationState] = useState<
     SubaccountDeactivationState | undefined
@@ -197,6 +201,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     let config = subaccountConfig;
 
+    setSubaccountActivationError(undefined);
+
     const toastId = Date.now();
 
     helperToast.info(<SubaccountActivateNotification toastId={toastId} />, {
@@ -215,12 +221,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         console.error(error);
 
         setSubaccountActivationState(SubaccountActivationState.GeneratingError);
+        setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
         metrics.pushError(error, "subaccount.generateSubaccount");
-
-        if (error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
-          toast.dismiss(toastId);
-          helperToast.error(getSmartWalletChainUnavailableToastContent(chainId, error.data?.walletName));
-        }
 
         return false;
       }
@@ -261,6 +263,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       return true;
     } catch (error) {
       setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
+      setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
       // eslint-disable-next-line no-console
       console.error(error);
       metrics.pushError(error, "subaccount.signDefaultApproval");
@@ -357,6 +360,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       subaccountConfig,
       subaccount,
       subaccountActivationState,
+      subaccountActivationError,
       subaccountDeactivationState,
       updateSubaccountSettings,
       resetSubaccountApproval,
@@ -368,6 +372,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccountConfig,
     subaccount,
     subaccountActivationState,
+    subaccountActivationError,
     subaccountDeactivationState,
     updateSubaccountSettings,
     resetSubaccountApproval,
@@ -380,7 +385,20 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 }
 
 function SubaccountActivateNotification({ toastId }: { toastId: number }) {
-  const { subaccountActivationState } = useSubaccountContext();
+  const { chainId } = useChainId();
+  const { subaccountActivationState, subaccountActivationError } = useSubaccountContext();
+
+  const errorContent = useMemo(
+    () =>
+      subaccountActivationError
+        ? getSmartWalletErrorToastContent(
+            chainId,
+            subaccountActivationError.message,
+            subaccountActivationError.walletName
+          )
+        : undefined,
+    [chainId, subaccountActivationError]
+  );
 
   const dismissTimerId = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -424,7 +442,8 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
 
   useEffect(
     function cleanup() {
-      if (isCompleted && !dismissTimerId.current) {
+      // Actionable errors stay until dismissed — they carry a link to follow.
+      if (isCompleted && !errorContent && !dismissTimerId.current) {
         dismissTimerId.current = setTimeout(() => {
           toast.dismiss(toastId);
           dismissTimerId.current = undefined;
@@ -437,7 +456,7 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
         }
       };
     },
-    [isCompleted, subaccountActivationState, toastId]
+    [isCompleted, subaccountActivationState, errorContent, toastId]
   );
 
   useEffect(() => {
@@ -449,7 +468,8 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
   return (
     <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Activate 1CT`}>
       {generatingStatus}
-      {approvalSigningStatus}
+      {subaccountActivationState !== SubaccountActivationState.GeneratingError && approvalSigningStatus}
+      {hasError && errorContent && <div className="mt-8">{errorContent}</div>}
     </StatusNotification>
   );
 }

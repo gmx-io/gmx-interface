@@ -4122,6 +4122,10 @@ msgstr ""
 msgid "Pool max short USD for deposit"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr ""
@@ -9087,10 +9091,6 @@ msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
-msgstr ""
-
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Order failed: your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account the order was created with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx

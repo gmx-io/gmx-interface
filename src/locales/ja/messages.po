@@ -4122,6 +4122,10 @@ msgstr "最大クローズ額を超えています"
 msgid "Pool max short USD for deposit"
 msgstr "プール入金時のショート側最大 USD"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
@@ -9088,10 +9092,6 @@ msgstr "受取"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr "ENDPOINT"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Order failed: your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account the order was created with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
-msgstr "<0>注文に失敗しました: ウォレットが別のアカウントに切り替わりました</0><1/><2>{0}での署名には、注文を作成したアカウントと同じアカウントが必要です。別のアカウントを選択せず、ウォレットで現在のアカウントに{1}を追加してからもう一度お試しください。</2>"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display settings"

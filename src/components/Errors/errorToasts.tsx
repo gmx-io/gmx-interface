@@ -87,43 +87,14 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  if (errorData.errorMessage === SMART_WALLET_WRONG_CHAIN_ERROR) {
-    const walletName = errorData.data?.walletName || "wallet";
+  const smartWalletContent = getSmartWalletErrorToastContent(
+    chainId,
+    errorData.errorMessage,
+    errorData.data?.walletName
+  );
 
-    toastParams.errorContent = (
-      <Trans>
-        <div>Your {walletName} is on a different network</div>
-        <br />
-        <div>
-          Switch your {walletName} to {getChainName(chainId)}, then try again
-        </div>
-      </Trans>
-    );
-
-    return toastParams;
-  }
-
-  if (errorData.errorMessage === SMART_WALLET_ACCOUNT_CHANGED_ERROR) {
-    toastParams.errorContent = (
-      <>
-        <Trans>
-          <div>Order failed: your wallet switched to a different account</div>
-          <br />
-          <div>
-            Signing on {getChainName(chainId)} requires the same account the order was created with. Instead of
-            selecting another account, add {getChainName(chainId)} to your current one in your wallet, then try again.
-          </div>
-        </Trans>
-        <br />
-        <SafeAddNetworkLink />
-      </>
-    );
-
-    return toastParams;
-  }
-
-  if (errorData.errorMessage === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
-    toastParams.errorContent = getSmartWalletChainUnavailableToastContent(chainId, errorData.data?.walletName);
+  if (smartWalletContent) {
+    toastParams.errorContent = smartWalletContent;
 
     return toastParams;
   }
@@ -339,6 +310,50 @@ export function getSmartWalletChainUnavailableToastContent(chainId: number, wall
       <SafeAddNetworkLink />
     </>
   );
+}
+
+/** Undefined for anything that is not a smart-wallet chain error. */
+export function getSmartWalletErrorToastContent(
+  chainId: number,
+  errorMessage: string | undefined,
+  rawWalletName?: string
+): ReactNode | undefined {
+  const walletName = rawWalletName || "wallet";
+
+  if (errorMessage === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
+    return getSmartWalletChainUnavailableToastContent(chainId, walletName);
+  }
+
+  if (errorMessage === SMART_WALLET_WRONG_CHAIN_ERROR) {
+    return (
+      <Trans>
+        <div>Your {walletName} is on a different network</div>
+        <br />
+        <div>
+          Switch your {walletName} to {getChainName(chainId)}, then try again
+        </div>
+      </Trans>
+    );
+  }
+
+  if (errorMessage === SMART_WALLET_ACCOUNT_CHANGED_ERROR) {
+    return (
+      <>
+        <Trans>
+          <div>Your wallet switched to a different account</div>
+          <br />
+          <div>
+            Signing on {getChainName(chainId)} requires the same account you started with. Instead of selecting another
+            account, add {getChainName(chainId)} to your current one in your wallet, then try again.
+          </div>
+        </Trans>
+        <br />
+        <SafeAddNetworkLink />
+      </>
+    );
+  }
+
+  return undefined;
 }
 
 function SafeAddNetworkLink() {
