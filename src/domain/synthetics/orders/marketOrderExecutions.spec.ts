@@ -29,14 +29,19 @@ function action(overrides: Partial<MarketOrderExecutionAction> = {}): MarketOrde
     executionAmountOut: null,
     orderCreatedTimestamp: 100,
     orderCreatedTxnHash: "0xcreation",
-    orderCreatedIndexTokenPriceMin: "98",
-    orderCreatedIndexTokenPriceMax: "102",
-    orderCreatedIndexTokenPriceTimestamp: 95,
-    orderCreatedIndexTokenPriceType: "v2",
-    indexTokenPriceMin: "99",
-    indexTokenPriceMax: "101",
-    indexTokenPriceTimestamp: 103,
-    indexTokenPriceType: "v2",
+    creationReferencePrice: "102",
+    creationReferenceTimestamp: 99,
+    creationReferenceTxnHash: "0xoracle",
+    creationReferenceProvider: "0xProvider",
+    creationReferenceObservationId: "0xoracle:1",
+    referenceAgeSeconds: 1,
+    executionReferencePrice: "101",
+    executionReferenceTimestamp: 103,
+    executionReferenceTxnHash: "0xexecution-oracle",
+    executionReferenceProvider: "0xExecutionProvider",
+    executionReferenceObservationId: "0xexecution-oracle:2",
+    executionReferenceAgeSeconds: 1,
+    signedFillDeltaBps: 196.0784,
     ...overrides,
   };
 }
@@ -55,9 +60,18 @@ function sample(overrides: Partial<MarketOrderExecutionSample> = {}): MarketOrde
     executedTimestamp: 104,
     executedTxnHash: "0xexecution",
     delaySeconds: 4,
-    referenceAgeSeconds: 5,
+    referenceAgeSeconds: 1,
     creationReferencePrice: "102",
+    creationReferenceTimestamp: 99,
+    creationReferenceTxnHash: "0xoracle",
+    creationReferenceProvider: "0xProvider",
+    creationReferenceObservationId: "0xoracle:1",
     executionReferencePrice: "101",
+    executionReferenceTimestamp: 103,
+    executionReferenceTxnHash: "0xexecution-oracle",
+    executionReferenceProvider: "0xExecutionProvider",
+    executionReferenceObservationId: "0xexecution-oracle:2",
+    executionReferenceAgeSeconds: 1,
     executionPrice: "100",
     signedFillDeltaBps: 196.0784,
     signedOracleMoveBps: 98.0392,
@@ -94,7 +108,7 @@ describe("getSignedPriceDeltaBps", () => {
 });
 
 describe("buildMarketOrderExecutionRows", () => {
-  it("uses creation and execution oracle references for a long increase", () => {
+  it("uses the canonical creation observation and authoritative fill delta", () => {
     const [row] = buildMarketOrderExecutionRows([action()]);
 
     expect(row.kind).toBe("perp");
@@ -106,34 +120,105 @@ describe("buildMarketOrderExecutionRows", () => {
     expect(row.submittedTransactionHash).toBe("0xcreation");
     expect(row.delaySeconds).toBe(4);
     expect(row.creationReferencePrice).toBe("102");
+    expect(row.creationReferenceTimestamp).toBe(99);
+    expect(row.creationReferenceTxnHash).toBe("0xoracle");
+    expect(row.creationReferenceProvider).toBe("0xProvider");
+    expect(row.creationReferenceObservationId).toBe("0xoracle:1");
     expect(row.executionReferencePrice).toBe("101");
-    expect(row.referenceAgeSeconds).toBe(5);
+    expect(row.executionReferenceTimestamp).toBe(103);
+    expect(row.executionReferenceTxnHash).toBe("0xexecution-oracle");
+    expect(row.executionReferenceProvider).toBe("0xExecutionProvider");
+    expect(row.executionReferenceObservationId).toBe("0xexecution-oracle:2");
+    expect(row.referenceAgeSeconds).toBe(1);
     expect(row.executionReferenceAgeSeconds).toBe(1);
     expect(row.fillDeltaBps).toBeCloseTo(196.0784);
     expect(row.oracleMoveBps).toBeCloseTo(98.0392);
     expect(row.executionImpactBps).toBeCloseTo(99.0099);
   });
 
-  it.each([
-    [OrderType.MarketIncrease, true, "102"],
-    [OrderType.MarketIncrease, false, "98"],
-    [OrderType.MarketDecrease, true, "98"],
-    [OrderType.MarketDecrease, false, "102"],
-  ])("selects the correct creation reference for orderType=%s and isLong=%s", (orderType, isLong, expected) => {
-    const [row] = buildMarketOrderExecutionRows([action({ orderType, isLong })]);
+  it("uses only the canonical execution observation instead of raw event prices", () => {
+    const actionWithRawEventPrices = {
+      ...action(),
+      indexTokenPriceMin: "1",
+      indexTokenPriceMax: "999",
+      indexTokenPriceTimestamp: 104,
+      indexTokenPriceType: "v2",
+    };
+    const [row] = buildMarketOrderExecutionRows([actionWithRawEventPrices]);
 
     expect(row.kind).toBe("perp");
     if (row.kind !== "perp") {
       throw new Error("Expected a perp row");
     }
 
-    expect(row.creationReferencePrice).toBe(expected);
+    expect(row.executionReferencePrice).toBe("101");
+    expect(row.executionReferenceAgeSeconds).toBe(1);
+    expect(row.oracleMoveBps).toBeCloseTo(98.0392);
   });
 
-  it("excludes stale creation references from price metrics", () => {
+  it("rejects an unavailable or stale canonical execution observation without falling back to raw event prices", () => {
+    const actionWithoutCanonicalExecutionReference = {
+      ...action({
+        executionReferencePrice: null,
+        executionReferenceAgeSeconds: null,
+      }),
+      indexTokenPriceMin: "99",
+      indexTokenPriceMax: "101",
+      indexTokenPriceTimestamp: 104,
+      indexTokenPriceType: "v2",
+    };
+    const [missingRow, staleRow] = buildMarketOrderExecutionRows([
+      actionWithoutCanonicalExecutionReference,
+      action({
+        executionReferenceAgeSeconds: 2,
+      }),
+    ]);
+
+    for (const row of [missingRow, staleRow]) {
+      expect(row.kind).toBe("perp");
+      if (row.kind !== "perp") {
+        throw new Error("Expected a perp row");
+      }
+
+      expect(row.executionReferencePrice).toBeNull();
+      expect(row.executionReferenceTimestamp).toBeNull();
+      expect(row.executionReferenceTxnHash).toBeNull();
+      expect(row.executionReferenceProvider).toBeNull();
+      expect(row.executionReferenceObservationId).toBeNull();
+      expect(row.oracleMoveBps).toBeNull();
+      expect(row.executionImpactBps).toBeNull();
+    }
+  });
+
+  it.each([
+    [OrderType.MarketIncrease, true],
+    [OrderType.MarketIncrease, false],
+    [OrderType.MarketDecrease, true],
+    [OrderType.MarketDecrease, false],
+  ])("preserves the canonical directional creation price for orderType=%s and isLong=%s", (orderType, isLong) => {
+    const [row] = buildMarketOrderExecutionRows([
+      action({ orderType, isLong, creationReferencePrice: "123", signedFillDeltaBps: 7 }),
+    ]);
+
+    expect(row.kind).toBe("perp");
+    if (row.kind !== "perp") {
+      throw new Error("Expected a perp row");
+    }
+
+    expect(row.creationReferencePrice).toBe("123");
+    expect(row.fillDeltaBps).toBe(7);
+  });
+
+  it.each([
+    [0, true],
+    [1, true],
+    [2, true],
+    [86_400, true],
+    [-1, false],
+  ])("accepts preceding canonical observations with age %s: %s", (referenceAgeSeconds, isQualified) => {
     const [row] = buildMarketOrderExecutionRows([
       action({
-        orderCreatedIndexTokenPriceTimestamp: 39,
+        referenceAgeSeconds,
       }),
     ]);
 
@@ -142,17 +227,34 @@ describe("buildMarketOrderExecutionRows", () => {
       throw new Error("Expected a perp row");
     }
 
-    expect(row.creationReferencePrice).toBe("102");
-    expect(row.referenceAgeSeconds).toBe(61);
-    expect(row.fillDeltaBps).toBeNull();
-    expect(row.oracleMoveBps).toBeNull();
-    expect(row.executionImpactBps).toBeNull();
+    expect(row.creationReferencePrice).toBe(isQualified ? "102" : null);
+    expect(row.referenceAgeSeconds).toBe(referenceAgeSeconds);
+    expect(row.fillDeltaBps).toBe(isQualified ? 196.0784 : null);
+    expect(row.creationReferenceTxnHash).toBe(isQualified ? "0xoracle" : null);
   });
 
-  it("does not fall back to acceptable price when the V2 creation reference is unavailable", () => {
+  it("does not infer a creation price when the canonical observation is unavailable", () => {
     const [row] = buildMarketOrderExecutionRows([
       action({
-        orderCreatedIndexTokenPriceType: "onchainFeed",
+        creationReferencePrice: null,
+        referenceAgeSeconds: null,
+      }),
+    ]);
+
+    expect(row.kind).toBe("perp");
+    if (row.kind !== "perp") {
+      throw new Error("Expected a perp row");
+    }
+
+    expect(row.creationReferencePrice).toBeNull();
+    expect(row.fillDeltaBps).toBeNull();
+  });
+
+  it("rejects a creation reference without complete oracle provenance", () => {
+    const [row] = buildMarketOrderExecutionRows([
+      action({
+        creationReferenceObservationId: null,
+        referenceAgeSeconds: 3_600,
       }),
     ]);
 
@@ -191,8 +293,8 @@ describe("buildMarketOrderExecutionRows", () => {
 });
 
 describe("buildMarketOrderExecutionSampleRows", () => {
-  it("maps the resolver's freshness-qualified sample without recalculating metrics", () => {
-    const [row] = buildMarketOrderExecutionSampleRows([sample()]);
+  it("maps the resolver's latest-preceding sample without recalculating metrics", () => {
+    const [row] = buildMarketOrderExecutionSampleRows([sample({ referenceAgeSeconds: 3_600 })]);
 
     expect(row).toMatchObject({
       kind: "perp",
@@ -202,11 +304,21 @@ describe("buildMarketOrderExecutionSampleRows", () => {
       executedTimestamp: 104,
       executedTransactionHash: "0xexecution",
       creationReferencePrice: "102",
+      creationReferenceTimestamp: 99,
+      creationReferenceTxnHash: "0xoracle",
+      creationReferenceProvider: "0xProvider",
+      creationReferenceObservationId: "0xoracle:1",
       executionReferencePrice: "101",
+      executionReferenceTimestamp: 103,
+      executionReferenceTxnHash: "0xexecution-oracle",
+      executionReferenceProvider: "0xExecutionProvider",
+      executionReferenceObservationId: "0xexecution-oracle:2",
+      executionReferenceAgeSeconds: 1,
       executionPrice: "100",
       fillDeltaBps: 196.0784,
       oracleMoveBps: 98.0392,
       executionImpactBps: 99.0099,
+      referenceAgeSeconds: 3_600,
     });
   });
 

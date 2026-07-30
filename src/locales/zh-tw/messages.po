@@ -349,6 +349,13 @@ msgstr "倉位虛擬庫存"
 msgid "Cancelled / frozen"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Chainlink Data Streams"
+msgstr "Chainlink Data Streams"
+
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Showing first {0} failures out of {1}"
 msgstr ""
@@ -1182,6 +1189,10 @@ msgstr "沒有符合條件的執行記錄"
 msgid "Vaultka"
 msgstr "Vaultka"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} time-stratified samples from {1} orders with a preceding oracle observation"
+msgstr "來自 {1} 筆訂單的 {0} 個按時間分層樣本，這些訂單均有更早的預言機觀測值"
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -1958,6 +1969,10 @@ msgstr "100+ 種加密代幣"
 msgid "Optimal usage factor short"
 msgstr "做空最佳使用因子"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Absolute oracle-to-fill difference"
+msgstr "預言機價格與成交價格之間的絕對差值"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} / {1}"
@@ -2102,6 +2117,12 @@ msgstr "即將離開 GMX.io 前往第三方網站"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Observed"
+msgstr "觀測時間"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -2999,10 +3020,6 @@ msgstr "未平倉位"
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Created / oracle reference"
-msgstr "建立時間 / 預言機參考價"
-
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
 msgstr "硬幣"
@@ -3374,6 +3391,10 @@ msgstr "平均倉位大小"
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Theme"
 msgstr "主題"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution price comparison unavailable"
+msgstr "無法比較執行價格"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4050,6 +4071,11 @@ msgstr "資金費用"
 msgid "Partial TP"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Same-second observation"
+msgstr "同秒觀測值"
+
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
@@ -4516,10 +4542,6 @@ msgstr "V2 交易量"
 msgid "Liquidation price changes with fees and margin value."
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Creation oracle price"
-msgstr "建立時的預言機價格"
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
 msgstr "閱讀規則"
@@ -4725,10 +4747,6 @@ msgstr "此倉位目前高於清算風險，但當市場切換至非交易時段
 msgid "Base borrowing factor long"
 msgstr "做多基礎借貸因子"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Creation price is the latest V2 oracle reference available when the order was created. References older than {0} seconds are excluded. Positive execution price improvement means the execution was favorable to the trader."
-msgstr "建立價格是建立訂單時可用的最新 V2 預言機參考價。早於 {0} 秒的參考價將被排除。執行價格改善為正表示此次執行對交易者有利。"
-
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
 msgstr "接收地址"
@@ -4818,10 +4836,6 @@ msgstr "領取中..."
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr "<0><1>@GMX_IO</1> 與 Token Terminal 建立數據合作夥伴關係。GMX 是建構在 <2>@Arbitrum</2> 和 <3>@Avax</3> 上的領先無許可永續合約交易所。</0><4>該協議作為多鏈 DeFi 的基礎流動性底層。</4><5>GMX 的名義交易量已達約 2,800 億美元且持續增長，因此認識到需要可靠且數據驅動的利害關係人報告。</5>"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Compare creation-time oracle references and order timestamps with actual fills"
-msgstr "將建立時的預言機參考價和訂單時間戳記與實際成交進行比較"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -5157,6 +5171,10 @@ msgstr "在槓桿顯示中包含 PnL"
 msgid "No claims yet"
 msgstr "目前尚無領取記錄"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No executions with a preceding oracle observation for the selected filters"
+msgstr "所選篩選條件下沒有具有更早預言機觀測值的執行記錄"
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
 msgstr "強制外部兌換失敗"
@@ -5402,10 +5420,6 @@ msgstr "近 180 天"
 msgid "Positive funding fees"
 msgstr "正向資金費用"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Cumulative share of freshness-qualified orders"
-msgstr "符合時效條件訂單的累計占比"
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
 msgstr "資金將很快顯示在您的 GMX Account 中"
@@ -5494,6 +5508,10 @@ msgstr "在 Bond Protocol 上以折扣價購買 GMX 債券，享有短期歸屬�
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Signed difference between the execution price and the latest preceding oracle observation. Positive values are favorable to the trader. Check the displayed oracle age because older observations may be stale."
+msgstr "執行價格與此前最近的預言機觀測值之間的帶符號差值。正值表示對交易者有利。請檢查顯示的預言機觀測時間差，因為較早的觀測值可能已過時。"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -5860,6 +5878,10 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL 分析"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Oracle age at execution"
+msgstr "執行訂單時距預言機觀測的時間"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -6300,6 +6322,10 @@ msgstr ""
 msgid "See more"
 msgstr "查看更多"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Reference price uses the latest indexed Chainlink Data Streams OraclePriceUpdate observation at or before order creation, regardless of its age. The displayed oracle age shows how stale that observation was and it may not represent the market price at creation. A positive comparison means the execution was favorable to the trader."
+msgstr "參考價格採用訂單建立時或之前已編入索引的最新 Chainlink Data Streams OraclePriceUpdate 觀測值，不論其時間差有多大。顯示的預言機觀測時間差表明該觀測值當時已有多舊，因此可能無法代表建立訂單時的市場價格。比較結果為正表示該成交對交易者有利。"
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total pending rewards"
 msgstr "待領取獎勵總額"
@@ -6307,6 +6333,10 @@ msgstr "待領取獎勵總額"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr "平倉產生的價格影響回饋可在「領取」分頁中領取。<0>了解更多</0>。"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders at or above absolute oracle-to-fill difference"
+msgstr "預言機價格與成交價格之間的絕對差值達到或超過門檻的訂單"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Order failed"
@@ -6358,6 +6388,10 @@ msgstr "無需重複確認錢包"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} before creation"
+msgstr "建立前 {0}"
 
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Fee data is temporarily unavailable."
@@ -6412,6 +6446,12 @@ msgstr "永續合約"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "影響指數（負向）"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "oracle tx"
+msgstr "預言機交易"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
@@ -6849,10 +6889,6 @@ msgstr ""
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
 msgstr "<0>錢包未連接至 {0}</0><1/><2>切換至 {1}</2>"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Absolute creation-to-fill difference"
-msgstr "建立價與成交價的絕對差異"
-
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/CAP"
@@ -6918,10 +6954,6 @@ msgstr "此規模無可用流動性來加倉做多。<0/>最大做多規模：{0
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "推薦計畫"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} freshness-qualified orders"
-msgstr "{0} 個符合時效條件的訂單"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code"
@@ -7240,6 +7272,11 @@ msgstr "價格"
 msgid "No assets found"
 msgstr "未找到資產"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Oracle source"
+msgstr "預言機來源"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Wallet disconnected. Reconnect and retry"
 msgstr "錢包已斷開連接。請重新連接並重試"
@@ -7275,6 +7312,10 @@ msgstr "Gas"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Cumulative share of orders with a preceding oracle observation"
+msgstr "具有更早預言機觀測值的訂單累計占比"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
@@ -7347,6 +7388,12 @@ msgstr "借出您的代幣或以其為抵押借入"
 msgid "GMX logo"
 msgstr "GMX 標誌"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Provider"
+msgstr "提供者"
+
 #: src/components/SideNav/SideNav.tsx
 msgid "Whales"
 msgstr ""
@@ -7409,9 +7456,17 @@ msgstr "關閉"
 msgid "per"
 msgstr "每"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Median oracle age"
+msgstr "預言機觀測時間差中位數"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor longs"
 msgstr "做多儲備因子"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "order tx"
+msgstr "訂單交易"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
@@ -7441,6 +7496,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
 msgstr "執行緒"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "P95 oracle age: {0}"
+msgstr "預言機觀測時間差 P95：{0}"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fees reduce margin and affect liquidation price."
@@ -7606,6 +7665,10 @@ msgstr "保證流動性"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Gas 餘額不足"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Compare the latest preceding oracle observations and order timestamps with actual fills"
+msgstr "將此前最近的預言機觀測值和訂單時間戳記與實際成交進行比較"
 
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Orders with timing data"
@@ -7900,10 +7963,6 @@ msgstr ""
 msgid "STATUS"
 msgstr "狀態"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} time-stratified samples from {1} freshness-qualified orders"
-msgstr "從 {1} 個符合時效條件的訂單中抽取 {0} 個依時間分層的樣本"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
@@ -8155,6 +8214,10 @@ msgstr "從"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No events"
 msgstr "無事件"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Magnitude of fill price versus the latest preceding oracle observation"
+msgstr "成交價格相對於此前最近的預言機觀測值的偏差幅度"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
@@ -9081,6 +9144,10 @@ msgstr "市場下架"
 msgid "Last updated:"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Oracle age at creation"
+msgstr "建立訂單時距預言機觀測的時間"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "已達池最大容量"
@@ -9099,6 +9166,8 @@ msgstr "（<0>{0}</0>，佔{operationText}金額）"
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "View"
 msgstr "查看"
@@ -9684,6 +9753,11 @@ msgstr "領取"
 msgid "Date"
 msgstr "日期"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No preceding Chainlink Data Streams observation available"
+msgstr "沒有可用的更早 Chainlink Data Streams 觀測值"
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "當流動性和價格條件滿足時執行"
@@ -9773,11 +9847,6 @@ msgstr "<0>以 75.5% 的多數票，GMX 選擇了 LayerZero 作為其多鏈擴�
 #: src/components/SideNav/SideNav.tsx
 msgid "Execution cost"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No freshness-qualified price data"
-msgstr "沒有符合時效條件的價格資料"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
@@ -10650,10 +10719,6 @@ msgstr "在 X 上分享您的 GMX 交易"
 msgid "Pool short amount"
 msgstr "池做空數量"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Orders at or above absolute creation-to-fill difference"
-msgstr "建立價與成交價絕對差異達到或超過門檻的訂單"
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "手續費 APY"
@@ -10707,10 +10772,6 @@ msgstr "Nonce："
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No freshness-qualified executions for the selected filters"
-msgstr "所選篩選條件下沒有符合時效條件的執行記錄"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RESPONSE"
@@ -11167,6 +11228,12 @@ msgstr "正在取消 {orderText}..."
 msgid "Re-sign"
 msgstr "重新簽署"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Observation ID"
+msgstr "觀測 ID"
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "正在存入至 GMX Account..."
@@ -11388,6 +11455,10 @@ msgstr "{idleSeconds}s"
 msgid "GMX V1 actions"
 msgstr "GMX V1 操作"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Created / oracle observation"
+msgstr "已建立 / 預言機觀測值"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "指數"
@@ -11458,6 +11529,10 @@ msgstr "{column}"
 msgid "Swap route unavailable for: {0}"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0}s before execution"
+msgstr "執行前 {0} 秒"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
 msgstr "無已註冊的追蹤器"
@@ -11479,6 +11554,10 @@ msgstr "最近 30 天"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "儀表板"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} of {1} orders with a preceding oracle observation"
+msgstr "{1} 筆訂單中有 {0} 筆具有更早的預言機觀測值"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"
@@ -11852,10 +11931,6 @@ msgstr "{longOrShort}倉位{fundingAction}每小時 {fundingRate} 的資金費�
 msgid "Failed to add referral code"
 msgstr "新增推薦碼失敗"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Magnitude of fill price versus creation-time oracle reference"
-msgstr "成交價相對於建立時預言機參考價的差異幅度"
-
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"
 msgstr "存入 {glvOrGm}"
@@ -11875,6 +11950,11 @@ msgstr "除錯設定"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "與 GMX 匿名對話"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No orders with a preceding oracle observation"
+msgstr "沒有具有更早預言機觀測值的訂單"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
@@ -12017,6 +12097,10 @@ msgstr "平倉"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Link"
 msgstr "連結"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Pre-creation oracle price"
+msgstr "訂單建立前的預言機價格"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

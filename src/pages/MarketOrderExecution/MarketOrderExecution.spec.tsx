@@ -2,6 +2,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import type { TooltipProps } from "recharts";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import type { SortDirection } from "context/SorterContext/types";
@@ -9,7 +10,7 @@ import type { MarketOrderExecutionRow } from "domain/synthetics/orders/marketOrd
 import { OrderType } from "domain/synthetics/orders/types";
 import { shortenAddress } from "lib/legacy";
 
-import { MarketOrderPairsTable } from "./MarketOrderExecution";
+import { MarketOrderChartTooltip, MarketOrderPairsTable, formatOracleAgeDuration } from "./MarketOrderExecution";
 
 const EMPTY_ROWS: MarketOrderExecutionRow[] = [];
 const ACCOUNT = "0x1234567890aBCDEF1234567890abCDef12345678";
@@ -28,7 +29,15 @@ const PERP_ROW: MarketOrderExecutionRow = {
   executedTransactionHash: "0xexecution",
   delaySeconds: 1,
   creationReferencePrice: null,
+  creationReferenceTimestamp: null,
+  creationReferenceTxnHash: null,
+  creationReferenceProvider: null,
+  creationReferenceObservationId: null,
   executionReferencePrice: null,
+  executionReferenceTimestamp: null,
+  executionReferenceTxnHash: null,
+  executionReferenceProvider: null,
+  executionReferenceObservationId: null,
   executionPrice: null,
   referenceAgeSeconds: null,
   executionReferenceAgeSeconds: null,
@@ -71,6 +80,32 @@ function renderTable(
         />
       </I18nProvider>
     </MemoryRouter>
+  );
+}
+
+function renderChartTooltip(row: MarketOrderExecutionRow) {
+  if (row.kind !== "perp") {
+    throw new Error("Expected a perp row");
+  }
+
+  const tooltipProps: TooltipProps<number, string> = {
+    active: true,
+    payload: [
+      {
+        payload: {
+          ...row,
+          delaySeconds: row.delaySeconds ?? 0,
+          fillDeltaBps: row.fillDeltaBps ?? 0,
+          marketName: "ETH / USD",
+        },
+      },
+    ],
+  };
+
+  return render(
+    <I18nProvider i18n={i18n}>
+      <MarketOrderChartTooltip {...tooltipProps} chainId={42161} marketsInfoData={undefined} tokensData={undefined} />
+    </I18nProvider>
   );
 }
 
@@ -157,5 +192,84 @@ describe("MarketOrderPairsTable", () => {
     expect(getByRole("link", { name: shortenAddress(ACCOUNT, 13) }).getAttribute("href")).toBe(
       `/accounts/${ACCOUNT}?network=arbitrum&v=2`
     );
+  });
+
+  it("explains when no preceding oracle observation is available", () => {
+    const { getAllByText } = renderTable("perp", "unspecified", vi.fn(), [PERP_ROW]);
+
+    expect(getAllByText("No preceding Chainlink Data Streams observation available")).not.toHaveLength(0);
+  });
+
+  it("links the order and oracle transactions separately and shows a readable observation age", () => {
+    const row: MarketOrderExecutionRow = {
+      ...PERP_ROW,
+      submittedTransactionHash: "0xcreation",
+      creationReferencePrice: "100",
+      creationReferenceTimestamp: 99,
+      creationReferenceTxnHash: "0xoracle",
+      creationReferenceProvider: "0xProvider",
+      creationReferenceObservationId: "0xoracle:1",
+      referenceAgeSeconds: 7_200,
+      fillDeltaBps: 1,
+    };
+    const { getByRole, getByText } = renderTable("perp", "unspecified", vi.fn(), [row]);
+
+    expect(getByRole("link", { name: "order tx" }).getAttribute("href")).toContain("tx/0xcreation");
+    expect(getByRole("link", { name: "oracle tx" }).getAttribute("href")).toContain("tx/0xoracle");
+    expect(getByText("2h before creation")).not.toBeNull();
+  });
+});
+
+describe("MarketOrderChartTooltip", () => {
+  it("distinguishes creation and execution observation provenance", () => {
+    const row: MarketOrderExecutionRow = {
+      ...PERP_ROW,
+      creationReferencePrice: "100",
+      creationReferenceTimestamp: 99,
+      creationReferenceTxnHash: "0xCreationOracle",
+      creationReferenceProvider: "0xCreationProvider",
+      creationReferenceObservationId: "0xCreationOracle:1",
+      referenceAgeSeconds: 1,
+      executionReferencePrice: "101",
+      executionReferenceTimestamp: 101,
+      executionReferenceTxnHash: "0xExecutionOracle",
+      executionReferenceProvider: "0xExecutionProvider",
+      executionReferenceObservationId: "0xExecutionOracle:2",
+      executionReferenceAgeSeconds: 0,
+      executionPrice: "102",
+      fillDeltaBps: 2,
+    };
+    const { getAllByRole, getAllByText, getByText } = renderChartTooltip(row);
+
+    expect(getByText("Pre-creation oracle price")).not.toBeNull();
+    expect(getByText("Oracle age at creation")).not.toBeNull();
+    expect(getByText("Execution oracle price")).not.toBeNull();
+    expect(getByText("Oracle age at execution")).not.toBeNull();
+    expect(getByText("0xCreationProvider")).not.toBeNull();
+    expect(getByText("0xExecutionProvider")).not.toBeNull();
+    expect(getByText("0xCreationOracle:1")).not.toBeNull();
+    expect(getByText("0xExecutionOracle:2")).not.toBeNull();
+    expect(getAllByText("Chainlink Data Streams")).toHaveLength(2);
+
+    const oracleLinks = getAllByRole("link", { name: "View" });
+    expect(oracleLinks[0].getAttribute("href")).toContain("tx/0xCreationOracle");
+    expect(oracleLinks[1].getAttribute("href")).toContain("tx/0xExecutionOracle");
+  });
+
+  it("does not claim an execution oracle source when its canonical observation is unavailable", () => {
+    const { getAllByText } = renderChartTooltip(PERP_ROW);
+
+    expect(getAllByText("Chainlink Data Streams")).toHaveLength(1);
+  });
+});
+
+describe("formatOracleAgeDuration", () => {
+  it.each([
+    [59, "59s"],
+    [90, "1.5m"],
+    [7_200, "2h"],
+    [172_800, "2d"],
+  ])("formats %s seconds as %s", (value, expected) => {
+    expect(formatOracleAgeDuration(value)).toBe(expected);
   });
 });

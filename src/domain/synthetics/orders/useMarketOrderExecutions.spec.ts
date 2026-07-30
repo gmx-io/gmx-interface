@@ -35,7 +35,7 @@ function statsResult(overrides: Record<string, unknown> = {}) {
         pricedCount: 850,
         oracleMoveCount: 800,
         executionImpactCount: 800,
-        maxReferenceAgeSeconds: 60,
+        maxReferenceAgeSeconds: null,
         pricedFromTimestamp: 1_700_000_100,
         medianDelaySeconds: 17,
         p95DelaySeconds: 42,
@@ -67,9 +67,18 @@ function statsResult(overrides: Record<string, unknown> = {}) {
             executedTimestamp: 1_700_000_101,
             executedTxnHash: "0xexecution",
             delaySeconds: 1,
-            referenceAgeSeconds: 2,
+            referenceAgeSeconds: 1,
             creationReferencePrice: "102",
+            creationReferenceTimestamp: 1_700_000_099,
+            creationReferenceTxnHash: "0xoracle",
+            creationReferenceProvider: "0xProvider",
+            creationReferenceObservationId: "0xoracle:1",
             executionReferencePrice: "101",
+            executionReferenceTimestamp: 1_700_000_101,
+            executionReferenceTxnHash: "0xexecution",
+            executionReferenceProvider: "0xExecutionProvider",
+            executionReferenceObservationId: "0xexecution:2",
+            executionReferenceAgeSeconds: 0,
             executionPrice: "100",
             signedFillDeltaBps: 196.0784,
             signedOracleMoveBps: 98.0392,
@@ -97,6 +106,24 @@ describe("fetchMarketOrderExecutionStats", () => {
     expect(result.sample).toHaveLength(1);
     expect(result.sample[0].delaySeconds).toBe(1);
     expect(result.sample[0].creationReferencePrice).toBe("102");
+    expect(result.sample[0]).toMatchObject({
+      executionReferencePrice: "101",
+      executionReferenceTimestamp: 1_700_000_101,
+      executionReferenceTxnHash: "0xexecution",
+      executionReferenceProvider: "0xExecutionProvider",
+      executionReferenceObservationId: "0xexecution:2",
+      executionReferenceAgeSeconds: 0,
+    });
+
+    const query = print(mocks.query.mock.calls[0][0].query);
+
+    expect(query).toContain("executionReferencePrice");
+    expect(query).toContain("executionReferenceTimestamp");
+    expect(query).toContain("executionReferenceTxnHash");
+    expect(query).toContain("executionReferenceProvider");
+    expect(query).toContain("executionReferenceObservationId");
+    expect(query).toContain("executionReferenceAgeSeconds");
+    expect(query).not.toContain("$maxReferenceAgeSeconds");
   });
 
   it("maps phase and side filters to resolver variables without changing address casing", async () => {
@@ -119,7 +146,6 @@ describe("fetchMarketOrderExecutionStats", () => {
           marketAddress,
           orderTypes: [OrderType.MarketDecrease],
           isLong: false,
-          maxReferenceAgeSeconds: 60,
           sampleSize: 300,
         }),
       })
@@ -157,7 +183,7 @@ describe("fetchMarketOrderExecutionRows", () => {
     mocks.query.mockReset();
   });
 
-  it("supports server pages beyond the old 1,000-order cap", async () => {
+  it("uses canonical resolver rows and supports pages beyond the old 1,000-order cap", async () => {
     mocks.query.mockResolvedValue({
       data: {
         marketOrderExecutions: [],
@@ -174,18 +200,38 @@ describe("fetchMarketOrderExecutionRows", () => {
 
     expect(mocks.query).toHaveBeenCalledWith(
       expect.objectContaining({
-        variables: {
+        variables: expect.objectContaining({
           offset: 1000,
           limit: 25,
-          where: expect.objectContaining({
-            orderType_in: [OrderType.MarketIncrease],
-            isLong_eq: true,
-            account_eq: baseParams.account,
-            marketAddress_eq: baseParams.marketAddress,
-          }),
-        },
+          orderTypes: [OrderType.MarketIncrease],
+          isLong: true,
+          account: baseParams.account,
+          marketAddress: baseParams.marketAddress,
+          sortField: "EXECUTED_AT",
+          sortDirection: "DESC",
+        }),
       })
     );
+
+    const query = print(mocks.query.mock.calls[0][0].query);
+
+    expect(query).toContain("creationReferencePrice");
+    expect(query).toContain("creationReferenceTimestamp");
+    expect(query).toContain("creationReferenceTxnHash");
+    expect(query).toContain("creationReferenceProvider");
+    expect(query).toContain("creationReferenceObservationId");
+    expect(query).toContain("referenceAgeSeconds");
+    expect(query).toContain("executionReferencePrice");
+    expect(query).toContain("executionReferenceTimestamp");
+    expect(query).toContain("executionReferenceTxnHash");
+    expect(query).toContain("executionReferenceProvider");
+    expect(query).toContain("executionReferenceObservationId");
+    expect(query).toContain("executionReferenceAgeSeconds");
+    expect(query).not.toContain("indexTokenPriceMin");
+    expect(query).not.toContain("indexTokenPriceMax");
+    expect(query).not.toContain("indexTokenPriceTimestamp");
+    expect(query).not.toContain("indexTokenPriceType");
+    expect(query).not.toContain("maxReferenceAgeSeconds:");
   });
 
   it.each([
@@ -217,9 +263,9 @@ describe("fetchMarketOrderExecutionRows", () => {
           account: baseParams.account,
           orderTypes: [OrderType.MarketDecrease],
           isLong: false,
-          maxReferenceAgeSeconds: 60,
           offset: 50,
           limit: 25,
+          sortField: "PRICE_IMPROVEMENT",
           sortDirection: expectedDirection,
         },
       })
@@ -227,9 +273,8 @@ describe("fetchMarketOrderExecutionRows", () => {
 
     const query = print(mocks.query.mock.calls[0][0].query);
 
-    expect(query).not.toContain("MarketOrderExecutionSortField");
-    expect(query).not.toContain("sortField");
-    expect(query).not.toContain("shouldUnwrapNativeToken");
+    expect(query).toContain("MarketOrderExecutionSortField");
+    expect(query).toContain("sortField");
   });
 
   it("maps the server-sorted improvement value into the table row", async () => {
@@ -249,14 +294,18 @@ describe("fetchMarketOrderExecutionRows", () => {
             executionPrice: "100",
             orderCreatedTimestamp: 1_700_000_100,
             orderCreatedTxnHash: "0xcreation",
-            orderCreatedIndexTokenPriceMin: "101",
-            orderCreatedIndexTokenPriceMax: "102",
-            orderCreatedIndexTokenPriceTimestamp: 1_700_000_099,
-            orderCreatedIndexTokenPriceType: "v2",
-            indexTokenPriceMin: "99",
-            indexTokenPriceMax: "100",
-            indexTokenPriceTimestamp: 1_700_000_104,
-            indexTokenPriceType: "v2",
+            creationReferencePrice: "102",
+            creationReferenceTimestamp: 1_699_996_500,
+            creationReferenceTxnHash: "0xoracle",
+            creationReferenceProvider: "0xProvider",
+            creationReferenceObservationId: "0xoracle:1",
+            referenceAgeSeconds: 3_600,
+            executionReferencePrice: "100",
+            executionReferenceTimestamp: 1_700_000_105,
+            executionReferenceTxnHash: "0xexecution",
+            executionReferenceProvider: "0xExecutionProvider",
+            executionReferenceObservationId: "0xexecution:2",
+            executionReferenceAgeSeconds: 0,
             signedFillDeltaBps: 196.078431,
           },
         ],
@@ -272,6 +321,17 @@ describe("fetchMarketOrderExecutionRows", () => {
     });
 
     expect(row.fillDeltaBps).toBe(196.078431);
+    expect(row.kind).toBe("perp");
+    if (row.kind === "perp") {
+      expect(row.creationReferencePrice).toBe("102");
+      expect(row.referenceAgeSeconds).toBe(3_600);
+      expect(row.executionReferencePrice).toBe("100");
+      expect(row.executionReferenceTimestamp).toBe(1_700_000_105);
+      expect(row.executionReferenceTxnHash).toBe("0xexecution");
+      expect(row.executionReferenceProvider).toBe("0xExecutionProvider");
+      expect(row.executionReferenceObservationId).toBe("0xexecution:2");
+      expect(row.executionReferenceAgeSeconds).toBe(0);
+    }
   });
 
   it("keeps swaps on newest-first entity pagination", async () => {
@@ -331,7 +391,6 @@ describe("fetchMarketOrderExecutionRows", () => {
           account: baseParams.account,
           orderTypes: [...orderTypes],
           isLong: undefined,
-          maxReferenceAgeSeconds: 60,
           offset: 25,
           limit: 25,
           sortField: "EXECUTION_TIME",

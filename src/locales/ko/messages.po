@@ -349,6 +349,13 @@ msgstr "포지션에 대한 가상 재고"
 msgid "Cancelled / frozen"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Chainlink Data Streams"
+msgstr "Chainlink Data Streams"
+
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Showing first {0} failures out of {1}"
 msgstr ""
@@ -1182,6 +1189,10 @@ msgstr "일치하는 실행 내역이 없습니다"
 msgid "Vaultka"
 msgstr "Vaultka"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} time-stratified samples from {1} orders with a preceding oracle observation"
+msgstr "선행 오라클 관측값이 있는 {1}개 주문에서 추출한 시간 계층별 표본 {0}개"
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -1958,6 +1969,10 @@ msgstr "100개 이상의 암호화폐 토큰"
 msgid "Optimal usage factor short"
 msgstr "최적 사용 비율 숏"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Absolute oracle-to-fill difference"
+msgstr "오라클 가격과 체결가의 절대 차이"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0}/{1}"
@@ -2102,6 +2117,12 @@ msgstr "GMX.io를 떠나 외부 웹사이트로 이동합니다"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Observed"
+msgstr "관측 시각"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -2999,10 +3020,6 @@ msgstr "오픈 포지션"
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Created / oracle reference"
-msgstr "생성 시간 / 오라클 기준가"
-
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
 msgstr "Coin"
@@ -3374,6 +3391,10 @@ msgstr "평균 포지션 규모"
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Theme"
 msgstr "테마"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution price comparison unavailable"
+msgstr "실행 가격 비교를 사용할 수 없습니다"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4050,6 +4071,11 @@ msgstr "펀딩 수수료"
 msgid "Partial TP"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Same-second observation"
+msgstr "동일 초 관측값"
+
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
@@ -4516,10 +4542,6 @@ msgstr "V2 거래량"
 msgid "Liquidation price changes with fees and margin value."
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Creation oracle price"
-msgstr "생성 시점 오라클 가격"
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
 msgstr "규칙 읽기"
@@ -4725,10 +4747,6 @@ msgstr "이 포지션은 현재 청산 리스크를 넘어선 상태이지만, �
 msgid "Base borrowing factor long"
 msgstr "롱 기본 차입 팩터"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Creation price is the latest V2 oracle reference available when the order was created. References older than {0} seconds are excluded. Positive execution price improvement means the execution was favorable to the trader."
-msgstr "생성 가격은 주문이 생성될 때 사용 가능한 최신 V2 오라클 기준가입니다. {0}초보다 오래된 기준가는 제외됩니다. 실행 가격 개선이 양수이면 트레이더에게 유리하게 실행되었음을 의미합니다."
-
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
 msgstr "수신자 주소"
@@ -4818,10 +4836,6 @@ msgstr "수령중..."
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr "<0><1>@GMX_IO</1>가 Token Terminal과 데이터 파트너십을 체결했습니다. GMX는 <2>@Arbitrum</2> 및 <3>@Avax</3> 기반의 선도적인 무허가형 무기한 거래소입니다.</0><4>이 프로토콜은 멀티체인 DeFi를 위한 기초 유동성 베이스레이어 역할을 합니다.</4><5>약 $2,800억의 명목 거래량을 달성한 GMX는 신뢰성 있고 데이터 기반의 이해관계자 보고의 필요성을 인식했습니다.</5>"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Compare creation-time oracle references and order timestamps with actual fills"
-msgstr "생성 시점 오라클 기준가와 주문 타임스탬프를 실제 체결과 비교"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -5157,6 +5171,10 @@ msgstr "레버리지 표시에 PnL 포함"
 msgid "No claims yet"
 msgstr "수령 없음"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No executions with a preceding oracle observation for the selected filters"
+msgstr "선택한 필터에 선행 오라클 관측값이 있는 실행 내역이 없습니다"
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
 msgstr "외부 스왑 실패 처리"
@@ -5402,10 +5420,6 @@ msgstr "최근 180일"
 msgid "Positive funding fees"
 msgstr "양의 펀딩 수수료"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Cumulative share of freshness-qualified orders"
-msgstr "최신성 조건을 충족한 주문의 누적 비율"
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
 msgstr "자금이 곧 GMX Account에 입금됩니다"
@@ -5494,6 +5508,10 @@ msgstr "Bond Protocol에서 짧은 베스팅 기간으로 GMX 채권을 할인 �
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Signed difference between the execution price and the latest preceding oracle observation. Positive values are favorable to the trader. Check the displayed oracle age because older observations may be stale."
+msgstr "체결가와 가장 최근의 선행 오라클 관측값 간의 부호 있는 차이입니다. 양수 값은 트레이더에게 유리합니다. 오래된 관측값은 최신 상태가 아닐 수 있으므로 표시된 오라클 관측값의 경과 시간을 확인하세요."
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -5860,6 +5878,10 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL 분석"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Oracle age at execution"
+msgstr "실행 시점 오라클 관측값 경과 시간"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -6300,6 +6322,10 @@ msgstr ""
 msgid "See more"
 msgstr "더 보기"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Reference price uses the latest indexed Chainlink Data Streams OraclePriceUpdate observation at or before order creation, regardless of its age. The displayed oracle age shows how stale that observation was and it may not represent the market price at creation. A positive comparison means the execution was favorable to the trader."
+msgstr "참조 가격은 주문 생성 시점 또는 그 이전에 인덱싱된 가장 최근의 Chainlink Data Streams OraclePriceUpdate 관측값을 경과 시간과 관계없이 사용합니다. 표시된 오라클 관측값의 경과 시간은 해당 관측값이 얼마나 오래되었는지를 나타내며, 생성 시점의 시장 가격을 반영하지 않을 수 있습니다. 비교값이 양수이면 체결이 트레이더에게 유리했다는 의미입니다."
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total pending rewards"
 msgstr "총 미청구 보상"
@@ -6307,6 +6333,10 @@ msgstr "총 미청구 보상"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr "포지션 종료 시 발생한 가격 영향 리베이트는 청구 탭에서 수령할 수 있습니다. <0>자세히 보기</0>."
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders at or above absolute oracle-to-fill difference"
+msgstr "오라클 가격과 체결가의 절대 차이가 다음 값 이상인 주문"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Order failed"
@@ -6358,6 +6388,10 @@ msgstr "반복적인 지갑 확인 없음"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 입금"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} before creation"
+msgstr "생성 시점 {0} 전"
 
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Fee data is temporarily unavailable."
@@ -6412,6 +6446,12 @@ msgstr "무기한"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "영향 지수 (음수)"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "oracle tx"
+msgstr "오라클 트랜잭션"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
@@ -6849,10 +6889,6 @@ msgstr ""
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
 msgstr "<0>지갑이 {0}에 연결되지 않았습니다</0><1/><2>{1}(으)로 전환</2>"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Absolute creation-to-fill difference"
-msgstr "생성 시점과 체결가의 절대 차이"
-
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/수용량"
@@ -6918,10 +6954,6 @@ msgstr "이 규모에서 롱 증가를 위한 유동성이 없습니다.<0/>최�
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "추천"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} freshness-qualified orders"
-msgstr "최신성 조건을 충족한 주문 {0}건"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code"
@@ -7240,6 +7272,11 @@ msgstr "가격"
 msgid "No assets found"
 msgstr "자산을 찾을 수 없습니다"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Oracle source"
+msgstr "오라클 소스"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Wallet disconnected. Reconnect and retry"
 msgstr "지갑 연결이 해제되었습니다. 다시 연결 후 재시도하십시오"
@@ -7275,6 +7312,10 @@ msgstr "가스"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Cumulative share of orders with a preceding oracle observation"
+msgstr "선행 오라클 관측값이 있는 주문의 누적 비율"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
@@ -7347,6 +7388,12 @@ msgstr "토큰을 대출하거나 담보로 차입하십시오"
 msgid "GMX logo"
 msgstr "GMX 로고"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Provider"
+msgstr "제공자"
+
 #: src/components/SideNav/SideNav.tsx
 msgid "Whales"
 msgstr ""
@@ -7409,9 +7456,17 @@ msgstr "끄기"
 msgid "per"
 msgstr "당"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Median oracle age"
+msgstr "오라클 관측값 경과 시간 중앙값"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor longs"
 msgstr "롱 준비금 비율"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "order tx"
+msgstr "주문 트랜잭션"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
@@ -7441,6 +7496,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
 msgstr "THREAD"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "P95 oracle age: {0}"
+msgstr "오라클 관측값 경과 시간 P95: {0}"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fees reduce margin and affect liquidation price."
@@ -7606,6 +7665,10 @@ msgstr "보장된 유동성"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "가스 잔액 부족"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Compare the latest preceding oracle observations and order timestamps with actual fills"
+msgstr "가장 최근의 선행 오라클 관측값과 주문 타임스탬프를 실제 체결 내역과 비교"
 
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Orders with timing data"
@@ -7900,10 +7963,6 @@ msgstr ""
 msgid "STATUS"
 msgstr "STATUS"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} time-stratified samples from {1} freshness-qualified orders"
-msgstr "최신성 조건을 충족한 주문 {1}건에서 시간대별 샘플 {0}개"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
@@ -8155,6 +8214,10 @@ msgstr "부터"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No events"
 msgstr "이벤트 없음"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Magnitude of fill price versus the latest preceding oracle observation"
+msgstr "체결가와 가장 최근의 선행 오라클 관측값 간 차이의 크기"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
@@ -9081,6 +9144,10 @@ msgstr "마켓 상장 폐지"
 msgid "Last updated:"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Oracle age at creation"
+msgstr "생성 시점 오라클 관측값 경과 시간"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "최대 풀 용량에 도달했습니다"
@@ -9099,6 +9166,8 @@ msgstr "({operationText} 금액의 <0>{0}</0>)"
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "View"
 msgstr "보기"
@@ -9684,6 +9753,11 @@ msgstr "청구"
 msgid "Date"
 msgstr "일자"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No preceding Chainlink Data Streams observation available"
+msgstr "사용 가능한 선행 Chainlink Data Streams 관측값이 없습니다"
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "유동성 및 가격 조건이 충족되면 체결됩니다"
@@ -9773,11 +9847,6 @@ msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징
 #: src/components/SideNav/SideNav.tsx
 msgid "Execution cost"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No freshness-qualified price data"
-msgstr "최신성 조건을 충족한 가격 데이터가 없습니다"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
@@ -10650,10 +10719,6 @@ msgstr "GMX 거래를 X에 공유하기"
 msgid "Pool short amount"
 msgstr "풀 숏 수량"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Orders at or above absolute creation-to-fill difference"
-msgstr "생성 시점과 체결가의 절대 차이가 다음 값 이상인 주문"
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "수수료 APY"
@@ -10707,10 +10772,6 @@ msgstr "Nonce:"
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No freshness-qualified executions for the selected filters"
-msgstr "선택한 필터에서 최신성 조건을 충족한 실행 내역이 없습니다"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RESPONSE"
@@ -11167,6 +11228,12 @@ msgstr "{orderText} 취소 중…"
 msgid "Re-sign"
 msgstr "재서명"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Observation ID"
+msgstr "관측 ID"
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "GMX Account에 입금 중..."
@@ -11388,6 +11455,10 @@ msgstr "{idleSeconds}초"
 msgid "GMX V1 actions"
 msgstr "GMX V1 액션"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Created / oracle observation"
+msgstr "생성 / 오라클 관측값"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "지수"
@@ -11458,6 +11529,10 @@ msgstr "{column}"
 msgid "Swap route unavailable for: {0}"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0}s before execution"
+msgstr "실행 {0}초 전"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
 msgstr "등록된 트래커가 없습니다"
@@ -11479,6 +11554,10 @@ msgstr "최근 30일"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "대시보드"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} of {1} orders with a preceding oracle observation"
+msgstr "선행 오라클 관측값이 있는 주문 {1}개 중 {0}개"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"
@@ -11852,10 +11931,6 @@ msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩 수수료�
 msgid "Failed to add referral code"
 msgstr "추천 코드 추가에 실패했습니다"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Magnitude of fill price versus creation-time oracle reference"
-msgstr "생성 시점 오라클 기준가 대비 체결가 차이의 크기"
-
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"
 msgstr "{glvOrGm} 입금"
@@ -11875,6 +11950,11 @@ msgstr "디버그 설정"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "GMX와 익명 채팅"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No orders with a preceding oracle observation"
+msgstr "선행 오라클 관측값이 있는 주문이 없습니다"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
@@ -12017,6 +12097,10 @@ msgstr "종료"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Link"
 msgstr "링크"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Pre-creation oracle price"
+msgstr "주문 생성 전 오라클 가격"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

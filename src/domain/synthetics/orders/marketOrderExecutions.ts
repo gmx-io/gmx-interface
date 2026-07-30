@@ -1,7 +1,7 @@
 import { OrderType } from "./types";
 
 export const MARKET_POSITION_ORDER_TYPES = [OrderType.MarketIncrease, OrderType.MarketDecrease];
-export const MARKET_ORDER_EXECUTION_MAX_REFERENCE_AGE_SECONDS = 60;
+const MARKET_ORDER_EXECUTION_MAX_EXECUTION_REFERENCE_AGE_SECONDS = 1;
 
 export type MarketOrderKind = "perp" | "swap";
 export type MarketOrderPhase = "increase" | "decrease";
@@ -26,14 +26,18 @@ export type MarketOrderExecutionAction = {
   executionAmountOut: string | null;
   orderCreatedTimestamp: number | null;
   orderCreatedTxnHash: string | null;
-  orderCreatedIndexTokenPriceMin: string | null;
-  orderCreatedIndexTokenPriceMax: string | null;
-  orderCreatedIndexTokenPriceTimestamp: number | null;
-  orderCreatedIndexTokenPriceType: string | null;
-  indexTokenPriceMin: string | null;
-  indexTokenPriceMax: string | null;
-  indexTokenPriceTimestamp: number | null;
-  indexTokenPriceType: string | null;
+  creationReferencePrice?: string | null;
+  creationReferenceTimestamp?: number | null;
+  creationReferenceTxnHash?: string | null;
+  creationReferenceProvider?: string | null;
+  creationReferenceObservationId?: string | null;
+  referenceAgeSeconds?: number | null;
+  executionReferencePrice?: string | null;
+  executionReferenceTimestamp?: number | null;
+  executionReferenceTxnHash?: string | null;
+  executionReferenceProvider?: string | null;
+  executionReferenceObservationId?: string | null;
+  executionReferenceAgeSeconds?: number | null;
   signedFillDeltaBps?: number | null;
 };
 
@@ -52,7 +56,16 @@ export type MarketOrderExecutionSample = {
   delaySeconds: number;
   referenceAgeSeconds: number;
   creationReferencePrice: string;
+  creationReferenceTimestamp: number;
+  creationReferenceTxnHash: string;
+  creationReferenceProvider: string;
+  creationReferenceObservationId: string;
   executionReferencePrice: string | null;
+  executionReferenceTimestamp: number | null;
+  executionReferenceTxnHash: string | null;
+  executionReferenceProvider: string | null;
+  executionReferenceObservationId: string | null;
+  executionReferenceAgeSeconds: number | null;
   executionPrice: string;
   signedFillDeltaBps: number;
   signedOracleMoveBps: number | null;
@@ -80,7 +93,15 @@ export type MarketPerpOrderExecutionRow = MarketOrderExecutionRowBase & {
   side: MarketOrderSide;
   sizeDeltaUsd: string;
   creationReferencePrice: string | null;
+  creationReferenceTimestamp: number | null;
+  creationReferenceTxnHash: string | null;
+  creationReferenceProvider: string | null;
+  creationReferenceObservationId: string | null;
   executionReferencePrice: string | null;
+  executionReferenceTimestamp: number | null;
+  executionReferenceTxnHash: string | null;
+  executionReferenceProvider: string | null;
+  executionReferenceObservationId: string | null;
   executionPrice: string | null;
   referenceAgeSeconds: number | null;
   executionReferenceAgeSeconds: number | null;
@@ -119,7 +140,7 @@ export type MarketOrderExecutionStats = {
   pricedCount: number;
   oracleMoveCount: number;
   executionImpactCount: number;
-  maxReferenceAgeSeconds: number;
+  maxReferenceAgeSeconds: number | null;
   pricedFromTimestamp: number | null;
   medianDelaySeconds: number | null;
   p95DelaySeconds: number | null;
@@ -135,8 +156,7 @@ export type MarketOrderExecutionStats = {
 };
 
 export function buildMarketOrderExecutionRows(
-  executionActions: MarketOrderExecutionAction[],
-  maxReferenceAgeSeconds = MARKET_ORDER_EXECUTION_MAX_REFERENCE_AGE_SECONDS
+  executionActions: MarketOrderExecutionAction[]
 ): MarketOrderExecutionRow[] {
   return executionActions.flatMap<MarketOrderExecutionRow>((action) => {
     const perpOrderType =
@@ -184,28 +204,31 @@ export function buildMarketOrderExecutionRows(
       return [];
     }
 
-    const isBuy = getIsBuyOrder(perpOrderType, action.isLong);
-    const creationReferencePrice =
-      action.orderCreatedIndexTokenPriceType === "v2"
-        ? getDirectionalPrice(action.orderCreatedIndexTokenPriceMin, action.orderCreatedIndexTokenPriceMax, isBuy)
-        : null;
-    const executionReferencePrice =
-      action.indexTokenPriceType === "v2"
-        ? getDirectionalPrice(action.indexTokenPriceMin, action.indexTokenPriceMax, isBuy)
-        : null;
-    const referenceAgeSeconds = getReferenceAge(
-      action.orderCreatedTimestamp,
-      action.orderCreatedIndexTokenPriceTimestamp
-    );
-    const executionReferenceAgeSeconds = getReferenceAge(action.timestamp, action.indexTokenPriceTimestamp);
-    const hasFreshCreationReference =
+    const creationReferencePrice = action.creationReferencePrice ?? null;
+    const executionReferencePrice = action.executionReferencePrice ?? null;
+    const referenceAgeSeconds = action.referenceAgeSeconds ?? null;
+    const executionReferenceAgeSeconds = action.executionReferenceAgeSeconds ?? null;
+    const hasCreationReference =
       isPositivePrice(creationReferencePrice) &&
       referenceAgeSeconds !== null &&
-      referenceAgeSeconds <= maxReferenceAgeSeconds;
+      referenceAgeSeconds >= 0 &&
+      action.creationReferenceTimestamp !== null &&
+      action.creationReferenceTimestamp !== undefined &&
+      Boolean(action.creationReferenceTxnHash) &&
+      Boolean(action.creationReferenceProvider) &&
+      Boolean(action.creationReferenceObservationId);
     const hasFreshExecutionReference =
       isPositivePrice(executionReferencePrice) &&
       executionReferenceAgeSeconds !== null &&
-      executionReferenceAgeSeconds <= maxReferenceAgeSeconds;
+      executionReferenceAgeSeconds >= 0 &&
+      executionReferenceAgeSeconds <= MARKET_ORDER_EXECUTION_MAX_EXECUTION_REFERENCE_AGE_SECONDS &&
+      action.executionReferenceTimestamp !== null &&
+      action.executionReferenceTimestamp !== undefined &&
+      Boolean(action.executionReferenceTxnHash) &&
+      Boolean(action.executionReferenceProvider) &&
+      Boolean(action.executionReferenceObservationId);
+    const qualifiedExecutionReferencePrice = hasFreshExecutionReference ? executionReferencePrice : null;
+    const isBuy = getIsBuyOrder(perpOrderType, action.isLong);
 
     return [
       {
@@ -215,31 +238,34 @@ export function buildMarketOrderExecutionRows(
         phase: perpOrderType === OrderType.MarketIncrease ? "increase" : "decrease",
         side: action.isLong ? "long" : "short",
         sizeDeltaUsd: action.sizeDeltaUsd ?? "0",
-        creationReferencePrice,
-        executionReferencePrice,
+        creationReferencePrice: hasCreationReference ? creationReferencePrice : null,
+        creationReferenceTimestamp: hasCreationReference ? action.creationReferenceTimestamp ?? null : null,
+        creationReferenceTxnHash: hasCreationReference ? action.creationReferenceTxnHash ?? null : null,
+        creationReferenceProvider: hasCreationReference ? action.creationReferenceProvider ?? null : null,
+        creationReferenceObservationId: hasCreationReference ? action.creationReferenceObservationId ?? null : null,
+        executionReferencePrice: qualifiedExecutionReferencePrice,
+        executionReferenceTimestamp: hasFreshExecutionReference ? action.executionReferenceTimestamp ?? null : null,
+        executionReferenceTxnHash: hasFreshExecutionReference ? action.executionReferenceTxnHash ?? null : null,
+        executionReferenceProvider: hasFreshExecutionReference ? action.executionReferenceProvider ?? null : null,
+        executionReferenceObservationId: hasFreshExecutionReference
+          ? action.executionReferenceObservationId ?? null
+          : null,
         executionPrice: action.executionPrice,
         referenceAgeSeconds,
         executionReferenceAgeSeconds,
-        fillDeltaBps: hasFreshCreationReference
-          ? action.signedFillDeltaBps ??
-            getSignedPriceDeltaBps({
-              referencePrice: creationReferencePrice,
-              comparisonPrice: action.executionPrice,
-              isBuy,
-            })
-          : null,
+        fillDeltaBps: hasCreationReference ? action.signedFillDeltaBps ?? null : null,
         oracleMoveBps:
-          hasFreshCreationReference && hasFreshExecutionReference
+          hasCreationReference && hasFreshExecutionReference
             ? getSignedPriceDeltaBps({
                 referencePrice: creationReferencePrice,
-                comparisonPrice: executionReferencePrice,
+                comparisonPrice: qualifiedExecutionReferencePrice,
                 isBuy,
               })
             : null,
         executionImpactBps:
-          hasFreshCreationReference && hasFreshExecutionReference
+          hasCreationReference && hasFreshExecutionReference
             ? getSignedPriceDeltaBps({
-                referencePrice: executionReferencePrice,
+                referencePrice: qualifiedExecutionReferencePrice,
                 comparisonPrice: action.executionPrice,
                 isBuy,
               })
@@ -278,10 +304,18 @@ export function buildMarketOrderExecutionSampleRows(
         executedTransactionHash: sample.executedTxnHash,
         delaySeconds: sample.delaySeconds,
         creationReferencePrice: sample.creationReferencePrice,
+        creationReferenceTimestamp: sample.creationReferenceTimestamp,
+        creationReferenceTxnHash: sample.creationReferenceTxnHash,
+        creationReferenceProvider: sample.creationReferenceProvider,
+        creationReferenceObservationId: sample.creationReferenceObservationId,
         executionReferencePrice: sample.executionReferencePrice,
+        executionReferenceTimestamp: sample.executionReferenceTimestamp,
+        executionReferenceTxnHash: sample.executionReferenceTxnHash,
+        executionReferenceProvider: sample.executionReferenceProvider,
+        executionReferenceObservationId: sample.executionReferenceObservationId,
         executionPrice: sample.executionPrice,
         referenceAgeSeconds: sample.referenceAgeSeconds,
-        executionReferenceAgeSeconds: null,
+        executionReferenceAgeSeconds: sample.executionReferenceAgeSeconds,
         fillDeltaBps: sample.signedFillDeltaBps,
         oracleMoveBps: sample.signedOracleMoveBps,
         executionImpactBps: sample.signedExecutionImpactBps,
@@ -322,10 +356,6 @@ export function getSignedPriceDeltaBps({
 
 function getIsBuyOrder(orderType: OrderType.MarketIncrease | OrderType.MarketDecrease, isLong: boolean) {
   return (orderType === OrderType.MarketIncrease && isLong) || (orderType === OrderType.MarketDecrease && !isLong);
-}
-
-function getDirectionalPrice(minPrice: string | null, maxPrice: string | null, isBuy: boolean) {
-  return isBuy ? maxPrice : minPrice;
 }
 
 function getReferenceAge(eventTimestamp: number | null, priceTimestamp: number | null) {

@@ -6,7 +6,6 @@ import { getMarketOrderExecutionGraphClient } from "lib/indexers";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import {
-  MARKET_ORDER_EXECUTION_MAX_REFERENCE_AGE_SECONDS,
   MARKET_POSITION_ORDER_TYPES,
   MarketOrderExecutionAction,
   MarketOrderExecutionSample,
@@ -30,7 +29,6 @@ const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
     $account: String
     $orderTypes: [Int!]
     $isLong: Boolean
-    $maxReferenceAgeSeconds: Int!
     $sampleSize: Int!
   ) {
     marketOrderExecutionStats(
@@ -40,7 +38,6 @@ const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
       account: $account
       orderTypes: $orderTypes
       isLong: $isLong
-      maxReferenceAgeSeconds: $maxReferenceAgeSeconds
       sampleSize: $sampleSize
     ) {
       totalCount
@@ -90,7 +87,16 @@ const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
         delaySeconds
         referenceAgeSeconds
         creationReferencePrice
+        creationReferenceTimestamp
+        creationReferenceTxnHash
+        creationReferenceProvider
+        creationReferenceObservationId
         executionReferencePrice
+        executionReferenceTimestamp
+        executionReferenceTxnHash
+        executionReferenceProvider
+        executionReferenceObservationId
+        executionReferenceAgeSeconds
         executionPrice
         signedFillDeltaBps
         signedOracleMoveBps
@@ -126,77 +132,18 @@ const MARKET_ORDER_EXECUTION_ROWS_QUERY = gql(`
       executionAmountOut
       orderCreatedTimestamp
       orderCreatedTxnHash
-      orderCreatedIndexTokenPriceMin
-      orderCreatedIndexTokenPriceMax
-      orderCreatedIndexTokenPriceTimestamp
-      orderCreatedIndexTokenPriceType
-      indexTokenPriceMin
-      indexTokenPriceMax
-      indexTokenPriceTimestamp
-      indexTokenPriceType
     }
   }
 `);
 
-const MARKET_ORDER_EXECUTION_PRICE_SORTED_ROWS_QUERY = gql(`
-  query MarketOrderExecutionPriceSortedRows(
+const MARKET_ORDER_EXECUTION_RESOLVER_ROWS_QUERY = gql(`
+  query MarketOrderExecutionResolverRows(
     $fromTimestamp: Int!
     $toTimestamp: Int!
     $marketAddress: String
     $account: String
     $orderTypes: [Int!]
     $isLong: Boolean
-    $maxReferenceAgeSeconds: Int!
-    $offset: Int!
-    $limit: Int!
-    $sortDirection: MarketOrderExecutionSortDirection!
-  ) {
-    marketOrderExecutions: marketOrderExecutionRows(
-      fromTimestamp: $fromTimestamp
-      toTimestamp: $toTimestamp
-      marketAddress: $marketAddress
-      account: $account
-      orderTypes: $orderTypes
-      isLong: $isLong
-      maxReferenceAgeSeconds: $maxReferenceAgeSeconds
-      offset: $offset
-      limit: $limit
-      sortDirection: $sortDirection
-    ) {
-      id
-      orderKey
-      orderType
-      timestamp
-      transactionHash
-      account
-      marketAddress
-      isLong
-      sizeDeltaUsd
-      executionPrice
-      orderCreatedTimestamp
-      orderCreatedTxnHash
-      orderCreatedIndexTokenPriceMin
-      orderCreatedIndexTokenPriceMax
-      orderCreatedIndexTokenPriceTimestamp
-      orderCreatedIndexTokenPriceType
-      indexTokenPriceMin
-      indexTokenPriceMax
-      indexTokenPriceTimestamp
-      indexTokenPriceType
-      signedFillDeltaBps
-    }
-  }
-`);
-
-const MARKET_ORDER_EXECUTION_TIME_SORTED_ROWS_QUERY = gql(`
-  query MarketOrderExecutionTimeSortedRows(
-    $fromTimestamp: Int!
-    $toTimestamp: Int!
-    $marketAddress: String
-    $account: String
-    $orderTypes: [Int!]
-    $isLong: Boolean
-    $maxReferenceAgeSeconds: Int!
     $offset: Int!
     $limit: Int!
     $sortField: MarketOrderExecutionSortField!
@@ -209,7 +156,6 @@ const MARKET_ORDER_EXECUTION_TIME_SORTED_ROWS_QUERY = gql(`
       account: $account
       orderTypes: $orderTypes
       isLong: $isLong
-      maxReferenceAgeSeconds: $maxReferenceAgeSeconds
       offset: $offset
       limit: $limit
       sortField: $sortField
@@ -233,14 +179,18 @@ const MARKET_ORDER_EXECUTION_TIME_SORTED_ROWS_QUERY = gql(`
       executionAmountOut
       orderCreatedTimestamp
       orderCreatedTxnHash
-      orderCreatedIndexTokenPriceMin
-      orderCreatedIndexTokenPriceMax
-      orderCreatedIndexTokenPriceTimestamp
-      orderCreatedIndexTokenPriceType
-      indexTokenPriceMin
-      indexTokenPriceMax
-      indexTokenPriceTimestamp
-      indexTokenPriceType
+      creationReferencePrice
+      creationReferenceTimestamp
+      creationReferenceTxnHash
+      creationReferenceProvider
+      creationReferenceObservationId
+      referenceAgeSeconds
+      executionReferencePrice
+      executionReferenceTimestamp
+      executionReferenceTxnHash
+      executionReferenceProvider
+      executionReferenceObservationId
+      executionReferenceAgeSeconds
       signedFillDeltaBps
     }
   }
@@ -279,7 +229,6 @@ type MarketOrderExecutionStatsVariables = {
   account?: string;
   orderTypes: number[];
   isLong?: boolean;
-  maxReferenceAgeSeconds: number;
   sampleSize: number;
 };
 
@@ -293,21 +242,17 @@ type MarketOrderExecutionRowsVariables = {
   where: Record<string, unknown>;
 };
 
-type MarketOrderExecutionPriceSortedRowsVariables = {
+type MarketOrderExecutionResolverRowsVariables = {
   fromTimestamp: number;
   toTimestamp: number;
   marketAddress?: string;
   account?: string;
   orderTypes: number[];
   isLong?: boolean;
-  maxReferenceAgeSeconds: number;
   offset: number;
   limit: number;
+  sortField: "EXECUTED_AT" | "EXECUTION_TIME" | "PRICE_IMPROVEMENT";
   sortDirection: "ASC" | "DESC";
-};
-
-type MarketOrderExecutionTimeSortedRowsVariables = MarketOrderExecutionPriceSortedRowsVariables & {
-  sortField: "EXECUTION_TIME";
 };
 
 export function useMarketOrderExecutionStats(params: MarketOrderExecutionsParams, enabled = true) {
@@ -404,7 +349,6 @@ export async function fetchMarketOrderExecutionStats(
       account: params.account,
       orderTypes: getOrderTypes(params),
       isLong: params.kind === "perp" && params.side !== undefined ? params.side === "long" : undefined,
-      maxReferenceAgeSeconds: MARKET_ORDER_EXECUTION_MAX_REFERENCE_AGE_SECONDS,
       sampleSize: params.kind === "perp" ? MARKET_ORDER_EXECUTION_SAMPLE_SIZE : 0,
     },
     fetchPolicy: "no-cache",
@@ -413,6 +357,7 @@ export async function fetchMarketOrderExecutionStats(
 
   return {
     ...stats,
+    maxReferenceAgeSeconds: stats.maxReferenceAgeSeconds ?? null,
     pricedFromTimestamp: stats.pricedFromTimestamp ?? null,
     medianDelaySeconds: stats.medianDelaySeconds ?? null,
     p95DelaySeconds: stats.p95DelaySeconds ?? null,
@@ -437,51 +382,40 @@ export async function fetchMarketOrderExecutionRows(params: MarketOrderExecution
     throw new Error(`No Subsquid client configured for chain ${params.chainId}`);
   }
 
-  const sortedRowsVariables =
-    params.sortDirection === undefined
-      ? undefined
-      : {
+  const useResolver = params.kind === "perp" || params.sortField === "executionTime";
+  const result = useResolver
+    ? await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionResolverRowsVariables>({
+        query: MARKET_ORDER_EXECUTION_RESOLVER_ROWS_QUERY,
+        variables: {
           fromTimestamp: params.fromTimestamp,
           toTimestamp: params.toTimestamp,
           marketAddress: params.marketAddress,
           account: params.account,
           orderTypes: getOrderTypes(params),
           isLong: params.side === undefined ? undefined : params.side === "long",
-          maxReferenceAgeSeconds: MARKET_ORDER_EXECUTION_MAX_REFERENCE_AGE_SECONDS,
           offset: params.offset,
           limit: params.limit,
-          sortDirection: params.sortDirection === "asc" ? ("ASC" as const) : ("DESC" as const),
-        };
-  const result =
-    params.kind === "perp" && params.sortField === "priceImprovement" && sortedRowsVariables
-      ? await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionPriceSortedRowsVariables>({
-          query: MARKET_ORDER_EXECUTION_PRICE_SORTED_ROWS_QUERY,
-          variables: sortedRowsVariables,
-          fetchPolicy: "no-cache",
-        })
-      : params.sortField === "executionTime" && sortedRowsVariables
-        ? await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionTimeSortedRowsVariables>({
-            query: MARKET_ORDER_EXECUTION_TIME_SORTED_ROWS_QUERY,
-            variables: {
-              ...sortedRowsVariables,
-              sortField: "EXECUTION_TIME",
-            },
-            fetchPolicy: "no-cache",
-          })
-        : await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionRowsVariables>({
-            query: MARKET_ORDER_EXECUTION_ROWS_QUERY,
-            variables: {
-              offset: params.offset,
-              limit: params.limit,
-              where: getExecutionWhere(params),
-            },
-            fetchPolicy: "no-cache",
-          });
+          sortField:
+            params.sortField === "priceImprovement"
+              ? "PRICE_IMPROVEMENT"
+              : params.sortField === "executionTime"
+                ? "EXECUTION_TIME"
+                : "EXECUTED_AT",
+          sortDirection: params.sortDirection === "asc" ? "ASC" : "DESC",
+        },
+        fetchPolicy: "no-cache",
+      })
+    : await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionRowsVariables>({
+        query: MARKET_ORDER_EXECUTION_ROWS_QUERY,
+        variables: {
+          offset: params.offset,
+          limit: params.limit,
+          where: getExecutionWhere(params),
+        },
+        fetchPolicy: "no-cache",
+      });
 
-  return buildMarketOrderExecutionRows(
-    result.data.marketOrderExecutions,
-    MARKET_ORDER_EXECUTION_MAX_REFERENCE_AGE_SECONDS
-  );
+  return buildMarketOrderExecutionRows(result.data.marketOrderExecutions);
 }
 
 function getOrderTypes(params: MarketOrderExecutionsParams) {

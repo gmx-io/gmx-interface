@@ -63,13 +63,14 @@ import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFi
 import type { Item } from "components/TableOptionsFilter/types";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const SECONDS_IN_DAY = 24 * 60 * 60;
 const MAX_QUERY_RANGE_SECONDS = 31 * SECONDS_IN_DAY;
 const MAX_QUERY_RANGE_CALENDAR_DAYS = 30;
 const TABLE_PAGE_SIZE = 10;
 const DATE_RANGE_PRESET_PERIODS = ["days7", "days30"] as const;
-const SUBSQUID_START_DATE = new Date(2026, 0, 27);
+const SUBSQUID_START_DATE = new Date(2025, 6, 28);
 const WALLET_FILTER_ERROR_ID = "market-order-execution-wallet-error";
 const CHART_MARGIN = { top: 16, right: 18, bottom: 28, left: 8 };
 const BAR_CHART_MARGIN = { top: 28, right: 12, bottom: 8, left: 4 };
@@ -388,16 +389,17 @@ export function MarketOrderExecution() {
       <div className="default-container page-layout flex flex-col gap-16">
         <PageTitle
           title={t`Market order execution`}
-          subtitle={t`Compare creation-time oracle references and order timestamps with actual fills`}
+          subtitle={t`Compare the latest preceding oracle observations and order timestamps with actual fills`}
           qa="market-order-execution-page"
         />
 
         <div className="text-body-small rounded-8 border border-slate-700 bg-slate-900 px-16 py-12 text-typography-secondary">
           {kind === "perp" ? (
             <Trans>
-              Creation price is the latest V2 oracle reference available when the order was created. References older
-              than {stats?.maxReferenceAgeSeconds ?? 60} seconds are excluded. Positive execution price improvement
-              means the execution was favorable to the trader.
+              Reference price uses the latest indexed Chainlink Data Streams OraclePriceUpdate observation at or before
+              order creation, regardless of its age. The displayed oracle age shows how stale that observation was and
+              it may not represent the market price at creation. A positive comparison means the execution was favorable
+              to the trader.
             </Trans>
           ) : (
             <Trans>
@@ -504,7 +506,12 @@ export function MarketOrderExecution() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 xl:grid-cols-4">
+        <div
+          className={cx(
+            "grid grid-cols-1 gap-12 sm:grid-cols-2",
+            kind === "perp" ? "xl:grid-cols-5" : "xl:grid-cols-4"
+          )}
+        >
           <SummaryCard
             label={t`Executed market orders`}
             value={formatCount(stats?.totalCount)}
@@ -521,11 +528,18 @@ export function MarketOrderExecution() {
             detail={t`Creation to execution`}
           />
           {kind === "perp" ? (
-            <SummaryCard
-              label={t`Median price improvement`}
-              value={formatBps(stats?.medianSignedFillDeltaBps ?? null)}
-              detail={t`${formatCount(stats?.pricedCount)} freshness-qualified orders`}
-            />
+            <>
+              <SummaryCard
+                label={t`Median oracle age`}
+                value={formatOracleAge(stats?.medianReferenceAgeSeconds ?? null)}
+                detail={t`P95 oracle age: ${formatOracleAge(stats?.p95ReferenceAgeSeconds ?? null)}`}
+              />
+              <SummaryCard
+                label={t`Median price improvement`}
+                value={formatBps(stats?.medianSignedFillDeltaBps ?? null)}
+                detail={t`${formatCount(stats?.pricedCount)} of ${formatCount(stats?.totalCount)} orders with a preceding oracle observation`}
+              />
+            </>
           ) : (
             <SummaryCard
               label={t`Orders with timing data`}
@@ -547,11 +561,11 @@ export function MarketOrderExecution() {
           />
           {kind === "perp" && (
             <MetricChartCard
-              title={t`Absolute creation-to-fill difference`}
-              subtitle={t`Magnitude of fill price versus creation-time oracle reference`}
+              title={t`Absolute oracle-to-fill difference`}
+              subtitle={t`Magnitude of fill price versus the latest preceding oracle observation`}
               data={fillDeltaPercentileRows}
               valueFormatter={formatBps}
-              emptyText={t`No freshness-qualified price data`}
+              emptyText={t`No orders with a preceding oracle observation`}
               isLoading={isLoading}
               hasError={statsError !== undefined}
             />
@@ -568,12 +582,12 @@ export function MarketOrderExecution() {
           />
           {kind === "perp" && (
             <MetricChartCard
-              title={t`Orders at or above absolute creation-to-fill difference`}
-              subtitle={t`Cumulative share of freshness-qualified orders`}
+              title={t`Orders at or above absolute oracle-to-fill difference`}
+              subtitle={t`Cumulative share of orders with a preceding oracle observation`}
               data={fillDeltaThresholdRows}
               valueFormatter={formatPercentage}
               domain={PERCENTAGE_AXIS_DOMAIN}
-              emptyText={t`No freshness-qualified price data`}
+              emptyText={t`No orders with a preceding oracle observation`}
               isLoading={isLoading}
               hasError={statsError !== undefined}
             />
@@ -590,8 +604,8 @@ export function MarketOrderExecution() {
                   </div>
                   <div className="text-body-small mt-2 text-typography-secondary">
                     <Trans>
-                      {chartEligibleRows.length} time-stratified samples from {formatCount(stats?.pricedCount)}{" "}
-                      freshness-qualified orders
+                      {chartEligibleRows.length} time-stratified samples from {formatCount(stats?.pricedCount)} orders
+                      with a preceding oracle observation
                     </Trans>
                     {scatterPercentileRange !== "all" && (
                       <span>
@@ -640,7 +654,7 @@ export function MarketOrderExecution() {
                 </div>
               ) : chartRows.length === 0 ? (
                 <div className="flex h-full items-center justify-center text-typography-secondary">
-                  <Trans>No freshness-qualified executions for the selected filters</Trans>
+                  <Trans>No executions with a preceding oracle observation for the selected filters</Trans>
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%" debounce={100}>
@@ -882,7 +896,7 @@ function Legend({ colorClassName, label }: { colorClassName: string; label: stri
   );
 }
 
-function MarketOrderChartTooltip({
+export function MarketOrderChartTooltip({
   active,
   payload,
   chainId,
@@ -904,16 +918,71 @@ function MarketOrderChartTooltip({
   }
 
   const values = getOrderDisplayValues(chainId, row, marketsInfoData, tokensData);
+  const explorerUrl = getExplorerUrl(chainId);
 
   return (
-    <div className="min-w-[240px] rounded-8 border border-slate-600 bg-slate-900 p-12 shadow-2xl">
+    <div className="min-w-[240px] max-w-[380px] rounded-8 border border-slate-600 bg-slate-900 p-12 shadow-2xl">
       <div className="font-medium">{row.marketName}</div>
       <div className="text-body-small mt-2 capitalize text-typography-secondary">
         {getPhaseLabel(row.phase)} · {getSideLabel(row.side)}
       </div>
       <div className="text-body-small mt-10 flex flex-col gap-6">
-        <TooltipRow label={t`Creation oracle price`} value={values.submitted} />
-        <TooltipRow label={t`Execution oracle price`} value={values.executionReference} />
+        <div className="flex flex-col gap-6">
+          <TooltipRow label={t`Pre-creation oracle price`} value={values.submitted} />
+          <TooltipRow label={t`Oracle age at creation`} value={formatOracleObservationAge(row.referenceAgeSeconds)} />
+          <TooltipRow label={t`Oracle source`} value={t`Chainlink Data Streams`} />
+          <TooltipRow
+            label={t`Observed`}
+            value={row.creationReferenceTimestamp === null ? "—" : formatEventTime(row.creationReferenceTimestamp)}
+          />
+          <TooltipRow label={t`Provider`} value={row.creationReferenceProvider ?? "—"} />
+          <TooltipRow label={t`Observation ID`} value={row.creationReferenceObservationId ?? "—"} />
+          <TooltipRow
+            label={t`oracle tx`}
+            value={
+              row.creationReferenceTxnHash === null ? (
+                "—"
+              ) : (
+                <ExplorerTransactionLink
+                  explorerUrl={explorerUrl}
+                  transactionHash={row.creationReferenceTxnHash}
+                  label={t`View`}
+                />
+              )
+            }
+          />
+        </div>
+        <div className="mt-4 flex flex-col gap-6 border-t border-slate-700 pt-8">
+          <TooltipRow label={t`Execution oracle price`} value={values.executionReference} />
+          <TooltipRow
+            label={t`Oracle age at execution`}
+            value={formatExecutionOracleObservationAge(row.executionReferenceAgeSeconds)}
+          />
+          <TooltipRow
+            label={t`Oracle source`}
+            value={row.executionReferencePrice === null ? "—" : t`Chainlink Data Streams`}
+          />
+          <TooltipRow
+            label={t`Observed`}
+            value={row.executionReferenceTimestamp === null ? "—" : formatEventTime(row.executionReferenceTimestamp)}
+          />
+          <TooltipRow label={t`Provider`} value={row.executionReferenceProvider ?? "—"} />
+          <TooltipRow label={t`Observation ID`} value={row.executionReferenceObservationId ?? "—"} />
+          <TooltipRow
+            label={t`oracle tx`}
+            value={
+              row.executionReferenceTxnHash === null ? (
+                "—"
+              ) : (
+                <ExplorerTransactionLink
+                  explorerUrl={explorerUrl}
+                  transactionHash={row.executionReferenceTxnHash}
+                  label={t`View`}
+                />
+              )
+            }
+          />
+        </div>
         <TooltipRow label={t`Fill price`} value={values.executed} />
         <TooltipRow label={t`Execution time`} value={formatDuration(row.delaySeconds)} />
         <TooltipRow label={t`Execution price improvement`} value={formatBps(row.fillDeltaBps)} />
@@ -925,11 +994,11 @@ function MarketOrderChartTooltip({
   );
 }
 
-function TooltipRow({ label, value }: { label: string; value: string }) {
+function TooltipRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-16">
       <span className="text-typography-secondary">{label}</span>
-      <span className="numbers">{value}</span>
+      <span className="min-w-0 break-all text-right numbers">{value}</span>
     </div>
   );
 }
@@ -981,7 +1050,7 @@ export function MarketOrderPairsTable({
               {kind === "perp" ? <Trans>Size</Trans> : <Trans>Input</Trans>}
             </TableTh>
             <TableTh padding="compact">
-              {kind === "perp" ? <Trans>Created / oracle reference</Trans> : <Trans>Created / min output</Trans>}
+              {kind === "perp" ? <Trans>Created / oracle observation</Trans> : <Trans>Created / min output</Trans>}
             </TableTh>
             <TableTh padding="compact">
               {kind === "perp" ? <Trans>Executed / fill</Trans> : <Trans>Executed / actual output</Trans>}
@@ -1016,7 +1085,15 @@ export function MarketOrderPairsTable({
             >
               {kind === "perp" ? (
                 <Sorter direction={priceImprovementSortDirection} onChange={onPriceImprovementSortChange}>
-                  <Trans>Execution price</Trans>
+                  <TooltipWithPortal
+                    as="span"
+                    variant="underline"
+                    disableClickToggle
+                    shouldPreventDefault={false}
+                    content={t`Signed difference between the execution price and the latest preceding oracle observation. Positive values are favorable to the trader. Check the displayed oracle age because older observations may be stale.`}
+                  >
+                    <Trans>Execution price</Trans>
+                  </TooltipWithPortal>
                 </Sorter>
               ) : (
                 <Trans>Price quality</Trans>
@@ -1067,12 +1144,16 @@ export function MarketOrderPairsTable({
                     {values.size}
                   </TableTd>
                   <TableTd padding="compact">
-                    <EventCell
-                      timestamp={row.submittedTimestamp}
-                      price={values.submitted}
-                      transactionHash={row.submittedTransactionHash}
-                      explorerUrl={explorerUrl}
-                    />
+                    {row.kind === "perp" ? (
+                      <CreationEventCell row={row} price={values.submitted} explorerUrl={explorerUrl} />
+                    ) : (
+                      <EventCell
+                        timestamp={row.submittedTimestamp}
+                        price={values.submitted}
+                        transactionHash={row.submittedTransactionHash}
+                        explorerUrl={explorerUrl}
+                      />
+                    )}
                   </TableTd>
                   <TableTd padding="compact">
                     <EventCell
@@ -1092,7 +1173,21 @@ export function MarketOrderPairsTable({
                       "text-red-500": row.fillDeltaBps !== null && row.fillDeltaBps < 0,
                     })}
                   >
-                    {formatBps(row.fillDeltaBps)}
+                    {row.kind === "perp" && row.fillDeltaBps === null ? (
+                      <TooltipWithPortal
+                        as="span"
+                        variant="underline"
+                        content={
+                          row.creationReferencePrice === null
+                            ? t`No preceding Chainlink Data Streams observation available`
+                            : t`Execution price comparison unavailable`
+                        }
+                      >
+                        —
+                      </TooltipWithPortal>
+                    ) : (
+                      formatBps(row.fillDeltaBps)
+                    )}
                   </TableTd>
                 </TableTr>
               );
@@ -1100,6 +1195,99 @@ export function MarketOrderPairsTable({
         </tbody>
       </Table>
     </TableScrollFadeContainer>
+  );
+}
+
+function CreationEventCell({
+  row,
+  price,
+  explorerUrl,
+}: {
+  row: MarketPerpOrderExecutionRow;
+  price: string;
+  explorerUrl: string;
+}) {
+  const hasObservation = row.creationReferencePrice !== null && row.referenceAgeSeconds !== null;
+  const provenance = (
+    <div className="flex max-w-[340px] flex-col gap-4 break-all">
+      <div className="font-medium">
+        <Trans>Chainlink Data Streams</Trans>
+      </div>
+      {row.creationReferenceTimestamp !== null && (
+        <div>
+          <span className="text-typography-secondary">
+            <Trans>Observed</Trans>:
+          </span>{" "}
+          <span className="numbers">{formatEventTime(row.creationReferenceTimestamp)}</span>
+        </div>
+      )}
+      {row.creationReferenceProvider !== null && (
+        <div>
+          <span className="text-typography-secondary">
+            <Trans>Provider</Trans>:
+          </span>{" "}
+          <span className="numbers">{row.creationReferenceProvider}</span>
+        </div>
+      )}
+      {row.creationReferenceObservationId !== null && (
+        <div>
+          <span className="text-typography-secondary">
+            <Trans>Observation ID</Trans>:
+          </span>{" "}
+          <span className="numbers">{row.creationReferenceObservationId}</span>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div>
+      <div className="numbers">
+        {row.submittedTimestamp === null ? "—" : formatEventTime(row.submittedTimestamp)}
+        {row.submittedTransactionHash && (
+          <>
+            {" · "}
+            <ExplorerTransactionLink
+              explorerUrl={explorerUrl}
+              transactionHash={row.submittedTransactionHash}
+              label={t`order tx`}
+            />
+          </>
+        )}
+      </div>
+      {hasObservation ? (
+        <>
+          <div className="text-body-small mt-2 text-typography-secondary numbers">{price}</div>
+          <div className="text-body-small mt-2 text-typography-secondary">
+            <span className="numbers">{formatOracleObservationAge(row.referenceAgeSeconds)}</span>
+            {" · "}
+            <TooltipWithPortal
+              as="span"
+              variant="underline"
+              disableClickToggle
+              content={provenance}
+              shouldPreventDefault={false}
+            >
+              <Trans>Chainlink Data Streams</Trans>
+            </TooltipWithPortal>
+            {row.creationReferenceTxnHash && (
+              <>
+                {" · "}
+                <ExplorerTransactionLink
+                  explorerUrl={explorerUrl}
+                  transactionHash={row.creationReferenceTxnHash}
+                  label={t`oracle tx`}
+                />
+              </>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="text-body-small mt-2 text-typography-secondary">
+          <Trans>No preceding Chainlink Data Streams observation available</Trans>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -1122,18 +1310,32 @@ function EventCell({
         {transactionHash && (
           <>
             {" · "}
-            <a
-              href={`${explorerUrl}tx/${transactionHash}`}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-blue-200 text-blue-300"
-            >
-              <Trans>tx</Trans>
-            </a>
+            <ExplorerTransactionLink explorerUrl={explorerUrl} transactionHash={transactionHash} label={t`tx`} />
           </>
         )}
       </div>
     </div>
+  );
+}
+
+function ExplorerTransactionLink({
+  explorerUrl,
+  transactionHash,
+  label,
+}: {
+  explorerUrl: string;
+  transactionHash: string;
+  label: string;
+}) {
+  return (
+    <a
+      href={`${explorerUrl}tx/${transactionHash}`}
+      target="_blank"
+      rel="noreferrer"
+      className="hover:text-blue-200 text-blue-300"
+    >
+      {label}
+    </a>
   );
 }
 
@@ -1292,6 +1494,42 @@ function formatDuration(value: number | null) {
   }
 
   return `${formatNumber(value / 60, 1)}m`;
+}
+
+function formatOracleObservationAge(value: number | null) {
+  if (value === null || !Number.isFinite(value)) {
+    return "—";
+  }
+
+  return value === 0 ? t`Same-second observation` : t`${formatOracleAgeDuration(value)} before creation`;
+}
+
+function formatExecutionOracleObservationAge(value: number | null) {
+  if (value === null || !Number.isFinite(value)) {
+    return "—";
+  }
+
+  return value === 0 ? t`Same-second observation` : t`${formatNumber(value, 0)}s before execution`;
+}
+
+function formatOracleAge(value: number | null) {
+  return value === null || !Number.isFinite(value) ? "—" : formatOracleAgeDuration(value);
+}
+
+export function formatOracleAgeDuration(value: number) {
+  if (value < 60) {
+    return `${formatNumber(value, 0)}s`;
+  }
+
+  if (value < 60 * 60) {
+    return `${formatNumber(value / 60, 1)}m`;
+  }
+
+  if (value < 24 * 60 * 60) {
+    return `${formatNumber(value / (60 * 60), 1)}h`;
+  }
+
+  return `${formatNumber(value / (24 * 60 * 60), 1)}d`;
 }
 
 function formatBps(value: number | null) {
