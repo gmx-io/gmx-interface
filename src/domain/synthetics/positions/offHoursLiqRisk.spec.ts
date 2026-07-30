@@ -7,18 +7,21 @@ import { USDC_ADDRESS } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
 
 import { getPositionOffHoursLiqRisk, isTradeboxOffHoursLiqRisk } from "./offHoursLiqRisk";
+import { getEstimatedLiquidationTimeInHours } from "./utils";
 
 const GOLD = "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f";
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const MIN_COLLATERAL_USD = expandDecimals(1, 30); // $1
 const SIZE_USD = expandDecimals(20_000, 30); // $20k @ $2000 mark
+const SIZE_IN_TOKENS = expandDecimals(10, 18);
+const SOFT_LIQUIDATION_HOURS = 24 * 7;
 
 function offHoursMarket() {
   return {
     ...createMockMarketInfo(),
     marketTokenAddress: GOLD,
-    borrowingFactorPerSecondForLongs: expandDecimals(50, 21),
-    borrowingFactorPerSecondForShorts: expandDecimals(50, 21),
+    borrowingFactorPerSecondForLongs: expandDecimals(14, 21),
+    borrowingFactorPerSecondForShorts: expandDecimals(14, 21),
   };
 }
 
@@ -44,7 +47,7 @@ function goldLong(marketInfo: ReturnType<typeof offHoursMarket>, collateralUsd: 
       sizeInUsd: SIZE_USD,
       collateralUsd,
     },
-    { netValue: collateralUsd }
+    { netValue: collateralUsd, sizeInTokens: SIZE_IN_TOKENS }
   );
 }
 
@@ -60,9 +63,15 @@ describe("getPositionOffHoursLiqRisk", () => {
   });
 
   it("warns when the off-hours config pushes time-to-liquidation into the zone while on-hours is safe", () => {
+    const position = goldLong(offHoursMarket(), expandDecimals(350, 30));
+
+    expect(getEstimatedLiquidationTimeInHours(position, MIN_COLLATERAL_USD)).toBeGreaterThanOrEqual(
+      SOFT_LIQUIDATION_HOURS
+    );
+
     const result = getPositionOffHoursLiqRisk({
       chainId: ARBITRUM,
-      position: goldLong(offHoursMarket(), expandDecimals(800, 30)),
+      position,
       minCollateralUsd: MIN_COLLATERAL_USD,
       userReferralInfo: undefined,
     });
@@ -71,9 +80,13 @@ describe("getPositionOffHoursLiqRisk", () => {
   });
 
   it("warns at high leverage even when the on-hours config is already at risk", () => {
+    const position = goldLong(offHoursMarket(), expandDecimals(250, 30));
+
+    expect(getEstimatedLiquidationTimeInHours(position, MIN_COLLATERAL_USD)).toBeLessThan(SOFT_LIQUIDATION_HOURS);
+
     const { showWarning } = getPositionOffHoursLiqRisk({
       chainId: ARBITRUM,
-      position: goldLong(offHoursMarket(), expandDecimals(300, 30)),
+      position,
       minCollateralUsd: MIN_COLLATERAL_USD,
       userReferralInfo: undefined,
     });
@@ -117,7 +130,8 @@ describe("isTradeboxOffHoursLiqRisk", () => {
         marketInfo: offHoursMarket(),
         isLong: true,
         nextSizeInUsd: SIZE_USD,
-        nextCollateralUsd: expandDecimals(800, 30),
+        nextSizeInTokens: SIZE_IN_TOKENS,
+        nextCollateralUsd: expandDecimals(350, 30),
         minCollateralUsd: MIN_COLLATERAL_USD,
       })
     ).toBe(true);
@@ -130,7 +144,8 @@ describe("isTradeboxOffHoursLiqRisk", () => {
         marketInfo: offHoursMarket(),
         isLong: true,
         nextSizeInUsd: SIZE_USD,
-        nextCollateralUsd: expandDecimals(300, 30),
+        nextSizeInTokens: SIZE_IN_TOKENS,
+        nextCollateralUsd: expandDecimals(250, 30),
         minCollateralUsd: MIN_COLLATERAL_USD,
       })
     ).toBe(true);
@@ -143,6 +158,7 @@ describe("isTradeboxOffHoursLiqRisk", () => {
         marketInfo: zeroFeeOffHoursMarket(),
         isLong: true,
         nextSizeInUsd: SIZE_USD,
+        nextSizeInTokens: SIZE_IN_TOKENS,
         nextCollateralUsd: expandDecimals(400, 30),
         minCollateralUsd: MIN_COLLATERAL_USD,
       })
@@ -156,6 +172,7 @@ describe("isTradeboxOffHoursLiqRisk", () => {
         marketInfo: offHoursMarket(),
         isLong: true,
         nextSizeInUsd: SIZE_USD,
+        nextSizeInTokens: SIZE_IN_TOKENS,
         nextCollateralUsd: expandDecimals(10_000, 30),
         minCollateralUsd: MIN_COLLATERAL_USD,
       })
@@ -169,6 +186,7 @@ describe("isTradeboxOffHoursLiqRisk", () => {
         marketInfo: nonOffHoursMarket(),
         isLong: true,
         nextSizeInUsd: SIZE_USD,
+        nextSizeInTokens: SIZE_IN_TOKENS,
         nextCollateralUsd: expandDecimals(800, 30),
         minCollateralUsd: MIN_COLLATERAL_USD,
       })

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { zeroAddress } from "viem";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "config/chains";
 import { getSortedMarketsAddressesKey } from "config/localStorage";
 import { SORTED_MARKETS } from "config/static/sortedMarkets";
 import {
@@ -68,13 +68,6 @@ function getSortedMarketsConfigs(marketsData?: MarketsData, sortedAddresses?: st
 }
 
 const FORCE_ALLOWED_COLLATERAL_TOKENS: Record<ContractsChainId, string[]> = {
-  // handled by wrapOrUnwrap or by stakeOrUnstake
-  [BOTANIX]: [
-    // bBTC
-    zeroAddress,
-    // pBTC
-    "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-  ],
   [MEGAETH]: [
     // ETH - handled by wrapOrUnwrap
     zeroAddress,

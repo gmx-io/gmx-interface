@@ -55,7 +55,6 @@ export type MarketInfo = Market &
     maxCollateralSumLongTokenShort: bigint;
     maxCollateralSumShortTokenLong: bigint;
     maxCollateralSumShortTokenShort: bigint;
-
     borrowingFactorLong: bigint;
     borrowingFactorShort: bigint;
     borrowingExponentFactorLong: bigint;
@@ -135,8 +134,10 @@ export type MarketInfo = Market &
     virtualPoolAmountForLongToken: bigint;
     virtualPoolAmountForShortToken: bigint;
     virtualInventoryForPositions: bigint;
+    virtualInventoryForPositionsInTokens: bigint;
 
     virtualMarketId: string;
+    virtualIndexTokenId: string;
     virtualLongTokenId: string;
     virtualShortTokenId: string;
   };
@@ -172,6 +173,7 @@ export const MARKET_VALUES_KEYS = [
   "virtualPoolAmountForLongToken",
   "virtualPoolAmountForShortToken",
   "virtualInventoryForPositions",
+  "virtualInventoryForPositionsInTokens",
 ] as const satisfies readonly (keyof MarketInfo)[];
 
 /**
@@ -248,6 +250,7 @@ export type MarketConfig = Pick<
   | "withdrawalFeeFactorBalanceWasImproved"
   | "withdrawalFeeFactorBalanceWasNotImproved"
   | "virtualMarketId"
+  | "virtualIndexTokenId"
   | "virtualLongTokenId"
   | "virtualShortTokenId"
 >;

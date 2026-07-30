@@ -145,7 +145,9 @@ export const MARKET_INFO_FIXTURE: MarketInfo = {
   virtualPoolAmountForLongToken: BigInt("0x032ecc6c8a9bf888ddd6"),
   virtualPoolAmountForShortToken: BigInt("0x2a389dc3f499"),
   virtualInventoryForPositions: BigInt("0x011bc30393022dc539e557527e9158b2"),
+  virtualInventoryForPositionsInTokens: 0n,
   virtualMarketId: "0xf5134a0a1379cd7f246d7a04d2463c57aa177bf09a34e93dafc5e768c05cea63",
+  virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
   virtualLongTokenId: "0x3c48977e4fc47fa4616e13af7ceb68b0d545dce7b1fb9ec7b85bb6e00870a051",
   virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
 };

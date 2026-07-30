@@ -65,6 +65,59 @@ export function hasStoredLocalStorageValue(key: LocalStorageKey | LocalStorageKe
   }
 }
 
+export function readLocalStorageItem<T>(
+  key: LocalStorageKey | LocalStorageKey[],
+  opts: {
+    deserializer: (value: string) => T | undefined;
+  }
+): T | undefined {
+  if (getShouldSkipKey(key)) {
+    return undefined;
+  }
+
+  try {
+    const stored = window.localStorage.getItem(JSON.stringify(key));
+
+    if (stored === null) {
+      return undefined;
+    }
+
+    return opts.deserializer(stored);
+  } catch (e) {
+    return undefined;
+  }
+}
+
+export function writeLocalStorageItem<T>(
+  key: LocalStorageKey | LocalStorageKey[],
+  value: T,
+  opts: {
+    serializer: (value: T) => string;
+  }
+): void {
+  if (getShouldSkipKey(key)) {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(JSON.stringify(key), opts.serializer(value));
+  } catch (e) {
+    // If user is in private mode or has storage restriction localStorage can throw
+  }
+}
+
+export function removeLocalStorageItem(key: LocalStorageKey | LocalStorageKey[]): void {
+  if (getShouldSkipKey(key)) {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(JSON.stringify(key));
+  } catch (e) {
+    // If user is in private mode or has storage restriction localStorage can throw
+  }
+}
+
 function tryGetLocalStorageItem<T>(key: string): T | undefined {
   const item = localStorage.getItem(key);
   if (!item) {

@@ -26,6 +26,10 @@ export function hasStaleMarketValues(
     return false;
   }
 
+  if (hasIncompleteMarketValues(configData, valuesData, disabledAddresses)) {
+    return true;
+  }
+
   const now = Date.now();
   const valuesByAddress = new Map(valuesData.map((v) => [v.marketTokenAddress, v]));
 
@@ -42,6 +46,36 @@ export function hasStaleMarketValues(
   }
 
   return false;
+}
+
+export function hasIncompleteMarketValues(
+  configData: RawMarketConfig[] | undefined,
+  valuesData: RawMarketValues[] | undefined,
+  disabledAddresses: Set<string>
+): boolean {
+  if (!configData || !valuesData) {
+    return false;
+  }
+
+  const valuesByAddress = new Map(valuesData.map((value) => [value.marketTokenAddress, value]));
+
+  return configData.some((config) => {
+    if (disabledAddresses.has(config.marketTokenAddress)) {
+      return false;
+    }
+
+    const value = valuesByAddress.get(config.marketTokenAddress);
+
+    return (
+      value === undefined ||
+      config.virtualIndexTokenId === undefined ||
+      config.maxCollateralSumLongTokenLong === undefined ||
+      config.maxCollateralSumLongTokenShort === undefined ||
+      config.maxCollateralSumShortTokenLong === undefined ||
+      config.maxCollateralSumShortTokenShort === undefined ||
+      value.virtualInventoryForPositionsInTokens === undefined
+    );
+  });
 }
 
 export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = true }: { enabled?: boolean } = {}) {
@@ -104,6 +138,7 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
     [configData]
   );
 
+  const isMarketsDataIncomplete = hasIncompleteMarketValues(configData, valuesData, disabledMarketAddresses);
   const isMarketsDataStale = hasStaleMarketValues(configData, valuesData, disabledMarketAddresses);
   if (configData) {
     ApiHealthTracker.getInstance().reportMarketsFreshness(chainId, isMarketsDataStale);
@@ -112,6 +147,7 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
   return {
     marketsInfoData,
     isStale: isValuesStale || isConfigStale || isMarketsDataStale,
+    isIncomplete: isMarketsDataIncomplete,
     error: valuesError ?? configError,
   };
 }

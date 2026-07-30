@@ -117,7 +117,7 @@ export function AppRoutes() {
 
   useEffect(() => {
     if (chainId && CONTRACTS_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
-      switchNetwork(Number(chainId), true).then(() => {
+      switchNetwork(Number(chainId), true, { fallbackToAppSelectionOnError: true }).then(() => {
         deleteSearchParam("chainId");
       });
     }

@@ -2,7 +2,7 @@ import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
 import { decodeFunctionResult, encodeFunctionData, isHex, maxUint256, type Hex, zeroAddress, zeroHash } from "viem";
 
-import type { AnyChainId, ContractsChainId } from "config/chains";
+import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import type {
   SignedSubaccountApproval,
@@ -154,10 +154,6 @@ export function getIsSubaccountNonceExpired({
     return false;
   }
 
-  if (chainId !== signedApproval.signatureChainId) {
-    return false;
-  }
-
   let onChainNonce: bigint;
   if (signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter")) {
     onChainNonce = onchainData.approvalNonce;
@@ -227,6 +223,17 @@ export function getIsSubaccountApprovalInvalid({
       signedApproval.subaccountRouterAddress !== subaccountRouterAddress);
 
   return result;
+}
+
+export function getSubaccountApprovalContextSrcChainId(
+  chainId: ContractsChainId,
+  signedApproval: SignedSubaccountApproval
+): SourceChainId | undefined {
+  if (isSourceChain(signedApproval.signatureChainId, chainId)) {
+    return signedApproval.signatureChainId;
+  }
+
+  return undefined;
 }
 
 export function getIsSubaccountExpired(subaccount: Subaccount): boolean {

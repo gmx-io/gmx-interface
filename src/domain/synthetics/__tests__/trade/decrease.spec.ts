@@ -3,8 +3,9 @@ import { describe, expect, it } from "vitest";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { PositionInfoLoaded } from "domain/synthetics/positions";
-import { TokenData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, getMidPrice, TokenData } from "domain/synthetics/tokens";
 import { expandDecimals } from "lib/numbers";
+import { getCappedPositionImpactUsd } from "sdk/utils/fees";
 import { getDecreasePositionAmounts } from "sdk/utils/trade/decrease";
 
 const closeSizeUsd = BigInt(99);
@@ -140,7 +141,9 @@ const marketInfo: MarketInfo = {
   virtualPoolAmountForLongToken: BigInt("0x032ecc6c8a9bf888ddd6"),
   virtualPoolAmountForShortToken: BigInt("0x2a389dc3f499"),
   virtualInventoryForPositions: BigInt("0x011bc30393022dc539e557527e9158b2"),
+  virtualInventoryForPositionsInTokens: 0n,
   virtualMarketId: "0xf5134a0a1379cd7f246d7a04d2463c57aa177bf09a34e93dafc5e768c05cea63",
+  virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
   virtualLongTokenId: "0x3c48977e4fc47fa4616e13af7ceb68b0d545dce7b1fb9ec7b85bb6e00870a051",
   virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
 };
@@ -210,7 +213,70 @@ const minCollateralUsd = BigInt(100000);
 const minPositionSizeUsd = BigInt(100000);
 const uiFeeFactor = BigInt(0);
 
-describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
+describe("getDecreasePositionAmounts", () => {
+  it("does not approximate token-OI decrease impact without a loaded position", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: position.sizeInUsd,
+      collateralToken: usdcToken,
+      position: undefined,
+      keepLeverage,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+
+    expect(amounts.sizeDeltaInTokens).toBe(0n);
+    expect(amounts.closePriceImpactDeltaUsd).toBe(0n);
+    expect(amounts.acceptablePrice).toBe(0n);
+  });
+
+  it("uses the exact position token size for a full-close impact preview", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: position.sizeInUsd,
+      collateralToken: usdcToken,
+      position,
+      keepLeverage,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+    const exactImpact = getCappedPositionImpactUsd(marketInfo, position.sizeInUsd, isLong, false, {
+      fallbackToZero: true,
+      shouldCapNegativeImpact: false,
+      sizeDeltaInTokens: position.sizeInTokens,
+    });
+    const approximateImpact = getCappedPositionImpactUsd(marketInfo, position.sizeInUsd, isLong, false, {
+      fallbackToZero: true,
+      shouldCapNegativeImpact: false,
+      sizeDeltaInTokens: convertToTokenAmount(
+        position.sizeInUsd,
+        marketInfo.indexToken.decimals,
+        getMidPrice(marketInfo.indexToken.prices)
+      ),
+    });
+
+    expect(amounts.isFullClose).toBe(true);
+    expect(amounts.sizeDeltaInTokens).toBe(position.sizeInTokens);
+    expect(amounts.closePriceImpactDeltaUsd).toBe(exactImpact.priceImpactDeltaUsd);
+    expect(exactImpact.priceImpactDeltaUsd).not.toBe(approximateImpact.priceImpactDeltaUsd);
+    expect(() =>
+      getCappedPositionImpactUsd(marketInfo, position.sizeInUsd, isLong, false, {
+        fallbackToZero: true,
+        shouldCapNegativeImpact: false,
+      })
+    ).toThrowError(`Missing sizeDeltaInTokens for token-OI decrease market ${marketInfo.marketTokenAddress}`);
+  });
+
   it("usdc collateral", () => {
     const amounts = getDecreasePositionAmounts({
       closeSizeUsd,

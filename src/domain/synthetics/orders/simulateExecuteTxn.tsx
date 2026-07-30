@@ -5,7 +5,7 @@ import { ContractFunctionParameters, encodeFunctionData, withRetry } from "viem"
 import { getContract, tryGetContract } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { decodeErrorFromViemError } from "lib/errors";
+import { decodeSimulationErrorFromViemError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
@@ -16,6 +16,7 @@ import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomErrorName } from "sdk/utils/errors";
+import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
@@ -185,10 +186,12 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         });
       }, retryConfig);
     } catch (txnError) {
-      handleSimulationTxnError(txnError, chainId, p, errorTitle);
+      return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
+
+    throw new Error("Execution simulation did not revert with EndOfOracleSimulation.");
   } else if (simulationRouterAddress) {
-    // v2.2c: create-only validation (SimulationRouter can't simulate without on-chain order)
+    simulationPayloadData.push(encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData));
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
     if (tenderlyConfig) {
@@ -200,7 +203,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         method: "multicall",
         params: [simulationPayloadData],
         value: p.value,
-        comment: `v2.2c create-only validation for ${method}`,
+        comment: `calling ${method}`,
       });
     }
 
@@ -216,9 +219,11 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
           blockNumber: blockNumber,
         });
       }, retryConfig);
-    } catch (createError) {
-      handleSimulationTxnError(createError, chainId, p, errorTitle);
+    } catch (txnError) {
+      return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
+
+    throw new Error("Execution simulation did not revert with EndOfOracleSimulation.");
   } else {
     simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "ExchangeRouter");
@@ -250,8 +255,10 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         });
       }, retryConfig);
     } catch (txnError) {
-      handleSimulationTxnError(txnError, chainId, p, errorTitle);
+      return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
+
+    throw new Error("Execution simulation did not revert with EndOfOracleSimulation.");
   }
 }
 
@@ -264,7 +271,7 @@ function handleSimulationTxnError(
   let msg: React.ReactNode = undefined;
 
   try {
-    const parsedError = decodeErrorFromViemError(txnError);
+    const parsedError = decodeSimulationErrorFromViemError(txnError);
     if (!parsedError) {
       const error = new Error("No data found in error.");
       error.cause = txnError;
@@ -317,10 +324,7 @@ function handleSimulationTxnError(
         <ToastifyDebug error={`${parsedError.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`} />
       </div>
     );
-  } catch (parsingError) {
-    // eslint-disable-next-line no-console
-    console.error(parsingError);
-
+  } catch {
     const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorParams?.content);
     msg = commonError.failMsg;
   }

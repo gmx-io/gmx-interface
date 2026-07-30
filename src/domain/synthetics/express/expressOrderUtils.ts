@@ -16,7 +16,8 @@ import {
   RawRelayParamsPayload,
   RelayParamsPayload,
 } from "domain/synthetics/express";
-import { getSubaccountValidations, Subaccount } from "domain/synthetics/subaccount";
+import type { Subaccount } from "domain/synthetics/subaccount";
+import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { TokenData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { metrics } from "lib/metrics";
