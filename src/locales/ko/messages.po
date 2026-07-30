@@ -3560,9 +3560,17 @@ msgstr "에러 바운더리 디버그 트리거 표시"
 msgid "Autocompound"
 msgstr "자동 복리"
 
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Liquidity to withdraw:"
+msgstr "인출할 유동성:"
+
 #: src/components/TVChart/Chart.tsx
 msgid "Market graph"
 msgstr "마켓 그래프"
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "After the deadline, trading and withdrawals on these markets are disabled, and capital left in them won't be accessible from the app. Close your positions and withdraw your liquidity now."
+msgstr "기한이 지나면 이 마켓에서 거래와 인출이 비활성화되며, 남아 있는 자금은 앱에서 접근할 수 없습니다. 지금 포지션을 종료하고 유동성을 인출하세요."
 
 #: src/domain/referrals/utils/referralsHelper.ts
 msgid "Only letters, numbers, and underscores allowed"
@@ -3620,6 +3628,11 @@ msgstr "펀딩 계수"
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
 msgstr "입금이 전송되었습니다"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Final notice: market delistings"
+msgstr "최종 안내: 마켓 상장 폐지"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -3721,11 +3734,6 @@ msgstr "이 조건가는 현재 청산가를 초과합니다. 이 TP/SL 주문�
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating..."
 msgstr "생성 중…"
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{0, plural, one {is} other {are}}"
-msgstr "{0, plural, one {곧} other {곧}}"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -4899,6 +4907,10 @@ msgstr "무기한 선물 애그리게이터"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Positions to close:"
+msgstr "종료할 포지션:"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -6999,6 +7011,10 @@ msgstr "청산까지 예상 시간"
 msgid "Mark price for the liquidation"
 msgstr "청산 시 기준가"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} will be disabled after August 5, 2026, 23:59 UTC. Close your {positionNoun} before then. Collateral left in open positions won't be accessible after that."
+msgstr "{markets}은(는) 2026년 8월 5일 23:59(UTC) 이후 비활성화됩니다. 그 전에 {positionNoun}을(를) 종료하세요. 오픈 포지션에 남은 담보는 이후에 접근할 수 없습니다."
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
@@ -7176,6 +7192,10 @@ msgstr "모든 포지션은 동일한 연결된 지갑에 속하며, {settlement
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "{tokenSymbol} 승인 중..."
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Your wallet {account} still holds capital in markets that are being delisted. These markets will be disabled after August 5, 2026, 23:59 UTC."
+msgstr "지갑 {account}에 상장 폐지 예정인 마켓의 자금이 아직 남아 있습니다. 이 마켓들은 2026년 8월 5일 23:59(UTC) 이후 비활성화됩니다."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -8272,10 +8292,6 @@ msgstr "최소 포지션 크기: {0}"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
-msgstr "{markets} {verb} 상장 폐지됩니다. 기존 {positionNoun}을(를) 종료하세요. 남은 포지션은 자동으로 종료될 수 있습니다."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr "중단"
@@ -8827,10 +8843,6 @@ msgstr "~5분"
 msgid "New tier:"
 msgstr "신규 등급:"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "Market delistings"
-msgstr "마켓 상장 폐지"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
@@ -8991,6 +9003,10 @@ msgstr "100배 레버리지로"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "가격 영향 없음. 이 규모에서 롱 증가 또는<0/>숏 감소 시 단일 체결가가<1/>적용됩니다."
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Close positions"
+msgstr "포지션 종료"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
@@ -10596,6 +10612,10 @@ msgstr "에스크로 GMX APR"
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "베스팅은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that."
+msgstr "{pools}은(는) 2026년 8월 5일 23:59(UTC) 이후 비활성화됩니다. 그 전에 유동성을 인출하세요. 비활성화된 풀에 남은 GM 토큰은 이후에 접근할 수 없습니다."
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "esGMX rewards:"
@@ -10848,10 +10868,6 @@ msgstr "<0>Camelot</0>을 통해 Arbitrum에서 APE를 구매하십시오"
 msgid "Depositing..."
 msgstr "입금 중…"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
-msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 예치할 수 없으므로 유동성을 인출하거나 GLV로 옮겨 계속 수익을 얻으세요."
-
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -11008,10 +11024,6 @@ msgstr "GMX trading chat"
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs trading simulations"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "Manage liquidity"
-msgstr "유동성 관리"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr "PnL 롱"
@@ -11150,6 +11162,11 @@ msgstr "GMX 대시보드 및 분석"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Withdraw liquidity"
+msgstr "유동성 인출"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"

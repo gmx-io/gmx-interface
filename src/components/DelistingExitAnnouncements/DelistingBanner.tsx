@@ -17,9 +17,10 @@ export function DelistingBanner({
   return (
     <AnnouncementBanner
       className="pointer-events-auto"
-      variant="warning"
+      variant="error"
       headerLabel={item.title}
       headerIcon="alert"
+      truncateHeader={false}
       onClose={handleClose}
     >
       {item.link ? (

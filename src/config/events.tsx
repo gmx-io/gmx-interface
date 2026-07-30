@@ -15,6 +15,15 @@ import sparkleIcon from "img/sparkle.svg";
 export type AnnouncementType = "listing" | "delisting" | "update" | "maintenance";
 export type AnnouncementVariant = "info" | "warning" | "error" | "success";
 
+export type EventLink = {
+  text: string;
+  href: string;
+  /**
+   * @default false
+   */
+  newTab?: boolean;
+};
+
 export type EventData = {
   id: string;
   type: AnnouncementType;
@@ -33,14 +42,8 @@ export type EventData = {
 
   variant?: AnnouncementVariant;
   chains?: number[];
-  link?: {
-    text: string;
-    href: string;
-    /**
-     * @default false
-     */
-    newTab?: boolean;
-  };
+  link?: EventLink;
+  links?: EventLink[];
 
   requiresOpenPosition?: string;
 };
