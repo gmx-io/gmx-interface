@@ -31,6 +31,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectExternalSwapBlockReason,
   selectExternalSwapDesirability,
   selectExternalSwapQuote,
   selectIsExternalSwapDisabledByExpressSchema,
@@ -38,6 +39,7 @@ import {
   selectIsWaitingForExternalSwapQuote,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
+  selectTradeboxSelectSwapToToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxIsTPSLEnabled,
@@ -59,6 +61,7 @@ import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
+import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
@@ -148,6 +151,7 @@ export function useTradeboxButtonState({
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
   const fromToken = useSelector(selectTradeboxFromToken);
+  const toToken = useSelector(selectTradeboxToToken);
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
   const tokensData = useSelector(selectTokensData);
@@ -309,8 +313,18 @@ export function useTradeboxButtonState({
         }
         case ValidationButtonTooltipName.noSwapPath: {
           tooltipContent = (
-            <NoSwapPathTooltipContent collateralToken={collateralToken} fromToken={fromToken} chainId={chainId} />
+            <NoSwapPathTooltipContent
+              collateralToken={collateralToken}
+              fromToken={fromToken}
+              chainId={chainId}
+              toToken={toToken}
+            />
           );
+          break;
+        }
+
+        case ValidationButtonTooltipName.insufficientGmxPoolLiquidity: {
+          tooltipContent = <InsufficientGmxPoolLiquidityTooltipContent />;
           break;
         }
 
@@ -343,6 +357,7 @@ export function useTradeboxButtonState({
     nativeGasError,
     collateralToken,
     fromToken,
+    toToken,
     isLeverageSliderEnabled,
     detectAndSetAvailableMaxLeverage,
   ]);
@@ -822,16 +837,87 @@ function useDetectAndSetAvailableMaxLeverage({
   ]);
 }
 
+function InsufficientGmxPoolLiquidityTooltipContent() {
+  const chainId = useSelector(selectChainId);
+  const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
+  const fromToken = useSelector(selectTradeboxFromToken);
+  const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const { setTradeMode } = useSelector(selectTradeboxState);
+
+  const handleSwitchToMarketOrder = useCallback(() => {
+    setTradeMode(TradeMode.Market);
+  }, [setTradeMode]);
+
+  switch (externalSwapBlockReason) {
+    case "oneClickTrading":
+      return (
+        <Trans>
+          GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading.
+          Disable One-Click Trading to proceed.
+        </Trans>
+      );
+    case "gasTokenConflict":
+      return (
+        <Trans>
+          GMX pools can't fill this swap size. It needs an external route, which isn't available while the gas payment
+          token matches the token you're swapping to. Change the gas payment token to proceed.
+        </Trans>
+      );
+    case "orderTypeNotSupported":
+      return (
+        <Trans>
+          TWAP swaps use GMX pool liquidity only, which can't fill this order size.
+          <br />
+          <br />
+          <span onClick={handleSwitchToMarketOrder} className="Tradebox-handle">
+            Switch to a market order
+          </span>{" "}
+          to enable external routes.
+        </Trans>
+      );
+    case "noRouteFound": {
+      const aggregatorSwapUrl = getExternalAggregatorSwapUrl({
+        chainId,
+        isFromTokenGmxAccount,
+        fromTokenAddress: fromToken?.address,
+        toTokenAddress: swapToToken?.address,
+      });
+
+      if (!aggregatorSwapUrl) {
+        return (
+          <Trans>
+            GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount.
+          </Trans>
+        );
+      }
+
+      return (
+        <Trans>
+          GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or{" "}
+          <ExternalLink href={aggregatorSwapUrl}>swap on an external aggregator</ExternalLink>.
+        </Trans>
+      );
+    }
+    default:
+      return <Trans>GMX pools don't have enough liquidity for this swap size. Try reducing the amount.</Trans>;
+  }
+}
+
 function NoSwapPathTooltipContent({
   collateralToken,
   fromToken,
   chainId,
+  toToken,
 }: {
   collateralToken: TokenData | undefined;
   fromToken: TokenData | undefined;
   chainId: number;
+  toToken: TokenData | undefined;
 }) {
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
 
   const makeHandleSwapClick = useCallback(
     (fromTokenSymbol: string, toTokenSymbol: string) => () => {
@@ -845,6 +931,32 @@ function NoSwapPathTooltipContent({
 
   if (!fromToken) {
     return <Trans>No swap path available</Trans>;
+  }
+
+  if (isSwap) {
+    const aggregatorSwapUrl = getExternalAggregatorSwapUrl({
+      chainId,
+      isFromTokenGmxAccount,
+      fromTokenAddress: fromToken.address,
+      toTokenAddress: toToken?.address,
+    });
+
+    if (!aggregatorSwapUrl) {
+      return (
+        <Trans>
+          No GMX swap route found for {fromToken.assetSymbol ?? fromToken.symbol} to{" "}
+          {toToken?.assetSymbol ?? toToken?.symbol}.
+        </Trans>
+      );
+    }
+
+    return (
+      <Trans>
+        No GMX swap route found for {fromToken.assetSymbol ?? fromToken.symbol} to{" "}
+        {toToken?.assetSymbol ?? toToken?.symbol}. Try{" "}
+        <ExternalLink href={aggregatorSwapUrl}>an external aggregator</ExternalLink>.
+      </Trans>
+    );
   }
 
   const collateralSymbol = collateralToken?.assetSymbol ?? collateralToken?.symbol;

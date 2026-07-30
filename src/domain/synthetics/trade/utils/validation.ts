@@ -53,6 +53,7 @@ export enum ValidationButtonTooltipName {
   liqPriceGtMarkPrice = "liqPrice > markPrice",
   noSwapPath = "noSwapPath",
   minDeposit = "minDeposit",
+  insufficientGmxPoolLiquidity = "insufficientGmxPoolLiquidity",
 }
 
 export enum ValidationBannerErrorName {
@@ -204,11 +205,15 @@ export function getSwapError(p: {
 
   if (
     (!isLimit || isTwap) &&
+    !isWrapOrUnwrap &&
     !externalSwapQuote &&
     !isExternalSwapLoading &&
     (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)
   ) {
-    return { buttonErrorMessage: t`Insufficient liquidity` };
+    return {
+      buttonErrorMessage: t`Insufficient GMX pool liquidity`,
+      buttonTooltipName: ValidationButtonTooltipName.insufficientGmxPoolLiquidity,
+    };
   }
 
   if (fromTokenAmount > (fromToken.balance ?? 0n)) {

@@ -1,5 +1,4 @@
 import { useMemo, useRef } from "react";
-import { usePrevious } from "react-use";
 import useSWR from "swr";
 
 import { useDebounce } from "lib/debounce/useDebounce";
@@ -7,18 +6,28 @@ import { metrics, KyberSwapQuoteTiming } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
+import { ExternalSwapAggregator, ExternalSwapCalculationStrategy, ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getKyberSwapTxnData, KyberSwapQuote } from "./kyberSwap";
-import { isAmountWithinKeyTolerance } from "./utils";
+import { ExternalSwapRequestKey } from "./types";
+import { getExternalSwapRequestKey, isAbortError, isAmountWithinKeyTolerance } from "./utils";
 
-function useStableRequestAmountIn(amountIn: bigint | undefined, resetKey: string): bigint | undefined {
+function useStableRequestAmountIn(
+  amountIn: bigint | undefined,
+  resetKey: string,
+  stabilizationEnabled: boolean
+): bigint | undefined {
   const ref = useRef<{ resetKey: string; value: bigint } | undefined>(undefined);
 
   if (amountIn === undefined || amountIn <= 0n) {
     ref.current = undefined;
     return undefined;
+  }
+
+  if (!stabilizationEnabled) {
+    ref.current = undefined;
+    return amountIn;
   }
 
   const prev = ref.current;
@@ -30,6 +39,8 @@ function useStableRequestAmountIn(amountIn: bigint | undefined, resetKey: string
   return prev.value;
 }
 
+type OutputRequestData = KyberSwapQuote & { requestKey: ExternalSwapRequestKey | undefined };
+
 export function useExternalSwapOutputRequest({
   chainId,
   tokenInAddress,
@@ -38,6 +49,7 @@ export function useExternalSwapOutputRequest({
   amountIn,
   slippage,
   gasPrice,
+  strategy,
   enabled = true,
 }: {
   chainId: ContractsChainId;
@@ -47,9 +59,14 @@ export function useExternalSwapOutputRequest({
   amountIn: bigint | undefined;
   slippage: number | undefined;
   gasPrice: bigint | undefined;
+  strategy: ExternalSwapCalculationStrategy | undefined;
   enabled?: boolean;
 }) {
-  const stableAmountIn = useStableRequestAmountIn(amountIn, `${tokenInAddress}:${tokenOutAddress}:${slippage}`);
+  const stableAmountIn = useStableRequestAmountIn(
+    amountIn,
+    `${tokenInAddress}:${tokenOutAddress}:${slippage}`,
+    strategy === "leverageBySize"
+  );
 
   const swapKey =
     enabled &&
@@ -65,12 +82,17 @@ export function useExternalSwapOutputRequest({
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
-  const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
-  const prevTokensKey = usePrevious(tokensKey);
-  const prevAmountIn = usePrevious(amountIn);
-  const { data, error } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
-    keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
+
+  const isDataUpToDate = debouncedKey === swapKey;
+
+  const abortControllerRef = useRef<AbortController | undefined>(undefined);
+
+  const { data, error } = useSWR<OutputRequestData | undefined>(debouncedKey, {
     fetcher: async () => {
+      abortControllerRef.current?.abort();
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+
       try {
         if (
           !tokenInAddress ||
@@ -94,6 +116,7 @@ export function useExternalSwapOutputRequest({
           amountIn: stableAmountIn,
           gasPrice,
           slippage,
+          signal: abortController.signal,
         });
 
         metrics.pushTiming<KyberSwapQuoteTiming>("kyberSwap.quote.timing", Date.now() - startTime);
@@ -102,8 +125,20 @@ export function useExternalSwapOutputRequest({
           throw new Error("Failed to fetch KyberSwap txn data");
         }
 
-        return result;
+        const requestKey = getExternalSwapRequestKey({
+          fromTokenAddress: tokenInAddress,
+          toTokenAddress: tokenOutAddress,
+          strategy,
+          amountIn: stableAmountIn,
+          desiredAmountOut: undefined,
+          slippage,
+        });
+
+        return { ...result, requestKey };
       } catch (error) {
+        if (isAbortError(error)) {
+          throw error;
+        }
         // eslint-disable-next-line no-console
         console.error("Error fetching external swap quote", error);
         metrics.pushError(error, "externalSwap.useExternalSwapOutputRequest");
@@ -119,11 +154,11 @@ export function useExternalSwapOutputRequest({
 
   return useMemo(() => {
     if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
-      return { error };
+      return { error, isDataUpToDate };
     }
 
     if (!data) {
-      return { error };
+      return { error, isDataUpToDate };
     }
 
     const needSpenderApproval = getNeedTokenApprove(
@@ -156,6 +191,17 @@ export function useExternalSwapOutputRequest({
       },
     };
 
-    return { quote, error };
-  }, [amountIn, tokenInAddress, tokenOutAddress, gasPrice, receiverAddress, chainId, data, error, tokensAllowanceData]);
+    return { quote, requestKey: data.requestKey, error, isDataUpToDate };
+  }, [
+    amountIn,
+    tokenInAddress,
+    tokenOutAddress,
+    gasPrice,
+    receiverAddress,
+    chainId,
+    data,
+    error,
+    tokensAllowanceData,
+    isDataUpToDate,
+  ]);
 }

@@ -1,15 +1,43 @@
 import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
+import { getToken } from "sdk/configs/tokens";
 
 export const PRODUCTION_HOST = "https://app.gmx.io";
 export const JUMPER_EXCHANGE_URL = "https://jumper.exchange/";
 
-export function getExternalAggregatorSwapUrlFromAddresses(chainId: number, fromAddress?: string, toAddress?: string) {
+const ONE_INCH_SUPPORTED_CHAIN_IDS: number[] = [ARBITRUM, AVALANCHE];
+
+function getTokenSymbolSafe(chainId: number, address: string): string | undefined {
+  try {
+    const token = getToken(chainId, address);
+    const assetSymbol = token.assetSymbol?.includes(" ") ? undefined : token.assetSymbol;
+    return assetSymbol ?? token.symbol;
+  } catch {
+    return undefined;
+  }
+}
+
+export function getExternalAggregatorSwapUrlFromAddresses(
+  chainId: number,
+  fromAddress?: string,
+  toAddress?: string
+): string | undefined {
   if (MEGAETH === chainId) {
     return JUMPER_EXCHANGE_URL;
   }
 
-  const addressesStr = [fromAddress, toAddress].filter(Boolean).join("/");
-  return `https://app.1inch.io/#/${chainId}/simple/swap/${addressesStr}`;
+  if (!ONE_INCH_SUPPORTED_CHAIN_IDS.includes(chainId)) {
+    return undefined;
+  }
+
+  const fromSymbol = fromAddress ? getTokenSymbolSafe(chainId, fromAddress) : undefined;
+  const toSymbol = toAddress ? getTokenSymbolSafe(chainId, toAddress) : undefined;
+
+  const params = [
+    fromSymbol ? `src=${chainId}:${encodeURIComponent(fromSymbol)}` : undefined,
+    toSymbol ? `dst=${chainId}:${encodeURIComponent(toSymbol)}` : undefined,
+  ].filter(Boolean);
+
+  return params.length > 0 ? `https://1inch.com/swap?${params.join("&")}` : "https://1inch.com/swap";
 }
 
 export const JUMPER_BRIDGE_URL = "https://jumper.exchange/";

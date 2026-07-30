@@ -47,26 +47,33 @@ const baseSwapParams = {
 };
 
 describe("getSwapError — isExternalSwapLoading gate", () => {
-  it("returns 'Insufficient liquidity' when no external quote and no internal liquidity", () => {
-    expect(getSwapError(baseSwapParams).buttonErrorMessage).toBe("Insufficient liquidity");
+  it("returns 'Insufficient GMX pool liquidity' when no external quote and no internal liquidity", () => {
+    const result = getSwapError(baseSwapParams);
+    expect(result.buttonErrorMessage).toBe("Insufficient GMX pool liquidity");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.insufficientGmxPoolLiquidity);
   });
 
-  it("does NOT return 'Insufficient liquidity' while external swap quote is loading", () => {
+  it("does NOT return 'Insufficient GMX pool liquidity' while external swap quote is loading", () => {
     const result = getSwapError({ ...baseSwapParams, isExternalSwapLoading: true });
-    expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity");
+    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
   });
 
-  it("does NOT return 'Insufficient liquidity' when external quote already exists", () => {
+  it("does NOT return 'Insufficient GMX pool liquidity' when external quote already exists", () => {
     const result = getSwapError({
       ...baseSwapParams,
       externalSwapQuote: mockExternalSwapQuote(),
     });
-    expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity");
+    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
   });
 
   it("ignores liquidity check entirely for limit (non-twap) orders", () => {
     const result = getSwapError({ ...baseSwapParams, isLimit: true });
-    expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity");
+    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
+  });
+
+  it("ignores liquidity check for wrap/unwrap", () => {
+    const result = getSwapError({ ...baseSwapParams, isWrapOrUnwrap: true });
+    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
   });
 });
 
