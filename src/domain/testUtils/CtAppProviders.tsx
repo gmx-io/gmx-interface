@@ -34,6 +34,7 @@ function AutoConnect({ chainId, children }: { chainId?: number; children: ReactN
     }
   }, [account.status, connect, connectors, chainId]);
 
+  // mount children only when connected so effects don't run twice
   if (account.status !== "connected" || (chainId !== undefined && account.chainId !== chainId)) {
     return null;
   }
@@ -41,8 +42,10 @@ function AutoConnect({ chainId, children }: { chainId?: number; children: ReactN
   return <>{children}</>;
 }
 
-export type OneClickCtProvidersProps = {
+export type CtAppProvidersProps = {
   wagmiConfig: Config;
+  /** Auto-connect the mock wallet before mounting children (default). Set false for disconnected scenarios. */
+  autoConnect?: boolean;
   /** When set, the mock connector connects on this chain and children render only once it is current. */
   connectChainId?: number;
   children: ReactNode;
@@ -50,10 +53,29 @@ export type OneClickCtProvidersProps = {
 
 /**
  * The full app provider stack required to mount trading UI (SettingsModal, TradeBox)
- * in One-Click component tests, including auto-connecting the mock wallet
+ * in component tests, including auto-connecting the mock wallet
  * and a ToastContainer for status toasts.
  */
-export function OneClickCtProviders({ wagmiConfig, connectChainId, children }: OneClickCtProvidersProps) {
+export function CtAppProviders({ wagmiConfig, autoConnect = true, connectChainId, children }: CtAppProvidersProps) {
+  let content = (
+    <>
+      {children}
+      <ToastContainer
+        limit={1}
+        position="bottom-right"
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick={false}
+        draggable={false}
+        icon={false}
+      />
+    </>
+  );
+
+  if (autoConnect) {
+    content = <AutoConnect chainId={connectChainId}>{content}</AutoConnect>;
+  }
+
   return (
     <MemoryRouter initialEntries={INITIAL_ENTRIES}>
       <ThemeProvider>
@@ -70,20 +92,7 @@ export function OneClickCtProviders({ wagmiConfig, connectChainId, children }: O
                             <TokenPermitsContextProvider>
                               <SubaccountContextProvider>
                                 <TokensFavoritesContextProvider>
-                                  <SorterContextProvider>
-                                    <AutoConnect chainId={connectChainId}>
-                                      {children}
-                                      <ToastContainer
-                                        limit={1}
-                                        position="bottom-right"
-                                        hideProgressBar={true}
-                                        newestOnTop={false}
-                                        closeOnClick={false}
-                                        draggable={false}
-                                        icon={false}
-                                      />
-                                    </AutoConnect>
-                                  </SorterContextProvider>
+                                  <SorterContextProvider>{content}</SorterContextProvider>
                                 </TokensFavoritesContextProvider>
                               </SubaccountContextProvider>
                             </TokenPermitsContextProvider>

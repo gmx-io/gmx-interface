@@ -4,9 +4,9 @@ import { useState } from "react";
 import { ARBITRUM } from "config/chains";
 import { getExpressOrdersEnabledKey, getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import { serializeSubaccountApproval } from "domain/synthetics/subaccount/subaccountApprovalStorage";
+import { CtAppProviders } from "domain/testUtils/CtAppProviders";
 import { MOCK_ACCOUNT, mockWagmiConfig } from "domain/testUtils/mockSyntheticsState";
 import { MockSyntheticsStateProvider } from "domain/testUtils/MockSyntheticsStateProvider";
-import { OneClickCtProviders } from "domain/testUtils/OneClickCtProviders";
 import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 import type { SignedSubaccountApproval } from "sdk/utils/subaccount";
@@ -68,10 +68,10 @@ export function OneClickTradingModeStory({
   const [isSettingsVisible, setIsSettingsVisible] = useState(true);
 
   return (
-    <OneClickCtProviders wagmiConfig={mockWagmiConfig}>
+    <CtAppProviders wagmiConfig={mockWagmiConfig}>
       <MockSyntheticsStateProvider>
         <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       </MockSyntheticsStateProvider>
-    </OneClickCtProviders>
+    </CtAppProviders>
   );
 }

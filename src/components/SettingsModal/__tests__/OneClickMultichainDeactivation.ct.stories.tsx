@@ -9,11 +9,11 @@ import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
+import { CtAppProviders } from "domain/testUtils/CtAppProviders";
 import { MOCK_L1_EXPRESS_ORDER_GAS_REFERENCE } from "domain/testUtils/mockChainData";
 import { MOCK_ACCOUNT, mockMultichainWagmiConfig } from "domain/testUtils/mockSyntheticsState";
 import { MockSyntheticsStateProvider, DEFAULT_MOCK_TOKENS_DATA } from "domain/testUtils/MockSyntheticsStateProvider";
 import { ETH_ADDRESS, ETH_TOKEN } from "domain/testUtils/mockTokens";
-import { OneClickCtProviders } from "domain/testUtils/OneClickCtProviders";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 
@@ -90,10 +90,10 @@ export function OneClickMultichainDeactivationStory({
   const [isSettingsVisible, setIsSettingsVisible] = useState(true);
 
   return (
-    <OneClickCtProviders wagmiConfig={mockMultichainWagmiConfig} connectChainId={SOURCE_BASE_MAINNET}>
+    <CtAppProviders wagmiConfig={mockMultichainWagmiConfig} connectChainId={SOURCE_BASE_MAINNET}>
       <MultichainSyntheticsState>
         <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       </MultichainSyntheticsState>
-    </OneClickCtProviders>
+    </CtAppProviders>
   );
 }

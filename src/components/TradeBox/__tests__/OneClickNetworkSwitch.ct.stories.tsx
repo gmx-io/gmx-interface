@@ -11,9 +11,9 @@ import {
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
 import { serializeSubaccountApproval } from "domain/synthetics/subaccount/subaccountApprovalStorage";
+import { CtAppProviders } from "domain/testUtils/CtAppProviders";
 import { MOCK_ACCOUNT, mockMultichainWagmiConfig } from "domain/testUtils/mockSyntheticsState";
 import { MockSyntheticsStateProvider } from "domain/testUtils/MockSyntheticsStateProvider";
-import { OneClickCtProviders } from "domain/testUtils/OneClickCtProviders";
 import { useChainId } from "lib/chains";
 import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
@@ -98,13 +98,13 @@ export function OneClickNetworkSwitchStory({
   });
 
   return (
-    <OneClickCtProviders wagmiConfig={mockMultichainWagmiConfig}>
+    <CtAppProviders wagmiConfig={mockMultichainWagmiConfig}>
       <SyntheticsStateWithAppChainContext>
         <NetworkSwitchControl />
         <div className="text-body-medium flex flex-col rounded-8">
           <TradeBox isMobile={false} />
         </div>
       </SyntheticsStateWithAppChainContext>
-    </OneClickCtProviders>
+    </CtAppProviders>
   );
 }

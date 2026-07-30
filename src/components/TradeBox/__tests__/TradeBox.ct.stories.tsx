@@ -1,34 +1,16 @@
-import { i18n } from "@lingui/core";
-import { I18nProvider } from "@lingui/react";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { MemoryRouter } from "react-router-dom";
-import { useAccount, useConnect, WagmiProvider } from "wagmi";
 
 import { ARBITRUM } from "config/chains";
 import { getLeverageKey, getSyntheticsTradeOptionsKey, TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
-import { ChainContextProvider } from "context/ChainContext/ChainContext";
-import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
-import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
-import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
-import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
-import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
-import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import type { MarketsInfoData } from "domain/synthetics/markets";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
 import type { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
+import { CtAppProviders } from "domain/testUtils/CtAppProviders";
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS, SECOND_ETH_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
-import {
-  MOCK_ACCOUNT,
-  mockQueryClient as queryClient,
-  mockWagmiConfig as wagmiConfig,
-} from "domain/testUtils/mockSyntheticsState";
+import { MOCK_ACCOUNT, mockWagmiConfig as wagmiConfig } from "domain/testUtils/mockSyntheticsState";
 import { MockSyntheticsStateProvider, DEFAULT_MOCK_TOKENS_DATA } from "domain/testUtils/MockSyntheticsStateProvider";
 import { ETH_ADDRESS, ETH_TOKEN, NATIVE_ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
@@ -36,26 +18,6 @@ import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import { TradeBox } from "../TradeBox";
 import { TradeBoxHeaderTabs } from "../TradeBoxHeaderTabs";
-
-const INITIAL_ENTRIES = ["/trade"];
-
-function AutoConnect({ children }: { children: ReactNode }) {
-  const { connect, connectors } = useConnect();
-  const { status } = useAccount();
-
-  useEffect(() => {
-    if (status === "disconnected") {
-      connect({ connector: connectors[0] });
-    }
-  }, [status, connect, connectors]);
-
-  // mount children only when connected so effects don't run twice
-  if (status !== "connected") {
-    return null;
-  }
-
-  return <>{children}</>;
-}
 
 /** Writes localStorage entries synchronously before children mount, so stateful hooks pick them up on init. */
 function SeedLocalStorage({ entries, children }: { entries: Array<[string, string]>; children: ReactNode }) {
@@ -283,39 +245,9 @@ export function TradeBoxStory({
     content = <AcceptablePriceImpactSetting>{content}</AcceptablePriceImpactSetting>;
   }
 
-  if (isConnected) {
-    content = <AutoConnect>{content}</AutoConnect>;
-  }
-
   return (
-    <MemoryRouter initialEntries={INITIAL_ENTRIES}>
-      <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={wagmiConfig}>
-          <GmxAccountContextProvider>
-            <ChainContextProvider>
-              <GlobalStateProvider>
-                <SettingsContextProvider>
-                  <PendingTxnsContextProvider>
-                    <I18nProvider i18n={i18n}>
-                      <ConnectModalProvider>
-                        <TokensBalancesContextProvider>
-                          <TokenPermitsContextProvider>
-                            <SubaccountContextProvider>
-                              <TokensFavoritesContextProvider>
-                                <SorterContextProvider>{content}</SorterContextProvider>
-                              </TokensFavoritesContextProvider>
-                            </SubaccountContextProvider>
-                          </TokenPermitsContextProvider>
-                        </TokensBalancesContextProvider>
-                      </ConnectModalProvider>
-                    </I18nProvider>
-                  </PendingTxnsContextProvider>
-                </SettingsContextProvider>
-              </GlobalStateProvider>
-            </ChainContextProvider>
-          </GmxAccountContextProvider>
-        </WagmiProvider>
-      </QueryClientProvider>
-    </MemoryRouter>
+    <CtAppProviders wagmiConfig={wagmiConfig} autoConnect={isConnected}>
+      {content}
+    </CtAppProviders>
   );
 }
