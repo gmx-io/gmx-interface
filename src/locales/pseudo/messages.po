@@ -1886,6 +1886,10 @@ msgstr ""
 msgid "Size (% of position)"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signature request was rejected in your wallet. Retry and confirm the request to deactivate."
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "100+ crypto tokens"
 msgstr ""
@@ -2440,6 +2444,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -5980,6 +5988,10 @@ msgstr ""
 msgid "Lifetime staking rewards"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr ""
@@ -8669,6 +8681,10 @@ msgstr ""
 msgid "Top positions"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
+msgstr ""
+
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
@@ -9231,6 +9247,10 @@ msgstr ""
 msgid "Events for account:"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
@@ -9532,6 +9552,10 @@ msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1y"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "An unexpected error occurred. Please retry."
 msgstr ""
 
 #: src/components/Errors/ErrorBoundary.tsx
@@ -10279,6 +10303,10 @@ msgstr ""
 msgid "Invalid recipient address"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Express transaction data is still loading. Please retry in a few seconds."
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
@@ -10734,6 +10762,7 @@ msgstr ""
 msgid "Cancelling {orderText}..."
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"

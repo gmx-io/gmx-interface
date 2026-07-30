@@ -1886,6 +1886,10 @@ msgstr "{ordersText} をキャンセル中..."
 msgid "Size (% of position)"
 msgstr "サイズ（ポジションの %）"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signature request was rejected in your wallet. Retry and confirm the request to deactivate."
+msgstr "ウォレットで署名リクエストが拒否されました。再度お試しいただき、リクエストを承認して無効化してください。"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "100+ crypto tokens"
 msgstr "100種類以上の暗号資産"
@@ -2441,6 +2445,10 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
 msgstr "グループ化"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
+msgstr "ネットワーク手数料を支払うためのGas支払いトークンの残高がGMX Accountに不足しています。資金を入金してから再度お試しください。"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
@@ -5980,6 +5988,10 @@ msgstr "GLVボーナスインセンティブ"
 msgid "Lifetime staking rewards"
 msgstr "累計ステーキング報酬"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
+msgstr "One-Click Trading には現在のネットワーク用の一度限りの署名が必要です。他のネットワークで署名した承認は影響を受けません。ここで One-Click Trading を有効にするには再署名してください。"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "お客様の資金は送信先チェーンのLayerZeroに安全に保管されています。LayerZero Scanで受信トランザクションを再試行するか、サポートにお問い合わせください。"
@@ -8669,6 +8681,10 @@ msgstr "One-Click TradingとExpress Tradingで、ブロックチェーンの混�
 msgid "Top positions"
 msgstr "トップポジション"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
+msgstr "ネットワーク手数料を支払うための {nativeTokenSymbol} 残高が不足しています。資金を追加してから再度お試しください。"
+
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
@@ -9231,6 +9247,10 @@ msgstr "リベート"
 msgid "Events for account:"
 msgstr "アカウントのイベント："
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
+msgstr "リクエストは送信されましたが、結果を確認できませんでした。すでに完了している可能性があります。再度お試しいただくと、状態を確認して無効化を完了できます。"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
@@ -9533,6 +9553,10 @@ msgstr "ベスティング用に予約されたトークン：{0}"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1y"
 msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "An unexpected error occurred. Please retry."
+msgstr "予期しないエラーが発生しました。再度お試しください。"
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
@@ -10279,6 +10303,10 @@ msgstr "ブリッジ入金に失敗しました"
 msgid "Invalid recipient address"
 msgstr "無効な受取人アドレス"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Express transaction data is still loading. Please retry in a few seconds."
+msgstr "Express トランザクションのデータを読み込み中です。数秒後に再度お試しください。"
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
@@ -10734,6 +10762,7 @@ msgstr "最終価格"
 msgid "Cancelling {orderText}..."
 msgstr "{orderText}をキャンセル中…"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"

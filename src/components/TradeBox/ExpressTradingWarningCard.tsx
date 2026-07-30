@@ -101,6 +101,7 @@ export function ExpressTradingWarningCard({
     shouldShowNonceExpiredWarning,
     shouldShowOutOfGasPaymentBalanceWarning,
     shouldShowSubaccountApprovalInvalidWarning,
+    shouldShowSubaccountApprovalForAnotherNetworkWarning,
     shouldShowExternalSwapSubaccountBlockedWarning,
     shouldShowExternalSwapGasConflictRequiredWarning,
     shouldShowExternalSwapGasConflictOptionalWarning,
@@ -109,6 +110,9 @@ export function ExpressTradingWarningCard({
   } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap, isGmxAccount });
 
   const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);
+  const prevShouldShowSubaccountApprovalForAnotherNetworkWarning = usePrevious(
+    shouldShowSubaccountApprovalForAnotherNetworkWarning
+  );
   const prevShouldShowExternalSwapSubaccountBlockedWarning = usePrevious(
     shouldShowExternalSwapSubaccountBlockedWarning
   );
@@ -122,6 +126,8 @@ export function ExpressTradingWarningCard({
     if (isVisible) return;
     const transitionedToTrue =
       (!prevShouldShowSubaccountApprovalInvalidWarning && shouldShowSubaccountApprovalInvalidWarning) ||
+      (!prevShouldShowSubaccountApprovalForAnotherNetworkWarning &&
+        shouldShowSubaccountApprovalForAnotherNetworkWarning) ||
       (!prevShouldShowExternalSwapSubaccountBlockedWarning && shouldShowExternalSwapSubaccountBlockedWarning) ||
       (!prevShouldShowExternalSwapGasConflictRequiredWarning && shouldShowExternalSwapGasConflictRequiredWarning) ||
       (!prevShouldShowExternalSwapGasConflictOptionalWarning && shouldShowExternalSwapGasConflictOptionalWarning);
@@ -132,6 +138,8 @@ export function ExpressTradingWarningCard({
     isVisible,
     prevShouldShowSubaccountApprovalInvalidWarning,
     shouldShowSubaccountApprovalInvalidWarning,
+    prevShouldShowSubaccountApprovalForAnotherNetworkWarning,
+    shouldShowSubaccountApprovalForAnotherNetworkWarning,
     prevShouldShowExternalSwapSubaccountBlockedWarning,
     shouldShowExternalSwapSubaccountBlockedWarning,
     prevShouldShowExternalSwapGasConflictRequiredWarning,
@@ -217,6 +225,17 @@ export function ExpressTradingWarningCard({
       history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
       onAfterAction?.();
     };
+  } else if (shouldShowSubaccountApprovalForAnotherNetworkWarning) {
+    icon = OneClickIcon;
+    color = "yellow";
+    content = (
+      <Trans>
+        One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are
+        unaffected. Re-sign to enable One-Click Trading here.
+      </Trans>
+    );
+    buttonText = <Trans>Re-sign</Trans>;
+    onClick = handleUpdateSubaccountSettings;
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
     color = "yellow";
