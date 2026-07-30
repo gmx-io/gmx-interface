@@ -3075,10 +3075,6 @@ msgstr "Desactivar 1CT"
 msgid "Check again"
 msgstr "Volver a comprobar"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Stake more GMX to increase your tier and earn more rewards."
-msgstr "Haz staking de más GMX para aumentar tu nivel y ganar más recompensas."
-
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -8988,6 +8984,10 @@ msgstr "De"
 msgid "No events"
 msgstr "Sin eventos"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trade to unlock higher volume tiers and earn more rewards."
+msgstr "Opera para desbloquear niveles de volumen superiores y obtener más recompensas."
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
 msgstr "Programaremos una conversación con usted. Como agradecimiento, recibirá <0>100 <1/></0> por sus comentarios."
@@ -9779,10 +9779,6 @@ msgstr ""
 msgid "for {comment}"
 msgstr "para {comment}"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Trade more to reach a higher tier and earn more rewards."
-msgstr "Opera más para alcanzar un nivel superior y ganar más recompensas."
-
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Adding esGMX extends your current vesting: your existing tokens will finish converting on <0>{0} instead of {1}</0>."
 msgstr "Añadir esGMX amplía su vesting actual: sus tokens existentes terminarán de convertirse el <0>{0} en lugar del {1}</0>."
@@ -9927,6 +9923,10 @@ msgstr "El impacto en el precio excede el tamaño de la orden. Impacto: {priceIm
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Active · next epoch"
 msgstr "Activo · próxima época"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake GMX to reach a higher tier and earn more rewards."
+msgstr "Haz staking de GMX para alcanzar un nivel superior y obtener más recompensas."
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -12133,6 +12133,10 @@ msgstr "La orden no se ejecutará: el precio de activación supera el precio de 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
 msgstr "Liquidando..."
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trade {0} to reach the {1} tier and earn rewards."
+msgstr "Opera {0} para alcanzar el nivel {1} y obtener recompensas."
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx

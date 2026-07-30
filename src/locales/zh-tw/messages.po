@@ -3075,10 +3075,6 @@ msgstr "停用 1CT"
 msgid "Check again"
 msgstr "再次檢查"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Stake more GMX to increase your tier and earn more rewards."
-msgstr "質押更多 GMX 以提升等級並獲得更多獎勵。"
-
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -8988,6 +8984,10 @@ msgstr "從"
 msgid "No events"
 msgstr "無事件"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trade to unlock higher volume tiers and earn more rewards."
+msgstr "開始交易以解鎖更高的交易量等級並賺取更多獎勵。"
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
 msgstr "我們將與您安排一次交流。作為感謝，您將獲得 <0>100 <1/></0> 的回饋獎勵。"
@@ -9779,10 +9779,6 @@ msgstr ""
 msgid "for {comment}"
 msgstr "用於 {comment}"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Trade more to reach a higher tier and earn more rewards."
-msgstr "增加交易以達到更高等級並獲得更多獎勵。"
-
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Adding esGMX extends your current vesting: your existing tokens will finish converting on <0>{0} instead of {1}</0>."
 msgstr "加入 esGMX 會延長您目前的歸屬期：您現有的代幣將於 <0>{0} 完成轉換，而不是 {1}</0>。"
@@ -9927,6 +9923,10 @@ msgstr "價格影響超過訂單規模。影響：{priceImpactUsdText}，訂單�
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Active · next epoch"
 msgstr "有效 · 下個週期"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake GMX to reach a higher tier and earn more rewards."
+msgstr "質押 GMX 以達到更高等級並賺取更多獎勵。"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -12133,6 +12133,10 @@ msgstr "訂單將不會執行：觸發價格超過清算價格"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
 msgstr "結算中..."
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trade {0} to reach the {1} tier and earn rewards."
+msgstr "交易 {0} 以達到 {1} 等級並賺取獎勵。"
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx

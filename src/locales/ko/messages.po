@@ -3075,10 +3075,6 @@ msgstr "1CT 비활성화"
 msgid "Check again"
 msgstr "다시 확인"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Stake more GMX to increase your tier and earn more rewards."
-msgstr "더 많은 GMX를 스테이킹하여 등급을 높이고 더 많은 보상을 받으세요."
-
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -8988,6 +8984,10 @@ msgstr "부터"
 msgid "No events"
 msgstr "이벤트 없음"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trade to unlock higher volume tiers and earn more rewards."
+msgstr "거래하여 더 높은 거래량 티어를 해제하고 더 많은 보상을 받으세요."
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
 msgstr "채팅 일정을 잡아드리겠습니다. 감사의 표시로 피드백에 대해 <0>100 <1/></0>을 지급해 드립니다."
@@ -9779,10 +9779,6 @@ msgstr ""
 msgid "for {comment}"
 msgstr "{comment}에 대해"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Trade more to reach a higher tier and earn more rewards."
-msgstr "더 많이 거래하여 더 높은 등급을 달성하고 더 많은 보상을 받으세요."
-
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Adding esGMX extends your current vesting: your existing tokens will finish converting on <0>{0} instead of {1}</0>."
 msgstr "esGMX를 추가하면 현재 베스팅 기간이 연장됩니다. 기존 토큰은 <0>{1}이 아닌 {0}에 전환이 완료됩니다</0>."
@@ -9927,6 +9923,10 @@ msgstr "가격 영향이 주문 규모를 초과합니다. 영향: {priceImpactU
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Active · next epoch"
 msgstr "활성 · 다음 에포크"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake GMX to reach a higher tier and earn more rewards."
+msgstr "GMX를 스테이킹하여 더 높은 티어에 도달하고 더 많은 보상을 받으세요."
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -12133,6 +12133,10 @@ msgstr "주문이 실행되지 않습니다: 조건가가 청산가를 초과합
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
 msgstr "정산 중..."
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Trade {0} to reach the {1} tier and earn rewards."
+msgstr "{0} 거래하여 {1} 티어에 도달하고 보상을 받으세요."
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx

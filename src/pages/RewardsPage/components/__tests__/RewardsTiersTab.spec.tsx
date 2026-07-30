@@ -408,7 +408,7 @@ describe("RewardsTiersTab", () => {
     ).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
   });
 
-  it("opens Buy GMX in place from the inactive staking card", () => {
+  it("opens Buy GMX in place from the below-tier active staking card", () => {
     renderTab({
       status: {
         ...status,
@@ -515,8 +515,8 @@ describe("RewardsTiersTab", () => {
       status: undefined,
     });
 
-    expect(screen.getByText("Trade more to reach a higher tier and earn more rewards.")).toBeDefined();
-    expect(screen.getByText("Stake more GMX to increase your tier and earn more rewards.")).toBeDefined();
+    expect(screen.getByText("Trade to unlock higher volume tiers and earn more rewards.")).toBeDefined();
+    expect(screen.getByText("Stake GMX to reach a higher tier and earn more rewards.")).toBeDefined();
     expect(screen.getByRole("heading", { name: "Trading activities" })).toBeDefined();
     expect(screen.getByText("Unlock bonuses and boosts and increase your rewards")).toBeDefined();
   });
@@ -566,10 +566,11 @@ describe("RewardsTiersTab", () => {
         ...status,
         stakingTier: null,
         projectedStakingTier: null,
+        currentStakedBalance: 0n,
       },
     });
 
-    expect(screen.getByText("Stake more GMX to increase your tier and earn more rewards.")).toBeDefined();
+    expect(screen.getByText("Stake GMX to reach a higher tier and earn more rewards.")).toBeDefined();
   });
 
   it("loads staking promo activity and chooses the wallet action", () => {
@@ -589,13 +590,12 @@ describe("RewardsTiersTab", () => {
         ...status,
         stakingTier: null,
         projectedStakingTier: null,
+        currentStakedBalance: 0n,
         manualRewardRemainingUsd: 0n,
       },
     });
 
-    const stakingCard = screen
-      .getByText("Stake more GMX to increase your tier and earn more rewards.")
-      .closest(".group");
+    const stakingCard = screen.getByText("Stake GMX to reach a higher tier and earn more rewards.").closest(".group");
     expect(stakingCard).not.toBeNull();
     expect(
       within(stakingCard as HTMLElement)
@@ -613,6 +613,7 @@ describe("RewardsTiersTab", () => {
       ...status,
       stakingTier: null,
       projectedStakingTier: null,
+      currentStakedBalance: 0n,
       manualRewardRemainingUsd: 0n,
     };
     mockUseRewardsVestingData.mockReturnValue({
@@ -655,6 +656,7 @@ describe("RewardsTiersTab", () => {
         ...status,
         stakingTier: null,
         projectedStakingTier: null,
+        currentStakedBalance: 0n,
         manualRewardRemainingUsd: 0n,
       },
     });
@@ -698,10 +700,11 @@ describe("RewardsTiersTab", () => {
         ...status,
         stakingTier: null,
         projectedStakingTier: null,
+        currentStakedBalance: 0n,
       },
     });
 
-    expect(screen.getByText("Stake more GMX to increase your tier and earn more rewards.")).toBeDefined();
+    expect(screen.getByText("Stake GMX to reach a higher tier and earn more rewards.")).toBeDefined();
     expect(screen.queryByText(/With your recent activity, staking GMX could have earned/)).toBeNull();
     expect(mockUseRewardsPromoActivity).toHaveBeenLastCalledWith(ARBITRUM, {
       account: CHECKSUMMED_ACCOUNT,
@@ -1008,7 +1011,7 @@ describe("RewardsTiersTab", () => {
     expect(Array.from(volumeCard!.parentElement!.children)).toEqual([stakingCard, boostsCard, volumeCard]);
   });
 
-  it("uses the active volume layout below the first tier once the trader has volume", () => {
+  it("shows the Ranked target below the first volume tier without using the active layout", () => {
     renderTab({
       status: {
         ...status,
@@ -1025,11 +1028,33 @@ describe("RewardsTiersTab", () => {
     const volumeCard = screen.getByText("Volume Tier").closest(".group");
     const volumeCardText = normalizeText(volumeCard?.textContent);
 
-    expect(volumeCard?.className).toContain("pt-16");
-    expect(volumeCardText).toContain(normalizeText("—Volume this epoch: $400"));
-    expect(volumeCardText).toContain(normalizeText("Trade $600 more to unlock Ranked status +0.25x"));
-    expect(within(volumeCard as HTMLElement).queryByText("Trade More. Earn More.")).toBeNull();
-    expect(within(volumeCard as HTMLElement).queryByRole("link", { name: "Start trading" })).toBeNull();
+    expect(volumeCard?.className).toContain("p-16");
+    expect(volumeCard?.className).not.toContain("pt-16");
+    expect(volumeCardText).toContain(normalizeText("Trade $600 to reach the Ranked tier and earn rewards."));
+    expect(within(volumeCard as HTMLElement).getByText("Trade More. Earn More.")).toBeDefined();
+    expect(within(volumeCard as HTMLElement).getByRole("link", { name: "Start trading" })).toBeDefined();
+  });
+
+  it("uses the active staking layout below the first tier once GMX is staked", () => {
+    renderTab({
+      status: {
+        ...status,
+        stakingTier: null,
+        projectedStakingTier: null,
+        currentStakedBalance: 40n * GMX_UNIT,
+        boostIds: [],
+        referralVolume: 0n,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const stakingCard = screen.getByText("Staking Tier").closest(".group");
+    const stakingCardText = normalizeText(stakingCard?.textContent);
+
+    expect(stakingCard?.className).toContain("pt-16");
+    expect(stakingCardText).toContain(normalizeText("—GMX staked: 40"));
+    expect(stakingCardText).toContain(normalizeText("Stake 60 GMX more to get Supporter status +0.1x"));
+    expect(within(stakingCard as HTMLElement).queryByText("Stake to Boost Rewards")).toBeNull();
   });
 
   it("uses a projected volume tier as the baseline for the next target", () => {

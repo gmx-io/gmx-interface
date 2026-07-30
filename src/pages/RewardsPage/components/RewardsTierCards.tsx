@@ -68,8 +68,13 @@ export function RewardsTierCards({
   if (statusState === "loading") return <TierCardsSkeleton />;
   if (statusState === "unavailable") return <TierCardsUnavailable />;
 
-  const volumeActive = Boolean(status?.volumeTier) || (status?.tierVolume ?? 0n) > 0n;
-  const stakingActive = Boolean(status?.stakingTier ?? status?.projectedStakingTier);
+  const tierVolume = status?.tierVolume ?? 0n;
+  const firstVolumeTier = config.volumeTiers[0];
+  const volumeActive =
+    Boolean(status?.volumeTier ?? status?.projectedVolumeTier) ||
+    Boolean(firstVolumeTier && tierVolume > 0n && tierVolume >= firstVolumeTier.threshold);
+  const stakingActive =
+    Boolean(status?.stakingTier ?? status?.projectedStakingTier) || (status?.currentStakedBalance ?? 0n) > 0n;
   const { activePersistentBoostIds, qualifiedTransientBoostIds } = getBoostStatuses(status);
   const hasReferralBoost = (status?.referralVolume ?? 0n) > 0n;
   const boostsHaveStatus =
@@ -421,7 +426,14 @@ function VolumeCard({
             <Trans>Trade More. Earn More.</Trans>
           </h3>
           <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
-            <Trans>Trade more to reach a higher tier and earn more rewards.</Trans>
+            {tierVolume > 0n && targetTierConfig ? (
+              <Trans>
+                Trade {formatCompactUsd(remainingToTarget)} to reach the {volumeTierLabels[targetTierConfig.tier]} tier
+                and earn rewards.
+              </Trans>
+            ) : (
+              <Trans>Trade to unlock higher volume tiers and earn more rewards.</Trans>
+            )}
           </div>
           <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300">
             <Trans>Start trading</Trans> <ArrowRight />
@@ -519,11 +531,11 @@ function StakingCard({
         ) : null}
       </div>
 
-      {active && displayTier ? (
+      {active ? (
         <>
           <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
-            <StakingTierIcon tierId={displayTier} active className={tierIconLarge} />
-            {stakingTierLabels[displayTier]}
+            {displayTier ? <StakingTierIcon tierId={displayTier} active className={tierIconLarge} /> : null}
+            {displayTier ? stakingTierLabels[displayTier] : "—"}
           </h3>
           <div className="mt-auto flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center justify-between py-2 font-medium">
@@ -556,7 +568,7 @@ function StakingCard({
             </div>
             <StakingProgressBar
               config={config}
-              fallbackTier={displayTier}
+              fallbackTier={displayTier ?? undefined}
               gmxStaked={gmxStaked}
               isMaxTier={isMaxTier}
             />
@@ -628,7 +640,7 @@ function InactiveStakingCardContent({
         {showStaticCopy ? <Trans>Stake to Boost Rewards</Trans> : promoCopy.title}
       </h3>
       <div className="text-13 font-medium text-typography-secondary">
-        <Trans>Stake more GMX to increase your tier and earn more rewards.</Trans>
+        <Trans>Stake GMX to reach a higher tier and earn more rewards.</Trans>
       </div>
       {isWalletBalanceLoading ? (
         <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
@@ -663,7 +675,7 @@ function StakingProgressBar({
   isMaxTier,
 }: {
   config: IncentivesConfig;
-  fallbackTier: StakingTierId;
+  fallbackTier?: StakingTierId;
   gmxStaked?: bigint;
   isMaxTier: boolean;
 }) {
