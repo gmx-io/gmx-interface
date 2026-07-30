@@ -3560,9 +3560,17 @@ msgstr "Показать триггер отладки границы ошибо
 msgid "Autocompound"
 msgstr "Автореинвестирование"
 
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Liquidity to withdraw:"
+msgstr "Ликвидность к выводу:"
+
 #: src/components/TVChart/Chart.tsx
 msgid "Market graph"
 msgstr "График рынка"
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "After the deadline, trading and withdrawals on these markets are disabled, and capital left in them won't be accessible from the app. Close your positions and withdraw your liquidity now."
+msgstr "После истечения срока торговля и вывод средств на этих рынках будут отключены, а оставшиеся там средства станут недоступны в приложении. Закройте позиции и выведите ликвидность сейчас."
 
 #: src/domain/referrals/utils/referralsHelper.ts
 msgid "Only letters, numbers, and underscores allowed"
@@ -3620,6 +3628,11 @@ msgstr "Фактор финансирования"
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
 msgstr "Депозит отправлен"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Final notice: market delistings"
+msgstr "Последнее предупреждение: делистинг рынков"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -3721,11 +3734,6 @@ msgstr "Эта цена активации находится за предел�
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating..."
 msgstr "Создание…"
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{0, plural, one {is} other {are}}"
-msgstr "{0, plural, one {выводится} few {выводятся} many {выводятся} other {выводятся}}"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -4900,6 +4908,10 @@ msgstr "Агрегатор бессрочных контрактов"
 msgid "Request Market Swap"
 msgstr "Запрос на Рыночный Обмен"
 
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Positions to close:"
+msgstr "Позиции к закрытию:"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "Чистый шорт {indexSymbol}. Экспозиция формируется только из позиции."
@@ -5424,6 +5436,7 @@ msgstr "<0>GMX исполняет сделки против динамическ
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
+#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -6999,6 +7012,10 @@ msgstr "Расчётное время до ликвидации"
 msgid "Mark price for the liquidation"
 msgstr "Расчётная цена на момент ликвидации"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} will be disabled after August 5, 2026, 23:59 UTC. Close your {positionNoun} before then. Collateral left in open positions won't be accessible after that."
+msgstr "{markets} будут отключены после 5 августа 2026 года, 23:59 UTC. Закройте {positionNoun} до этого времени. Залог, оставленный в открытых позициях, после этого будет недоступен."
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
@@ -7176,6 +7193,10 @@ msgstr "Все позиции принадлежат одному и тому ж
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "Одобрение {tokenSymbol}..."
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Your wallet {account} still holds capital in markets that are being delisted. These markets will be disabled after August 5, 2026, 23:59 UTC."
+msgstr "В вашем кошельке {account} всё ещё есть средства на рынках, которые выводятся из листинга. Эти рынки будут отключены после 5 августа 2026 года, 23:59 UTC."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -8272,10 +8293,6 @@ msgstr "Мин размер позиции: {0}"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
-msgstr "{markets} {verb} из листинга. Закройте {positionNoun}, оставшиеся позиции могут быть закрыты автоматически."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr "Недоступен"
@@ -8827,10 +8844,6 @@ msgstr "~5 мин"
 msgid "New tier:"
 msgstr "Новый уровень:"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "Market delistings"
-msgstr "Делистинг рынков"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
@@ -8991,6 +9004,11 @@ msgstr "с 100x левериджем"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "Нет влияния на цену. Единая цена исполнения для<0/>увеличения лонг-позиций или уменьшения шорт-позиций<1/>данного размера."
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Close positions"
+msgstr "Закрыть позиции"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
@@ -10596,6 +10614,10 @@ msgstr "APR эскроуированного GMX"
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "Вестинг доступен только на {chainNames}. Переключите сеть для продолжения."
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that."
+msgstr "{pools} будут отключены после 5 августа 2026 года, 23:59 UTC. Выведите ликвидность до этого времени. GM-токены, оставленные в отключённом пуле, после этого будут недоступны."
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "esGMX rewards:"
@@ -10848,10 +10870,6 @@ msgstr "Купить APE на Arbitrum через <0>Camelot</0>"
 msgid "Depositing..."
 msgstr "Внесение средств…"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
-msgstr "{pools} {verb} из листинга. Выведите ликвидность, так как депозиты больше недоступны, или переведите её в GLV, чтобы продолжать зарабатывать."
-
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -11008,10 +11026,6 @@ msgstr "GMX trading chat"
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs trading simulations"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "Manage liquidity"
-msgstr "Управление ликвидностью"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr "PnL лонг"
@@ -11150,6 +11164,11 @@ msgstr "Дашборды и аналитика GMX"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Withdraw liquidity"
+msgstr "Вывести ликвидность"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
