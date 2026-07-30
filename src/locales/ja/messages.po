@@ -4124,7 +4124,7 @@ msgstr "プール入金時のショート側最大 USD"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
-msgstr ""
+msgstr "<0>ウォレットが別のアカウントに切り替わりました</0><1/><2>{0}での署名には、開始時と同じアカウントが必要です。別のアカウントを選択せず、ウォレットで現在のアカウントに{1}を追加してからもう一度お試しください。</2>"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"

@@ -4124,7 +4124,7 @@ msgstr "Máximo USD corto del pool para depósito"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
-msgstr ""
+msgstr "<0>Tu wallet cambió a otra cuenta</0><1/><2>Firmar en {0} requiere la misma cuenta con la que empezaste. En lugar de seleccionar otra cuenta, añade {1} a la actual en tu wallet y vuelve a intentarlo.</2>"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
