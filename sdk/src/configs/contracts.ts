@@ -1,6 +1,6 @@
 import { type Address, zeroAddress } from "viem";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "./chains";
 
 export const CONTRACTS = {
   [ARBITRUM]: {
@@ -42,33 +42,35 @@ export const CONTRACTS = {
     // Synthetics
     DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
     EventEmitter: "0xC8ee91A54287DB53897056e12D9819156D3822Fb",
-    SubaccountRouter: "0xdD00F639725E19a209880A44962Bc93b51B1B161",
-    ExchangeRouter: "0x1C3fa76e6E1088bCE750f23a5BFcffa1efEF6A41",
+    SubaccountRouter: "0x9c05880A2AaD7530c69e18e342eDC9E06cc757db",
+    ExchangeRouter: "0x7dE39FF2e232A2203196788d37e234cF8F1b83f1",
     DepositVault: "0xF89e77e8Dc11691C9e8757e84aaFbCD8A67d7A55",
     WithdrawalVault: "0x0628D46b5D145f183AdB6Ef1f2c97eD1C4701C55",
     OrderVault: "0x31eF83a530Fde1B38EE9A18093A333D8Bbbc40D5",
     ShiftVault: "0xfe99609C4AA83ff6816b64563Bdffd7fa68753Ab",
-    SyntheticsReader: "0x470fbC46bcC0f16532691Df360A07d8Bf5ee0789",
+    SyntheticsReader: "0xfA26cBb46e2614609406de08CA1Dc7f70a684184",
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
 
-    GlvReader: "0x2C670A23f1E798184647288072e84054938B5497",
-    GlvRouter: "0x7EAdEE2ca1b4D06a0d82fDF03D715550c26AA12F",
+    SimulationRouter: "0xaD3051cB1aE3a86b335f12A9a41BD4d995a137ea",
+
+    GlvReader: "0x85fcBD684D08053f1efAB302dCb04F22E20E65B1",
+    GlvRouter: "0x167540D2DFF14120365CfDDF2F86e3045D4fa712",
     GlvVault: "0x393053B58f9678C9c28c2cE941fF6cac49C3F8f9",
 
-    GelatoRelayRouter: "0xa9090E2fd6cD8Ee397cF3106189A7E1CFAE6C59C",
-    SubaccountGelatoRelayRouter: "0x517602BaC704B72993997820981603f5E4901273",
+    GelatoRelayRouter: "0x5503b99308dB6923758F9A22d118207D633c4e87",
+    SubaccountGelatoRelayRouter: "0xfD0596f708d9D950E0eF7b5d191e5F8e55b8a67f",
 
-    MultichainClaimsRouter: "0x277B4c0e8A76Fa927C9881967a4475Fd6E234e95",
-    MultichainGlvRouter: "0xabcBbe23BD8E0dDD344Ff5fd1439b785B828cD2d",
-    MultichainGmRouter: "0xC6782854A8639cC3b40f9497797d6B33797CA592",
-    MultichainOrderRouter: "0xD38111f8aF1A7Cd809457C8A2303e15aE2170724",
-    MultichainSubaccountRouter: "0x70AaAd50d53732b2D5534bb57332D00aE20cAd36",
-    MultichainTransferRouter: "0xfaBEb65bB877600be3A2C2a03aA56a95F9f845B9",
+    MultichainClaimsRouter: "0x946CC490DFedd6016645F5ce555E0036D116f50e",
+    MultichainGlvRouter: "0xA0Ef0Ace6E437458BB4b5F72A7c7bB43a1CdDa8d",
+    MultichainGmRouter: "0xFd26a7E3c4A9b75Bd0dce495290Fa33af2bb4b00",
+    MultichainOrderRouter: "0xABFC734f7CFc9352AED7a97b1F6a236eae831e8A",
+    MultichainSubaccountRouter: "0xAb3EDf0f3eed6804BAe1bD9bF90109ccadFD262e",
+    MultichainTransferRouter: "0x3f6772B95423fC03264adf90Efb8A9922B6C8c6e",
     MultichainVault: "0xCeaadFAf6A8C489B250e407987877c5fDfcDBE6E",
-    LayerZeroProvider: "0xB6DE222dAef5029f31b8fABE498D34f3c491Ef85",
+    LayerZeroProvider: "0x0B33EBA531e5a5A331a3Ff9F418B8205F01C2869",
 
-    ChainlinkPriceFeedProvider: "0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B",
-    ClaimHandler: "0x8a83F2a71A53d3860a60C9F2E68AB2C46Ff9624e",
+    ChainlinkPriceFeedProvider: "0x90218fbb064b1475E4382b041Cc7ccF08AF718B0",
+    ClaimHandler: "0xc31E7aC86Cc20FF8D7f4642b5Ed67a43B2AC8426",
 
     // External
     ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
@@ -118,33 +120,35 @@ export const CONTRACTS = {
     // Synthetics
     DataStore: "0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6",
     EventEmitter: "0xDb17B211c34240B014ab6d61d4A31FA0C0e20c26",
-    SubaccountRouter: "0xf43F559774d2cF7882e6E846fCb87BDe183a6Da7",
-    ExchangeRouter: "0x8f550E53DFe96C055D5Bdb267c21F268fCAF63B2",
+    SubaccountRouter: "0xAda708aFf0f1D784D28cd8Ff4d6D977fF9599e5D",
+    ExchangeRouter: "0xc002Db96E682FFF6675966F959677285a0C45Efa",
     DepositVault: "0x90c670825d0C62ede1c5ee9571d6d9a17A722DFF",
     WithdrawalVault: "0xf5F30B10141E1F63FC11eD772931A8294a591996",
     OrderVault: "0xD3D60D22d415aD43b7e64b510D86A30f19B1B12C",
     ShiftVault: "0x7fC46CCb386e9bbBFB49A2639002734C3Ec52b39",
-    SyntheticsReader: "0x62Cb8740E6986B29dC671B2EB596676f60590A5B",
+    SyntheticsReader: "0xa34320a507493C71Fe35E982e496F7C5d1a7fa02",
     SyntheticsRouter: "0x820F5FfC5b525cD4d88Cd91aCf2c28F16530Cc68",
 
-    GlvReader: "0x5C6905A3002f989E1625910ba1793d40a031f947",
-    GlvRouter: "0x7E425c47b2Ff0bE67228c842B9C792D0BCe58ae6",
+    SimulationRouter: "0xaB409fCaCc14Dd4234f6f86a2547f04ACC90a55e",
+
+    GlvReader: "0x321EB66dD95ad33715ee615AAb8dAC6394E7b3F9",
+    GlvRouter: "0x603B3D3aB077CA433b888c05fa59c777d5b6dCAD",
     GlvVault: "0x527FB0bCfF63C47761039bB386cFE181A92a4701",
 
-    GelatoRelayRouter: "0xEE2d3339CbcE7A42573C96ACc1298A79a5C996Df",
-    SubaccountGelatoRelayRouter: "0xfaBEb65bB877600be3A2C2a03aA56a95F9f845B9",
+    GelatoRelayRouter: "0x51fe0b7919e1208a717E9B16a097C1C3D70eFbf6",
+    SubaccountGelatoRelayRouter: "0xa62BD1cFE2066c5bF4180b4125BBb5116eEA26c9",
 
-    MultichainClaimsRouter: "0xd10B10b816030347ff4E6767d340371B40b9F03D",
-    MultichainGlvRouter: "0xEEE61742bC4cf361c60Cd65826864560Bf2D0bB6",
-    MultichainGmRouter: "0xA191Bc0B72332e4c2022dB50a9d619079cc6c4fD",
-    MultichainOrderRouter: "0xd099565957046a2d2CF41B0CC9F95e14a8afD13b",
-    MultichainSubaccountRouter: "0x5872E84e5ea23292b40183BE86D25fb428621fC1",
-    MultichainTransferRouter: "0x5A44a3b026d50EC039582fDb3aFDD88e2092E211",
+    MultichainClaimsRouter: "0xa664B7E894ad5777f3419C2883911Af3692a4569",
+    MultichainGlvRouter: "0x206B582F309724dAd259058Bc3289Ca3519F34B1",
+    MultichainGmRouter: "0x00205f26BCc52537D12fA9b0eFA5Fcc58F03ab76",
+    MultichainOrderRouter: "0x204CC947Fddd11c90e302db2A5ac3865021D1618",
+    MultichainSubaccountRouter: "0x4A2826cAee8FF70d9392B171eaF398E0a2B55047",
+    MultichainTransferRouter: "0xd4F6C2332b36D1Ccb22C7ac479b270fa0cA26a41",
     MultichainVault: "0x6D5F3c723002847B009D07Fe8e17d6958F153E4e",
-    LayerZeroProvider: "0xF85Fd576bBe22Bce785B68922C1c9849d62737c0",
+    LayerZeroProvider: "0x74eECe8cC29b3d549db97F566a4445F48ed62a0d",
 
-    ChainlinkPriceFeedProvider: "0x05d97cee050bfb81FB3EaD4A9368584F8e72C88e",
-    ClaimHandler: "0xefCAdA759241D10B45d9Cb6265B19ADec97ceced",
+    ChainlinkPriceFeedProvider: "0x86E284921273E1442f32ebd1b567Ce988Cf50dfE",
+    ClaimHandler: "0x07d8115676362Cf0d6672Dd71B23A43DB1e69C06",
 
     // External
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
@@ -154,116 +158,40 @@ export const CONTRACTS = {
     LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
     GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
   },
-  [BOTANIX]: {
-    // Synthetics
-    DataStore: "0xA23B81a89Ab9D7D89fF8fc1b5d8508fB75Cc094d",
-    EventEmitter: "0xAf2E131d483cedE068e21a9228aD91E623a989C2",
-    SubaccountRouter: "0xa1793126B6Dc2f7F254a6c0E2F8013D2180C0D10",
-    ExchangeRouter: "0xBCB5eA3a84886Ce45FBBf09eBF0e883071cB2Dc8",
-    DepositVault: "0x4D12C3D3e750e051e87a2F3f7750fBd94767742c",
-    WithdrawalVault: "0x46BAeAEdbF90Ce46310173A04942e2B3B781Bf0e",
-    OrderVault: "0xe52B3700D17B45dE9de7205DEe4685B4B9EC612D",
-    ShiftVault: "0xa7EE2737249e0099906cB079BCEe85f0bbd837d4",
-
-    SyntheticsReader: "0x922766ca6234cD49A483b5ee8D86cA3590D0Fb0E",
-    SyntheticsRouter: "0x3d472afcd66F954Fe4909EEcDd5c940e9a99290c",
-
-    GlvReader: "0x955Aa50d2ecCeffa59084BE5e875eb676FfAFa98",
-    GlvRouter: "0xC92741F0a0D20A95529873cBB3480b1f8c228d9F",
-    GlvVault: "0xd336087512BeF8Df32AF605b492f452Fd6436CD8",
-
-    GelatoRelayRouter: "0x98e86155abf8bCbA566b4a909be8cF4e3F227FAf",
-    SubaccountGelatoRelayRouter: "0xd6b16f5ceE328310B1cf6d8C0401C23dCd3c40d4",
-
-    MultichainClaimsRouter: "0x421eB756B8f887f036e7332801288BC2bbA600aC",
-    MultichainGlvRouter: "0x9C11DFa4DAFA9227Ef172cc1d87D4D5008804C47",
-    MultichainGmRouter: "0x6a960F397eB8F2300F9FfA746F11375A613C5027",
-    MultichainOrderRouter: "0xbC074fF8b85f9b66884E1EdDcE3410fde96bd798",
-    MultichainSubaccountRouter: "0x8138Ce254Bc0AfE40369FDC2D1e46cE90944406d",
-    MultichainTransferRouter: "0x844D38f2c3875b8351feB4764718E1c64bD55c46",
-    MultichainVault: "0x9a535f9343434D96c4a39fF1d90cC685A4F6Fb20",
-    LayerZeroProvider: "0x9E721ef9b908B4814Aa18502692E4c5666d1942e",
-
-    ChainlinkPriceFeedProvider: "0xDc613305e9267f0770072dEaB8c03162e0554b2d",
-    ClaimHandler: "0x162e3a5B47C9a45ff762E5b4b23D048D6780C14e",
-
-    // External
-    ExternalHandler: "0x36b906eA6AE7c74aeEE8cDE66D01B3f1f8843872",
-    KyberSwapRouter: zeroAddress,
-    Multicall: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
-    LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
-    ArbitrumNodeInterface: zeroAddress,
-    GelatoRelayAddress: "0x61aCe8fBA7B80AEf8ED67f37CB60bE00180872aD",
-
-    Vault: zeroAddress,
-    Reader: zeroAddress,
-    PositionRouter: zeroAddress,
-    ReferralStorage: zeroAddress,
-    VaultReader: zeroAddress,
-    GlpManager: zeroAddress,
-    RewardRouter: zeroAddress,
-    RewardReader: zeroAddress,
-    GlpRewardRouter: zeroAddress,
-    StakedGmxTracker: zeroAddress,
-    FeeGmxTracker: zeroAddress,
-    GLP: zeroAddress,
-    GMX: zeroAddress,
-    ES_GMX: zeroAddress,
-    BN_GMX: zeroAddress,
-    USDG: zeroAddress,
-    BonusGmxTracker: zeroAddress,
-    StakedGlpTracker: zeroAddress,
-    FeeGlpTracker: zeroAddress,
-    ExtendedGmxTracker: zeroAddress,
-    StakedGmxDistributor: zeroAddress,
-    StakedGlpDistributor: zeroAddress,
-    GmxVester: zeroAddress,
-    GlpVester: zeroAddress,
-    AffiliateVester: zeroAddress,
-    Router: zeroAddress,
-    GovToken: zeroAddress,
-    ES_GMX_IOU: zeroAddress,
-    OrderBook: zeroAddress,
-
-    UniswapGmxEthPool: zeroAddress,
-
-    // botanix specific
-    NATIVE_TOKEN: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-    StBTC: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
-    PBTC: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-  },
   [MEGAETH]: {
     // Synthetics
     DataStore: "0xE43C7B694f6b652a9F4A0f275C008d18758Dce35",
     EventEmitter: "0xAf2E131d483cedE068e21a9228aD91E623a989C2",
-    SubaccountRouter: "0x3133aC88af73d3187f1700a2426AD95B5d6E0562",
-    ExchangeRouter: "0x73B3593F01CF8e573a412D1d0c972b581794ebE0",
+    SubaccountRouter: "0x03B59961bF30b973fBd793A6C8ad57dA38D4D0a6",
+    ExchangeRouter: "0xF68560cA917717639be497BF6283aC08C9Bf0264",
     DepositVault: "0x8231A60862F9b0bA93fFA050c0E94AC902D901d2",
     WithdrawalVault: "0x0Ec53dda9676219dE63eC703212219b07811F33C",
     OrderVault: "0xD5AE04762E2afb1506695b3F36286EBE7B0E6772",
     ShiftVault: "0xC255c70b50623054CADbAD9A02E1CFE73d286666",
 
-    SyntheticsReader: "0x0f038EB4a38B08cd3c937a3256b51aa01904a684",
+    SyntheticsReader: "0x51fe0b7919e1208a717E9B16a097C1C3D70eFbf6",
     SyntheticsRouter: "0x1eAfB14236C489C28845EC04F78DECA5Fb9879Aa",
 
-    GlvReader: "0x424527a588D56513cB2F5161958D83883EE8aB0f",
-    GlvRouter: "0x505F0cCADA00F0CcB4EEbf6467531cF4dd907B0E",
+    SimulationRouter: "0x321EB66dD95ad33715ee615AAb8dAC6394E7b3F9",
+
+    GlvReader: "0x804f206a2ec78F505FD5D397450EAB9E7CBD1b21",
+    GlvRouter: "0xef1BA2A3fcf0244361d63FCAe0c4772586Cd1925",
     GlvVault: "0x52e4875EB5603d21912d30A1dBA6B0B97192459A",
 
-    GelatoRelayRouter: "0x24eD625B9C47fDEbF088A4d12B7f9B4B2f556297",
-    SubaccountGelatoRelayRouter: "0xD515fA0B4d704f3E2C57270F1F53BEeE16348B3b",
+    GelatoRelayRouter: "0xbAAA3a693191e2e3E0973DE641C879D1aDD84e04",
+    SubaccountGelatoRelayRouter: "0x603B3D3aB077CA433b888c05fa59c777d5b6dCAD",
 
-    MultichainClaimsRouter: "0xfE9fD31e499bA6d8733Aec49ECe5b41381103433",
-    MultichainGlvRouter: "0x7EF7d01316425de5d7C2EFDf8b802A250c222faB",
-    MultichainGmRouter: "0x041336A3DaF0a12d004a95f1511393d9A3d7236d",
-    MultichainOrderRouter: "0x976363dFbA3AeB8Fb10b733baD74e7099cCB558A",
-    MultichainSubaccountRouter: "0xeB8f828A4B89dc3A854f278227A2A5E136E50bF9",
-    MultichainTransferRouter: "0xCa62C570D8667a00A56EB989881ECbA4364BFe9e",
+    MultichainClaimsRouter: "0x6614E9eAfE2FE583049333C03a2D6f9D7F252121",
+    MultichainGlvRouter: "0x5F65a3B91923840cD5254489A57c873427bA3A91",
+    MultichainGmRouter: "0x5CCD0b91Cfe6B0FBA1c98290dc39E71ff806d9bF",
+    MultichainOrderRouter: "0x00205f26BCc52537D12fA9b0eFA5Fcc58F03ab76",
+    MultichainSubaccountRouter: "0xDB8906520812840b9835E3B84dE62C826249e20B",
+    MultichainTransferRouter: "0x62B1691B067278E5B1167d0443d4c957473611D2",
     MultichainVault: "0xd6922E889cE4CF14e59427F20e7d857ff81A5A9D",
-    LayerZeroProvider: "0x9c41F854f123a7905907FfcF2578dFB7E47D02E0",
+    LayerZeroProvider: "0x8A959d38216ad67AEBBF31F46Cb3cA4D7fe584c8",
 
-    ChainlinkPriceFeedProvider: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
-    ClaimHandler: "0x7e42e350FEF7c0A766590A6b2F4eF3F38D8A2988",
+    ChainlinkPriceFeedProvider: "0xaD3051cB1aE3a86b335f12A9a41BD4d995a137ea",
+    ClaimHandler: "0xf9B01d45B2c5022429c3f745e5A2E700B02cEBeb",
 
     // External
     ExternalHandler: "0xa7EE2737249e0099906cB079BCEe85f0bbd837d4",
@@ -388,34 +316,36 @@ export const CONTRACTS = {
     // Synthetics
     DataStore: "0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201",
     EventEmitter: "0xa973c2692C1556E1a3d478e745e9a75624AEDc73",
-    ExchangeRouter: "0xEd50B2A1eF0C35DAaF08Da6486971180237909c3",
-    SubaccountRouter: "0xCF45A7E8bB46738f454eC6766631E5612DA90836",
+    ExchangeRouter: "0x6B489dD5bB1AAE8df246359d59aA7316760a75d2",
+    SubaccountRouter: "0xAFdD3e0B6c162974594AcA157eA642B8847CC5b1",
     DepositVault: "0x809Ea82C394beB993c2b6B0d73b8FD07ab92DE5A",
     WithdrawalVault: "0x7601c9dBbDCf1f5ED1E7Adba4EFd9f2cADa037A5",
     OrderVault: "0x1b8AC606de71686fd2a1AEDEcb6E0EFba28909a2",
     ShiftVault: "0x6b6F9B7B9a6b69942DAE74FB95E694ec277117af",
-    SyntheticsReader: "0x4750376b9378294138Cf7B7D69a2d243f4940f71",
+    SyntheticsReader: "0x92659fEf40582ceCC3CBa4D096d28291C238D358",
     SyntheticsRouter: "0x72F13a44C8ba16a678CAD549F17bc9e06d2B8bD2",
 
-    GlvReader: "0x9B7D08AB020D9c180E4bAc370fB545317124Cf22",
-    GlvRouter: "0x21b044Bb4a2Ba667723aA3d15ba7b4bCc628084D",
+    SimulationRouter: "0x82f1bb43b7E93dE4c38EC3198ed13e33D0904555",
+
+    GlvReader: "0x45356cEE7f8668b7030577c13b4638802D3397Df",
+    GlvRouter: "0x792D48B94F430965FE85645cF72527b3343d4BdD",
     GlvVault: "0x40bD50de0977c68ecB958ED4A065E14E1091ce64",
 
-    GelatoRelayRouter: "0xD2f52a70224d3453ea17944ABC12772793987FA6",
-    SubaccountGelatoRelayRouter: "0x43947140EEE26b82155baA18FDB746A05C700DCE",
+    GelatoRelayRouter: "0x7FB9d059d2F2323115285dAc25a3C66A67AeFAA7",
+    SubaccountGelatoRelayRouter: "0xaa174e2fbE98C1EE42009B81ec8b8D9C0Ed075cf",
 
-    MultichainClaimsRouter: "0x0896f77B7dcE6923c58Ab1a1A91fFF617606E30b",
-    MultichainGlvRouter: "0x10f3D7c30cabe91Cdd2785E5af37374842a1089C",
-    MultichainGmRouter: "0x94dB1F9CAa86E86cD90F231411D31E5a3815bced",
-    MultichainOrderRouter: "0xc9670CCD86d150C91f1f154813786f1Ec809Ae08",
-    MultichainSubaccountRouter: "0x2E883D945AB36DC8491693c8870648a232b540a1",
-    MultichainTransferRouter: "0xEaba39494d17e722f2Ef49929656b82d561b4460",
+    MultichainClaimsRouter: "0x2265c65b65ad8336C6Eb41dA1f2BeB5fF7a1CA3F",
+    MultichainGlvRouter: "0x666E55DABCDdd29C273B5C03886BcbFBd4FF654e",
+    MultichainGmRouter: "0x3224967e564f2e5E2551F0B87Cb759230E3C6908",
+    MultichainOrderRouter: "0xb813bf9a4968eb524C07aAf7Dd8c678840854f6C",
+    MultichainSubaccountRouter: "0x01ecA08518c90acf2779F5509de74B1C2c590b58",
+    MultichainTransferRouter: "0x26493a63B9e4Fd6E94bE8D3d9CfB5bAA90714697",
     MultichainVault: "0xCd46EF5ed7d08B345c47b5a193A719861Aa2CD91",
-    LayerZeroProvider: "0x2E3d6B4c471C50983F21b54d3Ed8e3dAC7dAFF2e",
+    LayerZeroProvider: "0x1Bc31F4e57d3A0694049ac6fa829a1B33111e28A",
 
     ChainlinkPriceFeedProvider: "0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d",
     ReferralStorage: "0xBbCdA58c228Bb29B5769778181c81Ac8aC546c11",
-    ClaimHandler: "0xdB980712cCB142A11296c1b9cf70C24E1e90002A",
+    ClaimHandler: "0x90B3B7a28574e8E623Fdce11D93D85Dffe12398D",
 
     // External
     Multicall: "0xD84793ae65842fFac5C20Ab8eaBD699ea1FC79F3",
@@ -471,4 +401,12 @@ export function getContract(chainId: ContractsChainId, name: ContractName): Addr
   }
 
   return CONTRACTS[chainId][name];
+}
+
+export function tryGetContract(chainId: ContractsChainId, name: ContractName): Address | undefined {
+  try {
+    return getContract(chainId, name);
+  } catch (e) {
+    return undefined;
+  }
 }

@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
@@ -21,12 +21,12 @@ import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
 
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
+import { ExpressTradingCannotSignBanner } from "components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
@@ -67,13 +67,11 @@ export function TradingSettings({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
-  const isGeminiWallet = useIsGeminiWallet();
+  const { canSignTypedData } = useWalletCanSignTypedData();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
-  const isExpressTradingDisabled =
-    (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain || isGeminiWallet;
+  const isExpressTradingDisabled = !canSignTypedData || (isOutOfGasPaymentBalance && srcChainId === undefined);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
@@ -152,11 +150,6 @@ export function TradingSettings({
               }
               icon={<ExpressIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
-              disabledTooltip={
-                isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
-                ) : undefined
-              }
               chip={
                 <Chip color="gray">
                   <Trans>Optimal</Trans>
@@ -171,11 +164,6 @@ export function TradingSettings({
               description={<Trans>Seamless trading with Express reliability</Trans>}
               icon={<OneClickIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
-              disabledTooltip={
-                isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
-                ) : undefined
-              }
               info={
                 <Trans>
                   GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
@@ -194,8 +182,10 @@ export function TradingSettings({
               onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
             />
 
-            {isOutOfGasPaymentBalance && !(isNonEoaAccountOnAnyChain || isGeminiWallet) && (
-              <ExpressTradingOutOfGasBanner onClose={onClose} />
+            {canSignTypedData ? (
+              isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />
+            ) : (
+              <ExpressTradingCannotSignBanner />
             )}
 
             <OldSubaccountWithdraw />
@@ -379,16 +369,13 @@ export function TradingSettings({
           />
         </ToggleSwitch>
 
-        {/* External swaps are enabled by default on Botanix */}
-        {chainId !== BOTANIX && (
-          <ToggleSwitch
-            isChecked={settings.externalSwapsEnabled}
-            setIsChecked={settings.setExternalSwapsEnabled}
-            className="font-medium"
-          >
-            <Trans>Enable external swaps</Trans>
-          </ToggleSwitch>
-        )}
+        <ToggleSwitch
+          isChecked={settings.externalSwapsEnabled}
+          setIsChecked={settings.setExternalSwapsEnabled}
+          className="font-medium"
+        >
+          <Trans>Enable external swaps</Trans>
+        </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.isSetAcceptablePriceImpactEnabled}

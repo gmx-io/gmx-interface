@@ -171,6 +171,22 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x0312dc3edf3f01f94db43caa6644",
@@ -223,6 +239,10 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -235,11 +255,19 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -369,6 +397,8 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -661,6 +691,22 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x0312e29f769647e643be40a5b828",
@@ -713,6 +759,10 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -725,11 +775,19 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -858,6 +916,8 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -1143,6 +1203,22 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x44ffb6d9efc35b60f80a10eab6",
@@ -1195,6 +1271,10 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -1207,11 +1287,19 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -1340,6 +1428,8 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualLongTokenId: "0x275d2a6e341e6a078d4eee59b08907d1e50825031c5481f9551284f4b7ee2fb9",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -1623,6 +1713,22 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x2ae01a651ad1a71f94202c9027",
@@ -1788,6 +1894,8 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "-0x3885f95a824cd6d349eb2ab00000",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
     virtualLongTokenId: "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -1828,6 +1936,10 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -1840,11 +1952,19 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -2098,6 +2218,22 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x02a1527b2029038ab8110a2a1b9b",
@@ -2263,6 +2399,8 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x04533437e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481d",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -2278,6 +2416,10 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -2290,11 +2432,19 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -2580,6 +2730,22 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x2b394ddfa1af6530444f10967f",
@@ -2745,6 +2911,8 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "-0x3885f95a824cd6d349eb2ab00000",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
     virtualLongTokenId: "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -2760,6 +2928,10 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -2772,11 +2944,19 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -3064,6 +3244,22 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x289e543927407e0ac1af2da10586",
@@ -3229,6 +3425,8 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "-0x15fc5948670bea861777d3cad968ae",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x85248fe8b259d5a671c8ca8540127a7b9cb2534b1175b95d1df6391360841c7b",
     virtualLongTokenId: "0xab14694c1d031aa28aedaf394a1c4f0054ad43be42448259b8bc064efa1af97c",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -3244,6 +3442,10 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -3256,11 +3458,19 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -3567,6 +3777,22 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x019dc9ef3df233d4d9fe733fb163b8",
@@ -3732,6 +3958,8 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "-0xbe933757ba61764c333f1919681000",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0xba1ff14bf93fbb00b6f43d3ad403cc4c6496c1bb88489075c8b1bc709bde9ebb",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -3747,6 +3975,10 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -3759,11 +3991,19 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4207,6 +4447,8 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "-0x05d0e5d6b8d0c98bdcf87b637382d4",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x4cdf047af6bcf090983ce57032e6e50a0ce1adc3cc5c3a51621361a4591267e5",
     virtualLongTokenId: "0x3c48977e4fc47fa4616e13af7ceb68b0d545dce7b1fb9ec7b85bb6e00870a051",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -4226,7 +4468,27 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingIncreaseRatePerSecond: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4242,11 +4504,19 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4536,6 +4806,22 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x4959b5647baa949d1f4102e6db02",
@@ -4701,6 +4987,8 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "-0x0414d8cb7fcabf9440fcb31bc71c42",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0xeed81816403077d40644cf5d67e0684a662b9e79f29112103f52bebee3ca78e2",
     virtualLongTokenId: "0xc31eff1feab296b571fe8131f0a4addc859c36445b90ea23edd116081d5eb0e8",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -4716,6 +5004,10 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -4728,11 +5020,19 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -5086,6 +5386,22 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x039938fe034c3882e849df93144f",
@@ -5252,6 +5568,8 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0x04533437e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481d",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -5267,6 +5585,10 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -5279,11 +5601,19 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -5753,6 +6083,7 @@ export const createOrderStopMarketLong = prepare({
     virtualPoolAmountForLongToken: { type: "bigint", value: "53344644343" },
     virtualPoolAmountForShortToken: { type: "bigint", value: "50160148540804" },
     virtualInventoryForPositions: { type: "bigint", value: "-9964932665251764549550043701788947898" },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
     isDisabled: false,
     maxLongPoolUsdForDeposit: { type: "bigint", value: "60000000000000000000000000000000000000" },
     maxShortPoolUsdForDeposit: { type: "bigint", value: "60000000000000000000000000000000000000" },
@@ -5764,6 +6095,10 @@ export const createOrderStopMarketLong = prepare({
     openInterestReserveFactorShort: { type: "bigint", value: "2100000000000000000000000000000" },
     maxOpenInterestLong: { type: "bigint", value: "90251000000000000000000000000000000000" },
     maxOpenInterestShort: { type: "bigint", value: "90251000000000000000000000000000000000" },
+    maxCollateralSumLongTokenLong: { type: "bigint", value: "0" },
+    maxCollateralSumLongTokenShort: { type: "bigint", value: "0" },
+    maxCollateralSumShortTokenLong: { type: "bigint", value: "0" },
+    maxCollateralSumShortTokenShort: { type: "bigint", value: "0" },
     minPositionImpactPoolAmount: { type: "bigint", value: "95000000" },
     positionImpactPoolDistributionRate: { type: "bigint", value: "0" },
     borrowingFactorLong: { type: "bigint", value: "6250000000000000000000" },
@@ -5773,11 +6108,14 @@ export const createOrderStopMarketLong = prepare({
     fundingFactor: { type: "bigint", value: "20000000000000000000000" },
     fundingExponentFactor: { type: "bigint", value: "1000000000000000000000000000000" },
     fundingIncreaseFactorPerSecond: { type: "bigint", value: "2048553493366975277" },
+    minFundingIncreaseRatePerSecond: { type: "bigint", value: "0" },
     fundingDecreaseFactorPerSecond: { type: "bigint", value: "128034593335435961" },
     thresholdForDecreaseFunding: { type: "bigint", value: "0" },
     thresholdForStableFunding: { type: "bigint", value: "40000000000000000000000000000" },
-    minFundingFactorPerSecond: { type: "bigint", value: "317097919837645865043" },
-    maxFundingFactorPerSecond: { type: "bigint", value: "22124377728363333333333" },
+    minFundingFactorPerSecondLong: { type: "bigint", value: "317097919837645865043" },
+    minFundingFactorPerSecondShort: { type: "bigint", value: "317097919837645865043" },
+    maxFundingFactorPerSecondLong: { type: "bigint", value: "22124377728363333333333" },
+    maxFundingFactorPerSecondShort: { type: "bigint", value: "22124377728363333333333" },
     maxPnlFactorForTradersLong: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForTradersShort: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForDepositsLong: { type: "bigint", value: "900000000000000000000000000000" },
@@ -5801,6 +6139,7 @@ export const createOrderStopMarketLong = prepare({
     swapImpactFactorPositive: { type: "bigint", value: "200000000000000000000" },
     swapImpactFactorNegative: { type: "bigint", value: "400000000000000000000" },
     swapImpactExponentFactor: { type: "bigint", value: "2000000000000000000000000000000" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0xba1ff14bf93fbb00b6f43d3ad403cc4c6496c1bb88489075c8b1bc709bde9ebb",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -5977,6 +6316,7 @@ export const executeOrderStopMarketLong = prepare({
     virtualPoolAmountForLongToken: { type: "bigint", value: "53344633893" },
     virtualPoolAmountForShortToken: { type: "bigint", value: "50160158578315" },
     virtualInventoryForPositions: { type: "bigint", value: "-9964951769951788881419543701788947898" },
+    virtualInventoryForPositionsInTokens: { type: "bigint", value: "0" },
     isDisabled: false,
     maxLongPoolUsdForDeposit: { type: "bigint", value: "60000000000000000000000000000000000000" },
     maxShortPoolUsdForDeposit: { type: "bigint", value: "60000000000000000000000000000000000000" },
@@ -5988,6 +6328,10 @@ export const executeOrderStopMarketLong = prepare({
     openInterestReserveFactorShort: { type: "bigint", value: "2100000000000000000000000000000" },
     maxOpenInterestLong: { type: "bigint", value: "90251000000000000000000000000000000000" },
     maxOpenInterestShort: { type: "bigint", value: "90251000000000000000000000000000000000" },
+    maxCollateralSumLongTokenLong: { type: "bigint", value: "0" },
+    maxCollateralSumLongTokenShort: { type: "bigint", value: "0" },
+    maxCollateralSumShortTokenLong: { type: "bigint", value: "0" },
+    maxCollateralSumShortTokenShort: { type: "bigint", value: "0" },
     minPositionImpactPoolAmount: { type: "bigint", value: "95000000" },
     positionImpactPoolDistributionRate: { type: "bigint", value: "0" },
     borrowingFactorLong: { type: "bigint", value: "6250000000000000000000" },
@@ -5997,11 +6341,14 @@ export const executeOrderStopMarketLong = prepare({
     fundingFactor: { type: "bigint", value: "20000000000000000000000" },
     fundingExponentFactor: { type: "bigint", value: "1000000000000000000000000000000" },
     fundingIncreaseFactorPerSecond: { type: "bigint", value: "2048553493366975277" },
+    minFundingIncreaseRatePerSecond: { type: "bigint", value: "0" },
     fundingDecreaseFactorPerSecond: { type: "bigint", value: "128034593335435961" },
     thresholdForDecreaseFunding: { type: "bigint", value: "0" },
     thresholdForStableFunding: { type: "bigint", value: "40000000000000000000000000000" },
-    minFundingFactorPerSecond: { type: "bigint", value: "317097919837645865043" },
-    maxFundingFactorPerSecond: { type: "bigint", value: "22124377728363333333333" },
+    minFundingFactorPerSecondLong: { type: "bigint", value: "317097919837645865043" },
+    minFundingFactorPerSecondShort: { type: "bigint", value: "317097919837645865043" },
+    maxFundingFactorPerSecondLong: { type: "bigint", value: "22124377728363333333333" },
+    maxFundingFactorPerSecondShort: { type: "bigint", value: "22124377728363333333333" },
     maxPnlFactorForTradersLong: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForTradersShort: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForDepositsLong: { type: "bigint", value: "900000000000000000000000000000" },
@@ -6025,6 +6372,7 @@ export const executeOrderStopMarketLong = prepare({
     swapImpactFactorPositive: { type: "bigint", value: "200000000000000000000" },
     swapImpactFactorNegative: { type: "bigint", value: "400000000000000000000" },
     swapImpactExponentFactor: { type: "bigint", value: "2000000000000000000000000000000" },
+    virtualIndexTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualMarketId: "0xba1ff14bf93fbb00b6f43d3ad403cc4c6496c1bb88489075c8b1bc709bde9ebb",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
