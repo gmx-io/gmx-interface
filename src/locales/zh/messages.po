@@ -271,6 +271,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr "清算最大因子"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet cannot sign messages, which trading from this network requires"
+msgstr "您的钱包无法签署消息，而从此网络交易需要该功能。"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
 msgstr ""
@@ -282,6 +286,10 @@ msgstr "Oracle keeper 事件"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
+msgstr "<0>您的 {walletName} 在不同的网络上</0><1/><2>请将您的 {walletName} 切换到 {0}，然后重试</2>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -811,6 +819,10 @@ msgstr "无奖励"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PROVIDER"
 msgstr "提供商"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
+msgstr "提取需要签名，但此钱包无法提供，因此已禁用该操作，以避免您的资金被锁定。"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -3593,10 +3605,6 @@ msgstr ""
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
-msgstr "<0>智能钱包不支持 {0}</0><1/><2>请切换至其他网络或使用 EOA 钱包</2>"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "从去中心化或中心化交易所买入"
@@ -4034,6 +4042,10 @@ msgstr ""
 msgid "Enter amount"
 msgstr "输入金额"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Add {0} to your wallet"
+msgstr "将 {0} 添加至您的钱包"
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "账户不正确"
@@ -4175,6 +4187,10 @@ msgstr "最大关闭金额超出"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short USD for deposit"
 msgstr "池最大做空 USD 存入额"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr "<0>您的钱包已切换到其他账户</0><1/><2>在 {0} 上签名需要使用您开始时的同一账户。请不要选择其他账户，而是在钱包中为当前账户添加 {1}，然后重试。</2>"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
@@ -4330,6 +4346,10 @@ msgstr "20 秒"
 msgid "Virtual market ID"
 msgstr "虚拟市场 ID"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet is not connected to this network"
+msgstr "您的钱包未连接到此网络"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -4444,13 +4464,6 @@ msgstr "输入推荐码"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "智能钱包不支持 Express Trading 或 One-Click Trading"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -5381,6 +5394,10 @@ msgstr "在 Bond Protocol 上以折扣价购买 GMX 债券，归属期较短"
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
+msgstr "<0>您的 {walletName} 在 {0} 上不可用</0><1/><2>请将 {1} 添加至您的 {walletName}，然后重新连接并重试</2>"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -6871,6 +6888,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7177,6 +7195,10 @@ msgstr "借出您的代币或以其为抵押进行借贷"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX logo"
 msgstr "GMX 标志"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Using Safe? Learn how to add a network"
+msgstr "使用 Safe？了解如何添加网络"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
@@ -7713,6 +7735,10 @@ msgstr "STATUS"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
+msgstr "您的钱包无法签署消息。请连接其他钱包进行交易。"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
@@ -8941,6 +8967,10 @@ msgstr "已归属 GMX 未提取"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short positions"
 msgstr "做空仓位"
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Use Classic mode to trade."
+msgstr "您的钱包无法签署消息。请使用经典模式进行交易。"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10215,6 +10245,10 @@ msgstr "已质押"
 msgid "Traders"
 msgstr "交易者"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Wallet cannot sign messages"
+msgstr "钱包无法签署消息"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
 msgstr "更新"
@@ -10300,6 +10334,10 @@ msgstr "复制技术详情"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "追踪器"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
+msgstr "提取需要在 {0} 上签名。请将该网络添加至您的钱包并重新连接，否则您的资金将无法提取。"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
@@ -11372,10 +11410,6 @@ msgstr "{orderText} 取消失败"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "卖出"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Smart wallets not supported on this network"
-msgstr "此网络不支持智能钱包"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"

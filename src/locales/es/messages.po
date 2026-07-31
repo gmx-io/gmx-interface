@@ -271,6 +271,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr "Factor máximo para liquidaciones"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet cannot sign messages, which trading from this network requires"
+msgstr "Tu wallet no puede firmar mensajes, algo necesario para operar desde esta red"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
 msgstr ""
@@ -282,6 +286,10 @@ msgstr "Eventos del Oracle keeper"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
+msgstr "<0>Tu {walletName} está en una red diferente</0><1/><2>Cambia tu {walletName} a {0} y vuelve a intentarlo</2>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -811,6 +819,10 @@ msgstr "Sin recompensas"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PROVIDER"
 msgstr "PROVEEDOR"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
+msgstr "La retirada necesita una firma que esta wallet no puede proporcionar, por lo que está desactivada para evitar bloquear tus fondos."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -3593,10 +3605,6 @@ msgstr ""
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
-msgstr "<0>Los monederos inteligentes no son compatibles con {0}</0><1/><2>Cambie a una red diferente o utilice un monedero EOA</2>"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "Comprar en exchanges descentralizados o centralizados"
@@ -4034,6 +4042,10 @@ msgstr ""
 msgid "Enter amount"
 msgstr "Ingresa un importe"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Add {0} to your wallet"
+msgstr "Añade {0} a tu wallet"
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "Cuenta incorrecta"
@@ -4175,6 +4187,10 @@ msgstr "Cantidad máxima de cierre excedida"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short USD for deposit"
 msgstr "Máximo USD corto del pool para depósito"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr "<0>Tu wallet cambió a otra cuenta</0><1/><2>Firmar en {0} requiere la misma cuenta con la que empezaste. En lugar de seleccionar otra cuenta, añade {1} a la actual en tu wallet y vuelve a intentarlo.</2>"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
@@ -4330,6 +4346,10 @@ msgstr "20s"
 msgid "Virtual market ID"
 msgstr "ID de mercado virtual"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet is not connected to this network"
+msgstr "Tu wallet no está conectada a esta red"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -4444,13 +4464,6 @@ msgstr "Ingresa código de referencia"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "Los monederos inteligentes no son compatibles con Express Trading ni con One-Click Trading"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -5381,6 +5394,10 @@ msgstr "Compre bonos GMX en Bond Protocol con descuento y un periodo de consolid
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
+msgstr "<0>Tu {walletName} no está disponible en {0}</0><1/><2>Añade {1} a tu {walletName}, luego reconéctate y vuelve a intentarlo</2>"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -6871,6 +6888,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7177,6 +7195,10 @@ msgstr "Preste sus tokens o pida prestado con ellos como garantía"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX logo"
 msgstr "Logotipo de GMX"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Using Safe? Learn how to add a network"
+msgstr "¿Usas Safe? Aprende a añadir una red"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
@@ -7713,6 +7735,10 @@ msgstr "ESTADO"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
+msgstr "Tu wallet no puede firmar mensajes. Conecta otra wallet para operar."
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
@@ -8941,6 +8967,10 @@ msgstr "GMX en vesting no retirado"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short positions"
 msgstr "Posiciones cortas"
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Use Classic mode to trade."
+msgstr "Tu wallet no puede firmar mensajes. Usa el modo Clásico para operar."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10215,6 +10245,10 @@ msgstr "Stakeado"
 msgid "Traders"
 msgstr "Traders"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Wallet cannot sign messages"
+msgstr "La wallet no puede firmar mensajes"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
 msgstr "Actualizaciones"
@@ -10300,6 +10334,10 @@ msgstr "Copiar detalles técnicos"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "TRACKER"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
+msgstr "La retirada se firma en {0}. Añade esa red a tu wallet y reconéctate, de lo contrario tus fondos no podrán retirarse."
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
@@ -11372,10 +11410,6 @@ msgstr "Error en la cancelación de {orderText}"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "Vender"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Smart wallets not supported on this network"
-msgstr "Monederos inteligentes no compatibles en esta red"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"

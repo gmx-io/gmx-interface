@@ -487,7 +487,13 @@ async function createAndSignSubaccountApproval(
     deadline: params.expiresAt,
   };
 
-  const signature = await signTypedData({ signer: mainAccountSigner, domain, types, typedData });
+  const signature = await signTypedData({
+    signer: mainAccountSigner,
+    domain,
+    types,
+    typedData,
+    verificationChainId: chainId,
+  });
 
   return {
     ...typedData,

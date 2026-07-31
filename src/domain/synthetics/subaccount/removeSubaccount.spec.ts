@@ -19,6 +19,7 @@ const { mocks } = vi.hoisted(() => ({
     getRawBaseRelayerParams: vi.fn(),
     estimateArbitraryRelayFee: vi.fn(),
     getArbitraryRelayParamsAndPayload: vi.fn(),
+    readContract: vi.fn(),
   },
 }));
 
@@ -41,7 +42,7 @@ vi.mock("lib/wallets/signing", () => ({
 }));
 
 vi.mock("lib/wallets/walletConfig", () => ({
-  getPublicClientWithRpc: () => ({}),
+  getPublicClientWithRpc: () => ({ readContract: mocks.readContract }),
 }));
 
 vi.mock("domain/synthetics/express", async (importOriginal) => ({
@@ -170,27 +171,23 @@ describe("getIsSubaccountRemovalRequired", () => {
   });
 
   it("keeps the removal without an on-chain read when the cached data says the subaccount is registered", async () => {
-    const provider = makeProvider(ENCODED_FALSE);
-
     await expect(
       getIsSubaccountRemovalRequired({
         chainId: CHAIN_ID,
-        provider,
-        signer: makeSigner(undefined),
         subaccount: makeSubaccount(true),
         account: ACCOUNT,
       })
     ).resolves.toBe(true);
 
-    expect(provider.call).not.toHaveBeenCalled();
+    expect(mocks.readContract).not.toHaveBeenCalled();
   });
 
   it("needs no transaction when One-Click is only enabled by a local approval", async () => {
+    mocks.readContract.mockResolvedValue(false);
+
     await expect(
       getIsSubaccountRemovalRequired({
         chainId: CHAIN_ID,
-        provider: makeProvider(ENCODED_FALSE),
-        signer: makeSigner(undefined),
         subaccount: makeSubaccount(false),
         account: ACCOUNT,
       })
@@ -198,39 +195,11 @@ describe("getIsSubaccountRemovalRequired", () => {
   });
 
   it("keeps the removal when the on-chain read is unavailable", async () => {
-    await expect(
-      getIsSubaccountRemovalRequired({
-        chainId: CHAIN_ID,
-        provider: makeProvider(new Error("rpc error")),
-        signer: makeSigner(undefined),
-        subaccount: makeSubaccount(false),
-        account: ACCOUNT,
-      })
-    ).resolves.toBe(true);
-  });
-
-  it("falls back to the signer provider when no provider is given", async () => {
-    const signerProvider = makeProvider(ENCODED_FALSE);
+    mocks.readContract.mockRejectedValue(new Error("rpc error"));
 
     await expect(
       getIsSubaccountRemovalRequired({
         chainId: CHAIN_ID,
-        provider: undefined,
-        signer: makeSigner(signerProvider),
-        subaccount: makeSubaccount(false),
-        account: ACCOUNT,
-      })
-    ).resolves.toBe(false);
-
-    expect(signerProvider.call).toHaveBeenCalledTimes(1);
-  });
-
-  it("keeps the removal when there is no provider to read with", async () => {
-    await expect(
-      getIsSubaccountRemovalRequired({
-        chainId: CHAIN_ID,
-        provider: undefined,
-        signer: makeSigner(undefined),
         subaccount: makeSubaccount(false),
         account: ACCOUNT,
       })
@@ -243,20 +212,26 @@ describe("getIsSubaccountActiveOnchain", () => {
     vi.clearAllMocks();
   });
 
-  it("decodes the DataStore result", async () => {
+  it("reads the DataStore on the settlement chain", async () => {
+    mocks.readContract.mockResolvedValue(true);
+
     await expect(
       getIsSubaccountActiveOnchain({
         chainId: CHAIN_ID,
-        provider: makeProvider(ENCODED_TRUE),
         account: ACCOUNT,
         subaccountAddress: SUBACCOUNT_ADDRESS,
       })
     ).resolves.toBe(true);
 
+    expect(mocks.readContract).toHaveBeenCalledWith(
+      expect.objectContaining({ functionName: "containsAddress", args: [expect.any(String), SUBACCOUNT_ADDRESS] })
+    );
+
+    mocks.readContract.mockResolvedValue(false);
+
     await expect(
       getIsSubaccountActiveOnchain({
         chainId: CHAIN_ID,
-        provider: makeProvider(ENCODED_FALSE),
         account: ACCOUNT,
         subaccountAddress: SUBACCOUNT_ADDRESS,
       })
@@ -264,10 +239,11 @@ describe("getIsSubaccountActiveOnchain", () => {
   });
 
   it("returns undefined when the read fails", async () => {
+    mocks.readContract.mockRejectedValue(new Error("rpc error"));
+
     await expect(
       getIsSubaccountActiveOnchain({
         chainId: CHAIN_ID,
-        provider: makeProvider(new Error("rpc error")),
         account: ACCOUNT,
         subaccountAddress: SUBACCOUNT_ADDRESS,
       })
@@ -290,11 +266,8 @@ describe("removeSubaccountExpressTxn", () => {
   });
 
   it("does not re-check the on-chain state — whether a removal is due is decided by the caller", async () => {
-    const provider = makeProvider(ENCODED_FALSE);
-
     await removeSubaccountExpressTxn({
       chainId: CHAIN_ID,
-      provider,
       account: ACCOUNT,
       srcChainId: SRC_CHAIN_ID,
       signer: makeSigner(undefined),
@@ -302,7 +275,7 @@ describe("removeSubaccountExpressTxn", () => {
       globalExpressParams,
     });
 
-    expect(provider.call).not.toHaveBeenCalled();
+    expect(mocks.readContract).not.toHaveBeenCalled();
     expect(mocks.getRawBaseRelayerParams).toHaveBeenCalledTimes(1);
     expect(mocks.sendExpressTransaction).toHaveBeenCalledTimes(1);
   });
@@ -313,7 +286,6 @@ describe("removeSubaccountExpressTxn", () => {
     await expect(
       removeSubaccountExpressTxn({
         chainId: CHAIN_ID,
-        provider: makeProvider(ENCODED_TRUE),
         account: ACCOUNT,
         srcChainId: SRC_CHAIN_ID,
         signer: makeSigner(undefined),
@@ -332,7 +304,6 @@ describe("removeSubaccountExpressTxn", () => {
 
     await removeSubaccountExpressTxn({
       chainId: CHAIN_ID,
-      provider: makeProvider(ENCODED_TRUE),
       account: ACCOUNT,
       srcChainId: SRC_CHAIN_ID,
       signer: makeSigner(undefined),
@@ -356,7 +327,6 @@ describe("removeSubaccountExpressTxn", () => {
 
     const rejection = await removeSubaccountExpressTxn({
       chainId: CHAIN_ID,
-      provider: makeProvider(ENCODED_TRUE),
       account: ACCOUNT,
       srcChainId: SRC_CHAIN_ID,
       signer: makeSigner(undefined),
@@ -378,7 +348,6 @@ describe("removeSubaccountExpressTxn", () => {
     await expect(
       removeSubaccountExpressTxn({
         chainId: CHAIN_ID,
-        provider: makeProvider(ENCODED_TRUE),
         account: ACCOUNT,
         srcChainId: SRC_CHAIN_ID,
         signer: makeSigner(undefined),

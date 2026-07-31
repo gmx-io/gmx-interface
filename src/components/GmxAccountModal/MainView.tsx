@@ -32,7 +32,6 @@ import { useLocalStorageByChainId } from "lib/localStorage";
 import { formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
@@ -120,9 +119,6 @@ function WalletBlock({ account }: { account: string }) {
   const embeddedWallet = getEmbeddedConnectedWallet(wallets);
   const canExport = Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
 
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
-  const canSend = !isNonEoaAccountOnAnyChain;
-
   const accountUrl = !account || !chainId ? "" : `${getExplorerUrl(chainId)}address/${account}`;
 
   useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
@@ -158,18 +154,16 @@ function WalletBlock({ account }: { account: string }) {
               <ReceiveIcon className="size-16" />
             </button>
           </TooltipWithPortal>
-          {canSend && (
-            <TooltipWithPortal
-              content={t`Send from Wallet`}
-              position="bottom"
-              tooltipClassName="!min-w-max"
-              variant="none"
-            >
-              <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
-                <SendIcon className="size-16" />
-              </button>
-            </TooltipWithPortal>
-          )}
+          <TooltipWithPortal
+            content={t`Send from Wallet`}
+            position="bottom"
+            tooltipClassName="!min-w-max"
+            variant="none"
+          >
+            <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
+              <SendIcon className="size-16" />
+            </button>
+          </TooltipWithPortal>
           <div className="h-16 border-l-1/2 border-slate-600" />
           {canExport && (
             <TooltipWithPortal

@@ -271,6 +271,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr "清算の最大ファクター"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet cannot sign messages, which trading from this network requires"
+msgstr "ウォレットはメッセージに署名できません。このネットワークでの取引にはその署名が必要です。"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
 msgstr ""
@@ -282,6 +286,10 @@ msgstr "Oracle keeperイベント"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
+msgstr "<0>{walletName}が別のネットワーク上にあります</0><1/><2>{walletName}を{0}に切り替えて、もう一度お試しください</2>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -811,6 +819,10 @@ msgstr "報酬なし"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PROVIDER"
 msgstr "PROVIDER"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
+msgstr "出金にはこのウォレットが提供できない署名が必要なため、資金がロックされるのを防ぐためこの操作を無効にしています。"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -3593,10 +3605,6 @@ msgstr ""
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
-msgstr "<0>スマートウォレットは{0}ではサポートされていません</0><1/><2>別のネットワークに切り替えるか、EOAウォレットをご利用ください</2>"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "分散型または中央集権型取引所で購入"
@@ -4034,6 +4042,10 @@ msgstr ""
 msgid "Enter amount"
 msgstr "額を入力"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Add {0} to your wallet"
+msgstr "{0}をウォレットに追加"
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "アカウントが一致しません"
@@ -4175,6 +4187,10 @@ msgstr "最大クローズ額を超えています"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short USD for deposit"
 msgstr "プール入金時のショート側最大 USD"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr "<0>ウォレットが別のアカウントに切り替わりました</0><1/><2>{0}での署名には、開始時と同じアカウントが必要です。別のアカウントを選択せず、ウォレットで現在のアカウントに{1}を追加してからもう一度お試しください。</2>"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
@@ -4330,6 +4346,10 @@ msgstr "20秒"
 msgid "Virtual market ID"
 msgstr "仮想マーケットID"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet is not connected to this network"
+msgstr "ウォレットはこのネットワークに接続されていません"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -4444,13 +4464,6 @@ msgstr "リファラルコードを入力"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "スマートウォレットは Express Trading および One-Click Trading に対応していません"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -5381,6 +5394,10 @@ msgstr "Bond ProtocolでGMXボンドを短いベスティング期間で割引�
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
+msgstr "<0>{walletName}は{0}で利用できません</0><1/><2>{walletName}に{1}を追加し、再接続してからもう一度お試しください</2>"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -6871,6 +6888,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7177,6 +7195,10 @@ msgstr "トークンを貸し出すか、それを担保に借り入れができ
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX logo"
 msgstr "GMXロゴ"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Using Safe? Learn how to add a network"
+msgstr "Safeをご利用ですか？ネットワークの追加方法はこちら"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
@@ -7713,6 +7735,10 @@ msgstr "STATUS"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
+msgstr "ウォレットはメッセージに署名できません。取引するには別のウォレットを接続してください。"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
@@ -8941,6 +8967,10 @@ msgstr "ベスティング済みGMX未引き出し"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short positions"
 msgstr "ショートポジション"
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Use Classic mode to trade."
+msgstr "ウォレットはメッセージに署名できません。取引するにはクラシックモードを使用してください。"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10215,6 +10245,10 @@ msgstr "ステーク済"
 msgid "Traders"
 msgstr "トレーダー"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Wallet cannot sign messages"
+msgstr "ウォレットはメッセージに署名できません"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
 msgstr "アップデート"
@@ -10300,6 +10334,10 @@ msgstr "技術的詳細をコピー"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "TRACKER"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
+msgstr "出金は{0}で署名されます。そのネットワークをウォレットに追加して再接続してください。そうしないと資金を出金できません。"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
@@ -11372,10 +11410,6 @@ msgstr "{orderText} のキャンセルに失敗しました"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "売却"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Smart wallets not supported on this network"
-msgstr "このネットワークではスマートウォレットはサポートされていません"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"

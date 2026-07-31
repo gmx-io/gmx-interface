@@ -1,5 +1,5 @@
-import { ethers, Provider, Signer } from "ethers";
-import { decodeFunctionResult, encodeFunctionData, isHex } from "viem";
+import { ethers, Signer } from "ethers";
+import { encodeFunctionData } from "viem";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import {
@@ -54,36 +54,22 @@ export async function removeSubaccountWalletTxn(
 
 export async function getIsSubaccountActiveOnchain({
   chainId,
-  provider,
   account,
   subaccountAddress,
 }: {
   chainId: ContractsChainId;
-  provider: Provider;
   account: string;
   subaccountAddress: string;
 }): Promise<boolean | undefined> {
   try {
-    const callData = encodeFunctionData({
+    const isActive = await getPublicClientWithRpc(chainId).readContract({
+      address: getContract(chainId, "DataStore"),
       abi: abis.DataStore,
       functionName: "containsAddress",
       args: [subaccountListKey(account), subaccountAddress],
     });
 
-    const result = await provider.call({
-      to: getContract(chainId, "DataStore"),
-      data: callData,
-    });
-
-    if (!isHex(result)) {
-      return undefined;
-    }
-
-    return decodeFunctionResult({
-      abi: abis.DataStore,
-      functionName: "containsAddress",
-      data: result,
-    }) as boolean;
+    return isActive;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -93,14 +79,10 @@ export async function getIsSubaccountActiveOnchain({
 
 export async function getIsSubaccountRemovalRequired({
   chainId,
-  provider,
-  signer,
   subaccount,
   account,
 }: {
   chainId: ContractsChainId;
-  provider: Provider | undefined;
-  signer: Signer;
   subaccount: Subaccount;
   account: string;
 }): Promise<boolean> {
@@ -108,15 +90,8 @@ export async function getIsSubaccountRemovalRequired({
     return true;
   }
 
-  const readProvider = provider ?? signer.provider;
-
-  if (!readProvider) {
-    return true;
-  }
-
   const freshOnchainActive = await getIsSubaccountActiveOnchain({
     chainId,
-    provider: readProvider,
     account,
     subaccountAddress: subaccount.address,
   });
@@ -221,12 +196,12 @@ async function signRemoveSubaccountPayload({
     types,
     typedData,
     domain,
+    verificationChainId: chainId,
   });
 }
 
 export async function removeSubaccountExpressTxn({
   chainId,
-  provider,
   account,
   srcChainId,
   signer,
@@ -234,15 +209,14 @@ export async function removeSubaccountExpressTxn({
   globalExpressParams,
 }: {
   chainId: ContractsChainId;
-  provider: Provider;
   account: string;
   srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
   subaccount: Subaccount;
   globalExpressParams: GlobalExpressParams;
 }) {
-  if (!provider || !account) {
-    throw new Error("No provider or account");
+  if (!account) {
+    throw new Error("No account");
   }
 
   const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = getRawBaseRelayerParams({

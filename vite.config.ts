@@ -215,7 +215,6 @@ export default defineConfig(({ mode }) => {
       format: "es",
     },
     optimizeDeps: {
-      include: ["@vanilla-extract/sprinkles"],
       esbuildOptions: {
         target: "es2020",
       },
@@ -282,11 +281,6 @@ export default defineConfig(({ mode }) => {
       globalSetup: "./vitest.global-setup.js",
       exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx"],
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
-      server: {
-        deps: {
-          inline: ["@vanilla-extract/sprinkles"],
-        },
-      },
     },
   };
 });

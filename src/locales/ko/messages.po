@@ -271,6 +271,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr "청산 최대 계수"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet cannot sign messages, which trading from this network requires"
+msgstr "지갑이 메시지에 서명할 수 없습니다. 이 네트워크에서 거래하려면 서명이 필요합니다."
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
 msgstr ""
@@ -282,6 +286,10 @@ msgstr "Oracle keeper 이벤트"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
+msgstr "<0>{walletName}이(가) 다른 네트워크에 있습니다</0><1/><2>{walletName}을(를) {0}(으)로 전환한 후 다시 시도하세요</2>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -811,6 +819,10 @@ msgstr "보상 없음"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PROVIDER"
 msgstr "PROVIDER"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
+msgstr "출금에는 이 지갑이 제공할 수 없는 서명이 필요하므로, 자금이 잠기는 것을 방지하기 위해 이 작업을 비활성화했습니다."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -3593,10 +3605,6 @@ msgstr ""
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
-msgstr "<0>스마트 지갑은 {0}에서 지원되지 않습니다</0><1/><2>다른 네트워크로 전환하거나 EOA 지갑을 사용하십시오</2>"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "탈중앙화 또는 중앙화 거래소에서 구매"
@@ -4034,6 +4042,10 @@ msgstr ""
 msgid "Enter amount"
 msgstr "금액 입력"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Add {0} to your wallet"
+msgstr "{0}을(를) 지갑에 추가"
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "잘못된 계정"
@@ -4175,6 +4187,10 @@ msgstr "최대 닫기 금액 초과"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short USD for deposit"
 msgstr "풀 입금용 최대 숏 USD"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr "<0>지갑이 다른 계정으로 전환되었습니다</0><1/><2>{0}에서 서명하려면 시작할 때와 동일한 계정이 필요합니다. 다른 계정을 선택하지 말고 지갑에서 현재 계정에 {1}을(를) 추가한 후 다시 시도하세요.</2>"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
@@ -4330,6 +4346,10 @@ msgstr "20초"
 msgid "Virtual market ID"
 msgstr "가상 마켓 ID"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet is not connected to this network"
+msgstr "지갑이 이 네트워크에 연결되어 있지 않습니다"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -4444,13 +4464,6 @@ msgstr "추천 코드 입력"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
-
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "스마트 지갑은 Express Trading 또는 One-Click Trading에서 지원되지 않습니다"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -5381,6 +5394,10 @@ msgstr "Bond Protocol에서 짧은 베스팅 기간으로 GMX 채권을 할인 �
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
+msgstr "<0>{walletName}은(는) {0}에서 사용할 수 없습니다</0><1/><2>{walletName}에 {1}을(를) 추가한 후 재연결하여 다시 시도하세요</2>"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -6871,6 +6888,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7177,6 +7195,10 @@ msgstr "토큰을 대출하거나 담보로 차입하십시오"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX logo"
 msgstr "GMX 로고"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Using Safe? Learn how to add a network"
+msgstr "Safe를 사용하시나요? 네트워크 추가 방법 알아보기"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
@@ -7713,6 +7735,10 @@ msgstr "STATUS"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
+msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 다른 지갑을 연결하세요."
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
@@ -8941,6 +8967,10 @@ msgstr "베스팅된 GMX가 출금되지 않음"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short positions"
 msgstr "숏 포지션"
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Use Classic mode to trade."
+msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 클래식 모드를 사용하세요."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10215,6 +10245,10 @@ msgstr "스테이킹됨"
 msgid "Traders"
 msgstr "트레이더"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Wallet cannot sign messages"
+msgstr "지갑이 메시지에 서명할 수 없습니다"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
 msgstr "업데이트"
@@ -10300,6 +10334,10 @@ msgstr "기술 세부 정보 복사"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "트래커"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
+msgstr "출금은 {0}에서 서명됩니다. 해당 네트워크를 지갑에 추가하고 재연결하세요. 그렇지 않으면 자금을 출금할 수 없습니다."
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
@@ -11372,10 +11410,6 @@ msgstr "{orderText} 취소에 실패했습니다"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "판매"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Smart wallets not supported on this network"
-msgstr "이 네트워크에서는 스마트 지갑이 지원되지 않습니다"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"
