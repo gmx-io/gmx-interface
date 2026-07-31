@@ -50,6 +50,47 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-120-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "31 Jul 2026, 08:00",
+    endDate: "07 Aug 2026, 16:00",
+    variant: "info",
+    title: "App Update: Smart Wallets, Swap Routing, and App Install",
+    summary: (
+      <>Smart wallets can now use Express and One-Click, swap routing is clearer, and you can install GMX as an app.</>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Smart wallets:</span> Safe, Coinbase Smart Wallet, and
+          other contract accounts can now use Express and One-Click Trading. If your wallet can't sign or is on the
+          wrong network, the app tells you exactly what to fix.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Swaps:</span> the trade box now shows whether your swap
+          routes through GMX pools or an external aggregator, and tells you which one is short on liquidity instead of a
+          generic insufficient-liquidity message.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One-Click Trading:</span> turning One-Click on and off
+          is reliable again. Declining a signature no longer leaves it half-enabled, switching back to Express works
+          without clearing your cache, and changing GMX Account networks no longer asks you to re-sign.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders and positions:</span> market orders that expire
+          before they can be executed are now labeled as expired in Trade History rather than looking like failures, and
+          liquidation time estimates line up with when liquidations actually trigger.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Install as an app:</span> add GMX to your home screen or
+          desktop and launch straight into the app. A more refined experience and further functionality, such as push
+          notifications, are still to come.
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "release-118-highlights",
     type: "update",
     isActive: true,
