@@ -2245,10 +2245,6 @@ msgstr "Fehler verstecken"
 msgid "Alert icon"
 msgstr "Warnsymbol"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Vest {0} esGMX"
-msgstr "{0} esGMX vesten"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
 msgstr "Passives Management"
@@ -4334,6 +4330,7 @@ msgstr "Mindesteinzahlung festlegen"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Unable to refresh vesting details. Please try again."
 msgstr "Die Vesting-Details konnten nicht aktualisiert werden. Bitte versuchen Sie es erneut."
 
@@ -4570,6 +4567,7 @@ msgstr "Betrag eingeben"
 msgid "Reach {0}+ in lifetime trading volume to unlock a permanent {1} multiplier."
 msgstr "Erreiche ein lebenslanges Handelsvolumen von {0}+, um dauerhaft einen {1}-Multiplikator freizuschalten."
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX was claimed. Balances will refresh shortly."
 msgstr "esGMX wurde beansprucht. Die Guthaben werden in Kürze aktualisiert."
@@ -6582,6 +6580,7 @@ msgid "Clear position history filter"
 msgstr "Positionsverlaufsfilter löschen"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX was claimed. Reconnect the original wallet to continue."
 msgstr "esGMX wurde beansprucht. Verbinden Sie die ursprüngliche Wallet erneut, um fortzufahren."
 
@@ -6719,10 +6718,6 @@ msgstr "Führt {numberOfParts} {0} {type}-Orders von je {1} über die nächsten 
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Dokumente"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Staking collateral..."
-msgstr "Kollateral wird gestakt..."
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vestable: {0} esGMX"
@@ -7393,8 +7388,6 @@ msgstr "Ihre Belohnungen teilen"
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stake GMX"
 msgstr "GMX staken"
 
@@ -9275,6 +9268,7 @@ msgid "Balance"
 msgstr "Balance"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting details changed. Review the updated collateral and continue vesting."
 msgstr "Die Vesting-Details haben sich geändert. Prüfen Sie das aktualisierte Kollateral und setzen Sie das Vesting fort."
 
@@ -9462,10 +9456,6 @@ msgstr "<0><1>#GMX V2</1>'s OI sieht großartig aus</0><2>GMX V2 > GMX V1 + Kwen
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "TP/SL-Orders werden automatisch storniert, wenn die Position geschlossen wird. Gilt nur für Orders, die nach der Aktivierung erstellt wurden."
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Claim esGMX"
-msgstr "esGMX beanspruchen"
-
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -9530,7 +9520,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Approve GMX"
 msgstr "GMX genehmigen"
@@ -9988,6 +9977,7 @@ msgstr "Aktiv · nächste Epoche"
 msgid "Stake GMX to reach a higher tier and earn more rewards."
 msgstr "Staken Sie GMX, um eine höhere Stufe zu erreichen und mehr Belohnungen zu verdienen."
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Wallet or network changed. Review the updated collateral and continue vesting."
@@ -11013,10 +11003,6 @@ msgstr "{0} Token für Vesting reserviert"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1y"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Claiming esGMX..."
-msgstr "esGMX wird beansprucht..."
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
@@ -12298,10 +12284,6 @@ msgstr "Token-Permit-Tests"
 msgid "Invalid liquidation price"
 msgstr "Ungültiger Liquidationspreis"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Approving GMX..."
-msgstr "GMX werden freigegeben..."
-
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
 msgstr "{count, plural, one {# Aktion in diesem Lebenszyklus} other {# Aktionen in diesem Lebenszyklus}}"
@@ -12912,6 +12894,7 @@ msgstr "Leihgebühren"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Continue"
 msgstr "Weiter"
 
@@ -13293,10 +13276,6 @@ msgstr "Wie werden Belohnungen berechnet?"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "Derivate-Portfolio-Tracker"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Vesting..."
-msgstr "Vesting..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming"

@@ -2245,10 +2245,6 @@ msgstr "エラーを隠す"
 msgid "Alert icon"
 msgstr "アラートアイコン"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Vest {0} esGMX"
-msgstr "{0} esGMXをベスティング"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
 msgstr "パッシブ運用"
@@ -4334,6 +4330,7 @@ msgstr "最小入金額を設定"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Unable to refresh vesting details. Please try again."
 msgstr "ベスティングの詳細を更新できませんでした。もう一度お試しください。"
 
@@ -4570,6 +4567,7 @@ msgstr "額を入力"
 msgid "Reach {0}+ in lifetime trading volume to unlock a permanent {1} multiplier."
 msgstr "生涯取引量が{0}+に達すると、恒久的な{1}倍率がアンロックされます。"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX was claimed. Balances will refresh shortly."
 msgstr "esGMXを請求しました。残高はまもなく更新されます。"
@@ -6582,6 +6580,7 @@ msgid "Clear position history filter"
 msgstr "ポジション履歴フィルターをクリア"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX was claimed. Reconnect the original wallet to continue."
 msgstr "esGMXを請求しました。続行するには、元のウォレットを再接続してください。"
 
@@ -6719,10 +6718,6 @@ msgstr "{3} で {2} にわたり、{1} ずつの {0} {type} 注文を {numberOfP
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "ドキュメント"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Staking collateral..."
-msgstr "担保をステーク中..."
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vestable: {0} esGMX"
@@ -7393,8 +7388,6 @@ msgstr "報酬を共有"
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stake GMX"
 msgstr "GMXをステーク"
 
@@ -9275,6 +9268,7 @@ msgid "Balance"
 msgstr "残高"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting details changed. Review the updated collateral and continue vesting."
 msgstr "ベスティングの詳細が変更されました。更新された担保を確認して、ベスティングを続行してください。"
 
@@ -9462,10 +9456,6 @@ msgstr "<0><1>#GMX V2</1>のOIは素晴らしい</0><2>GMX V2 > GMX V1 + Kwenta 
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "TP/SL注文はポジションの決済時に自動キャンセルされます。有効化後に作成された注文にのみ適用されます。"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Claim esGMX"
-msgstr "esGMXを請求"
-
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -9530,7 +9520,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Approve GMX"
 msgstr "GMXを承認"
@@ -9988,6 +9977,7 @@ msgstr "有効 · 次のエポック"
 msgid "Stake GMX to reach a higher tier and earn more rewards."
 msgstr "GMXをステークしてより高いティアに到達し、より多くの報酬を獲得しましょう。"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Wallet or network changed. Review the updated collateral and continue vesting."
@@ -11013,10 +11003,6 @@ msgstr "ベスティング用に予約されたトークン：{0}"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1y"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Claiming esGMX..."
-msgstr "esGMXを請求中..."
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
@@ -12298,10 +12284,6 @@ msgstr "トークンパーミットテスト"
 msgid "Invalid liquidation price"
 msgstr "無効な清算価格"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Approving GMX..."
-msgstr "GMXを承認中..."
-
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
 msgstr "{count, plural, other {このライフサイクル内の#件のアクション}}"
@@ -12912,6 +12894,7 @@ msgstr "借入手数料"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Continue"
 msgstr "続行"
 
@@ -13293,10 +13276,6 @@ msgstr "報酬の計算方法は？"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "デリバティブポートフォリオトラッカー"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Vesting..."
-msgstr "ベスティング中..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming"

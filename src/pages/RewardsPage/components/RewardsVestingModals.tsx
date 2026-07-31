@@ -27,6 +27,7 @@ import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendRewardsTransactionResultEvent } from "lib/userAnalytics/rewardsEvents";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -42,6 +43,7 @@ import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import CheckIcon from "img/ic_check.svg?react";
 import InfoIcon from "img/ic_info_circle_stroke.svg?react";
+import SpinnerBlueIcon from "img/ic_spinner_blue.svg?react";
 
 import { getRewardsVestingDebugCalculationData } from "../rewardsVestingDebug";
 import { RewardsVestingChainGuard } from "./RewardsVestingChainGuard";
@@ -154,7 +156,7 @@ function VestingStep({
   showConnector,
 }: {
   index: number;
-  status: "pending" | "active" | "completed";
+  status: "pending" | "loading" | "completed";
   label: React.ReactNode;
   completedLabel: React.ReactNode;
   showConnector: boolean;
@@ -163,19 +165,25 @@ function VestingStep({
     <div className="flex min-h-20 gap-10">
       <div className="relative z-10 flex w-20 shrink-0 justify-center self-stretch pt-1">
         {showConnector ? (
-          <span className="absolute left-1/2 top-[18px] z-0 h-full w-2 -translate-x-1/2 bg-slate-600" />
+          <span className="absolute -bottom-13 left-1/2 top-21 z-0 w-2 -translate-x-1/2 bg-slate-600" />
         ) : null}
         <span
           className={cx(
             "relative z-10 flex size-20 shrink-0 items-center justify-center rounded-full text-12 font-medium normal-nums",
-            status === "active"
-              ? "bg-blue-300 text-white"
+            status === "loading"
+              ? "bg-blue-300/20 text-blue-300"
               : status === "completed"
                 ? "bg-green-500/20 text-green-500"
                 : "bg-blue-300/20 text-blue-300"
           )}
         >
-          {status === "completed" ? <CheckIcon className="size-16" /> : index}
+          {status === "completed" ? (
+            <CheckIcon className="size-16" />
+          ) : status === "loading" ? (
+            <SpinnerBlueIcon className="size-16 animate-spin" />
+          ) : (
+            index
+          )}
         </span>
       </div>
       <div className="flex min-w-0 flex-1 items-center justify-between gap-8">
@@ -190,7 +198,7 @@ function VestingStep({
         <span
           className={cx(
             "w-72 shrink-0 rounded-full px-7 py-2 text-center text-11 font-medium",
-            status === "active"
+            status === "loading"
               ? "bg-blue-300/10 text-blue-300"
               : status === "completed"
                 ? "bg-green-500/10 text-green-500"
@@ -217,7 +225,7 @@ export function RewardsVestingModal({
 }: RewardsVestingModalProps) {
   const isSimulation = onSimulatedVest !== undefined;
   const pendingEsGmxClaimAmount = claimableEsGmxAmount ?? 0n;
-  const { account, active, chainId: walletChainId, signer } = useWallet();
+  const { account, active, chainId: walletChainId, connector, signer } = useWallet();
   const { setPendingTxns } = usePendingTxns();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
@@ -244,12 +252,31 @@ export function RewardsVestingModal({
   const [transactionStep, setTransactionStep] = useState<VestingTransactionStep>();
   const [transactionProgress, setTransactionProgress] =
     useState<VestingTransactionProgress>(EMPTY_TRANSACTION_PROGRESS);
+  const [showTransactionSteps, setShowTransactionSteps] = useState(false);
+  const [hasInterruptedTransaction, setHasInterruptedTransaction] = useState(false);
   const calculationData = isSimulation ? getRewardsVestingDebugCalculationData(data) : data;
   const wasVisible = useRef(false);
-  const visibleAccountRef = useRef(account);
   const transactionSessionRef = useRef(0);
+  const signerReady = Boolean(signer);
+  const connectorUid = connector?.uid;
+  const transactionWalletStateRef = useRef({ account, active, connectorUid, signerReady, walletChainId });
+  const visibleWalletStateRef = useRef({ account, active, connectorUid, signerReady, walletChainId });
+  const transactionWalletState = transactionWalletStateRef.current;
+  if (
+    transactionWalletState.account !== account ||
+    transactionWalletState.active !== active ||
+    transactionWalletState.connectorUid !== connectorUid ||
+    transactionWalletState.signerReady !== signerReady ||
+    transactionWalletState.walletChainId !== walletChainId
+  ) {
+    transactionSessionRef.current += 1;
+    transactionWalletStateRef.current = { account, active, connectorUid, signerReady, walletChainId };
+  }
   const walletStateRef = useRef({
     account,
+    active,
+    connectorUid,
+    signerReady,
     walletChainId,
     hasOutdatedUi,
     hasMultipleWalletExtensionsChainError,
@@ -282,6 +309,9 @@ export function RewardsVestingModal({
     (govTokenAmount !== undefined && govTokenDelegatesAddress !== undefined);
   walletStateRef.current = {
     account,
+    active,
+    connectorUid,
+    signerReady,
     walletChainId,
     hasOutdatedUi,
     hasMultipleWalletExtensionsChainError,
@@ -304,22 +334,31 @@ export function RewardsVestingModal({
 
   useEffect(() => {
     const isOpening = isVisible && !wasVisible.current;
-    const accountChanged = isVisible && visibleAccountRef.current !== account;
+    const visibleWalletState = visibleWalletStateRef.current;
+    const walletChanged =
+      isVisible &&
+      (visibleWalletState.account !== account ||
+        visibleWalletState.active !== active ||
+        visibleWalletState.connectorUid !== connectorUid ||
+        visibleWalletState.signerReady !== signerReady ||
+        visibleWalletState.walletChainId !== walletChainId);
 
-    if (wasVisible.current !== isVisible || accountChanged) {
+    if (wasVisible.current !== isVisible) {
       transactionSessionRef.current += 1;
     }
     if (wasVisible.current && !isVisible) {
       governanceReadSessionRef.current += 1;
     }
-    if (isOpening || accountChanged) {
+    if (isOpening || walletChanged) {
       setValue(vestingLimit > 0n ? formatAmountFree(vestingLimit, GMX_DECIMALS, GMX_DECIMALS) : "");
       setTransactionStep(undefined);
       setTransactionProgress(EMPTY_TRANSACTION_PROGRESS);
+      setShowTransactionSteps(false);
+      setHasInterruptedTransaction(false);
     }
     wasVisible.current = isVisible;
-    visibleAccountRef.current = account;
-  }, [account, isVisible, vestingLimit]);
+    visibleWalletStateRef.current = { account, active, connectorUid, signerReady, walletChainId };
+  }, [account, active, connectorUid, isVisible, signerReady, vestingLimit, walletChainId]);
 
   const gmxAddress = getContract(ARBITRUM, "GMX");
   const stakedGmxTrackerAddress = getContract(ARBITRUM, "StakedGmxTracker");
@@ -329,12 +368,8 @@ export function RewardsVestingModal({
     skip: !isVisible || isSimulation || preview.stakeShortfallAmount === 0n,
   });
   const gmxAllowance = tokensAllowanceData?.[gmxAddress];
-  const needsApproval =
-    !isSimulation &&
-    !needsEsGmxClaim &&
-    preview.stakeShortfallAmount > 0n &&
-    (gmxAllowance ?? 0n) < preview.stakeShortfallAmount &&
-    !transactionProgress.approval;
+  const gmxAllowanceRef = useRef(gmxAllowance);
+  gmxAllowanceRef.current = gmxAllowance;
   const hasEnoughWalletGmx = data.walletGmxBalance >= preview.stakeShortfallAmount;
   const isStakeBlockedByUndelegatedGovToken =
     !isSimulation &&
@@ -374,160 +409,8 @@ export function RewardsVestingModal({
   const setDepositValue = (nextValue: string) => {
     setValue(nextValue);
     setTransactionProgress(EMPTY_TRANSACTION_PROGRESS);
-  };
-
-  const handleClaimEsGmx = async () => {
-    if (
-      isSimulation ||
-      !needsEsGmxClaim ||
-      depositAmount === undefined ||
-      depositAmount === 0n ||
-      !account ||
-      !signer ||
-      walletChainId !== ARBITRUM ||
-      hasOutdatedUi ||
-      hasMultipleWalletExtensionsChainError
-    ) {
-      return;
-    }
-
-    const submittedAccount = account;
-    const transactionSession = ++transactionSessionRef.current;
-    let submittedClaimAmount: bigint | undefined;
-    setTransactionStep("claiming");
-    try {
-      let preflightData;
-      try {
-        preflightData = await mutate();
-      } catch {
-        helperToast.error(t`Unable to refresh esGMX rewards. Please try again.`);
-        return;
-      }
-
-      if (
-        transactionSessionRef.current !== transactionSession ||
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
-        helperToast.info(t`Wallet or network changed. Review your esGMX rewards before claiming.`);
-        return;
-      }
-
-      submittedClaimAmount = preflightData?.claimableEsGmxRewards;
-      if (
-        !preflightData ||
-        submittedClaimAmount === undefined ||
-        submittedClaimAmount !== pendingEsGmxClaimAmount ||
-        depositAmount > getVestingLimit(preflightData, preflightData.walletEsGmxBalance + submittedClaimAmount)
-      ) {
-        helperToast.info(t`esGMX rewards changed. Review the updated amount and continue vesting.`);
-        return;
-      }
-
-      const rewardRouter = new ethers.Contract(getContract(ARBITRUM, "RewardRouter"), abis.RewardRouter, signer);
-      const transaction = await callContract(
-        ARBITRUM,
-        rewardRouter,
-        "handleRewards",
-        [false, false, true, false, true, false, false],
-        {
-          sentMsg: t`esGMX claim submitted`,
-          failMsg: t`esGMX claim failed`,
-          successMsg: t`esGMX claimed`,
-          setPendingTxns,
-        }
-      );
-      await transaction?.wait();
-      sendRewardsTransactionResultEvent({
-        transaction: "ClaimEsGmx",
-        result: "Success",
-        amount: submittedClaimAmount,
-      });
-
-      if (
-        transactionSessionRef.current !== transactionSession ||
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
-        helperToast.info(t`esGMX was claimed. Reconnect the original wallet to continue.`);
-        return;
-      }
-
-      setTransactionProgress((current) => ({ ...current, claim: true }));
-      try {
-        await mutate();
-      } catch {
-        helperToast.info(t`esGMX was claimed. Balances will refresh shortly.`);
-      }
-    } catch {
-      sendRewardsTransactionResultEvent({
-        transaction: "ClaimEsGmx",
-        result: "Fail",
-        amount: submittedClaimAmount,
-      });
-    } finally {
-      if (transactionSessionRef.current === transactionSession) {
-        setTransactionStep(undefined);
-      }
-    }
-  };
-
-  const handleApprove = async () => {
-    if (
-      isSimulation ||
-      !isWalletReady ||
-      !account ||
-      !signer ||
-      hasOutdatedUi ||
-      hasMultipleWalletExtensionsChainError
-    ) {
-      return;
-    }
-
-    const submittedAccount = account;
-    const transactionSession = ++transactionSessionRef.current;
-    setTransactionStep("approving");
-    try {
-      const gmx = new ethers.Contract(gmxAddress, abis.Token, signer);
-      const transaction = await callContract(ARBITRUM, gmx, "approve", [stakedGmxTrackerAddress, maxUint256], {
-        sentMsg: t`GMX approval submitted`,
-        failMsg: t`GMX approval failed`,
-        successMsg: t`GMX approved`,
-        setPendingTxns,
-      });
-      await transaction?.wait();
-      sendRewardsTransactionResultEvent({
-        transaction: "ApproveGmx",
-        result: "Success",
-        amount: preview.stakeShortfallAmount,
-      });
-
-      if (
-        transactionSessionRef.current !== transactionSession ||
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
-        helperToast.info(t`GMX was approved. Reconnect the original wallet to continue.`);
-        return;
-      }
-      setTransactionProgress((current) => ({ ...current, approval: true }));
-    } catch {
-      sendRewardsTransactionResultEvent({
-        transaction: "ApproveGmx",
-        result: "Fail",
-        amount: preview.stakeShortfallAmount,
-      });
-    } finally {
-      if (transactionSessionRef.current === transactionSession) {
-        setTransactionStep(undefined);
-      }
-    }
+    setShowTransactionSteps(false);
+    setHasInterruptedTransaction(false);
   };
 
   const handleVest = async () => {
@@ -540,40 +423,47 @@ export function RewardsVestingModal({
       return;
     }
 
-    if (needsEsGmxClaim) {
-      if (onSimulatedClaim) {
-        setTransactionStep("claiming");
-        try {
-          await onSimulatedClaim();
-          setTransactionProgress((current) => ({ ...current, claim: true }));
-        } finally {
-          setTransactionStep(undefined);
-        }
-      } else {
-        await handleClaimEsGmx();
-      }
-      return;
-    }
+    setShowTransactionSteps(true);
+    const transactionSession = ++transactionSessionRef.current;
 
     if (onSimulatedVest) {
       const hasStakingStep = preview.stakeShortfallAmount > 0n || transactionProgress.staking;
-      setTransactionStep(hasStakingStep && !transactionProgress.staking ? "staking" : "vesting");
       try {
+        if (needsEsGmxClaim) {
+          if (!onSimulatedClaim) return;
+
+          setTransactionStep("claiming");
+          await onSimulatedClaim();
+          if (transactionSessionRef.current !== transactionSession) return;
+          setTransactionProgress((current) => ({ ...current, claim: true }));
+
+          if (!hasEnoughWalletGmx) return;
+        }
+
         if (hasStakingStep && !transactionProgress.staking) {
           if (!onSimulatedStake) return;
 
+          setTransactionStep("staking");
           await onSimulatedStake(preview.stakeShortfallAmount);
+          if (transactionSessionRef.current !== transactionSession) return;
           setTransactionProgress((current) => ({ ...current, staking: true }));
-          return;
         }
+
         setTransactionStep("vesting");
         await onSimulatedVest(depositAmount);
+        if (transactionSessionRef.current !== transactionSession) return;
         setTransactionProgress((current) => ({ ...current, vesting: true }));
         if (!hasClaimStep && !hasStakingStep) {
           setIsVisible(false);
         }
+      } catch {
+        if (transactionSessionRef.current === transactionSession) {
+          setHasInterruptedTransaction(true);
+        }
       } finally {
-        setTransactionStep(undefined);
+        if (transactionSessionRef.current === transactionSession) {
+          setTransactionStep(undefined);
+        }
       }
       return;
     }
@@ -582,19 +472,172 @@ export function RewardsVestingModal({
       return;
     }
 
-    if (needsApproval) {
-      await handleApprove();
-      return;
-    }
-
     const submittedAccount = account;
-    const transactionSession = ++transactionSessionRef.current;
+    const submittedConnectorUid = connectorUid;
+    let currentData = data;
+    let currentPreview = getVestingPreview(currentData, depositAmount);
+    let completedApprovalThisFlow = transactionProgress.approval;
     let completedStakeThisFlow = transactionProgress.staking;
-    let attemptedTransaction: "StakeCollateral" | "StartVesting" | undefined;
-    let attemptedStakeAmount: bigint | undefined;
+    let attemptedTransaction: "ClaimEsGmx" | "ApproveGmx" | "StakeCollateral" | "StartVesting" | undefined;
+    let attemptedAmount: bigint | undefined;
+
+    const hasCurrentTransaction = () =>
+      transactionSessionRef.current === transactionSession &&
+      walletStateRef.current.account === submittedAccount &&
+      walletStateRef.current.active &&
+      walletStateRef.current.connectorUid === submittedConnectorUid &&
+      walletStateRef.current.signerReady &&
+      walletStateRef.current.walletChainId === ARBITRUM &&
+      !walletStateRef.current.hasOutdatedUi &&
+      !walletStateRef.current.hasMultipleWalletExtensionsChainError;
 
     try {
-      setTransactionStep(preview.stakeShortfallAmount > 0n && !transactionProgress.staking ? "staking" : "vesting");
+      if (needsEsGmxClaim) {
+        setTransactionStep("claiming");
+
+        let claimPreflightData;
+        try {
+          claimPreflightData = await mutate();
+        } catch {
+          helperToast.error(t`Unable to refresh esGMX rewards. Please try again.`);
+          return;
+        }
+
+        if (!hasCurrentTransaction()) {
+          helperToast.info(t`Wallet or network changed. Review your esGMX rewards before claiming.`);
+          return;
+        }
+
+        attemptedAmount = claimPreflightData?.claimableEsGmxRewards;
+        if (
+          !claimPreflightData ||
+          attemptedAmount === undefined ||
+          attemptedAmount !== pendingEsGmxClaimAmount ||
+          depositAmount > getVestingLimit(claimPreflightData, claimPreflightData.walletEsGmxBalance + attemptedAmount)
+        ) {
+          helperToast.info(t`esGMX rewards changed. Review the updated amount and continue vesting.`);
+          return;
+        }
+
+        attemptedTransaction = "ClaimEsGmx";
+        const rewardRouter = new ethers.Contract(getContract(ARBITRUM, "RewardRouter"), abis.RewardRouter, signer);
+        const claimTransaction = await callContract(
+          ARBITRUM,
+          rewardRouter,
+          "handleRewards",
+          [false, false, true, false, true, false, false],
+          {
+            sentMsg: t`esGMX claim submitted`,
+            failMsg: t`esGMX claim failed`,
+            successMsg: t`esGMX claimed`,
+            setPendingTxns,
+          }
+        );
+        await claimTransaction?.wait();
+        sendRewardsTransactionResultEvent({
+          transaction: "ClaimEsGmx",
+          result: "Success",
+          amount: attemptedAmount,
+        });
+        attemptedTransaction = undefined;
+
+        if (!hasCurrentTransaction()) {
+          helperToast.info(t`esGMX was claimed. Reconnect the original wallet to continue.`);
+          return;
+        }
+
+        setTransactionProgress((current) => ({ ...current, claim: true }));
+        try {
+          const claimedData = await mutate();
+          if (!claimedData) {
+            helperToast.info(t`esGMX was claimed. Balances will refresh shortly.`);
+            return;
+          }
+          currentData = claimedData;
+          currentPreview = getVestingPreview(currentData, depositAmount);
+        } catch {
+          helperToast.info(t`esGMX was claimed. Balances will refresh shortly.`);
+          return;
+        }
+
+        if (!hasCurrentTransaction()) {
+          helperToast.info(t`esGMX was claimed. Reconnect the original wallet to continue.`);
+          return;
+        }
+
+        if (depositAmount > getVestingLimit(currentData)) {
+          helperToast.info(t`Vesting details changed. Review the updated collateral and continue vesting.`);
+          return;
+        }
+        if (currentData.walletGmxBalance < currentPreview.stakeShortfallAmount) return;
+      }
+
+      if (
+        currentPreview.stakeShortfallAmount > 0n &&
+        (!walletStateRef.current.isGovernanceDataReady || walletStateRef.current.isUndelegatedGovToken)
+      ) {
+        return;
+      }
+
+      let currentGmxAllowance = gmxAllowanceRef.current;
+      if (currentPreview.stakeShortfallAmount > 0n && currentGmxAllowance === undefined) {
+        try {
+          currentGmxAllowance = await getPublicClientWithRpc(ARBITRUM).readContract({
+            address: gmxAddress,
+            abi: abis.Token,
+            functionName: "allowance",
+            args: [submittedAccount, stakedGmxTrackerAddress],
+          });
+        } catch {
+          helperToast.error(t`Unable to refresh vesting details. Please try again.`);
+          return;
+        }
+
+        if (!hasCurrentTransaction()) {
+          helperToast.info(t`Wallet or network changed. Review the updated collateral and continue vesting.`);
+          return;
+        }
+      }
+
+      const requiresApproval =
+        currentPreview.stakeShortfallAmount > 0n &&
+        (currentGmxAllowance ?? 0n) < currentPreview.stakeShortfallAmount &&
+        !completedApprovalThisFlow;
+
+      if (requiresApproval) {
+        attemptedTransaction = "ApproveGmx";
+        attemptedAmount = currentPreview.stakeShortfallAmount;
+        setTransactionStep("approving");
+        const gmx = new ethers.Contract(gmxAddress, abis.Token, signer);
+        const approvalTransaction = await callContract(
+          ARBITRUM,
+          gmx,
+          "approve",
+          [stakedGmxTrackerAddress, maxUint256],
+          {
+            sentMsg: t`GMX approval submitted`,
+            failMsg: t`GMX approval failed`,
+            successMsg: t`GMX approved`,
+            setPendingTxns,
+          }
+        );
+        await approvalTransaction?.wait();
+        sendRewardsTransactionResultEvent({
+          transaction: "ApproveGmx",
+          result: "Success",
+          amount: attemptedAmount,
+        });
+        attemptedTransaction = undefined;
+        completedApprovalThisFlow = true;
+
+        if (!hasCurrentTransaction()) {
+          helperToast.info(t`GMX was approved. Reconnect the original wallet to continue.`);
+          return;
+        }
+        setTransactionProgress((current) => ({ ...current, approval: true }));
+      }
+
+      setTransactionStep(currentPreview.stakeShortfallAmount > 0n && !completedStakeThisFlow ? "staking" : "vesting");
 
       let preflightData;
       try {
@@ -604,13 +647,7 @@ export function RewardsVestingModal({
         return;
       }
 
-      if (
-        transactionSessionRef.current !== transactionSession ||
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
+      if (!hasCurrentTransaction()) {
         helperToast.info(t`Wallet or network changed. Review the updated collateral and continue vesting.`);
         return;
       }
@@ -623,7 +660,7 @@ export function RewardsVestingModal({
       const preflightPreview = getVestingPreview(preflightData, depositAmount);
       const preflightVestingLimit = getVestingLimit(preflightData);
       if (
-        hasVestingFundingPreviewChanged(data, preflightData) ||
+        hasVestingFundingPreviewChanged(currentData, preflightData) ||
         depositAmount > preflightVestingLimit ||
         preflightData.walletGmxBalance < preflightPreview.stakeShortfallAmount
       ) {
@@ -631,16 +668,16 @@ export function RewardsVestingModal({
         return;
       }
 
-      if (preflightPreview.stakeShortfallAmount > 0n && !transactionProgress.staking) {
+      if (preflightPreview.stakeShortfallAmount > 0n && !completedStakeThisFlow) {
         if (!walletStateRef.current.isGovernanceDataReady || walletStateRef.current.isUndelegatedGovToken) {
           return;
         }
 
         attemptedTransaction = "StakeCollateral";
-        attemptedStakeAmount = preflightPreview.stakeShortfallAmount;
+        attemptedAmount = preflightPreview.stakeShortfallAmount;
         setTransactionStep("staking");
         const rewardRouter = new ethers.Contract(getContract(ARBITRUM, "RewardRouter"), abis.RewardRouter, signer);
-        const stakeTransaction = await callContract(ARBITRUM, rewardRouter, "stakeGmx", [attemptedStakeAmount], {
+        const stakeTransaction = await callContract(ARBITRUM, rewardRouter, "stakeGmx", [attemptedAmount], {
           sentMsg: t`Stake submitted`,
           failMsg: t`Stake failed`,
           successMsg: t`GMX staked`,
@@ -651,17 +688,11 @@ export function RewardsVestingModal({
         sendRewardsTransactionResultEvent({
           transaction: "StakeCollateral",
           result: "Success",
-          amount: attemptedStakeAmount,
+          amount: attemptedAmount,
         });
         attemptedTransaction = undefined;
 
-        if (
-          transactionSessionRef.current !== transactionSession ||
-          walletStateRef.current.account !== submittedAccount ||
-          walletStateRef.current.walletChainId !== ARBITRUM ||
-          walletStateRef.current.hasOutdatedUi ||
-          walletStateRef.current.hasMultipleWalletExtensionsChainError
-        ) {
+        if (!hasCurrentTransaction()) {
           helperToast.info(t`GMX was staked. Review the updated collateral and continue vesting.`);
           return;
         }
@@ -679,13 +710,7 @@ export function RewardsVestingModal({
           helperToast.info(t`GMX was staked. Review the updated collateral and continue vesting.`);
           return;
         }
-        if (
-          transactionSessionRef.current !== transactionSession ||
-          walletStateRef.current.account !== submittedAccount ||
-          walletStateRef.current.walletChainId !== ARBITRUM ||
-          walletStateRef.current.hasOutdatedUi ||
-          walletStateRef.current.hasMultipleWalletExtensionsChainError
-        ) {
+        if (!hasCurrentTransaction()) {
           helperToast.info(t`GMX was staked. Review the updated collateral and continue vesting.`);
           return;
         }
@@ -703,17 +728,9 @@ export function RewardsVestingModal({
           helperToast.info(t`GMX was staked. Review the updated collateral and continue vesting.`);
           return;
         }
-
-        return;
       }
 
-      if (
-        transactionSessionRef.current !== transactionSession ||
-        walletStateRef.current.account !== submittedAccount ||
-        walletStateRef.current.walletChainId !== ARBITRUM ||
-        walletStateRef.current.hasOutdatedUi ||
-        walletStateRef.current.hasMultipleWalletExtensionsChainError
-      ) {
+      if (!hasCurrentTransaction()) {
         helperToast.info(t`Wallet or network changed. Review the updated collateral and continue vesting.`);
         return;
       }
@@ -734,15 +751,9 @@ export function RewardsVestingModal({
         amount: depositAmount,
       });
       attemptedTransaction = undefined;
-      const hasCurrentTransaction =
-        transactionSessionRef.current === transactionSession &&
-        walletStateRef.current.account === submittedAccount &&
-        walletStateRef.current.walletChainId === ARBITRUM &&
-        !walletStateRef.current.hasOutdatedUi &&
-        !walletStateRef.current.hasMultipleWalletExtensionsChainError;
-      if (hasCurrentTransaction) {
+      if (hasCurrentTransaction()) {
         setTransactionProgress((current) => ({ ...current, vesting: true }));
-        if (!hasClaimStep && !completedStakeThisFlow && !transactionProgress.approval) {
+        if (!hasClaimStep && !completedStakeThisFlow && !completedApprovalThisFlow) {
           setIsVisible(false);
         }
       }
@@ -752,11 +763,26 @@ export function RewardsVestingModal({
         helperToast.info(t`Vesting started. Balances will refresh shortly.`);
       }
     } catch {
-      if (attemptedTransaction === "StakeCollateral") {
+      if (attemptedTransaction !== undefined && transactionSessionRef.current === transactionSession) {
+        setHasInterruptedTransaction(true);
+      }
+      if (attemptedTransaction === "ClaimEsGmx") {
+        sendRewardsTransactionResultEvent({
+          transaction: "ClaimEsGmx",
+          result: "Fail",
+          amount: attemptedAmount,
+        });
+      } else if (attemptedTransaction === "ApproveGmx") {
+        sendRewardsTransactionResultEvent({
+          transaction: "ApproveGmx",
+          result: "Fail",
+          amount: attemptedAmount,
+        });
+      } else if (attemptedTransaction === "StakeCollateral") {
         sendRewardsTransactionResultEvent({
           transaction: "StakeCollateral",
           result: "Fail",
-          amount: attemptedStakeAmount,
+          amount: attemptedAmount,
         });
       } else if (attemptedTransaction === "StartVesting") {
         sendRewardsTransactionResultEvent({
@@ -776,6 +802,7 @@ export function RewardsVestingModal({
   };
 
   const isTransactionComplete = transactionProgress.vesting;
+  const title = t`Vest esGMX`;
   let primaryText: React.ReactNode;
   if (isTransactionComplete) {
     primaryText = <Trans>Close</Trans>;
@@ -783,40 +810,25 @@ export function RewardsVestingModal({
     primaryText = getPageOutdatedError();
   } else if (!isSimulation && multipleWalletExtensionsChainError.buttonErrorMessage) {
     primaryText = multipleWalletExtensionsChainError.buttonErrorMessage;
+  } else if (hasInterruptedTransaction) {
+    primaryText = <Trans>Continue</Trans>;
   } else if (depositAmount === undefined || depositAmount === 0n) {
     primaryText = <Trans>Enter an amount</Trans>;
   } else if (depositAmount > vestingLimit) {
     primaryText = <Trans>Max amount exceeded</Trans>;
-  } else if (transactionStep === "claiming") {
-    primaryText = <Trans>Claiming esGMX...</Trans>;
-  } else if (needsEsGmxClaim) {
-    primaryText = <Trans>Claim esGMX</Trans>;
-  } else if (!hasEnoughWalletGmx) {
-    primaryText = <Trans>Stake GMX</Trans>;
-  } else if (!isGovernanceDataReady) {
+  } else if (!needsEsGmxClaim && !isGovernanceDataReady) {
     primaryText = <Trans>Loading...</Trans>;
-  } else if (!isSimulation && isAllowanceLoading) {
+  } else if (!isSimulation && !needsEsGmxClaim && isAllowanceLoading) {
     primaryText = <Trans>Loading allowance...</Trans>;
-  } else if (transactionStep === "approving") {
-    primaryText = <Trans>Approving GMX...</Trans>;
-  } else if (needsApproval) {
-    primaryText = <Trans>Approve GMX</Trans>;
-  } else if (transactionStep === "staking") {
-    primaryText = <Trans>Staking collateral...</Trans>;
-  } else if (transactionStep === "vesting") {
-    primaryText = <Trans>Vesting...</Trans>;
-  } else if (preview.stakeShortfallAmount > 0n && !transactionProgress.staking) {
-    primaryText = <Trans>Stake GMX</Trans>;
   } else {
-    primaryText = <Trans>Vest {formatTokenAmount(depositAmount)} esGMX</Trans>;
+    primaryText = title;
   }
 
   const collateralAvailable = data.freePairAmount;
-  const title = t`Vest esGMX`;
   const missingGmxAmount =
     preview.stakeShortfallAmount > data.walletGmxBalance ? preview.stakeShortfallAmount - data.walletGmxBalance : 0n;
   const depositAmountLabel = `${formatTokenAmount(depositAmount ?? 0n)} esGMX`;
-  const showClaimStep = hasClaimStep;
+  const showClaimStep = hasClaimStep || transactionStep === "claiming";
   const showApprovalStep =
     !isSimulation &&
     ((preview.stakeShortfallAmount > 0n && (gmxAllowance ?? 0n) < preview.stakeShortfallAmount) ||
@@ -832,7 +844,7 @@ export function RewardsVestingModal({
             status: transactionProgress.claim
               ? ("completed" as const)
               : transactionStep === "claiming"
-                ? ("active" as const)
+                ? ("loading" as const)
                 : ("pending" as const),
             label: <Trans>Claim esGMX rewards</Trans>,
             completedLabel: <Trans>esGMX claimed</Trans>,
@@ -846,7 +858,7 @@ export function RewardsVestingModal({
             status: transactionProgress.approval
               ? ("completed" as const)
               : transactionStep === "approving"
-                ? ("active" as const)
+                ? ("loading" as const)
                 : ("pending" as const),
             label: <Trans>Approve GMX</Trans>,
             completedLabel: <Trans>GMX approved</Trans>,
@@ -860,7 +872,7 @@ export function RewardsVestingModal({
             status: transactionProgress.staking
               ? ("completed" as const)
               : transactionStep === "staking"
-                ? ("active" as const)
+                ? ("loading" as const)
                 : ("pending" as const),
             label: <Trans>Stake collateral</Trans>,
             completedLabel: <Trans>Collateral staked</Trans>,
@@ -872,7 +884,7 @@ export function RewardsVestingModal({
       status: transactionProgress.vesting
         ? ("completed" as const)
         : transactionStep === "vesting"
-          ? ("active" as const)
+          ? ("loading" as const)
           : ("pending" as const),
       label: <Trans>Start vesting</Trans>,
       completedLabel: <Trans>Vesting started</Trans>,
@@ -936,21 +948,6 @@ export function RewardsVestingModal({
             }
           />
         </div>
-
-        {(hasValidSelectedAmount || isTransactionComplete) && transactionSteps.length > 1 ? (
-          <div className="flex flex-col gap-12 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-12">
-            {transactionSteps.map((step, index) => (
-              <VestingStep
-                key={step.key}
-                index={index + 1}
-                status={step.status}
-                label={step.label}
-                completedLabel={step.completedLabel}
-                showConnector={index < transactionSteps.length - 1}
-              />
-            ))}
-          </div>
-        ) : null}
 
         {!hasEnoughWalletGmx && preview.stakeShortfallAmount > 0n ? (
           <ColorfulBanner color="yellow" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
@@ -1070,6 +1067,23 @@ export function RewardsVestingModal({
             ) : null}
           </div>
         </RewardsVestingChainGuard>
+        {showTransactionSteps && transactionSteps.length > 1 ? (
+          <div
+            className="flex flex-col gap-12 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-12"
+            data-qa="rewards-vesting-steps"
+          >
+            {transactionSteps.map((step, index) => (
+              <VestingStep
+                key={step.key}
+                index={index + 1}
+                status={step.status}
+                label={step.label}
+                completedLabel={step.completedLabel}
+                showConnector={index < transactionSteps.length - 1}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     </ModalWithPortal>
   );
@@ -1133,6 +1147,8 @@ export function RewardsStopVestingModal({
       try {
         await onSimulatedStop();
         setIsVisible(false);
+      } catch {
+        return;
       } finally {
         setIsStopping(false);
       }

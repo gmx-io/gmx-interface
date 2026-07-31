@@ -93,17 +93,33 @@ vi.mock("../RewardsVestingModals", () => ({
     isVisible ? (
       <div data-testid="vesting-modal" data-simulated={Boolean(onSimulatedVest)}>
         {onSimulatedClaim ? (
-          <button type="button" onClick={onSimulatedClaim}>
+          <button
+            type="button"
+            onClick={() => {
+              void onSimulatedClaim().catch(() => undefined);
+            }}
+          >
             Simulate esGMX claim
           </button>
         ) : null}
         {onSimulatedVest ? (
-          <button type="button" onClick={() => onSimulatedStake?.(10n * 10n ** 18n)}>
+          <button
+            type="button"
+            onClick={() => {
+              const transaction = onSimulatedStake?.(10n * 10n ** 18n);
+              void transaction?.catch(() => undefined);
+            }}
+          >
             Simulate stake
           </button>
         ) : null}
         {onSimulatedVest ? (
-          <button type="button" onClick={() => onSimulatedVest(10n * 10n ** 18n)}>
+          <button
+            type="button"
+            onClick={() => {
+              void onSimulatedVest(10n * 10n ** 18n).catch(() => undefined);
+            }}
+          >
             Simulate vest
           </button>
         ) : null}
@@ -119,7 +135,12 @@ vi.mock("../RewardsVestingModals", () => ({
     isVisible ? (
       <div data-testid="stop-vesting-modal" data-simulated={Boolean(onSimulatedStop)}>
         {onSimulatedStop ? (
-          <button type="button" onClick={onSimulatedStop}>
+          <button
+            type="button"
+            onClick={() => {
+              void onSimulatedStop().catch(() => undefined);
+            }}
+          >
             Simulate stop
           </button>
         ) : null}
@@ -133,6 +154,12 @@ async function settleSimulatedTransaction() {
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 1_100));
   });
+}
+
+function approveSimulatedTransaction(action: string) {
+  const dialog = screen.getByRole("dialog", { name: "Simulator wallet" });
+  expect(dialog.textContent).toContain(action);
+  fireEvent.click(screen.getByRole("button", { name: "Approve" }));
 }
 const mockUseRewardsVestingData = vi.mocked(useRewardsVestingData);
 const mockUseSettings = vi.mocked(useSettings);
@@ -413,6 +440,7 @@ describe("RewardsVestingFlow", () => {
     fireEvent.click(claimButton);
     expect(screen.getByRole("button", { name: "Claiming..." })).toBeDefined();
     expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("25");
+    approveSimulatedTransaction("Claim 50 GMX");
     await settleSimulatedTransaction();
     expect(screen.getByRole("button", { name: "Nothing to claim" })).toBeDefined();
     expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("75");
@@ -421,15 +449,18 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByTestId("vesting-modal").getAttribute("data-simulated")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: "Simulate esGMX claim" }));
     expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("0");
+    approveSimulatedTransaction("Claim 75 esGMX rewards");
     await settleSimulatedTransaction();
     expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("75");
     expect((screen.getByLabelText("Claimable esGMX rewards") as HTMLInputElement).value).toBe("0");
     fireEvent.click(screen.getByRole("button", { name: "Simulate stake" }));
     expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("75");
+    approveSimulatedTransaction("Stake 10 GMX collateral");
     await settleSimulatedTransaction();
     expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("65");
     fireEvent.click(screen.getByRole("button", { name: "Simulate vest" }));
     expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("75");
+    approveSimulatedTransaction("Vest 10 esGMX");
     await settleSimulatedTransaction();
     expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("65");
 
@@ -437,6 +468,7 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByTestId("stop-vesting-modal").getAttribute("data-simulated")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: "Simulate stop" }));
     expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("65");
+    approveSimulatedTransaction("Stop vesting");
     await settleSimulatedTransaction();
     expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("425");
     expect(screen.queryByRole("button", { name: "Stop vesting" })).toBeNull();
@@ -447,6 +479,40 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByRole("button", { name: "Claim 50 GMX" })).toBeDefined();
     expect(mockCallContract).not.toHaveBeenCalled();
   }, 10_000);
+
+  it("rejects a simulator wallet request without applying the transaction", async () => {
+    window.history.replaceState({}, "", "/rewards/history?rewardsDebug=vesting-active");
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Claim 50 GMX" }));
+
+    const dialog = screen.getByRole("dialog", { name: "Simulator wallet" });
+    expect(dialog.textContent).toContain("Claim 50 GMX");
+    expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("25");
+    fireEvent.click(screen.getByRole("button", { name: "Reject" }));
+
+    await waitFor(() => expect(screen.getByRole("button", { name: "Claim 50 GMX" })).toBeDefined());
+    expect(screen.queryByRole("dialog", { name: "Simulator wallet" })).toBeNull();
+    expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("25");
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
+  it("does not apply an approved simulator transaction to changed fixture data", async () => {
+    window.history.replaceState({}, "", "/rewards/history?rewardsDebug=vesting-active");
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Claim 50 GMX" }));
+    approveSimulatedTransaction("Claim 50 GMX");
+
+    fireEvent.change(screen.getByLabelText("GMX claimable"), { target: { value: "100" } });
+    fireEvent.click(screen.getByRole("button", { name: "Apply values" }));
+    await settleSimulatedTransaction();
+
+    expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("25");
+    expect((screen.getByLabelText("GMX claimable") as HTMLInputElement).value).toBe("100");
+    expect(screen.getByRole("button", { name: "Claim 100 GMX" })).toBeDefined();
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
 
   it("applies the simulator zero-state shortcut", () => {
     window.history.replaceState({}, "", "/rewards/history?rewardsDebug=vesting-active");

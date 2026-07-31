@@ -57,6 +57,7 @@ import {
 import { RewardsVestingChainGuard } from "./RewardsVestingChainGuard";
 import { RewardsVestingDebugPanel } from "./RewardsVestingDebugPanel";
 import { RewardsStopVestingModal, RewardsVestingModal } from "./RewardsVestingModals";
+import { RewardsVestingSimulatorApprovalModal } from "./RewardsVestingSimulatorApprovalModal";
 
 const SIMULATED_TRANSACTION_DELAY = 1_000;
 
@@ -246,9 +247,15 @@ export function RewardsVestingFlow() {
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
+  const [simulatedTransactionAction, setSimulatedTransactionAction] = useState<string>();
   const hasHandledStartActionRef = useRef(false);
   const transactionSessionRef = useRef(0);
   const isVestingActionPendingRef = useRef(false);
+  const simulatedTransactionSessionRef = useRef(0);
+  const simulatedTransactionRequestRef = useRef<{
+    resolve: () => void;
+    reject: (reason: Error) => void;
+  }>();
   const walletStateRef = useRef({
     account,
     walletChainId,
@@ -262,16 +269,72 @@ export function RewardsVestingFlow() {
     hasMultipleWalletExtensionsChainError,
   };
 
+  const requestSimulatedTransactionApproval = useCallback((action: string) => {
+    return new Promise<void>((resolve, reject) => {
+      if (simulatedTransactionRequestRef.current) {
+        reject(new Error("Another simulated transaction is awaiting approval."));
+        return;
+      }
+
+      simulatedTransactionRequestRef.current = { resolve, reject };
+      setSimulatedTransactionAction(action);
+    });
+  }, []);
+
+  const approveSimulatedTransaction = useCallback(() => {
+    const request = simulatedTransactionRequestRef.current;
+    if (!request) return;
+
+    simulatedTransactionRequestRef.current = undefined;
+    setSimulatedTransactionAction(undefined);
+    request.resolve();
+  }, []);
+
+  const rejectSimulatedTransaction = useCallback(() => {
+    simulatedTransactionSessionRef.current += 1;
+    const request = simulatedTransactionRequestRef.current;
+    simulatedTransactionRequestRef.current = undefined;
+    setSimulatedTransactionAction(undefined);
+    request?.reject(new Error("Simulated transaction rejected."));
+  }, []);
+
+  const runSimulatedTransaction = useCallback(
+    async (action: string, updateData: (currentData: RewardsVestingData) => RewardsVestingData) => {
+      if (simulatedTransactionRequestRef.current) {
+        throw new Error("Another simulated transaction is awaiting approval.");
+      }
+
+      const transactionSession = ++simulatedTransactionSessionRef.current;
+      await requestSimulatedTransactionApproval(action);
+      await waitForSimulatedTransaction();
+
+      if (simulatedTransactionSessionRef.current !== transactionSession) {
+        throw new Error("Simulated transaction cancelled.");
+      }
+
+      setDebugData((currentData) => {
+        if (!currentData) return currentData;
+        return updateData(currentData);
+      });
+    },
+    [requestSimulatedTransactionApproval]
+  );
+
   useEffect(() => {
     if (previousDebugModeRef.current === debugMode) return;
 
     previousDebugModeRef.current = debugMode;
+    rejectSimulatedTransaction();
     setDebugData(getRewardsVestingDebugSnapshot(debugMode)?.data);
-  }, [debugMode]);
+  }, [debugMode, rejectSimulatedTransaction]);
 
   useEffect(
     () => () => {
       transactionSessionRef.current += 1;
+      simulatedTransactionSessionRef.current += 1;
+      const request = simulatedTransactionRequestRef.current;
+      simulatedTransactionRequestRef.current = undefined;
+      request?.reject(new Error("Simulated transaction rejected."));
     },
     []
   );
@@ -352,8 +415,9 @@ export function RewardsVestingFlow() {
       isVestingActionPendingRef.current = true;
       setIsClaiming(true);
       try {
-        await waitForSimulatedTransaction();
-        setDebugData((currentData) => (currentData ? simulateRewardsVestingClaim(currentData) : currentData));
+        await runSimulatedTransaction(`Claim ${formatTokenAmount(claimableAmount)} GMX`, simulateRewardsVestingClaim);
+      } catch {
+        return;
       } finally {
         isVestingActionPendingRef.current = false;
         setIsClaiming(false);
@@ -466,8 +530,12 @@ export function RewardsVestingFlow() {
       isVestingActionPendingRef.current = true;
       setIsUnlocking(true);
       try {
-        await waitForSimulatedTransaction();
-        setDebugData((currentData) => (currentData ? simulateRewardsVestingUnlock(currentData) : currentData));
+        await runSimulatedTransaction(
+          `Unlock ${formatTokenAmount(vestingInfo?.pairAmount ?? 0n)} GMX collateral`,
+          simulateRewardsVestingUnlock
+        );
+      } catch {
+        return;
       } finally {
         isVestingActionPendingRef.current = false;
         setIsUnlocking(false);
@@ -586,35 +654,42 @@ export function RewardsVestingFlow() {
   };
 
   const simulateVesting = async (depositAmount: bigint) => {
-    await waitForSimulatedTransaction();
-    setDebugData((currentData) =>
-      currentData ? simulateRewardsVestingDeposit(currentData, depositAmount) : currentData
+    await runSimulatedTransaction(`Vest ${formatTokenAmount(depositAmount)} esGMX`, (currentData) =>
+      simulateRewardsVestingDeposit(currentData, depositAmount)
     );
   };
 
   const simulateEsGmxClaim = async () => {
-    await waitForSimulatedTransaction();
-    setDebugData((currentData) => (currentData ? simulateRewardsEsGmxClaim(currentData) : currentData));
+    await runSimulatedTransaction(
+      `Claim ${formatTokenAmount(data?.claimableEsGmxRewards ?? 0n)} esGMX rewards`,
+      simulateRewardsEsGmxClaim
+    );
   };
 
   const simulateGmxStake = async (stakeAmount: bigint) => {
-    await waitForSimulatedTransaction();
-    setDebugData((currentData) => (currentData ? simulateRewardsGmxStake(currentData, stakeAmount) : currentData));
+    await runSimulatedTransaction(`Stake ${formatTokenAmount(stakeAmount)} GMX collateral`, (currentData) =>
+      simulateRewardsGmxStake(currentData, stakeAmount)
+    );
   };
 
   const simulateStopVesting = async () => {
-    await waitForSimulatedTransaction();
-    setDebugData((currentData) => (currentData ? simulateRewardsVestingStop(currentData) : currentData));
+    await runSimulatedTransaction("Stop vesting", simulateRewardsVestingStop);
+  };
+
+  const applyDebugData = (nextData: RewardsVestingData) => {
+    rejectSimulatedTransaction();
+    setDebugData(nextData);
   };
 
   const resetDebugData = () => {
+    rejectSimulatedTransaction();
     setDebugData(getRewardsVestingDebugSnapshot(debugMode)?.data);
   };
 
   return (
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
       {isInteractiveDebug && data ? (
-        <RewardsVestingDebugPanel data={data} onApply={setDebugData} onReset={resetDebugData} />
+        <RewardsVestingDebugPanel data={data} onApply={applyDebugData} onReset={resetDebugData} />
       ) : null}
       <div className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_40px_minmax(0,1fr)] items-stretch gap-8 max-lg:grid-cols-1 max-lg:grid-rows-[1fr_40px_1fr_40px_1fr]">
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
@@ -873,6 +948,11 @@ export function RewardsVestingFlow() {
         </>
       ) : null}
       <StandaloneBuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
+      <RewardsVestingSimulatorApprovalModal
+        action={simulatedTransactionAction}
+        onApprove={approveSimulatedTransaction}
+        onReject={rejectSimulatedTransaction}
+      />
     </SkeletonTheme>
   );
 }

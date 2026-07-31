@@ -177,7 +177,7 @@ export function RewardsVestingDebugPanel({
         <div>
           <div className="text-14 font-medium text-typography-primary">Vesting simulator</div>
           <div className="mt-2 text-12 text-typography-secondary">
-            Transactions succeed locally and update these mocked values.
+            Transactions use simulated wallet approvals and update these mocked values locally.
           </div>
         </div>
         <div className="flex flex-wrap gap-8">

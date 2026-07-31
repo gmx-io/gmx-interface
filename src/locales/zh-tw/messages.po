@@ -2245,10 +2245,6 @@ msgstr "隱藏錯誤"
 msgid "Alert icon"
 msgstr "警示圖示"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Vest {0} esGMX"
-msgstr "歸屬 {0} esGMX"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
 msgstr "被動管理"
@@ -4334,6 +4330,7 @@ msgstr "設定最低存入金額"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Unable to refresh vesting details. Please try again."
 msgstr "無法重新整理歸屬詳情。請再試一次。"
 
@@ -4570,6 +4567,7 @@ msgstr "請輸入金額"
 msgid "Reach {0}+ in lifetime trading volume to unlock a permanent {1} multiplier."
 msgstr "終身交易量達到 {0}+，即可永久解鎖 {1} 倍數。"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX was claimed. Balances will refresh shortly."
 msgstr "已領取 esGMX。餘額即將更新。"
@@ -6582,6 +6580,7 @@ msgid "Clear position history filter"
 msgstr "清除倉位歷史篩選器"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX was claimed. Reconnect the original wallet to continue."
 msgstr "已領取 esGMX。請重新連接原錢包以繼續。"
 
@@ -6719,10 +6718,6 @@ msgstr "在接下來的 {2} 內，為 {3} 執行 {numberOfParts} 筆 {0} {type} 
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "文件"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Staking collateral..."
-msgstr "正在質押抵押品..."
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vestable: {0} esGMX"
@@ -7393,8 +7388,6 @@ msgstr "分享您的獎勵"
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stake GMX"
 msgstr "質押 GMX"
 
@@ -9275,6 +9268,7 @@ msgid "Balance"
 msgstr "餘額"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting details changed. Review the updated collateral and continue vesting."
 msgstr "歸屬詳情已變更。請檢視更新後的抵押品並繼續歸屬。"
 
@@ -9462,10 +9456,6 @@ msgstr "<0><1>#GMX V2</1> 的 OI 看起來很棒</0><2>GMX V2 > GMX V1 + Kwenta 
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "倉位平倉時，止盈/止損訂單會自動取消。僅適用於啟用後建立的訂單。"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Claim esGMX"
-msgstr "領取 esGMX"
-
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -9530,7 +9520,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Approve GMX"
 msgstr "授權 GMX"
@@ -9988,6 +9977,7 @@ msgstr "有效 · 下個週期"
 msgid "Stake GMX to reach a higher tier and earn more rewards."
 msgstr "質押 GMX 以達到更高等級並賺取更多獎勵。"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Wallet or network changed. Review the updated collateral and continue vesting."
@@ -11013,10 +11003,6 @@ msgstr "{0} 代幣已保留用於歸屬"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1y"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Claiming esGMX..."
-msgstr "正在領取 esGMX..."
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
@@ -12298,10 +12284,6 @@ msgstr "代幣許可測試"
 msgid "Invalid liquidation price"
 msgstr "無效的清算價格"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Approving GMX..."
-msgstr "正在授權 GMX..."
-
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
 msgstr "{count, plural, other {此生命週期中的# 個操作}}"
@@ -12912,6 +12894,7 @@ msgstr "借貸費用"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Continue"
 msgstr "繼續"
 
@@ -13293,10 +13276,6 @@ msgstr "獎勵如何計算？"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "衍生品投資組合追蹤器"
-
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Vesting..."
-msgstr "正在歸屬..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming"
