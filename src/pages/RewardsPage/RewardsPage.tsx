@@ -15,6 +15,7 @@ import RewardsIcon from "img/ic_rewards.svg?react";
 
 import { RewardsHistoryTab } from "./components/RewardsHistoryTab";
 import { RewardsLeaderboardTab } from "./components/RewardsLeaderboardTab";
+import { RewardsOnboardingModal } from "./components/RewardsOnboardingModal";
 import { RewardsTiersTab } from "./components/RewardsTiersTab";
 import { RewardsVestingFlow } from "./components/RewardsVestingFlow";
 import { getRewardsDebugConfig, getRewardsDebugMode } from "./rewardsDebug";
@@ -61,8 +62,16 @@ export function RewardsPage() {
   const pageContent = (content: React.ReactNode) => (
     <RewardsPageLayout>
       <div className="mt-12 flex grow flex-col gap-8">
-        <div className="overflow-x-auto scrollbar-hide">
-          <Tabs options={tabOptions} selectedValue={activeTab} onChange={handleTabChange} type="inline-primary" />
+        <div className="min-w-0">
+          <Tabs
+            options={tabOptions}
+            selectedValue={activeTab}
+            onChange={handleTabChange}
+            type="inline-primary"
+            className="min-w-0 gap-12"
+            tabsWrapperClassName="min-w-0 overflow-x-auto scrollbar-hide"
+            rightContent={<RewardsOnboardingModal shouldAutoOpen={Boolean(config)} />}
+          />
         </div>
         {content}
       </div>

@@ -103,6 +103,15 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         >
           <Trans>Permits testing</Trans>
         </Link>
+        <Link
+          to="/rewards/history?rewardsDebug=vesting-idle"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          Vesting simulator
+        </Link>
       </SettingsSection>
     </div>
   );

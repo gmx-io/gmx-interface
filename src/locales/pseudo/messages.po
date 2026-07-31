@@ -423,6 +423,7 @@ msgstr ""
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Volume"
 msgstr ""
@@ -509,6 +510,10 @@ msgstr ""
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Return Bonus"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "How it works?"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -1508,6 +1513,7 @@ msgstr ""
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/GmxAccountModal/RewardsSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPageShell.tsx
@@ -1665,6 +1671,10 @@ msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "How rewards are distributed"
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -1913,11 +1923,6 @@ msgstr ""
 msgid "Onchain quests and rewards"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Preview only"
-msgstr "[Prëvïëw önlý]"
-
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr ""
@@ -1932,6 +1937,10 @@ msgstr ""
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Skip"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -2234,7 +2243,6 @@ msgid "Alert icon"
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vest {0} esGMX"
 msgstr "[Vëst {0} ësGMX]"
 
@@ -2348,6 +2356,7 @@ msgid "Symbiosis"
 msgstr ""
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "How it works"
 msgstr ""
 
@@ -2849,6 +2858,7 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "GMX"
 msgstr ""
 
@@ -3422,10 +3432,6 @@ msgstr ""
 msgid "Mark:"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "One-click claim, stake, and vest is not supported yet. Turn off its preview in Settings to use the step-by-step flow."
-msgstr "[Önë-clïck cläïm, stäkë, änd vëst ïs nöt süppörtëd ýët. Türn öff ïts prëvïëw ïn Sëttïngs tö üsë thë stëp-bý-stëp flöw.]"
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Incentivized Markets"
 msgstr ""
@@ -3443,6 +3449,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "esGMX rewards changed. Review the updated amount and continue vesting."
 msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -4269,6 +4279,10 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "GT Rewards"
+msgstr ""
+
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
@@ -4556,6 +4570,10 @@ msgstr ""
 
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Reach {0}+ in lifetime trading volume to unlock a permanent {1} multiplier."
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "esGMX was claimed. Balances will refresh shortly."
 msgstr ""
 
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
@@ -4873,6 +4891,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "esGMX"
 msgstr ""
 
@@ -4957,6 +4976,10 @@ msgstr ""
 
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims match the selected filters"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Staking"
 msgstr ""
 
 #: src/lib/legacy.ts
@@ -5420,6 +5443,7 @@ msgid "Generating..."
 msgstr ""
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Go to slide {0}"
 msgstr ""
@@ -5472,6 +5496,10 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to liquidation"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "esGMX claim failed"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
@@ -6492,6 +6520,10 @@ msgstr ""
 msgid "Affiliate rewards claimed"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "GT accumulates in your account and will become available after the GT token generation event (TGE)."
+msgstr ""
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
 msgstr ""
@@ -6555,6 +6587,10 @@ msgstr ""
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "Clear position history filter"
 msgstr "Clear position history filter"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "esGMX was claimed. Reconnect the original wallet to continue."
+msgstr ""
 
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Steward"
@@ -6715,6 +6751,10 @@ msgstr ""
 msgid "Failed Stop Market"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Unable to refresh esGMX rewards. Please try again."
+msgstr ""
+
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "You receive 50% of all rewards earned by the traders you invite."
 msgstr ""
@@ -6844,6 +6884,10 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search token"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Trader"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -7360,6 +7404,8 @@ msgstr ""
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stake GMX"
 msgstr ""
 
@@ -7438,6 +7484,7 @@ msgid "Order not found. May have been canceled or already executed"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Vesting"
 msgstr ""
 
@@ -7470,6 +7517,10 @@ msgstr ""
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Accumulates"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
 msgstr ""
@@ -7493,6 +7544,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "How GMX Rewards works"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -7565,6 +7620,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Affiliate"
 msgstr ""
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
@@ -7790,10 +7849,6 @@ msgstr ""
 msgid "Trade now"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Waiting for confirmation..."
-msgstr "[Wäïtïng för cönfïrmätïön...]"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr ""
@@ -7831,6 +7886,10 @@ msgstr ""
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting was stopped. Balances will refresh shortly."
 msgstr "[Vëstïng wäs stöppëd. Bäläncës wïll rëfrësh shörtlý.]"
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Get started"
+msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching search"
@@ -8163,6 +8222,10 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Welcome to GMX Rewards"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
 msgstr ""
@@ -8363,6 +8426,10 @@ msgstr ""
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "True"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "GMX Rewards is a rewards program for active traders and affiliates. Trade and stake on GMX to earn up to 120% of your fees as rewards."
 msgstr ""
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -8619,6 +8686,10 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "The higher the multiplier, the more rewards you receive"
 msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
@@ -9083,6 +9154,10 @@ msgstr ""
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Claim esGMX rewards"
+msgstr ""
+
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Volume this epoch"
 msgstr ""
@@ -9407,6 +9482,10 @@ msgstr ""
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Claim esGMX"
+msgstr ""
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -9541,6 +9620,7 @@ msgid "The new epoch is being indexed. Account totals will update shortly."
 msgstr ""
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Next"
 msgstr ""
 
@@ -10351,6 +10431,11 @@ msgstr "Åṽåîļåƀļé ţø éļîĝîƀļé ĥîšţøřîçåļ ûšéř�
 msgid "Receive"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "esGMX claimed"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr ""
@@ -10949,6 +11034,10 @@ msgstr ""
 msgid "1y"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Claiming esGMX..."
+msgstr ""
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr ""
@@ -11342,6 +11431,10 @@ msgstr ""
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "esGMX claim submitted"
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new amount or price"
 msgstr ""
@@ -11668,6 +11761,7 @@ msgid "V1 unsupported on {chainName}. Switch to Arbitrum to use V1."
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Completed"
 msgstr ""
 
@@ -11847,6 +11941,10 @@ msgstr ""
 msgid "Delisting"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Wallet or network changed. Review your esGMX rewards before claiming."
+msgstr ""
+
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
@@ -11970,6 +12068,10 @@ msgstr "Šţåķé {0} ĜḾẊ ɱøřé ţø ĝéţ {1} ñéẋţ éƥøçĥ"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "esGMX can be converted into GMX through vesting."
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -12112,6 +12214,10 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Oracle price"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Your multiplier is at the core of the rewards program"
 msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -12369,6 +12475,10 @@ msgstr ""
 msgid "Default sorting"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Trading activity"
+msgstr ""
+
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr ""
@@ -12468,6 +12578,7 @@ msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "GT"
 msgstr ""
 
@@ -12544,6 +12655,10 @@ msgstr ""
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "esGMX Rewards"
 msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -13063,6 +13178,10 @@ msgstr ""
 msgid "Join an anonymous one-on-one chat to share your experience"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "It determines how many rewards you earn and is based on your trading volume, GMX staking, and participation in trading activities."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GMX staked rewards:"
 msgstr ""
@@ -13238,6 +13357,7 @@ msgstr ""
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Close"
 msgstr ""
 
@@ -13400,6 +13520,8 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Multiplier"
@@ -13407,6 +13529,10 @@ msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Maximum claim entries selected. Claim this batch first, then claim the remaining fees in another transaction to avoid oversized wallet confirmations."
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Rewards are distributed each epoch in esGMX and GT tokens."
 msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx

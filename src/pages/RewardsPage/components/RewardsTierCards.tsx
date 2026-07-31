@@ -237,7 +237,7 @@ const tierCardBase =
 const tierCardBanner = "bg-slate-950 p-16 max-lg:p-12";
 const tierCardActive = "bg-slate-950 pt-16 px-16 pb-12";
 const tierIconLarge =
-  "size-48 shrink-0 rounded-12 border-[0.8px] border-rewards-blue-300/60 drop-shadow-[0_4px_8px_rgba(120,133,255,0.9)]";
+  "size-48 shrink-0 rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_8px_rgba(120,133,255,0.9)]";
 
 function VolumeCard({
   config,
@@ -374,7 +374,7 @@ function VolumeCard({
                     className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/volume-bar:scale-y-150 group-focus-within/volume-bar:bg-cold-blue-700 group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-cold-blue-700"
                   >
                     <div
-                      className="absolute left-0 top-0 h-full rounded-8 bg-rewards-blue-300 transition-[background-color,width] duration-300 ease-out"
+                      className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color,width] duration-300 ease-out"
                       style={progressStyle}
                     />
                   </button>
@@ -387,7 +387,7 @@ function VolumeCard({
                 <div
                   className={cx(
                     "absolute left-0 top-0 h-full rounded-8 transition-[width] duration-300",
-                    showMaxTierState ? "bg-green-300" : "bg-rewards-blue-300"
+                    showMaxTierState ? "bg-green-300" : "bg-blue-300"
                   )}
                   style={progressStyle}
                 />
@@ -435,7 +435,7 @@ function VolumeCard({
               <Trans>Trade to unlock higher volume tiers and earn more rewards.</Trans>
             )}
           </div>
-          <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300">
+          <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-blue-300">
             <Trans>Start trading</Trans> <ArrowRight />
           </Link>
         </div>
@@ -549,7 +549,7 @@ function StakingCard({
                 shouldStakeGmx ? (
                   <Link
                     to={EARN_PORTFOLIO_STAKE_GMX_LINK}
-                    className="inline-flex items-center gap-2 text-13 font-medium text-rewards-blue-300"
+                    className="inline-flex items-center gap-2 text-13 font-medium text-blue-300"
                   >
                     <Trans>Stake GMX</Trans>
                     <GmxIcon className="size-12" />
@@ -558,7 +558,7 @@ function StakingCard({
                   <button
                     type="button"
                     onClick={onBuyGmx}
-                    className="inline-flex items-center gap-2 text-13 font-medium text-rewards-blue-300"
+                    className="inline-flex items-center gap-2 text-13 font-medium text-blue-300"
                   >
                     <Trans>Buy GMX</Trans>
                     <PlusIcon className="size-12" />
@@ -647,19 +647,12 @@ function InactiveStakingCardContent({
           <Skeleton width={88} height={16} />
         </SkeletonTheme>
       ) : shouldStakeGmx ? (
-        <Link
-          to={EARN_PORTFOLIO_STAKE_GMX_LINK}
-          className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300"
-        >
+        <Link to={EARN_PORTFOLIO_STAKE_GMX_LINK} className="flex items-center gap-4 text-13 font-medium text-blue-300">
           <Trans>Stake GMX</Trans>
           <GmxIcon className="size-16" />
         </Link>
       ) : (
-        <button
-          type="button"
-          onClick={onBuyGmx}
-          className="flex items-center gap-4 text-13 font-medium text-rewards-blue-300"
-        >
+        <button type="button" onClick={onBuyGmx} className="flex items-center gap-4 text-13 font-medium text-blue-300">
           <Trans>Buy GMX</Trans>
           <PlusIcon className="size-16" />
         </button>
@@ -738,10 +731,7 @@ function StakingProgressBar({
                   type="button"
                   className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/segment:scale-y-150 group-focus-within/segment:bg-cold-blue-700 group-hover/segment:scale-y-150 group-hover/segment:bg-cold-blue-700"
                 >
-                  <div
-                    className="absolute left-0 top-0 h-full rounded-8 bg-rewards-blue-300"
-                    style={nextTierProgressStyle}
-                  />
+                  <div className="absolute left-0 top-0 h-full rounded-8 bg-blue-300" style={nextTierProgressStyle} />
                   <span className="sr-only">
                     {stakingTierLabels[tier.tier]} <Trans>Staking tier</Trans>
                   </span>
@@ -754,7 +744,7 @@ function StakingProgressBar({
                     completed
                       ? isMaxTier
                         ? "bg-green-300"
-                        : "bg-rewards-blue-300"
+                        : "bg-blue-300"
                       : "bg-cold-blue-900 group-focus-within/segment:bg-cold-blue-700 group-hover/segment:bg-cold-blue-700"
                   )}
                 >
@@ -874,8 +864,8 @@ function BoostsCard({
         {hasStatus ? (
           <>
             <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
-              <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-rewards-blue-300/60 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
-                <BoostSvg className="size-24 text-rewards-blue-300" />
+              <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
+                <BoostSvg className="size-24 text-blue-300" />
               </div>
               <span className="flex flex-col">
                 {activeBoostCount > 0 ? (
@@ -917,7 +907,7 @@ function BoostsCard({
                           </div>
                           <Link
                             to="/referrals/affiliates"
-                            className="mt-4 inline-flex items-center gap-4 text-13 font-medium text-rewards-blue-300"
+                            className="mt-4 inline-flex items-center gap-4 text-13 font-medium text-blue-300"
                           >
                             <Trans>Invite traders</Trans> <ArrowRight />
                           </Link>
@@ -973,7 +963,7 @@ function BoostsCard({
                             <Trans>Active</Trans>
                           </div>
                         ) : isQualifiedThisEpoch ? (
-                          <div className="mt-4 text-13 text-rewards-blue-300">
+                          <div className="mt-4 text-13 text-blue-300">
                             <Trans>Qualified this epoch</Trans>
                           </div>
                         ) : null}

@@ -79,13 +79,61 @@ vi.mock("lib/chains", () => ({
 }));
 
 vi.mock("../RewardsVestingModals", () => ({
-  RewardsVestingModal: ({ isVisible, isReadOnly }: { isVisible: boolean; isReadOnly?: boolean }) =>
-    isVisible ? <div data-testid="vesting-modal" data-read-only={isReadOnly} /> : null,
-  RewardsStopVestingModal: ({ isVisible, isReadOnly }: { isVisible: boolean; isReadOnly?: boolean }) =>
-    isVisible ? <div data-testid="stop-vesting-modal" data-read-only={isReadOnly} /> : null,
+  RewardsVestingModal: ({
+    isVisible,
+    onSimulatedClaim,
+    onSimulatedStake,
+    onSimulatedVest,
+  }: {
+    isVisible: boolean;
+    onSimulatedClaim?: () => Promise<void>;
+    onSimulatedStake?: (amount: bigint) => Promise<void>;
+    onSimulatedVest?: (amount: bigint) => Promise<void>;
+  }) =>
+    isVisible ? (
+      <div data-testid="vesting-modal" data-simulated={Boolean(onSimulatedVest)}>
+        {onSimulatedClaim ? (
+          <button type="button" onClick={onSimulatedClaim}>
+            Simulate esGMX claim
+          </button>
+        ) : null}
+        {onSimulatedVest ? (
+          <button type="button" onClick={() => onSimulatedStake?.(10n * 10n ** 18n)}>
+            Simulate stake
+          </button>
+        ) : null}
+        {onSimulatedVest ? (
+          <button type="button" onClick={() => onSimulatedVest(10n * 10n ** 18n)}>
+            Simulate vest
+          </button>
+        ) : null}
+      </div>
+    ) : null,
+  RewardsStopVestingModal: ({
+    isVisible,
+    onSimulatedStop,
+  }: {
+    isVisible: boolean;
+    onSimulatedStop?: () => Promise<void>;
+  }) =>
+    isVisible ? (
+      <div data-testid="stop-vesting-modal" data-simulated={Boolean(onSimulatedStop)}>
+        {onSimulatedStop ? (
+          <button type="button" onClick={onSimulatedStop}>
+            Simulate stop
+          </button>
+        ) : null}
+      </div>
+    ) : null,
 }));
 
 const TOKEN_UNIT = expandDecimals(1, 18);
+
+async function settleSimulatedTransaction() {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1_100));
+  });
+}
 const mockUseRewardsVestingData = vi.mocked(useRewardsVestingData);
 const mockUseSettings = vi.mocked(useSettings);
 const mockUseWallet = vi.mocked(useWallet);
@@ -100,6 +148,7 @@ const mutate = vi.fn(async (): Promise<RewardsVestingData | undefined> => undefi
 const idleData: RewardsVestingData = {
   walletGmxBalance: 0n,
   walletEsGmxBalance: 0n,
+  claimableEsGmxRewards: 0n,
   stakedGmxBalance: 0n,
   freePairAmount: 0n,
   vestingInfo: {
@@ -193,7 +242,7 @@ describe("RewardsVestingFlow", () => {
   it("renders the designed start-vesting guidance when esGMX is available", () => {
     setVestingData({
       ...idleData,
-      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      claimableEsGmxRewards: 100n * TOKEN_UNIT,
       freePairAmount: 100n * TOKEN_UNIT,
       vestingInfo: {
         ...idleData.vestingInfo,
@@ -214,7 +263,7 @@ describe("RewardsVestingFlow", () => {
   it("shows the lifetime-capped vestable amount instead of the full wallet balance", () => {
     setVestingData({
       ...idleData,
-      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      claimableEsGmxRewards: 100n * TOKEN_UNIT,
       vestingInfo: {
         ...idleData.vestingInfo,
         vestedAmount: 90n * TOKEN_UNIT,
@@ -229,11 +278,29 @@ describe("RewardsVestingFlow", () => {
     );
   });
 
+  it("shows wallet and pending reward esGMX together as vestable", () => {
+    setVestingData({
+      ...idleData,
+      walletEsGmxBalance: 40n * TOKEN_UNIT,
+      claimableEsGmxRewards: 60n * TOKEN_UNIT,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        maxVestableAmount: 200n * TOKEN_UNIT,
+      },
+    });
+
+    renderFlow();
+
+    expect(screen.getByText("Vestable esGMX").parentElement?.parentElement?.textContent?.replace(/\s/g, "")).toContain(
+      "100esGMX"
+    );
+  });
+
   it("opens the vesting modal from the rewards summary deep link", async () => {
     window.history.replaceState({}, "", "/rewards/history?vesting=start");
     setVestingData({
       ...idleData,
-      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      claimableEsGmxRewards: 100n * TOKEN_UNIT,
       freePairAmount: 100n * TOKEN_UNIT,
       vestingInfo: {
         ...idleData.vestingInfo,
@@ -250,13 +317,13 @@ describe("RewardsVestingFlow", () => {
     expect(mockSendRewardsVestingModalOpenEvent).toHaveBeenCalledWith("Start");
   });
 
-  it("shows a notice instead of opening the stepper in one-click preview mode", () => {
+  it("opens the claim, stake, and vest sequence in one-click mode", () => {
     mockUseSettings.mockReturnValue({
       rewardsOneClickActionEnabled: true,
     } as ReturnType<typeof useSettings>);
     setVestingData({
       ...idleData,
-      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      claimableEsGmxRewards: 100n * TOKEN_UNIT,
       freePairAmount: 100n * TOKEN_UNIT,
       vestingInfo: {
         ...idleData.vestingInfo,
@@ -268,11 +335,9 @@ describe("RewardsVestingFlow", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Start vesting" }));
 
-    expect(mockHelperToastInfo).toHaveBeenCalledWith(
-      "One-click claim, stake, and vest is not supported yet. Turn off its preview in Settings to use the step-by-step flow."
-    );
-    expect(screen.queryByTestId("vesting-modal")).toBeNull();
-    expect(mockSendRewardsVestingModalOpenEvent).not.toHaveBeenCalled();
+    expect(screen.getByTestId("vesting-modal")).toBeDefined();
+    expect(mockHelperToastInfo).not.toHaveBeenCalled();
+    expect(mockSendRewardsVestingModalOpenEvent).toHaveBeenCalledWith("Start");
   });
 
   it("consumes a one-click preview deep link once and preserves other query parameters", async () => {
@@ -282,7 +347,7 @@ describe("RewardsVestingFlow", () => {
     } as ReturnType<typeof useSettings>);
     setVestingData({
       ...idleData,
-      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      claimableEsGmxRewards: 100n * TOKEN_UNIT,
       freePairAmount: 100n * TOKEN_UNIT,
       vestingInfo: {
         ...idleData.vestingInfo,
@@ -292,19 +357,19 @@ describe("RewardsVestingFlow", () => {
     });
     const view = renderFlow();
 
-    await waitFor(() => expect(mockHelperToastInfo).toHaveBeenCalledTimes(1));
-    expect(screen.queryByTestId("vesting-modal")).toBeNull();
-    expect(mockSendRewardsVestingModalOpenEvent).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByTestId("vesting-modal")).toBeDefined());
+    expect(mockHelperToastInfo).not.toHaveBeenCalled();
+    expect(mockSendRewardsVestingModalOpenEvent).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId("location-search").textContent).toBe("?source=summary");
 
     view.rerender(getFlow());
-    expect(mockHelperToastInfo).toHaveBeenCalledTimes(1);
+    expect(mockSendRewardsVestingModalOpenEvent).toHaveBeenCalledTimes(1);
   });
 
   it("renders active vesting values and opens the add-to-vesting and stop confirmations", () => {
     setVestingData({
       ...idleData,
-      walletEsGmxBalance: 42n * TOKEN_UNIT,
+      claimableEsGmxRewards: 42n * TOKEN_UNIT,
       walletGmxBalance: 100n * TOKEN_UNIT,
       stakedGmxBalance: 100n * TOKEN_UNIT,
       vestingInfo: {
@@ -331,18 +396,80 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByTestId("stop-vesting-modal")).toBeDefined();
   });
 
-  it("renders development vesting fixtures as read-only states", () => {
+  it("runs development vesting fixtures as an editable transaction simulator", async () => {
     window.history.replaceState({}, "", "/rewards/history?rewardsDebug=vesting-active");
     renderFlow();
 
-    expect(screen.getByRole("button", { name: "Claim 50 GMX" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByTestId("vesting-debug-panel")).toBeDefined();
+    expect((screen.getByLabelText("Claimable esGMX rewards") as HTMLInputElement).value).toBe("40");
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("0");
+
+    fireEvent.change(screen.getByLabelText("Claimable esGMX rewards"), { target: { value: "75" } });
+    fireEvent.click(screen.getByRole("button", { name: "Apply values" }));
+    expect((screen.getByLabelText("Claimable esGMX rewards") as HTMLInputElement).value).toBe("75");
+
+    const claimButton = screen.getByRole("button", { name: "Claim 50 GMX" });
+    expect(claimButton.hasAttribute("disabled")).toBe(false);
+    fireEvent.click(claimButton);
+    expect(screen.getByRole("button", { name: "Claiming..." })).toBeDefined();
+    expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("25");
+    await settleSimulatedTransaction();
+    expect(screen.getByRole("button", { name: "Nothing to claim" })).toBeDefined();
+    expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("75");
 
     fireEvent.click(screen.getByRole("button", { name: "Add to Vesting" }));
-    expect(screen.getByTestId("vesting-modal").getAttribute("data-read-only")).toBe("true");
+    expect(screen.getByTestId("vesting-modal").getAttribute("data-simulated")).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "Simulate esGMX claim" }));
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("0");
+    await settleSimulatedTransaction();
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("75");
+    expect((screen.getByLabelText("Claimable esGMX rewards") as HTMLInputElement).value).toBe("0");
+    fireEvent.click(screen.getByRole("button", { name: "Simulate stake" }));
+    expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("75");
+    await settleSimulatedTransaction();
+    expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("65");
+    fireEvent.click(screen.getByRole("button", { name: "Simulate vest" }));
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("75");
+    await settleSimulatedTransaction();
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("65");
 
     fireEvent.click(screen.getByRole("button", { name: "Stop vesting" }));
-    expect(screen.getByTestId("stop-vesting-modal").getAttribute("data-read-only")).toBe("true");
+    expect(screen.getByTestId("stop-vesting-modal").getAttribute("data-simulated")).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "Simulate stop" }));
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("65");
+    await settleSimulatedTransaction();
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("425");
+    expect(screen.queryByRole("button", { name: "Stop vesting" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("0");
+    expect((screen.getByLabelText("Claimable esGMX rewards") as HTMLInputElement).value).toBe("40");
+    expect(screen.getByRole("button", { name: "Claim 50 GMX" })).toBeDefined();
     expect(mockCallContract).not.toHaveBeenCalled();
+  }, 10_000);
+
+  it("applies the simulator zero-state shortcut", () => {
+    window.history.replaceState({}, "", "/rewards/history?rewardsDebug=vesting-active");
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Zero state" }));
+
+    expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("0");
+    expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("0");
+    expect((screen.getByLabelText("Staked GMX") as HTMLInputElement).value).toBe("0");
+    expect((screen.getByLabelText("Max vestable esGMX cap") as HTMLInputElement).value).toBe("0");
+    expect(screen.getByRole("button", { name: "Nothing to vest" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Nothing to claim" })).toBeDefined();
+  });
+
+  it("rejects mocked collateral that exceeds staked GMX", () => {
+    window.history.replaceState({}, "", "/rewards/history?rewardsDebug=vesting-idle");
+    renderFlow();
+
+    fireEvent.change(screen.getByLabelText("Staked GMX"), { target: { value: "0" } });
+    fireEvent.click(screen.getByRole("button", { name: "Apply values" }));
+
+    expect(screen.getByRole("alert").textContent).toBe("Free and locked GMX collateral cannot exceed Staked GMX.");
   });
 
   it("shows claimable rewards and account balances", () => {

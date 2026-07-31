@@ -411,7 +411,7 @@ export function RewardsPromotionalBanners({
                 ) : null}
                 <Link
                   to={action.to}
-                  className="flex w-fit items-center gap-4 text-14 font-medium text-rewards-blue-300"
+                  className="flex w-fit items-center gap-4 text-14 font-medium text-blue-300"
                   onClick={handleActionClick}
                 >
                   {action.label}
@@ -454,7 +454,7 @@ export function RewardsPromotionalBanners({
               aria-label={t`Go to slide ${index + 1}`}
               aria-current={index === selectedIndex}
               className={cx(
-                "size-8 rounded-full bg-rewards-blue-300 transition-opacity",
+                "size-8 rounded-full bg-blue-300 transition-opacity",
                 index === selectedIndex ? "opacity-100" : "opacity-40 hover:opacity-70"
               )}
               onClick={() => handleDotClick(index)}

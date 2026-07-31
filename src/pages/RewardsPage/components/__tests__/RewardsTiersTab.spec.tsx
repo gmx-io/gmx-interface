@@ -215,6 +215,7 @@ function getVestingDataResult(walletGmxBalance = 0n): ReturnType<typeof useRewar
     data: {
       walletGmxBalance,
       walletEsGmxBalance: 5n * GMX_UNIT,
+      claimableEsGmxRewards: 5n * GMX_UNIT,
       stakedGmxBalance: 0n,
       freePairAmount: 0n,
       vestingInfo: {

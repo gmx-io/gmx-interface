@@ -41,6 +41,7 @@ type CapturedMulticallParams = {
 const contractsData: RewardsVestingContractsData = {
   walletGmxBalance: 11n,
   walletEsGmxBalance: 22n,
+  claimableEsGmxRewards: 55n,
   stakedGmxBalance: 33n,
   freePairAmount: 44n,
   vestingInfo: {
@@ -49,7 +50,7 @@ const contractsData: RewardsVestingContractsData = {
     escrowedBalance: 77n,
     claimedAmounts: 88n,
     claimable: 99n,
-    maxVestableAmount: 111n,
+    maxVestableAmount: 211n,
     averageStakedAmount: 222n,
   },
   vestingDuration: 333n,
@@ -87,11 +88,16 @@ function getCapturedMulticallParams(): CapturedMulticallParams {
   return latestCall[2] as unknown as CapturedMulticallParams;
 }
 
-function makeMulticallResult(vestingInfo: bigint[] = [55n, 66n, 77n, 88n, 99n, 111n, 222n]) {
+function makeMulticallResult(vestingInfo: bigint[] = [55n, 66n, 77n, 88n, 99n, 211n, 222n]) {
   return {
     data: {
       gmx: { balanceOf: { returnValues: [11n] } },
       esGmx: { balanceOf: { returnValues: [22n] } },
+      rewardReader: {
+        getStakingInfo: {
+          returnValues: [21n, 0n, 0n, 0n, 0n, 34n, 0n, 0n, 0n, 0n],
+        },
+      },
       stakedGmxTracker: { gmxDepositBalance: { returnValues: [33n] } },
       feeGmxTracker: { balanceOf: { returnValues: [44n] } },
       reader: { getVestingInfo: { returnValues: vestingInfo } },
@@ -165,6 +171,16 @@ describe("useRewardsVestingData", () => {
         abiId: "RewardTracker",
         calls: { balanceOf: { methodName: "balanceOf", params: [ACCOUNT] } },
       },
+      rewardReader: {
+        contractAddress: getContract(ARBITRUM, "RewardReader"),
+        abiId: "RewardReader",
+        calls: {
+          getStakingInfo: {
+            methodName: "getStakingInfo",
+            params: [ACCOUNT, [getContract(ARBITRUM, "StakedGmxTracker"), getContract(ARBITRUM, "StakedGlpTracker")]],
+          },
+        },
+      },
       reader: {
         contractAddress: getContract(ARBITRUM, "Reader"),
         abiId: "ReaderV2",
@@ -183,8 +199,8 @@ describe("useRewardsVestingData", () => {
     });
     expect(params.parseResponse(makeMulticallResult())).toEqual(contractsData);
     expect(hookResult?.data).toEqual({ ...contractsData, gmxPrice: GMX_PRICE });
-    expect(hookResult?.vestableEsGmx).toBe(22n);
-    expect(hookResult?.vestableEsGmxUsd).toBe(924_000_000_000_000n);
+    expect(hookResult?.vestableEsGmx).toBe(77n);
+    expect(hookResult?.vestableEsGmxUsd).toBe(3_234_000_000_000_000n);
   });
 
   it("throws when any required return value is missing", () => {

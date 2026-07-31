@@ -9,9 +9,6 @@ export const colors = {
     600: { light: "#2d42fc", dark: "#2d42fc" },
     700: { light: "#2e3dcd", dark: "#2e3dcd" },
   },
-  "rewards-blue": {
-    300: { light: "#2D42FC", dark: "#7885FF" },
-  },
   "cold-blue": {
     500: { light: "#3a3f79", dark: "#3a3f79" },
     700: { light: "#282b54", dark: "#282b54" },

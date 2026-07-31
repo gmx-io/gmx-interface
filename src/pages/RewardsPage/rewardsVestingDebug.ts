@@ -1,4 +1,9 @@
 import { USD_DECIMALS } from "config/factors";
+import {
+  getRewardsVestingAvailableAmount,
+  getRewardsVestingEffectiveRemainingAmount,
+  getRewardsVestingPairAmounts,
+} from "domain/vesting/rewardsVesting";
 import type { RewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { GMX_DECIMALS } from "lib/legacy";
 
@@ -18,9 +23,21 @@ const EMPTY_VESTING_INFO: RewardsVestingData["vestingInfo"] = {
   averageStakedAmount: 0n,
 };
 
+const ZERO_VESTING_DATA: RewardsVestingData = {
+  walletGmxBalance: 0n,
+  walletEsGmxBalance: 0n,
+  claimableEsGmxRewards: 0n,
+  stakedGmxBalance: 0n,
+  freePairAmount: 0n,
+  vestingInfo: EMPTY_VESTING_INFO,
+  vestingDuration: VESTING_DURATION,
+  gmxPrice: 45n * USD_PRICE_UNIT,
+};
+
 const IDLE_VESTING_DATA: RewardsVestingData = {
   walletGmxBalance: 80n * TOKEN_UNIT,
-  walletEsGmxBalance: 40n * TOKEN_UNIT,
+  walletEsGmxBalance: 0n,
+  claimableEsGmxRewards: 40n * TOKEN_UNIT,
   stakedGmxBalance: 420n * TOKEN_UNIT,
   freePairAmount: 120n * TOKEN_UNIT,
   vestingInfo: {
@@ -34,7 +51,8 @@ const IDLE_VESTING_DATA: RewardsVestingData = {
 
 const ACTIVE_VESTING_DATA: RewardsVestingData = {
   walletGmxBalance: 25n * TOKEN_UNIT,
-  walletEsGmxBalance: 40n * TOKEN_UNIT,
+  walletEsGmxBalance: 0n,
+  claimableEsGmxRewards: 40n * TOKEN_UNIT,
   stakedGmxBalance: 500n * TOKEN_UNIT,
   freePairAmount: 380n * TOKEN_UNIT,
   vestingInfo: {
@@ -53,6 +71,7 @@ const ACTIVE_VESTING_DATA: RewardsVestingData = {
 const COMPLETE_VESTING_DATA: RewardsVestingData = {
   walletGmxBalance: 180n * TOKEN_UNIT,
   walletEsGmxBalance: 0n,
+  claimableEsGmxRewards: 0n,
   stakedGmxBalance: 500n * TOKEN_UNIT,
   freePairAmount: 300n * TOKEN_UNIT,
   vestingInfo: {
@@ -74,16 +93,38 @@ export type RewardsVestingDebugSnapshot = {
   error?: Error;
 };
 
+export type RewardsVestingDebugPreset = "zero" | "idle" | "active" | "complete";
+
+function cloneRewardsVestingData(data: RewardsVestingData): RewardsVestingData {
+  return {
+    ...data,
+    vestingInfo: {
+      ...data.vestingInfo,
+    },
+  };
+}
+
+export function getRewardsVestingDebugPreset(preset: RewardsVestingDebugPreset): RewardsVestingData {
+  const presetData = {
+    zero: ZERO_VESTING_DATA,
+    idle: IDLE_VESTING_DATA,
+    active: ACTIVE_VESTING_DATA,
+    complete: COMPLETE_VESTING_DATA,
+  }[preset];
+
+  return cloneRewardsVestingData(presetData);
+}
+
 export function getRewardsVestingDebugSnapshot(
   mode: RewardsDebugMode | undefined
 ): RewardsVestingDebugSnapshot | undefined {
   switch (mode) {
     case "vesting-idle":
-      return { data: IDLE_VESTING_DATA, isLoading: false };
+      return { data: getRewardsVestingDebugPreset("idle"), isLoading: false };
     case "vesting-active":
-      return { data: ACTIVE_VESTING_DATA, isLoading: false };
+      return { data: getRewardsVestingDebugPreset("active"), isLoading: false };
     case "vesting-complete":
-      return { data: COMPLETE_VESTING_DATA, isLoading: false };
+      return { data: getRewardsVestingDebugPreset("complete"), isLoading: false };
     case "vesting-error":
       return { isLoading: false, error: new Error("Rewards vesting debug error") };
     case "vesting-loading":
@@ -91,4 +132,161 @@ export function getRewardsVestingDebugSnapshot(
     default:
       return undefined;
   }
+}
+
+function clearVestingPosition(
+  data: RewardsVestingData,
+  balances: Pick<RewardsVestingData, "walletGmxBalance" | "walletEsGmxBalance" | "freePairAmount">
+): RewardsVestingData {
+  return {
+    ...data,
+    ...balances,
+    vestingInfo: {
+      ...data.vestingInfo,
+      pairAmount: 0n,
+      vestedAmount: 0n,
+      escrowedBalance: 0n,
+      claimedAmounts: 0n,
+      claimable: 0n,
+    },
+  };
+}
+
+export function getRewardsVestingDebugCalculationData(data: RewardsVestingData): RewardsVestingData {
+  if (data.vestingInfo.averageStakedAmount > 0n || data.vestingInfo.maxVestableAmount === 0n) {
+    return data;
+  }
+
+  return {
+    ...data,
+    vestingInfo: {
+      ...data.vestingInfo,
+      averageStakedAmount: data.vestingInfo.maxVestableAmount,
+    },
+  };
+}
+
+export function simulateRewardsGmxStake(data: RewardsVestingData, stakeAmount: bigint): RewardsVestingData {
+  if (stakeAmount <= 0n || stakeAmount > data.walletGmxBalance) {
+    return data;
+  }
+
+  return {
+    ...data,
+    walletGmxBalance: data.walletGmxBalance - stakeAmount,
+    stakedGmxBalance: data.stakedGmxBalance + stakeAmount,
+    freePairAmount: data.freePairAmount + stakeAmount,
+  };
+}
+
+export function simulateRewardsVestingDeposit(data: RewardsVestingData, depositAmount: bigint): RewardsVestingData {
+  const calculationData = getRewardsVestingDebugCalculationData(data);
+  const vestableAmount = getRewardsVestingAvailableAmount({
+    walletEsGmxAmount: calculationData.walletEsGmxBalance,
+    totalVestedAmount: calculationData.vestingInfo.vestedAmount,
+    maxVestableAmount: calculationData.vestingInfo.maxVestableAmount,
+  });
+
+  if (depositAmount <= 0n || depositAmount > vestableAmount) {
+    return data;
+  }
+
+  const effectiveRemainingAmount = getRewardsVestingEffectiveRemainingAmount({
+    totalVestedAmount: calculationData.vestingInfo.vestedAmount,
+    escrowedBalance: calculationData.vestingInfo.escrowedBalance,
+    claimedAmount: calculationData.vestingInfo.claimedAmounts,
+    claimableAmount: calculationData.vestingInfo.claimable,
+  });
+  const pairAmounts = getRewardsVestingPairAmounts({
+    effectiveRemainingAmount,
+    depositAmount,
+    averageStakedAmount: calculationData.vestingInfo.averageStakedAmount,
+    maxVestableAmount: calculationData.vestingInfo.maxVestableAmount,
+    currentPairAmount: calculationData.vestingInfo.pairAmount,
+    availablePairAmount: calculationData.freePairAmount,
+  });
+
+  if (pairAmounts.stakeShortfallAmount > 0n) {
+    return data;
+  }
+
+  return {
+    ...data,
+    walletEsGmxBalance: data.walletEsGmxBalance - depositAmount,
+    freePairAmount: data.freePairAmount - pairAmounts.additionalPairAmount,
+    vestingInfo: {
+      ...data.vestingInfo,
+      pairAmount: data.vestingInfo.pairAmount + pairAmounts.additionalPairAmount,
+      vestedAmount: data.vestingInfo.vestedAmount + depositAmount,
+      escrowedBalance: data.vestingInfo.escrowedBalance + depositAmount,
+    },
+  };
+}
+
+export function simulateRewardsEsGmxClaim(data: RewardsVestingData): RewardsVestingData {
+  if (data.claimableEsGmxRewards <= 0n) {
+    return data;
+  }
+
+  return {
+    ...data,
+    walletEsGmxBalance: data.walletEsGmxBalance + data.claimableEsGmxRewards,
+    claimableEsGmxRewards: 0n,
+  };
+}
+
+export function simulateRewardsVestingClaim(data: RewardsVestingData): RewardsVestingData {
+  const claimableAmount = data.vestingInfo.claimable;
+
+  if (claimableAmount <= 0n) {
+    return data;
+  }
+
+  return {
+    ...data,
+    walletGmxBalance: data.walletGmxBalance + claimableAmount,
+    vestingInfo: {
+      ...data.vestingInfo,
+      claimedAmounts: data.vestingInfo.claimedAmounts + claimableAmount,
+      claimable: 0n,
+    },
+  };
+}
+
+export function simulateRewardsVestingStop(data: RewardsVestingData): RewardsVestingData {
+  const effectiveRemainingAmount = getRewardsVestingEffectiveRemainingAmount({
+    totalVestedAmount: data.vestingInfo.vestedAmount,
+    escrowedBalance: data.vestingInfo.escrowedBalance,
+    claimedAmount: data.vestingInfo.claimedAmounts,
+    claimableAmount: data.vestingInfo.claimable,
+  });
+
+  if (data.vestingInfo.vestedAmount <= 0n || effectiveRemainingAmount <= 0n) {
+    return data;
+  }
+
+  return clearVestingPosition(data, {
+    walletGmxBalance: data.walletGmxBalance + data.vestingInfo.claimable,
+    walletEsGmxBalance: data.walletEsGmxBalance + effectiveRemainingAmount,
+    freePairAmount: data.freePairAmount + data.vestingInfo.pairAmount,
+  });
+}
+
+export function simulateRewardsVestingUnlock(data: RewardsVestingData): RewardsVestingData {
+  const effectiveRemainingAmount = getRewardsVestingEffectiveRemainingAmount({
+    totalVestedAmount: data.vestingInfo.vestedAmount,
+    escrowedBalance: data.vestingInfo.escrowedBalance,
+    claimedAmount: data.vestingInfo.claimedAmounts,
+    claimableAmount: data.vestingInfo.claimable,
+  });
+
+  if (data.vestingInfo.vestedAmount <= 0n || effectiveRemainingAmount > 0n || data.vestingInfo.pairAmount <= 0n) {
+    return data;
+  }
+
+  return clearVestingPosition(data, {
+    walletGmxBalance: data.walletGmxBalance + data.vestingInfo.claimable,
+    walletEsGmxBalance: data.walletEsGmxBalance,
+    freePairAmount: data.freePairAmount + data.vestingInfo.pairAmount,
+  });
 }

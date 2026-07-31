@@ -197,7 +197,7 @@ export function RewardsTiersSummary({
               {(vestableEsGmx ?? 0n) > 0n ? (
                 <Link
                   to={getStartRewardsVestingPath()}
-                  className="pb-1 text-12 font-medium leading-[1.25] text-rewards-blue-300"
+                  className="pb-1 text-12 font-medium leading-[1.25] text-blue-300"
                   onClick={() => sendRewardsNavigationEvent({ source: "TiersSummary" })}
                 >
                   {hasVestingPosition ? <Trans>Vest more</Trans> : <Trans>Start vesting</Trans>}

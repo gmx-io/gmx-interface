@@ -43,6 +43,7 @@ import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import CheckIcon from "img/ic_check.svg?react";
 import InfoIcon from "img/ic_info_circle_stroke.svg?react";
 
+import { getRewardsVestingDebugCalculationData } from "../rewardsVestingDebug";
 import { RewardsVestingChainGuard } from "./RewardsVestingChainGuard";
 
 type RewardsVestingDataMutator = () => Promise<RewardsVestingData | undefined>;
@@ -53,7 +54,10 @@ type RewardsVestingModalProps = {
   data: RewardsVestingData;
   mutate: RewardsVestingDataMutator;
   onBuyGmx: () => void;
-  isReadOnly?: boolean;
+  claimableEsGmxAmount?: bigint;
+  onSimulatedClaim?: () => Promise<void>;
+  onSimulatedStake?: (stakeAmount: bigint) => Promise<void>;
+  onSimulatedVest?: (depositAmount: bigint) => Promise<void>;
 };
 
 function formatTokenAmount(amount: bigint, displayDecimals = 2) {
@@ -69,9 +73,9 @@ function getEffectiveRemainingAmount(data: RewardsVestingData) {
   });
 }
 
-function getVestingLimit(data: RewardsVestingData) {
+function getVestingLimit(data: RewardsVestingData, availableEsGmxAmount = data.walletEsGmxBalance) {
   return getRewardsVestingAvailableAmount({
-    walletEsGmxAmount: data.walletEsGmxBalance,
+    walletEsGmxAmount: availableEsGmxAmount,
     totalVestedAmount: data.vestingInfo.vestedAmount,
     maxVestableAmount: data.vestingInfo.maxVestableAmount,
   });
@@ -108,6 +112,7 @@ function hasVestingFundingPreviewChanged(currentData: RewardsVestingData, nextDa
     hasVestingPositionSnapshotChanged(currentData, nextData) ||
     currentData.walletGmxBalance !== nextData.walletGmxBalance ||
     currentData.walletEsGmxBalance !== nextData.walletEsGmxBalance ||
+    currentData.claimableEsGmxRewards !== nextData.claimableEsGmxRewards ||
     currentData.stakedGmxBalance !== nextData.stakedGmxBalance ||
     currentData.freePairAmount !== nextData.freePairAmount ||
     currentData.vestingDuration !== nextData.vestingDuration ||
@@ -125,16 +130,20 @@ function ModalValueRow({ label, value }: { label: React.ReactNode; value: React.
   );
 }
 
-type VestingTransactionStep = "approving" | "staking" | "vesting";
+type VestingTransactionStep = "claiming" | "approving" | "staking" | "vesting";
 
 type VestingTransactionProgress = {
+  claim: boolean;
   approval: boolean;
   staking: boolean;
+  vesting: boolean;
 };
 
 const EMPTY_TRANSACTION_PROGRESS: VestingTransactionProgress = {
+  claim: false,
   approval: false,
   staking: false,
+  vesting: false,
 };
 
 function VestingStep({
@@ -151,41 +160,45 @@ function VestingStep({
   showConnector: boolean;
 }) {
   return (
-    <div className="flex gap-10">
+    <div className="flex min-h-20 gap-10">
       <div className="relative z-10 flex w-20 shrink-0 justify-center self-stretch pt-1">
         {showConnector ? (
-          <span className="absolute left-1/2 top-[24px] z-0 h-full w-2 -translate-x-1/2 bg-slate-600" />
+          <span className="absolute left-1/2 top-[18px] z-0 h-full w-2 -translate-x-1/2 bg-slate-600" />
         ) : null}
         <span
           className={cx(
             "relative z-10 flex size-20 shrink-0 items-center justify-center rounded-full text-12 font-medium normal-nums",
-            status === "active" ? "bg-rewards-blue-300 text-white" : "bg-rewards-blue-300/20 text-rewards-blue-300"
+            status === "active"
+              ? "bg-blue-300 text-white"
+              : status === "completed"
+                ? "bg-green-500/20 text-green-500"
+                : "bg-blue-300/20 text-blue-300"
           )}
         >
           {status === "completed" ? <CheckIcon className="size-16" /> : index}
         </span>
       </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex min-h-20 items-center justify-between gap-8">
-          <span
-            className={cx(
-              "text-13 font-medium",
-              status === "pending" ? "text-typography-secondary" : "text-typography-primary"
-            )}
-          >
-            {status === "completed" ? completedLabel : label}
-          </span>
-          {status === "active" ? (
-            <span className="shrink-0 rounded-full bg-rewards-blue-300/10 px-7 py-2 text-11 font-medium text-rewards-blue-300">
-              <Trans>In progress</Trans>
-            </span>
-          ) : null}
-        </div>
-        {status === "active" ? (
-          <div className="mt-2 text-12 text-blue-100">
-            <Trans>Waiting for confirmation...</Trans>
-          </div>
-        ) : null}
+      <div className="flex min-w-0 flex-1 items-center justify-between gap-8">
+        <span
+          className={cx(
+            "text-13 font-medium",
+            status === "pending" ? "text-typography-secondary" : "text-typography-primary"
+          )}
+        >
+          {status === "completed" ? completedLabel : label}
+        </span>
+        <span
+          className={cx(
+            "w-72 shrink-0 rounded-full px-7 py-2 text-center text-11 font-medium",
+            status === "active"
+              ? "bg-blue-300/10 text-blue-300"
+              : status === "completed"
+                ? "bg-green-500/10 text-green-500"
+                : "invisible"
+          )}
+        >
+          {status === "completed" ? <Trans>Completed</Trans> : <Trans>In progress</Trans>}
+        </span>
       </div>
     </div>
   );
@@ -197,8 +210,13 @@ export function RewardsVestingModal({
   data,
   mutate,
   onBuyGmx,
-  isReadOnly = false,
+  claimableEsGmxAmount,
+  onSimulatedClaim,
+  onSimulatedStake,
+  onSimulatedVest,
 }: RewardsVestingModalProps) {
+  const isSimulation = onSimulatedVest !== undefined;
+  const pendingEsGmxClaimAmount = claimableEsGmxAmount ?? 0n;
   const { account, active, chainId: walletChainId, signer } = useWallet();
   const { setPendingTxns } = usePendingTxns();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -212,9 +230,12 @@ export function RewardsVestingModal({
     governanceReadSessionRef.current += 1;
   }
   const governanceRequestKey = `${governanceReadInstanceId}:${governanceReadSessionRef.current}`;
-  const govTokenAmount = useGovTokenAmount(ARBITRUM, { enabled: isVisible, requestKey: governanceRequestKey });
+  const govTokenAmount = useGovTokenAmount(ARBITRUM, {
+    enabled: isVisible && !isSimulation,
+    requestKey: governanceRequestKey,
+  });
   const govTokenDelegatesAddress = useGovTokenDelegates(ARBITRUM, {
-    enabled: isVisible,
+    enabled: isVisible && !isSimulation,
     requestKey: governanceRequestKey,
   });
   const isUndelegatedGovToken =
@@ -223,6 +244,7 @@ export function RewardsVestingModal({
   const [transactionStep, setTransactionStep] = useState<VestingTransactionStep>();
   const [transactionProgress, setTransactionProgress] =
     useState<VestingTransactionProgress>(EMPTY_TRANSACTION_PROGRESS);
+  const calculationData = isSimulation ? getRewardsVestingDebugCalculationData(data) : data;
   const wasVisible = useRef(false);
   const visibleAccountRef = useRef(account);
   const transactionSessionRef = useRef(0);
@@ -242,12 +264,22 @@ export function RewardsVestingModal({
     []
   );
 
-  const effectiveRemainingAmount = useMemo(() => getEffectiveRemainingAmount(data), [data]);
-  const vestingLimit = useMemo(() => getVestingLimit(data), [data]);
+  const effectiveRemainingAmount = useMemo(() => getEffectiveRemainingAmount(calculationData), [calculationData]);
+  const needsEsGmxClaim = pendingEsGmxClaimAmount > 0n && !transactionProgress.claim;
+  const hasClaimStep = pendingEsGmxClaimAmount > 0n || transactionProgress.claim;
+  const availableEsGmxAmount = needsEsGmxClaim
+    ? data.walletEsGmxBalance + pendingEsGmxClaimAmount
+    : data.walletEsGmxBalance;
+  const vestingLimit = useMemo(() => getVestingLimit(data, availableEsGmxAmount), [availableEsGmxAmount, data]);
   const depositAmount = useMemo(() => parseValue(value, GMX_DECIMALS), [value]);
-  const preview = useMemo(() => getVestingPreview(data, depositAmount ?? 0n), [data, depositAmount]);
+  const preview = useMemo(
+    () => getVestingPreview(calculationData, depositAmount ?? 0n),
+    [calculationData, depositAmount]
+  );
   const isGovernanceDataReady =
-    preview.stakeShortfallAmount === 0n || (govTokenAmount !== undefined && govTokenDelegatesAddress !== undefined);
+    isSimulation ||
+    preview.stakeShortfallAmount === 0n ||
+    (govTokenAmount !== undefined && govTokenDelegatesAddress !== undefined);
   walletStateRef.current = {
     account,
     walletChainId,
@@ -259,15 +291,15 @@ export function RewardsVestingModal({
   const affordableDepositAmount = useMemo(
     () =>
       getRewardsVestingMaxDepositAmount({
-        walletEsGmxAmount: data.walletEsGmxBalance,
+        walletEsGmxAmount: availableEsGmxAmount,
         totalVestedAmount: data.vestingInfo.vestedAmount,
         maxVestableAmount: data.vestingInfo.maxVestableAmount,
         effectiveRemainingAmount,
-        averageStakedAmount: data.vestingInfo.averageStakedAmount,
+        averageStakedAmount: calculationData.vestingInfo.averageStakedAmount,
         currentPairAmount: data.vestingInfo.pairAmount,
         availablePairAmount: data.freePairAmount + data.walletGmxBalance,
       }),
-    [data, effectiveRemainingAmount]
+    [availableEsGmxAmount, calculationData.vestingInfo.averageStakedAmount, data, effectiveRemainingAmount]
   );
 
   useEffect(() => {
@@ -294,27 +326,30 @@ export function RewardsVestingModal({
   const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(ARBITRUM, {
     spenderAddress: stakedGmxTrackerAddress,
     tokenAddresses: [gmxAddress],
-    skip: !isVisible || preview.stakeShortfallAmount === 0n,
+    skip: !isVisible || isSimulation || preview.stakeShortfallAmount === 0n,
   });
   const gmxAllowance = tokensAllowanceData?.[gmxAddress];
   const needsApproval =
+    !isSimulation &&
+    !needsEsGmxClaim &&
     preview.stakeShortfallAmount > 0n &&
     (gmxAllowance ?? 0n) < preview.stakeShortfallAmount &&
     !transactionProgress.approval;
   const hasEnoughWalletGmx = data.walletGmxBalance >= preview.stakeShortfallAmount;
   const isStakeBlockedByUndelegatedGovToken =
-    preview.stakeShortfallAmount > 0n && !transactionProgress.staking && isUndelegatedGovToken;
+    !isSimulation &&
+    !needsEsGmxClaim &&
+    preview.stakeShortfallAmount > 0n &&
+    !transactionProgress.staking &&
+    isUndelegatedGovToken;
   const isBusy = transactionStep !== undefined;
-  const isWalletReady = Boolean(
-    active && account && signer && walletChainId === ARBITRUM && !hasMultipleWalletExtensionsChainError
-  );
+  const isWalletReady =
+    isSimulation ||
+    Boolean(active && account && signer && walletChainId === ARBITRUM && !hasMultipleWalletExtensionsChainError);
   const hasActiveVesting = data.vestingInfo.vestedAmount > 0n && effectiveRemainingAmount > 0n;
+  const hasValidSelectedAmount = depositAmount !== undefined && depositAmount > 0n && depositAmount <= vestingLimit;
   const hasValidAmount =
-    depositAmount !== undefined &&
-    depositAmount > 0n &&
-    depositAmount <= vestingLimit &&
-    hasEnoughWalletGmx &&
-    isGovernanceDataReady;
+    hasValidSelectedAmount && (needsEsGmxClaim ? true : hasEnoughWalletGmx && isGovernanceDataReady);
 
   const currentEndTimestamp = getRewardsVestingEndTimestamp({
     currentTimestamp: BigInt(Math.floor(Date.now() / 1000)),
@@ -338,14 +373,118 @@ export function RewardsVestingModal({
 
   const setDepositValue = (nextValue: string) => {
     setValue(nextValue);
-    setTransactionProgress((current) => ({
-      ...current,
-      staking: false,
-    }));
+    setTransactionProgress(EMPTY_TRANSACTION_PROGRESS);
+  };
+
+  const handleClaimEsGmx = async () => {
+    if (
+      isSimulation ||
+      !needsEsGmxClaim ||
+      depositAmount === undefined ||
+      depositAmount === 0n ||
+      !account ||
+      !signer ||
+      walletChainId !== ARBITRUM ||
+      hasOutdatedUi ||
+      hasMultipleWalletExtensionsChainError
+    ) {
+      return;
+    }
+
+    const submittedAccount = account;
+    const transactionSession = ++transactionSessionRef.current;
+    let submittedClaimAmount: bigint | undefined;
+    setTransactionStep("claiming");
+    try {
+      let preflightData;
+      try {
+        preflightData = await mutate();
+      } catch {
+        helperToast.error(t`Unable to refresh esGMX rewards. Please try again.`);
+        return;
+      }
+
+      if (
+        transactionSessionRef.current !== transactionSession ||
+        walletStateRef.current.account !== submittedAccount ||
+        walletStateRef.current.walletChainId !== ARBITRUM ||
+        walletStateRef.current.hasOutdatedUi ||
+        walletStateRef.current.hasMultipleWalletExtensionsChainError
+      ) {
+        helperToast.info(t`Wallet or network changed. Review your esGMX rewards before claiming.`);
+        return;
+      }
+
+      submittedClaimAmount = preflightData?.claimableEsGmxRewards;
+      if (
+        !preflightData ||
+        submittedClaimAmount === undefined ||
+        submittedClaimAmount !== pendingEsGmxClaimAmount ||
+        depositAmount > getVestingLimit(preflightData, preflightData.walletEsGmxBalance + submittedClaimAmount)
+      ) {
+        helperToast.info(t`esGMX rewards changed. Review the updated amount and continue vesting.`);
+        return;
+      }
+
+      const rewardRouter = new ethers.Contract(getContract(ARBITRUM, "RewardRouter"), abis.RewardRouter, signer);
+      const transaction = await callContract(
+        ARBITRUM,
+        rewardRouter,
+        "handleRewards",
+        [false, false, true, false, true, false, false],
+        {
+          sentMsg: t`esGMX claim submitted`,
+          failMsg: t`esGMX claim failed`,
+          successMsg: t`esGMX claimed`,
+          setPendingTxns,
+        }
+      );
+      await transaction?.wait();
+      sendRewardsTransactionResultEvent({
+        transaction: "ClaimEsGmx",
+        result: "Success",
+        amount: submittedClaimAmount,
+      });
+
+      if (
+        transactionSessionRef.current !== transactionSession ||
+        walletStateRef.current.account !== submittedAccount ||
+        walletStateRef.current.walletChainId !== ARBITRUM ||
+        walletStateRef.current.hasOutdatedUi ||
+        walletStateRef.current.hasMultipleWalletExtensionsChainError
+      ) {
+        helperToast.info(t`esGMX was claimed. Reconnect the original wallet to continue.`);
+        return;
+      }
+
+      setTransactionProgress((current) => ({ ...current, claim: true }));
+      try {
+        await mutate();
+      } catch {
+        helperToast.info(t`esGMX was claimed. Balances will refresh shortly.`);
+      }
+    } catch {
+      sendRewardsTransactionResultEvent({
+        transaction: "ClaimEsGmx",
+        result: "Fail",
+        amount: submittedClaimAmount,
+      });
+    } finally {
+      if (transactionSessionRef.current === transactionSession) {
+        setTransactionStep(undefined);
+      }
+    }
   };
 
   const handleApprove = async () => {
-    if (!isWalletReady || !account || !signer || isReadOnly || hasOutdatedUi || hasMultipleWalletExtensionsChainError) {
+    if (
+      isSimulation ||
+      !isWalletReady ||
+      !account ||
+      !signer ||
+      hasOutdatedUi ||
+      hasMultipleWalletExtensionsChainError
+    ) {
       return;
     }
 
@@ -393,18 +532,53 @@ export function RewardsVestingModal({
 
   const handleVest = async () => {
     if (
-      !signer ||
-      !account ||
-      walletChainId !== ARBITRUM ||
       depositAmount === undefined ||
       depositAmount === 0n ||
       !hasValidAmount ||
-      hasOutdatedUi ||
-      hasMultipleWalletExtensionsChainError ||
-      !isGovernanceDataReady ||
-      isStakeBlockedByUndelegatedGovToken ||
-      isReadOnly
+      (!needsEsGmxClaim && (!isGovernanceDataReady || isStakeBlockedByUndelegatedGovToken))
     ) {
+      return;
+    }
+
+    if (needsEsGmxClaim) {
+      if (onSimulatedClaim) {
+        setTransactionStep("claiming");
+        try {
+          await onSimulatedClaim();
+          setTransactionProgress((current) => ({ ...current, claim: true }));
+        } finally {
+          setTransactionStep(undefined);
+        }
+      } else {
+        await handleClaimEsGmx();
+      }
+      return;
+    }
+
+    if (onSimulatedVest) {
+      const hasStakingStep = preview.stakeShortfallAmount > 0n || transactionProgress.staking;
+      setTransactionStep(hasStakingStep && !transactionProgress.staking ? "staking" : "vesting");
+      try {
+        if (hasStakingStep && !transactionProgress.staking) {
+          if (!onSimulatedStake) return;
+
+          await onSimulatedStake(preview.stakeShortfallAmount);
+          setTransactionProgress((current) => ({ ...current, staking: true }));
+          return;
+        }
+        setTransactionStep("vesting");
+        await onSimulatedVest(depositAmount);
+        setTransactionProgress((current) => ({ ...current, vesting: true }));
+        if (!hasClaimStep && !hasStakingStep) {
+          setIsVisible(false);
+        }
+      } finally {
+        setTransactionStep(undefined);
+      }
+      return;
+    }
+
+    if (!signer || !account || walletChainId !== ARBITRUM || hasOutdatedUi || hasMultipleWalletExtensionsChainError) {
       return;
     }
 
@@ -529,6 +703,8 @@ export function RewardsVestingModal({
           helperToast.info(t`GMX was staked. Review the updated collateral and continue vesting.`);
           return;
         }
+
+        return;
       }
 
       if (
@@ -558,14 +734,17 @@ export function RewardsVestingModal({
         amount: depositAmount,
       });
       attemptedTransaction = undefined;
-      const shouldCloseModal =
+      const hasCurrentTransaction =
         transactionSessionRef.current === transactionSession &&
         walletStateRef.current.account === submittedAccount &&
         walletStateRef.current.walletChainId === ARBITRUM &&
         !walletStateRef.current.hasOutdatedUi &&
         !walletStateRef.current.hasMultipleWalletExtensionsChainError;
-      if (shouldCloseModal) {
-        setIsVisible(false);
+      if (hasCurrentTransaction) {
+        setTransactionProgress((current) => ({ ...current, vesting: true }));
+        if (!hasClaimStep && !completedStakeThisFlow && !transactionProgress.approval) {
+          setIsVisible(false);
+        }
       }
       try {
         await mutate();
@@ -596,22 +775,27 @@ export function RewardsVestingModal({
     }
   };
 
+  const isTransactionComplete = transactionProgress.vesting;
   let primaryText: React.ReactNode;
-  if (hasOutdatedUi) {
+  if (isTransactionComplete) {
+    primaryText = <Trans>Close</Trans>;
+  } else if (!isSimulation && hasOutdatedUi) {
     primaryText = getPageOutdatedError();
-  } else if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+  } else if (!isSimulation && multipleWalletExtensionsChainError.buttonErrorMessage) {
     primaryText = multipleWalletExtensionsChainError.buttonErrorMessage;
-  } else if (isReadOnly) {
-    primaryText = <Trans>Preview only</Trans>;
   } else if (depositAmount === undefined || depositAmount === 0n) {
     primaryText = <Trans>Enter an amount</Trans>;
   } else if (depositAmount > vestingLimit) {
     primaryText = <Trans>Max amount exceeded</Trans>;
+  } else if (transactionStep === "claiming") {
+    primaryText = <Trans>Claiming esGMX...</Trans>;
+  } else if (needsEsGmxClaim) {
+    primaryText = <Trans>Claim esGMX</Trans>;
   } else if (!hasEnoughWalletGmx) {
-    primaryText = <Trans>Vest {formatTokenAmount(depositAmount)} esGMX</Trans>;
+    primaryText = <Trans>Stake GMX</Trans>;
   } else if (!isGovernanceDataReady) {
     primaryText = <Trans>Loading...</Trans>;
-  } else if (isAllowanceLoading) {
+  } else if (!isSimulation && isAllowanceLoading) {
     primaryText = <Trans>Loading allowance...</Trans>;
   } else if (transactionStep === "approving") {
     primaryText = <Trans>Approving GMX...</Trans>;
@@ -621,23 +805,40 @@ export function RewardsVestingModal({
     primaryText = <Trans>Staking collateral...</Trans>;
   } else if (transactionStep === "vesting") {
     primaryText = <Trans>Vesting...</Trans>;
+  } else if (preview.stakeShortfallAmount > 0n && !transactionProgress.staking) {
+    primaryText = <Trans>Stake GMX</Trans>;
   } else {
     primaryText = <Trans>Vest {formatTokenAmount(depositAmount)} esGMX</Trans>;
   }
 
-  const collateralAvailable = data.freePairAmount + data.walletGmxBalance;
+  const collateralAvailable = data.freePairAmount;
   const title = t`Vest esGMX`;
   const missingGmxAmount =
     preview.stakeShortfallAmount > data.walletGmxBalance ? preview.stakeShortfallAmount - data.walletGmxBalance : 0n;
   const depositAmountLabel = `${formatTokenAmount(depositAmount ?? 0n)} esGMX`;
+  const showClaimStep = hasClaimStep;
   const showApprovalStep =
-    preview.stakeShortfallAmount > 0n &&
-    ((gmxAllowance ?? 0n) < preview.stakeShortfallAmount ||
+    !isSimulation &&
+    ((preview.stakeShortfallAmount > 0n && (gmxAllowance ?? 0n) < preview.stakeShortfallAmount) ||
       transactionProgress.approval ||
       transactionStep === "approving");
   const showStakingStep =
     preview.stakeShortfallAmount > 0n || transactionProgress.staking || transactionStep === "staking";
   const transactionSteps = [
+    ...(showClaimStep
+      ? [
+          {
+            key: "claim",
+            status: transactionProgress.claim
+              ? ("completed" as const)
+              : transactionStep === "claiming"
+                ? ("active" as const)
+                : ("pending" as const),
+            label: <Trans>Claim esGMX rewards</Trans>,
+            completedLabel: <Trans>esGMX claimed</Trans>,
+          },
+        ]
+      : []),
     ...(showApprovalStep
       ? [
           {
@@ -668,7 +869,11 @@ export function RewardsVestingModal({
       : []),
     {
       key: "vesting",
-      status: transactionStep === "vesting" ? ("active" as const) : ("pending" as const),
+      status: transactionProgress.vesting
+        ? ("completed" as const)
+        : transactionStep === "vesting"
+          ? ("active" as const)
+          : ("pending" as const),
       label: <Trans>Start vesting</Trans>,
       completedLabel: <Trans>Vesting started</Trans>,
     },
@@ -695,7 +900,7 @@ export function RewardsVestingModal({
               className="bg-transparent min-w-0 grow text-16 outline-none"
               placeholder="0"
               maxDecimals={GMX_DECIMALS}
-              isDisabled={isBusy}
+              isDisabled={isBusy || isTransactionComplete || transactionProgress.claim}
               qa="rewards-vesting-amount"
             />
             <span className="text-13 text-typography-secondary">esGMX</span>
@@ -703,7 +908,7 @@ export function RewardsVestingModal({
               type="button"
               className="rounded-full bg-slate-600 px-8 py-3 text-12 font-medium text-typography-primary hover:bg-slate-500"
               onClick={() => setDepositValue(formatAmountFree(vestingLimit, GMX_DECIMALS, GMX_DECIMALS))}
-              disabled={isBusy || vestingLimit === 0n}
+              disabled={isBusy || isTransactionComplete || transactionProgress.claim || vestingLimit === 0n}
             >
               <Trans>Max</Trans>
             </button>
@@ -732,6 +937,21 @@ export function RewardsVestingModal({
           />
         </div>
 
+        {(hasValidSelectedAmount || isTransactionComplete) && transactionSteps.length > 1 ? (
+          <div className="flex flex-col gap-12 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-12">
+            {transactionSteps.map((step, index) => (
+              <VestingStep
+                key={step.key}
+                index={index + 1}
+                status={step.status}
+                label={step.label}
+                completedLabel={step.completedLabel}
+                showConnector={index < transactionSteps.length - 1}
+              />
+            ))}
+          </div>
+        ) : null}
+
         {!hasEnoughWalletGmx && preview.stakeShortfallAmount > 0n ? (
           <ColorfulBanner color="yellow" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
             <div>
@@ -744,35 +964,43 @@ export function RewardsVestingModal({
                   {formatTokenAmount(data.walletGmxBalance)} unreserved GMX in the wallet. You can either:
                 </Trans>
               )}
-              {affordableDepositAmount > 0n && data.walletGmxBalance > 0n ? (
-                <ColorfulButtonLink
-                  color="yellow"
-                  onClick={() => setDepositValue(formatAmountFree(affordableDepositAmount, GMX_DECIMALS, GMX_DECIMALS))}
-                >
-                  <Trans>
-                    Vest {formatTokenAmount(affordableDepositAmount)} esGMX with your{" "}
-                    {formatTokenAmount(data.walletGmxBalance)} GMX
-                  </Trans>
-                </ColorfulButtonLink>
-              ) : null}
-              <ColorfulButtonLink color="yellow" onClick={onBuyGmx}>
-                {data.walletGmxBalance === 0n ? (
-                  <Trans>
-                    Buy {formatTokenAmount(missingGmxAmount)} GMX to vest {depositAmountLabel}
-                  </Trans>
-                ) : (
-                  <Trans>
-                    Buy {formatTokenAmount(missingGmxAmount)} GMX and vest all {depositAmountLabel}
-                  </Trans>
-                )}
-              </ColorfulButtonLink>
+              {isSimulation ? (
+                <div className="mt-8 text-yellow-300">Increase Wallet GMX in the simulator to continue.</div>
+              ) : (
+                <>
+                  {affordableDepositAmount > 0n && data.walletGmxBalance > 0n ? (
+                    <ColorfulButtonLink
+                      color="yellow"
+                      onClick={() =>
+                        setDepositValue(formatAmountFree(affordableDepositAmount, GMX_DECIMALS, GMX_DECIMALS))
+                      }
+                    >
+                      <Trans>
+                        Vest {formatTokenAmount(affordableDepositAmount)} esGMX with your{" "}
+                        {formatTokenAmount(data.walletGmxBalance)} GMX
+                      </Trans>
+                    </ColorfulButtonLink>
+                  ) : null}
+                  <ColorfulButtonLink color="yellow" onClick={onBuyGmx}>
+                    {data.walletGmxBalance === 0n ? (
+                      <Trans>
+                        Buy {formatTokenAmount(missingGmxAmount)} GMX to vest {depositAmountLabel}
+                      </Trans>
+                    ) : (
+                      <Trans>
+                        Buy {formatTokenAmount(missingGmxAmount)} GMX and vest all {depositAmountLabel}
+                      </Trans>
+                    )}
+                  </ColorfulButtonLink>
+                </>
+              )}
             </div>
           </ColorfulBanner>
         ) : null}
 
         {preview.stakeShortfallAmount > 0n && hasEnoughWalletGmx ? (
           <ColorfulBanner color="blue" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
-            <span className="text-rewards-blue-300">
+            <span className="font-medium text-blue-300">
               <Trans>You need {formatTokenAmount(preview.stakeShortfallAmount)} more GMX staked as collateral.</Trans>
             </span>{" "}
             <Trans>We’ll stake it from your wallet, then start vesting.</Trans>
@@ -803,53 +1031,43 @@ export function RewardsVestingModal({
           </ColorfulBanner>
         ) : null}
 
-        {hasValidAmount && transactionSteps.length > 1 ? (
-          <div className="flex flex-col gap-16 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-12">
-            {transactionSteps.map((step, index) => (
-              <VestingStep
-                key={step.key}
-                index={index + 1}
-                status={step.status}
-                label={step.label}
-                completedLabel={step.completedLabel}
-                showConnector={index < transactionSteps.length - 1}
-              />
-            ))}
-          </div>
-        ) : null}
-
-        <SwitchToSettlementChainWarning topic="vesting" settlementChainId={ARBITRUM} />
-        <RewardsVestingChainGuard>
-          <div className="grid grid-cols-2 gap-12">
-            <ButtonTooltipWrapper content={multipleWalletExtensionsChainError.buttonTooltipMessage}>
+        {!isSimulation ? <SwitchToSettlementChainWarning topic="vesting" settlementChainId={ARBITRUM} /> : null}
+        <RewardsVestingChainGuard skip={isSimulation}>
+          <div className={cx("grid gap-12", isTransactionComplete ? "grid-cols-1" : "grid-cols-2")}>
+            <ButtonTooltipWrapper
+              content={isSimulation ? undefined : multipleWalletExtensionsChainError.buttonTooltipMessage}
+            >
               <Button
                 variant="primary"
                 size="medium"
                 className="w-full"
-                onClick={handleVest}
+                onClick={isTransactionComplete ? () => setModalVisible(false) : handleVest}
                 disabled={
-                  !hasValidAmount ||
-                  !isWalletReady ||
                   isBusy ||
-                  isAllowanceLoading ||
-                  hasOutdatedUi ||
-                  hasMultipleWalletExtensionsChainError ||
-                  isStakeBlockedByUndelegatedGovToken ||
-                  isReadOnly
+                  (!isTransactionComplete &&
+                    (!hasValidAmount ||
+                      !isWalletReady ||
+                      (!isSimulation &&
+                        ((!needsEsGmxClaim && isAllowanceLoading) ||
+                          hasOutdatedUi ||
+                          hasMultipleWalletExtensionsChainError ||
+                          isStakeBlockedByUndelegatedGovToken))))
                 }
               >
                 {primaryText}
               </Button>
             </ButtonTooltipWrapper>
-            <Button
-              variant="secondary"
-              size="medium"
-              className="w-full"
-              onClick={() => setModalVisible(false)}
-              disabled={isBusy}
-            >
-              <Trans>Cancel</Trans>
-            </Button>
+            {!isTransactionComplete ? (
+              <Button
+                variant="secondary"
+                size="medium"
+                className="w-full"
+                onClick={() => setModalVisible(false)}
+                disabled={isBusy}
+              >
+                <Trans>Cancel</Trans>
+              </Button>
+            ) : null}
           </div>
         </RewardsVestingChainGuard>
       </div>
@@ -862,7 +1080,7 @@ type RewardsStopVestingModalProps = {
   setIsVisible: (isVisible: boolean) => void;
   data: RewardsVestingData;
   mutate: RewardsVestingDataMutator;
-  isReadOnly?: boolean;
+  onSimulatedStop?: () => Promise<void>;
 };
 
 export function RewardsStopVestingModal({
@@ -870,8 +1088,9 @@ export function RewardsStopVestingModal({
   setIsVisible,
   data,
   mutate,
-  isReadOnly = false,
+  onSimulatedStop,
 }: RewardsStopVestingModalProps) {
+  const isSimulation = onSimulatedStop !== undefined;
   const { account, active, chainId: walletChainId, signer } = useWallet();
   const { setPendingTxns } = usePendingTxns();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -905,6 +1124,21 @@ export function RewardsStopVestingModal({
   };
 
   const handleStop = async () => {
+    if (onSimulatedStop) {
+      if (data.vestingInfo.vestedAmount === 0n || isStopping) {
+        return;
+      }
+
+      setIsStopping(true);
+      try {
+        await onSimulatedStop();
+        setIsVisible(false);
+      } finally {
+        setIsStopping(false);
+      }
+      return;
+    }
+
     if (
       !account ||
       !signer ||
@@ -913,8 +1147,7 @@ export function RewardsStopVestingModal({
       data.vestingInfo.vestedAmount === 0n ||
       isStopping ||
       hasOutdatedUi ||
-      hasMultipleWalletExtensionsChainError ||
-      isReadOnly
+      hasMultipleWalletExtensionsChainError
     ) {
       return;
     }
@@ -1025,7 +1258,7 @@ export function RewardsStopVestingModal({
         </p>
 
         <ColorfulBanner color="blue" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
-          <span className="text-rewards-blue-300">
+          <span className="text-blue-300">
             <Trans>Your {formatTokenAmount(data.vestingInfo.pairAmount)} GMX collateral will be unlocked</Trans>
           </span>{" "}
           — <Trans>it stays staked, it is not unstaked.</Trans>
@@ -1035,10 +1268,12 @@ export function RewardsStopVestingModal({
           <Trans>Stop vesting 100% of these rewards?</Trans>
         </div>
 
-        <SwitchToSettlementChainWarning topic="vesting" settlementChainId={ARBITRUM} />
-        <RewardsVestingChainGuard>
+        {!isSimulation ? <SwitchToSettlementChainWarning topic="vesting" settlementChainId={ARBITRUM} /> : null}
+        <RewardsVestingChainGuard skip={isSimulation}>
           <div className="grid grid-cols-2 gap-12">
-            <ButtonTooltipWrapper content={multipleWalletExtensionsChainError.buttonTooltipMessage}>
+            <ButtonTooltipWrapper
+              content={isSimulation ? undefined : multipleWalletExtensionsChainError.buttonTooltipMessage}
+            >
               <Button
                 variant="primary"
                 size="medium"
@@ -1046,23 +1281,13 @@ export function RewardsStopVestingModal({
                 onClick={handleStop}
                 disabled={
                   isStopping ||
-                  !signer ||
-                  !active ||
-                  hasOutdatedUi ||
-                  hasMultipleWalletExtensionsChainError ||
-                  isReadOnly
+                  (!isSimulation && (!signer || !active || hasOutdatedUi || hasMultipleWalletExtensionsChainError))
                 }
               >
-                {hasOutdatedUi
+                {!isSimulation && hasOutdatedUi
                   ? getPageOutdatedError()
-                  : multipleWalletExtensionsChainError.buttonErrorMessage ??
-                    (isReadOnly ? (
-                      <Trans>Preview only</Trans>
-                    ) : isStopping ? (
-                      <Trans>Stopping...</Trans>
-                    ) : (
-                      <Trans>Yes, stop vesting</Trans>
-                    ))}
+                  : (!isSimulation ? multipleWalletExtensionsChainError.buttonErrorMessage : undefined) ??
+                    (isStopping ? <Trans>Stopping...</Trans> : <Trans>Yes, stop vesting</Trans>)}
               </Button>
             </ButtonTooltipWrapper>
             <Button

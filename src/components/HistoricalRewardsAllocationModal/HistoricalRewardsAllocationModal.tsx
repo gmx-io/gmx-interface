@@ -87,7 +87,7 @@ export function HistoricalRewardsAllocationModal({
             </p>
             <Link
               to="/rewards"
-              className="text-14 font-medium text-rewards-blue-300"
+              className="text-14 font-medium text-blue-300"
               onClick={() => {
                 sendRewardsManualAllocationDialogActionEvent("LearnMore");
                 onClose();
@@ -130,7 +130,7 @@ export function HistoricalRewardsAllocationModal({
               <p className="text-14 text-typography-secondary">
                 <Trans>Share the rewards program and let them check their allocation.</Trans>
               </p>
-              <span className="mt-2 flex items-center gap-4 text-14 font-medium text-rewards-blue-300">
+              <span className="mt-2 flex items-center gap-4 text-14 font-medium text-blue-300">
                 <Trans>Share your rewards</Trans>
                 <ShareIcon className="size-12" />
               </span>

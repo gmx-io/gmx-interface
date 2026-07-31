@@ -24,6 +24,7 @@ export type VestingInfo = {
 export type RewardsVestingData = {
   walletGmxBalance: bigint;
   walletEsGmxBalance: bigint;
+  claimableEsGmxRewards: bigint;
   stakedGmxBalance: bigint;
   freePairAmount: bigint;
   vestingInfo: VestingInfo;
@@ -46,7 +47,9 @@ type RewardsVestingAddresses = {
   gmx: string;
   esGmx: string;
   stakedGmxTracker: string;
+  stakedGlpTracker: string;
   feeGmxTracker: string;
+  rewardReader: string;
   reader: string;
   gmxVester: string;
 };
@@ -105,7 +108,7 @@ export function useRewardsVestingData(account?: string, targetChainId?: Contract
     () =>
       data
         ? getRewardsVestingAvailableAmount({
-            walletEsGmxAmount: data.walletEsGmxBalance,
+            walletEsGmxAmount: data.walletEsGmxBalance + data.claimableEsGmxRewards,
             totalVestedAmount: data.vestingInfo.vestedAmount,
             maxVestableAmount: data.vestingInfo.maxVestableAmount,
           })
@@ -137,7 +140,9 @@ function getRewardsVestingAddresses(chainId: ContractsChainId): RewardsVestingAd
     gmx: getContract(chainId, "GMX"),
     esGmx: getContract(chainId, "ES_GMX"),
     stakedGmxTracker: getContract(chainId, "StakedGmxTracker"),
+    stakedGlpTracker: getContract(chainId, "StakedGlpTracker"),
     feeGmxTracker: getContract(chainId, "FeeGmxTracker"),
+    rewardReader: getContract(chainId, "RewardReader"),
     reader: getContract(chainId, "Reader"),
     gmxVester: getContract(chainId, "GmxVester"),
   };
@@ -185,6 +190,16 @@ function buildRewardsVestingRequest(account: string, addresses: RewardsVestingAd
         },
       },
     },
+    rewardReader: {
+      contractAddress: addresses.rewardReader,
+      abiId: "RewardReader",
+      calls: {
+        getStakingInfo: {
+          methodName: "getStakingInfo",
+          params: [account, [addresses.stakedGmxTracker, addresses.stakedGlpTracker]],
+        },
+      },
+    },
     reader: {
       contractAddress: addresses.reader,
       abiId: "ReaderV2",
@@ -213,6 +228,7 @@ function parseRewardsVestingResponse(
 ): RewardsVestingContractsData {
   const walletGmxBalance = getFirstReturnValue(result.data.gmx?.balanceOf?.returnValues);
   const walletEsGmxBalance = getFirstReturnValue(result.data.esGmx?.balanceOf?.returnValues);
+  const claimableEsGmxRewards = parseClaimableEsGmxRewards(result.data.rewardReader?.getStakingInfo?.returnValues);
   const stakedGmxBalance = getFirstReturnValue(result.data.stakedGmxTracker?.gmxDepositBalance?.returnValues);
   const freePairAmount = getFirstReturnValue(result.data.feeGmxTracker?.balanceOf?.returnValues);
   const vestingDuration = getFirstReturnValue(result.data.gmxVester?.vestingDuration?.returnValues);
@@ -221,6 +237,7 @@ function parseRewardsVestingResponse(
   if (
     walletGmxBalance === undefined ||
     walletEsGmxBalance === undefined ||
+    claimableEsGmxRewards === undefined ||
     stakedGmxBalance === undefined ||
     freePairAmount === undefined ||
     vestingDuration === undefined ||
@@ -232,11 +249,25 @@ function parseRewardsVestingResponse(
   return {
     walletGmxBalance,
     walletEsGmxBalance,
+    claimableEsGmxRewards,
     stakedGmxBalance,
     freePairAmount,
     vestingInfo,
     vestingDuration,
   };
+}
+
+function parseClaimableEsGmxRewards(returnValues: unknown): bigint | undefined {
+  if (
+    !Array.isArray(returnValues) ||
+    returnValues.length < 6 ||
+    typeof returnValues[0] !== "bigint" ||
+    typeof returnValues[5] !== "bigint"
+  ) {
+    return undefined;
+  }
+
+  return returnValues[0] + returnValues[5];
 }
 
 function parseVestingInfo(returnValues: unknown): VestingInfo | undefined {

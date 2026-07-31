@@ -58,10 +58,27 @@ vi.mock("components/PageTitle/PageTitle", () => ({
 }));
 
 vi.mock("components/Tabs/Tabs", () => ({
-  default: ({ selectedValue, options }: { selectedValue: string; options: { value: string }[] }) => (
+  default: ({
+    selectedValue,
+    options,
+    rightContent,
+  }: {
+    selectedValue: string;
+    options: { value: string }[];
+    rightContent?: React.ReactNode;
+  }) => (
     <div data-options={options.map((option) => option.value).join(",")} data-testid="tabs">
-      {selectedValue}
+      <span data-testid="selected-tab">{selectedValue}</span>
+      {rightContent}
     </div>
+  ),
+}));
+
+vi.mock("pages/RewardsPage/components/RewardsOnboardingModal", () => ({
+  RewardsOnboardingModal: ({ shouldAutoOpen }: { shouldAutoOpen: boolean }) => (
+    <button type="button" data-auto-open={String(shouldAutoOpen)}>
+      How it works?
+    </button>
   ),
 }));
 
@@ -197,6 +214,14 @@ describe("RewardsPage", () => {
     );
   });
 
+  it("places the onboarding launcher in the shared tabs row", () => {
+    renderPage("/rewards");
+
+    const launcher = screen.getByRole("button", { name: "How it works?" });
+    expect(screen.getByTestId("tabs").contains(launcher)).toBe(true);
+    expect(launcher.getAttribute("data-auto-open")).toBe("true");
+  });
+
   it("hides the Rewards tab while disconnected", () => {
     mockUseWallet.mockReturnValue({ account: undefined } as ReturnType<typeof useWallet>);
 
@@ -212,7 +237,7 @@ describe("RewardsPage", () => {
 
     expect(screen.getByTestId("page-layout")).toBeDefined();
     expect(screen.getByTestId("rewards-loader")).toBeDefined();
-    expect(screen.getByTestId("tabs").textContent).toBe("history");
+    expect(screen.getByTestId("selected-tab").textContent).toBe("history");
     expect(screen.queryByTestId("history-tab")).toBeNull();
   });
 
@@ -225,7 +250,7 @@ describe("RewardsPage", () => {
 
     renderPage("/rewards/leaderboard");
 
-    expect(screen.getByTestId("tabs").textContent).toBe("leaderboard");
+    expect(screen.getByTestId("selected-tab").textContent).toBe("leaderboard");
     expect(screen.getByTestId("leaderboard-tab").getAttribute("data-config")).toBe("all-time-only");
     expect(screen.queryByTestId("rewards-loader")).toBeNull();
     expect(screen.queryByText("Rewards are temporarily unavailable")).toBeNull();
@@ -266,7 +291,7 @@ describe("RewardsPage", () => {
   it("renders the active tab with the current chain and account", () => {
     renderPage("/rewards/history");
 
-    expect(screen.getByTestId("tabs").textContent).toBe("history");
+    expect(screen.getByTestId("selected-tab").textContent).toBe("history");
     expect(screen.getByTestId("history-tab").getAttribute("data-chain-id")).toBe(String(ARBITRUM));
     expect(screen.getByTestId("history-tab").getAttribute("data-account")).toBe("0x123");
     expect(screen.getByTestId("vesting-flow")).toBeDefined();

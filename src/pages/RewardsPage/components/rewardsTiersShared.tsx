@@ -117,7 +117,7 @@ export function StatusLabel({
 
   if (projected) {
     return (
-      <span className="text-rewards-blue-300">
+      <span className="text-blue-300">
         <Trans>Next epoch</Trans>
       </span>
     );

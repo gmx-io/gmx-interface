@@ -91,7 +91,8 @@ const onBuyGmx = vi.fn();
 const baseData: RewardsVestingData = {
   walletGmxBalance: 0n,
   walletEsGmxBalance: 100n * TOKEN_UNIT,
-  stakedGmxBalance: 0n,
+  claimableEsGmxRewards: 100n * TOKEN_UNIT,
+  stakedGmxBalance: 100n * TOKEN_UNIT,
   freePairAmount: 100n * TOKEN_UNIT,
   vestingInfo: {
     pairAmount: 0n,
@@ -109,7 +110,16 @@ const baseData: RewardsVestingData = {
 i18n.load({ en: {} });
 i18n.activate("en");
 
-function getVestModal(data: RewardsVestingData, isVisible = true) {
+function getVestModal(
+  data: RewardsVestingData,
+  isVisible = true,
+  onSimulatedVest?: (amount: bigint) => Promise<void>,
+  options?: {
+    claimableEsGmxAmount?: bigint;
+    onSimulatedClaim?: () => Promise<void>;
+    onSimulatedStake?: (stakeAmount: bigint) => Promise<void>;
+  }
+) {
   return (
     <I18nProvider i18n={i18n}>
       <RewardsVestingModal
@@ -118,6 +128,10 @@ function getVestModal(data: RewardsVestingData, isVisible = true) {
         data={data}
         mutate={mutate}
         onBuyGmx={onBuyGmx}
+        claimableEsGmxAmount={options?.claimableEsGmxAmount}
+        onSimulatedClaim={options?.onSimulatedClaim}
+        onSimulatedStake={options?.onSimulatedStake}
+        onSimulatedVest={onSimulatedVest}
       />
     </I18nProvider>
   );
@@ -127,10 +141,16 @@ function renderVestModal(data: RewardsVestingData) {
   return render(getVestModal(data));
 }
 
-function getStopModal(data: RewardsVestingData) {
+function getStopModal(data: RewardsVestingData, onSimulatedStop?: () => Promise<void>) {
   return (
     <I18nProvider i18n={i18n}>
-      <RewardsStopVestingModal isVisible setIsVisible={setIsVisible} data={data} mutate={mutate} />
+      <RewardsStopVestingModal
+        isVisible
+        setIsVisible={setIsVisible}
+        data={data}
+        mutate={mutate}
+        onSimulatedStop={onSimulatedStop}
+      />
     </I18nProvider>
   );
 }
@@ -279,13 +299,14 @@ describe("RewardsVestingModal", () => {
     expect(screen.getByRole("button", { name: "Vest 50 esGMX with your 50 GMX" })).toBeDefined();
     fireEvent.click(screen.getByRole("button", { name: "Buy 50 GMX and vest all 100 esGMX" }));
     expect(onBuyGmx).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("button", { name: "Vest 100 esGMX" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Stake GMX" }).hasAttribute("disabled")).toBe(true);
   });
 
-  it("shows selected esGMX as locked collateral and combines free staked and wallet GMX", () => {
+  it("shows only free staked GMX as available collateral", () => {
     renderVestModal({
       ...baseData,
       walletGmxBalance: 25n * TOKEN_UNIT,
+      stakedGmxBalance: 150n * TOKEN_UNIT,
       freePairAmount: 150n * TOKEN_UNIT,
       vestingInfo: {
         ...baseData.vestingInfo,
@@ -297,7 +318,7 @@ describe("RewardsVestingModal", () => {
       "Collateralthisvestlocks100GMX"
     );
     expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralavailable175GMX"
+      "Collateralavailable150GMX"
     );
   });
 
@@ -346,6 +367,188 @@ describe("RewardsVestingModal", () => {
 
     expect(screen.getByRole("button", { name: "Switch to Arbitrum" })).toBeDefined();
     expect(screen.queryByRole("button", { name: "Vest 100 esGMX" })).toBeNull();
+  });
+
+  it("simulates vesting without a wallet, allowance, or governance reads", async () => {
+    const onSimulatedStake = vi.fn(async () => undefined);
+    const onSimulatedVest = vi.fn(async () => undefined);
+    mockUseWallet.mockReturnValue({
+      active: false,
+      chainId: AVALANCHE,
+    } as ReturnType<typeof useWallet>);
+    mockUseGovTokenAmount.mockReturnValue(undefined);
+    mockUseGovTokenDelegates.mockReturnValue(undefined);
+    mockUseTokensAllowanceData.mockReturnValue({
+      isLoading: true,
+      isLoaded: false,
+    });
+
+    render(
+      getVestModal(
+        {
+          ...baseData,
+          walletGmxBalance: 100n * TOKEN_UNIT,
+          freePairAmount: 0n,
+        },
+        true,
+        onSimulatedVest,
+        { onSimulatedStake }
+      )
+    );
+
+    const button = screen.getByRole("button", { name: "Stake GMX" });
+    expect(button.hasAttribute("disabled")).toBe(false);
+    fireEvent.click(button);
+
+    await waitFor(() => expect(onSimulatedStake).toHaveBeenCalledWith(100n * TOKEN_UNIT));
+    expect(onSimulatedVest).not.toHaveBeenCalled();
+    expect(screen.getByText("Collateral staked")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    await waitFor(() => expect(onSimulatedVest).toHaveBeenCalledWith(100n * TOKEN_UNIT));
+    await waitFor(() => expect(screen.getByText("Close", { selector: "button.primary" })).toBeDefined());
+    expect(screen.getByText("Collateral staked")).toBeDefined();
+    expect(screen.getByText("Vesting started")).toBeDefined();
+    expect(screen.getAllByText("Completed")).toHaveLength(2);
+    expect(setIsVisible).not.toHaveBeenCalled();
+    expect(mockUseGovTokenAmount).toHaveBeenCalledWith(ARBITRUM, expect.objectContaining({ enabled: false }));
+    expect(mockCallContract).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText("Close", { selector: "button.primary" }));
+    expect(setIsVisible).toHaveBeenCalledWith(false);
+  });
+
+  it("claims simulated rewards first and blocks vesting when GMX cannot be staked", async () => {
+    const onSimulatedClaim = vi.fn(async () => undefined);
+    const onSimulatedStake = vi.fn(async () => undefined);
+    const onSimulatedVest = vi.fn(async () => undefined);
+    const rewardData = {
+      ...baseData,
+      walletGmxBalance: 0n,
+      walletEsGmxBalance: 40n * TOKEN_UNIT,
+      claimableEsGmxRewards: 60n * TOKEN_UNIT,
+      stakedGmxBalance: 0n,
+      freePairAmount: 0n,
+      vestingInfo: {
+        ...baseData.vestingInfo,
+        averageStakedAmount: 0n,
+      },
+    };
+    const view = render(
+      getVestModal(rewardData, true, onSimulatedVest, {
+        claimableEsGmxAmount: rewardData.claimableEsGmxRewards,
+        onSimulatedClaim,
+        onSimulatedStake,
+      })
+    );
+
+    expect(screen.getByText("Stake collateral")).toBeDefined();
+    expect(
+      screen.getByText("Claim esGMX rewards").compareDocumentPosition(screen.getByText(/you have no GMX to stake/)) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    expect(screen.getAllByText("In progress")).toHaveLength(3);
+    expect(screen.getAllByText("In progress").every((element) => element.classList.contains("invisible"))).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Claim esGMX" }));
+    await waitFor(() => expect(onSimulatedClaim).toHaveBeenCalledTimes(1));
+    expect(onSimulatedVest).not.toHaveBeenCalled();
+
+    const claimedData = {
+      ...rewardData,
+      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      claimableEsGmxRewards: 0n,
+    };
+    view.rerender(
+      getVestModal(claimedData, true, onSimulatedVest, {
+        claimableEsGmxAmount: claimedData.claimableEsGmxRewards,
+        onSimulatedClaim,
+        onSimulatedStake,
+      })
+    );
+
+    const stakeButton = screen.getByRole("button", { name: "Stake GMX" });
+    expect(stakeButton.hasAttribute("disabled")).toBe(true);
+    expect(screen.getByText("esGMX claimed")).toBeDefined();
+    expect(screen.getByText(/you have no GMX to stake/)).toBeDefined();
+
+    const fundedClaimedData = {
+      ...claimedData,
+      walletGmxBalance: 100n * TOKEN_UNIT,
+    };
+    view.rerender(
+      getVestModal(fundedClaimedData, true, onSimulatedVest, {
+        claimableEsGmxAmount: fundedClaimedData.claimableEsGmxRewards,
+        onSimulatedClaim,
+        onSimulatedStake,
+      })
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
+
+    await waitFor(() => expect(onSimulatedStake).toHaveBeenCalledWith(100n * TOKEN_UNIT));
+    expect(onSimulatedVest).not.toHaveBeenCalled();
+    expect(screen.getByText("Collateral staked")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    await waitFor(() => expect(onSimulatedVest).toHaveBeenCalledWith(100n * TOKEN_UNIT));
+    expect(screen.getByText("Collateral staked")).toBeDefined();
+    expect(screen.getByText("Vesting started")).toBeDefined();
+    expect(screen.getAllByText("Completed")).toHaveLength(3);
+    expect(screen.getByText("Close", { selector: "button.primary" })).toBeDefined();
+    expect(setIsVisible).not.toHaveBeenCalled();
+  });
+
+  it("claims pending esGMX through the rewards handler before vesting", async () => {
+    const wait = vi.fn(async () => undefined);
+    const rewardData = {
+      ...baseData,
+      walletEsGmxBalance: 20n * TOKEN_UNIT,
+      claimableEsGmxRewards: 80n * TOKEN_UNIT,
+    };
+    const claimedData = {
+      ...rewardData,
+      walletEsGmxBalance: 100n * TOKEN_UNIT,
+      claimableEsGmxRewards: 0n,
+    };
+    mockCallContract.mockResolvedValueOnce({ wait } as any);
+    mutate.mockResolvedValueOnce(rewardData).mockResolvedValueOnce(claimedData);
+    const view = render(
+      getVestModal(rewardData, true, undefined, {
+        claimableEsGmxAmount: rewardData.claimableEsGmxRewards,
+      })
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Claim esGMX" }));
+
+    await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
+    expect(mockCallContract.mock.calls[0][2]).toBe("handleRewards");
+    expect(mockCallContract.mock.calls[0][3]).toEqual([false, false, true, false, true, false, false]);
+    expect(wait).toHaveBeenCalledTimes(1);
+    expect(setIsVisible).not.toHaveBeenCalled();
+
+    view.rerender(
+      getVestModal(claimedData, true, undefined, {
+        claimableEsGmxAmount: claimedData.claimableEsGmxRewards,
+      })
+    );
+    expect(screen.getByRole("button", { name: "Vest 100 esGMX" })).toBeDefined();
+    expect(screen.getByText("esGMX claimed")).toBeDefined();
+  });
+
+  it("vests wallet esGMX directly when there are no pending rewards to claim", () => {
+    const walletOnlyData = {
+      ...baseData,
+      claimableEsGmxRewards: 0n,
+    };
+
+    render(
+      getVestModal(walletOnlyData, true, undefined, {
+        claimableEsGmxAmount: 0n,
+      })
+    );
+
+    expect(screen.getByText("Vestable: 100 esGMX")).toBeDefined();
+    expect(screen.getByRole("button", { name: "Vest 100 esGMX" })).toBeDefined();
+    expect(screen.queryByText("Claim esGMX rewards")).toBeNull();
   });
 
   it("refreshes the vesting preview before a direct deposit", async () => {
@@ -433,7 +636,7 @@ describe("RewardsVestingModal", () => {
     expect(approvalWait).toHaveBeenCalledTimes(1);
     await waitFor(() => expect(screen.getByText("GMX approved")).toBeDefined());
 
-    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
 
     await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(2));
     expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["approve", "stakeGmx"]);
@@ -458,7 +661,7 @@ describe("RewardsVestingModal", () => {
     renderVestModal(initialData);
 
     expect(screen.getByRole("link", { name: "Delegate your undelegated 100.00 GMX DAO" })).toBeDefined();
-    const button = screen.getByRole("button", { name: "Vest 100 esGMX" });
+    const button = screen.getByRole("button", { name: "Stake GMX" });
     expect(button.hasAttribute("disabled")).toBe(true);
     fireEvent.click(button);
     expect(mutate).not.toHaveBeenCalled();
@@ -485,7 +688,7 @@ describe("RewardsVestingModal", () => {
     );
     const view = renderVestModal(initialData);
 
-    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
     await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
 
     mockUseGovTokenAmount.mockReturnValue(100n * TOKEN_UNIT);
@@ -588,18 +791,33 @@ describe("RewardsVestingModal", () => {
       isLoaded: true,
     });
     mockCallContract.mockResolvedValueOnce({ wait: stakeWait } as any).mockResolvedValueOnce({ wait: vestWait } as any);
-    mutate.mockResolvedValueOnce(initialData).mockResolvedValueOnce(refreshedData).mockResolvedValueOnce(refreshedData);
-    renderVestModal(initialData);
+    mutate.mockResolvedValueOnce(initialData).mockResolvedValue(refreshedData);
+    const view = renderVestModal(initialData);
 
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
+
+    await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
+    expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["stakeGmx"]);
+    expect(stakeWait).toHaveBeenCalledTimes(1);
+    expect(vestWait).not.toHaveBeenCalled();
+    expect(mutate).toHaveBeenCalledTimes(2);
+    expect(screen.getByText("Collateral staked")).toBeDefined();
+
+    view.rerender(getVestModal(refreshedData));
     fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
 
     await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(2));
     expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["stakeGmx", "deposit"]);
-    expect(stakeWait).toHaveBeenCalledTimes(1);
     expect(vestWait).toHaveBeenCalledTimes(1);
-    expect(mutate).toHaveBeenCalledTimes(3);
+    expect(mutate).toHaveBeenCalledTimes(4);
+    await waitFor(() => expect(screen.getByText("Close", { selector: "button.primary" })).toBeDefined());
+    expect(screen.getByText("Collateral staked")).toBeDefined();
+    expect(screen.getByText("Vesting started")).toBeDefined();
+    expect(screen.getAllByText("Completed")).toHaveLength(2);
+    expect(setIsVisible).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText("Close", { selector: "button.primary" }));
     expect(setIsVisible).toHaveBeenCalledWith(false);
-    expect(setIsVisible.mock.invocationCallOrder[0]).toBeLessThan(mutate.mock.invocationCallOrder[2]);
   });
 
   it("does not let a previous account vest clear the current account pending step", async () => {
@@ -660,7 +878,7 @@ describe("RewardsVestingModal", () => {
     });
     renderVestModal(initialData);
 
-    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
 
     await waitFor(() => expect(mockHelperToastInfo).toHaveBeenCalled());
     expect(mockCallContract).toHaveBeenCalledTimes(1);
@@ -692,7 +910,7 @@ describe("RewardsVestingModal", () => {
     mutate.mockResolvedValueOnce(initialData).mockResolvedValueOnce(changedPreviewData);
     renderVestModal(initialData);
 
-    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
 
     await waitFor(() =>
       expect(mockHelperToastInfo).toHaveBeenCalledWith(
@@ -729,7 +947,7 @@ describe("RewardsVestingModal", () => {
     );
     const view = renderVestModal(initialData);
 
-    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
     await waitFor(() => expect(mutate).toHaveBeenCalledTimes(2));
 
     mockUseWallet.mockReturnValue({
@@ -777,7 +995,7 @@ describe("RewardsVestingModal", () => {
     );
     const view = renderVestModal(initialData);
 
-    fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
     await waitFor(() => expect(mutate).toHaveBeenCalledTimes(2));
 
     view.unmount();
@@ -808,9 +1026,13 @@ describe("RewardsVestingModal", () => {
       freePairAmount: 100n * TOKEN_UNIT,
       walletGmxBalance: 0n,
     };
-    mutate.mockResolvedValueOnce(initialData).mockResolvedValueOnce(refreshedData);
-    renderVestModal(initialData);
+    mutate.mockResolvedValueOnce(initialData).mockResolvedValue(refreshedData);
+    const view = renderVestModal(initialData);
 
+    fireEvent.click(screen.getByRole("button", { name: "Stake GMX" }));
+
+    await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
+    view.rerender(getVestModal(refreshedData));
     fireEvent.click(screen.getByRole("button", { name: "Vest 100 esGMX" }));
 
     await waitFor(() =>
@@ -863,6 +1085,33 @@ describe("RewardsStopVestingModal", () => {
     expect(screen.getByText("Stop vesting 100% of these rewards?")).toBeDefined();
     expect(screen.getByRole("button", { name: "Yes, stop vesting" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Keep vesting" })).toBeDefined();
+  });
+
+  it("simulates stopping without a connected wallet", async () => {
+    const onSimulatedStop = vi.fn(async () => undefined);
+    mockUseWallet.mockReturnValue({
+      active: false,
+      chainId: AVALANCHE,
+    } as ReturnType<typeof useWallet>);
+    const activeData = {
+      ...baseData,
+      vestingInfo: {
+        ...baseData.vestingInfo,
+        pairAmount: 50n * TOKEN_UNIT,
+        vestedAmount: 100n * TOKEN_UNIT,
+        escrowedBalance: 50n * TOKEN_UNIT,
+        claimedAmounts: 50n * TOKEN_UNIT,
+      },
+    };
+
+    render(getStopModal(activeData, onSimulatedStop));
+    const button = screen.getByRole("button", { name: "Yes, stop vesting" });
+    expect(button.hasAttribute("disabled")).toBe(false);
+    fireEvent.click(button);
+
+    await waitFor(() => expect(onSimulatedStop).toHaveBeenCalledTimes(1));
+    expect(setIsVisible).toHaveBeenCalledWith(false);
+    expect(mockCallContract).not.toHaveBeenCalled();
   });
 
   it("blocks stopping when wallet extensions are on different networks", () => {

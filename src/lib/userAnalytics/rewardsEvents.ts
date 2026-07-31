@@ -29,6 +29,7 @@ export type RewardsAnalyticsBanner =
   | "trade-rewards-program";
 
 export type RewardsTransaction =
+  | "ClaimEsGmx"
   | "ApproveGmx"
   | "StakeCollateral"
   | "StartVesting"

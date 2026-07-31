@@ -9,7 +9,6 @@ import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   getRewardsVestingAvailableAmount,
   getRewardsVestingDaysLeft,
@@ -46,9 +45,26 @@ import InfoIcon from "img/ic_info_circle_stroke.svg?react";
 
 import { getRewardsDebugMode } from "../rewardsDebug";
 import { getRewardsPath, REWARDS_VESTING_SEARCH_PARAM, REWARDS_VESTING_START_ACTION } from "../rewardsRoutes";
-import { getRewardsVestingDebugSnapshot } from "../rewardsVestingDebug";
+import {
+  getRewardsVestingDebugSnapshot,
+  simulateRewardsGmxStake,
+  simulateRewardsEsGmxClaim,
+  simulateRewardsVestingClaim,
+  simulateRewardsVestingDeposit,
+  simulateRewardsVestingStop,
+  simulateRewardsVestingUnlock,
+} from "../rewardsVestingDebug";
 import { RewardsVestingChainGuard } from "./RewardsVestingChainGuard";
+import { RewardsVestingDebugPanel } from "./RewardsVestingDebugPanel";
 import { RewardsStopVestingModal, RewardsVestingModal } from "./RewardsVestingModals";
+
+const SIMULATED_TRANSACTION_DELAY = 1_000;
+
+function waitForSimulatedTransaction() {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, SIMULATED_TRANSACTION_DELAY);
+  });
+}
 
 function formatTokenAmount(amount: bigint, displayDecimals = 2) {
   return formatAmount(amount, GMX_DECIMALS, displayDecimals, true, { trimTrailingZeros: true });
@@ -106,7 +122,7 @@ function AmountHeader({
         <span
           className={cx(
             "flex size-20 items-center justify-center rounded-full px-4 py-2 text-12 font-medium",
-            active ? "bg-rewards-blue-300/20 text-rewards-blue-300" : "bg-slate-800 text-typography-disabled"
+            active ? "bg-blue-300/20 text-blue-300" : "bg-slate-800 text-typography-disabled"
           )}
         >
           {step}
@@ -210,18 +226,21 @@ export function RewardsVestingFlow() {
   const { account, chainId: walletChainId, signer } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { setPendingTxns } = usePendingTxns();
-  const { rewardsOneClickActionEnabled } = useSettings();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const hasMultipleWalletExtensionsChainError = Boolean(multipleWalletExtensionsChainError.buttonErrorMessage);
   const now = useCurrentUnixTimestamp(30_000);
   const vestingResult = useRewardsVestingData(account, ARBITRUM);
-  const debugSnapshot = getRewardsVestingDebugSnapshot(getRewardsDebugMode(search));
-  const data = debugSnapshot ? debugSnapshot.data : vestingResult.data;
+  const debugMode = getRewardsDebugMode(search);
+  const debugSnapshot = getRewardsVestingDebugSnapshot(debugMode);
+  const [debugData, setDebugData] = useState(() => debugSnapshot?.data);
+  const previousDebugModeRef = useRef(debugMode);
+  const data = debugSnapshot ? debugData : vestingResult.data;
   const isLoading = debugSnapshot ? debugSnapshot.isLoading : vestingResult.isLoading;
   const error = debugSnapshot ? debugSnapshot.error : vestingResult.error;
   const mutate = vestingResult.mutate;
   const isDebugFixture = debugSnapshot !== undefined;
+  const isInteractiveDebug = isDebugFixture && data !== undefined;
   const [isVestingModalVisible, setIsVestingModalVisible] = useState(false);
   const [isStopModalVisible, setIsStopModalVisible] = useState(false);
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
@@ -242,6 +261,13 @@ export function RewardsVestingFlow() {
     hasOutdatedUi,
     hasMultipleWalletExtensionsChainError,
   };
+
+  useEffect(() => {
+    if (previousDebugModeRef.current === debugMode) return;
+
+    previousDebugModeRef.current = debugMode;
+    setDebugData(getRewardsVestingDebugSnapshot(debugMode)?.data);
+  }, [debugMode]);
 
   useEffect(
     () => () => {
@@ -287,23 +313,16 @@ export function RewardsVestingFlow() {
   const claimableAmount = vestingInfo?.claimable ?? 0n;
   const vestableAmount = data
     ? getRewardsVestingAvailableAmount({
-        walletEsGmxAmount: data.walletEsGmxBalance,
+        walletEsGmxAmount: data.walletEsGmxBalance + data.claimableEsGmxRewards,
         totalVestedAmount: data.vestingInfo.vestedAmount,
         maxVestableAmount: data.vestingInfo.maxVestableAmount,
       })
     : 0n;
 
   const startVestingAction = useCallback(() => {
-    if (rewardsOneClickActionEnabled) {
-      helperToast.info(
-        t`One-click claim, stake, and vest is not supported yet. Turn off its preview in Settings to use the step-by-step flow.`
-      );
-      return;
-    }
-
     sendRewardsVestingModalOpenEvent("Start");
     setIsVestingModalVisible(true);
-  }, [rewardsOneClickActionEnabled]);
+  }, []);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
@@ -325,6 +344,23 @@ export function RewardsVestingFlow() {
   }, [account, data, history, isDebugFixture, pathname, search, startVestingAction, vestableAmount]);
 
   const handleClaim = async () => {
+    if (isInteractiveDebug) {
+      if (claimableAmount === 0n || isClaiming || isUnlocking || isVestingActionPendingRef.current) {
+        return;
+      }
+
+      isVestingActionPendingRef.current = true;
+      setIsClaiming(true);
+      try {
+        await waitForSimulatedTransaction();
+        setDebugData((currentData) => (currentData ? simulateRewardsVestingClaim(currentData) : currentData));
+      } finally {
+        isVestingActionPendingRef.current = false;
+        setIsClaiming(false);
+      }
+      return;
+    }
+
     if (
       !account ||
       !signer ||
@@ -334,8 +370,7 @@ export function RewardsVestingFlow() {
       isUnlocking ||
       isVestingActionPendingRef.current ||
       hasOutdatedUi ||
-      hasMultipleWalletExtensionsChainError ||
-      isDebugFixture
+      hasMultipleWalletExtensionsChainError
     ) {
       return;
     }
@@ -416,6 +451,30 @@ export function RewardsVestingFlow() {
   };
 
   const handleUnlock = async () => {
+    if (isInteractiveDebug) {
+      if (
+        !data ||
+        !isVestingComplete ||
+        (vestingInfo?.pairAmount ?? 0n) === 0n ||
+        isUnlocking ||
+        isClaiming ||
+        isVestingActionPendingRef.current
+      ) {
+        return;
+      }
+
+      isVestingActionPendingRef.current = true;
+      setIsUnlocking(true);
+      try {
+        await waitForSimulatedTransaction();
+        setDebugData((currentData) => (currentData ? simulateRewardsVestingUnlock(currentData) : currentData));
+      } finally {
+        isVestingActionPendingRef.current = false;
+        setIsUnlocking(false);
+      }
+      return;
+    }
+
     if (
       !account ||
       !data ||
@@ -427,8 +486,7 @@ export function RewardsVestingFlow() {
       isClaiming ||
       isVestingActionPendingRef.current ||
       hasOutdatedUi ||
-      hasMultipleWalletExtensionsChainError ||
-      isDebugFixture
+      hasMultipleWalletExtensionsChainError
     ) {
       return;
     }
@@ -527,8 +585,37 @@ export function RewardsVestingFlow() {
     setIsStopModalVisible(true);
   };
 
+  const simulateVesting = async (depositAmount: bigint) => {
+    await waitForSimulatedTransaction();
+    setDebugData((currentData) =>
+      currentData ? simulateRewardsVestingDeposit(currentData, depositAmount) : currentData
+    );
+  };
+
+  const simulateEsGmxClaim = async () => {
+    await waitForSimulatedTransaction();
+    setDebugData((currentData) => (currentData ? simulateRewardsEsGmxClaim(currentData) : currentData));
+  };
+
+  const simulateGmxStake = async (stakeAmount: bigint) => {
+    await waitForSimulatedTransaction();
+    setDebugData((currentData) => (currentData ? simulateRewardsGmxStake(currentData, stakeAmount) : currentData));
+  };
+
+  const simulateStopVesting = async () => {
+    await waitForSimulatedTransaction();
+    setDebugData((currentData) => (currentData ? simulateRewardsVestingStop(currentData) : currentData));
+  };
+
+  const resetDebugData = () => {
+    setDebugData(getRewardsVestingDebugSnapshot(debugMode)?.data);
+  };
+
   return (
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+      {isInteractiveDebug && data ? (
+        <RewardsVestingDebugPanel data={data} onApply={setDebugData} onReset={resetDebugData} />
+      ) : null}
       <div className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_40px_minmax(0,1fr)] items-stretch gap-8 max-lg:grid-cols-1 max-lg:grid-rows-[1fr_40px_1fr_40px_1fr]">
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
           <AmountHeader
@@ -552,7 +639,7 @@ export function RewardsVestingFlow() {
               {vestableAmount > 0n ? (
                 <div className="flex grow items-center justify-center px-4 text-left text-13 leading-[1.5]">
                   <p className="min-w-0 text-center">
-                    <span className="font-medium text-rewards-blue-300">
+                    <span className="font-medium text-blue-300">
                       <InfoIcon className="-mt-2 mr-4 inline size-16 align-middle" />
                       <Trans>Vesting turns esGMX into GMX over 12 months.</Trans>
                     </span>
@@ -574,7 +661,7 @@ export function RewardsVestingFlow() {
                     </div>
                     <ButtonLink
                       to={getRewardsPath("tiers")}
-                      className="flex w-fit items-center gap-4 pr-2 text-13 font-medium text-rewards-blue-300 -outline-offset-2"
+                      className="flex w-fit items-center gap-4 pr-2 text-13 font-medium text-blue-300 -outline-offset-2"
                     >
                       <Trans>Learn how</Trans>
                       <ChevronRightIcon className="size-16" />
@@ -655,14 +742,16 @@ export function RewardsVestingFlow() {
                 </div>
                 <div className="h-4 overflow-hidden rounded-full bg-slate-700">
                   <div
-                    className={cx("h-full rounded-full", isVestingComplete ? "bg-green-500" : "bg-rewards-blue-300")}
+                    className={cx("h-full rounded-full", isVestingComplete ? "bg-green-500" : "bg-blue-300")}
                     style={progressStyle}
                   />
                 </div>
               </div>
               {isVestingComplete && (vestingInfo?.pairAmount ?? 0n) > 0n ? (
-                <RewardsVestingChainGuard>
-                  <ButtonTooltipWrapper content={multipleWalletExtensionsChainError.buttonTooltipMessage}>
+                <RewardsVestingChainGuard skip={isInteractiveDebug}>
+                  <ButtonTooltipWrapper
+                    content={isInteractiveDebug ? undefined : multipleWalletExtensionsChainError.buttonTooltipMessage}
+                  >
                     <Button
                       variant="secondary"
                       size="medium"
@@ -671,13 +760,10 @@ export function RewardsVestingFlow() {
                       disabled={
                         isUnlocking ||
                         isClaiming ||
-                        !signer ||
-                        hasOutdatedUi ||
-                        hasMultipleWalletExtensionsChainError ||
-                        isDebugFixture
+                        (!isInteractiveDebug && (!signer || hasOutdatedUi || hasMultipleWalletExtensionsChainError))
                       }
                     >
-                      {multipleWalletExtensionsChainError.buttonErrorMessage ??
+                      {(!isInteractiveDebug ? multipleWalletExtensionsChainError.buttonErrorMessage : undefined) ??
                         (isUnlocking ? <Trans>Unlocking...</Trans> : <Trans>Unlock collateral</Trans>)}
                       <CheckIcon className="size-16" />
                     </Button>
@@ -729,8 +815,10 @@ export function RewardsVestingFlow() {
                 <RewardBalanceRow label={<Trans>Staked</Trans>} amount={data?.stakedGmxBalance ?? 0n} />
               </div>
               {claimableAmount > 0n ? (
-                <RewardsVestingChainGuard>
-                  <ButtonTooltipWrapper content={multipleWalletExtensionsChainError.buttonTooltipMessage}>
+                <RewardsVestingChainGuard skip={isInteractiveDebug}>
+                  <ButtonTooltipWrapper
+                    content={isInteractiveDebug ? undefined : multipleWalletExtensionsChainError.buttonTooltipMessage}
+                  >
                     <Button
                       variant="primary"
                       size="medium"
@@ -739,13 +827,10 @@ export function RewardsVestingFlow() {
                       disabled={
                         isClaiming ||
                         isUnlocking ||
-                        !signer ||
-                        hasOutdatedUi ||
-                        hasMultipleWalletExtensionsChainError ||
-                        isDebugFixture
+                        (!isInteractiveDebug && (!signer || hasOutdatedUi || hasMultipleWalletExtensionsChainError))
                       }
                     >
-                      {multipleWalletExtensionsChainError.buttonErrorMessage ??
+                      {(!isInteractiveDebug ? multipleWalletExtensionsChainError.buttonErrorMessage : undefined) ??
                         (isClaiming ? (
                           <Trans>Claiming...</Trans>
                         ) : (
@@ -773,14 +858,17 @@ export function RewardsVestingFlow() {
             data={data}
             mutate={mutate}
             onBuyGmx={openBuyGmxModal}
-            isReadOnly={isDebugFixture}
+            claimableEsGmxAmount={data.claimableEsGmxRewards}
+            onSimulatedClaim={isInteractiveDebug ? simulateEsGmxClaim : undefined}
+            onSimulatedStake={isInteractiveDebug ? simulateGmxStake : undefined}
+            onSimulatedVest={isInteractiveDebug ? simulateVesting : undefined}
           />
           <RewardsStopVestingModal
             isVisible={isStopModalVisible}
             setIsVisible={setIsStopModalVisible}
             data={data}
             mutate={mutate}
-            isReadOnly={isDebugFixture}
+            onSimulatedStop={isInteractiveDebug ? simulateStopVesting : undefined}
           />
         </>
       ) : null}

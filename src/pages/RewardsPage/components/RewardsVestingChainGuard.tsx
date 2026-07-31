@@ -6,10 +6,10 @@ import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 
-export function RewardsVestingChainGuard({ children }: { children: React.ReactNode }) {
+export function RewardsVestingChainGuard({ children, skip = false }: { children: React.ReactNode; skip?: boolean }) {
   const { active, chainId: walletChainId } = useWallet();
 
-  if (active && walletChainId !== ARBITRUM) {
+  if (!skip && active && walletChainId !== ARBITRUM) {
     return (
       <Button type="button" className="w-full" variant="primary-action" onClick={() => switchNetwork(ARBITRUM, true)}>
         <Trans>Switch to {getChainName(ARBITRUM)}</Trans>

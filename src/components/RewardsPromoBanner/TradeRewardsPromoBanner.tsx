@@ -138,7 +138,7 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
             <span className="text-13 text-typography-secondary">{promo.body}</span>
           </div>
 
-          <span className="flex items-center gap-4 text-14 font-medium text-rewards-blue-300">
+          <span className="flex items-center gap-4 text-14 font-medium text-blue-300">
             {promo.actionLabel}
             {promo.actionIcon}
           </span>
