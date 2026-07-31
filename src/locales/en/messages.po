@@ -724,6 +724,10 @@ msgstr "Order execution price"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr "Current swap impact: {0}. Add a 1% buffer for better execution."
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
@@ -2557,10 +2561,6 @@ msgstr "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds a
 msgid "Discounts earned by this account as a trader"
 msgstr "Discounts earned by this account as a trader"
 
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "Decrease leverage to match the max allowed leverage."
@@ -4099,10 +4099,6 @@ msgstr "Pool max short USD for deposit"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9569,6 +9565,10 @@ msgstr "{0} tokens reserved for vesting"
 msgid "1y"
 msgstr "1y"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -11653,6 +11653,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "No decentralized exchanges available"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

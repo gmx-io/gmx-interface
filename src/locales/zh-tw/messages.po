@@ -724,6 +724,10 @@ msgstr "訂單成交價格"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "推薦碼尚未在以下網路註冊：{nonTakenNetworkNamesJoined}。請切換網路以完成註冊並賺取返傭。"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -2557,10 +2561,6 @@ msgstr "{gmOrGlvLabel} 出售成功，但跨鏈至 {0} 失敗。您的資金安�
 msgid "Discounts earned by this account as a trader"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "推薦碼尚未在 {nonTakenNetworkNames} 上註冊。請切換網路以完成註冊並賺取返傭。"
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "降低槓桿以符合最大允許槓桿。"
@@ -4099,10 +4099,6 @@ msgstr "池存入最大做空 USD"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "推薦碼已被其他用戶在 {takenNetworkNames} 上使用。無法從這些網路獲得返傭。"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9569,6 +9565,10 @@ msgstr "{0} 代幣已保留用於歸屬"
 msgid "1y"
 msgstr ""
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "推薦碼已在以下網路被使用：{takenNetworkNamesJoined}。無法從這些網路獲得返傭。"
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "發生錯誤"
@@ -11653,6 +11653,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 至 </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "無可用的去中心化交易所"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "推薦碼已在以下網路被使用：{takenNetworkNamesJoined}。無法從該網路獲得返傭。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

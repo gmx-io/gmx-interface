@@ -724,6 +724,10 @@ msgstr "Цена исполнения ордера"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "Код не зарегистрирован в сетях: {nonTakenNetworkNamesJoined}. Переключите сеть для регистрации и получения скидок."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -2557,10 +2561,6 @@ msgstr "{gmOrGlvLabel} успешно продан, но бридж в {0} не 
 msgid "Discounts earned by this account as a trader"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "Код не зарегистрирован в {nonTakenNetworkNames}. Переключите сеть для регистрации и получения скидок."
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "Уменьшите кредитное плечо до максимально допустимого значения."
@@ -4099,10 +4099,6 @@ msgstr "Макс. шорт USD пула для депозита"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "Код занят другим пользователем в {takenNetworkNames}. Скидки от этих сетей недоступны."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9569,6 +9565,10 @@ msgstr "Токенов зарезервировано для вестинга: {
 msgid "1y"
 msgstr ""
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "Код уже занят в сетях: {takenNetworkNamesJoined}. Скидки от этих сетей не начисляются."
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "Что-то пошло не так"
@@ -11653,6 +11653,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> на </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "Нет доступных децентрализованных бирж"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "Код уже занят в сети: {takenNetworkNamesJoined}. Скидки от этой сети не начисляются."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

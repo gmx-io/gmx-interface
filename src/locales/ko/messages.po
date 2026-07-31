@@ -724,6 +724,10 @@ msgstr "주문 체결가"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "코드가 등록되지 않은 네트워크: {nonTakenNetworkNamesJoined}. 네트워크를 전환하여 등록하고 리베이트를 받으십시오."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -2557,10 +2561,6 @@ msgstr "{gmOrGlvLabel} 판매에 성공했지만 {0}(으)로의 브리지에 실
 msgid "Discounts earned by this account as a trader"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "{nonTakenNetworkNames}에 코드가 등록되지 않았습니다. 네트워크를 전환하여 등록하고 리베이트를 받으십시오."
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "허용된 최대 레버리지에 맞게 레버리지를 줄이십시오."
@@ -4099,10 +4099,6 @@ msgstr "풀 입금용 최대 숏 USD"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "다른 사용자가 {takenNetworkNames}에서 해당 코드를 사용 중입니다. 해당 네트워크에서는 리베이트가 지급되지 않습니다."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9569,6 +9565,10 @@ msgstr "베스팅을 위해 {0} 토큰이 예약되어 있습니다"
 msgid "1y"
 msgstr ""
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "코드가 이미 사용 중인 네트워크: {takenNetworkNamesJoined}. 해당 네트워크에서는 리베이트가 지급되지 않습니다."
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
@@ -11653,6 +11653,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "이용 가능한 탈중앙화 거래소가 없습니다"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "코드가 이미 사용 중인 네트워크: {takenNetworkNamesJoined}. 해당 네트워크에서는 리베이트가 지급되지 않습니다."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
