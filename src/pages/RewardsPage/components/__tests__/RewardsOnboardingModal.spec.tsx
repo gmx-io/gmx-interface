@@ -12,19 +12,23 @@ vi.mock("components/Modal/ModalWithPortal", () => ({
     isVisible,
     label,
     headerContent,
+    hideCloseButton,
     children,
     setIsVisible,
   }: {
     isVisible?: boolean;
     label?: React.ReactNode;
     headerContent?: React.ReactNode;
+    hideCloseButton?: boolean;
     children: React.ReactNode;
     setIsVisible: (isVisible: boolean) => void;
   }) =>
     isVisible ? (
       <div role="dialog" aria-label={String(label)}>
         {headerContent}
-        <button type="button" aria-label="Close dialog" onClick={() => setIsVisible(false)} />
+        {!hideCloseButton ? (
+          <button type="button" aria-label="Close dialog" onClick={() => setIsVisible(false)} />
+        ) : null}
         {children}
       </div>
     ) : null,
@@ -51,14 +55,44 @@ describe("RewardsOnboardingModal", () => {
   it("opens once automatically, supports all navigation methods, and can be reopened from the launcher", async () => {
     renderOnboarding();
 
+    const launcher = screen.getByRole("button", { name: "How it works?" });
+    expect(launcher.classList.contains("h-32")).toBe(true);
+    expect(launcher.classList.contains("gap-4")).toBe(true);
+    expect(launcher.classList.contains("px-12")).toBe(true);
+    expect(launcher.classList.contains("py-8")).toBe(true);
+    expect(launcher.classList.contains("text-13")).toBe(true);
+    expect(launcher.querySelector("svg")?.classList.contains("size-16")).toBe(true);
+
     expect(await screen.findByRole("dialog", { name: "How it works" })).toBeDefined();
     expect(screen.getByRole("heading", { name: "Welcome to GMX Rewards" })).toBeDefined();
 
+    const diagramTrack = screen.getByTestId("rewards-onboarding-diagram-track") as HTMLImageElement;
+    const track = screen.getByTestId("rewards-onboarding-track") as HTMLDivElement;
+    const panels = screen.getAllByTestId("rewards-onboarding-panel");
     const dots = screen.getAllByRole("button", { name: /Go to slide/ });
+    expect(panels).toHaveLength(4);
+    expect(panels.map((panel) => panel.getAttribute("aria-hidden"))).toEqual(["false", "true", "true", "true"]);
+    expect(diagramTrack.style.transform).toBe("translate3d(0px, 0, 0)");
+    expect(diagramTrack.classList.contains("motion-reduce:transition-none")).toBe(true);
+    expect(track.style.transform).toBe("translate3d(0%, 0, 0)");
+    expect(track.classList.contains("motion-reduce:transition-none")).toBe(true);
+    expect(screen.getByText("Slide 1 of 4")).toBeDefined();
     expect(dots).toHaveLength(4);
+    expect(dots[0].classList.contains("size-8")).toBe(true);
+    expect(dots[0].classList.contains("after:-inset-4")).toBe(true);
+    expect(dots[0].parentElement?.classList.contains("mb-32")).toBe(true);
+    expect(dots[0].parentElement?.classList.contains("gap-8")).toBe(true);
     expect(dots[0].getAttribute("aria-current")).toBe("true");
 
+    const skipButton = screen.getByRole("button", { name: "Skip" });
+    expect(skipButton.querySelector("svg")).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Close dialog" })).toBeNull();
+
     fireEvent.click(screen.getByRole("button", { name: /Next/ }));
+    expect(diagramTrack.style.transform).toBe("translate3d(-308px, 0, 0)");
+    expect(track.style.transform).toBe("translate3d(-100%, 0, 0)");
+    expect(screen.getByText("Slide 2 of 4")).toBeDefined();
+    expect(screen.queryByRole("heading", { name: "Welcome to GMX Rewards" })).toBeNull();
     expect(
       screen.getByRole("heading", { name: "Your multiplier is at the core of the rewards program" })
     ).toBeDefined();
@@ -66,11 +100,15 @@ describe("RewardsOnboardingModal", () => {
     fireEvent.keyDown(screen.getByRole("region", { name: "How GMX Rewards works" }), {
       key: "ArrowRight",
     });
+    expect(diagramTrack.style.transform).toBe("translate3d(-605px, 0, 0)");
+    expect(track.style.transform).toBe("translate3d(-200%, 0, 0)");
     expect(
       screen.getByRole("heading", { name: "The higher the multiplier, the more rewards you receive" })
     ).toBeDefined();
 
     fireEvent.click(dots[3]);
+    expect(diagramTrack.style.transform).toBe("translate3d(-844px, 0, 0)");
+    expect(track.style.transform).toBe("translate3d(-300%, 0, 0)");
     expect(screen.getByRole("heading", { name: "How rewards are distributed" })).toBeDefined();
     expect(dots[3].getAttribute("aria-current")).toBe("true");
 
@@ -80,6 +118,10 @@ describe("RewardsOnboardingModal", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "How it works?" }));
     expect(await screen.findByRole("heading", { name: "Welcome to GMX Rewards" })).toBeDefined();
+    expect(screen.getByTestId("rewards-onboarding-diagram-track").getAttribute("style")).toContain(
+      "translate3d(0px, 0, 0)"
+    );
+    expect(screen.getByTestId("rewards-onboarding-track").getAttribute("style")).toContain("translate3d(0%, 0, 0)");
     fireEvent.click(screen.getByRole("button", { name: "Skip" }));
     expect(screen.queryByRole("dialog")).toBeNull();
   });
@@ -95,7 +137,7 @@ describe("RewardsOnboardingModal", () => {
     );
     expect(await screen.findByRole("dialog", { name: "How it works" })).toBeDefined();
 
-    fireEvent.click(screen.getByRole("button", { name: "Close dialog" }));
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
 
     cleanup();
@@ -110,12 +152,24 @@ describe("RewardsOnboardingModal", () => {
     const slide = screen.getByTestId("rewards-onboarding-slide");
     fireEvent.pointerDown(slide, { pointerType: "touch", pointerId: 1, clientX: 200, clientY: 20 });
     fireEvent.pointerUp(slide, { pointerType: "touch", pointerId: 1, clientX: 120, clientY: 24 });
+    expect(screen.getByTestId("rewards-onboarding-diagram-track").getAttribute("style")).toContain(
+      "translate3d(-308px, 0, 0)"
+    );
+    expect(screen.getByTestId("rewards-onboarding-track").getAttribute("style")).toContain("translate3d(-100%, 0, 0)");
     expect(
       screen.getByRole("heading", { name: "Your multiplier is at the core of the rewards program" })
     ).toBeDefined();
 
-    fireEvent.pointerDown(slide, { pointerType: "touch", pointerId: 2, clientX: 120, clientY: 20 });
-    fireEvent.pointerUp(slide, { pointerType: "touch", pointerId: 2, clientX: 200, clientY: 24 });
+    fireEvent.pointerDown(slide, { pointerType: "touch", pointerId: 2, clientX: 200, clientY: 20 });
+    fireEvent.pointerUp(slide, { pointerType: "touch", pointerId: 2, clientX: 150, clientY: 100 });
+    expect(screen.getByTestId("rewards-onboarding-track").getAttribute("style")).toContain("translate3d(-100%, 0, 0)");
+
+    fireEvent.pointerDown(slide, { pointerType: "touch", pointerId: 3, clientX: 120, clientY: 20 });
+    fireEvent.pointerUp(slide, { pointerType: "touch", pointerId: 3, clientX: 200, clientY: 24 });
+    expect(screen.getByTestId("rewards-onboarding-diagram-track").getAttribute("style")).toContain(
+      "translate3d(0px, 0, 0)"
+    );
+    expect(screen.getByTestId("rewards-onboarding-track").getAttribute("style")).toContain("translate3d(0%, 0, 0)");
     expect(screen.getByRole("heading", { name: "Welcome to GMX Rewards" })).toBeDefined();
   });
 });

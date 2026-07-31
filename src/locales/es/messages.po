@@ -423,7 +423,6 @@ msgstr "Airdrop de GM"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Volume"
 msgstr "Volumen"
@@ -1513,7 +1512,6 @@ msgstr "PnL No Realizado"
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/GmxAccountModal/RewardsSection.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPageShell.tsx
@@ -1672,6 +1670,11 @@ msgstr "Margen inicial"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
 msgstr "Airdrop de competición"
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Slide {0} of {SLIDE_COUNT}"
+msgstr "Diapositiva {0} de {SLIDE_COUNT}"
 
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "How rewards are distributed"
@@ -2858,7 +2861,6 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "GMX"
 msgstr "GMX"
 
@@ -4279,10 +4281,6 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "GT Rewards"
-msgstr "Recompensas GT"
-
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
@@ -4891,7 +4889,6 @@ msgstr "Retiro fallido"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "esGMX"
 msgstr "esGMX"
 
@@ -4977,10 +4974,6 @@ msgstr "Retirando..."
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims match the selected filters"
 msgstr "No hay reclamos que coincidan con los filtros seleccionados"
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Staking"
-msgstr "Staking"
 
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
@@ -6886,10 +6879,6 @@ msgstr "Transferencia ya iniciada"
 msgid "Search token"
 msgstr "Buscar token"
 
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Trader"
-msgstr "Trader"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GLV (GMX Liquidity Vault) holds various GM tokens, giving you diversified exposure to GMX's markets. The vault auto-rebalances to high-demand markets, unlocking higher potential yield compared to isolated pools."
 msgstr "GLV (GMX Liquidity Vault) contiene diversos tokens GM, ofreciéndole una exposición diversificada a los mercados de GMX. El vault se reequilibra automáticamente hacia los mercados de mayor demanda, desbloqueando un rendimiento potencial más elevado en comparación con los pools aislados."
@@ -7484,7 +7473,6 @@ msgid "Order not found. May have been canceled or already executed"
 msgstr "Orden no encontrada. Puede haber sido cancelada o ya ejecutada"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Vesting"
 msgstr "Vesting"
 
@@ -7516,10 +7504,6 @@ msgstr "Harmonix"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Accumulates"
-msgstr "Se acumula"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
@@ -7621,10 +7605,6 @@ msgstr "Valor de la posición después de PnL y todas las tarifas"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Affiliate"
-msgstr "Afiliado"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Share your referral card"
@@ -12475,10 +12455,6 @@ msgstr "Impacto en el precio aceptable"
 msgid "Default sorting"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Trading activity"
-msgstr "Actividad de trading"
-
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr "Reduzca la retirada para ajustarse al máximo. <0>Más información</0>.<1/><2/><3>Establecer retirada máxima</3>"
@@ -12578,7 +12554,6 @@ msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "GT"
 msgstr "GT"
 
@@ -12656,10 +12631,6 @@ msgstr "{idleSeconds}s"
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
 msgstr "Acciones de GMX V1"
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "esGMX Rewards"
-msgstr "Recompensas esGMX"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
@@ -13520,8 +13491,6 @@ msgstr "Aumentar tamaño (Stop Market)"
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Multiplier"

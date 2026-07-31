@@ -423,7 +423,6 @@ msgstr "GM 空投"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Volume"
 msgstr "交易量"
@@ -1513,7 +1512,6 @@ msgstr "未實現盈虧"
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/GmxAccountModal/RewardsSection.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPageShell.tsx
@@ -1672,6 +1670,11 @@ msgstr "初始保證金"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
 msgstr "競賽空投"
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Slide {0} of {SLIDE_COUNT}"
+msgstr "第 {0} 張投影片，共 {SLIDE_COUNT} 張"
 
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "How rewards are distributed"
@@ -2858,7 +2861,6 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "GMX"
 msgstr "GMX"
 
@@ -4279,10 +4281,6 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "GT Rewards"
-msgstr "GT 獎勵"
-
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
@@ -4891,7 +4889,6 @@ msgstr "提取失敗"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "esGMX"
 msgstr "esGMX"
 
@@ -4977,10 +4974,6 @@ msgstr "提取中..."
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims match the selected filters"
 msgstr "沒有符合所選篩選條件的領取記錄"
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Staking"
-msgstr "質押"
 
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
@@ -6886,10 +6879,6 @@ msgstr "轉帳已發起"
 msgid "Search token"
 msgstr "搜尋代幣"
 
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Trader"
-msgstr "交易者"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GLV (GMX Liquidity Vault) holds various GM tokens, giving you diversified exposure to GMX's markets. The vault auto-rebalances to high-demand markets, unlocking higher potential yield compared to isolated pools."
 msgstr "GLV（GMX Liquidity Vault）持有各種 GM 代幣，為您提供對 GMX 市場的多元化曝險。該金庫會自動再平衡至高需求市場，相較於獨立池可解鎖更高的潛在收益。"
@@ -7484,7 +7473,6 @@ msgid "Order not found. May have been canceled or already executed"
 msgstr "找不到訂單。可能已被取消或已執行"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Vesting"
 msgstr "歸屬"
 
@@ -7516,10 +7504,6 @@ msgstr "Harmonix"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Accumulates"
-msgstr "累積"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
@@ -7621,10 +7605,6 @@ msgstr "計入 PnL 及所有費用後的倉位價值"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Affiliate"
-msgstr "推廣夥伴"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Share your referral card"
@@ -12475,10 +12455,6 @@ msgstr "可接受價格影響"
 msgid "Default sorting"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Trading activity"
-msgstr "交易活動"
-
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr "減少提取金額以符合上限。<0>了解更多</0>。<1/><2/><3>設定最大提取金額</3>"
@@ -12578,7 +12554,6 @@ msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "GT"
 msgstr "GT"
 
@@ -12656,10 +12631,6 @@ msgstr "{idleSeconds}s"
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
 msgstr "GMX V1 操作"
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "esGMX Rewards"
-msgstr "esGMX 獎勵"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
@@ -13520,8 +13491,6 @@ msgstr "加倉（止損市價單）"
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Multiplier"

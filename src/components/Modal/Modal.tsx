@@ -55,6 +55,7 @@ export type ModalProps = PropsWithChildren<{
   withMobileBottomPosition?: boolean;
   takeFullHeight?: boolean;
   hideHeaderBorder?: boolean;
+  hideCloseButton?: boolean;
 }>;
 
 export default function Modal({
@@ -76,6 +77,7 @@ export default function Modal({
   withMobileBottomPosition = false,
   takeFullHeight = false,
   hideHeaderBorder = false,
+  hideCloseButton = false,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -151,14 +153,16 @@ export default function Modal({
                         {label}
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className="Modal-close-button"
-                      onClick={() => setIsVisible(false)}
-                      aria-label={t`Close`}
-                    >
-                      <CloseIcon className="Modal-close-icon size-20" />
-                    </button>
+                    {!hideCloseButton && (
+                      <button
+                        type="button"
+                        className="Modal-close-button"
+                        onClick={() => setIsVisible(false)}
+                        aria-label={t`Close`}
+                      >
+                        <CloseIcon className="Modal-close-icon size-20" />
+                      </button>
+                    )}
                   </div>
                   {headerContent}
                 </div>

@@ -73,6 +73,25 @@ describe("Modal", () => {
     expect(document.activeElement).not.toBe(screen.getByText("Invisible action").closest("button"));
   });
 
+  it("can replace the default close button with a custom header control", () => {
+    render(
+      <I18nProvider i18n={i18n}>
+        <Modal
+          isVisible
+          label="Custom close modal"
+          setIsVisible={vi.fn()}
+          hideCloseButton
+          headerContent={<button type="button">Skip and close</button>}
+        >
+          Modal content
+        </Modal>
+      </I18nProvider>
+    );
+
+    expect(screen.queryByRole("button", { name: "Close" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Skip and close" })).toBeDefined();
+  });
+
   it("lets only the topmost mobile slide modal handle Escape", () => {
     const closeParent = vi.fn();
     const closeChild = vi.fn();
