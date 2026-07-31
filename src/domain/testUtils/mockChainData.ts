@@ -1,6 +1,6 @@
 import type { PositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import { expandDecimals } from "lib/numbers";
-import type { GasLimitsConfig } from "sdk/utils/fees/types";
+import type { GasLimitsConfig, L1ExpressOrderGasReference } from "sdk/utils/fees/types";
 
 /** Chain-level fixtures close to Arbitrum production values. */
 
@@ -26,6 +26,11 @@ export const MOCK_GAS_LIMITS: GasLimitsConfig = {
   cancelOrderGasLimit: 700000n,
   tokenPermitGasLimit: 110000n,
   gmxAccountCollateralGasLimit: 500000n,
+};
+
+export const MOCK_L1_EXPRESS_ORDER_GAS_REFERENCE: L1ExpressOrderGasReference = {
+  gasLimit: 3000000n,
+  sizeOfData: 3000n,
 };
 
 export const MOCK_POSITIONS_CONSTANTS: PositionsConstants = {

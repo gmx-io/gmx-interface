@@ -22,6 +22,7 @@ export const MAX_POOL_AMOUNT_KEY = hashString("MAX_POOL_AMOUNT");
 export const RESERVE_FACTOR_KEY = hashString("RESERVE_FACTOR");
 export const OPEN_INTEREST_RESERVE_FACTOR_KEY = hashString("OPEN_INTEREST_RESERVE_FACTOR");
 export const MAX_OPEN_INTEREST_KEY = hashString("MAX_OPEN_INTEREST");
+export const MAX_COLLATERAL_SUM_KEY = hashString("MAX_COLLATERAL_SUM");
 export const NONCE_KEY = hashString("NONCE");
 export const BORROWING_FACTOR_KEY = hashString("BORROWING_FACTOR");
 export const BORROWING_EXPONENT_FACTOR_KEY = hashString("BORROWING_EXPONENT_FACTOR");
@@ -30,6 +31,7 @@ export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
 export const FUNDING_FACTOR_KEY = hashString("FUNDING_FACTOR");
 export const FUNDING_EXPONENT_FACTOR_KEY = hashString("FUNDING_EXPONENT_FACTOR");
 export const FUNDING_INCREASE_FACTOR_PER_SECOND = hashString("FUNDING_INCREASE_FACTOR_PER_SECOND");
+export const MIN_FUNDING_INCREASE_RATE_PER_SECOND = hashString("MIN_FUNDING_INCREASE_RATE_PER_SECOND");
 export const FUNDING_DECREASE_FACTOR_PER_SECOND = hashString("FUNDING_DECREASE_FACTOR_PER_SECOND");
 export const MIN_FUNDING_FACTOR_PER_SECOND = hashString("MIN_FUNDING_FACTOR_PER_SECOND");
 export const MAX_FUNDING_FACTOR_PER_SECOND = hashString("MAX_FUNDING_FACTOR_PER_SECOND");
@@ -81,6 +83,7 @@ export const CLAIMABLE_FUNDING_AMOUNT = hashString("CLAIMABLE_FUNDING_AMOUNT");
 export const VIRTUAL_TOKEN_ID_KEY = hashString("VIRTUAL_TOKEN_ID");
 export const VIRTUAL_MARKET_ID_KEY = hashString("VIRTUAL_MARKET_ID");
 export const VIRTUAL_INVENTORY_FOR_POSITIONS_KEY = hashString("VIRTUAL_INVENTORY_FOR_POSITIONS");
+export const VIRTUAL_INVENTORY_FOR_POSITIONS_IN_TOKENS_KEY = hashString("VIRTUAL_INVENTORY_FOR_POSITIONS_IN_TOKENS");
 export const VIRTUAL_INVENTORY_FOR_SWAPS_KEY = hashString("VIRTUAL_INVENTORY_FOR_SWAPS");
 export const AFFILIATE_REWARD_KEY = hashString("AFFILIATE_REWARD");
 export const IS_MARKET_DISABLED_KEY = hashString("IS_MARKET_DISABLED");
@@ -206,6 +209,10 @@ export function maxOpenInterestKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [MAX_OPEN_INTEREST_KEY, market, isLong]);
 }
 
+export function maxCollateralSumKey(market: string, collateralToken: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "address", "bool"], [MAX_COLLATERAL_SUM_KEY, market, collateralToken, isLong]);
+}
+
 export function borrowingFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [BORROWING_FACTOR_KEY, market, isLong]);
 }
@@ -234,16 +241,20 @@ export function fundingIncreaseFactorPerSecondKey(market: string) {
   return hashData(["bytes32", "address"], [FUNDING_INCREASE_FACTOR_PER_SECOND, market]);
 }
 
+export function minFundingIncreaseRatePerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [MIN_FUNDING_INCREASE_RATE_PER_SECOND, market]);
+}
+
 export function fundingDecreaseFactorPerSecondKey(market: string) {
   return hashData(["bytes32", "address"], [FUNDING_DECREASE_FACTOR_PER_SECOND, market]);
 }
 
-export function minFundingFactorPerSecondKey(market: string) {
-  return hashData(["bytes32", "address"], [MIN_FUNDING_FACTOR_PER_SECOND, market]);
+export function minFundingFactorPerSecondKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [MIN_FUNDING_FACTOR_PER_SECOND, market, isLong]);
 }
 
-export function maxFundingFactorPerSecondKey(market: string) {
-  return hashData(["bytes32", "address"], [MAX_FUNDING_FACTOR_PER_SECOND, market]);
+export function maxFundingFactorPerSecondKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [MAX_FUNDING_FACTOR_PER_SECOND, market, isLong]);
 }
 
 export function thresholdForStableFundingKey(market: string) {
@@ -350,6 +361,10 @@ export function virtualInventoryForSwapsKey(virtualMarketId: string, token: stri
 
 export function virtualInventoryForPositionsKey(virtualTokenId: string) {
   return hashData(["bytes32", "bytes32"], [VIRTUAL_INVENTORY_FOR_POSITIONS_KEY, virtualTokenId]);
+}
+
+export function virtualInventoryForPositionsInTokensKey(virtualTokenId: string) {
+  return hashData(["bytes32", "bytes32"], [VIRTUAL_INVENTORY_FOR_POSITIONS_IN_TOKENS_KEY, virtualTokenId]);
 }
 
 export function affiliateRewardKey(market: string, token: string, account: string) {
