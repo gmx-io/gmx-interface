@@ -237,7 +237,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
     );
 
     if (prefetched) {
-      return prefetched.then((flags) => (flags ?? this.request("/ui-flags/v2", {})) as Record<string, UiFlag>);
+      return prefetched.then((flags) => (flags ? (flags as Record<string, UiFlag>) : this.request("/ui-flags/v2", {})));
     }
 
     return this.request("/ui-flags/v2", {});

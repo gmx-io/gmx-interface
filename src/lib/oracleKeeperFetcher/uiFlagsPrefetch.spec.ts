@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { consumeUiFlagsPrefetch } from "./uiFlagsPrefetch";
 
@@ -7,6 +7,16 @@ const URL = "https://arbitrum-api.gmxinfra.io/ui-flags/v2";
 describe("consumeUiFlagsPrefetch", () => {
   afterEach(() => {
     delete window.__uiFlagsPrefetch;
+    vi.restoreAllMocks();
+  });
+
+  it("does not consume a prefetch after the boot window", () => {
+    const promise = Promise.resolve({ apiPositions: true });
+    window.__uiFlagsPrefetch = { [URL]: promise };
+    vi.spyOn(performance, "now").mockReturnValue(20_000);
+
+    expect(consumeUiFlagsPrefetch(URL)).toBeUndefined();
+    expect(window.__uiFlagsPrefetch[URL]).toBeUndefined();
   });
 
   it("returns undefined when no prefetch was registered", () => {
