@@ -34,24 +34,43 @@
     <link rel="preconnect" href="https://avalanche-api.gmxinfra.io" crossorigin />
     <link rel="dns-prefetch" href="//avalanche-api.gmxinfra.io" />
     <script>
-      // The app gates its api data requests on ui-flags; fetching them only after the bundle
-      // boots serializes ~2s on first-visit loads, so kick the requests off during HTML parse.
+      // Warms ui-flags during HTML parse; consumed once by src/lib/oracleKeeperFetcher/uiFlagsPrefetch.ts.
       window.__uiFlagsPrefetch = {};
-      ["https://arbitrum-api.gmxinfra.io/ui-flags/v2", "https://avalanche-api.gmxinfra.io/ui-flags/v2"].forEach(
-        function (url) {
-          try {
-            window.__uiFlagsPrefetch[url] = fetch(url)
+      [
+        [
+          "https://arbitrum-api.gmxinfra.io/ui-flags/v2",
+          "https://arbitrum-api-fallback.gmxinfra.io/ui-flags/v2",
+          "https://arbitrum-api-fallback.gmxinfra2.io/ui-flags/v2",
+        ],
+        [
+          "https://avalanche-api.gmxinfra.io/ui-flags/v2",
+          "https://avalanche-api-fallback.gmxinfra.io/ui-flags/v2",
+          "https://avalanche-api-fallback.gmxinfra2.io/ui-flags/v2",
+        ],
+      ].forEach(function (urls) {
+        try {
+          var attempt = function (i) {
+            if (i >= urls.length) return Promise.resolve(null);
+            var opts = {};
+            try {
+              if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) {
+                opts.signal = AbortSignal.timeout(10000);
+              }
+            } catch (e) {}
+            return fetch(urls[i], opts)
               .then(function (res) {
-                return res.ok ? res.json() : null;
+                return res.ok ? res.json() : attempt(i + 1);
               })
               .catch(function () {
-                return null;
+                return attempt(i + 1);
               });
-          } catch (e) {
-            window.__uiFlagsPrefetch[url] = undefined;
-          }
-        }
-      );
+          };
+          var promise = attempt(0);
+          urls.forEach(function (url) {
+            window.__uiFlagsPrefetch[url] = promise;
+          });
+        } catch (e) {}
+      });
     </script>
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
