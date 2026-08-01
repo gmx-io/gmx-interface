@@ -1,0 +1,53 @@
+name: SDK E2E Tests
+
+on:
+  push:
+    branches:
+      - release
+      - "release-*"
+  workflow_dispatch:
+    inputs:
+      run_bridges:
+        description: "Also run bridge tests that move funds cross-chain (sets GMX_TEST_SEND=1)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: sdk-e2e
+  cancel-in-progress: false
+
+jobs:
+  e2e:
+    name: SDK e2e (funded wallet)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GMX_TEST_PRIVATE_KEY: ${{ secrets.GMX_TEST_PRIVATE_KEY }}
+      GMX_TEST_RPC_URL: ${{ secrets.GMX_TEST_RPC_URL }}
+      GMX_TEST_SOURCE_RPC_URL: ${{ secrets.GMX_TEST_SOURCE_RPC_URL }}
+      GMX_TEST_API_URL: ${{ vars.GMX_TEST_API_URL }}
+      GMX_TEST_SEND: ${{ inputs.run_bridges && '1' || '' }}
+    steps:
+      - name: Check secrets
+        run: |
+          if [ -z "$GMX_TEST_PRIVATE_KEY" ]; then
+            echo "GMX_TEST_PRIVATE_KEY secret is not configured; the funded e2e suite cannot run" >&2
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run SDK e2e tests
+        run: |
+          cd sdk
+          yarn test:v2

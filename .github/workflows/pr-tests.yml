@@ -60,6 +60,11 @@ jobs:
           cd sdk
           yarn test:multicall
 
+      - name: Run SDK e2e public tests
+        run: |
+          cd sdk
+          yarn test:v2:public
+
   sdk-standalone:
     name: SDK standalone build (publish parity)
     runs-on: ubuntu-latest

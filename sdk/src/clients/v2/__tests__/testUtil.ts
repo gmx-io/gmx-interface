@@ -1,3 +1,5 @@
+import { generatePrivateKey } from "viem/accounts";
+
 import { ARBITRUM, getViemChain } from "configs/chains";
 import { sleep } from "utils/common";
 import type { IHttp } from "utils/http/types";
@@ -162,6 +164,17 @@ export function requireSigner(): PrivateKeySigner {
     throw new Error("GMX_TEST_PRIVATE_KEY env var is required for this test");
   }
   return signer;
+}
+
+let ephemeralSigner: PrivateKeySigner | undefined;
+
+export function getOrCreateTestSigner(): PrivateKeySigner {
+  const signer = getTestSigner();
+  if (signer) return signer;
+  if (!ephemeralSigner) {
+    ephemeralSigner = new PrivateKeySigner(generatePrivateKey() as `0x${string}`);
+  }
+  return ephemeralSigner;
 }
 
 export function hasRpcUrl(): boolean {
