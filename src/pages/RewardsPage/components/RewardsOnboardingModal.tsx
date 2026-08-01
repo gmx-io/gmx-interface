@@ -29,7 +29,7 @@ function clampSlide(index: number) {
 
 function RewardsFlowDiagram({ activeSlide }: { activeSlide: number }) {
   return (
-    <div className="-mx-20 flex h-[200px] w-[calc(100%+40px)] shrink-0 justify-center max-[479px]:h-[180px] max-[453px]:h-[160px] max-[407px]:h-[140px] max-[361px]:h-[120px]">
+    <div className="-mx-20 flex h-[200px] w-[calc(100%+40px)] shrink-0 justify-center overflow-hidden max-[479px]:h-[180px] max-[453px]:h-[160px] max-[407px]:h-[140px] max-[361px]:h-[120px]">
       <div className="relative h-[200px] w-[500px] shrink-0 origin-top overflow-hidden max-[479px]:scale-90 max-[453px]:scale-[0.8] max-[407px]:scale-[0.7] max-[361px]:scale-[0.6]">
         <img
           src={rewardsOnboardingFlowSrc}

@@ -73,6 +73,7 @@ describe("RewardsOnboardingModal", () => {
     expect(panels).toHaveLength(4);
     expect(panels.map((panel) => panel.getAttribute("aria-hidden"))).toEqual(["false", "true", "true", "true"]);
     expect(diagramTrack.style.transform).toBe("translate3d(0px, 0, 0)");
+    expect(diagramTrack.parentElement?.parentElement?.classList.contains("overflow-hidden")).toBe(true);
     expect(diagramTrack.classList.contains("motion-reduce:transition-none")).toBe(true);
     expect(track.style.transform).toBe("translate3d(0%, 0, 0)");
     expect(track.classList.contains("motion-reduce:transition-none")).toBe(true);
