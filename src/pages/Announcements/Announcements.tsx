@@ -2,6 +2,7 @@ import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react
 import { Popover, Portal } from "@headlessui/react";
 import { MessageDescriptor } from "@lingui/core";
 import { msg, t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -15,6 +16,8 @@ import useSearchParams from "lib/useSearchParams";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { DateRangeSelect } from "components/DateRangeSelect/DateRangeSelect";
+import { getPersonalDelistingAnnouncement } from "components/DelistingExitAnnouncements/personalDelistingAnnouncement";
+import { useDelistingExposure } from "components/DelistingExitAnnouncements/useDelistingExposure";
 import Loader from "components/Loader/Loader";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -47,7 +50,10 @@ const TAB_LABELS: Record<AnnouncementTab, MessageDescriptor> = {
 export default function AnnouncementsPage() {
   const { id: deepLinkId } = useSearchParams<{ id?: string }>();
   const history = useHistory();
+  const { _ } = useLingui();
   const { uiFlags, isLoading, error } = useAnnouncementsUiFlags();
+  const { account, chainId, positionMarkets, positionNames, positionCount, liquidityMarkets, liquidityNames } =
+    useDelistingExposure();
 
   const [tab, setTab] = useState<AnnouncementTab>("all");
   const [search, setSearch] = useState("");
@@ -76,10 +82,26 @@ export default function AnnouncementsPage() {
   );
 
   const searchTokens = useMemo(() => tokenizeSearchQuery(search), [search]);
+  const personalDelistingAnnouncement = useMemo(
+    () =>
+      getPersonalDelistingAnnouncement(
+        account,
+        chainId,
+        {
+          positionMarkets,
+          positionNames,
+          positionCount,
+          liquidityMarkets,
+          liquidityNames,
+        },
+        _
+      ),
+    [_, account, chainId, liquidityMarkets, liquidityNames, positionCount, positionMarkets, positionNames]
+  );
 
   const allEligible = useMemo<EventData[]>(() => {
     const now = new Date();
-    return appEventsData
+    const events = appEventsData
       .filter((event) => !event.requiresOpenPosition)
       .filter((event) => isEventActiveByFlag(event, uiFlags))
       .filter((event) => hasEventStarted(event, now))
@@ -89,7 +111,9 @@ export default function AnnouncementsPage() {
         if (aTime !== bTime) return bTime - aTime;
         return a.id.localeCompare(b.id);
       });
-  }, [uiFlags]);
+
+    return personalDelistingAnnouncement ? [personalDelistingAnnouncement, ...events] : events;
+  }, [personalDelistingAnnouncement, uiFlags]);
 
   const [fromTimestamp, toTimestamp] = useNormalizeDateRange(startDate, endDate);
 

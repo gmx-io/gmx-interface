@@ -11,12 +11,12 @@ import {
   withRetry,
 } from "viem";
 
-import { getContract } from "config/contracts";
+import { getContract, tryGetContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
-import { decodeErrorFromViemError } from "lib/errors";
+import { decodeSimulationErrorFromViemError } from "lib/errors";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -25,6 +25,7 @@ import { type ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomError, CustomErrorName, extendError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
 
 import type { GlvShiftParam } from "../jit/utils";
 import { isGlvEnabled } from "../markets/glv";
@@ -243,101 +244,181 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
 
   simulationPayloadData.push(...p.createMulticallPayload);
 
+  const simulationRouterAddress = !isGlv ? tryGetContract(chainId, "SimulationRouter") : undefined;
+
+  let simulateExecuteData: string;
+
   if (method === "simulateExecuteLatestWithdrawal") {
     if (p.swapPricingType === undefined) {
       throw new Error("swapPricingType is required for simulateExecuteLatestWithdrawal");
     }
 
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestWithdrawal",
-        args: [simulationPriceParams, p.swapPricingType],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestWithdrawal",
+      args: [simulationPriceParams, p.swapPricingType],
+    });
   } else if (method === "simulateExecuteLatestDeposit") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestDeposit",
-        args: [simulationPriceParams],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestDeposit",
+      args: [simulationPriceParams],
+    });
   } else if (method === "simulateExecuteLatestOrder") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestOrder",
-        args: [simulationPriceParams],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestOrder",
+      args: [simulationPriceParams],
+    });
   } else if (method === "simulateExecuteLatestShift") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestShift",
-        args: [simulationPriceParams],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestShift",
+      args: [simulationPriceParams],
+    });
   } else if (method === "simulateExecuteLatestGlvDeposit") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.GlvRouter,
-        functionName: "simulateExecuteLatestGlvDeposit",
-        args: [simulationPriceParams],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.GlvRouter,
+      functionName: "simulateExecuteLatestGlvDeposit",
+      args: [simulationPriceParams],
+    });
   } else if (method === "simulateExecuteLatestGlvWithdrawal") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.GlvRouter,
-        functionName: "simulateExecuteLatestGlvWithdrawal",
-        args: [simulationPriceParams],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.GlvRouter,
+      functionName: "simulateExecuteLatestGlvWithdrawal",
+      args: [simulationPriceParams],
+    });
   } else if (method === "simulateExecuteLatestJitOrder") {
     if (!p.jitShiftParamsList || p.jitShiftParamsList.length === 0) {
       throw new Error("jitShiftParamsList is required for simulateExecuteLatestJitOrder");
     }
 
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestJitOrder",
-        args: [p.jitShiftParamsList, simulationPriceParams],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestJitOrder",
+      args: [p.jitShiftParamsList, simulationPriceParams],
+    });
   } else {
     throw new Error(`Unknown method: ${method}`);
   }
 
   const tenderlyConfig = getTenderlyConfig();
-  const routerAddress = isGlv ? getContract(chainId, "GlvRouter") : getContract(chainId, "ExchangeRouter");
-  const routerAbi = isGlv ? abis.GlvRouter : abis.ExchangeRouter;
 
-  if (tenderlyConfig) {
-    await simulateTxWithTenderly({
-      chainId,
+  if (isGlv) {
+    simulationPayloadData.push(simulateExecuteData);
+    const routerAddress = getContract(chainId, "GlvRouter");
+    const routerAbi = abis.GlvRouter;
+
+    if (tenderlyConfig) {
+      await simulateTxWithTenderly({
+        chainId,
+        address: routerAddress,
+        abi: routerAbi,
+        account: p.account,
+        method: "multicall",
+        params: [simulationPayloadData],
+        value: p.value,
+        comment: `calling ${method}`,
+      });
+    }
+
+    await simulateContractWithRetry({
+      client,
       address: routerAddress,
       abi: routerAbi,
-      account: p.account,
-      method: "multicall",
-      params: [simulationPayloadData],
+      args: [simulationPayloadData],
       value: p.value,
-      comment: `calling ${method}`,
+      account: p.account,
+      blockNumber,
+      isExpress: p.isExpress,
+    });
+  } else if (simulationRouterAddress) {
+    simulationPayloadData.push(encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData));
+    const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
+
+    if (tenderlyConfig) {
+      await simulateTxWithTenderly({
+        chainId,
+        address: exchangeRouterAddress,
+        abi: abis.ExchangeRouter,
+        account: p.account,
+        method: "multicall",
+        params: [simulationPayloadData],
+        value: p.value,
+        comment: `calling ${method}`,
+      });
+    }
+
+    await simulateContractWithRetry({
+      client,
+      address: exchangeRouterAddress,
+      abi: abis.ExchangeRouter,
+      args: [simulationPayloadData],
+      value: p.value,
+      account: p.account,
+      blockNumber,
+      isExpress: p.isExpress,
+    });
+  } else {
+    simulationPayloadData.push(simulateExecuteData);
+    const routerAddress = getContract(chainId, "ExchangeRouter");
+    const routerAbi = abis.ExchangeRouter;
+
+    if (tenderlyConfig) {
+      await simulateTxWithTenderly({
+        chainId,
+        address: routerAddress,
+        abi: routerAbi,
+        account: p.account,
+        method: "multicall",
+        params: [simulationPayloadData],
+        value: p.value,
+        comment: `calling ${method}`,
+      });
+    }
+
+    await simulateContractWithRetry({
+      client,
+      address: routerAddress,
+      abi: routerAbi,
+      args: [simulationPayloadData],
+      value: p.value,
+      account: p.account,
+      blockNumber,
+      isExpress: p.isExpress,
     });
   }
+}
 
+export async function simulateContractWithRetry({
+  client,
+  address,
+  abi,
+  args,
+  value,
+  account,
+  blockNumber,
+  isExpress,
+}: {
+  client: PublicClient;
+  address: string;
+  abi: readonly any[];
+  args: [string[]];
+  value: bigint;
+  account: string;
+  blockNumber: bigint | undefined;
+  isExpress: boolean;
+}) {
   try {
     await withRetry(
       () => {
         return client.simulateContract({
-          address: routerAddress,
-          abi: routerAbi,
+          address: address,
+          abi: abi,
           functionName: "multicall",
-          args: [simulationPayloadData],
-          value: p.value,
-          account: p.account,
+          args: args,
+          value: value,
+          account: account,
           blockNumber: blockNumber,
         });
       },
@@ -350,12 +431,12 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       }
     );
   } catch (txnError) {
-    const decodedError = decodeErrorFromViemError(txnError);
+    const decodedError = decodeSimulationErrorFromViemError(txnError);
 
     const isPassed = decodedError?.name === CustomErrorName.EndOfOracleSimulation;
 
     const isInsufficientFunds = isInsufficientFundsError(txnError);
-    const shouldIgnoreExpressNativeTokenBalance = isInsufficientFunds && p.isExpress;
+    const shouldIgnoreExpressNativeTokenBalance = isInsufficientFunds && isExpress;
 
     if (isPassed || shouldIgnoreExpressNativeTokenBalance) {
       return;
@@ -374,6 +455,10 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       );
     }
   }
+
+  throw extendError(new Error("Execution simulation did not revert with EndOfOracleSimulation."), {
+    errorContext: "simulation",
+  });
 }
 
 export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams<any>[]) {

@@ -17,6 +17,7 @@ export async function searchAmountInForDesiredOutput(
     desiredAmountOut,
     initialAmountIn,
     gasPrice,
+    signal,
   }: {
     chainId: ContractsChainId;
     tokenInAddress: string;
@@ -24,6 +25,7 @@ export async function searchAmountInForDesiredOutput(
     desiredAmountOut: bigint;
     initialAmountIn: bigint;
     gasPrice: bigint;
+    signal?: AbortSignal;
   },
   fetchRoute: FetchRoute = getKyberSwapRoute
 ): Promise<{ amountIn: bigint; routeResult: KyberSwapRouteResult } | undefined> {
@@ -38,6 +40,7 @@ export async function searchAmountInForDesiredOutput(
       tokenOutAddress,
       amountIn,
       gasPrice,
+      signal,
     });
 
     if (!routeResult) return undefined;
