@@ -10,6 +10,7 @@ import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncem
 import { useBalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/useBalancerProgramAnnouncement";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
+import { useWalletExtensionConnectionBanner } from "components/WalletExtensionConnectionBanner/useWalletExtensionConnectionBanner";
 
 import { useWhatsNewAnnouncements } from "./useWhatsNewAnnouncements";
 import { WhatsNewToast } from "./WhatsNewToast";
@@ -38,6 +39,8 @@ export function WhatsNewToastContainer() {
     useBalancerProgramAnnouncement();
   const [isScrolled, setIsScrolled] = useState(false);
   const { pathname } = useLocation();
+  const { isVisible: isWalletExtensionBannerVisible, dismiss: dismissWalletExtensionBanner } =
+    useWalletExtensionConnectionBanner(pathname);
 
   const warningUiFlagEvents = activeUiFlagEvents.filter(
     (event) => event.data.variant === "warning" || event.data.variant === "error"
@@ -120,6 +123,26 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           ))}
+          {isWalletExtensionBannerVisible && (
+            <motion.div
+              key="wallet-extension-connection"
+              initial={MOTION_INITIAL}
+              animate={MOTION_ANIMATE}
+              exit={MOTION_EXIT}
+            >
+              <div className="pb-12">
+                <AnnouncementBanner
+                  className="pointer-events-auto"
+                  variant="info"
+                  headerLabel="Wallet connection"
+                  headerIcon="info"
+                  onClose={dismissWalletExtensionBanner}
+                >
+                  Disable and reenable your wallet extension if you are having trouble connecting it.
+                </AnnouncementBanner>
+              </div>
+            </motion.div>
+          )}
           {cards.length > 0 && (
             <motion.div key="whats-new" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <WhatsNewToast cards={cards} dismiss={dismiss} />
