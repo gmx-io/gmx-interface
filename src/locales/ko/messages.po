@@ -3004,7 +3004,7 @@ msgstr "스테이킹 등급"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Rewards Vault"
-msgstr ""
+msgstr "Rewards 볼트"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
@@ -3443,7 +3443,7 @@ msgstr "esGMX 보상이 변경되었습니다. 업데이트된 수량을 확인�
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Legacy Vault"
-msgstr ""
+msgstr "Legacy 볼트"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -6289,7 +6289,7 @@ msgstr "최대 네트워크 수수료에는 Gas 급등에 대비한 버퍼가 �
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate Vault"
-msgstr ""
+msgstr "Affiliate 볼트"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9942,7 +9942,7 @@ msgstr "지갑 또는 네트워크가 변경되었습니다. 업데이트된 담
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GMX Vault"
-msgstr ""
+msgstr "GMX 볼트"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"

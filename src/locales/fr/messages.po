@@ -3004,7 +3004,7 @@ msgstr "Niveau de staking"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Rewards Vault"
-msgstr ""
+msgstr "Rewards Vault"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
@@ -3443,7 +3443,7 @@ msgstr "Les récompenses esGMX ont changé. Vérifiez le montant mis à jour et 
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Legacy Vault"
-msgstr ""
+msgstr "Legacy Vault"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -6289,7 +6289,7 @@ msgstr "Les frais de réseau max incluent une marge pour les pics de Gas. Les fr
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate Vault"
-msgstr ""
+msgstr "Vault Affiliate"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9942,7 +9942,7 @@ msgstr "Le portefeuille ou le réseau a changé. Vérifiez le collatéral actual
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GMX Vault"
-msgstr ""
+msgstr "GMX vault"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"

@@ -3004,7 +3004,7 @@ msgstr "質押等級"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Rewards Vault"
-msgstr ""
+msgstr "Rewards 金庫"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
@@ -3443,7 +3443,7 @@ msgstr "esGMX 獎勵已變更。請查看更新後的金額並繼續鎖倉釋放
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Legacy Vault"
-msgstr ""
+msgstr "Legacy 金庫"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -6289,7 +6289,7 @@ msgstr "最大網路費用包含 Gas 突增的緩衝。未使用的費用將在�
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate Vault"
-msgstr ""
+msgstr "推廣者金庫"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9942,7 +9942,7 @@ msgstr "錢包或網路已變更。請檢查更新後的抵押品並繼續歸屬
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GMX Vault"
-msgstr ""
+msgstr "GMX 金庫"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"

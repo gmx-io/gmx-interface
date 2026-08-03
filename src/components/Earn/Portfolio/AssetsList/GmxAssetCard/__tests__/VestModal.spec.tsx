@@ -251,12 +251,12 @@ describe("VestModal", () => {
     const tabs = screen.getAllByRole("tab");
 
     expect(tabs.map((tab) => tab.textContent)).toEqual([
-      "Rewards vault",
-      "Legacy vault",
-      "GMX vault",
-      "Affiliate vault",
+      "Rewards Vault",
+      "Legacy Vault",
+      "GMX Vault",
+      "Affiliate Vault",
     ]);
-    expect(screen.getByRole("tab", { name: "Rewards vault" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByRole("tab", { name: "Rewards Vault" }).getAttribute("aria-selected")).toBe("true");
     expect(view.container.querySelector('[data-qa="vesting-rewards-vault"]')).not.toBeNull();
     expect(
       screen.getByText((_content, element) => element?.tagName === "SPAN" && element.textContent === "Max: —")
@@ -271,9 +271,9 @@ describe("VestModal", () => {
   it("switches to the disabled Legacy Vault panel", () => {
     const view = renderModal();
 
-    selectVault("Legacy vault");
+    selectVault("Legacy Vault");
 
-    expect(screen.getByRole("tab", { name: "Legacy vault" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByRole("tab", { name: "Legacy Vault" }).getAttribute("aria-selected")).toBe("true");
     expect(view.container.querySelector('[data-qa="vesting-legacy-vault"]')).not.toBeNull();
     expect(view.container.querySelector('[data-qa="vesting-rewards-vault"]')).toBeNull();
     expect((screen.getByRole("button", { name: "Coming soon" }) as HTMLButtonElement).disabled).toBe(true);
@@ -282,7 +282,7 @@ describe("VestModal", () => {
 
   it.each([
     {
-      tab: "GMX vault",
+      tab: "GMX Vault",
       contractName: "GmxVester",
       contractAddress: GMX_VESTER,
       status: "95.0000 / 300.0000",
@@ -290,7 +290,7 @@ describe("VestModal", () => {
       returned: "205.0000 esGMX",
     },
     {
-      tab: "Affiliate vault",
+      tab: "Affiliate Vault",
       contractName: "AffiliateVester",
       contractAddress: AFFILIATE_VESTER,
       status: "180.0000 / 900.0000",
@@ -345,7 +345,7 @@ describe("VestModal", () => {
       gmxVesterClaimSum: 0n,
       gmxVesterVestedAmount: 0n,
     });
-    selectVault("GMX vault");
+    selectVault("GMX Vault");
 
     const statusRow = screen.getByTestId("progress-row");
     expect(normalizedText(statusRow)).toContain("0.0000 / 0.0000");
