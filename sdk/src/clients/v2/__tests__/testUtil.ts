@@ -23,7 +23,9 @@ export const TEST_CHAIN_ID = ARBITRUM;
 
 export const TEST_SYMBOL = "ETH/USD [WETH-USDC]";
 export const TEST_SIZE_USD = 10n * 10n ** 30n; // $10
-export const TEST_COLLATERAL = { amount: 1000000n, token: "USDC" }; // 1 USDC
+// Must clear MIN_COLLATERAL_USD ($1 on Arbitrum) after fees, otherwise the keeper
+// cancels the order with LiquidatablePosition.
+export const TEST_COLLATERAL = { amount: 3000000n, token: "USDC" }; // 3 USDC
 
 const TERMINAL_STATUSES = new Set(["executed", "cancelled", "relay_failed", "relay_reverted"]);
 const ORDER_PREPARE_PATHS = new Set([
