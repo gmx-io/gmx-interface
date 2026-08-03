@@ -469,12 +469,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             stakingPowerData={stakingPowerData}
             stakingPowerProjectedRewardsUsd={accumulatedGmxUsd}
           />
-          <VestModal
-            isVisible={isVestModalVisible}
-            setIsVisible={setIsVestModalVisible}
-            processedData={processedData}
-            reservedAmount={reservedAmount}
-          />
+          <VestModal isVisible={isVestModalVisible} setIsVisible={setIsVestModalVisible} />
         </>
       )}
 
