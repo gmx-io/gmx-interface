@@ -3,7 +3,8 @@ name: SDK E2E Tests
 on:
   push:
     branches:
-      - release
+      # Must stay within the sdk_e2e environment's deployment branch policy,
+      # otherwise the job cannot read its secrets.
       - "release-*"
   workflow_dispatch:
     inputs:
@@ -20,6 +21,7 @@ jobs:
   e2e:
     name: SDK e2e (funded wallet)
     runs-on: ubuntu-latest
+    environment: sdk_e2e
     timeout-minutes: 90
     env:
       GMX_TEST_PRIVATE_KEY: ${{ secrets.GMX_TEST_PRIVATE_KEY }}
