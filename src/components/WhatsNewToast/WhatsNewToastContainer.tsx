@@ -6,6 +6,8 @@ import { useLocation } from "react-router-dom";
 import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
+import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/BalancerProgramAnnouncement";
+import { useBalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/useBalancerProgramAnnouncement";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
 
@@ -32,8 +34,17 @@ export function WhatsNewToastContainer() {
   const activeUiFlagEvents = useUiFlagEvents();
   const { cards, dismiss } = useWhatsNewAnnouncements();
   const { announcements: delistingAnnouncements, dismiss: dismissDelisting } = useDelistingExitAnnouncements();
+  const { isVisible: isBalancerProgramAnnouncementVisible, dismiss: dismissBalancerProgramAnnouncement } =
+    useBalancerProgramAnnouncement();
   const [isScrolled, setIsScrolled] = useState(false);
   const { pathname } = useLocation();
+
+  const warningUiFlagEvents = activeUiFlagEvents.filter(
+    (event) => event.data.variant === "warning" || event.data.variant === "error"
+  );
+  const genericUiFlagEvents = activeUiFlagEvents.filter(
+    (event) => event.data.variant !== "warning" && event.data.variant !== "error"
+  );
 
   useEffect(() => {
     setIsScrolled(false);
@@ -72,7 +83,29 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           ))}
-          {activeUiFlagEvents.map((event) => (
+          {warningUiFlagEvents.map((event) => (
+            <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <AnnouncementBanner
+                  className="pointer-events-auto"
+                  variant={event.data.variant}
+                  headerLabel={event.data.title}
+                  headerIcon="alert"
+                  onClose={event.dismiss}
+                >
+                  {event.data.content}
+                </AnnouncementBanner>
+              </div>
+            </motion.div>
+          ))}
+          {isBalancerProgramAnnouncementVisible && (
+            <motion.div key="balancer-program" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <BalancerProgramAnnouncement onDismiss={dismissBalancerProgramAnnouncement} />
+              </div>
+            </motion.div>
+          )}
+          {genericUiFlagEvents.map((event) => (
             <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <div className="pb-12">
                 <AnnouncementBanner
