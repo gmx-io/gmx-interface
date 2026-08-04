@@ -7,11 +7,14 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import { ThemeProvider } from "context/ThemeContext/ThemeContext";
+import { registerPreloadErrorRecovery } from "lib/pwa/registerPreloadErrorRecovery";
 import { registerServiceWorker } from "lib/pwa/registerServiceWorker";
 import WalletProvider from "lib/wallets/WalletProvider";
 
 import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
+
+registerPreloadErrorRecovery();
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
