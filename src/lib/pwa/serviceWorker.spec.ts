@@ -68,7 +68,7 @@ function loadFetchHandler(fetch: ReturnType<typeof vi.fn>) {
   return fetchHandler;
 }
 
-async function dispatchNavigation(fetchHandler: (event: FetchEvent) => void) {
+async function dispatchNavigation(fetchHandler: (event: FetchEvent) => void, url = "https://app.example/trade") {
   let responsePromise: Promise<Response> | undefined;
   const backgroundPromises: Promise<unknown>[] = [];
 
@@ -77,7 +77,7 @@ async function dispatchNavigation(fetchHandler: (event: FetchEvent) => void) {
       destination: "document",
       method: "GET",
       mode: "navigate",
-      url: "https://app.example/trade",
+      url,
     },
     respondWith: (response) => {
       responsePromise = response;
@@ -97,7 +97,7 @@ async function dispatchNavigation(fetchHandler: (event: FetchEvent) => void) {
 }
 
 describe("PWA service worker navigation", () => {
-  it("returns the network shell when online", async () => {
+  it("returns the cached shell immediately and checks the network in the background", async () => {
     const fetch = vi.fn().mockResolvedValue(
       new Response(APP_SHELL_HTML, {
         headers: { "content-type": "text/html" },
@@ -106,22 +106,41 @@ describe("PWA service worker navigation", () => {
 
     const response = await dispatchNavigation(loadFetchHandler(fetch));
 
-    expect(await response.text()).toContain('content="2"');
+    expect(await response.text()).toBe("cached shell");
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  it("falls back to the cached shell after a server error", async () => {
-    const fetch = vi.fn().mockResolvedValue(new Response("unavailable", { status: 503 }));
+  it("returns the cached shell when the background network check fails", async () => {
+    const fetch = vi.fn().mockRejectedValue(new Error("offline"));
 
     const response = await dispatchNavigation(loadFetchHandler(fetch));
 
     expect(await response.text()).toBe("cached shell");
   });
 
-  it("falls back to the cached shell when offline", async () => {
+  it("uses the network shell for a preload recovery navigation", async () => {
+    const fetch = vi.fn().mockResolvedValue(
+      new Response(APP_SHELL_HTML, {
+        headers: { "content-type": "text/html" },
+      })
+    );
+
+    const response = await dispatchNavigation(
+      loadFetchHandler(fetch),
+      "https://app.example/trade?__gmx_pwa_recovery=1"
+    );
+
+    expect(await response.text()).toContain('content="2"');
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("falls back to the cached shell when a recovery navigation is offline", async () => {
     const fetch = vi.fn().mockRejectedValue(new Error("offline"));
 
-    const response = await dispatchNavigation(loadFetchHandler(fetch));
+    const response = await dispatchNavigation(
+      loadFetchHandler(fetch),
+      "https://app.example/trade?__gmx_pwa_recovery=1"
+    );
 
     expect(await response.text()).toBe("cached shell");
   });

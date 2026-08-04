@@ -7,6 +7,7 @@ const CONTROL_CACHE = "gmx-pwa-control-v2";
 const DISABLED_KEY_PREFIX = "/__gmx_pwa_disabled__/";
 const APP_SHELL_URL = "/";
 const OFFLINE_SHELL_KEY = "/index.html";
+const RECOVERY_QUERY_PARAM = "__gmx_pwa_recovery";
 const APP_ROOT_MARKER = 'id="root"';
 const PWA_SHELL_MARKER = 'name="gmx-pwa-enabled" content="true"';
 const PWA_BUILD_ID_PATTERN = /<meta\s+name=["']gmx-pwa-build-id["']\s+content=["']([^"']+)["'][^>]*>/i;
@@ -374,6 +375,11 @@ async function inspectNavigationResponse(response) {
   }
 }
 
+async function checkNetworkNavigation(request) {
+  const response = await fetch(request);
+  await inspectNavigationResponse(response);
+}
+
 async function trimCache(cache, maxEntries) {
   const keys = await cache.keys();
   for (let index = 0; index < keys.length - maxEntries; index++) {
@@ -382,6 +388,13 @@ async function trimCache(cache, maxEntries) {
 }
 
 async function handleNavigation(event) {
+  const isRecoveryNavigation = new URL(event.request.url).searchParams.has(RECOVERY_QUERY_PARAM);
+  const cachedShell = await getFromShellCaches(OFFLINE_SHELL_KEY);
+  if (cachedShell && !isRecoveryNavigation) {
+    event.waitUntil(checkNetworkNavigation(event.request).catch(() => undefined));
+    return cachedShell;
+  }
+
   try {
     const response = await fetch(event.request);
     if (response.status >= 500) {

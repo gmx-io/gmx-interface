@@ -23,6 +23,7 @@ describe("registerPreloadErrorRecovery", () => {
 
   afterEach(() => {
     document.querySelectorAll('meta[name="gmx-pwa-build-id"]').forEach((element) => element.remove());
+    window.history.replaceState({}, "", "/");
   });
 
   it("reloads once when a preload fails", () => {
@@ -35,6 +36,18 @@ describe("registerPreloadErrorRecovery", () => {
 
     expect(event.defaultPrevented).toBe(true);
     expect(reloadPage).toHaveBeenCalledTimes(1);
+    expect(reloadPage.mock.calls[0][0]).toContain("__gmx_pwa_recovery=100");
+    unregister();
+  });
+
+  it("removes the recovery query parameter after the fresh shell loads", () => {
+    window.history.replaceState({}, "", "/trade?foo=bar&__gmx_pwa_recovery=100#/orders");
+
+    const unregister = registerPreloadErrorRecovery({ reloadPage: vi.fn() });
+
+    expect(window.location.pathname).toBe("/trade");
+    expect(window.location.search).toBe("?foo=bar");
+    expect(window.location.hash).toBe("#/orders");
     unregister();
   });
 
