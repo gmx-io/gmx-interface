@@ -544,8 +544,8 @@ export function formatFactor(factor: bigint) {
       .abs(factor)
       .toString()
       .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
-  const factorDecimals = 30 - trailingZeroes;
-  return formatAmount(factor, 30, factorDecimals);
+  const factorDecimals = Math.max(PRECISION_DECIMALS - trailingZeroes, 0);
+  return formatAmount(factor, PRECISION_DECIMALS, factorDecimals);
 }
 export function numberWithCommas(x: BigNumberish, { showDollar = false }: { showDollar?: boolean } = {}) {
   if (x === undefined || x === null) {

@@ -411,6 +411,14 @@ describe("formatFactor", () => {
     expect(formatFactor(1000000000000000000000000000n)).toBe("0.001");
     expect(formatFactor(1000000000000000000000000000000n)).toBe("1");
   });
+
+  it("should format percentage-scaled factors", () => {
+    expect(formatFactor(PRECISION * 10n)).toBe("10");
+    expect(formatFactor(PRECISION * 30n)).toBe("30");
+    expect(formatFactor(PRECISION * 80n)).toBe("80");
+    expect(formatFactor(PRECISION * 100n)).toBe("100");
+    expect(formatFactor(PRECISION * 1000n)).toBe("1000");
+  });
 });
 
 describe("formatPercentage", () => {
