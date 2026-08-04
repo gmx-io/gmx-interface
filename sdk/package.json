@@ -506,6 +506,7 @@
     "test:ci": "vitest run",
     "test:multicall": "vitest run --config vitest.multicall.config.ts",
     "test:v2": "vitest run --config vitest.v2.config.ts",
+    "test:v2:public": "vitest run --config vitest.v2.public.config.ts",
     "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
