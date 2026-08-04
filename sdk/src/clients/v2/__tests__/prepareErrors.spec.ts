@@ -106,6 +106,24 @@ describe("prepare order errors", () => {
     expect(isPrepareOrderError(parsed)).toBe(true);
   });
 
+  it("preserves an unknown error code and diagnostics", () => {
+    const parsed = parsePrepareOrderError(
+      new HttpError(400, "Bad Request", {
+        code: "FUTURE_ERROR",
+        message: "Prepare failed",
+        traceId: "trace-1",
+      })
+    );
+
+    expect(parsed).toEqual({
+      code: "UNKNOWN_PREPARE_ORDER_ERROR",
+      originalCode: "FUTURE_ERROR",
+      message: "Prepare failed",
+      traceId: "trace-1",
+    });
+    expect(isPrepareOrderError(parsed)).toBe(true);
+  });
+
   it("parses a documented code-less bad request", () => {
     const parsed = parsePrepareOrderError(new HttpError(400, "Bad Request", { message: "Invalid request" }));
 
@@ -136,7 +154,7 @@ describe("prepare order errors", () => {
     ["a non-HTTP error", new Error("Prepare failed")],
     ["a non-400 response", new HttpError(500, "Internal Server Error", buildInsufficientLiquidityBody("101"))],
     ["a raw response body", buildInsufficientLiquidityBody("101")],
-    ["an unknown code", new HttpError(400, "Bad Request", { code: "FUTURE_ERROR", message: "Prepare failed" })],
+    ["an empty error code", new HttpError(400, "Bad Request", { code: "", message: "Prepare failed" })],
     [
       "malformed field validation errors",
       new HttpError(400, "Bad Request", { message: { size: { value: "invalid" } } }),
@@ -164,11 +182,21 @@ describe("prepare order errors", () => {
 
 describe("prepare order warning amount parsing", () => {
   it.each([true, 1, 1.5, null, undefined, "", "-1", "+1", "01", "1.0", "0x1", (MAX_UINT256 + 1n).toString()])(
-    "rejects non-canonical requestedSizeUsd %p",
+    "degrades non-canonical requestedSizeUsd %p to an unknown warning",
     async (requestedSizeUsd) => {
-      await expect(
-        prepareOrder({ api: new PrepareApi(buildPrepareResponse(requestedSizeUsd)) }, prepareRequest)
-      ).rejects.toThrow("Invalid insufficient-liquidity warning in prepare response");
+      const prepared = await prepareOrder(
+        { api: new PrepareApi(buildPrepareResponse(requestedSizeUsd)) },
+        prepareRequest
+      );
+
+      expect(prepared.validationWarnings).toEqual([
+        {
+          code: "UNKNOWN_VALIDATION_WARNING",
+          originalCode: "INSUFFICIENT_LIQUIDITY",
+          message: "Insufficient liquidity",
+          details: { ...buildCapacity(), requestedSizeUsd },
+        },
+      ]);
     }
   );
 

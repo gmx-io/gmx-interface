@@ -1,5 +1,6 @@
 import { IHttp } from "utils/http/types";
-import { deserializeBigIntsInObject } from "utils/numbers";
+import { deserializeBigIntsInObject, isUint256, parseUint256DecimalString } from "utils/numbers";
+import { getString, isRecord } from "utils/objects";
 import { TokenData } from "utils/tokens/types";
 
 import {
@@ -10,6 +11,9 @@ import {
   RawMarketInfo,
   RawMarketValues,
   TradingCapacity,
+  type JitDataStatus,
+  type MarketDataStatus,
+  type TradingCapacityLimitingFactor,
 } from "./types";
 
 export async function fetchApiMarketsInfo(ctx: { api: IHttp }): Promise<RawMarketInfo[]> {
@@ -47,11 +51,97 @@ export async function fetchApiMarketsTickers(
       symbols: params?.symbols,
     },
   });
-  return tickers.map((t) => deserializeBigIntsInObject(t, { handleInts: true })) as MarketTickerWithCapacity[];
+  return tickers.map((rawTicker) => {
+    const { capacityLong: rawCapacityLong, capacityShort: rawCapacityShort, ...rawMarketTicker } = rawTicker;
+    const marketTicker = deserializeBigIntsInObject(rawMarketTicker, { handleInts: true });
+    const capacityLong = parseTradingCapacity(rawCapacityLong);
+    const capacityShort = parseTradingCapacity(rawCapacityShort);
+
+    return {
+      ...marketTicker,
+      ...(capacityLong ? { capacityLong } : {}),
+      ...(capacityShort ? { capacityShort } : {}),
+    };
+  }) as MarketTickerWithCapacity[];
 }
 
-export function parseTradingCapacity(raw: any): TradingCapacity {
-  return deserializeBigIntsInObject(raw, { handleInts: true }) as TradingCapacity;
+function parseTradingCapacityAmount(value: unknown): bigint | undefined {
+  if (typeof value === "string") {
+    return parseUint256DecimalString(value);
+  }
+
+  if (typeof value === "bigint") {
+    return isUint256(value) ? value : undefined;
+  }
+
+  if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0) {
+    return BigInt(value);
+  }
+
+  return undefined;
+}
+
+function parseTradingCapacityLimitingFactor(value: unknown): TradingCapacityLimitingFactor | undefined {
+  const factor = getString(value);
+
+  if (factor === "reserve" || factor === "openInterest" || factor === "both" || factor === "notApplicable") {
+    return factor;
+  }
+
+  return undefined;
+}
+
+function parseJitDataStatus(value: unknown): JitDataStatus | undefined {
+  const status = getString(value);
+
+  if (status === "available" || status === "stale" || status === "unavailable") {
+    return status;
+  }
+
+  return undefined;
+}
+
+function parseMarketDataStatus(value: unknown): MarketDataStatus | undefined {
+  const status = getString(value);
+
+  if (status === "fresh" || status === "stale") {
+    return status;
+  }
+
+  return undefined;
+}
+
+export function parseTradingCapacity(raw: unknown): TradingCapacity | undefined {
+  if (!isRecord(raw)) {
+    return undefined;
+  }
+
+  const availableLiquidity = parseTradingCapacityAmount(raw.availableLiquidity);
+  const baseAvailableLiquidity = parseTradingCapacityAmount(raw.baseAvailableLiquidity);
+  const jitAvailableLiquidity = parseTradingCapacityAmount(raw.jitAvailableLiquidity);
+  const limitingFactor = parseTradingCapacityLimitingFactor(raw.limitingFactor);
+  const jitDataStatus = parseJitDataStatus(raw.jitDataStatus);
+  const marketDataStatus = parseMarketDataStatus(raw.marketDataStatus);
+
+  if (
+    availableLiquidity === undefined ||
+    baseAvailableLiquidity === undefined ||
+    jitAvailableLiquidity === undefined ||
+    limitingFactor === undefined ||
+    jitDataStatus === undefined ||
+    marketDataStatus === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    availableLiquidity,
+    baseAvailableLiquidity,
+    jitAvailableLiquidity,
+    limitingFactor,
+    jitDataStatus,
+    marketDataStatus,
+  };
 }
 
 export async function fetchApiTradingCapacity(
@@ -63,6 +153,14 @@ export async function fetchApiTradingCapacity(
       symbol: params.symbol,
       direction: params.direction,
     },
-    transform: parseTradingCapacity,
+    transform: (raw) => {
+      const capacity = parseTradingCapacity(raw);
+
+      if (!capacity) {
+        throw new Error("Invalid trading capacity response");
+      }
+
+      return capacity;
+    },
   });
 }

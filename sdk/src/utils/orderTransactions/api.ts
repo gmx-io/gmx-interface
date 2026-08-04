@@ -4,6 +4,7 @@ import { IHttp } from "utils/http/types";
 import { parseTradingCapacity } from "utils/markets/api";
 import type { TradingCapacity } from "utils/markets/types";
 import { isUint256, parseUint256DecimalString } from "utils/numbers";
+import { getRecord, getString, isRecord } from "utils/objects";
 import type { IAbstractSigner, TypedDataDomain, TypedDataTypes } from "utils/signer";
 
 import { validateOrderTypedData } from "./validateTypedData";
@@ -88,6 +89,12 @@ export type PrepareOrderError =
   | {
       code: PrepareOrderErrorCode;
       message: string;
+    }
+  | {
+      code: "UNKNOWN_PREPARE_ORDER_ERROR";
+      originalCode: string;
+      message: string;
+      traceId?: string;
     }
   | {
       code?: undefined;
@@ -214,47 +221,35 @@ const PREPARE_ORDER_ERROR_CODES: readonly PrepareOrderErrorCode[] = [
   "POSITION_NOT_FOUND",
 ];
 
-function isParsedTradingCapacity(value: unknown): value is TradingCapacity {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+function isDeserializedTradingCapacity(value: unknown): value is TradingCapacity {
+  const raw = getRecord(value);
+  if (!raw) {
     return false;
   }
 
-  const capacity = value as Record<string, unknown>;
-  return (
-    typeof capacity.availableLiquidity === "bigint" &&
-    typeof capacity.baseAvailableLiquidity === "bigint" &&
-    typeof capacity.jitAvailableLiquidity === "bigint" &&
-    typeof capacity.limitingFactor === "string" &&
-    typeof capacity.jitDataStatus === "string" &&
-    typeof capacity.marketDataStatus === "string"
-  );
+  const parsed = parseTradingCapacity(raw);
+  return parsed !== undefined && Object.entries(parsed).every(([key, parsedValue]) => raw[key] === parsedValue);
 }
 
 function isPrepareOrderFieldValidationErrors(value: unknown): value is PrepareOrderFieldValidationErrors {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+  if (!isRecord(value)) {
     return false;
   }
 
-  return Object.values(value).every(
-    (fieldError) =>
-      typeof fieldError === "object" &&
-      fieldError !== null &&
-      !Array.isArray(fieldError) &&
-      typeof (fieldError as Record<string, unknown>).message === "string"
-  );
+  return Object.values(value).every((fieldError) => isRecord(fieldError) && typeof fieldError.message === "string");
 }
 
 function parsePrepareOrderErrorBody(value: unknown): PrepareOrderError | undefined {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+  if (!isRecord(value)) {
     return undefined;
   }
 
-  const body = value as Record<string, unknown>;
+  const body = value;
   if (body.code === "INSUFFICIENT_LIQUIDITY") {
-    const capacity = parseTradingCapacity(body.details);
-    const details = body.details as Record<string, unknown> | null | undefined;
+    const details = getRecord(body.details);
+    const capacity = parseTradingCapacity(details);
     const requestedSizeUsd = parseUint256DecimalString(details?.requestedSizeUsd);
-    if (!isParsedTradingCapacity(capacity) || requestedSizeUsd === undefined || typeof body.message !== "string") {
+    if (!capacity || requestedSizeUsd === undefined || typeof body.message !== "string") {
       return undefined;
     }
 
@@ -272,6 +267,15 @@ function parsePrepareOrderErrorBody(value: unknown): PrepareOrderError | undefin
     return {
       code: body.code as PrepareOrderErrorCode,
       message: body.message,
+    };
+  }
+
+  if (typeof body.code === "string" && body.code.length > 0 && typeof body.message === "string") {
+    return {
+      code: "UNKNOWN_PREPARE_ORDER_ERROR",
+      originalCode: body.code,
+      message: body.message,
+      ...(typeof body.traceId === "string" ? { traceId: body.traceId } : {}),
     };
   }
 
@@ -300,22 +304,30 @@ export function parsePrepareOrderError(error: unknown): PrepareOrderError | unde
 
 /** Validates an already deserialized prepare error. Use parsePrepareOrderError for a caught HttpError. */
 export function isPrepareOrderError(value: unknown): value is PrepareOrderError {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+  if (!isRecord(value)) {
     return false;
   }
 
-  const error = value as Record<string, unknown>;
+  const error = value;
   if (error.code === "INSUFFICIENT_LIQUIDITY") {
-    const details = error.details as Record<string, unknown> | null | undefined;
+    const details = getRecord(error.details);
+    const requestedSizeUsd = details?.requestedSizeUsd;
     return Boolean(
-      isParsedTradingCapacity(error.details) &&
-        isUint256(details?.requestedSizeUsd) &&
-        typeof error.message === "string"
+      isDeserializedTradingCapacity(details) && isUint256(requestedSizeUsd) && typeof error.message === "string"
     );
   }
 
   if (PREPARE_ORDER_ERROR_CODES.includes(error.code as PrepareOrderErrorCode)) {
     return typeof error.message === "string";
+  }
+
+  if (error.code === "UNKNOWN_PREPARE_ORDER_ERROR") {
+    return (
+      typeof error.originalCode === "string" &&
+      error.originalCode.length > 0 &&
+      typeof error.message === "string" &&
+      (error.traceId === undefined || typeof error.traceId === "string")
+    );
   }
 
   return (
@@ -342,47 +354,51 @@ function parseEstimates(raw: any): OrderEstimates | undefined {
   };
 }
 
-function parseValidationWarning(raw: any): OrderValidationWarning {
-  if (raw?.code === "INSUFFICIENT_LIQUIDITY") {
-    const capacity = parseTradingCapacity(raw.details);
-    const requestedSizeUsd = parseUint256DecimalString(raw.details?.requestedSizeUsd);
-    if (!isParsedTradingCapacity(capacity) || requestedSizeUsd === undefined || typeof raw.message !== "string") {
-      throw new Error("Invalid insufficient-liquidity warning in prepare response");
-    }
+function parseValidationWarning(raw: unknown): OrderValidationWarning | undefined {
+  const warning = getRecord(raw);
+  const code = getString(warning?.code);
+  const message = getString(warning?.message);
 
-    return {
-      code: raw.code,
-      message: raw.message,
-      details: {
-        ...capacity,
-        requestedSizeUsd,
-      },
-    };
+  if (!warning || !code || !message) {
+    return undefined;
   }
 
+  const details = getRecord(warning.details);
+  if (code === "INSUFFICIENT_LIQUIDITY") {
+    const capacity = parseTradingCapacity(details);
+    const requestedSizeUsd = parseUint256DecimalString(details?.requestedSizeUsd);
+    if (capacity && requestedSizeUsd !== undefined) {
+      return {
+        code,
+        message,
+        details: {
+          ...capacity,
+          requestedSizeUsd,
+        },
+      };
+    }
+  }
+
+  const reason = getString(details?.reason);
   if (
-    raw?.code === "TRADING_CAPACITY_UNAVAILABLE" &&
-    typeof raw.message === "string" &&
-    ["STALE_MARKET_DATA", "JIT_DATA_UNAVAILABLE", "JIT_ACCOUNT_ELIGIBILITY_UNKNOWN", "COLLATERAL_SWAP"].includes(
-      raw.details?.reason
-    )
+    code === "TRADING_CAPACITY_UNAVAILABLE" &&
+    (reason === "STALE_MARKET_DATA" ||
+      reason === "JIT_DATA_UNAVAILABLE" ||
+      reason === "JIT_ACCOUNT_ELIGIBILITY_UNKNOWN" ||
+      reason === "COLLATERAL_SWAP")
   ) {
     return {
-      code: raw.code,
-      message: raw.message,
-      details: { reason: raw.details.reason },
+      code,
+      message,
+      details: { reason },
     };
-  }
-
-  if (typeof raw?.code !== "string" || raw.code.length === 0 || typeof raw.message !== "string") {
-    throw new Error("Invalid validation warning in prepare response");
   }
 
   return {
     code: "UNKNOWN_VALIDATION_WARNING",
-    originalCode: raw.code,
-    message: raw.message,
-    ...(raw.details === undefined ? {} : { details: raw.details }),
+    originalCode: code,
+    message,
+    ...(warning.details === undefined ? {} : { details: warning.details }),
   };
 }
 
@@ -391,10 +407,10 @@ function parseValidationWarnings(raw: unknown): OrderValidationWarning[] | undef
     return undefined;
   }
   if (!Array.isArray(raw)) {
-    throw new Error("Invalid validation warnings in prepare response");
+    return undefined;
   }
 
-  return raw.map(parseValidationWarning);
+  return raw.map(parseValidationWarning).filter((warning): warning is OrderValidationWarning => warning !== undefined);
 }
 
 function parsePrepareResponse(raw: any): PrepareOrderResponse {

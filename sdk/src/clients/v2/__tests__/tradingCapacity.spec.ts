@@ -91,6 +91,44 @@ describe("GmxApiSdk.getTradingCapacity", () => {
     });
   });
 
+  it("accepts safe integer, bigint, and decimal string capacity amounts", async () => {
+    const sdk = new GmxApiSdk({
+      chainId: ARBITRUM,
+      api: new TradingCapacityApi({
+        ...buildCapacity(),
+        availableLiquidity: 100,
+        baseAvailableLiquidity: 80n,
+        jitAvailableLiquidity: "20",
+      }),
+    });
+
+    await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" })).resolves.toMatchObject({
+      availableLiquidity: 100n,
+      baseAvailableLiquidity: 80n,
+      jitAvailableLiquidity: 20n,
+    });
+  });
+
+  it.each([
+    ["a negative amount", { availableLiquidity: "-1" }],
+    ["a non-canonical amount", { availableLiquidity: "01" }],
+    ["a fractional amount", { availableLiquidity: 1.5 }],
+    ["an unsafe integer amount", { availableLiquidity: Number.MAX_SAFE_INTEGER + 1 }],
+    ["an overflowing amount", { availableLiquidity: (MAX_UINT256 + 1n).toString() }],
+    ["an unknown limiting factor", { limitingFactor: "futureFactor" }],
+    ["an unknown JIT data status", { jitDataStatus: "futureStatus" }],
+    ["an unknown market data status", { marketDataStatus: "futureStatus" }],
+  ])("rejects %s", async (_description, override) => {
+    const sdk = new GmxApiSdk({
+      chainId: ARBITRUM,
+      api: new TradingCapacityApi({ ...buildCapacity(), ...override }),
+    });
+
+    await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" })).rejects.toThrow(
+      "Invalid trading capacity response"
+    );
+  });
+
   it.each(["available", "stale", "unavailable"] as const)("preserves the %s JIT status", async (jitDataStatus) => {
     const response = { ...buildCapacity(), jitDataStatus };
     const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: new TradingCapacityApi(response) });
@@ -122,6 +160,35 @@ describe("GmxApiSdk.getTradingCapacity", () => {
     });
 
     await expect(sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" })).rejects.toThrow("Market not found");
+  });
+});
+
+describe("GmxApiSdk.fetchMarketsTickers trading capacity", () => {
+  it("parses valid capacities and drops malformed capacities", async () => {
+    const sdk = new GmxApiSdk({
+      chainId: ARBITRUM,
+      api: new TradingCapacityApi([
+        {
+          symbol: SYMBOL,
+          capacityLong: buildCapacity(),
+          capacityShort: { ...buildCapacity(), jitAvailableLiquidity: "-1" },
+        },
+      ]),
+    });
+
+    await expect(sdk.fetchMarketsTickers()).resolves.toEqual([
+      {
+        symbol: SYMBOL,
+        capacityLong: {
+          availableLiquidity: MAX_UINT256,
+          baseAvailableLiquidity: MAX_UINT256 - 2n,
+          jitAvailableLiquidity: 2n,
+          limitingFactor: "reserve",
+          jitDataStatus: "available",
+          marketDataStatus: "fresh",
+        },
+      },
+    ]);
   });
 });
 
@@ -201,7 +268,34 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
     ]);
   });
 
-  it("rejects malformed capacity warning details", async () => {
+  it("drops a malformed capacity estimate", async () => {
+    const sdk = new GmxApiSdk({
+      chainId: ARBITRUM,
+      api: new PrepareCapacityApi({
+        requestId: "request-1",
+        payloadType: "transaction",
+        mode: "classic",
+        payload: {},
+        estimates: {
+          tradingCapacity: { ...buildCapacity(), marketDataStatus: "futureStatus" },
+        },
+      }),
+    });
+
+    const prepared = await sdk.prepareOrder({
+      kind: "increase",
+      symbol: SYMBOL,
+      direction: "long",
+      orderType: "limit",
+      size: 1n,
+      mode: "classic",
+      from: ACCOUNT,
+    });
+
+    expect(prepared.estimates?.tradingCapacity).toBeUndefined();
+  });
+
+  it("degrades malformed capacity warning details to an unknown warning", async () => {
     const sdk = new GmxApiSdk({
       chainId: ARBITRUM,
       api: new PrepareCapacityApi({
@@ -219,8 +313,41 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
       }),
     });
 
-    await expect(
-      sdk.prepareOrder({
+    const prepared = await sdk.prepareOrder({
+      kind: "increase",
+      symbol: SYMBOL,
+      direction: "long",
+      orderType: "limit",
+      size: 1n,
+      mode: "classic",
+      from: ACCOUNT,
+    });
+
+    expect(prepared.validationWarnings).toEqual([
+      {
+        code: "UNKNOWN_VALIDATION_WARNING",
+        originalCode: "INSUFFICIENT_LIQUIDITY",
+        message: "Order may not execute",
+        details: { requestedSizeUsd: "1" },
+      },
+    ]);
+  });
+
+  it.each([null, true, {}, { code: "", message: "Missing code" }, { code: "FUTURE_WARNING", message: "" }])(
+    "drops a structurally invalid warning %p",
+    async (warning) => {
+      const sdk = new GmxApiSdk({
+        chainId: ARBITRUM,
+        api: new PrepareCapacityApi({
+          requestId: "request-1",
+          payloadType: "transaction",
+          mode: "classic",
+          payload: {},
+          validationWarnings: [warning],
+        }),
+      });
+
+      const prepared = await sdk.prepareOrder({
         kind: "increase",
         symbol: SYMBOL,
         direction: "long",
@@ -228,8 +355,35 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
         size: 1n,
         mode: "classic",
         from: ACCOUNT,
-      })
-    ).rejects.toThrow("Invalid insufficient-liquidity warning in prepare response");
+      });
+
+      expect(prepared.validationWarnings).toEqual([]);
+    }
+  );
+
+  it("drops a non-array validationWarnings value", async () => {
+    const sdk = new GmxApiSdk({
+      chainId: ARBITRUM,
+      api: new PrepareCapacityApi({
+        requestId: "request-1",
+        payloadType: "transaction",
+        mode: "classic",
+        payload: {},
+        validationWarnings: { code: "FUTURE_WARNING", message: "A newer API warning" },
+      }),
+    });
+
+    const prepared = await sdk.prepareOrder({
+      kind: "increase",
+      symbol: SYMBOL,
+      direction: "long",
+      orderType: "limit",
+      size: 1n,
+      mode: "classic",
+      from: ACCOUNT,
+    });
+
+    expect(prepared.validationWarnings).toBeUndefined();
   });
 
   it("preserves unknown validation warnings for forward compatibility", async () => {

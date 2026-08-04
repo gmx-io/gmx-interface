@@ -298,7 +298,7 @@ export class GmxApiSdk {
     return fetchApiMarketsTickers(this.ctx, params);
   }
 
-  async getTradingCapacity(params: GetTradingCapacityParams): Promise<TradingCapacity> {
+  getTradingCapacity(params: GetTradingCapacityParams): Promise<TradingCapacity> {
     return fetchApiTradingCapacity(this.ctx, params);
   }
 
