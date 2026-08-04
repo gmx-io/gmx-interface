@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
 
-import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY } from "config/localStorage";
+import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY, SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useSearchParams from "lib/useSearchParams";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
@@ -13,6 +13,10 @@ export function useShowSupportChat() {
     SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY,
     false
   );
+  const [wasOpenedWithoutWallet, setWasOpenedWithoutWallet] = useLocalStorageSerializeKey<boolean>(
+    SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY,
+    false
+  );
 
   const { openChat } = useSearchParams<{ openChat?: string }>();
   // Latched on first render so the widget doesn't shut back down once AppRoutes strips the "openChat" param.
@@ -20,7 +24,13 @@ export function useShowSupportChat() {
 
   const showWhileConnecting = isWalletInitializing && lastConnectedState;
 
-  const shouldShowSupportChat = isConnected || showWhileConnecting || shouldOpenChatOnBoot;
+  const shouldShowSupportChat = isConnected || showWhileConnecting || shouldOpenChatOnBoot || wasOpenedWithoutWallet;
+
+  useEffect(() => {
+    if (shouldOpenChatOnBoot) {
+      setWasOpenedWithoutWallet(true);
+    }
+  }, [shouldOpenChatOnBoot, setWasOpenedWithoutWallet]);
 
   useEffect(() => {
     if (!isWalletInitializing) {

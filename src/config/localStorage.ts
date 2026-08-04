@@ -68,6 +68,7 @@ export const SUPPORT_CHAT_WAS_EVER_SHOWN_KEY = "support-chat-was-ever-shown";
 export const SUPPORT_CHAT_WAS_EVER_CLICKED_KEY = "support-chat-was-ever-clicked";
 export const SUPPORT_CHAT_USER_ID_KEY = "support-chat-user-id";
 export const SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY = "support-chat-last-connected-state";
+export const SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY = "support-chat-was-opened-without-wallet";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
