@@ -343,3 +343,18 @@ export function decodeErrorFromViemError(error: any): ParsedCustomError | undefi
   }
   return tryDecodeCustomError(data);
 }
+
+export function decodeSimulationErrorFromViemError(error: any): ParsedCustomError | undefined {
+  let decodedError = decodeErrorFromViemError(error);
+
+  while (decodedError?.name === CustomErrorName.ExternalCallFailed && typeof decodedError.args?.data === "string") {
+    const nestedError = tryDecodeCustomError(decodedError.args.data);
+    if (!nestedError) {
+      break;
+    }
+
+    decodedError = nestedError;
+  }
+
+  return decodedError;
+}

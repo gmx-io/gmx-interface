@@ -1,11 +1,13 @@
 import { Trans } from "@lingui/macro";
 import { useState } from "react";
 
+import { REFERRALS_DOCS_URL } from "config/links";
 import { AffiliateReferralStats } from "domain/referrals";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
 import { formatBigUsd, formatUsd } from "lib/numbers";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
 import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
 import { TradersVolumeChartContainer } from "components/Referrals/shared/charts/TradersVolumeChartContainer";
@@ -126,10 +128,21 @@ export function NumberOfTradesChartCard({ stats, isLoading, timeRangeInfo }: Bas
 }
 
 export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: BaseChartCardProps) {
+  const hasGraduatedTraders = (stats?.summary.tradersGraduated ?? 0) > 0;
+
   return (
     <OverviewChartCard
       label={<Trans>Traders referred</Trans>}
-      tooltipContent={<Trans>Net referred traders in the selected period (gained - lost)</Trans>}
+      tooltipContent={
+        <Trans>
+          Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the
+          referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount
+          but no longer generate affiliate rewards.{" "}
+          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
+            Read more
+          </ExternalLink>
+        </Trans>
+      }
       value={stats?.summary.tradersNet ?? 0}
       valueChange={formatCountDelta(stats?.summary.tradersNetDelta)}
       isValueChangePositive={(stats?.summary.tradersNetDelta ?? 0) >= 0}
@@ -139,6 +152,12 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ba
             <span className="size-[6px] shrink-0 rounded-full bg-green-500" />
             <Trans>Gained</Trans>
           </span>
+          {hasGraduatedTraders && (
+            <span className="flex items-center gap-[9px]">
+              <span className="size-[6px] shrink-0 rounded-full bg-yellow-500" />
+              <Trans>Graduated</Trans>
+            </span>
+          )}
           <span className="flex items-center gap-[9px]">
             <span className="size-[6px] shrink-0 rounded-full bg-red-500" />
             <Trans>Lost</Trans>

@@ -4,6 +4,8 @@ import { CSSProperties, PropsWithChildren, useCallback, useEffect, useMemo, useR
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
+import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
+
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 const HEADER_HEIGHT = 39;
@@ -246,7 +248,7 @@ export function Curtain({
         )}
         onClick={handleClose}
       />
-      <RemoveScroll enabled={isOpen}>
+      <RemoveScroll enabled={isOpen} shards={PRIVY_DIALOG_SCROLL_SHARDS}>
         <div
           data-qa={dataQa}
           ref={curtainRef}

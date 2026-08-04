@@ -3,6 +3,8 @@ import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
+import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
+
 import Button from "components/Button/Button";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 
@@ -113,7 +115,7 @@ export default function Modal({
   return (
     <AnimatePresence>
       {isVisible && (
-        <RemoveScroll>
+        <RemoveScroll shards={PRIVY_DIALOG_SCROLL_SHARDS}>
           <motion.div
             className={cx("Modal", className, { "max-md:!items-end": withMobileBottomPosition })}
             ref={modalRef}

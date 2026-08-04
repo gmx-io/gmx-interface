@@ -3,8 +3,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
-import { isDevelopment } from "config/env";
+import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -15,6 +14,15 @@ import sparkleIcon from "img/sparkle.svg";
 
 export type AnnouncementType = "listing" | "delisting" | "update" | "maintenance";
 export type AnnouncementVariant = "info" | "warning" | "error" | "success";
+
+export type EventLink = {
+  text: string;
+  href: string;
+  /**
+   * @default false
+   */
+  newTab?: boolean;
+};
 
 export type EventData = {
   id: string;
@@ -34,31 +42,96 @@ export type EventData = {
 
   variant?: AnnouncementVariant;
   chains?: number[];
-  link?: {
-    text: string;
-    href: string;
-    /**
-     * @default false
-     */
-    newTab?: boolean;
-  };
+  link?: EventLink;
+  links?: EventLink[];
 
   requiresOpenPosition?: string;
 };
 
-const testEvent: EventData = {
-  id: "test-event-flag",
-  type: "update",
-  flagId: "testEventFlagId",
-  endDate: "31 Dec 2026, 0:00",
-  title: "Test announcement",
-  description: (
-    <>Test announcement gated by the testEventFlagId KLI flag; its start date comes from the flag's createdAt.</>
-  ),
-};
-
 export const appEventsData: EventData[] = [
-  ...(isDevelopment() ? [testEvent] : []),
+  {
+    id: "release-120-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "31 Jul 2026, 08:00",
+    endDate: "07 Aug 2026, 16:00",
+    variant: "info",
+    title: "App Update: Smart Wallets, Swap Routing, and App Install",
+    summary: (
+      <>Smart wallets can now use Express and One-Click, swap routing is clearer, and you can install GMX as an app.</>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Smart wallets:</span> Safe, Coinbase Smart Wallet, and
+          other contract accounts can now use Express and One-Click Trading. If your wallet can't sign or is on the
+          wrong network, the app tells you exactly what to fix.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Swaps:</span> the trade box now shows whether your swap
+          routes through GMX pools or an external aggregator, and tells you which one is short on liquidity instead of a
+          generic insufficient-liquidity message.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One-Click Trading:</span> turning One-Click on and off
+          is reliable again. Declining a signature no longer leaves it half-enabled, switching back to Express works
+          without clearing your cache, and changing GMX Account networks no longer asks you to re-sign.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders and positions:</span> market orders that expire
+          before they can be executed are now labeled as expired in Trade History rather than looking like failures, and
+          liquidation time estimates line up with when liquidations actually trigger.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Install as an app:</span> add GMX to your home screen or
+          desktop and launch straight into the app. A more refined experience and further functionality, such as push
+          notifications, are still to come.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "release-118-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "16 Jul 2026, 12:00",
+    endDate: "24 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: Passkey Login, Wallet Funding, and Performance Sharing",
+    summary: (
+      <>
+        Sign in with a passkey, fund your wallet with a card, share your performance, and skip swap fees on TP/SL
+        closes.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> create a wallet with just a passkey. Face
+          ID, Touch ID, Windows Hello, or Android biometrics get you trading, with no email or seed phrase required.
+          Funding is built into the Receive flow: buy crypto with a card, Apple Pay, or Google Pay, or transfer from
+          another wallet, exchange, or chain.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> share your results with a
+          performance card showing your PnL, win rate, and cumulative PnL curve, carrying your referral code.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now
+          return profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a
+          resting increase order would be liquidatable at its trigger price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool
+          settings now survive refreshes.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Support:</span> the menu now shows how many replies came
+          in while you were away.
+        </span>
+      </span>
+    ),
+  },
   {
     id: "release-117-highlights",
     type: "update",
@@ -117,25 +190,6 @@ export const appEventsData: EventData[] = [
           stuck as pending after executing, and GM pool fee data loads reliably again in Pools and Earn.
         </span>
       </span>
-    ),
-  },
-  {
-    id: "botanix-withdraw-deadline",
-    type: "delisting",
-    isActive: true,
-    startDate: "24 Jun 2026, 16:45",
-    endDate: "01 Aug 2026, 0:00",
-    chains: [BOTANIX],
-    title: "Botanix network is shutting down",
-    summary: <>Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.</>,
-    description: (
-      <>
-        In the swap interface, swap pBTC to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC
-        directly on Botanix. Move your BTC off the network before the deadline.
-        <br />
-        <br />
-        <Link to="/pools">Withdraw liquidity</Link>
-      </>
     ),
   },
   {
@@ -474,18 +528,17 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: "aero-brett-pbtc-listing",
+    id: "aero-brett-listing",
     type: "listing",
     isActive: true,
     startDate: "28 Aug 2025, 10:00",
     endDate: "04 Sep 2025, 12:00",
-    chains: [ARBITRUM, BOTANIX],
-    title: "AERO and BRETT markets added on Arbitrum, BTC market added on Botanix",
+    chains: [ARBITRUM],
+    title: "AERO and BRETT markets added on Arbitrum",
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM{" "}
-        <span className="text-slate-100">[PBTC]</span> for BTC
+        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT
       </>
     ),
   },

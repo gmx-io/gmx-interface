@@ -27,8 +27,6 @@ import {
   useGmxAccountSelectedTransferGuid,
   useGmxAccountSelector,
   useGmxAccountSettlementChainId,
-  useGmxAccountWalletReceiveViewBackTo,
-  useGmxAccountWalletReceiveViewChain,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
@@ -46,6 +44,7 @@ import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
+import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
@@ -72,8 +71,6 @@ import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
@@ -102,6 +99,7 @@ import {
   useGmxAccountDepositEligibility,
   useGmxAccountDepositNetworks,
   useMultichainTradeTokensRequest,
+  useOpenWalletReceive,
 } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
@@ -144,6 +142,7 @@ const useIsFirstDeposit = () => {
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const { address: account, chainId: walletChainId } = useAccount();
+  const withdrawBlockedError = useWithdrawBlockedError();
 
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
@@ -161,8 +160,7 @@ export const DepositView = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
-  const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
-  const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+  const openWalletReceive = useOpenWalletReceive();
 
   const depositNetworks = useGmxAccountDepositNetworks();
   const { hasAnyDepositFunds, hasDepositFundsOnChain, isEligibilityLoading } = useGmxAccountDepositEligibility();
@@ -566,6 +564,7 @@ export const DepositView = () => {
     gasPaymentTokenBalance: gasPaymentTokenBalanceForDeposit,
     gasPaymentTokenAmount: gasPaymentTokenAmountForDepositView,
     ignoreGasPaymentToken,
+    useMinimalBuffer: depositViewChain !== undefined && depositViewChain !== settlementChainId,
   });
 
   const handleMaxButtonClick = useCallback(() => {
@@ -579,9 +578,6 @@ export const DepositView = () => {
 
   const subaccountState = useSubaccountContext();
 
-  const isGeminiWallet = useIsGeminiWallet();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
-  const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
@@ -774,7 +770,7 @@ export const DepositView = () => {
 
           if (submittedDepositGuid) {
             setSelectedTransferGuid(submittedDepositGuid);
-            if (!subaccountState.subaccount && !isExpressTradingDisabled) {
+            if (!subaccountState.subaccount) {
               setIsVisibleOrView("depositStatus");
             } else {
               setIsVisibleOrView("transferHistory");
@@ -792,7 +788,6 @@ export const DepositView = () => {
       setMultichainSubmittedDeposit,
       setSelectedTransferGuid,
       subaccountState.subaccount,
-      isExpressTradingDisabled,
       setIsVisibleOrView,
     ]
   );
@@ -1101,10 +1096,8 @@ export const DepositView = () => {
   );
 
   const handleReceiveToWallet = useCallback(() => {
-    setWalletReceiveViewChain(depositViewChain ?? (settlementChainId as SourceChainId));
-    setWalletReceiveViewBackTo("deposit");
-    setIsVisibleOrView("walletReceive");
-  }, [depositViewChain, setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain, settlementChainId]);
+    openWalletReceive({ chain: depositViewChain ?? (settlementChainId as SourceChainId), backTo: "deposit" });
+  }, [depositViewChain, openWalletReceive, settlementChainId]);
 
   const handleChangeNetworkClick = useCallback(() => {
     fromNetworkButtonRef.current?.click();
@@ -1170,6 +1163,13 @@ export const DepositView = () => {
       ),
       disabled: true,
     };
+  } else if (isInputEmpty) {
+    buttonState = {
+      text: t`Enter deposit amount`,
+      disabled: true,
+    };
+  } else if (withdrawBlockedError) {
+    buttonState = withdrawBlockedError;
   } else if (needTokenApprove) {
     buttonState = {
       text: t`Allow ${selectedToken?.symbol} spending`,
@@ -1183,11 +1183,6 @@ export const DepositView = () => {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      disabled: true,
-    };
-  } else if (isInputEmpty) {
-    buttonState = {
-      text: t`Enter deposit amount`,
       disabled: true,
     };
   } else if (selectedTokenBalanceForDeposit !== undefined && amountLD > selectedTokenBalanceForDeposit) {

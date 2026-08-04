@@ -2,6 +2,7 @@ import { Provider } from "ethers";
 import { withRetry } from "viem";
 
 import { ContractsChainId } from "config/chains";
+import { getSwapDebugSettings } from "config/externalSwaps";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
 import { GlvShiftParam } from "domain/synthetics/jit/utils";
@@ -23,7 +24,7 @@ import {
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
-import { encodeJitBatchOrderUiFeeReceiver, getNeedsJitOrder, isJitShiftError } from "./jitOrderUtils";
+import { encodeJitBatchOrderMetadata, getNeedsJitOrder, isJitShiftError } from "./jitOrderUtils";
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
 import { callRelayTransaction } from "../express/callRelayTransaction";
 
@@ -61,7 +62,7 @@ export async function sendBatchOrderTxn({
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
-  const encodedBatchParams = encodeJitBatchOrderUiFeeReceiver(batchParams, simulationParams);
+  const encodedBatchParams = encodeJitBatchOrderMetadata(batchParams, simulationParams);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
     expressParams,
     batchParams: encodedBatchParams,
@@ -95,6 +96,15 @@ export async function sendBatchOrderTxn({
           nativeReserveLiquidity: simulationParams.nativeReserveLiquidity,
         });
       };
+    }
+
+    if (getSwapDebugSettings()?.failExternalSwaps && getBatchHasExternalSwap(expressParams, encodedBatchParams)) {
+      runSimulation = () =>
+        Promise.reject(
+          extendError(new Error("Debug fail external swaps: execution reverted"), {
+            errorContext: "simulation",
+          })
+        );
     }
 
     if (expressParams) {
@@ -328,3 +338,10 @@ const makeBatchOrderSimulation = async ({
     });
   }
 };
+
+function getBatchHasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParams: BatchOrderTxnParams) {
+  return Boolean(
+    expressParams?.relayParamsPayload.externalCalls.externalCallDataList.length ||
+      batchParams.createOrderParams.some((cp) => cp.tokenTransfersParams?.externalCalls?.externalCallDataList.length)
+  );
+}

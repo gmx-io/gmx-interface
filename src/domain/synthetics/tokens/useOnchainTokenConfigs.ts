@@ -17,23 +17,20 @@ export function useOnchainTokenConfigs(chainId: ContractsChainId, params?: { ena
     refreshInterval: null,
 
     request: () =>
-      tokens.reduce<MulticallRequestConfig>(
-        (acc, token) => {
-          acc[`${token.address}-priceFeed`] = {
-            contractAddress: getContract(chainId, "DataStore"),
-            abiId: "DataStore",
-            calls: {
-              chainlinkPriceFeedAddress: {
-                methodName: "getAddress",
-                params: [priceFeedKey(token.address)],
-              },
+      tokens.reduce<MulticallRequestConfig>((acc, token) => {
+        acc[`${token.address}-priceFeed`] = {
+          contractAddress: getContract(chainId, "DataStore"),
+          abiId: "DataStore",
+          calls: {
+            chainlinkPriceFeedAddress: {
+              methodName: "getAddress",
+              params: [priceFeedKey(token.address)],
             },
-          };
+          },
+        };
 
-          return acc;
-        },
-        {}
-      ),
+        return acc;
+      }, {}),
 
     parseResponse: (response) => {
       const tokens = getV2Tokens(chainId);

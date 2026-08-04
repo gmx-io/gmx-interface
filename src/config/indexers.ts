@@ -3,7 +3,6 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   type ContractsChainId,
@@ -22,7 +21,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-260605170830-1049f5c/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@6230c4/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@bac941/api/graphql",
   },
 
   [AVALANCHE]: {
@@ -32,7 +31,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-avalanche-referrals/master-240415215829-f6877d6/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-avalanche-stats/master-260605222642-1049f5c/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche@6230c4/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche@bac941/api/graphql",
   },
 
   [AVALANCHE_FUJI]: {
@@ -44,17 +43,11 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@6230c4/api/graphql",
-  },
-
-  [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@6230c4/api/graphql",
-    syntheticsStats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@bac941/api/graphql",
   },
 
   [MEGAETH]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth@6230c4/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth@bac941/api/graphql",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-megaeth-stats/master-260120151613-540f334/gn",
     referrals:
