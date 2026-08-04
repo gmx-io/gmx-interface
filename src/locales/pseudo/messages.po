@@ -12023,10 +12023,6 @@ msgstr ""
 msgid "No decentralized exchanges available"
 msgstr ""
 
-#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
-msgid "Clear answers to common questions<0/>about the platform and its features"
-msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Margin before borrow/funding"

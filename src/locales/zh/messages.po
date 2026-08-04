@@ -12023,10 +12023,6 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 到 </1>{0}{toTokenIcon}{1}"
 msgid "No decentralized exchanges available"
 msgstr "无可用的去中心化交易所"
 
-#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
-msgid "Clear answers to common questions<0/>about the platform and its features"
-msgstr "关于平台及其功能的<0/>常见问题解答"
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Margin before borrow/funding"

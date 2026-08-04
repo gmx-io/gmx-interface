@@ -10,13 +10,6 @@ export function BuildersFaqSection() {
           <h2 className="text-heading-2">
             <Trans>FAQ</Trans>
           </h2>
-          <p className="text-18 mt-12 -tracking-[0.576px] text-slate-500">
-            <Trans>
-              Clear answers to common questions
-              <br />
-              about the platform and its features
-            </Trans>
-          </p>
         </div>
         <div className="flex w-full flex-col">
           <div className="flex flex-col gap-12">

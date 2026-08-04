@@ -20,52 +20,69 @@ export function CodeSnippet({ className }: { className?: string }) {
       <div className="font-code overflow-x-auto p-20 pb-[22px] pt-12 text-16 leading-[28px] -tracking-[0.8px] text-slate-500">
         <CodeLine>
           <span className={KEYWORD}>import</span> {"{ "}
-          <span className={IDENT}>GmxSdk</span>
+          <span className={IDENT}>GmxApiSdk</span>
           {" } "}
-          <span className={KEYWORD}>from</span> <span className={STRING}>&quot;@gmx-io/sdk&quot;</span>;
+          <span className={KEYWORD}>from</span> <span className={STRING}>&quot;@gmx-io/sdk/v2&quot;</span>;
         </CodeLine>
-        <CodeLine>&nbsp;</CodeLine>
         <CodeLine>
-          <span className={KEYWORD}>const</span> gmx = <span className={KEYWORD}>new</span>{" "}
-          <span className={IDENT}>GmxSdk</span>
-          {"({ chain: "}
-          <span className={STRING}>&quot;arbitrum&quot;</span>
+          <span className={KEYWORD}>const</span> sdk = <span className={KEYWORD}>new</span>{" "}
+          <span className={IDENT}>GmxApiSdk</span>
+          {"({ chainId: "}
+          <span className={STRING}>42161</span>
           {" });"}
         </CodeLine>
         <CodeLine>&nbsp;</CodeLine>
-        <CodeLine>{"// route a trade through your builder code"}</CodeLine>
+        <CodeLine>{"// route a trade through your referral code"}</CodeLine>
         <CodeLine>
-          <span className={KEYWORD}>const</span> tx = <span className={KEYWORD}>await</span>
-          {" gmx.orders."}
-          <span className={IDENT}>createIncrease</span>
+          <span className={KEYWORD}>await</span>
+          {" sdk."}
+          <span className={IDENT}>executeExpressOrder</span>
           {"({"}
         </CodeLine>
         <CodeLine>
-          {"  market:      "}
-          <span className={STRING}>&quot;ETH/USD&quot;</span>,
+          {"  kind: "}
+          <span className={STRING}>&quot;increase&quot;</span>,
         </CodeLine>
         <CodeLine>
-          {"  collateral:  "}
-          <span className={STRING}>&quot;USDC&quot;</span>,
+          {"  symbol: "}
+          <span className={STRING}>&quot;ETH/USD [WETH-USDC]&quot;</span>,
         </CodeLine>
         <CodeLine>
-          {"  sizeUsd:     "}
-          <span className={STRING}>25_000</span>,
+          {"  orderType: "}
+          <span className={STRING}>&quot;market&quot;</span>,
         </CodeLine>
         <CodeLine>
-          {"  leverage:    "}
-          <span className={STRING}>5</span>,
+          {"  size: "}
+          <span className={STRING}>25_000n</span>
+          {" * "}
+          <span className={STRING}>10n</span>
+          {" ** "}
+          <span className={STRING}>30n</span>, {"// $25k long"}
+        </CodeLine>
+        <CodeLine>{"  collateralToPay:"}</CodeLine>
+        <CodeLine>
+          {"    { amount: "}
+          <span className={STRING}>5_000_000_000n</span>
+          {", token: "}
+          <span className={STRING}>&quot;USDC&quot;</span>
+          {" },"}
         </CodeLine>
         <CodeLine>
-          {"  builderCode: "}
+          {"  referralCode: "}
           <span className={STRING}>&quot;your-code&quot;</span>,
         </CodeLine>
-        <CodeLine>{"});"}</CodeLine>
-        <CodeLine>&nbsp;</CodeLine>
         <CodeLine>
-          <span className={KEYWORD}>await</span> {"tx."}
-          <span className={IDENT}>wait</span>
-          {"(); // you just earned on this trade"}
+          {"  mode: "}
+          <span className={STRING}>&quot;express&quot;</span>,
+        </CodeLine>
+        <CodeLine>
+          {"  from: "}
+          <span className={IDENT}>account</span>,
+        </CodeLine>
+        <CodeLine>
+          {"}, "}
+          <span className={IDENT}>signer</span>
+          {"); // you just earned on this trade"}
         </CodeLine>
       </div>
     </div>

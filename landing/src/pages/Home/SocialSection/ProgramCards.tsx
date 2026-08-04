@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { Eyebrow } from "landing/pages/Builders/Eyebrow";
 import { CodeSnippet } from "landing/pages/Builders/HeroSection/CodeSnippet";
 
-import { GMX_PARTNER_TELEGRAM_URL } from "config/links";
 
 import programGlow from "img/home_program_glow.png";
 import vipCoins from "img/home_program_vip_coins.png";
@@ -74,7 +73,7 @@ export function ProgramCards() {
                 Plus personal support.
               </Trans>
             </p>
-            <CardButton href={GMX_PARTNER_TELEGRAM_URL}>
+            <CardButton href="/#/trader-affiliate-program">
               <Trans>Explore the VIP Desk</Trans>
             </CardButton>
           </div>

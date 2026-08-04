@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { HomePageContextProvider } from "landing/pages/Home/contexts/HomePageContext";
 import { HeaderMenu } from "landing/pages/Home/HeaderMenu/HeaderMenu";
 import { useRef } from "react";
 
@@ -24,23 +25,25 @@ export default function Builders() {
 
   return (
     <SEO title={getPageTitle(t`Builders`)}>
-      <HeaderMenu />
-      <HeroSection ref={heroButtonsRef} />
-      <ApiSurfacesSection />
-      <RevenueSection />
-      <EcosystemSection />
-      <SupportSection />
-      <BuildersFaqSection />
-      <div ref={ctaRef} className="relative overflow-hidden bg-slate-900">
-        <img
-          src={ctaGlow}
-          alt=""
-          className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
-        />
-        <CtaSection />
-        <BuildersFooter />
-      </div>
-      <StickyApplyBar heroButtonsRef={heroButtonsRef} ctaRef={ctaRef} />
+      <HomePageContextProvider>
+        <HeaderMenu />
+        <HeroSection ref={heroButtonsRef} />
+        <ApiSurfacesSection />
+        <RevenueSection />
+        <EcosystemSection />
+        <SupportSection />
+        <BuildersFaqSection />
+        <div ref={ctaRef} className="relative overflow-hidden bg-slate-900">
+          <img
+            src={ctaGlow}
+            alt=""
+            className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
+          />
+          <CtaSection />
+          <BuildersFooter />
+        </div>
+        <StickyApplyBar heroButtonsRef={heroButtonsRef} ctaRef={ctaRef} />
+      </HomePageContextProvider>
     </SEO>
   );
 }

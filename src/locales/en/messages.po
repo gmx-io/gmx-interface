@@ -12023,10 +12023,6 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgid "No decentralized exchanges available"
 msgstr "No decentralized exchanges available"
 
-#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
-msgid "Clear answers to common questions<0/>about the platform and its features"
-msgstr "Clear answers to common questions<0/>about the platform and its features"
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Margin before borrow/funding"
