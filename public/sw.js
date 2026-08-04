@@ -374,11 +374,6 @@ async function inspectNavigationResponse(response) {
   }
 }
 
-async function checkNetworkNavigation(request) {
-  const response = await fetch(request);
-  await inspectNavigationResponse(response);
-}
-
 async function trimCache(cache, maxEntries) {
   const keys = await cache.keys();
   for (let index = 0; index < keys.length - maxEntries; index++) {
@@ -387,12 +382,6 @@ async function trimCache(cache, maxEntries) {
 }
 
 async function handleNavigation(event) {
-  const cachedShell = await getFromShellCaches(OFFLINE_SHELL_KEY);
-  if (cachedShell) {
-    event.waitUntil(checkNetworkNavigation(event.request).catch(() => undefined));
-    return cachedShell;
-  }
-
   try {
     const response = await fetch(event.request);
     if (response.status >= 500) {
