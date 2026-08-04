@@ -539,12 +539,14 @@ function StakingCard({
           </h3>
           <div className="mt-auto flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center justify-between py-2 font-medium">
-              <Trans>
-                GMX staked:{" "}
-                <span className="text-typography-primary">
-                  {gmxStaked === undefined ? "—" : formatWholeGmx(gmxStaked)}
-                </span>
-              </Trans>
+              <span>
+                <Trans>
+                  GMX staked:{" "}
+                  <span className="text-typography-primary">
+                    {gmxStaked === undefined ? "—" : formatWholeGmx(gmxStaked)}
+                  </span>
+                </Trans>
+              </span>
               {requiredToNextTier > 0n ? (
                 shouldStakeGmx ? (
                   <Link
