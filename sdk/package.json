@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "type": "module",
   "repository": {
     "type": "git",
@@ -506,6 +506,7 @@
     "test:ci": "vitest run",
     "test:multicall": "vitest run --config vitest.multicall.config.ts",
     "test:v2": "vitest run --config vitest.v2.config.ts",
+    "test:v2:public": "vitest run --config vitest.v2.public.config.ts",
     "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
@@ -550,6 +551,7 @@
     "@types/lodash": "4.14.198",
     "@types/node": "18.7.13",
     "lint-staged": "12.3.4",
+    "prettier": "3.2.5",
     "ts-patch": "3.2.1",
     "tsx": "4.19.0",
     "typescript-transform-paths": "3.5.1",

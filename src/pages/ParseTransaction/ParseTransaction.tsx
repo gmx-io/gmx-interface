@@ -216,7 +216,7 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        <Trans>Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia</Trans>
+        <Trans>Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia</Trans>
       </div>
     );
   }

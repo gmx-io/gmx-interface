@@ -1,7 +1,7 @@
 import { zeroHash } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { AVALANCHE, AVALANCHE_FUJI, SOURCE_BASE_MAINNET, SOURCE_BSC_MAINNET, SourceChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { getTradeboxLeverageSliderMarks } from "domain/synthetics/markets";
@@ -12,6 +12,7 @@ import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 import { selectIsOneClickActiveByUser } from ".";
 
 const subaccountRouterAddress = getContract(AVALANCHE, "SubaccountGelatoRelayRouter");
+const multichainSubaccountRouterAddress = getContract(AVALANCHE, "MultichainSubaccountRouter");
 
 type SubaccountOverrides = Omit<Partial<Subaccount>, "onchainData" | "signedApproval"> & {
   onchainData?: Partial<Subaccount["onchainData"]>;
@@ -67,11 +68,11 @@ function createSubaccount(overrides: SubaccountOverrides = {}): Subaccount {
   };
 }
 
-function createState(subaccount: Subaccount | undefined): SyntheticsState {
+function createState(subaccount: Subaccount | undefined, srcChainId?: SourceChainId): SyntheticsState {
   return {
     globals: {
       chainId: AVALANCHE,
-      srcChainId: undefined,
+      srcChainId,
     },
     settings: {
       expressOrdersEnabled: true,
@@ -165,6 +166,77 @@ describe("tradeboxSelectors", () => {
           )
         )
       ).toBe(false);
+    });
+
+    describe("signing-context resolution", () => {
+      const PENDING_MULTICHAIN_NONCE = 7n;
+
+      function createPendingSourceContextSubaccount(
+        signerChainId: SourceChainId,
+        approvalSignatureChainId: SourceChainId
+      ): Subaccount {
+        return createSubaccount({
+          signerChainId,
+          onchainData: {
+            active: false,
+            multichainApprovalNonce: PENDING_MULTICHAIN_NONCE,
+          },
+          signedApproval: {
+            signatureChainId: approvalSignatureChainId,
+            subaccountRouterAddress: multichainSubaccountRouterAddress,
+            nonce: PENDING_MULTICHAIN_NONCE,
+          },
+        });
+      }
+
+      it("approval signed for the settlement context is active in the settlement context", () => {
+        expect(selectIsOneClickActiveByUser(createState(createSubaccount()))).toBe(true);
+      });
+
+      it("approval signed for the settlement context is not used for a source-network context", () => {
+        const subaccount = createSubaccount({
+          signerChainId: SOURCE_BASE_MAINNET,
+        });
+
+        expect(selectIsOneClickActiveByUser(createState(subaccount, SOURCE_BASE_MAINNET))).toBe(false);
+      });
+
+      it("pending approval signed for a source network is active in its own context", () => {
+        const subaccount = createPendingSourceContextSubaccount(SOURCE_BASE_MAINNET, SOURCE_BASE_MAINNET);
+
+        expect(selectIsOneClickActiveByUser(createState(subaccount, SOURCE_BASE_MAINNET))).toBe(true);
+      });
+
+      it("pending approval signed for one source network is not used for another source network", () => {
+        const subaccount = createPendingSourceContextSubaccount(SOURCE_BSC_MAINNET, SOURCE_BASE_MAINNET);
+
+        expect(selectIsOneClickActiveByUser(createState(subaccount, SOURCE_BSC_MAINNET))).toBe(false);
+      });
+
+      it("before either approval is applied both contexts are active with their own pending approvals", () => {
+        const baseSubaccount = createPendingSourceContextSubaccount(SOURCE_BASE_MAINNET, SOURCE_BASE_MAINNET);
+        const bscSubaccount = createPendingSourceContextSubaccount(SOURCE_BSC_MAINNET, SOURCE_BSC_MAINNET);
+
+        expect(selectIsOneClickActiveByUser(createState(baseSubaccount, SOURCE_BASE_MAINNET))).toBe(true);
+        expect(selectIsOneClickActiveByUser(createState(bscSubaccount, SOURCE_BSC_MAINNET))).toBe(true);
+      });
+
+      it("an approval with a consumed shared nonce is not a valid One-Click path even in its own context", () => {
+        const subaccount = createSubaccount({
+          signerChainId: SOURCE_BASE_MAINNET,
+          onchainData: {
+            active: true,
+            multichainApprovalNonce: PENDING_MULTICHAIN_NONCE + 1n,
+          },
+          signedApproval: {
+            signatureChainId: SOURCE_BASE_MAINNET,
+            subaccountRouterAddress: multichainSubaccountRouterAddress,
+            nonce: PENDING_MULTICHAIN_NONCE,
+          },
+        });
+
+        expect(selectIsOneClickActiveByUser(createState(subaccount, SOURCE_BASE_MAINNET))).toBe(false);
+      });
     });
   });
 });
