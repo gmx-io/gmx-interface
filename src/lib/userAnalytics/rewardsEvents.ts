@@ -13,6 +13,7 @@ export type RewardsNavigationSource =
   | "FeeBlock"
   | "TiersSummary"
   | "PromoBanner"
+  | "ReferralsPageBanner"
   | "FeaturedMarket"
   | "ManualAllocationDialog";
 
@@ -26,7 +27,8 @@ export type RewardsAnalyticsBanner =
   | "restake-rewards"
   | "trade-manual-reward"
   | "trade-recent-activity"
-  | "trade-rewards-program";
+  | "trade-rewards-program"
+  | "referrals-rewards-program";
 
 export type RewardsTransaction =
   | "ClaimEsGmx"

@@ -16,12 +16,11 @@ import {
   EARN_PORTFOLIO_STAKE_ES_GMX_LINK,
   EARN_PORTFOLIO_STAKE_GMX_LINK,
 } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
-import { rewardsBannerStyles } from "components/RewardsPromoBanner/rewardsBannerStyles";
+import { RewardsPromoBannerCard } from "components/RewardsPromoBanner/RewardsPromoBannerCard";
 import { getRewardsPromoCopy } from "components/RewardsPromoBanner/rewardsPromoCopy";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import TradeIcon from "img/ic_candles_filled.svg?react";
-import CloseIcon from "img/ic_close.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
 import rewardsBannerCoinGmx from "img/rewards_banner_coin_gmx.png";
 import rewardsBannerCoinMultiplier from "img/rewards_banner_coin_multiplier.png";
@@ -383,13 +382,11 @@ export function RewardsPromotionalBanners({
       }}
       data-testid="rewards-promotional-banners"
     >
-      <div
+      <RewardsPromoBannerCard
         key={current.type}
-        className={cx(
-          "relative grid min-h-[110px] w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-950 p-16 [touch-action:pan-y]",
-          !prefersReducedMotion && bannerAnimationClass
-        )}
-        style={rewardsBannerStyles}
+        className={cx("[touch-action:pan-y]", !prefersReducedMotion && bannerAnimationClass)}
+        coin={current.coin}
+        onClose={handleDismiss}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerCancel={() => {
@@ -427,23 +424,7 @@ export function RewardsPromotionalBanners({
             ))}
           </div>
         </div>
-
-        <img
-          src={current.coin}
-          alt=""
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-[-30px] right-[-12px] size-[126px] select-none max-sm:bottom-[-22px] max-sm:right-[-36px] max-sm:size-[124px]"
-        />
-
-        <button
-          type="button"
-          aria-label={t`Close`}
-          className="absolute right-8 top-8 z-20 flex size-24 items-center justify-center text-typography-secondary opacity-50 hover:opacity-80"
-          onClick={handleDismiss}
-        >
-          <CloseIcon className="size-16" />
-        </button>
-      </div>
+      </RewardsPromoBannerCard>
 
       {banners.length > 1 ? (
         <div className="flex items-center justify-center gap-8 py-12">
