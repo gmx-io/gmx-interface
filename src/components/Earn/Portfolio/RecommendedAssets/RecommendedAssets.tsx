@@ -23,7 +23,7 @@ import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
-import { AnyChainId, BOTANIX, ContractsChainId, MEGAETH } from "sdk/configs/chains";
+import { AnyChainId, ContractsChainId, MEGAETH } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/utils/markets/types";
 import { getByKey } from "sdk/utils/objects";
@@ -177,11 +177,7 @@ export function RecommendedAssets({
 
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
-  if (
-    glvsToShow.length === 0 &&
-    gmsToShow.length === 0 &&
-    (!hasGmxAssets || chainId === BOTANIX || chainId === MEGAETH)
-  ) {
+  if (glvsToShow.length === 0 && gmsToShow.length === 0 && (!hasGmxAssets || chainId === MEGAETH)) {
     return null;
   }
 
@@ -198,7 +194,7 @@ export function RecommendedAssets({
           "md:grid-flow-col": gmsToShow.length === 3,
         })}
       >
-        {!hasGmxAssets && chainId !== BOTANIX && chainId !== MEGAETH && (
+        {!hasGmxAssets && chainId !== MEGAETH && (
           <RecommendedAssetSection title={<Trans>GMX</Trans>}>
             {[
               <GmxRecommendedAssetItem

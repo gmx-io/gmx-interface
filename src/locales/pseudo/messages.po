@@ -275,6 +275,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet cannot sign messages, which trading from this network requires"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
 msgstr ""
@@ -285,6 +289,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -361,6 +369,10 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "settings"
+msgstr ""
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external routes."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
@@ -460,6 +472,10 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -669,6 +685,10 @@ msgstr ""
 msgid "sell"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GMX pool liquidity"
+msgstr ""
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr ""
@@ -737,6 +757,10 @@ msgstr ""
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to Classic Trading"
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -769,6 +793,10 @@ msgstr ""
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "..."
+msgstr ""
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Swap on an external aggregator"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -807,6 +835,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "PROVIDER"
+msgstr ""
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
 msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -926,6 +958,10 @@ msgstr ""
 msgid "Available liquidity"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
+msgstr ""
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr ""
@@ -992,6 +1028,10 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
 msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
@@ -1908,6 +1948,10 @@ msgstr ""
 msgid "No fee"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to market order"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Warning: may not execute due to low liquidity at your min. receive price"
 msgstr ""
@@ -1922,6 +1966,10 @@ msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signature request was rejected in your wallet. Retry and confirm the request to deactivate."
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
@@ -1953,6 +2001,7 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -2006,6 +2055,10 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr ""
@@ -2052,6 +2105,10 @@ msgstr ""
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "RECEIVE"
 msgstr ""
@@ -2073,6 +2130,10 @@ msgstr ""
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
+msgstr ""
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -2243,6 +2304,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "GMX pools"
 msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2427,8 +2492,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr ""
 
@@ -2476,6 +2539,10 @@ msgstr ""
 msgid "Job openings at GMX"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount."
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -2490,12 +2557,20 @@ msgstr ""
 msgid "Update Stop-Loss"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size.<0/><1/><2>Switch to a market order</2> to enable external routes."
+msgstr ""
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -2653,6 +2728,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
@@ -3080,10 +3159,6 @@ msgstr ""
 msgid "Search address"
 msgstr ""
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
-msgstr ""
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
@@ -3167,6 +3242,10 @@ msgstr ""
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized PnL"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "Swap route"
 msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
@@ -3449,6 +3528,10 @@ msgstr ""
 msgid "Primary failed"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}."
+msgstr ""
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
 msgstr "[!! Commodities !!]"
@@ -3583,8 +3666,16 @@ msgstr ""
 msgid "Autocompound"
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Liquidity to withdraw:"
+msgstr ""
+
 #: src/components/TVChart/Chart.tsx
 msgid "Market graph"
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "After the deadline, trading and withdrawals on these markets are disabled, and capital left in them won't be accessible from the app. Close your positions and withdraw your liquidity now."
 msgstr ""
 
 #: src/domain/referrals/utils/referralsHelper.ts
@@ -3608,10 +3699,6 @@ msgstr ""
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
 msgstr ""
@@ -3624,6 +3711,7 @@ msgstr ""
 msgid "Impact pool after reserved positive impact"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -3641,6 +3729,11 @@ msgstr ""
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Final notice: market delistings"
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
@@ -3742,11 +3835,6 @@ msgstr ""
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating..."
-msgstr ""
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{0, plural, one {is} other {are}}"
 msgstr ""
 
 #: src/pages/Jobs/Jobs.tsx
@@ -3855,6 +3943,10 @@ msgstr ""
 msgid "Settlement"
 msgstr ""
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr ""
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr ""
@@ -3865,10 +3957,6 @@ msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
-msgstr ""
-
-#: src/components/BotanixShutdownBanner/BotanixShutdownBanner.tsx
-msgid "Botanix is shutting down. Do not open new positions. Close existing positions and withdraw funds from Botanix."
 msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
@@ -4048,6 +4136,10 @@ msgstr ""
 msgid "Enter amount"
 msgstr ""
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Add {0} to your wallet"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr ""
@@ -4188,6 +4280,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short USD for deposit"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
@@ -4348,6 +4444,10 @@ msgstr ""
 msgid "Virtual market ID"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet is not connected to this network"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -4463,13 +4563,6 @@ msgstr ""
 msgid "Referral link copied to clipboard"
 msgstr ""
 
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr ""
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr ""
@@ -4513,6 +4606,10 @@ msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Maximum collateral capacity reached"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -4587,6 +4684,10 @@ msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
+msgstr ""
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4788,6 +4889,10 @@ msgstr ""
 msgid "Swap to"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr ""
@@ -4838,6 +4943,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit"
+msgstr ""
+
+#: src/domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap.ts
+msgid "Gas token switched to {toSymbol} to enable external swap routing"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4902,6 +5011,10 @@ msgstr ""
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available while the gas payment token matches the token you're swapping to. Change the gas payment token to proceed."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Per 1h"
 msgstr ""
@@ -4912,6 +5025,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Positions to close:"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
@@ -5116,10 +5233,6 @@ msgstr ""
 msgid "Permit supported:"
 msgstr ""
 
-#: src/pages/ParseTransaction/ParseTransaction.tsx
-msgid "Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
@@ -5285,10 +5398,6 @@ msgstr ""
 msgid "Cancel new orders"
 msgstr ""
 
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to unstake"
-msgstr ""
-
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
 msgstr ""
@@ -5407,6 +5516,9 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Talk to the desk"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -5429,6 +5541,10 @@ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5467,6 +5583,7 @@ msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
+#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -5786,10 +5903,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
-msgstr ""
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -6142,6 +6255,10 @@ msgstr ""
 msgid "Lifetime staking rewards"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr ""
@@ -6383,10 +6500,6 @@ msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Allowed actions"
-msgstr ""
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
 msgstr ""
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -6926,6 +7039,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7071,6 +7185,10 @@ msgstr ""
 msgid "Mark price for the liquidation"
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} will be disabled after August 5, 2026, 23:59 UTC. Close your {positionNoun} before then. Collateral left in open positions won't be accessible after that."
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
@@ -7098,10 +7216,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
-msgstr ""
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
@@ -7237,6 +7351,10 @@ msgstr ""
 msgid "GMX logo"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Using Safe? Learn how to add a network"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
 msgstr ""
@@ -7251,6 +7369,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Your wallet {account} still holds capital in markets that are being delisted. These markets will be disabled after August 5, 2026, 23:59 UTC."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -7768,7 +7890,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr ""
 
@@ -7788,6 +7909,9 @@ msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Do I need to pass KYC?"
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
@@ -8330,6 +8454,10 @@ msgstr ""
 msgid "Collateral in"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr ""
@@ -8345,6 +8473,10 @@ msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin transfer"
+msgstr ""
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
 msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
@@ -8363,10 +8495,6 @@ msgstr ""
 #: src/components/APRLabel/APRLabel.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
-msgstr ""
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -8393,10 +8521,6 @@ msgstr ""
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
-msgstr ""
-
-#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
-msgid "No opportunities on Botanix yet"
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
@@ -8562,10 +8686,6 @@ msgstr ""
 msgid "Invalid transfer addresses. Check the URL."
 msgstr ""
 
-#: src/components/StatusNotification/StakeNotification.tsx
-msgid "Swap {fromAmount} for {toAmount}"
-msgstr ""
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
@@ -8692,10 +8812,6 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to stake"
-msgstr ""
-
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -8759,6 +8875,10 @@ msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
+msgstr ""
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -8887,6 +9007,10 @@ msgstr ""
 msgid "Top positions"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
+msgstr ""
+
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
@@ -8928,10 +9052,6 @@ msgstr ""
 msgid "New tier:"
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "Market delistings"
-msgstr ""
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
@@ -8949,7 +9069,6 @@ msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
@@ -9031,6 +9150,10 @@ msgstr ""
 msgid "Short positions"
 msgstr ""
 
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Use Classic mode to trade."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr ""
@@ -9060,6 +9183,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
+msgstr ""
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Retry external route"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -9092,6 +9219,11 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Close positions"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9419,6 +9551,10 @@ msgstr ""
 msgid "Express Trading is unavailable for wrapping or unwrapping native token ETH"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Relay fee exceeds the maximum allowed"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr ""
@@ -9460,6 +9596,10 @@ msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Events for account:"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
 msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -9763,6 +9903,10 @@ msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1y"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "An unexpected error occurred. Please retry."
 msgstr ""
 
 #: src/components/Errors/ErrorBoundary.tsx
@@ -10309,6 +10453,9 @@ msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "REFERRED MONTHLY VOLUME"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Wallet cannot sign messages"
 msgstr ""
 
 #: src/pages/Announcements/Announcements.tsx
@@ -10399,6 +10546,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
+msgstr ""
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
@@ -10534,6 +10685,10 @@ msgstr ""
 msgid "Invalid recipient address"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Express transaction data is still loading. Please retry in a few seconds."
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
@@ -10582,6 +10737,10 @@ msgstr ""
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Delisting"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "{0} (external)"
 msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
@@ -10714,6 +10873,10 @@ msgstr ""
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "esGMX rewards:"
@@ -10818,6 +10981,10 @@ msgstr ""
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
 msgstr ""
@@ -10918,6 +11085,10 @@ msgstr ""
 msgid "Invalid liquidation price"
 msgstr ""
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+msgstr ""
+
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
 msgstr ""
@@ -10966,10 +11137,6 @@ msgstr ""
 msgid "Depositing..."
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
-msgstr ""
-
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -11001,6 +11168,7 @@ msgstr ""
 msgid "Estimate your savings"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
@@ -11131,10 +11299,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs trading simulations"
-msgstr ""
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "Manage liquidity"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11282,6 +11446,11 @@ msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Withdraw liquidity"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
@@ -11496,10 +11665,6 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Smart wallets not supported on this network"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"
 msgstr ""
@@ -11541,6 +11706,10 @@ msgstr ""
 msgid "Avalanche trading incentives"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routes are only used for market swaps."
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction canceled"
@@ -11560,6 +11729,11 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
@@ -11849,6 +12023,10 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr ""
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr ""
@@ -11867,6 +12045,10 @@ msgstr ""
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

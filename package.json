@@ -52,6 +52,8 @@
     "@privy-io/react-auth": "3.35.0",
     "@privy-io/wagmi": "4.0.8",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",
+    "@stripe/crypto": "1.1.2",
+    "@stripe/stripe-js": "1.54.2",
     "@tanstack/react-query": "5.25.0",
     "@taskworld.com/rereselect": "0.3.0",
     "@testing-library/jest-dom": "5.16.1",

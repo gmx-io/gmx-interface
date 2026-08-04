@@ -2,7 +2,13 @@ import type { ContractCallsConfig } from "clients/v1/multicall";
 import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "codegen/prebuilt";
 import { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
-import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
+import {
+  CLAIMABLE_FUNDING_AMOUNT,
+  MAX_PNL_FACTOR_FOR_TRADERS_KEY,
+  maxCollateralSumKey,
+  virtualInventoryForPositionsInTokensKey,
+  virtualTokenIdKey,
+} from "configs/dataStore";
 import { hashDataMap } from "utils/hash";
 import { getContractMarketPrices, getOiInTokensFromRawValues, getOiUsdFromRawValues } from "utils/markets";
 import { getByKey } from "utils/objects";
@@ -14,6 +20,89 @@ type MulticallResponse = {
   data: Record<string, any>;
   errors: Record<string, any>;
 };
+
+export type MarketRiskInput = {
+  marketTokenAddress: string;
+  longTokenAddress: string;
+  shortTokenAddress: string;
+  virtualIndexTokenId: string;
+};
+
+export type MarketRiskValues = Pick<
+  MarketConfig & MarketValues,
+  | "maxCollateralSumLongTokenLong"
+  | "maxCollateralSumLongTokenShort"
+  | "maxCollateralSumShortTokenLong"
+  | "maxCollateralSumShortTokenShort"
+  | "virtualInventoryForPositionsInTokens"
+>;
+
+export function buildMarketsRiskValuesRequest(chainId: ContractsChainId, markets: MarketRiskInput[]) {
+  const dataStoreAddress = getContract(chainId, "DataStore");
+
+  return markets.reduce(
+    (request, market) => {
+      const marketAddress = market.marketTokenAddress;
+
+      request[marketAddress] = {
+        contractAddress: dataStoreAddress,
+        abiId: "DataStore",
+        calls: {
+          maxCollateralSumLongTokenLong: {
+            methodName: "getUint",
+            params: [maxCollateralSumKey(marketAddress, market.longTokenAddress, true)],
+          },
+          maxCollateralSumLongTokenShort: {
+            methodName: "getUint",
+            params: [maxCollateralSumKey(marketAddress, market.longTokenAddress, false)],
+          },
+          maxCollateralSumShortTokenLong: {
+            methodName: "getUint",
+            params: [maxCollateralSumKey(marketAddress, market.shortTokenAddress, true)],
+          },
+          maxCollateralSumShortTokenShort: {
+            methodName: "getUint",
+            params: [maxCollateralSumKey(marketAddress, market.shortTokenAddress, false)],
+          },
+          virtualInventoryForPositionsInTokens: {
+            methodName: "getInt",
+            params: [virtualInventoryForPositionsInTokensKey(market.virtualIndexTokenId)],
+          },
+        },
+      } satisfies ContractCallsConfig<any>;
+
+      return request;
+    },
+    {} as Record<string, ContractCallsConfig<any>>
+  );
+}
+
+export function parseMarketsRiskValuesResponse(
+  res: MulticallResponse,
+  markets: MarketRiskInput[]
+): Record<string, MarketRiskValues> {
+  return markets.reduce(
+    (result, market) => {
+      const values = res.data[market.marketTokenAddress];
+      const errors = res.errors[market.marketTokenAddress];
+
+      if (!values || errors) {
+        return result;
+      }
+
+      result[market.marketTokenAddress] = {
+        maxCollateralSumLongTokenLong: values.maxCollateralSumLongTokenLong.returnValues[0],
+        maxCollateralSumLongTokenShort: values.maxCollateralSumLongTokenShort.returnValues[0],
+        maxCollateralSumShortTokenLong: values.maxCollateralSumShortTokenLong.returnValues[0],
+        maxCollateralSumShortTokenShort: values.maxCollateralSumShortTokenShort.returnValues[0],
+        virtualInventoryForPositionsInTokens: values.virtualInventoryForPositionsInTokens.returnValues[0],
+      };
+
+      return result;
+    },
+    {} as Record<string, MarketRiskValues>
+  );
+}
 
 export function buildClaimableFundingDataRequest({
   marketsAddresses,
@@ -75,10 +164,12 @@ export async function buildMarketsValuesRequest(
   {
     marketsAddresses,
     marketsData,
+    marketsConfigsData,
     tokensData,
   }: {
     marketsAddresses: string[] | undefined;
     marketsData: MarketsData | undefined;
+    marketsConfigsData: Record<string, MarketConfig> | undefined;
     tokensData: TokensData | undefined;
   }
 ) {
@@ -88,8 +179,9 @@ export async function buildMarketsValuesRequest(
 
   for (const marketAddress of marketsAddresses || []) {
     const market = getByKey(marketsData, marketAddress);
+    const marketConfig = getByKey(marketsConfigsData, marketAddress);
 
-    if (!market) {
+    if (!market || !marketConfig?.virtualIndexTokenId) {
       continue;
     }
 
@@ -203,6 +295,10 @@ export async function buildMarketsValuesRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.shortInterestInTokensUsingShortToken],
         },
+        virtualInventoryForPositionsInTokens: {
+          methodName: "getInt",
+          params: [virtualInventoryForPositionsInTokensKey(marketConfig.virtualIndexTokenId)],
+        },
       },
     } satisfies ContractCallsConfig<any>;
   }
@@ -301,6 +397,7 @@ export function parseMarketsValuesResponse(
         virtualPoolAmountForLongToken: virtualInventory.virtualPoolAmountForLongToken,
         virtualPoolAmountForShortToken: virtualInventory.virtualPoolAmountForShortToken,
         virtualInventoryForPositions: virtualInventory.virtualInventoryForPositions,
+        virtualInventoryForPositionsInTokens: dataStoreValues.virtualInventoryForPositionsInTokens.returnValues[0],
       };
 
       return acc;
@@ -313,16 +410,19 @@ export async function buildMarketsConfigsRequest(
   chainId: ContractsChainId,
   {
     marketsAddresses,
+    marketsData,
   }: {
     marketsAddresses: string[] | undefined;
+    marketsData: MarketsData | undefined;
   }
 ) {
   const dataStoreAddress = getContract(chainId, "DataStore");
   const request: Record<string, ContractCallsConfig<any>> = {};
   for (const marketAddress of marketsAddresses || []) {
+    const market = getByKey(marketsData, marketAddress);
     const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
 
-    if (!prebuiltHashedKeys) {
+    if (!market || !prebuiltHashedKeys) {
       throw new Error(`No pre-built hashed config keys found for the market ${marketAddress}.`);
     }
 
@@ -374,6 +474,22 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxOpenInterestShort],
         },
+        maxCollateralSumLongTokenLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumLongTokenLong],
+        },
+        maxCollateralSumLongTokenShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumLongTokenShort],
+        },
+        maxCollateralSumShortTokenLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumShortTokenLong],
+        },
+        maxCollateralSumShortTokenShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumShortTokenShort],
+        },
         minPositionImpactPoolAmount: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.minPositionImpactPoolAmount],
@@ -410,6 +526,10 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.fundingIncreaseFactorPerSecond],
         },
+        minFundingIncreaseRatePerSecond: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.minFundingIncreaseRatePerSecond],
+        },
         fundingDecreaseFactorPerSecond: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.fundingDecreaseFactorPerSecond],
@@ -422,13 +542,21 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.thresholdForDecreaseFunding],
         },
-        minFundingFactorPerSecond: {
+        minFundingFactorPerSecondLong: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.minFundingFactorPerSecond],
+          params: [prebuiltHashedKeys.minFundingFactorPerSecondLong],
         },
-        maxFundingFactorPerSecond: {
+        minFundingFactorPerSecondShort: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.maxFundingFactorPerSecond],
+          params: [prebuiltHashedKeys.minFundingFactorPerSecondShort],
+        },
+        maxFundingFactorPerSecondLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxFundingFactorPerSecondLong],
+        },
+        maxFundingFactorPerSecondShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxFundingFactorPerSecondShort],
         },
         maxPnlFactorForTradersLong: {
           methodName: "getUint",
@@ -558,6 +686,10 @@ export async function buildMarketsConfigsRequest(
           methodName: "getBytes32",
           params: [prebuiltHashedKeys.virtualMarketId],
         },
+        virtualIndexTokenId: {
+          methodName: "getBytes32",
+          params: [virtualTokenIdKey(market.indexTokenAddress)],
+        },
         virtualShortTokenId: {
           methodName: "getBytes32",
           params: [prebuiltHashedKeys.virtualShortTokenId],
@@ -598,6 +730,10 @@ export function parseMarketsConfigsResponse(
         openInterestReserveFactorShort: dataStoreValues.openInterestReserveFactorShort.returnValues[0],
         maxOpenInterestLong: dataStoreValues.maxOpenInterestLong.returnValues[0],
         maxOpenInterestShort: dataStoreValues.maxOpenInterestShort.returnValues[0],
+        maxCollateralSumLongTokenLong: dataStoreValues.maxCollateralSumLongTokenLong.returnValues[0],
+        maxCollateralSumLongTokenShort: dataStoreValues.maxCollateralSumLongTokenShort.returnValues[0],
+        maxCollateralSumShortTokenLong: dataStoreValues.maxCollateralSumShortTokenLong.returnValues[0],
+        maxCollateralSumShortTokenShort: dataStoreValues.maxCollateralSumShortTokenShort.returnValues[0],
         minPositionImpactPoolAmount: dataStoreValues.minPositionImpactPoolAmount.returnValues[0],
         positionImpactPoolDistributionRate: dataStoreValues.positionImpactPoolDistributionRate.returnValues[0],
         borrowingFactorLong: dataStoreValues.borrowingFactorLong.returnValues[0],
@@ -607,11 +743,14 @@ export function parseMarketsConfigsResponse(
         fundingFactor: dataStoreValues.fundingFactor.returnValues[0],
         fundingExponentFactor: dataStoreValues.fundingExponentFactor.returnValues[0],
         fundingIncreaseFactorPerSecond: dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0],
+        minFundingIncreaseRatePerSecond: dataStoreValues.minFundingIncreaseRatePerSecond.returnValues[0],
         fundingDecreaseFactorPerSecond: dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0],
         thresholdForDecreaseFunding: dataStoreValues.thresholdForDecreaseFunding.returnValues[0],
         thresholdForStableFunding: dataStoreValues.thresholdForStableFunding.returnValues[0],
-        minFundingFactorPerSecond: dataStoreValues.minFundingFactorPerSecond.returnValues[0],
-        maxFundingFactorPerSecond: dataStoreValues.maxFundingFactorPerSecond.returnValues[0],
+        minFundingFactorPerSecondLong: dataStoreValues.minFundingFactorPerSecondLong.returnValues[0],
+        minFundingFactorPerSecondShort: dataStoreValues.minFundingFactorPerSecondShort.returnValues[0],
+        maxFundingFactorPerSecondLong: dataStoreValues.maxFundingFactorPerSecondLong.returnValues[0],
+        maxFundingFactorPerSecondShort: dataStoreValues.maxFundingFactorPerSecondShort.returnValues[0],
         maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
         maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
         maxPnlFactorForDepositsLong: dataStoreValues.maxPnlFactorForDepositsLong.returnValues[0],
@@ -647,6 +786,7 @@ export function parseMarketsConfigsResponse(
           dataStoreValues.withdrawalFeeFactorBalanceWasNotImproved.returnValues[0],
         swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
         virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
+        virtualIndexTokenId: dataStoreValues.virtualIndexTokenId.returnValues[0],
         virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],
         virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
       };

@@ -1,19 +1,24 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
+import { Redirect } from "react-router-dom";
 
+import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import {
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvOrMarketInfo,
 } from "context/PoolsDetailsContext/selectors";
 import {
+  selectChainId,
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useBreakpoints } from "lib/useBreakpoints";
+import useRouteQuery from "lib/useRouteQuery";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import { isMarketTokenAddress } from "sdk/configs/markets";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs";
@@ -33,11 +38,20 @@ import { PoolsDetailsCard } from "./PoolsDetailsCard";
 import { PoolsDetailsHeader } from "./PoolsDetailsHeader";
 
 export function PoolsDetails() {
+  const chainId = useSelector(selectChainId);
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
 
   const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
   const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
+  const searchParams = useRouteQuery();
+  const requestedMarketAddress = searchParams.get("market");
+  const requestedChainId = Number(searchParams.get("chainId"));
+  const isChainChangePending =
+    CONTRACTS_CHAIN_IDS.includes(requestedChainId as ContractsChainId) && requestedChainId !== chainId;
+  const isValidMarketAddress =
+    requestedMarketAddress !== null &&
+    (isMarketTokenAddress(chainId, requestedMarketAddress) || isGlvAddress(chainId, requestedMarketAddress));
 
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
 
@@ -50,6 +64,10 @@ export function PoolsDetails() {
   const isMobile = usePoolsIsMobilePage();
 
   const { isDesktop: isInCurtain } = useBreakpoints();
+
+  if (!isValidMarketAddress && !isChainChangePending) {
+    return <Redirect to="/pools" />;
+  }
 
   const breadcrumbs = (
     <Breadcrumbs>

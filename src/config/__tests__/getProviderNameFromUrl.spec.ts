@@ -27,8 +27,6 @@ describe("getProviderNameFromUrl", () => {
       { input: "https://optimism-sepolia.drpc.org", output: "optimism-sepolia.drpc.org" },
       { input: "https://optimism-sepolia.therpc.io", output: "optimism-sepolia.therpc.io" },
       { input: "https://sepolia.drpc.org", output: "sepolia.drpc.org" },
-      { input: "https://rpc.ankr.com/botanix_mainnet", output: "rpc.ankr.com/botanix_mainnet" },
-
       { input: "https://arb-mainnet.g.alchemy.com/v2/SECRET_CODE", output: "arb-mainnet.g.alchemy.com" },
     ];
 

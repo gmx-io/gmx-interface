@@ -153,7 +153,11 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
       return feesLines;
     }
 
-    const settlementLines = getSettlementTooltipLines(fullCloseCandidate, settlement.closeChange, settlement.openChange);
+    const settlementLines = getSettlementTooltipLines(
+      fullCloseCandidate,
+      settlement.closeChange,
+      settlement.openChange
+    );
 
     if (feesLines.length === 0) {
       return settlementLines[0] === "" ? settlementLines.slice(1) : settlementLines;

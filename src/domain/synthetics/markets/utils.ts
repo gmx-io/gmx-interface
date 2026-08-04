@@ -15,6 +15,7 @@ import {
   getReservedUsd,
   getTokenPoolType,
 } from "sdk/utils/markets";
+import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
 
 import { getCappedPositionImpactUsd } from "../fees";
 import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
@@ -228,8 +229,15 @@ export function getMinPriceImpactMarket(
     );
 
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity > sizeDeltaUsd) {
+      const sizeDeltaInTokens = convertToTokenAmountForIncrease(
+        sizeDeltaUsd,
+        marketInfo.indexToken.decimals,
+        isLong ? marketInfo.indexToken.prices.maxPrice : marketInfo.indexToken.prices.minPrice,
+        isLong
+      );
       const { priceImpactDeltaUsd } = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong, true, {
         shouldCapNegativeImpact: true,
+        sizeDeltaInTokens,
       });
 
       if (bestImpactDeltaUsd === undefined || priceImpactDeltaUsd > bestImpactDeltaUsd) {

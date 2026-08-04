@@ -7,6 +7,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import { ThemeProvider } from "context/ThemeContext/ThemeContext";
+import { registerServiceWorker } from "lib/pwa/registerServiceWorker";
 import WalletProvider from "lib/wallets/WalletProvider";
 
 import App from "./App/App";
@@ -28,3 +29,5 @@ createRoot(document.getElementById("root")!).render(
 // to log results (for example: reportWebVitals(console.info))
 // or send to an analytics endpoint. Read more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+registerServiceWorker();

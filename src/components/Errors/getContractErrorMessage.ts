@@ -69,6 +69,9 @@ export function getContractErrorMessage({
         : t`Max open interest exceeded`;
     }
 
+    case CustomErrorName.MaxCollateralSumExceeded:
+      return t`Maximum collateral capacity reached`;
+
     case CustomErrorName.InsufficientReserveForOpenInterest: {
       const reservedUsd = getBigIntContractErrorArg(args, 0, "reservedUsd");
       const maxReservedUsd = getBigIntContractErrorArg(args, 1, "maxReservedUsd");
@@ -196,6 +199,9 @@ export function getContractErrorMessage({
 
     case CustomErrorName.MaxPriceAgeExceeded:
       return t`Oracle price is stale`;
+
+    case CustomErrorName.MaxRelayFeeSwapExceeded:
+      return t`Relay fee exceeds the maximum allowed`;
 
     case CustomErrorName.InvalidOraclePrice: {
       const tokenAddress = getStringContractErrorArg(args, 0, "token");

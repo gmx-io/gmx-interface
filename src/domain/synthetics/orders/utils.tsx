@@ -13,6 +13,7 @@ import {
   isTwapOrder,
   isTwapSwapOrder,
 } from "sdk/utils/orders";
+import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -177,10 +178,20 @@ export function getOrderErrors(p: {
     const positionOrder = order as PositionOrderInfo;
 
     const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(positionOrder, pos.key));
+    const sizeDeltaInTokens =
+      position && isDecreaseOrderType(positionOrder.orderType)
+        ? getDecreasePositionSizeDeltaInTokens({
+            sizeInUsd: position.sizeInUsd,
+            sizeInTokens: position.sizeInTokens,
+            sizeDeltaUsd: positionOrder.sizeDeltaUsd,
+            isLong: position.isLong,
+          })
+        : undefined;
 
     if (
       isSetAcceptablePriceImpactEnabled &&
       [OrderType.LimitDecrease, OrderType.LimitIncrease].includes(positionOrder.orderType) &&
+      (!isDecreaseOrderType(positionOrder.orderType) || sizeDeltaInTokens !== undefined) &&
       !isTwapOrder(order)
     ) {
       const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
@@ -190,6 +201,7 @@ export function getOrderErrors(p: {
         isLong: positionOrder.isLong,
         indexPrice: positionOrder.triggerPrice,
         sizeDeltaUsd: positionOrder.sizeDeltaUsd,
+        sizeDeltaInTokens,
       });
 
       const { acceptablePriceDeltaBps: orderAcceptablePriceDeltaBps } = getPriceImpactByAcceptablePrice({
@@ -445,7 +457,8 @@ function getIsMaxLeverageError({
     amountIn: order.initialCollateralDeltaAmount,
     isLimit: false,
     findSwapPath,
-    uiFeeFactor,
+    // execution charges the factor snapshotted on the order, not the live one
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     marketsInfoData: undefined,
     externalSwapQuoteParams: undefined,
     chainId,
