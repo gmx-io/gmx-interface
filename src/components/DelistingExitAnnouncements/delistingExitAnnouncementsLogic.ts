@@ -24,15 +24,13 @@ export function joinMarketNames(names: string[]): string {
 
 export function buildPositionsBodyText(marketNames: string[], positionCount: number): string {
   const markets = joinMarketNames(marketNames);
-  const verb = plural(marketNames.length, { one: "is", other: "are" });
   const positionNoun = plural(positionCount, { one: "position", other: "positions" });
-  return t`${markets} ${verb} being delisted. Close your existing ${positionNoun} as remaining positions may be auto-closed.`;
+  return t`${markets} will be disabled after August 5, 2026, 23:59 UTC. Close your ${positionNoun} before then. Collateral left in open positions won't be accessible after that.`;
 }
 
 export function buildLiquidityBodyText(poolNames: string[]): string {
   const pools = joinMarketNames(poolNames);
-  const verb = plural(poolNames.length, { one: "is", other: "are" });
-  return t`${pools} ${verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning.`;
+  return t`${pools} will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that.`;
 }
 
 export function computeAffectedPositionMarkets(
@@ -65,6 +63,43 @@ export function computeAffectedLiquidityMarkets(
   }
 
   return result;
+}
+
+export type DelistingExposure = {
+  positionMarkets: string[];
+  positionNames: string[];
+  positionCount: number;
+  liquidityMarkets: string[];
+  liquidityNames: string[];
+};
+
+export function getDelistingExposure(params: {
+  chainId: number;
+  positionsInfoData: PositionsData | undefined;
+  depositMarketTokensData: TokensData | undefined;
+  marketsInfoData: MarketsInfoData | undefined;
+}): DelistingExposure {
+  const { chainId, positionsInfoData, depositMarketTokensData, marketsInfoData } = params;
+
+  const labelOf = (addresses: string[]): string[] =>
+    addresses
+      .map((address) => getByKey(marketsInfoData, address))
+      .filter((marketInfo): marketInfo is MarketInfo => Boolean(marketInfo))
+      .map(getDelistingMarketLabel);
+
+  const { marketAddresses: positionMarkets, positionCount } = computeAffectedPositionMarkets(
+    chainId,
+    positionsInfoData
+  );
+  const liquidityMarkets = computeAffectedLiquidityMarkets(chainId, depositMarketTokensData);
+
+  return {
+    positionMarkets,
+    positionNames: labelOf(positionMarkets),
+    positionCount,
+    liquidityMarkets,
+    liquidityNames: labelOf(liquidityMarkets),
+  };
 }
 
 export const DELISTING_ANNOUNCEMENT_COOLDOWN_MS = DAY_MS;
@@ -107,8 +142,8 @@ export function shouldShowDelistingAnnouncement(toastId: string, affectedAddress
   return affectedAddresses.some((address) => !record.markets.includes(address));
 }
 
-export const POSITIONS_TOAST_ID = "delisting-positions";
-export const LIQUIDITY_TOAST_ID = "delisting-liquidity";
+export const POSITIONS_TOAST_ID = "delisting-final-notice-positions";
+export const LIQUIDITY_TOAST_ID = "delisting-final-notice-liquidity";
 
 export type DelistingToast = {
   id: string;
@@ -118,6 +153,39 @@ export type DelistingToast = {
   link?: { text: string; href: string };
 };
 
+export function getActiveDelistingAnnouncementsForExposure(
+  params: DelistingExposure & {
+    now: number;
+  }
+): DelistingToast[] {
+  const { positionMarkets, positionNames, positionCount, liquidityMarkets, liquidityNames, now } = params;
+
+  const toShow: DelistingToast[] = [];
+  const title = t`Final notice: market delistings`;
+
+  if (positionNames.length > 0 && shouldShowDelistingAnnouncement(POSITIONS_TOAST_ID, positionMarkets, now)) {
+    toShow.push({
+      id: POSITIONS_TOAST_ID,
+      title,
+      bodyText: buildPositionsBodyText(positionNames, positionCount),
+      markets: positionMarkets,
+      link: { text: t`Close positions`, href: "/trade" },
+    });
+  }
+
+  if (liquidityNames.length > 0 && shouldShowDelistingAnnouncement(LIQUIDITY_TOAST_ID, liquidityMarkets, now)) {
+    toShow.push({
+      id: LIQUIDITY_TOAST_ID,
+      title,
+      bodyText: buildLiquidityBodyText(liquidityNames),
+      markets: liquidityMarkets,
+      link: { text: t`Withdraw liquidity`, href: "/pools" },
+    });
+  }
+
+  return toShow;
+}
+
 export function getActiveDelistingAnnouncements(params: {
   chainId: number;
   positionsInfoData: PositionsData | undefined;
@@ -125,44 +193,9 @@ export function getActiveDelistingAnnouncements(params: {
   marketsInfoData: MarketsInfoData | undefined;
   now: number;
 }): DelistingToast[] {
-  const { chainId, positionsInfoData, depositMarketTokensData, marketsInfoData, now } = params;
-
-  const toShow: DelistingToast[] = [];
-  const title = t`Market delistings`;
-
-  const labelOf = (addresses: string[]): string[] =>
-    addresses
-      .map((address) => getByKey(marketsInfoData, address))
-      .filter((marketInfo): marketInfo is MarketInfo => Boolean(marketInfo))
-      .map(getDelistingMarketLabel);
-
-  // Positions
-  const { marketAddresses: positionMarkets, positionCount } = computeAffectedPositionMarkets(
-    chainId,
-    positionsInfoData
-  );
-  const positionNames = labelOf(positionMarkets);
-  if (positionNames.length > 0 && shouldShowDelistingAnnouncement(POSITIONS_TOAST_ID, positionMarkets, now)) {
-    toShow.push({
-      id: POSITIONS_TOAST_ID,
-      title,
-      bodyText: buildPositionsBodyText(positionNames, positionCount),
-      markets: positionMarkets,
-    });
-  }
-
-  // Liquidity
-  const liquidityMarkets = computeAffectedLiquidityMarkets(chainId, depositMarketTokensData);
-  const liquidityNames = labelOf(liquidityMarkets);
-  if (liquidityNames.length > 0 && shouldShowDelistingAnnouncement(LIQUIDITY_TOAST_ID, liquidityMarkets, now)) {
-    toShow.push({
-      id: LIQUIDITY_TOAST_ID,
-      title,
-      bodyText: buildLiquidityBodyText(liquidityNames),
-      markets: liquidityMarkets,
-      link: { text: t`Manage liquidity`, href: "/pools" },
-    });
-  }
-
-  return toShow;
+  const { now, ...exposureParams } = params;
+  return getActiveDelistingAnnouncementsForExposure({
+    ...getDelistingExposure(exposureParams),
+    now,
+  });
 }

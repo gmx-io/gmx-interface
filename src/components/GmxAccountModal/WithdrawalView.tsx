@@ -23,6 +23,7 @@ import {
   getMultichainTokenId,
   getStargatePoolAddress,
   isSettlementChain,
+  MULTICHAIN_FUNDING_SLIPPAGE_BPS,
   MULTI_CHAIN_TOKEN_MAPPING,
   MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS,
   RANDOM_ACCOUNT,
@@ -95,6 +96,7 @@ import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
+import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
@@ -700,7 +702,7 @@ export const WithdrawalView = () => {
     return {
       token: selectedTokenAddress as Address,
       amount: fakeAmount,
-      minAmountOut: fakeAmount,
+      minAmountOut: 0n,
       data: encodeAbiParameters(
         [
           {
@@ -737,7 +739,7 @@ export const WithdrawalView = () => {
       return {
         token: selectedTokenAddress as Address,
         amount: inputAmount,
-        minAmountOut: inputAmount, // Not actually used in smart contracts
+        minAmountOut: inputAmount, // Ignored by the same-chain transferOut path
         data: "0x",
         provider: zeroAddress,
       };
@@ -746,14 +748,14 @@ export const WithdrawalView = () => {
     const dstEid = getLayerZeroEndpointId(withdrawalViewChain);
     const stargateAddress = getStargatePoolAddress(chainId, unwrappedSelectedTokenAddress);
 
-    if (dstEid === undefined || stargateAddress === undefined) {
+    if (dstEid === undefined || stargateAddress === undefined || quoteOft === undefined) {
       return;
     }
 
     return {
       token: selectedTokenAddress as Address,
       amount: inputAmount,
-      minAmountOut: inputAmount,
+      minAmountOut: applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, quoteOft.receipt.amountReceivedLD),
       data: encodeAbiParameters(
         [
           {
@@ -765,7 +767,15 @@ export const WithdrawalView = () => {
       ),
       provider: stargateAddress,
     };
-  }, [withdrawalViewChain, selectedTokenAddress, unwrappedSelectedTokenAddress, inputAmount, isSameChain, chainId]);
+  }, [
+    withdrawalViewChain,
+    selectedTokenAddress,
+    unwrappedSelectedTokenAddress,
+    inputAmount,
+    isSameChain,
+    chainId,
+    quoteOft,
+  ]);
 
   const gasPrice = useGasPrice(chainId);
 

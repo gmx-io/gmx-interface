@@ -59,3 +59,35 @@ jobs:
         run: |
           cd sdk
           yarn test:multicall
+
+  sdk-standalone:
+    name: SDK standalone build (publish parity)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: sdk/yarn.lock
+
+      - name: Install dependencies
+        working-directory: ./sdk
+        run: yarn install --immutable
+
+      - name: Build package
+        working-directory: ./sdk
+        run: |
+          yarn prepare
+          yarn prebuild
+          yarn build
+
+      - name: Test package
+        working-directory: ./sdk
+        run: |
+          yarn test:ci
+          yarn tscheck:ci
+          npm pack --dry-run
