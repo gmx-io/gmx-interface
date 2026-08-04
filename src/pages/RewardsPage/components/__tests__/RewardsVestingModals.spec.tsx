@@ -471,7 +471,7 @@ describe("RewardsVestingModal", () => {
     expect(screen.getByText("Vesting started")).toBeDefined();
   });
 
-  it("claims available rewards before stopping for missing collateral", async () => {
+  it("does not start a simulated flow when collateral is insufficient", () => {
     const onSimulatedClaim = vi.fn(async () => undefined);
     const onSimulatedStake = vi.fn(async () => undefined);
     const onSimulatedVest = vi.fn(async () => undefined);
@@ -487,7 +487,7 @@ describe("RewardsVestingModal", () => {
         averageStakedAmount: 0n,
       },
     };
-    const view = render(
+    render(
       getVestModal(rewardData, true, onSimulatedVest, {
         claimableEsGmxAmount: rewardData.claimableEsGmxRewards,
         onSimulatedClaim,
@@ -498,28 +498,12 @@ describe("RewardsVestingModal", () => {
     expect(screen.queryByText("Stake collateral")).toBeNull();
     expect(screen.queryByText("Claim esGMX rewards")).toBeNull();
     const button = screen.getByRole("button", { name: "Vest esGMX" });
-    expect(button.hasAttribute("disabled")).toBe(false);
+    expect(button.hasAttribute("disabled")).toBe(true);
     fireEvent.click(button);
 
-    await waitFor(() => expect(onSimulatedClaim).toHaveBeenCalledTimes(1));
+    expect(onSimulatedClaim).not.toHaveBeenCalled();
     expect(onSimulatedStake).not.toHaveBeenCalled();
     expect(onSimulatedVest).not.toHaveBeenCalled();
-    expect(screen.getByText("esGMX claimed")).toBeDefined();
-
-    const claimedData = {
-      ...rewardData,
-      walletEsGmxBalance: 100n * TOKEN_UNIT,
-      claimableEsGmxRewards: 0n,
-    };
-    view.rerender(
-      getVestModal(claimedData, true, onSimulatedVest, {
-        claimableEsGmxAmount: claimedData.claimableEsGmxRewards,
-        onSimulatedClaim,
-        onSimulatedStake,
-      })
-    );
-
-    expect(screen.getByRole("button", { name: "Vest esGMX" }).hasAttribute("disabled")).toBe(true);
   });
 
   it("claims, stakes, and vests sequentially from one click when funded", async () => {

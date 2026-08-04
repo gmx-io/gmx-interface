@@ -384,7 +384,7 @@ export function RewardsVestingModal({
   const hasActiveVesting = data.vestingInfo.vestedAmount > 0n && effectiveRemainingAmount > 0n;
   const hasValidSelectedAmount = depositAmount !== undefined && depositAmount > 0n && depositAmount <= vestingLimit;
   const hasValidAmount =
-    hasValidSelectedAmount && (needsEsGmxClaim ? true : hasEnoughWalletGmx && isGovernanceDataReady);
+    hasValidSelectedAmount && (!isSimulation && needsEsGmxClaim ? true : hasEnoughWalletGmx && isGovernanceDataReady);
 
   const currentEndTimestamp = getRewardsVestingEndTimestamp({
     currentTimestamp: BigInt(Math.floor(Date.now() / 1000)),
