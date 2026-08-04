@@ -96,17 +96,14 @@ export function ContactSection() {
   );
 
   return (
-    <section
-      id="contact"
-      className="relative flex w-full flex-col items-center overflow-hidden border-t-1/2 border-slate-600 bg-slate-900 px-16 pt-80 text-white sm:px-40 sm:pt-[120px]"
-    >
+    <section className="relative flex w-full flex-col items-center overflow-hidden border-t-1/2 border-slate-600 bg-slate-900 px-16 pt-80 text-white sm:px-40 sm:pt-[120px]">
       <img
         src={contactBg}
         alt=""
         aria-hidden
         className="pointer-events-none absolute bottom-0 left-1/2 h-[1514px] w-full min-w-[1728px] max-w-none -translate-x-1/2 select-none"
       />
-      <div className="relative flex w-full flex-col items-center text-center">
+      <div id="contact" className="relative flex w-full flex-col items-center text-center">
         <span className="inline-flex h-24 w-fit items-center rounded-full bg-blue-300/20 px-6">
           <span className={cx("text-16 -tracking-[0.512px]", GRADIENT_TEXT_CLASS)}>
             <Trans>Talk to the desk</Trans>

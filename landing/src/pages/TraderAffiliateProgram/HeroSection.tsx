@@ -83,7 +83,7 @@ export function HeroSection() {
           <div className="flex flex-col gap-20 sm:flex-row">
             <ArrowButton
               label={<Trans>Contact us</Trans>}
-              onClick={() => scrollToId("contact", 0)}
+              onClick={() => scrollToId("contact", 24)}
               variant="primary"
               className="w-full sm:w-[200px]"
             />
