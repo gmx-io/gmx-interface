@@ -18,6 +18,8 @@ import { InfoTokens, Token, TokenInfo } from "sdk/utils/tokens/types";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
+import { buildTokenApprovalCall } from "./tokenApproval";
+
 type Params = {
   setIsApproving: (val: boolean) => void;
   signer: Signer | undefined;
@@ -147,13 +149,18 @@ export async function approveTokens({
   const networkName = getChainName(chainId);
 
   const finalApproveAmount = approveAmount ?? maxUint256;
+  const approvalCall = buildTokenApprovalCall({
+    tokenAddress,
+    spender,
+    amount: finalApproveAmount,
+  });
 
   try {
     const gasLimit = await estimateGasLimit(getProvider(undefined, chainId), {
-      to: tokenAddress,
-      data: contract.interface.encodeFunctionData("approve", [spender, finalApproveAmount]),
+      to: approvalCall.to,
+      data: approvalCall.data,
       from: await signer!.getAddress(),
-      value: undefined,
+      value: approvalCall.value,
     });
 
     const res = await contract.approve(spender, finalApproveAmount, { gasLimit });

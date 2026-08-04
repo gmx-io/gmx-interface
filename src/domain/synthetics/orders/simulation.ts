@@ -10,6 +10,7 @@ import {
   encodeFunctionData,
   withRetry,
 } from "viem";
+import type { Address } from "viem";
 
 import { getContract, tryGetContract } from "config/contracts";
 import { isDevelopment } from "config/env";
@@ -18,6 +19,7 @@ import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "d
 import { SignedTokenPermit } from "domain/tokens";
 import { decodeSimulationErrorFromViemError } from "lib/errors";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import type { WalletCall } from "lib/transactions/sendWalletCalls";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
@@ -48,6 +50,7 @@ export type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
   blockTimestampData: BlockTimestampData | undefined;
   jitShiftParamsList?: GlvShiftParam[];
+  preCalls?: WalletCall[];
 };
 
 export function isInsufficientFundsError(error: any): boolean {
@@ -309,7 +312,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     const routerAddress = getContract(chainId, "GlvRouter");
     const routerAbi = abis.GlvRouter;
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: routerAddress,
@@ -331,12 +334,13 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   } else if (simulationRouterAddress) {
     simulationPayloadData.push(encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData));
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: exchangeRouterAddress,
@@ -358,13 +362,14 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   } else {
     simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "ExchangeRouter");
     const routerAbi = abis.ExchangeRouter;
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: routerAddress,
@@ -386,6 +391,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   }
 }
@@ -399,6 +405,7 @@ export async function simulateContractWithRetry({
   account,
   blockNumber,
   isExpress,
+  preCalls,
 }: {
   client: PublicClient;
   address: string;
@@ -408,7 +415,23 @@ export async function simulateContractWithRetry({
   account: string;
   blockNumber: bigint | undefined;
   isExpress: boolean;
+  preCalls?: WalletCall[];
 }) {
+  if (preCalls?.length) {
+    await simulateContractWithPreCalls({
+      client,
+      address,
+      abi,
+      args,
+      value,
+      account,
+      blockNumber,
+      isExpress,
+      preCalls,
+    });
+    return;
+  }
+
   try {
     await withRetry(
       () => {
@@ -431,34 +454,145 @@ export async function simulateContractWithRetry({
       }
     );
   } catch (txnError) {
-    const decodedError = decodeSimulationErrorFromViemError(txnError);
-
-    const isPassed = decodedError?.name === CustomErrorName.EndOfOracleSimulation;
-
-    const isInsufficientFunds = isInsufficientFundsError(txnError);
-    const shouldIgnoreExpressNativeTokenBalance = isInsufficientFunds && isExpress;
-
-    if (isPassed || shouldIgnoreExpressNativeTokenBalance) {
-      return;
-    } else {
-      throw extendError(
-        decodedError
-          ? new CustomError({
-              name: decodedError.name,
-              message: JSON.stringify(decodedError, null, 2),
-              args: decodedError.args,
-            })
-          : txnError,
-        {
-          errorContext: "simulation",
-        }
-      );
-    }
+    handleSimulationError(txnError, { isExpress });
+    return;
   }
 
   throw extendError(new Error("Execution simulation did not revert with EndOfOracleSimulation."), {
     errorContext: "simulation",
   });
+}
+
+async function simulateContractWithPreCalls({
+  client,
+  address,
+  abi,
+  args,
+  value,
+  account,
+  blockNumber,
+  isExpress,
+  preCalls,
+}: {
+  client: PublicClient;
+  address: string;
+  abi: readonly any[];
+  args: [string[]];
+  value: bigint;
+  account: string;
+  blockNumber: bigint | undefined;
+  isExpress: boolean;
+  preCalls: WalletCall[];
+}) {
+  let results;
+
+  try {
+    ({ results } = await withRetry(
+      () =>
+        client.simulateCalls({
+          account: account as Address,
+          blockNumber,
+          calls: [
+            ...preCalls,
+            {
+              data: encodeFunctionData({
+                abi,
+                functionName: "multicall",
+                args,
+              }),
+              to: address as Address,
+              value,
+            },
+          ],
+        }),
+      {
+        retryCount: 2,
+        delay: 200,
+        shouldRetry: ({ error }) => isTemporaryError(error),
+      }
+    ));
+  } catch (error) {
+    if (isEthSimulateV1UnsupportedError(error)) {
+      return;
+    }
+
+    handleSimulationError(error, { isExpress });
+    return;
+  }
+
+  const failedPreCall = results.slice(0, preCalls.length).find((result) => result.status === "failure");
+  if (failedPreCall) {
+    handleSimulationError(failedPreCall.error ?? new Error("Pre-call simulation failed"), {
+      acceptEndOfOracleSimulation: false,
+      isExpress: false,
+    });
+    return;
+  }
+
+  const simulationResult = results[preCalls.length];
+  if (simulationResult?.status === "failure") {
+    handleSimulationError(simulationResult.error ?? new Error("Execution simulation failed"), { isExpress });
+    return;
+  }
+
+  throw extendError(new Error("Execution simulation did not revert with EndOfOracleSimulation."), {
+    errorContext: "simulation",
+  });
+}
+
+function handleSimulationError(
+  txnError: any,
+  { acceptEndOfOracleSimulation = true, isExpress }: { acceptEndOfOracleSimulation?: boolean; isExpress: boolean }
+) {
+  const decodedError = decodeSimulationErrorFromViemError(txnError);
+  const isPassed = acceptEndOfOracleSimulation && decodedError?.name === CustomErrorName.EndOfOracleSimulation;
+  const shouldIgnoreExpressNativeTokenBalance = isInsufficientFundsError(txnError) && isExpress;
+
+  if (isPassed || shouldIgnoreExpressNativeTokenBalance) {
+    return;
+  }
+
+  throw extendError(
+    decodedError
+      ? new CustomError({
+          name: decodedError.name,
+          message: JSON.stringify(decodedError, null, 2),
+          args: decodedError.args,
+        })
+      : txnError,
+    {
+      errorContext: "simulation",
+    }
+  );
+}
+
+export function isEthSimulateV1UnsupportedError(error: any): boolean {
+  let current = error;
+
+  for (let index = 0; index < 10 && current && typeof current === "object"; index++) {
+    if (current.code === -32601) {
+      return true;
+    }
+
+    const errorText = [current.details, current.shortMessage, current.message]
+      .filter((value): value is string => typeof value === "string")
+      .join(" ")
+      .toLowerCase();
+
+    if (
+      errorText.includes("eth_simulatev1") &&
+      (errorText.includes("method not found") ||
+        errorText.includes("does not exist") ||
+        errorText.includes("not available") ||
+        errorText.includes("not supported"))
+    ) {
+      return true;
+    }
+
+    current = current.cause;
+  }
+
+  return false;
 }
 
 export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams<any>[]) {

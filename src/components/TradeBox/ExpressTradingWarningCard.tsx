@@ -46,6 +46,7 @@ import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/utils/trade/types";
 
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import { OneClickTokenApprovalPreview } from "components/OneClickAdvancedSettings/OneClickTokenApprovalPreview";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
@@ -323,6 +324,7 @@ export function ExpressTradingWarningCard({
   let buttonText: ReactNode | undefined = undefined;
   let icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>> | undefined = undefined;
   let color: "blue" | "yellow" | "red" = "blue";
+  let showOneClickTokenApprovalPreview = false;
 
   let onClick: undefined | (() => void) = undefined;
 
@@ -353,12 +355,14 @@ export function ExpressTradingWarningCard({
     color = "yellow";
     content = <Trans>One-Click Trading action limit reached. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
+    showOneClickTokenApprovalPreview = true;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
     color = "yellow";
     content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
+    showOneClickTokenApprovalPreview = true;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     onCloseClick = dismissExpiredSubaccountWarning;
@@ -366,6 +370,7 @@ export function ExpressTradingWarningCard({
     color = "yellow";
     content = <Trans>One-Click Trading time limit expired. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
+    showOneClickTokenApprovalPreview = true;
   } else if (shouldShowExternalSwapSubaccountBlockedWarning) {
     icon = OneClickIcon;
     color = "red";
@@ -446,6 +451,7 @@ export function ExpressTradingWarningCard({
     );
     buttonText = <Trans>Re-sign</Trans>;
     onClick = handleUpdateSubaccountSettings;
+    showOneClickTokenApprovalPreview = true;
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
     color = "yellow";
@@ -457,6 +463,7 @@ export function ExpressTradingWarningCard({
     );
     buttonText = <Trans>Re-sign</Trans>;
     onClick = handleUpdateSubaccountSettings;
+    showOneClickTokenApprovalPreview = true;
   } else if (shouldShowExternalSwapGasConflictOptionalWarning) {
     if (!gasTokenCandidate) {
       return null;
@@ -482,6 +489,7 @@ export function ExpressTradingWarningCard({
   return (
     <ColorfulBanner color={color} icon={icon} onClose={onCloseClick}>
       {content}
+      {showOneClickTokenApprovalPreview && <OneClickTokenApprovalPreview />}
       {onClick && (
         <ColorfulButtonLink color="blue" onClick={onClick}>
           {buttonText}

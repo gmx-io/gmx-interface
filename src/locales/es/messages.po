@@ -4799,6 +4799,10 @@ msgstr "<0>Comprar</0> {wrappedNativeTokenSymbol}."
 msgid "Annualized buy pressure:"
 msgstr "Presión de compra anualizada:"
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Unlimited"
+msgstr "Ilimitado"
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -6436,6 +6440,10 @@ msgstr "Recibido en la billetera"
 msgid "Set SL price above mark price"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Confirm the optional approval in your wallet"
+msgstr "Confirma la aprobación opcional en tu billetera"
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -6880,6 +6888,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/charts/TraderReferralChartContainer.tsx
@@ -6888,6 +6897,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8799,6 +8809,10 @@ msgstr "Jones DAO"
 msgid "Set short Stop Market @ {0}"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Skipping this request won't interrupt One-Click setup."
+msgstr "Omitir esta solicitud no interrumpirá la configuración de One-Click."
+
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV"
 msgstr "Error al descargar el CSV del historial de operaciones"
@@ -9103,6 +9117,10 @@ msgstr "Solicitud de venta enviada"
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error"
 msgstr "Error de retirada"
+
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Optional token approvals"
+msgstr "Aprobaciones de tokens opcionales"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
@@ -10891,6 +10909,7 @@ msgstr "Eventos de la cuenta"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed"
 msgstr "Transacción fallida"
 
@@ -11003,6 +11022,10 @@ msgstr "Reduzca la retirada para ajustarse al máximo. <0>Más información</0>.
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Approve One-Click gas payment tokens in one wallet confirmation."
+msgstr "Aprueba los tokens de pago de gas de One-Click con una sola confirmación de la billetera."
 
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -11644,6 +11667,13 @@ msgstr "{ordersText} canceladas"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Límite"
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Approve tokens"
+msgstr "Aprobar tokens"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

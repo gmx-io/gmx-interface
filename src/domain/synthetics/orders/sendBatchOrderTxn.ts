@@ -1,5 +1,6 @@
 import { Provider } from "ethers";
 import { withRetry } from "viem";
+import type { Address } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getSwapDebugSettings } from "config/externalSwaps";
@@ -9,7 +10,10 @@ import { GlvShiftParam } from "domain/synthetics/jit/utils";
 import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
+import { getTenderlyConfig } from "lib/tenderly";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import { sendWalletCalls } from "lib/transactions/sendWalletCalls";
+import type { WalletCall, WalletCallsAnalyticsContext } from "lib/transactions/sendWalletCalls";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
@@ -51,6 +55,8 @@ export async function sendBatchOrderTxn({
   batchParams,
   expressParams,
   simulationParams,
+  approvalCalls,
+  approvalAnalytics,
   callback,
 }: {
   chainId: ContractsChainId;
@@ -60,6 +66,8 @@ export async function sendBatchOrderTxn({
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
   simulationParams: BatchSimulationParams | undefined;
+  approvalCalls?: WalletCall[];
+  approvalAnalytics?: WalletCallsAnalyticsContext;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
   const encodedBatchParams = encodeJitBatchOrderMetadata(batchParams, simulationParams);
@@ -76,6 +84,9 @@ export async function sendBatchOrderTxn({
 
     if (isGmxAccount && !provider) {
       throw new Error("provider is required for multichain txns");
+    }
+    if (expressParams && approvalCalls?.length) {
+      throw new Error("Approval calls cannot be included in an Express order");
     }
     callback?.(eventBuilder.Submitted());
 
@@ -94,6 +105,7 @@ export async function sendBatchOrderTxn({
           isGmxAccount,
           jitShiftParamsList: simulationParams.jitShiftParamsList,
           nativeReserveLiquidity: simulationParams.nativeReserveLiquidity,
+          approvalCalls,
         });
       };
     }
@@ -154,6 +166,51 @@ export async function sendBatchOrderTxn({
 
     const { callData, value } = getBatchOrderMulticallPayload({ params: encodedBatchParams });
 
+    if (approvalCalls?.length) {
+      await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
+
+      if (getTenderlyConfig()) {
+        return {
+          transactionHash: undefined,
+          wait: async () => ({
+            transactionHash: undefined,
+            blockNumber: undefined,
+            status: "success" as const,
+          }),
+        };
+      }
+
+      callback?.(eventBuilder.Sending());
+
+      const result = await sendWalletCalls({
+        chainId,
+        account: signer.address as Address,
+        calls: [
+          ...approvalCalls,
+          {
+            to: getContract(chainId, "ExchangeRouter") as Address,
+            data: callData as `0x${string}`,
+            value,
+          },
+        ],
+        analytics: approvalAnalytics,
+      }).catch((error) => {
+        throw extendError(error, {
+          errorContext: "sending",
+        });
+      });
+
+      callback?.(
+        eventBuilder.Sent({
+          type: "walletCalls",
+          callBundleId: result.id,
+          getCallsStatus: result.getStatus,
+        })
+      );
+
+      return result;
+    }
+
     return sendWalletTransaction({
       chainId,
       signer,
@@ -183,6 +240,7 @@ const makeBatchOrderSimulation = async ({
   expressParams,
   jitShiftParamsList,
   nativeReserveLiquidity,
+  approvalCalls,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -194,6 +252,7 @@ const makeBatchOrderSimulation = async ({
   expressParams: ExpressTxnParams | undefined;
   jitShiftParamsList?: GlvShiftParam[];
   nativeReserveLiquidity?: bigint;
+  approvalCalls?: WalletCall[];
 }): Promise<void> => {
   let simulationMethod: "simulateExecuteLatestOrder" | "simulateExecuteLatestJitOrder" | undefined;
 
@@ -323,6 +382,7 @@ const makeBatchOrderSimulation = async ({
           isExpress: Boolean(expressParams),
           method: simulationMethod,
           jitShiftParamsList: needsJit ? jitShiftParamsList : undefined,
+          preCalls: approvalCalls,
         });
       } catch (error) {
         if (needsJit && isJitShiftError(error)) {

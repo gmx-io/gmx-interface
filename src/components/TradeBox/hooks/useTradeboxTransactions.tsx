@@ -65,6 +65,7 @@ import {
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import type { WalletCall, WalletCallsAnalyticsContext } from "lib/transactions/sendWalletCalls";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
@@ -74,6 +75,11 @@ import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
 }
+
+type SubmitOrderOptions = {
+  approvalCalls?: WalletCall[];
+  approvalAnalytics?: WalletCallsAnalyticsContext;
+};
 
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId, srcChainId } = useChainId();
@@ -321,103 +327,109 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     triggerPrice,
   ]);
 
-  const onSubmitOrder = useCallback(async () => {
-    const fulfilledExpressParams = await expressParamsPromise;
+  const onSubmitOrder = useCallback(
+    async (options?: SubmitOrderOptions) => {
+      const fulfilledExpressParams = await expressParamsPromise;
 
-    const metricData = initOrderMetricData();
+      const metricData = initOrderMetricData();
 
-    sendOrderSubmittedMetric(metricData.metricId);
+      sendOrderSubmittedMetric(metricData.metricId);
 
-    const actionName = isSwap ? "Swap" : isIncrease ? "Open Position" : "Close Position";
-    const collateralSymbol = isSwap ? fromToken?.symbol : collateralToken?.symbol;
+      const actionName = isSwap ? "Swap" : isIncrease ? "Open Position" : "Close Position";
+      const collateralSymbol = isSwap ? fromToken?.symbol : collateralToken?.symbol;
 
-    if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
-      helperToast.error(t`Order submission failed`, {
-        tradingErrorInfo: { actionName, collateral: collateralSymbol, requestId: metricData.requestId },
-      });
-      sendTxnValidationErrorMetric(metricData.metricId);
-      return Promise.reject();
-    }
+      if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
+        helperToast.error(t`Order submission failed`, {
+          tradingErrorInfo: { actionName, collateral: collateralSymbol, requestId: metricData.requestId },
+        });
+        sendTxnValidationErrorMetric(metricData.metricId);
+        return Promise.reject();
+      }
 
-    if (
-      reportMultichainExpressSubmitError({
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount: isFromTokenGmxAccount,
+          expressParams: fulfilledExpressParams,
+          tokensData,
+          actionName,
+          collateral: collateralSymbol,
+          requestId: metricData.requestId,
+          metricId: metricData.metricId,
+        })
+      ) {
+        return Promise.reject();
+      }
+
+      sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
+
+      const jitShiftParamsList = marketInfo
+        ? getJitGlvShiftParams(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+        : undefined;
+      const nativeReserveLiquidity = marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined;
+      const expressParamsForSubmit = getExpressParamsForSubmit(fulfilledExpressParams);
+      return sendBatchOrderTxn({
+        chainId,
+        signer,
+        provider,
+        batchParams,
         isGmxAccount: isFromTokenGmxAccount,
-        expressParams: fulfilledExpressParams,
-        tokensData,
-        actionName,
-        collateral: collateralSymbol,
-        requestId: metricData.requestId,
-        metricId: metricData.metricId,
-      })
-    ) {
-      return Promise.reject();
-    }
-
-    sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
-
-    const jitShiftParamsList = marketInfo
-      ? getJitGlvShiftParams(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
-      : undefined;
-    const nativeReserveLiquidity = marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined;
-    return sendBatchOrderTxn({
-      chainId,
-      signer,
-      provider,
-      batchParams,
-      isGmxAccount: isFromTokenGmxAccount,
-      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
-      simulationParams: shouldDisableValidationForTesting
-        ? undefined
-        : {
-            tokensData,
-            blockTimestampData,
-            jitShiftParamsList,
-            // Excludes JIT — determines whether JIT simulation is needed
-            nativeReserveLiquidity,
+        expressParams: expressParamsForSubmit,
+        approvalCalls: expressParamsForSubmit ? undefined : options?.approvalCalls,
+        approvalAnalytics: expressParamsForSubmit ? undefined : options?.approvalAnalytics,
+        simulationParams: shouldDisableValidationForTesting
+          ? undefined
+          : {
+              tokensData,
+              blockTimestampData,
+              jitShiftParamsList,
+              // Excludes JIT — determines whether JIT simulation is needed
+              nativeReserveLiquidity,
+            },
+        callback: makeOrderTxnCallback({
+          metricId: metricData.metricId,
+          requestId: metricData.requestId,
+          slippageInputId,
+          additionalErrorContent: undefined,
+          actionName,
+          collateralSymbol,
+          onInternalSwapFallback: () => {
+            setShouldFallbackToInternalSwap(true);
+            setShouldForceExternalSwap(false);
           },
-      callback: makeOrderTxnCallback({
-        metricId: metricData.metricId,
-        requestId: metricData.requestId,
-        slippageInputId,
-        additionalErrorContent: undefined,
-        actionName,
-        collateralSymbol,
-        onInternalSwapFallback: () => {
-          setShouldFallbackToInternalSwap(true);
-          setShouldForceExternalSwap(false);
-        },
-        onExternalSwapFallback: () => {
-          setShouldForceExternalSwap(true);
-          setShouldFallbackToInternalSwap(false);
-        },
-      }),
-    });
-  }, [
-    account,
-    batchParams,
-    blockTimestampData,
-    chainId,
-    collateralToken?.symbol,
-    expressParamsPromise,
-    fromToken?.symbol,
-    initOrderMetricData,
-    isFromTokenGmxAccount,
-    isIncrease,
-    isLong,
-    isSwap,
-    jitLiquidityMap,
-    makeOrderTxnCallback,
-    marketInfo,
-    marketsInfoData,
-    primaryCreateOrderParams,
-    provider,
-    setShouldFallbackToInternalSwap,
-    setShouldForceExternalSwap,
-    shouldDisableValidationForTesting,
-    signer,
-    slippageInputId,
-    tokensData,
-  ]);
+          onExternalSwapFallback: () => {
+            setShouldForceExternalSwap(true);
+            setShouldFallbackToInternalSwap(false);
+          },
+        }),
+      });
+    },
+    [
+      account,
+      batchParams,
+      blockTimestampData,
+      chainId,
+      collateralToken?.symbol,
+      expressParamsPromise,
+      fromToken?.symbol,
+      initOrderMetricData,
+      isFromTokenGmxAccount,
+      isIncrease,
+      isLong,
+      isSwap,
+      jitLiquidityMap,
+      makeOrderTxnCallback,
+      marketInfo,
+      marketsInfoData,
+      primaryCreateOrderParams,
+      provider,
+      setShouldFallbackToInternalSwap,
+      setShouldForceExternalSwap,
+      shouldDisableValidationForTesting,
+      signer,
+      slippageInputId,
+      tokensData,
+    ]
+  );
 
   function onSubmitWrapOrUnwrap() {
     if (!account || !swapAmounts || !fromToken || !signer) {

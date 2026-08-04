@@ -280,7 +280,7 @@ export function useOrderTxnCallbacks() {
               key: expressParams ? getExpressParamsKey(expressParams) : undefined,
               taskId: e.data.relayTaskId,
             });
-          } else if (e.data.type === "wallet") {
+          } else {
             const totalExecutionFee = tokensData
               ? getBatchTotalExecutionFee({
                   batchParams: e.data.batchParams,
@@ -289,8 +289,7 @@ export function useOrderTxnCallbacks() {
                 })
               : undefined;
 
-            const pendingTxn: PendingTransaction = {
-              hash: e.data.transactionHash,
+            const pendingTxnBase = {
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               actionName: ctx.actionName,
@@ -301,6 +300,19 @@ export function useOrderTxnCallbacks() {
                   }
                 : undefined,
             };
+            const pendingTxn: PendingTransaction =
+              e.data.type === "wallet"
+                ? {
+                    ...pendingTxnBase,
+                    hash: e.data.transactionHash,
+                  }
+                : {
+                    ...pendingTxnBase,
+                    type: "walletCalls",
+                    chainId,
+                    callBundleId: e.data.callBundleId,
+                    getCallsStatus: e.data.getCallsStatus,
+                  };
 
             setPendingTxns((txns) => [...txns, pendingTxn]);
           }

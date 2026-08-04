@@ -4799,6 +4799,10 @@ msgstr "<0>{wrappedNativeTokenSymbol}を購入</0>。"
 msgid "Annualized buy pressure:"
 msgstr "年間購入圧力："
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Unlimited"
+msgstr "無制限"
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -6436,6 +6440,10 @@ msgstr "ウォレット受取額"
 msgid "Set SL price above mark price"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Confirm the optional approval in your wallet"
+msgstr "ウォレットで任意の承認を確認してください"
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -6880,6 +6888,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/charts/TraderReferralChartContainer.tsx
@@ -6888,6 +6897,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8799,6 +8809,10 @@ msgstr "Jones DAO"
 msgid "Set short Stop Market @ {0}"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Skipping this request won't interrupt One-Click setup."
+msgstr "このリクエストをスキップしても、One-Click の設定は中断されません。"
+
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV"
 msgstr "取引履歴CSVのダウンロードに失敗しました"
@@ -9103,6 +9117,10 @@ msgstr "売却リクエストが送信されました"
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error"
 msgstr "出金エラー"
+
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Optional token approvals"
+msgstr "任意のトークン承認"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
@@ -10891,6 +10909,7 @@ msgstr "アカウントイベント"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed"
 msgstr "取引失敗"
 
@@ -11003,6 +11022,10 @@ msgstr "最大値に合わせて出金額を減らしてください。<0>詳細
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Approve One-Click gas payment tokens in one wallet confirmation."
+msgstr "One-Click のガス支払いトークンを、ウォレットで一度に承認します。"
 
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -11644,6 +11667,13 @@ msgstr "{ordersText}がキャンセルされました"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "リミット"
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Approve tokens"
+msgstr "トークンを承認"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

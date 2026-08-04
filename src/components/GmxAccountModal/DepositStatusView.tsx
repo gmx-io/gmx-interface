@@ -11,6 +11,7 @@ import { getToken } from "sdk/configs/tokens";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
+import { OneClickTokenApprovalPreview } from "components/OneClickAdvancedSettings/OneClickTokenApprovalPreview";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import CheckCircleIcon from "img/ic_check_circle.svg?react";
@@ -137,6 +138,7 @@ export const DepositStatusView = () => {
         </div>
         <img src={OneClickCoinImage} alt={t`One-Click`} className="mr-6 mt-6 h-93 w-92 transform" />
       </div>
+      <OneClickTokenApprovalPreview className="mt-0" />
       <Button variant="primary" size="medium" onClick={onEnableOneClickClick} disabled={isSubaccountActivating}>
         {isSubaccountActivating ? <SpinnerIcon className="size-16 animate-spin" /> : null}
         <Trans>Enable One-Click Trading</Trans>

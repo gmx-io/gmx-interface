@@ -4799,6 +4799,10 @@ msgstr "<0>Acheter</0> {wrappedNativeTokenSymbol}."
 msgid "Annualized buy pressure:"
 msgstr "Pression d'achat annualisée :"
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Unlimited"
+msgstr "Illimité"
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -6436,6 +6440,10 @@ msgstr "Reçu sur le portefeuille"
 msgid "Set SL price above mark price"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Confirm the optional approval in your wallet"
+msgstr "Confirmez l’autorisation facultative dans votre portefeuille"
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -6880,6 +6888,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/charts/TraderReferralChartContainer.tsx
@@ -6888,6 +6897,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8799,6 +8809,10 @@ msgstr "Jones DAO"
 msgid "Set short Stop Market @ {0}"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Skipping this request won't interrupt One-Click setup."
+msgstr "Ignorer cette demande n’interrompra pas la configuration de One-Click."
+
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV"
 msgstr "Échec du téléchargement du CSV de l'historique des transactions"
@@ -9103,6 +9117,10 @@ msgstr "Demande de vente envoyée"
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error"
 msgstr "Erreur de retrait"
+
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Optional token approvals"
+msgstr "Autorisations de jetons facultatives"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
@@ -10891,6 +10909,7 @@ msgstr "Événements du compte"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed"
 msgstr "Transaction échouée"
 
@@ -11003,6 +11022,10 @@ msgstr "Réduisez le retrait pour correspondre au maximum. <0>En savoir plus</0>
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Approve One-Click gas payment tokens in one wallet confirmation."
+msgstr "Autorisez les jetons de paiement des frais de One-Click en une seule confirmation du portefeuille."
 
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -11644,6 +11667,13 @@ msgstr "{ordersText} annulé(s)"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Limite"
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Approve tokens"
+msgstr "Approuver les jetons"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

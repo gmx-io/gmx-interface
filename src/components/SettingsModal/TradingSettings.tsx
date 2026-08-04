@@ -33,6 +33,7 @@ import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasP
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
+import { OneClickTokenApprovalPreview } from "components/OneClickAdvancedSettings/OneClickTokenApprovalPreview";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 import ExpressIcon from "img/ic_express.svg?react";
@@ -181,6 +182,8 @@ export function TradingSettings({
               active={tradingMode === TradingMode.Express1CT}
               onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
             />
+
+            <OneClickTokenApprovalPreview />
 
             {canSignTypedData ? (
               isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />

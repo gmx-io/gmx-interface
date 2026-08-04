@@ -11,11 +11,8 @@ import type { AnyChainId } from "sdk/configs/chains";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
 import { approveTokens } from "./approveTokens";
-
-interface TokenToApprove {
-  tokenAddress: string;
-  amount: bigint | undefined;
-}
+import { mergeTokenApprovals } from "./tokenApproval";
+import type { PendingTokenApproval, TokenToApprove } from "./tokenApproval";
 
 interface UseTokenApprovalParams {
   chainId: AnyChainId | undefined;
@@ -32,6 +29,7 @@ export interface HandleApproveOptions {
 
 interface UseTokenApprovalReturn {
   tokensToApprove: string[];
+  pendingTokenApprovals: PendingTokenApproval[];
   needsApproval: boolean;
   isAllowanceLoading: boolean;
   isAllowanceLoaded: boolean;
@@ -51,15 +49,7 @@ export function useTokenApproval({
   const { tokenPermits, addTokenPermit, isPermitsDisabled, setIsPermitsDisabled } = useTokenPermitsContext();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
 
-  const mergedTokens = useMemo(() => {
-    const map = new Map<string, bigint>();
-    for (const token of tokens) {
-      if (!token.tokenAddress) continue;
-      const prev = map.get(token.tokenAddress) ?? 0n;
-      map.set(token.tokenAddress, prev + (token.amount ?? 0n));
-    }
-    return Array.from(map, ([tokenAddress, amount]) => ({ tokenAddress, amount }));
-  }, [tokens]);
+  const mergedTokens = useMemo(() => mergeTokenApprovals(tokens), [tokens]);
 
   const tokenAddresses = useMemo(() => mergedTokens.map((t) => t.tokenAddress), [mergedTokens]);
 
@@ -80,16 +70,19 @@ export function useTokenApproval({
 
   const permitsOrEmpty = allowPermit && !isPermitsDisabled && tokenPermits ? tokenPermits : EMPTY_ARRAY;
 
-  const tokensToApprove = useMemo(
+  const pendingTokenApprovals = useMemo<PendingTokenApproval[]>(
     () =>
       skip
         ? EMPTY_ARRAY
-        : mergedTokens
-            .filter((token) =>
-              getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, permitsOrEmpty)
-            )
-            .map((token) => token.tokenAddress),
+        : mergedTokens.filter((token) =>
+            getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, permitsOrEmpty)
+          ),
     [skip, mergedTokens, tokensAllowanceData, permitsOrEmpty]
+  );
+
+  const tokensToApprove = useMemo(
+    () => pendingTokenApprovals.map((token) => token.tokenAddress),
+    [pendingTokenApprovals]
   );
 
   const needsApproval = tokensToApprove.length > 0;
@@ -148,6 +141,7 @@ export function useTokenApproval({
 
   return {
     tokensToApprove,
+    pendingTokenApprovals,
     needsApproval,
     isAllowanceLoading,
     isAllowanceLoaded,

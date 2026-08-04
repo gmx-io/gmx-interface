@@ -6,9 +6,13 @@ import {
   HttpRequestError,
   InsufficientFundsError,
   InvalidInputRpcError,
+  MethodNotFoundRpcError,
+  RawContractError,
   RpcRequestError,
   TimeoutError,
   WebSocketRequestError,
+  encodeErrorResult,
+  encodeFunctionData,
 } from "viem";
 import type { PublicClient } from "viem";
 import { describe, expect, it, vi } from "vitest";
@@ -16,7 +20,12 @@ import { describe, expect, it, vi } from "vitest";
 import { abis } from "sdk/abis";
 import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
 
-import { isInsufficientFundsError, isTemporaryError, simulateContractWithRetry } from "../simulation";
+import {
+  isEthSimulateV1UnsupportedError,
+  isInsufficientFundsError,
+  isTemporaryError,
+  simulateContractWithRetry,
+} from "../simulation";
 
 describe("simulation", () => {
   it("routes execution simulation through ExchangeRouter.makeExternalCalls", () => {
@@ -45,6 +54,103 @@ describe("simulation", () => {
       })
     ).rejects.toThrow("Execution simulation did not revert with EndOfOracleSimulation.");
     expect(simulateContract).toHaveBeenCalledOnce();
+  });
+
+  describe("pre-call simulation", () => {
+    const account = "0x1111111111111111111111111111111111111111";
+    const preCallTarget = "0x2222222222222222222222222222222222222222";
+    const routerAddress = "0x3333333333333333333333333333333333333333";
+    const endOfOracleSimulationData = encodeErrorResult({
+      abi: abis.CustomErrors,
+      errorName: "EndOfOracleSimulation",
+    });
+
+    function runPreCallSimulation(simulateCalls: ReturnType<typeof vi.fn>) {
+      return simulateContractWithRetry({
+        client: { simulateCalls } as unknown as PublicClient,
+        address: routerAddress,
+        abi: abis.ExchangeRouter,
+        args: [["0x1234"]],
+        value: 5n,
+        account,
+        blockNumber: 123n,
+        isExpress: false,
+        preCalls: [{ data: "0x5678", to: preCallTarget }],
+      });
+    }
+
+    it("simulates pre-calls and the router multicall in order", async () => {
+      const simulateCalls = vi.fn().mockResolvedValue({
+        results: [
+          { status: "success" },
+          {
+            status: "failure",
+            error: new RawContractError({ data: endOfOracleSimulationData }),
+          },
+        ],
+      });
+
+      await expect(runPreCallSimulation(simulateCalls)).resolves.toBeUndefined();
+      expect(simulateCalls).toHaveBeenCalledWith({
+        account,
+        blockNumber: 123n,
+        calls: [
+          { data: "0x5678", to: preCallTarget, value: undefined },
+          {
+            data: encodeFunctionData({
+              abi: abis.ExchangeRouter,
+              functionName: "multicall",
+              args: [["0x1234"]],
+            }),
+            to: routerAddress,
+            value: 5n,
+          },
+        ],
+      });
+    });
+
+    it("does not treat a sentinel-shaped pre-call failure as success", async () => {
+      const sentinelError = new RawContractError({ data: endOfOracleSimulationData });
+      const simulateCalls = vi.fn().mockResolvedValue({
+        results: [
+          { status: "failure", error: sentinelError },
+          { status: "failure", error: sentinelError },
+        ],
+      });
+
+      await expect(runPreCallSimulation(simulateCalls)).rejects.toThrow("EndOfOracleSimulation");
+    });
+
+    it("skips only the remote preflight when eth_simulateV1 is unavailable", async () => {
+      const simulateCalls = vi
+        .fn()
+        .mockRejectedValue(new MethodNotFoundRpcError(new Error("not found"), { method: "eth_simulateV1" }));
+
+      await expect(runPreCallSimulation(simulateCalls)).resolves.toBeUndefined();
+      expect(simulateCalls).toHaveBeenCalledOnce();
+    });
+
+    it("does not swallow other RPC failures", async () => {
+      const simulateCalls = vi.fn().mockRejectedValue(new Error("RPC unavailable"));
+
+      await expect(runPreCallSimulation(simulateCalls)).rejects.toThrow("RPC unavailable");
+    });
+  });
+
+  describe("isEthSimulateV1UnsupportedError", () => {
+    it("recognizes nested method-not-found errors", () => {
+      const error = new MethodNotFoundRpcError(new Error("not found"), { method: "eth_simulateV1" });
+
+      expect(isEthSimulateV1UnsupportedError(error)).toBe(true);
+    });
+
+    it("recognizes provider-specific unsupported messages", () => {
+      expect(isEthSimulateV1UnsupportedError(new Error("eth_simulateV1 is not supported"))).toBe(true);
+    });
+
+    it("does not classify unrelated RPC errors as unsupported", () => {
+      expect(isEthSimulateV1UnsupportedError(new Error("RPC unavailable"))).toBe(false);
+    });
   });
 
   describe("isTemporaryError", () => {

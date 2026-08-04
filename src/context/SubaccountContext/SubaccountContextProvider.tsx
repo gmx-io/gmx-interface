@@ -23,6 +23,10 @@ import {
   serializeSubaccountApproval,
   writeStoredSubaccountApproval,
 } from "domain/synthetics/subaccount/subaccountApprovalStorage";
+import {
+  type OneClickTokenApprovalState,
+  useOneClickTokenApproval,
+} from "domain/synthetics/subaccount/useOneClickTokenApproval";
 import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import {
   getActualApproval,
@@ -115,6 +119,7 @@ export type SubaccountState = {
   subaccountActivationError: { message?: string; walletName?: string } | undefined;
   subaccountDeactivationState: SubaccountDeactivationState | undefined;
   subaccountDeactivationFailureReason: SubaccountDeactivationFailureReason | undefined;
+  oneClickTokenApproval?: OneClickTokenApprovalState;
   updateSubaccountSettings: (params: {
     nextRemainigActions?: bigint;
     nextRemainingSeconds?: bigint;
@@ -141,6 +146,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   const signer = useEthersSigner();
   const { account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
+  const { requestTokenApprovals: requestOneClickTokenApprovals, state: oneClickTokenApproval } =
+    useOneClickTokenApproval({ chainId, account });
 
   const {
     subaccountConfig,
@@ -215,6 +222,17 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const calcSelector = useCalcSelector();
 
+  const requestOptionalOneClickTokenApprovals = useCallback(
+    (source: "OneClickSetup" | "OneClickReauth") => {
+      try {
+        requestOneClickTokenApprovals(source);
+      } catch (error) {
+        metrics.pushError(error, "subaccount.requestOneClickTokenApprovals");
+      }
+    },
+    [requestOneClickTokenApprovals]
+  );
+
   const updateSubaccountSettings = useCallback(
     async function updateSubaccountSettings({
       nextRemainigActions,
@@ -254,6 +272,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           </StatusNotification>
         );
         setSignedApproval(signedSubaccountApproval);
+        requestOptionalOneClickTokenApprovals("OneClickReauth");
         return true;
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -268,7 +287,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         return false;
       }
     },
-    [signer, subaccount, provider, calcSelector, chainId, setSignedApproval]
+    [signer, subaccount, provider, calcSelector, chainId, setSignedApproval, requestOptionalOneClickTokenApprovals]
   );
 
   const resetSubaccountApproval = useCallback(() => {
@@ -345,6 +364,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         setSubaccountConfig({ ...config, isNew: true });
       }
 
+      requestOptionalOneClickTokenApprovals("OneClickSetup");
+
       return true;
     } catch (error) {
       if (isConfigGeneratedInCurrentFlow) {
@@ -367,6 +388,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     resetStoredConfig,
     chainId,
     setSignedApproval,
+    requestOptionalOneClickTokenApprovals,
   ]);
 
   const tryDisableSubaccount = useCallback(async (): Promise<boolean> => {
@@ -469,6 +491,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       subaccountActivationError,
       subaccountDeactivationState,
       subaccountDeactivationFailureReason,
+      oneClickTokenApproval,
       updateSubaccountSettings,
       resetSubaccountApproval,
       tryEnableSubaccount,
@@ -482,6 +505,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccountActivationError,
     subaccountDeactivationState,
     subaccountDeactivationFailureReason,
+    oneClickTokenApproval,
     updateSubaccountSettings,
     resetSubaccountApproval,
     tryEnableSubaccount,

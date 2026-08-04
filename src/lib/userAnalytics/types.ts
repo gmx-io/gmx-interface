@@ -120,6 +120,42 @@ export type TokenApproveResultEvent = {
   };
 };
 
+export type TokenApproveBatchAction =
+  | "BatchApproveAttempt"
+  | "BatchApproveSubmitted"
+  | "BatchApproveSuccess"
+  | "BatchApproveFail"
+  | "BatchApproveStatusUnknown"
+  | "BatchApproveFallback";
+
+export type TokenApproveBatchSource = "Classic" | "Express" | "OneClickSetup" | "OneClickReauth";
+
+export type TokenApproveBatchCapability = "Supported" | "Ready" | "Unsupported" | "Unknown";
+
+export type TokenApproveBatchReason =
+  | "CapabilityUnsupported"
+  | "CapabilityQueryFailed"
+  | "UserRejected"
+  | "UpgradeRejected"
+  | "AtomicUnsupported"
+  | "SendFailed"
+  | "BundleFailed"
+  | "StatusTimeout"
+  | "UserSkipped";
+
+export type TokenApproveBatchEvent = {
+  event: "TokenApproveAction";
+  data: {
+    action: TokenApproveBatchAction;
+    source: TokenApproveBatchSource;
+    chain: ChainName;
+    capability: TokenApproveBatchCapability;
+    tokenCount: number;
+    walletProvider?: string;
+    reason?: TokenApproveBatchReason;
+  };
+};
+
 export type TradeBoxConfirmClickEvent = {
   event: "TradeBoxAction";
   data: {

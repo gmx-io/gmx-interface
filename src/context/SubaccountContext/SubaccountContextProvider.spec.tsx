@@ -13,6 +13,7 @@ const { mocks, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, OLD_SUBACCOUNT_ADDRESS } =
     getInitialSubaccountApproval: vi.fn(),
     refreshSubaccountData: vi.fn(),
     pushError: vi.fn(),
+    requestTokenApprovals: vi.fn(),
   },
   ACCOUNT: "0x1234567890123456789012345678901234567890",
   CHAIN_ID: 42161,
@@ -45,6 +46,13 @@ vi.mock("domain/synthetics/subaccount/useSubaccountOnchainData", () => ({
   useSubaccountOnchainData: () => ({
     subaccountData: undefined,
     refreshSubaccountData: mocks.refreshSubaccountData,
+  }),
+}));
+
+vi.mock("domain/synthetics/subaccount/useOneClickTokenApproval", () => ({
+  useOneClickTokenApproval: () => ({
+    requestTokenApprovals: mocks.requestTokenApprovals,
+    state: { canBatch: false, isApproving: false, pendingTokens: [] },
   }),
 }));
 
@@ -146,6 +154,7 @@ describe("SubaccountContextProvider.tryEnableSubaccount", () => {
   beforeEach(() => {
     mocks.generateSubaccount.mockResolvedValue(generatedConfig);
     mocks.getInitialSubaccountApproval.mockRejectedValue(new Error("User rejected the request."));
+    mocks.requestTokenApprovals.mockImplementation(() => undefined);
   });
 
   afterEach(() => {
@@ -232,5 +241,29 @@ describe("SubaccountContextProvider.tryEnableSubaccount", () => {
     expect(context.current.subaccountConfig?.address).toBe(SUBACCOUNT_ADDRESS);
     expect(localStorage.getItem(configKey)).toContain(SUBACCOUNT_ADDRESS);
     expect(getStoredValues().some((value) => value.includes("0xsignature"))).toBe(true);
+    expect(mocks.requestTokenApprovals).toHaveBeenCalledOnce();
+    expect(mocks.requestTokenApprovals).toHaveBeenCalledWith("OneClickSetup");
+  });
+
+  it("keeps One-Click enabled if the optional token approval cannot be queued", async () => {
+    mocks.getInitialSubaccountApproval.mockResolvedValue(signedApproval);
+    mocks.requestTokenApprovals.mockImplementationOnce(() => {
+      throw new Error("Optional approval failed");
+    });
+
+    const context = setup();
+
+    let result: boolean | undefined;
+    await act(async () => {
+      result = await context.current.tryEnableSubaccount();
+    });
+
+    expect(result).toBe(true);
+    expect(context.current.subaccountConfig?.address).toBe(SUBACCOUNT_ADDRESS);
+    expect(getStoredValues().some((value) => value.includes("0xsignature"))).toBe(true);
+    expect(mocks.pushError).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "Optional approval failed" }),
+      "subaccount.requestOneClickTokenApprovals"
+    );
   });
 });

@@ -4799,6 +4799,10 @@ msgstr ""
 msgid "Annualized buy pressure:"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Unlimited"
+msgstr ""
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -6436,6 +6440,10 @@ msgstr ""
 msgid "Set SL price above mark price"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Confirm the optional approval in your wallet"
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -6880,6 +6888,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/charts/TraderReferralChartContainer.tsx
@@ -6888,6 +6897,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8799,6 +8809,10 @@ msgstr ""
 msgid "Set short Stop Market @ {0}"
 msgstr ""
 
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Skipping this request won't interrupt One-Click setup."
+msgstr ""
+
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV"
 msgstr ""
@@ -9102,6 +9116,10 @@ msgstr ""
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error"
+msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Optional token approvals"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
@@ -10891,6 +10909,7 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed"
 msgstr ""
 
@@ -11002,6 +11021,10 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
+msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickTokenApprovalPreview.tsx
+msgid "Approve One-Click gas payment tokens in one wallet confirmation."
 msgstr ""
 
 #: src/components/GmList/GmList.tsx
@@ -11643,6 +11666,13 @@ msgstr ""
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
+msgstr ""
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Approve tokens"
 msgstr ""
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx

@@ -54,6 +54,7 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import { useAtomicTokenApproval } from "domain/tokens/useAtomicTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
@@ -72,6 +73,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   BatchOrderTxnParams,
   CreateOrderTxnParams,
@@ -270,7 +272,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     if (expressParams?.gasPaymentParams) {
       list.push({
         tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+        amount: bigMath.mulDiv(expressParams.gasPaymentParams.gasPaymentTokenAmount, 13n, 10n),
       });
     }
 
@@ -279,6 +281,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
 
   const {
     tokensToApprove,
+    pendingTokenApprovals,
     isAllowanceLoaded: isAllowanceLoadedRaw,
     isApproving,
     handleApprove,
@@ -286,12 +289,29 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
     skip: isCollateralTokenFromGmxAccount,
   });
 
   const isAllowanceLoaded =
     Boolean(selectedCollateralAddress && collateralDeltaAmount !== undefined) && isAllowanceLoadedRaw;
+
+  const atomicApprovalCount = expressParams ? 2 : 1;
+  const hasAtomicApprovalCandidate = pendingTokenApprovals.length >= atomicApprovalCount;
+  const atomicApproval = useAtomicTokenApproval({
+    chainId,
+    spenderAddress: routerAddress,
+    pendingTokenApprovals,
+    source: expressParams ? "Express" : "Classic",
+    enabled: isAllowanceLoaded && hasAtomicApprovalCandidate,
+    minApprovalCount: atomicApprovalCount,
+  });
+  const shouldBatchClassicOrder = !expressParams && atomicApproval.canBatch;
+  const shouldBatchExpressApprovals = Boolean(expressParams) && atomicApproval.canBatch;
+  const isAtomicCapabilityLoading =
+    isAllowanceLoaded &&
+    hasAtomicApprovalCandidate &&
+    !atomicApproval.isAtomicBatchingDisabled &&
+    atomicApproval.isCapabilityLoading;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -454,8 +474,21 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return;
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
-      if (!chainId || isApproving) return;
+    if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken && !shouldBatchClassicOrder) {
+      if (!chainId || isApproving || atomicApproval.isBatchApproving || isAtomicCapabilityLoading) return;
+
+      if (shouldBatchExpressApprovals) {
+        await atomicApproval.submitBatch();
+        return;
+      }
+
+      if (hasAtomicApprovalCandidate) {
+        if (atomicApproval.isAtomicBatchingDisabled) {
+          atomicApproval.trackSessionFallback();
+        } else {
+          atomicApproval.trackFallback(atomicApproval.fallbackReason);
+        }
+      }
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
         event: "TokenApproveAction",
@@ -524,12 +557,13 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return;
     }
 
+    const expressParamsForSubmit = getExpressParamsForSubmit(fulfilledExpressParams);
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       provider,
       batchParams,
-      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      expressParams: expressParamsForSubmit,
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
@@ -544,6 +578,9 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
         actionName: "Edit Collateral",
         collateralSymbol: selectedCollateralToken?.symbol,
       }),
+      approvalCalls: shouldBatchClassicOrder && !expressParamsForSubmit ? atomicApproval.approvalCalls : undefined,
+      approvalAnalytics:
+        shouldBatchClassicOrder && !expressParamsForSubmit ? atomicApproval.analyticsContext : undefined,
     });
 
     if (expressParams?.subaccount) {
@@ -590,6 +627,18 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     };
   }
 
+  if (atomicApproval.isBatchApproving && tokensToApprove.length) {
+    return {
+      text: (
+        <>
+          <Trans>Approve tokens</Trans> <SpinnerIcon className="ml-4 animate-spin" />
+        </>
+      ),
+      disabled: true,
+      ...commonParams,
+    };
+  }
+
   if (isExpressLoading || isMultichainSubmitDisabled) {
     return {
       text: (
@@ -629,7 +678,28 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     };
   }
 
-  if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
+  if (isAtomicCapabilityLoading) {
+    return {
+      text: (
+        <>
+          {t`Loading...`}
+          <SpinnerIcon className="ml-4 animate-spin" />
+        </>
+      ),
+      disabled: true,
+      ...commonParams,
+    };
+  }
+
+  if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken && !shouldBatchClassicOrder) {
+    if (shouldBatchExpressApprovals) {
+      return {
+        text: <Trans>Approve tokens</Trans>,
+        disabled: false,
+        ...commonParams,
+      };
+    }
+
     const tokenToApprove = tokensToApprove[0];
     return {
       text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,

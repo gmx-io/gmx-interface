@@ -69,6 +69,13 @@ vi.mock("domain/synthetics/subaccount/useSubaccountOnchainData", () => ({
   }),
 }));
 
+vi.mock("domain/synthetics/subaccount/useOneClickTokenApproval", () => ({
+  useOneClickTokenApproval: () => ({
+    requestTokenApprovals: vi.fn(),
+    state: { canBatch: false, isApproving: false, pendingTokens: [] },
+  }),
+}));
+
 vi.mock("domain/synthetics/subaccount/utils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   getActualApproval: vi.fn(() => ({ signature: "0xsignature" })),

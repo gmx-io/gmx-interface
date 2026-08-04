@@ -10,6 +10,7 @@ import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TradingActionName } from "lib/tradingErrorTracker";
+import type { SendWalletCallsResult } from "lib/transactions/sendWalletCalls";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 
 import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
@@ -20,14 +21,27 @@ export type PendingTransactionData = {
   estimatedExecutionGasLimit: bigint;
 };
 
-export type PendingTransaction = {
-  hash: string;
+type PendingTransactionBase = {
   message: ReactNode | undefined;
   messageDetails?: ReactNode;
   metricId?: OrderMetricId;
   data?: PendingTransactionData;
   actionName?: TradingActionName;
 };
+
+export type PendingTransaction = PendingTransactionBase &
+  (
+    | {
+        type?: "transaction";
+        hash: string;
+      }
+    | {
+        type: "walletCalls";
+        chainId: number;
+        callBundleId: string;
+        getCallsStatus: SendWalletCallsResult["getStatus"];
+      }
+  );
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
 
@@ -45,7 +59,15 @@ export function usePendingTxns() {
   return useContext(PendingTxnsContext);
 }
 
-export function getPendingTxnFailureToastContent({ txUrl }: { txUrl: string }) {
+export function getPendingTxnFailureToastContent({ txUrl }: { txUrl?: string }) {
+  if (!txUrl) {
+    return (
+      <div>
+        <Trans>Transaction failed</Trans>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Trans>
@@ -65,15 +87,19 @@ export function getPendingTxnSuccessToastContent({
 }: {
   message: ReactNode;
   messageDetails?: ReactNode;
-  txUrl: string;
+  txUrl?: string;
 }) {
   return (
     <div className="StatusNotification">
       <div className="StatusNotification-title">{message}</div>
-      <br />
-      <ExternalLink href={txUrl}>
-        <Trans>View</Trans>
-      </ExternalLink>
+      {txUrl && (
+        <>
+          <br />
+          <ExternalLink href={txUrl}>
+            <Trans>View</Trans>
+          </ExternalLink>
+        </>
+      )}
       {messageDetails && (
         <>
           <hr className="my-8 -ml-12 -mr-32 h-[1.5px] border-none bg-[#0f463d]" />
@@ -97,71 +123,99 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
         return;
       }
 
-      const updatedPendingTxns: any[] = [];
+      const updatedPendingTxns: PendingTransaction[] = [];
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
-        const receipt = await provider.getTransactionReceipt(pendingTxn.hash);
-        if (receipt) {
-          if (receipt.status === 0) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            const { error: onchainError, txnData } = await getCallStaticError(
-              chainId,
-              provider,
-              undefined,
-              pendingTxn.hash
-            );
-            const errorData = onchainError ? parseError(onchainError as any) : undefined;
+        let hash: string | undefined;
+        let resolvedChainId: number = chainId;
+        let isSuccess = false;
+        let isFailure = false;
 
-            let toastMsg: ReactNode;
+        if (pendingTxn.type === "walletCalls") {
+          try {
+            const callsStatus = await pendingTxn.getCallsStatus();
 
-            if (errorData?.contractError === "InsufficientExecutionFee" && txnData) {
-              const [minExecutionFee, executionFee]: bigint[] = errorData.contractErrorArgs;
-
-              toastMsg = getInsufficientExecutionFeeToastContent({
-                minExecutionFee,
-                executionFee,
-                chainId,
-                executionFeeBufferBps,
-                txUrl,
-                errorMessage: errorData?.errorMessage,
-                shouldOfferExpress: true,
-                setIsSettingsVisible,
-                estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
-              });
-            } else {
-              toastMsg = getPendingTxnFailureToastContent({ txUrl });
+            if (callsStatus.status === "pending" || callsStatus.status === undefined) {
+              updatedPendingTxns.push(pendingTxn);
+              continue;
             }
 
-            helperToast.error(toastMsg, {
-              autoClose: false,
-              tradingErrorInfo: pendingTxn.actionName
-                ? {
-                    actionName: pendingTxn.actionName,
-                    errorData: errorData ?? onchainError,
-                    metricId: pendingTxn.metricId,
-                  }
-                : undefined,
-            });
+            hash = callsStatus.receipts?.at(-1)?.transactionHash;
+            resolvedChainId = callsStatus.chainId ?? pendingTxn.chainId;
+            isSuccess = callsStatus.status === "success" && callsStatus.atomic;
+            isFailure = !isSuccess;
+          } catch {
+            updatedPendingTxns.push(pendingTxn);
+            continue;
+          }
+        } else {
+          const receipt = await provider.getTransactionReceipt(pendingTxn.hash);
 
-            if (pendingTxn.metricId) {
-              sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
-              sendUserAnalyticsOrderResultEvent(chainId, pendingTxn.metricId, false);
-            }
+          if (!receipt) {
+            updatedPendingTxns.push(pendingTxn);
+            continue;
           }
 
-          if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            helperToast.success(
-              getPendingTxnSuccessToastContent({
-                message: pendingTxn.message,
-                messageDetails: pendingTxn.messageDetails,
-                txUrl,
-              })
-            );
-          }
-          continue;
+          hash = pendingTxn.hash;
+          isSuccess = receipt.status === 1;
+          isFailure = receipt.status === 0;
         }
-        updatedPendingTxns.push(pendingTxn);
+
+        const txUrl = hash ? getExplorerUrl(resolvedChainId) + "tx/" + hash : undefined;
+
+        if (isFailure) {
+          const { error: onchainError, txnData } =
+            pendingTxn.type !== "walletCalls" && hash
+              ? await getCallStaticError(chainId, provider, undefined, hash)
+              : { error: new Error("Wallet call bundle failed"), txnData: undefined };
+          const errorData = onchainError ? parseError(onchainError as any) : undefined;
+
+          let toastMsg: ReactNode;
+
+          if (errorData?.contractError === "InsufficientExecutionFee" && txnData && txUrl) {
+            const [minExecutionFee, executionFee]: bigint[] = errorData.contractErrorArgs;
+
+            toastMsg = getInsufficientExecutionFeeToastContent({
+              minExecutionFee,
+              executionFee,
+              chainId,
+              executionFeeBufferBps,
+              txUrl,
+              errorMessage: errorData?.errorMessage,
+              shouldOfferExpress: true,
+              setIsSettingsVisible,
+              estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
+            });
+          } else {
+            toastMsg = getPendingTxnFailureToastContent({ txUrl });
+          }
+
+          helperToast.error(toastMsg, {
+            autoClose: false,
+            tradingErrorInfo: pendingTxn.actionName
+              ? {
+                  actionName: pendingTxn.actionName,
+                  errorData: errorData ?? onchainError,
+                  metricId: pendingTxn.metricId,
+                }
+              : undefined,
+          });
+
+          if (pendingTxn.metricId) {
+            sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
+            sendUserAnalyticsOrderResultEvent(resolvedChainId, pendingTxn.metricId, false);
+          }
+        }
+
+        if (isSuccess && pendingTxn.message) {
+          helperToast.success(
+            getPendingTxnSuccessToastContent({
+              message: pendingTxn.message,
+              messageDetails: pendingTxn.messageDetails,
+              txUrl,
+            })
+          );
+        }
       }
 
       if (updatedPendingTxns.length !== pendingTxns.length) {

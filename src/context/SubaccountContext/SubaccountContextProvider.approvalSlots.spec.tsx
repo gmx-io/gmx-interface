@@ -22,6 +22,7 @@ const { mocks, chainState, onchainState, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, 
       getInitialSubaccountApproval: vi.fn(),
       signUpdatedSubaccountSettings: vi.fn(),
       refreshSubaccountData: vi.fn(),
+      requestTokenApprovals: vi.fn(),
     },
     chainState: { current: { chainId: 42161, srcChainId: undefined as number | undefined } },
     onchainState: { current: undefined as unknown },
@@ -57,6 +58,13 @@ vi.mock("domain/synthetics/subaccount/useSubaccountOnchainData", () => ({
   useSubaccountOnchainData: () => ({
     subaccountData: onchainState.current,
     refreshSubaccountData: mocks.refreshSubaccountData,
+  }),
+}));
+
+vi.mock("domain/synthetics/subaccount/useOneClickTokenApproval", () => ({
+  useOneClickTokenApproval: () => ({
+    requestTokenApprovals: mocks.requestTokenApprovals,
+    state: { canBatch: false, isApproving: false, pendingTokens: [] },
   }),
 }));
 
@@ -274,6 +282,7 @@ describe("SubaccountContextProvider approval slots", () => {
     expect(readSlot(SOURCE_BSC_MAINNET)?.signatureChainId).toBe(SOURCE_BSC_MAINNET);
     expect(readSlot(SOURCE_BASE_MAINNET)?.signatureChainId).toBe(SOURCE_BASE_MAINNET);
     expect(captured.current.subaccount?.signedApproval.signatureChainId).toBe(SOURCE_BSC_MAINNET);
+    expect(mocks.requestTokenApprovals).toHaveBeenCalledWith("OneClickReauth");
   });
 
   it("ignores stored approvals of another subaccount address", () => {

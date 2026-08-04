@@ -75,6 +75,7 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import { useAtomicTokenApproval } from "domain/tokens/useAtomicTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
@@ -89,6 +90,7 @@ import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAn
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { ExecutionFee } from "sdk/utils/fees/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { TokenData } from "sdk/utils/tokens/types";
@@ -192,7 +194,7 @@ export function useTradeboxButtonState({
     if (expressParams?.gasPaymentParams && gasPaymentToken) {
       list.push({
         tokenAddress: gasPaymentToken.address,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+        amount: bigMath.mulDiv(expressParams.gasPaymentParams.gasPaymentTokenAmount, 13n, 10n),
       });
     }
 
@@ -201,6 +203,7 @@ export function useTradeboxButtonState({
 
   const {
     tokensToApprove,
+    pendingTokenApprovals,
     isAllowanceLoaded: isAllowanceLoadedRaw,
     isApproving,
     handleApprove,
@@ -208,12 +211,39 @@ export function useTradeboxButtonState({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
     skip: isFromTokenGmxAccount,
   });
 
   const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
+  const minimumBatchApprovalCount = expressParams ? 2 : 1;
+  const isAtomicApprovalCandidate =
+    !isFromTokenGmxAccount &&
+    isAllowanceLoaded &&
+    pendingTokenApprovals.length >= minimumBatchApprovalCount &&
+    (Boolean(expressParams) || !isWrapOrUnwrap);
+  const {
+    approvalCalls,
+    analyticsContext: approvalAnalytics,
+    canBatch,
+    fallbackReason,
+    isBatchApproving,
+    isCapabilityLoading,
+    isAtomicBatchingDisabled,
+    submitBatch,
+    trackFallback,
+    trackSessionFallback,
+  } = useAtomicTokenApproval({
+    chainId,
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    pendingTokenApprovals,
+    source: expressParams ? "Express" : "Classic",
+    enabled: isAtomicApprovalCandidate,
+    minApprovalCount: minimumBatchApprovalCount,
+  });
+  const isAtomicCapabilityLoading = isAtomicApprovalCandidate && isCapabilityLoading;
+  const shouldBatchExpressApprovals = Boolean(expressParams) && canBatch;
+  const shouldBatchClassicOrder = !expressParams && !isWrapOrUnwrap && canBatch;
 
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
@@ -419,35 +449,58 @@ export function useTradeboxButtonState({
     }
 
     if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
-      if (!chainId || isApproving || !tokensToApprove[0]) return;
+      if (isBatchApproving || isAtomicCapabilityLoading) return;
 
-      userAnalytics.pushEvent<TokenApproveClickEvent>({
-        event: "TokenApproveAction",
-        data: { action: "ApproveClick" },
-      });
-      handleApprove({
-        onApproveFail: () =>
-          userAnalytics.pushEvent<TokenApproveResultEvent>({
-            event: "TokenApproveAction",
-            data: { action: "ApproveFail" },
-          }),
-      });
+      if (shouldBatchExpressApprovals) {
+        await submitBatch();
+        return;
+      }
 
-      return;
+      if (!shouldBatchClassicOrder) {
+        if (!chainId || isApproving || !tokensToApprove[0]) return;
+
+        if (isAtomicApprovalCandidate) {
+          if (isAtomicBatchingDisabled) {
+            trackSessionFallback();
+          } else {
+            trackFallback(fallbackReason);
+          }
+        }
+
+        userAnalytics.pushEvent<TokenApproveClickEvent>({
+          event: "TokenApproveAction",
+          data: { action: "ApproveClick" },
+        });
+        handleApprove({
+          onApproveFail: () =>
+            userAnalytics.pushEvent<TokenApproveResultEvent>({
+              event: "TokenApproveAction",
+              data: { action: "ApproveFail" },
+            }),
+        });
+
+        return;
+      }
     }
 
     setStage("processing");
 
     let txnPromise: Promise<any>;
+    const orderSubmitOptions = shouldBatchClassicOrder
+      ? {
+          approvalCalls,
+          approvalAnalytics,
+        }
+      : undefined;
 
     if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
     } else if (isSwap) {
-      txnPromise = onSubmitSwap();
+      txnPromise = onSubmitSwap(orderSubmitOptions);
     } else if (isIncrease) {
-      txnPromise = Promise.resolve(onSubmitIncreaseOrder());
+      txnPromise = Promise.resolve(onSubmitIncreaseOrder(orderSubmitOptions));
     } else {
-      txnPromise = onSubmitDecreaseOrder();
+      txnPromise = onSubmitDecreaseOrder(orderSubmitOptions);
     }
 
     if (expressParams?.subaccount) {
@@ -468,10 +521,15 @@ export function useTradeboxButtonState({
     account,
     chainId,
     expressParams?.subaccount,
+    fallbackReason,
     fromToken,
     handleApprove,
+    isAtomicApprovalCandidate,
+    isAtomicBatchingDisabled,
     isAllowanceLoaded,
     isApproving,
+    isBatchApproving,
+    isAtomicCapabilityLoading,
     isFromTokenGmxAccount,
     isIncrease,
     isSwap,
@@ -483,12 +541,19 @@ export function useTradeboxButtonState({
     openConnectModal,
     payAmount,
     payTokenSourceChainMappedBalance,
+    approvalAnalytics,
+    approvalCalls,
     setGmxAccountDepositViewTokenAddress,
     setGmxAccountDepositViewTokenInputValue,
     setGmxAccountModalOpen,
     setStage,
     shouldShowDepositButton,
     signer,
+    shouldBatchClassicOrder,
+    shouldBatchExpressApprovals,
+    submitBatch,
+    trackFallback,
+    trackSessionFallback,
     tokensToApprove,
   ]);
 
@@ -573,6 +638,30 @@ export function useTradeboxButtonState({
       };
     }
 
+    if (isAtomicCapabilityLoading) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            {t`Loading...`} <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isBatchApproving && tokensToApprove.length) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            <Trans>Approve tokens</Trans> <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if (isApproving && tokensToApprove.length) {
       return {
         ...commonState,
@@ -586,10 +675,14 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length) {
+    if (isAllowanceLoaded && tokensToApprove.length && !shouldBatchClassicOrder) {
       return {
         ...commonState,
-        text: t`Allow ${getToken(chainId, tokensToApprove[0]).symbol} to be spent`,
+        text: shouldBatchExpressApprovals ? (
+          <Trans>Approve tokens</Trans>
+        ) : (
+          t`Allow ${getToken(chainId, tokensToApprove[0]).symbol} to be spent`
+        ),
         disabled: false,
       };
     }
@@ -669,8 +762,12 @@ export function useTradeboxButtonState({
     stopLoss.error?.percentage,
     takeProfit.error?.percentage,
     isApproving,
+    isBatchApproving,
+    isAtomicCapabilityLoading,
     tokensToApprove,
     isAllowanceLoaded,
+    shouldBatchClassicOrder,
+    shouldBatchExpressApprovals,
     stage,
     isIncrease,
     sidecarEntries,
