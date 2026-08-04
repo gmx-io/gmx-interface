@@ -8841,6 +8841,10 @@ msgstr "Insuficiente liquidez"
 msgid "No executed or cancelled transaction yet"
 msgstr ""
 
+#: src/components/GmxAccountModal/RewardsSection.tsx
+msgid "Stake {0} GMX more to get {1}"
+msgstr "Haz staking de {0} GMX adicionales para obtener {1}"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -12143,10 +12147,6 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr ""
-
-#: src/components/GmxAccountModal/RewardsSection.tsx
-msgid "Stake {0} GMX more to get {1} next epoch"
-msgstr "Haz staking de {0} GMX adicionales para obtener {1} en la próxima época"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"

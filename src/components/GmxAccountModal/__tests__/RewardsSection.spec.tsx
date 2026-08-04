@@ -95,7 +95,8 @@ describe("RewardsSection", () => {
     expect(link.getAttribute("href")).toBe("/rewards");
     expect(link.textContent).toContain("2.5x");
     expect(link.textContent).toContain("Stake 375 GMX more");
-    expect(link.textContent).toContain("+0.5x next epoch");
+    expect(link.textContent).toContain("+0.5x");
+    expect(link.textContent).not.toContain("next epoch");
     expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
       account: ACCOUNT,
       enabled: true,
@@ -180,7 +181,7 @@ describe("RewardsSection", () => {
 
     const link = screen.getByRole("link", { name: /Your multiplier/ });
     expect(link.textContent).toContain("Stake 400 GMX more");
-    expect(link.textContent).toContain("+0.5x next epoch");
+    expect(link.textContent).toContain("+0.5x");
   });
 
   it("treats a null projected tier as no next-epoch staking multiplier", () => {
@@ -198,7 +199,7 @@ describe("RewardsSection", () => {
 
     const link = screen.getByRole("link", { name: /Your multiplier/ });
     expect(link.textContent).toContain("Stake 50 GMX more");
-    expect(link.textContent).toContain("+0.5x next epoch");
+    expect(link.textContent).toContain("+0.5x");
   });
 
   it("does not round a tiny positive distance to the next tier down to zero", () => {

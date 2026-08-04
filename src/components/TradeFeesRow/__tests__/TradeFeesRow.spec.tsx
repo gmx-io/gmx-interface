@@ -25,10 +25,20 @@ vi.mock("lib/chains", () => ({
   useChainId: () => ({ chainId: 42161 }),
 }));
 vi.mock("components/Tooltip/TooltipWithPortal", () => ({
-  default: ({ handle, content }: { handle: ReactNode; content: ReactNode }) => (
+  default: ({
+    handle,
+    content,
+    maxAllowedWidth,
+  }: {
+    handle: ReactNode;
+    content: ReactNode;
+    maxAllowedWidth?: number;
+  }) => (
     <>
       <div data-testid="fees-handle">{handle}</div>
-      <div data-testid="fees-tooltip">{content}</div>
+      <div data-testid="fees-tooltip" data-max-allowed-width={maxAllowedWidth}>
+        {content}
+      </div>
     </>
   ),
 }));
@@ -92,6 +102,7 @@ describe("TradeFeesRow estimated rewards", () => {
     expect(handleText).toContain("(+$12.00 rewards)");
     expect(tooltipText).toContain("Estimated rewards:");
     expect(tooltipText).toContain("+$12.00 (60% of net position fee)");
+    expect(screen.getByTestId("fees-tooltip").getAttribute("data-max-allowed-width")).toBe("400");
   });
 
   it("omits the compact and expanded reward details without an estimate", () => {

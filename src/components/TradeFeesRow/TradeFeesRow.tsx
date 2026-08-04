@@ -599,6 +599,7 @@ export function TradeFeesRow(p: Props) {
       return (
         <TooltipWithPortal
           tooltipClassName="TradeFeesRow-tooltip"
+          maxAllowedWidth={400}
           handleClassName={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
             "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,

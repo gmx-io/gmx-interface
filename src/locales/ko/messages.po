@@ -8841,6 +8841,10 @@ msgstr "유동성 부족"
 msgid "No executed or cancelled transaction yet"
 msgstr ""
 
+#: src/components/GmxAccountModal/RewardsSection.tsx
+msgid "Stake {0} GMX more to get {1}"
+msgstr "{0} GMX를 추가로 스테이킹하면 {1}을 받을 수 있습니다"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -12143,10 +12147,6 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr ""
-
-#: src/components/GmxAccountModal/RewardsSection.tsx
-msgid "Stake {0} GMX more to get {1} next epoch"
-msgstr "{0} GMX를 추가로 스테이킹하면 다음 에포크에 {1}을 받을 수 있습니다"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
