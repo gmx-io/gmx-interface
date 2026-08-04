@@ -14,6 +14,12 @@ export enum AccountType {
   EOA,
 }
 
+export const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
+  [AccountType.PostEip7702EOA]: "postEip7702Eoa",
+  [AccountType.SmartAccount]: "smartAccount",
+  [AccountType.EOA]: "eoa",
+};
+
 const ACCOUNT_TYPES_CACHE = new LRUCache<Promise<AccountType>>(100);
 
 let unwatchAccount: (() => void) | undefined;

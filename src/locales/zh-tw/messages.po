@@ -5314,6 +5314,10 @@ msgstr "已從子帳戶提取"
 msgid "Unknown buy GM order"
 msgstr "未知的買入 GM 訂單"
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
+msgstr ""
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "頁面已過期，請重新整理"

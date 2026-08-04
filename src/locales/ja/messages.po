@@ -5314,6 +5314,10 @@ msgstr "サブアカウントから出金されました"
 msgid "Unknown buy GM order"
 msgstr "不明なGM購入注文"
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
+msgstr ""
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "ページが古くなっています。更新してください"

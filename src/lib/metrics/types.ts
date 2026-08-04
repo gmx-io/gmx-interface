@@ -653,6 +653,28 @@ export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
 };
 
+/** What a wallet actually returned, so a later relay rejection can be diagnosed. */
+export type SignatureProducedEvent = {
+  event: "signature.produced";
+  isError: false;
+  data: {
+    /** EIP-712 primary type ("BridgeOut", "Batch", …) or "message". */
+    signaturePurpose: string;
+    signatureKind: "eoa" | "erc6492" | "erc1271" | "malformed";
+    signatureBytes: number | undefined;
+    /** Recovery id of a 65-byte signature. On-chain ECDSA only accepts 27/28. */
+    ecdsaV: number | undefined;
+    isOnChainRecoverableShape: boolean | undefined;
+    isHighS: boolean | undefined;
+    signingChainId: number;
+    verificationChainId: number;
+    didSwitchChain: boolean;
+    isRetryAfterInvalidSignature: boolean;
+    accountTypeOnSigningChain: string | undefined;
+    accountTypeOnVerificationChain: string | undefined;
+  };
+};
+
 type MultichainFundingParams = {
   sourceChain: number;
   settlementChain: number;

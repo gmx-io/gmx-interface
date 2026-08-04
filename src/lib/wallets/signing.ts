@@ -1,21 +1,31 @@
+import { t } from "@lingui/macro";
 import { getAccount, getChainId, getWalletClient } from "@wagmi/core";
 import { AbstractSigner, type Wallet } from "ethers";
-import { hashTypedData, isAddressEqual, isHex, size, withRetry, type Hex } from "viem";
+import { hashTypedData, isAddressEqual, withRetry, type Hex } from "viem";
 
+import { getChainName } from "config/chains";
 import { extendError, parseError, type ErrorLike } from "lib/errors";
 import {
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
 } from "lib/errors/customErrors";
+import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { ISigner } from "lib/transactions/iSigner";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
+import { analyzeSignatureShape, reportSignatureProduced } from "./signatureDiagnostics";
 import { AccountType, getAccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
+import {
+  isPostEip7702OnEitherChain,
+  rememberVerificationChainSigning,
+  requiresVerificationChainSigning,
+  verifySignatureOnVerificationChain,
+} from "./verificationChainSigning";
 import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
 export type SignatureDomain = {
@@ -119,29 +129,40 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     signer,
     address,
     targetChainId,
+    forceVerificationChain = false,
+    shouldUseLearnedChainBinding = true,
   }: {
     signer: S;
     address: string;
     targetChainId: number | undefined;
+    forceVerificationChain?: boolean;
+    shouldUseLearnedChainBinding?: boolean;
   },
-  action: (signer: S | WalletSigner) => Promise<T>
+  action: (signer: S | WalletSigner, signingChainId: number) => Promise<T>
 ): Promise<T> {
   const config = getWagmiConfig();
   const startingChainId = getChainId(config);
-  const needsSwap = await probeChainBoundSigning({
-    address,
-    currentChainId: startingChainId,
-    targetChainId,
-  });
+
+  if (targetChainId === undefined || targetChainId === startingChainId) {
+    return action(signer, startingChainId);
+  }
+
+  const hasLearnedChainBinding =
+    shouldUseLearnedChainBinding && requiresVerificationChainSigning(address, targetChainId);
+
+  const needsSwap =
+    forceVerificationChain ||
+    hasLearnedChainBinding ||
+    (await probeChainBoundSigning({ address, currentChainId: startingChainId, targetChainId }));
 
   if (!needsSwap) {
-    return action(signer);
+    return action(signer, startingChainId);
   }
 
   try {
-    await switchNetwork(targetChainId!, true);
+    await switchNetwork(targetChainId, true);
   } catch (error) {
-    throw await buildChainSwitchError({ address, startingChainId, targetChainId: targetChainId!, cause: error });
+    throw await buildChainSwitchError({ address, startingChainId, targetChainId, cause: error });
   }
 
   try {
@@ -157,16 +178,16 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
       });
     }
 
-    const swappedWalletClient = await getWalletClient(config, { chainId: targetChainId! });
+    const swappedWalletClient = await getWalletClient(config, { chainId: targetChainId });
     const swappedSigner = clientToSigner(swappedWalletClient, account);
     try {
-      return await action(swappedSigner);
+      return await action(swappedSigner, targetChainId);
     } catch (error) {
       if (!isUnsupportedChainError(error)) {
         throw error;
       }
 
-      throw await buildChainSwitchError({ address, startingChainId, targetChainId: targetChainId!, cause: error });
+      throw await buildChainSwitchError({ address, startingChainId, targetChainId, cause: error });
     }
   } finally {
     await switchNetwork(startingChainId, true).catch((error) => {
@@ -218,22 +239,6 @@ function minifyTypedData({
   };
 }
 
-export const ERC6492_MAGIC_SUFFIX = "6492649264926492649264926492649264926492649264926492649264926492";
-
-export type SignatureKind = "eoa" | "erc6492" | "erc1271" | "malformed";
-
-export function getSignatureKind(signature: string): SignatureKind {
-  if (!isHex(signature) || size(signature) === 0) {
-    return "malformed";
-  }
-
-  if (signature.endsWith(ERC6492_MAGIC_SUFFIX)) {
-    return "erc6492";
-  }
-
-  return size(signature) === 65 ? "eoa" : "erc1271";
-}
-
 export function hashSignedTypedData({
   domain,
   types,
@@ -255,9 +260,26 @@ export async function signMessage({
   verificationChainId: number;
 }): Promise<string> {
   const from = await signer.getAddress();
+  const startingChainId = getChainId(getWagmiConfig());
 
-  return withSmartWalletChainSwap({ signer, address: from, targetChainId: verificationChainId }, (signWith) =>
-    signWith.signMessage(message)
+  // `generateSubaccount` derives a private key from this signature, so it has to stay stable for a given
+  // wallet — it is never checked on chain, and learning chain binding later would change the subaccount.
+  return withSmartWalletChainSwap(
+    { signer, address: from, targetChainId: verificationChainId, shouldUseLearnedChainBinding: false },
+    async (signWith, signingChainId) => {
+      const signature = await signWith.signMessage(message);
+
+      reportSignatureProduced({
+        address: from,
+        signature,
+        signaturePurpose: "message",
+        signingChainId,
+        startingChainId,
+        verificationChainId,
+      });
+
+      return signature;
+    }
   );
 }
 
@@ -320,7 +342,7 @@ export async function signTypedData({
     message: messageToSign,
   };
 
-  return withSmartWalletChainSwap({ signer, address: from, targetChainId: verificationChainId }, (signWith) => {
+  const requestSignature = (signWith: AnySigner) => {
     if (shouldUseSignerMethod && signWith.signTypedData) {
       return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {
         if (!e.message.includes("requires a provider")) throw e;
@@ -328,7 +350,112 @@ export async function signTypedData({
       });
     }
     return providerSendSign(signWith, from, eip712);
+  };
+
+  // `typesToSign` collapses to `Minified`, so name the signature after the original struct.
+  const signaturePurpose = Object.keys(types).find((type) => type !== "EIP712Domain") ?? "unknown";
+  const startingChainId = getChainId(getWagmiConfig());
+
+  const firstResult = await withSmartWalletChainSwap(
+    { signer, address: from, targetChainId: verificationChainId },
+    async (signWith, signingChainId) => {
+      const signature = await requestSignature(signWith);
+
+      reportSignatureProduced({
+        address: from,
+        signature,
+        signaturePurpose,
+        signingChainId,
+        startingChainId,
+        verificationChainId,
+      });
+
+      return { signature, signingChainId };
+    }
+  );
+
+  if (firstResult.signingChainId === verificationChainId) {
+    return firstResult.signature;
+  }
+
+  const isPostEip7702 = await isPostEip7702OnEitherChain({
+    address: from,
+    currentChainId: firstResult.signingChainId,
+    verificationChainId,
   });
+
+  if (!isPostEip7702) {
+    return firstResult.signature;
+  }
+
+  const signedHash = hashSignedTypedData({ domain, types, typedData, minified });
+  const firstSignatureIsValid = await verifySignatureOnVerificationChain({
+    signedHash,
+    signature: firstResult.signature,
+    expectedAccount: from,
+    verificationChainId,
+  });
+
+  if (firstSignatureIsValid !== false) {
+    return firstResult.signature;
+  }
+
+  // Before the swap, so it explains the network prompt instead of trailing it.
+  helperToast.info(
+    t`This wallet creates network-specific signatures. We switched to ${getChainName(verificationChainId)}; please sign once more.`
+  );
+
+  const retryResult = await withSmartWalletChainSwap(
+    {
+      signer,
+      address: from,
+      targetChainId: verificationChainId,
+      forceVerificationChain: true,
+    },
+    async (signWith, signingChainId) => {
+      const signature = await requestSignature(signWith);
+
+      reportSignatureProduced({
+        address: from,
+        signature,
+        signaturePurpose,
+        signingChainId,
+        startingChainId,
+        verificationChainId,
+        isRetryAfterInvalidSignature: true,
+      });
+
+      return { signature, signingChainId };
+    }
+  );
+
+  const retrySignatureIsValid = await verifySignatureOnVerificationChain({
+    signedHash,
+    signature: retryResult.signature,
+    expectedAccount: from,
+    verificationChainId,
+  });
+
+  // `verifyHash` also reports `false` when the deployless ERC-6492 `eth_call` is unsupported, so the
+  // relay stays the authority on validity — we only record that our own check disagreed.
+  if (retrySignatureIsValid === false) {
+    metrics.pushError(
+      extendError(new Error("Signature invalid after signing on verification chain"), {
+        data: {
+          expectedAccount: from,
+          ...analyzeSignatureShape(retryResult.signature),
+          verificationChainId,
+        },
+      }),
+      "signing.adaptiveRetryStillInvalid"
+    );
+  }
+
+  if (retrySignatureIsValid) {
+    rememberVerificationChainSigning(from, verificationChainId);
+  }
+
+  return retryResult.signature;
 }
 
 export function splitSignature(signature: string): { r: string; s: string; v: number } {

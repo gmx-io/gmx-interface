@@ -5314,6 +5314,10 @@ msgstr "Withdrawn from subaccount"
 msgid "Unknown buy GM order"
 msgstr "Unknown buy GM order"
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
+msgstr "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "Page outdated. Refresh"

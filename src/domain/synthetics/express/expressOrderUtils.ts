@@ -25,7 +25,8 @@ import { getByKey } from "lib/objects";
 import { createProviderRpc } from "lib/rpc/createProviderRpc";
 import { ISigner } from "lib/transactions/iSigner";
 import { WalletSigner } from "lib/wallets";
-import { getSignatureKind, hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
+import { getSignatureKind } from "lib/wallets/signatureDiagnostics";
+import { hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
@@ -576,8 +577,9 @@ async function validateSignature({
 
     signedHash = hashSignedTypedData(signatureParams);
 
+    const client = getPublicClientWithRpc(verificationChainId);
     // Covers EOA, ERC-1271 and ERC-6492, matching what the relay router accepts.
-    const isValid = await getPublicClientWithRpc(verificationChainId).verifyHash({
+    const isValid = await client.verifyHash({
       address: expectedAccount,
       hash: signedHash,
       signature,

@@ -5314,6 +5314,10 @@ msgstr "Retrait du sous-compte effectué"
 msgid "Unknown buy GM order"
 msgstr "Ordre d'achat GM inconnu"
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
+msgstr ""
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "Page obsolète. Actualisez"
