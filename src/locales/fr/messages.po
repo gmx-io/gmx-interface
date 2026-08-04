@@ -2918,6 +2918,10 @@ msgstr "TEMPS DE RÉPONSE"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade (anciennement GMX Solana) est hébergé sur un autre site web et géré par une équipe différente, l'expérience peut donc varier légèrement"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
+msgstr "<0>Il n'y a pas de seuil fixe — l'équipe fixe votre niveau selon votre volume mensuel récent et prévu. La plupart des traders sont éligibles à partir d'environ 5-10 M$/mois ; contactez-nous et nous confirmerons votre taux.</0>"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "Vous n'avez pas effectué de transactions durant la période sélectionnée"
@@ -5408,6 +5412,10 @@ msgstr "Parler à l'équipe"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
+msgstr "<0>Non. GMX est auto-hébergé et sans permission — vous connectez un portefeuille et vous tradez. Aucune vérification d'identité n'est requise.</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8382,10 +8390,6 @@ msgstr "Tableau de bord de parrainage en temps réel"
 msgid "Open interest reserve factor shorts"
 msgstr "Facteur de réserve des positions ouvertes pour les shorts"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $500k/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>Il n'y a pas de seuil fixe — l'équipe fixe votre niveau selon votre volume mensuel récent et prévu. La plupart des traders sont éligibles à partir d'environ 500 k$/mois ; contactez-nous et nous confirmerons votre taux.</0>"
-
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
@@ -8697,10 +8701,6 @@ msgstr "Échec du staker"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h volume"
 msgstr "Volume 24h"
-
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade, no identity verification required.</0>"
-msgstr "<0>Non. GMX est auto-hébergé et sans permission — vous connectez un portefeuille et vous tradez, aucune vérification d'identité n'est requise.</0>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx

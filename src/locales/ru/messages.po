@@ -2918,6 +2918,10 @@ msgstr "ВРЕМЯ ОТВЕТА"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade (ранее GMX Solana) размещён на другом сайте и управляется другой командой, поэтому работа может незначительно отличаться"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
+msgstr "<0>Фиксированного порога нет — деск определяет ваш уровень исходя из текущего и ожидаемого месячного объёма. Большинство трейдеров получают право на участие начиная примерно с $5–10 млн в месяц; свяжитесь с нами, и мы подтвердим вашу ставку.</0>"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "Вы не совершали сделок за выбранный период"
@@ -5408,6 +5412,10 @@ msgstr "Поговорить с деском"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
+msgstr "<0>Нет. GMX некастодиален и не требует разрешений — вы подключаете кошелёк и торгуете. Верификация личности не требуется.</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8382,10 +8390,6 @@ msgstr "Реферальная панель в реальном времени"
 msgid "Open interest reserve factor shorts"
 msgstr "Резервный фактор открытого интереса для шортов"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $500k/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>Фиксированного порога нет — деск определяет ваш уровень исходя из текущего и ожидаемого месячного объёма. Большинство трейдеров получают право на участие начиная примерно с $500 тыс. в месяц; свяжитесь с нами, и мы подтвердим вашу ставку.</0>"
-
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
@@ -8697,10 +8701,6 @@ msgstr "Не удалось стейкать"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h volume"
 msgstr "Объём за 24ч"
-
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade, no identity verification required.</0>"
-msgstr "<0>Нет. GMX некастодиален и не требует разрешений — вы подключаете кошелёк и торгуете, верификация личности не требуется.</0>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx

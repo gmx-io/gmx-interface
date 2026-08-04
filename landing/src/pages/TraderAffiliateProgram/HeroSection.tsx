@@ -8,8 +8,14 @@ import { shortFormatUsd } from "landing/pages/Home/utils/formatters";
 import heroBg from "img/trader_affiliate_hero_bg.svg";
 import heroScreens from "img/trader_affiliate_hero_screens.png";
 
-function scrollToId(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+function scrollToId(id: string, gapBelowHeader: number) {
+  const element = document.getElementById(id);
+  if (!element) {
+    return;
+  }
+  const headerHeight = document.querySelector("[data-landing-header]")?.getBoundingClientRect().height ?? 0;
+  const top = element.getBoundingClientRect().top + window.scrollY - headerHeight - gapBelowHeader;
+  window.scrollTo({ top, behavior: "smooth" });
 }
 
 function HeroStat({
@@ -77,13 +83,13 @@ export function HeroSection() {
           <div className="flex flex-col gap-20 sm:flex-row">
             <ArrowButton
               label={<Trans>Contact us</Trans>}
-              onClick={() => scrollToId("contact")}
+              onClick={() => scrollToId("contact", 0)}
               variant="primary"
               className="w-full sm:w-[200px]"
             />
             <ArrowButton
               label={<Trans>See the perks</Trans>}
-              onClick={() => scrollToId("program")}
+              onClick={() => scrollToId("program", 60)}
               variant="secondary"
               className="w-full sm:w-[200px]"
             />
@@ -92,7 +98,7 @@ export function HeroSection() {
             <HeroStat label={<Trans>GMX cumulative volume</Trans>} value={totalVolumeText} className="sm:w-[207px]" />
             <HeroStat
               label={<Trans>Paid to traders & affiliates</Trans>}
-              value="$3.5M+"
+              value="$9M+"
               gradient
               className="sm:w-[210px]"
             />

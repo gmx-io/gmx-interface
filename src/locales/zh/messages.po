@@ -2918,6 +2918,10 @@ msgstr "RESPONSE TIME"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade（前身为 GMX Solana）托管在另一个网站上，由另一支团队运营，因此体验可能略有不同"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
+msgstr "<0>没有固定门槛——交易台会根据您近期及预期的月交易量为您设定等级。大多数交易者从约 500 万–1000 万美元/月起即可符合条件；请联系我们，我们将为您确认费率。</0>"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "您在所选时间段内没有交易记录"
@@ -5408,6 +5412,10 @@ msgstr "联系交易台"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
+msgstr "<0>不需要。GMX 是自托管且无需许可的——您只需连接钱包即可交易。无需身份验证。</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8382,10 +8390,6 @@ msgstr "实时推荐仪表盘"
 msgid "Open interest reserve factor shorts"
 msgstr "做空未平仓量储备系数"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $500k/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>没有固定门槛——交易台会根据您近期及预期的月交易量为您设定等级。大多数交易者从约 50 万美元/月起即可符合条件；请联系我们，我们将为您确认费率。</0>"
-
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
@@ -8697,10 +8701,6 @@ msgstr "质押失败"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h volume"
 msgstr "24小时交易量"
-
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade, no identity verification required.</0>"
-msgstr "<0>不需要。GMX 是自托管且无需许可的——您只需连接钱包即可交易，无需身份验证。</0>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx

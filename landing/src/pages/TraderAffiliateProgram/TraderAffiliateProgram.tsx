@@ -17,11 +17,10 @@ export default function TraderAffiliateProgram() {
       <HomePageContextProvider>
         <HeaderMenu />
         <HeroSection />
-        <section
-          id="program"
-          className="bg-light-150 flex w-full scroll-mt-96 justify-center px-16 py-80 sm:px-40 sm:pb-[114px] sm:pt-[120px]"
-        >
-          <TraderAffiliateWidget />
+        <section className="bg-light-150 flex w-full justify-center px-16 py-80 sm:px-40 sm:pb-[114px] sm:pt-[120px]">
+          <div id="program" className="w-full">
+            <TraderAffiliateWidget />
+          </div>
         </section>
         <FaqSection />
         <ContactSection />

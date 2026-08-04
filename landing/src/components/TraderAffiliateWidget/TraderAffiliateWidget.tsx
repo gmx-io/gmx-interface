@@ -18,7 +18,11 @@ import {
   FEE_SHARE_RATE,
   GRADIENT_TEXT_CLASS,
   TRADER_VOLUME_TIERS,
+  VIP_CONTACT_FORM_INTEREST_AFFILIATE,
+  VIP_CONTACT_FORM_INTEREST_ENTRY,
+  VIP_CONTACT_FORM_INTEREST_TRADER,
   VIP_CONTACT_FORM_URL,
+  VIP_CONTACT_FORM_VOLUME_ENTRY,
 } from "./constants";
 
 type TabKey = "trader" | "affiliate";
@@ -115,6 +119,19 @@ function useTabContent(tab: TabKey): TabContent {
   }, [tab]);
 }
 
+function getContactFormVolumeOption(volume: number): string {
+  if (volume >= 50_000_000) {
+    return "Over 50M";
+  }
+  if (volume >= 10_000_000) {
+    return "Over 10M & Under 50m";
+  }
+  if (volume >= 1_000_000) {
+    return "Over 1M & under 10M";
+  }
+  return "Under 1 M";
+}
+
 function formatVolumeShort(value: number): string {
   if (value >= 1_000_000) {
     return `$${value / 1_000_000}m`;
@@ -141,6 +158,18 @@ export function TraderAffiliateWidget() {
   const volumeIndex = volumeIndexByTab[tab];
   const volume = volumeTiers[volumeIndex];
   const income = volume * EFFECTIVE_FEE_RATE * FEE_SHARE_RATE;
+
+  const contactFormUrl = useMemo(() => {
+    const params = new URLSearchParams({
+      usp: "pp_url",
+      [VIP_CONTACT_FORM_INTEREST_ENTRY]:
+        tab === "trader" ? VIP_CONTACT_FORM_INTEREST_TRADER : VIP_CONTACT_FORM_INTEREST_AFFILIATE,
+    });
+    if (tab === "trader") {
+      params.set(VIP_CONTACT_FORM_VOLUME_ENTRY, getContactFormVolumeOption(volume));
+    }
+    return `${VIP_CONTACT_FORM_URL}?${params.toString()}`;
+  }, [tab, volume]);
 
   const setVolumeIndex = (index: number) => {
     setVolumeIndexByTab((prev) => ({ ...prev, [tab]: index }));
@@ -245,7 +274,7 @@ export function TraderAffiliateWidget() {
               </span>
             </div>
             <p className="mt-4 text-12 leading-[15px] tracking-[0.024px] text-[#646A8F]">{content.disclaimer}</p>
-            <ArrowButton label={content.cta} variant="primary" href={VIP_CONTACT_FORM_URL} className="mt-16 w-full" />
+            <ArrowButton label={content.cta} variant="primary" href={contactFormUrl} className="mt-16 w-full" />
           </div>
         </div>
       </div>

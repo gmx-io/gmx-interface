@@ -1,7 +1,14 @@
 export const VIP_TELEGRAM_URL = "https://t.me/GMXPartners";
 export const VIP_CALL_BOOKING_URL = "https://calendly.com/traders-gmx/30min";
-// TODO(FEDEV-4076): replace with the real VIP-desk contact form link once it exists.
-export const VIP_CONTACT_FORM_URL = "https://forms.gle/REPLACE_WITH_VIP_CONTACT_LINK";
+export const VIP_CONTACT_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdBQIxeDvgaRTPXX_G68eh6EtNK8CdQrAQ63hpzkpqy4NDdJA/viewform";
+export const VIP_CONTACT_FORM_CONTACT_ENTRY = "entry.483482254";
+export const VIP_CONTACT_FORM_INTEREST_ENTRY = "entry.367285497";
+export const VIP_CONTACT_FORM_METHOD_ENTRY = "entry.113799407";
+export const VIP_CONTACT_FORM_VOLUME_ENTRY = "entry.762060236";
+export const VIP_CONTACT_FORM_INTEREST_TRADER = "VIP: I'm trading with size and frequent volume";
+export const VIP_CONTACT_FORM_INTEREST_AFFILIATE = "Affiliate: I'm leveraging a social community to bring trading volume";
+export const VIP_CONTACT_FORM_METHOD_EMAIL = "E-mail";
 
 export const GRADIENT_TEXT_CLASS = "bg-[linear-gradient(160deg,#A4C3F9,#2D42FC_210%)] bg-clip-text text-transparent";
 

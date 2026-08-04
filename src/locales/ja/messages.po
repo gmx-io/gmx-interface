@@ -2918,6 +2918,10 @@ msgstr "RESPONSE TIME"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade（旧GMX Solana）は別のウェブサイトでホストされ、別のチームによって運営されているため、体験が若干異なる場合があります"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
+msgstr "<0>明確な基準額はありません — デスクが直近および見込みの月間取引高からお客様のティアを設定します。多くのトレーダーは月間500万〜1,000万ドル前後から対象となります。ご連絡いただければレートを確定いたします。</0>"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "選択した期間中に取引はありませんでした"
@@ -5408,6 +5412,10 @@ msgstr "デスクに相談"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
+msgstr "<0>いいえ。GMXはセルフカストディかつパーミッションレスです — ウォレットを接続するだけで取引できます。本人確認は必要ありません。</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8382,10 +8390,6 @@ msgstr "リアルタイム紹介ダッシュボード"
 msgid "Open interest reserve factor shorts"
 msgstr "建玉リザーブファクター（ショート）"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $500k/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>明確な基準額はありません — デスクが直近および見込みの月間取引高からお客様のティアを設定します。多くのトレーダーは月間50万ドル前後から対象となります。ご連絡いただければレートを確定いたします。</0>"
-
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
@@ -8697,10 +8701,6 @@ msgstr "ステークに失敗しました"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h volume"
 msgstr "24時間取引高"
-
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade, no identity verification required.</0>"
-msgstr "<0>いいえ。GMXはセルフカストディかつパーミッションレスです — ウォレットを接続するだけで取引でき、本人確認は必要ありません。</0>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx

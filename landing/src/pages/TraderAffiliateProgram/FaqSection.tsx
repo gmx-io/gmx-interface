@@ -25,7 +25,7 @@ export function FaqSection() {
             <Trans>
               <p>
                 There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most
-                traders qualify starting around $500k/month; reach out and we'll confirm your rate.
+                traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.
               </p>
             </Trans>
           </FaqItem>
@@ -40,7 +40,7 @@ export function FaqSection() {
           <FaqItem title={t`Do I need to pass KYC?`} iconClassName="size-12 text-slate-500">
             <Trans>
               <p>
-                No. GMX is self-custodial and permissionless — you connect a wallet and trade, no identity verification
+                No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification
                 required.
               </p>
             </Trans>

@@ -2918,6 +2918,10 @@ msgstr "RESPONSE TIME"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade(이전 GMX Solana)는 다른 웹사이트에서 호스팅되며 별도의 팀이 운영하므로 이용 경험이 다소 다를 수 있습니다"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
+msgstr "<0>고정된 기준선은 없습니다 — 데스크가 최근 및 예상 월간 거래량을 바탕으로 등급을 정합니다. 대부분의 트레이더는 월 $5-10M 안팎부터 자격을 얻으며, 문의해 주시면 정확한 요율을 확인해 드립니다.</0>"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "선택한 기간 동안 거래 내역이 없습니다"
@@ -5408,6 +5412,10 @@ msgstr "데스크와 상담하기"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
+msgstr "<0>아닙니다. GMX는 자기 수탁형이며 무허가 방식으로 운영됩니다 — 지갑을 연결하고 거래하면 됩니다. 신원 확인은 필요하지 않습니다.</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8382,10 +8390,6 @@ msgstr "실시간 추천 대시보드"
 msgid "Open interest reserve factor shorts"
 msgstr "숏 미결제약정 준비금 비율"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $500k/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>고정된 기준선은 없습니다 — 데스크가 최근 및 예상 월간 거래량을 바탕으로 등급을 정합니다. 대부분의 트레이더는 월 $500k 안팎부터 자격을 얻으며, 문의해 주시면 정확한 요율을 확인해 드립니다.</0>"
-
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
@@ -8697,10 +8701,6 @@ msgstr "스테이킹에 실패했습니다"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h volume"
 msgstr "24시간 거래량"
-
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade, no identity verification required.</0>"
-msgstr "<0>아닙니다. GMX는 자기 수탁형이며 무허가 방식으로 운영됩니다 — 지갑을 연결하고 거래하면 되며, 신원 확인은 필요하지 않습니다.</0>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx

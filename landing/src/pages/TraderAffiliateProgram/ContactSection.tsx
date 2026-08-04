@@ -3,6 +3,9 @@ import cx from "classnames";
 import {
   GRADIENT_TEXT_CLASS,
   VIP_CALL_BOOKING_URL,
+  VIP_CONTACT_FORM_CONTACT_ENTRY,
+  VIP_CONTACT_FORM_METHOD_EMAIL,
+  VIP_CONTACT_FORM_METHOD_ENTRY,
   VIP_CONTACT_FORM_URL,
   VIP_TELEGRAM_URL,
 } from "landing/components/TraderAffiliateWidget/constants";
@@ -79,15 +82,23 @@ export function ContactSection() {
   const openLiveChat = useOpenLiveChat();
   const [email, setEmail] = useState("");
 
-  const handleSubmit = useCallback((event: React.FormEvent) => {
-    event.preventDefault();
-    window.open(VIP_CONTACT_FORM_URL, "_blank", "noopener,noreferrer");
-  }, []);
+  const handleSubmit = useCallback(
+    (event: React.FormEvent) => {
+      event.preventDefault();
+      const params = new URLSearchParams({
+        usp: "pp_url",
+        [VIP_CONTACT_FORM_METHOD_ENTRY]: VIP_CONTACT_FORM_METHOD_EMAIL,
+        [VIP_CONTACT_FORM_CONTACT_ENTRY]: email,
+      });
+      window.open(`${VIP_CONTACT_FORM_URL}?${params.toString()}`, "_blank", "noopener,noreferrer");
+    },
+    [email]
+  );
 
   return (
     <section
       id="contact"
-      className="relative flex w-full scroll-mt-96 flex-col items-center overflow-hidden border-t-1/2 border-slate-600 bg-slate-900 px-16 pt-80 text-white sm:px-40 sm:pt-[120px]"
+      className="relative flex w-full flex-col items-center overflow-hidden border-t-1/2 border-slate-600 bg-slate-900 px-16 pt-80 text-white sm:px-40 sm:pt-[120px]"
     >
       <img
         src={contactBg}

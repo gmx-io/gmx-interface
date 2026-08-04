@@ -22,6 +22,7 @@ export function HeaderMenu() {
 
   return (
     <div
+      data-landing-header
       className={cx("fixed left-0 top-0 z-30 flex w-full flex-col bg-slate-900 text-white", {
         "h-screen": isMenuOpen,
       })}
