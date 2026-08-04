@@ -19,7 +19,6 @@ export function useShowSupportChat() {
   );
 
   const { openChat } = useSearchParams<{ openChat?: string }>();
-  // Latched on first render so the widget doesn't shut back down once AppRoutes strips the "openChat" param.
   const shouldOpenChatOnBoot = useRef(Boolean(openChat)).current;
 
   const showWhileConnecting = isWalletInitializing && lastConnectedState;

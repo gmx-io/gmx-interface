@@ -133,8 +133,6 @@ export function useSupportChat() {
       setSupportChatUnreadCount(unreadCount);
     });
 
-    // show() must run on every boot: the cleanup's shutdown() closes the messenger,
-    // so a consumed-once flag would leave the StrictMode remount without an open chat
     if (shouldOpenChatOnBoot) {
       show();
     }

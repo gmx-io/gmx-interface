@@ -12,7 +12,6 @@ export const VIP_CONTACT_FORM_METHOD_EMAIL = "E-mail";
 
 export const GRADIENT_TEXT_CLASS = "bg-[linear-gradient(160deg,#A4C3F9,#2D42FC_210%)] bg-clip-text text-transparent";
 
-// T4 code rates: 0% fee discount, 25% rebate — the calculator shows the rebate share
 export const FEE_SHARE_RATE = 0.25;
 export const EFFECTIVE_FEE_RATE = 0.0006;
 
