@@ -110,7 +110,7 @@ export function StatusLabel({
   if (active && projected) {
     return (
       <span className="text-green-500">
-        <Trans>Active · next epoch</Trans>
+        <Trans>Active</Trans>
       </span>
     );
   }

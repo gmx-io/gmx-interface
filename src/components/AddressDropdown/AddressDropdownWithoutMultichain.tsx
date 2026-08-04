@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { Address } from "viem";
 
-import { BOTANIX } from "config/chains";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -39,9 +38,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
   const displayAddressLength = isMobile ? 9 : 13;
 
   const { chainId } = useChainId();
-  const isBotanix = chainId === BOTANIX;
   const formattedMultiplier = useHeaderIncentivesMultiplier({ account, chainId });
-
   const accountUrl = getAccountUrl(chainId, account);
   const handleDisconnect = useDisconnectAndClose();
 
@@ -99,16 +96,14 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
                 </p>
               </ExternalLink>
             </Menu.Item>
-            {!isBotanix ? (
-              <Menu.Item>
-                <div className="menu-item" onClick={openNotifyModal}>
-                  <BellIcon className="ml-2 size-20 pt-2" />
-                  <p>
-                    <Trans>Alerts</Trans>
-                  </p>
-                </div>
-              </Menu.Item>
-            ) : null}
+            <Menu.Item>
+              <div className="menu-item" onClick={openNotifyModal}>
+                <BellIcon className="ml-2 size-20 pt-2" />
+                <p>
+                  <Trans>Alerts</Trans>
+                </p>
+              </div>
+            </Menu.Item>
             <Menu.Item>
               <div className="menu-item" onClick={handleDisconnect}>
                 <DisconnectIcon width={20} className="size-20" />

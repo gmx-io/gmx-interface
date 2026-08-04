@@ -44,6 +44,7 @@ import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
+import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
@@ -70,8 +71,6 @@ import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
@@ -143,6 +142,7 @@ const useIsFirstDeposit = () => {
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const { address: account, chainId: walletChainId } = useAccount();
+  const withdrawBlockedError = useWithdrawBlockedError();
 
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
@@ -578,9 +578,6 @@ export const DepositView = () => {
 
   const subaccountState = useSubaccountContext();
 
-  const isGeminiWallet = useIsGeminiWallet();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
-  const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
@@ -773,7 +770,7 @@ export const DepositView = () => {
 
           if (submittedDepositGuid) {
             setSelectedTransferGuid(submittedDepositGuid);
-            if (!subaccountState.subaccount && !isExpressTradingDisabled) {
+            if (!subaccountState.subaccount) {
               setIsVisibleOrView("depositStatus");
             } else {
               setIsVisibleOrView("transferHistory");
@@ -791,7 +788,6 @@ export const DepositView = () => {
       setMultichainSubmittedDeposit,
       setSelectedTransferGuid,
       subaccountState.subaccount,
-      isExpressTradingDisabled,
       setIsVisibleOrView,
     ]
   );
@@ -1167,6 +1163,13 @@ export const DepositView = () => {
       ),
       disabled: true,
     };
+  } else if (isInputEmpty) {
+    buttonState = {
+      text: t`Enter deposit amount`,
+      disabled: true,
+    };
+  } else if (withdrawBlockedError) {
+    buttonState = withdrawBlockedError;
   } else if (needTokenApprove) {
     buttonState = {
       text: t`Allow ${selectedToken?.symbol} spending`,
@@ -1180,11 +1183,6 @@ export const DepositView = () => {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      disabled: true,
-    };
-  } else if (isInputEmpty) {
-    buttonState = {
-      text: t`Enter deposit amount`,
       disabled: true,
     };
   } else if (selectedTokenBalanceForDeposit !== undefined && amountLD > selectedTokenBalanceForDeposit) {

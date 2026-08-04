@@ -69,10 +69,11 @@ export function isTradeboxOffHoursLiqRisk(p: {
   marketInfo: MarketInfo | undefined;
   isLong: boolean;
   nextSizeInUsd: bigint | undefined;
+  nextSizeInTokens: bigint | undefined;
   nextCollateralUsd: bigint | undefined;
   minCollateralUsd: bigint | undefined;
 }): boolean {
-  const { chainId, marketInfo, isLong, nextSizeInUsd, nextCollateralUsd, minCollateralUsd } = p;
+  const { chainId, marketInfo, isLong, nextSizeInUsd, nextSizeInTokens, nextCollateralUsd, minCollateralUsd } = p;
   const offHoursMarketInfo = getOffHoursMarketInfo(chainId, marketInfo);
 
   if (
@@ -81,6 +82,8 @@ export function isTradeboxOffHoursLiqRisk(p: {
     minCollateralUsd === undefined ||
     nextSizeInUsd === undefined ||
     nextSizeInUsd <= 0n ||
+    nextSizeInTokens === undefined ||
+    nextSizeInTokens <= 0n ||
     nextCollateralUsd === undefined
   ) {
     return false;
@@ -90,6 +93,7 @@ export function isTradeboxOffHoursLiqRisk(p: {
     marketInfo,
     isLong,
     sizeInUsd: nextSizeInUsd,
+    sizeInTokens: nextSizeInTokens,
     isOpening: false,
     netValue: nextCollateralUsd,
     pendingImpactAmount: 0n,

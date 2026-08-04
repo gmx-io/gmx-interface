@@ -120,9 +120,14 @@ const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dis
 
 export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
-export function getSubaccountApprovalKey(chainId: number, account: string | undefined) {
+export function getSubaccountApprovalKey(chainId: number, account: string | undefined, srcChainId: number | undefined) {
   if (!chainId || !account) return null;
-  return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
+
+  if (srcChainId === undefined) {
+    return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
+  }
+
+  return [chainId, account, srcChainId, SUBACCOUNT_APPROVAL_KEY];
 }
 
 export function getTokenPermitsKey(chainId: number, account: string | undefined) {

@@ -2,6 +2,7 @@ import { Provider } from "ethers";
 import { withRetry } from "viem";
 
 import { ContractsChainId } from "config/chains";
+import { getSwapDebugSettings } from "config/externalSwaps";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
 import { GlvShiftParam } from "domain/synthetics/jit/utils";
@@ -95,6 +96,15 @@ export async function sendBatchOrderTxn({
           nativeReserveLiquidity: simulationParams.nativeReserveLiquidity,
         });
       };
+    }
+
+    if (getSwapDebugSettings()?.failExternalSwaps && getBatchHasExternalSwap(expressParams, encodedBatchParams)) {
+      runSimulation = () =>
+        Promise.reject(
+          extendError(new Error("Debug fail external swaps: execution reverted"), {
+            errorContext: "simulation",
+          })
+        );
     }
 
     if (expressParams) {
@@ -328,3 +338,10 @@ const makeBatchOrderSimulation = async ({
     });
   }
 };
+
+function getBatchHasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParams: BatchOrderTxnParams) {
+  return Boolean(
+    expressParams?.relayParamsPayload.externalCalls.externalCallDataList.length ||
+      batchParams.createOrderParams.some((cp) => cp.tokenTransfersParams?.externalCalls?.externalCallDataList.length)
+  );
+}

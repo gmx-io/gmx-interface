@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
-import { BOTANIX } from "config/chains";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
@@ -45,8 +44,6 @@ export default function Pools() {
 
   const isMobile = usePoolsIsMobilePage();
 
-  const isBotanix = chainId === BOTANIX;
-
   return (
     <AppPageLayout title={t`Pools`} header={<ChainContentHeader />}>
       <div
@@ -68,21 +65,19 @@ export default function Pools() {
       </div>
 
       <div className="flex grow flex-col gap-16 lg:overflow-hidden">
-        {!isBotanix && (
-          <ErrorBoundary id="Pools-GlvList" variant="block" wrapperClassName="rounded-t-8">
-            <GlvList
-              marketsTokensApyData={marketsTokensApyData}
-              marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-              glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-              marketsTokensLidoAprData={marketsTokensLidoAprData}
-              glvTokensApyData={glvApyInfoData}
-              apyLoading={apyLoading}
-              performance={performance}
-              performanceLoading={performanceLoading}
-              performanceSnapshots={performanceSnapshots}
-            />
-          </ErrorBoundary>
-        )}
+        <ErrorBoundary id="Pools-GlvList" variant="block" wrapperClassName="rounded-t-8">
+          <GlvList
+            marketsTokensApyData={marketsTokensApyData}
+            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+            marketsTokensLidoAprData={marketsTokensLidoAprData}
+            glvTokensApyData={glvApyInfoData}
+            apyLoading={apyLoading}
+            performance={performance}
+            performanceLoading={performanceLoading}
+            performanceSnapshots={performanceSnapshots}
+          />
+        </ErrorBoundary>
 
         <ErrorBoundary id="Pools-GmList" variant="block" wrapperClassName="rounded-t-8">
           <GmList

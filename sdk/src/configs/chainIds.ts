@@ -1,7 +1,6 @@
 // Production
 export const AVALANCHE = 43114;
 export const ARBITRUM = 42161;
-export const BOTANIX = 3637;
 export const MEGAETH = 4326;
 // Production source
 export const SOURCE_ETHEREUM_MAINNET = 1;

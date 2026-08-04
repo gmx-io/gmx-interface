@@ -48,6 +48,7 @@ import { EntryPriceRow } from "./EntryPriceRow";
 import { NextStoredImpactRows } from "./NextStoredImpactRows";
 import { RewardsHintRow } from "./RewardsHintRow";
 import { SwapDebugRow } from "./SwapDebugRow";
+import { SwapRouteRow } from "./SwapRouteRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 
@@ -246,6 +247,7 @@ export function TradeBoxAdvancedGroups({
       ) : null}
 
       {/* only when isSwap */}
+      {isSwap && <SwapRouteRow />}
       {isSwap && <SwapSpreadRow />}
       {(isLimit || isTwap) && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}

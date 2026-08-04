@@ -1,6 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createConfig, http } from "wagmi";
-import { arbitrum } from "wagmi/chains";
+import { arbitrum, base } from "wagmi/chains";
 import { mock } from "wagmi/connectors";
 
 import { ARBITRUM } from "config/chains";
@@ -116,5 +116,11 @@ export const MOCK_ACCOUNT = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 export const mockWagmiConfig = createConfig({
   chains: [arbitrum],
   transports: { [arbitrum.id]: http() },
+  connectors: [mock({ accounts: [MOCK_ACCOUNT] })],
+});
+
+export const mockMultichainWagmiConfig = createConfig({
+  chains: [arbitrum, base],
+  transports: { [arbitrum.id]: http(), [base.id]: http() },
   connectors: [mock({ accounts: [MOCK_ACCOUNT] })],
 });

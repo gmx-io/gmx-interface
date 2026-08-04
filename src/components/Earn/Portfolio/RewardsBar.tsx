@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
+import { getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { UserEarningsData } from "domain/synthetics/markets/types";
@@ -84,7 +84,6 @@ function RewardsBar({
                   userEarnings={userEarnings}
                   isUserEarningsLoading={isUserEarningsLoading}
                   isUserEarningsUnavailable={isUserEarningsUnavailable}
-                  chainId={chainId}
                 />
               </div>
             </div>
@@ -96,11 +95,7 @@ function RewardsBar({
                 <span className="text-body-small font-medium text-typography-secondary">
                   <Trans>Total pending rewards</Trans>
                 </span>
-                <TotalPendingRewards
-                  processedData={processedData}
-                  nativeTokenSymbol={nativeTokenSymbol}
-                  chainId={chainId}
-                />
+                <TotalPendingRewards processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
               </div>
             </div>
           </div>
@@ -122,14 +117,12 @@ function TotalEarned({
   userEarnings,
   isUserEarningsLoading,
   isUserEarningsUnavailable,
-  chainId,
 }: {
   processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
   userEarnings: UserEarningsData | null;
   isUserEarningsLoading: boolean;
   isUserEarningsUnavailable: boolean;
-  chainId: ContractsChainId;
 }) {
   const earnedTooltipContent = useMemo(() => {
     if (!processedData) {
@@ -138,7 +131,7 @@ function TotalEarned({
 
     const stakingRows: ReactNode[] = [];
 
-    if (chainId !== BOTANIX && (processedData.cumulativeGmxRewards ?? 0n) > 0n) {
+    if ((processedData.cumulativeGmxRewards ?? 0n) > 0n) {
       stakingRows.push(
         <StatsTooltipRow
           key="gmx"
@@ -245,7 +238,7 @@ function TotalEarned({
     }
 
     return <div className="flex flex-col gap-8">{tooltipSections}</div>;
-  }, [nativeTokenSymbol, processedData, userEarnings, isUserEarningsLoading, isUserEarningsUnavailable, chainId]);
+  }, [nativeTokenSymbol, processedData, userEarnings, isUserEarningsLoading, isUserEarningsUnavailable]);
 
   const stakingEarnedUsd = processedData?.cumulativeTotalRewardsUsd ?? 0n;
   const totalEarnedUsd =
@@ -275,11 +268,9 @@ function TotalEarned({
 function TotalPendingRewards({
   processedData,
   nativeTokenSymbol,
-  chainId,
 }: {
   processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
-  chainId: ContractsChainId;
 }) {
   const totalPendingRewardsUsd = processedData?.totalRewardsUsd ?? 0n;
   const isLoading = processedData === undefined;
@@ -290,14 +281,6 @@ function TotalPendingRewards({
   const skeletonElement = (
     <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
   );
-
-  if (chainId === BOTANIX) {
-    return (
-      <span className="text-body-large font-medium numbers">
-        {isLoading ? skeletonElement : formatUsd(totalPendingRewardsUsd)}
-      </span>
-    );
-  }
 
   return (
     <TooltipWithPortal

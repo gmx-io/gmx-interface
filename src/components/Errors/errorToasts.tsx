@@ -4,11 +4,16 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
-import { JUMPER_BRIDGE_URL } from "config/links";
+import { JUMPER_BRIDGE_URL, SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { ErrorData } from "lib/errors";
+import {
+  SMART_WALLET_ACCOUNT_CHANGED_ERROR,
+  SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_WRONG_CHAIN_ERROR,
+} from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
@@ -78,6 +83,19 @@ export function getTxnErrorToast(
         <div>Refresh and retry</div>
       </Trans>
     );
+
+    return toastParams;
+  }
+
+  const smartWalletContent = getSmartWalletErrorToastContent(
+    chainId,
+    errorData.errorMessage,
+    errorData.data?.walletName
+  );
+
+  if (smartWalletContent) {
+    toastParams.errorContent = smartWalletContent;
+    toastParams.autoCloseToast = false;
 
     return toastParams;
   }
@@ -277,8 +295,77 @@ export function getErrorMessage(
   return { failMsg, autoCloseToast };
 }
 
+export function getSmartWalletChainUnavailableToastContent(chainId: number, walletName = "wallet") {
+  return (
+    <>
+      <Trans>
+        <div>
+          Your {walletName} is not available on {getChainName(chainId)}
+        </div>
+        <br />
+        <div>
+          Add {getChainName(chainId)} to your {walletName}, then reconnect and try again
+        </div>
+      </Trans>
+      <br />
+      <SafeAddNetworkLink />
+    </>
+  );
+}
+
+/** Undefined for anything that is not a smart-wallet chain error. */
+export function getSmartWalletErrorToastContent(
+  chainId: number,
+  errorMessage: string | undefined,
+  rawWalletName?: string
+): ReactNode | undefined {
+  const walletName = rawWalletName || "wallet";
+
+  if (errorMessage === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
+    return getSmartWalletChainUnavailableToastContent(chainId, walletName);
+  }
+
+  if (errorMessage === SMART_WALLET_WRONG_CHAIN_ERROR) {
+    return (
+      <Trans>
+        <div>Your {walletName} is on a different network</div>
+        <br />
+        <div>
+          Switch your {walletName} to {getChainName(chainId)}, then try again
+        </div>
+      </Trans>
+    );
+  }
+
+  if (errorMessage === SMART_WALLET_ACCOUNT_CHANGED_ERROR) {
+    return (
+      <>
+        <Trans>
+          <div>Your wallet switched to a different account</div>
+          <br />
+          <div>
+            Signing on {getChainName(chainId)} requires the same account you started with. Instead of selecting another
+            account, add {getChainName(chainId)} to your current one in your wallet, then try again.
+          </div>
+        </Trans>
+        <br />
+        <SafeAddNetworkLink />
+      </>
+    );
+  }
+
+  return undefined;
+}
+
+function SafeAddNetworkLink() {
+  return (
+    <ExternalLink href={SAFE_MULTICHAIN_DOCS_URL}>
+      <Trans>Using Safe? Learn how to add a network</Trans>
+    </ExternalLink>
+  );
+}
+
 export const INVALID_NETWORK_TOAST_ID = "invalid-network";
-export const NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID = "non-eoa-account-chain-warning";
 
 export function getInvalidNetworkToastContent(chainId: number) {
   return (
@@ -314,16 +401,6 @@ export function getMultipleWalletsConnectedToastContent(
         disable other wallet extensions in your browser settings.
       </Trans>
     </div>
-  );
-}
-
-export function getNonEoaAccountChainWarningToastContent(chainId: number) {
-  return (
-    <Trans>
-      <div>Smart wallets not supported on {getChainName(chainId)}</div>
-      <br />
-      <div>Switch to a different network or use an EOA wallet</div>
-    </Trans>
   );
 }
 

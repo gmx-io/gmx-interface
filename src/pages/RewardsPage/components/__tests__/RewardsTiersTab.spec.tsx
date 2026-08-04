@@ -488,6 +488,24 @@ describe("RewardsTiersTab", () => {
     expect(screen.getByRole("columnheader", { name: "Status" }).getAttribute("width")).toBe(statusWidth);
   });
 
+  it("does not append the next epoch label when a tier remains active", () => {
+    renderTab({
+      status: {
+        ...status,
+        projectedVolumeTier: "Tier1",
+        projectedStakingTier: "Tier1",
+      },
+    });
+
+    expect(within(screen.getByRole("row", { name: /Ranked.*Active/ })).getByText("Active")).toBeDefined();
+    expect(screen.queryByText("Active · next epoch")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Staking Tiers" }));
+
+    expect(within(screen.getByRole("row", { name: /Supporter.*Active/ })).getByText("Active")).toBeDefined();
+    expect(screen.queryByText("Active · next epoch")).toBeNull();
+  });
+
   it("renders config-derived volume and staking targets", () => {
     const progressingStatus = {
       ...status,

@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, BOTANIX, getExecutionFeeConfig } from "config/chains";
+import { ARBITRUM, getExecutionFeeConfig } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
@@ -39,9 +39,8 @@ import {
 import { useChainId } from "lib/chains";
 import { hasStoredLocalStorageValue, useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import useWallet from "lib/wallets/useWallet";
+import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
@@ -153,9 +152,6 @@ export function useSettings() {
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaLoading } = useIsNonEoaAccountOnAnyChain();
-  const isGeminiWallet = useIsGeminiWallet();
-  const isExpressUnsupportedWallet = isNonEoaAccountOnAnyChain || isGeminiWallet;
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -227,6 +223,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
+  const { canSignTypedData } = useWalletCanSignTypedData();
   const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(expressOrdersEnabledKey, false);
 
@@ -357,8 +354,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       if (
         !account ||
         expressOrdersEnabled ||
-        isExpressUnsupportedWallet ||
-        isNonEoaLoading ||
         !getIsExpressSupported(chainId) ||
         hasStoredLocalStorageValue(expressOrdersEnabledKey)
       ) {
@@ -367,33 +362,16 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       setExpressOrdersEnabled(true);
     },
-    [
-      chainId,
-      account,
-      expressOrdersEnabled,
-      expressOrdersEnabledKey,
-      isExpressUnsupportedWallet,
-      isNonEoaLoading,
-      setExpressOrdersEnabled,
-    ]
+    [account, chainId, expressOrdersEnabled, expressOrdersEnabledKey, setExpressOrdersEnabled]
   );
 
   useEffect(
     function fallbackMultichain() {
-      if (srcChainId && !expressOrdersEnabled && !isExpressUnsupportedWallet && !isNonEoaLoading) {
+      if (srcChainId && !expressOrdersEnabled) {
         setExpressOrdersEnabled(true);
       }
     },
-    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId, isExpressUnsupportedWallet, isNonEoaLoading]
-  );
-
-  useEffect(
-    function disableExpressForUnsupportedWallets() {
-      if (isExpressUnsupportedWallet && expressOrdersEnabled) {
-        setExpressOrdersEnabled(false);
-      }
-    },
-    [isExpressUnsupportedWallet, expressOrdersEnabled, setExpressOrdersEnabled]
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
   );
 
   const contextState: SettingsContextType = useMemo(() => {
@@ -444,15 +422,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
-      expressOrdersEnabled: expressOrdersEnabled!,
+      expressOrdersEnabled: expressOrdersEnabled! && canSignTypedData,
       setExpressOrdersEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
       gmxAccountGasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress!,
       setGmxAccountGasPaymentTokenAddress,
 
-      // External swaps are enabled by default on Botanix
-      externalSwapsEnabled: chainId === BOTANIX || externalSwapsEnabled!,
+      externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -521,12 +498,12 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlySimulationEnabled,
     isSettingsVisible,
     expressOrdersEnabled,
+    canSignTypedData,
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
     gmxAccountGasPaymentTokenAddress,
     setGmxAccountGasPaymentTokenAddress,
-    chainId,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,

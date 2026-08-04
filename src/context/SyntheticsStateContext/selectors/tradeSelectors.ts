@@ -28,7 +28,6 @@ import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/utils/trade/type
 
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
-  selectBotanixStakingAssetsPerShare,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
@@ -580,13 +579,11 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
 );
 
 export const selectExternalSwapQuoteParams = createSelector((q): ExternalSwapQuoteParams => {
-  const botanixStakingAssetsPerShare = q(selectBotanixStakingAssetsPerShare);
   const chainId = q(selectChainId);
   const tokensData = q(selectTokensData);
   const gasPrice = q(selectGasPrice);
 
   return {
-    botanixStakingAssetsPerShare,
     chainId,
     gasPrice,
     tokensData,
