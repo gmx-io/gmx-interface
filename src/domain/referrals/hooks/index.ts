@@ -422,11 +422,11 @@ const AFFILIATE_CODES_QUERY = gql`
       first: 1000
       orderBy: volume
       orderDirection: desc
-      where: { period: total, affiliate: $account }
+      where: { period: total, affiliate_contains_nocase: $account }
     ) {
       referralCode
     }
-    referralCodes(first: 1000, where: { owner: $account }) {
+    referralCodes(first: 1000, where: { owner_contains_nocase: $account }) {
       code
     }
   }

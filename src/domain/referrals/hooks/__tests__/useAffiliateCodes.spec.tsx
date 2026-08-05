@@ -1,4 +1,5 @@
 import { cleanup, render, waitFor } from "@testing-library/react";
+import { print } from "graphql";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
@@ -16,14 +17,22 @@ vi.mock("lib/indexers", () => ({
 
 type HookResult = ReturnType<typeof useAffiliateCodes>;
 
-function Harness({ enabled, onResult }: { enabled: boolean; onResult: (result: HookResult) => void }) {
-  onResult(useAffiliateCodes(ARBITRUM, "0x123", enabled));
+function Harness({
+  account,
+  enabled,
+  onResult,
+}: {
+  account: string;
+  enabled: boolean;
+  onResult: (result: HookResult) => void;
+}) {
+  onResult(useAffiliateCodes(ARBITRUM, account, enabled));
   return null;
 }
 
-function setup(enabled = true) {
+function setup(enabled = true, account = "0x123") {
   let result!: HookResult;
-  render(<Harness enabled={enabled} onResult={(nextResult) => (result = nextResult)} />);
+  render(<Harness account={account} enabled={enabled} onResult={(nextResult) => (result = nextResult)} />);
   return () => result;
 }
 
@@ -39,6 +48,27 @@ describe("useAffiliateCodes", () => {
 
     expect(mocks.query).not.toHaveBeenCalled();
     expect(getResult()).toEqual({ code: null, success: false });
+  });
+
+  it("queries owned codes case-insensitively without changing the account casing", async () => {
+    const account = "0x1640e916e10610Ba39aAC5Cd8a08acF3cCae1A4c";
+    const ownedCode = encodeReferralCode("H4X");
+    mocks.query.mockResolvedValue({
+      data: {
+        affiliateStats: [{ referralCode: ownedCode }],
+        referralCodes: [{ code: ownedCode }],
+      },
+    });
+
+    const getResult = setup(true, account);
+
+    await waitFor(() => expect(getResult()).toEqual({ code: "H4X", success: true }));
+
+    const queryOptions = mocks.query.mock.calls[0][0];
+    const queryText = print(queryOptions.query);
+    expect(queryText).toContain("affiliate_contains_nocase: $account");
+    expect(queryText).toContain("owner_contains_nocase: $account");
+    expect(queryOptions.variables).toEqual({ account });
   });
 
   it("selects the highest-volume code the user still owns", async () => {
