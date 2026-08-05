@@ -5278,7 +5278,7 @@ msgstr ""
 
 #: src/lib/wallets/signing.ts
 msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
-msgstr ""
+msgstr "此钱包生成的签名仅适用于特定网络。请批准切换到 {0}，然后再次签名。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"

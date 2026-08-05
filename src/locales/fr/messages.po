@@ -5278,7 +5278,7 @@ msgstr ""
 
 #: src/lib/wallets/signing.ts
 msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
-msgstr ""
+msgstr "Ce wallet crée des signatures spécifiques à chaque réseau. Approuvez le changement de réseau vers {0}, puis signez à nouveau."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
