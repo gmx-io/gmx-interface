@@ -24,6 +24,21 @@ export const BN_NEGATIVE_ONE = -1n;
 export const MaxUint256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 export const MaxInt256 = BigInt("0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
+const UINT_DECIMAL_STRING_REGEX = /^(0|[1-9]\d*)$/;
+
+export function parseUint256DecimalString(value: unknown): bigint | undefined {
+  if (typeof value !== "string" || !UINT_DECIMAL_STRING_REGEX.test(value)) {
+    return undefined;
+  }
+
+  const parsed = BigInt(value);
+  return parsed <= MaxUint256 ? parsed : undefined;
+}
+
+export function isUint256(value: unknown): value is bigint {
+  return typeof value === "bigint" && value >= 0n && value <= MaxUint256;
+}
+
 export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
