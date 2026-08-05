@@ -66,7 +66,6 @@ export function createGetMaxLongShortLiquidityPool(
     return {
       maxLongLiquidityPool,
       maxShortLiquidityPool,
-      /** All pools of the index token, used to validate a remembered explicit pool selection */
       indexTokenPools: currentMarkets,
     };
   };
