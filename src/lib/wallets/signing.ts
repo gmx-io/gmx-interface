@@ -17,16 +17,17 @@ import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
 import { analyzeSignatureShape, reportSignatureProduced } from "./signatureDiagnostics";
-import { AccountType, getAccountType } from "./useAccountType";
+import { AccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
 import {
+  getChainBindingState,
   isPostEip7702OnEitherChain,
-  rememberVerificationChainSigning,
-  requiresVerificationChainSigning,
+  probeAccountTypes,
+  rememberChainBindingState,
   verifySignatureOnVerificationChain,
 } from "./verificationChainSigning";
-import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
+import { getWagmiConfig } from "./walletConfig";
 
 export type SignatureDomain = {
   name: string;
@@ -72,15 +73,7 @@ async function probeChainBoundSigning({
 
   // Smart wallets deploy lazily per chain, so the current chain alone would misread a
   // not-yet-deployed one as an EOA and skip the swap.
-  const accountTypes = await Promise.all(
-    [currentChainId, targetChainId].map((chainId) =>
-      getAccountType(address, getPublicClientWithRpc(chainId)).catch((error) => {
-        metrics.pushError(extendError(error, { data: { chainId, address } }), "signing.accountTypeProbe");
-
-        return undefined;
-      })
-    )
-  );
+  const accountTypes = await probeAccountTypes(address, [currentChainId, targetChainId], "signing.accountTypeProbe");
 
   return accountTypes.some(mustSignOnVerificationChain);
 }
@@ -148,7 +141,7 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
   }
 
   const hasLearnedChainBinding =
-    shouldUseLearnedChainBinding && requiresVerificationChainSigning(address, targetChainId);
+    shouldUseLearnedChainBinding && getChainBindingState(address, targetChainId) === "needsVerificationChain";
 
   const needsSwap =
     forceVerificationChain ||
@@ -378,6 +371,10 @@ export async function signTypedData({
     return firstResult.signature;
   }
 
+  if (getChainBindingState(from, verificationChainId) === "chainSwitchDoesNotHelp") {
+    return firstResult.signature;
+  }
+
   const isPostEip7702 = await isPostEip7702OnEitherChain({
     address: from,
     currentChainId: firstResult.signingChainId,
@@ -402,7 +399,7 @@ export async function signTypedData({
 
   // Before the swap, so it explains the network prompt instead of trailing it.
   helperToast.info(
-    t`This wallet creates network-specific signatures. We switched to ${getChainName(verificationChainId)}; please sign once more.`
+    t`This wallet creates network-specific signatures. Approve the switch to ${getChainName(verificationChainId)} and sign once more.`
   );
 
   const retryResult = await withSmartWalletChainSwap(
@@ -451,8 +448,12 @@ export async function signTypedData({
     );
   }
 
-  if (retrySignatureIsValid) {
-    rememberVerificationChainSigning(from, verificationChainId);
+  if (retrySignatureIsValid !== undefined) {
+    rememberChainBindingState(
+      from,
+      verificationChainId,
+      retrySignatureIsValid ? "needsVerificationChain" : "chainSwitchDoesNotHelp"
+    );
   }
 
   return retryResult.signature;

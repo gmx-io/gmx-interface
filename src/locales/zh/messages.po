@@ -5276,6 +5276,10 @@ msgstr "其他代币部分"
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "取消新订单"
@@ -5325,10 +5329,6 @@ msgstr "已从子账户提取"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr "未知购买 GM 订单"
-
-#: src/lib/wallets/signing.ts
-msgid "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
-msgstr ""
 
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"

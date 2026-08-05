@@ -5276,6 +5276,10 @@ msgstr "In other tokens"
 msgid "Margin before pending borrow and funding fees"
 msgstr "Margin before pending borrow and funding fees"
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
+msgstr "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Cancel new orders"
@@ -5325,10 +5329,6 @@ msgstr "Withdrawn from subaccount"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr "Unknown buy GM order"
-
-#: src/lib/wallets/signing.ts
-msgid "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
-msgstr "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
 
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"

@@ -5276,6 +5276,10 @@ msgstr "В других токенах"
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Отменить новые ордера"
@@ -5325,10 +5329,6 @@ msgstr "Средства выведены с субаккаунта"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr "Неизвестный ордер на покупку GM"
-
-#: src/lib/wallets/signing.ts
-msgid "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
-msgstr ""
 
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"

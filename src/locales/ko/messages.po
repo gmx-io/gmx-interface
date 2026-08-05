@@ -5276,6 +5276,10 @@ msgstr "기타 토큰"
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "신규 주문 취소"
@@ -5325,10 +5329,6 @@ msgstr "서브계정에서 출금 완료"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr "알 수 없는 GM 구매 주문"
-
-#: src/lib/wallets/signing.ts
-msgid "This wallet creates network-specific signatures. We switched to {0}; please sign once more."
-msgstr ""
 
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
