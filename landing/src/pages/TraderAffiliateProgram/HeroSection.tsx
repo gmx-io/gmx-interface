@@ -4,19 +4,10 @@ import { ArrowButton } from "landing/components/TraderAffiliateWidget/ArrowButto
 import { GRADIENT_TEXT_CLASS } from "landing/components/TraderAffiliateWidget/constants";
 import { useTotalVolume } from "landing/pages/Home/hooks/useTotalVolume";
 import { shortFormatUsd } from "landing/pages/Home/utils/formatters";
+import { scrollToLandingSection } from "landing/utils/scrollToLandingSection";
 
 import heroBg from "img/trader_affiliate_hero_bg.svg";
 import heroScreens from "img/trader_affiliate_hero_screens.png";
-
-function scrollToId(id: string, gapBelowHeader: number) {
-  const element = document.getElementById(id);
-  if (!element) {
-    return;
-  }
-  const headerHeight = document.querySelector("[data-landing-header]")?.getBoundingClientRect().height ?? 0;
-  const top = element.getBoundingClientRect().top + window.scrollY - headerHeight - gapBelowHeader;
-  window.scrollTo({ top, behavior: "smooth" });
-}
 
 function HeroStat({
   label,
@@ -83,13 +74,13 @@ export function HeroSection() {
           <div className="flex flex-col gap-20 sm:flex-row">
             <ArrowButton
               label={<Trans>Contact us</Trans>}
-              onClick={() => scrollToId("contact", 24)}
+              onClick={() => scrollToLandingSection("contact", 24)}
               variant="primary"
               className="w-full sm:w-[200px]"
             />
             <ArrowButton
               label={<Trans>See the perks</Trans>}
-              onClick={() => scrollToId("program", 60)}
+              onClick={() => scrollToLandingSection("program", 60)}
               variant="secondary"
               className="w-full sm:w-[200px]"
             />

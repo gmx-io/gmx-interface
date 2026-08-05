@@ -2941,10 +2941,6 @@ msgstr "Siga el volumen y los pagos en vivo."
 msgid "Excludes incentives"
 msgstr "Excluye incentivos"
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Your e-mail"
-msgstr "Su correo electrónico"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "Comprando {symbol}..."
@@ -4085,6 +4081,10 @@ msgstr "Días máximos antes de que se requiera reautorización"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Minimum {0} capital required for rankings"
 msgstr "Se requiere un capital mínimo de {0} para las clasificaciones"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Request to be contacted"
+msgstr "Solicitar que te contactemos"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -5513,14 +5513,13 @@ msgstr "Compre bonos GMX en Bond Protocol con descuento y un periodo de consolid
 msgid "{positionTitle} orders"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Talk to the desk"
-msgstr "Hable con el equipo"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>Tu {walletName} no está disponible en {0}</0><1/><2>Añade {1} a tu {walletName}, luego reconéctate y vuelve a intentarlo</2>"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Talk to the desk"
+msgstr "Hable con el equipo"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -7161,10 +7160,6 @@ msgstr "Bóvedas optimizadas para rendimiento que suministran liquidez en múlti
 msgid "Analytics"
 msgstr "Analíticas"
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "We reply within ~2 hours during market hours. No forms, no obligation — just a conversation."
-msgstr "Respondemos en ~2 horas durante el horario de mercado. Sin formularios, sin compromiso — solo una conversación."
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "APR de wstETH"
@@ -8045,6 +8040,10 @@ msgstr "Apalancamiento medio utilizado"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "Cancelar Stop-Loss"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
+msgstr "Respondemos en ~2 horas durante el horario de mercado. Sin compromiso — solo una conversación."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -10453,13 +10452,13 @@ msgstr "Stakeado"
 msgid "Traders"
 msgstr "Traders"
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "REFERRED MONTHLY VOLUME"
-msgstr "VOLUMEN MENSUAL REFERIDO"
-
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
 msgstr "La wallet no puede firmar mensajes"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "REFERRED MONTHLY VOLUME"
+msgstr "VOLUMEN MENSUAL REFERIDO"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"

@@ -2941,10 +2941,6 @@ msgstr "实时追踪交易量和收益。"
 msgid "Excludes incentives"
 msgstr "不包含激励"
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Your e-mail"
-msgstr "您的邮箱"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "购买 {symbol}..."
@@ -4085,6 +4081,10 @@ msgstr "需要重新授权前的最大天数"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Minimum {0} capital required for rankings"
 msgstr "排名需要最低 {0} 的资金"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Request to be contacted"
+msgstr "申请联系"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -5513,14 +5513,13 @@ msgstr "在 Bond Protocol 上以折扣价购买 GMX 债券，归属期较短"
 msgid "{positionTitle} orders"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Talk to the desk"
-msgstr "联系交易台"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>您的 {walletName} 在 {0} 上不可用</0><1/><2>请将 {1} 添加至您的 {walletName}，然后重新连接并重试</2>"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Talk to the desk"
+msgstr "联系交易台"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -7161,10 +7160,6 @@ msgstr "收益优化金库，跨多个 GMX 市场提供流动性"
 msgid "Analytics"
 msgstr "数据分析"
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "We reply within ~2 hours during market hours. No forms, no obligation — just a conversation."
-msgstr "在交易时段内，我们通常会在约 2 小时内回复。无需填表，无需承诺——只是一次交流。"
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "wstETH APR"
@@ -8045,6 +8040,10 @@ msgstr "平均使用杠杆"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "取消止损"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
+msgstr "在交易时段内，我们通常会在约 2 小时内回复。无需承诺——只是一次交流。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -10453,13 +10452,13 @@ msgstr "已质押"
 msgid "Traders"
 msgstr "交易者"
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "REFERRED MONTHLY VOLUME"
-msgstr "推荐月交易量"
-
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
 msgstr "钱包无法签署消息"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "REFERRED MONTHLY VOLUME"
+msgstr "推荐月交易量"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"

@@ -3,16 +3,13 @@ import cx from "classnames";
 import {
   GRADIENT_TEXT_CLASS,
   VIP_CALL_BOOKING_URL,
-  VIP_CONTACT_FORM_CONTACT_ENTRY,
-  VIP_CONTACT_FORM_METHOD_EMAIL,
-  VIP_CONTACT_FORM_METHOD_ENTRY,
   VIP_CONTACT_FORM_URL,
   VIP_TELEGRAM_URL,
 } from "landing/components/TraderAffiliateWidget/constants";
 import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
 import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
 import { getLandingReferralCode } from "landing/utils/referralCode";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
@@ -80,20 +77,6 @@ function ContactRow({
 
 export function ContactSection() {
   const openLiveChat = useOpenLiveChat();
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = useCallback(
-    (event: React.FormEvent) => {
-      event.preventDefault();
-      const params = new URLSearchParams({
-        usp: "pp_url",
-        [VIP_CONTACT_FORM_METHOD_ENTRY]: VIP_CONTACT_FORM_METHOD_EMAIL,
-        [VIP_CONTACT_FORM_CONTACT_ENTRY]: email,
-      });
-      window.open(`${VIP_CONTACT_FORM_URL}?${params.toString()}`, "_blank", "noopener,noreferrer");
-    },
-    [email]
-  );
 
   return (
     <section className="relative flex w-full flex-col items-center overflow-hidden border-t-1/2 border-slate-600 bg-slate-900 px-16 pt-80 text-white sm:px-40 sm:pt-[120px]">
@@ -156,22 +139,14 @@ export function ContactSection() {
           <div className="flex-1 border-t-1/2 border-slate-600/50" />
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-16 sm:flex-row">
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder={t`Your e-mail`}
-            className="h-44 w-full min-w-0 rounded-8 bg-slate-800 px-16 text-16 -tracking-[0.512px] outline-none placeholder:text-slate-500 hover:bg-[#252635] focus:bg-[#252635]"
-          />
-          <button
-            type="submit"
-            className="duration-180 h-44 w-full flex-shrink-0 rounded-8 bg-slate-600/50 text-16 font-medium -tracking-[0.512px] text-white transition-colors hover:bg-slate-600/70 sm:w-[140px]"
-          >
-            <Trans>Talk to the desk</Trans>
-          </button>
-        </form>
+        <a
+          href={VIP_CONTACT_FORM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="duration-180 flex h-44 w-full items-center justify-center rounded-8 bg-slate-600/50 text-16 font-medium -tracking-[0.512px] text-white transition-colors hover:bg-slate-600/70"
+        >
+          <Trans>Request to be contacted</Trans>
+        </a>
         <p className="mt-20 text-center text-[13px] leading-[16px] tracking-[0.026px] text-slate-500">
           <Trans>
             Anonymous by default — connect with just your wallet.
@@ -184,7 +159,7 @@ export function ContactSection() {
       <div className="relative mt-76 flex w-full max-w-[1200px] flex-col items-center gap-16 pb-16 text-12 tracking-[0.024px] text-white sm:flex-row sm:justify-between">
         <img src={footerLogo} alt="GMX" className="h-16 w-[70px]" />
         <p className="text-center">
-          <Trans>We reply within ~2 hours during market hours. No forms, no obligation — just a conversation.</Trans>
+          <Trans>We reply within ~2 hours during market hours. No obligation — just a conversation.</Trans>
         </p>
         <div className="flex items-center gap-12">
           <a

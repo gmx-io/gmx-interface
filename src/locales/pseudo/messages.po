@@ -2941,10 +2941,6 @@ msgstr ""
 msgid "Excludes incentives"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Your e-mail"
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr ""
@@ -4084,6 +4080,10 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Minimum {0} capital required for rankings"
+msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Request to be contacted"
 msgstr ""
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -5513,12 +5513,12 @@ msgstr ""
 msgid "{positionTitle} orders"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "Talk to the desk"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
+msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Talk to the desk"
 msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -7160,10 +7160,6 @@ msgstr ""
 msgid "Analytics"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
-msgid "We reply within ~2 hours during market hours. No forms, no obligation — just a conversation."
-msgstr ""
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr ""
@@ -7909,6 +7905,7 @@ msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Do I need to pass KYC?"
+msgstr ""
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
@@ -8042,6 +8039,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
+msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -10451,11 +10452,12 @@ msgstr ""
 msgid "Traders"
 msgstr ""
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "REFERRED MONTHLY VOLUME"
-
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
+msgstr ""
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "REFERRED MONTHLY VOLUME"
 msgstr ""
 
 #: src/pages/Announcements/Announcements.tsx
