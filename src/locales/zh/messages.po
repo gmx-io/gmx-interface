@@ -335,10 +335,6 @@ msgstr "打开应用"
 msgid "Try Express Trading"
 msgstr "尝试快速交易"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Executed / actual output"
-msgstr "已执行 / 实际输出"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "仓位虚拟库存"
@@ -348,13 +344,6 @@ msgstr "仓位虚拟库存"
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Cancelled / frozen"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Chainlink Data Streams"
-msgstr "Chainlink Data Streams"
 
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Showing first {0} failures out of {1}"
@@ -416,10 +405,6 @@ msgstr "收益挖矿"
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "路线图"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Longest execution time first · server-paginated"
-msgstr "执行时间从长到短 · 服务器分页"
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FULL MARKET"
@@ -1189,10 +1174,6 @@ msgstr "没有匹配的执行记录"
 msgid "Vaultka"
 msgstr "Vaultka"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} time-stratified samples from {1} orders with a preceding oracle observation"
-msgstr "来自 {1} 笔订单的 {0} 个按时间分层样本，这些订单均有更早的预言机观测值"
-
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -1448,10 +1429,6 @@ msgstr "流动性仅在 {chainNames} 上可用。请切换网络以继续。"
 msgid "Stop-Loss"
 msgstr "止损"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Price quality"
-msgstr "价格质量"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "外部兑换 {0} 至 {1}"
@@ -1553,10 +1530,6 @@ msgstr "可能需要几分钟才能生效。请稍后查看"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Shortest execution time first · server-paginated"
-msgstr "执行时间从短到长 · 服务器分页"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1969,10 +1942,6 @@ msgstr "超过 100 种加密代币"
 msgid "Optimal usage factor short"
 msgstr "最优使用率系数（做空）"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Absolute oracle-to-fill difference"
-msgstr "预言机价格与成交价格之间的绝对差值"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} 每 {1}"
@@ -2117,12 +2086,6 @@ msgstr "即将离开 GMX.io 前往第三方网站"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Observed"
-msgstr "观测时间"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -2407,10 +2370,6 @@ msgstr "{longOrShort} 仓位无需支付资金费用，每小时支付 {borrowRa
 msgid "Search pools"
 msgstr "搜索池"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Executed / fill"
-msgstr "执行时间 / 成交价"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding increase factor"
 msgstr "资金费率增长因子"
@@ -2542,10 +2501,6 @@ msgstr ""
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Worst price improvement first · server-paginated"
-msgstr "价格改善最差优先 · 服务器分页"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Unable to load rate history"
@@ -2748,6 +2703,10 @@ msgstr "在此规模下无可用流动性来增加做多仓位。<0/>最大做�
 msgid "Transfer completed"
 msgstr "转账完成"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay is measured from order creation to execution."
+msgstr "执行延迟按订单创建到执行的时长计算。"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM 跨链桥接至..."
@@ -2900,6 +2859,10 @@ msgstr ""
 msgid "Changes may take a few minutes to appear"
 msgstr "更改可能需要几分钟才能显示"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Longest execution delay first · server-paginated"
+msgstr "执行延迟最长优先 · 服务器分页"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "不包含激励"
@@ -2933,7 +2896,6 @@ msgstr "在 {chainName} 上购买 GMX"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Size"
 msgstr "规模"
@@ -3391,10 +3353,6 @@ msgstr "平均仓位规模"
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Theme"
 msgstr "主题"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution price comparison unavailable"
-msgstr "无法比较执行价格"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4071,11 +4029,6 @@ msgstr "资金费用"
 msgid "Partial TP"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Same-second observation"
-msgstr "同秒观测值"
-
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
@@ -4297,6 +4250,10 @@ msgstr "{0} 余额"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "numerous assets"
 msgstr "众多资产"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Research creation-to-execution delays for market orders"
+msgstr "研究市价单从创建到执行的延迟"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -4523,6 +4480,7 @@ msgstr ""
 msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
 msgstr "智能钱包不支持 Express Trading 或 One-Click Trading"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
@@ -4687,11 +4645,6 @@ msgstr "{chainName} 数据"
 msgid "Rank among accounts for this metric and period."
 msgstr "此指标和周期内账户之间的排名。"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution price improvement"
-msgstr "执行价格改善"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -4845,7 +4798,6 @@ msgstr "<0><1>@GMX_IO</1> 与 Token Terminal 达成数据合作。GMX 是建立�
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "All"
 msgstr "全部"
 
@@ -5000,10 +4952,6 @@ msgstr ""
 msgid "Request Market Swap"
 msgstr "请求市场交换"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Creation → execution (seconds)"
-msgstr "创建 → 执行（秒）"
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "纯 {indexSymbol} 做空。风险敞口仅来自仓位。"
@@ -5121,10 +5069,6 @@ msgstr "参数"
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "通过 GMX 账户创建推荐码需要在 {1} 上拥有 USDC 和 {0}。请存入资金或切换到其他网络。"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} samples within {1} bounds"
-msgstr "{1} 范围内有 {0} 个样本"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -5170,10 +5114,6 @@ msgstr "在杠杆显示中包含 PnL"
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "暂无领取"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No executions with a preceding oracle observation for the selected filters"
-msgstr "所选筛选条件下没有具有更早预言机观测值的执行记录"
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
@@ -5375,10 +5315,6 @@ msgstr "其他代币部分"
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution time vs price improvement"
-msgstr "执行时间与价格改善"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "取消新订单"
@@ -5508,10 +5444,6 @@ msgstr "在 Bond Protocol 上以折扣价购买 GMX 债券，归属期较短"
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Signed difference between the execution price and the latest preceding oracle observation. Positive values are favorable to the trader. Check the displayed oracle age because older observations may be stale."
-msgstr "执行价格与此前最近的预言机观测值之间的带符号差值。正值表示对交易者有利。请检查显示的预言机观测时间差，因为较早的观测值可能已经过时。"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -5878,10 +5810,6 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL 分析"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Oracle age at execution"
-msgstr "执行订单时距预言机观测的时间"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -6322,10 +6250,6 @@ msgstr ""
 msgid "See more"
 msgstr "查看更多"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Reference price uses the latest indexed Chainlink Data Streams OraclePriceUpdate observation at or before order creation, regardless of its age. The displayed oracle age shows how stale that observation was and it may not represent the market price at creation. A positive comparison means the execution was favorable to the trader."
-msgstr "参考价格使用订单创建时或之前已编入索引的最新 Chainlink Data Streams OraclePriceUpdate 观测值，无论其时间差有多大。显示的预言机观测时间差表明该观测值当时已有多旧，因此它可能无法代表创建订单时的市场价格。比较结果为正表示该成交对交易者有利。"
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total pending rewards"
 msgstr "待领取奖励总额"
@@ -6333,10 +6257,6 @@ msgstr "待领取奖励总额"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr "平仓产生的价格影响返还可在\"领取\"标签页中领取。<0>了解更多</0>。"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Orders at or above absolute oracle-to-fill difference"
-msgstr "预言机价格与成交价格之间的绝对差值达到或超过阈值的订单"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Order failed"
@@ -6389,10 +6309,6 @@ msgstr "无需重复钱包确认"
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} before creation"
-msgstr "创建前 {0}"
-
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Fee data is temporarily unavailable."
 msgstr "费用数据暂时不可用。"
@@ -6418,10 +6334,6 @@ msgstr ""
 msgid "GMX (Portuguese)"
 msgstr "GMX (葡萄牙语)"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Swap analytics include creation-to-execution timing only. Minimum output is a protection boundary, not a creation-time market price, so it is not used to measure price quality."
-msgstr "兑换分析仅包含从创建到执行的用时。最小输出量是保护边界，而非创建时的市场价格，因此不用于衡量价格质量。"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
@@ -6446,12 +6358,6 @@ msgstr "永续合约"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "影响指数（负值）"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "oracle tx"
-msgstr "预言机交易"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
@@ -6515,10 +6421,6 @@ msgstr ""
 msgid "24h"
 msgstr "24 小时"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Percentile range"
-msgstr "百分位范围"
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
@@ -6558,10 +6460,6 @@ msgstr "已减少"
 msgid "Selling"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Median execution time"
-msgstr "执行时间中位数"
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr "推荐"
@@ -6582,13 +6480,16 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Decrease"
 msgstr "减少"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above mark price"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Shortest execution delay first · server-paginated"
+msgstr "执行延迟最短优先 · 服务器分页"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
@@ -6739,10 +6640,6 @@ msgstr ""
 msgid "Order not found. May have been canceled or already executed"
 msgstr "未找到订单。可能已被取消或已执行"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution impact"
-msgstr "执行影响"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
 msgstr "归属"
@@ -6758,10 +6655,6 @@ msgstr "支持"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them"
 msgstr "保证金不足。费用会在存入的抵押品改善仓位保证金之前从中扣除，请存入更多以覆盖这些费用"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "P95 execution time"
-msgstr "P95 执行时间"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
@@ -7098,12 +6991,6 @@ msgstr "Multicall 事件"
 msgid "Position not found. It may have been closed"
 msgstr "未找到仓位。它可能已被关闭"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution time"
-msgstr "执行时间"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "执行"
@@ -7272,11 +7159,6 @@ msgstr "价格"
 msgid "No assets found"
 msgstr "未找到资产"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Oracle source"
-msgstr "预言机来源"
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Wallet disconnected. Reconnect and retry"
 msgstr "钱包已断开连接。请重新连接并重试"
@@ -7312,10 +7194,6 @@ msgstr "Gas"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak 优化器"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Cumulative share of orders with a preceding oracle observation"
-msgstr "具有更早预言机观测值的订单累计占比"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
@@ -7388,12 +7266,6 @@ msgstr "借出您的代币或以其为抵押进行借贷"
 msgid "GMX logo"
 msgstr "GMX 标志"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Provider"
-msgstr "提供方"
-
 #: src/components/SideNav/SideNav.tsx
 msgid "Whales"
 msgstr ""
@@ -7456,10 +7328,6 @@ msgstr "关闭"
 msgid "per"
 msgstr "每"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Median oracle age"
-msgstr "预言机观测时间差中位数"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor longs"
 msgstr "做多储备因子"
@@ -7497,10 +7365,6 @@ msgstr ""
 msgid "THREAD"
 msgstr "THREAD"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "P95 oracle age: {0}"
-msgstr "预言机观测时间差 P95：{0}"
-
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fees reduce margin and affect liquidation price."
 msgstr ""
@@ -7508,10 +7372,6 @@ msgstr ""
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit signed for {0}"
 msgstr "{0} 的许可已签署"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Best price improvement first · server-paginated"
-msgstr "价格改善最佳优先 · 服务器分页"
 
 #: src/domain/synthetics/orders/prepareOrderTxn.ts
 msgid "Transaction failed: provider unavailable"
@@ -7667,10 +7527,6 @@ msgid "Insufficient gas balance"
 msgstr "Gas余额不足"
 
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Compare the latest preceding oracle observations and order timestamps with actual fills"
-msgstr "将此前最近的预言机观测值和订单时间戳与实际成交进行比较"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Orders with timing data"
 msgstr "含时间数据的订单"
 
@@ -7781,6 +7637,10 @@ msgstr "转账已提交"
 msgid "Order submission failed"
 msgstr "订单提交失败"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "P95 execution delay"
+msgstr "P95 执行延迟"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "扣除费用前的已实现盈亏"
@@ -7832,6 +7692,10 @@ msgstr "版本："
 msgid "Available"
 msgstr "可用"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Median execution delay"
+msgstr "执行延迟中位数"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap profit fee"
 msgstr "兑换利润费用"
@@ -7845,6 +7709,7 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "领取已提交"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
 msgstr "已创建"
@@ -7922,10 +7787,6 @@ msgstr "治理"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "取消"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Created / min output"
-msgstr "创建时间 / 最小输出量"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
@@ -8185,6 +8046,10 @@ msgstr "请输入有效金额"
 msgid "Keep leverage at {currentLeverage}"
 msgstr "保持杠杆为 {currentLeverage}"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay"
+msgstr "执行延迟"
+
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Today"
@@ -8214,10 +8079,6 @@ msgstr "从"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No events"
 msgstr "暂无事件"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Magnitude of fill price versus the latest preceding oracle observation"
-msgstr "成交价格相对于此前最近的预言机观测值的偏差幅度"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
@@ -8447,10 +8308,6 @@ msgstr "我不希望转移联盟 esGMX 代币"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr "订单超过最大杠杆。点击自动调整。"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Oracle move"
-msgstr "预言机价格变动"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
@@ -9144,10 +9001,6 @@ msgstr "市场下架"
 msgid "Last updated:"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Oracle age at creation"
-msgstr "创建订单时距预言机观测的时间"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "池容量已达上限"
@@ -9166,8 +9019,6 @@ msgstr "（{operationText}金额的 <0>{0}</0>）"
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "View"
 msgstr "查看"
@@ -9194,7 +9045,6 @@ msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
 msgstr "额外 APR 以 {airdropTokenTitle} 空投形式发放。<0>了解更多</0>。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Execution price"
 msgstr "成交价格"
 
@@ -9575,10 +9425,6 @@ msgstr "许可签名已取消"
 msgid "V2 rebates"
 msgstr "V2 返佣"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Any"
-msgstr "任意"
-
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select asset to deposit"
@@ -9752,11 +9598,6 @@ msgstr "领取"
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "日期"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No preceding Chainlink Data Streams observation available"
-msgstr "没有可用的更早 Chainlink Data Streams 观测值"
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when liquidity and price conditions are met"
@@ -10497,7 +10338,6 @@ msgstr "操作"
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Increase"
 msgstr "增加"
 
@@ -10929,10 +10769,6 @@ msgstr "主题"
 msgid "Gained"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Fill price"
-msgstr "成交价"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
 msgstr "正在更新订单…"
@@ -11228,12 +11064,6 @@ msgstr "正在取消 {orderText}…"
 msgid "Re-sign"
 msgstr "重新签名"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Observation ID"
-msgstr "观测 ID"
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "正在存入 GMX Account..."
@@ -11314,10 +11144,6 @@ msgstr "清算确认"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Negative funding fees"
 msgstr "负资金费用"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution oracle price"
-msgstr "执行时的预言机价格"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -11455,10 +11281,6 @@ msgstr "{idleSeconds}s"
 msgid "GMX V1 actions"
 msgstr "GMX V1 操作"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Created / oracle observation"
-msgstr "已创建 / 预言机观测值"
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "指数"
@@ -11471,7 +11293,6 @@ msgstr "GLV 金库："
 msgid "Download as CSV"
 msgstr "下载为 CSV"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Could not load market order executions"
 msgstr "无法加载市价单执行记录"
@@ -11529,10 +11350,6 @@ msgstr "{column}"
 msgid "Swap route unavailable for: {0}"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0}s before execution"
-msgstr "执行前 {0} 秒"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
 msgstr "未注册追踪器"
@@ -11554,10 +11371,6 @@ msgstr "过去 30 天"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "仪表板"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} of {1} orders with a preceding oracle observation"
-msgstr "{1} 笔订单中有 {0} 笔具有更早的预言机观测值"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"
@@ -11616,10 +11429,6 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 3 月 20-27 日"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Median price improvement"
-msgstr "价格改善中位数"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -11951,11 +11760,6 @@ msgstr "调试设置"
 msgid "Anonymous chat with GMX"
 msgstr "与 GMX 匿名聊天"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No orders with a preceding oracle observation"
-msgstr "没有具有更早预言机观测值的订单"
-
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} 已取消"
@@ -12097,10 +11901,6 @@ msgstr "关闭"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Link"
 msgstr "链接"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Pre-creation oracle price"
-msgstr "订单创建前的预言机价格"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

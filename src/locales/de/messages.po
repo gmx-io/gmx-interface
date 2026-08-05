@@ -335,10 +335,6 @@ msgstr "App öffnen"
 msgid "Try Express Trading"
 msgstr "Versuche Express-Trading"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Executed / actual output"
-msgstr "Ausgeführt / tatsächliche Ausgabe"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "Virtueller Bestand für Positionen"
@@ -348,13 +344,6 @@ msgstr "Virtueller Bestand für Positionen"
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Cancelled / frozen"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Chainlink Data Streams"
-msgstr "Chainlink Data Streams"
 
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Showing first {0} failures out of {1}"
@@ -416,10 +405,6 @@ msgstr "Yield Farming"
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "Roadmap"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Longest execution time first · server-paginated"
-msgstr "Längste Ausführungszeit zuerst · serverseitig paginiert"
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FULL MARKET"
@@ -1189,10 +1174,6 @@ msgstr "Keine passenden Ausführungen"
 msgid "Vaultka"
 msgstr "Vaultka"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} time-stratified samples from {1} orders with a preceding oracle observation"
-msgstr "{0} zeitlich geschichtete Stichproben aus {1} Orders mit einer vorausgehenden Oracle-Beobachtung"
-
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -1448,10 +1429,6 @@ msgstr "Liquidität nur auf {chainNames} verfügbar. Wechseln Sie das Netzwerk, 
 msgid "Stop-Loss"
 msgstr "Stop-Loss"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Price quality"
-msgstr "Preisqualität"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "Externer Tausch {0} zu {1}"
@@ -1553,10 +1530,6 @@ msgstr "Es kann einige Minuten dauern, bis die Änderung sichtbar ist. Bitte ver
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Shortest execution time first · server-paginated"
-msgstr "Kürzeste Ausführungszeit zuerst · serverseitig paginiert"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1969,10 +1942,6 @@ msgstr "Über 100 Krypto-Token"
 msgid "Optimal usage factor short"
 msgstr "Optimaler Nutzungsfaktor Short"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Absolute oracle-to-fill difference"
-msgstr "Absolute Differenz zwischen Oracle- und Ausführungspreis"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} pro {1}"
@@ -2117,12 +2086,6 @@ msgstr "Sie verlassen GMX.io und werden zu einer Drittanbieter-Website weitergel
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Observed"
-msgstr "Beobachtet"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -2407,10 +2370,6 @@ msgstr "{longOrShort}-Positionen zahlen keine Finanzierungsgebühr und zahlen ei
 msgid "Search pools"
 msgstr "Pools suchen"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Executed / fill"
-msgstr "Ausgeführt / Fill-Preis"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding increase factor"
 msgstr "Finanzierungserhöhungsfaktor"
@@ -2542,10 +2501,6 @@ msgstr ""
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Worst price improvement first · server-paginated"
-msgstr "Schlechteste Preisverbesserung zuerst · serverseitig paginiert"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Unable to load rate history"
@@ -2748,6 +2703,10 @@ msgstr "Keine Liquidität verfügbar, um Longs bei<0/>dieser Größe zu erhöhen
 msgid "Transfer completed"
 msgstr "Übertragung abgeschlossen"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay is measured from order creation to execution."
+msgstr "Die Ausführungsverzögerung wird von der Erstellung bis zur Ausführung der Order gemessen."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM-Bridging zu..."
@@ -2900,6 +2859,10 @@ msgstr ""
 msgid "Changes may take a few minutes to appear"
 msgstr "Änderungen können einige Minuten dauern, bis sie angezeigt werden"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Longest execution delay first · server-paginated"
+msgstr "Längste Ausführungsverzögerung zuerst · serverseitig paginiert"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "Ohne Anreize"
@@ -2933,7 +2896,6 @@ msgstr "Kaufe GMX auf {chainName}"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Size"
 msgstr "Größe"
@@ -3391,10 +3353,6 @@ msgstr "Durchschnittliche Positionsgröße"
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Theme"
 msgstr "Thema"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution price comparison unavailable"
-msgstr "Vergleich des Ausführungspreises nicht verfügbar"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4071,11 +4029,6 @@ msgstr "Finanzierungsgebühr"
 msgid "Partial TP"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Same-second observation"
-msgstr "Beobachtung in derselben Sekunde"
-
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
@@ -4297,6 +4250,10 @@ msgstr "{0} Guthaben"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "numerous assets"
 msgstr "zahlreiche Vermögenswerte"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Research creation-to-execution delays for market orders"
+msgstr "Verzögerungen von der Erstellung bis zur Ausführung von Market-Orders untersuchen"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -4523,6 +4480,7 @@ msgstr ""
 msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
 msgstr "Smart Wallets werden bei Express Trading oder One-Click Trading nicht unterstützt"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
@@ -4687,11 +4645,6 @@ msgstr "{chainName}-Daten"
 msgid "Rank among accounts for this metric and period."
 msgstr "Rang unter Konten für diese Kennzahl und diesen Zeitraum."
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution price improvement"
-msgstr "Preisverbesserung bei Ausführung"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -4845,7 +4798,6 @@ msgstr "<0><1>@GMX_IO</1> geht eine Datenpartnerschaft mit Token Terminal ein. G
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "All"
 msgstr "Alle"
 
@@ -5000,10 +4952,6 @@ msgstr ""
 msgid "Request Market Swap"
 msgstr "Markttausch anfordern"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Creation → execution (seconds)"
-msgstr "Erstellung → Ausführung (Sekunden)"
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "Reiner {indexSymbol} Short. Das Exposure ergibt sich ausschließlich aus der Position."
@@ -5121,10 +5069,6 @@ msgstr "Argumente"
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "Sie benötigen USDC und {0} auf {1}, um einen Empfehlungscode über das GMX-Konto zu erstellen. Zahlen Sie Geld ein oder wechseln Sie zu einem anderen Netzwerk."
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} samples within {1} bounds"
-msgstr "{0} Stichproben innerhalb der {1}-Grenzen"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero Scan"
@@ -5170,10 +5114,6 @@ msgstr "PnL in Hebelanzeige einbeziehen"
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "Noch keine Ansprüche"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No executions with a preceding oracle observation for the selected filters"
-msgstr "Keine Ausführungen mit einer vorausgehenden Oracle-Beobachtung für die ausgewählten Filter"
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
@@ -5375,10 +5315,6 @@ msgstr "In anderen Token"
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution time vs price improvement"
-msgstr "Ausführungszeit vs. Preisverbesserung"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Neue Orders abbrechen"
@@ -5508,10 +5444,6 @@ msgstr "Kaufen Sie GMX-Bonds auf Bond Protocol mit einem Rabatt und einer kurzen
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr ""
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Signed difference between the execution price and the latest preceding oracle observation. Positive values are favorable to the trader. Check the displayed oracle age because older observations may be stale."
-msgstr "Vorzeichenbehaftete Differenz zwischen dem Ausführungspreis und der letzten vorausgehenden Oracle-Beobachtung. Positive Werte sind für den Trader vorteilhaft. Prüfe das angezeigte Oracle-Alter, da ältere Beobachtungen veraltet sein können."
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -5878,10 +5810,6 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL-Analyse"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Oracle age at execution"
-msgstr "Alter der Oracle-Beobachtung bei Ausführung"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -6322,10 +6250,6 @@ msgstr ""
 msgid "See more"
 msgstr "Mehr anzeigen"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Reference price uses the latest indexed Chainlink Data Streams OraclePriceUpdate observation at or before order creation, regardless of its age. The displayed oracle age shows how stale that observation was and it may not represent the market price at creation. A positive comparison means the execution was favorable to the trader."
-msgstr "Der Referenzpreis verwendet die letzte indexierte OraclePriceUpdate-Beobachtung von Chainlink Data Streams zum Zeitpunkt der Ordererstellung oder davor, unabhängig von ihrem Alter. Das angezeigte Oracle-Alter zeigt, wie veraltet diese Beobachtung war; sie entspricht möglicherweise nicht dem Marktpreis bei der Erstellung. Ein positiver Vergleich bedeutet, dass die Ausführung für den Trader vorteilhaft war."
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total pending rewards"
 msgstr "Ausstehende Belohnungen gesamt"
@@ -6333,10 +6257,6 @@ msgstr "Ausstehende Belohnungen gesamt"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr "Preiseinflussrabatte aus dem Schließen sind im Claims-Tab beanspruchbar. <0>Mehr erfahren</0>."
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Orders at or above absolute oracle-to-fill difference"
-msgstr "Orders mit einer absoluten Oracle-zu-Ausführung-Differenz ab diesem Wert"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Order failed"
@@ -6389,10 +6309,6 @@ msgstr "Keine wiederholten Wallet-Bestätigungen"
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} einzahlen"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} before creation"
-msgstr "{0} vor der Erstellung"
-
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Fee data is temporarily unavailable."
 msgstr "Gebührendaten sind vorübergehend nicht verfügbar."
@@ -6418,10 +6334,6 @@ msgstr ""
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portugiesisch)"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Swap analytics include creation-to-execution timing only. Minimum output is a protection boundary, not a creation-time market price, so it is not used to measure price quality."
-msgstr "Swap-Analysen enthalten nur die Zeit von der Erstellung bis zur Ausführung. Der Mindestausgabebetrag ist eine Schutzgrenze und kein Marktpreis zum Erstellungszeitpunkt, daher wird er nicht zur Messung der Preisqualität verwendet."
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
@@ -6446,12 +6358,6 @@ msgstr "Perpetuals"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Einflussexponent (negativ)"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "oracle tx"
-msgstr "Oracle-Tx"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
@@ -6515,10 +6421,6 @@ msgstr ""
 msgid "24h"
 msgstr "24h"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Percentile range"
-msgstr "Perzentilbereich"
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
@@ -6558,10 +6460,6 @@ msgstr "Verringert"
 msgid "Selling"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Median execution time"
-msgstr "Mediane Ausführungszeit"
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr "Empfohlen"
@@ -6582,13 +6480,16 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Decrease"
 msgstr "Verringern"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above mark price"
 msgstr ""
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Shortest execution delay first · server-paginated"
+msgstr "Kürzeste Ausführungsverzögerung zuerst · serverseitig paginiert"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
@@ -6739,10 +6640,6 @@ msgstr ""
 msgid "Order not found. May have been canceled or already executed"
 msgstr "Order nicht gefunden. Möglicherweise storniert oder bereits ausgeführt"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution impact"
-msgstr "Ausführungseinfluss"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
 msgstr "Vesting"
@@ -6758,10 +6655,6 @@ msgstr "Support"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them"
 msgstr "Unzureichende Margin. Gebühren werden vom eingezahlten Kollateral abgezogen, bevor es die Margin der Position verbessert. Zahlen Sie mehr ein, um sie zu decken"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "P95 execution time"
-msgstr "P95-Ausführungszeit"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
@@ -7098,12 +6991,6 @@ msgstr "Multicall Ereignisse"
 msgid "Position not found. It may have been closed"
 msgstr "Position nicht gefunden. Sie wurde möglicherweise geschlossen"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution time"
-msgstr "Ausführungszeit"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "Ausführen"
@@ -7272,11 +7159,6 @@ msgstr "Preis"
 msgid "No assets found"
 msgstr "Keine Vermögenswerte gefunden"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Oracle source"
-msgstr "Oracle-Quelle"
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Wallet disconnected. Reconnect and retry"
 msgstr "Wallet getrennt. Verbinden Sie sich erneut und versuchen Sie es nochmal"
@@ -7312,10 +7194,6 @@ msgstr "Gas"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Cumulative share of orders with a preceding oracle observation"
-msgstr "Kumulativer Anteil der Orders mit einer vorausgehenden Oracle-Beobachtung"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
@@ -7388,12 +7266,6 @@ msgstr "Verleihen Sie Ihre Token oder leihen Sie sich dagegen"
 msgid "GMX logo"
 msgstr "GMX Logo"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Provider"
-msgstr "Anbieter"
-
 #: src/components/SideNav/SideNav.tsx
 msgid "Whales"
 msgstr ""
@@ -7456,10 +7328,6 @@ msgstr "Aus"
 msgid "per"
 msgstr "pro"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Median oracle age"
-msgstr "Medianes Alter der Oracle-Beobachtung"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor longs"
 msgstr "Reservefaktor Longs"
@@ -7497,10 +7365,6 @@ msgstr ""
 msgid "THREAD"
 msgstr "THREAD"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "P95 oracle age: {0}"
-msgstr "P95-Alter der Oracle-Beobachtung: {0}"
-
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fees reduce margin and affect liquidation price."
 msgstr ""
@@ -7508,10 +7372,6 @@ msgstr ""
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit signed for {0}"
 msgstr "Genehmigung für {0} unterzeichnet"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Best price improvement first · server-paginated"
-msgstr "Beste Preisverbesserung zuerst · serverseitig paginiert"
 
 #: src/domain/synthetics/orders/prepareOrderTxn.ts
 msgid "Transaction failed: provider unavailable"
@@ -7667,10 +7527,6 @@ msgid "Insufficient gas balance"
 msgstr "Unzureichender Gas-Saldo"
 
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Compare the latest preceding oracle observations and order timestamps with actual fills"
-msgstr "Vergleiche die letzten vorausgehenden Oracle-Beobachtungen und Order-Zeitstempel mit den tatsächlichen Ausführungen"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Orders with timing data"
 msgstr "Orders mit Zeitdaten"
 
@@ -7781,6 +7637,10 @@ msgstr "Übertragung eingereicht"
 msgid "Order submission failed"
 msgstr "Ordereinreichung fehlgeschlagen"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "P95 execution delay"
+msgstr "P95-Ausführungsverzögerung"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "Realisierter PnL vor Gebühren"
@@ -7832,6 +7692,10 @@ msgstr "Version:"
 msgid "Available"
 msgstr "Verfügbar"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Median execution delay"
+msgstr "Mediane Ausführungsverzögerung"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap profit fee"
 msgstr "Tauschgewinngebühr"
@@ -7845,6 +7709,7 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "Beanspruchung eingereicht"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
 msgstr "Erstellt"
@@ -7922,10 +7787,6 @@ msgstr "Governance"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Abbrechen"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Created / min output"
-msgstr "Erstellt / Mindestausgabe"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
@@ -8185,6 +8046,10 @@ msgstr "Geben Sie einen gültigen Betrag ein"
 msgid "Keep leverage at {currentLeverage}"
 msgstr "Hebel bei {currentLeverage} beibehalten"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay"
+msgstr "Ausführungsverzögerung"
+
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Today"
@@ -8214,10 +8079,6 @@ msgstr "Von"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No events"
 msgstr "Keine Ereignisse"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Magnitude of fill price versus the latest preceding oracle observation"
-msgstr "Betrag der Differenz zwischen dem Ausführungspreis und der jüngsten vorangegangenen Oracle-Beobachtung"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
@@ -8447,10 +8308,6 @@ msgstr "Ich möchte die Affiliate-esGMX-Token nicht übertragen"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr "Die Order überschreitet den maximalen Hebel. Klicken Sie zur automatischen Anpassung."
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Oracle move"
-msgstr "Oracle-Bewegung"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
@@ -9144,10 +9001,6 @@ msgstr "Markt-Delistings"
 msgid "Last updated:"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Oracle age at creation"
-msgstr "Alter der Oracle-Beobachtung bei Erstellung"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "Maximale Poolkapazität erreicht"
@@ -9166,8 +9019,6 @@ msgstr "(<0>{0}</0> des {operationText}-Betrags)"
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "View"
 msgstr "Ansicht"
@@ -9194,7 +9045,6 @@ msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
 msgstr "Bonus APR ausgezahlt als {airdropTokenTitle} Airdrops. <0>Mehr erfahren</0>."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Execution price"
 msgstr "Ausführungspreis"
 
@@ -9575,10 +9425,6 @@ msgstr "Permit-Signierung abgebrochen"
 msgid "V2 rebates"
 msgstr "V2-Rückvergütungen"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Any"
-msgstr "Beliebig"
-
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select asset to deposit"
@@ -9752,11 +9598,6 @@ msgstr "Beanspruchungen"
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "Datum"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No preceding Chainlink Data Streams observation available"
-msgstr "Keine vorangegangene Beobachtung von Chainlink Data Streams verfügbar"
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when liquidity and price conditions are met"
@@ -10497,7 +10338,6 @@ msgstr "AKTION"
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Increase"
 msgstr "Erhöhen"
 
@@ -10929,10 +10769,6 @@ msgstr "Themen"
 msgid "Gained"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Fill price"
-msgstr "Ausführungspreis"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
 msgstr "Order wird aktualisiert…"
@@ -11228,12 +11064,6 @@ msgstr "{orderText} wird storniert…"
 msgid "Re-sign"
 msgstr "Erneut signieren"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Observation ID"
-msgstr "Beobachtungs-ID"
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "Einzahlung auf GMX Account..."
@@ -11314,10 +11144,6 @@ msgstr "Liquidationsbestätigungen"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Negative funding fees"
 msgstr "Negative Finanzierungsgebühren"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Execution oracle price"
-msgstr "Oracle-Preis bei Ausführung"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -11455,10 +11281,6 @@ msgstr "{idleSeconds}s"
 msgid "GMX V1 actions"
 msgstr "GMX V1 Aktionen"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Created / oracle observation"
-msgstr "Erstellt / Oracle-Beobachtung"
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "Indizes"
@@ -11471,7 +11293,6 @@ msgstr "GLV Vaults:"
 msgid "Download as CSV"
 msgstr "Als CSV herunterladen"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Could not load market order executions"
 msgstr "Market-Order-Ausführungen konnten nicht geladen werden"
@@ -11529,10 +11350,6 @@ msgstr "{column}"
 msgid "Swap route unavailable for: {0}"
 msgstr ""
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0}s before execution"
-msgstr "{0}s vor Ausführung"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
 msgstr "Keine Tracker registriert"
@@ -11554,10 +11371,6 @@ msgstr "Letzte 30T"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "Dashboards"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "{0} of {1} orders with a preceding oracle observation"
-msgstr "{0} von {1} Orders mit einer vorangegangenen Oracle-Beobachtung"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"
@@ -11616,10 +11429,6 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mär"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Median price improvement"
-msgstr "Mediane Preisverbesserung"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -11951,11 +11760,6 @@ msgstr "Debug-Einstellungen"
 msgid "Anonymous chat with GMX"
 msgstr "Anonymer Chat mit GMX"
 
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "No orders with a preceding oracle observation"
-msgstr "Keine Orders mit einer vorangegangenen Oracle-Beobachtung"
-
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} abgebrochen"
@@ -12097,10 +11901,6 @@ msgstr "Schließen"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Link"
 msgstr "Link"
-
-#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
-msgid "Pre-creation oracle price"
-msgstr "Oracle-Preis vor der Erstellung"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."

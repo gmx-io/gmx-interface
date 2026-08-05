@@ -19,20 +19,15 @@ export default function MarketOrderExecutionSkeletonStructure() {
       </TableTd>
       <TableTd padding="compact">
         <Skeleton width={100} />
-        <Skeleton width={140} className="max-w-full" />
+        <Skeleton width={60} className="max-w-full" />
       </TableTd>
       <TableTd padding="compact">
         <Skeleton width={100} />
-        <Skeleton width={140} className="max-w-full" />
+        <Skeleton width={30} className="max-w-full" />
       </TableTd>
       <TableTd padding="compact">
         <div className="flex justify-end">
           <Skeleton width={50} />
-        </div>
-      </TableTd>
-      <TableTd padding="compact">
-        <div className="flex justify-end">
-          <Skeleton width={70} />
         </div>
       </TableTd>
     </TableTr>

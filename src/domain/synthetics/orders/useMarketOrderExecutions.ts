@@ -8,17 +8,15 @@ import { TradeActionType } from "sdk/utils/tradeHistory/types";
 import {
   MARKET_POSITION_ORDER_TYPES,
   MarketOrderExecutionAction,
-  MarketOrderExecutionSample,
   MarketOrderExecutionStats,
   MarketOrderKind,
   MarketOrderPhase,
   MarketOrderSide,
   buildMarketOrderExecutionRows,
-  buildMarketOrderExecutionSampleRows,
 } from "./marketOrderExecutions";
 import { OrderType } from "./types";
 
-const MARKET_ORDER_EXECUTION_SAMPLE_SIZE = 300;
+const MARKET_ORDER_EXECUTION_SAMPLE_SIZE = 0;
 const REFRESH_INTERVAL = 60 * 1000;
 
 const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
@@ -42,65 +40,17 @@ const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
     ) {
       totalCount
       timingCount
-      referencePriceCount
-      pricedCount
-      oracleMoveCount
-      executionImpactCount
-      maxReferenceAgeSeconds
-      pricedFromTimestamp
       medianDelaySeconds
       p95DelaySeconds
-      medianReferenceAgeSeconds
-      p95ReferenceAgeSeconds
-      medianSignedFillDeltaBps
-      medianSignedOracleMoveBps
-      medianSignedExecutionImpactBps
       percentiles {
         percentile
         delaySeconds
-        absoluteFillDeltaBps
       }
       delayThresholds {
         threshold
         count
         total
         percentage
-      }
-      priceThresholds {
-        threshold
-        count
-        total
-        percentage
-      }
-      sample {
-        id
-        orderKey
-        orderType
-        account
-        marketAddress
-        isLong
-        sizeDeltaUsd
-        orderCreatedTimestamp
-        orderCreatedTxnHash
-        executedTimestamp
-        executedTxnHash
-        delaySeconds
-        referenceAgeSeconds
-        creationReferencePrice
-        creationReferenceTimestamp
-        creationReferenceTxnHash
-        creationReferenceProvider
-        creationReferenceObservationId
-        executionReferencePrice
-        executionReferenceTimestamp
-        executionReferenceTxnHash
-        executionReferenceProvider
-        executionReferenceObservationId
-        executionReferenceAgeSeconds
-        executionPrice
-        signedFillDeltaBps
-        signedOracleMoveBps
-        signedExecutionImpactBps
       }
     }
   }
@@ -114,7 +64,6 @@ const MARKET_ORDER_EXECUTION_ROWS_QUERY = gql(`
       orderBy: [timestamp_DESC, id_DESC]
       where: $where
     ) {
-      id
       orderKey
       orderType
       timestamp
@@ -127,9 +76,6 @@ const MARKET_ORDER_EXECUTION_ROWS_QUERY = gql(`
       initialCollateralDeltaAmount
       swapPath
       sizeDeltaUsd
-      executionPrice
-      minOutputAmount
-      executionAmountOut
       orderCreatedTimestamp
       orderCreatedTxnHash
     }
@@ -161,7 +107,6 @@ const MARKET_ORDER_EXECUTION_RESOLVER_ROWS_QUERY = gql(`
       sortField: $sortField
       sortDirection: $sortDirection
     ) {
-      id
       orderKey
       orderType
       timestamp
@@ -174,24 +119,8 @@ const MARKET_ORDER_EXECUTION_RESOLVER_ROWS_QUERY = gql(`
       initialCollateralDeltaAmount
       swapPath
       sizeDeltaUsd
-      executionPrice
-      minOutputAmount
-      executionAmountOut
       orderCreatedTimestamp
       orderCreatedTxnHash
-      creationReferencePrice
-      creationReferenceTimestamp
-      creationReferenceTxnHash
-      creationReferenceProvider
-      creationReferenceObservationId
-      referenceAgeSeconds
-      executionReferencePrice
-      executionReferenceTimestamp
-      executionReferenceTxnHash
-      executionReferenceProvider
-      executionReferenceObservationId
-      executionReferenceAgeSeconds
-      signedFillDeltaBps
     }
   }
 `);
@@ -214,12 +143,10 @@ export type MarketOrderExecutionRowsParams = MarketOrderExecutionsParams & {
   sortDirection?: "asc" | "desc";
 };
 
-export type MarketOrderExecutionSortField = "executionTime" | "priceImprovement";
+export type MarketOrderExecutionSortField = "executionTime";
 
 type MarketOrderExecutionStatsQuery = {
-  marketOrderExecutionStats: Omit<MarketOrderExecutionStats, "sample"> & {
-    sample: MarketOrderExecutionSample[];
-  };
+  marketOrderExecutionStats: MarketOrderExecutionStats;
 };
 
 type MarketOrderExecutionStatsVariables = {
@@ -251,7 +178,7 @@ type MarketOrderExecutionResolverRowsVariables = {
   isLong?: boolean;
   offset: number;
   limit: number;
-  sortField: "EXECUTED_AT" | "EXECUTION_TIME" | "PRICE_IMPROVEMENT";
+  sortField: "EXECUTION_TIME";
   sortDirection: "ASC" | "DESC";
 };
 
@@ -349,7 +276,7 @@ export async function fetchMarketOrderExecutionStats(
       account: params.account,
       orderTypes: getOrderTypes(params),
       isLong: params.kind === "perp" && params.side !== undefined ? params.side === "long" : undefined,
-      sampleSize: params.kind === "perp" ? MARKET_ORDER_EXECUTION_SAMPLE_SIZE : 0,
+      sampleSize: MARKET_ORDER_EXECUTION_SAMPLE_SIZE,
     },
     fetchPolicy: "no-cache",
   });
@@ -357,21 +284,12 @@ export async function fetchMarketOrderExecutionStats(
 
   return {
     ...stats,
-    maxReferenceAgeSeconds: stats.maxReferenceAgeSeconds ?? null,
-    pricedFromTimestamp: stats.pricedFromTimestamp ?? null,
     medianDelaySeconds: stats.medianDelaySeconds ?? null,
     p95DelaySeconds: stats.p95DelaySeconds ?? null,
-    medianReferenceAgeSeconds: stats.medianReferenceAgeSeconds ?? null,
-    p95ReferenceAgeSeconds: stats.p95ReferenceAgeSeconds ?? null,
-    medianSignedFillDeltaBps: stats.medianSignedFillDeltaBps ?? null,
-    medianSignedOracleMoveBps: stats.medianSignedOracleMoveBps ?? null,
-    medianSignedExecutionImpactBps: stats.medianSignedExecutionImpactBps ?? null,
     percentiles: stats.percentiles.map((item) => ({
       ...item,
       delaySeconds: item.delaySeconds ?? null,
-      absoluteFillDeltaBps: item.absoluteFillDeltaBps ?? null,
     })),
-    sample: buildMarketOrderExecutionSampleRows(stats.sample),
   };
 }
 
@@ -382,7 +300,7 @@ export async function fetchMarketOrderExecutionRows(params: MarketOrderExecution
     throw new Error(`No Subsquid client configured for chain ${params.chainId}`);
   }
 
-  const useResolver = params.kind === "perp" || params.sortField === "executionTime";
+  const useResolver = params.sortField === "executionTime";
   const result = useResolver
     ? await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionResolverRowsVariables>({
         query: MARKET_ORDER_EXECUTION_RESOLVER_ROWS_QUERY,
@@ -395,12 +313,7 @@ export async function fetchMarketOrderExecutionRows(params: MarketOrderExecution
           isLong: params.side === undefined ? undefined : params.side === "long",
           offset: params.offset,
           limit: params.limit,
-          sortField:
-            params.sortField === "priceImprovement"
-              ? "PRICE_IMPROVEMENT"
-              : params.sortField === "executionTime"
-                ? "EXECUTION_TIME"
-                : "EXECUTED_AT",
+          sortField: "EXECUTION_TIME",
           sortDirection: params.sortDirection === "asc" ? "ASC" : "DESC",
         },
         fetchPolicy: "no-cache",

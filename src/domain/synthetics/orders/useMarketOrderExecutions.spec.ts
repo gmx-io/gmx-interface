@@ -1,6 +1,7 @@
 import { print } from "graphql";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { MarketOrderExecutionAction } from "./marketOrderExecutions";
 import { OrderType } from "./types";
 import { fetchMarketOrderExecutionRows, fetchMarketOrderExecutionStats } from "./useMarketOrderExecutions";
 
@@ -31,63 +32,38 @@ function statsResult(overrides: Record<string, unknown> = {}) {
       marketOrderExecutionStats: {
         totalCount: 1001,
         timingCount: 999,
-        referencePriceCount: 900,
-        pricedCount: 850,
-        oracleMoveCount: 800,
-        executionImpactCount: 800,
-        maxReferenceAgeSeconds: null,
-        pricedFromTimestamp: 1_700_000_100,
         medianDelaySeconds: 17,
         p95DelaySeconds: 42,
-        medianReferenceAgeSeconds: 4,
-        p95ReferenceAgeSeconds: 12,
-        medianSignedFillDeltaBps: 3,
-        medianSignedOracleMoveBps: 2,
-        medianSignedExecutionImpactBps: 1,
         percentiles: [
           {
             percentile: 0.5,
             delaySeconds: 17,
-            absoluteFillDeltaBps: 5,
           },
         ],
         delayThresholds: [{ threshold: 2, count: 800, total: 999, percentage: 80.08008 }],
-        priceThresholds: [{ threshold: 5, count: 425, total: 850, percentage: 50 }],
-        sample: [
-          {
-            id: "execution",
-            orderKey: "0xorder",
-            orderType: OrderType.MarketIncrease,
-            account: "0x2222222222222222222222222222222222222222",
-            marketAddress: "0x1111111111111111111111111111111111111111",
-            isLong: true,
-            sizeDeltaUsd: "1000",
-            orderCreatedTimestamp: 1_700_000_100,
-            orderCreatedTxnHash: "0xcreation",
-            executedTimestamp: 1_700_000_101,
-            executedTxnHash: "0xexecution",
-            delaySeconds: 1,
-            referenceAgeSeconds: 1,
-            creationReferencePrice: "102",
-            creationReferenceTimestamp: 1_700_000_099,
-            creationReferenceTxnHash: "0xoracle",
-            creationReferenceProvider: "0xProvider",
-            creationReferenceObservationId: "0xoracle:1",
-            executionReferencePrice: "101",
-            executionReferenceTimestamp: 1_700_000_101,
-            executionReferenceTxnHash: "0xexecution",
-            executionReferenceProvider: "0xExecutionProvider",
-            executionReferenceObservationId: "0xexecution:2",
-            executionReferenceAgeSeconds: 0,
-            executionPrice: "100",
-            signedFillDeltaBps: 196.0784,
-            signedOracleMoveBps: 98.0392,
-            signedExecutionImpactBps: 99.0099,
-          },
-        ],
         ...overrides,
       },
     },
+  };
+}
+
+function executionAction(overrides: Partial<MarketOrderExecutionAction> = {}): MarketOrderExecutionAction {
+  return {
+    orderKey: "0xorder",
+    orderType: OrderType.MarketIncrease,
+    timestamp: 1_700_000_105,
+    transactionHash: "0xexecution",
+    account: baseParams.account,
+    marketAddress: baseParams.marketAddress,
+    isLong: true,
+    shouldUnwrapNativeToken: false,
+    initialCollateralTokenAddress: "0xTokenIn",
+    initialCollateralDeltaAmount: "1000",
+    swapPath: [],
+    sizeDeltaUsd: "1000",
+    orderCreatedTimestamp: 1_700_000_100,
+    orderCreatedTxnHash: "0xcreation",
+    ...overrides,
   };
 }
 
@@ -96,38 +72,53 @@ describe("fetchMarketOrderExecutionStats", () => {
     mocks.query.mockReset();
   });
 
-  it("returns full-population aggregates instead of recomputing them from the sample", async () => {
+  it("returns full-population timing aggregates and disables the server sample", async () => {
     mocks.query.mockResolvedValue(statsResult());
 
     const result = await fetchMarketOrderExecutionStats(baseParams);
 
-    expect(result.totalCount).toBe(1001);
-    expect(result.medianDelaySeconds).toBe(17);
-    expect(result.sample).toHaveLength(1);
-    expect(result.sample[0].delaySeconds).toBe(1);
-    expect(result.sample[0].creationReferencePrice).toBe("102");
-    expect(result.sample[0]).toMatchObject({
-      executionReferencePrice: "101",
-      executionReferenceTimestamp: 1_700_000_101,
-      executionReferenceTxnHash: "0xexecution",
-      executionReferenceProvider: "0xExecutionProvider",
-      executionReferenceObservationId: "0xexecution:2",
-      executionReferenceAgeSeconds: 0,
+    expect(result).toEqual({
+      totalCount: 1001,
+      timingCount: 999,
+      medianDelaySeconds: 17,
+      p95DelaySeconds: 42,
+      percentiles: [{ percentile: 0.5, delaySeconds: 17 }],
+      delayThresholds: [{ threshold: 2, count: 800, total: 999, percentage: 80.08008 }],
     });
+    expect(mocks.query).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: expect.objectContaining({
+          sampleSize: 0,
+        }),
+      })
+    );
 
     const query = print(mocks.query.mock.calls[0][0].query);
 
-    expect(query).toContain("executionReferencePrice");
-    expect(query).toContain("executionReferenceTimestamp");
-    expect(query).toContain("executionReferenceTxnHash");
-    expect(query).toContain("executionReferenceProvider");
-    expect(query).toContain("executionReferenceObservationId");
-    expect(query).toContain("executionReferenceAgeSeconds");
-    expect(query).not.toContain("$maxReferenceAgeSeconds");
+    expect(query).toContain("totalCount");
+    expect(query).toContain("delayThresholds");
+    expect(query).not.toMatch(/price|oracle|reference|fill|impact/i);
+    expect(query).not.toContain("sample {");
   });
 
-  it("maps phase and side filters to resolver variables without changing address casing", async () => {
-    mocks.query.mockResolvedValue(statsResult({ sample: [] }));
+  it("normalizes nullable timing values", async () => {
+    mocks.query.mockResolvedValue(
+      statsResult({
+        medianDelaySeconds: undefined,
+        p95DelaySeconds: undefined,
+        percentiles: [{ percentile: 0.95, delaySeconds: undefined }],
+      })
+    );
+
+    const result = await fetchMarketOrderExecutionStats(baseParams);
+
+    expect(result.medianDelaySeconds).toBeNull();
+    expect(result.p95DelaySeconds).toBeNull();
+    expect(result.percentiles).toEqual([{ percentile: 0.95, delaySeconds: null }]);
+  });
+
+  it("maps filters without changing address casing", async () => {
+    mocks.query.mockResolvedValue(statsResult());
     const account = "0xAbCdEfabcdefABCDefabCDefAbcdefABcDefABCD";
     const marketAddress = "0xFfFfFffFffFFfffFFfFFfFffFFFffffFfFFFfFfF";
 
@@ -146,26 +137,20 @@ describe("fetchMarketOrderExecutionStats", () => {
           marketAddress,
           orderTypes: [OrderType.MarketDecrease],
           isLong: false,
-          sampleSize: 300,
+          sampleSize: 0,
         }),
       })
     );
   });
 
-  it("requests timing-only stats for swaps", async () => {
-    mocks.query.mockResolvedValue(
-      statsResult({
-        pricedCount: 0,
-        sample: [],
-      })
-    );
+  it("requests timing aggregates for swaps", async () => {
+    mocks.query.mockResolvedValue(statsResult());
 
-    const result = await fetchMarketOrderExecutionStats({
+    await fetchMarketOrderExecutionStats({
       ...baseParams,
       kind: "swap",
     });
 
-    expect(result.sample).toEqual([]);
     expect(mocks.query).toHaveBeenCalledWith(
       expect.objectContaining({
         variables: expect.objectContaining({
@@ -183,15 +168,15 @@ describe("fetchMarketOrderExecutionRows", () => {
     mocks.query.mockReset();
   });
 
-  it("uses canonical resolver rows and supports pages beyond the old 1,000-order cap", async () => {
-    mocks.query.mockResolvedValue({
-      data: {
-        marketOrderExecutions: [],
-      },
-    });
+  it("uses newest-first entity pagination by default for perps", async () => {
+    mocks.query.mockResolvedValue({ data: { marketOrderExecutions: [] } });
+    const account = "0xAbCdEfabcdefABCDefabCDefAbcdefABcDefABCD";
+    const marketAddress = "0xFfFfFffFffFFfffFFfFFfFffFFFffffFfFFFfFfF";
 
     await fetchMarketOrderExecutionRows({
       ...baseParams,
+      account,
+      marketAddress,
       phase: "increase",
       side: "long",
       offset: 1000,
@@ -200,115 +185,103 @@ describe("fetchMarketOrderExecutionRows", () => {
 
     expect(mocks.query).toHaveBeenCalledWith(
       expect.objectContaining({
-        variables: expect.objectContaining({
+        variables: {
           offset: 1000,
           limit: 25,
-          orderTypes: [OrderType.MarketIncrease],
-          isLong: true,
-          account: baseParams.account,
-          marketAddress: baseParams.marketAddress,
-          sortField: "EXECUTED_AT",
-          sortDirection: "DESC",
-        }),
-      })
-    );
-
-    const query = print(mocks.query.mock.calls[0][0].query);
-
-    expect(query).toContain("creationReferencePrice");
-    expect(query).toContain("creationReferenceTimestamp");
-    expect(query).toContain("creationReferenceTxnHash");
-    expect(query).toContain("creationReferenceProvider");
-    expect(query).toContain("creationReferenceObservationId");
-    expect(query).toContain("referenceAgeSeconds");
-    expect(query).toContain("executionReferencePrice");
-    expect(query).toContain("executionReferenceTimestamp");
-    expect(query).toContain("executionReferenceTxnHash");
-    expect(query).toContain("executionReferenceProvider");
-    expect(query).toContain("executionReferenceObservationId");
-    expect(query).toContain("executionReferenceAgeSeconds");
-    expect(query).not.toContain("indexTokenPriceMin");
-    expect(query).not.toContain("indexTokenPriceMax");
-    expect(query).not.toContain("indexTokenPriceTimestamp");
-    expect(query).not.toContain("indexTokenPriceType");
-    expect(query).not.toContain("maxReferenceAgeSeconds:");
-  });
-
-  it.each([
-    ["desc", "DESC"],
-    ["asc", "ASC"],
-  ] as const)("sorts the full filtered perp dataset by price improvement %s", async (direction, expectedDirection) => {
-    mocks.query.mockResolvedValue({
-      data: {
-        marketOrderExecutions: [],
-      },
-    });
-
-    await fetchMarketOrderExecutionRows({
-      ...baseParams,
-      phase: "decrease",
-      side: "short",
-      offset: 50,
-      limit: 25,
-      sortField: "priceImprovement",
-      sortDirection: direction,
-    });
-
-    expect(mocks.query).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: {
-          fromTimestamp: baseParams.fromTimestamp,
-          toTimestamp: baseParams.toTimestamp,
-          marketAddress: baseParams.marketAddress,
-          account: baseParams.account,
-          orderTypes: [OrderType.MarketDecrease],
-          isLong: false,
-          offset: 50,
-          limit: 25,
-          sortField: "PRICE_IMPROVEMENT",
-          sortDirection: expectedDirection,
+          where: expect.objectContaining({
+            account_eq: account,
+            marketAddress_eq: marketAddress,
+            orderType_in: [OrderType.MarketIncrease],
+            isLong_eq: true,
+          }),
         },
       })
     );
 
     const query = print(mocks.query.mock.calls[0][0].query);
 
-    expect(query).toContain("MarketOrderExecutionSortField");
-    expect(query).toContain("sortField");
+    expect(query).toContain("tradeActions");
+    expect(query).toContain("timestamp_DESC");
+    expect(query).toContain("id_DESC");
+    expect(query).not.toContain("marketOrderExecutionRows");
+    expect(query).not.toMatch(/price|oracle|reference|fill|impact/i);
+    expect(query).not.toContain("minOutputAmount");
+    expect(query).not.toContain("executionAmountOut");
   });
 
-  it("maps the server-sorted improvement value into the table row", async () => {
+  it("uses newest-first entity pagination by default for swaps", async () => {
+    mocks.query.mockResolvedValue({ data: { marketOrderExecutions: [] } });
+
+    await fetchMarketOrderExecutionRows({
+      ...baseParams,
+      kind: "swap",
+      offset: 25,
+      limit: 25,
+    });
+
+    expect(mocks.query).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          offset: 25,
+          limit: 25,
+          where: expect.objectContaining({
+            orderType_eq: OrderType.MarketSwap,
+            initialCollateralDeltaAmount_not_eq: "0",
+            executionAmountOut_isNull: false,
+            swapPath_containsAny: [baseParams.marketAddress],
+          }),
+        },
+      })
+    );
+  });
+
+  it.each([
+    ["perp", [OrderType.MarketIncrease, OrderType.MarketDecrease], "asc", "ASC"],
+    ["swap", [OrderType.MarketSwap], "desc", "DESC"],
+  ] as const)(
+    "sorts the full filtered %s dataset by execution time",
+    async (kind, orderTypes, sortDirection, expectedDirection) => {
+      mocks.query.mockResolvedValue({ data: { marketOrderExecutions: [] } });
+
+      await fetchMarketOrderExecutionRows({
+        ...baseParams,
+        kind,
+        offset: 50,
+        limit: 25,
+        sortField: "executionTime",
+        sortDirection,
+      });
+
+      expect(mocks.query).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            fromTimestamp: baseParams.fromTimestamp,
+            toTimestamp: baseParams.toTimestamp,
+            marketAddress: baseParams.marketAddress,
+            account: baseParams.account,
+            orderTypes: [...orderTypes],
+            isLong: undefined,
+            offset: 50,
+            limit: 25,
+            sortField: "EXECUTION_TIME",
+            sortDirection: expectedDirection,
+          },
+        })
+      );
+
+      const query = print(mocks.query.mock.calls[0][0].query);
+
+      expect(query).toContain("marketOrderExecutionRows");
+      expect(query).not.toMatch(/price|oracle|reference|fill|impact/i);
+      expect(query).not.toContain("minOutputAmount");
+      expect(query).not.toContain("executionAmountOut");
+    }
+  );
+
+  it("maps creation and execution timestamps into a timing row", async () => {
     mocks.query.mockResolvedValue({
       data: {
-        marketOrderExecutions: [
-          {
-            id: "execution",
-            orderKey: "0xorder",
-            orderType: OrderType.MarketIncrease,
-            timestamp: 1_700_000_105,
-            transactionHash: "0xexecution",
-            account: baseParams.account,
-            marketAddress: baseParams.marketAddress,
-            isLong: true,
-            sizeDeltaUsd: "1000",
-            executionPrice: "100",
-            orderCreatedTimestamp: 1_700_000_100,
-            orderCreatedTxnHash: "0xcreation",
-            creationReferencePrice: "102",
-            creationReferenceTimestamp: 1_699_996_500,
-            creationReferenceTxnHash: "0xoracle",
-            creationReferenceProvider: "0xProvider",
-            creationReferenceObservationId: "0xoracle:1",
-            referenceAgeSeconds: 3_600,
-            executionReferencePrice: "100",
-            executionReferenceTimestamp: 1_700_000_105,
-            executionReferenceTxnHash: "0xexecution",
-            executionReferenceProvider: "0xExecutionProvider",
-            executionReferenceObservationId: "0xexecution:2",
-            executionReferenceAgeSeconds: 0,
-            signedFillDeltaBps: 196.078431,
-          },
-        ],
+        marketOrderExecutions: [executionAction()],
       },
     });
 
@@ -316,87 +289,16 @@ describe("fetchMarketOrderExecutionRows", () => {
       ...baseParams,
       offset: 0,
       limit: 25,
-      sortField: "priceImprovement",
-      sortDirection: "desc",
     });
 
-    expect(row.fillDeltaBps).toBe(196.078431);
-    expect(row.kind).toBe("perp");
-    if (row.kind === "perp") {
-      expect(row.creationReferencePrice).toBe("102");
-      expect(row.referenceAgeSeconds).toBe(3_600);
-      expect(row.executionReferencePrice).toBe("100");
-      expect(row.executionReferenceTimestamp).toBe(1_700_000_105);
-      expect(row.executionReferenceTxnHash).toBe("0xexecution");
-      expect(row.executionReferenceProvider).toBe("0xExecutionProvider");
-      expect(row.executionReferenceObservationId).toBe("0xexecution:2");
-      expect(row.executionReferenceAgeSeconds).toBe(0);
-    }
-  });
-
-  it("keeps swaps on newest-first entity pagination", async () => {
-    mocks.query.mockResolvedValue({
-      data: {
-        marketOrderExecutions: [],
-      },
+    expect(row).toMatchObject({
+      kind: "perp",
+      submittedTimestamp: 1_700_000_100,
+      submittedTransactionHash: "0xcreation",
+      executedTimestamp: 1_700_000_105,
+      executedTransactionHash: "0xexecution",
+      delaySeconds: 5,
+      sizeDeltaUsd: "1000",
     });
-
-    await fetchMarketOrderExecutionRows({
-      ...baseParams,
-      kind: "swap",
-      offset: 0,
-      limit: 25,
-      sortField: "priceImprovement",
-      sortDirection: "desc",
-    });
-
-    expect(mocks.query).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: expect.objectContaining({
-          offset: 0,
-          limit: 25,
-          where: expect.objectContaining({
-            orderType_eq: OrderType.MarketSwap,
-          }),
-        }),
-      })
-    );
-  });
-
-  it.each([
-    ["perp", [OrderType.MarketIncrease, OrderType.MarketDecrease]],
-    ["swap", [OrderType.MarketSwap]],
-  ] as const)("sorts the full filtered %s dataset by execution time", async (kind, orderTypes) => {
-    mocks.query.mockResolvedValue({
-      data: {
-        marketOrderExecutions: [],
-      },
-    });
-
-    await fetchMarketOrderExecutionRows({
-      ...baseParams,
-      kind,
-      offset: 25,
-      limit: 25,
-      sortField: "executionTime",
-      sortDirection: "asc",
-    });
-
-    expect(mocks.query).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: {
-          fromTimestamp: baseParams.fromTimestamp,
-          toTimestamp: baseParams.toTimestamp,
-          marketAddress: baseParams.marketAddress,
-          account: baseParams.account,
-          orderTypes: [...orderTypes],
-          isLong: undefined,
-          offset: 25,
-          limit: 25,
-          sortField: "EXECUTION_TIME",
-          sortDirection: "ASC",
-        },
-      })
-    );
   });
 });
