@@ -9481,6 +9481,10 @@ msgstr "GMX 池無法完成此規模的兌換，且當前沒有可用的外部�
 msgid "EVENT NAME"
 msgstr "事件名稱"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+msgstr "再質押 {0} GMX 以達到 {1} 等級並獲得更多獎勵。"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
 msgstr "抵押品已解鎖。餘額將很快重新整理。"

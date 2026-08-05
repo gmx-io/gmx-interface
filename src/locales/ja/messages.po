@@ -9481,6 +9481,10 @@ msgstr "GMXプールではこのスワップサイズを約定できず、現在
 msgid "EVENT NAME"
 msgstr "イベント名"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+msgstr "{1}ティアに到達してより多くの報酬を獲得するには、さらに{0} GMXをステークしてください。"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
 msgstr "担保のロックを解除しました。残高はまもなく更新されます。"

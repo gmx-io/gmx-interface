@@ -9481,6 +9481,10 @@ msgstr "Les pools GMX ne peuvent pas exécuter cette taille de swap et aucune ro
 msgid "EVENT NAME"
 msgstr "NOM DE L'ÉVÉNEMENT"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+msgstr "Stakez {0} GMX supplémentaires pour atteindre le niveau {1} et gagner plus de récompenses."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
 msgstr "Le collatéral a été déverrouillé. Les soldes seront bientôt actualisés."

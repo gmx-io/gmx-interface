@@ -9481,6 +9481,10 @@ msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 현재 사�
 msgid "EVENT NAME"
 msgstr "이벤트명"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+msgstr "{1} 티어에 도달하고 더 많은 리워드를 받으려면 GMX {0}개를 더 스테이킹하세요."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
 msgstr "담보 잠금이 해제되었습니다. 잔액이 곧 새로고침됩니다."

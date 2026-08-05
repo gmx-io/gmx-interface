@@ -409,16 +409,18 @@ describe("RewardsTiersTab", () => {
     ).toBe(EARN_PORTFOLIO_STAKE_GMX_LINK);
   });
 
-  it("opens Buy GMX in place from the below-tier active staking card", () => {
+  it("opens Buy GMX in place from the below-tier staking banner", () => {
     renderTab({
       status: {
         ...status,
         stakingTier: null,
         projectedStakingTier: null,
+        currentStakedBalance: 40n * GMX_UNIT,
       },
     });
 
     const stakingCard = screen.getByText("Staking Tier").closest(".group");
+    expect(stakingCard?.textContent).toContain("Stake 60 GMX more to reach the Supporter tier and earn more rewards.");
     fireEvent.click(within(stakingCard as HTMLElement).getByRole("button", { name: "Buy GMX" }));
 
     expect(screen.getByRole("button", { name: "Buy GMX on GMX swap" })).toBeDefined();
@@ -1054,7 +1056,7 @@ describe("RewardsTiersTab", () => {
     expect(within(volumeCard as HTMLElement).getByRole("link", { name: "Start trading" })).toBeDefined();
   });
 
-  it("uses the active staking layout below the first tier once GMX is staked", () => {
+  it("uses the staking banner below the first tier and shows the remaining amount", () => {
     renderTab({
       status: {
         ...status,
@@ -1070,10 +1072,33 @@ describe("RewardsTiersTab", () => {
     const stakingCard = screen.getByText("Staking Tier").closest(".group");
     const stakingCardText = normalizeText(stakingCard?.textContent);
 
-    expect(stakingCard?.className).toContain("pt-16");
-    expect(stakingCardText).toContain(normalizeText("—GMX staked: 40"));
-    expect(stakingCardText).toContain(normalizeText("Stake 60 GMX more to get Supporter status +0.1x"));
-    expect(within(stakingCard as HTMLElement).queryByText("Stake to Boost Rewards")).toBeNull();
+    expect(stakingCard?.className).toContain("p-16");
+    expect(stakingCard?.className).not.toContain("pt-16");
+    expect(stakingCardText).toContain(
+      normalizeText("Stake 60 GMX more to reach the Supporter tier and earn more rewards.")
+    );
+    expect(stakingCardText).not.toContain(normalizeText("GMX staked: 40"));
+    expect(within(stakingCard as HTMLElement).queryByRole("progressbar")).toBeNull();
+  });
+
+  it("does not round a below-tier staking shortfall down to zero", () => {
+    renderTab({
+      status: {
+        ...status,
+        stakingTier: null,
+        projectedStakingTier: null,
+        currentStakedBalance: 100n * GMX_UNIT - GMX_UNIT / 1_000n,
+        boostIds: [],
+        referralVolume: 0n,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const stakingCard = screen.getByText("Staking Tier").closest(".group");
+
+    expect(normalizeText(stakingCard?.textContent)).toContain(
+      normalizeText("Stake < 0.01 GMX more to reach the Supporter tier and earn more rewards.")
+    );
   });
 
   it("uses a projected volume tier as the baseline for the next target", () => {

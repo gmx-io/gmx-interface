@@ -9481,6 +9481,10 @@ msgstr "GMX pools can't fill this swap size, and no external route is currently 
 msgid "EVENT NAME"
 msgstr "EVENT NAME"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+msgstr "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
 msgstr "Collateral was unlocked. Balances will refresh shortly."

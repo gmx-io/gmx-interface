@@ -9481,6 +9481,10 @@ msgstr "Los pools de GMX no pueden completar este tamaño de swap y actualmente 
 msgid "EVENT NAME"
 msgstr "NOMBRE DEL EVENTO"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+msgstr "Haz stake de {0} GMX más para alcanzar el nivel {1} y ganar más recompensas."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
 msgstr "Se desbloqueó la garantía. Los saldos se actualizarán en breve."

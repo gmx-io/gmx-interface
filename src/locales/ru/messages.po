@@ -9481,6 +9481,10 @@ msgstr "Пулы GMX не могут исполнить своп такого р
 msgid "EVENT NAME"
 msgstr "НАЗВАНИЕ СОБЫТИЯ"
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+msgstr "Застейкайте ещё {0} GMX, чтобы достичь уровня {1} и получать больше наград."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
 msgstr "Обеспечение разблокировано. Балансы скоро обновятся."

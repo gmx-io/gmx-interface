@@ -9481,6 +9481,10 @@ msgstr ""
 msgid "EVENT NAME"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
+msgstr "Šţåķé {0} ĜḾẊ ɱøřé ţø řéåçĥ ţĥé {1} ţîéř åñð éåřñ ɱøřé řéŵåřðš."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
 msgstr "[Cöllätëräl wäs ünlöckëd. Bäläncës wïll rëfrësh shörtlý.]"

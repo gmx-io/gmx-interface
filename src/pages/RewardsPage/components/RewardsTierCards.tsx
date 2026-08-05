@@ -14,7 +14,7 @@ import type {
   StakingTierId,
 } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
-import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
+import { expandDecimals, formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 import { StandaloneBuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 
 import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
@@ -73,8 +73,14 @@ export function RewardsTierCards({
   const volumeActive =
     Boolean(status?.volumeTier ?? status?.projectedVolumeTier) ||
     Boolean(firstVolumeTier && tierVolume > 0n && tierVolume >= firstVolumeTier.threshold);
+  const firstStakingTier = config.stakingTiers[0];
   const stakingActive =
-    Boolean(status?.stakingTier ?? status?.projectedStakingTier) || (status?.currentStakedBalance ?? 0n) > 0n;
+    Boolean(status?.stakingTier ?? status?.projectedStakingTier) ||
+    Boolean(
+      firstStakingTier &&
+        status?.currentStakedBalance !== undefined &&
+        status.currentStakedBalance >= firstStakingTier.threshold
+    );
   const { activePersistentBoostIds, qualifiedTransientBoostIds } = getBoostStatuses(status);
   const hasReferralBoost = (status?.referralVolume ?? 0n) > 0n;
   const boostsHaveStatus =
@@ -154,6 +160,14 @@ function formatWholeGmx(amount: bigint | undefined) {
   if (amount === undefined) return "…";
 
   return formatAmount(amount / 10n ** BigInt(ES_GMX_DECIMALS), 0, 0, true);
+}
+
+function formatStakingShortfall(amount: bigint) {
+  const minimumDisplayAmount = expandDecimals(1, ES_GMX_DECIMALS - 2);
+
+  return amount < minimumDisplayAmount
+    ? "< 0.01"
+    : formatAmount(amount, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true });
 }
 
 function MultiplierBadge({
@@ -482,6 +496,11 @@ function StakingCard({
     nextTierConfig && gmxStaked !== undefined && gmxStaked < nextTierConfig.threshold
       ? nextTierConfig.threshold - gmxStaked
       : 0n;
+  const firstTierConfig = config.stakingTiers[0];
+  const requiredToFirstTier =
+    firstTierConfig && gmxStaked !== undefined && gmxStaked > 0n && gmxStaked < firstTierConfig.threshold
+      ? firstTierConfig.threshold - gmxStaked
+      : 0n;
   const isMaxTier = active && displayTierIndex >= 0 && !nextTierConfig;
   const shouldStakeGmx = walletGmxState !== "ready" || (walletGmx ?? 0n) > 0n;
   const isProjectedDowngrade = Boolean(
@@ -588,6 +607,8 @@ function StakingCard({
           walletGmx={walletGmx}
           walletGmxState={walletGmxState}
           promoSelection={promoSelection}
+          requiredToFirstTier={requiredToFirstTier}
+          firstTier={firstTierConfig?.tier}
           onBuyGmx={onBuyGmx}
         />
       )}
@@ -600,12 +621,16 @@ function InactiveStakingCardContent({
   walletGmx,
   walletGmxState,
   promoSelection,
+  requiredToFirstTier,
+  firstTier,
   onBuyGmx,
 }: {
   account?: string;
   walletGmx?: bigint;
   walletGmxState: AccountDataState;
   promoSelection?: RewardsPromoSelection;
+  requiredToFirstTier: bigint;
+  firstTier?: StakingTierId;
   onBuyGmx: () => void;
 }) {
   if (!promoSelection) {
@@ -633,7 +658,14 @@ function InactiveStakingCardContent({
         {showStaticCopy ? <Trans>Stake to Boost Rewards</Trans> : promoCopy.title}
       </h3>
       <div className="text-13 font-medium text-typography-secondary">
-        <Trans>Stake GMX to reach a higher tier and earn more rewards.</Trans>
+        {requiredToFirstTier > 0n && firstTier ? (
+          <Trans>
+            Stake {formatStakingShortfall(requiredToFirstTier)} GMX more to reach the {stakingTierLabels[firstTier]}{" "}
+            tier and earn more rewards.
+          </Trans>
+        ) : (
+          <Trans>Stake GMX to reach a higher tier and earn more rewards.</Trans>
+        )}
       </div>
       {isWalletBalanceLoading ? (
         <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
