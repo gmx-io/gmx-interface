@@ -2,20 +2,22 @@ import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
+import { useMemo, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
-import {
-  isSourceChainForAnySettlementChain,
-  isValidVisualSettlementChain,
-  isValidVisualSourceChain,
-} from "config/multichain";
+import { isValidVisualSettlementChain, isValidVisualSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
+import { extendError } from "lib/errors";
+import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
+import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useWalletCanSignTypedData, useWalletUnavailableChains } from "lib/wallets/useWalletSessionChains";
 import { getChainName, isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
+import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -73,24 +75,57 @@ export default function NetworkDropdown({
   );
 }
 
+type DisplayNetworkOption = NetworkOption & { disabledReason?: ReactNode };
+
+function getNetworkDisabledReason({
+  network,
+  unavailableChains,
+  canSignTypedData,
+}: {
+  network: NetworkOption;
+  unavailableChains: number[] | undefined;
+  canSignTypedData: boolean;
+}): ReactNode {
+  if (unavailableChains?.includes(network.value)) {
+    return <Trans>Your wallet is not connected to this network</Trans>;
+  }
+
+  // Source-only chains trade through the GMX Account, which is express-only and always needs a signature.
+  if (!canSignTypedData && !isContractsChain(network.value, true)) {
+    return <Trans>Your wallet cannot sign messages, which trading from this network requires</Trans>;
+  }
+
+  return undefined;
+}
+
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
+  const { unavailableChains, isLoading: isAvailabilityLoading } = useWalletUnavailableChains(
+    networkOptions.map((network) => network.value)
+  );
+  const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
+  const isVerdictPending = isAvailabilityLoading || isCanSignLoading;
 
-  const [disabledNetworks, enabledNetworks] = partition(
-    networkOptions,
-    (network) =>
-      // True is passed to filter both dev and prod contracts chains
-      !isContractsChain(network.value, true) &&
-      isSourceChainForAnySettlementChain(network.value) &&
-      isNonEoaAccountOnAnyChain
-  );
+  const { walletAndGmxAccountNetworks, walletOnlyNetworks } = useMemo(() => {
+    const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => ({
+      ...network,
+      disabledReason: isVerdictPending
+        ? undefined
+        : getNetworkDisabledReason({ network, unavailableChains, canSignTypedData }),
+    }));
 
-  const walletAndGmxAccountNetworks = enabledNetworks.filter(
-    (network) => isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value)
-  );
-  const walletOnlyNetworks = enabledNetworks.filter(
-    (network) => !(isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value))
-  );
+    const orderDisabledLast = (networks: DisplayNetworkOption[]) =>
+      partition(networks, (network) => !network.disabledReason).flat();
+
+    const isWalletAndGmxAccountNetwork = (network: DisplayNetworkOption) =>
+      isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value);
+
+    return {
+      walletAndGmxAccountNetworks: orderDisabledLast(displayNetworks.filter(isWalletAndGmxAccountNetwork)),
+      walletOnlyNetworks: orderDisabledLast(
+        displayNetworks.filter((network) => !isWalletAndGmxAccountNetwork(network))
+      ),
+    };
+  }, [networkOptions, unavailableChains, canSignTypedData, isVerdictPending]);
 
   return (
     <>
@@ -140,29 +175,19 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
       <Menu.Item key="solana">
         <SolanaNetworkItem />
       </Menu.Item>
-      {disabledNetworks.map((network) => (
-        <NetworkMenuItem key={network.value} network={network} chainId={chainId} disabled />
-      ))}
     </>
   );
 }
 
-function NetworkMenuItem({
-  network,
-  chainId,
-  disabled,
-}: {
-  network: NetworkOption;
-  chainId: number;
-  disabled?: boolean;
-}) {
+function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; chainId: number }) {
   const { isConnected } = useAccount();
+  const disabled = Boolean(network.disabledReason);
   const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
       {({ close }) => (
-        <Wrapper variant="none" as="div" content={<Trans>Smart wallets not supported on this network</Trans>}>
+        <Wrapper variant="none" as="div" content={network.disabledReason}>
           <div
             className={cx("network-dropdown-menu-item menu-item", {
               "disabled !cursor-not-allowed opacity-50": disabled,
@@ -173,7 +198,16 @@ function NetworkMenuItem({
                 return;
               }
               close();
-              switchNetwork(network.value, isConnected, { fallbackToAppSelectionOnError: true });
+              switchNetwork(network.value, isConnected, { fallbackToAppSelectionOnError: true }).catch((error) => {
+                if (error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
+                  helperToast.error(getSmartWalletChainUnavailableToastContent(network.value));
+                }
+
+                metrics.pushError(
+                  extendError(error, { data: { chainId: network.value } }),
+                  "networkDropdown.switchNetwork"
+                );
+              });
             }}
           >
             <div className="menu-item-group">

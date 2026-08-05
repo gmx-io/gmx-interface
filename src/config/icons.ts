@@ -4,7 +4,6 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
   GmxAccountPseudoChainId,
@@ -31,7 +30,6 @@ import arbitrumSepolia from "img/tokens/ic_arbitrum_sepolia.svg";
 import avalanche from "img/tokens/ic_avalanche.svg";
 import avalancheTestnet from "img/tokens/ic_avalanche_testnet.svg";
 import base from "img/tokens/ic_base.svg";
-import botanix from "img/tokens/ic_botanix.svg";
 import esGMXIcon from "img/tokens/ic_esgmx.svg";
 import eth from "img/tokens/ic_eth.svg";
 import glpIcon from "img/tokens/ic_glp.svg";
@@ -79,13 +77,6 @@ const ICONS: Record<number | "common", ChainIcons> = {
     gmx: gmxAvax,
     glp: glpAvax,
   },
-  [BOTANIX]: {
-    network: botanix,
-    glp: glpIcon,
-    gmx: gmxIcon,
-    gm: gmIcon,
-    esgmx: esGMXIcon,
-  },
   [MEGAETH]: {
     network: megaeth,
     glp: glpIcon,
@@ -113,7 +104,6 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChain
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
-  [BOTANIX]: botanix,
   [MEGAETH]: megaeth,
   [SOURCE_BSC_MAINNET]: bsc,
 };

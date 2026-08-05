@@ -13,21 +13,20 @@ import {
   USDC_BASE,
   waitForWithdrawStatus,
 } from "./multichainTestUtil";
-import { getTestSdk, getTestSigner } from "./testUtil";
+import { getOrCreateTestSigner, getTestSdk } from "./testUtil";
 
 beforeAll(() => {
   expectArbitrumSettlement();
 });
 
 const sdk = getTestSdk();
-const signer = getTestSigner();
-const account = signer?.address ?? "";
-const hasSigner = signer !== undefined;
+const signer = getOrCreateTestSigner();
+const account = signer.address;
 
 const DEPOSIT_AMOUNT = 1_000_000n; // 1 USDC
 const WITHDRAW_AMOUNT = 500_000n; // 0.5 USDC
 
-describe.skipIf(!hasSigner)("multichain same-chain (build only)", () => {
+describe("multichain same-chain (build only)", () => {
   it("deposit: multicall(sendTokens + bridgeIn)", () => {
     const built = sdk.buildSameChainDepositTxn({
       tokenAddress: USDC_ARBITRUM,
@@ -52,7 +51,7 @@ describe.skipIf(!hasSigner)("multichain same-chain (build only)", () => {
   });
 });
 
-describe.skipIf(!hasSigner)("multichain cross-chain deposit (Base → Arbitrum, API-driven)", () => {
+describe("multichain cross-chain deposit (Base → Arbitrum, API-driven)", () => {
   it("prepare: server resolves pools + quotes nativeFee + composeGas (tokenSymbol)", async () => {
     const prepared = await sdk.prepareCrossChainDeposit({
       srcChainId: TEST_SOURCE_CHAIN_ID,
@@ -104,7 +103,7 @@ describe.skipIf(!hasSigner)("multichain cross-chain deposit (Base → Arbitrum, 
   });
 });
 
-describe.skipIf(!hasSigner)("multichain cross-chain withdraw (Arbitrum → Base, via Gelato)", () => {
+describe("multichain cross-chain withdraw (Arbitrum → Base, via Gelato)", () => {
   it("prepare: returns typed-data + gasPaymentParams", async () => {
     const bridgeOutParams = sdk.buildCrossChainWithdrawBridgeOutParams({
       tokenAddress: USDC_ARBITRUM,
@@ -132,7 +131,7 @@ describe.skipIf(!hasSigner)("multichain cross-chain withdraw (Arbitrum → Base,
       stargateAddress: STARGATE_USDC_ARBITRUM,
     });
 
-    const submitted = await sdk.executeCrossChainWithdraw(signer!, {
+    const submitted = await sdk.executeCrossChainWithdraw(signer, {
       srcChainId: TEST_SOURCE_CHAIN_ID,
       account,
       bridgeOutParams,

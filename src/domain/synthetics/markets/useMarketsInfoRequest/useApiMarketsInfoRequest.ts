@@ -17,6 +17,20 @@ function getApiMarketsConfigRequestKey(chainId: ContractsChainId) {
   return ["apiMarketsConfigRequest", chainId] as const;
 }
 
+export function getNewestValuesUpdatedAt(valuesData: RawMarketValues[] | undefined): number | undefined {
+  let newest: number | undefined = undefined;
+
+  for (const value of valuesData ?? []) {
+    if (value.updatedAt != null && (newest === undefined || value.updatedAt > newest)) {
+      newest = value.updatedAt;
+    }
+  }
+
+  return newest;
+}
+
+// Server updatedAt must never be compared to the client clock (skew would misfire): a market is
+// stale when it lags the newest market of the same response beyond the threshold.
 export function hasStaleMarketValues(
   configData: RawMarketConfig[] | undefined,
   valuesData: RawMarketValues[] | undefined,
@@ -26,7 +40,11 @@ export function hasStaleMarketValues(
     return false;
   }
 
-  const now = Date.now();
+  if (hasIncompleteMarketValues(configData, valuesData, disabledAddresses)) {
+    return true;
+  }
+
+  const newestUpdatedAt = getNewestValuesUpdatedAt(valuesData);
   const valuesByAddress = new Map(valuesData.map((v) => [v.marketTokenAddress, v]));
 
   for (const config of configData) {
@@ -36,12 +54,82 @@ export function hasStaleMarketValues(
 
     const value = valuesByAddress.get(config.marketTokenAddress);
 
-    if (!value || value.updatedAt == null || now - value.updatedAt > MARKETS_STALE_THRESHOLD_MS) {
+    if (!value || value.updatedAt == null) {
+      return true;
+    }
+
+    if (newestUpdatedAt !== undefined && newestUpdatedAt - value.updatedAt > MARKETS_STALE_THRESHOLD_MS) {
       return true;
     }
   }
 
   return false;
+}
+
+export function hasIncompleteMarketValues(
+  configData: RawMarketConfig[] | undefined,
+  valuesData: RawMarketValues[] | undefined,
+  disabledAddresses: Set<string>
+): boolean {
+  if (!configData || !valuesData) {
+    return false;
+  }
+
+  const valuesByAddress = new Map(valuesData.map((value) => [value.marketTokenAddress, value]));
+
+  return configData.some((config) => {
+    if (disabledAddresses.has(config.marketTokenAddress)) {
+      return false;
+    }
+
+    const value = valuesByAddress.get(config.marketTokenAddress);
+
+    return (
+      value === undefined ||
+      config.virtualIndexTokenId === undefined ||
+      config.maxCollateralSumLongTokenLong === undefined ||
+      config.maxCollateralSumLongTokenShort === undefined ||
+      config.maxCollateralSumShortTokenLong === undefined ||
+      config.maxCollateralSumShortTokenShort === undefined ||
+      value.virtualInventoryForPositionsInTokens === undefined
+    );
+  });
+}
+
+export type MarketValuesSnapshot = {
+  chainId: ContractsChainId;
+  newestUpdatedAt: number;
+  receivedAt: number;
+};
+
+export function trackValuesSnapshot(
+  prev: MarketValuesSnapshot | undefined,
+  chainId: ContractsChainId,
+  valuesData: RawMarketValues[] | undefined,
+  receivedAt: number | undefined
+): MarketValuesSnapshot | undefined {
+  const newestUpdatedAt = getNewestValuesUpdatedAt(valuesData);
+
+  if (newestUpdatedAt === undefined || receivedAt === undefined) {
+    return prev?.chainId === chainId ? prev : undefined;
+  }
+
+  if (!prev || prev.chainId !== chainId || prev.newestUpdatedAt !== newestUpdatedAt) {
+    return { chainId, newestUpdatedAt, receivedAt };
+  }
+
+  return prev;
+}
+
+// A backend whose puller died keeps serving the same snapshot: responses keep arriving but the
+// newest server updatedAt never moves. Compares client receipt times only, so clock skew is moot.
+export function getIsValuesSnapshotFrozen(
+  snapshot: MarketValuesSnapshot | undefined,
+  receivedAt: number | undefined
+): boolean {
+  return (
+    snapshot !== undefined && receivedAt !== undefined && receivedAt - snapshot.receivedAt > MARKETS_STALE_THRESHOLD_MS
+  );
 }
 
 export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = true }: { enabled?: boolean } = {}) {
@@ -61,6 +149,7 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
 
   const {
     data: valuesData,
+    updatedAt: valuesUpdatedAt,
     isStale: isValuesStale,
     error: valuesError,
   } = useApiDataRequest<RawMarketValues[]>(
@@ -104,7 +193,13 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
     [configData]
   );
 
-  const isMarketsDataStale = hasStaleMarketValues(configData, valuesData, disabledMarketAddresses);
+  const isMarketsDataIncomplete = hasIncompleteMarketValues(configData, valuesData, disabledMarketAddresses);
+  const valuesSnapshotRef = useRef<MarketValuesSnapshot | undefined>(undefined);
+  valuesSnapshotRef.current = trackValuesSnapshot(valuesSnapshotRef.current, chainId, valuesData, valuesUpdatedAt);
+
+  const isMarketsDataStale =
+    hasStaleMarketValues(configData, valuesData, disabledMarketAddresses) ||
+    getIsValuesSnapshotFrozen(valuesSnapshotRef.current, valuesUpdatedAt);
   if (configData) {
     ApiHealthTracker.getInstance().reportMarketsFreshness(chainId, isMarketsDataStale);
   }
@@ -112,6 +207,7 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
   return {
     marketsInfoData,
     isStale: isValuesStale || isConfigStale || isMarketsDataStale,
+    isIncomplete: isMarketsDataIncomplete,
     error: valuesError ?? configError,
   };
 }

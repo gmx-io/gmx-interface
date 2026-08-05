@@ -74,6 +74,7 @@ export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
+export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
 
 export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
 
@@ -111,9 +112,14 @@ const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dis
 
 export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
-export function getSubaccountApprovalKey(chainId: number, account: string | undefined) {
+export function getSubaccountApprovalKey(chainId: number, account: string | undefined, srcChainId: number | undefined) {
   if (!chainId || !account) return null;
-  return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
+
+  if (srcChainId === undefined) {
+    return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
+  }
+
+  return [chainId, account, srcChainId, SUBACCOUNT_APPROVAL_KEY];
 }
 
 export function getTokenPermitsKey(chainId: number, account: string | undefined) {

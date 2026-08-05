@@ -28,6 +28,7 @@ import {
   RawIncentivesStats,
   TickersResponse,
 } from "./types";
+import { consumeUiFlagsPrefetch } from "./uiFlagsPrefetch";
 
 function parseOracleCandle(rawCandle: number[]): Bar {
   const [time, open, high, low, close] = rawCandle;
@@ -231,6 +232,14 @@ export class OracleKeeperFetcher implements OracleFetcher {
   }
 
   fetchUiFlags(): Promise<Record<string, UiFlag>> {
+    const prefetched = consumeUiFlagsPrefetch(
+      buildUrl(this.oracleTracker.getCurrentEndpoints().primary, "/ui-flags/v2")
+    );
+
+    if (prefetched) {
+      return prefetched.then((flags) => (flags ? (flags as Record<string, UiFlag>) : this.request("/ui-flags/v2", {})));
+    }
+
     return this.request("/ui-flags/v2", {});
   }
 

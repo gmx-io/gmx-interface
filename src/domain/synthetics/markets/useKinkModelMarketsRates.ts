@@ -33,52 +33,49 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: () =>
-      marketsAddresses.reduce<MulticallRequestConfig>(
-        (acc, marketAddress) => {
-          // @ts-expect-error
-          const prebuiltHashedKeys = HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId]?.[marketAddress];
+      marketsAddresses.reduce<MulticallRequestConfig>((acc, marketAddress) => {
+        // @ts-expect-error
+        const prebuiltHashedKeys = HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId]?.[marketAddress];
 
-          if (!prebuiltHashedKeys) {
-            throw new Error(
-              `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
-            );
-          }
+        if (!prebuiltHashedKeys) {
+          throw new Error(
+            `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
+          );
+        }
 
-          acc[`${marketAddress}-dataStore`] = {
-            contractAddress: dataStoreAddress,
-            abiId: "DataStore",
-            calls: {
-              optimalUsageFactorLong: {
-                methodName: "getUint",
-                params: [prebuiltHashedKeys.optimalUsageFactorLong],
-              },
-              optimalUsageFactorShort: {
-                methodName: "getUint",
-                params: [prebuiltHashedKeys.optimalUsageFactorShort],
-              },
-              baseBorrowingFactorLong: {
-                methodName: "getUint",
-                params: [prebuiltHashedKeys.baseBorrowingFactorLong],
-              },
-              baseBorrowingFactorShort: {
-                methodName: "getUint",
-                params: [prebuiltHashedKeys.baseBorrowingFactorShort],
-              },
-              aboveOptimalUsageBorrowingFactorLong: {
-                methodName: "getUint",
-                params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorLong],
-              },
-              aboveOptimalUsageBorrowingFactorShort: {
-                methodName: "getUint",
-                params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorShort],
-              },
+        acc[`${marketAddress}-dataStore`] = {
+          contractAddress: dataStoreAddress,
+          abiId: "DataStore",
+          calls: {
+            optimalUsageFactorLong: {
+              methodName: "getUint",
+              params: [prebuiltHashedKeys.optimalUsageFactorLong],
             },
-          } satisfies ContractCallsConfig<any>;
+            optimalUsageFactorShort: {
+              methodName: "getUint",
+              params: [prebuiltHashedKeys.optimalUsageFactorShort],
+            },
+            baseBorrowingFactorLong: {
+              methodName: "getUint",
+              params: [prebuiltHashedKeys.baseBorrowingFactorLong],
+            },
+            baseBorrowingFactorShort: {
+              methodName: "getUint",
+              params: [prebuiltHashedKeys.baseBorrowingFactorShort],
+            },
+            aboveOptimalUsageBorrowingFactorLong: {
+              methodName: "getUint",
+              params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorLong],
+            },
+            aboveOptimalUsageBorrowingFactorShort: {
+              methodName: "getUint",
+              params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorShort],
+            },
+          },
+        } satisfies ContractCallsConfig<any>;
 
-          return acc;
-        },
-        {}
-      ),
+        return acc;
+      }, {}),
     parseResponse: (res) => {
       const result = marketsAddresses!.reduce(
         (acc, marketAddress) => {
