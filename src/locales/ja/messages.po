@@ -7759,6 +7759,10 @@ msgstr ""
 msgid "Stake {tokenSymbol} rewards"
 msgstr "{tokenSymbol}報酬をステーク"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Active Balancer Program code"
+msgstr "有効なBalancerプログラムコード"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -8836,6 +8840,10 @@ msgstr "GMX Accountへの入金はStargateブリッジの流動性により制�
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
 msgstr "このオーダーは現在のポジション状態では約定しない可能性があります。トリガー前に担保を追加するか、レバレッジを下げてください。"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
+msgstr "BalancerプログラムはGMXマーケットのアンダーウェイト側を継続的に取るトレーダーに報酬を与えます。これらのコードはトレーダーの手数料割引を、より高いリベートに置き換えます。リベートはコード所有者のアフィリエイト口座に蓄積され、いつでも請求できます。<0>詳細を見る</0>"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -8877,6 +8885,14 @@ msgstr "ショート借入指数"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "価格への影響"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Claim it anytime in the <0>Affiliates tab</0>."
+msgstr "<0>アフィリエイト</0>タブでいつでも請求できます。"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "It accrues to the code owner ({0})."
+msgstr "コード所有者（{0}）に蓄積されます。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -11611,6 +11627,10 @@ msgstr ""
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "テイクプロフィット"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trades earn a {currentTierRebate}% rebate, not a discount."
+msgstr "あなたの取引は割引ではなく{currentTierRebate}%のリベートを獲得します。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
