@@ -80,6 +80,11 @@ export function getLargestRelatedExistingPositionOrOrder({
 
 export type PreferredTradeTypePickStrategy = TradeType | "largestPosition";
 
+export type UserSelectedMarkets = {
+  long?: string;
+  short?: string;
+};
+
 export function chooseSuitableMarket({
   indexTokenAddress,
   maxLongLiquidityPool,
@@ -89,6 +94,8 @@ export function chooseSuitableMarket({
   ordersInfo,
   preferredTradeType,
   currentTradeType,
+  userSelectedMarkets,
+  availableIndexTokenPools,
 }: {
   indexTokenAddress: string;
   maxLongLiquidityPool?: TokenOption;
@@ -98,6 +105,12 @@ export function chooseSuitableMarket({
   ordersInfo?: OrdersInfoData;
   preferredTradeType: PreferredTradeTypePickStrategy;
   currentTradeType?: TradeType;
+  userSelectedMarkets?: UserSelectedMarkets;
+  /**
+   * When omitted, `userSelectedMarkets` is silently ignored: a remembered pool
+   * is only applied after validating it against the available pools.
+   */
+  availableIndexTokenPools?: TokenOption[];
 }):
   | { indexTokenAddress: string; marketTokenAddress?: string; tradeType: TradeType; collateralTokenAddress?: string }
   | undefined {
@@ -111,6 +124,18 @@ export function chooseSuitableMarket({
   const tradeTypeForPoolSelection =
     preferredTradeType === "largestPosition" ? currentTradeType ?? TradeType.Long : preferredTradeType;
   const maxLiquidityPool = tradeTypeForPoolSelection === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
+
+  const getUserSelectedMarketAddress = (tradeType: TradeType) => {
+    const marketTokenAddress = tradeType === TradeType.Long ? userSelectedMarkets?.long : userSelectedMarkets?.short;
+
+    if (!marketTokenAddress) {
+      return undefined;
+    }
+
+    const isStillAvailable = availableIndexTokenPools?.some((pool) => pool.marketTokenAddress === marketTokenAddress);
+
+    return isStillAvailable ? marketTokenAddress : undefined;
+  };
 
   if (preferredTradeType === "largestPosition" && positionsInfo) {
     let largestLongPositionOrOrder = getLargestRelatedExistingPositionOrOrder({
@@ -128,7 +153,8 @@ export function chooseSuitableMarket({
     });
 
     if (!largestLongPositionOrOrder && !largestShortPositionOrOrder) {
-      let marketTokenAddress = maxLiquidityPool?.marketTokenAddress;
+      let marketTokenAddress =
+        getUserSelectedMarketAddress(tradeTypeForPoolSelection) ?? maxLiquidityPool?.marketTokenAddress;
 
       if (!marketTokenAddress) {
         return undefined;
@@ -160,13 +186,16 @@ export function chooseSuitableMarket({
       collateralTokenAddress: largestPositionOrOrder?.collateralTokenAddress,
     };
   } else if (preferredTradeType === "largestPosition") {
-    if (!maxLiquidityPool) {
+    const marketTokenAddress =
+      getUserSelectedMarketAddress(tradeTypeForPoolSelection) ?? maxLiquidityPool?.marketTokenAddress;
+
+    if (!marketTokenAddress) {
       return undefined;
     }
 
     return {
       indexTokenAddress,
-      marketTokenAddress: maxLiquidityPool.marketTokenAddress,
+      marketTokenAddress,
       tradeType: currentTradeType ?? TradeType.Long,
     };
   }
@@ -180,7 +209,10 @@ export function chooseSuitableMarket({
       indexTokenAddress,
     });
 
-  const marketAddress = largestPositionOrOrder?.marketAddress ?? maxLiquidityPool?.marketTokenAddress;
+  const marketAddress =
+    largestPositionOrOrder?.marketAddress ??
+    getUserSelectedMarketAddress(preferredTradeType) ??
+    maxLiquidityPool?.marketTokenAddress;
 
   if (!marketAddress) {
     return undefined;
