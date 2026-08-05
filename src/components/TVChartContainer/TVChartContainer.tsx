@@ -7,6 +7,7 @@ import { isAddressEqual, type Address } from "viem";
 import { colors } from "config/colors";
 import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -23,6 +24,7 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { parseContractPrice } from "domain/synthetics/tokens";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
@@ -135,6 +137,8 @@ export default function TVChartContainer({
   const { theme } = useTheme();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
+  const sdk = useGmxSdk(chainId as ContractsChainId);
+  const wsCandlesEnabled = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
   const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
@@ -216,6 +220,9 @@ export default function TVChartContainer({
     visualMultiplier,
     chainId,
     account,
+    shouldShowPositionLines,
+    sdk,
+    wsCandlesEnabled,
     buySellIconsMode,
   });
   const marksHistoryCacheRef = useRef<{
@@ -240,6 +247,13 @@ export default function TVChartContainer({
       if (!data) return undefined;
       const token = Object.values(data).find((t) => t.symbol === symbol);
       return token?.prices?.minPrice;
+    });
+    newDatafeed.setCandleStreamFactory((symbol, timeframe) => {
+      const { sdk: liveSdk, wsCandlesEnabled: enabled } = marksStateRef.current;
+      if (!enabled || !liveSdk) {
+        return undefined;
+      }
+      return liveSdk.watchCandles({ symbol, timeframe });
     });
     newDatafeed.setMarksGetter(async (_symbolInfo, from, to, resolution) => {
       const {

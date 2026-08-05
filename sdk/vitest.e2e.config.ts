@@ -1,22 +1,14 @@
 import path from "path";
 import { defineConfig } from "vitest/config";
 
+// E2E specs spin up real sockets/servers; they run only in the dedicated CI step
+// (`yarn test:e2e`), not in the default `test:ci` suite the pre-push hook runs.
 export default defineConfig({
   test: {
     environment: "node",
-    testTimeout: 15000,
-    exclude: [
-      "**/build/**",
-      "**/node_modules/**",
-      "**/*.e2e.spec.ts",
-      "**/clients/v1/modules/markets/markets.spec.ts",
-      "**/clients/v1/modules/tokens/tokens.spec.ts",
-      "**/clients/v1/modules/positions/positions.spec.ts",
-      "**/clients/v1/modules/orders/orders.spec.ts",
-      "**/clients/v1/modules/orders/helpers.spec.ts",
-      "**/clients/v1/modules/trades/trades.spec.ts",
-      "**/clients/v2/__tests__/**",
-    ],
+    testTimeout: 30000,
+    include: ["src/**/*.e2e.spec.ts"],
+    exclude: ["**/build/**", "**/node_modules/**"],
   },
   resolve: {
     alias: {

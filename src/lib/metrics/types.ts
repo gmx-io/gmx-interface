@@ -198,6 +198,36 @@ export type FreshnessTiming = {
   };
 };
 
+export type WsPriceTickTiming = {
+  event: "wsPrices.tick";
+  data: {
+    chainId: number;
+    tokenCount: number;
+    byteLength: number;
+    status: string;
+  };
+};
+
+export type WsPriceFreshnessTiming = {
+  event: "wsPrices.freshness";
+  data: { chainId: number };
+};
+
+export type WsPriceFirstTickTiming = {
+  event: "wsPrices.firstTick";
+  data: { chainId: number };
+};
+
+export type WsPriceInterArrivalTiming = {
+  event: "wsPrices.interArrival";
+  data: { chainId: number };
+};
+
+export type WsStreamStatusCounter = {
+  event: "wsPrices.status";
+  data: { chainId: number; status: string };
+};
+
 // Transactions tracking
 export type SubmittedOrderEvent = {
   event: `${OrderMetricType}.${OrderStage.Submitted}`;

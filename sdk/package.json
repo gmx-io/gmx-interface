@@ -39,6 +39,9 @@
       "types/markets": [
         "./build/types/src/utils/markets/types.d.ts"
       ],
+      "utils/stream": [
+        "./build/types/src/utils/stream/index.d.ts"
+      ],
       "utils/prices": [
         "./build/types/src/utils/prices/index.d.ts"
       ],
@@ -215,6 +218,12 @@
       "import": "./build/esm/src/utils/markets/index.js",
       "require": "./build/cjs/src/utils/markets/index.js",
       "default": "./build/cjs/src/utils/markets/index.js"
+    },
+    "./utils/stream": {
+      "types": "./build/types/src/utils/stream/index.d.ts",
+      "import": "./build/esm/src/utils/stream/index.js",
+      "require": "./build/cjs/src/utils/stream/index.js",
+      "default": "./build/cjs/src/utils/stream/index.js"
     },
     "./types/markets": {
       "types": "./build/types/src/utils/markets/types.d.ts",
@@ -506,6 +515,7 @@
     "test:ci": "vitest run",
     "test:multicall": "vitest run --config vitest.multicall.config.ts",
     "test:v2": "vitest run --config vitest.v2.config.ts",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
@@ -535,11 +545,13 @@
     "crypto-js": "4.2.0",
     "graphql": "15.8.0",
     "isomorphic-performance": "5.1.1",
+    "isomorphic-ws": "^5.0.0",
     "lodash": "4.18.1",
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
-    "viem": "^2.48.11"
+    "viem": "^2.48.11",
+    "ws": "8.18.3"
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "7.25.9",
@@ -549,6 +561,7 @@
     "@graphql-codegen/typescript-operations": "4.6.1",
     "@types/lodash": "4.14.198",
     "@types/node": "18.7.13",
+    "@types/ws": "^8.5.10",
     "lint-staged": "12.3.4",
     "prettier": "3.2.5",
     "ts-patch": "3.2.1",

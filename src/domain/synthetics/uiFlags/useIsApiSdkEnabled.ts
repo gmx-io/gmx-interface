@@ -8,6 +8,8 @@ export const API_UI_FLAGS = {
   markets: "apiMarkets",
   positions: "apiPositions",
   orders: "apiOrders",
+  wsPrices: "wsPrices",
+  wsCandles: "wsCandles",
 } as const;
 
 export type ApiUiFlagName = (typeof API_UI_FLAGS)[keyof typeof API_UI_FLAGS];
