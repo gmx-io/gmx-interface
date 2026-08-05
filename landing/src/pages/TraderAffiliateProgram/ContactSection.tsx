@@ -49,7 +49,7 @@ function ContactRow({
   href?: string;
 }) {
   const buttonClassName = cx(
-    "duration-180 flex h-44 w-[140px] flex-shrink-0 items-center justify-center rounded-8 text-16 font-medium -tracking-[0.512px] text-white transition-colors",
+    "duration-180 flex h-44 w-full flex-shrink-0 items-center justify-center rounded-8 text-16 font-medium -tracking-[0.512px] text-white transition-colors sm:w-[140px]",
     primary ? "btn-landing" : "bg-slate-600/50 hover:bg-slate-600/70"
   );
 

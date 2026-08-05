@@ -34,14 +34,18 @@ export function FaqItem({ title, defaultOpen, iconClassName = "size-16", childre
       </div>
       <div
         className={cx(
-          "leading-body-md duration-180 flex flex-col gap-16 overflow-hidden text-16 -tracking-[0.512px] text-slate-400 transition-all ease-in-out",
-          {
-            "max-h-0 opacity-0": !isOpen,
-            "max-h-[1000px] opacity-100": isOpen,
-          }
+          "duration-180 grid transition-[grid-template-rows] ease-in-out",
+          isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         )}
       >
-        {children}
+        <div
+          className={cx(
+            "leading-body-md duration-180 flex min-h-0 flex-col gap-16 overflow-hidden text-16 -tracking-[0.512px] text-slate-400 transition-opacity ease-in-out",
+            isOpen ? "opacity-100" : "opacity-0"
+          )}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );
