@@ -824,7 +824,7 @@ export function RewardsVestingModal({
     primaryText = title;
   }
 
-  const collateralAvailable = data.freePairAmount;
+  const collateralAvailable = data.freePairAmount + data.walletGmxBalance;
   const missingGmxAmount =
     preview.stakeShortfallAmount > data.walletGmxBalance ? preview.stakeShortfallAmount - data.walletGmxBalance : 0n;
   const depositAmountLabel = `${formatTokenAmount(depositAmount ?? 0n)} esGMX`;
@@ -932,7 +932,7 @@ export function RewardsVestingModal({
 
         <div className="flex flex-col gap-8 px-4">
           <ModalValueRow
-            label={<Trans>Collateral this vest locks</Trans>}
+            label={<Trans>Collateral required for vest</Trans>}
             value={
               <>
                 {formatTokenAmount(depositAmount ?? 0n)} <span className="text-typography-secondary">GMX</span>

@@ -4142,6 +4142,10 @@ msgstr "입금 USD 한도"
 msgid "Arbitrum wallet"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral required for vest"
+msgstr "베스팅에 필요한 담보"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
@@ -7746,10 +7750,6 @@ msgstr "{0, plural, one {#일 남음} other {#일 남음}}"
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "담보를 출금할 수 없습니다. 잔여 담보가 최소 기준 미만이 됩니다"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Collateral this vest locks"
-msgstr "이번 베스팅으로 잠기는 담보"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -11266,10 +11266,6 @@ msgstr "익스프레스 + 원클릭"
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Lifetime Volume"
 msgstr "누적 거래량"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Applies next epoch"
-msgstr "다음 에포크에 적용"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx

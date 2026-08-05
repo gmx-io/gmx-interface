@@ -4142,6 +4142,10 @@ msgstr ""
 msgid "Arbitrum wallet"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral required for vest"
+msgstr "[Cöllätëräl rëqüïrëd för vëst]"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
@@ -7746,10 +7750,6 @@ msgstr "{0, plural, one {[# däý lëft]} other {[# däýs lëft]}}"
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Collateral this vest locks"
-msgstr "[Cöllätëräl thïs vëst löcks]"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -11265,10 +11265,6 @@ msgstr ""
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Lifetime Volume"
-msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Applies next epoch"
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx

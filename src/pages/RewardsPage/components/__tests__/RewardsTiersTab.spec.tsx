@@ -1099,6 +1099,27 @@ describe("RewardsTiersTab", () => {
     expect(volumeCardText).not.toContain(normalizeText("Trade $0 more"));
   });
 
+  it("shows a zero-to-projected multiplier transition for the first staking tier", () => {
+    renderTab({
+      status: {
+        ...status,
+        multiplier: 0n,
+        stakingTier: null,
+        projectedStakingTier: "Tier1",
+        currentStakedBalance: 100n * GMX_UNIT,
+        boostIds: [],
+        referralVolume: 0n,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const stakingCard = screen.getByText("Staking Tier").closest(".group");
+    const stakingCardText = normalizeText(stakingCard?.textContent);
+
+    expect(stakingCardText).toContain(normalizeText("0x →0.1x"));
+    expect(within(stakingCard as HTMLElement).queryByText("Applies next epoch")).toBeNull();
+  });
+
   it("uses the live staking tier for progress and the next target after a multi-tier jump", () => {
     const multiTierConfig: IncentivesConfig = {
       ...config,

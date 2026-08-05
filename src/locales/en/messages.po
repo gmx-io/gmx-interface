@@ -4142,6 +4142,10 @@ msgstr "Deposit USD capacity"
 msgid "Arbitrum wallet"
 msgstr "Arbitrum wallet"
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral required for vest"
+msgstr "Collateral required for vest"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
@@ -7746,10 +7750,6 @@ msgstr "{0, plural, one {# day left} other {# days left}}"
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "Can't withdraw collateral. Remaining collateral would be below minimum"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Collateral this vest locks"
-msgstr "Collateral this vest locks"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -11266,10 +11266,6 @@ msgstr "Express + One-Click"
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Lifetime Volume"
 msgstr "Lifetime Volume"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Applies next epoch"
-msgstr "Applies next epoch"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx

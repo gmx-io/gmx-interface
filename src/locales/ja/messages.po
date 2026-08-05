@@ -4142,6 +4142,10 @@ msgstr "入金USD上限"
 msgid "Arbitrum wallet"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral required for vest"
+msgstr "ベスティングに必要な担保"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
@@ -7746,10 +7750,6 @@ msgstr "{0, plural, one {残り#日} other {残り#日}}"
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "担保を出金できません。残りの担保が最低額を下回ります"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Collateral this vest locks"
-msgstr "このベスティングでロックされる担保"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -11266,10 +11266,6 @@ msgstr "エクスプレス + ワンクリック"
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Lifetime Volume"
 msgstr "生涯取引量"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Applies next epoch"
-msgstr "次のエポックに適用"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx

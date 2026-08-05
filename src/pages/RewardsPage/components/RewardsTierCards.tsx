@@ -484,17 +484,19 @@ function StakingCard({
       : 0n;
   const isMaxTier = active && displayTierIndex >= 0 && !nextTierConfig;
   const shouldStakeGmx = walletGmxState !== "ready" || (walletGmx ?? 0n) > 0n;
-  const stakingTooltip = projectedTierConfig ? (
-    <MultiplierChangeTooltip
-      isDecrease={Boolean(displayTierConfig && projectedTierConfig.multiplier < displayTierConfig.multiplier)}
-    >
-      {displayTierConfig && projectedTierConfig.multiplier < displayTierConfig.multiplier ? (
-        <Trans>Your combined staked balance is below the threshold for your current tier.</Trans>
-      ) : (
-        <Trans>Your combined staked balance is high enough to reach a higher tier.</Trans>
-      )}
-    </MultiplierChangeTooltip>
-  ) : undefined;
+  const isProjectedDowngrade = Boolean(
+    displayTierConfig && projectedTierConfig && projectedTierConfig.multiplier < displayTierConfig.multiplier
+  );
+  const stakingTooltip =
+    projectedTierConfig || isProjectedOnly ? (
+      <MultiplierChangeTooltip isDecrease={isProjectedDowngrade}>
+        {isProjectedDowngrade ? (
+          <Trans>Your combined staked balance is below the threshold for your current tier.</Trans>
+        ) : (
+          <Trans>Your combined staked balance is high enough to reach a higher tier.</Trans>
+        )}
+      </MultiplierChangeTooltip>
+    ) : undefined;
 
   return (
     <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
@@ -511,23 +513,12 @@ function StakingCard({
           </div>
         )}
         {active && displayTierConfig ? (
-          isProjectedOnly ? (
-            <span className="inline-flex items-center gap-6">
-              <span className="text-12 text-typography-secondary">
-                <Trans>Applies next epoch</Trans>
-              </span>
-              <span className="rounded-full bg-green-900 px-6 py-2 text-12 font-medium text-green-500">
-                {formatMultiplier(displayTierConfig.multiplier, config.multiplierDecimals)}
-              </span>
-            </span>
-          ) : (
-            <MultiplierBadge
-              config={config}
-              currentMultiplier={displayTierConfig.multiplier}
-              projectedMultiplier={projectedTierConfig?.multiplier}
-              tooltipContent={stakingTooltip}
-            />
-          )
+          <MultiplierBadge
+            config={config}
+            currentMultiplier={isProjectedOnly ? 0n : displayTierConfig.multiplier}
+            projectedMultiplier={isProjectedOnly ? displayTierConfig.multiplier : projectedTierConfig?.multiplier}
+            tooltipContent={stakingTooltip}
+          />
         ) : null}
       </div>
 

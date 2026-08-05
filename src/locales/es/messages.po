@@ -4142,6 +4142,10 @@ msgstr "Capacidad de depósito en USD"
 msgid "Arbitrum wallet"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Collateral required for vest"
+msgstr "Garantía necesaria para el vesting"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
@@ -7746,10 +7750,6 @@ msgstr "{0, plural, one {Queda # día} other {Quedan # días}}"
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "No se puede retirar la garantía. La garantía restante quedaría por debajo del mínimo"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "Collateral this vest locks"
-msgstr "Garantía que bloquea este vesting"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -11266,10 +11266,6 @@ msgstr "Express + Un Clic"
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Lifetime Volume"
 msgstr "Volumen histórico"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Applies next epoch"
-msgstr "Se aplica en la próxima época"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx

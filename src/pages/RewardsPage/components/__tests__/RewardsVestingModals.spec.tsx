@@ -250,8 +250,8 @@ describe("RewardsVestingModal", () => {
     expect(screen.getByText("Vest esGMX", { selector: ".Modal-title" })).toBeDefined();
     expect(screen.getByDisplayValue("100")).toBeDefined();
     expect(screen.getByText("Vestable: 100 esGMX")).toBeDefined();
-    expect(screen.getByText("Collateral this vest locks").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralthisvestlocks100GMX"
+    expect(screen.getByText("Collateral required for vest").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralrequiredforvest100GMX"
     );
     expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
       "Collateralavailable100GMX"
@@ -264,8 +264,8 @@ describe("RewardsVestingModal", () => {
 
     fireEvent.change(screen.getByDisplayValue("100"), { target: { value: "25" } });
     expect(screen.getByRole("button", { name: "Vest esGMX" })).toBeDefined();
-    expect(screen.getByText("Collateral this vest locks").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralthisvestlocks25GMX"
+    expect(screen.getByText("Collateral required for vest").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralrequiredforvest25GMX"
     );
   });
 
@@ -280,8 +280,8 @@ describe("RewardsVestingModal", () => {
 
     expect(screen.getByDisplayValue("0.0156211012965299")).toBeDefined();
     expect(screen.getByText("Vestable: 0.02 esGMX")).toBeDefined();
-    expect(screen.getByText("Collateral this vest locks").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralthisvestlocks0.02GMX"
+    expect(screen.getByText("Collateral required for vest").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralrequiredforvest0.02GMX"
     );
     expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
       "Collateralavailable0.02GMX"
@@ -318,7 +318,7 @@ describe("RewardsVestingModal", () => {
     expect(screen.getByRole("button", { name: "Vest esGMX" }).hasAttribute("disabled")).toBe(true);
   });
 
-  it("shows only free staked GMX as available collateral", () => {
+  it("includes free staked and wallet GMX in available collateral", () => {
     renderVestModal({
       ...baseData,
       walletGmxBalance: 25n * TOKEN_UNIT,
@@ -330,11 +330,11 @@ describe("RewardsVestingModal", () => {
       },
     });
 
-    expect(screen.getByText("Collateral this vest locks").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralthisvestlocks100GMX"
+    expect(screen.getByText("Collateral required for vest").parentElement?.textContent?.replace(/\s/g, "")).toBe(
+      "Collateralrequiredforvest100GMX"
     );
     expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralavailable150GMX"
+      "Collateralavailable175GMX"
     );
   });
 
