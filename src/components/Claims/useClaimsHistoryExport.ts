@@ -1,4 +1,3 @@
-import { t } from "@lingui/macro";
 import { useCallback } from "react";
 
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -114,5 +113,5 @@ export function useClaimsHistoryExport({
     ]
   );
 
-  return useHistoryExport({ generate, canonicalFormatName: t`GMX Claims CSV` });
+  return useHistoryExport({ generate });
 }

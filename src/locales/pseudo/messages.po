@@ -992,7 +992,6 @@ msgid "Minimum required margin"
 msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "GMX Detailed CSV"
 msgstr ""
 
@@ -3206,10 +3205,6 @@ msgstr ""
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
-msgstr ""
-
-#: src/components/HistoryExport/useHistoryExport.ts
-msgid "This format could not safely represent every economic record. Use {canonicalFormatName} for audit or manual review."
 msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -11665,7 +11660,6 @@ msgstr ""
 msgid "Error signing permit for {0}: {1}"
 msgstr ""
 
-#: src/components/Claims/useClaimsHistoryExport.ts
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Claims CSV"
 msgstr ""

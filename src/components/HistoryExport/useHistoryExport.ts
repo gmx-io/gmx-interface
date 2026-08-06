@@ -5,14 +5,12 @@ import { HistoryExportFormat, HistoryExportProgress } from "domain/synthetics/hi
 
 export function useHistoryExport({
   generate,
-  canonicalFormatName,
 }: {
   generate: (
     format: HistoryExportFormat,
     signal: AbortSignal,
     onProgress: (progress: HistoryExportProgress) => void
   ) => Promise<void>;
-  canonicalFormatName: string;
 }) {
   const abortControllerRef = useRef<AbortController>();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -59,13 +57,7 @@ export function useHistoryExport({
         if (abortController.signal.aborted || (error instanceof DOMException && error.name === "AbortError")) {
           return;
         }
-        if (error instanceof Error && error.name === "UnsafeProviderProjectionError") {
-          setError(
-            t`This format could not safely represent every economic record. Use ${canonicalFormatName} for audit or manual review.`
-          );
-        } else {
-          setError(t`The export could not be completed. No file was downloaded.`);
-        }
+        setError(t`The export could not be completed. No file was downloaded.`);
       } finally {
         if (abortControllerRef.current === abortController) {
           abortControllerRef.current = undefined;
@@ -75,7 +67,7 @@ export function useHistoryExport({
         }
       }
     },
-    [cancel, canonicalFormatName, generate]
+    [cancel, generate]
   );
 
   useEffect(() => cancel, [cancel]);

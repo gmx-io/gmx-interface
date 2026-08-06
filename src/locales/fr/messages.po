@@ -992,7 +992,6 @@ msgid "Minimum required margin"
 msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
 
@@ -3207,10 +3206,6 @@ msgstr "Rechercher une adresse"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "Fraîcheur des données"
-
-#: src/components/HistoryExport/useHistoryExport.ts
-msgid "This format could not safely represent every economic record. Use {canonicalFormatName} for audit or manual review."
-msgstr "Ce format n’a pas pu représenter en toute sécurité chaque enregistrement économique. Utilisez {canonicalFormatName} pour un audit ou une vérification manuelle."
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -11665,7 +11660,6 @@ msgstr "long"
 msgid "Error signing permit for {0}: {1}"
 msgstr "Erreur lors de la signature du permis pour {0} : {1}"
 
-#: src/components/Claims/useClaimsHistoryExport.ts
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Claims CSV"
 msgstr "GMX Claims CSV"

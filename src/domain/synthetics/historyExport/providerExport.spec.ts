@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { CsvRow } from "lib/csv";
 
 import {
-  UnsafeProviderProjectionError,
   buildCoinLedgerTradeExport,
+  buildCoinTrackerTradeExport,
   buildCoinTrackerClaimsExport,
   buildKoinlyTradeExport,
 } from "./providerExport";
@@ -155,28 +155,31 @@ describe("provider exports", () => {
     ]);
   });
 
-  it("fails closed when an executed swap has incomplete token legs", () => {
-    expect(() =>
-      buildKoinlyTradeExport([
-        {
-          row_type: "action",
-          status: "executed",
-          order_type: "MarketSwap",
-          action_id: "42161:incomplete-swap",
-          record_id: "42161:incomplete-swap:action",
-          timestamp_utc: "2025-07-02T12:00:00Z",
-          data_completeness: "complete",
-        },
-        {
-          row_type: "cashflow",
-          action_id: "42161:incomplete-swap",
-          sent_amount: "100",
-          sent_currency: "USDC",
-          received_amount: "",
-          received_currency: "ETH",
-        },
-      ])
-    ).toThrow(UnsafeProviderProjectionError);
+  it("omits an incompatible swap without blocking the provider export", () => {
+    const rows: CsvRow[] = [
+      {
+        row_type: "action",
+        status: "executed",
+        order_type: "MarketSwap",
+        action_id: "42161:incomplete-swap",
+        record_id: "42161:incomplete-swap:action",
+        timestamp_utc: "2025-07-02T12:00:00Z",
+        data_completeness: "partial",
+      },
+      {
+        row_type: "cashflow",
+        action_id: "42161:incomplete-swap",
+        sent_amount: "100",
+        sent_currency: "USDC",
+        received_amount: "",
+        received_currency: "ETH",
+      },
+      settledDecrease,
+    ];
+
+    expect(buildKoinlyTradeExport(rows).rows).toHaveLength(3);
+    expect(buildCoinTrackerTradeExport(rows).rows).toHaveLength(3);
+    expect(buildCoinLedgerTradeExport(rows).margin.rows).toHaveLength(1);
   });
 
   it("uses USD when a swap fee cannot be converted to its fee token", () => {

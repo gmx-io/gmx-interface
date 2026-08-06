@@ -22,13 +22,6 @@ type CoinLedgerTradeResult = {
   margin: ProviderResult;
 };
 
-export class UnsafeProviderProjectionError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "UnsafeProviderProjectionError";
-  }
-}
-
 function parseDecimal(value: string): bigint {
   return value ? parseUnits(value, DECIMAL_PRECISION) : 0n;
 }
@@ -48,10 +41,6 @@ function subtractDecimalValues(value: string, subtrahends: string[]): string {
 function divideDecimal(numerator: string, denominator: string): string {
   const numeratorRaw = parseDecimal(absDecimal(numerator));
   const denominatorRaw = parseDecimal(absDecimal(denominator));
-  if (denominatorRaw === 0n) {
-    throw new UnsafeProviderProjectionError("A provider amount could not be valued safely");
-  }
-
   return formatUnits((numeratorRaw * 10n ** 18n) / denominatorRaw, 18);
 }
 
@@ -80,21 +69,17 @@ function getCashflowCurrency(cashflow: CsvRow, direction: "sent" | "received"): 
   return getAssetIdentifier(cashflow, `${direction}_currency`, `${direction}_token_address`);
 }
 
-function assertSafeSwapCashflow(row: CsvRow, cashflow: CsvRow | undefined): asserts cashflow is CsvRow {
-  if (
-    !cashflow ||
-    !getCsvString(cashflow, "sent_amount") ||
-    !getCashflowCurrency(cashflow, "sent") ||
-    !getCsvString(cashflow, "received_amount") ||
-    !getCashflowCurrency(cashflow, "received")
-  ) {
-    throw new UnsafeProviderProjectionError(
-      `Provider export cannot safely represent ${getCsvString(row, "record_id") || "an executed swap"}`
-    );
-  }
+function isSafeSwapCashflow(cashflow: CsvRow | undefined): cashflow is CsvRow {
+  return Boolean(
+    cashflow &&
+      getCsvString(cashflow, "sent_amount") &&
+      getCashflowCurrency(cashflow, "sent") &&
+      getCsvString(cashflow, "received_amount") &&
+      getCashflowCurrency(cashflow, "received")
+  );
 }
 
-function assertSafeTransferCashflow(row: CsvRow, cashflow: CsvRow) {
+function isSafeTransferCashflow(cashflow: CsvRow): boolean {
   const sentAmount = getCsvString(cashflow, "sent_amount");
   const sentCurrency = getCashflowCurrency(cashflow, "sent");
   const receivedAmount = getCsvString(cashflow, "received_amount");
@@ -104,11 +89,7 @@ function assertSafeTransferCashflow(row: CsvRow, cashflow: CsvRow) {
   const hasIncompleteSide =
     Boolean(sentAmount) !== Boolean(sentCurrency) || Boolean(receivedAmount) !== Boolean(receivedCurrency);
 
-  if (hasIncompleteSide || (!hasCompleteSentSide && !hasCompleteReceivedSide)) {
-    throw new UnsafeProviderProjectionError(
-      `Provider export cannot safely represent ${getCsvString(row, "record_id") || "a collateral transfer"}`
-    );
-  }
+  return !hasIncompleteSide && (hasCompleteSentSide || hasCompleteReceivedSide);
 }
 
 function getActionRows(rows: CsvRow[]): CsvRow[] {
@@ -193,7 +174,7 @@ function getFeeComponents(row: CsvRow): FeeComponent[] {
       return [];
     }
 
-    throw new UnsafeProviderProjectionError(`Provider export is missing a fee currency for ${description}`);
+    return [];
   });
 }
 
@@ -284,9 +265,7 @@ function getKoinlyPositionRows(row: CsvRow): CsvRow[] {
       providerAmount = { amount: tokenDiscountAmount, currency: tokenCurrency };
     } else if (discountUsd && !isZero(discountUsd)) {
       providerAmount = getProviderAmountForUsd(row, discountUsd);
-    } else {
-      throw new UnsafeProviderProjectionError("Provider export is missing the trader discount currency");
-    }
+    } else return rows;
     const result = createCsvRow(KOINLY_CSV_HEADERS);
     result.Date = timestamp;
     result["Received Amount"] = providerAmount.amount;
@@ -339,9 +318,7 @@ function getCoinTrackerPositionRows(row: CsvRow): CsvRow[] {
       providerAmount = { amount: tokenDiscountAmount, currency: tokenCurrency };
     } else if (discountUsd && !isZero(discountUsd)) {
       providerAmount = getProviderAmountForUsd(row, discountUsd);
-    } else {
-      throw new UnsafeProviderProjectionError("Provider export is missing the trader discount currency");
-    }
+    } else return rows;
     const result = createCsvRow(COINTRACKER_CSV_HEADERS);
     result.Date = timestamp;
     result["Received Quantity"] = providerAmount.amount;
@@ -391,7 +368,6 @@ function isCollateralOnly(row: CsvRow): boolean {
 }
 
 function buildKoinlyTransfer(row: CsvRow, cashflow: CsvRow): CsvRow {
-  assertSafeTransferCashflow(row, cashflow);
   const result = createCsvRow(KOINLY_CSV_HEADERS);
   result.Date = formatProviderTimestamp(getCsvString(row, "timestamp_utc"), "iso");
   result["Sent Amount"] = getCsvString(cashflow, "sent_amount");
@@ -404,7 +380,6 @@ function buildKoinlyTransfer(row: CsvRow, cashflow: CsvRow): CsvRow {
 }
 
 function buildCoinTrackerTransfer(row: CsvRow, cashflow: CsvRow): CsvRow {
-  assertSafeTransferCashflow(row, cashflow);
   const result = createCsvRow(COINTRACKER_CSV_HEADERS);
   result.Date = formatProviderTimestamp(getCsvString(row, "timestamp_utc"), "us");
   result["Received Quantity"] = getCsvString(cashflow, "received_amount");
@@ -416,7 +391,6 @@ function buildCoinTrackerTransfer(row: CsvRow, cashflow: CsvRow): CsvRow {
 }
 
 function buildCoinLedgerTransfer(row: CsvRow, cashflow: CsvRow): CsvRow {
-  assertSafeTransferCashflow(row, cashflow);
   const result = createCsvRow(COINLEDGER_UNIVERSAL_CSV_HEADERS);
   const isDeposit = Boolean(getCsvString(cashflow, "received_amount"));
   result["Date (UTC)"] = formatProviderTimestamp(getCsvString(row, "timestamp_utc"), "us");
@@ -436,11 +410,13 @@ export function buildKoinlyTradeExport(canonicalRows: CsvRow[]): ProviderResult 
     if (!isExecuted(row)) return [];
     const cashflow = getCashflow(canonicalRows, getCsvString(row, "action_id"));
     if (isPureSwap(row)) {
-      assertSafeSwapCashflow(row, cashflow);
+      if (!isSafeSwapCashflow(cashflow)) return [];
       return [buildKoinlySwap(row, cashflow)];
     }
     const providerRows = getKoinlyPositionRows(row);
-    if (isCollateralOnly(row) && cashflow) providerRows.unshift(buildKoinlyTransfer(row, cashflow));
+    if (isCollateralOnly(row) && cashflow && isSafeTransferCashflow(cashflow)) {
+      providerRows.unshift(buildKoinlyTransfer(row, cashflow));
+    }
     return providerRows;
   });
   return { rows, csv: serializeCsv(KOINLY_CSV_HEADERS, rows) };
@@ -451,11 +427,13 @@ export function buildCoinTrackerTradeExport(canonicalRows: CsvRow[]): ProviderRe
     if (!isExecuted(row)) return [];
     const cashflow = getCashflow(canonicalRows, getCsvString(row, "action_id"));
     if (isPureSwap(row)) {
-      assertSafeSwapCashflow(row, cashflow);
+      if (!isSafeSwapCashflow(cashflow)) return [];
       return [buildCoinTrackerSwap(row, cashflow)];
     }
     const providerRows = getCoinTrackerPositionRows(row);
-    if (isCollateralOnly(row) && cashflow) providerRows.unshift(buildCoinTrackerTransfer(row, cashflow));
+    if (isCollateralOnly(row) && cashflow && isSafeTransferCashflow(cashflow)) {
+      providerRows.unshift(buildCoinTrackerTransfer(row, cashflow));
+    }
     return providerRows;
   });
   return { rows, csv: serializeCsv(COINTRACKER_CSV_HEADERS, rows) };
@@ -468,11 +446,13 @@ export function buildCoinLedgerTradeExport(canonicalRows: CsvRow[]): CoinLedgerT
     if (!isExecuted(row)) continue;
     const cashflow = getCashflow(canonicalRows, getCsvString(row, "action_id"));
     if (isPureSwap(row)) {
-      assertSafeSwapCashflow(row, cashflow);
+      if (!isSafeSwapCashflow(cashflow)) continue;
       universalRows.push(buildCoinLedgerSwap(row, cashflow));
       continue;
     }
-    if (isCollateralOnly(row) && cashflow) universalRows.push(buildCoinLedgerTransfer(row, cashflow));
+    if (isCollateralOnly(row) && cashflow && isSafeTransferCashflow(cashflow)) {
+      universalRows.push(buildCoinLedgerTransfer(row, cashflow));
+    }
     const margin = buildCoinLedgerMarginRow(row);
     if (margin) marginRows.push(margin);
   }
@@ -489,13 +469,7 @@ function getClaimsEconomicRows(canonicalRows: CsvRow[]): CsvRow[] {
       return false;
     }
 
-    if (!getCsvString(row, "amount") || !getAssetIdentifier(row, "token_symbol", "token_address")) {
-      throw new UnsafeProviderProjectionError(
-        `Provider export cannot safely represent ${getCsvString(row, "record_id") || "an executed claim"}`
-      );
-    }
-
-    return true;
+    return Boolean(getCsvString(row, "amount") && getAssetIdentifier(row, "token_symbol", "token_address"));
   });
 }
 
