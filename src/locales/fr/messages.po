@@ -413,10 +413,6 @@ msgstr "Yield farming"
 msgid "Roadmap"
 msgstr "Feuille de Route"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "FULL MARKET"
-msgstr "MARCHÉ COMPLET"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "Vers"
@@ -563,6 +559,10 @@ msgstr "Liquidité insuffisante dans tous les pools BTC/USD"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
 msgstr "PnL de base non réalisé"
+
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Exports are for record-keeping and tax-software compatibility; they do not constitute tax advice."
+msgstr "Les exportations sont destinées à la tenue de registres et à la compatibilité avec les logiciels fiscaux ; elles ne constituent pas un conseil fiscal."
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -991,6 +991,11 @@ msgstr "en liquidité"
 msgid "Minimum required margin"
 msgstr ""
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "GMX Detailed CSV"
+msgstr "GMX Detailed CSV"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
@@ -1200,10 +1205,8 @@ msgstr "Vaultka"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1419,9 +1422,7 @@ msgstr "Payer"
 msgid "Creating referral code..."
 msgstr "Création du code de parrainage..."
 
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -1599,6 +1600,10 @@ msgstr "Fondamentaux GMX"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
 msgstr "DONNÉES D'ÉVÉNEMENT"
+
+#: src/components/Claims/ClaimsHistory.tsx
+msgid "Export claims history"
+msgstr "Exporter l’historique des réclamations"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
@@ -3138,6 +3143,10 @@ msgstr "Liquidé car l'effet de levier maximum de {formattedMaxLeverage} a été
 msgid "Deposited {0} into {positionText}"
 msgstr "Déposé {0} dans {positionText}"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Preparing export…"
+msgstr "Préparation de l’exportation…"
+
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Current price"
 msgstr "Prix actuel"
@@ -3198,6 +3207,10 @@ msgstr "Rechercher une adresse"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "Fraîcheur des données"
+
+#: src/components/HistoryExport/useHistoryExport.ts
+msgid "This format could not safely represent every economic record. Use {canonicalFormatName} for audit or manual review."
+msgstr "Ce format n’a pas pu représenter en toute sécurité chaque enregistrement économique. Utilisez {canonicalFormatName} pour un audit ou une vérification manuelle."
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -3666,10 +3679,6 @@ msgstr "Analyses Dune pour GMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Frais d'emprunt en attente de toutes les positions ouvertes"
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "RPNL ($)"
-msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -5198,13 +5207,13 @@ msgstr "Échec du chargement des données de l'ordre :"
 msgid "Network"
 msgstr "Réseau"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "CoinLedger Margin Gain Manual CSV"
+msgstr "CoinLedger Margin Gain Manual CSV"
+
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "FEES ($)"
-msgstr "FRAIS ($)"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Pre-IPO"
@@ -5829,7 +5838,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -6055,10 +6063,6 @@ msgstr "Récompenses d'affiliation récupérées"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
 msgstr "transaction :"
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "EXECUTION PRICE"
-msgstr "PRIX D'EXÉCUTION"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "spinner"
@@ -8048,6 +8052,7 @@ msgstr ""
 msgid "Governance"
 msgstr "Gouvernance"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -8342,11 +8347,9 @@ msgid "Link copied"
 msgstr "Lien copié"
 
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr "TAILLE"
@@ -9218,10 +9221,6 @@ msgstr "Jones DAO"
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
 msgstr ""
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "Failed to download trade history CSV"
-msgstr "Échec du téléchargement du CSV de l'historique des transactions"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -10359,7 +10358,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -10644,10 +10642,6 @@ msgstr ""
 msgid "Position impact amount"
 msgstr "Montant d'impact sur la position"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "PRICE IMPACT"
-msgstr "PRICE IMPACT"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
 msgstr "Rechercher des opportunités"
@@ -10664,11 +10658,6 @@ msgstr "Confirmation en cours..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited:"
 msgstr "Déposé :"
-
-#: src/components/Claims/ClaimsHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "ACTION"
-msgstr "ACTION"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -11043,7 +11032,6 @@ msgstr "{0} (externe)"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "TRIGGER PRICE"
 msgstr "PRIX DE DÉCLENCHEMENT"
 
@@ -11051,9 +11039,17 @@ msgstr "PRIX DE DÉCLENCHEMENT"
 msgid "Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as shown."
 msgstr "Accumule les frais provenant du trading à effet de levier et des échanges pour le marché {marketName}. Exposé à {exposedToLabel} comme indiqué."
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Export trade history"
+msgstr "Exporter l’historique des trades"
+
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR."
 msgstr "Taux de rachat annuel estimé. Au rythme moyen récent, les rachats de GMX représenteraient ce pourcentage de l'offre totale de GMX sur un an. Il s'agit d'une mesure de rachat à l'échelle du protocole, et non d'un APR de staking personnel."
+
+#: src/components/HistoryExport/useHistoryExport.ts
+msgid "The export could not be completed. No file was downloaded."
+msgstr "L’exportation n’a pas pu être terminée. Aucun fichier n’a été téléchargé."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
@@ -11403,10 +11399,6 @@ msgstr "{count, plural, one {# action dans ce cycle de vie} other {# actions dan
 msgid "Multicall simulation"
 msgstr "Simulation Multicall"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "ACCEPTABLE PRICE"
-msgstr "PRIX ACCEPTABLE"
-
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "Événements"
@@ -11514,7 +11506,6 @@ msgstr "VALEUR NETTE"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "MARK PRICE"
 msgstr "PRIX DE RÉFÉRENCE"
 
@@ -11673,6 +11664,11 @@ msgstr "long"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "Erreur lors de la signature du permis pour {0} : {1}"
+
+#: src/components/Claims/useClaimsHistoryExport.ts
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "GMX Claims CSV"
+msgstr "GMX Claims CSV"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
@@ -11900,11 +11896,6 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "Partager le PnL"
-
-#: src/components/Claims/ClaimsHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "TRANSACTION ID"
-msgstr "ID DE TRANSACTION"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"

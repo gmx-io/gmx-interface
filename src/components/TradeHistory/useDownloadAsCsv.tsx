@@ -1,42 +1,45 @@
-import { t, Trans } from "@lingui/macro";
-import { format as dateFnsFormat } from "date-fns/format";
-import { useCallback, useState } from "react";
-import { withRetry } from "viem";
+import { t } from "@lingui/macro";
+import { useCallback } from "react";
 
-import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isSwapOrderType } from "domain/synthetics/orders";
+import {
+  buildCoinLedgerTradeExport,
+  buildCoinTrackerTradeExport,
+  buildKoinlyTradeExport,
+} from "domain/synthetics/historyExport/providerExport";
+import { generateTradeCsv } from "domain/synthetics/historyExport/tradeExport";
+import {
+  HistoryExportFormat,
+  HistoryExportProgress,
+  getHistoryExportFilename,
+} from "domain/synthetics/historyExport/utils";
+import { createZipBlob } from "domain/synthetics/historyExport/zip";
 import { OrderType } from "domain/synthetics/orders/types";
-import { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
-import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
-import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
-import { downloadAsCsv } from "lib/csv";
-import { helperToast } from "lib/helperToast";
+import { TradeActionType } from "domain/synthetics/tradeHistory";
+import { downloadFile } from "lib/csv";
 
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+import { useHistoryExport } from "components/HistoryExport/useHistoryExport";
 
 import type { MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
-import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
-import type { RowDetails } from "./TradeHistoryRow/utils/shared";
-import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
-
-const PAGE_SIZE = 300;
 
 export function useDownloadAsCsv({
   marketsDirectionsFilter,
   forAllAccounts,
   account,
+  startDate,
+  endDate,
   fromTxTimestamp,
   toTxTimestamp,
   orderEventCombinations,
-  minCollateralUsd,
   positionLifecycleId,
 }: {
   marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
   account: string | null | undefined;
+  startDate?: Date;
+  endDate?: Date;
   fromTxTimestamp: number | undefined;
   toTxTimestamp: number | undefined;
   orderEventCombinations:
@@ -47,133 +50,103 @@ export function useDownloadAsCsv({
         isTwap?: boolean | undefined;
       }[]
     | undefined;
-
-  minCollateralUsd?: bigint;
   positionLifecycleId?: string;
-}): [boolean, () => Promise<void>] {
+}) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCsvDownload = useCallback(async () => {
-    try {
-      setIsLoading(true);
-
-      // Ensure dependent data is available before fetching
-      if (!marketsInfoData || !tokensData || minCollateralUsd === undefined) {
+  const generate = useCallback(
+    async (format: HistoryExportFormat, signal: AbortSignal, onProgress: (progress: HistoryExportProgress) => void) => {
+      if ((!account && !forAllAccounts) || !marketsInfoData || !tokensData) {
         throw new Error("Required market/token data not loaded yet");
       }
 
-      // Fetch in pages to avoid GraphQL response-size limits
-      const aggregatedTradeActions: (PositionTradeAction | SwapTradeAction)[] = [];
-      let currentPageIndex = 0;
-      let hasMorePages = true;
+      const canonical = await generateTradeCsv({
+        chainId,
+        account,
+        forAllAccounts,
+        fromTxTimestamp,
+        toTxTimestamp,
+        marketsDirectionsFilter,
+        orderEventCombinations,
+        positionLifecycleId,
+        marketsInfoData,
+        tokensData,
+        signal,
+        onProgress,
+      });
+      const filenameParams = {
+        surface: "trade-history" as const,
+        account,
+        forAllAccounts,
+        chainId,
+        fromDate: startDate,
+        toDate: endDate,
+        fromTimestamp: fromTxTimestamp,
+        toTimestamp: toTxTimestamp,
+        schemaVersion: 1,
+      };
 
-      while (hasMorePages) {
-        const rawPageResult = await withRetry(
-          () =>
-            fetchRawTradeActions({
-              chainId,
-              pageIndex: currentPageIndex,
-              pageSize: PAGE_SIZE,
-              forAllAccounts,
-              account,
-              fromTxTimestamp,
-              toTxTimestamp,
-              marketsDirectionsFilter,
-              orderEventCombinations,
-              positionLifecycleId,
-            }),
-          {
-            retryCount: 3,
-            delay: 300,
-          }
-        );
-        const rawPage = rawPageResult?.tradeActions;
-
-        // Use raw page length; processing can drop rows.
-        hasMorePages =
-          rawPageResult?.totalCount !== undefined
-            ? (currentPageIndex + 1) * PAGE_SIZE < rawPageResult.totalCount
-            : Boolean(rawPage && rawPage.length === PAGE_SIZE);
-
-        const processedPage = processRawTradeActions({
-          chainId,
-          rawActions: rawPage,
-          marketsInfoData,
-          tokensData,
-          marketsDirectionsFilter,
-        }) as (PositionTradeAction | SwapTradeAction)[] | undefined;
-
-        if (processedPage && processedPage.length) {
-          aggregatedTradeActions.push(...processedPage);
-        }
-
-        currentPageIndex += 1;
+      if (format === "gmx-detailed") {
+        const filename = getHistoryExportFilename({
+          ...filenameParams,
+          format,
+          extension: "csv",
+        });
+        downloadFile(filename, canonical.csv, "text/csv;charset=utf-8");
+        return;
       }
 
-      const fullFormattedData = aggregatedTradeActions
-        .map((tradeAction) => {
-          const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transactionHash}`;
+      if (format === "koinly") {
+        const provider = buildKoinlyTradeExport(canonical.rows);
+        const filename = getHistoryExportFilename({ ...filenameParams, format, extension: "csv" });
+        downloadFile(filename, provider.csv, "text/csv;charset=utf-8");
+        return;
+      }
 
-          let rowDetails: RowDetails | null;
+      if (format === "cointracker") {
+        const provider = buildCoinTrackerTradeExport(canonical.rows);
+        const filename = getHistoryExportFilename({ ...filenameParams, format, extension: "csv" });
+        downloadFile(filename, provider.csv, "text/csv;charset=utf-8");
+        return;
+      }
 
-          if (isSwapOrderType(tradeAction.orderType!)) {
-            rowDetails = formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData, false);
-          } else {
-            rowDetails = formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, false);
-          }
+      if (format === "coinledger") {
+        const provider = buildCoinLedgerTradeExport(canonical.rows);
+        const universalFilename = getHistoryExportFilename({
+          ...filenameParams,
+          format: "coinledger-universal",
+          extension: "csv",
+        });
+        const marginFilename = getHistoryExportFilename({
+          ...filenameParams,
+          format: "coinledger-margin-gain-manual",
+          extension: "csv",
+        });
+        const zip = createZipBlob([
+          { name: universalFilename, contents: provider.universal.csv },
+          { name: marginFilename, contents: provider.margin.csv },
+        ]);
+        const filename = getHistoryExportFilename({ ...filenameParams, format, extension: "zip" });
+        downloadFile(filename, zip, "application/zip");
+      }
+    },
+    [
+      account,
+      chainId,
+      endDate,
+      forAllAccounts,
+      fromTxTimestamp,
+      marketsDirectionsFilter,
+      marketsInfoData,
+      orderEventCombinations,
+      positionLifecycleId,
+      startDate,
+      toTxTimestamp,
+      tokensData,
+    ]
+  );
 
-          return {
-            ...rowDetails,
-            explorerUrl,
-          };
-        })
-        .filter(Boolean);
-
-      const timezone = dateFnsFormat(new Date(), "z");
-
-      downloadAsCsv("trade-history", fullFormattedData, ["priceComment", "feesTooltip"], {
-        timestamp: t`DATE` + ` (${timezone})`,
-        action: t`ACTION`,
-        size: t`SIZE`,
-        market: t`MARKET`,
-        fullMarket: t`FULL MARKET`,
-        marketPrice: t`MARK PRICE`,
-        acceptablePrice: t`ACCEPTABLE PRICE`,
-        executionPrice: t`EXECUTION PRICE`,
-        triggerPrice: t`TRIGGER PRICE`,
-        priceImpact: t`PRICE IMPACT`,
-        explorerUrl: t`TRANSACTION ID`,
-        pnl: t`RPNL ($)`,
-        fees: t`FEES ($)`,
-      });
-    } catch (error) {
-      helperToast.error(
-        <div>
-          <Trans>Failed to download trade history CSV</Trans>
-          <br />
-          <br />
-          <ToastifyDebug error={String(error)} />
-        </div>
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [
-    account,
-    chainId,
-    forAllAccounts,
-    fromTxTimestamp,
-    marketsDirectionsFilter,
-    marketsInfoData,
-    minCollateralUsd,
-    orderEventCombinations,
-    positionLifecycleId,
-    toTxTimestamp,
-    tokensData,
-  ]);
-
-  return [isLoading, handleCsvDownload];
+  return useHistoryExport({ generate, canonicalFormatName: t`GMX Detailed CSV` });
 }
