@@ -1,7 +1,7 @@
 import { i18n } from "@lingui/core";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 
 import {
@@ -48,26 +48,26 @@ describe("getDelistingMarketLabel", () => {
 describe("buildPositionsBodyText", () => {
   it("singular market and single position", () =>
     expect(buildPositionsBodyText(["TON/USD"], 1)).toBe(
-      "TON/USD is being delisted. Close your existing position as remaining positions may be auto-closed."
+      "TON/USD will be disabled after August 5, 2026, 23:59 UTC. Close your position before then. Collateral left in open positions won't be accessible after that."
     ));
   it("singular market with plural positions", () =>
     expect(buildPositionsBodyText(["TON/USD"], 2)).toBe(
-      "TON/USD is being delisted. Close your existing positions as remaining positions may be auto-closed."
+      "TON/USD will be disabled after August 5, 2026, 23:59 UTC. Close your positions before then. Collateral left in open positions won't be accessible after that."
     ));
   it("plural markets and positions", () =>
     expect(buildPositionsBodyText(["TON/USD", "PI/USD"], 3)).toBe(
-      "TON/USD and PI/USD are being delisted. Close your existing positions as remaining positions may be auto-closed."
+      "TON/USD and PI/USD will be disabled after August 5, 2026, 23:59 UTC. Close your positions before then. Collateral left in open positions won't be accessible after that."
     ));
 });
 
 describe("buildLiquidityBodyText", () => {
   it("singular pool", () =>
     expect(buildLiquidityBodyText(["KTA/USD"])).toBe(
-      "KTA/USD is being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
+      "KTA/USD will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that."
     ));
   it("plural pools", () =>
     expect(buildLiquidityBodyText(["KTA/USD", "SATS/USD"])).toBe(
-      "KTA/USD and SATS/USD are being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
+      "KTA/USD and SATS/USD will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that."
     ));
 });
 
@@ -93,6 +93,8 @@ describe("computeAffectedPositionMarkets", () => {
 
 describe("computeAffectedLiquidityMarkets", () => {
   const KTA = "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d";
+  const ARBITRUM_DAI_SWAP = "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665";
+  const AVALANCHE_DAI_SWAP = "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b";
   const NON_DELISTING = "0x0000000000000000000000000000000000000003";
 
   it("includes GM tokens with a positive balance that are delisting", () => {
@@ -108,6 +110,15 @@ describe("computeAffectedLiquidityMarkets", () => {
   it("excludes markets not in the delisting list", () => {
     const data = { [NON_DELISTING]: { symbol: "GM", balance: 5n } } as any;
     expect(computeAffectedLiquidityMarkets(ARBITRUM, data)).toEqual([]);
+  });
+
+  it("includes the DAI swap pools on Arbitrum and Avalanche", () => {
+    expect(
+      computeAffectedLiquidityMarkets(ARBITRUM, { [ARBITRUM_DAI_SWAP]: { symbol: "GM", balance: 1n } } as any)
+    ).toEqual([ARBITRUM_DAI_SWAP]);
+    expect(
+      computeAffectedLiquidityMarkets(AVALANCHE, { [AVALANCHE_DAI_SWAP]: { symbol: "GM", balance: 1n } } as any)
+    ).toEqual([AVALANCHE_DAI_SWAP]);
   });
 });
 
@@ -167,11 +178,11 @@ describe("getActiveDelistingAnnouncements", () => {
     });
     expect(result.map((item) => item.id)).toEqual([POSITIONS_TOAST_ID]);
     expect(result[0].markets).toEqual([TON]);
-    expect(result[0].title).toBe("Market delistings");
-    expect(result[0].link).toBeUndefined();
+    expect(result[0].title).toBe("Final notice: market delistings");
+    expect(result[0].link).toEqual({ text: "Close positions", href: "/trade" });
   });
 
-  it("shows only the liquidity toast (with the Manage liquidity link) for direct GM holders", () => {
+  it("shows only the liquidity toast (with the Withdraw liquidity link) for direct GM holders", () => {
     const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
       positionsInfoData: undefined,
@@ -180,7 +191,7 @@ describe("getActiveDelistingAnnouncements", () => {
       now: 1000,
     });
     expect(result.map((item) => item.id)).toEqual([LIQUIDITY_TOAST_ID]);
-    expect(result[0].link).toEqual({ text: "Manage liquidity", href: "/pools" });
+    expect(result[0].link).toEqual({ text: "Withdraw liquidity", href: "/pools" });
   });
 
   it("shows nothing when there is no exposure", () => {
@@ -204,6 +215,23 @@ describe("getActiveDelistingAnnouncements", () => {
       now: 2000,
     });
     expect(result).toEqual([]);
+  });
+
+  it("ignores the earlier warning's dismissal record", () => {
+    localStorage.setItem(
+      "delisting-announcement-dismissed-delisting-positions",
+      JSON.stringify({ dismissedAt: 1000, markets: [TON] })
+    );
+
+    const result = getActiveDelistingAnnouncements({
+      chainId: ARBITRUM,
+      positionsInfoData: { k: { marketAddress: TON } } as any,
+      depositMarketTokensData: undefined,
+      marketsInfoData,
+      now: 2000,
+    });
+
+    expect(result.map((item) => item.id)).toEqual([POSITIONS_TOAST_ID]);
   });
 
   it("waits when marketsInfoData has not loaded (cannot label)", () => {

@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-import { BOTANIX } from "config/chains";
 import {
   selectGlvAndMarketsInfoData,
   selectTokensData,
@@ -168,10 +167,6 @@ export default function EarnAdditionalOpportunitiesPage() {
   }, [activeFilter, allOpportunities, searchQuery, userAssets, opportunityTagLabels, marketsInfoData, tokensData]);
 
   const emptyStateMessage = useMemo(() => {
-    if (chainId === BOTANIX) {
-      return <Trans>No opportunities on Botanix yet</Trans>;
-    }
-
     if (allOpportunities.length === 0) {
       return <Trans>No opportunities on this chain yet</Trans>;
     }
@@ -189,7 +184,7 @@ export default function EarnAdditionalOpportunitiesPage() {
     }
 
     return <Trans>No matches for selected filters</Trans>;
-  }, [activeFilter, allOpportunities.length, chainId, searchQuery, userAssets.size]);
+  }, [activeFilter, allOpportunities.length, searchQuery, userAssets.size]);
 
   return (
     <EarnPageLayout>

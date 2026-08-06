@@ -224,6 +224,10 @@ msgstr ""
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
 msgstr "Существующий лимитный ордер в пуле {0}, но для данного ордера недостаточно ликвидности"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Walk through tiers & onboarding live"
+msgstr "Живой разбор уровней и подключения"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 msgstr "Влияние на цену при закрытии. Положительные значения выгодны для вас. <0>Подробнее</0>."
@@ -271,6 +275,10 @@ msgstr ""
 msgid "Max factor for liquidations"
 msgstr "Макс. фактор для ликвидаций"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet cannot sign messages, which trading from this network requires"
+msgstr "Ваш кошелёк не может подписывать сообщения, что необходимо для торговли из этой сети"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
 msgstr ""
@@ -282,6 +290,10 @@ msgstr "События Oracle keeper"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
+msgstr "<0>Ваш {walletName} находится в другой сети</0><1/><2>Переключите {walletName} на {0} и попробуйте снова</2>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
@@ -329,11 +341,6 @@ msgstr "Общий размер"
 msgid "Open app"
 msgstr "Открыть приложение"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr "Попробовать экспресс-трейдинг"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "Виртуальный инвентарь для позиций"
@@ -358,6 +365,10 @@ msgstr "GMX Account недоступен на {chainName}. Переключит�
 #: src/components/Errors/errorToasts.tsx
 msgid "settings"
 msgstr "настройки"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external routes."
+msgstr "TWAP-свопы используют только ликвидность пулов GMX, которой не хватает для этого объёма. Используйте маркет-ордер, чтобы включить внешние маршруты."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Est. APR"
@@ -408,6 +419,7 @@ msgid "To"
 msgstr "К"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -457,6 +469,10 @@ msgstr "Что такое GLV?"
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr "Истёкший рыночный ордер на увеличение"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "Процент"
@@ -468,6 +484,10 @@ msgstr "Комиссия UI за своп"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No TP orders"
 msgstr "Нет ордеров тейк-профит"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Lock in this rate"
+msgstr "Зафиксировать эту ставку"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
@@ -545,6 +565,10 @@ msgstr "GM"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
 msgstr "Экспонента фандинга"
+
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Paid to traders & affiliates"
+msgstr "Выплачено трейдерам и аффилиатам"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies to earn funding."
@@ -656,6 +680,10 @@ msgstr "Нет средств для внесения из сети {networkName
 msgid "sell"
 msgstr "продать"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GMX pool liquidity"
+msgstr "Недостаточная ликвидность пулов GMX"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "Переключиться на {0}"
@@ -724,6 +752,10 @@ msgstr "Цена исполнения ордера"
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to Classic Trading"
+msgstr "Переключиться на Classic Trading"
+
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
 msgstr "Код не зарегистрирован в сетях: {nonTakenNetworkNamesJoined}. Переключите сеть для регистрации и получения скидок."
@@ -752,11 +784,19 @@ msgstr ""
 msgid "No"
 msgstr "Нет"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "/ mo"
+msgstr "/ мес"
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "..."
 msgstr "..."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Swap on an external aggregator"
+msgstr "Своп на внешнем агрегаторе"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
@@ -795,6 +835,10 @@ msgstr "Нет наград"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PROVIDER"
 msgstr "ПРОВАЙДЕР"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds."
+msgstr "Для вывода средств нужна подпись, которую этот кошелёк не может предоставить, поэтому вывод отключён во избежание блокировки ваших средств."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -861,6 +905,7 @@ msgstr "Отрицательное значение: трейдеры выпла
 msgid "Transfer {nativeTokenSymbol} from other networks to {chainName}"
 msgstr "Перевести {nativeTokenSymbol} из других сетей в {chainName}"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -911,6 +956,10 @@ msgstr "Купить GMX на централизованных биржах"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
 msgstr "Доступная ликвидность"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
+msgstr "Пулы GMX не могут исполнить этот своп, а внешний маршрут сейчас недоступен. Попробуйте уменьшить сумму."
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
@@ -979,6 +1028,10 @@ msgstr "Уведомления GMX"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "Чистое влияние на цену и комиссии вашей сделки. <0>Подробнее</0>."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
+msgstr "Истёкший рыночный ордер на уменьшение"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1321,6 +1374,10 @@ msgstr "{0} будет обменено на {1} при исполнении"
 msgid "Weekly"
 msgstr "Еженедельно"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Terms"
+msgstr "Условия"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -1330,6 +1387,10 @@ msgstr "Нереализованная PnL"
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 msgid "Rewards"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>Yes — the two programs stack. You can trade on your discounted tier while also earning affiliate rebates from anyone you refer.</0>"
+msgstr "<0>Да — обе программы можно совмещать. Вы можете торговать на своём уровне со скидкой и одновременно получать реферальные вознаграждения от всех, кого вы пригласите.</0>"
 
 #: src/components/TradeBox/TradeBoxHeaderTabs.tsx
 msgid "Leverage for the current order. Resulting position leverage: {formattedLeverage}."
@@ -1398,7 +1459,7 @@ msgstr "Внешний обмен {0} на {1}"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
-msgstr ""
+msgstr "Использовать {0} для газа"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Earn up to 15% in<0/> rebates as an affiliate"
@@ -1590,6 +1651,10 @@ msgstr "Залог"
 msgid "Stocks"
 msgstr "Акции"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "I'm an affiliate"
+msgstr "Я аффилиат"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
 msgstr ""
@@ -1601,6 +1666,10 @@ msgstr "Отмена стоп-рынка"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit"
 msgstr "Исполнить лимит"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "Can I be both a trader and an affiliate?"
+msgstr "Могу ли я быть одновременно трейдером и аффилиатом?"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
@@ -1747,6 +1816,10 @@ msgstr "RPNL"
 msgid "FUNDING FEE"
 msgstr "КОМИССИЯ ЗА ФИНАНСИРОВАНИЕ"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "I'm a trader"
+msgstr "Я трейдер"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a pay token"
 msgstr "Выберите токен для оплаты"
@@ -1874,6 +1947,10 @@ msgstr ""
 msgid "No fee"
 msgstr "Без комиссии"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Switch to market order"
+msgstr "Переключиться на маркет-ордер"
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Warning: may not execute due to low liquidity at your min. receive price"
 msgstr ""
@@ -1889,6 +1966,10 @@ msgstr "Отмена {ordersText}..."
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "Размер (% позиции)"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signature request was rejected in your wallet. Retry and confirm the request to deactivate."
+msgstr "Запрос на подпись был отклонён в вашем кошельке. Повторите попытку и подтвердите запрос, чтобы отключить."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "100+ crypto tokens"
@@ -1906,6 +1987,10 @@ msgstr "{0} за {1}"
 msgid "In liquidity"
 msgstr "В ликвидности"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Live chat with the desk"
+msgstr "Живой чат с деском"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -1915,6 +2000,7 @@ msgstr "Не поддерживается"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -1968,6 +2054,10 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr "Комиссия за заимствование / день"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
+msgstr "В пулах GMX недостаточно ликвидности для свопа такого размера. Попробуйте уменьшить сумму."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "У вас есть токены esGMX в хранилище Affiliate. Выведите их для перевода на новый аккаунт."
@@ -2014,6 +2104,10 @@ msgstr "Получить право голоса и участвовать в у
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
+msgstr "Не найден маршрут свопа GMX из {0} в {1}. Попробуйте <0>внешний агрегатор</0>."
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "RECEIVE"
 msgstr "ПОЛУЧЕНИЕ"
@@ -2036,6 +2130,10 @@ msgstr "Вы покидаете GMX.io и переходите на сторон
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
 msgstr ""
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
+msgstr "Для этого свопа нужен внешний маршрут, который недоступен, пока токен оплаты газа совпадает с получаемым токеном, а у других газовых токенов недостаточно баланса."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -2153,6 +2251,10 @@ msgstr "Прибыль"
 msgid "Swapped {0} for {1}"
 msgstr "Обменяно {0} на {1}"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Pick a time"
+msgstr "Выбрать время"
+
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX balance"
@@ -2179,6 +2281,10 @@ msgstr "Запрос возвратов за влияние на цену…"
 msgid "Explore"
 msgstr "Исследовать"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "You save"
+msgstr "Вы экономите"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max positive factor"
 msgstr "Макс. положительный фактор"
@@ -2199,10 +2305,18 @@ msgstr "Отправка запроса на продажу…"
 msgid "PURPOSE"
 msgstr "НАЗНАЧЕНИЕ"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "GMX pools"
+msgstr "Пулы GMX"
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "Награды {nativeTokenSymbol}:"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Become an affiliate"
+msgstr "Стать аффилиатом"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
@@ -2377,8 +2491,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "Путь обмена не найден"
 
@@ -2426,6 +2538,10 @@ msgstr "{orderTypeText} {0} за {1}"
 msgid "Job openings at GMX"
 msgstr "Вакансии в GMX"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount."
+msgstr "Пулы GMX не могут исполнить своп такого размера, а внешний маршрут сейчас недоступен. Попробуйте уменьшить сумму."
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -2440,6 +2556,10 @@ msgstr "Скоро"
 msgid "Update Stop-Loss"
 msgstr "Обновление стоп-лосс"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size.<0/><1/><2>Switch to a market order</2> to enable external routes."
+msgstr "TWAP-свопы используют только ликвидность пулов GMX, которой не хватает для этого объёма.<0/><1/><2>Переключитесь на маркет-ордер</2>, чтобы включить внешние маршруты."
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
 msgstr ""
@@ -2447,6 +2567,10 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
 msgstr "Группировка"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
+msgstr "Недостаточно токена оплаты Gas на вашем GMX Account для покрытия сетевых комиссий. Внесите средства и повторите попытку."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
@@ -2601,6 +2725,10 @@ msgstr ""
 msgid "Allow {0} spending"
 msgstr "Разрешить использование {0}"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
+msgstr "Пулы GMX не могут исполнить своп такого размера. Нужен внешний маршрут, который недоступен с One-Click Trading. Отключите One-Click Trading, чтобы продолжить."
+
 #: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
 msgid "Swap debug"
 msgstr ""
@@ -2648,6 +2776,10 @@ msgstr "Перевод завершён"
 msgid "GM bridging to..."
 msgstr "GM перевод на..."
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Contact us"
+msgstr "Связаться с нами"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2662,6 +2794,14 @@ msgstr "<0>Без KYC, длительной регистрации и обяза
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
 msgstr "Деактивировать 1CT"
+
+#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+msgid "VIP"
+msgstr "VIP"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate."
+msgstr "Приглашайте трейдеров на GMX по своей уникальной ссылке и получайте долю комиссий, которые они приносят."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -2776,10 +2916,6 @@ msgstr "Аффилиаты"
 msgid "Global network"
 msgstr "Глобальная сеть"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
-msgstr "Попробовать экспресс"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"
 msgstr ""
@@ -2787,6 +2923,10 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Changes may take a few minutes to appear"
 msgstr "Изменения могут отобразиться через несколько минут"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Track volume and payouts live."
+msgstr "Отслеживайте объём и выплаты в реальном времени."
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
@@ -2828,6 +2968,10 @@ msgstr "Купить GMX на {chainName}"
 msgid "Size"
 msgstr "Размер"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Trade from your own wallet — no deposits."
+msgstr "Торгуйте прямо со своего кошелька — без депозитов."
+
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
 msgstr "Загрузка параметров Express…"
@@ -2839,6 +2983,10 @@ msgstr "ВРЕМЯ ОТВЕТА"
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade (ранее GMX Solana) размещён на другом сайте и управляется другой командой, поэтому работа может незначительно отличаться"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
+msgstr "<0>Фиксированного порога нет — деск определяет ваш уровень исходя из текущего и ожидаемого месячного объёма. Большинство трейдеров получают право на участие начиная примерно с $5–10 млн в месяц; свяжитесь с нами, и мы подтвердим вашу ставку.</0>"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
@@ -2998,10 +3146,6 @@ msgstr "Недействительная подпись. Попробуйте п
 msgid "Search address"
 msgstr "Поиск адреса"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
-msgstr "Нет пути обмена. <0>Обменяйте {0} на STBTC</0>, чтобы использовать {1} как залог."
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
@@ -3014,6 +3158,10 @@ msgstr ""
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr "Высокое потенциальное чистое влияние на цену (ограничено {formattedCap} для данного рынка) может существенно повлиять на ваше обеспечение. Рассмотрите возможность уменьшения кредитного плеча. <0>Подробнее</0>."
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Keep more of every trade."
+msgstr "Оставляйте себе больше с каждой сделки."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
@@ -3082,6 +3230,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized PnL"
 msgstr "Начальный нереализованный PnL"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "Swap route"
+msgstr "Маршрут свопа"
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Transfer from another chain"
@@ -3193,6 +3345,10 @@ msgstr "Объём пула влияния на цену"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
+msgstr "Из расчёта эффективной комиссии ~0,06% за полный цикл сделки на перпах GMX.<0/>Только для иллюстрации — точную ставку деск подтвердит при подключении."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -3309,6 +3465,10 @@ msgstr "Нет доступных централизованных бирж"
 msgid "Loyalty"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Up to 25% earnings"
+msgstr "Доход до 25%"
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
 msgstr "Нет активов"
@@ -3354,6 +3514,10 @@ msgstr "Купить GMX на централизованных сервисах"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
 msgstr "Основной не удался"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No GMX swap route found for {0} to {1}."
+msgstr "Не найден маршрут свопа GMX из {0} в {1}."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
@@ -3489,9 +3653,17 @@ msgstr "Показать триггер отладки границы ошибо
 msgid "Autocompound"
 msgstr "Автореинвестирование"
 
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Liquidity to withdraw:"
+msgstr "Ликвидность к выводу:"
+
 #: src/components/TVChart/Chart.tsx
 msgid "Market graph"
 msgstr "График рынка"
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "After the deadline, trading and withdrawals on these markets are disabled, and capital left in them won't be accessible from the app. Close your positions and withdraw your liquidity now."
+msgstr "После истечения срока торговля и вывод средств на этих рынках будут отключены, а оставшиеся там средства станут недоступны в приложении. Закройте позиции и выведите ликвидность сейчас."
 
 #: src/domain/referrals/utils/referralsHelper.ts
 msgid "Only letters, numbers, and underscores allowed"
@@ -3514,10 +3686,6 @@ msgstr ""
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
-msgstr "<0>Смарт-кошельки не поддерживаются в сети {0}</0><1/><2>Переключитесь на другую сеть или используйте EOA-кошелёк</2>"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "Покупка на децентрализованных или централизованных биржах"
@@ -3530,6 +3698,7 @@ msgstr ""
 msgid "Impact pool after reserved positive impact"
 msgstr "Пул влияния после зарезервированного положительного влияния"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -3548,6 +3717,11 @@ msgstr "Фактор финансирования"
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
 msgstr "Депозит отправлен"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Final notice: market delistings"
+msgstr "Последнее предупреждение: делистинг рынков"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -3649,11 +3823,6 @@ msgstr "Эта цена активации находится за предел�
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating..."
 msgstr "Создание…"
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{0, plural, one {is} other {are}}"
-msgstr "{0, plural, one {выводится} few {выводятся} many {выводятся} other {выводятся}}"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -3761,6 +3930,10 @@ msgstr "При срабатывании возможна недостаточн�
 msgid "Settlement"
 msgstr "Расчёт"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr "Минимальный фактор финансирования (лонг)"
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "Что делает GMX более экономичным, чем другие перпетуальные платформы?"
@@ -3772,10 +3945,6 @@ msgstr ""
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
 msgstr ""
-
-#: src/components/BotanixShutdownBanner/BotanixShutdownBanner.tsx
-msgid "Botanix is shutting down. Do not open new positions. Close existing positions and withdraw funds from Botanix."
-msgstr "Botanix закрывается. Не открывайте новые позиции. Закройте существующие позиции и выведите средства из Botanix."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3904,6 +4073,10 @@ msgstr "Максимальное количество дней до необхо
 msgid "Minimum {0} capital required for rankings"
 msgstr "Минимальный капитал {0} необходим для участия в рейтинге"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Request to be contacted"
+msgstr "Запросить обратную связь"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
@@ -3953,6 +4126,10 @@ msgstr ""
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
 msgstr "Введите сумму"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Add {0} to your wallet"
+msgstr "Добавьте {0} в кошелёк"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -4096,6 +4273,10 @@ msgstr "Макс. сумма закрытия превышена"
 msgid "Pool max short USD for deposit"
 msgstr "Макс. шорт USD пула для депозита"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
+msgstr "<0>Кошелёк переключился на другой аккаунт</0><1/><2>Для подписи в сети {0} нужен тот же аккаунт, с которого вы начали. Вместо выбора другого аккаунта добавьте {1} к текущему в кошельке и попробуйте снова.</2>"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
@@ -4197,6 +4378,10 @@ msgstr "Как начать на GMX?"
 msgid "Acceptable price"
 msgstr "Допустимая цена"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Instant answers, right on the page"
+msgstr "Мгновенные ответы прямо на странице"
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
 msgstr "Вывод с субаккаунта…"
@@ -4245,6 +4430,10 @@ msgstr "20с"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual market ID"
 msgstr "Виртуальный ID рынка"
+
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Your wallet is not connected to this network"
+msgstr "Ваш кошелёк не подключён к этой сети"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -4361,13 +4550,6 @@ msgstr "Введите реферальный код"
 msgid "Referral link copied to clipboard"
 msgstr ""
 
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Smart wallets are not supported on Express Trading or One-Click Trading"
-msgstr "Смарт-кошельки не поддерживаются в Express Trading и One-Click Trading"
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "Исполнено"
@@ -4412,6 +4594,10 @@ msgstr "Подробнее"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached"
 msgstr "Достигнут лимит максимальной прибыли"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Maximum collateral capacity reached"
+msgstr "Достигнут максимальный лимит обеспечения"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
@@ -4486,6 +4672,10 @@ msgstr "Разбивка чистого влияния на цену"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
 msgstr "Отсутствуют параметры для получения. Повторите через несколько секунд"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
+msgstr "Максимальный фактор финансирования (шорт)"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
@@ -4600,6 +4790,10 @@ msgstr "Загрузка данных рынков..."
 msgid "{longOrShort} positions do not pay a funding fee or a borrow fee"
 msgstr "Позиции {longOrShort} не платят комиссию за финансирование или комиссию за заимствование"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Turn your audience<0/>into on-chain income."
+msgstr "Превратите свою аудиторию<0/>в ончейн-доход."
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
 msgstr "в {0}"
@@ -4654,6 +4848,10 @@ msgstr "Требование..."
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr "<0><1>@GMX_IO</1> заключает партнёрство по данным с Token Terminal. GMX — ведущая бессрочная биржа без разрешений, построенная на <2>@Arbitrum</2> и <3>@Avax</3>.</0><4>Протокол служит базовым уровнем ликвидности для мультичейн DeFi.</4><5>С условным объёмом торгов ~$280 млрд и более, GMX осознала необходимость надёжной аналитической отчётности для стейкхолдеров.</5>"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive supported assets into your wallet on {networkName}, or choose another network."
+msgstr "Получите поддерживаемые активы на ваш кошелёк в сети {networkName} или выберите другую сеть."
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
@@ -4681,6 +4879,10 @@ msgstr "Редактировать {0}"
 #: src/components/Referrals/shared/modals/ClaimSwapTargetTokenSelector.tsx
 msgid "Swap to"
 msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
+msgstr "Внешняя маршрутизация временно приостановлена после неудачной попытки.<0/><1/><2>Повторить внешний маршрут</2>"
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
@@ -4734,6 +4936,10 @@ msgstr ""
 msgid "Cancel Limit"
 msgstr "Отменить Лимит"
 
+#: src/domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap.ts
+msgid "Gas token switched to {toSymbol} to enable external swap routing"
+msgstr "Токен газа переключён на {toSymbol}, чтобы включить внешнюю маршрутизацию свопа"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -4775,6 +4981,10 @@ msgstr "Не удалось загрузить объявления. Пожал�
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "Превышен максимальный открытый интерес. Текущий: {openInterestText}, макс.: {maxOpenInterestText}"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
+msgstr "Анонимно по умолчанию — достаточно подключить кошелёк.<0/>Оставьте email, только если хотите получать обновления."
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop-loss"
 msgstr "стоп-лосс"
@@ -4792,6 +5002,10 @@ msgstr "Период"
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "Swap Market: Обмен токенов по текущей рыночной цене"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available while the gas payment token matches the token you're swapping to. Change the gas payment token to proceed."
+msgstr "Пулы GMX не могут исполнить своп такого размера. Нужен внешний маршрут, который недоступен, пока токен оплаты газа совпадает с получаемым токеном. Смените токен оплаты газа, чтобы продолжить."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Per 1h"
 msgstr "За 1ч"
@@ -4803,6 +5017,10 @@ msgstr "Агрегатор бессрочных контрактов"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Запрос на Рыночный Обмен"
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Positions to close:"
+msgstr "Позиции к закрытию:"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -4929,6 +5147,10 @@ msgstr "LayerZero scan"
 msgid "Borrow fee"
 msgstr "Комиссия за заимствование"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Self-custodial, always"
+msgstr "Всегда некастодиально"
+
 #: src/lib/copyElementAsImage.ts
 msgid "Image copied to clipboard"
 msgstr ""
@@ -5001,10 +5223,6 @@ msgstr "Жизненный цикл ордера"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit supported:"
 msgstr "Permit поддерживается:"
-
-#: src/pages/ParseTransaction/ParseTransaction.tsx
-msgid "Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
-msgstr "Укажите сеть: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
@@ -5099,6 +5317,10 @@ msgstr "DeFi маржинальный протокол"
 msgid "Set short Stop-Loss @ {0}"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Banners, links and a partner manager."
+msgstr "Баннеры, ссылки и партнёрский менеджер."
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
 msgstr "Комиссия"
@@ -5106,6 +5328,10 @@ msgstr "Комиссия"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
 msgstr "Ёмкость хранилища"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "MONTHLY VOLUME"
+msgstr "МЕСЯЧНЫЙ ОБЪЁМ"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5162,10 +5388,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Отменить новые ордера"
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to unstake"
-msgstr "Не удалось вывести из стейкинга"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -5282,9 +5504,21 @@ msgstr "Покупайте облигации GMX на Bond Protocol со ски
 msgid "{positionTitle} orders"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
+msgstr "<0>Ваш {walletName} недоступен в сети {0}</0><1/><2>Добавьте {1} в {walletName}, подключитесь заново и попробуйте снова</2>"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Talk to the desk"
+msgstr "Поговорить с деском"
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
+msgstr "<0>Нет. GMX некастодиален и не требует разрешений — вы подключаете кошелёк и торгуете. Верификация личности не требуется.</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5299,6 +5533,10 @@ msgstr "СТАВКА ЛОНГОВ / 1Ч"
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
 msgstr "Не удалось проверить подпись permit."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
+msgstr "Истёкший вывод"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5326,12 +5564,17 @@ msgstr "Отменить все"
 msgid "{positionName} settling fees..."
 msgstr "{positionName} расчёт комиссий..."
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "OR"
+msgstr "ИЛИ"
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
 msgstr "<0>GMX исполняет сделки против динамически сбалансированного пула ликвидности, в отличие от традиционных книг ордеров. Эта модель поддерживает глубокую ликвидность, позволяя открывать позиции более $50м с уменьшенным влиянием цены, даже по сравнению с крупнейшими книгами ордеров. В некоторых случаях вы даже можете получить оплату при исполнении ордера из-за положительного влияния цены.</0><1>GMX предотвращает несправедливые ликвидации, используя децентрализованные оракулы от Chainlink и Chaos Labs, которые агрегируют цены из нескольких доверенных источников, чтобы избежать манипуляций.</1>"
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
+#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -5653,10 +5896,6 @@ msgstr ""
 msgid "PnL Analysis"
 msgstr "Анализ PnL"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
-msgstr "Нет доступного пути обмена. <0>Обмен {0} на {swapToTokenSymbol}</0>, затем на {1}."
-
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -5776,6 +6015,10 @@ msgstr "{updateOrdersCount} TP/SL ордеров обновлено"
 msgid "Insufficient margin. Add more margin"
 msgstr ""
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "What's the minimum volume to qualify?"
+msgstr "Какой минимальный объём торгов нужен для участия?"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Current reserved:"
 msgstr "Текущий резерв:"
@@ -5834,11 +6077,16 @@ msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} 
 msgstr "Выполняет {numberOfParts} {0} {type} ордеров по {1} каждый в течение {2} для {3}"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Документация"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Marketing Kit + Co-marketing"
+msgstr "Маркетинг-кит + совместный маркетинг"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
@@ -5997,6 +6245,10 @@ msgstr "Бонусное вознаграждение GLV"
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Lifetime staking rewards"
 msgstr "Вознаграждения за стейкинг за всё время"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
+msgstr "Для One-Click Trading требуется однократная подпись для текущей сети. Подписи, сделанные для других сетей, не затрагиваются. Подпишите повторно, чтобы включить One-Click Trading здесь."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
@@ -6166,7 +6418,7 @@ msgstr "Показывать иконки покупки/продажи на г�
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
-msgstr ""
+msgstr "Для этого свопа требуется внешняя маршрутизация. Оплатите газ в {0}, чтобы включить её."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -6240,10 +6492,6 @@ msgstr "Введите hex-данные ошибки выше для декод�
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Allowed actions"
 msgstr "Разрешённые действия"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr "Макс. фактор финансирования"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
@@ -6402,6 +6650,10 @@ msgstr "Переход от <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></
 msgid "Share your PnL"
 msgstr "Поделитесь своим PnL"
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Active affiliates"
+msgstr "Активные аффилиаты"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
@@ -6472,6 +6724,10 @@ msgstr "Ордер не найден. Возможно, он был отменё
 msgid "Vesting"
 msgstr "Вестинг"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Earn on every trade they make."
+msgstr "Зарабатывайте на каждой их сделке."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order cancelled"
 msgstr "Ордер на покупку отменён"
@@ -6520,6 +6776,10 @@ msgstr "Размер позиции превышает стоимость пул
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display net value and PnL after all fees"
 msgstr "Отображать чистую стоимость и PnL после всех комиссий"
+
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "GMX cumulative volume"
+msgstr "Совокупный объём GMX"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6770,6 +7030,7 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6911,6 +7172,10 @@ msgstr "Расчётное время до ликвидации"
 msgid "Mark price for the liquidation"
 msgstr "Расчётная цена на момент ликвидации"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} will be disabled after August 5, 2026, 23:59 UTC. Close your {positionNoun} before then. Collateral left in open positions won't be accessible after that."
+msgstr "{markets} будут отключены после 5 августа 2026 года, 23:59 UTC. Закройте {positionNoun} до этого времени. Залог, оставленный в открытых позициях, после этого будет недоступен."
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
@@ -6939,10 +7204,6 @@ msgstr "Макс. сумма лонгов в пуле"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "Требует более активного управления, чем GLV"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
-msgstr "Мин. фактор финансирования"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -7077,6 +7338,10 @@ msgstr "Предоставляйте токены в займы или бери�
 msgid "GMX logo"
 msgstr "Логотип GMX"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Using Safe? Learn how to add a network"
+msgstr "Используете Safe? Узнайте, как добавить сеть"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
 msgstr "Минуты"
@@ -7092,6 +7357,10 @@ msgstr "Все позиции принадлежат одному и тому ж
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "Одобрение {tokenSymbol}..."
+
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Your wallet {account} still holds capital in markets that are being delisted. These markets will be disabled after August 5, 2026, 23:59 UTC."
+msgstr "В вашем кошельке {account} всё ещё есть средства на рынках, которые выводятся из листинга. Эти рынки будут отключены после 5 августа 2026 года, 23:59 UTC."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -7290,6 +7559,10 @@ msgstr "Поставка"
 msgid "LONG LIQ."
 msgstr "LONG LIQ."
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "If you're moving serious size on GMX, you shouldn't be paying list price. The desk cuts your fees and gives you a direct line to a person — not a ticket queue."
+msgstr "Если вы торгуете на GMX серьёзными объёмами, вам не стоит платить по стандартному тарифу. Деск снижает ваши комиссии и даёт прямую связь с человеком — а не очередь из тикетов."
+
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "Выберите актив для депозита"
@@ -7312,6 +7585,10 @@ msgstr ""
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
 msgstr "Нет открытых позиций"
+
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "See the perks"
+msgstr "Посмотреть преимущества"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
@@ -7367,6 +7644,10 @@ msgstr "Последние 90д"
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Show size in tokens"
 msgstr "Показать размер в токенах"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "You earn"
+msgstr "Вы зарабатываете"
 
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
@@ -7452,6 +7733,10 @@ msgstr "Perpie"
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Supported by"
 msgstr "Поддерживается"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
+msgstr "<0>Нет, вы торгуете полностью со своего собственного кошелька на GMX. Мы никогда не храним ваши активы — скидки и выплаты происходят ончейн прямо на ваш адрес.</0>"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -7592,7 +7877,6 @@ msgstr "Tradao"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "Недостаточная ликвидность"
 
@@ -7609,6 +7893,14 @@ msgstr "СТАТУС"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "Do I need to pass KYC?"
+msgstr "Нужно ли проходить KYC?"
+
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
+msgstr "Ваш кошелёк не может подписывать сообщения. Подключите другой кошелёк для торговли."
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
@@ -7740,6 +8032,10 @@ msgstr "Среднее используемое кредитное плечо"
 msgid "Cancel Stop-Loss"
 msgstr "Отмена стоп-лосса"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
+msgstr "Мы отвечаем в течение ~2 часов в часы работы рынка. Никаких обязательств — просто разговор."
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7847,6 +8143,10 @@ msgstr "Ссылка скопирована"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr "РАЗМЕР"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Book a 30-min call"
+msgstr "Запишитесь на 30-минутный звонок"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -8146,6 +8446,10 @@ msgstr "Тип аккаунта"
 msgid "Collateral in"
 msgstr "Обеспечение"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
+msgstr "Пулы GMX не могут исполнить своп такого размера, а внешний маршрут сейчас недоступен. Попробуйте уменьшить сумму или <0>выполните своп на внешнем агрегаторе</0>."
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr "НАЗВАНИЕ СОБЫТИЯ"
@@ -8162,6 +8466,10 @@ msgstr "ОТКРЫТЫЙ ИНТЕРЕС"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin transfer"
 msgstr "Начать перевод"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr "Минимальный фактор финансирования (шорт)"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
@@ -8181,10 +8489,6 @@ msgstr "Мин размер позиции: {0}"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
-msgstr "{markets} {verb} из листинга. Закройте {positionNoun}, оставшиеся позиции могут быть закрыты автоматически."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr "Недоступен"
@@ -8198,6 +8502,10 @@ msgstr ""
 msgid "Staked GMX"
 msgstr "GMX в стейкинге"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Real-time referral dashboard"
+msgstr "Реферальная панель в реальном времени"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor shorts"
 msgstr "Резервный фактор открытого интереса для шортов"
@@ -8206,10 +8514,6 @@ msgstr "Резервный фактор открытого интереса дл
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
 msgstr "Недостаточная ликвидность пула"
-
-#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
-msgid "No opportunities on Botanix yet"
-msgstr "На Botanix пока нет возможностей"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -8374,10 +8678,6 @@ msgstr "Чистая ставка"
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "Недействительные адреса перевода. Проверьте URL."
 
-#: src/components/StatusNotification/StakeNotification.tsx
-msgid "Swap {fromAmount} for {toAmount}"
-msgstr "Обмен {fromAmount} на {toAmount}"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
@@ -8504,10 +8804,6 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to stake"
-msgstr "Не удалось стейкать"
-
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -8572,6 +8868,10 @@ msgstr "Выполнение запроса на покупку…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "Покупка GM не удалась"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
+msgstr "Максимальный фактор финансирования (лонг)"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
@@ -8699,6 +8999,10 @@ msgstr "Наслаждайтесь бесперебойной торговлей
 msgid "Top positions"
 msgstr "Лучшие позиции"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
+msgstr "Недостаточный баланс {nativeTokenSymbol} для покрытия сетевых комиссий. Добавьте средства и повторите попытку."
+
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
@@ -8740,10 +9044,6 @@ msgstr "~5 мин"
 msgid "New tier:"
 msgstr "Новый уровень:"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "Market delistings"
-msgstr "Делистинг рынков"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
@@ -8761,7 +9061,6 @@ msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "(<0>{0}</0> от суммы {operationText})"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
@@ -8843,6 +9142,10 @@ msgstr "Вестинговый GMX не выведен"
 msgid "Short positions"
 msgstr "Шорт-позиции"
 
+#: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+msgid "Your wallet cannot sign messages. Use Classic mode to trade."
+msgstr "Ваш кошелёк не может подписывать сообщения. Используйте классический режим для торговли."
+
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr "КОМИССИИ"
@@ -8874,6 +9177,10 @@ msgstr "Экспонента заимствования шорт"
 msgid "Price impact"
 msgstr "Влияние на цену"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Retry external route"
+msgstr "Повторить внешний маршрут"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
 msgstr ""
@@ -8894,6 +9201,10 @@ msgstr "Вы"
 msgid "Close position"
 msgstr "Закрыть позицию"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
+msgstr "Иллюстративно, из расчёта эффективной комиссии ~0,06%.<0/>Фактический доход зависит от уровня аффилиата и активности каждого трейдера."
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
 msgstr "с 100x левериджем"
@@ -8901,6 +9212,11 @@ msgstr "с 100x левериджем"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "Нет влияния на цену. Единая цена исполнения для<0/>увеличения лонг-позиций или уменьшения шорт-позиций<1/>данного размера."
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Close positions"
+msgstr "Закрыть позиции"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
@@ -9060,6 +9376,10 @@ msgstr "Пулы"
 msgid "Pool long amount"
 msgstr "Сумма лонг-позиций пула"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Open Live-Chat"
+msgstr "Открыть Live-Chat"
+
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
 msgstr "ХРАНИЛИЩЕ"
@@ -9133,6 +9453,10 @@ msgstr "Структура обеспечения"
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "Доступные к получению скидки"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Lock in<0/><1>a better rate.</1>"
+msgstr "Зафиксируйте<0/><1>ставку получше.</1>"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -9219,6 +9543,10 @@ msgstr "Недостаточный баланс {0}"
 msgid "Express Trading is unavailable for wrapping or unwrapping native token ETH"
 msgstr "Express Trading недоступен для обёртывания или развёртывания нативного токена ETH"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Relay fee exceeds the maximum allowed"
+msgstr "Комиссия ретрансляции превышает допустимый максимум"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr "Ожидаемая скидка до {0}% от комиссии за открытие. Распределяется в виде токенов {incentivesTokenTitle} пропорционально. <0><1>Подробнее</1>.</0>"
@@ -9261,6 +9589,10 @@ msgstr "Возвраты"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Events for account:"
 msgstr "События для аккаунта:"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation."
+msgstr "Запрос отправлен, но подтвердить его результат не удалось. Возможно, он всё же выполнен — повторите попытку, чтобы проверить и завершить отключение."
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
@@ -9565,6 +9897,10 @@ msgstr "Токенов зарезервировано для вестинга: {
 msgid "1y"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "An unexpected error occurred. Please retry."
+msgstr "Произошла непредвиденная ошибка. Пожалуйста, повторите попытку."
+
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
 msgstr "Код уже занят в сетях: {takenNetworkNamesJoined}. Скидки от этих сетей не начисляются."
@@ -9699,6 +10035,10 @@ msgstr "Express + One-Click"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "View position history"
 msgstr "Посмотреть историю позиции"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "The more you trade, the more you keep."
+msgstr "Чем больше вы торгуете, тем больше оставляете себе."
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
@@ -9907,6 +10247,10 @@ msgstr "Мониторинг рынков"
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "История распределений полученных компенсаций и аирдропов"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Fastest — chat with the desk directly"
+msgstr "Быстрее всего — пообщаться с деском напрямую"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new amount or price"
 msgstr "Введите новую сумму или цену"
@@ -9977,6 +10321,10 @@ msgstr "тейк-профит"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "Топ PnL ($)"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
+msgstr "<0>Скидки для трейдеров применяются к аккаунту автоматически после подтверждения уровня. Реферальные вознаграждения начисляются в реальном времени, и их можно получить ончейн через реферальную панель в любой момент.</0>"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Leverage trading terminal"
@@ -10099,6 +10447,14 @@ msgstr "В стейкинге"
 msgid "Traders"
 msgstr "Трейдеры"
 
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Wallet cannot sign messages"
+msgstr "Кошелёк не может подписывать сообщения"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "REFERRED MONTHLY VOLUME"
+msgstr "МЕСЯЧНЫЙ ОБЪЁМ РЕФЕРАЛОВ"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
 msgstr "Обновления"
@@ -10115,6 +10471,10 @@ msgstr "Исполнить часть TWAP"
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
 msgstr "Создать лимитный своп"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Reach out however suits you and we'll come back with your exact tier — usually within a couple of hours. No obligation."
+msgstr "Напишите нам любым удобным способом — мы сообщим ваш точный уровень, обычно в течение пары часов. Никаких обязательств."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Change network"
@@ -10184,6 +10544,10 @@ msgstr "Скопировать технические детали"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "ТРЕКЕР"
+
+#: src/domain/multichain/useWithdrawBlockedError.tsx
+msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect, otherwise your funds cannot be withdrawn."
+msgstr "Вывод средств подписывается в сети {0}. Добавьте эту сеть в кошелёк и подключитесь заново, иначе вывод средств будет невозможен."
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
@@ -10298,6 +10662,10 @@ msgstr ""
 msgid "Your funds are safe and remain in your wallet."
 msgstr "Ваши средства в безопасности и остаются в вашем кошельке."
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Up to 25% off fees for high-volume traders. Up to 25% earnings<0/>for affiliates. Personal support for both."
+msgstr "До 25% скидки на комиссии для трейдеров с крупными объёмами. До 25% дохода<0/>для аффилиатов. Персональная поддержка и тем, и другим."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Swap"
 msgstr "Неудачный рыночный своп"
@@ -10313,6 +10681,10 @@ msgstr "Ошибка входящего моста"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Invalid recipient address"
 msgstr "Недействительный адрес получателя"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Express transaction data is still loading. Please retry in a few seconds."
+msgstr "Данные Express-транзакции ещё загружаются. Пожалуйста, повторите попытку через несколько секунд."
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -10363,6 +10735,10 @@ msgstr "Что такое GM?"
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Delisting"
 msgstr "Делистинг"
+
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "{0} (external)"
+msgstr "{0} (внешний)"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -10469,6 +10845,10 @@ msgstr ""
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>Положительные комиссии финансирования, накопленные из ваших позиций</0>"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Message us on Telegram"
+msgstr "Написать нам в Telegram"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Topics"
 msgstr "Топики"
@@ -10489,6 +10869,10 @@ msgstr "APR эскроуированного GMX"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "Вестинг доступен только на {chainNames}. Переключите сеть для продолжения."
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that."
+msgstr "{pools} будут отключены после 5 августа 2026 года, 23:59 UTC. Выведите ликвидность до этого времени. GM-токены, оставленные в отключённом пуле, после этого будут недоступны."
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -10558,9 +10942,17 @@ msgstr "Автоотмена TP/SL"
 msgid "LIQUIDITY LONG"
 msgstr "ЛИКВИДНОСТЬ ЛОНГ"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "Is this custodial? Do I send you my funds?"
+msgstr "Это кастодиальный сервис? Нужно ли отправлять вам свои средства?"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "PnL шорт"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "A dedicated account manager"
+msgstr "Персональный менеджер"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
@@ -10585,6 +10977,10 @@ msgstr "Прошло времени"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "Подписывайте транзакции вне сети. Премиальные RPC обеспечивают надёжность при перегрузке сети.<0/><1/>Оплата Gas в {gasPaymentTokensText}."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
+msgstr "Внешняя маршрутизация временно приостановлена после неудачной попытки. Повторите, чтобы проверить более выгодный курс."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
@@ -10686,6 +11082,10 @@ msgstr "Тестирование разрешений токенов"
 msgid "Invalid liquidation price"
 msgstr "Недопустимая цена ликвидации"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+msgstr "Укажите сеть: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
 msgstr "{count, plural, one {# действие в этом жизненном цикле} few {# действия в этом жизненном цикле} many {# действий в этом жизненном цикле} other {# действия в этом жизненном цикле}}"
@@ -10734,10 +11134,6 @@ msgstr "Купить APE на Arbitrum через <0>Camelot</0>"
 msgid "Depositing..."
 msgstr "Внесение средств…"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
-msgstr "{pools} {verb} из листинга. Выведите ликвидность, так как депозиты больше недоступны, или переведите её в GLV, чтобы продолжать зарабатывать."
-
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -10765,6 +11161,11 @@ msgstr "ПОСЛЕДНЯЯ ЦЕНА"
 msgid "Cancelling {orderText}..."
 msgstr "Отмена {orderText}…"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your savings"
+msgstr "Оценить свою экономию"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
@@ -10833,6 +11234,10 @@ msgstr "Уменьшите вывод до максимума. <0>Подробн
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr ""
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Trade more, pay less.<0/>Refer, and earn."
+msgstr "Торгуйте больше, платите меньше.<0/>Приглашайте — и зарабатывайте."
+
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
@@ -10892,10 +11297,6 @@ msgstr "GMX trading chat"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs trading simulations"
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "Manage liquidity"
-msgstr "Управление ликвидностью"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
@@ -10969,6 +11370,10 @@ msgstr "Распределение"
 msgid "<0>Every</0> {minutes} minutes{0}"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your own contact on Telegram."
+msgstr "Личный контакт в Telegram."
+
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
@@ -10995,6 +11400,10 @@ msgstr "GLV хранилища:"
 #: src/components/DownloadAsCsv/DownloadAsCsv.tsx
 msgid "Download as CSV"
 msgstr "Скачать как CSV"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Fee discounts up to 25%"
+msgstr "Скидки на комиссии до 25%"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
@@ -11035,6 +11444,11 @@ msgstr "Дашборды и аналитика GMX"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
+msgid "Withdraw liquidity"
+msgstr "Вывести ликвидность"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
@@ -11197,6 +11611,11 @@ msgstr "Для продолжения требуется стандартная 
 msgid "Yield optimizations"
 msgstr "Оптимизация доходности"
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+#: landing/src/pages/TraderAffiliateProgram/TraderAffiliateProgram.tsx
+msgid "Trader & Affiliate Program"
+msgstr "Программа для трейдеров и аффилиатов"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
@@ -11235,13 +11654,13 @@ msgstr "Начать зарабатывать"
 msgid "{orderText} cancellation failed"
 msgstr "Отмена {orderText} не удалась"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "How and when do I get paid or credited?"
+msgstr "Как и когда я получу выплату или начисление?"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "Продать"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Smart wallets not supported on this network"
-msgstr "Смарт-кошельки не поддерживаются в этой сети"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"
@@ -11284,6 +11703,10 @@ msgstr "{count, plural, one {Ордер} other {# Ордеров}}"
 msgid "Avalanche trading incentives"
 msgstr "Торговые поощрения Avalanche"
 
+#: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
+msgid "External routes are only used for market swaps."
+msgstr "Внешние маршруты используются только для маркет-свопов."
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction canceled"
@@ -11304,6 +11727,11 @@ msgstr "Дельта-нейтральные хранилища"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."
 msgstr "Отправка запроса на перемещение…"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr "Ордер истёк до того, как мог быть исполнен"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
@@ -11505,6 +11933,10 @@ msgstr "лимит"
 msgid "Execute TWAP Swap part"
 msgstr "Исполнение части TWAP-обмена"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your income (at 25%)"
+msgstr "Ваш доход (при 25%)"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed"
 msgstr "Не удалось купить {gmOrGlvLabel}"
@@ -11555,6 +11987,10 @@ msgstr ""
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
 msgstr "Цена исполнения не соответствовала допустимой цене. Ордер будет исполнен при выполнении условия."
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Open Telegram"
+msgstr "Открыть Telegram"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "multiple asset classes"
 msgstr "множество классов активов"
@@ -11584,6 +12020,10 @@ msgstr "Закрыть"
 msgid "Link"
 msgstr "Ссылка"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr "Истёкший рыночный обмен"
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "Завершившие трейдеры были переведены на протокольный код GMX после достижения порога завершения реферальной программы."
@@ -11603,6 +12043,10 @@ msgstr "Общие показатели эффективности"
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
 msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
+msgstr "Истёкший депозит"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

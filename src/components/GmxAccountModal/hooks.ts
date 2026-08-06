@@ -5,6 +5,7 @@ import { isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { isGmxAccountHoldableToken } from "config/markets";
 import {
   getMappedTokenId,
   MULTI_CHAIN_PLATFORM_TOKENS_MAP,
@@ -457,7 +458,10 @@ export function useGmxAccountDepositEligibility(): {
 
   return useMemo(() => {
     const hasSettlementChainFunds = Object.values(tokensData ?? (EMPTY_OBJECT as TokensData)).some(
-      (token) => token.walletBalance !== undefined && token.walletBalance > 0n
+      (token) =>
+        token.walletBalance !== undefined &&
+        token.walletBalance > 0n &&
+        isGmxAccountHoldableToken(chainId as SettlementChainId, token.address)
     );
 
     const hasDepositFundsOnChain = (network: number): boolean =>

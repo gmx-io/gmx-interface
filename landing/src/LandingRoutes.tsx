@@ -1,10 +1,11 @@
-import { lazy, Suspense } from "react";
-import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { Redirect, Route, RouteComponentProps, Switch, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
+const TraderAffiliateProgram = lazy(() => import("./pages/TraderAffiliateProgram/TraderAffiliateProgram"));
 
 function TermsPageLoader() {
   return (
@@ -24,23 +25,41 @@ function RedirectToHomeWithSearch({ location }: RouteComponentProps) {
   return <Redirect to={`/${location.search}`} />;
 }
 
+function ScrollToTopOnNavigate() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 export function LandingRoutes() {
   return (
-    <Switch>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <Route exact path="/referral-terms">
-        <Suspense fallback={<TermsPageLoader />}>
-          <ReferralTerms />
-        </Suspense>
-      </Route>
-      <Route exact path="/terms-and-conditions">
-        <Suspense fallback={<TermsPageLoader />}>
-          <TermsAndConditions />
-        </Suspense>
-      </Route>
-      <Route path="*" render={RedirectToHomeWithSearch} />
-    </Switch>
+    <>
+      <ScrollToTopOnNavigate />
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route exact path="/referral-terms">
+          <Suspense fallback={<TermsPageLoader />}>
+            <ReferralTerms />
+          </Suspense>
+        </Route>
+        <Route exact path="/terms-and-conditions">
+          <Suspense fallback={<TermsPageLoader />}>
+            <TermsAndConditions />
+          </Suspense>
+        </Route>
+        <Route exact path="/trader-affiliate-program">
+          <Suspense fallback={<TermsPageLoader />}>
+            <TraderAffiliateProgram />
+          </Suspense>
+        </Route>
+        <Route path="*" render={RedirectToHomeWithSearch} />
+      </Switch>
+    </>
   );
 }

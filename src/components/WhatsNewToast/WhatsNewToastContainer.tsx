@@ -6,8 +6,11 @@ import { useLocation } from "react-router-dom";
 import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
+import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/BalancerProgramAnnouncement";
+import { useBalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/useBalancerProgramAnnouncement";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
+import { useWalletExtensionConnectionBanner } from "components/WalletExtensionConnectionBanner/useWalletExtensionConnectionBanner";
 
 import { useWhatsNewAnnouncements } from "./useWhatsNewAnnouncements";
 import { WhatsNewToast } from "./WhatsNewToast";
@@ -32,8 +35,19 @@ export function WhatsNewToastContainer() {
   const activeUiFlagEvents = useUiFlagEvents();
   const { cards, dismiss } = useWhatsNewAnnouncements();
   const { announcements: delistingAnnouncements, dismiss: dismissDelisting } = useDelistingExitAnnouncements();
+  const { isVisible: isBalancerProgramAnnouncementVisible, dismiss: dismissBalancerProgramAnnouncement } =
+    useBalancerProgramAnnouncement();
   const [isScrolled, setIsScrolled] = useState(false);
   const { pathname } = useLocation();
+  const { isVisible: isWalletExtensionBannerVisible, dismiss: dismissWalletExtensionBanner } =
+    useWalletExtensionConnectionBanner(pathname);
+
+  const warningUiFlagEvents = activeUiFlagEvents.filter(
+    (event) => event.data.variant === "warning" || event.data.variant === "error"
+  );
+  const genericUiFlagEvents = activeUiFlagEvents.filter(
+    (event) => event.data.variant !== "warning" && event.data.variant !== "error"
+  );
 
   useEffect(() => {
     setIsScrolled(false);
@@ -72,7 +86,7 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           ))}
-          {activeUiFlagEvents.map((event) => (
+          {warningUiFlagEvents.map((event) => (
             <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <div className="pb-12">
                 <AnnouncementBanner
@@ -87,6 +101,48 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           ))}
+          {isBalancerProgramAnnouncementVisible && (
+            <motion.div key="balancer-program" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <BalancerProgramAnnouncement onDismiss={dismissBalancerProgramAnnouncement} />
+              </div>
+            </motion.div>
+          )}
+          {genericUiFlagEvents.map((event) => (
+            <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <AnnouncementBanner
+                  className="pointer-events-auto"
+                  variant={event.data.variant}
+                  headerLabel={event.data.title}
+                  headerIcon="alert"
+                  onClose={event.dismiss}
+                >
+                  {event.data.content}
+                </AnnouncementBanner>
+              </div>
+            </motion.div>
+          ))}
+          {isWalletExtensionBannerVisible && (
+            <motion.div
+              key="wallet-extension-connection"
+              initial={MOTION_INITIAL}
+              animate={MOTION_ANIMATE}
+              exit={MOTION_EXIT}
+            >
+              <div className="pb-12">
+                <AnnouncementBanner
+                  className="pointer-events-auto"
+                  variant="info"
+                  headerLabel="Wallet connection"
+                  headerIcon="info"
+                  onClose={dismissWalletExtensionBanner}
+                >
+                  Disable and reenable your wallet extension if you are having trouble connecting it.
+                </AnnouncementBanner>
+              </div>
+            </motion.div>
+          )}
           {cards.length > 0 && (
             <motion.div key="whats-new" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <WhatsNewToast cards={cards} dismiss={dismiss} />

@@ -235,6 +235,8 @@ function convertApiOrderToOrder({
   ...rest
 }: ApiOrderInfo): Order {
   return {
+    // overridden by the spread once the API starts serving the snapshot
+    uiFeeFactor: undefined,
     ...rest,
     orderType: rest.orderType as OrderType,
     decreasePositionSwapType: rest.decreasePositionSwapType as DecreasePositionSwapType,
@@ -313,6 +315,7 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         executionFee: BigInt(orderData.numbers.executionFee),
         callbackGasLimit: BigInt(orderData.numbers.callbackGasLimit),
         minOutputAmount: BigInt(orderData.numbers.minOutputAmount),
+        uiFeeFactor: BigInt(orderData.numbers.uiFeeFactor),
         updatedAtTime: orderData.numbers.updatedAtTime,
         validFromTime: orderData.numbers.validFromTime,
         isLong: orderData.flags.isLong,
