@@ -29,7 +29,12 @@ import {
 import { UserReferralInfo } from "utils/referrals/types";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { ExternalSwapStrategy, NoSwapStrategy } from "utils/swap/types";
-import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "utils/tokens";
+import {
+  convertToTokenAmount,
+  convertToTokenAmountForIncrease,
+  convertToUsd,
+  getTokensRatioByPrice,
+} from "utils/tokens";
 import { TokenData, TokensRatio } from "utils/tokens/types";
 
 import {
@@ -221,8 +226,19 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     const swapAmountOut = values.swapStrategy.amountOut;
     const baseCollateralUsd = convertToUsd(swapAmountOut, collateralToken.decimals, values.collateralPrice)!;
     const baseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
-    const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, baseSizeDeltaUsd, isLong);
-    const basePositionFeeInfo = getPositionFee(marketInfo, baseSizeDeltaUsd, balanceWasImproved, userReferralInfo);
+    const baseSizeDeltaInTokens = convertToTokenAmountForIncrease(
+      baseSizeDeltaUsd,
+      indexToken.decimals,
+      values.indexPrice,
+      isLong
+    )!;
+    const { balanceWasImproved: baseBalanceWasImproved } = getPriceImpactForPosition(
+      marketInfo,
+      baseSizeDeltaUsd,
+      isLong,
+      { sizeDeltaInTokens: baseSizeDeltaInTokens }
+    );
+    const basePositionFeeInfo = getPositionFee(marketInfo, baseSizeDeltaUsd, baseBalanceWasImproved, userReferralInfo);
     const baseUiFeeUsd = applyFactor(baseSizeDeltaUsd, uiFeeFactor);
     const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(values.swapStrategy.swapPathStats?.swapSteps);
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
@@ -233,8 +249,20 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       BASIS_POINTS_DIVISOR_BIGINT
     );
 
-    values.indexTokenAmount = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
+    if (values.sizeDeltaUsd <= 0n) {
+      return values;
+    }
 
+    values.indexTokenAmount = convertToTokenAmountForIncrease(
+      values.sizeDeltaUsd,
+      indexToken.decimals,
+      values.indexPrice,
+      isLong
+    )!;
+
+    const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong, {
+      sizeDeltaInTokens: values.indexTokenAmount,
+    });
     const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, balanceWasImproved, userReferralInfo);
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
@@ -263,7 +291,15 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.indexTokenAmount = indexTokenAmount;
     values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
 
-    const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong);
+    const sizeDeltaInTokensForPriceImpact = convertToTokenAmountForIncrease(
+      values.sizeDeltaUsd,
+      indexToken.decimals,
+      values.indexPrice,
+      isLong
+    )!;
+    const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong, {
+      sizeDeltaInTokens: sizeDeltaInTokensForPriceImpact,
+    });
 
     const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, balanceWasImproved, userReferralInfo);
 
@@ -327,7 +363,15 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       values.indexTokenAmount = indexTokenAmount;
       values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
 
-      const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong);
+      const sizeDeltaInTokensForPriceImpact = convertToTokenAmountForIncrease(
+        values.sizeDeltaUsd,
+        indexToken.decimals,
+        values.indexPrice,
+        isLong
+      )!;
+      const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong, {
+        sizeDeltaInTokens: sizeDeltaInTokensForPriceImpact,
+      });
 
       const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, balanceWasImproved, userReferralInfo);
       values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
@@ -402,6 +446,13 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     });
   }
 
+  values.sizeDeltaInTokens = convertToTokenAmountForIncrease(
+    values.sizeDeltaUsd,
+    indexToken.decimals,
+    values.indexPrice,
+    isLong
+  )!;
+
   const acceptablePriceInfo = getAcceptablePriceInfo({
     marketInfo,
     isIncrease: true,
@@ -409,6 +460,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
+    sizeDeltaInTokens: values.sizeDeltaInTokens,
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
@@ -447,14 +499,13 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
         maxNegativePriceImpactBps,
+        sizeDeltaInTokens: values.sizeDeltaInTokens,
       });
 
       values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
       values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
     }
   }
-
-  values.sizeDeltaInTokens = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
 
   return values;
 }
@@ -679,6 +730,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
 
   return {
     nextSizeUsd,
+    nextSizeInTokens,
     nextCollateralUsd,
     nextEntryPrice,
     nextLeverage,

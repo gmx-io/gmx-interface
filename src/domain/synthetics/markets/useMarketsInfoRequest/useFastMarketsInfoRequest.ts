@@ -5,9 +5,13 @@ import { zeroAddress } from "viem";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 import { metrics } from "lib/metrics";
+import { executeMulticall } from "lib/multicall";
 import { MarketInfo as SquidMarketInfo } from "sdk/codegen/subsquid";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { queryPaginated } from "sdk/utils/indexers";
+import { buildMarketsRiskValuesRequest, parseMarketsRiskValuesResponse } from "sdk/utils/markets/multicall";
+import type { MarketRiskInput } from "sdk/utils/markets/multicall";
 
 import { getMarketFullName, RawMarketsInfoData } from "..";
 
@@ -44,11 +48,14 @@ const MARKETS_INFO_QUERY = gql`
       fundingFactor
       fundingExponentFactor
       fundingIncreaseFactorPerSecond
+      minFundingIncreaseRatePerSecond
       fundingDecreaseFactorPerSecond
       thresholdForStableFunding
       thresholdForDecreaseFunding
-      minFundingFactorPerSecond
-      maxFundingFactorPerSecond
+      minFundingFactorPerSecondLong
+      minFundingFactorPerSecondShort
+      maxFundingFactorPerSecondLong
+      maxFundingFactorPerSecondShort
 
       totalBorrowingFees
 
@@ -106,6 +113,7 @@ const MARKETS_INFO_QUERY = gql`
       useOpenInterestInTokensForBalance
 
       virtualMarketId
+      virtualIndexTokenId
       virtualLongTokenId
       virtualShortTokenId
     }
@@ -114,7 +122,7 @@ const MARKETS_INFO_QUERY = gql`
 
 const MARKETS_INFO_QUERY_LIMIT = 150;
 
-export function useFastMarketsInfoRequest(chainId: number, { enabled = true }: { enabled?: boolean } = {}) {
+export function useFastMarketsInfoRequest(chainId: ContractsChainId, { enabled = true }: { enabled?: boolean } = {}) {
   const {
     data: fastMarketInfoData,
     error,
@@ -140,11 +148,40 @@ export function useFastMarketsInfoRequest(chainId: number, { enabled = true }: {
           return undefined;
         }
 
-        return rawMarketsInfos.reduce((acc: RawMarketsInfoData, mInfo) => {
+        const supportedMarketInfos = rawMarketsInfos.filter((mInfo) => {
           const nativeIndexAddress = convertTokenAddress(chainId, mInfo.indexTokenAddress, "native");
 
-          // Skip markets with tokens not in the config to avoid throwing
+          return (
+            isValidTokenSafe(chainId, nativeIndexAddress) &&
+            isValidTokenSafe(chainId, mInfo.longTokenAddress) &&
+            isValidTokenSafe(chainId, mInfo.shortTokenAddress)
+          );
+        });
+        const riskInputs: MarketRiskInput[] = supportedMarketInfos.map((mInfo) => ({
+          marketTokenAddress: mInfo.marketTokenAddress,
+          longTokenAddress: mInfo.longTokenAddress,
+          shortTokenAddress: mInfo.shortTokenAddress,
+          virtualIndexTokenId: mInfo.virtualIndexTokenId,
+        }));
+
+        if (riskInputs.length === 0) {
+          return {};
+        }
+
+        const riskRequest = buildMarketsRiskValuesRequest(chainId, riskInputs);
+        const riskResponse = await executeMulticall(chainId, riskRequest, "urgent", "useFastMarketsInfoRequest");
+        const riskValues = parseMarketsRiskValuesResponse(riskResponse, riskInputs);
+
+        if (Object.keys(riskValues).length !== riskInputs.length) {
+          return undefined;
+        }
+
+        return supportedMarketInfos.reduce((acc: RawMarketsInfoData, mInfo) => {
+          const nativeIndexAddress = convertTokenAddress(chainId, mInfo.indexTokenAddress, "native");
+          const marketRiskValues = riskValues[mInfo.marketTokenAddress];
+
           if (
+            !marketRiskValues ||
             !isValidTokenSafe(chainId, nativeIndexAddress) ||
             !isValidTokenSafe(chainId, mInfo.longTokenAddress) ||
             !isValidTokenSafe(chainId, mInfo.shortTokenAddress)
@@ -191,6 +228,11 @@ export function useFastMarketsInfoRequest(chainId: number, { enabled = true }: {
             maxOpenInterestLong: BigInt(mInfo.maxOpenInterestLong),
             maxOpenInterestShort: BigInt(mInfo.maxOpenInterestShort),
 
+            maxCollateralSumLongTokenLong: marketRiskValues.maxCollateralSumLongTokenLong,
+            maxCollateralSumLongTokenShort: marketRiskValues.maxCollateralSumLongTokenShort,
+            maxCollateralSumShortTokenLong: marketRiskValues.maxCollateralSumShortTokenLong,
+            maxCollateralSumShortTokenShort: marketRiskValues.maxCollateralSumShortTokenShort,
+
             borrowingFactorLong: 0n,
             borrowingFactorShort: 0n,
             borrowingExponentFactorLong: 0n,
@@ -199,11 +241,14 @@ export function useFastMarketsInfoRequest(chainId: number, { enabled = true }: {
             fundingFactor: BigInt(mInfo.fundingFactor),
             fundingExponentFactor: BigInt(mInfo.fundingExponentFactor),
             fundingIncreaseFactorPerSecond: BigInt(mInfo.fundingIncreaseFactorPerSecond),
+            minFundingIncreaseRatePerSecond: BigInt(mInfo.minFundingIncreaseRatePerSecond),
             fundingDecreaseFactorPerSecond: BigInt(mInfo.fundingDecreaseFactorPerSecond),
             thresholdForStableFunding: BigInt(mInfo.thresholdForStableFunding),
             thresholdForDecreaseFunding: BigInt(mInfo.thresholdForDecreaseFunding),
-            minFundingFactorPerSecond: BigInt(mInfo.minFundingFactorPerSecond),
-            maxFundingFactorPerSecond: BigInt(mInfo.maxFundingFactorPerSecond),
+            minFundingFactorPerSecondLong: BigInt(mInfo.minFundingFactorPerSecondLong),
+            minFundingFactorPerSecondShort: BigInt(mInfo.minFundingFactorPerSecondShort),
+            maxFundingFactorPerSecondLong: BigInt(mInfo.maxFundingFactorPerSecondLong),
+            maxFundingFactorPerSecondShort: BigInt(mInfo.maxFundingFactorPerSecondShort),
 
             totalBorrowingFees: BigInt(mInfo.totalBorrowingFees),
 
@@ -258,10 +303,12 @@ export function useFastMarketsInfoRequest(chainId: number, { enabled = true }: {
             virtualPoolAmountForLongToken: BigInt(mInfo.virtualPoolAmountForLongToken),
             virtualPoolAmountForShortToken: BigInt(mInfo.virtualPoolAmountForShortToken),
             virtualInventoryForPositions: BigInt(mInfo.virtualInventoryForPositions),
+            virtualInventoryForPositionsInTokens: marketRiskValues.virtualInventoryForPositionsInTokens,
 
             useOpenInterestInTokensForBalance: mInfo.useOpenInterestInTokensForBalance,
 
             virtualMarketId: mInfo.virtualMarketId,
+            virtualIndexTokenId: mInfo.virtualIndexTokenId,
             virtualLongTokenId: mInfo.virtualLongTokenId,
             virtualShortTokenId: mInfo.virtualShortTokenId,
           };

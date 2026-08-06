@@ -2,7 +2,6 @@ import { Trans, msg, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { BOTANIX } from "config/chains";
 import { useReferralsData, useUserReferralCode } from "domain/referrals";
 import { CREATE_REFERRAL_CODE_QUERY_PARAM } from "domain/referrals/utils/referralsHelper";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
@@ -53,8 +52,6 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
 
   const { data: referralsData, isLoading } = useReferralsData(account);
   const createReferralCodePrefill = routeQuery.get(CREATE_REFERRAL_CODE_QUERY_PARAM) ?? undefined;
-
-  const isBotanix = chainId === BOTANIX;
 
   const hasAffiliateCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
   const { recentCodes } = useRecentReferralCodes();
@@ -132,41 +129,37 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
             isTop
             title={t`Referrals`}
             subtitle={
-              !isBotanix ? (
-                <Trans>
-                  Get fee discounts and earn up to 15% commission through the GMX <br /> referral program
-                </Trans>
-              ) : undefined
+              <Trans>
+                Get fee discounts and earn up to 15% commission through the GMX <br /> referral program
+              </Trans>
             }
             qa="referrals-page"
           />
-          {!isBotanix && (
-            <div className="flex grow flex-col">
-              <Tabs
-                type="inline-primary"
-                className="mb-8"
-                options={tabsOptions}
-                selectedValue={activeTab}
-                onChange={setActiveTab}
-              />
+          <div className="flex grow flex-col">
+            <Tabs
+              type="inline-primary"
+              className="mb-8"
+              options={tabsOptions}
+              selectedValue={activeTab}
+              onChange={setActiveTab}
+            />
 
-              {activeTab === ReferralsTab.Traders && (
-                <ReferralsTradersTab isLoading={isLoading} account={account} hasAddressInUrl={hasAddressInUrl} />
-              )}
-              {activeTab === ReferralsTab.Affiliates && (
-                <ReferralsAffiliatesTab
-                  isLoading={isLoading}
-                  account={account}
-                  referralsData={referralsData}
-                  initialReferralCode={createReferralCodePrefill}
-                  hasAddressInUrl={hasAddressInUrl}
-                />
-              )}
-              {activeTab === ReferralsTab.Distributions && (
-                <ReferralsDistributionsTab isLoading={isLoading} account={account} referralsData={referralsData} />
-              )}
-            </div>
-          )}
+            {activeTab === ReferralsTab.Traders && (
+              <ReferralsTradersTab isLoading={isLoading} account={account} hasAddressInUrl={hasAddressInUrl} />
+            )}
+            {activeTab === ReferralsTab.Affiliates && (
+              <ReferralsAffiliatesTab
+                isLoading={isLoading}
+                account={account}
+                referralsData={referralsData}
+                initialReferralCode={createReferralCodePrefill}
+                hasAddressInUrl={hasAddressInUrl}
+              />
+            )}
+            {activeTab === ReferralsTab.Distributions && (
+              <ReferralsDistributionsTab isLoading={isLoading} account={account} referralsData={referralsData} />
+            )}
+          </div>
         </div>
       </SEO>
     </AppPageLayout>

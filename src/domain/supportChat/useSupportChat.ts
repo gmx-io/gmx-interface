@@ -11,7 +11,7 @@ import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/use
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
 import { tradingErrorTracker } from "lib/tradingErrorTracker";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
 
@@ -22,10 +22,16 @@ import { useSupportChatUnreadCount } from "./useSupportChatUnreadCount";
 import { useWalletPortfolioUsd } from "./useWalletPortfolioUsd";
 import { getOrCreateSupportChatUserId, themeToIntercomTheme } from "./utils";
 
+const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
+  [AccountType.SmartAccount]: "Smart Wallet",
+  [AccountType.PostEip7702EOA]: "EOA",
+  [AccountType.EOA]: "EOA",
+};
+
 export function useSupportChat() {
   const { shouldShowSupportChat } = useShowSupportChat();
   const { address: account, connector } = useAccount();
-  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
+  const { accountType, isLoading: isAccountTypeLoading } = useAccountType();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });
   const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();
@@ -48,7 +54,7 @@ export function useSupportChat() {
   const customUserAttributes = useMemo(() => {
     if (
       isWalletPortfolioUsdLoading ||
-      isNonEoaAccountOnAnyChainLoading ||
+      isAccountTypeLoading ||
       isLargeAccountVolumeStatsLoading ||
       isGmxAccountUsdLoading
     ) {
@@ -75,12 +81,12 @@ export function useSupportChat() {
         gmxAccount: gmxAccountUsd,
       }),
       "Active Network": getChainName(srcChainId ?? chainId),
-      "Wallet Type": isNonEoaAccountOnAnyChain ? "Smart Wallet" : "EOA",
+      "Wallet Type": accountType === undefined ? undefined : ACCOUNT_TYPE_LABELS[accountType],
       "Trading Mode": !expressOrdersEnabled ? "Classic" : subaccount ? "OneClick" : "Express",
     };
   }, [
     isWalletPortfolioUsdLoading,
-    isNonEoaAccountOnAnyChainLoading,
+    isAccountTypeLoading,
     isLargeAccountVolumeStatsLoading,
     isGmxAccountUsdLoading,
     largeAccountVolumeStatsData?.totalVolume,
@@ -89,7 +95,7 @@ export function useSupportChat() {
     gmxAccountUsd,
     srcChainId,
     chainId,
-    isNonEoaAccountOnAnyChain,
+    accountType,
     expressOrdersEnabled,
     subaccount,
   ]);

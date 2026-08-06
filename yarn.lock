@@ -6664,6 +6664,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stripe/crypto@npm:1.1.2":
+  version: 1.1.2
+  resolution: "@stripe/crypto@npm:1.1.2"
+  peerDependencies:
+    "@stripe/stripe-js": ^1.46.0
+  checksum: 10/2b39299d715c16f4532c24f5283ed7b4a8a5d06ffd8ad7c241c0c1d62d9815b5571b52105397395f2e910b88e639ba24fe706f21e595cd796b2d6ff5aa33b20e
+  languageName: node
+  linkType: hard
+
+"@stripe/stripe-js@npm:1.54.2":
+  version: 1.54.2
+  resolution: "@stripe/stripe-js@npm:1.54.2"
+  checksum: 10/52d6e814dd6e4979a050d9c06d8aa463f583138bb6b1aaf6e8856e92dcfa3ce7fd2231ce86882b44ffd0299b8e1d93f6c6dd9d1461b957ef2a6d548a801e506f
+  languageName: node
+  linkType: hard
+
 "@svgr/babel-plugin-add-jsx-attribute@npm:8.0.0":
   version: 8.0.0
   resolution: "@svgr/babel-plugin-add-jsx-attribute@npm:8.0.0"
@@ -13023,6 +13039,8 @@ __metadata:
     "@privy-io/react-auth": "npm:3.35.0"
     "@privy-io/wagmi": "npm:4.0.8"
     "@stargatefinance/stg-evm-sdk-v2": "npm:1.1.12"
+    "@stripe/crypto": "npm:1.1.2"
+    "@stripe/stripe-js": "npm:1.54.2"
     "@tanstack/react-query": "npm:5.25.0"
     "@taskworld.com/rereselect": "npm:0.3.0"
     "@testing-library/jest-dom": "npm:5.16.1"
@@ -15801,7 +15819,7 @@ __metadata:
 
 "ox@patch:ox@npm:0.14.29#.yarn/patches/ox-npm-0.14.29-gmx-types::locator=gmx-interface%40workspace%3A.":
   version: 0.14.29
-  resolution: "ox@patch:ox@npm%3A0.14.29#.yarn/patches/ox-npm-0.14.29-gmx-types::version=0.14.29&hash=65b910&locator=gmx-interface%40workspace%3A."
+  resolution: "ox@patch:ox@npm%3A0.14.29#.yarn/patches/ox-npm-0.14.29-gmx-types::version=0.14.29&hash=d1c8bc&locator=gmx-interface%40workspace%3A."
   dependencies:
     "@adraffy/ens-normalize": "npm:^1.11.0"
     "@noble/ciphers": "npm:^1.3.0"
@@ -15816,7 +15834,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/d3d9df7f20d8fd761a854c85c85e19678f6d3e004f3239c60463cdc8a5d7dca1cc8f1490aeb42f2b75f887debb86d047b242166a66a223a6ed7fb044b50b07d7
+  checksum: 10/096776ce6139f08b1c3011ad21322e6d93a9182c9df43883ddd50013780c3441b1385ca55ba5a34d2f88bb40fc686827c22839ea970e34834574962ee56f4d3f
   languageName: node
   linkType: hard
 
