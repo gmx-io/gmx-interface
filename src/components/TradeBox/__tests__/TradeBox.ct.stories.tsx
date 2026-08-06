@@ -387,7 +387,6 @@ export function TradeBoxStory({
         isFromTokenGmxAccount: false,
       };
 
-      // left out unless asked for: mirrors stored options written before the field existed
       if (seedUserSelectedSecondEthPool) {
         storedOptions.userSelectedMarkets = {
           [ETH_ADDRESS]: { long: SECOND_ETH_MARKET_ADDRESS, short: SECOND_ETH_MARKET_ADDRESS },

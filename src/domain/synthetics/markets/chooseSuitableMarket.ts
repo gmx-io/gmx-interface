@@ -106,10 +106,6 @@ export function chooseSuitableMarket({
   preferredTradeType: PreferredTradeTypePickStrategy;
   currentTradeType?: TradeType;
   userSelectedMarkets?: UserSelectedMarkets;
-  /**
-   * When omitted, `userSelectedMarkets` is silently ignored: a remembered pool
-   * is only applied after validating it against the available pools.
-   */
   availableIndexTokenPools?: TokenOption[];
 }):
   | { indexTokenAddress: string; marketTokenAddress?: string; tradeType: TradeType; collateralTokenAddress?: string }

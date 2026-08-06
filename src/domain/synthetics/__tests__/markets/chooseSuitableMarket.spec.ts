@@ -9,7 +9,6 @@ type Input = Parameters<typeof chooseSuitableMarket>[0];
 const INDEX_TOKEN_ADDRESS = "0x1";
 const MAX_LONG_LIQUIDITY_MARKET = "0x2";
 const MAX_SHORT_LIQUIDITY_MARKET = "0x3";
-/** A third pool of the same index token, never the highest liquidity one */
 const THIRD_MARKET = "0x4";
 const COLLATERAL_TOKEN_ADDRESS = "0xc";
 
@@ -277,7 +276,6 @@ describe("chooseSuitableMarket", () => {
           ...baseInput,
           preferredTradeType: TradeType.Long,
           positionsInfo: {},
-          // no userSelectedMarkets: users stored before the field was introduced
         });
 
         expect(result).toEqual({

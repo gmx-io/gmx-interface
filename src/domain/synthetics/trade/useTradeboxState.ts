@@ -71,7 +71,6 @@ export type StoredTradeOptions = {
     swapToTokenAddress?: string;
     indexTokenAddress?: string;
   };
-  /** The current pool per index token, whether picked by the user or chosen automatically */
   markets: {
     [indexTokenAddress: string]: {
       long: string;

@@ -39,7 +39,6 @@ function selectTradeDirection(page: PageLike, direction: "Long" | "Short") {
     .click();
 }
 
-/** The pool field handle: its text is the currently selected pool name */
 function poolSelector(page: PageLike) {
   return page.locator(getDataQALocator("pool-selector-button"));
 }
@@ -838,22 +837,18 @@ test.describe("TradeBox", () => {
       await expect(poolSelector(page)).toContainText("ETH-ETH");
 
       await selectTradeDirection(page, "Short");
-      // nothing was picked for short: the highest liquidity pool is used
       await expect(poolSelector(page)).toContainText("ETH-USDC");
 
       await selectTradeDirection(page, "Long");
-      // FEDEV-4079: before the fix the auto pick silently fell back to ETH-USDC
       await expect(poolSelector(page)).toContainText("ETH-ETH");
     });
 
     test("existing position pool wins over the remembered pool", async ({ mount, page }) => {
       await mount(<TradeBoxStory withPosition withSecondEthPool seedUserSelectedSecondEthPool />);
 
-      // the seeded long position lives in ETH-USDC, the remembered pick is ETH-ETH
       await expect(poolSelector(page)).toContainText("ETH-USDC");
 
       await selectTradeDirection(page, "Short");
-      // no short position: the remembered pick applies
       await expect(poolSelector(page)).toContainText("ETH-ETH");
 
       await selectTradeDirection(page, "Long");
@@ -861,14 +856,11 @@ test.describe("TradeBox", () => {
     });
 
     test("stored options without the remembered pool field keep working", async ({ mount, page }) => {
-      // seeded stored options have no userSelectedMarkets, like every pre-FEDEV-4079 user
       await mount(<TradeBoxStory withSecondEthPool seedTradeMode={TradeMode.Limit} />);
 
-      // the rest of the stored options is untouched: limit mode survived
       await expect(page.locator(getDataQALocator("trigger-price-input"))).toBeVisible();
       await expect(poolSelector(page)).toContainText("ETH-USDC");
 
-      // and a pick made now is remembered on top of the legacy state
       await selectPool(page, "ETH-ETH");
       await selectTradeDirection(page, "Short");
       await selectTradeDirection(page, "Long");
