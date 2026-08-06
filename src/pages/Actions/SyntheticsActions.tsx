@@ -25,9 +25,11 @@ export default function SyntheticsActions() {
             title={t`Trader activity`}
             subtitle={
               <>
-                <Trans>
-                  GMX {VERSION_NAME} actions across all traders on {networkName}
-                </Trans>
+                <div className="mb-20">
+                  <Trans>
+                    GMX {VERSION_NAME} actions across all traders on {networkName}
+                  </Trans>
+                </div>
                 <VersionNetworkSwitcherRow chainId={chainId} version={2} />
               </>
             }
