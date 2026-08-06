@@ -1,6 +1,6 @@
 # GMX Interface
 
-Frontend monorepo of the [GMX](https://gmx.io) decentralized perpetual and spot exchange:
+Frontend monorepo of the GMX decentralized perpetual and spot exchange:
 
 - `src/` — the trading app ([app.gmx.io](https://app.gmx.io))
 - `landing/` — the landing page
