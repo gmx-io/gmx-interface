@@ -2,6 +2,7 @@ import { getAccount, getChainId } from "@wagmi/core";
 import { isHex, size, type Hex } from "viem";
 
 import { getVerificationChainSigningKey } from "config/localStorage";
+import { DAY_MS } from "lib/dates";
 import { extendError } from "lib/errors";
 import {
   readLocalStorageItem,
@@ -15,9 +16,11 @@ import { getSignatureKind } from "./signatureDiagnostics";
 import { AccountType, getAccountType } from "./useAccountType";
 import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
-/** Some EIP-7702 wallets bind the digest to the connected chain id (Coinbase's `replaySafeHash`) and some
- * don't; delegation alone can't tell them apart, so it is learned from a failed verification. */
 export type ChainBindingState = "needsVerificationChain" | "chainSwitchDoesNotHelp";
+
+type StoredChainBindingState = { state: ChainBindingState; learnedAt: number };
+
+const CHAIN_SWITCH_DOES_NOT_HELP_TTL = 30 * DAY_MS;
 
 function getStorageKey(address: string, verificationChainId: number) {
   return getVerificationChainSigningKey(getAccount(getWagmiConfig()).connector?.id, address, verificationChainId);
@@ -25,22 +28,33 @@ function getStorageKey(address: string, verificationChainId: number) {
 
 export function getChainBindingState(address: string, verificationChainId: number): ChainBindingState | undefined {
   const storageKey = getStorageKey(address, verificationChainId);
-  const state = readLocalStorageItem<ChainBindingState>(storageKey, { deserializer: JSON.parse });
+  const stored = readLocalStorageItem<StoredChainBindingState>(storageKey, { deserializer: JSON.parse });
 
-  if (state !== undefined) {
-    forgetStateIfDelegationRevoked(address, verificationChainId, storageKey);
+  if (!stored?.state) {
+    return undefined;
   }
 
-  return state;
+  if (stored.state === "chainSwitchDoesNotHelp" && Date.now() - stored.learnedAt > CHAIN_SWITCH_DOES_NOT_HELP_TTL) {
+    removeLocalStorageItem(storageKey);
+
+    return undefined;
+  }
+
+  forgetStateIfDelegationRevoked(address, verificationChainId, storageKey);
+
+  return stored.state;
 }
 
 export function rememberChainBindingState(address: string, verificationChainId: number, state: ChainBindingState) {
-  writeLocalStorageItem(getStorageKey(address, verificationChainId), state, { serializer: JSON.stringify });
+  writeLocalStorageItem<StoredChainBindingState>(
+    getStorageKey(address, verificationChainId),
+    { state, learnedAt: Date.now() },
+    { serializer: JSON.stringify }
+  );
 }
 
 const checkedForRevocation = new Set<string>();
 
-/** Fire and forget: revocation is rare, and dropping a stale state late costs nothing. */
 function forgetStateIfDelegationRevoked(address: string, verificationChainId: number, storageKey: LocalStorageKey[]) {
   const checkKey = JSON.stringify(storageKey);
 

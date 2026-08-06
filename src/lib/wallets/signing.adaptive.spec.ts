@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
  * The wallet is connected to Base, but the order is verified on Arbitrum.
@@ -32,9 +32,7 @@ const {
     helperToastInfoMock: vi.fn(),
     metricsPushErrorMock: vi.fn(),
     metricsPushEventMock: vi.fn(),
-    switchNetworkMock: vi.fn(async (chainId: number) => {
-      chainState.chainId = chainId;
-    }),
+    switchNetworkMock: vi.fn(),
     verificationClient: { chain: { id: 0 }, verifyHash: vi.fn() },
   };
 });
@@ -85,6 +83,7 @@ vi.mock("./walletConfig", () => ({
   getWagmiConfig: () => ({}),
 }));
 
+import { DAY_MS } from "lib/dates";
 import { sleep } from "lib/sleep";
 import { ARBITRUM, SOURCE_BASE_MAINNET as BASE } from "sdk/configs/chainIds";
 
@@ -156,6 +155,20 @@ function verificationIsUnavailable() {
   verificationClient.verifyHash.mockRejectedValue(new Error("RPC unavailable"));
 }
 
+function walletRefusesToSwitchTo(refusedChainId: number) {
+  switchNetworkMock.mockImplementation(async (chainId: number) => {
+    if (chainId === refusedChainId) {
+      throw new Error("User rejected the request");
+    }
+
+    chainState.chainId = chainId;
+  });
+}
+
+function aMonthPasses() {
+  vi.useFakeTimers({ toFake: ["Date"], now: Date.now() + 31 * DAY_MS });
+}
+
 describe("adaptive EIP-7702 signing", () => {
   let walletOnBase: TestWallet;
   let walletOnArbitrum: TestWallet;
@@ -191,10 +204,16 @@ describe("adaptive EIP-7702 signing", () => {
     getWalletClientMock.mockReset().mockResolvedValue({});
     clientToSignerMock.mockReset().mockReturnValue(walletOnArbitrum);
     verificationClient.verifyHash.mockReset();
-    switchNetworkMock.mockClear();
+    switchNetworkMock.mockReset().mockImplementation(async (chainId: number) => {
+      chainState.chainId = chainId;
+    });
     helperToastInfoMock.mockClear();
     metricsPushErrorMock.mockClear();
     metricsPushEventMock.mockClear();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("does not verify and does not switch chains when the wallet is already on the verification chain", async () => {
@@ -288,6 +307,23 @@ describe("adaptive EIP-7702 signing", () => {
     expect(getChainBindingState(ACCOUNT, ARBITRUM)).toBe("chainSwitchDoesNotHelp");
   });
 
+  it("sends the first signature when the user declines the switch, instead of failing the order", async () => {
+    verificationAlwaysFails();
+    walletRefusesToSwitchTo(ARBITRUM);
+
+    await expect(signOrderVerifiedOnArbitrum(walletOnBase)).resolves.toBe(SIGNATURE_FROM_BASE);
+
+    expect(typedDataRequestCount(walletOnArbitrum)).toBe(0);
+    expect(metricsPushErrorMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("fails the order when the user rejects the second signature, instead of sending the first one", async () => {
+    verificationAlwaysFails();
+    walletOnArbitrum.provider.send.mockRejectedValue(new Error("User rejected the request"));
+
+    await expect(signOrderVerifiedOnArbitrum(walletOnBase)).rejects.toThrow("User rejected the request");
+  });
+
   it("asks for the second signature only once, when signing on Arbitrum turns out not to help", async () => {
     verificationAlwaysFails();
     await signOrderVerifiedOnArbitrum(walletOnBase);
@@ -302,6 +338,27 @@ describe("adaptive EIP-7702 signing", () => {
     expect(verificationClient.verifyHash).not.toHaveBeenCalled();
     expect(helperToastInfoMock).not.toHaveBeenCalled();
     expect(typedDataRequestCount(walletOnArbitrum)).toBe(1);
+  });
+
+  it("tries Arbitrum again a month later, in case the check only failed because of the RPC", async () => {
+    verificationAlwaysFails();
+    await signOrderVerifiedOnArbitrum(walletOnBase);
+    aMonthPasses();
+
+    switchNetworkMock.mockClear();
+    await expect(signOrderVerifiedOnArbitrum(walletOnBase)).resolves.toBe(SIGNATURE_FROM_ARBITRUM);
+
+    expect(switchedChainIds()).toEqual([ARBITRUM, BASE]);
+  });
+
+  it("keeps signing on Arbitrum a month later, because that flag was learned from a signature that worked", async () => {
+    await learnThatWalletNeedsArbitrum();
+    aMonthPasses();
+
+    await expect(signOrderVerifiedOnArbitrum(walletOnBase)).resolves.toBe(SIGNATURE_FROM_ARBITRUM);
+
+    expect(switchedChainIds()).toEqual([ARBITRUM, BASE]);
+    expect(verificationClient.verifyHash).not.toHaveBeenCalled();
   });
 
   it("stops switching chains once the wallet is a plain EOA again, because the delegation was revoked", async () => {

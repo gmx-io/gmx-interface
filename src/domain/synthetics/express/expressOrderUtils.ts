@@ -578,7 +578,6 @@ async function validateSignature({
     signedHash = hashSignedTypedData(signatureParams);
 
     const client = getPublicClientWithRpc(verificationChainId);
-    // Covers EOA, ERC-1271 and ERC-6492, matching what the relay router accepts.
     const isValid = await client.verifyHash({
       address: expectedAccount,
       hash: signedHash,

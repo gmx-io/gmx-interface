@@ -32,7 +32,6 @@ export type SignatureShape = {
   isOnChainRecoverableShape: boolean | undefined;
 };
 
-/** Diagnostic only: an odd shape is not proof of rejection, since ERC-1271 is tried after ECDSA on-chain. */
 export function analyzeSignatureShape(signature: string): SignatureShape {
   const signatureKind = getSignatureKind(signature);
   const signatureBytes = isHex(signature) ? size(signature) : undefined;
@@ -65,7 +64,7 @@ async function resolveAccountTypeLabel(address: string, chainId: number): Promis
     .catch(() => undefined);
 }
 
-/** Fire-and-forget, and never carries the raw signature — it authorizes the action. */
+/** Never carries the raw signature — it authorizes the action. */
 export function reportSignatureProduced({
   address,
   signature,
@@ -77,7 +76,6 @@ export function reportSignatureProduced({
 }: {
   address: string;
   signature: string;
-  /** EIP-712 primary type, or "message". */
   signaturePurpose: string;
   signingChainId: number;
   startingChainId: number;

@@ -53,7 +53,6 @@ type RpcSendable = Pick<WalletSigner["provider"], "send">;
 
 type AnySigner = WalletSigner | Wallet | AbstractSigner | ISigner;
 
-/** Contract accounts bind signatures to the connected chainId; EOAs (incl. 7702) can sign from any chain. */
 function mustSignOnVerificationChain(accountType: AccountType | undefined): boolean {
   return accountType !== undefined && accountType !== AccountType.EOA && accountType !== AccountType.PostEip7702EOA;
 }
@@ -71,8 +70,8 @@ async function probeChainBoundSigning({
     return false;
   }
 
-  // Smart wallets deploy lazily per chain, so the current chain alone would misread a
-  // not-yet-deployed one as an EOA and skip the swap.
+  // Smart wallets deploy lazily per chain, so the current chain alone would misread a not-yet-deployed one
+  // as an EOA and skip the swap.
   const accountTypes = await probeAccountTypes(address, [currentChainId, targetChainId], "signing.accountTypeProbe");
 
   return accountTypes.some(mustSignOnVerificationChain);
@@ -80,6 +79,10 @@ async function probeChainBoundSigning({
 
 function isUnsupportedChainError(error: ErrorLike): boolean {
   return parseError(error)?.errorMessage?.includes("Unsupported chains") ?? false;
+}
+
+function isChainSwapFailure(error: ErrorLike): boolean {
+  return error?.message === SMART_WALLET_WRONG_CHAIN_ERROR || error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR;
 }
 
 function providerSendSign(signer: AnySigner, from: string, eip712: object) {
@@ -345,7 +348,6 @@ export async function signTypedData({
     return providerSendSign(signWith, from, eip712);
   };
 
-  // `typesToSign` collapses to `Minified`, so name the signature after the original struct.
   const signaturePurpose = Object.keys(types).find((type) => type !== "EIP712Domain") ?? "unknown";
   const startingChainId = getChainId(getWagmiConfig());
 
@@ -397,34 +399,48 @@ export async function signTypedData({
     return firstResult.signature;
   }
 
-  // Before the swap, so it explains the network prompt instead of trailing it.
   helperToast.info(
     t`This wallet creates network-specific signatures. Approve the switch to ${getChainName(verificationChainId)} and sign once more.`
   );
 
-  const retryResult = await withSmartWalletChainSwap(
-    {
-      signer,
-      address: from,
-      targetChainId: verificationChainId,
-      forceVerificationChain: true,
-    },
-    async (signWith, signingChainId) => {
-      const signature = await requestSignature(signWith);
+  let retryResult: { signature: string; signingChainId: number };
 
-      reportSignatureProduced({
+  try {
+    retryResult = await withSmartWalletChainSwap(
+      {
+        signer,
         address: from,
-        signature,
-        signaturePurpose,
-        signingChainId,
-        startingChainId,
-        verificationChainId,
-        isRetryAfterInvalidSignature: true,
-      });
+        targetChainId: verificationChainId,
+        forceVerificationChain: true,
+      },
+      async (signWith, signingChainId) => {
+        const signature = await requestSignature(signWith);
 
-      return { signature, signingChainId };
+        reportSignatureProduced({
+          address: from,
+          signature,
+          signaturePurpose,
+          signingChainId,
+          startingChainId,
+          verificationChainId,
+          isRetryAfterInvalidSignature: true,
+        });
+
+        return { signature, signingChainId };
+      }
+    );
+  } catch (error) {
+    if (!isChainSwapFailure(error)) {
+      throw error;
     }
-  );
+
+    metrics.pushError(
+      extendError(error, { data: { expectedAccount: from, verificationChainId } }),
+      "signing.adaptiveRetrySwapFailed"
+    );
+
+    return firstResult.signature;
+  }
 
   const retrySignatureIsValid = await verifySignatureOnVerificationChain({
     signedHash,

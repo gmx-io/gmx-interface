@@ -10,7 +10,7 @@ import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
 export enum AccountType {
   PostEip7702EOA, // Post-EIP-7702 EOA (delegated EOA)
-  SmartAccount, // has bytecode — in practice always ERC-1271 capable
+  SmartAccount,
   EOA,
 }
 
@@ -52,7 +52,6 @@ async function fetchAccountType(address: string, client: PublicClient): Promise<
   return AccountType.SmartAccount;
 }
 
-/** Cached: signing paths await this before every wallet prompt. */
 export async function getAccountType(address: string, client: PublicClient): Promise<AccountType> {
   const chainId = client.chain?.id;
 
