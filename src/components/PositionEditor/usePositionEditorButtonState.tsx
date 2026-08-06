@@ -81,7 +81,6 @@ import {
   buildIncreaseOrderPayload,
 } from "sdk/utils/orderTransactions";
 
-import { EmbeddedActionButton } from "components/EmbeddedActionButton/EmbeddedActionButton";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -424,9 +423,13 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
           <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
           <br />
           <br />
-          <EmbeddedActionButton onClick={detectAndSetMaxSize}>
+          <button
+            type="button"
+            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+            onClick={detectAndSetMaxSize}
+          >
             <Trans>Set max withdrawal</Trans>
-          </EmbeddedActionButton>
+          </button>
         </Trans>
       );
     }
@@ -446,9 +449,13 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
           deposit must also cover them.
         </Trans>
         <div className="mt-4">
-          <EmbeddedActionButton onClick={setMinDepositValue}>
+          <button
+            type="button"
+            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+            onClick={setMinDepositValue}
+          >
             <Trans>Set min deposit</Trans>
-          </EmbeddedActionButton>
+          </button>
         </div>
       </div>
     );

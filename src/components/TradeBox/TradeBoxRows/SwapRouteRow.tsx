@@ -11,7 +11,6 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getExternalSwapAggregatorLabel } from "domain/synthetics/externalSwaps/utils";
 
-import { EmbeddedActionButton } from "components/EmbeddedActionButton/EmbeddedActionButton";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -65,7 +64,13 @@ export function SwapRouteRow() {
               External routing is temporarily paused after a failed attempt.
               <br />
               <br />
-              <EmbeddedActionButton onClick={handleRetryExternalSwap}>Retry external route</EmbeddedActionButton>
+              <button
+                type="button"
+                className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+                onClick={handleRetryExternalSwap}
+              >
+                Retry external route
+              </button>
             </Trans>
           )}
         />

@@ -96,7 +96,6 @@ import { TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 import { mustNeverExist } from "sdk/utils/types";
 
-import { EmbeddedActionButton } from "components/EmbeddedActionButton/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
@@ -298,9 +297,13 @@ export function useTradeboxButtonState({
               .
               <br />
               <br />
-              <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
+              <button
+                type="button"
+                className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+                onClick={detectAndSetAvailableMaxLeverage}
+              >
                 <Trans>Set max leverage</Trans>
-              </EmbeddedActionButton>
+              </button>
             </>
           );
 
@@ -869,8 +872,14 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
           TWAP swaps use GMX pool liquidity only, which can't fill this order size.
           <br />
           <br />
-          <EmbeddedActionButton onClick={handleSwitchToMarketOrder}>Switch to a market order</EmbeddedActionButton> to
-          enable external routes.
+          <button
+            type="button"
+            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+            onClick={handleSwitchToMarketOrder}
+          >
+            Switch to a market order
+          </button>{" "}
+          to enable external routes.
         </Trans>
       );
     case "noRouteFound": {
@@ -966,9 +975,13 @@ function NoSwapPathTooltipContent({
       No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
       <br />
       <br />
-      <EmbeddedActionButton onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
+      <button
+        type="button"
+        className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+        onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}
+      >
         Swap {collateralSymbol}
-      </EmbeddedActionButton>{" "}
+      </button>{" "}
       or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
     </Trans>
   );
