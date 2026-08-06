@@ -791,8 +791,13 @@ export const parseValue = (value: string, tokenDecimals: number) => {
     return undefined;
   }
 
-  value = limitDecimals(value, tokenDecimals);
-  const amount = parseUnits(value, tokenDecimals);
+  let amount: bigint;
+  try {
+    value = limitDecimals(value, tokenDecimals);
+    amount = parseUnits(value, tokenDecimals);
+  } catch {
+    return undefined;
+  }
 
   // Cap at a safe maximum to prevent downstream BigInt overflow errors
   const MAX_ALLOWED = expandDecimals(1, 62);
@@ -838,9 +843,11 @@ export function maxbigint(...args: bigint[]) {
 }
 
 export function removeTrailingZeros(amount: string | number) {
-  const amountWithoutZeros = Number(amount);
-  if (!amountWithoutZeros) return amount;
-  return amountWithoutZeros;
+  if (typeof amount === "number" || !amount.includes(".") || amount.includes(",") || /^[-+]?0*\.0*$/.test(amount)) {
+    return amount;
+  }
+
+  return amount.replace(/0+$/, "").replace(/\.$/, "");
 }
 
 type SerializedBigIntsInObject<T> = {

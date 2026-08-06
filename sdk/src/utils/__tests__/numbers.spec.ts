@@ -26,6 +26,8 @@ import {
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
   PRECISION_DECIMALS,
+  parseValue,
+  removeTrailingZeros,
   trimZeroDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
@@ -172,6 +174,22 @@ describe("trimZeroDecimals", () => {
 
   it("leading zeros with trailing zero decimals trims to int", () => {
     expect(trimZeroDecimals("0000123.000")).toBe("123");
+  });
+});
+
+describe("removeTrailingZeros", () => {
+  it("keeps large values in plain decimal notation", () => {
+    expect(removeTrailingZeros("9659861417460889000000.00")).toBe("9659861417460889000000");
+  });
+
+  it("removes trailing fractional zeros without converting the value to a number", () => {
+    expect(removeTrailingZeros("123.4500")).toBe("123.45");
+  });
+});
+
+describe("parseValue", () => {
+  it("returns undefined instead of throwing for scientific notation", () => {
+    expect(parseValue("9.659861417460889e+21", USD_DECIMALS)).toBeUndefined();
   });
 });
 
