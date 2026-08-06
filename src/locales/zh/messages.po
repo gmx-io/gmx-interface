@@ -198,7 +198,6 @@ msgstr "GMX Account 交换无法使用原生 {0}。请选择 {1}，或先提取�
 msgid "Include rPnL in leverage display"
 msgstr "在杠杆显示中包含已实现 PnL"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Arbitrum"
@@ -765,6 +764,10 @@ msgstr ""
 msgid "Switch to Classic Trading"
 msgstr "切换到 Classic Trading"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "推荐码尚未在以下网络注册：{nonTakenNetworkNamesJoined}。请切换网络以注册并赚取返佣。"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -1101,7 +1104,6 @@ msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
@@ -1295,10 +1297,6 @@ msgstr "交易量"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "{0} amount"
 msgstr "{0} 数量"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Current yield landscape"
-msgstr "当前收益概览"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "SHORTS NET RATE / 1H"
@@ -1915,7 +1913,6 @@ msgid "Pool max short amount"
 msgstr "池最大做空金额"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "APR"
 msgstr "年化收益率"
 
@@ -2644,8 +2641,6 @@ msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -2729,10 +2724,6 @@ msgstr "{gmOrGlvLabel} 出售成功，但跨链至 {0} 失败。您的资金安�
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "推荐码尚未在 {nonTakenNetworkNames} 上注册。请切换网络以注册并赚取返佣。"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -3575,7 +3566,6 @@ msgstr "增加仓位（Market）"
 msgid "Bridge transfer sent"
 msgstr "跨链桥转账已发送"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4278,7 +4268,6 @@ msgstr "截止时间："
 msgid "Connected to {sourceChainName}"
 msgstr "已连接到 {sourceChainName}"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Avalanche"
@@ -4389,10 +4378,6 @@ msgstr "<0>您的钱包已切换到其他账户</0><1/><2>在 {0} 上签名需�
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "推荐码已被其他用户在 {takenNetworkNames} 上使用。来自这些网络的返佣不可用。"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5209,7 +5194,6 @@ msgstr "最近上线"
 msgid "Failed to load order data:"
 msgstr "加载订单数据失败："
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "网络"
@@ -5238,7 +5222,6 @@ msgstr "尚未投入就想先拿到资金"
 msgid "High swap profit fee"
 msgstr "高交换利润费用"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5383,7 +5366,6 @@ msgid "Bonus APR"
 msgstr "奖金年化收益率"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/APRLabel/APRLabel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Accumulating..."
 msgstr ""
@@ -5613,7 +5595,6 @@ msgstr "池最大做多 USD 存入上限"
 msgid "Net value"
 msgstr "净值"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -5837,10 +5818,6 @@ msgstr "从您的钱包"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
 msgstr ""
-
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Explore more"
-msgstr "探索更多"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated"
@@ -6723,10 +6700,6 @@ msgstr "已减少"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Selling"
 msgstr ""
-
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Recommended"
-msgstr "推荐"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -8091,7 +8064,6 @@ msgid "Up to 25% off fees for high-volume traders.<0/>Up to 25% earnings for aff
 msgstr "高交易量交易者最高可享 25% 手续费折扣。<0/>推广者最高可获 25% 收益。<1/>还有专属支持。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr ""
@@ -8278,13 +8250,13 @@ msgstr "在交易时段内，我们通常会在约 2 小时内回复。无需承
 msgid "Set limit price above mark price"
 msgstr ""
 
-#: src/pages/Earn/EarnPortfolioPage.tsx
-msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "质押 {tokenSymbol} 奖励"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Active Balancer Program code"
+msgstr "有效的 Balancer 计划代码"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -8564,7 +8536,6 @@ msgstr "超过最大 {0} 多头"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8743,7 +8714,6 @@ msgid "Min position size: {0}"
 msgstr "最小头寸大小：{0}"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/APRLabel/APRLabel.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
@@ -9121,10 +9091,6 @@ msgstr "用于 {comment}"
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "已用资本 = max(未平仓仓位抵押品总和 - 已实现盈亏 + 初始待处理盈亏)。"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Performance APY"
-msgstr "绩效 APY"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -9411,6 +9377,10 @@ msgstr "GMX Account 存款受 Stargate 跨链桥流动性限制。请尝试小�
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
 msgstr "在当前仓位状态下，此订单可能无法成交。请在触发前增加抵押品或降低杠杆。"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
+msgstr "Balancer 计划奖励持续站在 GMX 市场权重不足一方的交易者。这些代码将交易者手续费折扣替换为更高的返佣，返佣会累积到代码所有者的推荐账户，可随时领取。<0>了解更多</0>"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -9456,6 +9426,14 @@ msgstr "做空借贷指数"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "价格影响"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Claim it anytime in the <0>Affiliates tab</0>."
+msgstr "随时在<0>附属</0>标签页领取。"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "It accrues to the code owner ({0})."
+msgstr "返佣累积给代码所有者（{0}）。"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -9765,7 +9743,6 @@ msgid "Session generated"
 msgstr "会话已生成"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -10193,6 +10170,10 @@ msgstr ""
 msgid "An unexpected error occurred. Please retry."
 msgstr "发生意外错误。请重试。"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "推荐码已在以下网络被使用：{takenNetworkNamesJoined}。来自这些网络的返佣不可用。"
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "出现错误"
@@ -10455,10 +10436,6 @@ msgstr "什么是 GMX？"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposit submitted"
 msgstr "存入已提交"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11086,10 +11063,6 @@ msgstr "直接在 <0>{chainName}</0> 上买入 {nativeTokenSymbol}"
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Limit Swap：当达到触发价格时兑换代币"
 
-#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-msgid "See recommended section above to start"
-msgstr "请参阅上方推荐部分以开始"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "获取 GMX 的提醒和公告，随时掌握您的交易、清算风险等信息"
@@ -11390,10 +11363,6 @@ msgstr "流动性仅在 {chainNames} 或 {lastChainName} 上可用。请切换�
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
 msgstr "转账历史"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "MegaETH"
-msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -12418,6 +12387,10 @@ msgstr "止盈"
 msgid "Builders"
 msgstr "开发者"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trades earn a {currentTierRebate}% rebate, not a discount."
+msgstr "您的交易获得 {currentTierRebate}% 返佣，而非折扣。"
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Arbitrum, Avalanche, MegaETH. (GMX Account also accepts entry from Ethereum, Base, and BNB.)"
 msgstr "Arbitrum、Avalanche、MegaETH。（GMX Account 也支持从 Ethereum、Base 和 BNB 进入。）"
@@ -12463,6 +12436,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 到 </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "无可用的去中心化交易所"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "推荐码已在以下网络被使用：{takenNetworkNamesJoined}。来自该网络的返佣不可用。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

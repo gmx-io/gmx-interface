@@ -198,7 +198,6 @@ msgstr "Свопы GMX Account не могут использовать нати
 msgid "Include rPnL in leverage display"
 msgstr "Включить rPnL в отображение кредитного плеча"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Arbitrum"
@@ -765,6 +764,10 @@ msgstr ""
 msgid "Switch to Classic Trading"
 msgstr "Переключиться на Classic Trading"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "Код не зарегистрирован в сетях: {nonTakenNetworkNamesJoined}. Переключите сеть для регистрации и получения скидок."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -1101,7 +1104,6 @@ msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
@@ -1295,10 +1297,6 @@ msgstr "ОБЪЁМ"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "{0} amount"
 msgstr "{0} количество"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Current yield landscape"
-msgstr "Текущая картина доходности"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "SHORTS NET RATE / 1H"
@@ -1915,7 +1913,6 @@ msgid "Pool max short amount"
 msgstr "Максимальный объём шорт-токена в пуле"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "APR"
 msgstr "Годовая Процентная Ставка"
 
@@ -2644,8 +2641,6 @@ msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -2729,10 +2724,6 @@ msgstr "{gmOrGlvLabel} успешно продан, но бридж в {0} не 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "Код не зарегистрирован в {nonTakenNetworkNames}. Переключите сеть для регистрации и получения скидок."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -3575,7 +3566,6 @@ msgstr "Увеличить размер (Market)"
 msgid "Bridge transfer sent"
 msgstr "Перевод через мост отправлен"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4278,7 +4268,6 @@ msgstr "Срок действия:"
 msgid "Connected to {sourceChainName}"
 msgstr "Подключено к {sourceChainName}"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Avalanche"
@@ -4389,10 +4378,6 @@ msgstr "<0>Кошелёк переключился на другой аккау�
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "Код занят другим пользователем в {takenNetworkNames}. Скидки от этих сетей недоступны."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5209,7 +5194,6 @@ msgstr "Недавно добавленные"
 msgid "Failed to load order data:"
 msgstr "Не удалось загрузить данные ордера:"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "Сеть"
@@ -5238,7 +5222,6 @@ msgstr "Ищете чек до каких-либо обязательств"
 msgid "High swap profit fee"
 msgstr "Высокая комиссия прибыли свопа"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5383,7 +5366,6 @@ msgid "Bonus APR"
 msgstr "Бонусная Годовая Процентная Ставка"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/APRLabel/APRLabel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Accumulating..."
 msgstr ""
@@ -5613,7 +5595,6 @@ msgstr "Макс. лонг USD пула для депозита"
 msgid "Net value"
 msgstr "Чистая стоимость"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -5837,10 +5818,6 @@ msgstr "из вашего кошелька"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
 msgstr ""
-
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Explore more"
-msgstr "Ещё возможности"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated"
@@ -6723,10 +6700,6 @@ msgstr "Уменьшено"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Selling"
 msgstr ""
-
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Recommended"
-msgstr "Рекомендуемые"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -8091,7 +8064,6 @@ msgid "Up to 25% off fees for high-volume traders.<0/>Up to 25% earnings for aff
 msgstr "Скидка до 25% на комиссии для крупных трейдеров.<0/>До 25% дохода для аффилиатов.<1/>Плюс персональная поддержка."
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr ""
@@ -8278,13 +8250,13 @@ msgstr "Мы отвечаем в течение ~2 часов в часы раб
 msgid "Set limit price above mark price"
 msgstr ""
 
-#: src/pages/Earn/EarnPortfolioPage.tsx
-msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "Стейкать вознаграждения {tokenSymbol}"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Active Balancer Program code"
+msgstr "Активный код программы Balancer"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -8564,7 +8536,6 @@ msgstr "Максимальный {0} лонг превышен"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8743,7 +8714,6 @@ msgid "Min position size: {0}"
 msgstr "Мин размер позиции: {0}"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/APRLabel/APRLabel.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
@@ -9121,10 +9091,6 @@ msgstr "для {comment}"
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "Использованный капитал = max(сумма залога открытых позиций - реализованный PnL + начальный ожидающий PnL)."
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Performance APY"
-msgstr "Доходность APY"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -9411,6 +9377,10 @@ msgstr "Депозиты GMX Account ограничены ликвидность
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
 msgstr "Этот ордер может не исполниться при текущем состоянии позиции. Добавьте обеспечение или уменьшите кредитное плечо до его срабатывания."
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
+msgstr "Программа Balancer вознаграждает трейдеров, которые последовательно занимают недовешенную сторону рынков GMX. Такие коды заменяют скидку на комиссию трейдера повышенным ребейтом, который начисляется на партнёрский счёт владельца кода и может быть получен в любой момент. <0>Подробнее</0>"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -9456,6 +9426,14 @@ msgstr "Экспонента заимствования шорт"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "Влияние на цену"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Claim it anytime in the <0>Affiliates tab</0>."
+msgstr "Получите его в любой момент на вкладке <0>Аффилиаты</0>."
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "It accrues to the code owner ({0})."
+msgstr "Он начисляется владельцу кода ({0})."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -9765,7 +9743,6 @@ msgid "Session generated"
 msgstr "Сессия сгенерирована"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -10193,6 +10170,10 @@ msgstr ""
 msgid "An unexpected error occurred. Please retry."
 msgstr "Произошла непредвиденная ошибка. Пожалуйста, повторите попытку."
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "Код уже занят в сетях: {takenNetworkNamesJoined}. Скидки от этих сетей не начисляются."
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "Что-то пошло не так"
@@ -10455,10 +10436,6 @@ msgstr "Что такое GMX?"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposit submitted"
 msgstr "Депозит отправлен"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11086,10 +11063,6 @@ msgstr "Купить {nativeTokenSymbol} напрямую на <0>{chainName}</0
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Swap Limit: обмен токенов при достижении цены активации"
 
-#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-msgid "See recommended section above to start"
-msgstr "Смотрите рекомендуемый раздел выше, чтобы начать"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Получайте оповещения и уведомления от GMX, чтобы быть в курсе ваших сделок, риска ликвидации и многого другого"
@@ -11390,10 +11363,6 @@ msgstr "Ликвидность доступна только на {chainNames} �
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
 msgstr "История переводов"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "MegaETH"
-msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -12418,6 +12387,10 @@ msgstr "Тейк-профит"
 msgid "Builders"
 msgstr "Билдерам"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trades earn a {currentTierRebate}% rebate, not a discount."
+msgstr "Ваши сделки приносят ребейт {currentTierRebate}%, а не скидку."
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Arbitrum, Avalanche, MegaETH. (GMX Account also accepts entry from Ethereum, Base, and BNB.)"
 msgstr "Arbitrum, Avalanche, MegaETH. (GMX Account также принимает вход из Ethereum, Base и BNB.)"
@@ -12463,6 +12436,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> на </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "Нет доступных децентрализованных бирж"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "Код уже занят в сети: {takenNetworkNamesJoined}. Скидки от этой сети не начисляются."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

@@ -198,7 +198,6 @@ msgstr "GMX Account 스왑에서는 네이티브 {0}을(를) 사용할 수 없�
 msgid "Include rPnL in leverage display"
 msgstr "레버리지 표시에 실현 PnL 포함"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Arbitrum"
@@ -765,6 +764,10 @@ msgstr ""
 msgid "Switch to Classic Trading"
 msgstr "Classic Trading으로 전환"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "코드가 등록되지 않은 네트워크: {nonTakenNetworkNamesJoined}. 네트워크를 전환하여 등록하고 리베이트를 받으십시오."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -1101,7 +1104,6 @@ msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
@@ -1295,10 +1297,6 @@ msgstr "VOLUME"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "{0} amount"
 msgstr "{0} 수량"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Current yield landscape"
-msgstr "현재 수익률 현황"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "SHORTS NET RATE / 1H"
@@ -1915,7 +1913,6 @@ msgid "Pool max short amount"
 msgstr "풀 최대 숏 수량"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "APR"
 msgstr "APR"
 
@@ -2644,8 +2641,6 @@ msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -2729,10 +2724,6 @@ msgstr "{gmOrGlvLabel} 판매에 성공했지만 {0}(으)로의 브리지에 실
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "{nonTakenNetworkNames}에 코드가 등록되지 않았습니다. 네트워크를 전환하여 등록하고 리베이트를 받으십시오."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -3575,7 +3566,6 @@ msgstr "규모 증가 (Market)"
 msgid "Bridge transfer sent"
 msgstr "브릿지 전송이 전송되었습니다"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4278,7 +4268,6 @@ msgstr "마감 기한:"
 msgid "Connected to {sourceChainName}"
 msgstr "{sourceChainName}에 연결됨"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Avalanche"
@@ -4389,10 +4378,6 @@ msgstr "<0>지갑이 다른 계정으로 전환되었습니다</0><1/><2>{0}에�
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "다른 사용자가 {takenNetworkNames}에서 해당 코드를 사용 중입니다. 해당 네트워크에서는 리베이트가 지급되지 않습니다."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5209,7 +5194,6 @@ msgstr "최근 상장"
 msgid "Failed to load order data:"
 msgstr "주문 데이터 로드 실패:"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "네트워크"
@@ -5238,7 +5222,6 @@ msgstr "시작 전에 자금부터 바라는 경우"
 msgid "High swap profit fee"
 msgstr "높은 스왑 이익 수수료"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5383,7 +5366,6 @@ msgid "Bonus APR"
 msgstr "보너스 APR"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/APRLabel/APRLabel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Accumulating..."
 msgstr ""
@@ -5613,7 +5595,6 @@ msgstr "풀 최대 롱 USD 입금 한도"
 msgid "Net value"
 msgstr "순가치"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -5837,10 +5818,6 @@ msgstr "지갑에서"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
 msgstr ""
-
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Explore more"
-msgstr "더 탐색하기"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated"
@@ -6723,10 +6700,6 @@ msgstr "감소 완료"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Selling"
 msgstr ""
-
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Recommended"
-msgstr "추천"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -8091,7 +8064,6 @@ msgid "Up to 25% off fees for high-volume traders.<0/>Up to 25% earnings for aff
 msgstr "대량 거래자는 수수료 최대 25% 할인.<0/>제휴자는 최대 25% 수익.<1/>여기에 개인 지원까지."
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr ""
@@ -8278,13 +8250,13 @@ msgstr "시장 운영 시간 기준 약 2시간 이내에 답변드립니다. �
 msgid "Set limit price above mark price"
 msgstr ""
 
-#: src/pages/Earn/EarnPortfolioPage.tsx
-msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "{tokenSymbol} 보상 스테이킹"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Active Balancer Program code"
+msgstr "활성 Balancer 프로그램 코드"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -8564,7 +8536,6 @@ msgstr "{0} 롱 최대치 초과"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8743,7 +8714,6 @@ msgid "Min position size: {0}"
 msgstr "최소 포지션 크기: {0}"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/APRLabel/APRLabel.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
@@ -9121,10 +9091,6 @@ msgstr "{comment}에 대해"
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "사용 자본 = max(열린 포지션 담보 합계 - 실현 PnL + 시작 보류 PnL)."
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Performance APY"
-msgstr "성과 APY"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -9411,6 +9377,10 @@ msgstr "GMX Account 입금은 Stargate 브리지 유동성에 의해 제한됩�
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
 msgstr "이 주문은 현재 포지션 상태에서는 체결되지 않을 수 있습니다. 트리거되기 전에 담보를 추가하거나 레버리지를 낮추세요."
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
+msgstr "Balancer 프로그램은 GMX 마켓에서 지속적으로 언더웨이트 방향을 취하는 트레이더에게 보상합니다. 이 코드는 트레이더 수수료 할인을 더 높은 리베이트로 대체하며, 리베이트는 코드 소유자의 어필리에이트 계정에 적립되어 언제든지 청구할 수 있습니다. <0>자세히 보기</0>"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -9456,6 +9426,14 @@ msgstr "차입 지수 (숏)"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "가격 영향"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Claim it anytime in the <0>Affiliates tab</0>."
+msgstr "<0>제휴사</0> 탭에서 언제든지 청구하세요."
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "It accrues to the code owner ({0})."
+msgstr "코드 소유자({0})에게 적립됩니다."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -9765,7 +9743,6 @@ msgid "Session generated"
 msgstr "세션 생성됨"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -10193,6 +10170,10 @@ msgstr ""
 msgid "An unexpected error occurred. Please retry."
 msgstr "예기치 않은 오류가 발생했습니다. 다시 시도해 주세요."
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "코드가 이미 사용 중인 네트워크: {takenNetworkNamesJoined}. 해당 네트워크에서는 리베이트가 지급되지 않습니다."
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
@@ -10455,10 +10436,6 @@ msgstr "GMX란 무엇인가요?"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposit submitted"
 msgstr "입금이 제출되었습니다"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11086,10 +11063,6 @@ msgstr "<0>{chainName}</0>에서 직접 {nativeTokenSymbol} 구매"
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Limit Swap: 조건가에 도달하면 토큰을 스왑합니다"
 
-#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-msgid "See recommended section above to start"
-msgstr "시작하려면 위의 추천 섹션을 참조하십시오"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "GMX에서 알림 및 공지를 받아 거래, 청산 위험 등을 관리하십시오"
@@ -11390,10 +11363,6 @@ msgstr "유동성은 {chainNames} 또는 {lastChainName}에서만 이용 가능�
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
 msgstr "전송 내역"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "MegaETH"
-msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -12418,6 +12387,10 @@ msgstr "익절매"
 msgid "Builders"
 msgstr "빌더"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trades earn a {currentTierRebate}% rebate, not a discount."
+msgstr "귀하의 거래는 할인이 아닌 {currentTierRebate}% 리베이트를 얻습니다."
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Arbitrum, Avalanche, MegaETH. (GMX Account also accepts entry from Ethereum, Base, and BNB.)"
 msgstr "Arbitrum, Avalanche, MegaETH. (GMX Account는 Ethereum, Base, BNB에서의 진입도 지원합니다.)"
@@ -12463,6 +12436,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "이용 가능한 탈중앙화 거래소가 없습니다"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "코드가 이미 사용 중인 네트워크: {takenNetworkNamesJoined}. 해당 네트워크에서는 리베이트가 지급되지 않습니다."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

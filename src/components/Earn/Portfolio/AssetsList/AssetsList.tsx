@@ -154,15 +154,7 @@ function AssetsList({
         <div className="flex h-full flex-col items-center justify-center gap-12 p-20">
           <EarnIcon className="size-20 text-blue-300" />
           <span className="text-body-small text-center font-medium text-typography-secondary">
-            {account ? (
-              <>
-                <Trans>No assets yet</Trans>
-                <br />
-                <Trans>See recommended section above to start</Trans>
-              </>
-            ) : (
-              <Trans>Connect wallet to see your assets</Trans>
-            )}
+            {account ? <Trans>No assets yet</Trans> : <Trans>Connect wallet to see your assets</Trans>}
           </span>
           {!account && openConnectModal && (
             <ConnectWalletButton onClick={openConnectModal}>
