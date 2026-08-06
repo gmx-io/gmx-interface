@@ -321,6 +321,26 @@ export type ClaimableFundingData = {
   [marketAddress: string]: ClaimableFunding;
 };
 
+export type TradingCapacityLimitingFactor = "reserve" | "openInterest" | "both" | "notApplicable";
+
+export type JitDataStatus = "available" | "stale" | "unavailable";
+
+export type MarketDataStatus = "fresh" | "stale";
+
+export type TradingCapacity = {
+  availableLiquidity: bigint;
+  baseAvailableLiquidity: bigint;
+  jitAvailableLiquidity: bigint;
+  limitingFactor: TradingCapacityLimitingFactor;
+  jitDataStatus: JitDataStatus;
+  marketDataStatus: MarketDataStatus;
+};
+
+export type GetTradingCapacityParams = {
+  symbol: string;
+  direction: "long" | "short";
+};
+
 export type MarketTicker = {
   symbol: string;
   marketTokenAddress: string;
@@ -349,6 +369,11 @@ export type MarketTicker = {
   borrowingRateShort: bigint;
   netRateLong: bigint;
   netRateShort: bigint;
+};
+
+export type MarketTickerWithCapacity = MarketTicker & {
+  capacityLong?: TradingCapacity;
+  capacityShort?: TradingCapacity;
 };
 
 export type LeverageTier = {

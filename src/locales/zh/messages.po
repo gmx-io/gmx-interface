@@ -91,6 +91,10 @@ msgstr "自动复投您的 GMX 奖励，无需手动领取"
 msgid "Disconnect"
 msgstr "断开连接"
 
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Evaluate GMX"
+msgstr "评估 GMX"
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
@@ -194,7 +198,6 @@ msgstr "GMX Account 交换无法使用原生 {0}。请选择 {1}，或先提取�
 msgid "Include rPnL in leverage display"
 msgstr "在杠杆显示中包含已实现 PnL"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Arbitrum"
@@ -223,6 +226,10 @@ msgstr ""
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
 msgstr "在 {0} 池中存在现有限价单，但该池缺乏此订单所需的流动性"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Walk through tiers & onboarding live"
+msgstr "实时讲解等级与入驻流程"
 
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
@@ -337,11 +344,6 @@ msgstr "总规模"
 msgid "Open app"
 msgstr "打开应用"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr "尝试快速交易"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "仓位虚拟库存"
@@ -419,7 +421,9 @@ msgstr "完整市场"
 msgid "To"
 msgstr "至"
 
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -485,6 +489,10 @@ msgstr "兑换界面费用"
 msgid "No TP orders"
 msgstr "无止盈订单"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Lock in this rate"
+msgstr "锁定此费率"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "仓位规模"
@@ -501,6 +509,10 @@ msgstr "已结算资金费用"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr ""
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Idea stage, nothing shipped yet"
+msgstr "还在想法阶段，尚未发布任何产品"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double {indexSymbol} exposure from position and collateral. Higher liquidation price than stablecoin collateral."
@@ -561,6 +573,10 @@ msgstr "GM"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
 msgstr "资金费率指数"
+
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Paid to traders & affiliates"
+msgstr "已支付给交易者与联盟伙伴"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies to earn funding."
@@ -733,6 +749,10 @@ msgstr "展开"
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
 
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
+msgstr "{networkName}上所有交易者的GMX {VERSION_NAME}操作"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -748,6 +768,10 @@ msgstr ""
 msgid "Switch to Classic Trading"
 msgstr "切换到 Classic Trading"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "推荐码尚未在以下网络注册：{nonTakenNetworkNamesJoined}。请切换网络以注册并赚取返佣。"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -760,6 +784,7 @@ msgstr "所有 {0}/USD 池流动性不足"
 msgid "Open"
 msgstr ""
 
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
 msgstr "国库"
@@ -771,6 +796,10 @@ msgstr ""
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "No"
 msgstr "否"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "/ mo"
+msgstr "/月"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -889,6 +918,8 @@ msgstr "负值：交易者支付资金费用"
 msgid "Transfer {nativeTokenSymbol} from other networks to {chainName}"
 msgstr "从其他网络转账 {nativeTokenSymbol} 至 {chainName}"
 
+#: landing/src/pages/Builders/Footer/BuildersFooter.tsx
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -1077,7 +1108,6 @@ msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
@@ -1272,10 +1302,6 @@ msgstr "交易量"
 msgid "{0} amount"
 msgstr "{0} 数量"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Current yield landscape"
-msgstr "当前收益概览"
-
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "SHORTS NET RATE / 1H"
 msgstr "做空净费率 / 1H"
@@ -1357,6 +1383,11 @@ msgstr "执行时 {0} 将兑换为 {1}"
 msgid "Weekly"
 msgstr "每周"
 
+#: landing/src/pages/Builders/Footer/BuildersFooter.tsx
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Terms"
+msgstr "条款"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -1366,6 +1397,10 @@ msgstr "未实现盈亏"
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 msgid "Rewards"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>Yes — the two programs stack. You can trade on your discounted tier while also earning affiliate rebates from anyone you refer.</0>"
+msgstr "<0>是的——这两个计划可以叠加。您可以按折扣等级交易，同时通过您推荐的任何人赚取联盟返佣。</0>"
 
 #: src/components/TradeBox/TradeBoxHeaderTabs.tsx
 msgid "Leverage for the current order. Resulting position leverage: {formattedLeverage}."
@@ -1414,6 +1449,10 @@ msgstr "GMX 提案投票页面"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Receive funds"
 msgstr "接收资金"
+
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Prices, markets, positions, orders — one call away."
+msgstr "价格、市场、仓位、订单——一次调用即可获取。"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
@@ -1518,6 +1557,10 @@ msgstr "购买 GM: {0}"
 msgid "Trigger price condition has not been met"
 msgstr "未满足触发价格条件"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
+msgid "/ year"
+msgstr "/ 年"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
 msgstr "可能需要几分钟才能生效。请稍后查看"
@@ -1549,6 +1592,10 @@ msgstr "订单的标记价格"
 msgid "Trigger error boundary"
 msgstr "触发错误边界"
 
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Support at <0>every stage.</0>"
+msgstr "<0>每个阶段</0>都有支持。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX fundamentals"
 msgstr "GMX 基础"
@@ -1571,6 +1618,10 @@ msgstr "总交易笔数"
 msgid "No pools found"
 msgstr "未找到池"
 
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Smart Contracts"
+msgstr "智能合约"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
 msgstr "Beefy"
@@ -1590,6 +1641,10 @@ msgstr "虚拟做多代币 ID"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "停用中..."
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Not yet"
+msgstr "还不合适"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Period loss"
@@ -1626,6 +1681,10 @@ msgstr "抵押品"
 msgid "Stocks"
 msgstr "股票"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "I'm an affiliate"
+msgstr "我是联盟伙伴"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
 msgstr ""
@@ -1637,6 +1696,10 @@ msgstr "取消止损市场"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit"
 msgstr "执行限价"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "Can I be both a trader and an affiliate?"
+msgstr "我可以同时是交易者和联盟伙伴吗？"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
@@ -1783,6 +1846,10 @@ msgstr "RPNL"
 msgid "FUNDING FEE"
 msgstr "资金费用"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "I'm a trader"
+msgstr "我是交易者"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a pay token"
 msgstr "选择支付代币"
@@ -1850,7 +1917,6 @@ msgid "Pool max short amount"
 msgstr "池最大做空金额"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "APR"
 msgstr "年化收益率"
 
@@ -1918,6 +1984,10 @@ msgstr "切换到市价单"
 msgid "Warning: may not execute due to low liquidity at your min. receive price"
 msgstr ""
 
+#: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
+msgid "Combined monthly revenue"
+msgstr "每月总收入"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap liquidity may be insufficient when order triggers"
 msgstr "订单触发时兑换流动性可能不足"
@@ -1949,6 +2019,10 @@ msgstr "{0} 每 {1}"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "In liquidity"
 msgstr "在流动性池中"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Live chat with the desk"
+msgstr "与交易台实时聊天"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -2140,6 +2214,10 @@ msgstr "Express Trading 不支持原生代币 {0} 的包装或解包装操作"
 msgid "Virtual short token ID"
 msgstr "虚拟做空代币 ID"
 
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Build on GMX. Get<0/>paid on every trade."
+msgstr "在 GMX 上构建。<0/>每笔交易都有收益。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844"
@@ -2210,6 +2288,10 @@ msgstr "盈利"
 msgid "Swapped {0} for {1}"
 msgstr "已将 {0} 兑换为 {1}"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Pick a time"
+msgstr "选择时间"
+
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX balance"
@@ -2218,6 +2300,10 @@ msgstr "GMX 余额"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Avalanche 上的价格"
+
+#: landing/src/pages/Builders/CtaSection/CtaSection.tsx
+msgid "on GMX."
+msgstr "在 GMX。"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
@@ -2232,9 +2318,14 @@ msgstr ""
 msgid "Claiming price impact rebates..."
 msgstr "正在领取价格影响返还…"
 
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
 msgid "Explore"
 msgstr "探索"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "You save"
+msgstr "您节省"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max positive factor"
@@ -2264,6 +2355,10 @@ msgstr "GMX 池"
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "{nativeTokenSymbol} 奖励："
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Become an affiliate"
+msgstr "成为联盟伙伴"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
@@ -2519,6 +2614,10 @@ msgstr "分组"
 msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
 msgstr "您的 GMX Account 中 Gas 支付代币余额不足，无法支付网络费用。请存入资金后重试。"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "Add your own fee and keep 100% of it."
+msgstr "添加你自己的费用并保留 100%。"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr ""
@@ -2529,7 +2628,6 @@ msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Account"
 msgstr "账户"
 
@@ -2546,8 +2644,6 @@ msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -2631,10 +2727,6 @@ msgstr "{gmOrGlvLabel} 出售成功，但跨链至 {0} 失败。您的资金安�
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "推荐码尚未在 {nonTakenNetworkNames} 上注册。请切换网络以注册并赚取返佣。"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -2727,6 +2819,10 @@ msgstr "转账完成"
 msgid "GM bridging to..."
 msgstr "GM 跨链桥接至..."
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Contact us"
+msgstr "联系我们"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2741,6 +2837,14 @@ msgstr "<0>无需 KYC、无需冗长的注册流程、无需存款。您只需�
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
 msgstr "停用 1CT"
+
+#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+msgid "VIP"
+msgstr "VIP"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate."
+msgstr "使用您的专属链接将交易者推荐至 GMX，赚取他们所产生费用的分成。"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -2773,6 +2877,10 @@ msgstr "转换仅在 {chainNames} 上可用。请切换网络以继续。"
 msgid "Cumulative PnL"
 msgstr "累积盈亏"
 
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Pick what fits your stack. Everything's documented."
+msgstr "选择适合你技术栈的方式，一切都有文档。"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Set max leverage"
@@ -2782,6 +2890,10 @@ msgstr "设置最大杠杆"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {取消订单} other {取消 # 个订单}}"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Terms are still being finalized — apply or reach out to the team for the current details."
+msgstr "条款仍在最终确定中——请申请或联系团队了解当前详情。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -2855,10 +2967,6 @@ msgstr "附属"
 msgid "Global network"
 msgstr "全球网络"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
-msgstr "尝试快速"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"
 msgstr ""
@@ -2866,6 +2974,10 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Changes may take a few minutes to appear"
 msgstr "更改可能需要几分钟才能显示"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Track volume and payouts live."
+msgstr "实时追踪交易量和收益。"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
@@ -2907,6 +3019,10 @@ msgstr "在 {chainName} 上购买 GMX"
 msgid "Size"
 msgstr "规模"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Trade from your own wallet — no deposits."
+msgstr "直接用您自己的钱包交易——无需存款。"
+
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
 msgstr "正在加载 Express 参数…"
@@ -2918,6 +3034,10 @@ msgstr "RESPONSE TIME"
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade（前身为 GMX Solana）托管在另一个网站上，由另一支团队运营，因此体验可能略有不同"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
+msgstr "<0>没有固定门槛——交易台会根据您近期及预期的月交易量为您设定等级。大多数交易者从约 500 万–1000 万美元/月起即可符合条件；请联系我们，我们将为您确认费率。</0>"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
@@ -3090,6 +3210,14 @@ msgstr ""
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr "较高的潜在净价格影响（该市场上限为 {formattedCap}）可能会显著影响您的抵押品。建议降低杠杆。<0>了解更多</0>。"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Keep more of every trade."
+msgstr "留住更多交易收益。"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Address"
+msgstr "地址"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "更新止盈"
@@ -3174,6 +3302,10 @@ msgstr "止盈 / 止损"
 msgid "Yield trading"
 msgstr "收益交易"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "Earn from every referral."
+msgstr "从每个推荐中赚取收益。"
+
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Stake for rewards and governance rights"
 msgstr "质押以获得奖励和治理权利"
@@ -3186,6 +3318,10 @@ msgstr "超过最大 {0} 可售卖金额"
 msgid "TOKEN"
 msgstr "TOKEN"
 
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "For developers & teams"
+msgstr "面向开发者和团队"
+
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "天"
@@ -3197,6 +3333,10 @@ msgstr "正在从 GMX Account 提取..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting status"
 msgstr "归属期状态"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Intro call plus integration feedback."
+msgstr "介绍通话以及集成反馈。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
@@ -3273,6 +3413,10 @@ msgstr "影响池金额"
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
+msgstr "按 GMX 永续合约约 0.06% 的实际往返费率估算。<0/>仅供参考——您的确切费率将在注册时由服务台确认。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "最大可借出影响 USD"
@@ -3281,6 +3425,10 @@ msgstr "最大可借出影响 USD"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative factor"
 msgstr "负向因子"
+
+#: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+msgid "Start building"
+msgstr "开始构建"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
@@ -3367,6 +3515,10 @@ msgstr "申领资金费用失败"
 msgid "TVL"
 msgstr "TVL"
 
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "For large traders"
+msgstr "面向大额交易者"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI trading assistant"
 msgstr "AI 交易助手"
@@ -3387,6 +3539,10 @@ msgstr "无可用的中心化交易所"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr ""
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Up to 25% earnings"
+msgstr "最高 25% 收益"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
@@ -3417,7 +3573,6 @@ msgstr "增加仓位（Market）"
 msgid "Bridge transfer sent"
 msgstr "跨链桥转账已发送"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -3475,6 +3630,17 @@ msgstr "兑换价格影响过高"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "可在 {minutesText}{seconds}s 后取消"
+
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Four ways in."
+msgstr "四种接入方式。"
+
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/ActionsRouter.tsx
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "Trader activity"
+msgstr "交易者活动"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -3601,6 +3767,10 @@ msgstr "存入 USD 容量"
 msgid "Arbitrum wallet"
 msgstr ""
 
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "TypeScript SDK"
+msgstr "TypeScript SDK"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
@@ -3636,6 +3806,10 @@ msgstr "资金费率因子"
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
 msgstr "存入已发送"
+
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you."
+msgstr "以稳定币支付的链上收入 — 你自己的构建者费用，<0/>加上 GMX 手续费分成，每当有人通过你<1/>交易即可获得。"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
@@ -3807,11 +3981,19 @@ msgstr "交易确认"
 msgid "Insufficient GLV liquidity"
 msgstr "GLV 流动性不足"
 
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
+msgid "AI agents"
+msgstr "AI 代理"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Confirm claim"
 msgstr "确认领取"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Realistic timeline, under 6 months"
+msgstr "现实的时间表，6 个月以内"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet-only"
@@ -3972,6 +4154,10 @@ msgstr "Gas 不足，无法支付网络费用"
 msgid "{fromText} to"
 msgstr "{fromText} 到"
 
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
+msgid "Frontends"
+msgstr "前端"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim successful"
 msgstr "领取成功"
@@ -3991,6 +4177,10 @@ msgstr "需要重新授权前的最大天数"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Minimum {0} capital required for rankings"
 msgstr "排名需要最低 {0} 的资金"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Request to be contacted"
+msgstr "申请联系"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -4022,6 +4212,10 @@ msgstr "资金费用"
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr ""
+
+#: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+msgid "Builder Program"
+msgstr "Builder Program"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
@@ -4072,6 +4266,10 @@ msgstr "交易空投"
 msgid "Found {0} events in the past {DAYS_BACK} days"
 msgstr "过去 {DAYS_BACK} 天内发现 {0} 个事件"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "How you earn"
+msgstr "收益方式"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
 msgstr "{gmOrGlvLabel} 跨链至..."
@@ -4084,7 +4282,6 @@ msgstr "截止时间："
 msgid "Connected to {sourceChainName}"
 msgstr "已连接到 {sourceChainName}"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Avalanche"
@@ -4196,10 +4393,6 @@ msgstr "<0>您的钱包已切换到其他账户</0><1/><2>在 {0} 上签名需�
 msgid "One-Click"
 msgstr "One-Click"
 
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "推荐码已被其他用户在 {takenNetworkNames} 上使用。来自这些网络的返佣不可用。"
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4296,6 +4489,10 @@ msgstr "如何在 GMX 上入门？"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Acceptable price"
 msgstr "可接受价格"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Instant answers, right on the page"
+msgstr "即时解答，就在页面上"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
@@ -4570,6 +4767,10 @@ msgstr "资金费用已领取"
 msgid "Copy users"
 msgstr "复制用户"
 
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "How do I actually make money?"
+msgstr "我到底怎么赚钱？"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4579,6 +4780,10 @@ msgstr "已实现兑换影响"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "输入接收方地址"
+
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Trade size.<0/>Or refer those who do."
+msgstr "大额交易。<0/>或推荐大额交易者。"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -4632,6 +4837,10 @@ msgstr ""
 msgid "Liquidated"
 msgstr "已清算"
 
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
+msgid "What people are building."
+msgstr "大家在构建什么。"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr "授权已取消"
@@ -4677,6 +4886,10 @@ msgstr "做多基础借贷因子"
 msgid "Recipient address"
 msgstr "接收地址"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
+msgid "Monthly volume routed"
+msgstr "每月路由交易量"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "VOL."
 msgstr "交易量"
@@ -4705,9 +4918,17 @@ msgstr "正在加载市场数据..."
 msgid "{longOrShort} positions do not pay a funding fee or a borrow fee"
 msgstr "{longOrShort} 仓位无需支付资金费用或借贷费用"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Turn your audience<0/>into on-chain income."
+msgstr "把您的受众<0/>变成链上收入。"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
 msgstr "在 {0} 中"
+
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
+msgid "Infrastructure"
+msgstr "基础设施"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
@@ -4759,6 +4980,10 @@ msgstr "领取中..."
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr "<0><1>@GMX_IO</1> 与 Token Terminal 达成数据合作。GMX 是建立在 <2>@Arbitrum</2> 和 <3>@Avax</3> 上的领先无许可永续合约交易所。</0><4>该协议是多链 DeFi 的基础流动性底层。</4><5>凭借约 2800 亿美元的名义交易量且仍在增长，GMX 认识到需要可靠的、数据驱动的利益相关者报告。</5>"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Receive supported assets into your wallet on {networkName}, or choose another network."
+msgstr "在 {networkName} 网络上接收支持的资产到您的钱包，或选择其他网络。"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
@@ -4774,9 +4999,9 @@ msgstr "全部"
 msgid "Request Market Increase"
 msgstr "请求市场增加"
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX {VERSION_NAME} {networkName} actions for all accounts"
-msgstr "GMX {VERSION_NAME} {networkName} 所有账户的操作"
+#: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
+msgid "Revenue calculator"
+msgstr "收益计算器"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
@@ -4888,6 +5113,10 @@ msgstr "无法加载公告。请稍后重试。"
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "超出最大未平仓量。当前：{openInterestText}，上限：{maxOpenInterestText}"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
+msgstr "默认匿名——只需连接钱包。<0/>仅在您希望接收更新时才需要提供邮箱。"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop-loss"
 msgstr "止损"
@@ -4900,6 +5129,10 @@ msgstr "输入接收方地址"
 #: src/pages/AccountDashboard/PerformanceShareCard.tsx
 msgid "Period"
 msgstr "期间"
+
+#: landing/src/pages/Builders/CtaSection/CtaSection.tsx
+msgid "Read the docs"
+msgstr "阅读文档"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
@@ -4971,7 +5204,6 @@ msgstr "最近上线"
 msgid "Failed to load order data:"
 msgstr "加载订单数据失败："
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "网络"
@@ -4992,11 +5224,14 @@ msgstr ""
 msgid "Borrowing rate"
 msgstr ""
 
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Looking for a check before committing"
+msgstr "尚未投入就想先拿到资金"
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr "高交换利润费用"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5049,6 +5284,10 @@ msgstr "LayerZero scan"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "借贷费用"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Self-custodial, always"
+msgstr "始终自托管"
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image copied to clipboard"
@@ -5137,7 +5376,6 @@ msgid "Bonus APR"
 msgstr "奖金年化收益率"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/APRLabel/APRLabel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Accumulating..."
 msgstr ""
@@ -5216,6 +5454,10 @@ msgstr "DeFi 保证金协议"
 msgid "Set short Stop-Loss @ {0}"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Banners, links and a partner manager."
+msgstr "横幅广告、专属链接和合作伙伴经理。"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
 msgstr "费用"
@@ -5223,6 +5465,10 @@ msgstr "费用"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
 msgstr "金库容量"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "MONTHLY VOLUME"
+msgstr "月交易量"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5276,6 +5522,10 @@ msgstr "其他代币部分"
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
+msgstr "此钱包生成的签名仅适用于特定网络。请批准切换到 {0}，然后再次签名。"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "取消新订单"
@@ -5326,6 +5576,10 @@ msgstr "已从子账户提取"
 msgid "Unknown buy GM order"
 msgstr "未知购买 GM 订单"
 
+#: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+msgid "Build on GMX.<0/>Get paid on every trade."
+msgstr "在 GMX 上构建。<0/>每笔交易都有收益。"
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "页面已过期，请刷新"
@@ -5355,7 +5609,6 @@ msgstr "池最大做多 USD 存入上限"
 msgid "Net value"
 msgstr "净值"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -5365,6 +5618,10 @@ msgstr "赚取"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be immediately liquidated upon execution. Try reducing the size."
 msgstr "仓位在执行时将被立即清算。请尝试减小规模。"
+
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Explore the Builder Program"
+msgstr "了解 Builder Program"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose: {0} | public: {1}"
@@ -5399,9 +5656,21 @@ msgstr ""
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>您的 {walletName} 在 {0} 上不可用</0><1/><2>请将 {1} 添加至您的 {walletName}，然后重新连接并重试</2>"
 
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "For affiliates"
+msgstr "面向推广者"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Talk to the desk"
+msgstr "联系交易台"
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
+msgstr "<0>不需要。GMX 是自托管且无需许可的——您只需连接钱包即可交易。无需身份验证。</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5439,6 +5708,10 @@ msgstr "<0>订单失败：钱包地址不匹配</0><1/><2>刷新并重试</2>"
 msgid "Click to select, then use the trade box to increase size."
 msgstr "点击选择，然后使用交易框增加仓位大小。"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
+msgid "Assumes Builder Code at 7.5 bps plus Referral Fee at 1.25 bps.<0/>You set your own Builder Code rate (5 to 10 bps is typical)."
+msgstr "假设 Builder Code 为 7.5 个基点，推荐费为 1.25 个基点。<0/>Builder Code 费率由你自己设定（通常为 5 到 10 个基点）。"
+
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "Cancel all"
 msgstr "全部取消"
@@ -5446,6 +5719,10 @@ msgstr "全部取消"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} settling fees..."
 msgstr "{positionName} 正在结算费用..."
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "OR"
+msgstr "或"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
@@ -5556,10 +5833,6 @@ msgstr "从您的钱包"
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
 msgstr ""
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Explore more"
-msgstr "探索更多"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated"
 msgstr "设置已更新"
@@ -5605,6 +5878,11 @@ msgstr "做空"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution. <0>Read more</0>."
 msgstr "最大网络费用包含 Gas 波动缓冲。未使用的费用将在执行时退还。<0>了解更多</0>。"
+
+#: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+#: landing/src/pages/Builders/StickyApplyBar.tsx
+msgid "Apply to program"
+msgstr "申请加入"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5701,6 +5979,10 @@ msgstr "扣除所有费用后的盈亏"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "需要额外保留："
+
+#: landing/src/pages/Builders/StickyApplyBar.tsx
+msgid "Build on GMX. Get paid on every trade."
+msgstr "在 GMX 上构建。每笔交易都有收益。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
@@ -5894,6 +6176,10 @@ msgstr "{updateOrdersCount} 个 TP/SL 订单已更新"
 msgid "Insufficient margin. Add more margin"
 msgstr ""
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "What's the minimum volume to qualify?"
+msgstr "符合条件的最低交易量是多少？"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Current reserved:"
 msgstr "当前已预留："
@@ -5929,6 +6215,10 @@ msgstr "提取费用"
 msgid "TP"
 msgstr "TP"
 
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Rest API"
+msgstr "Rest API"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
 msgstr "选择图表上显示哪些买入/卖出标记：您的所有历史交易、仅您当前的持仓，或不显示。"
@@ -5951,12 +6241,18 @@ msgstr ""
 msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
 msgstr "在接下来的 {2} 内，为 {3} 执行 {numberOfParts} 个 {0} {type} 订单，每笔 {1}"
 
+#: landing/src/pages/Builders/Footer/BuildersFooter.tsx
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "文档"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Marketing Kit + Co-marketing"
+msgstr "营销工具包 + 联合营销"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
@@ -6008,6 +6304,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "{0} 流动性不足"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "A day for a lightweight integration, 1 to 3 weeks for something deeper."
+msgstr "轻量级集成需要一天，更深入的集成需要 1 到 3 周。"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
@@ -6265,6 +6565,10 @@ msgstr "连接钱包"
 msgid "No repeated wallet confirmations"
 msgstr "无需重复钱包确认"
 
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "It depends on the volume you route and which revenue streams you turn on — use the calculator above for a rough estimate, or apply to talk specifics with the team."
+msgstr "这取决于你路由的交易量以及启用的收入来源——使用上方计算器进行粗略估算，或申请后与团队详谈。"
+
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
@@ -6391,6 +6695,10 @@ msgstr "投票"
 msgid "Update TWAP Swap part"
 msgstr "更新 TWAP 兑换部分"
 
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Good fit"
+msgstr "适合"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
 msgstr ""
@@ -6406,10 +6714,6 @@ msgstr "已减少"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Selling"
 msgstr ""
-
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Recommended"
-msgstr "推荐"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -6428,9 +6732,17 @@ msgstr ""
 msgid "Decrease"
 msgstr "减少"
 
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
+msgid "Yield"
+msgstr "收益"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "钱包收到金额"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Is this a grants program? Do I get tokens?"
+msgstr "这是赠款计划吗？我会获得代币吗？"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above mark price"
@@ -6520,6 +6832,10 @@ msgstr "从 <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> 转移到 <3>
 msgid "Share your PnL"
 msgstr "分享您的盈亏"
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Active affiliates"
+msgstr "活跃联盟伙伴"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
@@ -6532,6 +6848,10 @@ msgstr ""
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
 msgstr "组成"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Two ways, and you can run both. Builder Code is your own fee: you set the rate (5 to 10 bps is typical), it stacks on top of GMX's fees, and 100% comes to you. Referral Fees are a cut of GMX's own fees: up to 25% of open/close fees, paid automatically."
+msgstr "有两种方式，而且可以同时使用。Builder Code 是你自己的费用：你设定费率（通常为 5 到 10 个基点），叠加在 GMX 费用之上，100% 归你。推荐费是 GMX 自身费用的分成：最高可达开仓/平仓费用的 25%，自动支付。"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6590,6 +6910,10 @@ msgstr "未找到订单。可能已被取消或已执行"
 msgid "Vesting"
 msgstr "归属"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Earn on every trade they make."
+msgstr "他们每次交易，您都能赚取收益。"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order cancelled"
 msgstr "买入订单已取消"
@@ -6638,6 +6962,10 @@ msgstr "仓位规模超过池价值。Delta：{usdDeltaText}，池：{poolUsdTex
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display net value and PnL after all fees"
 msgstr "显示扣除所有费用后的净值和盈亏"
+
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "GMX cumulative volume"
+msgstr "GMX 累计交易量"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6822,6 +7150,10 @@ msgstr "该仓位在扣除待结借贷费用和资金费用后保证金为负，
 msgid "Sell order executed"
 msgstr "卖出订单已执行"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "Charge your own fee"
+msgstr "收取你自己的费用"
+
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "以 {receiveTokenSymbol} 接收会交换您的利润并产生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分别接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳过交换。<1>了解更多</1>"
@@ -6934,6 +7266,10 @@ msgstr "未找到仓位。它可能已被关闭"
 msgid "Execute"
 msgstr "执行"
 
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Launch"
+msgstr "上线"
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching search"
 msgstr "未找到匹配搜索的资金费用记录"
@@ -6979,6 +7315,10 @@ msgstr "成交价格未达到可接受价格"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
 msgstr ""
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Comfortable with Builder / Referral Code attribution"
+msgstr "接受 Builder / Referral Code 归因"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
@@ -7141,6 +7481,10 @@ msgstr "{orderText} 已更新"
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
 msgstr "提取已发送"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "What if I'm building a competing perp DEX?"
+msgstr "如果我在构建一个与之竞争的永续 DEX 呢？"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I share my code?"
@@ -7333,6 +7677,10 @@ msgstr "不支持此订单类型"
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
 msgstr "订单错误。该市场价格波动剧烈，请尝试<0>增加允许的滑点</0>"
 
+#: landing/src/pages/Builders/HeroSection/HeroSection.tsx
+msgid "Real onchain revenue, paid in stablecoins, every time someone trades through you."
+msgstr "每当有人通过你交易，都能获得以稳定币支付的真实链上收入。"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -7417,6 +7765,10 @@ msgstr "供应"
 msgid "LONG LIQ."
 msgstr "LONG LIQ."
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "If you're moving serious size on GMX, you shouldn't be paying list price. The desk cuts your fees and gives you a direct line to a person — not a ticket queue."
+msgstr "如果您在 GMX 上的交易量较大，就不应该支付标准费率。交易台会为您削减费用，并提供直达真人的联系渠道——而非工单排队。"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "选择要存入的资产"
@@ -7439,6 +7791,10 @@ msgstr ""
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
 msgstr "无开放头寸"
+
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "See the perks"
+msgstr "查看权益"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
@@ -7494,6 +7850,14 @@ msgstr "过去 90 天"
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Show size in tokens"
 msgstr "以代币显示规模"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "You earn"
+msgstr "您赚取"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Vague on timing"
+msgstr "时间安排含糊"
 
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
@@ -7579,6 +7943,14 @@ msgstr "Perpie"
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Supported by"
 msgstr "支持者"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Timeline"
+msgstr "时间表"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
+msgstr "<0>不会。您完全通过自己的钱包在 GMX 上交易。我们绝不托管您的资产——折扣与收益都会以链上方式结算至您的地址。</0>"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -7701,8 +8073,11 @@ msgstr "取消"
 msgid "Live"
 msgstr "实时"
 
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Up to 25% off fees for high-volume traders.<0/>Up to 25% earnings for affiliates.<1/>Plus personal support."
+msgstr "高交易量交易者最高可享 25% 手续费折扣。<0/>推广者最高可获 25% 收益。<1/>还有专属支持。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr ""
@@ -7735,6 +8110,10 @@ msgstr "STATUS"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "Do I need to pass KYC?"
+msgstr "我需要通过 KYC 吗？"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
@@ -7831,6 +8210,10 @@ msgstr "您想以哪种方式添加资金？"
 msgid "Receiver has not staked GLP tokens before"
 msgstr "接收方此前未质押过 GLP 代币"
 
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
+msgid "Already live"
+msgstr "已上线"
+
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
 msgstr ""
@@ -7870,6 +8253,10 @@ msgstr "平均使用杠杆"
 msgid "Cancel Stop-Loss"
 msgstr "取消止损"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
+msgstr "在交易时段内，我们通常会在约 2 小时内回复。无需承诺——只是一次交流。"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7877,13 +8264,13 @@ msgstr "取消止损"
 msgid "Set limit price above mark price"
 msgstr ""
 
-#: src/pages/Earn/EarnPortfolioPage.tsx
-msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "质押 {tokenSymbol} 奖励"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Active Balancer Program code"
+msgstr "有效的 Balancer 计划代码"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -7978,6 +8365,10 @@ msgstr "链接已复制"
 msgid "SIZE"
 msgstr "规模"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Book a 30-min call"
+msgstr "预约 30 分钟通话"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
@@ -7987,6 +8378,18 @@ msgstr "从"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No events"
 msgstr "暂无事件"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Reach out and let's talk — apply below and the team will follow up."
+msgstr "联系我们聊聊——在下方申请，团队会跟进。"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Do I need to join the program to integrate?"
+msgstr "集成必须加入该计划吗？"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Co-marketing, ecosystem distribution, and selective incentives."
+msgstr "联合营销、生态系统分发和选择性激励。"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
@@ -8039,6 +8442,10 @@ msgstr "（{0}，占 {1}）"
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "已实现和未实现盈亏总计，包含费用和价格影响"
 
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Squid GraphQL"
+msgstr "Squid GraphQL"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In GMX"
 msgstr "GMX 中"
@@ -8063,6 +8470,10 @@ msgstr "资金费率 / 天"
 msgid "GLP reimbursement (test)"
 msgstr "GLP 补偿（测试）"
 
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Built for those<0/>who do more."
+msgstr "为做得更多的人<0/>而建。"
+
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "将 {tokenSymbol} 桥接到 {chainName} 使用"
@@ -8078,6 +8489,10 @@ msgstr "显示更多"
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Net rate = funding + borrowing fees.<0/><1/>Funding: Balances longs vs shorts, paid between traders. <2>Read more</2>.<3/><4/>Borrowing: Ensures available liquidity. <5>Read more</5>."
 msgstr "净费率 = 资金费率 + 借贷费用。<0/><1/>资金费率：平衡多空双方，在交易者之间支付。<2>了解更多</2>。<3/><4/>借贷费用：确保可用流动性。<5>了解更多</5>。"
+
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Start trading in under 5 minutes"
+msgstr "5 分钟内开始交易"
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
@@ -8135,7 +8550,6 @@ msgstr "超过最大 {0} 多头"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8242,11 +8656,6 @@ msgstr "总返佣"
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "单边流动性金库，通过主动对冲和再平衡以最小化无常损失"
 
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX V2 actions"
-msgstr "GMX V2 操作"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr ""
@@ -8314,7 +8723,6 @@ msgid "Min position size: {0}"
 msgstr "最小头寸大小：{0}"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/APRLabel/APRLabel.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
@@ -8331,6 +8739,14 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
 msgstr "已质押 GMX"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Real-time referral dashboard"
+msgstr "实时推荐仪表盘"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Chains"
+msgstr "链"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor shorts"
@@ -8382,6 +8798,10 @@ msgstr "已发送"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "仅在完整账户转移时使用此功能。<0/>这将把您所有的 GMX、esGMX、GLP、乘数积分和投票权转移到您的新账户。<1/>仅当接收账户之前未质押过 GMX 或 GLP 代币时才支持转移。<2/>转移是单向的，您将无法将已质押的代币转回发送账户。"
+
+#: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
+msgid "/ month"
+msgstr "/ 月"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
@@ -8442,6 +8862,13 @@ msgstr "<0>⬡ Chainlink 数据故事 ⬡ <1/><2>#Chainlink</2> 数据流已为 
 msgid "Min collateral factor OI long"
 msgstr "做多 OI 最小抵押品系数"
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "Trader Profile"
+msgstr "交易者档案"
+
 #: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
@@ -8454,6 +8881,7 @@ msgstr "已领取"
 msgid "less than a minute"
 msgstr "不到一分钟"
 
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "生态系统"
@@ -8514,6 +8942,10 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
 msgstr "金额"
+
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Integrate GMX"
+msgstr "集成 GMX"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
@@ -8662,6 +9094,10 @@ msgstr "非交易时段：每日 20:45–22:15 UTC（周末 周五 20:45 → 周
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."
 msgstr ""
 
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Build"
+msgstr "构建"
+
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
@@ -8670,10 +9106,6 @@ msgstr "用于 {comment}"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "已用资本 = max(未平仓仓位抵押品总和 - 已实现盈亏 + 初始待处理盈亏)。"
-
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-msgid "Performance APY"
-msgstr "绩效 APY"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
@@ -8765,6 +9197,10 @@ msgstr "GMX announcements"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "平仓费用"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Solo, anonymous account"
+msgstr "单人且匿名账号"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -8957,6 +9393,10 @@ msgstr "GMX Account 存款受 Stargate 跨链桥流动性限制。请尝试小�
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
 msgstr "在当前仓位状态下，此订单可能无法成交。请在触发前增加抵押品或降低杠杆。"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
+msgstr "Balancer 计划奖励持续站在 GMX 市场权重不足一方的交易者。这些代码将交易者手续费折扣替换为更高的返佣，返佣会累积到代码所有者的推荐账户，可随时领取。<0>了解更多</0>"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -9003,6 +9443,14 @@ msgstr "做空借贷指数"
 msgid "Price impact"
 msgstr "价格影响"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Claim it anytime in the <0>Affiliates tab</0>."
+msgstr "随时在<0>附属</0>标签页领取。"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "It accrues to the code owner ({0})."
+msgstr "返佣累积给代码所有者（{0}）。"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
 msgstr "重试外部路由"
@@ -9026,6 +9474,10 @@ msgstr "您"
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Close position"
 msgstr "平仓"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
+msgstr "仅供参考，按约 0.06% 的实际费率估算。<0/>实际收益取决于联盟等级及每位交易者的活跃度。"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -9198,6 +9650,10 @@ msgstr "池"
 msgid "Pool long amount"
 msgstr "池做多数量"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Open Live-Chat"
+msgstr "打开实时聊天"
+
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
 msgstr "金库"
@@ -9209,6 +9665,10 @@ msgstr "循环策略"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "最大预留 {directionLabel}"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Technical guidance plus architecture and UX feedback."
+msgstr "技术指导以及架构和用户体验反馈。"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
@@ -9272,6 +9732,10 @@ msgstr "支撑资产构成"
 msgid "Claimable rebates"
 msgstr "可领取返佣"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Lock in<0/><1>a better rate.</1>"
+msgstr "锁定<0/><1>更优费率。</1>"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Secondary"
@@ -9295,7 +9759,6 @@ msgid "Session generated"
 msgstr "会话已生成"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -9580,6 +10043,10 @@ msgstr "超过最大 {0} 金额"
 msgid "GMX pages"
 msgstr "GMX 页面"
 
+#: landing/src/pages/Builders/CtaSection/CtaSection.tsx
+msgid "The API's open and the economics are real.<0/>Ship an integration, or apply to get support and distribution behind it."
+msgstr "API 是开放的，收益是真实的。<0/>发布一个集成，或申请获得支持和分发资源。"
+
 #: src/components/BridgeModal/BridgeInModal.tsx
 msgid "Deposit {glvOrGm}: {0}"
 msgstr "存入 {glvOrGm}：{0}"
@@ -9620,6 +10087,10 @@ msgstr "已平仓仓位的盈亏次数"
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Short liquidity"
 msgstr ""
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Quick hits"
+msgstr "快速要点"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9715,6 +10186,10 @@ msgstr ""
 msgid "An unexpected error occurred. Please retry."
 msgstr "发生意外错误。请重试。"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "推荐码已在以下网络被使用：{takenNetworkNamesJoined}。来自这些网络的返佣不可用。"
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "出现错误"
@@ -9799,9 +10274,17 @@ msgstr ""
 msgid "Buying"
 msgstr ""
 
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "API Surfaces"
+msgstr "API 接口"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "转移"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "The Program"
+msgstr "计划"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -9845,6 +10328,10 @@ msgstr "快速 + 一键"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "View position history"
 msgstr "查看仓位历史"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "The more you trade, the more you keep."
+msgstr "交易越多，留存越多。"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
@@ -9946,6 +10433,10 @@ msgstr "Venus"
 msgid "No swap route available"
 msgstr ""
 
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "How much could I earn?"
+msgstr "我能赚多少？"
+
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on {0}."
 msgstr ""
@@ -9961,10 +10452,6 @@ msgstr "什么是 GMX？"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposit submitted"
 msgstr "存入已提交"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -10053,6 +10540,10 @@ msgstr "市场监控"
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "已领取返还和空投的分发历史记录"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Fastest — chat with the desk directly"
+msgstr "最快捷——直接与交易台聊天"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new amount or price"
 msgstr "输入新的金额或价格"
@@ -10123,6 +10614,10 @@ msgstr "止盈"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "最高盈亏 ($)"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
+msgstr "<0>交易者折扣会在您的等级确认后自动应用到您的账户。联盟返佣实时累积，您可以随时通过推荐仪表盘在链上领取。</0>"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Leverage trading terminal"
@@ -10212,6 +10707,10 @@ msgstr "在净值和盈亏显示中包含所有费用，包括平仓费用。"
 msgid "Claim price impact rebates"
 msgstr "领取价格影响返还"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "Two revenue streams."
+msgstr "两种收入来源。"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "正在执行转移请求…"
@@ -10245,9 +10744,17 @@ msgstr "已质押"
 msgid "Traders"
 msgstr "交易者"
 
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Query historical chain data fast."
+msgstr "快速查询链上历史数据。"
+
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
 msgstr "钱包无法签署消息"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "REFERRED MONTHLY VOLUME"
+msgstr "推荐月交易量"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
@@ -10266,6 +10773,14 @@ msgstr "执行 TWAP 部分"
 msgid "Create Limit Swap"
 msgstr "创建限价交换"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "Up to 25% of GMX trading fees, paid directly to you."
+msgstr "最高可获得 GMX 交易费用的 25%，直接支付给你。"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Reach out however suits you and we'll come back with your exact tier — usually within a couple of hours. No obligation."
+msgstr "以您方便的方式联系我们，我们会为您确认具体等级——通常在几小时内回复。无需任何承诺。"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Change network"
 msgstr "更换网络"
@@ -10281,6 +10796,10 @@ msgstr "纯 {indexSymbol} 做多。敞口仅来自仓位。"
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Used referral code"
 msgstr ""
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Integrating or shipping"
+msgstr "正在集成或交付"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Vested claimable GMX:"
@@ -10298,10 +10817,6 @@ msgstr "扣除费用和价格影响后的总盈亏百分比。将鼠标悬停在
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX 账户"
 
@@ -10367,6 +10882,10 @@ msgstr "{chainName} 不支持 V1。请切换至 Arbitrum 以使用 V1。"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Completed"
 msgstr "已完成"
+
+#: landing/src/pages/Builders/CtaSection/CtaSection.tsx
+msgid "Apply to Builder Program"
+msgstr "申请 Builder Program"
 
 #: src/components/ShareModal/SkipReferralCodeBanner.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -10452,9 +10971,17 @@ msgstr ""
 msgid "Your funds are safe and remain in your wallet."
 msgstr "您的资金是安全的，保留在您的钱包中。"
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Up to 25% off fees for high-volume traders. Up to 25% earnings<0/>for affiliates. Personal support for both."
+msgstr "大额交易者最高可享 25% 手续费折扣。联盟推广人最高可获 25% 收益。<0/>双方均享专属支持。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Swap"
 msgstr "市场交换失败"
+
+#: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
+msgid "Risk / hedging"
+msgstr "风险 / 对冲"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "HoudiniSwap"
@@ -10548,10 +11075,6 @@ msgstr "直接在 <0>{chainName}</0> 上买入 {nativeTokenSymbol}"
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Limit Swap：当达到触发价格时兑换代币"
 
-#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-msgid "See recommended section above to start"
-msgstr "请参阅上方推荐部分以开始"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "获取 GMX 的提醒和公告，随时掌握您的交易、清算风险等信息"
@@ -10575,6 +11098,10 @@ msgstr "{positionName} 结算失败"
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
 msgstr "接收至此钱包"
+
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "Stack them."
+msgstr "叠加使用。"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"
@@ -10631,9 +11158,17 @@ msgstr ""
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>从您的仓位中累积的正向资金费用</0>"
 
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Message us on Telegram"
+msgstr "通过 Telegram 联系我们"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Topics"
 msgstr "主题"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Is this the right fit?"
+msgstr "是否合适？"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
@@ -10724,9 +11259,17 @@ msgstr "自动取消 TP/SL"
 msgid "LIQUIDITY LONG"
 msgstr "LIQUIDITY LONG"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "Is this custodial? Do I send you my funds?"
+msgstr "这是托管服务吗？我需要将资金发送给你们吗？"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "做空 PnL"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "A dedicated account manager"
+msgstr "专属客户经理"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
@@ -10739,6 +11282,10 @@ msgstr "RPC 错误。请通过 <0>chainlist.org</0> 更新您钱包的 RPC。<1>
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order data unavailable yet"
 msgstr "订单数据暂不可用"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Real team with shipping experience"
+msgstr "有交付经验的真实团队"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Earn fees from leverage trading, swaps, and spreads"
@@ -10755,6 +11302,10 @@ msgstr "链下签署交易。优质 RPC 确保在网络拥堵时的可靠性。<
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
 msgstr "外部路由在一次失败的尝试后暂时暂停。请重试以检查是否有更优汇率。"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Working prototype or live product"
+msgstr "可运行的原型或已上线的产品"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
@@ -10824,10 +11375,6 @@ msgstr "流动性仅在 {chainNames} 或 {lastChainName} 上可用。请切换�
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
 msgstr "转账历史"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "MegaETH"
-msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -10922,6 +11469,10 @@ msgstr "30 秒"
 msgid "Annualized performance"
 msgstr "年化表现"
 
+#: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
+msgid "Direct smart contract integration"
+msgstr "直接集成智能合约"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are disabled for this token."
 msgstr "此代币已禁用 Permit 授权。"
@@ -10934,6 +11485,10 @@ msgstr "最新价格"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "正在取消 {orderText}…"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your savings"
+msgstr "预估节省金额"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -10975,6 +11530,10 @@ msgstr "净值"
 msgid "MARK PRICE"
 msgstr "标记价格"
 
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "No — the API, SDK, and docs are open to everyone. Joining the program adds direct support and distribution on top."
+msgstr "不需要——API、SDK 和文档对所有人开放。加入计划将额外获得直接支持和分发资源。"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr "在 {settingsLink} 中将最大网络费用缓冲提高至 {0}"
@@ -11004,6 +11563,10 @@ msgstr "减少提取量以匹配上限。<0>了解更多</0>。<1/><2/><3>设置
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr ""
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+msgid "Trade more, pay less.<0/>Refer, and earn."
+msgstr "交易更多，费用更低。<0/>推荐好友，赚取收益。"
+
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
@@ -11013,6 +11576,10 @@ msgstr "没有匹配的资金池"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in swap markets"
 msgstr "搜索兑换市场"
+
+#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
+msgid "Going live or already live"
+msgstr "即将上线或已上线"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation confirmations"
@@ -11136,6 +11703,10 @@ msgstr "分配"
 msgid "<0>Every</0> {minutes} minutes{0}"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your own contact on Telegram."
+msgstr "您在 Telegram 上的专属联系人。"
+
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
@@ -11145,11 +11716,6 @@ msgstr "语言"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
-
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/ActionsRouter.tsx
-msgid "GMX V1 actions"
-msgstr "GMX V1 操作"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
@@ -11162,6 +11728,10 @@ msgstr "GLV 金库："
 #: src/components/DownloadAsCsv/DownloadAsCsv.tsx
 msgid "Download as CSV"
 msgstr "下载为 CSV"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Fee discounts up to 25%"
+msgstr "最高 25% 费用折扣"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
@@ -11369,6 +11939,15 @@ msgstr "需要标准授权交易才能继续。"
 msgid "Yield optimizations"
 msgstr "收益优化"
 
+#: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
+#: landing/src/pages/TraderAffiliateProgram/TraderAffiliateProgram.tsx
+msgid "Trader & Affiliate Program"
+msgstr "交易者与联盟伙伴计划"
+
+#: landing/src/pages/Home/SocialSection/ProgramCards.tsx
+msgid "Explore the VIP Desk"
+msgstr "了解 VIP Desk"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
@@ -11399,6 +11978,7 @@ msgstr "借贷费用"
 msgid "Continue"
 msgstr "继续"
 
+#: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start earning"
 msgstr "开始赚取"
@@ -11406,6 +11986,10 @@ msgstr "开始赚取"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancellation failed"
 msgstr "{orderText} 取消失败"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "How and when do I get paid or credited?"
+msgstr "我将如何以及何时获得付款或入账？"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
@@ -11682,6 +12266,10 @@ msgstr "限价"
 msgid "Execute TWAP Swap part"
 msgstr "执行 TWAP 兑换部分"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your income (at 25%)"
+msgstr "您的收益（25%）"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed"
 msgstr "购买 {gmOrGlvLabel} 失败"
@@ -11731,6 +12319,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
 msgstr "成交价格未达到可接受价格。订单将在满足条件时成交。"
+
+#: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
+msgid "Open Telegram"
+msgstr "打开 Telegram"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "multiple asset classes"
@@ -11797,6 +12389,19 @@ msgstr "已过期的存入"
 msgid "Take-Profit"
 msgstr "止盈"
 
+#: landing/src/pages/Builders/Builders.tsx
+#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+msgid "Builders"
+msgstr "开发者"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trades earn a {currentTierRebate}% rebate, not a discount."
+msgstr "您的交易获得 {currentTierRebate}% 返佣，而非折扣。"
+
+#: landing/src/pages/Builders/FaqSection/FaqSection.tsx
+msgid "Arbitrum, Avalanche, MegaETH. (GMX Account also accepts entry from Ethereum, Base, and BNB.)"
+msgstr "Arbitrum、Avalanche、MegaETH。（GMX Account 也支持从 Ethereum、Base 和 BNB 进入。）"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
 msgstr ""
@@ -11838,6 +12443,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 到 </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "无可用的去中心化交易所"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "推荐码已在以下网络被使用：{takenNetworkNamesJoined}。来自该网络的返佣不可用。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -11882,6 +12491,10 @@ msgstr "已在 {0} 发送"
 msgid "DeBank"
 msgstr "DeBank"
 
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "Builder code"
+msgstr "Builder Code"
+
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive (test)"
 msgstr "GLV 奖金激励（测试）"
@@ -11899,6 +12512,10 @@ msgstr "余额不足"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
 msgstr ""
+
+#: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
+msgid "Referral revenue, built in"
+msgstr "内置推荐收益"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
