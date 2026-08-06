@@ -26,6 +26,8 @@ import {
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
   PRECISION_DECIMALS,
+  parseValue,
+  removeTrailingZeros,
   trimZeroDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
@@ -172,6 +174,22 @@ describe("trimZeroDecimals", () => {
 
   it("leading zeros with trailing zero decimals trims to int", () => {
     expect(trimZeroDecimals("0000123.000")).toBe("123");
+  });
+});
+
+describe("removeTrailingZeros", () => {
+  it("keeps large values in plain decimal notation", () => {
+    expect(removeTrailingZeros("9659861417460889000000.00")).toBe("9659861417460889000000");
+  });
+
+  it("removes trailing fractional zeros without converting the value to a number", () => {
+    expect(removeTrailingZeros("123.4500")).toBe("123.45");
+  });
+});
+
+describe("parseValue", () => {
+  it("returns undefined instead of throwing for scientific notation", () => {
+    expect(parseValue("9.659861417460889e+21", USD_DECIMALS)).toBeUndefined();
   });
 });
 
@@ -438,6 +456,14 @@ describe("formatFactor", () => {
     expect(formatFactor(1000000000000000000000000n)).toBe("0.000001");
     expect(formatFactor(1000000000000000000000000000n)).toBe("0.001");
     expect(formatFactor(1000000000000000000000000000000n)).toBe("1");
+  });
+
+  it("should format percentage-scaled factors", () => {
+    expect(formatFactor(PRECISION * 10n)).toBe("10");
+    expect(formatFactor(PRECISION * 30n)).toBe("30");
+    expect(formatFactor(PRECISION * 80n)).toBe("80");
+    expect(formatFactor(PRECISION * 100n)).toBe("100");
+    expect(formatFactor(PRECISION * 1000n)).toBe("1000");
   });
 });
 
