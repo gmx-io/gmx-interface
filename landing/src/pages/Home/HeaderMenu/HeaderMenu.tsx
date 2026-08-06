@@ -22,13 +22,16 @@ export function HeaderMenu() {
 
   return (
     <div
+      data-landing-header
       className={cx("fixed left-0 top-0 z-30 flex w-full flex-col bg-slate-900 text-white", {
         "h-screen": isMenuOpen,
       })}
     >
       <div className="flex w-full items-center justify-center px-16 py-12 sm:px-40 sm:py-16">
         <div className="flex w-[1200px] items-center justify-between">
-          <IcGmxHeader className="h-20 sm:h-24" />
+          <a href="/#/" aria-label="GMX">
+            <IcGmxHeader className="h-20 sm:h-24" />
+          </a>
           <div className="flex items-center gap-8 sm:gap-12">
             <div className="leading-body-sm mr-36 hidden flex-row gap-22 text-14 font-medium -tracking-[0.448px] sm:flex">
               {headerLinks.map((link) => (
@@ -91,6 +94,10 @@ export function HeaderMenu() {
 function useHeaderLinks() {
   return useMemo(() => {
     return [
+      {
+        label: t`VIP`,
+        href: "/#/trader-affiliate-program",
+      },
       {
         label: t`Protocol`,
         href: "https://github.com/gmx-io",
