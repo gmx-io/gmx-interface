@@ -55,7 +55,6 @@ export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
 export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
 export const DEBUG_SWAP_MARKETS_CONFIG_KEY = "debug-swap-markets-config";
 
-const ONE_CLICK_TRADING_PROMO_HIDDEN_KEY = "one-click-trading-promo-hidden";
 export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-native-token-warn-hidden";
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
@@ -68,6 +67,7 @@ export const SUPPORT_CHAT_WAS_EVER_SHOWN_KEY = "support-chat-was-ever-shown";
 export const SUPPORT_CHAT_WAS_EVER_CLICKED_KEY = "support-chat-was-ever-clicked";
 export const SUPPORT_CHAT_USER_ID_KEY = "support-chat-user-id";
 export const SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY = "support-chat-last-connected-state";
+export const SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY = "support-chat-was-opened-without-wallet";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
@@ -228,10 +228,6 @@ export function getGasPaymentTokenAddressKey(chainId: number, account: string | 
 
 export function getGmxAccountGasPaymentTokenAddressKey(chainId: number, account: string | undefined) {
   return [chainId, account, GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY];
-}
-
-export function getOneClickTradingPromoHiddenKey(chainId: number) {
-  return `${chainId}-${ONE_CLICK_TRADING_PROMO_HIDDEN_KEY}`;
 }
 
 export function getHighLeverageWarningDismissedTimestampKey(account: string) {
