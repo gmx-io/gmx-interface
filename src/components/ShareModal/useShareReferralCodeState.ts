@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePrevious } from "react-use";
 
 import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
+import { getProtocolReferralCodeType } from "domain/referrals/utils/referralsHelper";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
@@ -24,7 +25,7 @@ export function useShareReferralCodeState({
   createdReferralCode: controlledCreatedReferralCode,
   setCreatedReferralCode: setControlledCreatedReferralCode,
 }: Params) {
-  const userAffiliateCode = useAffiliateCodes(chainId, account);
+  const userAffiliateCode = useAffiliateCodes(chainId, account, isOpen);
   const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account);
   const [internalCreatedReferralCode, setInternalCreatedReferralCode] = useState<string | null>(null);
   const isCreatedReferralCodeControlled = controlledCreatedReferralCode !== undefined;
@@ -39,23 +40,35 @@ export function useShareReferralCodeState({
   );
   const prevIsOpen = usePrevious(isOpen);
 
-  const shareAffiliateCode = useMemo(() => {
+  const ownedAffiliateCode = useMemo(() => {
     if (createdReferralCode) {
       return { code: createdReferralCode, success: true };
     }
     return userAffiliateCode;
   }, [createdReferralCode, userAffiliateCode]);
-  const hasReferralCode = Boolean(shareAffiliateCode?.code);
+  const hasReferralCode = Boolean(ownedAffiliateCode.code);
+
+  const shareAffiliateCode = useMemo(() => {
+    if (!ownedAffiliateCode.success || ownedAffiliateCode.code) {
+      return ownedAffiliateCode;
+    }
+
+    if (usedReferralCode && !getProtocolReferralCodeType(usedReferralCode)) {
+      return { code: usedReferralCode, success: true };
+    }
+
+    return { code: null, success: true };
+  }, [ownedAffiliateCode, usedReferralCode]);
 
   const { referralCodeOwnerKind, code } = useMemo(() => {
-    if (hasReferralCode && shareAffiliateCode?.code) {
-      return { referralCodeOwnerKind: "created" as const, code: shareAffiliateCode.code };
+    if (ownedAffiliateCode.code) {
+      return { referralCodeOwnerKind: "created" as const, code: ownedAffiliateCode.code };
     }
-    if (usedReferralCode) {
-      return { referralCodeOwnerKind: "used" as const, code: usedReferralCode };
+    if (shareAffiliateCode.code) {
+      return { referralCodeOwnerKind: "used" as const, code: shareAffiliateCode.code };
     }
     return { referralCodeOwnerKind: undefined, code: undefined };
-  }, [hasReferralCode, shareAffiliateCode?.code, usedReferralCode]);
+  }, [ownedAffiliateCode.code, shareAffiliateCode.code]);
 
   useEffect(() => {
     if (!isCreatedReferralCodeControlled) {
@@ -102,7 +115,10 @@ export function useShareReferralCodeState({
 
   const shouldShowCreateReferralCard = userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
   const shouldPromptToCreateReferralCode =
-    !hasReferralCode && !promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
+    userAffiliateCode.success &&
+    !hasReferralCode &&
+    !promptedToCreateReferralCode &&
+    !isCreateReferralCodeInfoMessageClosed;
   const shouldShowSkipReferralCodeBanner = promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
 
   return {
