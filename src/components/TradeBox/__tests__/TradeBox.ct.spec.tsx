@@ -32,6 +32,22 @@ function selectTradeMode(page: PageLike, mode: "Market" | "Limit") {
   return page.locator(getDataQALocator("trade-mode")).getByRole("button", { name: mode, exact: true }).click();
 }
 
+function selectTradeDirection(page: PageLike, direction: "Long" | "Short") {
+  return page
+    .locator(getDataQALocator("trade-direction"))
+    .getByRole("button", { name: direction, exact: true })
+    .click();
+}
+
+function poolSelector(page: PageLike) {
+  return page.locator(getDataQALocator("pool-selector-button"));
+}
+
+async function selectPool(page: PageLike, poolName: string) {
+  await poolSelector(page).click();
+  await page.locator(getDataQALocator(`pool-selector-row-${poolName}`)).click();
+}
+
 async function switchSizeDisplayMode(page: PageLike, mode: "ETH" | "USD") {
   await page.locator(getDataQALocator("position-size-display-mode-button")).click();
   await page
@@ -812,6 +828,43 @@ test.describe("TradeBox", () => {
 
       await expect(page.getByText(/Switch to ETH-ETH pool/)).not.toBeVisible();
       await expect(page.getByText("ETH-ETH", { exact: true })).toBeVisible();
+    });
+
+    test("keeps the manually picked pool when the direction is switched away and back", async ({ mount, page }) => {
+      await mount(<TradeBoxStory withSecondEthPool />);
+
+      await selectPool(page, "ETH-ETH");
+      await expect(poolSelector(page)).toContainText("ETH-ETH");
+
+      await selectTradeDirection(page, "Short");
+      await expect(poolSelector(page)).toContainText("ETH-USDC");
+
+      await selectTradeDirection(page, "Long");
+      await expect(poolSelector(page)).toContainText("ETH-ETH");
+    });
+
+    test("existing position pool wins over the remembered pool", async ({ mount, page }) => {
+      await mount(<TradeBoxStory withPosition withSecondEthPool seedUserSelectedSecondEthPool />);
+
+      await expect(poolSelector(page)).toContainText("ETH-USDC");
+
+      await selectTradeDirection(page, "Short");
+      await expect(poolSelector(page)).toContainText("ETH-ETH");
+
+      await selectTradeDirection(page, "Long");
+      await expect(poolSelector(page)).toContainText("ETH-USDC");
+    });
+
+    test("stored options without the remembered pool field keep working", async ({ mount, page }) => {
+      await mount(<TradeBoxStory withSecondEthPool seedTradeMode={TradeMode.Limit} />);
+
+      await expect(page.locator(getDataQALocator("trigger-price-input"))).toBeVisible();
+      await expect(poolSelector(page)).toContainText("ETH-USDC");
+
+      await selectPool(page, "ETH-ETH");
+      await selectTradeDirection(page, "Short");
+      await selectTradeDirection(page, "Long");
+      await expect(poolSelector(page)).toContainText("ETH-ETH");
     });
   });
 

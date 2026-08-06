@@ -838,6 +838,7 @@ export function getSettlementTooltipLines(
   return lines(
     "",
     t`Settlement`,
+    "",
     openChange
       ? infoRow(t`Initial margin`, formatCollateralAmount(openChange.collateralDeltaAmount + openChange.feesAmount))
       : undefined,
