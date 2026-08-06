@@ -5522,6 +5522,10 @@ msgstr "En otros tokens"
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
+msgstr "Esta wallet crea firmas específicas de cada red. Apruebe el cambio a {0} y vuelva a firmar."
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Cancelar nuevas órdenes"
