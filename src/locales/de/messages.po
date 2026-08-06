@@ -755,6 +755,10 @@ msgstr ""
 msgid "Switch to Classic Trading"
 msgstr "Zu Classic Trading wechseln"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "Code nicht registriert auf: {nonTakenNetworkNamesJoined}. Wechseln Sie das Netzwerk, um sich zu registrieren und Rabatte zu erhalten."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -2672,10 +2676,6 @@ msgstr "{gmOrGlvLabel} erfolgreich verkauft, aber die Bridge zu {0} ist fehlgesc
 msgid "Discounts earned by this account as a trader"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "Code nicht registriert auf {nonTakenNetworkNames}. Wechseln Sie das Netzwerk, um sich zu registrieren und Rabatte zu erhalten."
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "Verringern Sie den Hebel auf den maximal zulässigen Hebel."
@@ -4269,10 +4269,6 @@ msgstr "<0>Ihre Wallet hat zu einem anderen Konto gewechselt</0><1/><2>Das Signi
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "Code von einem anderen Benutzer auf {takenNetworkNames} beansprucht. Keine Rabatte von diesen Netzwerken."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9886,6 +9882,10 @@ msgstr ""
 msgid "An unexpected error occurred. Please retry."
 msgstr "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "Code bereits vergeben auf: {takenNetworkNamesJoined}. Keine Rabatte von diesen Netzwerken."
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "Etwas ist schiefgelaufen"
@@ -12070,6 +12070,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> zu </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "Keine dezentralen Börsen verfügbar"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "Code bereits vergeben auf: {takenNetworkNamesJoined}. Keine Rabatte von diesem Netzwerk."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

@@ -755,6 +755,10 @@ msgstr ""
 msgid "Switch to Classic Trading"
 msgstr "Classic Trading に切り替える"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
+msgstr "コードが未登録のネットワーク: {nonTakenNetworkNamesJoined}。ネットワークを切り替えて登録し、リベートを獲得してください。"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -2672,10 +2676,6 @@ msgstr "{gmOrGlvLabel}の売却に成功しましたが、{0}へのブリッジ�
 msgid "Discounts earned by this account as a trader"
 msgstr ""
 
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr "コードが{nonTakenNetworkNames}で登録されていません。ネットワークを切り替えて登録し、リベートを獲得してください。"
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "レバレッジを許容される最大レバレッジまで下げてください。"
@@ -4269,10 +4269,6 @@ msgstr "<0>ウォレットが別のアカウントに切り替わりました</0
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-msgstr "{takenNetworkNames} では別のユーザーがこのコードを使用しています。これらのネットワークからのリベートはありません。"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9886,6 +9882,10 @@ msgstr ""
 msgid "An unexpected error occurred. Please retry."
 msgstr "予期しないエラーが発生しました。再度お試しください。"
 
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks."
+msgstr "コードがすでに使用されているネットワーク: {takenNetworkNamesJoined}。これらのネットワークからのリベートはありません。"
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something went wrong"
 msgstr "エラーが発生しました"
@@ -12070,6 +12070,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> から </1>{0}{toTokenIcon}{1}
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "利用可能な分散型取引所はありません"
+
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
+msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
+msgstr "コードがすでに使用されているネットワーク: {takenNetworkNamesJoined}。このネットワークからのリベートはありません。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
