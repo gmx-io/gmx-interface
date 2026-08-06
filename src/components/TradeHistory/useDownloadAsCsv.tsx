@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { HISTORY_EXPORT_SCHEMA_VERSION } from "domain/synthetics/historyExport/csvSchemas";
 import {
   buildCoinLedgerTradeExport,
   buildCoinTrackerTradeExport,
@@ -85,7 +86,7 @@ export function useDownloadAsCsv({
         toDate: endDate,
         fromTimestamp: fromTxTimestamp,
         toTimestamp: toTxTimestamp,
-        schemaVersion: 1,
+        schemaVersion: HISTORY_EXPORT_SCHEMA_VERSION,
       };
 
       if (format === "gmx-detailed") {

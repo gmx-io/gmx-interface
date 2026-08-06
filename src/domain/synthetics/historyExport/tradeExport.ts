@@ -43,6 +43,7 @@ const ACTION_ECONOMIC_HEADERS: TradeCsvHeader[] = [
   "position_price_impact_usd",
   "swap_price_impact_usd",
   "pending_price_impact_usd",
+  "claimable_price_impact_diff_usd",
   "position_fee_amount",
   "position_fee_usd",
   "borrowing_fee_amount",
@@ -368,6 +369,8 @@ export function buildTradeCsvRows({
         ? formatUsdDecimal(action.swapImpactUsd)
         : "";
     row.pending_price_impact_usd = formatUsdDecimal(pendingImpact);
+    // Capped off the settled impact and paid out later as a ClaimPriceImpact claim, so it is not part of net_action_result_usd
+    row.claimable_price_impact_diff_usd = isExecuted ? formatUsdDecimal(action.priceImpactDiffUsd) : "";
     row.position_fee_amount = isExecuted ? formatDecimal(action.positionFeeAmount, collateralToken?.decimals) : "";
     row.position_fee_usd = isExecuted ? formatTokenUsd(action.positionFeeAmount, collateralPrice) : "";
     row.borrowing_fee_amount = isExecuted ? formatDecimal(action.borrowingFeeAmount, collateralToken?.decimals) : "";

@@ -37,6 +37,7 @@ export const TRADE_CSV_HEADERS = [
   "position_price_impact_usd",
   "swap_price_impact_usd",
   "pending_price_impact_usd",
+  "claimable_price_impact_diff_usd",
   "position_fee_amount",
   "position_fee_usd",
   "borrowing_fee_amount",

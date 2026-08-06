@@ -45,6 +45,41 @@ describe("provider exports", () => {
     expect(result.rows[2]).toMatchObject({ "Sent Amount": "0.3", Tags: "funding fee" });
   });
 
+  it("never folds the claimable price impact diff into a provider result", () => {
+    const withClaimableDiff = { ...settledDecrease, claimable_price_impact_diff_usd: "40" };
+
+    expect(buildKoinlyTradeExport([withClaimableDiff]).rows[0]).toMatchObject({ "Received Amount": "248.6" });
+    expect(buildCoinLedgerTradeExport([withClaimableDiff]).margin.rows[0]).toMatchObject({ Amount: "245.9" });
+  });
+
+  it("labels CoinLedger universal swap rows as trades", () => {
+    const result = buildCoinLedgerTradeExport([
+      {
+        row_type: "action",
+        status: "executed",
+        order_type: "MarketSwap",
+        action_id: "42161:swap",
+        record_id: "42161:swap:action",
+        timestamp_utc: "2026-07-02T12:00:00Z",
+        transaction_hash: "0xSwap",
+        data_completeness: "complete",
+      },
+      {
+        row_type: "cashflow",
+        action_id: "42161:swap",
+        sent_amount: "100",
+        sent_currency: "USDC",
+        received_amount: "0.03",
+        received_currency: "ETH",
+      },
+    ]);
+
+    expect(result.universal.rows).toEqual([
+      expect.objectContaining({ Type: "Trade", "Asset Sent": "USDC", "Asset Received": "ETH" }),
+    ]);
+    expect(result.margin.rows).toHaveLength(0);
+  });
+
   it("nets settled components once for CoinLedger manual rows", () => {
     const result = buildCoinLedgerTradeExport([settledDecrease]);
     expect(result.margin.rows).toHaveLength(1);

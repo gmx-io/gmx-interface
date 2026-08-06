@@ -184,7 +184,7 @@ export async function fetchRawClaimActions({
         },
         {
           OR: marketAddresses?.map((tokenAddress) => ({
-            marketAddresses_contains: [tokenAddress],
+            marketAddresses_containsAll: [tokenAddress],
           })),
         },
         ...(showDebugValues

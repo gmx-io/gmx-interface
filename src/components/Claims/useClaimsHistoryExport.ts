@@ -5,6 +5,7 @@ import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContex
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { generateClaimsCsv } from "domain/synthetics/historyExport/claimsExport";
+import { HISTORY_EXPORT_SCHEMA_VERSION } from "domain/synthetics/historyExport/csvSchemas";
 import {
   buildCoinLedgerClaimsExport,
   buildCoinTrackerClaimsExport,
@@ -66,7 +67,7 @@ export function useClaimsHistoryExport({
         toDate: endDate,
         fromTimestamp: fromTxTimestamp,
         toTimestamp: toTxTimestamp,
-        schemaVersion: 1,
+        schemaVersion: HISTORY_EXPORT_SCHEMA_VERSION,
       };
 
       if (format === "gmx-claims") {

@@ -236,6 +236,7 @@ function buildCoinLedgerSwap(row: CsvRow, cashflow: CsvRow): CsvRow {
   const [swapFee] = getFeeComponents(row).filter((fee) => fee.description === "swap fee");
   result["Fee Currency"] = swapFee?.currency ?? "";
   result["Fee Amount"] = swapFee?.amount ?? "";
+  result.Type = "Trade";
   result.Description = getTransactionDescription(row);
   result.TxHash = getCsvString(row, "transaction_hash");
   return result;

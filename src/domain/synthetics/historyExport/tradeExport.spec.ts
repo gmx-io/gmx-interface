@@ -109,6 +109,7 @@ describe("buildTradeCsvRows", () => {
           srcChainId: "42161",
           totalImpactUsd: "-1400000000000000000000000000000",
           priceImpactUsd: "-1000000000000000000000000000000",
+          priceImpactDiffUsd: "800000000000000000000000000000",
           basePnlUsd: "250000000000000000000000000000000",
           pnlUsd: "245900000000000000000000000000000",
           collateralTokenPriceMin: USDC_PRICE,
@@ -136,6 +137,81 @@ describe("buildTradeCsvRows", () => {
       base_pnl_usd: "250",
       net_action_result_usd: "245.9",
     });
+  });
+
+  it("keeps the capped claimable impact separate from the settled result", () => {
+    const rows = buildTradeCsvRows({
+      chainId: 42161,
+      rawActions: [
+        {
+          id: "capped",
+          eventName: TradeActionType.OrderExecuted,
+          account: "0xAccount",
+          orderType: OrderType.MarketDecrease,
+          orderKey: "0xCapped",
+          timestamp: 1783512000,
+          transactionHash: "0xCappedHash",
+          swapPath: [],
+          initialCollateralTokenAddress: "0xUsdc",
+          initialCollateralDeltaAmount: "0",
+          sizeDeltaUsd: "4000000000000000000000000000000000",
+          marketAddress: "0xMarket",
+          isLong: true,
+          shouldUnwrapNativeToken: false,
+          srcChainId: "42161",
+          totalImpactUsd: "-30920012773763338383616464187500",
+          priceImpactUsd: "-53207667269697429074513629527107",
+          priceImpactDiffUsd: "17337787356205129002853995330865",
+          basePnlUsd: "100000000000000000000000000000000",
+          pnlUsd: "69079987226236661616383535812500",
+          collateralTokenPriceMin: USDC_PRICE,
+        },
+      ] as any,
+      marketsInfoData: {
+        "0xMarket": { indexToken: { symbol: "ETH", decimals: 18 }, indexTokenAddress: "0xEth", isSpotOnly: false },
+      } as any,
+      tokensData: { "0xUsdc": { address: "0xUsdc", symbol: "USDC", decimals: 6 } } as any,
+    });
+
+    const action = rows.find((row) => row.row_type === "action")!;
+    // The claimable diff is capped off the settled impact, so it must not be folded into the settled total
+    expect(action).toMatchObject({
+      position_price_impact_usd: "-30.9200127737633383836164641875",
+      claimable_price_impact_diff_usd: "17.337787356205129002853995330865",
+      base_pnl_usd: "100",
+      net_action_result_usd: "69.0799872262366616163835358125",
+    });
+  });
+
+  it("leaves the claimable impact blank on unexecuted actions", () => {
+    const [row] = buildTradeCsvRows({
+      chainId: 42161,
+      rawActions: [
+        {
+          id: "cancelled",
+          eventName: TradeActionType.OrderCancelled,
+          account: "0xAccount",
+          orderType: OrderType.LimitDecrease,
+          orderKey: "0xCancelled",
+          timestamp: 1783512000,
+          transactionHash: "0xCancelledHash",
+          swapPath: [],
+          initialCollateralTokenAddress: "0xUsdc",
+          initialCollateralDeltaAmount: "0",
+          sizeDeltaUsd: "1000000000000000000000000000000",
+          marketAddress: "0xMarket",
+          isLong: true,
+          shouldUnwrapNativeToken: false,
+          priceImpactDiffUsd: "17337787356205129002853995330865",
+        },
+      ] as any,
+      marketsInfoData: {
+        "0xMarket": { indexToken: { symbol: "ETH", decimals: 18 }, indexTokenAddress: "0xEth", isSpotOnly: false },
+      } as any,
+      tokensData: { "0xUsdc": { address: "0xUsdc", symbol: "USDC", decimals: 6 } } as any,
+    });
+
+    expect(row).toMatchObject({ status: "cancelled", claimable_price_impact_diff_usd: "" });
   });
 
   it("retains unresolved source actions as partial rows", () => {
