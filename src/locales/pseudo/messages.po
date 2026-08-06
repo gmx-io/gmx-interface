@@ -337,11 +337,6 @@ msgstr ""
 msgid "Open app"
 msgstr ""
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr ""
@@ -2853,10 +2848,6 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
-msgstr ""
-
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
 msgstr ""
 
 #: src/components/MarketNetFee/MarketNetFee.tsx

@@ -337,11 +337,6 @@ msgstr "總規模"
 msgid "Open app"
 msgstr "開啟應用"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Try Express Trading"
-msgstr "試用 Express Trading"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "倉位虛擬庫存"
@@ -2854,10 +2849,6 @@ msgstr "推廣夥伴"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "全域網路"
-
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express"
-msgstr "試用 Express"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"
