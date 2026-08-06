@@ -335,6 +335,7 @@ export function PositionEditor() {
       handle={buttonContent}
       handleClassName="w-full"
       position="top"
+      variant="none"
     />
   ) : (
     buttonContent

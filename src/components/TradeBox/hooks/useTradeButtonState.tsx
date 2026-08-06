@@ -96,6 +96,7 @@ import { TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 import { mustNeverExist } from "sdk/utils/types";
 
+import { EmbeddedActionButton } from "components/EmbeddedActionButton/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
@@ -297,18 +298,16 @@ export function useTradeboxButtonState({
               .
               <br />
               <br />
-              <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
+              <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
                 <Trans>Set max leverage</Trans>
-              </span>
+              </EmbeddedActionButton>
             </>
           );
 
           break;
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
-          tooltipContent = (
-            <Trans>Position would be immediately liquidated upon execution. Try reducing the size.</Trans>
-          );
+          tooltipContent = <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>;
           break;
         }
         case ValidationButtonTooltipName.noSwapPath: {
@@ -870,10 +869,8 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
           TWAP swaps use GMX pool liquidity only, which can't fill this order size.
           <br />
           <br />
-          <span onClick={handleSwitchToMarketOrder} className="Tradebox-handle">
-            Switch to a market order
-          </span>{" "}
-          to enable external routes.
+          <EmbeddedActionButton onClick={handleSwitchToMarketOrder}>Switch to a market order</EmbeddedActionButton> to
+          enable external routes.
         </Trans>
       );
     case "noRouteFound": {
@@ -969,9 +966,9 @@ function NoSwapPathTooltipContent({
       No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
       <br />
       <br />
-      <span onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")} className="Tradebox-handle">
+      <EmbeddedActionButton onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
         Swap {collateralSymbol}
-      </span>{" "}
+      </EmbeddedActionButton>{" "}
       or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
     </Trans>
   );

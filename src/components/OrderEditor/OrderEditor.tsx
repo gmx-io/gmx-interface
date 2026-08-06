@@ -115,6 +115,7 @@ import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactI
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { EmbeddedActionButton } from "components/EmbeddedActionButton/EmbeddedActionButton";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -641,9 +642,9 @@ export function OrderEditor(p: Props) {
             .
             <br />
             <br />
-            <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
+            <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
               <Trans>Set max leverage</Trans>
-            </span>
+            </EmbeddedActionButton>
           </>
         ),
         disabled: true,

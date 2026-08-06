@@ -1,0 +1,31 @@
+.EmbeddedActionButton {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-gray-400);
+  font: inherit;
+  line-height: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: var(--color-gray-400);
+  text-decoration-style: solid;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  touch-action: manipulation;
+  user-select: none;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-typography-primary);
+    text-decoration-color: var(--color-typography-primary);
+  }
+
+  &:focus-visible {
+    border-radius: 2px;
+    outline: 2px solid var(--color-blue-300);
+    outline-offset: 2px;
+  }
+}

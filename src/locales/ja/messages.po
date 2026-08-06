@@ -36,10 +36,6 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "価格への影響リベートを受け取りました"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
-msgstr "注文が執行されない可能性があります：結果として生じるポジションはトリガー価格で清算対象となります。担保を追加するかサイズを縮小してください。"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "または<0>chainlist.org</0>からウォレットのRPCを更新してください"
@@ -552,6 +548,10 @@ msgstr "すべてのBTC/USDプールで流動性不足です"
 msgid "Unrealized base PnL"
 msgstr "未実現ベースPnL"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: liquidity may be insufficient when they trigger."
+msgstr "この注文の一部は約定しない可能性があります：トリガー時に流動性が不足する可能性があります。"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -1031,6 +1031,10 @@ msgstr "Plutus"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order won't execute: the trigger price is beyond the liquidation price. Edit the trigger price."
+msgstr "注文は約定しません：トリガー価格が清算価格を超えています。トリガー価格を編集してください。"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
@@ -1914,14 +1918,6 @@ msgstr "手数料なし"
 msgid "Switch to market order"
 msgstr "成行注文に切り替える"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Warning: may not execute due to low liquidity at your min. receive price"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Swap liquidity may be insufficient when order triggers"
-msgstr "注文がトリガーされた際にスワップ流動性が不足する可能性があります"
-
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Canceling {ordersText}..."
 msgstr "{ordersText} をキャンセル中..."
@@ -2559,10 +2555,6 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "送金が開始されました"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Warning: may not execute due to low liquidity at your trigger price"
-msgstr ""
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "金額が出金下限を下回っています。<0>{lowerLimitFormatted}</0>より大きい金額をお試しください。"
@@ -2619,6 +2611,10 @@ msgstr "最大 {0} out"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "入金可能な資産がありません"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
+msgstr "注文は{priceText}価格で約定しない可能性があります：許容価格インパクト（{formattedOrderAcceptablePriceImpact}）が現在の市場インパクト（{formattedCurrentAcceptablePriceImpact}）を下回っています。許容価格インパクトを編集してください。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
@@ -3429,6 +3425,11 @@ msgstr "GLVボールト"
 msgid "Buy GMX from centralized services"
 msgstr "中央集権型サービスからGMXを購入"
 
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
+msgstr "注文は約定しない可能性があります：トリガー価格で流動性が不足しています。注文サイズを減らしてください。"
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -3459,6 +3460,10 @@ msgstr "取引履歴の読み込みに失敗しました"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>推奨インパクトを設定：{0}</0>。"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Position would be liquidated immediately upon execution. Reduce the size."
+msgstr "実行時にポジションが直ちに清算されます。サイズを減らしてください。"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claiming affiliate rewards failed"
 msgstr "アフィリエイトリワードの請求に失敗しました"
@@ -3479,7 +3484,6 @@ msgstr "{minutesText}{seconds}秒後にキャンセル可能"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/domain/synthetics/orders/utils.tsx
 msgid "Trigger price"
 msgstr "トリガー価格"
 
@@ -3775,6 +3779,11 @@ msgstr "実現手数料"
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "未払いの借入手数料とファンディング手数料は、入金がポジションの証拠金を改善する前に入金額から差し引かれるため、入金額はこれらの手数料も賄う必要があります。"
 
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
+msgstr "注文は約定しない可能性があります：結果として生じるポジションはトリガー価格で清算対象となります。証拠金を入金するか、注文サイズを減らしてください。"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr "資金が GMX Account に入金されました"
@@ -3840,10 +3849,6 @@ msgstr "完全にパブリックチェーンで実行"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
 msgstr "最小入金額を設定"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "May lack liquidity for parts of this order when triggered"
-msgstr "トリガー時に注文の一部で流動性が不足する可能性があります"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Settlement"
@@ -3996,10 +4001,6 @@ msgstr "ランキングには最低 {0} の資本が必要です"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "送信中..."
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity for swap at min. receive amount"
-msgstr "最小受取額でのスワップに必要な流動性が不足しています"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max capacity:"
@@ -4349,6 +4350,11 @@ msgstr "仮想マーケットID"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
 msgstr "ウォレットはこのネットワークに接続されていません"
+
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
+msgstr "注文は約定しない可能性があります：最小受取額でスワップを約定するための流動性が不足しています。最小受取額を編集するか、スワップサイズを減らしてください。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -4704,6 +4710,10 @@ msgstr "マーケットデータを読み込み中..."
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee or a borrow fee"
 msgstr "{longOrShort} ポジションはファンディング手数料および借入手数料がかかりません"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped."
+msgstr "受取トークンのスワップはスキップされる可能性があります：注文のトリガー時に流動性が不足する可能性があります。減少注文はそのまま実行され、担保トークンをスワップされていない状態で受け取ります。"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
@@ -5362,10 +5372,6 @@ msgstr "純価値"
 msgid "Earn"
 msgstr "獲得"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Position would be immediately liquidated upon execution. Try reducing the size."
-msgstr "ポジションは約定時に即座に清算されます。サイズを縮小してみてください。"
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose: {0} | public: {1}"
 msgstr "用途: {0} | public: {1}"
@@ -5976,6 +5982,10 @@ msgstr "ストップマーケット失敗"
 msgid "Settings"
 msgstr "設定"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers."
+msgstr "注文は約定しない可能性があります：結果として生じるポジションが最大許容レバレッジを超えます。トリガー前に証拠金を入金するか、注文サイズを減らしてください。"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "日次"
@@ -6193,6 +6203,10 @@ msgstr "プロトコル検証エラーにより注文が失敗しました: {err
 msgid "Send fee"
 msgstr "送金手数料"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available."
+msgstr "この注文の一部は流動性を待っています：十分な流動性が利用可能になると約定します。"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
@@ -6330,10 +6344,6 @@ msgstr "ODOS"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
 msgstr "GMX Substack"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
-msgstr "トリガー価格での支払トークンから担保へのスワップに必要な流動性不足"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
@@ -7370,10 +7380,6 @@ msgstr ""
 msgid "Win rate"
 msgstr "勝率"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity to execute order at trigger price"
-msgstr "トリガー価格での注文執行に必要な流動性が不足しています"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
@@ -7486,6 +7492,10 @@ msgstr "決済価格"
 msgid "Transfer failed"
 msgstr "送金失敗"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Position would be liquidated immediately. Reduce the withdrawal amount."
+msgstr "ポジションが直ちに清算されます。出金額を減らしてください。"
+
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
 msgstr "過去90日"
@@ -7503,10 +7513,6 @@ msgstr "選択期間におけるベンチマークとの比較パフォーマン
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics dashboard"
 msgstr "Dune Analyticsダッシュボード"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
-msgstr "注文が執行されない可能性があります：最大レバレッジを超過しています。サイズを縮小してください。<0>詳細はこちら</0>。"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "No distribution history"
@@ -7779,6 +7785,10 @@ msgstr "FX"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "ポジションを共有"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity to swap the pay token into the collateral token at the trigger price. Reduce the order size."
+msgstr "注文は約定しない可能性があります：トリガー価格で支払トークンを担保トークンにスワップするための流動性が不足しています。注文サイズを減らしてください。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Max deposit capacity reached for this pool"
@@ -8066,10 +8076,6 @@ msgstr "GLP払い戻し（テスト）"
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "{tokenSymbol} を {chainName} にブリッジ"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
-msgstr "注文は{collateralSymbol}を使用していますが、既存の{longText}ポジションは{symbol}を担保としています"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
@@ -8952,10 +8958,6 @@ msgstr "未実現手数料開始"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Accountへの入金はStargateブリッジの流動性により制限されています。<0>{upperLimitFormatted}</0>より少ない金額でお試しください。"
-
-#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
-msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr "このオーダーは現在のポジション状態では約定しない可能性があります。トリガー前に担保を追加するか、レバレッジを下げてください。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -10310,7 +10312,6 @@ msgstr "GMXアカウント"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
-#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit price"
 msgstr "指値価格"
 
@@ -10776,10 +10777,6 @@ msgstr "GMX positions bot"
 msgid "Reload page"
 msgstr "ページを再読み込み"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order won't execute: trigger price beyond liquidation price"
-msgstr "注文は実行されません: トリガー価格が清算価格を超えています"
-
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
 msgstr "決済中..."
@@ -10875,6 +10872,10 @@ msgstr "許容価格"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "イベント"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order won't add to the existing {longText} position: it uses {collateralSymbol} as collateral while the position uses {symbol}. Executing it opens a separate position."
+msgstr "注文は既存の{longText}ポジションに追加されません：注文は{collateralSymbol}を担保として使用していますが、ポジションは{symbol}を使用しています。実行すると別のポジションが開かれます。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
@@ -11080,10 +11081,6 @@ msgstr "トランザクションをシミュレート"
 msgid "Where can I read more?"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Parts of this order will execute once sufficient liquidity is available"
-msgstr "この注文の一部は、十分な流動性が確保され次第実行されます"
-
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "許容価格への影響が高く設定されています。現在の影響: {0}。"
@@ -11239,6 +11236,7 @@ msgstr "ダッシュボード"
 msgid "{label}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "トリガー"
@@ -11674,6 +11672,7 @@ msgstr "利用可能："
 msgid "Realized base PnL"
 msgstr "実現ベースPnL"
 
+#: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr "リミット"
@@ -11710,10 +11709,6 @@ msgstr "30日パフォーマンスAPY"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Uniswap"
 msgstr "Uniswap"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderAcceptablePriceImpact}) below market ({formattedCurrentAcceptablePriceImpact}). Click \"Edit\"."
-msgstr "注文は{priceText}で約定しない可能性があります: 許容影響（{formattedOrderAcceptablePriceImpact}）がマーケット（{formattedCurrentAcceptablePriceImpact}）を下回っています。「Edit」をクリックしてください。"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
