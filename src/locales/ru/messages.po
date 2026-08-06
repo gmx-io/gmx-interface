@@ -8027,6 +8027,10 @@ msgstr ""
 msgid "Stake {tokenSymbol} rewards"
 msgstr "Стейкать вознаграждения {tokenSymbol}"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Active Balancer Program code"
+msgstr "Активный код программы Balancer"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -9101,6 +9105,10 @@ msgstr "Депозиты GMX Account ограничены ликвидность
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
 msgstr "Этот ордер может не исполниться при текущем состоянии позиции. Добавьте обеспечение или уменьшите кредитное плечо до его срабатывания."
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
+msgstr "Программа Balancer вознаграждает трейдеров, которые последовательно занимают недовешенную сторону рынков GMX. Такие коды заменяют скидку на комиссию трейдера повышенным ребейтом, который начисляется на партнёрский счёт владельца кода и может быть получен в любой момент. <0>Подробнее</0>"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -9146,6 +9154,14 @@ msgstr "Экспонента заимствования шорт"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "Влияние на цену"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Claim it anytime in the <0>Affiliates tab</0>."
+msgstr "Получите его в любой момент на вкладке <0>Аффилиаты</0>."
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "It accrues to the code owner ({0})."
+msgstr "Он начисляется владельцу кода ({0})."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -12008,6 +12024,10 @@ msgstr "Истёкший депозит"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "Тейк-профит"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trades earn a {currentTierRebate}% rebate, not a discount."
+msgstr "Ваши сделки приносят ребейт {currentTierRebate}%, а не скидку."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."

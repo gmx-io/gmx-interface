@@ -8027,6 +8027,10 @@ msgstr ""
 msgid "Stake {tokenSymbol} rewards"
 msgstr "質押 {tokenSymbol} 獎勵"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Active Balancer Program code"
+msgstr "有效的 Balancer 計劃代碼"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -9101,6 +9105,10 @@ msgstr "GMX Account 存款受 Stargate 跨鏈橋流動性限制。請嘗試小�
 msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
 msgstr "在目前倉位狀態下，此訂單可能無法成交。請在觸發前增加抵押品或降低槓桿。"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
+msgstr "Balancer 計劃獎勵持續站在 GMX 市場權重不足一方的交易者。這些代碼將交易者手續費折扣替換為更高的返佣，返佣會累積至代碼擁有者的推薦帳戶，可隨時領取。<0>了解更多</0>"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -9146,6 +9154,14 @@ msgstr "做空借貸指數"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "價格影響"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Claim it anytime in the <0>Affiliates tab</0>."
+msgstr "隨時在<0>推廣夥伴</0>標籤頁領取。"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "It accrues to the code owner ({0})."
+msgstr "返佣累積給代碼擁有者（{0}）。"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -12008,6 +12024,10 @@ msgstr "已過期的存入"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "止盈"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trades earn a {currentTierRebate}% rebate, not a discount."
+msgstr "您的交易獲得 {currentTierRebate}% 返佣，而非折扣。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
