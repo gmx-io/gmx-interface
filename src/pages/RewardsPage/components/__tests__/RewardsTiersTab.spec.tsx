@@ -333,6 +333,8 @@ describe("RewardsTiersTab", () => {
     let multiplierSummary = screen.getByTestId("rewards-current-multiplier");
     expect(multiplierSummary.textContent).toContain("1.75x");
     expect(multiplierSummary.textContent).toContain("1.35x");
+    expect(screen.getByRole("heading", { name: "Supporter" })).toBeDefined();
+    expect(screen.queryByRole("heading", { name: "Advocate" })).toBeNull();
 
     view.rerender(
       getTabNode({
@@ -394,14 +396,14 @@ describe("RewardsTiersTab", () => {
   it("opens Buy GMX in place or links to Stake GMX from the active staking card", () => {
     const view = renderTab();
 
-    let stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    let stakingCard = screen.getByRole("heading", { name: "Advocate" }).closest(".group");
     fireEvent.click(within(stakingCard as HTMLElement).getByRole("button", { name: "Buy GMX" }));
     expect(screen.getByRole("button", { name: "Buy GMX on GMX swap" })).toBeDefined();
 
     mockUseRewardsVestingData.mockReturnValue(getVestingDataResult(5n * GMX_UNIT));
     view.rerender(getTabNode());
 
-    stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    stakingCard = screen.getByRole("heading", { name: "Advocate" }).closest(".group");
     expect(
       within(stakingCard as HTMLElement)
         .getByRole("link", { name: "Stake GMX" })
@@ -428,7 +430,7 @@ describe("RewardsTiersTab", () => {
 
   it("closes the Buy GMX modal when the account changes", async () => {
     const view = renderTab();
-    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    const stakingCard = screen.getByRole("heading", { name: "Advocate" }).closest(".group");
 
     fireEvent.click(within(stakingCard as HTMLElement).getByRole("button", { name: "Buy GMX" }));
     expect(screen.getByRole("button", { name: "Buy GMX on GMX swap" })).toBeDefined();
@@ -741,7 +743,7 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    const stakingCard = screen.getByRole("heading", { name: "Advocate" }).closest(".group");
     const tierProgress = within(stakingCard as HTMLElement).getByRole("progressbar", {
       name: "Staking tier levels",
     });
@@ -923,7 +925,7 @@ describe("RewardsTiersTab", () => {
     renderTab();
 
     const volumeCard = screen.getByRole("heading", { name: "Ranked" }).closest(".group") as HTMLElement;
-    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group") as HTMLElement;
+    const stakingCard = screen.getByRole("heading", { name: "Advocate" }).closest(".group") as HTMLElement;
     const boostsCard = screen.getByRole("heading", { name: "2 active boosts" }).closest(".group") as HTMLElement;
 
     expect(volumeCard.querySelector(".mt-auto")?.textContent).toContain("Volume this epoch");
@@ -1023,7 +1025,7 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    const stakingCard = screen.getByRole("heading", { name: "Advocate" }).closest(".group");
     const boostsCard = screen.getByRole("heading", { name: "1 active boost" }).closest(".group");
     const volumeCard = screen.getByText("Volume Tier").closest(".group");
 
@@ -1142,10 +1144,11 @@ describe("RewardsTiersTab", () => {
     const stakingCardText = normalizeText(stakingCard?.textContent);
 
     expect(stakingCardText).toContain(normalizeText("0x →0.1x"));
+    expect(within(stakingCard as HTMLElement).getByRole("heading", { name: "Supporter" })).toBeDefined();
     expect(within(stakingCard as HTMLElement).queryByText("Applies next epoch")).toBeNull();
   });
 
-  it("uses the live staking tier for progress and the next target after a multi-tier jump", () => {
+  it("shows the projected staking tier as active while using the live balance for progress", () => {
     const multiTierConfig: IncentivesConfig = {
       ...config,
       stakingTiers: [
@@ -1166,9 +1169,10 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    const stakingHeading = screen.getByRole("heading", { name: "Supporter" });
+    const stakingHeading = screen.getByRole("heading", { name: "Guardian" });
     const stakingCard = stakingHeading.closest(".group");
     expect(stakingCard).toBeDefined();
+    expect(within(stakingCard as HTMLElement).queryByRole("heading", { name: "Supporter" })).toBeNull();
     expect(stakingCard!.textContent).toContain("0.1x →0.5x");
     expect(stakingCard!.textContent).toContain("Stake 800 GMX more to get Steward status");
 

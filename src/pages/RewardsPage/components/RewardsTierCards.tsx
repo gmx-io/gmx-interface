@@ -486,6 +486,7 @@ function StakingCard({
     !isProjectedOnly && status?.projectedStakingTier && status.projectedStakingTier !== stakingTier
       ? config.stakingTiers.find((tier) => tier.tier === status.projectedStakingTier)
       : undefined;
+  const activeTier = projectedTierConfig?.tier ?? displayTier;
   const gmxStaked = status?.currentStakedBalance;
   const nextTierIndex =
     gmxStaked === undefined
@@ -544,8 +545,8 @@ function StakingCard({
       {active ? (
         <>
           <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
-            {displayTier ? <StakingTierIcon tierId={displayTier} active className={tierIconLarge} /> : null}
-            {displayTier ? stakingTierLabels[displayTier] : "—"}
+            {activeTier ? <StakingTierIcon tierId={activeTier} active className={tierIconLarge} /> : null}
+            {activeTier ? stakingTierLabels[activeTier] : "—"}
           </h3>
           <div className="mt-auto flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center justify-between py-2 font-medium">
