@@ -53,10 +53,14 @@ beforeAll(() => {
 
 afterEach(cleanup);
 
+function toInitialEntries(entry: string) {
+  return [entry];
+}
+
 function renderAt(entry: string) {
   return render(
     <I18nProvider i18n={i18n}>
-      <MemoryRouter initialEntries={[entry]}>
+      <MemoryRouter initialEntries={toInitialEntries(entry)}>
         <Route exact path="/traders/:account">
           <AccountDashboard />
         </Route>

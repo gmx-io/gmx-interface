@@ -26,11 +26,15 @@ function noop() {
 
 afterEach(cleanup);
 
+function toInitialEntries(entry: string) {
+  return [entry];
+}
+
 function renderAt(entry: string) {
   let url = "";
 
   const { container } = render(
-    <MemoryRouter initialEntries={[entry]}>
+    <MemoryRouter initialEntries={toInitialEntries(entry)}>
       <MainRoutes openSettings={noop} />
       <Route
         path="*"
