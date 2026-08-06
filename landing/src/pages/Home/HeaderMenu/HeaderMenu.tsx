@@ -99,6 +99,10 @@ function useHeaderLinks() {
         href: "/#/trader-affiliate-program",
       },
       {
+        label: t`Builders`,
+        href: "/#/builders",
+      },
+      {
         label: t`Protocol`,
         href: "https://github.com/gmx-io",
       },

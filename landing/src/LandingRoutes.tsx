@@ -3,6 +3,7 @@ import { Redirect, Route, RouteComponentProps, Switch, useLocation } from "react
 
 import Home from "./pages/Home/Home";
 
+const Builders = lazy(() => import("./pages/Builders/Builders"));
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 const TraderAffiliateProgram = lazy(() => import("./pages/TraderAffiliateProgram/TraderAffiliateProgram"));
@@ -56,6 +57,11 @@ export function LandingRoutes() {
         <Route exact path="/trader-affiliate-program">
           <Suspense fallback={<TermsPageLoader />}>
             <TraderAffiliateProgram />
+          </Suspense>
+        </Route>
+        <Route exact path="/builders">
+          <Suspense fallback={<TermsPageLoader />}>
+            <Builders />
           </Suspense>
         </Route>
         <Route path="*" render={RedirectToHomeWithSearch} />
