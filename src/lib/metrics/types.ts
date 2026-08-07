@@ -587,6 +587,14 @@ export type GelatoPollingTiming = {
   };
 };
 
+// kept separate from GelatoPollingTiming so the Gelato-era latency baseline stays comparable
+export type GmxRelayPollingTiming = {
+  event: "express.pollRelayTask.finalStatus";
+  data: {
+    status: string;
+  };
+};
+
 // Counters
 export type MissedMarketPricesCounter = {
   event: "missedMarketPrices";

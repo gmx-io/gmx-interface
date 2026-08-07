@@ -15,6 +15,7 @@ import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
+import { isPermanentRelayError } from "sdk/utils/express";
 import {
   BatchOrderTxnParams,
   getBatchOrderMulticallPayload,
@@ -131,6 +132,9 @@ export async function sendBatchOrderTxn({
         {
           retryCount: 3,
           delay: 300,
+          // a relay rejection is determinate — resending the same signed payload burns the
+          // submit window without any chance of a different answer
+          shouldRetry: ({ error }) => !isPermanentRelayError(error),
         }
       )
         .then(async (res) => {

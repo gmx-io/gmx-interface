@@ -2,9 +2,11 @@ import { TransactionRevertedError, TransactionRejectedError, SimulationFailedRpc
 import { encodePacked } from "viem";
 
 import { ContractsChainId } from "config/chains";
-import { GelatoPollingTiming, metrics } from "lib/metrics";
+import { getRelayProvider } from "config/relay";
+import { GelatoPollingTiming, GmxRelayPollingTiming, metrics } from "lib/metrics";
 import { GELATO_API_KEYS } from "sdk/configs/express";
 import type { ExpressTxnData } from "sdk/utils/express";
+import { sendToGmxRelay, waitForGmxRelayTask } from "sdk/utils/express";
 import { StatusCode, getGelatoRelayerClient } from "sdk/utils/gelatoRelay";
 
 import type { TransactionWaiterResult } from "./types";
@@ -20,6 +22,60 @@ export async function sendExpressTransaction(p: {
   chainId: ContractsChainId;
   txnData: ExpressTxnData;
 }): Promise<ExpressTxnResult> {
+  if (getRelayProvider(p.chainId) === "gmx") {
+    return sendViaGmxRelay(p);
+  }
+
+  return sendViaGelato(p);
+}
+
+async function sendViaGmxRelay(p: { chainId: ContractsChainId; txnData: ExpressTxnData }): Promise<ExpressTxnResult> {
+  const { taskId } = await sendToGmxRelay({ chainId: p.chainId, txnData: p.txnData });
+
+  return {
+    taskId,
+    wait: makeGmxRelayResultWaiter(p.chainId, taskId),
+  };
+}
+
+function makeGmxRelayResultWaiter(chainId: ContractsChainId, taskId: string) {
+  return async (): Promise<TransactionWaiterResult> => {
+    const timerId = `pollRelayTask ${taskId}`;
+    metrics.startTimer(timerId);
+
+    const result = await waitForGmxRelayTask({ chainId, taskId });
+
+    // `pending` here means the relay never reached a determinate outcome within the wait window;
+    // surface it the same way Gelato surfaced a poll timeout, so on-chain events decide
+    if (result.status === "pending") {
+      throw new Error(`Relay task ${taskId} did not resolve: ${result.message ?? result.relayStatus}`);
+    }
+
+    const statusCode =
+      result.status === "success"
+        ? StatusCode.Success
+        : result.relayStatus === "reverted"
+          ? StatusCode.Reverted
+          : StatusCode.Rejected;
+
+    metrics.pushTiming<GmxRelayPollingTiming>("express.pollRelayTask.finalStatus", metrics.getTime(timerId) ?? 0, {
+      status: String(statusCode),
+    });
+
+    return {
+      transactionHash: result.transactionHash,
+      blockNumber: undefined,
+      status: result.status,
+      relayStatus: {
+        taskId,
+        statusCode,
+        message: result.message,
+      },
+    };
+  };
+}
+
+async function sendViaGelato(p: { chainId: ContractsChainId; txnData: ExpressTxnData }): Promise<ExpressTxnResult> {
   const data = encodePacked(
     ["bytes", "address", "address", "uint256"],
     [p.txnData.callData, p.txnData.to, p.txnData.feeToken, p.txnData.feeAmount]
