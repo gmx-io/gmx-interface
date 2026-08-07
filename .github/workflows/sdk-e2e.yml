@@ -37,19 +37,47 @@ jobs:
             exit 1
           fi
 
+      # Nearly all of a run's cost is the per-order execution fee, which scales with gas.
+      # A congested chain turns a routine run into an expensive one, so sit it out instead.
+      - name: Check gas price
+        id: gas
+        run: |
+          max_gwei="${{ vars.GMX_TEST_MAX_GAS_GWEI || '0.1' }}"
+
+          hex=$(curl -sS --max-time 20 -X POST "$GMX_TEST_RPC_URL" \
+            -H 'content-type: application/json' \
+            -d '{"jsonrpc":"2.0","id":1,"method":"eth_gasPrice","params":[]}' \
+            | python3 -c 'import json,sys; print(json.load(sys.stdin)["result"])')
+
+          wei=$((hex))
+          max_wei=$(python3 -c "print(int(float('$max_gwei') * 10**9))")
+          gwei=$(python3 -c "print(f'{$wei / 10**9:.6f}')")
+
+          if [ "$wei" -gt "$max_wei" ]; then
+            echo "::warning::Skipped: Arbitrum gas is $gwei gwei, above the $max_gwei gwei limit"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Arbitrum gas $gwei gwei, limit $max_gwei gwei"
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout code
+        if: steps.gas.outputs.ok == 'true'
         uses: actions/checkout@v3
 
       - name: Setup Node.js
+        if: steps.gas.outputs.ok == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: "22"
           cache: "yarn"
 
       - name: Install dependencies
+        if: steps.gas.outputs.ok == 'true'
         run: yarn install --frozen-lockfile
 
       - name: Run SDK e2e tests
+        if: steps.gas.outputs.ok == 'true'
         run: |
           cd sdk
           yarn test:v2
