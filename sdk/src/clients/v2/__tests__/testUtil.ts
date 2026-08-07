@@ -1,4 +1,5 @@
 import { generatePrivateKey } from "viem/accounts";
+import { expect } from "vitest";
 
 import { ARBITRUM, getViemChain } from "configs/chains";
 import { sleep } from "utils/common";
@@ -28,6 +29,10 @@ export const TEST_SIZE_USD = 10n * 10n ** 30n; // $10
 export const TEST_COLLATERAL = { amount: 3000000n, token: "USDC" }; // 3 USDC
 
 const TERMINAL_STATUSES = new Set(["executed", "cancelled", "relay_failed", "relay_reverted"]);
+// A limit or conditional order rests at "created" until its trigger is hit, so that is
+// where waiting should stop for them — "executed" would only arrive if the market moved.
+const PLACED_STATUSES = new Set([...TERMINAL_STATUSES, "created"]);
+export const PLACED_OK_STATUSES = ["created", "executed"];
 const ORDER_PREPARE_PATHS = new Set([
   "/v1/orders/txns/prepare",
   "/v1/orders/txns/edit/prepare",
@@ -179,23 +184,51 @@ export function getOrCreateTestSigner(): PrivateKeySigner {
   return ephemeralSigner;
 }
 
+/**
+ * TWAP submits fan out into one sub-order per part, each paying its own execution fee,
+ * so the live TWAP flows are opt-in. The TWAP validation cases never submit and always run.
+ */
+export function shouldRunTwap(): boolean {
+  // eslint-disable-next-line no-restricted-globals
+  return process.env.GMX_TEST_TWAP === "1";
+}
+
+/**
+ * Two prepares are priced moments apart, so oracle drift moves the fee in the last digits.
+ * Assert they agree well within a basis point rather than bit-for-bit.
+ */
+export function expectFeesEqual(a: bigint, b: bigint): void {
+  const diff = a > b ? a - b : b - a;
+  expect(diff * 10_000n).toBeLessThanOrEqual(a);
+}
+
 export function hasRpcUrl(): boolean {
   // eslint-disable-next-line no-restricted-globals
   return !!process.env.GMX_TEST_RPC_URL;
 }
 
-export async function waitForOrderStatus(
+/** For limit and conditional orders: resolves as soon as the order is on the book. */
+export function waitForOrderPlaced(
   sdk: GmxApiSdk,
   requestId: string,
   timeoutMs = 60000
+): Promise<OrderStatusResponse> {
+  return waitForOrderStatus(sdk, requestId, timeoutMs, PLACED_STATUSES);
+}
+
+export async function waitForOrderStatus(
+  sdk: GmxApiSdk,
+  requestId: string,
+  timeoutMs = 60000,
+  stopStatuses: ReadonlySet<string> = TERMINAL_STATUSES
 ): Promise<OrderStatusResponse> {
   const start = Date.now();
 
   while (Date.now() - start < timeoutMs) {
     const status = await sdk.fetchOrderStatus({ requestId });
 
-    if (TERMINAL_STATUSES.has(status.status)) {
-      if (status.status !== "executed") {
+    if (stopStatuses.has(status.status)) {
+      if (!PLACED_OK_STATUSES.includes(status.status)) {
         logOrderFailure(status);
       }
       return status;

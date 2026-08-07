@@ -5,10 +5,14 @@ import {
   requireSigner,
   expressFlow,
   waitForOrderStatus,
+  waitForOrderPlaced,
+  PLACED_OK_STATUSES,
   waitForOrdersUpdate,
   waitForPositionUpdate,
   activateTestSubaccount,
   hasRpcUrl,
+  shouldRunTwap,
+  expectFeesEqual,
   TEST_SYMBOL,
   TEST_SIZE_USD,
 } from "./testUtil";
@@ -263,7 +267,7 @@ describe("decrease orders", () => {
     });
   });
 
-  describe("TWAP decrease", () => {
+  describe.skipIf(!shouldRunTwap())("TWAP decrease", () => {
     afterAll(async () => {
       try {
         const prepared = await sdk.prepareCancelOrder({ all: true, mode: "express", from: account });
@@ -363,7 +367,7 @@ describe("decrease orders", () => {
 
       // Size and fees unchanged between slippage variants
       expect(prepared30.estimates!.sizeDeltaUsd).toBe(prepared300.estimates!.sizeDeltaUsd);
-      expect(prepared30.estimates!.positionFeeUsd).toBe(prepared300.estimates!.positionFeeUsd);
+      expectFeesEqual(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd);
     });
   });
 
@@ -413,8 +417,8 @@ describe("decrease orders", () => {
 
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const orders = await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
       expect(orders.length).toBeGreaterThan(0);
@@ -444,8 +448,8 @@ describe("decrease orders", () => {
 
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const orders = await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
       expect(orders.length).toBeGreaterThan(0);
