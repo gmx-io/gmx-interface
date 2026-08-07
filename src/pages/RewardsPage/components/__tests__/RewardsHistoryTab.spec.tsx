@@ -21,8 +21,24 @@ const breakpointsMock = vi.hoisted(() => ({
   isMobile: false,
 }));
 
+const rewardsPricesMock = vi.hoisted(() => ({
+  gmxPrice: undefined as bigint | undefined,
+  gtPrice: undefined as bigint | undefined,
+}));
+
 vi.mock("lib/useBreakpoints", () => ({
   useBreakpoints: () => ({ isMobile: breakpointsMock.isMobile }),
+}));
+
+vi.mock("domain/legacy", () => ({
+  useGmxPrice: () => ({ gmxPrice: rewardsPricesMock.gmxPrice }),
+}));
+
+vi.mock("domain/synthetics/incentives/v2/useLatestGtPrice", () => ({
+  useLatestGtPrice: () => ({
+    data:
+      rewardsPricesMock.gtPrice === undefined ? undefined : { priceUsd: rewardsPricesMock.gtPrice, timestamp: EPOCH },
+  }),
 }));
 
 type HistoryParams = {
@@ -144,6 +160,8 @@ describe("RewardsHistoryTab", () => {
     historyMock.params.length = 0;
     historyMock.mutate.mockClear();
     breakpointsMock.isMobile = false;
+    rewardsPricesMock.gmxPrice = 2n * PRECISION;
+    rewardsPricesMock.gtPrice = 3n * PRECISION;
   });
 
   afterEach(() => {
@@ -186,6 +204,40 @@ describe("RewardsHistoryTab", () => {
     expect(screen.queryByText("No rewards history yet. Start trading to earn rewards.")).toBeNull();
   });
 
+  it("shows dollar values beside esGMX and GT amounts", () => {
+    historyMock.totalCount = 1;
+
+    renderHistory();
+
+    const row = screen.getByText("Finished").closest("tr");
+    const cells = row?.querySelectorAll("td");
+
+    expect(cells?.[3].textContent?.replace(/[\s\u200a]/g, "")).toBe("10($20.00)");
+    expect(cells?.[3].querySelector(".text-typography-secondary")?.textContent?.replace(/[\s\u200a]/g, "")).toBe(
+      "($20.00)"
+    );
+    expect(cells?.[4].textContent?.replace(/[\s\u200a]/g, "")).toBe("5($15.00)");
+    expect(cells?.[4].querySelector(".text-typography-secondary")?.textContent?.replace(/[\s\u200a]/g, "")).toBe(
+      "($15.00)"
+    );
+  });
+
+  it("keeps token amounts visible when reward prices are unavailable", () => {
+    historyMock.totalCount = 1;
+    rewardsPricesMock.gmxPrice = undefined;
+    rewardsPricesMock.gtPrice = undefined;
+
+    renderHistory();
+
+    const row = screen.getByText("Finished").closest("tr");
+    const cells = row?.querySelectorAll("td");
+
+    expect(cells?.[3].textContent).toBe("10");
+    expect(cells?.[3].querySelector(".text-typography-secondary")).toBeNull();
+    expect(cells?.[4].textContent).toBe("5");
+    expect(cells?.[4].querySelector(".text-typography-secondary")).toBeNull();
+  });
+
   it("uses the filled history pagination offsets", async () => {
     historyMock.data = Array.from({ length: HISTORY_PAGE_SIZE }, (_, index) =>
       makeHistoryEntry(EPOCH - index * ONE_HOUR)
@@ -217,6 +269,18 @@ describe("RewardsHistoryTab", () => {
     expect(screen.getByText("esGMX accrued")).toBeTruthy();
     expect(screen.getByText("GT allocated")).toBeTruthy();
     expect(screen.getByText("Status")).toBeTruthy();
+    expect(
+      screen
+        .getByText("esGMX accrued")
+        .closest(".justify-between")
+        ?.textContent?.replace(/[\s\u200a]/g, "")
+    ).toBe("esGMXaccrued10($20.00)");
+    expect(
+      screen
+        .getByText("GT allocated")
+        .closest(".justify-between")
+        ?.textContent?.replace(/[\s\u200a]/g, "")
+    ).toBe("GTallocated5($15.00)");
   });
 
   it("resets to the first page without revalidating the old page on config rollover", async () => {

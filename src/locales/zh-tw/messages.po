@@ -480,6 +480,7 @@ msgstr "目標"
 #: src/components/Referrals/traders/faq.tsx
 #: src/components/Referrals/traders/ReferralsTradersTab.tsx
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "FAQ"
 msgstr "常見問題"
 
@@ -744,6 +745,10 @@ msgstr "倡導者"
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable swap impact"
 msgstr "可接受的兌換影響"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "What happens to my unvested esGMX if I stop vesting?"
+msgstr "停止歸屬後，尚未歸屬的 esGMX 會怎樣？"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Delistings"
@@ -1911,6 +1916,10 @@ msgstr "協議"
 msgid "High network fees"
 msgstr "網路費用偏高"
 
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Does staked collateral continue earning staking rewards?"
+msgstr "已質押的抵押品是否會繼續賺取質押獎勵？"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2662,6 +2671,10 @@ msgstr ""
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
 msgstr "正在領取價格影響回饋..."
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "The full vesting period is one year. GMX becomes available to claim gradually throughout this period."
+msgstr "完整的歸屬期為一年。在此期間，GMX 會逐步變為可領取狀態。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
@@ -3685,6 +3698,10 @@ msgstr "買入手續費"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Claimable collateral reduction factor"
 msgstr "可領取抵押品削減因子"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Any esGMX that has not yet vested will be returned to you and can be deposited into vesting again later."
+msgstr "任何尚未歸屬的 esGMX 都會退還給您，之後可以再次存入進行歸屬。"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Buy {0} GMX to vest {depositAmountLabel}"
@@ -8398,6 +8415,10 @@ msgstr "訂單可接受價格"
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "正在更新 {updateOrdersCount} 個 TP/SL 訂單..."
 
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "The amount of GMX currently available to be locked as collateral for vesting."
+msgstr "目前可鎖定作為歸屬抵押品的 GMX 數量。"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price"
 msgstr "成交價格未達到可接受價格"
@@ -8570,6 +8591,10 @@ msgstr "Yield Yak Optimizer"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "正在提取 {balanceFormatted} 至主帳戶..."
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "To convert 1 esGMX into 1 GMX over one year, you must stake 5 GMX as collateral. The required GMX must remain staked throughout the vesting period."
+msgstr "要在一年內將 1 esGMX 轉換為 1 GMX，您必須質押 5 GMX 作為抵押品。所需的 GMX 必須在整個歸屬期內保持質押。"
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 msgid "Symbol (A to Z)"
@@ -9046,6 +9071,10 @@ msgstr "標記價格"
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No rewards are currently available to claim."
 msgstr "目前沒有可領取的獎勵。"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "What is vesting?"
+msgstr "什麼是歸屬？"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "You chose to send the remaining margin to your <0>{chosenLabel}</0>. Make this the default destination when closing positions?"
@@ -10067,6 +10096,10 @@ msgstr "倉位平倉時，止盈/止損訂單會自動取消。僅適用於啟�
 msgid "fees"
 msgstr "手續費"
 
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "How long does vesting take?"
+msgstr "歸屬需要多長時間？"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
 msgstr "無法完成 Permit 授權。"
@@ -10565,6 +10598,10 @@ msgstr "單人且匿名帳號"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr "切換至 {0} 池"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Can I stop vesting?"
+msgstr "我可以停止歸屬嗎？"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Explore, analyze, and copy on-chain traders"
@@ -11306,6 +11343,10 @@ msgstr "質押 GMX 並進行交易，即可賺取價值最高達手續費 120% �
 msgid "Invalid Ethereum address"
 msgstr "無效的 Ethereum 地址"
 
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Vesting is the gradual conversion of esGMX into liquid GMX. As GMX becomes vested, it can be claimed and used like any other liquid GMX token."
+msgstr "歸屬是將 esGMX 逐步轉換為流動 GMX 的過程。GMX 完成歸屬後，即可領取，並像其他流動 GMX 代幣一樣使用。"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -11364,6 +11405,10 @@ msgstr "更新限價單"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and locked"
+msgstr "用於歸屬所輸入 esGMX 所需的 GMX 數量。每 1 esGMX 需要質押並鎖定 5 GMX"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
@@ -11624,6 +11669,10 @@ msgstr "績效和圖表數據均以 UTC 時間為基準"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "賣出 {operationTokenSymbol}"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Yes. GMX used as vesting collateral remains staked and continues earning staking rewards throughout the vesting period."
+msgstr "是的。用作歸屬抵押品的 GMX 會保持質押，並在整個歸屬期內繼續賺取質押獎勵。"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
@@ -13325,6 +13374,10 @@ msgstr "交易量等級"
 msgid "For detailed stats"
 msgstr "查看詳細統計"
 
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "How does vesting work?"
+msgstr "歸屬是如何運作的？"
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Simulate transactions"
 msgstr "模擬交易"
@@ -13595,6 +13648,10 @@ msgstr "<0>目前倍數</0> · 透過符合資格的交易賺取獎勵"
 msgid "Save on costs"
 msgstr "節省費用"
 
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "You can restart vesting at any time by depositing esGMX and providing the required GMX collateral."
+msgstr "您可以隨時透過存入 esGMX 並提供所需的 GMX 抵押品來重新開始歸屬。"
+
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Open short"
 msgstr ""
@@ -13796,6 +13853,10 @@ msgstr "儲存等級"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {訂單} other {# 筆訂單}}"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Yes. You can stop vesting at any time. Any GMX that has already vested will remain available to claim, and the GMX used as collateral will be unlocked."
+msgstr "是的。您可以隨時停止歸屬。任何已經歸屬的 GMX 仍可領取，用作抵押品的 GMX 將會解鎖。"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"

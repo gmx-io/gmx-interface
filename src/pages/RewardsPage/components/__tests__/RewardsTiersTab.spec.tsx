@@ -510,6 +510,24 @@ describe("RewardsTiersTab", () => {
     expect(screen.queryByText("Active · next epoch")).toBeNull();
   });
 
+  it("prefixes card multiplier badges with a plus sign", () => {
+    renderTab({
+      status: {
+        ...status,
+        projectedVolumeTier: "Tier1",
+        projectedStakingTier: "Tier1",
+      },
+    });
+
+    const volumeCard = screen.getByRole("heading", { name: "Ranked" }).closest(".group");
+    const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
+    const boostsCard = screen.getByRole("heading", { name: "2 active boosts" }).closest(".group");
+
+    expect(within(volumeCard as HTMLElement).getByText("+0.25x")).toBeDefined();
+    expect(within(stakingCard as HTMLElement).getByText("+0.1x")).toBeDefined();
+    expect(within(boostsCard as HTMLElement).getByText("+2x")).toBeDefined();
+  });
+
   it("renders config-derived volume and staking targets", () => {
     const progressingStatus = {
       ...status,
@@ -889,7 +907,7 @@ describe("RewardsTiersTab", () => {
     const boostsHeading = screen.getByRole("heading", { name: "3 active boosts" });
     const boostsCard = boostsHeading.closest(".group");
     expect(boostsCard).toBeDefined();
-    expect(within(boostsCard as HTMLElement).getByText("3x")).toBeDefined();
+    expect(within(boostsCard as HTMLElement).getByText("+3x")).toBeDefined();
     expect(
       within(boostsCard as HTMLElement)
         .getAllByRole("button")
@@ -931,6 +949,18 @@ describe("RewardsTiersTab", () => {
     expect(volumeCard.querySelector(".mt-auto")?.textContent).toContain("Volume this epoch");
     expect(stakingCard.querySelector(".mt-auto")?.textContent).toContain("GMX staked");
     expect(boostsCard.querySelector(".mt-auto")?.querySelector('[aria-label="Referral Bonus"]')).not.toBeNull();
+  });
+
+  it("adds a translucent blue background to active tier icons", () => {
+    renderTab();
+
+    const volumeIcon = screen.getByRole("heading", { name: "Ranked" }).querySelector("svg");
+    const stakingIcon = screen.getByRole("heading", { name: "Advocate" }).querySelector("svg");
+    const boostIcon = screen.getByRole("heading", { name: "2 active boosts" }).querySelector("svg")?.parentElement;
+
+    expect(volumeIcon?.classList.contains("bg-blue-300/10")).toBe(true);
+    expect(stakingIcon?.classList.contains("bg-blue-300/10")).toBe(true);
+    expect(boostIcon?.classList.contains("bg-blue-300/10")).toBe(true);
   });
 
   it("uses muted text and an invite link for the Referral Bonus description", async () => {
@@ -1121,7 +1151,7 @@ describe("RewardsTiersTab", () => {
     const volumeCard = screen.getByText("Volume Tier").closest(".group");
     const volumeCardText = normalizeText(volumeCard?.textContent);
 
-    expect(volumeCardText).toContain(normalizeText("0x →0.25x"));
+    expect(volumeCardText).toContain(normalizeText("+0x →+0.25x"));
     expect(volumeCardText).toContain(normalizeText("Trade $4K more to unlock Certified status +0.5x"));
     expect(volumeCardText).not.toContain(normalizeText("Trade $0 more"));
   });
@@ -1143,7 +1173,7 @@ describe("RewardsTiersTab", () => {
     const stakingCard = screen.getByText("Staking Tier").closest(".group");
     const stakingCardText = normalizeText(stakingCard?.textContent);
 
-    expect(stakingCardText).toContain(normalizeText("0x →0.1x"));
+    expect(stakingCardText).toContain(normalizeText("+0x →+0.1x"));
     expect(within(stakingCard as HTMLElement).getByRole("heading", { name: "Supporter" })).toBeDefined();
     expect(within(stakingCard as HTMLElement).queryByText("Applies next epoch")).toBeNull();
   });
@@ -1173,7 +1203,7 @@ describe("RewardsTiersTab", () => {
     const stakingCard = stakingHeading.closest(".group");
     expect(stakingCard).toBeDefined();
     expect(within(stakingCard as HTMLElement).queryByRole("heading", { name: "Supporter" })).toBeNull();
-    expect(stakingCard!.textContent).toContain("0.1x →0.5x");
+    expect(stakingCard!.textContent).toContain("+0.1x →+0.5x");
     expect(stakingCard!.textContent).toContain("Stake 800 GMX more to get Steward status");
 
     const tierProgress = within(stakingCard as HTMLElement).getByRole("progressbar", {
@@ -1257,7 +1287,7 @@ describe("RewardsTiersTab", () => {
 
     expect(screen.getByRole("row", { name: /Certified.*Expires in/ })).toBeDefined();
     expect(screen.getByRole("row", { name: /Ranked.*Next epoch/ })).toBeDefined();
-    expect(document.body.textContent).toContain("0.5x →0.25x");
+    expect(document.body.textContent).toContain("+0.5x →+0.25x");
     expect(document.body.textContent).toMatch(/Trade .* more to keep Certified status/);
     expect(screen.queryByText("Max tier reached ✓")).toBeNull();
 

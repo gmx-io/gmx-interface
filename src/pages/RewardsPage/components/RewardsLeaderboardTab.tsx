@@ -17,9 +17,8 @@ import {
   useIncentivesLeaderboard,
 } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
 import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";
-import { convertToUsd } from "sdk/utils/tokens";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -32,6 +31,8 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import Tabs from "components/Tabs/Tabs";
 
 import ShareIcon from "img/ic_share_arrow_filled.svg?react";
+
+import { RewardsTokenValue } from "./RewardsTokenValue";
 
 const PAGE_SIZE = 20;
 
@@ -111,21 +112,6 @@ function toLeaderboardOrderBy(
   return `${field}_${direction === "asc" ? "ASC" : "DESC"}` as IncentivesLeaderboardOrderBy;
 }
 
-function RewardTokenValue({ amount, decimals, price }: { amount: bigint; decimals: number; price?: bigint }) {
-  const amountUsd = convertToUsd(amount, decimals, price);
-
-  return (
-    <span className="flex items-center gap-4 whitespace-nowrap">
-      <span>{formatAmount(amount, decimals, 4, true, { trimTrailingZeros: true })}</span>
-      {amountUsd !== undefined ? (
-        <span className="text-typography-secondary">
-          ({formatUsd(amountUsd, { fallbackToZero: true, displayDecimals: 2 })})
-        </span>
-      ) : null}
-    </span>
-  );
-}
-
 function LeaderboardRow({
   entry,
   account,
@@ -169,10 +155,10 @@ function LeaderboardRow({
         {formatUsd(entry.referralVolume, { fallbackToZero: true, displayDecimals: 0 })}
       </TableTd>
       <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
-        <RewardTokenValue amount={entry.esGmxRewards} decimals={ES_GMX_DECIMALS} price={gmxPrice} />
+        <RewardsTokenValue amount={entry.esGmxRewards} decimals={ES_GMX_DECIMALS} price={gmxPrice} />
       </TableTd>
       <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
-        <RewardTokenValue amount={entry.gtRewards} decimals={GT_DECIMALS} price={gtPrice} />
+        <RewardsTokenValue amount={entry.gtRewards} decimals={GT_DECIMALS} price={gtPrice} />
       </TableTd>
       <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "numbers")}>
         {formatUsd(entry.rewardsUsd, { fallbackToZero: true, displayDecimals: 2 })}
