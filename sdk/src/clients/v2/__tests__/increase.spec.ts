@@ -11,6 +11,7 @@ import {
   waitForPositionUpdate,
   activateTestSubaccount,
   hasRpcUrl,
+  shouldRunTwap,
   TEST_SYMBOL,
   TEST_SIZE_USD,
   TEST_COLLATERAL,
@@ -478,7 +479,7 @@ describe("increase orders", () => {
     });
   });
 
-  describe("TWAP increase", () => {
+  describe.skipIf(!shouldRunTwap())("TWAP increase", () => {
     afterAll(cancelAllOrders);
 
     it("TWAP market increase — creates sub-orders", async () => {
