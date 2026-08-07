@@ -21,7 +21,8 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-260605170830-1049f5c/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@c9407b/api/graphql",
+    // FEDEV-4139 test deployment with pure-swap fee/impact; revert to gmx.squids.live once it is live in production
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@swpfee/api/graphql",
   },
 
   [AVALANCHE]: {
