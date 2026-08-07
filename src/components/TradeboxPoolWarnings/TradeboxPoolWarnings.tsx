@@ -46,7 +46,7 @@ const useTradeboxPoolWarnings = () => {
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const { marketInfo, setCollateralAddress, setMarketAddress } = useSelector(selectTradeboxState);
+  const { marketInfo, setCollateralAddress, setUserSelectedMarketAddress } = useSelector(selectTradeboxState);
   const accountStats = useSelector(selectAccountStats);
   const fromToken = useSelector(selectTradeboxFromToken);
 
@@ -259,7 +259,7 @@ const useTradeboxPoolWarnings = () => {
           <ColorfulButtonLink
             color="blue"
             onClick={() => {
-              setMarketAddress(marketWithPosition.marketTokenAddress);
+              setUserSelectedMarketAddress(marketWithPosition.marketTokenAddress);
               setCollateralAddress(marketsOptions.collateralWithPosition?.address);
             }}
           >
@@ -296,7 +296,10 @@ const useTradeboxPoolWarnings = () => {
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Select a different pool.
         </Trans>
         {hasEnoughLiquidity(minOpenFeesMarket) && (
-          <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
+          <ColorfulButtonLink
+            color="blue"
+            onClick={() => setUserSelectedMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
+          >
             <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
           </ColorfulButtonLink>
         )}
@@ -313,7 +316,7 @@ const useTradeboxPoolWarnings = () => {
         </Trans>
         <ColorfulButtonLink
           color="blue"
-          onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
+          onClick={() => setUserSelectedMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
         >
           <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
         </ColorfulButtonLink>
@@ -331,7 +334,7 @@ const useTradeboxPoolWarnings = () => {
           <ColorfulButtonLink
             color="blue"
             onClick={() => {
-              setMarketAddress(marketWithOrder.marketTokenAddress);
+              setUserSelectedMarketAddress(marketWithOrder.marketTokenAddress);
               setCollateralAddress(address);
             }}
           >
@@ -354,7 +357,7 @@ const useTradeboxPoolWarnings = () => {
 
   if (showHasBetterOpenFeesWarning) {
     const onSwitchPoolClick = () => {
-      setMarketAddress(minOpenFeesMarket.marketTokenAddress);
+      setUserSelectedMarketAddress(minOpenFeesMarket.marketTokenAddress);
       userAnalytics.pushEvent<TradeBoxWarningSwitchPoolClickEvent>({
         event: "TradeBoxAction",
         data: {

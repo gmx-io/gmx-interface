@@ -1,4 +1,3 @@
-import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
@@ -15,9 +14,7 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
-import { RecommendedAssets } from "components/Earn/Portfolio/RecommendedAssets/RecommendedAssets";
 import RewardsBar from "components/Earn/Portfolio/RewardsBar";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
@@ -39,11 +36,6 @@ export default function EarnPortfolioPage() {
   const { performance: performance30d, isLoading: isPerformance30dLoading } = usePerformanceAnnualized({
     chainId,
     period: "30d",
-  });
-
-  const { performance: performance90d } = usePerformanceAnnualized({
-    chainId,
-    period: "90d",
   });
 
   const gmGlvAssets = useMemo(() => {
@@ -81,14 +73,6 @@ export default function EarnPortfolioPage() {
 
   return (
     <EarnPageLayout>
-      {processedData?.isRewardsSuspended && !isWalletInitializing && (
-        <AlertInfoCard type="info">
-          <Trans>
-            27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to
-            stakers when GMX reaches $90, proportional to staking power (duration × amount staked).
-          </Trans>
-        </AlertInfoCard>
-      )}
       {processedData && !isWalletInitializing && (
         <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />
       )}
@@ -107,16 +91,6 @@ export default function EarnPortfolioPage() {
                 performance30d={performance30d}
                 isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
                 multichainMarketTokensBalances={multichainMarketTokensBalances}
-              />
-            </ErrorBoundary>
-          )}
-          {performance90d && marketTokensData && marketsInfoData && (
-            <ErrorBoundary id="EarnPortfolio-RecommendedAssets" variant="block" wrapperClassName="rounded-t-8">
-              <RecommendedAssets
-                hasGmxAssets={hasGmxAssets}
-                marketsInfoData={marketsInfoData}
-                marketTokensData={marketTokensData}
-                performance={performance90d}
               />
             </ErrorBoundary>
           )}

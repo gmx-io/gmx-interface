@@ -74,6 +74,12 @@ export function getTierIdDisplay(tierId: number | bigint | string): number {
   return Number(tierId) + 1;
 }
 
+const BALANCER_PROGRAM_TIERS = [6, 7];
+
+export function isBalancerProgramTier(tierId: number | undefined): boolean {
+  return tierId !== undefined && BALANCER_PROGRAM_TIERS.includes(tierId);
+}
+
 export function getSharePercentage(
   customDiscountShare: bigint | undefined,
   tierDiscountShare: bigint | undefined,

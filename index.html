@@ -29,6 +29,49 @@
     <link rel="dns-prefetch" href="//arbitrum.gmxapi.io" />
     <link rel="preconnect" href="https://avalanche.gmxapi.io" crossorigin />
     <link rel="dns-prefetch" href="//avalanche.gmxapi.io" />
+    <link rel="preconnect" href="https://arbitrum-api.gmxinfra.io" crossorigin />
+    <link rel="dns-prefetch" href="//arbitrum-api.gmxinfra.io" />
+    <link rel="preconnect" href="https://avalanche-api.gmxinfra.io" crossorigin />
+    <link rel="dns-prefetch" href="//avalanche-api.gmxinfra.io" />
+    <script>
+      // Warms ui-flags during HTML parse; consumed once by src/lib/oracleKeeperFetcher/uiFlagsPrefetch.ts.
+      window.__uiFlagsPrefetch = {};
+      [
+        [
+          "https://arbitrum-api.gmxinfra.io/ui-flags/v2",
+          "https://arbitrum-api-fallback.gmxinfra.io/ui-flags/v2",
+          "https://arbitrum-api-fallback.gmxinfra2.io/ui-flags/v2",
+        ],
+        [
+          "https://avalanche-api.gmxinfra.io/ui-flags/v2",
+          "https://avalanche-api-fallback.gmxinfra.io/ui-flags/v2",
+          "https://avalanche-api-fallback.gmxinfra2.io/ui-flags/v2",
+        ],
+      ].forEach(function (urls) {
+        try {
+          var attempt = function (i) {
+            if (i >= urls.length) return Promise.resolve(null);
+            var opts = {};
+            try {
+              if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) {
+                opts.signal = AbortSignal.timeout(10000);
+              }
+            } catch (e) {}
+            return fetch(urls[i], opts)
+              .then(function (res) {
+                return res.ok ? res.json() : attempt(i + 1);
+              })
+              .catch(function () {
+                return attempt(i + 1);
+              });
+          };
+          var promise = attempt(0);
+          urls.forEach(function (url) {
+            window.__uiFlagsPrefetch[url] = promise;
+          });
+        } catch (e) {}
+      });
+    </script>
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />

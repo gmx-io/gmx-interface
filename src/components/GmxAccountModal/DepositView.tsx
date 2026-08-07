@@ -10,6 +10,7 @@ import { useAccount, useChains } from "wagmi";
 import { AVALANCHE, AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
+import { isGmxAccountHoldableToken } from "config/markets";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
@@ -32,6 +33,7 @@ import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountC
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
+import { resolveSettlementChainDepositToken } from "domain/multichain/depositTokenSelection";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { isStringEqualInsensitive, matchLogRequest } from "domain/multichain/progress/LongCrossChainTask";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
@@ -896,7 +898,7 @@ export const DepositView = () => {
 
   useEffect(
     function fallbackTokenOnSourceChain() {
-      if (isVisibleOrView === false) {
+      if (isVisibleOrView === false || depositViewChain === (settlementChainId as number)) {
         return;
       }
 
@@ -979,50 +981,16 @@ export const DepositView = () => {
         return;
       }
 
-      const depositTradeTokens = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId as SettlementChainId];
+      const nextTokenAddress = resolveSettlementChainDepositToken({
+        chainId: settlementChainId as SettlementChainId,
+        tokensData: settlementChainTokensData,
+        selectedTokenAddress: depositViewTokenAddress,
+        preferredTokenAddress: CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[settlementChainId as SettlementChainId],
+      });
 
-      const isInvalidTokenAddress =
-        depositViewTokenAddress === undefined ||
-        !depositTradeTokens.includes(depositViewTokenAddress as NativeTokenSupportedAddress) ||
-        (getByKey(settlementChainTokensData, depositViewTokenAddress)?.walletBalance ?? 0n) === 0n;
-
-      if (!isInvalidTokenAddress) {
-        return;
-      }
-
-      const preferredTokenAddress = CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[settlementChainId as SettlementChainId];
-      const preferredTokenBalance = getByKey(settlementChainTokensData, preferredTokenAddress)?.walletBalance;
-
-      if (preferredTokenBalance !== undefined && preferredTokenBalance > 0n) {
+      if (nextTokenAddress !== undefined && nextTokenAddress !== depositViewTokenAddress) {
         setInputValue(undefined);
-        setDepositViewTokenAddress(preferredTokenAddress);
-        return;
-      }
-
-      let maxBalanceTokenAddress: string | undefined = undefined;
-      let maxBalanceUsd: bigint | undefined = undefined;
-
-      for (const tokenAddress of depositTradeTokens) {
-        const tokenData = getByKey(settlementChainTokensData, tokenAddress);
-
-        if (tokenData?.walletBalance === undefined || tokenData.walletBalance === 0n) {
-          continue;
-        }
-
-        const balanceUsd = convertToUsd(tokenData.walletBalance, tokenData.decimals, getMidPrice(tokenData.prices));
-
-        if (
-          balanceUsd !== undefined &&
-          (maxBalanceTokenAddress === undefined || maxBalanceUsd === undefined || balanceUsd > maxBalanceUsd)
-        ) {
-          maxBalanceTokenAddress = tokenAddress;
-          maxBalanceUsd = balanceUsd;
-        }
-      }
-
-      if (maxBalanceTokenAddress !== undefined) {
-        setInputValue(undefined);
-        setDepositViewTokenAddress(maxBalanceTokenAddress);
+        setDepositViewTokenAddress(nextTokenAddress);
       }
     },
     [
@@ -1071,7 +1039,8 @@ export const DepositView = () => {
       const isSelectedTokenAvailableOnNewChain =
         depositViewTokenAddress !== undefined &&
         (newChain === (settlementChainId as number)
-          ? (getByKey(settlementChainTokensData, depositViewTokenAddress)?.walletBalance ?? 0n) > 0n
+          ? (getByKey(settlementChainTokensData, depositViewTokenAddress)?.walletBalance ?? 0n) > 0n &&
+            isGmxAccountHoldableToken(settlementChainId as SettlementChainId, depositViewTokenAddress)
           : multichainTokens.some(
               (token) => token.address === depositViewTokenAddress && token.sourceChainId === newChain
             ));
@@ -1455,6 +1424,10 @@ export const DepositView = () => {
             {isGlobalEmpty ? (
               <Trans>
                 Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account.
+              </Trans>
+            ) : depositViewChain === (settlementChainId as number) ? (
+              <Trans>
+                Receive supported assets into your wallet on {networkName}, or choose another network.
               </Trans>
             ) : (
               <Trans>

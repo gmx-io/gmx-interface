@@ -49,9 +49,15 @@ import {
   fetchApiMarketsInfo,
   fetchApiMarketsValues,
   fetchApiMarketsTickers,
+  fetchApiTradingCapacity,
   fetchApiTokensData,
 } from "utils/markets/api";
-import { MarketTicker, MarketWithTiers } from "utils/markets/types";
+import {
+  GetTradingCapacityParams,
+  MarketTickerWithCapacity,
+  MarketWithTiers,
+  TradingCapacity,
+} from "utils/markets/types";
 import {
   buildCrossChainWithdrawBridgeOutParams,
   buildSameChainDepositTxn,
@@ -71,10 +77,16 @@ import {
   prepareCancelOrder,
   prepareCollateral,
   fetchOrderStatus as fetchOrderStatusRaw,
+  isPrepareOrderError,
+  parsePrepareOrderError,
 } from "utils/orderTransactions/api";
 import type {
+  PrepareOrderError,
+  PrepareOrderErrorCode,
+  PrepareOrderFieldValidationErrors,
   PrepareOrderRequest,
   PrepareOrderResponse,
+  OrderValidationWarning,
   SubmitOrderRequest,
   SubmitOrderResponse,
   PrepareEditOrderRequest,
@@ -120,7 +132,16 @@ import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
 import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
 
 export type { ApyEntry, ApyParams, ApyResponse } from "utils/apy/types";
-export type { MarketTicker, MarketWithTiers } from "utils/markets/types";
+export type {
+  GetTradingCapacityParams,
+  JitDataStatus,
+  MarketDataStatus,
+  MarketTicker,
+  MarketTickerWithCapacity,
+  MarketWithTiers,
+  TradingCapacity,
+  TradingCapacityLimitingFactor,
+} from "utils/markets/types";
 export type { Pair } from "utils/pairs/types";
 export type {
   PerformanceAnnualized,
@@ -151,8 +172,12 @@ export type {
   TradesListResponse,
 } from "utils/trades/types";
 export type {
+  PrepareOrderError,
+  PrepareOrderErrorCode,
+  PrepareOrderFieldValidationErrors,
   PrepareOrderRequest,
   PrepareOrderResponse,
+  OrderValidationWarning,
   SubmitOrderRequest,
   SubmitOrderResponse,
   PrepareEditOrderRequest,
@@ -161,6 +186,7 @@ export type {
   OrderStatusRequest,
   OrderStatusResponse,
 };
+export { isPrepareOrderError, parsePrepareOrderError };
 export type {
   WalletBalance,
   TokenAllowance,
@@ -268,8 +294,12 @@ export class GmxApiSdk {
     return fetchApiMarkets(this.ctx);
   }
 
-  fetchMarketsTickers(params?: { addresses?: string[]; symbols?: string[] }): Promise<MarketTicker[]> {
+  fetchMarketsTickers(params?: { addresses?: string[]; symbols?: string[] }): Promise<MarketTickerWithCapacity[]> {
     return fetchApiMarketsTickers(this.ctx, params);
+  }
+
+  getTradingCapacity(params: GetTradingCapacityParams): Promise<TradingCapacity> {
+    return fetchApiTradingCapacity(this.ctx, params);
   }
 
   fetchTokensData() {

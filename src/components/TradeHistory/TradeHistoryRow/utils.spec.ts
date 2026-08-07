@@ -941,6 +941,7 @@ describe("TradeHistoryRow helpers", () => {
       expect(result).toEqual([
         "",
         "Settlement",
+        "",
         { key: "Initial margin", value: "1,000.00\u00a0USDC" },
         { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
         { key: "Margin at close", value: "996.21\u00a0USDC" },
@@ -958,6 +959,7 @@ describe("TradeHistoryRow helpers", () => {
       expect(result).toEqual([
         "",
         "Settlement",
+        "",
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
         { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
@@ -965,6 +967,23 @@ describe("TradeHistoryRow helpers", () => {
         "",
         { text: "Original margin reconciliation requires the opening row.", state: "muted" },
       ]);
+    });
+
+    it("separates the Settlement heading from the first detail row with an empty line", () => {
+      const withOpenChange = getSettlementTooltipLines(fullCloseAction, closeChange, openChange).filter(
+        (line) => line !== undefined
+      );
+      const withoutOpenChange = getSettlementTooltipLines(fullCloseAction, closeChange, undefined).filter(
+        (line) => line !== undefined
+      );
+
+      for (const result of [withOpenChange, withoutOpenChange]) {
+        const headingIndex = result.indexOf("Settlement");
+
+        expect(headingIndex).toBeGreaterThanOrEqual(0);
+        expect(result[headingIndex + 1]).toBe("");
+        expect(result[headingIndex + 2]).not.toBe("");
+      }
     });
 
     it("marks the USD received value as an estimate when the collateral was swapped on close", () => {
@@ -994,6 +1013,7 @@ describe("TradeHistoryRow helpers", () => {
       expect(result).toEqual([
         "",
         "Settlement",
+        "",
         { key: "Initial margin", value: "1,000.00\u00a0USDC" },
         { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
         { key: "Margin at close", value: "996.21\u00a0USDC" },
