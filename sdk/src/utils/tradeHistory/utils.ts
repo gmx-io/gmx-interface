@@ -5,6 +5,7 @@ import type { MarketsInfoData } from "utils/markets/types";
 import { toBigInt } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { isIncreaseOrderType, isSwapOrderType } from "utils/orders";
+import type { DecreasePositionSwapType } from "utils/orders/types";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 import { parseContractPrice } from "utils/tokens";
 import { Token, TokensData } from "utils/tokens/types";
@@ -140,6 +141,10 @@ export function createRawTradeActionTransformer(
           : undefined,
 
         orderType,
+        decreasePositionSwapType:
+          rawAction.decreasePositionSwapType === null || rawAction.decreasePositionSwapType === undefined
+            ? undefined
+            : (Number(rawAction.decreasePositionSwapType) as DecreasePositionSwapType),
         orderKey: rawAction.orderKey,
         isLong: rawAction.isLong!,
         pnlUsd: rawAction.pnlUsd ? BigInt(rawAction.pnlUsd) : undefined,
