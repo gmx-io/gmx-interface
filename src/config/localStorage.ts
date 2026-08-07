@@ -110,6 +110,8 @@ const TOKEN_PERMITS_KEY = "token-permits";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
+const VERIFICATION_CHAIN_SIGNING_KEY = "verification-chain-signing";
+
 export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSubaccountApprovalKey(chainId: number, account: string | undefined, srcChainId: number | undefined) {
@@ -232,4 +234,12 @@ export function getGmxAccountGasPaymentTokenAddressKey(chainId: number, account:
 
 export function getHighLeverageWarningDismissedTimestampKey(account: string) {
   return `${account}-${HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY}`;
+}
+
+export function getVerificationChainSigningKey(
+  connectorId: string | undefined,
+  account: string,
+  verificationChainId: number
+) {
+  return [VERIFICATION_CHAIN_SIGNING_KEY, connectorId ?? "unknown", account, verificationChainId];
 }
