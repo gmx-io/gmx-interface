@@ -64,6 +64,9 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
     });
 
     expect(hasLiquidatableError(result)).toBe(true);
+    expect(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg).toBe(
+      "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
+    );
     expect(result.level).toBe("error");
   });
 

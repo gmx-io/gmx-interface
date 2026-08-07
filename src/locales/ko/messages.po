@@ -36,10 +36,6 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "가격 영향 리베이트가 수령되었습니다"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
-msgstr "주문이 실행되지 않을 수 있습니다: 결과 포지션이 조건가에서 청산 대상이 됩니다. 담보를 추가하거나 규모를 줄이세요."
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하십시오"
@@ -564,6 +560,10 @@ msgstr "모든 BTC/USD 풀에 유동성 부족"
 msgid "Unrealized base PnL"
 msgstr "미실현 기본 PnL"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: liquidity may be insufficient when they trigger."
+msgstr "이 주문의 일부가 체결되지 않을 수 있습니다: 트리거될 때 유동성이 부족할 수 있습니다."
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -1062,6 +1062,10 @@ msgstr "Plutus"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order won't execute: the trigger price is beyond the liquidation price. Edit the trigger price."
+msgstr "주문이 체결되지 않습니다: 트리거 가격이 청산 가격을 벗어났습니다. 트리거 가격을 수정하세요."
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
@@ -1980,17 +1984,9 @@ msgstr "수수료 없음"
 msgid "Switch to market order"
 msgstr "시장가 주문으로 전환"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Warning: may not execute due to low liquidity at your min. receive price"
-msgstr ""
-
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
 msgstr "월간 합산 수익"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Swap liquidity may be insufficient when order triggers"
-msgstr "주문 트리거 시 스왑 유동성이 부족할 수 있습니다"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Canceling {ordersText}..."
@@ -2655,10 +2651,6 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "전송이 시작되었습니다"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Warning: may not execute due to low liquidity at your trigger price"
-msgstr ""
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "금액이 출금 한도 미만입니다. <0>{lowerLimitFormatted}</0>보다 큰 금액을 입력하십시오."
@@ -2715,6 +2707,10 @@ msgstr "최대 {0} 아웃"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "입금 가능한 자산이 없습니다"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
+msgstr "주문이 {priceText} 가격에서 체결되지 않을 수 있습니다: 허용 가능한 가격 영향({formattedOrderAcceptablePriceImpact})이 현재 시장 영향({formattedCurrentAcceptablePriceImpact})보다 낮습니다. 허용 가능한 가격 영향을 수정하세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
@@ -3584,6 +3580,11 @@ msgstr "GLV 볼트"
 msgid "Buy GMX from centralized services"
 msgstr "중앙화 서비스에서 GMX 구매"
 
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
+msgstr "주문이 체결되지 않을 수 있습니다: 트리거 가격의 유동성이 부족합니다. 주문 크기를 줄이세요."
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -3613,6 +3614,10 @@ msgstr "거래 내역을 불러오지 못했습니다"
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>권장 영향값 설정: {0}</0>."
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Position would be liquidated immediately upon execution. Reduce the size."
+msgstr "실행 즉시 포지션이 청산됩니다. 크기를 줄이세요."
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claiming affiliate rewards failed"
@@ -3645,7 +3650,6 @@ msgstr "트레이더 활동"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/domain/synthetics/orders/utils.tsx
 msgid "Trigger price"
 msgstr "조건가"
 
@@ -3949,6 +3953,11 @@ msgstr "실현 수수료"
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "누적된 차입 수수료와 펀딩 수수료는 예치금이 포지션의 마진을 개선하기 전에 차감되므로, 예치 금액은 해당 수수료도 충당해야 합니다."
 
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
+msgstr "주문이 체결되지 않을 수 있습니다: 결과 포지션이 트리거 가격에서 청산 대상이 됩니다. 증거금을 예치하거나 주문 크기를 줄이세요."
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr "자금이 GMX Account에 입금되었습니다"
@@ -4022,10 +4031,6 @@ msgstr "전체적으로 공개 체인에서 실행"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
 msgstr "최소 예치 금액 설정"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "May lack liquidity for parts of this order when triggered"
-msgstr "발동 시 이 주문의 일부에 대해 유동성이 부족할 수 있습니다"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Settlement"
@@ -4186,10 +4191,6 @@ msgstr "연락 요청하기"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "전송 중..."
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity for swap at min. receive amount"
-msgstr "최소 수령 금액 기준 스왑에 유동성이 부족합니다"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max capacity:"
@@ -4546,6 +4547,11 @@ msgstr "가상 마켓 ID"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
 msgstr "지갑이 이 네트워크에 연결되어 있지 않습니다"
+
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
+msgstr "주문이 체결되지 않을 수 있습니다: 최소 수령액으로 스왑을 체결하기 위한 유동성이 부족합니다. 최소 수령액을 수정하거나 스왑 크기를 줄이세요."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -4921,6 +4927,10 @@ msgstr "{longOrShort} 포지션은 펀딩 수수료 또는 차입 수수료를 �
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Turn your audience<0/>into on-chain income."
 msgstr "당신의 오디언스를<0/>온체인 수익으로 바꾸세요."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped."
+msgstr "수령 토큰 스왑이 건너뛰어질 수 있습니다: 주문이 트리거될 때 유동성이 부족할 수 있습니다. 포지션 감소는 그대로 실행되며 담보 토큰을 스왑되지 않은 상태로 받습니다."
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
@@ -5615,10 +5625,6 @@ msgstr "순가치"
 msgid "Earn"
 msgstr "수익"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Position would be immediately liquidated upon execution. Try reducing the size."
-msgstr "체결 시 포지션이 즉시 청산됩니다. 크기를 줄여보십시오."
-
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Explore the Builder Program"
 msgstr "Builder Program 살펴보기"
@@ -6272,6 +6278,10 @@ msgstr "스탑 마켓 실패"
 msgid "Settings"
 msgstr "설정"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers."
+msgstr "주문이 체결되지 않을 수 있습니다: 결과 포지션이 최대 허용 레버리지를 초과합니다. 트리거되기 전에 증거금을 예치하거나 주문 크기를 줄이세요."
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "일별"
@@ -6493,6 +6503,10 @@ msgstr "프로토콜 검증 오류로 주문이 실패했습니다: {errorName}"
 msgid "Send fee"
 msgstr "전송 수수료"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available."
+msgstr "이 주문의 일부가 유동성을 기다리고 있습니다: 충분한 유동성이 확보되면 체결됩니다."
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
@@ -6634,10 +6648,6 @@ msgstr "ODOS"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
 msgstr "GMX Substack"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
-msgstr "조건가에서 지불-담보 스왑을 위한 유동성 부족"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
@@ -7718,10 +7728,6 @@ msgstr ""
 msgid "Win rate"
 msgstr "승률"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity to execute order at trigger price"
-msgstr "조건가에서 주문을 실행하기에 유동성 부족"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
@@ -7842,6 +7848,10 @@ msgstr "종료가"
 msgid "Transfer failed"
 msgstr "전송 실패"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Position would be liquidated immediately. Reduce the withdrawal amount."
+msgstr "포지션이 즉시 청산됩니다. 출금액을 줄이세요."
+
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
 msgstr "최근 90일"
@@ -7867,10 +7877,6 @@ msgstr "선택한 기간 동안의 벤치마크 대비 성과"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics dashboard"
 msgstr "Dune Analytics 대시보드"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
-msgstr "주문이 실행되지 않을 수 있습니다: 최대 레버리지 초과. 크기를 줄이도록 수정하십시오. <0>자세히 보기</0>."
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "No distribution history"
@@ -8158,6 +8164,10 @@ msgstr "FX"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "포지션 공유"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity to swap the pay token into the collateral token at the trigger price. Reduce the order size."
+msgstr "주문이 체결되지 않을 수 있습니다: 트리거 가격에서 결제 토큰을 담보 토큰으로 스왑하기 위한 유동성이 부족합니다. 주문 크기를 줄이세요."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Max deposit capacity reached for this pool"
@@ -8477,10 +8487,6 @@ msgstr "더 많이 하는 이들을<0/>위해."
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "{tokenSymbol}을 {chainName}으로 브릿지"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
-msgstr "주문은 {collateralSymbol}을(를) 사용하지만, 기존 {longText} 포지션은 {symbol}을(를) 담보로 사용합니다"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
@@ -9388,10 +9394,6 @@ msgstr "시작 미실현 수수료"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account 입금은 Stargate 브리지 유동성에 의해 제한됩니다. <0>{upperLimitFormatted}</0>보다 작은 금액으로 시도하십시오."
-
-#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
-msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr "이 주문은 현재 포지션 상태에서는 체결되지 않을 수 있습니다. 트리거되기 전에 담보를 추가하거나 레버리지를 낮추세요."
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
@@ -10825,7 +10827,6 @@ msgstr "GMX 계정"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
-#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit price"
 msgstr "지정가"
 
@@ -11327,10 +11328,6 @@ msgstr "GMX positions bot"
 msgid "Reload page"
 msgstr "페이지 새로고침"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order won't execute: trigger price beyond liquidation price"
-msgstr "주문이 실행되지 않습니다: 조건가가 청산가를 초과합니다"
-
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
 msgstr "정산 중..."
@@ -11422,6 +11419,10 @@ msgstr "ACCEPTABLE PRICE"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "이벤트"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order won't add to the existing {longText} position: it uses {collateralSymbol} as collateral while the position uses {symbol}. Executing it opens a separate position."
+msgstr "주문이 기존 {longText} 포지션에 추가되지 않습니다: 주문은 {collateralSymbol}을 담보로 사용하지만 포지션은 {symbol}을 사용합니다. 실행하면 별도의 포지션이 열립니다."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
@@ -11647,10 +11648,6 @@ msgstr "트랜잭션 시뮬레이션"
 msgid "Where can I read more?"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Parts of this order will execute once sufficient liquidity is available"
-msgstr "충분한 유동성이 확보되면 이 주문의 일부가 체결됩니다"
-
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "높은 허용 가격 영향이 설정되었습니다. 현재 영향: {0}."
@@ -11809,6 +11806,7 @@ msgstr "대시보드"
 msgid "{label}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "트리거"
@@ -12258,6 +12256,7 @@ msgstr "사용 가능:"
 msgid "Realized base PnL"
 msgstr "실현 기본 PnL"
 
+#: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr "지정가"
@@ -12298,10 +12297,6 @@ msgstr "30일 실적 APY"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Uniswap"
 msgstr "Uniswap"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderAcceptablePriceImpact}) below market ({formattedCurrentAcceptablePriceImpact}). Click \"Edit\"."
-msgstr "주문이 {priceText}에 체결되지 않을 수 있습니다: 허용 가격 영향({formattedOrderAcceptablePriceImpact})이 시장 수준({formattedCurrentAcceptablePriceImpact})보다 낮습니다. \"Edit\"을 클릭하십시오."
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
