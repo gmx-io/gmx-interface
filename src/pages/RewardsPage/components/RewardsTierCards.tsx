@@ -397,7 +397,7 @@ function VolumeCard({
                 variant="none"
               />
             ) : (
-              <div className="relative -my-5 h-6 overflow-hidden rounded-8 bg-cold-blue-900">
+              <div className="relative h-6 overflow-hidden rounded-8 bg-cold-blue-900">
                 <div
                   className={cx(
                     "absolute left-0 top-0 h-full rounded-8 transition-[width] duration-300",
