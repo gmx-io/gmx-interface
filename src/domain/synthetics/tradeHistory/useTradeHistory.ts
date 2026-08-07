@@ -169,6 +169,7 @@ export async function fetchRawTradeActions({
   orderEventCombinations,
   positionLifecycleId,
   showDebugValues,
+  abortSignal,
 }: {
   chainId: number;
   pageIndex: number;
@@ -189,6 +190,7 @@ export async function fetchRawTradeActions({
     | undefined;
   positionLifecycleId?: string;
   showDebugValues?: boolean;
+  abortSignal?: AbortSignal;
 }): Promise<RawTradeActionsResult | undefined> {
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
@@ -370,6 +372,7 @@ export async function fetchRawTradeActions({
             sizeDeltaUsd
             sizeDeltaInTokens
             triggerPrice
+            contractTriggerPrice
             acceptablePrice
             executionPrice
             minOutputAmount
@@ -412,7 +415,11 @@ export async function fetchRawTradeActions({
         }
       }`);
 
-  const result = await client!.query({ query, fetchPolicy: "no-cache" });
+  const result = await client!.query({
+    query,
+    fetchPolicy: "no-cache",
+    context: abortSignal ? { fetchOptions: { signal: abortSignal } } : undefined,
+  });
 
   const rawTradeActions = (result.data?.tradeActions || []) as SubsquidTradeAction[];
   const totalCount = result.data?.tradeActionsConnection?.totalCount;
