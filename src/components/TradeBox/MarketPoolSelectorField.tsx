@@ -22,7 +22,7 @@ type Props = {
 
 export function MarketPoolSelectorField({ disabled }: Props = {}) {
   const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
-  const { marketAddress, setMarketAddress } = useSelector(selectTradeboxState);
+  const { marketAddress, setUserSelectedMarketAddress } = useSelector(selectTradeboxState);
   const tradeType = useSelector(selectTradeboxTradeType);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const popoverReferenceRef = useRef<HTMLDivElement | null>(null);
@@ -45,7 +45,7 @@ export function MarketPoolSelectorField({ disabled }: Props = {}) {
           options={relatedMarketStats}
           tradeType={tradeType}
           positionStats={relatedMarketsPositionStats}
-          onSelect={setMarketAddress}
+          onSelect={setUserSelectedMarketAddress}
           handleClassName={cx(
             "inline-block overflow-hidden text-ellipsis whitespace-nowrap text-13",
             isInteractive && "group-gmx-hover/selector-field:text-blue-300"

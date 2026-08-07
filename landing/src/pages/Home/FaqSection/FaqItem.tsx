@@ -5,11 +5,13 @@ import IcCross from "img/ic_cross.svg?react";
 
 type Props = {
   title: string;
+  defaultOpen?: boolean;
+  iconClassName?: string;
   children: React.ReactNode;
 };
 
-export function FaqItem({ title, children }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+export function FaqItem({ title, defaultOpen, iconClassName = "size-16", children }: Props) {
+  const [isOpen, setIsOpen] = useState(Boolean(defaultOpen));
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -24,7 +26,7 @@ export function FaqItem({ title, children }: Props) {
         <h3 className="text-heading-4">{title}</h3>
         <div className="flex size-23 flex-shrink-0 items-center justify-center">
           <IcCross
-            className={cx("duration-180 margin-auto size-16 origin-center transition-transform", {
+            className={cx("duration-180 margin-auto origin-center transition-transform", iconClassName, {
               "rotate-45": !isOpen,
             })}
           />
@@ -32,14 +34,18 @@ export function FaqItem({ title, children }: Props) {
       </div>
       <div
         className={cx(
-          "leading-body-md duration-180 flex flex-col gap-16 overflow-hidden text-16 -tracking-[0.512px] text-slate-400 transition-all ease-in-out",
-          {
-            "max-h-0 opacity-0": !isOpen,
-            "max-h-[1000px] opacity-100": isOpen,
-          }
+          "duration-180 grid transition-[grid-template-rows] ease-in-out",
+          isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         )}
       >
-        {children}
+        <div
+          className={cx(
+            "leading-body-md duration-180 flex min-h-0 flex-col gap-16 overflow-hidden text-16 -tracking-[0.512px] text-slate-400 transition-opacity ease-in-out",
+            isOpen ? "opacity-100" : "opacity-0"
+          )}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

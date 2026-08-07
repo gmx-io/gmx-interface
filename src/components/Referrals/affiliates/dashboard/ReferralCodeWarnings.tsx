@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import toPairs from "lodash/toPairs";
-import values from "lodash/values";
 
 import { ContractsChainId, getChainName } from "config/chains";
 import type { CodeOwnershipInfo } from "domain/referrals/types";
@@ -8,7 +7,6 @@ import type { CodeOwnershipInfo } from "domain/referrals/types";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import AlertIcon from "img/ic_alert.svg?react";
-import InfoIcon from "img/ic_info_circle.svg?react";
 
 type Props = {
   allOwnersOnOtherChains:
@@ -19,52 +17,53 @@ type Props = {
 };
 
 export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
-  const areSomeCodesNotTaken = values(allOwnersOnOtherChains).some((o) => !o.isTaken);
   const nonTakenNetworkNames = toPairs(allOwnersOnOtherChains)
     .filter(([, o]) => !o.isTaken)
-    .map(([chainId]) => getChainName(Number(chainId) as ContractsChainId))
-    .join(", ");
+    .map(([chainId]) => getChainName(Number(chainId) as ContractsChainId));
 
-  const areSomeCodesTakenByOthers = values(allOwnersOnOtherChains).some((o) => o.isTaken && !o.isTakenByCurrentUser);
   const takenNetworkNames = toPairs(allOwnersOnOtherChains)
     .filter(([, o]) => o.isTaken && !o.isTakenByCurrentUser)
-    .map(([chainId]) => getChainName(Number(chainId) as ContractsChainId))
-    .join(", ");
+    .map(([chainId]) => getChainName(Number(chainId) as ContractsChainId));
+
+  if (nonTakenNetworkNames.length === 0 && takenNetworkNames.length === 0) {
+    return null;
+  }
+
+  const nonTakenNetworkNamesJoined = nonTakenNetworkNames.join(", ");
+  const takenNetworkNamesJoined = takenNetworkNames.join(", ");
 
   return (
-    <>
-      {areSomeCodesNotTaken && (
-        <div className="info">
-          <TooltipWithPortal
-            position="right"
-            handle={<AlertIcon className="size-16 text-yellow-300" />}
-            variant="none"
-            className="flex"
-            content={
+    <div className="info">
+      <TooltipWithPortal
+        position="right"
+        handle={<AlertIcon className="size-16 text-yellow-300" />}
+        variant="none"
+        className="flex"
+        content={
+          <div className="flex flex-col gap-8">
+            {nonTakenNetworkNames.length > 0 && (
               <div>
                 <Trans>
-                  Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates.
+                  Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates.
                 </Trans>
               </div>
-            }
-          />
-        </div>
-      )}
-      {areSomeCodesTakenByOthers && (
-        <div className="info">
-          <TooltipWithPortal
-            position="right"
-            handle={<InfoIcon className="size-16 text-red-500" />}
-            variant="none"
-            className="flex"
-            content={
+            )}
+            {takenNetworkNames.length > 0 && (
               <div>
-                <Trans>Code taken by another user on {takenNetworkNames}. No rebates from those networks.</Trans>
+                {takenNetworkNames.length === 1 ? (
+                  <Trans>
+                    Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network.
+                  </Trans>
+                ) : (
+                  <Trans>
+                    Code already taken on: {takenNetworkNamesJoined}. No rebates received from these networks.
+                  </Trans>
+                )}
               </div>
-            }
-          />
-        </div>
-      )}
-    </>
+            )}
+          </div>
+        }
+      />
+    </div>
   );
 }

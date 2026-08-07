@@ -297,11 +297,11 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
 
     const prepared = await sdk.prepareOrder({
       kind: "increase",
-      symbol: "ETH/USD [WETH-USDC]",
+      symbol: TEST_SYMBOL,
       direction: "long",
       orderType: "market",
-      size: 100n * 10n ** 30n,
-      collateralToPay: { amount: 1000000n, token: "USDC" },
+      size: TEST_SIZE_USD,
+      collateralToPay: TEST_COLLATERAL,
       mode: "express",
       from: signer.address,
       subaccountAddress: sdk.subaccountAddress,

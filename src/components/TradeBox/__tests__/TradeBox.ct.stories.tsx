@@ -168,6 +168,8 @@ export type TradeBoxStoryProps = {
   zeroBalances?: boolean;
   /** Seed the stored trade mode */
   seedTradeMode?: TradeMode;
+  /** Seed a remembered explicit pool pick (the second ETH pool) for both directions */
+  seedUserSelectedSecondEthPool?: boolean;
   /** Seed stored trade options with native ETH as the pay token (Long/Market) */
   seedPayNativeEth?: boolean;
   /** Seed stored trade options with a native ETH -> WETH swap (wrap) */
@@ -206,6 +208,7 @@ export function TradeBoxStory({
   seedLeverageOption,
   seedSizeDisplayMode,
   seedTradeMode,
+  seedUserSelectedSecondEthPool = false,
 }: TradeBoxStoryProps) {
   const isConnected = connected || withPosition || withWethCollateralPosition;
 
@@ -371,7 +374,7 @@ export function TradeBoxStory({
       entries.push([JSON.stringify(getSyntheticsTradeOptionsKey(ARBITRUM)), JSON.stringify(storedOptions)]);
     }
 
-    if (seedPayNativeEth || seedSwapWrap || seedTradeMode !== undefined) {
+    if (seedPayNativeEth || seedSwapWrap || seedTradeMode !== undefined || seedUserSelectedSecondEthPool) {
       const fromTokenAddress = seedPayNativeEth || seedSwapWrap ? NATIVE_ETH_ADDRESS : USDC_ADDRESS;
       const storedOptions: StoredTradeOptions = {
         tradeType: seedSwapWrap ? TradeType.Swap : TradeType.Long,
@@ -383,6 +386,13 @@ export function TradeBoxStory({
         collaterals: {},
         isFromTokenGmxAccount: false,
       };
+
+      if (seedUserSelectedSecondEthPool) {
+        storedOptions.userSelectedMarkets = {
+          [ETH_ADDRESS]: { long: SECOND_ETH_MARKET_ADDRESS, short: SECOND_ETH_MARKET_ADDRESS },
+        };
+      }
+
       entries.push([JSON.stringify(getSyntheticsTradeOptionsKey(ARBITRUM)), JSON.stringify(storedOptions)]);
     }
 
@@ -403,6 +413,7 @@ export function TradeBoxStory({
     seedLeverageOption,
     seedSizeDisplayMode,
     seedTradeMode,
+    seedUserSelectedSecondEthPool,
   ]);
 
   let content = (

@@ -1,4 +1,4 @@
-import Intercom, { boot, onUnreadCountChange, shutdown, update } from "@intercom/messenger-js-sdk";
+import Intercom, { boot, onUnreadCountChange, show, shutdown, update } from "@intercom/messenger-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
 import { useAccount } from "wagmi";
 
@@ -29,7 +29,7 @@ const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
 };
 
 export function useSupportChat() {
-  const { shouldShowSupportChat } = useShowSupportChat();
+  const { shouldShowSupportChat, shouldOpenChatOnBoot } = useShowSupportChat();
   const { address: account, connector } = useAccount();
   const { accountType, isLoading: isAccountTypeLoading } = useAccountType();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
@@ -133,11 +133,15 @@ export function useSupportChat() {
       setSupportChatUnreadCount(unreadCount);
     });
 
+    if (shouldOpenChatOnBoot) {
+      show();
+    }
+
     return () => {
       shutdown();
       initializedAddress.current = undefined;
     };
-  }, [shouldShowSupportChat, setSupportChatUnreadCount]);
+  }, [shouldShowSupportChat, shouldOpenChatOnBoot, setSupportChatUnreadCount]);
 
   useEffect(() => {
     if (!shouldShowSupportChat) {

@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
 
-import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY } from "config/localStorage";
+import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY, SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import useSearchParams from "lib/useSearchParams";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 export function useShowSupportChat() {
@@ -12,10 +13,23 @@ export function useShowSupportChat() {
     SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY,
     false
   );
+  const [wasOpenedWithoutWallet, setWasOpenedWithoutWallet] = useLocalStorageSerializeKey<boolean>(
+    SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY,
+    false
+  );
+
+  const { openChat } = useSearchParams<{ openChat?: string }>();
+  const shouldOpenChatOnBoot = useRef(Boolean(openChat)).current;
 
   const showWhileConnecting = isWalletInitializing && lastConnectedState;
 
-  const shouldShowSupportChat = isConnected || showWhileConnecting;
+  const shouldShowSupportChat = isConnected || showWhileConnecting || shouldOpenChatOnBoot || wasOpenedWithoutWallet;
+
+  useEffect(() => {
+    if (shouldOpenChatOnBoot) {
+      setWasOpenedWithoutWallet(true);
+    }
+  }, [shouldOpenChatOnBoot, setWasOpenedWithoutWallet]);
 
   useEffect(() => {
     if (!isWalletInitializing) {
@@ -25,5 +39,6 @@ export function useShowSupportChat() {
 
   return {
     shouldShowSupportChat,
+    shouldOpenChatOnBoot,
   };
 }

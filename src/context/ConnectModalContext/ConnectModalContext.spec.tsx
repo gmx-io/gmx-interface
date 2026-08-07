@@ -5,8 +5,10 @@ import { ConnectModalProvider, useConnectModal } from "./ConnectModalContext";
 
 const mocks = vi.hoisted(() => ({
   authenticated: false,
+  connectOrCreateWalletCallbacks: undefined as undefined | { onError: (error: string) => void; onSuccess: () => void },
   isPrivyModalOpen: false,
   connectOrCreateWallet: vi.fn(),
+  connectWalletCallbacks: undefined as undefined | { onError: (error: string) => void; onSuccess: () => void },
   connectWallet: vi.fn(),
   pushError: vi.fn(),
   switchNetwork: vi.fn(),
@@ -19,12 +21,14 @@ vi.mock("@privy-io/react-auth", () => ({
   useModalStatus: () => ({
     isOpen: mocks.isPrivyModalOpen,
   }),
-  useConnectOrCreateWallet: () => ({
-    connectOrCreateWallet: mocks.connectOrCreateWallet,
-  }),
-  useConnectWallet: () => ({
-    connectWallet: mocks.connectWallet,
-  }),
+  useConnectOrCreateWallet: (callbacks: { onError: (error: string) => void; onSuccess: () => void }) => {
+    mocks.connectOrCreateWalletCallbacks = callbacks;
+    return { connectOrCreateWallet: mocks.connectOrCreateWallet };
+  },
+  useConnectWallet: (callbacks: { onError: (error: string) => void; onSuccess: () => void }) => {
+    mocks.connectWalletCallbacks = callbacks;
+    return { connectWallet: mocks.connectWallet };
+  },
 }));
 
 vi.mock("context/GmxAccountContext/hooks", () => ({
@@ -65,7 +69,9 @@ function setup() {
 describe("ConnectModalProvider", () => {
   beforeEach(() => {
     mocks.authenticated = false;
+    mocks.connectOrCreateWalletCallbacks = undefined;
     mocks.isPrivyModalOpen = false;
+    mocks.connectWalletCallbacks = undefined;
   });
 
   afterEach(() => {
@@ -108,5 +114,32 @@ describe("ConnectModalProvider", () => {
     });
 
     expect(mocks.connectWallet).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports connect-or-create errors and allows another attempt", () => {
+    const getContext = setup();
+
+    act(() => {
+      getContext().openConnectModal?.();
+      mocks.connectOrCreateWalletCallbacks?.onError("connect_or_create_failed");
+      getContext().openConnectModal?.();
+    });
+
+    expect(mocks.pushError).toHaveBeenCalledWith("connect_or_create_failed", "connectModal.connectOrCreateWallet");
+    expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(2);
+  });
+
+  it("reports connect errors and allows another attempt", () => {
+    mocks.authenticated = true;
+    const getContext = setup();
+
+    act(() => {
+      getContext().openConnectModal?.();
+      mocks.connectWalletCallbacks?.onError("connect_failed");
+      getContext().openConnectModal?.();
+    });
+
+    expect(mocks.pushError).toHaveBeenCalledWith("connect_failed", "connectModal.connectWallet");
+    expect(mocks.connectWallet).toHaveBeenCalledTimes(2);
   });
 });

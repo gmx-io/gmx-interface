@@ -1,8 +1,3 @@
-.DailyAndCumulativePnL-hide-last-tick .recharts-cartesian-axis-tick:last-child {
-  /* Last tick is too close to edge. https://github.com/recharts/recharts/issues/661#issuecomment-297588801 */
-  visibility: hidden;
-}
-
 .DailyAndCumulativePnL-chartInteraction {
   cursor: zoom-in;
   touch-action: pan-y;

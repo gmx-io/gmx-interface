@@ -50,11 +50,60 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-121-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "07 Aug 2026, 08:00",
+    endDate: "14 Aug 2026, 08:00",
+    variant: "info",
+    title: "App Update: Builder and Affiliate Programs, Trader Profiles, Referral Fixes",
+    summary: (
+      <>
+        New Builders and Trader &amp; Affiliate pages, trader profiles moved to /traders, and referral share cards are
+        fixed.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Builders:</span>{" "}
+          <ExternalLink href="https://gmx.io/#/builders">gmx.io/builders</ExternalLink> is a new home for teams building
+          on GMX, with the SDK, REST API and subgraph side by side, a calculator for what a builder code earns, and a
+          direct contact route.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trader &amp; Affiliate Program:</span>{" "}
+          <ExternalLink href="https://gmx.io/#/trader-affiliate-program">a new page</ExternalLink> for high-volume
+          traders and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and
+          marketing support. Apply from the page, or reach the team on Telegram or a call.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trader profiles:</span> trader activity and address
+          pages now live at /traders, and the address page is called Trader Profile. GMX Account keeps its own meaning,
+          your trading balance. Your existing links still work.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Referrals:</span> the share card now prints a code you
+          actually own. A code you transferred away no longer appears on the card, in the QR, or in the copied link, so
+          your shares credit you. The two network warnings on your code are now a single icon.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">GMX Account:</span> you can deposit any asset you hold
+          on Arbitrum, not just ETH, USDC and USDT.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Fixes:</span> your selected pool stays put after you
+          close a position, and the Daily and cumulative PnL chart shows its first and last dates.
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "release-120-highlights",
     type: "update",
     isActive: true,
     startDate: "31 Jul 2026, 08:00",
-    endDate: "07 Aug 2026, 16:00",
+    endDate: "07 Aug 2026, 08:00",
     variant: "info",
     title: "App Update: Smart Wallets, Swap Routing, and App Install",
     summary: (

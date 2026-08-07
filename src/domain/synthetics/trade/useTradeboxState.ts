@@ -27,7 +27,7 @@ import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import { TwapDuration } from "sdk/utils/twap/types";
 
 import { MarketsData, MarketsInfoData } from "../markets";
-import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
+import { chooseSuitableMarket, UserSelectedMarkets } from "../markets/chooseSuitableMarket";
 import {
   isLimitOrderType,
   isStopIncreaseOrderType,
@@ -76,6 +76,9 @@ export type StoredTradeOptions = {
       long: string;
       short: string;
     };
+  };
+  userSelectedMarkets?: {
+    [indexTokenAddress: string]: UserSelectedMarkets;
   };
   collaterals?: {
     [marketAddress: string]: {
@@ -346,7 +349,7 @@ export function useTradeboxState(
 
         if (!token) return oldState;
 
-        const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+        const { maxLongLiquidityPool, maxShortLiquidityPool, indexTokenPools } = getMaxLongShortLiquidityPool(token);
 
         const patch = chooseSuitableMarket({
           indexTokenAddress: tokenAddress,
@@ -357,6 +360,8 @@ export function useTradeboxState(
           ordersInfo: ordersInfoData,
           preferredTradeType: tradeType,
           currentTradeType: oldState.tradeType,
+          userSelectedMarkets: oldState.userSelectedMarkets?.[tokenAddress],
+          availableIndexTokenPools: indexTokenPools,
         });
 
         if (!patch) {
@@ -441,7 +446,7 @@ export function useTradeboxState(
     return true;
   }, [enabled, storedOptions]);
 
-  const setMarketAddress = useCallback(
+  const setUserSelectedMarketAddress = useCallback(
     (marketAddress?: string) => {
       setStoredOptions((oldState) => {
         const toTokenAddress = oldState.tokens.indexTokenAddress;
@@ -452,6 +457,7 @@ export function useTradeboxState(
 
         return produce(oldState, (draft) => {
           draft.markets[toTokenAddress][isLong ? "long" : "short"] = marketAddress;
+          set(draft, ["userSelectedMarkets", toTokenAddress, isLong ? "long" : "short"], marketAddress);
         });
       });
     },
@@ -728,6 +734,7 @@ export function useTradeboxState(
     toTokenAddress,
     marketAddress,
     marketInfo,
+    userSelectedMarkets: storedOptions.userSelectedMarkets,
     collateralAddress,
     collateralToken,
     availableTokensOptions,
@@ -739,7 +746,7 @@ export function useTradeboxState(
     setActiveOrder,
     setFromTokenAddress,
     setToTokenAddress,
-    setMarketAddress,
+    setUserSelectedMarketAddress,
     setCollateralAddress,
     setTradeType,
     setTradeMode,
