@@ -19,10 +19,15 @@ import {
   formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
+  isUint256,
+  MaxUint256,
   numberToBigint,
+  parseUint256DecimalString,
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
   PRECISION_DECIMALS,
+  parseValue,
+  removeTrailingZeros,
   trimZeroDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
@@ -39,6 +44,31 @@ describe("numbers utils", () => {
     expect(BN_ZERO).toBe(0n);
     expect(BN_ONE).toBe(1n);
     expect(BN_NEGATIVE_ONE).toBe(-1n);
+  });
+
+  describe("uint256", () => {
+    it.each([
+      ["0", 0n],
+      ["1", 1n],
+      [MaxUint256.toString(), MaxUint256],
+    ])("parses the canonical decimal string %s", (value, expected) => {
+      expect(parseUint256DecimalString(value)).toBe(expected);
+    });
+
+    it.each([undefined, null, 1, 1n, "", "-1", "+1", "01", "1.0", "0x10", (MaxUint256 + 1n).toString()])(
+      "rejects the non-uint256 decimal value %s",
+      (value) => {
+        expect(parseUint256DecimalString(value)).toBeUndefined();
+      }
+    );
+
+    it("recognizes uint256 bigint values", () => {
+      expect(isUint256(0n)).toBe(true);
+      expect(isUint256(MaxUint256)).toBe(true);
+      expect(isUint256(-1n)).toBe(false);
+      expect(isUint256(MaxUint256 + 1n)).toBe(false);
+      expect(isUint256("1")).toBe(false);
+    });
   });
 
   describe("expandDecimals", () => {
@@ -144,6 +174,22 @@ describe("trimZeroDecimals", () => {
 
   it("leading zeros with trailing zero decimals trims to int", () => {
     expect(trimZeroDecimals("0000123.000")).toBe("123");
+  });
+});
+
+describe("removeTrailingZeros", () => {
+  it("keeps large values in plain decimal notation", () => {
+    expect(removeTrailingZeros("9659861417460889000000.00")).toBe("9659861417460889000000");
+  });
+
+  it("removes trailing fractional zeros without converting the value to a number", () => {
+    expect(removeTrailingZeros("123.4500")).toBe("123.45");
+  });
+});
+
+describe("parseValue", () => {
+  it("returns undefined instead of throwing for scientific notation", () => {
+    expect(parseValue("9.659861417460889e+21", USD_DECIMALS)).toBeUndefined();
   });
 });
 
@@ -418,6 +464,14 @@ describe("formatFactor", () => {
     expect(formatFactor(1000000000000000000000000n)).toBe("0.000001");
     expect(formatFactor(1000000000000000000000000000n)).toBe("0.001");
     expect(formatFactor(1000000000000000000000000000000n)).toBe("1");
+  });
+
+  it("should format percentage-scaled factors", () => {
+    expect(formatFactor(PRECISION * 10n)).toBe("10");
+    expect(formatFactor(PRECISION * 30n)).toBe("30");
+    expect(formatFactor(PRECISION * 80n)).toBe("80");
+    expect(formatFactor(PRECISION * 100n)).toBe("100");
+    expect(formatFactor(PRECISION * 1000n)).toBe("1000");
   });
 });
 

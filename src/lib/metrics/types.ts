@@ -653,6 +653,26 @@ export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
 };
 
+export type SignatureProducedEvent = {
+  event: "signature.produced";
+  isError: false;
+  data: {
+    /** EIP-712 primary type ("BridgeOut", "Batch", …) or "message". */
+    signaturePurpose: string;
+    signatureKind: "eoa" | "erc6492" | "erc1271" | "malformed";
+    signatureBytes: number | undefined;
+    ecdsaV: number | undefined;
+    isOnChainRecoverableShape: boolean | undefined;
+    isHighS: boolean | undefined;
+    signingChainId: number;
+    verificationChainId: number;
+    didSwitchChain: boolean;
+    isRetryAfterInvalidSignature: boolean;
+    accountTypeOnSigningChain: string | undefined;
+    accountTypeOnVerificationChain: string | undefined;
+  };
+};
+
 type MultichainFundingParams = {
   sourceChain: number;
   settlementChain: number;
