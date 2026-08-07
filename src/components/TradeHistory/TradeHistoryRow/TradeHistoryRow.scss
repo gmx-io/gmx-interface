@@ -16,6 +16,9 @@
 
 .TradeHistoryRow-tooltip {
   white-space: pre-line;
+
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .TradeHistoryRow-pnl-fees {

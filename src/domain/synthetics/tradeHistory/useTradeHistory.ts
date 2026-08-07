@@ -34,6 +34,65 @@ export type RawTradeActionsResult = {
   totalCount?: number;
 };
 
+export const TRADE_ACTION_FIELDS = `
+    id
+    eventName
+
+    srcChainId
+    account
+    marketAddress
+    swapPath
+    initialCollateralTokenAddress
+    positionKey
+    positionLifecycleId
+    positionSizeInUsd
+    positionSizeInTokens
+
+    initialCollateralDeltaAmount
+    sizeDeltaUsd
+    sizeDeltaInTokens
+    triggerPrice
+    acceptablePrice
+    executionPrice
+    minOutputAmount
+    executionAmountOut
+
+    swapImpactUsd
+    collateralTotalCostAmount
+    priceImpactUsd
+    priceImpactDiffUsd
+    positionFeeAmount
+    traderDiscountAmount
+    borrowingFeeAmount
+    fundingFeeAmount
+    swapFeeUsd
+    liquidationFeeAmount
+    minCollateralFactorForLiquidation
+    pnlUsd
+    basePnlUsd
+
+    collateralTokenPriceMax
+    collateralTokenPriceMin
+
+    indexTokenPriceMin
+    indexTokenPriceMax
+
+    orderType
+    orderKey
+    isLong
+    shouldUnwrapNativeToken
+    twapGroupId
+    numberOfParts
+    totalImpactUsd
+    proportionalPendingImpactUsd
+    decreasePositionSwapType
+
+    reason
+    reasonBytes
+    timestamp
+    transactionHash
+`;
+
 export function useTradeHistory(
   chainId: number,
   p: {
@@ -353,62 +412,7 @@ export async function fetchRawTradeActions({
             orderBy: [timestamp_DESC, id_DESC],
             ${whereClause}
         ) {
-            id
-            eventName
-
-            srcChainId
-            account
-            marketAddress
-            swapPath
-            initialCollateralTokenAddress
-            positionKey
-            positionLifecycleId
-            positionSizeInUsd
-            positionSizeInTokens
-
-            initialCollateralDeltaAmount
-            sizeDeltaUsd
-            sizeDeltaInTokens
-            triggerPrice
-            acceptablePrice
-            executionPrice
-            minOutputAmount
-            executionAmountOut
-
-            swapImpactUsd
-            collateralTotalCostAmount
-            priceImpactUsd
-            priceImpactDiffUsd
-            positionFeeAmount
-            traderDiscountAmount
-            borrowingFeeAmount
-            fundingFeeAmount
-            swapFeeUsd
-            liquidationFeeAmount
-            minCollateralFactorForLiquidation
-            pnlUsd
-            basePnlUsd
-
-            collateralTokenPriceMax
-            collateralTokenPriceMin
-
-            indexTokenPriceMin
-            indexTokenPriceMax
-
-            orderType
-            orderKey
-            isLong
-            shouldUnwrapNativeToken
-            twapGroupId
-            numberOfParts
-            totalImpactUsd
-            proportionalPendingImpactUsd
-            decreasePositionSwapType
-
-            reason
-            reasonBytes
-            timestamp
-            transactionHash
+            ${TRADE_ACTION_FIELDS}
         }
       }`);
 
