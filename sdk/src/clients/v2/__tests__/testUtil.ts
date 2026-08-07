@@ -183,6 +183,15 @@ export function getOrCreateTestSigner(): PrivateKeySigner {
   return ephemeralSigner;
 }
 
+/**
+ * TWAP submits fan out into one sub-order per part, each paying its own execution fee,
+ * so the live TWAP flows are opt-in. The TWAP validation cases never submit and always run.
+ */
+export function shouldRunTwap(): boolean {
+  // eslint-disable-next-line no-restricted-globals
+  return process.env.GMX_TEST_TWAP === "1";
+}
+
 export function hasRpcUrl(): boolean {
   // eslint-disable-next-line no-restricted-globals
   return !!process.env.GMX_TEST_RPC_URL;

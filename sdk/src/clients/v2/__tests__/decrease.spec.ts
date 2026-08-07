@@ -11,6 +11,7 @@ import {
   waitForPositionUpdate,
   activateTestSubaccount,
   hasRpcUrl,
+  shouldRunTwap,
   TEST_SYMBOL,
   TEST_SIZE_USD,
 } from "./testUtil";
@@ -265,7 +266,7 @@ describe("decrease orders", () => {
     });
   });
 
-  describe("TWAP decrease", () => {
+  describe.skipIf(!shouldRunTwap())("TWAP decrease", () => {
     afterAll(async () => {
       try {
         const prepared = await sdk.prepareCancelOrder({ all: true, mode: "express", from: account });

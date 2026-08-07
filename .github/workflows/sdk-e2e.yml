@@ -12,6 +12,10 @@ on:
         description: "Also run bridge tests that move funds cross-chain (sets GMX_TEST_SEND=1)"
         type: boolean
         default: false
+      run_twap:
+        description: "Also run live TWAP flows, which fan out into one paid sub-order per part"
+        type: boolean
+        default: false
 
 concurrency:
   group: sdk-e2e
@@ -29,6 +33,7 @@ jobs:
       GMX_TEST_SOURCE_RPC_URL: ${{ secrets.GMX_TEST_SOURCE_RPC_URL }}
       GMX_TEST_API_URL: ${{ vars.GMX_TEST_API_URL }}
       GMX_TEST_SEND: ${{ inputs.run_bridges && '1' || '' }}
+      GMX_TEST_TWAP: ${{ inputs.run_twap && '1' || '' }}
     steps:
       - name: Check secrets
         run: |
