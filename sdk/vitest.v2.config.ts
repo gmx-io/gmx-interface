@@ -11,6 +11,7 @@ export default defineConfig({
     maxConcurrency: 1,
     include: ["src/clients/v2/__tests__/**/*.spec.ts"],
     exclude: ["**/build/**", "**/node_modules/**"],
+    setupFiles: ["src/clients/v2/__tests__/setupAllowance.ts"],
     // eslint-disable-next-line no-restricted-globals
     env: loadEnv("test", process.cwd(), ""),
   },

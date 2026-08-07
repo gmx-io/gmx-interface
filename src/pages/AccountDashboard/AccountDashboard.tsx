@@ -64,9 +64,9 @@ export function AccountDashboard() {
 
   if (!isAddress(account!)) {
     return (
-      <AppPageLayout title={t`GMX Account`} header={header}>
+      <AppPageLayout title={t`Trader Profile`} header={header}>
         <div className="default-container page-layout">
-          <PageTitle title={t`GMX Account`} className="p-12" />
+          <PageTitle title={t`Trader Profile`} className="p-12" />
           <div className="text-center text-red-500">
             <Trans>Invalid Ethereum address</Trans>
           </div>
@@ -76,14 +76,14 @@ export function AccountDashboard() {
   }
 
   return (
-    <AppPageLayout title={t`GMX Account`} header={header}>
+    <AppPageLayout title={t`Trader Profile`} header={header}>
       <div className="default-container page-layout flex flex-col gap-8">
         <PageTitle
-          title={t`GMX Account`}
+          title={t`Trader Profile`}
           subtitle={
             <>
               <div className="text-body-medium mb-20 flex flex-wrap items-center gap-4 font-medium">
-                <Trans>Account</Trans>
+                <Trans>Address</Trans>
                 <AddressView noLink address={account} size={20} breakpoint={isMobile ? "XL" : undefined} />
               </div>
               <VersionNetworkSwitcherRow account={account} chainId={chainId} version={version} />
