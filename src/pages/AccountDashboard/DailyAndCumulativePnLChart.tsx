@@ -600,12 +600,9 @@ export function DailyAndCumulativePnLChart({
     <div className="relative min-h-[250px] grow">
       <div
         ref={chartInteractionRef}
-        className={cx(
-          "DailyAndCumulativePnL-chartInteraction DailyAndCumulativePnL-hide-last-tick absolute size-full",
-          {
-            "DailyAndCumulativePnL-chartInteraction--zoomed": isZoomed,
-          }
-        )}
+        className={cx("DailyAndCumulativePnL-chartInteraction absolute size-full", {
+          "DailyAndCumulativePnL-chartInteraction--zoomed": isZoomed,
+        })}
         onDoubleClickCapture={handleChartDoubleClick}
         onMouseDownCapture={handleChartMouseDown}
         onTouchStartCapture={handleChartTouchStart}
@@ -672,6 +669,9 @@ export function DailyAndCumulativePnLChart({
               allowDataOverflow
               domain={xAxisDomain}
               ticks={xAxisTicks}
+              // Always label the first and the last visible bucket; intermediate ticks are thinned
+              // by `minTickGap` and boundary labels are shifted inwards instead of being clipped.
+              interval="preserveStartEnd"
               tickLine={false}
               axisLine={X_AXIS_LINE_PROPS}
               minTickGap={isMobile ? 20 : 32}

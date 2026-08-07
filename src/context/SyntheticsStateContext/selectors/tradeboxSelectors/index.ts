@@ -481,6 +481,7 @@ export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.t
 export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.marketAddress);
 export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox?.marketInfo;
+const selectTradeboxUserSelectedMarkets = (s: SyntheticsState) => s.tradebox.userSelectedMarkets;
 export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.collateralAddress);
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
@@ -2082,6 +2083,7 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
   const ordersInfo = q(selectOrdersInfoData);
   const tokensData = q(selectTokensData);
   const setTradeConfig = q(selectTradeboxSetTradeConfig);
+  const userSelectedMarkets = q(selectTradeboxUserSelectedMarkets);
 
   const chooseSuitableMarketWrapped = (
     tokenAddress: string,
@@ -2092,7 +2094,7 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
 
     if (!token) return;
 
-    const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+    const { maxLongLiquidityPool, maxShortLiquidityPool, indexTokenPools } = getMaxLongShortLiquidityPool(token);
 
     const effectiveTradeType = currentTradeType ?? tradeType;
 
@@ -2105,6 +2107,8 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
       ordersInfo,
       preferredTradeType: preferredTradeType ?? effectiveTradeType,
       currentTradeType: effectiveTradeType,
+      userSelectedMarkets: userSelectedMarkets?.[tokenAddress],
+      availableIndexTokenPools: indexTokenPools,
     });
 
     if (!suitableParams) return;

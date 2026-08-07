@@ -54,16 +54,18 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
-    onError: () => {
+    onError: (error) => {
       connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
+      metrics.pushError(error, "connectModal.connectOrCreateWallet");
     },
   });
   const { connectWallet } = useConnectWallet({
     onSuccess: handleSuccess,
-    onError: () => {
+    onError: (error) => {
       connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
+      metrics.pushError(error, "connectModal.connectWallet");
     },
   });
 

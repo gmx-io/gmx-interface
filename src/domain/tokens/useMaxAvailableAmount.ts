@@ -244,7 +244,7 @@ export function useMaxAvailableAmount({
     })
   ) {
     gasPaymentTokenWarningContent = getLowGasPaymentTokenBalanceWarning({
-      chainId,
+      chainId: srcChainId ?? chainId,
       isGmxAccount,
       symbol: gasPaymentToken.symbol,
     });

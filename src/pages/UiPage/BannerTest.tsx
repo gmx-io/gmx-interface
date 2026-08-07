@@ -179,12 +179,6 @@ export function BannerTest() {
               </span>
             </div>
           </ColorfulBanner>
-
-          <ColorfulBanner color="blue" icon={OneClickIcon} onClose={noop} onClick={noop} className="cursor-pointer">
-            <div>
-              <Trans>Try Express Trading</Trans>
-            </div>
-          </ColorfulBanner>
         </Section>
 
         <Section title="Inline ExternalLink">

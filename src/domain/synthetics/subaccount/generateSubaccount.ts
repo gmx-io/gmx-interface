@@ -3,7 +3,8 @@ import { Signer } from "ethers";
 import { keccak256, type Hash } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
-import { getSignatureKind, signMessage } from "lib/wallets/signing";
+import { getSignatureKind } from "lib/wallets/signatureDiagnostics";
+import { signMessage } from "lib/wallets/signing";
 import { SUBACCOUNT_MESSAGE } from "sdk/configs/express";
 
 export const EMPTY_SUBACCOUNT_SIGNATURE_ERROR = "Wallet returned an empty signature";

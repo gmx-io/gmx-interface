@@ -44,7 +44,7 @@ export function ReferralsTradersTab({ isLoading, account, hasAddressInUrl = fals
           </div>
         </>
       ) : (
-        <ReferralsTradersContent account={account} />
+        <ReferralsTradersContent account={account} hasAddressInUrl={hasAddressInUrl} />
       )}
     </div>
   );
