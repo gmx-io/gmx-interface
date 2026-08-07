@@ -16,7 +16,7 @@ import {
   TradeAction,
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
-import { useCloseSettlement } from "domain/synthetics/tradeHistory/useCloseSettlement";
+import { useLifecycleSettlement } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -37,6 +37,13 @@ import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import ShareClosedPosition from "./ShareClosedPosition";
+import {
+  getLifecycleSettlementLines,
+  getLifecycleSettlementView,
+  getSettlementNotes,
+  getUnreconcilableLifecycleLines,
+  isMultichainRow,
+} from "./utils/lifecycleSettlement";
 import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
@@ -136,7 +143,8 @@ function getFullCloseCandidate(tradeAction: TradeAction): PositionTradeAction | 
   const isFullCloseCandidate =
     tradeAction.eventName === TradeActionType.OrderExecuted &&
     (isDecreaseOrderType(tradeAction.orderType) || isLiquidationOrderType(tradeAction.orderType)) &&
-    tradeAction.sizeDeltaUsd > 0n;
+    tradeAction.sizeDeltaUsd > 0n &&
+    tradeAction.positionSizeInUsd === 0n;
 
   return isFullCloseCandidate ? tradeAction : undefined;
 }
@@ -146,18 +154,28 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
 
   const fullCloseCandidate = getFullCloseCandidate(tradeAction);
 
-  const { settlement, isLoading } = useCloseSettlement(chainId, fullCloseCandidate);
+  const { settlement, isLoading } = useLifecycleSettlement(chainId, fullCloseCandidate);
 
   const content = useMemo(() => {
-    if (!fullCloseCandidate || !settlement?.isFullClose || !settlement.closeChange) {
+    if (!fullCloseCandidate || !settlement) {
       return feesLines;
     }
 
-    const settlementLines = getSettlementTooltipLines(
-      fullCloseCandidate,
-      settlement.closeChange,
-      settlement.openChange
-    );
+    const view = getLifecycleSettlementView(fullCloseCandidate, settlement);
+
+    const settlementLines =
+      view.mode === "extended"
+        ? getLifecycleSettlementLines(view.aggregate)
+        : view.mode === "compact"
+          ? [
+              ...getSettlementTooltipLines(fullCloseCandidate, view.openRow, view.isMultichain),
+              "",
+              ...getSettlementNotes(view.isMultichain),
+            ]
+          : [
+              ...getSettlementTooltipLines(fullCloseCandidate, undefined, isMultichainRow(fullCloseCandidate)),
+              ...getUnreconcilableLifecycleLines(),
+            ];
 
     if (feesLines.length === 0) {
       return settlementLines[0] === "" ? settlementLines.slice(1) : settlementLines;

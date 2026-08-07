@@ -12,7 +12,6 @@ import {
 } from "domain/synthetics/orders";
 import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
-import type { SettlementPositionChange } from "domain/synthetics/tradeHistory/useCloseSettlement";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import {
@@ -729,7 +728,17 @@ export const formatPositionMessage = (
   };
 };
 
-function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint; lines: Line[] } {
+/** Fees an action took out of the collateral, as a positive collateral-token magnitude. */
+export function getRowFeesAmount(tradeAction: PositionTradeAction): bigint {
+  return (
+    (tradeAction.positionFeeAmount ?? 0n) +
+    (tradeAction.borrowingFeeAmount ?? 0n) +
+    (tradeAction.fundingFeeAmount ?? 0n) -
+    (tradeAction.traderDiscountAmount ?? 0n)
+  );
+}
+
+export function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint; lines: Line[] } {
   const collateralPrice = tradeAction.collateralTokenPriceMin;
   const collateralDecimals = tradeAction.initialCollateralToken?.decimals;
   const orderType = tradeAction.orderType;
@@ -797,10 +806,14 @@ function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint;
   return { totalUsd, lines: breakdownLines };
 }
 
+/**
+ * Close-side settlement for a full close. `openRow` is the lifecycle's opening increase when the lifecycle is a
+ * direct open-to-close; without it only the close side can be reconciled.
+ */
 export function getSettlementTooltipLines(
   tradeAction: PositionTradeAction,
-  closeChange: SettlementPositionChange,
-  openChange: SettlementPositionChange | undefined
+  openRow: PositionTradeAction | undefined,
+  isMultichain = false
 ): Line[] {
   const collateralToken = tradeAction.initialCollateralToken;
   const collateralPrice = tradeAction.collateralTokenPriceMin;
@@ -813,7 +826,7 @@ export function getSettlementTooltipLines(
       isStable: collateralToken.isStable,
     });
 
-  const marginAtCloseAmount = closeChange.collateralDeltaAmount;
+  const marginAtCloseAmount = tradeAction.initialCollateralDeltaAmount;
   const marginAtCloseUsd = convertToUsd(marginAtCloseAmount, collateralToken.decimals, collateralPrice);
 
   let walletReceived: string | undefined;
@@ -839,10 +852,15 @@ export function getSettlementTooltipLines(
     "",
     t`Settlement`,
     "",
-    openChange
-      ? infoRow(t`Initial margin`, formatCollateralAmount(openChange.collateralDeltaAmount + openChange.feesAmount))
-      : undefined,
-    openChange ? infoRow(t`Open fee / discount`, formatCollateralAmount(-openChange.feesAmount)) : undefined,
+    openRow === undefined
+      ? undefined
+      : infoRow(
+          t`Initial margin`,
+          formatCollateralAmount(openRow.initialCollateralDeltaAmount + getRowFeesAmount(openRow))
+        ),
+    openRow === undefined
+      ? undefined
+      : infoRow(t`Open fee / discount`, formatCollateralAmount(-getRowFeesAmount(openRow))),
     infoRow(t`Margin at close`, formatCollateralAmount(marginAtCloseAmount)),
     infoRow(t`RPNL`, {
       text: formatDeltaUsd(tradeAction.basePnlUsd),
@@ -852,14 +870,9 @@ export function getSettlementTooltipLines(
       text: formatDeltaUsd(breakdown.totalUsd),
       state: numberToState(breakdown.totalUsd),
     }),
-    walletReceived === undefined ? undefined : infoRow(t`Wallet received`, walletReceived),
-    openChange ? undefined : "",
-    openChange
+    walletReceived === undefined
       ? undefined
-      : {
-          text: t`Original margin reconciliation requires the opening row.`,
-          state: "muted" as const,
-        }
+      : infoRow(isMultichain ? t`Received at close (GMX balance)` : t`Wallet received`, walletReceived)
   );
 }
 
