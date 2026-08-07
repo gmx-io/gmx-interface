@@ -1,4 +1,11 @@
 .TradeFeesRow-tooltip {
+  .Tooltip-row {
+    .Tooltip-row-value {
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+  }
+
   .Tooltip-popup {
     min-width: 32rem;
 

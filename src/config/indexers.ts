@@ -10,8 +10,12 @@ import {
 import { isDevelopment } from "./env";
 import { getIndexerUrlKey } from "./localStorage";
 
-type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid" | "chainLink";
+type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid" | "incentives" | "chainLink";
 type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
+
+export const INCENTIVES_TEST_SQUIDS = ["ivprod", "ivtest"] as const;
+export type IncentivesTestSquid = (typeof INCENTIVES_TEST_SQUIDS)[number];
+export const DEFAULT_INCENTIVES_TEST_SQUID: IncentivesTestSquid = "ivprod";
 
 const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   [ARBITRUM]: {
@@ -22,6 +26,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-260605170830-1049f5c/gn",
     subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@c9407b/api/graphql",
+    incentives: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
   },
 
   [AVALANCHE]: {
@@ -55,13 +60,24 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 };
 
+const DEVELOPMENT_INCENTIVES_INDEXER_URLS: Partial<Record<ContractsChainId, Record<IncentivesTestSquid, string>>> = {
+  [ARBITRUM]: {
+    ivprod: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivprod/api/graphql",
+    ivtest: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivtest/api/graphql",
+  },
+};
+
 const COMMON_INDEXER_URLS: Partial<Record<number, IndexerUrlMap>> = {
   [SOURCE_ETHEREUM_MAINNET]: {
     chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
   },
 };
 
-export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
+export function getIndexerUrl(
+  chainId: number,
+  indexer: IndexerKey,
+  options: { incentivesTestSquid?: IncentivesTestSquid } = {}
+): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getIndexerUrlKey(chainId, indexer);
     const url = localStorage.getItem(localStorageKey);
@@ -69,6 +85,14 @@ export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | un
       // eslint-disable-next-line no-console
       console.warn("%s indexer on chain %s url is overriden: %s", indexer, chainId, url);
       return url;
+    }
+
+    if (indexer === "incentives") {
+      const incentivesTestSquid = options.incentivesTestSquid ?? DEFAULT_INCENTIVES_TEST_SQUID;
+      const developmentUrl = DEVELOPMENT_INCENTIVES_INDEXER_URLS[chainId as ContractsChainId]?.[incentivesTestSquid];
+      if (developmentUrl) {
+        return developmentUrl;
+      }
     }
   }
 

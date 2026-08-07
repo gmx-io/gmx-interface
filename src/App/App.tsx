@@ -19,6 +19,7 @@ import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalCo
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
+import { IncentivesV2ContextProvider } from "context/IncentivesV2Context/IncentivesV2Context";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
@@ -35,6 +36,7 @@ import SEO from "components/Seo/SEO";
 
 import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";
+import { WalletReadyContent } from "./WalletReadyContent";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -57,7 +59,11 @@ function App() {
     dynamicActivate(defaultLanguage);
   }, []);
 
-  let app = <AppRoutes />;
+  let app = (
+    <WalletReadyContent>
+      <AppRoutes />
+    </WalletReadyContent>
+  );
   app = (
     <ErrorBoundary id="App" variant="app">
       {app}
@@ -73,6 +79,7 @@ function App() {
   app = <ConnectModalProvider>{app}</ConnectModalProvider>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
+  app = <IncentivesV2ContextProvider>{app}</IncentivesV2ContextProvider>;
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;

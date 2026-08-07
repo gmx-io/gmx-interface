@@ -114,8 +114,8 @@ export function LeaderboardPositionsTable({
   );
 
   const filteredStats = useMemo(() => {
-    const q = term.toLowerCase().trim();
-    return positionFilteredStats.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
+    const query = term.trim();
+    return positionFilteredStats.filter((item) => item.account.includes(query));
   }, [positionFilteredStats, term]);
 
   const indexFrom = (page - 1) * PER_PAGE;

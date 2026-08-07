@@ -1,9 +1,10 @@
-import { FloatingPortal, autoUpdate, flip, shift, useFloating } from "@floating-ui/react";
+import { autoUpdate, flip, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { t } from "@lingui/macro";
 import cx from "classnames";
 
 import Button from "components/Button/Button";
+import FloatingPortal from "components/Portal/FloatingPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 

@@ -16,6 +16,7 @@ export function applyTopLevelFilter(
     topLevelTab: TopLevelTab;
     favoriteAddresses: string[];
     recentlyListedAddresses?: Set<string>;
+    incentivizedAddresses?: string[];
   }
 ): Token[] {
   switch (args.topLevelTab) {
@@ -32,6 +33,8 @@ export function applyTopLevelFilter(
       if (!set || set.size === 0) return [];
       return tokens.filter((t) => set.has(t.address.toLowerCase()) || set.has(t.address));
     }
+    case "incentivized":
+      return tokens.filter((t) => args.incentivizedAddresses?.includes(t.address));
   }
 }
 

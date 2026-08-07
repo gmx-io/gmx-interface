@@ -136,6 +136,8 @@ export function MarketSelector({
         return textMatched?.filter((item) => Boolean(item.marketInfo.indexToken?.categories?.includes("tradfi")));
       case "recently-listed":
         return textMatched?.filter(() => false);
+      case "incentivized":
+        return textMatched;
     }
   }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 

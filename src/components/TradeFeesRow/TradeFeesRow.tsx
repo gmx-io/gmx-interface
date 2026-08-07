@@ -7,6 +7,7 @@ import { DOCS_LINKS, getIncentivesV2Url } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
+import type { EstimatedTradeRewards } from "domain/synthetics/incentives/v2/tradeRewardEstimate";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { TradeFees, TradeFeesType } from "domain/synthetics/trade";
 import { getIsHighSwapImpact } from "domain/synthetics/trade/utils/warnings";
@@ -29,6 +30,7 @@ import "./TradeFeesRow.scss";
 type Props = TradeFees & {
   shouldShowRebate?: boolean;
   feesType: TradeFeesType | null;
+  estimatedRewards?: EstimatedTradeRewards;
 };
 
 type FeeRow = {
@@ -36,6 +38,7 @@ type FeeRow = {
   label: ReactNode;
   value: ReactNode;
   className?: string;
+  labelClassName?: string;
 };
 
 export function TradeFeesRow(p: Props) {
@@ -47,6 +50,8 @@ export function TradeFeesRow(p: Props) {
   const { breakdownNetPriceImpactEnabled } = useSettings();
 
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
+  const estimatedRewards =
+    p.estimatedRewards !== undefined && p.estimatedRewards.rewardsUsd > 0n ? p.estimatedRewards : undefined;
   const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
 
   const rebateIsApplicable =
@@ -399,6 +404,40 @@ export function TradeFeesRow(p: Props) {
           }
         : undefined;
 
+    const rewardsShareBps =
+      estimatedRewards && estimatedRewards.eligibleFeeUsd > 0n
+        ? bigMath.mulDiv(estimatedRewards.rewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, estimatedRewards.eligibleFeeUsd)
+        : undefined;
+    const rewardsRow = estimatedRewards
+      ? {
+          label: (
+            <div className="text-typography-primary">
+              <Trans>Estimated rewards</Trans>:
+            </div>
+          ),
+          labelClassName: "whitespace-nowrap text-typography-secondary",
+          value: (
+            <>
+              <span className="text-green-500">{formatDeltaUsd(estimatedRewards.rewardsUsd)}</span>
+              {rewardsShareBps !== undefined ? (
+                <span className="text-typography-secondary">
+                  {" "}
+                  (
+                  <Trans>
+                    {formatPercentage(rewardsShareBps, {
+                      displayDecimals: 0,
+                    })}{" "}
+                    of net position fee
+                  </Trans>
+                  )
+                </span>
+              ) : null}
+            </>
+          ),
+          id: "estimatedRewards",
+        }
+      : undefined;
+
     if (p.feesType === "swap") {
       return [swapPriceImpactRow, externalSwapFeeRow, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
     }
@@ -415,6 +454,7 @@ export function TradeFeesRow(p: Props) {
         uiSwapFeeRow,
         borrowFeeRow,
         fundingFeeRow,
+        rewardsRow,
       ].filter(Boolean) as FeeRow[];
     }
 
@@ -434,6 +474,7 @@ export function TradeFeesRow(p: Props) {
         swapProfitFeeRow,
         swapPriceImpactRow,
         ...swapFeeRows,
+        rewardsRow,
       ].filter(Boolean) as FeeRow[];
     }
 
@@ -450,6 +491,7 @@ export function TradeFeesRow(p: Props) {
     estimatedRebatesPercentage,
     showDebugValues,
     breakdownNetPriceImpactEnabled,
+    estimatedRewards,
   ]);
 
   const totalFeeUsd = useMemo(() => {
@@ -533,6 +575,12 @@ export function TradeFeesRow(p: Props) {
   }, [p.swapFees, p.externalSwapFee]);
 
   let value: ReactNode = useMemo(() => {
+    const rewardsValue = estimatedRewards ? (
+      <span className="ml-4 text-green-500">
+        ({formatDeltaUsd(estimatedRewards.rewardsUsd)} <Trans>rewards</Trans>)
+      </span>
+    ) : null;
+
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
       return "-";
     } else if (!feeRows.length && !incentivesBottomText) {
@@ -544,17 +592,24 @@ export function TradeFeesRow(p: Props) {
           })}
         >
           {formatDeltaUsd(totalFeeUsd)}
+          {rewardsValue}
         </span>
       );
     } else {
       return (
         <TooltipWithPortal
           tooltipClassName="TradeFeesRow-tooltip"
+          maxAllowedWidth={400}
           handleClassName={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
             "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,
           })}
-          handle={formatDeltaUsd(totalFeeUsd)}
+          handle={
+            <>
+              {formatDeltaUsd(totalFeeUsd)}
+              {rewardsValue}
+            </>
+          }
           position="left-start"
           content={
             <div>
@@ -562,6 +617,7 @@ export function TradeFeesRow(p: Props) {
                 <StatsTooltipRow
                   key={feeRow.id}
                   textClassName={feeRow.className}
+                  labelClassName={feeRow.labelClassName}
                   label={feeRow.label}
                   value={feeRow.value}
                   showDollar={false}
@@ -590,7 +646,15 @@ export function TradeFeesRow(p: Props) {
         />
       );
     }
-  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, priceImpactRebatesInfo, swapRouteMsg]);
+  }, [
+    estimatedRewards,
+    totalFeeUsd,
+    feeRows,
+    incentivesBottomText,
+    shouldShowWarning,
+    priceImpactRebatesInfo,
+    swapRouteMsg,
+  ]);
 
   return <SyntheticsInfoRow label={title} value={value} />;
 }

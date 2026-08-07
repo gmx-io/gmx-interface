@@ -1,4 +1,4 @@
-import { autoUpdate, flip, FloatingPortal, offset, shift, useFloating } from "@floating-ui/react";
+import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 
 import type { SortDirection } from "context/SorterContext/types";
 
+import FloatingPortal from "components/Portal/FloatingPortal";
 import { directionIconMap } from "components/Sorter/Sorter";
 
 type Props = {
