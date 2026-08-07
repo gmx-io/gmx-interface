@@ -12,6 +12,7 @@ import {
   activateTestSubaccount,
   hasRpcUrl,
   shouldRunTwap,
+  expectFeesEqual,
   TEST_SYMBOL,
   TEST_SIZE_USD,
   TEST_COLLATERAL,
@@ -41,15 +42,6 @@ async function cancelAllOrders() {
   } catch {
     /* cleanup best-effort */
   }
-}
-
-/**
- * Two prepares are priced moments apart, so oracle drift moves the fee in the last digits.
- * Assert they agree well within a basis point rather than bit-for-bit.
- */
-function expectFeesEqual(a: bigint, b: bigint): void {
-  const diff = a > b ? a - b : b - a;
-  expect(diff * 10_000n).toBeLessThanOrEqual(a);
 }
 
 describe("increase orders", () => {

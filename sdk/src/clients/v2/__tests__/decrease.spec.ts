@@ -12,6 +12,7 @@ import {
   activateTestSubaccount,
   hasRpcUrl,
   shouldRunTwap,
+  expectFeesEqual,
   TEST_SYMBOL,
   TEST_SIZE_USD,
 } from "./testUtil";
@@ -366,7 +367,7 @@ describe("decrease orders", () => {
 
       // Size and fees unchanged between slippage variants
       expect(prepared30.estimates!.sizeDeltaUsd).toBe(prepared300.estimates!.sizeDeltaUsd);
-      expect(prepared30.estimates!.positionFeeUsd).toBe(prepared300.estimates!.positionFeeUsd);
+      expectFeesEqual(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd);
     });
   });
 
