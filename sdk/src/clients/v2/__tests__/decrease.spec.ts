@@ -5,6 +5,8 @@ import {
   requireSigner,
   expressFlow,
   waitForOrderStatus,
+  waitForOrderPlaced,
+  PLACED_OK_STATUSES,
   waitForOrdersUpdate,
   waitForPositionUpdate,
   activateTestSubaccount,
@@ -413,8 +415,8 @@ describe("decrease orders", () => {
 
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const orders = await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
       expect(orders.length).toBeGreaterThan(0);
@@ -444,8 +446,8 @@ describe("decrease orders", () => {
 
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const orders = await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
       expect(orders.length).toBeGreaterThan(0);

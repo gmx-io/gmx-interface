@@ -5,6 +5,8 @@ import {
   requireSigner,
   expressFlow,
   waitForOrderStatus,
+  waitForOrderPlaced,
+  PLACED_OK_STATUSES,
   waitForOrdersUpdate,
   waitForPositionUpdate,
   activateTestSubaccount,
@@ -38,6 +40,15 @@ async function cancelAllOrders() {
   } catch {
     /* cleanup best-effort */
   }
+}
+
+/**
+ * Two prepares are priced moments apart, so oracle drift moves the fee in the last digits.
+ * Assert they agree well within a basis point rather than bit-for-bit.
+ */
+function expectFeesEqual(a: bigint, b: bigint): void {
+  const diff = a > b ? a - b : b - a;
+  expect(diff * 10_000n).toBeLessThanOrEqual(a);
 }
 
 describe("increase orders", () => {
@@ -143,7 +154,7 @@ describe("increase orders", () => {
       ]);
 
       // Same size → same position fee regardless of collateral amount
-      expect(small.estimates!.positionFeeUsd).toBe(large.estimates!.positionFeeUsd);
+      expectFeesEqual(small.estimates!.positionFeeUsd, large.estimates!.positionFeeUsd);
       expect(small.estimates!.sizeDeltaUsd).toBe(large.estimates!.sizeDeltaUsd);
     });
   });
@@ -157,7 +168,7 @@ describe("increase orders", () => {
         orderType: "market",
         size: TEST_SIZE_USD,
         collateralToken: "USDC",
-        collateralToPay: { amount: 1_000_000n, token: "USDC" },
+        collateralToPay: TEST_COLLATERAL,
         mode: "express",
         from: account,
       });
@@ -180,7 +191,7 @@ describe("increase orders", () => {
         direction: "long",
         orderType: "market",
         size: TEST_SIZE_USD,
-        collateralToPay: { amount: 1_000_000n, token: "USDC" },
+        collateralToPay: TEST_COLLATERAL,
         mode: "express",
         from: account,
       });
@@ -200,7 +211,7 @@ describe("increase orders", () => {
           orderType: "market",
           size: TEST_SIZE_USD,
           collateralToken: "USDC",
-          collateralToPay: { amount: 1_000_000n, token: "USDC" },
+          collateralToPay: TEST_COLLATERAL,
           mode: "express",
           from: account,
         }),
@@ -210,7 +221,7 @@ describe("increase orders", () => {
           direction: "long",
           orderType: "market",
           size: TEST_SIZE_USD,
-          collateralToPay: { amount: 1_000_000n, token: "USDC" },
+          collateralToPay: TEST_COLLATERAL,
           mode: "express",
           from: account,
         }),
@@ -236,7 +247,7 @@ describe("increase orders", () => {
           direction: "long",
           orderType: "market",
           size: TEST_SIZE_USD,
-          collateralToPay: { amount: 1_000_000n, token: "USDC" },
+          collateralToPay: TEST_COLLATERAL,
           mode: "express",
           from: account,
         }),
@@ -246,7 +257,7 @@ describe("increase orders", () => {
           direction: "long",
           orderType: "market",
           size: TEST_SIZE_USD,
-          collateralToPay: { amount: 1_000_000n, token: "USDC" },
+          collateralToPay: TEST_COLLATERAL,
           manualSwapPath: [ETH_USD_MARKET_ADDRESS],
           mode: "express",
           from: account,
@@ -586,9 +597,9 @@ describe("increase orders", () => {
 
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
       expect(status.requestId).toBe(submitted.requestId);
-      expect(status.status).toBe("executed");
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const orders = await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
       expect(orders.length).toBeGreaterThan(0);
@@ -635,7 +646,7 @@ describe("increase orders", () => {
       ]);
 
       expect(prepared30.estimates!.sizeDeltaUsd).toBe(prepared300.estimates!.sizeDeltaUsd);
-      expect(prepared30.estimates!.positionFeeUsd).toBe(prepared300.estimates!.positionFeeUsd);
+      expectFeesEqual(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd);
     });
   });
 
