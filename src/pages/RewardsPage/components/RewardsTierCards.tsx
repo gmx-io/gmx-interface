@@ -185,7 +185,7 @@ function MultiplierBadge({
     const badge = (
       <span className="inline-flex items-center">
         <span className="inline-flex items-center rounded-full border-1/2 border-slate-600 py-2 pl-8 pr-18 text-12 font-medium text-typography-disabled">
-          {formatMultiplier(currentMultiplier, config.multiplierDecimals)} →
+          +{formatMultiplier(currentMultiplier, config.multiplierDecimals)} →
         </span>
         <span
           className={cx(
@@ -195,7 +195,7 @@ function MultiplierBadge({
               : "border-green-900 bg-green-900 text-green-500"
           )}
         >
-          {formatMultiplier(projectedMultiplier, config.multiplierDecimals)}
+          +{formatMultiplier(projectedMultiplier, config.multiplierDecimals)}
         </span>
       </span>
     );
@@ -205,7 +205,7 @@ function MultiplierBadge({
 
   return (
     <span className="inline-flex items-center rounded-full bg-green-900 px-6 py-2 text-12 font-medium text-green-500 numbers">
-      {formatMultiplier(currentMultiplier, config.multiplierDecimals)}
+      +{formatMultiplier(currentMultiplier, config.multiplierDecimals)}
     </span>
   );
 }
@@ -251,7 +251,7 @@ const tierCardBase =
 const tierCardBanner = "bg-slate-950 p-16 max-lg:p-12";
 const tierCardActive = "bg-slate-950 pt-16 px-16 pb-12";
 const tierIconLarge =
-  "size-48 shrink-0 rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_8px_rgba(120,133,255,0.9)]";
+  "size-48 shrink-0 rounded-12 border-[0.8px] border-blue-300/60 bg-blue-300/10 drop-shadow-[0_4px_8px_rgba(120,133,255,0.9)]";
 
 function VolumeCard({
   config,
@@ -890,7 +890,7 @@ function BoostsCard({
         {hasStatus ? (
           <>
             <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
-              <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
+              <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-blue-300/60 bg-blue-300/10 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
                 <BoostSvg className="size-24 text-blue-300" />
               </div>
               <span className="flex flex-col">

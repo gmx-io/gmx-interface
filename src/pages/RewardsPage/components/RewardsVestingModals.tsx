@@ -40,6 +40,7 @@ import ModalWithPortal from "components/Modal/ModalWithPortal";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import CheckIcon from "img/ic_check.svg?react";
 import InfoIcon from "img/ic_info_circle_stroke.svg?react";
@@ -123,9 +124,9 @@ function hasVestingFundingPreviewChanged(currentData: RewardsVestingData, nextDa
   );
 }
 
-function ModalValueRow({ label, value }: { label: React.ReactNode; value: React.ReactNode }) {
+function ModalValueRow({ label, value, qa }: { label: React.ReactNode; value: React.ReactNode; qa?: string }) {
   return (
-    <div className="flex items-center justify-between gap-12 text-14 leading-[1.25]">
+    <div className="flex items-center justify-between gap-12 text-14 leading-[1.25]" data-qa={qa}>
       <span className="text-typography-secondary">{label}</span>
       <span className="shrink-0 text-typography-primary numbers">{value}</span>
     </div>
@@ -453,6 +454,7 @@ export function RewardsVestingModal({
         await onSimulatedVest(depositAmount);
         if (transactionSessionRef.current !== transactionSession) return;
         setTransactionProgress((current) => ({ ...current, vesting: true }));
+        setValue("");
         if (!hasClaimStep && !hasStakingStep) {
           setIsVisible(false);
         }
@@ -753,6 +755,7 @@ export function RewardsVestingModal({
       attemptedTransaction = undefined;
       if (hasCurrentTransaction()) {
         setTransactionProgress((current) => ({ ...current, vesting: true }));
+        setValue("");
         if (!hasClaimStep && !completedStakeThisFlow && !completedApprovalThisFlow) {
           setIsVisible(false);
         }
@@ -828,14 +831,19 @@ export function RewardsVestingModal({
   const missingGmxAmount =
     preview.stakeShortfallAmount > data.walletGmxBalance ? preview.stakeShortfallAmount - data.walletGmxBalance : 0n;
   const depositAmountLabel = `${formatTokenAmount(depositAmount ?? 0n)} esGMX`;
-  const showClaimStep = hasClaimStep || transactionStep === "claiming";
+  const showClaimStep =
+    transactionProgress.claim || transactionStep === "claiming" || (!isTransactionComplete && hasClaimStep);
   const showApprovalStep =
     !isSimulation &&
-    ((preview.stakeShortfallAmount > 0n && (gmxAllowance ?? 0n) < preview.stakeShortfallAmount) ||
-      transactionProgress.approval ||
-      transactionStep === "approving");
+    (transactionProgress.approval ||
+      transactionStep === "approving" ||
+      (!isTransactionComplete &&
+        preview.stakeShortfallAmount > 0n &&
+        (gmxAllowance ?? 0n) < preview.stakeShortfallAmount));
   const showStakingStep =
-    preview.stakeShortfallAmount > 0n || transactionProgress.staking || transactionStep === "staking";
+    transactionProgress.staking ||
+    transactionStep === "staking" ||
+    (!isTransactionComplete && preview.stakeShortfallAmount > 0n);
   const transactionSteps = [
     ...(showClaimStep
       ? [
@@ -932,7 +940,21 @@ export function RewardsVestingModal({
 
         <div className="flex flex-col gap-8 px-4">
           <ModalValueRow
-            label={<Trans>Collateral required for vest</Trans>}
+            qa="rewards-vesting-collateral-required"
+            label={
+              <TooltipWithPortal
+                position="top-start"
+                variant="iconStroke"
+                content={
+                  <Trans>
+                    The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and
+                    locked
+                  </Trans>
+                }
+              >
+                <Trans>Collateral required for vest</Trans>
+              </TooltipWithPortal>
+            }
             value={
               <>
                 {formatTokenAmount(depositAmount ?? 0n)} <span className="text-typography-secondary">GMX</span>
@@ -940,7 +962,16 @@ export function RewardsVestingModal({
             }
           />
           <ModalValueRow
-            label={<Trans>Collateral available</Trans>}
+            qa="rewards-vesting-collateral-available"
+            label={
+              <TooltipWithPortal
+                position="top-start"
+                variant="iconStroke"
+                content={<Trans>The amount of GMX currently available to be locked as collateral for vesting.</Trans>}
+              >
+                <Trans>Collateral available</Trans>
+              </TooltipWithPortal>
+            }
             value={
               <>
                 {formatTokenAmount(collateralAvailable)} <span className="text-typography-secondary">GMX</span>
@@ -950,7 +981,7 @@ export function RewardsVestingModal({
         </div>
 
         {!hasEnoughWalletGmx && preview.stakeShortfallAmount > 0n ? (
-          <ColorfulBanner color="yellow" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
+          <ColorfulBanner color="blue" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
             <div>
               {data.walletGmxBalance === 0n ? (
                 <Trans>Vesting needs GMX staked as collateral, but you have no GMX to stake.</Trans>
@@ -962,12 +993,12 @@ export function RewardsVestingModal({
                 </Trans>
               )}
               {isSimulation ? (
-                <div className="mt-8 text-yellow-300">Increase Wallet GMX in the simulator to continue.</div>
+                <div className="mt-8 text-blue-300">Increase Wallet GMX in the simulator to continue.</div>
               ) : (
                 <>
                   {affordableDepositAmount > 0n && data.walletGmxBalance > 0n ? (
                     <ColorfulButtonLink
-                      color="yellow"
+                      color="blue"
                       onClick={() =>
                         setDepositValue(formatAmountFree(affordableDepositAmount, GMX_DECIMALS, GMX_DECIMALS))
                       }
@@ -978,7 +1009,7 @@ export function RewardsVestingModal({
                       </Trans>
                     </ColorfulButtonLink>
                   ) : null}
-                  <ColorfulButtonLink color="yellow" onClick={onBuyGmx}>
+                  <ColorfulButtonLink color="blue" onClick={onBuyGmx}>
                     {data.walletGmxBalance === 0n ? (
                       <Trans>
                         Buy {formatTokenAmount(missingGmxAmount)} GMX to vest {depositAmountLabel}
@@ -1016,10 +1047,10 @@ export function RewardsVestingModal({
         ) : null}
 
         {hasActiveVesting && currentEndTimestamp !== undefined && nextEndTimestamp !== undefined ? (
-          <ColorfulBanner color="yellow" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
+          <ColorfulBanner color="blue" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
             <Trans>
               Adding esGMX extends your current vesting: your existing tokens will finish converting on{" "}
-              <span className="font-medium text-yellow-300">
+              <span className="font-medium text-blue-300">
                 {formatRelativeDateWithComma(Number(nextEndTimestamp))} instead of{" "}
                 {formatRelativeDateWithComma(Number(currentEndTimestamp))}
               </span>

@@ -171,6 +171,30 @@ function renderStopModal(data: RewardsVestingData) {
   return render(getStopModal(data));
 }
 
+function getCollateralRowText(row: "required" | "available") {
+  const element = document.querySelector(`[data-qa="rewards-vesting-collateral-${row}"]`);
+
+  if (!element) {
+    throw new Error(`Missing ${row} collateral row`);
+  }
+
+  return element.textContent?.replace(/\s/g, "");
+}
+
+function expectBlueNotification(element: Element) {
+  const banner = element.closest(".border-l-2");
+
+  if (!banner) {
+    throw new Error("Missing notification banner");
+  }
+
+  expect(banner.className).toContain("border-l-blue-300");
+  expect(banner.className).toContain("bg-blue-300");
+  expect(banner.className).not.toContain("border-l-yellow-300");
+
+  return banner;
+}
+
 describe("RewardsVestingModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -250,12 +274,8 @@ describe("RewardsVestingModal", () => {
     expect(screen.getByText("Vest esGMX", { selector: ".Modal-title" })).toBeDefined();
     expect(screen.getByDisplayValue("100")).toBeDefined();
     expect(screen.getByText("Vestable: 100 esGMX")).toBeDefined();
-    expect(screen.getByText("Collateral required for vest").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralrequiredforvest100GMX"
-    );
-    expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralavailable100GMX"
-    );
+    expect(getCollateralRowText("required")).toBe("Collateralrequiredforvest100GMX");
+    expect(getCollateralRowText("available")).toBe("Collateralavailable100GMX");
     expect(screen.queryByText(/more GMX staked as collateral/)).toBeNull();
     expect(screen.getByRole("button", { name: "Vest esGMX" }).hasAttribute("disabled")).toBe(false);
     expect(screen.queryByText("Approve GMX")).toBeNull();
@@ -264,9 +284,26 @@ describe("RewardsVestingModal", () => {
 
     fireEvent.change(screen.getByDisplayValue("100"), { target: { value: "25" } });
     expect(screen.getByRole("button", { name: "Vest esGMX" })).toBeDefined();
-    expect(screen.getByText("Collateral required for vest").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralrequiredforvest25GMX"
-    );
+    expect(getCollateralRowText("required")).toBe("Collateralrequiredforvest25GMX");
+  });
+
+  it("explains the vesting collateral fields", async () => {
+    renderVestModal(baseData);
+
+    const requiredLabel = screen.getByText("Collateral required for vest");
+    fireEvent.mouseEnter(requiredLabel.closest(".Tooltip-handle")!);
+    expect(
+      await screen.findByText(
+        "The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and locked"
+      )
+    ).toBeDefined();
+    fireEvent.mouseLeave(requiredLabel.closest(".Tooltip-handle")!);
+
+    const availableLabel = screen.getByText("Collateral available");
+    fireEvent.mouseEnter(availableLabel.closest(".Tooltip-handle")!);
+    expect(
+      await screen.findByText("The amount of GMX currently available to be locked as collateral for vesting.")
+    ).toBeDefined();
   });
 
   it("rounds vestable and collateral summaries while preserving the exact input amount", () => {
@@ -280,12 +317,8 @@ describe("RewardsVestingModal", () => {
 
     expect(screen.getByDisplayValue("0.0156211012965299")).toBeDefined();
     expect(screen.getByText("Vestable: 0.02 esGMX")).toBeDefined();
-    expect(screen.getByText("Collateral required for vest").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralrequiredforvest0.02GMX"
-    );
-    expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralavailable0.02GMX"
-    );
+    expect(getCollateralRowText("required")).toBe("Collateralrequiredforvest0.02GMX");
+    expect(getCollateralRowText("available")).toBe("Collateralavailable0.02GMX");
   });
 
   it("shows the stake-and-vest notice when wallet GMX covers an initial vest", () => {
@@ -296,7 +329,7 @@ describe("RewardsVestingModal", () => {
     });
 
     expect(screen.getByText("Vest esGMX", { selector: ".Modal-title" })).toBeDefined();
-    expect(screen.getByText(/You need 100 more GMX staked as collateral/)).toBeDefined();
+    expectBlueNotification(screen.getByText(/You need 100 more GMX staked as collateral/));
     expect(screen.getByText(/then start vesting/)).toBeDefined();
     expect(screen.getByRole("button", { name: "Vest esGMX" })).toBeDefined();
     expect(screen.queryByText("Approve GMX")).toBeNull();
@@ -311,8 +344,11 @@ describe("RewardsVestingModal", () => {
       walletGmxBalance: 50n * TOKEN_UNIT,
     });
 
-    expect(screen.getByText(/You hold 50 unreserved GMX in the wallet/)).toBeDefined();
-    expect(screen.getByRole("button", { name: "Vest 50 esGMX with your 50 GMX" })).toBeDefined();
+    const banner = expectBlueNotification(screen.getByText(/You hold 50 unreserved GMX in the wallet/));
+    const affordableVestButton = screen.getByRole("button", { name: "Vest 50 esGMX with your 50 GMX" });
+
+    expect(banner.querySelector(".text-yellow-300")).toBeNull();
+    expect(affordableVestButton.className).toContain("text-blue-300");
     fireEvent.click(screen.getByRole("button", { name: "Buy 50 GMX and vest all 100 esGMX" }));
     expect(onBuyGmx).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button", { name: "Vest esGMX" }).hasAttribute("disabled")).toBe(true);
@@ -330,19 +366,36 @@ describe("RewardsVestingModal", () => {
       },
     });
 
-    expect(screen.getByText("Collateral required for vest").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralrequiredforvest100GMX"
-    );
-    expect(screen.getByText("Collateral available").parentElement?.textContent?.replace(/\s/g, "")).toBe(
-      "Collateralavailable175GMX"
-    );
+    expect(getCollateralRowText("required")).toBe("Collateralrequiredforvest100GMX");
+    expect(getCollateralRowText("available")).toBe("Collateralavailable175GMX");
   });
 
   it("shows the no-GMX blocked state", () => {
     renderVestModal({ ...baseData, freePairAmount: 0n });
 
-    expect(screen.getByText("Vesting needs GMX staked as collateral, but you have no GMX to stake.")).toBeDefined();
-    expect(screen.getByRole("button", { name: "Buy 100 GMX to vest 100 esGMX" })).toBeDefined();
+    expectBlueNotification(screen.getByText("Vesting needs GMX staked as collateral, but you have no GMX to stake."));
+    const buyButton = screen.getByRole("button", { name: "Buy 100 GMX to vest 100 esGMX" });
+
+    expect(buyButton.className).toContain("text-blue-300");
+  });
+
+  it("shows the active vesting extension notice in blue", () => {
+    renderVestModal({
+      ...baseData,
+      walletEsGmxBalance: 50n * TOKEN_UNIT,
+      freePairAmount: 50n * TOKEN_UNIT,
+      vestingInfo: {
+        ...baseData.vestingInfo,
+        pairAmount: 50n * TOKEN_UNIT,
+        vestedAmount: 50n * TOKEN_UNIT,
+        escrowedBalance: 25n * TOKEN_UNIT,
+      },
+    });
+
+    const banner = expectBlueNotification(screen.getByText(/Adding esGMX extends your current vesting/));
+
+    expect(banner.querySelector(".text-blue-300")).not.toBeNull();
+    expect(banner.querySelector(".text-yellow-300")).toBeNull();
   });
 
   it("disables the vest action until the signer is available", () => {
@@ -543,6 +596,91 @@ describe("RewardsVestingModal", () => {
     expect(screen.getAllByText("Completed")).toHaveLength(3);
     expect(screen.getByText("Close", { selector: "button.primary" })).toBeDefined();
     expect(setIsVisible).not.toHaveBeenCalled();
+  });
+
+  it("keeps completed steps stable after balances refresh and clears the amount", async () => {
+    const onSimulatedClaim = vi.fn(async () => undefined);
+    const onSimulatedVest = vi.fn(async () => undefined);
+    const depositAmount = 10n * TOKEN_UNIT;
+    const rewardData = {
+      ...baseData,
+      walletEsGmxBalance: 0n,
+      claimableEsGmxRewards: depositAmount,
+      stakedGmxBalance: depositAmount,
+      freePairAmount: depositAmount,
+    };
+    const vestedData = {
+      ...rewardData,
+      walletEsGmxBalance: 0n,
+      claimableEsGmxRewards: 0n,
+      freePairAmount: 0n,
+      vestingInfo: {
+        ...rewardData.vestingInfo,
+        pairAmount: depositAmount,
+        vestedAmount: depositAmount,
+        escrowedBalance: depositAmount,
+      },
+    };
+    const view = render(
+      getVestModal(rewardData, true, onSimulatedVest, {
+        claimableEsGmxAmount: rewardData.claimableEsGmxRewards,
+        onSimulatedClaim,
+      })
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
+
+    await waitFor(() => expect(onSimulatedVest).toHaveBeenCalledWith(depositAmount));
+    await waitFor(() => expect(screen.getByText("Close", { selector: "button.primary" })).toBeDefined());
+    view.rerender(
+      getVestModal(vestedData, true, onSimulatedVest, {
+        claimableEsGmxAmount: vestedData.claimableEsGmxRewards,
+        onSimulatedClaim,
+      })
+    );
+
+    expect(screen.getByText("esGMX claimed")).toBeDefined();
+    expect(screen.getByText("Vesting started")).toBeDefined();
+    expect(screen.getAllByText("Completed")).toHaveLength(2);
+    expect(screen.queryByText("Stake collateral")).toBeNull();
+    expect((screen.getByPlaceholderText("0") as HTMLInputElement).value).toBe("");
+  });
+
+  it("does not add a newly available claim to a completed vesting flow", async () => {
+    const onSimulatedClaim = vi.fn(async () => undefined);
+    const onSimulatedVest = vi.fn(async () => undefined);
+    const view = render(getVestModal(baseData, true, onSimulatedVest));
+
+    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
+
+    await waitFor(() => expect(screen.getByText("Close", { selector: "button.primary" })).toBeDefined());
+    view.rerender(
+      getVestModal(
+        {
+          ...baseData,
+          walletEsGmxBalance: 0n,
+          claimableEsGmxRewards: 10n * TOKEN_UNIT,
+          freePairAmount: 0n,
+          vestingInfo: {
+            ...baseData.vestingInfo,
+            pairAmount: 100n * TOKEN_UNIT,
+            vestedAmount: 100n * TOKEN_UNIT,
+            escrowedBalance: 100n * TOKEN_UNIT,
+          },
+        },
+        true,
+        onSimulatedVest,
+        {
+          claimableEsGmxAmount: 10n * TOKEN_UNIT,
+          onSimulatedClaim,
+        }
+      )
+    );
+
+    expect(screen.queryByText("Claim esGMX rewards")).toBeNull();
+    expect(screen.queryByText("Stake collateral")).toBeNull();
+    expect(document.querySelector('[data-qa="rewards-vesting-steps"]')).toBeNull();
+    expect(screen.getByText("Close", { selector: "button.primary" })).toBeDefined();
   });
 
   it("keeps the loading claim step visible and uses allowance loaded during the claim", async () => {
@@ -883,6 +1021,7 @@ describe("RewardsVestingModal", () => {
     expect(screen.getByText("GMX approved")).toBeDefined();
     expect(screen.getByText("Collateral staked")).toBeDefined();
     expect(screen.getByText("Vesting started")).toBeDefined();
+    expect((screen.getByPlaceholderText("0") as HTMLInputElement).value).toBe("");
   });
 
   it("does not auto-stake undelegated GMX voting power", () => {
@@ -1096,10 +1235,12 @@ describe("RewardsVestingModal", () => {
     resolveFirstVest?.();
     await waitFor(() => expect(mockSendRewardsTransactionResultEvent).toHaveBeenCalledTimes(1));
     expect(screen.getByRole("button", { name: "Vest esGMX" }).hasAttribute("disabled")).toBe(true);
+    expect((screen.getByPlaceholderText("0") as HTMLInputElement).value).toBe("100");
     expect(setIsVisible).not.toHaveBeenCalled();
 
     resolveSecondVest?.();
     await waitFor(() => expect(setIsVisible).toHaveBeenCalledWith(false));
+    expect((screen.getByPlaceholderText("0") as HTMLInputElement).value).toBe("");
   });
 
   it("does not deposit when the refreshed account still lacks collateral", async () => {
@@ -1355,6 +1496,7 @@ describe("RewardsVestingModal", () => {
     expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["stakeGmx", "deposit"]);
     expect(screen.getByText("Collateral staked")).toBeDefined();
     expect(screen.getByRole("button", { name: "Continue" })).toBeDefined();
+    expect((screen.getByPlaceholderText("0") as HTMLInputElement).value).toBe("100");
     expect(setIsVisible).not.toHaveBeenCalled();
     expect(mockSendRewardsTransactionResultEvent).toHaveBeenCalledWith({
       transaction: "StartVesting",
@@ -1369,6 +1511,7 @@ describe("RewardsVestingModal", () => {
       expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["stakeGmx", "deposit", "deposit"])
     );
     expect(screen.getByText("Close", { selector: "button.primary" })).toBeDefined();
+    expect((screen.getByPlaceholderText("0") as HTMLInputElement).value).toBe("");
   });
 });
 
@@ -1402,7 +1545,7 @@ describe("RewardsStopVestingModal", () => {
     expect(screen.getByText("Stop vesting?", { selector: ".Modal-title" })).toBeDefined();
     expect(screen.getByText(/So far 50 GMX has vested/)).toBeDefined();
     expect(screen.getByText(/remaining 50 esGMX/)).toBeDefined();
-    expect(screen.getByText(/Your 50 GMX collateral will be unlocked/)).toBeDefined();
+    expectBlueNotification(screen.getByText(/Your 50 GMX collateral will be unlocked/));
     expect(screen.getByText("Stop vesting 100% of these rewards?")).toBeDefined();
     expect(screen.getByRole("button", { name: "Yes, stop vesting" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Keep vesting" })).toBeDefined();

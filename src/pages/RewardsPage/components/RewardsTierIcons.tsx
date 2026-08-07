@@ -60,7 +60,7 @@ const BOOST_ICONS: Record<BoostId, IconPair> = {
 };
 
 const tierIconBase = "size-28 shrink-0 rounded-8 border-1/2 border-slate-600";
-const tierIconGlow = `${tierIconBase} drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)] dark:drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)] !border-blue-300/50`;
+const tierIconGlow = `${tierIconBase} bg-blue-300/10 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)] dark:drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)] !border-blue-300/50`;
 
 export function VolumeTierIcon({
   tierId,

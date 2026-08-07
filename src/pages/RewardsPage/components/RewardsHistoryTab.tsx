@@ -4,13 +4,16 @@ import cx from "classnames";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
+import type { ContractsChainId } from "config/chains";
+import { useGmxPrice } from "domain/legacy";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/v2/types";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/v2/useAccountRewardsHistory";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
+import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
 import { formatEpochLabel, getRewardsHistoryStatus } from "domain/synthetics/incentives/v2/utils";
 import { formatTimeLeft } from "lib/dates";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 
@@ -20,6 +23,8 @@ import { TableTd, TableTdActionable, TableTh, TableTheadTr, TableTr, TableTrActi
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+
+import { RewardsTokenValue } from "./RewardsTokenValue";
 
 const PAGE_SIZE = 10;
 
@@ -68,7 +73,7 @@ function RewardsHistoryDesktopSkeletonRow({ invisible }: { invisible?: boolean }
 }
 
 type Props = {
-  chainId: number;
+  chainId: ContractsChainId;
   account?: string;
   config: IncentivesConfig;
 };
@@ -76,6 +81,11 @@ type Props = {
 export function RewardsHistoryTab({ chainId, account, config }: Props) {
   const { i18n } = useLingui();
   const { isMobile } = useBreakpoints();
+  const { gmxPrice } = useGmxPrice(chainId, {}, false, {
+    enabled: Boolean(account),
+    fetchAllChains: false,
+  });
+  const { data: gtPrice } = useLatestGtPrice(chainId, { enabled: Boolean(account) });
   const [page, setPage] = useState(1);
   const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useAccountRewardsHistory(chainId, {
     account,
@@ -191,6 +201,8 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
                         epochDuration={config.epochDuration}
                         now={now}
                         locale={i18n.locale}
+                        gmxPrice={gmxPrice}
+                        gtPrice={gtPrice?.priceUsd}
                       />
                     ))
                   )}
@@ -228,6 +240,8 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
                         now={now}
                         locale={i18n.locale}
                         tdClassName={tdClassName}
+                        gmxPrice={gmxPrice}
+                        gtPrice={gtPrice?.priceUsd}
                       />
                     ))
                   )}
@@ -255,12 +269,16 @@ function DesktopRewardsHistoryRow({
   now,
   locale,
   tdClassName,
+  gmxPrice,
+  gtPrice,
 }: {
   entry: RewardsHistoryEntry;
   epochDuration: number;
   now: number;
   locale: string;
   tdClassName: string;
+  gmxPrice?: bigint;
+  gtPrice?: bigint;
 }) {
   return (
     <TableTr>
@@ -274,10 +292,10 @@ function DesktopRewardsHistoryRow({
         {formatUsd(entry.referralVolume, { fallbackToZero: true, displayDecimals: 0 })}
       </TableTd>
       <TableTd className={cx(tdClassName, "numbers")}>
-        {formatAmount(entry.esGmxRewards, ES_GMX_DECIMALS, 4, true, { trimTrailingZeros: true })}
+        <RewardsTokenValue amount={entry.esGmxRewards} decimals={ES_GMX_DECIMALS} price={gmxPrice} />
       </TableTd>
       <TableTd className={cx(tdClassName, "numbers")}>
-        {formatAmount(entry.gtRewards, GT_DECIMALS, 4, true, { trimTrailingZeros: true })}
+        <RewardsTokenValue amount={entry.gtRewards} decimals={GT_DECIMALS} price={gtPrice} />
       </TableTd>
       <TableTd className={cx(tdClassName, "numbers")}>
         {formatUsd(entry.rewardsUsd, { fallbackToZero: true, displayDecimals: 2 })}
@@ -292,11 +310,15 @@ function MobileRewardsHistoryRow({
   epochDuration,
   now,
   locale,
+  gmxPrice,
+  gtPrice,
 }: {
   entry: RewardsHistoryEntry;
   epochDuration: number;
   now: number;
   locale: string;
+  gmxPrice?: bigint;
+  gtPrice?: bigint;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const onClick = useCallback(() => setIsExpanded((prev) => !prev), []);
@@ -336,10 +358,10 @@ function MobileRewardsHistoryRow({
                 {formatUsd(entry.referralVolume, { fallbackToZero: true, displayDecimals: 0 })}
               </MobileRewardDetail>
               <MobileRewardDetail label={<Trans>esGMX accrued</Trans>}>
-                {formatAmount(entry.esGmxRewards, ES_GMX_DECIMALS, 4, true, { trimTrailingZeros: true })}
+                <RewardsTokenValue amount={entry.esGmxRewards} decimals={ES_GMX_DECIMALS} price={gmxPrice} />
               </MobileRewardDetail>
               <MobileRewardDetail label={<Trans>GT allocated</Trans>}>
-                {formatAmount(entry.gtRewards, GT_DECIMALS, 4, true, { trimTrailingZeros: true })}
+                <RewardsTokenValue amount={entry.gtRewards} decimals={GT_DECIMALS} price={gtPrice} />
               </MobileRewardDetail>
               <MobileRewardDetail label={<Trans>Rewards USD</Trans>}>
                 {formatUsd(entry.rewardsUsd, { fallbackToZero: true, displayDecimals: 2 })}

@@ -121,6 +121,10 @@ vi.mock("pages/RewardsPage/components/RewardsVestingFlow", () => ({
   RewardsVestingFlow: () => <div data-testid="vesting-flow" />,
 }));
 
+vi.mock("pages/RewardsPage/components/RewardsVestingFaq", () => ({
+  RewardsVestingFaq: () => <div data-testid="vesting-faq" />,
+}));
+
 vi.mock("pages/RewardsPage/components/RewardsPromotionalBanners", () => ({
   RewardsPromotionalBanners: () => <div data-testid="promotional-banners" />,
 }));
@@ -295,6 +299,9 @@ describe("RewardsPage", () => {
     expect(screen.getByTestId("history-tab").getAttribute("data-chain-id")).toBe(String(ARBITRUM));
     expect(screen.getByTestId("history-tab").getAttribute("data-account")).toBe("0x123");
     expect(screen.getByTestId("vesting-flow")).toBeDefined();
+    const historyTab = screen.getByTestId("history-tab");
+    const vestingFaq = screen.getByTestId("vesting-faq");
+    expect(historyTab.compareDocumentPosition(vestingFaq) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(mockUseRewardsPageData).toHaveBeenCalledWith({
       chainId: ARBITRUM,
       account: "0x123",

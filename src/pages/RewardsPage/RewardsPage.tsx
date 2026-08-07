@@ -17,6 +17,7 @@ import { RewardsHistoryTab } from "./components/RewardsHistoryTab";
 import { RewardsLeaderboardTab } from "./components/RewardsLeaderboardTab";
 import { RewardsOnboardingModal } from "./components/RewardsOnboardingModal";
 import { RewardsTiersTab } from "./components/RewardsTiersTab";
+import { RewardsVestingFaq } from "./components/RewardsVestingFaq";
 import { RewardsVestingFlow } from "./components/RewardsVestingFlow";
 import { getRewardsDebugConfig, getRewardsDebugMode } from "./rewardsDebug";
 import { RewardsPageLayout, RewardsPageLoadingContent } from "./RewardsPageShell";
@@ -216,6 +217,7 @@ export function RewardsPage() {
         <div className="flex flex-col gap-8">
           <RewardsVestingFlow />
           <RewardsHistoryTab chainId={chainId} account={account} config={config} />
+          <RewardsVestingFaq />
         </div>
       ) : (
         <RewardsLeaderboardTab chainId={chainId} account={account} config={config} />
