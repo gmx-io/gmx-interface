@@ -302,6 +302,10 @@ describe("RewardsPage", () => {
     const historyTab = screen.getByTestId("history-tab");
     const vestingFaq = screen.getByTestId("vesting-faq");
     expect(historyTab.compareDocumentPosition(vestingFaq) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const contentColumn = historyTab.parentElement;
+    expect(contentColumn?.contains(screen.getByTestId("vesting-flow"))).toBe(true);
+    expect(contentColumn?.contains(vestingFaq)).toBe(false);
+    expect(vestingFaq.parentElement?.className).toContain("sticky");
     expect(mockUseRewardsPageData).toHaveBeenCalledWith({
       chainId: ARBITRUM,
       account: "0x123",
