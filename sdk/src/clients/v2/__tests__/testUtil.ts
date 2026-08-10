@@ -1,5 +1,4 @@
 import { generatePrivateKey } from "viem/accounts";
-import { expect } from "vitest";
 
 import { ARBITRUM, getViemChain } from "configs/chains";
 import { sleep } from "utils/common";
@@ -191,15 +190,6 @@ export function getOrCreateTestSigner(): PrivateKeySigner {
 export function shouldRunTwap(): boolean {
   // eslint-disable-next-line no-restricted-globals
   return process.env.GMX_TEST_TWAP === "1";
-}
-
-/**
- * Two prepares are priced moments apart, so oracle drift moves the fee in the last digits.
- * Assert they agree well within a basis point rather than bit-for-bit.
- */
-export function expectFeesEqual(a: bigint, b: bigint): void {
-  const diff = a > b ? a - b : b - a;
-  expect(diff * 10_000n).toBeLessThanOrEqual(a);
 }
 
 export function hasRpcUrl(): boolean {

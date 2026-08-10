@@ -1,5 +1,6 @@
 import { describe, expect, it, beforeAll, afterAll } from "vitest";
 
+import { expectFeesEqual } from "./assertions";
 import {
   getTestSdk,
   requireSigner,
@@ -12,7 +13,6 @@ import {
   activateTestSubaccount,
   hasRpcUrl,
   shouldRunTwap,
-  expectFeesEqual,
   TEST_SYMBOL,
   TEST_SIZE_USD,
 } from "./testUtil";
