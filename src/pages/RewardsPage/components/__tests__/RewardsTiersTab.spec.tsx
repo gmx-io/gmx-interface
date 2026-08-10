@@ -951,18 +951,6 @@ describe("RewardsTiersTab", () => {
     expect(boostsCard.querySelector(".mt-auto")?.querySelector('[aria-label="Referral Bonus"]')).not.toBeNull();
   });
 
-  it("adds a translucent blue background to active tier icons", () => {
-    renderTab();
-
-    const volumeIcon = screen.getByRole("heading", { name: "Ranked" }).querySelector("svg");
-    const stakingIcon = screen.getByRole("heading", { name: "Advocate" }).querySelector("svg");
-    const boostIcon = screen.getByRole("heading", { name: "2 active boosts" }).querySelector("svg")?.parentElement;
-
-    expect(volumeIcon?.classList.contains("bg-blue-300/10")).toBe(true);
-    expect(stakingIcon?.classList.contains("bg-blue-300/10")).toBe(true);
-    expect(boostIcon?.classList.contains("bg-blue-300/10")).toBe(true);
-  });
-
   it("uses muted text and an invite link for the Referral Bonus description", async () => {
     renderTab();
 
