@@ -67,13 +67,13 @@ export const appEventsData: EventData[] = [
       <span className="flex flex-col gap-12">
         <span>
           <span className="font-medium text-typography-primary">Builders:</span>{" "}
-          <ExternalLink href="https://gmx.io/#/builders">gmx.io/builders</ExternalLink> is a new home for teams building
+          <ExternalLink href="https://gmx.io/builders">gmx.io/builders</ExternalLink> is a new home for teams building
           on GMX, with the SDK, REST API and subgraph side by side, a calculator for what a builder code earns, and a
           direct contact route.
         </span>
         <span>
           <span className="font-medium text-typography-primary">Trader &amp; Affiliate Program:</span>{" "}
-          <ExternalLink href="https://gmx.io/#/trader-affiliate-program">a new page</ExternalLink> for high-volume
+          <ExternalLink href="https://gmx.io/trader-affiliate-program">a new page</ExternalLink> for high-volume
           traders and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and
           marketing support. Apply from the page, or reach the team on Telegram or a call.
         </span>
