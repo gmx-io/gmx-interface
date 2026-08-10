@@ -1,6 +1,5 @@
 import { describe, expect, it, beforeAll, afterAll } from "vitest";
 
-import { expectFeesEqual } from "./assertions";
 import {
   getTestSdk,
   requireSigner,
@@ -13,6 +12,7 @@ import {
   activateTestSubaccount,
   hasRpcUrl,
   shouldRunTwap,
+  feesMatch,
   TEST_SYMBOL,
   TEST_SIZE_USD,
 } from "./testUtil";
@@ -367,7 +367,7 @@ describe("decrease orders", () => {
 
       // Size and fees unchanged between slippage variants
       expect(prepared30.estimates!.sizeDeltaUsd).toBe(prepared300.estimates!.sizeDeltaUsd);
-      expectFeesEqual(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd);
+      expect(feesMatch(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd)).toBe(true);
     });
   });
 

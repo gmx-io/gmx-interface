@@ -23,13 +23,11 @@ export const TEST_CHAIN_ID = ARBITRUM;
 
 export const TEST_SYMBOL = "ETH/USD [WETH-USDC]";
 export const TEST_SIZE_USD = 10n * 10n ** 30n; // $10
-// Must clear MIN_COLLATERAL_USD ($1 on Arbitrum) after fees, otherwise the keeper
-// cancels the order with LiquidatablePosition.
+// Must clear MIN_COLLATERAL_USD ($1 on Arbitrum) after fees, or the keeper cancels the order.
 export const TEST_COLLATERAL = { amount: 3000000n, token: "USDC" }; // 3 USDC
 
 const TERMINAL_STATUSES = new Set(["executed", "cancelled", "relay_failed", "relay_reverted"]);
-// A limit or conditional order rests at "created" until its trigger is hit, so that is
-// where waiting should stop for them — "executed" would only arrive if the market moved.
+// A limit or conditional order rests at "created" until its trigger is hit.
 const PLACED_STATUSES = new Set([...TERMINAL_STATUSES, "created"]);
 export const PLACED_OK_STATUSES = ["created", "executed"];
 const ORDER_PREPARE_PATHS = new Set([
@@ -183,13 +181,16 @@ export function getOrCreateTestSigner(): PrivateKeySigner {
   return ephemeralSigner;
 }
 
-/**
- * TWAP submits fan out into one sub-order per part, each paying its own execution fee,
- * so the live TWAP flows are opt-in. The TWAP validation cases never submit and always run.
- */
+// TWAP fans out into one paid sub-order per part, so the live flows are opt-in.
 export function shouldRunTwap(): boolean {
   // eslint-disable-next-line no-restricted-globals
   return process.env.GMX_TEST_TWAP === "1";
+}
+
+// Concurrent prepares are priced moments apart, so fees drift in the last digits.
+export function feesMatch(a: bigint, b: bigint): boolean {
+  const diff = a > b ? a - b : b - a;
+  return diff * 10_000n <= a;
 }
 
 export function hasRpcUrl(): boolean {

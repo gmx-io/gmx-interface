@@ -1,10 +1,6 @@
 import { expressFlow, getTestSdk, getTestSigner, waitForOrderStatus } from "./testUtil";
 
-/**
- * The funded suite trades a shared wallet, so anything a failed run leaves behind — resting
- * orders and open positions — locks collateral and skews the next run's starting state.
- * Sweep before the run so it starts flat, and again after so nothing is left holding funds.
- */
+// The wallet is shared between runs, so anything left behind keeps holding collateral.
 async function sweep(label: string): Promise<void> {
   const signer = getTestSigner();
   if (!signer) return;
@@ -37,7 +33,7 @@ async function sweep(label: string): Promise<void> {
     console.warn(`[cleanup:${label}] cancel-all failed:`, (error as Error).message);
   }
 
-  // Positions can reappear while a close settles, so re-read rather than trusting one snapshot.
+  // A close can settle after the snapshot, so re-read instead of trusting one pass.
   for (let attempt = 0; attempt < 4; attempt++) {
     let positions: any[];
 
@@ -61,7 +57,7 @@ async function sweep(label: string): Promise<void> {
           orderType: "market",
           size: BigInt(position.sizeInUsd),
           collateralToken: position.collateralTokenAddress,
-          // Settle back into USDC, otherwise the wallet slowly drains into the index token.
+          // Settle into USDC, or the wallet drifts into the index token.
           receiveToken: "USDC",
           mode: "express",
           from: account,
