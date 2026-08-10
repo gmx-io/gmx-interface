@@ -147,6 +147,55 @@ describe("waitForGmxRelayTask", () => {
     expect(call).toBe(3);
   });
 
+  it("keeps polling through a transient status failure", async () => {
+    let call = 0;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        call++;
+        if (call === 1) throw new Error("network blip");
+        if (call === 2) return jsonResponse({ message: "upstream" }, 503);
+        // accepted a moment before it became readable
+        if (call === 3) return jsonResponse({ message: "no relay operation" }, 404);
+        return jsonResponse({ taskId: TASK_ID, status: "executed", txHash: "0xhash" });
+      })
+    );
+
+    const result = await waitForGmxRelayTask({ chainId: ARBITRUM, taskId: TASK_ID, pollingInterval: 1 });
+
+    // a broadcasting operation must not be judged by a hiccup on the way to the status endpoint
+    expect(result.status).toBe("success");
+    expect(result.transactionHash).toBe("0xhash");
+    expect(call).toBe(4);
+  });
+
+  it("gives up immediately when the status request itself is rejected", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({ message: "taskId must be a 32-byte hex string" }, 400));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const error = await waitForGmxRelayTask({ chainId: ARBITRUM, taskId: TASK_ID, pollingInterval: 1 }).catch((e) => e);
+
+    expect(error).toBeInstanceOf(GmxRelayError);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports an unresolved status rather than a failure when the window closes on errors", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => jsonResponse({ message: "upstream" }, 503))
+    );
+
+    const result = await waitForGmxRelayTask({
+      chainId: ARBITRUM,
+      taskId: TASK_ID,
+      pollingInterval: 1,
+      timeout: 5,
+    });
+
+    expect(result.status).toBe("pending");
+    expect(result.message).toContain("Could not read");
+  });
+
   it("reports a revert as a failure carrying the reason", async () => {
     vi.stubGlobal(
       "fetch",

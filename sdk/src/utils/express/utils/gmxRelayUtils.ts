@@ -110,7 +110,32 @@ export async function waitForGmxRelayTask({
   const deadline = Date.now() + timeout;
 
   for (;;) {
-    const view = await getGmxRelayTaskStatus({ chainId, taskId, apiUrl });
+    let view: GmxRelayStatusView;
+
+    try {
+      view = await getGmxRelayTaskStatus({ chainId, taskId, apiUrl });
+    } catch (e) {
+      // the operation is already broadcasting, so a blip on the way to the status endpoint must not
+      // decide its outcome. A 404 counts as transient too: the task can be accepted a moment before
+      // it is readable. Only a determinate rejection of the request itself ends the wait.
+      const error = e instanceof GmxRelayError ? e : new GmxRelayError(String(e));
+
+      if (error.isPermanent && error.httpStatus !== 404) {
+        throw error;
+      }
+
+      if (Date.now() + pollingInterval >= deadline) {
+        return {
+          transactionHash: undefined,
+          status: "pending",
+          relayStatus: "unknown",
+          message: `Could not read the relay operation's status: ${error.message}`,
+        };
+      }
+
+      await sleep(pollingInterval);
+      continue;
+    }
 
     if (view.status !== "pending") {
       return {
