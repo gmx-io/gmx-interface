@@ -35,7 +35,6 @@ import ButtonLink from "components/Button/ButtonLink";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
-import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import CheckIcon from "img/ic_check.svg?react";
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
@@ -152,14 +151,6 @@ function AmountHeader({
       <span className="shrink-0 whitespace-nowrap text-12 font-medium leading-[1.25] text-typography-disabled">
         {loading ? <Skeleton width={72} /> : `= ${unavailable ? "-" : formatUsd(usd) ?? "-"}`}
       </span>
-    </div>
-  );
-}
-
-function FlowArrow() {
-  return (
-    <div className="flex w-40 shrink-0 items-center justify-center rounded-8 bg-slate-900/[0.88] max-lg:h-40 max-lg:w-full">
-      <ArrowRightIcon className="size-16 text-typography-disabled max-lg:rotate-90" />
     </div>
   );
 }
@@ -691,11 +682,11 @@ export function RewardsVestingFlow() {
       {isInteractiveDebug && data ? (
         <RewardsVestingDebugPanel data={data} onApply={applyDebugData} onReset={resetDebugData} />
       ) : null}
-      <div className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_40px_minmax(0,1fr)] items-stretch gap-8 max-lg:grid-cols-1 max-lg:grid-rows-[1fr_40px_1fr_40px_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] items-stretch gap-8 max-lg:grid-cols-1 max-lg:grid-rows-[1fr_minmax(0,1fr)_1fr]">
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
           <AmountHeader
             step={1}
-            label={<Trans>Vestable esGMX</Trans>}
+            label={<Trans>Available to Vest</Trans>}
             unit="esGMX"
             amount={vestableAmount}
             usd={getUsdValue(vestableAmount, data?.gmxPrice)}
@@ -764,12 +755,10 @@ export function RewardsVestingFlow() {
           )}
         </section>
 
-        <FlowArrow />
-
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
           <AmountHeader
             step={2}
-            label={<Trans>Vesting esGMX</Trans>}
+            label={<Trans>Vesting</Trans>}
             unit={<Trans>esGMX left</Trans>}
             amount={effectiveRemainingAmount}
             usd={getUsdValue(effectiveRemainingAmount, data?.gmxPrice)}
@@ -863,8 +852,6 @@ export function RewardsVestingFlow() {
             </div>
           )}
         </section>
-
-        <FlowArrow />
 
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
           <AmountHeader
