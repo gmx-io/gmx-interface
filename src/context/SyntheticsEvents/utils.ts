@@ -1,5 +1,8 @@
+import { type Abi, encodeErrorResult } from "viem";
+
 import type { RelayProvider } from "config/relay";
 import { extendError } from "lib/errors";
+import { abis } from "sdk/abis";
 
 import type {
   RelayTaskStatus,
@@ -115,10 +118,65 @@ export function getPendingShiftKey(data: PendingShiftData) {
 }
 
 const BYTECODE_REGEXP = /0x[a-fA-F0-9]+/;
+const DECODED_REVERT_REASON_REGEXP = /^(\w+)\((.*)\)$/;
+
+const CUSTOM_ERRORS_ABI = abis.CustomErrors as Abi;
+
+function parseReasonArg(rawArg: string, type: string): unknown {
+  if (/^u?int\d*$/.test(type)) {
+    return BigInt(rawArg);
+  }
+
+  if (type === "bool") {
+    return rawArg === "true";
+  }
+
+  return rawArg;
+}
+
+/**
+ * GMX Relay reports a failure as an already-decoded `ErrorName(arg,arg)` string rather than as
+ * revert data, so the bytes the error matchers decode are rebuilt through the same ABI that
+ * produced the string. A reason that does not round-trip exactly is left undecoded instead of
+ * guessed at, so a wrong reading can never reach a toast.
+ */
+function encodeRelayReasonAsRevertData(reason: string | undefined): string | undefined {
+  const match = reason?.match(DECODED_REVERT_REASON_REGEXP);
+
+  if (!match) {
+    return undefined;
+  }
+
+  const [, errorName, joinedArgs] = match;
+
+  const abiError = CUSTOM_ERRORS_ABI.find((item) => item.type === "error" && item.name === errorName);
+
+  if (abiError?.type !== "error") {
+    return undefined;
+  }
+
+  const rawArgs = joinedArgs === "" ? [] : joinedArgs.split(",");
+
+  if (rawArgs.length !== abiError.inputs.length) {
+    return undefined;
+  }
+
+  try {
+    return encodeErrorResult({
+      abi: CUSTOM_ERRORS_ABI,
+      errorName,
+      args: rawArgs.map((rawArg, index) => parseReasonArg(rawArg, abiError.inputs[index].type)),
+    });
+  } catch {
+    return undefined;
+  }
+}
 
 export function extractRelayTaskError(relayTaskStatus: RelayTaskStatus) {
-  if (relayTaskStatus.revertData) {
-    return extendError(new Error(`data="${relayTaskStatus.revertData}"`), {
+  const revertData = relayTaskStatus.revertData ?? encodeRelayReasonAsRevertData(relayTaskStatus.message);
+
+  if (revertData) {
+    return extendError(new Error(`data="${revertData}"`), {
       data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
     });
   }

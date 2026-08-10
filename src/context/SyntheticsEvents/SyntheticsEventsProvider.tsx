@@ -41,8 +41,10 @@ import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrde
 import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
+import { ErrorLike } from "lib/errors";
 import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import {
   getGLVSwapMetricId,
   getGMSwapMetricId,
@@ -1044,7 +1046,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     if (pendingTasks.length === 0) return;
 
-    for (const { taskId, relayProvider } of pendingTasks) {
+    for (const { taskId, relayProvider, metricId } of pendingTasks) {
       if (!taskChainIdRef.current.has(taskId)) {
         taskChainIdRef.current.set(taskId, chainId);
       }
@@ -1061,6 +1063,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             // a task id is only meaningful to the relay that issued it, so an unrecorded provider
             // has to fall back to the same choice the submit side made, not to a fixed one
             relayProvider: relayProvider ?? getRelayProvider(taskChainId),
+            metricId,
           });
 
           // no outcome means the relay never reached a verdict; leave the operation to be resolved
@@ -1068,6 +1071,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           if (outcome) {
             setRelayTaskStatuses((old) => setByKey(old, taskId, { taskId, ...outcome }));
           }
+        } catch (error) {
+          // nothing above may reject the poller: an unhandled rejection would leave the task marked
+          // as polled and its failure unreported
+          metrics.pushError(error as ErrorLike, "pollRelayTaskOutcome");
         } finally {
           taskChainIdRef.current.delete(taskId);
         }

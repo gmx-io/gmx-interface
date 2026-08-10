@@ -4,6 +4,9 @@ import { getUiApiUrl } from "config/api";
 import { ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { RelayProvider } from "config/relay";
+import { ErrorLike, extendError } from "lib/errors";
+import type { OrderMetricId } from "lib/metrics/types";
+import { sendTxnErrorMetric } from "lib/metrics/utils";
 import { getTenderlyAccountParams } from "lib/tenderly";
 import { GELATO_API_KEYS } from "sdk/configs/express";
 import type { GmxRelayTaskResult } from "sdk/utils/express";
@@ -26,21 +29,23 @@ export function getGmxRelayStatusCode(result: Pick<GmxRelayTaskResult, "status" 
 }
 
 /**
- * Awaits the terminal status of a relay task from the relay that accepted it. `undefined` means the
- * relay never reached a determinate outcome, so the operation must be judged by on-chain events
- * rather than reported as failed.
+ * Awaits the terminal status of a relay task from the relay that accepted it. Never rejects:
+ * `undefined` means the relay never reached a determinate outcome, so the operation must be judged
+ * by on-chain events rather than reported as failed.
  */
 export async function waitForRelayTaskOutcome({
   chainId,
   taskId,
   relayProvider,
+  metricId,
 }: {
   chainId: ContractsChainId;
   taskId: string;
   relayProvider: RelayProvider;
+  metricId?: OrderMetricId;
 }): Promise<RelayTaskOutcome | undefined> {
   if (relayProvider === "gmx") {
-    return waitForGmxRelayTaskOutcome({ chainId, taskId });
+    return waitForGmxRelayTaskOutcome({ chainId, taskId, metricId });
   }
 
   return waitForGelatoTaskOutcome({ chainId, taskId });
@@ -49,11 +54,24 @@ export async function waitForRelayTaskOutcome({
 async function waitForGmxRelayTaskOutcome({
   chainId,
   taskId,
+  metricId,
 }: {
   chainId: ContractsChainId;
   taskId: string;
+  metricId?: OrderMetricId;
 }): Promise<RelayTaskOutcome | undefined> {
-  const result = await waitForGmxRelayTask({ chainId, taskId, apiUrl: getUiApiUrl(chainId) });
+  let result: GmxRelayTaskResult;
+
+  try {
+    result = await waitForGmxRelayTask({ chainId, taskId, apiUrl: getUiApiUrl(chainId) });
+  } catch (error) {
+    // the relay refused the status request itself, so it will never report a verdict for this task.
+    // The operation may still land on-chain, so the failure is only recorded against the order and
+    // the outcome is left to on-chain events
+    sendTxnErrorMetric(metricId, extendError(error as ErrorLike, { data: { taskId } }), "relayer");
+
+    return undefined;
+  }
 
   if (result.status === "pending") {
     return undefined;
