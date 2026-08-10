@@ -372,11 +372,6 @@ msgstr "总规模"
 msgid "Open app"
 msgstr "打开应用"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/pages/UiPage/BannerTest.tsx
-#~ msgid "Try Express Trading"
-#~ msgstr "尝试快速交易"
-
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "In progress"
 msgstr "进行中"
@@ -561,10 +556,6 @@ msgstr "手动奖励子集（USD）"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "仓位规模"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Confirm withdraw"
-#~ msgstr "确认提取"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -1167,10 +1158,6 @@ msgstr "周期"
 msgid "Position impact"
 msgstr "仓位影响"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Insufficient staked tokens"
-#~ msgstr "质押代币不足"
-
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "正在创建代码..."
@@ -1483,10 +1470,6 @@ msgstr "质押等级"
 msgid "{0} amount"
 msgstr "{0} 数量"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-#~ msgid "Current yield landscape"
-#~ msgstr "当前收益概览"
-
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "SHORTS NET RATE / 1H"
 msgstr "做空净费率 / 1H"
@@ -1702,10 +1685,6 @@ msgstr "本页符合条件的费用"
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Qualified this epoch"
 msgstr "本周期已达标"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Deposited"
-#~ msgstr "已存入"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signing..."
@@ -3069,10 +3048,6 @@ msgstr ""
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "金额低于提款限额。请尝试大于 <0>{lowerLimitFormatted}</0> 的金额。"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "No funds to claim"
-#~ msgstr "无资金可申领"
-
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -3142,10 +3117,6 @@ msgstr "您的乘数决定您获得的奖励数量："
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-#~ msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-#~ msgstr "推荐码尚未在 {nonTakenNetworkNames} 上注册。请切换网络以注册并赚取返佣。"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -3435,10 +3406,6 @@ msgstr "附属"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "全球网络"
-
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#~ msgid "Try Express"
-#~ msgstr "尝试快速"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"
@@ -4590,7 +4557,6 @@ msgid "Stop vesting & withdraw"
 msgstr "停止归属并提取"
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vestable esGMX"
 msgstr "可归属的 esGMX"
 
@@ -4846,14 +4812,6 @@ msgstr "发送中..."
 msgid "Insufficient liquidity for swap at min. receive amount"
 msgstr "按最低接收数量兑换时流动性不足"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Max capacity:"
-#~ msgstr "最大容量："
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Withdraw and unreserve GMX"
-#~ msgstr "提取并解除 GMX 锁定"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
@@ -5092,10 +5050,6 @@ msgstr "<0>您的钱包已切换到其他账户</0><1/><2>在 {0} 上签名需�
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
-
-#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
-#~ msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
-#~ msgstr "推荐码已被其他用户在 {takenNetworkNames} 上使用。来自这些网络的返佣不可用。"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5765,10 +5719,6 @@ msgstr "请求市场增加"
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Revenue calculator"
 msgstr "收益计算器"
-
-#: src/pages/Actions/SyntheticsActions.tsx
-#~ msgid "GMX {VERSION_NAME} {networkName} actions for all accounts"
-#~ msgstr "GMX {VERSION_NAME} {networkName} 所有账户的操作"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
@@ -6702,10 +6652,6 @@ msgstr "从您的钱包"
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
 msgstr ""
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-#~ msgid "Explore more"
-#~ msgstr "探索更多"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated"
 msgstr "设置已更新"
@@ -6824,10 +6770,6 @@ msgstr "领取完成"
 msgid "Open in explorer"
 msgstr "在浏览器中查看"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
-#~ msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin at liquidation"
 msgstr ""
@@ -6867,10 +6809,6 @@ msgstr "历史汇总"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
 msgstr "扣除所有费用后的盈亏"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Additional reserve required:"
-#~ msgstr "需要额外保留："
 
 #: landing/src/pages/Builders/StickyApplyBar.tsx
 msgid "Build on GMX. Get paid on every trade."
@@ -7109,10 +7047,6 @@ msgstr ""
 msgid "What's the minimum volume to qualify?"
 msgstr "符合条件的最低交易量是多少？"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Current reserved:"
-#~ msgstr "当前已预留："
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "支持"
@@ -7279,10 +7213,6 @@ msgstr "无法计算订单"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL CAP SHORT"
 msgstr "池上限 做空"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "GMX vault"
-#~ msgstr "GMX 金库"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request..."
@@ -7750,10 +7680,6 @@ msgstr "已减少"
 msgid "Selling"
 msgstr ""
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-#~ msgid "Recommended"
-#~ msgstr "推荐"
-
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -7966,6 +7892,7 @@ msgid "Order not found. May have been canceled or already executed"
 msgstr "未找到订单。可能已被取消或已执行"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting"
 msgstr "归属"
 
@@ -9506,10 +9433,6 @@ msgstr "在交易时段内，我们通常会在约 2 小时内回复。无需承
 msgid "Set limit price above mark price"
 msgstr ""
 
-#: src/pages/Earn/EarnPortfolioPage.tsx
-#~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-#~ msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "质押 {tokenSymbol} 奖励"
@@ -9892,10 +9815,6 @@ msgstr "余额"
 msgid "Vesting details changed. Review the updated collateral and continue vesting."
 msgstr "归属详情已更改。请查看更新后的抵押品并继续归属。"
 
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Vesting esGMX"
-msgstr "归属中的 esGMX"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force failures"
@@ -9955,11 +9874,6 @@ msgstr "总返佣"
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "单边流动性金库，通过主动对冲和再平衡以最小化无常损失"
-
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/SyntheticsActions.tsx
-#~ msgid "GMX V2 actions"
-#~ msgstr "GMX V2 操作"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
@@ -10222,10 +10136,6 @@ msgstr "交易者档案"
 msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Claimed"
-#~ msgstr "已领取"
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "不到一分钟"
@@ -10482,10 +10392,6 @@ msgstr "添加 esGMX 会延长您当前的归属期：您现有的代币将于 <
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "已用资本 = max(未平仓仓位抵押品总和 - 已实现盈亏 + 初始待处理盈亏)。"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-#~ msgid "Performance APY"
-#~ msgstr "绩效 APY"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -10614,10 +10520,6 @@ msgstr "{networkLabel} 上的 {addressLabel}"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Loading fees..."
 msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "{0} GMX"
-#~ msgstr "{0} GMX"
 
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Per qualifying trade"
@@ -12028,14 +11930,6 @@ msgstr "归属 {0} esGMX 还需要质押 {1} GMX 作为抵押品。您的钱包�
 msgid "What is GMX?"
 msgstr "什么是 GMX？"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Deposit submitted"
-#~ msgstr "存入已提交"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-#~ msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
-#~ msgstr ""
-
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Program start"
 msgstr "计划开始时间"
@@ -12268,6 +12162,10 @@ msgstr "GM 从单个市场赚取费用。GLV 持有多个 GM 代币，并在相�
 msgid "Featured markets:"
 msgstr "精选市场："
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Available to Vest"
+msgstr "可归属"
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the margin automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing margin on GMX<6/><7/>You can change this preference anytime in settings or when closing a position."
@@ -12296,10 +12194,6 @@ msgstr "深色"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirming..."
 msgstr "确认中..."
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Deposited:"
-#~ msgstr "已存入："
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
@@ -12740,10 +12634,6 @@ msgstr "直接在 <0>{chainName}</0> 上买入 {nativeTokenSymbol}"
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Limit Swap：当达到触发价格时兑换代币"
 
-#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-#~ msgid "See recommended section above to start"
-#~ msgstr "请参阅上方推荐部分以开始"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "获取 GMX 的提醒和公告，随时掌握您的交易、清算风险等信息"
@@ -12787,10 +12677,6 @@ msgstr "处理中..."
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading time limit expired. You're now using Express Trading."
 msgstr "One-Click Trading 时间限制已过期。您现在正在使用 Express Trading。"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#~ msgid "Affiliate vault"
-#~ msgstr "Affiliate 金库"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
@@ -13087,10 +12973,6 @@ msgstr "流动性仅在 {chainNames} 或 {lastChainName} 上可用。请切换�
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
 msgstr "转账历史"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-#~ msgid "MegaETH"
-#~ msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -13464,11 +13346,6 @@ msgstr "语言"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
-
-#: src/pages/Actions/ActionsRouter.tsx
-#: src/pages/Actions/ActionsRouter.tsx
-#~ msgid "GMX V1 actions"
-#~ msgstr "GMX V1 操作"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"

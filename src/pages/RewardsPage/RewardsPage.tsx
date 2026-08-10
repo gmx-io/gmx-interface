@@ -214,10 +214,14 @@ export function RewardsPage() {
           summaryUnavailable={Boolean(pageData.allTimeSummaryError && !pageData.allTimeSummaryLoaded)}
         />
       ) : activeTab === "history" ? (
-        <div className="flex flex-col gap-8">
-          <RewardsVestingFlow />
-          <RewardsHistoryTab chainId={chainId} account={account} config={config} />
-          <RewardsVestingFaq />
+        <div className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1620px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1">
+          <div className="flex min-w-0 flex-col gap-8">
+            <RewardsVestingFlow />
+            <RewardsHistoryTab chainId={chainId} account={account} config={config} />
+          </div>
+          <div className="sticky top-8 min-w-0 max-xl:static">
+            <RewardsVestingFaq />
+          </div>
         </div>
       ) : (
         <RewardsLeaderboardTab chainId={chainId} account={account} config={config} />
