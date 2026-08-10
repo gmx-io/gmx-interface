@@ -255,8 +255,8 @@ describe("RewardsVestingFlow", () => {
   it("renders the idle state from an empty on-chain snapshot", () => {
     renderFlow();
 
-    expect(screen.getByText("Vestable esGMX")).toBeDefined();
-    expect(screen.getByText("Vesting esGMX")).toBeDefined();
+    expect(screen.getByText("Available to Vest")).toBeDefined();
+    expect(screen.getByText("Vesting")).toBeDefined();
     expect(screen.getByText("Rewards")).toBeDefined();
     expect(screen.getAllByText("0").length).toBeGreaterThanOrEqual(3);
     expect(screen.getAllByText((text) => text.replace(/\s/g, "") === "=$0.00")).toHaveLength(3);
@@ -300,9 +300,9 @@ describe("RewardsVestingFlow", () => {
 
     renderFlow();
 
-    expect(screen.getByText("Vestable esGMX").parentElement?.parentElement?.textContent?.replace(/\s/g, "")).toContain(
-      "10esGMX"
-    );
+    expect(
+      screen.getByText("Available to Vest").parentElement?.parentElement?.textContent?.replace(/\s/g, "")
+    ).toContain("10esGMX");
   });
 
   it("shows wallet and pending reward esGMX together as vestable", () => {
@@ -318,9 +318,9 @@ describe("RewardsVestingFlow", () => {
 
     renderFlow();
 
-    expect(screen.getByText("Vestable esGMX").parentElement?.parentElement?.textContent?.replace(/\s/g, "")).toContain(
-      "100esGMX"
-    );
+    expect(
+      screen.getByText("Available to Vest").parentElement?.parentElement?.textContent?.replace(/\s/g, "")
+    ).toContain("100esGMX");
   });
 
   it("opens the vesting modal from the rewards summary deep link", async () => {
