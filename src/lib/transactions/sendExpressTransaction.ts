@@ -1,6 +1,7 @@
 import { TransactionRevertedError, TransactionRejectedError, SimulationFailedRpcError } from "@gelatocloud/gasless";
 import { encodePacked } from "viem";
 
+import { getUiApiUrl } from "config/api";
 import { ContractsChainId } from "config/chains";
 import { getRelayProvider } from "config/relay";
 import { GelatoPollingTiming, GmxRelayPollingTiming, metrics } from "lib/metrics";
@@ -30,20 +31,24 @@ export async function sendExpressTransaction(p: {
 }
 
 async function sendViaGmxRelay(p: { chainId: ContractsChainId; txnData: ExpressTxnData }): Promise<ExpressTxnResult> {
-  const { taskId } = await sendToGmxRelay({ chainId: p.chainId, txnData: p.txnData });
+  // the relay has to follow whichever API the rest of the UI is pointed at, or a test session would
+  // read from one environment and broadcast through another
+  const apiUrl = getUiApiUrl(p.chainId);
+
+  const { taskId } = await sendToGmxRelay({ chainId: p.chainId, txnData: p.txnData, apiUrl });
 
   return {
     taskId,
-    wait: makeGmxRelayResultWaiter(p.chainId, taskId),
+    wait: makeGmxRelayResultWaiter(p.chainId, taskId, apiUrl),
   };
 }
 
-function makeGmxRelayResultWaiter(chainId: ContractsChainId, taskId: string) {
+function makeGmxRelayResultWaiter(chainId: ContractsChainId, taskId: string, apiUrl: string | undefined) {
   return async (): Promise<TransactionWaiterResult> => {
     const timerId = `pollRelayTask ${taskId}`;
     metrics.startTimer(timerId);
 
-    const result = await waitForGmxRelayTask({ chainId, taskId });
+    const result = await waitForGmxRelayTask({ chainId, taskId, apiUrl });
 
     // `pending` here means the relay never reached a determinate outcome within the wait window;
     // surface it the same way Gelato surfaced a poll timeout, so on-chain events decide
