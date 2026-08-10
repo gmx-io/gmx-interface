@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 
 import type { OrderCreatedEventData, OrderStatus, PendingOrderData } from "./types";
-import { findMatchedOrderStatus, findOrderStatusForAllocation } from "./utils";
+import { findMatchedOrderStatus, findOrderStatusForAllocation, getRelayTaskUrl } from "./utils";
 
 function makePendingOrder(overrides: Partial<PendingOrderData> = {}): PendingOrderData {
   return {
@@ -138,5 +138,24 @@ describe("findMatchedOrderStatus", () => {
 
     expect(findOrderStatusForAllocation([cancelledCreatedStatus], pendingCreate)).toBeUndefined();
     expect(findMatchedOrderStatus([cancelledCreatedStatus], pendingCreate)).toBe(cancelledCreatedStatus);
+  });
+});
+
+describe("getRelayTaskUrl", () => {
+  const taskId = "0xtask";
+
+  it("offers no Gelato task page for a task the GMX relay issued", () => {
+    expect(getRelayTaskUrl({ relayProvider: "gmx", taskId, isDebug: true })).toBeUndefined();
+    expect(getRelayTaskUrl({ relayProvider: "gmx", taskId, isDebug: false })).toBeUndefined();
+  });
+
+  it("offers no task page when the provider was not recorded", () => {
+    expect(getRelayTaskUrl({ relayProvider: undefined, taskId, isDebug: true })).toBeUndefined();
+  });
+
+  it("keeps the Gelato task page for a task Gelato issued", () => {
+    expect(getRelayTaskUrl({ relayProvider: "gelato", taskId, isDebug: true })).toContain(
+      `https://api.gelato.digital/tasks/status/${taskId}/debug`
+    );
   });
 });

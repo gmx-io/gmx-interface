@@ -1,10 +1,10 @@
-import { TransactionRevertedError, TransactionRejectedError } from "@gelatocloud/gasless";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useLatest } from "react-use";
 
-import { isDevelopment } from "config/env";
+import { ContractsChainId } from "config/chains";
+import { getRelayProvider } from "config/relay";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -58,8 +58,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
-import { getTenderlyAccountParams } from "lib/tenderly";
-import { getGelatoRelayerForChain, getGelatoTaskDebugInfo } from "lib/transactions/sendExpressTransaction";
+import { waitForRelayTaskOutcome } from "lib/transactions/relayTaskStatus";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -79,7 +78,6 @@ import {
   DepositStatuses,
   EventLogData,
   EventTxnParams,
-  GelatoTaskStatus,
   GLVDepositCreatedEventData,
   OrderCreatedEventData,
   OrderStatuses,
@@ -94,6 +92,7 @@ import {
   PendingWithdrawalData,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
+  RelayTaskStatus,
   ShiftCreatedEventData,
   ShiftStatuses,
   SyntheticsEventsContextType,
@@ -101,7 +100,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMultichainEvents } from "./useMultichainEvents";
-import { extractGelatoError, getGelatoTaskUrl, getPendingOrderKey } from "./utils";
+import { extractRelayTaskError, getRelayTaskUrl, getPendingOrderKey } from "./utils";
 
 const SyntheticsEventsContext = createContext({});
 
@@ -156,12 +155,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [awaitingBackfillOrders, setAwaitingBackfillOrders] = useState<PendingOrderData[]>([]);
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
-  const [gelatoTaskStatuses, setGelatoTaskStatuses] = useState<{ [taskId: string]: GelatoTaskStatus }>({});
+  const [relayTaskStatuses, setRelayTaskStatuses] = useState<{ [taskId: string]: RelayTaskStatus }>({});
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
   const latestPendingExpressTxnParams = useLatest(pendingExpressTxnParams);
-  const latestGelatoTaskStatuses = useLatest(gelatoTaskStatuses);
+  const latestRelayTaskStatuses = useLatest(relayTaskStatuses);
   const pendingOrderToastIdRef = useRef<number>();
   const eventLogHandlers = useRef({});
 
@@ -1032,101 +1031,49 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [chainId, currentAccount]
   );
 
-  const pollingTaskIdsRef = useRef<Set<string>>(new Set());
-  const taskChainIdRef = useRef<Map<string, number>>(new Map());
+  // holds every task already handed to the poller, including ones that ended without a verdict and
+  // therefore wrote no status — those must not be picked up again on the next render
+  const polledTaskIdsRef = useRef<Set<string>>(new Set());
+  const taskChainIdRef = useRef<Map<string, ContractsChainId>>(new Map());
 
   useEffect(() => {
-    const taskIds = Object.values(pendingExpressTxnParams)
-      .map((p) => p.taskId)
-      .filter(
-        (id): id is string =>
-          Boolean(id) && !latestGelatoTaskStatuses.current[id!] && !pollingTaskIdsRef.current.has(id!)
-      );
+    const pendingTasks = Object.values(pendingExpressTxnParams).filter(
+      (p): p is Partial<PendingExpressTxnParams> & { taskId: string } =>
+        Boolean(p.taskId) && !latestRelayTaskStatuses.current[p.taskId!] && !polledTaskIdsRef.current.has(p.taskId!)
+    );
 
-    if (taskIds.length === 0) return;
+    if (pendingTasks.length === 0) return;
 
-    for (const taskId of taskIds) {
+    for (const { taskId, relayProvider } of pendingTasks) {
       if (!taskChainIdRef.current.has(taskId)) {
         taskChainIdRef.current.set(taskId, chainId);
       }
 
       const taskChainId = taskChainIdRef.current.get(taskId)!;
-      const relayer = getGelatoRelayerForChain(taskChainId);
 
-      if (!relayer) continue;
-
-      pollingTaskIdsRef.current.add(taskId);
+      polledTaskIdsRef.current.add(taskId);
 
       (async () => {
         try {
-          const receipt = await relayer.waitForReceipt({
-            id: taskId,
-            timeout: 120_000,
-            pollingInterval: 1_000,
-            throwOnReverted: true,
+          const outcome = await waitForRelayTaskOutcome({
+            chainId: taskChainId,
+            taskId,
+            // a task id is only meaningful to the relay that issued it, so an unrecorded provider
+            // has to fall back to the same choice the submit side made, not to a fixed one
+            relayProvider: relayProvider ?? getRelayProvider(taskChainId),
           });
 
-          if (isDevelopment()) {
-            const { accountSlug, projectSlug } = getTenderlyAccountParams();
-            getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
-              // eslint-disable-next-line no-console
-              console.log("gelatoDebugData", receipt, debugInfo)
-            );
-          }
-
-          setGelatoTaskStatuses((old) =>
-            setByKey(old, taskId, {
-              taskId,
-              statusCode: StatusCode.Success,
-              transactionHash: receipt.transactionHash,
-            })
-          );
-        } catch (e) {
-          if (e instanceof TransactionRevertedError) {
-            if (isDevelopment()) {
-              const { accountSlug, projectSlug } = getTenderlyAccountParams();
-              getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
-                // eslint-disable-next-line no-console
-                console.log("gelatoDebugData reverted", e, debugInfo)
-              );
-            }
-
-            setGelatoTaskStatuses((old) =>
-              setByKey(old, taskId, {
-                taskId,
-                statusCode: StatusCode.Reverted,
-                message: e.errorMessage,
-                transactionHash: e.receipt.transactionHash,
-                revertData: typeof e.errorData === "string" ? e.errorData : undefined,
-              })
-            );
-          } else if (e instanceof TransactionRejectedError) {
-            setGelatoTaskStatuses((old) =>
-              setByKey(old, taskId, {
-                taskId,
-                statusCode: StatusCode.Rejected,
-                message: e.errorMessage,
-              })
-            );
-          } else {
-            // eslint-disable-next-line no-console
-            console.error(e);
-
-            setGelatoTaskStatuses((old) =>
-              setByKey(old, taskId, {
-                taskId,
-                statusCode: StatusCode.Rejected,
-                message: e instanceof Error ? e.message : "Task status polling failed",
-              })
-            );
+          // no outcome means the relay never reached a verdict; leave the operation to be resolved
+          // by on-chain events instead of writing a status the toasts would report as a failure
+          if (outcome) {
+            setRelayTaskStatuses((old) => setByKey(old, taskId, { taskId, ...outcome }));
           }
         } finally {
-          pollingTaskIdsRef.current.delete(taskId);
           taskChainIdRef.current.delete(taskId);
         }
       })();
     }
-  }, [pendingExpressTxnParams, latestGelatoTaskStatuses, chainId]);
+  }, [pendingExpressTxnParams, latestRelayTaskStatuses, chainId]);
 
   useEffect(
     function notifyPendingExpressTxn() {
@@ -1144,8 +1091,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           return;
         }
 
-        if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
-          const status = gelatoTaskStatuses[pendingExpressTxn.taskId].statusCode;
+        if (pendingExpressTxn.taskId && pendingExpressTxn.key && relayTaskStatuses[pendingExpressTxn.taskId]) {
+          const status = relayTaskStatuses[pendingExpressTxn.taskId].statusCode;
 
           if (status === StatusCode.Success && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
             helperToast.success(pendingExpressTxn.successMessage);
@@ -1157,11 +1104,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             let isViewed = false;
 
             if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              const gelatoError = extractGelatoError(gelatoTaskStatuses[pendingExpressTxn.taskId]);
+              const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
 
-              sendTxnErrorMetric(pendingExpressTxn.metricId, gelatoError, "relayer");
+              sendTxnErrorMetric(pendingExpressTxn.metricId, relayError, "relayer");
 
-              const executionFeeErrorParams = getIsInsufficientExecutionFeeError(gelatoError);
+              const executionFeeErrorParams = getIsInsufficientExecutionFeeError(relayError);
 
               if (executionFeeErrorParams.isErrorMatched) {
                 const totastContent = getInsufficientExecutionFeeToastContent({
@@ -1170,7 +1117,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   chainId,
                   executionFeeBufferBps,
                   estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit ?? 0n,
-                  txUrl: getGelatoTaskUrl({
+                  txUrl: getRelayTaskUrl({
+                    relayProvider: pendingExpressTxn.relayProvider,
                     taskId: pendingExpressTxn.taskId,
                     isDebug: false,
                   }),
@@ -1193,7 +1141,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 isViewed = true;
               }
 
-              const invalidSignatureErrorParams = getIsInvalidSignatureError(gelatoError);
+              const invalidSignatureErrorParams = getIsInvalidSignatureError(relayError);
 
               if (invalidSignatureErrorParams.isErrorMatched) {
                 // Wait to ensure there is no race condition with the pending order toast
@@ -1243,7 +1191,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [
       chainId,
       executionFeeBufferBps,
-      gelatoTaskStatuses,
+      relayTaskStatuses,
       pendingExpressTxnParams,
       provider,
       setIsSettingsVisible,
@@ -1290,7 +1238,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       positionIncreaseEvents,
       positionDecreaseEvents,
       pendingExpressTxns: pendingExpressTxnParams,
-      gelatoTaskStatuses,
+      relayTaskStatuses,
       setPendingExpressTxn: (params: PendingExpressTxnParams) => {
         setPendingExpressTxnParams((old) => setByKey(old, params.key, params));
       },
@@ -1445,7 +1393,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     positionIncreaseEvents,
     positionDecreaseEvents,
     pendingExpressTxnParams,
-    gelatoTaskStatuses,
+    relayTaskStatuses,
     multichainEventsState,
     marketsInfoData,
     tokensData,

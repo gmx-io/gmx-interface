@@ -1,7 +1,8 @@
+import type { RelayProvider } from "config/relay";
 import { extendError } from "lib/errors";
 
 import type {
-  GelatoTaskStatus,
+  RelayTaskStatus,
   OrderStatus,
   PendingDepositData,
   PendingOrderData,
@@ -115,25 +116,46 @@ export function getPendingShiftKey(data: PendingShiftData) {
 
 const BYTECODE_REGEXP = /0x[a-fA-F0-9]+/;
 
-export function extractGelatoError(gelatoTaskStatus: GelatoTaskStatus) {
-  if (gelatoTaskStatus.revertData) {
-    return extendError(new Error(`data="${gelatoTaskStatus.revertData}"`), {
-      data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
+export function extractRelayTaskError(relayTaskStatus: RelayTaskStatus) {
+  if (relayTaskStatus.revertData) {
+    return extendError(new Error(`data="${relayTaskStatus.revertData}"`), {
+      data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
     });
   }
 
-  const bytecodeMatch = gelatoTaskStatus.message?.match(BYTECODE_REGEXP);
+  const bytecodeMatch = relayTaskStatus.message?.match(BYTECODE_REGEXP);
 
   if (bytecodeMatch) {
     const bytecode = bytecodeMatch[0];
     return extendError(new Error(`data="${bytecode}"`), {
-      data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
+      data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
     });
   }
 
-  return extendError(new Error(`Gelato task cancelled, unknown reason`), {
-    data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
+  return extendError(new Error(`Relay task cancelled, unknown reason`), {
+    data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
   });
+}
+
+export function getRelayTaskUrl({
+  relayProvider,
+  taskId,
+  isDebug,
+  tenderlyAccountSlug,
+  tenderlyProjectSlug,
+}: {
+  relayProvider: RelayProvider | undefined;
+  taskId: string | undefined;
+  isDebug: boolean;
+  tenderlyAccountSlug?: string;
+  tenderlyProjectSlug?: string;
+}) {
+  // only Gelato publishes a task page; a GMX Relay task id resolves to nothing on gelato.digital
+  if (relayProvider !== "gelato" || !taskId) {
+    return undefined;
+  }
+
+  return getGelatoTaskUrl({ taskId, isDebug, tenderlyAccountSlug, tenderlyProjectSlug });
 }
 
 export function getGelatoTaskUrl({

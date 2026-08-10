@@ -279,6 +279,7 @@ export function useOrderTxnCallbacks() {
             updatePendingExpressTxn({
               key: expressParams ? getExpressParamsKey(expressParams) : undefined,
               taskId: e.data.relayTaskId,
+              relayProvider: e.data.relayProvider,
             });
           } else if (e.data.type === "wallet") {
             const totalExecutionFee = tokensData

@@ -438,7 +438,7 @@ export function getInsufficientExecutionFeeToastContent({
   chainId: number;
   executionFeeBufferBps: number | undefined;
   estimatedExecutionGasLimit: bigint;
-  txUrl: string;
+  txUrl: string | undefined;
   errorMessage: string | undefined;
   shouldOfferExpress: boolean;
   setIsSettingsVisible: (isVisible: boolean) => void;
@@ -485,10 +485,16 @@ export function getInsufficientExecutionFeeToastContent({
         <br />
         <br />
         {suggestText}
-        <br />
-        <br />
-        <ExternalLink href={txUrl}>View</ExternalLink>
       </Trans>
+      {txUrl && (
+        <>
+          <br />
+          <br />
+          <ExternalLink href={txUrl}>
+            <Trans>View</Trans>
+          </ExternalLink>
+        </>
+      )}
       <br />
       <br />
       {errorMessage && <ToastifyDebug error={errorMessage} />}
