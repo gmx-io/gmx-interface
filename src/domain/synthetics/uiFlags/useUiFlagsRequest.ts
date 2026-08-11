@@ -20,6 +20,16 @@ export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): bo
   return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG]?.enabled !== false;
 }
 
+export const IS_EXPRESS_AVAILABLE_UI_FLAG = "isExpressAvailable";
+
+/**
+ * Fail-open: an unreachable keeper, or a chain that never published the flag, must not take express
+ * away from everyone. Only an explicit `false` disables it.
+ */
+export function getIsExpressAvailable(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled !== false;
+}
+
 const PERSISTED_API_FLAG_KEYS = [
   "apiMarkets",
   "apiPositions",
@@ -28,6 +38,8 @@ const PERSISTED_API_FLAG_KEYS = [
   "api50",
   "api100",
   IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG,
+  // a reload mid-incident must restore the last known value rather than blank-default on first paint
+  IS_EXPRESS_AVAILABLE_UI_FLAG,
 ];
 
 function getCacheKey(chainId: number): string {

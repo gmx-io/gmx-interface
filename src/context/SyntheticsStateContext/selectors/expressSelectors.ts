@@ -14,6 +14,7 @@ import {
   selectGasLimits,
   selectGasPaymentTokenAllowance,
   selectGasPrice,
+  selectIsExpressAvailableFlag,
   selectIsRelayRouterEnabled,
   selectIsSponsoredCallAvailable,
   selectL1ExpressOrderGasReference,
@@ -53,8 +54,9 @@ export const selectIsExpressTransactionAvailable = createSelector((q) => {
   const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
   const isRelayRouterEnabled = q(selectIsRelayRouterEnabled);
   const isSponsoredCallAvailable = q(selectIsSponsoredCallAvailable);
+  const isRelayAvailable = q(selectIsExpressAvailableFlag);
 
-  return isExpressOrdersEnabledSetting && isRelayRouterEnabled && isSponsoredCallAvailable;
+  return isExpressOrdersEnabledSetting && isRelayRouterEnabled && isSponsoredCallAvailable && isRelayAvailable;
 });
 
 function createSelectExpressFindSwapPath(selectGasPaymentTokenAddressSelector: GasPaymentTokenAddressSelector) {
