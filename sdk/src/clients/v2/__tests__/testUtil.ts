@@ -187,8 +187,8 @@ export function shouldRunTwap(): boolean {
   return process.env.GMX_TEST_TWAP === "1";
 }
 
-// Concurrent prepares are priced moments apart, so fees drift in the last digits.
-export function feesMatch(a: bigint, b: bigint): boolean {
+// Concurrent prepares are priced moments apart, so oracle-derived values drift in the last digits.
+export function withinOneBp(a: bigint, b: bigint): boolean {
   const diff = a > b ? a - b : b - a;
   return diff * 10_000n <= a;
 }
