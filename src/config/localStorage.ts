@@ -60,6 +60,8 @@ export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-w
 export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
 export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
 
+export const MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY = "margin-deposit-suggestion-hidden";
+
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";

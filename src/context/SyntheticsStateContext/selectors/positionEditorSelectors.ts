@@ -1,5 +1,6 @@
 import type { Address } from "viem";
 
+import { USD_DECIMALS } from "config/factors";
 import {
   getIsPositionInfoLoaded,
   getMinCollateralFactorForPosition,
@@ -11,7 +12,7 @@ import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
-import { selectPositionsInfoData, selectTokensData } from "./globalSelectors";
+import { selectOrdersInfoData, selectPositionsInfoData, selectTokensData } from "./globalSelectors";
 
 export const selectPositionEditorEditingPositionKey = (state: SyntheticsState) =>
   state.positionEditor.editingPositionKey;
@@ -82,6 +83,50 @@ export const selectPositionEditorSelectedCollateralToken = createSelector((q) =>
   }
 
   return { ...token, balanceType: TokenBalanceType.Wallet, balance: token.walletBalance };
+});
+
+export const selectPositionEditorDepositMode = (state: SyntheticsState) => state.positionEditor.depositMode;
+export const selectPositionEditorSetDepositMode = (state: SyntheticsState) => state.positionEditor.setDepositMode;
+
+export const selectPositionEditorTriggerPriceInputValue = (state: SyntheticsState) =>
+  state.positionEditor.triggerPriceInputValue;
+export const selectPositionEditorSetTriggerPriceInputValue = (state: SyntheticsState) =>
+  state.positionEditor.setTriggerPriceInputValue;
+
+export const selectPositionEditorReplacingOrderKey = (state: SyntheticsState) => state.positionEditor.replacingOrderKey;
+export const selectPositionEditorSetReplacingOrderKey = (state: SyntheticsState) =>
+  state.positionEditor.setReplacingOrderKey;
+
+export const selectPositionEditorAtPriceOpenRequest = (state: SyntheticsState) =>
+  state.positionEditor.atPriceOpenRequest;
+export const selectPositionEditorClearAtPriceOpenRequest = (state: SyntheticsState) =>
+  state.positionEditor.clearAtPriceOpenRequest;
+
+export const selectPositionEditorOpenAtPrice = (state: SyntheticsState) => state.positionEditor.openAtPrice;
+
+export const selectPositionEditorTriggerPrice = createSelector((q) => {
+  const triggerPriceInputValue = q(selectPositionEditorTriggerPriceInputValue);
+  const indexToken = q(selectPositionEditorPosition)?.indexToken;
+
+  if (!triggerPriceInputValue || !indexToken) return undefined;
+
+  let triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+
+  if (triggerPrice === 0n) {
+    triggerPrice = undefined;
+  } else if (triggerPrice !== undefined && indexToken.visualMultiplier) {
+    triggerPrice = triggerPrice / BigInt(indexToken.visualMultiplier);
+  }
+
+  return triggerPrice;
+});
+
+export const selectPositionEditorReplacingOrder = createSelector((q) => {
+  const replacingOrderKey = q(selectPositionEditorReplacingOrderKey);
+
+  if (!replacingOrderKey) return undefined;
+
+  return q((s) => selectOrdersInfoData(s)?.[replacingOrderKey]);
 });
 
 export const selectPositionEditorCollateralInputAmountAndUsd = createSelector((q) => {

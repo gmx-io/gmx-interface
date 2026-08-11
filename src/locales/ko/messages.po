@@ -393,6 +393,10 @@ msgstr "탐색"
 msgid "GM airdrop"
 msgstr "GM 에어드롭"
 
+#: src/components/PositionEditor/types.ts
+msgid "At price"
+msgstr "지정가"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "거래량"
@@ -412,6 +416,10 @@ msgstr "수익률 파밍"
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "로드맵"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price."
+msgstr "이 증거금 예치는 청산 전에 실행되지 않을 수 있습니다: 조건가가 예상 청산가 또는 그 너머에 있습니다."
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FULL MARKET"
@@ -444,6 +452,10 @@ msgstr "허가 상세 정보"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Network fees increased. Additional fee required."
 msgstr "네트워크 수수료가 인상되었습니다. 추가 수수료가 필요합니다."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+msgstr "이 증거금 예치는 실행되지 않을 수 있습니다: 조건가에서 포지션이 청산 요건을 상회하지 못합니다. 예치 금액을 늘리거나 조건가를 청산에서 더 멀리 설정하세요."
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
@@ -609,6 +621,10 @@ msgstr "미실현 수수료 기여분"
 msgid "Funding"
 msgstr "자금조달"
 
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Deposit margin"
+msgstr "증거금 예치"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
 msgstr "언스테이킹 중..."
@@ -757,6 +773,7 @@ msgstr "{networkName}의 모든 트레이더에 대한 GMX {VERSION_NAME} 액션
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "주문 체결가"
 
@@ -775,6 +792,10 @@ msgstr "코드가 등록되지 않은 네트워크: {nonTakenNetworkNamesJoined}
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Failed margin deposit"
+msgstr "증거금 예치 실패"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD pool"
@@ -1106,6 +1127,11 @@ msgstr "최대 네트워크 수수료 버퍼 정밀도는 0.01%입니다."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Replace margin deposit"
+msgstr "증거금 예치 교체"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
@@ -1573,6 +1599,7 @@ msgstr ""
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
 msgstr "최근 GMX 바이백 속도, 회원님의 스테이킹 파워 비율, 현재 스테이킹된 GMX + esGMX를 기반으로 한 지갑별 예상 연이율입니다. 실제 분배는 DAO 거버넌스에 따라 결정됩니다."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2083,6 +2110,11 @@ msgstr "계정 전송 완료"
 msgid "Discounts"
 msgstr ""
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient deposit at trigger price"
+msgstr "조건가에서 예치 금액 부족"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Borrow fee / day"
 msgstr "차입 수수료 / 일"
@@ -2496,6 +2528,10 @@ msgstr "지원되는 경우 직불/신용카드, Apple Pay 또는 Google Pay를 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
 msgstr "2위"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Auto-cancel order limit reached"
+msgstr "자동 취소 주문 한도 도달"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -2959,6 +2995,10 @@ msgstr "적격 보유 자산이 감지되지 않았습니다"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 먼저 연락드리지 않습니다. 공식 계정으로 \"I have feedback\"를 보내주십시오:"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Cancel margin deposit"
+msgstr "증거금 예치 취소"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "제휴사"
@@ -3146,6 +3186,7 @@ msgid "Current price"
 msgstr "현재 가격"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "Mark:"
@@ -3396,6 +3437,7 @@ msgstr "<0>입금</0> 또는 <1>구매</1> {wrappedNativeTokenSymbol}."
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
@@ -3584,6 +3626,10 @@ msgstr "GLV 볼트"
 msgid "Buy GMX from centralized services"
 msgstr "중앙화 서비스에서 GMX 구매"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit."
+msgstr "이 포지션의 자동 취소 주문 한도에 도달했습니다. 다른 증거금 예치를 생성하려면 기존 주문을 취소하세요."
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -3642,8 +3688,10 @@ msgstr "네 가지 진입 방법."
 msgid "Trader activity"
 msgstr "트레이더 활동"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Trigger price"
@@ -4153,6 +4201,10 @@ msgstr "네트워크 수수료를 위한 Gas가 부족합니다"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText}에서"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+msgstr "이 예치로는 조건가에서 포지션이 청산 요건을 상회하지 못합니다. 예치 금액을 늘리거나 조건가를 청산에서 더 멀리 설정하세요."
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -4837,6 +4889,10 @@ msgstr ""
 msgid "Liquidated"
 msgstr "청산됨"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Update margin deposit"
+msgstr "증거금 예치 업데이트"
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "사람들이 만들고 있는 것."
@@ -5157,6 +5213,10 @@ msgstr "마켓 스왑 요청"
 #: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
 msgid "Positions to close:"
 msgstr "종료할 포지션:"
+
+#: src/components/TradeBox/MarginDepositSuggestionCard.tsx
+msgid "Want to add margin without increasing your position size?"
+msgstr "포지션 크기를 늘리지 않고 증거금을 추가하시겠어요?"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -5857,6 +5917,7 @@ msgstr ""
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5885,6 +5946,7 @@ msgid "Apply to program"
 msgstr "프로그램 지원하기"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a price"
@@ -6792,6 +6854,10 @@ msgstr "Arbitrum에서 가격"
 msgid "Approval signing failed"
 msgstr "승인 서명 실패"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "margin deposit"
+msgstr "증거금 예치"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -7130,6 +7196,11 @@ msgstr "매도 요청을 실행하는 중…"
 msgid "Close short"
 msgstr ""
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/TradeHistory/keys.ts
+msgid "Create margin deposit"
+msgstr "증거금 예치 생성"
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "{0} claimed"
 msgstr "{0} 수령 완료"
@@ -7411,6 +7482,8 @@ msgstr "거버넌스 알림"
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -7828,6 +7901,10 @@ msgstr "{BLOCKCHAIN_COUNT} 블록체인에서"
 msgid "Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation. Consider lowering leverage or adding margin."
 msgstr "장외 시간 리스크: 이 마켓이 장외 시간 모드로 전환되면 이 포지션이 청산에 가까워질 수 있습니다. 레버리지를 낮추거나 증거금을 추가하는 것을 고려하세요."
 
+#: src/components/PositionEditor/types.ts
+msgid "Now"
+msgstr "즉시"
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -7841,6 +7918,10 @@ msgstr "종료가"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr "전송 실패"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Edit margin deposit: {suffix}"
+msgstr "증거금 예치 편집: {suffix}"
 
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
@@ -8065,6 +8146,7 @@ msgstr "거버넌스"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "취소"
@@ -8252,6 +8334,10 @@ msgstr "평균 사용 레버리지"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "손절매 취소"
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Adds margin without increasing your position size when the trigger price is reached."
+msgstr "조건가에 도달하면 포지션 크기를 늘리지 않고 증거금을 추가합니다."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
@@ -8877,6 +8963,10 @@ msgstr ""
 msgid "Claimed"
 msgstr "수령 완료"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Deposit amount"
+msgstr "예치 금액"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "1분 미만"
@@ -8898,6 +8988,7 @@ msgstr "더 많은 정보"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
@@ -9411,6 +9502,10 @@ msgstr "숏 포지션"
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 클래식 모드를 사용하세요."
+
+#: src/components/TradeBox/MarginDepositSuggestionCard.tsx
+msgid "Deposit margin at price"
+msgstr "지정가로 증거금 예치"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10163,6 +10258,7 @@ msgstr "순 청산 수수료 / 영향"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order trigger price"
 msgstr "주문 조건가"
 
@@ -10388,6 +10484,7 @@ msgstr ""
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -11004,6 +11101,10 @@ msgstr "Express 거래 데이터를 아직 불러오는 중입니다. 몇 초 �
 msgid "Nonce:"
 msgstr "Nonce:"
 
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
+msgstr "{txnTypeText} 증거금 예치: {amountText} ({indexTokenText} {longShortText})"
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr ""
@@ -11486,6 +11587,10 @@ msgstr "최종 가격"
 msgid "Cancelling {orderText}..."
 msgstr "{orderText} 취소 중…"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Execute margin deposit"
+msgstr "증거금 예치 실행"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Estimate your savings"
 msgstr "예상 절감액 확인하기"
@@ -11862,6 +11967,10 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 3월 20-27일"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
+msgstr "이 조건가는 예상 청산가 또는 그 너머에 있습니다. 증거금 예치는 대상이 되는 경우 청산 전에 시도되지만 실행이 보장되지는 않습니다."
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -12361,6 +12470,10 @@ msgstr "만료된 마켓 스왑"
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "졸업한 트레이더는 추천 프로그램의 졸업 기준에 도달하여 GMX 프로토콜 코드로 이동되었습니다."
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+msgid "Enter a new price"
+msgstr "새 가격을 입력하세요"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
@@ -12429,6 +12542,7 @@ msgstr "Express Trading이 활성화되었습니다. <0>설정</0>에서 비활�
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr ""
 
@@ -12475,6 +12589,7 @@ msgstr "액션 단위의 수수료와 가격 영향의 순 총합입니다. 값 
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below mark price"
 msgstr ""

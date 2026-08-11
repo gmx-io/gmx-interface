@@ -7,8 +7,13 @@ import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { TriggerThresholdType } from "sdk/utils/trade/types";
 
 import {
+  getConditionalDepositError,
+  getConditionalDepositWarning,
   getEditCollateralError,
   getIncreaseError,
+  getMarginDepositAutoCancelLimitMessage,
+  getMarginDepositBeyondLiqPriceMessage,
+  getMarginDepositInsufficientMessage,
   getNativeGasError,
   getSwapError,
   ValidationBannerErrorName,
@@ -284,6 +289,152 @@ describe("getEditCollateralError — min deposit covering pending fees", () => {
       maxWithdrawAmount: expandDecimals(100, 6),
     });
     expect(result.buttonErrorMessage).toBeUndefined();
+  });
+});
+
+const baseConditionalDepositParams = {
+  collateralDeltaAmount: expandDecimals(1000, 6),
+  collateralDeltaUsd: expandDecimals(1000, 30),
+  depositToken: toToken,
+  depositAmount: expandDecimals(1000, 6),
+  minDepositUsd: undefined,
+  isLong: true,
+  markPrice: expandDecimals(50_000, 30),
+  triggerPrice: expandDecimals(45_000, 30),
+  currentLiqPrice: expandDecimals(40_000, 30),
+  nextLiqPrice: expandDecimals(30_000, 30),
+  isAutoCancelLimitReached: false,
+};
+
+describe("getConditionalDepositError", () => {
+  it("passes a well-formed deposit", () => {
+    expect(getConditionalDepositError(baseConditionalDepositParams).buttonErrorMessage).toBeUndefined();
+  });
+
+  it("reuses the shared amount check", () => {
+    const result = getConditionalDepositError({
+      ...baseConditionalDepositParams,
+      collateralDeltaAmount: 0n,
+      collateralDeltaUsd: 0n,
+    });
+    expect(result.buttonErrorMessage).toBe("Enter an amount");
+  });
+
+  it("reuses the shared balance check", () => {
+    const result = getConditionalDepositError({
+      ...baseConditionalDepositParams,
+      depositAmount: expandDecimals(200_000, 6),
+    });
+    expect(result.buttonErrorMessage).toBe("Insufficient USDC balance");
+  });
+
+  it("reuses the shared min deposit check", () => {
+    const result = getConditionalDepositError({
+      ...baseConditionalDepositParams,
+      minDepositUsd: expandDecimals(2000, 30),
+    });
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.minDeposit);
+  });
+
+  it("requires a trigger price", () => {
+    expect(
+      getConditionalDepositError({ ...baseConditionalDepositParams, triggerPrice: undefined }).buttonErrorMessage
+    ).toBe("Enter a price");
+    expect(getConditionalDepositError({ ...baseConditionalDepositParams, triggerPrice: 0n }).buttonErrorMessage).toBe(
+      "Enter a price"
+    );
+  });
+
+  it("requires a long trigger below the mark price", () => {
+    const result = getConditionalDepositError({
+      ...baseConditionalDepositParams,
+      triggerPrice: expandDecimals(50_000, 30),
+    });
+    expect(result.buttonErrorMessage).toBe("Set trigger price below mark price");
+  });
+
+  it("requires a short trigger above the mark price", () => {
+    const result = getConditionalDepositError({
+      ...baseConditionalDepositParams,
+      isLong: false,
+      triggerPrice: expandDecimals(50_000, 30),
+      currentLiqPrice: expandDecimals(60_000, 30),
+      nextLiqPrice: expandDecimals(70_000, 30),
+    });
+    expect(result.buttonErrorMessage).toBe("Set trigger price above mark price");
+  });
+
+  it("blocks when the auto-cancel order limit is reached", () => {
+    const result = getConditionalDepositError({
+      ...baseConditionalDepositParams,
+      isAutoCancelLimitReached: true,
+    });
+    expect(result.buttonErrorMessage).toBe("Auto-cancel order limit reached");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.marginDepositAutoCancelLimit);
+  });
+
+  it("blocks when the deposit is insufficient at the trigger price", () => {
+    const result = getConditionalDepositError({
+      ...baseConditionalDepositParams,
+      nextLiqPrice: expandDecimals(46_000, 30),
+    });
+    expect(result.buttonErrorMessage).toBe("Insufficient deposit at trigger price");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.marginDepositInsufficient);
+  });
+
+  it("does not block when the trigger is only beyond the current liquidation price", () => {
+    const result = getConditionalDepositError({
+      ...baseConditionalDepositParams,
+      currentLiqPrice: expandDecimals(46_000, 30),
+    });
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+});
+
+describe("getConditionalDepositWarning", () => {
+  it("warns when the trigger is at or beyond the current liquidation price", () => {
+    expect(
+      getConditionalDepositWarning({
+        isLong: true,
+        triggerPrice: expandDecimals(45_000, 30),
+        currentLiqPrice: expandDecimals(46_000, 30),
+        nextLiqPrice: expandDecimals(30_000, 30),
+      })
+    ).toBe(getMarginDepositBeyondLiqPriceMessage());
+  });
+
+  it("stays silent for a safe trigger and for the blocking state", () => {
+    expect(
+      getConditionalDepositWarning({
+        isLong: true,
+        triggerPrice: expandDecimals(45_000, 30),
+        currentLiqPrice: expandDecimals(40_000, 30),
+        nextLiqPrice: expandDecimals(30_000, 30),
+      })
+    ).toBeUndefined();
+
+    expect(
+      getConditionalDepositWarning({
+        isLong: true,
+        triggerPrice: expandDecimals(45_000, 30),
+        currentLiqPrice: expandDecimals(46_000, 30),
+        nextLiqPrice: expandDecimals(46_000, 30),
+      })
+    ).toBeUndefined();
+  });
+});
+
+describe("margin deposit banner copy", () => {
+  it("exposes the exact blocking and warning messages", () => {
+    expect(getMarginDepositAutoCancelLimitMessage()).toBe(
+      "Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit."
+    );
+    expect(getMarginDepositInsufficientMessage()).toBe(
+      "This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+    );
+    expect(getMarginDepositBeyondLiqPriceMessage()).toBe(
+      "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
+    );
   });
 });
 

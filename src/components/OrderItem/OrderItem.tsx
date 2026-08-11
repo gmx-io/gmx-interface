@@ -31,6 +31,7 @@ import {
   isSwapOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { PositionsInfoData, getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
@@ -334,6 +335,19 @@ function SizeWithIcon({
     );
   }
 
+  // A margin deposit has no size, so its deposited amount is shown instead
+  if (isMarginDepositOrder(order)) {
+    const depositToken = order.initialCollateralToken;
+
+    return (
+      <span className={className}>
+        {formatBalanceAmount(order.initialCollateralDeltaAmount, depositToken.decimals, depositToken.symbol, {
+          isStable: depositToken.isStable,
+        })}
+      </span>
+    );
+  }
+
   const sizeText = formatUsd(sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n), {
     displayPlus: true,
   });
@@ -559,7 +573,9 @@ function TriggerPrice({
             <StatsTooltipRow
               label={t`Acceptable price`}
               value={
-                isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
+                isStopLossOrderType(positionOrder.orderType) ||
+                isStopIncreaseOrderType(positionOrder.orderType) ||
+                isMarginDepositOrder(positionOrder)
                   ? "N/A"
                   : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
                       displayDecimals: priceDecimals,
@@ -958,7 +974,9 @@ function getSwapRatioText(order: OrderInfo) {
 function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?: string }) {
   const { errors, level } = useOrderErrors(order.key);
 
-  const handle = <span className={className}>{getNameByOrderType(order.orderType, order.isTwap)}</span>;
+  const typeLabel = isMarginDepositOrder(order) ? t`Deposit margin` : getNameByOrderType(order.orderType, order.isTwap);
+
+  const handle = <span className={className}>{typeLabel}</span>;
 
   if (errors.length === 0) {
     return <>{handle}</>;

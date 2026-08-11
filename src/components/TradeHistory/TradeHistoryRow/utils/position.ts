@@ -10,6 +10,7 @@ import {
   isLiquidationOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import type { SettlementPositionChange } from "domain/synthetics/tradeHistory/useCloseSettlement";
@@ -117,6 +118,14 @@ export const formatPositionMessage = (
   }
 
   const isFullClose = isTriggerDecreaseOrderType(ot) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd);
+
+  // Zero-size limit increase: adds margin at a trigger price, so it is presented by its collateral, not its size.
+  const isMarginDeposit = isMarginDepositOrder({
+    orderType: ot,
+    sizeDeltaUsd,
+    initialCollateralDeltaAmount: collateralDeltaAmount,
+    isTwap: Boolean(tradeAction.twapParams),
+  });
 
   const sizeDeltaText = isFullClose
     ? t`Full position close`
@@ -314,6 +323,72 @@ export const formatPositionMessage = (
       };
     }
     //#endregion Twap
+    //#region MarginDeposit
+  } else if (
+    isMarginDeposit &&
+    (ev === TradeActionType.OrderCreated ||
+      ev === TradeActionType.OrderUpdated ||
+      ev === TradeActionType.OrderCancelled)
+  ) {
+    const customPrice = triggerPriceInequality + formattedTriggerPrice;
+    const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
+
+    result = {
+      action: i18n._(actionTextMap[`MarginDeposit-${ev}`]!),
+      size: formattedCollateralDelta,
+      price: customPrice,
+      priceComment: lines(t`Trigger price for the order`),
+      triggerPrice: customPrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
+    };
+  } else if (isMarginDeposit && ev === TradeActionType.OrderExecuted) {
+    const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
+
+    result = {
+      action: i18n._(actionTextMap["MarginDeposit-OrderExecuted"]!),
+      size: formattedCollateralDelta,
+      priceComment: lines(
+        t`Mark price for the order`,
+        "",
+        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
+        ...priceImpactLines
+      ),
+      triggerPrice: triggerPriceInequality + formattedTriggerPrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
+    };
+  } else if (isMarginDeposit && ev === TradeActionType.OrderFrozen) {
+    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
+    const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
+    const customPrice = triggerPriceInequality + formattedTriggerPrice;
+
+    result = {
+      action: i18n._(actionTextMap["MarginDeposit-OrderFrozen"]!),
+      size: formattedCollateralDelta,
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name, false, error.args),
+          state: "error",
+        }),
+      price: customPrice,
+      priceComment: lines(
+        t`Trigger price for the order`,
+        error?.args?.price !== undefined ? "" : undefined,
+        error?.args?.price !== undefined
+          ? infoRow(
+              t`Order execution price`,
+              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                displayDecimals: marketPriceDecimals,
+                visualMultiplier: tradeAction.indexToken.visualMultiplier,
+              })
+            )
+          : undefined
+      ),
+      triggerPrice: customPrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
+      isActionError: true,
+    };
+    //#endregion MarginDeposit
     //#region LimitIncrease and StopIncrease
   } else if (
     ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderCreated) ||

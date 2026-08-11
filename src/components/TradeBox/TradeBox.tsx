@@ -123,6 +123,7 @@ import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { LiquidatableIncreaseWarningCard } from "./LiquidatableIncreaseWarningCard";
+import { MarginDepositSuggestionCard } from "./MarginDepositSuggestionCard";
 import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
@@ -215,6 +216,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
+    marginDepositSuggestionHidden,
+    setMarginDepositSuggestionHidden,
   } = useSelector(selectTradeboxFormState);
 
   const isTwapModeAvailable = useMemo(
@@ -1230,6 +1233,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 .
               </Trans>
             </AlertInfoCard>
+          )}
+          {!marginDepositSuggestionHidden && (
+            <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}
           {showIncreaseLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
           {gasPaymentTokenWarningContent && (

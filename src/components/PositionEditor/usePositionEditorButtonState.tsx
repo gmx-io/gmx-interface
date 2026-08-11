@@ -19,13 +19,18 @@ import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/se
 import {
   selectBlockTimestampData,
   selectMarketsInfoData,
+  selectMaxAutoCancelOrders,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorDepositMode,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
+  selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
+  selectPositionEditorTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -47,8 +52,11 @@ import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMarkPrice, getMaxWithdrawAmount, getMinRequiredCollateralUsdForPosition } from "domain/synthetics/trade";
 import {
   getCommonError,
+  getConditionalDepositError,
   getEditCollateralError,
   getExpressError,
+  getMarginDepositAutoCancelLimitMessage,
+  getMarginDepositInsufficientMessage,
   takeValidationResult,
   ValidationBannerErrorName,
   ValidationButtonTooltipName,
@@ -88,6 +96,8 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
+import { getIsAutoCancelLimitReached } from "./marginDepositAutoCancel";
+import { buildMarginDepositBatchParams } from "./marginDepositBatchParams";
 import { OPERATION_LABELS, Operation } from "./types";
 
 type PositionEditorButtonState = {
@@ -102,7 +112,7 @@ type PositionEditorButtonState = {
 };
 
 export function usePositionEditorButtonState(operation: Operation): PositionEditorButtonState {
-  const [, setEditingPositionKey] = usePositionEditorPositionState();
+  const [editingPositionKey, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
   const { chainId, srcChainId } = useChainId();
   const { shouldDisableValidationForTesting } = useSettings();
@@ -125,8 +135,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const depositMode = useSelector(selectPositionEditorDepositMode);
+  const triggerPrice = useSelector(selectPositionEditorTriggerPrice);
+  const replacingOrderKey = useSelector(selectPositionEditorReplacingOrderKey);
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(editingPositionKey));
+  const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
 
   const isDeposit = operation === Operation.Deposit;
+  const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
 
   const { executionFee } = usePositionEditorFees({
     operation,
@@ -162,6 +178,28 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       !selectedCollateralToken
     ) {
       return undefined;
+    }
+
+    if (isAtPriceDeposit) {
+      if (triggerPrice === undefined) {
+        return undefined;
+      }
+
+      return buildMarginDepositBatchParams({
+        chainId,
+        receiver: account,
+        executionFeeAmount: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
+        referralCode: userReferralInfo?.referralCodeForTxn,
+        collateralTokenAddress: position.collateralTokenAddress,
+        collateralDeltaAmount,
+        triggerPrice,
+        isLong: position.isLong,
+        marketAddress: position.marketAddress,
+        indexTokenAddress: position.indexToken.address,
+        allowedSlippage,
+        replacingOrderKey,
+      });
     }
 
     let createOrderParams: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams>;
@@ -235,15 +273,18 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     chainId,
     collateralDeltaAmount,
     executionFee,
+    isAtPriceDeposit,
     isDeposit,
     markPrice,
     marketsInfoData,
     position,
     receiveUsd,
+    replacingOrderKey,
     selectedCollateralAddress,
     selectedCollateralToken,
     signer,
     tokensData,
+    triggerPrice,
     userReferralInfo?.referralCodeForTxn,
   ]);
 
@@ -363,6 +404,12 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     setCollateralInputValue(formatAmountFree(minDepositAmount, selectedCollateralToken.decimals));
   }, [minDepositUsd, selectedCollateralToken, setCollateralInputValue]);
 
+  // deposit auto-cancel is mandatory, so the limit blocks instead of downgrading like TP/SL does
+  const isAutoCancelLimitReached = useMemo(
+    () => getIsAutoCancelLimitReached({ positionOrders, replacingOrderKey, maxAutoCancelOrders }),
+    [maxAutoCancelOrders, positionOrders, replacingOrderKey]
+  );
+
   const validationResult: ValidationResult = useMemo(() => {
     const commonError = getCommonError({
       chainId,
@@ -374,6 +421,29 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       expressParams,
       tokensData,
     });
+
+    if (isAtPriceDeposit) {
+      const conditionalDepositError = getConditionalDepositError({
+        collateralDeltaAmount,
+        collateralDeltaUsd,
+        depositToken: selectedCollateralToken,
+        depositAmount: collateralDeltaAmount,
+        minDepositUsd,
+        isLong: Boolean(position?.isLong),
+        markPrice,
+        triggerPrice,
+        currentLiqPrice: position?.liquidationPrice,
+        nextLiqPrice,
+        isAutoCancelLimitReached,
+      });
+
+      return takeValidationResult(
+        commonError,
+        multipleWalletExtensionsChainError,
+        conditionalDepositError,
+        expressError
+      );
+    }
 
     const editCollateralError = getEditCollateralError({
       collateralDeltaAmount,
@@ -399,6 +469,9 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     tokensData,
     collateralDeltaAmount,
     collateralDeltaUsd,
+    isAtPriceDeposit,
+    isAutoCancelLimitReached,
+    markPrice,
     nextLeverage,
     nextLiqPrice,
     isDeposit,
@@ -406,6 +479,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     selectedCollateralToken,
     minDepositUsd,
     maxWithdrawAmount,
+    triggerPrice,
   ]);
 
   const errorTooltipContent = useMemo(() => {
@@ -431,6 +505,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   }, [detectAndSetMaxSize, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   const errorBannerContent = useMemo(() => {
+    if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositAutoCancelLimit) {
+      return getMarginDepositAutoCancelLimitMessage();
+    }
+
+    if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositInsufficient) {
+      return getMarginDepositInsufficientMessage();
+    }
+
     if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.minDeposit) {
       return null;
     }
@@ -472,7 +554,11 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return;
     }
 
-    const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
+    const orderType = isAtPriceDeposit
+      ? OrderType.LimitIncrease
+      : isDeposit
+        ? OrderType.MarketIncrease
+        : OrderType.MarketDecrease;
 
     const metricData = initEditCollateralMetricData({
       collateralToken: selectedCollateralToken,
@@ -638,8 +724,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     };
   }
 
+  const submitLabel = isAtPriceDeposit
+    ? replacingOrderKey !== undefined
+      ? t`Replace margin deposit`
+      : t`Create margin deposit`
+    : localizedOperationLabels[operation];
+
   return {
-    text: validationResult.buttonErrorMessage || localizedOperationLabels[operation],
+    text: validationResult.buttonErrorMessage || submitLabel,
     disabled: Boolean(validationResult.buttonErrorMessage) && !shouldDisableValidationForTesting,
     ...commonParams,
   };

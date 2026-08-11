@@ -328,7 +328,10 @@ export function useTradeboxButtonState({
           break;
         }
 
+        // PositionEditor-only states, never produced by trade box validation
         case ValidationButtonTooltipName.minDeposit:
+        case ValidationButtonTooltipName.marginDepositAutoCancelLimit:
+        case ValidationButtonTooltipName.marginDepositInsufficient:
           break;
 
         default:

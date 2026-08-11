@@ -560,6 +560,9 @@ const selectTradeboxSwitchTokenAddresses = (s: SyntheticsState) => s.tradebox.sw
 const selectTradeboxAvailableTradeModes = (s: SyntheticsState) => s.tradebox.availableTradeModes;
 const selectTradeboxLimitPriceWarningHidden = (s: SyntheticsState) => s.tradebox.limitPriceWarningHidden;
 const selectTradeboxSetLimitPriceWarningHidden = (s: SyntheticsState) => s.tradebox.setLimitPriceWarningHidden;
+const selectTradeboxMarginDepositSuggestionHidden = (s: SyntheticsState) => s.tradebox.marginDepositSuggestionHidden;
+const selectTradeboxSetMarginDepositSuggestionHidden = (s: SyntheticsState) =>
+  s.tradebox.setMarginDepositSuggestionHidden;
 
 export const selectTradeboxFormState = createSelector((q) => {
   return {
@@ -595,6 +598,8 @@ export const selectTradeboxFormState = createSelector((q) => {
     setDuration: q(selectTradeboxSetTwapDuration),
     limitPriceWarningHidden: q(selectTradeboxLimitPriceWarningHidden),
     setLimitPriceWarningHidden: q(selectTradeboxSetLimitPriceWarningHidden),
+    marginDepositSuggestionHidden: q(selectTradeboxMarginDepositSuggestionHidden),
+    setMarginDepositSuggestionHidden: q(selectTradeboxSetMarginDepositSuggestionHidden),
   };
 });
 

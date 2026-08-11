@@ -393,6 +393,10 @@ msgstr "Descubrir"
 msgid "GM airdrop"
 msgstr "Airdrop de GM"
 
+#: src/components/PositionEditor/types.ts
+msgid "At price"
+msgstr "A precio"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "Volumen"
@@ -412,6 +416,10 @@ msgstr "Yield farming"
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "Hoja de Ruta"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price."
+msgstr "Es posible que este depósito de margen no se ejecute antes de la liquidación: su activador está en o más allá del precio de liquidación estimado."
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FULL MARKET"
@@ -444,6 +452,10 @@ msgstr "Detalles del permiso"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Network fees increased. Additional fee required."
 msgstr "Las comisiones de red han aumentado. Se requiere una comisión adicional."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+msgstr "Es posible que este depósito de margen no se ejecute: no dejaría la posición por encima del requisito de liquidación al precio de activación. Aumenta el importe del depósito o aleja el activador de la liquidación."
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
@@ -609,6 +621,10 @@ msgstr "Contribución de comisiones no realizadas"
 msgid "Funding"
 msgstr "Financiación"
 
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Deposit margin"
+msgstr "Depositar margen"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
 msgstr "Retirando del staking..."
@@ -757,6 +773,7 @@ msgstr "Acciones de GMX {VERSION_NAME} de todos los traders en {networkName}"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "Precio de ejecución de la orden"
 
@@ -775,6 +792,10 @@ msgstr "Código no registrado en: {nonTakenNetworkNamesJoined}. Cambie de red pa
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Failed margin deposit"
+msgstr "Depósito de margen fallido"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD pool"
@@ -1106,6 +1127,11 @@ msgstr "La precisión máxima del buffer de comisión de red es 0.01%"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Replace margin deposit"
+msgstr "Reemplazar depósito de margen"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
@@ -1573,6 +1599,7 @@ msgstr ""
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
 msgstr "Tasa anualizada estimada específica de tu monedero, basada en el ritmo reciente de recompra de GMX, tu participación en el staking power y tu GMX + esGMX actualmente en stake. La distribución real está sujeta a la gobernanza de la DAO."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2083,6 +2110,11 @@ msgstr "Completar transferencia de cuenta"
 msgid "Discounts"
 msgstr ""
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient deposit at trigger price"
+msgstr "Depósito insuficiente al precio de activación"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Borrow fee / day"
 msgstr "Comisión de préstamo / día"
@@ -2496,6 +2528,10 @@ msgstr "Use tarjeta de débito/crédito, Apple Pay o Google Pay donde esté disp
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
 msgstr "2.º puesto"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Auto-cancel order limit reached"
+msgstr "Límite de órdenes con cancelación automática alcanzado"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -2959,6 +2995,10 @@ msgstr "No se detectaron tenencias elegibles"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "Ayúdenos a mejorar GMX. Por seguridad, no le contactaremos primero. Envíe \"I have feedback\" a nuestra cuenta oficial:"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Cancel margin deposit"
+msgstr "Cancelar depósito de margen"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "Afiliados"
@@ -3146,6 +3186,7 @@ msgid "Current price"
 msgstr "Precio actual"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "Mark:"
@@ -3396,6 +3437,7 @@ msgstr "<0>Depositar</0> o <1>comprar</1> {wrappedNativeTokenSymbol}."
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
@@ -3584,6 +3626,10 @@ msgstr "Bóvedas GLV"
 msgid "Buy GMX from centralized services"
 msgstr "Comprar GMX en servicios centralizados"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit."
+msgstr "Se alcanzó el límite de órdenes con cancelación automática para esta posición. Cancela una orden existente para crear otro depósito de margen."
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -3642,8 +3688,10 @@ msgstr "Cuatro formas de entrar."
 msgid "Trader activity"
 msgstr "Actividad de traders"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Trigger price"
@@ -4153,6 +4201,10 @@ msgstr "Gas insuficiente para las comisiones de red"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} a"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+msgstr "Este depósito no dejaría la posición por encima de su requisito de liquidación al precio de activación. Aumenta el importe del depósito o aleja el activador de la liquidación."
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -4837,6 +4889,10 @@ msgstr ""
 msgid "Liquidated"
 msgstr "Liquidado"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Update margin deposit"
+msgstr "Actualizar depósito de margen"
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "Lo que la gente está construyendo."
@@ -5157,6 +5213,10 @@ msgstr "Solicitar Intercambio de Mercado"
 #: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
 msgid "Positions to close:"
 msgstr "Posiciones por cerrar:"
+
+#: src/components/TradeBox/MarginDepositSuggestionCard.tsx
+msgid "Want to add margin without increasing your position size?"
+msgstr "¿Quieres añadir margen sin aumentar el tamaño de tu posición?"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -5857,6 +5917,7 @@ msgstr ""
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5885,6 +5946,7 @@ msgid "Apply to program"
 msgstr "Solicitar acceso"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a price"
@@ -6792,6 +6854,10 @@ msgstr "Precio en Arbitrum"
 msgid "Approval signing failed"
 msgstr "Error en la firma de aprobación"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "margin deposit"
+msgstr "depósito de margen"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -7130,6 +7196,11 @@ msgstr "Ejecutando solicitud de venta…"
 msgid "Close short"
 msgstr ""
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/TradeHistory/keys.ts
+msgid "Create margin deposit"
+msgstr "Crear depósito de margen"
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "{0} claimed"
 msgstr "{0} reclamado"
@@ -7411,6 +7482,8 @@ msgstr "Alertas de gobernanza"
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -7828,6 +7901,10 @@ msgstr "desde {BLOCKCHAIN_COUNT} blockchains"
 msgid "Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation. Consider lowering leverage or adding margin."
 msgstr "Riesgo fuera de horario: cuando este mercado pase al modo fuera de horario, esta posición podría estar cerca de la liquidación. Considere reducir el apalancamiento o añadir margen."
 
+#: src/components/PositionEditor/types.ts
+msgid "Now"
+msgstr "Ahora"
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -7841,6 +7918,10 @@ msgstr "Precio de salida"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr "Transferencia fallida"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Edit margin deposit: {suffix}"
+msgstr "Editar depósito de margen: {suffix}"
 
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
@@ -8065,6 +8146,7 @@ msgstr "Gobernanza"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Cancelar"
@@ -8252,6 +8334,10 @@ msgstr "Apalancamiento medio utilizado"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "Cancelar Stop-Loss"
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Adds margin without increasing your position size when the trigger price is reached."
+msgstr "Añade margen sin aumentar el tamaño de tu posición cuando se alcanza el precio de activación."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
@@ -8877,6 +8963,10 @@ msgstr ""
 msgid "Claimed"
 msgstr "Reclamado"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Deposit amount"
+msgstr "Importe del depósito"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "menos de un minuto"
@@ -8898,6 +8988,7 @@ msgstr "Más información"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
@@ -9411,6 +9502,10 @@ msgstr "Posiciones cortas"
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "Tu wallet no puede firmar mensajes. Usa el modo Clásico para operar."
+
+#: src/components/TradeBox/MarginDepositSuggestionCard.tsx
+msgid "Deposit margin at price"
+msgstr "Depositar margen a precio"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10163,6 +10258,7 @@ msgstr "Comisiones netas de cierre / impacto"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order trigger price"
 msgstr "Precio de activación de la orden"
 
@@ -10388,6 +10484,7 @@ msgstr ""
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -11004,6 +11101,10 @@ msgstr "Los datos de la transacción Express aún se están cargando. Inténtelo
 msgid "Nonce:"
 msgstr "Nonce:"
 
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
+msgstr "{txnTypeText} depósito de margen: {amountText} a {indexTokenText} {longShortText}"
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr ""
@@ -11486,6 +11587,10 @@ msgstr "ÚLTIMO PRECIO"
 msgid "Cancelling {orderText}..."
 msgstr "Cancelando {orderText}…"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Execute margin deposit"
+msgstr "Ejecutar depósito de margen"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Estimate your savings"
 msgstr "Calcule su ahorro"
@@ -11862,6 +11967,10 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
+msgstr "Este activador está en o más allá del precio de liquidación estimado. El depósito de margen se intentará antes de la liquidación cuando sea elegible, pero la ejecución no está garantizada."
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -12361,6 +12470,10 @@ msgstr "Intercambio de mercado vencido"
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "Los traders graduados fueron trasladados a un código del protocolo GMX tras alcanzar el umbral de graduación del programa de referidos."
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+msgid "Enter a new price"
+msgstr "Introduce un nuevo precio"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
@@ -12429,6 +12542,7 @@ msgstr "Express Trading activado. Desactivar en <0>configuración</0>"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr ""
 
@@ -12475,6 +12589,7 @@ msgstr "Total neto de comisiones e impacto en el precio a nivel de acción. Pasa
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below mark price"
 msgstr ""

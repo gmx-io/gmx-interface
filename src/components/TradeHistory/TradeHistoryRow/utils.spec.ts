@@ -4,13 +4,17 @@ import { describe, expect, it } from "vitest";
 import { OrderType } from "domain/synthetics/orders";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
 import { MaxUint256, PRECISION, applyFactor, formatUsd } from "lib/numbers";
+import { USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
 
 import {
+  cancelMarginDeposit,
   cancelOrderIncreaseLong,
+  createMarginDeposit,
   createOrderDecreaseLong,
   createOrderIncreaseLong,
   createOrderStopMarketLong,
   deposit1Usd,
+  executeMarginDeposit,
   executeOrderIncreaseLong,
   executeOrderMarketIncreaseLongWithFee,
   executeOrderStopMarketLong,
@@ -18,16 +22,18 @@ import {
   executeSwap,
   executeTwapIncreaseWithFee,
   failedSwap,
+  frozenMarginDeposit,
   frozenOrderIncreaseShort,
   increaseLongETH,
   liquidated,
   requestIncreasePosition,
   requestSwap,
   undefinedOrder,
+  updateMarginDeposit,
   withdraw1Usd,
 } from "./mocks";
 import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
-import { getErrorTooltipTitle } from "./utils/shared";
+import { INEQUALITY_GT, INEQUALITY_LT, getErrorTooltipTitle } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 i18n.load({ en: {} });
@@ -888,6 +894,82 @@ describe("TradeHistoryRow helpers", () => {
         ],
       }
     );
+  });
+
+  describe("margin deposits", () => {
+    it("labels every event and shows the deposited collateral as the size", () => {
+      const created = formatPositionMessage(createMarginDeposit, minCollateralUsd);
+      expect(created.action).toBe("Create margin deposit");
+      expect(created.size).toBe("0.25000 WETH");
+      expect(created.price).toBe(`${INEQUALITY_LT}$ 1.00`);
+      expect(created.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+      expect(created.priceComment).toEqual(["Trigger price for the order"]);
+
+      const updated = formatPositionMessage(updateMarginDeposit, minCollateralUsd);
+      expect(updated.action).toBe("Update margin deposit");
+      expect(updated.size).toBe("0.25000 WETH");
+      expect(updated.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+
+      const cancelled = formatPositionMessage(cancelMarginDeposit, minCollateralUsd);
+      expect(cancelled.action).toBe("Cancel margin deposit");
+      expect(cancelled.size).toBe("0.25000 WETH");
+      expect(cancelled.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+
+      const executed = formatPositionMessage(executeMarginDeposit, minCollateralUsd);
+      expect(executed.action).toBe("Execute margin deposit");
+      expect(executed.size).toBe("500.00 USDC");
+      expect(executed.triggerPrice).toBe(`${INEQUALITY_GT}$ 0.83600`);
+      expect(executed.priceComment).toContainEqual({
+        key: "Order trigger price",
+        value: `${INEQUALITY_GT}$ 0.83600`,
+      });
+
+      const frozen = formatPositionMessage(frozenMarginDeposit, minCollateralUsd);
+      expect(frozen.action).toBe("Failed margin deposit");
+      expect(frozen.size).toBe("250.00 USDC.e");
+      expect(frozen.price).toBe(`${INEQUALITY_GT}$ 27,210.00`);
+      expect(frozen.triggerPrice).toBe(`${INEQUALITY_GT}$ 27,210.00`);
+      expect(frozen.isActionError).toBe(true);
+    });
+
+    it("never renders a zero USD size", () => {
+      const marginDeposits = [
+        createMarginDeposit,
+        updateMarginDeposit,
+        cancelMarginDeposit,
+        executeMarginDeposit,
+        frozenMarginDeposit,
+      ];
+
+      for (const marginDeposit of marginDeposits) {
+        expect(formatPositionMessage(marginDeposit, minCollateralUsd).size).not.toContain("$");
+      }
+    });
+
+    it("reads as cancelled for user initiated cancels, not expired", () => {
+      const userCancelled = { ...cancelMarginDeposit, reason: USER_INITIATED_CANCEL };
+
+      expect(formatPositionMessage(userCancelled, minCollateralUsd).action).toBe("Cancel margin deposit");
+    });
+
+    it("leaves limit increases with a size untouched", () => {
+      const details = formatPositionMessage(createOrderIncreaseLong, minCollateralUsd);
+
+      expect(details.action).toBe("Create Limit");
+      expect(details.size).toBe("+$ 2.64");
+    });
+
+    it("leaves zero size twap increases untouched", () => {
+      const twapDeposit = {
+        ...createMarginDeposit,
+        twapParams: { twapGroupId: "0xtwap-group-deposit", numberOfParts: 3 },
+      };
+
+      const details = formatPositionMessage(twapDeposit, minCollateralUsd);
+
+      expect(details.action).toBe("Create TWAP");
+      expect(details.price).toBe("N/A");
+    });
   });
 
   describe("getSettlementTooltipLines", () => {
