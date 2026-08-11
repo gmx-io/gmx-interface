@@ -1,6 +1,5 @@
 import { describe, expect, it, beforeAll, afterAll } from "vitest";
 
-import { expectFeesEqual } from "./assertions";
 import {
   getTestSdk,
   requireSigner,
@@ -13,6 +12,7 @@ import {
   activateTestSubaccount,
   hasRpcUrl,
   shouldRunTwap,
+  feesMatch,
   TEST_SYMBOL,
   TEST_SIZE_USD,
   TEST_COLLATERAL,
@@ -147,7 +147,7 @@ describe("increase orders", () => {
       ]);
 
       // Same size → same position fee regardless of collateral amount
-      expectFeesEqual(small.estimates!.positionFeeUsd, large.estimates!.positionFeeUsd);
+      expect(feesMatch(small.estimates!.positionFeeUsd, large.estimates!.positionFeeUsd)).toBe(true);
       expect(small.estimates!.sizeDeltaUsd).toBe(large.estimates!.sizeDeltaUsd);
     });
   });
@@ -639,7 +639,7 @@ describe("increase orders", () => {
       ]);
 
       expect(prepared30.estimates!.sizeDeltaUsd).toBe(prepared300.estimates!.sizeDeltaUsd);
-      expectFeesEqual(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd);
+      expect(feesMatch(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd)).toBe(true);
     });
   });
 
