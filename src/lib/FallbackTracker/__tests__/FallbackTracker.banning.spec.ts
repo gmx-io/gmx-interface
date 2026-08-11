@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { suppressConsole } from "lib/__testUtils__/_utils";
 
+import { addFallbackTrackerListener } from "../events";
 import { FallbackTracker } from "../FallbackTracker";
 import { createMockConfig, testEndpoints } from "./_utils";
 
@@ -231,6 +232,26 @@ describe("FallbackTracker - endpoint banning", () => {
       // Banning unused endpoint
       tracker2.banEndpoint(testEndpoints.fallback, "Test ban");
       expect(selectSpy2).toHaveBeenCalledWith({ keepPrimary: true });
+    });
+
+    it("should ignore repeated bans of an already banned endpoint", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      const bannedListener = vi.fn();
+      const cleanup = addFallbackTrackerListener("endpointBanned", config.trackerKey, bannedListener);
+
+      tracker.banEndpoint(config.primary, "First ban");
+
+      const selectSpy = vi.spyOn(tracker, "selectBestEndpoints");
+
+      tracker.banEndpoint(config.primary, "Second ban");
+      tracker.banEndpoint(config.primary, "Third ban");
+
+      expect(bannedListener).toHaveBeenCalledTimes(1);
+      expect(selectSpy).not.toHaveBeenCalled();
+      expect(tracker.state.endpointsState[config.primary].banned?.reason).toBe("First ban");
+
+      cleanup();
     });
 
     // Error handling

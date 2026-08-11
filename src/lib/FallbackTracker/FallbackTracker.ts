@@ -313,6 +313,12 @@ export class FallbackTracker<TCheckStats> {
       return;
     }
 
+    // Failures keep coming in while the endpoint is degraded, but the ban is already applied:
+    // re-banning only duplicates the metric event and re-runs the selection for nothing.
+    if (endpointState.banned) {
+      return;
+    }
+
     endpointState.banned = {
       timestamp: Date.now(),
       reason,

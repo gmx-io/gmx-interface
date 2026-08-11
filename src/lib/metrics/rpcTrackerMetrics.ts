@@ -9,10 +9,13 @@ import {
   RpcTrackerEndpointBannedEvent,
   RpcTrackerEndpointBlockGapTiming,
   RpcTrackerEndpointTiming,
+  RpcTrackerFallbacksUpdatedCounter,
   RpcTrackerUpdateEndpointsEvent,
 } from ".";
 
 export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
+  let reportedPrimary: string | undefined;
+
   const cleanupBannedSubscription = addFallbackTrackerListener(
     "endpointBanned",
     tracker.trackerKey,
@@ -35,6 +38,17 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
     tracker.trackerKey,
     (p) => {
       const { primary, fallbacks, endpointsStats } = p;
+
+      // The fallbacks list is re-ranked on every tracking cycle, so most updates carry
+      // no new information about which endpoint actually serves the user.
+      if (primary === reportedPrimary) {
+        metrics.pushCounter<RpcTrackerFallbacksUpdatedCounter>("rpcTracker.endpoint.fallbacksUpdated", {
+          chainId: tracker.params.chainId,
+        });
+        return;
+      }
+
+      reportedPrimary = primary;
 
       const bestBlock = getBestBlock(endpointsStats);
 

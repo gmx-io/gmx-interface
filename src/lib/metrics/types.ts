@@ -287,6 +287,18 @@ export type RpcTrackerUpdateEndpointsEvent = {
   };
 };
 
+/**
+ * Emitted instead of `rpcTracker.endpoint.updated` when only the fallbacks order changed.
+ * The fallbacks list is re-ranked on every tracking cycle, so as an event it produced
+ * the bulk of the UI log volume.
+ */
+export type RpcTrackerFallbacksUpdatedCounter = {
+  event: "rpcTracker.endpoint.fallbacksUpdated";
+  data: {
+    chainId: number;
+  };
+};
+
 export type RpcTrackerEndpointTiming = {
   event: "rpcTracker.endpoint.timing";
   data: {
@@ -311,6 +323,16 @@ export type OracleKeeperUpdateEndpointsEvent = {
     chainName: string;
     primary: string;
     secondary: string;
+  };
+};
+
+/**
+ * See `RpcTrackerFallbacksUpdatedCounter`.
+ */
+export type OracleKeeperFallbacksUpdatedCounter = {
+  event: "oracleKeeper.endpoint.fallbacksUpdated";
+  data: {
+    chainId: number;
   };
 };
 
@@ -636,6 +658,19 @@ export type MulticallRequestCounter = {
     requestType: string;
     rpcProvider: string;
     isLargeAccount: boolean;
+  };
+};
+
+/**
+ * A worker job failure always falls back to the main thread, which reports the outcome itself
+ * (`multicall.error` / `multicall.timeout` once all endpoints are exhausted). Counting the
+ * fallbacks keeps the rate visible without logging the same failure twice.
+ */
+export type WorkerMulticallErrorCounter = {
+  event: "worker.multicall.error";
+  data: {
+    chainId: number;
+    errorName: string;
   };
 };
 
