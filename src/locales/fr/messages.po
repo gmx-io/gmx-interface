@@ -622,6 +622,8 @@ msgid "Funding"
 msgstr "Financement"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Deposit margin"
 msgstr "Déposer de la marge"
 

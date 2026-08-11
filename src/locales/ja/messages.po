@@ -622,6 +622,8 @@ msgid "Funding"
 msgstr "ファンディング"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Deposit margin"
 msgstr "証拠金を入金"
 

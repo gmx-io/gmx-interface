@@ -622,6 +622,8 @@ msgid "Funding"
 msgstr "资金费"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Deposit margin"
 msgstr "存入保证金"
 

@@ -622,6 +622,8 @@ msgid "Funding"
 msgstr "자금조달"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
+#: src/components/TVChartContainer/constants.ts
 msgid "Deposit margin"
 msgstr "증거금 예치"
 
