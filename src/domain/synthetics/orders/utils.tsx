@@ -30,7 +30,10 @@ import {
 } from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
-import { getIsIncreaseResultingPositionLiquidatable } from "../trade/utils/warnings";
+import {
+  getIsIncreaseResultingPositionLiquidatable,
+  getIsPositionLiquidatedBeforeTrigger,
+} from "../trade/utils/warnings";
 
 function getSwapOrderTitle() {
   return t`Swap`;
@@ -316,9 +319,27 @@ export function getOrderErrors(p: {
     }
 
     if (isIncreaseOrderType(order.orderType)) {
+      const isPositionLiquidatedBeforeTrigger =
+        isLimitOrderType(order.orderType) &&
+        getIsPositionLiquidatedBeforeTrigger({
+          liqPrice: position?.liquidationPrice,
+          triggerPrice: positionOrder.triggerPrice,
+          isLong: positionOrder.isLong,
+        });
+
+      const positionForPreview = isPositionLiquidatedBeforeTrigger ? undefined : position;
+
+      if (isPositionLiquidatedBeforeTrigger) {
+        errors.push({
+          key: "liquidatedBeforeTrigger",
+          level: "warning",
+          msg: t`This order may execute after the current position is liquidated and open a new position.`,
+        });
+      }
+
       const isMaxLeverageError = getIsMaxLeverageError({
         order: positionOrder,
-        position,
+        position: positionForPreview,
         findSwapPath: p.findSwapPath,
         uiFeeFactor: p.uiFeeFactor,
         chainId: p.chainId,

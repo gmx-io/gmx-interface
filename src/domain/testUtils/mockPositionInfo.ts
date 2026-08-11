@@ -19,6 +19,7 @@ export type MockPositionInfoOverrides = {
   sizeInTokens?: bigint;
   collateralAmount?: bigint;
   collateralUsd?: bigint;
+  liquidationPrice?: bigint;
 };
 
 /**
@@ -34,6 +35,7 @@ export function createMockPositionInfo({
   sizeInTokens = expandDecimals(1, 18),
   collateralAmount,
   collateralUsd = expandDecimals(1000, 30),
+  liquidationPrice,
 }: MockPositionInfoOverrides): PositionInfo {
   const resolvedCollateralAmount =
     collateralAmount ?? convertToTokenAmount(collateralUsd, collateralToken.decimals, collateralToken.prices.minPrice);
@@ -83,7 +85,7 @@ export function createMockPositionInfo({
     markPrice,
     entryPrice,
     // ~2x long liquidates around entry * 0.525, short around entry * 1.475
-    liquidationPrice: isLong ? (entryPrice * 105n) / 200n : (entryPrice * 295n) / 200n,
+    liquidationPrice: liquidationPrice ?? (isLong ? (entryPrice * 105n) / 200n : (entryPrice * 295n) / 200n),
     collateralUsd,
     remainingCollateralUsd: collateralUsd,
     remainingCollateralAmount: resolvedCollateralAmount,

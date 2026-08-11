@@ -7,8 +7,10 @@ import {
   selectTradeboxFees,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxIsPositionLiquidatedBeforeTrigger,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
@@ -84,7 +86,7 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const fromTokenAmount = q(selectTradeboxFromTokenAmount);
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
   const collateralToken = q(selectTradeboxCollateralToken);
-  const selectedPosition = q(selectTradeboxSelectedPosition);
+  const existingPosition = q(selectTradeboxExistingPositionForPreview);
   const fees = q(selectTradeboxFees);
   const { maxLiquidity: swapOutLiquidity } = q(selectTradeboxMaxLiquidityPath);
   const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
@@ -107,7 +109,7 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
     targetCollateralToken: collateralToken,
     collateralUsd: increaseAmounts?.collateralDeltaUsd,
     sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
-    existingPosition: selectedPosition,
+    existingPosition,
     externalSwapQuote: increaseAmounts?.swapStrategy.externalSwapQuote,
     isExternalSwapLoading,
     fees,
@@ -178,6 +180,16 @@ export const selectTradeboxTradeTypeError = createSelector((q) => {
   }
 
   return tradeError;
+});
+
+export const selectTradeboxIncreaseFreshPositionWarning = createSelector((q) => {
+  if (!q(selectTradeboxIsPositionLiquidatedBeforeTrigger)) {
+    return false;
+  }
+
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+
+  return increaseAmounts !== undefined && increaseAmounts.sizeDeltaUsd > 0;
 });
 
 export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) => {

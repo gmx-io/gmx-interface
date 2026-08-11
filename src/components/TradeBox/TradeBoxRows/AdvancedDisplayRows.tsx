@@ -13,7 +13,7 @@ import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
-  selectTradeboxSelectedPosition,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetAdvancedOptions,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
@@ -53,16 +53,16 @@ function LeverageInfoRows() {
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
 
-  if (isIncrease && selectedPosition) {
+  if (isIncrease && existingPosition) {
     return (
       <SyntheticsInfoRow
         label={t`Leverage`}
         value={
           nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd && increaseAmounts?.sizeDeltaUsd > 0 ? (
             <ValueTransition
-              from={formatLeverage(selectedPosition?.leverage)}
+              from={formatLeverage(existingPosition?.leverage)}
               to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
             />
           ) : (
@@ -71,17 +71,17 @@ function LeverageInfoRows() {
         }
       />
     );
-  } else if (isTrigger && selectedPosition) {
+  } else if (isTrigger && existingPosition) {
     let leverageValue: ReactNode = "-";
 
     if (decreaseAmounts?.isFullClose) {
       leverageValue = t`N/A`;
-    } else if (selectedPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd || 0n)) {
+    } else if (existingPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd || 0n)) {
       leverageValue = "-";
     } else {
       leverageValue = (
         <ValueTransition
-          from={formatLeverage(selectedPosition.leverage)}
+          from={formatLeverage(existingPosition.leverage)}
           to={formatLeverage(nextPositionValues?.nextLeverage)}
         />
       );
@@ -98,32 +98,32 @@ function LeverageInfoRows() {
 }
 
 function ExistingPositionInfoRows() {
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
-  if (!selectedPosition || isSwap) {
+  if (!existingPosition || isSwap) {
     return null;
   }
 
   return (
     <>
-      {selectedPosition?.sizeInUsd !== undefined && selectedPosition.sizeInUsd > 0 && (
+      {existingPosition?.sizeInUsd !== undefined && existingPosition.sizeInUsd > 0 && (
         <SyntheticsInfoRow
           label={t`Size`}
           value={
             <ValueTransition
-              from={formatUsd(selectedPosition.sizeInUsd)!}
+              from={formatUsd(existingPosition.sizeInUsd)!}
               to={formatUsd(nextPositionValues?.nextSizeUsd)}
             />
           }
         />
       )}
       <SyntheticsInfoRow
-        label={t`Margin (${selectedPosition?.collateralToken?.symbol})`}
+        label={t`Margin (${existingPosition?.collateralToken?.symbol})`}
         value={
           <ValueTransition
-            from={formatUsd(selectedPosition?.collateralUsd)}
+            from={formatUsd(existingPosition?.collateralUsd)}
             to={formatUsd(nextPositionValues?.nextCollateralUsd)}
           />
         }
