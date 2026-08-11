@@ -1723,6 +1723,7 @@ msgid "Maintenance"
 msgstr "Mantenimiento"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Swap fee"
 msgstr "Comisión de intercambio"
 
@@ -10694,6 +10695,7 @@ msgstr "Incrementar"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "Impacto en el precio del intercambio"

@@ -1723,6 +1723,7 @@ msgid "Maintenance"
 msgstr "점검"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Swap fee"
 msgstr "스왑 수수료"
 
@@ -10694,6 +10695,7 @@ msgstr "증가"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "스왑 가격 영향"
