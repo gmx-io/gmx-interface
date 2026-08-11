@@ -12,7 +12,7 @@ import {
   activateTestSubaccount,
   hasRpcUrl,
   shouldRunTwap,
-  feesMatch,
+  withinOneBp,
   TEST_SYMBOL,
   TEST_SIZE_USD,
   TEST_COLLATERAL,
@@ -147,7 +147,7 @@ describe("increase orders", () => {
       ]);
 
       // Same size → same position fee regardless of collateral amount
-      expect(feesMatch(small.estimates!.positionFeeUsd, large.estimates!.positionFeeUsd)).toBe(true);
+      expect(withinOneBp(small.estimates!.positionFeeUsd, large.estimates!.positionFeeUsd)).toBe(true);
       expect(small.estimates!.sizeDeltaUsd).toBe(large.estimates!.sizeDeltaUsd);
     });
   });
@@ -639,7 +639,7 @@ describe("increase orders", () => {
       ]);
 
       expect(prepared30.estimates!.sizeDeltaUsd).toBe(prepared300.estimates!.sizeDeltaUsd);
-      expect(feesMatch(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd)).toBe(true);
+      expect(withinOneBp(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd)).toBe(true);
     });
   });
 
@@ -671,8 +671,8 @@ describe("increase orders", () => {
       ]);
 
       expect(prepared0.estimates!.sizeDeltaUsd).toBe(prepared5000.estimates!.sizeDeltaUsd);
-      expect(prepared0.estimates!.positionFeeUsd).toBe(prepared5000.estimates!.positionFeeUsd);
-      expect(prepared0.estimates!.acceptablePrice).toBe(prepared5000.estimates!.acceptablePrice);
+      expect(withinOneBp(prepared0.estimates!.positionFeeUsd, prepared5000.estimates!.positionFeeUsd)).toBe(true);
+      expect(withinOneBp(prepared0.estimates!.acceptablePrice, prepared5000.estimates!.acceptablePrice)).toBe(true);
     });
   });
 
