@@ -482,8 +482,7 @@ export function PositionEditor() {
                 onChange={setDepositMode}
                 selectedValue={depositMode}
                 options={depositModeTabsOptions}
-                type="inline"
-                className="PositionEditor-tabs"
+                type="pill"
                 qa="deposit-mode-tabs"
               />
             )}
