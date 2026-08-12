@@ -1,14 +1,23 @@
-import { useMemo } from "react";
+import { getEmbeddedConnectedWallet, useWallets } from "@privy-io/react-auth";
+import { useCallback, useMemo } from "react";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
+import { isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { isGmxAccountHoldableToken } from "config/markets";
 import {
   getMappedTokenId,
   MULTI_CHAIN_PLATFORM_TOKENS_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
   MultichainTokenMapping,
 } from "config/multichain";
+import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
+import {
+  useGmxAccountModalOpen,
+  useGmxAccountWalletReceiveViewBackTo,
+  useGmxAccountWalletReceiveViewChain,
+} from "context/GmxAccountContext/hooks";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
@@ -449,7 +458,10 @@ export function useGmxAccountDepositEligibility(): {
 
   return useMemo(() => {
     const hasSettlementChainFunds = Object.values(tokensData ?? (EMPTY_OBJECT as TokensData)).some(
-      (token) => token.walletBalance !== undefined && token.walletBalance > 0n
+      (token) =>
+        token.walletBalance !== undefined &&
+        token.walletBalance > 0n &&
+        isGmxAccountHoldableToken(chainId as SettlementChainId, token.address)
     );
 
     const hasDepositFundsOnChain = (network: number): boolean =>
@@ -463,4 +475,29 @@ export function useGmxAccountDepositEligibility(): {
       isEligibilityLoading: isBalanceDataLoading || !isWalletBalancesLoaded,
     };
   }, [chainId, tokenChainDataArray, tokensData, isBalanceDataLoading, isWalletBalancesLoaded]);
+}
+
+export function useIsActiveAccountEmbeddedWallet(): boolean {
+  const { address: account } = useAccount();
+  const { wallets } = useWallets();
+
+  const embeddedWallet = getEmbeddedConnectedWallet(wallets);
+
+  return Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
+}
+
+export function useOpenWalletReceive(): (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => void {
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
+  const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
+
+  return useCallback(
+    (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => {
+      setWalletReceiveViewChain(opts?.chain);
+      setWalletReceiveViewBackTo(opts?.backTo);
+      setIsVisibleOrView(isEmbeddedWallet ? "walletReceiveOptions" : "walletReceive");
+    },
+    [isEmbeddedWallet, setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
+  );
 }

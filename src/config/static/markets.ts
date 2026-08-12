@@ -4,15 +4,7 @@
 
   However, this files can be a dependency for the client code.
 */
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
-  MEGAETH,
-  ContractsChainId,
-} from "sdk/configs/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "sdk/configs/chains";
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
 type MarketUiConfig = {
@@ -761,20 +753,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // XPD/USD [WETH-USDC.SG]
     "0x0b0A750812700E9673547134096577D8a79d8108": {
-      enabled: true,
-    },
-  },
-  [BOTANIX]: {
-    // BTC/USD [stBTC-stBTC]
-    "0x6682BB60590a045A956541B1433f016Ed22E361d": {
-      enabled: true,
-    },
-    // BTC/USD [stBTC-USDC.E]
-    "0x2f95a2529328E427d3204555F164B1102086690E": {
-      enabled: true,
-    },
-    // BTC/USD [PBTC-PBTC]
-    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
       enabled: true,
     },
   },

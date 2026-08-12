@@ -4,12 +4,13 @@ import { Suspense, lazy, useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import { NETWORK_QUERY_PARAM, NETWORK_SLUGS_ID_MAP } from "pages/AccountDashboard/constants";
 import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
@@ -42,6 +43,14 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { EarnRedirect } from "components/Earn/EarnRedirect";
 import Loader from "components/Loader/Loader";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
+
+const LEGACY_TRADER_PROFILE_PATHS = ["/accounts/:account", "/actions/:account"];
+
+function getChainIdFromSearch(search: string, fallbackChainId: ContractsChainId) {
+  const networkSlug = new URLSearchParams(search).get(NETWORK_QUERY_PARAM);
+
+  return (NETWORK_SLUGS_ID_MAP[networkSlug ?? ""] as ContractsChainId | undefined) ?? fallbackChainId;
+}
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 const UiPage = () => (
@@ -207,9 +216,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
   return (
     <Switch>
-      <Redirect exact from="/actions/v2" to="/accounts" />
-      <Redirect exact from="/actions" to="/accounts" />
-      <Redirect exact from="/actions/:account" to="/accounts/:account" />
       {/* redirect from previous dashboard url */}
       <RedirectWithQuery exact from="/dashboard" to="/stats" />
       <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
@@ -317,18 +323,28 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <ReferralsRouter />
         </SyntheticsStateContextProvider>
       </Route>
+      <Route exact path="/traders">
+        <AccountsRouter />
+      </Route>
+      <Route exact path="/traders/:account">
+        <AccountDashboard />
+      </Route>
+      <RedirectWithQuery exact from="/accounts" to="/traders" />
+      <RedirectWithQuery exact from="/actions" to="/traders" />
+      <RedirectWithQuery exact from="/actions/v2" to="/traders" />
       <Route exact path="/actions/:v/:account">
-        {({ match }) => (
+        {({ match, location }) => (
           <Redirect
-            to={buildAccountDashboardUrl(match?.params.account as Address, chainId, match?.params.v === "v1" ? 1 : 2)}
+            to={buildAccountDashboardUrl(
+              match?.params.account as Address,
+              getChainIdFromSearch(location.search, chainId),
+              match?.params.v === "v1" ? 1 : 2
+            )}
           />
         )}
       </Route>
-      <Route exact path="/accounts">
-        <AccountsRouter />
-      </Route>
-      <Route exact path="/accounts/:account">
-        <AccountDashboard />
+      <Route exact path={LEGACY_TRADER_PROFILE_PATHS}>
+        {({ match }) => <RedirectWithQuery to={`/traders/${match?.params.account}`} />}
       </Route>
       <Route exact path="/referrals-tier">
         <ReferralsTier />

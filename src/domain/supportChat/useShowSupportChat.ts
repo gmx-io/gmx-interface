@@ -1,27 +1,44 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
 
-import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY } from "config/localStorage";
+import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY, SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import useSearchParams from "lib/useSearchParams";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 export function useShowSupportChat() {
-  const { isConnected, isConnecting, isReconnecting } = useAccount();
+  const { isConnected } = useAccount();
+  const isWalletInitializing = useIsWalletInitializing();
   const [lastConnectedState, setLastConnectedState] = useLocalStorageSerializeKey<boolean>(
     SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY,
     false
   );
+  const [wasOpenedWithoutWallet, setWasOpenedWithoutWallet] = useLocalStorageSerializeKey<boolean>(
+    SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY,
+    false
+  );
 
-  const showWhileConnecting = (isConnecting || isReconnecting) && lastConnectedState;
+  const { openChat } = useSearchParams<{ openChat?: string }>();
+  const shouldOpenChatOnBoot = useRef(Boolean(openChat)).current;
 
-  const shouldShowSupportChat = isConnected || showWhileConnecting;
+  const showWhileConnecting = isWalletInitializing && lastConnectedState;
+
+  const shouldShowSupportChat = isConnected || showWhileConnecting || shouldOpenChatOnBoot || wasOpenedWithoutWallet;
 
   useEffect(() => {
-    if (!isConnecting && !isReconnecting) {
+    if (shouldOpenChatOnBoot) {
+      setWasOpenedWithoutWallet(true);
+    }
+  }, [shouldOpenChatOnBoot, setWasOpenedWithoutWallet]);
+
+  useEffect(() => {
+    if (!isWalletInitializing) {
       setLastConnectedState(isConnected);
     }
-  }, [isConnecting, isReconnecting, isConnected, setLastConnectedState]);
+  }, [isWalletInitializing, isConnected, setLastConnectedState]);
 
   return {
     shouldShowSupportChat,
+    shouldOpenChatOnBoot,
   };
 }

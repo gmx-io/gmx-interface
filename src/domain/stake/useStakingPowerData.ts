@@ -8,6 +8,7 @@ export {
   getEffectiveHistoricalMax,
   getMaxSafeUnstake,
   getUnstakeLimitPercent,
+  getUserEstimatedApr,
   isLoyaltyTrackingActive,
   wouldTriggerReset,
 } from "./stakingPowerUtils";

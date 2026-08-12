@@ -399,12 +399,12 @@ export function TPSLInputRow({
   }, [referencePrice, formatPrice, onPriceChange]);
 
   const estimatedPnlRow = (
-    <div className="text-body-small flex justify-end">
-      <span className="text-typography-secondary">
+    <div className="text-body-small flex min-w-0 justify-end">
+      <span className="shrink-0 text-typography-secondary">
         <Trans>Est. PnL</Trans>
       </span>
       <span
-        className={cx("ml-4 numbers", {
+        className={cx("ml-4 min-w-0 truncate numbers", {
           "text-green-500": estimatedPnl && estimatedPnl.pnlUsd > 0n,
           "text-red-500": estimatedPnl && estimatedPnl.pnlUsd < 0n,
         })}

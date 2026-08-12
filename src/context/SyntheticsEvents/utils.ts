@@ -2,6 +2,7 @@ import { extendError } from "lib/errors";
 
 import type {
   GelatoTaskStatus,
+  OrderStatus,
   PendingDepositData,
   PendingOrderData,
   PendingShiftData,
@@ -19,7 +20,28 @@ export function getPendingOrderKey(
     data.shouldUnwrapNativeToken,
     data.isLong,
     data.orderType,
+    data.decreasePositionSwapType,
   ].join(":");
+}
+
+export function findMatchedOrderStatus(orderList: OrderStatus[], orderData: PendingOrderData) {
+  if (orderData.orderKey) {
+    return orderList.find((status) => status.key === orderData.orderKey);
+  }
+
+  const matchingOrderKey = getPendingOrderKey(orderData);
+
+  return orderList.find((status) => {
+    return (status.data && matchingOrderKey === getPendingOrderKey(status.data)) || status.key === matchingOrderKey;
+  });
+}
+
+export function findOrderStatusForAllocation(orderList: OrderStatus[], orderData: PendingOrderData) {
+  const candidates = orderData.orderKey
+    ? orderList
+    : orderList.filter((status) => !status.updatedTxnHash && !status.cancelledTxnHash);
+
+  return findMatchedOrderStatus(candidates, orderData);
 }
 
 export function getPendingDepositKey(data: PendingDepositData) {

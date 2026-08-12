@@ -10,8 +10,9 @@ import {
   isLiquidationOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
+import type { SettlementPositionChange } from "domain/synthetics/tradeHistory/useCloseSettlement";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import {
@@ -28,7 +29,7 @@ import {
   roundsToZero,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
+import { PositionTradeAction, TradeActionType, USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
 
 import {
   INEQUALITY_GT,
@@ -43,7 +44,7 @@ import {
   lines,
   numberToState,
 } from "./shared";
-import { actionTextMap, getActionTitle } from "../../keys";
+import { actionTextMap, expiredActionTextMap, getActionTitle } from "../../keys";
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
@@ -154,7 +155,12 @@ export const formatPositionMessage = (
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
   })!;
 
-  const action = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
+  const action = getActionTitle(
+    tradeAction.orderType,
+    tradeAction.eventName,
+    Boolean(tradeAction.twapParams),
+    tradeAction.reason
+  );
   const timestamp = formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp);
   const timestampUTC = formatTradeActionTimestampUTC(tradeAction.timestamp);
 
@@ -198,7 +204,11 @@ export const formatPositionMessage = (
   const getCancelledMarketOrderResult = (
     collateralActionKey: "Deposit-OrderCancelled" | "Withdraw-OrderCancelled"
   ): typeof result => {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap[collateralActionKey]!);
+    const isExpired = tradeAction.reason === USER_INITIATED_CANCEL;
+    const customAction =
+      sizeDeltaUsd > 0
+        ? action
+        : i18n._(isExpired ? expiredActionTextMap[collateralActionKey]! : actionTextMap[collateralActionKey]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -223,16 +233,20 @@ export const formatPositionMessage = (
 
     return {
       action: customAction,
-      actionComment:
-        error &&
-        lines({
-          text: getErrorTooltipTitle(error.name, true, error.args),
-          state: "error",
-        }),
+      actionComment: isExpired
+        ? lines({
+            text: t`Order expired before it could be executed`,
+            state: "muted",
+          })
+        : error &&
+          lines({
+            text: getErrorTooltipTitle(error.name, true, error.args),
+            state: "error",
+          }),
       size: customSize,
       priceComment,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      isActionError: true,
+      isActionError: !isExpired,
       ...(hasMarkPrice ? {} : { price: customPrice }),
     };
   };
@@ -781,6 +795,72 @@ function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint;
   const breakdownLines: Line[] = items.map((item) => infoRow(item.label, formatDeltaUsd(item.amountUsd)));
 
   return { totalUsd, lines: breakdownLines };
+}
+
+export function getSettlementTooltipLines(
+  tradeAction: PositionTradeAction,
+  closeChange: SettlementPositionChange,
+  openChange: SettlementPositionChange | undefined
+): Line[] {
+  const collateralToken = tradeAction.initialCollateralToken;
+  const collateralPrice = tradeAction.collateralTokenPriceMin;
+  const breakdown = getFeesBreakdown(tradeAction);
+
+  const formatCollateralAmount = (amount: bigint) =>
+    formatTokenAmount(amount, collateralToken.decimals, collateralToken.symbol, {
+      useCommas: true,
+      displayDecimals: calculateDisplayDecimals(amount, collateralToken.decimals, undefined, collateralToken.isStable),
+      isStable: collateralToken.isStable,
+    });
+
+  const marginAtCloseAmount = closeChange.collateralDeltaAmount;
+  const marginAtCloseUsd = convertToUsd(marginAtCloseAmount, collateralToken.decimals, collateralPrice);
+
+  let walletReceived: string | undefined;
+  if (marginAtCloseUsd !== undefined && tradeAction.basePnlUsd !== undefined) {
+    const receivedUsd = bigMath.max(0n, marginAtCloseUsd + tradeAction.basePnlUsd + breakdown.totalUsd);
+    const isCollateralSwapped = tradeAction.swapPath.length > 0;
+    const isPnlSwapInvolved =
+      (tradeAction.swapFeeUsd !== undefined && tradeAction.swapFeeUsd !== 0n) ||
+      (tradeAction.swapImpactUsd !== undefined && tradeAction.swapImpactUsd !== 0n);
+
+    if (isCollateralSwapped) {
+      const formattedReceivedUsd = formatUsd(receivedUsd);
+      walletReceived = formattedReceivedUsd === undefined ? undefined : `~${formattedReceivedUsd}`;
+    } else {
+      const receivedAmount = convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice);
+      const formattedReceived = formatCollateralAmount(receivedAmount!);
+      walletReceived =
+        isPnlSwapInvolved && formattedReceived !== undefined ? `~${formattedReceived}` : formattedReceived;
+    }
+  }
+
+  return lines(
+    "",
+    t`Settlement`,
+    "",
+    openChange
+      ? infoRow(t`Initial margin`, formatCollateralAmount(openChange.collateralDeltaAmount + openChange.feesAmount))
+      : undefined,
+    openChange ? infoRow(t`Open fee / discount`, formatCollateralAmount(-openChange.feesAmount)) : undefined,
+    infoRow(t`Margin at close`, formatCollateralAmount(marginAtCloseAmount)),
+    infoRow(t`RPNL`, {
+      text: formatDeltaUsd(tradeAction.basePnlUsd),
+      state: numberToState(tradeAction.basePnlUsd),
+    }),
+    infoRow(t`Net close fees / impact`, {
+      text: formatDeltaUsd(breakdown.totalUsd),
+      state: numberToState(breakdown.totalUsd),
+    }),
+    walletReceived === undefined ? undefined : infoRow(t`Wallet received`, walletReceived),
+    openChange ? undefined : "",
+    openChange
+      ? undefined
+      : {
+          text: t`Original margin reconciliation requires the opening row.`,
+          state: "muted" as const,
+        }
+  );
 }
 
 function getPriceImpactLines(tradeAction: PositionTradeAction) {

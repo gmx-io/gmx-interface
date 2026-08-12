@@ -20,6 +20,7 @@ import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/market
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
+  DecreasePositionSwapType,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLiquidationOrderType,
@@ -65,7 +66,7 @@ import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { StatusCode } from "sdk/utils/gelatoRelay";
-import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
+import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
@@ -202,7 +203,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
-      const twapParams = decodeTwapUiFeeReceiver(uiFeeReceiver);
+      const twapParams = decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, uiFeeReceiver);
 
       const data: OrderCreatedEventData = {
         account: eventData.addressItems.items.account,
@@ -220,6 +221,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         minOutputAmount: eventData.uintItems.items.minOutputAmount,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
         orderType: Number(eventData.uintItems.items.orderType),
+        decreasePositionSwapType: Number(
+          eventData.uintItems.items.decreasePositionSwapType ?? DecreasePositionSwapType.NoSwap
+        ) as DecreasePositionSwapType,
         isLong: eventData.boolItems.items.isLong,
         shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
         isFrozen: eventData.boolItems.items.isFrozen,

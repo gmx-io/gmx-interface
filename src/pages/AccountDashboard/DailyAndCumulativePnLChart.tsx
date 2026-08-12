@@ -21,7 +21,6 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-import type { AccountPnlHistoryPoint } from "./DailyAndCumulativePnL";
 import {
   formatPnlChartYAxisTick,
   getPnlChartDragPanSpeed,
@@ -44,6 +43,7 @@ import {
   getDebugPeriodPnlYAxisValues,
   renderDebugLines,
 } from "./dailyAndCumulativePnLDebug";
+import type { AccountPnlHistoryPoint } from "./usePnlHistoricalData";
 
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
@@ -81,6 +81,7 @@ const BAR_CATEGORY_GAP = "25%";
 const DEBUG_BAR_CATEGORY_GAP = "10%";
 const BAR_GAP = 4;
 const DEBUG_BAR_GAP = -2;
+const SINGLE_POINT_BAR_SIZE = 48;
 const DRAGGING_DATA_ATTRIBUTE = "dragging";
 const SUPPRESS_HOVER_DATA_ATTRIBUTE = "suppressHover";
 const ZOOM_INTERACTION_RESET_DELAY = 250;
@@ -111,6 +112,7 @@ export function DailyAndCumulativePnLChart({
   resetKey: string;
 }) {
   const [zoomWindow, setZoomWindow] = useState<PnlZoomWindow | undefined>();
+  const [isBarAnimationActive, setIsBarAnimationActive] = useState(true);
   const showDebugValues = useShowDebugValues();
   const chartInteractionRef = useRef<HTMLDivElement>(null);
   const lastTouchTapRef = useRef(0);
@@ -124,6 +126,7 @@ export function DailyAndCumulativePnLChart({
   const zoomWindowRef = useRef<PnlZoomWindow | undefined>(undefined);
   const applyZoomWindow = useCallback((nextWindow: PnlZoomWindow | undefined) => {
     zoomWindowRef.current = nextWindow;
+    setIsBarAnimationActive(false);
     setZoomWindow(nextWindow);
   }, []);
 
@@ -187,12 +190,13 @@ export function DailyAndCumulativePnLChart({
 
   const isZoomed = Boolean(normalizedZoomWindow);
   const canZoom = groupedPnlData.length > 2;
-  const isBarAnimationActive = !isZoomed;
 
   useEffect(() => {
-    applyZoomWindow(undefined);
+    zoomWindowRef.current = undefined;
+    setZoomWindow(undefined);
+    setIsBarAnimationActive(true);
     wheelZoomAccumulatorRef.current = { value: 0 };
-  }, [applyZoomWindow, resetKey]);
+  }, [resetKey]);
 
   useEffect(() => {
     const element = chartInteractionRef.current;
@@ -596,12 +600,9 @@ export function DailyAndCumulativePnLChart({
     <div className="relative min-h-[250px] grow">
       <div
         ref={chartInteractionRef}
-        className={cx(
-          "DailyAndCumulativePnL-chartInteraction DailyAndCumulativePnL-hide-last-tick absolute size-full",
-          {
-            "DailyAndCumulativePnL-chartInteraction--zoomed": isZoomed,
-          }
-        )}
+        className={cx("DailyAndCumulativePnL-chartInteraction absolute size-full", {
+          "DailyAndCumulativePnL-chartInteraction--zoomed": isZoomed,
+        })}
         onDoubleClickCapture={handleChartDoubleClick}
         onMouseDownCapture={handleChartMouseDown}
         onTouchStartCapture={handleChartTouchStart}
@@ -629,6 +630,7 @@ export function DailyAndCumulativePnLChart({
               yAxisId="periodPnl"
               minPointSize={1}
               radius={2}
+              barSize={chartPnlData.length <= 1 ? SINGLE_POINT_BAR_SIZE : undefined}
               isAnimationActive={isBarAnimationActive}
             >
               {pnlBarCells}
@@ -667,6 +669,9 @@ export function DailyAndCumulativePnLChart({
               allowDataOverflow
               domain={xAxisDomain}
               ticks={xAxisTicks}
+              // Always label the first and the last visible bucket; intermediate ticks are thinned
+              // by `minTickGap` and boundary labels are shifted inwards instead of being clipped.
+              interval="preserveStartEnd"
               tickLine={false}
               axisLine={X_AXIS_LINE_PROPS}
               minTickGap={isMobile ? 20 : 32}

@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 
 import { AnyChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
+import { isGmxAccountHoldableToken } from "config/markets";
 import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import {
   useGmxAccountDepositViewChain,
@@ -128,7 +129,8 @@ function getSettlementChainTokens({
       const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesNetwork = selectedNetwork === "all" || chainId === selectedNetwork;
       const hasBalance = token.walletBalance !== undefined && token.walletBalance > 0n;
-      return matchesSearch && matchesNetwork && hasBalance;
+      const isHoldable = isGmxAccountHoldableToken(chainId as SettlementChainId, token.address);
+      return matchesSearch && matchesNetwork && hasBalance && isHoldable;
     })
     .map((token: TokenData): DisplayTokenChainData => {
       const balanceUsd = convertToUsd(token.walletBalance, token.decimals, getMidPrice(token.prices)) ?? 0n;
@@ -201,15 +203,16 @@ export const SelectAssetToDepositView = () => {
   const networksFilter = useMemo(() => {
     const wildCard = { id: "all" as const, name: t`All networks` };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId] ?? EMPTY_OBJECT)
-      .map((sourceChainId) => ({
-        id: parseInt(sourceChainId),
-        name: getChainName(parseInt(sourceChainId)),
-      }))
-      .concat({
+    const chainFilters = [
+      {
         id: chainId,
         name: getChainName(chainId),
-      });
+      },
+      ...Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
+        id: parseInt(sourceChainId),
+        name: getChainName(parseInt(sourceChainId)),
+      })),
+    ];
 
     return [wildCard, ...chainFilters];
   }, [chainId]);

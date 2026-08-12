@@ -1,12 +1,4 @@
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
-  MEGAETH,
-  SOURCE_ETHEREUM_MAINNET,
-} from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, SOURCE_ETHEREUM_MAINNET } from "config/chains";
 import { isDevelopment } from "config/env";
 
 import { createClient } from "./utils";
@@ -24,14 +16,12 @@ const megaethReferralsGraphClient = createClient(MEGAETH, "referrals");
 const arbitrumSyntheticsStatsClient = createClient(ARBITRUM, "syntheticsStats");
 const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "syntheticsStats");
 const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
-const botanixSyntheticsStatsClient = createClient(BOTANIX, "syntheticsStats");
 const megaethSyntheticsStatsClient = createClient(MEGAETH, "syntheticsStats");
 const arbitrumSubsquidClient = createClient(ARBITRUM, "subsquid");
 const arbitrumMarketOrderExecutionClient = createClient(ARBITRUM, "marketOrderExecution");
 const avalancheSubsquidClient = createClient(AVALANCHE, "subsquid");
 const avalancheFujiSubsquidClient = createClient(AVALANCHE_FUJI, "subsquid");
 const arbitrumSepoliaSubsquidClient = createClient(ARBITRUM_SEPOLIA, "subsquid");
-const botanixSubsquidClient = createClient(BOTANIX, "subsquid");
 const megaethSubsquidClient = createClient(MEGAETH, "subsquid");
 export const REFERRAL_SUPPORTED_CHAIN_IDS = isDevelopment()
   ? [ARBITRUM, AVALANCHE, MEGAETH, AVALANCHE_FUJI]
@@ -48,10 +38,6 @@ export function getSyntheticsGraphClient(chainId: number) {
 
   if (chainId === AVALANCHE_FUJI) {
     return avalancheFujiSyntheticsStatsClient;
-  }
-
-  if (chainId === BOTANIX) {
-    return botanixSyntheticsStatsClient;
   }
 
   if (chainId === MEGAETH) {
@@ -78,10 +64,6 @@ export function getSubsquidGraphClient(chainId: number) {
     return arbitrumSepoliaSubsquidClient;
   }
 
-  if (chainId === BOTANIX) {
-    return botanixSubsquidClient;
-  }
-
   if (chainId === MEGAETH) {
     return megaethSubsquidClient;
   }
@@ -100,7 +82,7 @@ export function getGmxGraphClient(chainId: number) {
     return avalancheGraphClient;
   } else if (chainId === AVALANCHE_FUJI) {
     return null;
-  } else if (chainId === BOTANIX || chainId === ARBITRUM_SEPOLIA || chainId === MEGAETH) {
+  } else if (chainId === ARBITRUM_SEPOLIA || chainId === MEGAETH) {
     return null;
   }
 
@@ -116,7 +98,7 @@ export function getReferralsGraphClient(chainId: number) {
     return avalancheFujiReferralsGraphClient;
   } else if (chainId === MEGAETH) {
     return megaethReferralsGraphClient;
-  } else if (chainId === BOTANIX || chainId === ARBITRUM_SEPOLIA) {
+  } else if (chainId === ARBITRUM_SEPOLIA) {
     return null;
   }
   throw new Error(`Unsupported chain ${chainId}`);

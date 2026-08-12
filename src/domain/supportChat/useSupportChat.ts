@@ -1,4 +1,4 @@
-import Intercom, { onUnreadCountChange, shutdown, update } from "@intercom/messenger-js-sdk";
+import Intercom, { boot, onUnreadCountChange, show, shutdown, update } from "@intercom/messenger-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
 import { useAccount } from "wagmi";
 
@@ -11,7 +11,7 @@ import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/use
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
 import { tradingErrorTracker } from "lib/tradingErrorTracker";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
 
@@ -22,10 +22,16 @@ import { useSupportChatUnreadCount } from "./useSupportChatUnreadCount";
 import { useWalletPortfolioUsd } from "./useWalletPortfolioUsd";
 import { getOrCreateSupportChatUserId, themeToIntercomTheme } from "./utils";
 
+const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
+  [AccountType.SmartAccount]: "Smart Wallet",
+  [AccountType.PostEip7702EOA]: "EOA",
+  [AccountType.EOA]: "EOA",
+};
+
 export function useSupportChat() {
-  const { shouldShowSupportChat } = useShowSupportChat();
+  const { shouldShowSupportChat, shouldOpenChatOnBoot } = useShowSupportChat();
   const { address: account, connector } = useAccount();
-  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
+  const { accountType, isLoading: isAccountTypeLoading } = useAccountType();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });
   const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();
@@ -34,6 +40,10 @@ export function useSupportChat() {
   const { themeMode } = useTheme();
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
+  const wasIntercomInitialized = useRef(false);
+  const themeModeRef = useRef(themeMode);
+  themeModeRef.current = themeMode;
+  const lastSentIntercomTheme = useRef<ReturnType<typeof themeToIntercomTheme> | undefined>(undefined);
 
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain({
     enabled: shouldShowSupportChat,
@@ -44,7 +54,7 @@ export function useSupportChat() {
   const customUserAttributes = useMemo(() => {
     if (
       isWalletPortfolioUsdLoading ||
-      isNonEoaAccountOnAnyChainLoading ||
+      isAccountTypeLoading ||
       isLargeAccountVolumeStatsLoading ||
       isGmxAccountUsdLoading
     ) {
@@ -71,12 +81,12 @@ export function useSupportChat() {
         gmxAccount: gmxAccountUsd,
       }),
       "Active Network": getChainName(srcChainId ?? chainId),
-      "Wallet Type": isNonEoaAccountOnAnyChain ? "Smart Wallet" : "EOA",
+      "Wallet Type": accountType === undefined ? undefined : ACCOUNT_TYPE_LABELS[accountType],
       "Trading Mode": !expressOrdersEnabled ? "Classic" : subaccount ? "OneClick" : "Express",
     };
   }, [
     isWalletPortfolioUsdLoading,
-    isNonEoaAccountOnAnyChainLoading,
+    isAccountTypeLoading,
     isLargeAccountVolumeStatsLoading,
     isGmxAccountUsdLoading,
     largeAccountVolumeStatsData?.totalVolume,
@@ -85,7 +95,7 @@ export function useSupportChat() {
     gmxAccountUsd,
     srcChainId,
     chainId,
-    isNonEoaAccountOnAnyChain,
+    accountType,
     expressOrdersEnabled,
     subaccount,
   ]);
@@ -97,7 +107,7 @@ export function useSupportChat() {
 
     const supportChatUserId = getOrCreateSupportChatUserId();
 
-    Intercom({
+    const intercomSettings = {
       app_id: INTERCOM_APP_ID,
       alignment: "left",
       horizontal_padding: 20,
@@ -105,24 +115,50 @@ export function useSupportChat() {
       hide_default_launcher: true,
       hide_notifications: false,
       user_id: supportChatUserId,
-    });
+      // theme goes into the boot settings: update({ theme_mode }) during the boot window
+      // suppresses the initial unread count delivery in the Intercom widget
+      theme_mode: themeToIntercomTheme(themeModeRef.current),
+    };
+    lastSentIntercomTheme.current = intercomSettings.theme_mode;
+
+    if (wasIntercomInitialized.current) {
+      // Intercom() is a no-op after the first call; after shutdown() only boot() revives the messenger
+      boot(intercomSettings);
+    } else {
+      Intercom(intercomSettings);
+      wasIntercomInitialized.current = true;
+    }
 
     onUnreadCountChange((unreadCount: number) => {
       setSupportChatUnreadCount(unreadCount);
     });
 
+    if (shouldOpenChatOnBoot) {
+      show();
+    }
+
     return () => {
       shutdown();
+      initializedAddress.current = undefined;
     };
-  }, [shouldShowSupportChat, setSupportChatUnreadCount]);
+  }, [shouldShowSupportChat, shouldOpenChatOnBoot, setSupportChatUnreadCount]);
 
   useEffect(() => {
     if (!shouldShowSupportChat) {
       return;
     }
 
+    const intercomTheme = themeToIntercomTheme(themeMode);
+
+    // only on actual theme switches: an update({ theme_mode }) right after boot suppresses
+    // the initial unread count delivery in the Intercom widget
+    if (lastSentIntercomTheme.current === intercomTheme) {
+      return;
+    }
+
+    lastSentIntercomTheme.current = intercomTheme;
     update({
-      theme_mode: themeToIntercomTheme(themeMode),
+      theme_mode: intercomTheme,
     });
   }, [shouldShowSupportChat, themeMode]);
 

@@ -72,7 +72,6 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
-import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
 import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
@@ -468,7 +467,6 @@ export function SyntheticsPage(p: Props) {
       {isTablet ? <ChartHeader /> : null}
       <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
         <div className="Exchange-left flex grow flex-col gap-8">
-          <OneClickPromoBanner openSettings={openSettings} />
           <Chart onOpenChartTPSLModal={onOpenChartTPSLModal} />
           {!isTablet && (
             <div className="flex grow flex-col overflow-hidden rounded-8" data-qa="trade-table-large">

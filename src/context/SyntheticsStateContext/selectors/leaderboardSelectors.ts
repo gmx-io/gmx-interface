@@ -9,6 +9,10 @@ import { selectAccount, selectMarketsInfoData, selectTokensData, selectUserRefer
 
 const BASIS_POINTS_DIVISOR = 10000n;
 
+function compareBigIntDescending(a: bigint, b: bigint) {
+  return a > b ? -1 : a < b ? 1 : 0;
+}
+
 const selectLeaderboardAccountBases = (s: SyntheticsState) => s.leaderboard.accounts;
 
 const selectLeaderboardPositionBases = (s: SyntheticsState) => s.leaderboard.positions;
@@ -60,6 +64,9 @@ export const selectLeaderboardCurrentAccount = createSelector(function selectLea
     netCapital: 0n,
     realizedFees: 0n,
     realizedPriceImpact: 0n,
+    realizedSwapFees: 0n,
+    realizedSwapImpact: 0n,
+    positiveFundingFeesUsd: 0n,
     pnlPercentage: 0n,
     realizedPnl: 0n,
     startUnrealizedFees: 0n,
@@ -103,7 +110,6 @@ const selectLeaderboardAccounts = createSelector(function selectLeaderboardAccou
 
   const baseAccounts = q(selectLeaderboardAccountBases);
   const positionBasesByAccount = q(selectPositionBasesByAccount);
-  const marketsInfoData = q(selectMarketsInfoData);
 
   if (!baseAccounts) return undefined;
 
@@ -122,17 +128,21 @@ const selectLeaderboardAccounts = createSelector(function selectLeaderboardAccou
     };
 
     for (const p of positionBasesByAccount[base.account] || []) {
-      const market = (marketsInfoData || {})[p.market];
-      const unrealizedPnl = getPositionPnl(p, market);
       account.totalCount++;
       account.sumMaxSize = account.sumMaxSize + p.maxSize;
       account.unrealizedFees = account.unrealizedFees + p.unrealizedFees;
-      account.unrealizedPnl = account.unrealizedPnl + unrealizedPnl;
+      account.unrealizedPnl = account.unrealizedPnl + p.unrealizedPnl;
     }
 
     account.totalFees = account.totalFees + account.unrealizedFees - account.startUnrealizedFees;
     account.totalPnl = account.totalPnl + account.unrealizedPnl - account.startUnrealizedPnl;
-    account.totalQualifyingPnl = account.totalPnl - account.totalFees + account.realizedPriceImpact;
+    account.totalQualifyingPnl =
+      account.totalPnl -
+      account.totalFees -
+      account.realizedSwapFees +
+      account.realizedPriceImpact +
+      account.realizedSwapImpact +
+      account.positiveFundingFeesUsd;
 
     if (account.maxCapital > 0n) {
       account.pnlPercentage = (account.totalQualifyingPnl * BASIS_POINTS_DIVISOR) / account.maxCapital;
@@ -159,14 +169,14 @@ export const selectLeaderboardRankedAccounts = createSelector(function selectLea
 export const selectLeaderboardRankedAccountsByPnl = createSelector(function selectLeaderboardRankedAccountsByPnl(q) {
   const accounts = q(selectLeaderboardRankedAccounts);
   if (!accounts) return undefined;
-  return [...accounts].sort((a, b) => (b.totalQualifyingPnl - a.totalQualifyingPnl > 0n ? 1 : -1));
+  return [...accounts].sort((a, b) => compareBigIntDescending(a.totalQualifyingPnl, b.totalQualifyingPnl));
 });
 
 export const selectLeaderboardRankedAccountsByPnlPercentage = createSelector(
   function selectLeaderboardRankedAccountsByPnlPercentage(q) {
     const accounts = q(selectLeaderboardRankedAccounts);
     if (!accounts) return undefined;
-    return [...accounts].sort((a, b) => (b.pnlPercentage - a.pnlPercentage > 0n ? 1 : -1));
+    return [...accounts].sort((a, b) => compareBigIntDescending(a.pnlPercentage, b.pnlPercentage));
   }
 );
 
@@ -175,16 +185,14 @@ export const selectLeaderboardAccountsRanks = createSelector(function selectLead
   const ranks = { pnl: new Map<string, number>(), pnlPercentage: new Map<string, number>() };
   if (!accounts) return ranks;
 
-  const accountsCopy = [...accounts];
-
-  accountsCopy
-    .sort((a, b) => (b.totalQualifyingPnl - a.totalQualifyingPnl > 0n ? 1 : -1))
+  [...accounts]
+    .sort((a, b) => compareBigIntDescending(a.totalQualifyingPnl, b.totalQualifyingPnl))
     .forEach((account, index) => {
       ranks.pnl.set(account.account, index + 1);
     });
 
-  accountsCopy
-    .sort((a, b) => (b.pnlPercentage - a.pnlPercentage > 0n ? 1 : -1))
+  [...accounts]
+    .sort((a, b) => compareBigIntDescending(a.pnlPercentage, b.pnlPercentage))
     .forEach((account, index) => {
       ranks.pnlPercentage.set(account.account, index + 1);
     });
@@ -219,7 +227,7 @@ export const selectLeaderboardPositions = createSelector(function selectLeaderbo
 
       if (!marketInfo) return undefined;
 
-      const unrealizedPnl = getPositionPnl(position, market);
+      const unrealizedPnl = position.unrealizedPnl;
 
       const pnl = position.realizedPnl + unrealizedPnl;
       const closingFeeUsd = getCloseFee(marketInfo, position.sizeInUsd, false, userReferralInfo);
@@ -260,26 +268,6 @@ export const selectLeaderboardPositions = createSelector(function selectLeaderbo
 
   return positions;
 });
-
-function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
-  if (position.isSnapshot) {
-    return position.unrealizedPnl;
-  }
-
-  if (!market) {
-    return 0n;
-  }
-
-  let pnl =
-    (position.sizeInTokens * market.indexToken.prices.minPrice) / 10n ** BigInt(market.indexToken.decimals) -
-    position.sizeInUsd;
-
-  if (!position.isLong) {
-    pnl = pnl * -1n;
-  }
-
-  return pnl;
-}
 
 function getEntryPrice(sizeInUsd: bigint, sizeInTokens: bigint, decimals: number) {
   if (sizeInTokens <= 0n) {

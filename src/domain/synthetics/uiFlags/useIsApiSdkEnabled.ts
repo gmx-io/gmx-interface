@@ -19,7 +19,7 @@ function getMaxActiveRolloutPercent(uiFlags: UiFlags | undefined): number {
 
   let max = 0;
   for (const pct of API_ROLLOUT_PERCENTAGES) {
-    if (uiFlags[`api${pct}`] === true && pct > max) {
+    if (uiFlags[`api${pct}`]?.enabled === true && pct > max) {
       max = pct;
     }
   }
@@ -39,7 +39,7 @@ export function useIsApiSdkEnabled(uiFlagName: ApiUiFlagName): boolean {
     return getIsFlagEnabled("abSdk3");
   }
 
-  if (uiFlags?.[uiFlagName] === true) {
+  if (uiFlags?.[uiFlagName]?.enabled === true) {
     const rolloutPercent = getMaxActiveRolloutPercent(uiFlags);
     return isInRolloutBucket(rolloutPercent);
   }

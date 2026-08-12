@@ -45,6 +45,7 @@ import {
   TriggerThresholdType,
 } from "sdk/utils/trade/types";
 
+import { getIsPositionLiquidatableAtPrice } from "./warnings";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
 export enum ValidationButtonTooltipName {
@@ -52,6 +53,7 @@ export enum ValidationButtonTooltipName {
   liqPriceGtMarkPrice = "liqPrice > markPrice",
   noSwapPath = "noSwapPath",
   minDeposit = "minDeposit",
+  insufficientGmxPoolLiquidity = "insufficientGmxPoolLiquidity",
 }
 
 export enum ValidationBannerErrorName {
@@ -155,7 +157,6 @@ export function getSwapError(p: {
   externalSwapQuote: ExternalSwapQuote | undefined;
   isExternalSwapLoading: boolean;
   isWrapOrUnwrap: boolean;
-  isStakeOrUnstake: boolean;
   isFromTokenGmxAccount: boolean;
   swapLiquidity: bigint | undefined;
   isTwap: boolean;
@@ -172,7 +173,6 @@ export function getSwapError(p: {
     markRatio,
     fees,
     isWrapOrUnwrap,
-    isStakeOrUnstake,
     isFromTokenGmxAccount,
     swapLiquidity,
     swapPathStats,
@@ -205,28 +205,25 @@ export function getSwapError(p: {
 
   if (
     (!isLimit || isTwap) &&
+    !isWrapOrUnwrap &&
     !externalSwapQuote &&
     !isExternalSwapLoading &&
     (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)
   ) {
-    return { buttonErrorMessage: t`Insufficient liquidity` };
+    return {
+      buttonErrorMessage: t`Insufficient GMX pool liquidity`,
+      buttonTooltipName: ValidationButtonTooltipName.insufficientGmxPoolLiquidity,
+    };
   }
 
   if (fromTokenAmount > (fromToken.balance ?? 0n)) {
     return { buttonErrorMessage: t`Insufficient ${fromToken?.symbol} balance` };
   }
 
-  if (isWrapOrUnwrap || isStakeOrUnstake) {
+  if (isWrapOrUnwrap) {
     return {};
   }
 
-  if (fromToken.symbol === "USDC.E" && (toToken.symbol === "BTC" || toToken.symbol === "PBTC")) {
-    return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
-  }
-
-  if (fromToken.symbol === "STBTC" && toToken.symbol === "BTC") {
-    return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
-  }
   const noInternalSwap =
     !swapPathStats?.swapPath || ((!isLimit || isTwap) && swapPathStats.swapSteps.some((step) => step.isOutLiquidity));
 
@@ -493,20 +490,14 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Min position size: ${formatUsd(minPositionSizeUsd)}` };
   }
 
-  if (nextPositionValues?.nextLiqPrice !== undefined && markPrice !== undefined) {
-    if (isLong && nextPositionValues.nextLiqPrice > markPrice) {
-      return {
-        buttonErrorMessage: t`Invalid liquidation price`,
-        buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
-      };
-    }
-
-    if (!isLong && nextPositionValues.nextLiqPrice < markPrice) {
-      return {
-        buttonErrorMessage: t`Invalid liquidation price`,
-        buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
-      };
-    }
+  if (
+    !isLimit &&
+    getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong })
+  ) {
+    return {
+      buttonErrorMessage: t`Invalid liquidation price`,
+      buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
+    };
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {

@@ -29,7 +29,7 @@ import {
   isVisibleOrder,
 } from "sdk/utils/orders";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
-import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
+import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import type {
   MarketFilterLongShortDirection,
@@ -191,7 +191,7 @@ export function useOrders(
       if (orderTypesFilter.length > 0) {
         const { type, groupType } = convertOrderTypeFilterValues(orderTypesFilter);
 
-        const twapParams = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
+        const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
         const orderGroupType = twapParams ? "twap" : "none";
         matchByOrderType = type.includes(order.orderType) && groupType.includes(orderGroupType);
       }
@@ -231,9 +231,12 @@ function convertApiOrderToOrder({
   acceptablePrice,
   cancellationReceiver: _cancellationReceiver,
   srcChainId: _srcChainId,
+  dataList,
   ...rest
 }: ApiOrderInfo): Order {
   return {
+    // overridden by the spread once the API starts serving the snapshot
+    uiFeeFactor: undefined,
     ...rest,
     orderType: rest.orderType as OrderType,
     decreasePositionSwapType: rest.decreasePositionSwapType as DecreasePositionSwapType,
@@ -242,7 +245,7 @@ function convertApiOrderToOrder({
     marketAddress: getAddress(rest.marketAddress),
     initialCollateralTokenAddress: getAddress(rest.initialCollateralTokenAddress),
     swapPath: rest.swapPath.map((addr) => getAddress(addr)),
-    data: [],
+    data: dataList,
   };
 }
 
@@ -312,6 +315,7 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         executionFee: BigInt(orderData.numbers.executionFee),
         callbackGasLimit: BigInt(orderData.numbers.callbackGasLimit),
         minOutputAmount: BigInt(orderData.numbers.minOutputAmount),
+        uiFeeFactor: BigInt(orderData.numbers.uiFeeFactor),
         updatedAtTime: orderData.numbers.updatedAtTime,
         validFromTime: orderData.numbers.validFromTime,
         isLong: orderData.flags.isLong,

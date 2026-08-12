@@ -16,6 +16,7 @@ export const selectGmxAccountGasPaymentTokenAddress = (s: SyntheticsState) =>
   s.settings.gmxAccountGasPaymentTokenAddress;
 export const selectSetGmxAccountGasPaymentTokenAddress = (s: SyntheticsState) =>
   s.settings.setGmxAccountGasPaymentTokenAddress;
+export const selectExternalSwapsEnabledSetting = (s: SyntheticsState) => s.settings.externalSwapsEnabled;
 export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.debugSwapMarketsConfig;
 export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;
 export const selectSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.settingsWarningDotVisible;

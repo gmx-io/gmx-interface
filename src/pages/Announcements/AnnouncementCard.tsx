@@ -5,6 +5,7 @@ import { cloneElement, Fragment, isValidElement, ReactNode } from "react";
 import { getChainName } from "config/chains";
 import { AnnouncementType, EventData } from "config/events";
 import { getChainIcon } from "config/icons";
+import type { UiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 import Button from "components/Button/Button";
 
@@ -16,13 +17,20 @@ const EMPTY_TOKENS: string[] = [];
 
 type AnnouncementCardProps = {
   event: EventData;
+  uiFlags: UiFlags | undefined;
   searchTokens?: string[];
   isHighlighted?: boolean;
 };
 
-export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS, isHighlighted }: AnnouncementCardProps) {
-  const date = getEventSortDate(event);
+export function AnnouncementCard({
+  event,
+  uiFlags,
+  searchTokens = EMPTY_TOKENS,
+  isHighlighted,
+}: AnnouncementCardProps) {
+  const date = getEventSortDate(event, uiFlags);
   const titleText = reactNodeToText(event.title);
+  const links = event.links ?? (event.link ? [event.link] : []);
 
   return (
     <article
@@ -38,28 +46,32 @@ export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS, isHighlig
           {event.chains?.map((chainId) => <ChainBadge key={chainId} chainId={chainId} />)}
           <TypeTag type={event.type} />
         </div>
-        <h3 className="text-h2 col-span-full max-w-[600px] text-typography-primary">
+        <h3 className="text-h2 col-span-full max-w-[660px] text-typography-primary">
           <HighlightedText text={titleText} tokens={searchTokens} />
         </h3>
       </div>
 
-      <div className="flex max-w-[600px] flex-col gap-16">
+      <div className="flex max-w-[660px] flex-col gap-16">
         <div className="text-body-medium flex flex-col gap-12 leading-[1.3] text-typography-secondary [&_a:hover]:!underline [&_a]:!text-blue-300 [&_a]:!no-underline">
           {event.summary !== undefined && <div>{highlightNode(event.summary, searchTokens)}</div>}
           <div>{highlightNode(event.description, searchTokens)}</div>
         </div>
-        {event.link && (
-          <Button
-            variant="secondary"
-            size="small"
-            className="self-start"
-            to={event.link.href}
-            newTab={event.link.newTab}
-            showExternalLinkArrow={false}
-          >
-            {event.link.text}
-            <UpRightArrowIcon className="size-16" />
-          </Button>
+        {links.length > 0 && (
+          <div className="flex flex-wrap gap-8">
+            {links.map((link) => (
+              <Button
+                key={`${link.href}-${link.text}`}
+                variant="secondary"
+                size="small"
+                to={link.href}
+                newTab={link.newTab}
+                showExternalLinkArrow={false}
+              >
+                {link.text}
+                <UpRightArrowIcon className="size-16" />
+              </Button>
+            ))}
+          </div>
         )}
       </div>
     </article>

@@ -57,6 +57,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxIncreaseLiquidationRiskWarning } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
@@ -71,7 +72,6 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
-import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
 import {
@@ -91,7 +91,6 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -123,6 +122,7 @@ import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
+import { LiquidatableIncreaseWarningCard } from "./LiquidatableIncreaseWarningCard";
 import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
@@ -243,6 +243,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const showIncreaseLiquidationRiskWarning = useSelector(selectTradeboxIncreaseLiquidationRiskWarning);
 
   const closeSizeHook = useCloseSizeInput({
     positionSizeInUsd: selectedPosition?.sizeInUsd,
@@ -657,14 +658,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFocusedInput, setToTokenInputValue]
   );
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
-      if (isGmxAccount && isNonEoaAccountOnAnyChain) {
-        helperToast.error(t`Smart wallets are not supported on Express Trading or One-Click Trading`);
-        return;
-      }
-
       if (isGmxAccount && !expressOrdersEnabled) {
         setExpressOrdersEnabled(true);
 
@@ -676,7 +671,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [
       expressOrdersEnabled,
-      isNonEoaAccountOnAnyChain,
       onSelectFromTokenAddress,
       setExpressOrdersEnabled,
       setIsFromTokenGmxAccount,
@@ -761,7 +755,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           placeholder={TRADEBOX_INPUT_PLACEHOLDER}
         >
           {fromTokenAddress &&
-            (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
+            (!isSettlementChain(chainId) ? (
               <TokenSelector
                 label={t`Pay`}
                 chainId={chainId}
@@ -1210,6 +1204,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
             disabled={shouldShowDepositButton}
             isGmxAccount={isFromTokenGmxAccount}
+            showExternalSwapWarnings={tradeFlags.isSwap || tradeFlags.isIncrease}
           />
           {twapRecommendation && !twapRecommendationDismissed && (
             <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>
@@ -1236,6 +1231,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </Trans>
             </AlertInfoCard>
           )}
+          {showIncreaseLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
           {gasPaymentTokenWarningContent && (
             <AlertInfoCard hideClose type="warning">
               {gasPaymentTokenWarningContent}

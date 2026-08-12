@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { isAddressEqual } from "viem";
 
-import { BOTANIX, getChainName, getExplorerUrl } from "config/chains";
+import { getChainName, getExplorerUrl } from "config/chains";
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY } from "config/localStorage";
@@ -18,8 +18,6 @@ import {
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelectedTransferGuid,
-  useGmxAccountWalletReceiveViewBackTo,
-  useGmxAccountWalletReceiveViewChain,
 } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
@@ -34,7 +32,6 @@ import { useLocalStorageByChainId } from "lib/localStorage";
 import { formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
@@ -67,7 +64,11 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 import WithdrawIcon from "img/ic_withdraw.svg?react";
 
-import { useAvailableToTradeAssetSettlementChain, useGmxAccountDepositEligibility } from "./hooks";
+import {
+  useAvailableToTradeAssetSettlementChain,
+  useGmxAccountDepositEligibility,
+  useOpenWalletReceive,
+} from "./hooks";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
 
 function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () => void }) {
@@ -101,8 +102,6 @@ function WalletBlock({ account }: { account: string }) {
 
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setAvailableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
-  const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
-  const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
   const { ensName } = useENS(account);
   const [, copyToClipboard] = useCopyToClipboard();
   const [isCopied, setIsCopied] = useState(false);
@@ -111,18 +110,14 @@ function WalletBlock({ account }: { account: string }) {
   const { walletUsd } = useAvailableToTradeAssetSettlementChain();
   const { wallets } = useWallets();
   const { exportWallet } = useExportWallet();
+  const openWalletReceive = useOpenWalletReceive();
 
   const handleOpenWalletReceive = () => {
-    setWalletReceiveViewChain(undefined);
-    setWalletReceiveViewBackTo(undefined);
-    setIsVisibleOrView("walletReceive");
+    openWalletReceive();
   };
 
   const embeddedWallet = getEmbeddedConnectedWallet(wallets);
   const canExport = Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
-
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
-  const canSend = !isNonEoaAccountOnAnyChain;
 
   const accountUrl = !account || !chainId ? "" : `${getExplorerUrl(chainId)}address/${account}`;
 
@@ -159,18 +154,16 @@ function WalletBlock({ account }: { account: string }) {
               <ReceiveIcon className="size-16" />
             </button>
           </TooltipWithPortal>
-          {canSend && (
-            <TooltipWithPortal
-              content={t`Send from Wallet`}
-              position="bottom"
-              tooltipClassName="!min-w-max"
-              variant="none"
-            >
-              <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
-                <SendIcon className="size-16" />
-              </button>
-            </TooltipWithPortal>
-          )}
+          <TooltipWithPortal
+            content={t`Send from Wallet`}
+            position="bottom"
+            tooltipClassName="!min-w-max"
+            variant="none"
+          >
+            <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
+              <SendIcon className="size-16" />
+            </button>
+          </TooltipWithPortal>
           <div className="h-16 border-l-1/2 border-slate-600" />
           {canExport && (
             <TooltipWithPortal
@@ -397,8 +390,6 @@ function MenuList({ account }: { account: string }) {
   const { openNotifyModal } = useNotifyModalState();
   const { setIsSettingsVisible } = useSettings();
 
-  const showNotify = settlementChainId !== BOTANIX;
-
   const handleNotificationsClick = () => {
     openNotifyModal();
     setTimeout(() => {
@@ -426,13 +417,11 @@ function MenuList({ account }: { account: string }) {
         label={<Trans>PnL Analysis</Trans>}
         onClick={handlePnlAnalysisClick}
       />
-      {showNotify && (
-        <MenuRow
-          icon={<BellIcon className="size-16" />}
-          label={<Trans>Notifications</Trans>}
-          onClick={handleNotificationsClick}
-        />
-      )}
+      <MenuRow
+        icon={<BellIcon className="size-16" />}
+        label={<Trans>Notifications</Trans>}
+        onClick={handleNotificationsClick}
+      />
       <MenuRow
         icon={<SettingsIcon className="size-16" />}
         label={<Trans>Settings</Trans>}
