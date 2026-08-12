@@ -2,6 +2,8 @@ export type RewardsTab = "tiers" | "history" | "leaderboard";
 
 export const REWARDS_VESTING_SEARCH_PARAM = "vesting";
 export const REWARDS_VESTING_START_ACTION = "start";
+export const REWARDS_ONBOARDING_SEARCH_PARAM = "onboarding";
+export const REWARDS_ONBOARDING_OPEN_ACTION = "open";
 
 export function getRewardsTabFromPathname(pathname: string): RewardsTab | undefined {
   const normalizedPath = pathname.replace(/\/+$/, "") || "/";
@@ -21,6 +23,10 @@ export function getRewardsPath(tab: RewardsTab) {
 
 export function getStartRewardsVestingPath() {
   return `${getRewardsPath("history")}?${REWARDS_VESTING_SEARCH_PARAM}=${REWARDS_VESTING_START_ACTION}`;
+}
+
+export function getRewardsOnboardingPath() {
+  return `${getRewardsPath("tiers")}?${REWARDS_ONBOARDING_SEARCH_PARAM}=${REWARDS_ONBOARDING_OPEN_ACTION}`;
 }
 
 export function getRewardsPathFromPointsPath(pathname: string) {

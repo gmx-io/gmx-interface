@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { PointerEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { REWARDS_ONBOARDING_DISMISSED_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
@@ -12,6 +13,8 @@ import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import InfoIcon from "img/ic_info_circle.svg?react";
 import rewardsOnboardingFlowSrc from "img/rewards_onboarding_flow.svg";
+
+import { REWARDS_ONBOARDING_OPEN_ACTION, REWARDS_ONBOARDING_SEARCH_PARAM } from "../rewardsRoutes";
 
 const SLIDE_COUNT = 4;
 const SWIPE_THRESHOLD_PX = 40;
@@ -121,6 +124,8 @@ export function RewardsOnboardingModal({ shouldAutoOpen }: { shouldAutoOpen: boo
   const [isVisible, setIsVisible] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const swipeStartRef = useRef<{ pointerId: number; x: number; y: number }>();
+  const history = useHistory();
+  const { pathname, search } = useLocation();
 
   useEffect(() => {
     if (shouldAutoOpen && dismissed === false) {
@@ -137,6 +142,17 @@ export function RewardsOnboardingModal({ shouldAutoOpen }: { shouldAutoOpen: boo
     setActiveSlide(0);
     setIsVisible(true);
   }, []);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(search);
+
+    if (searchParams.get(REWARDS_ONBOARDING_SEARCH_PARAM) !== REWARDS_ONBOARDING_OPEN_ACTION) return;
+
+    open();
+    searchParams.delete(REWARDS_ONBOARDING_SEARCH_PARAM);
+    const nextSearch = searchParams.toString();
+    history.replace({ pathname, search: nextSearch ? `?${nextSearch}` : "" });
+  }, [history, open, pathname, search]);
 
   const goToSlide = useCallback((nextSlide: number) => {
     setActiveSlide(clampSlide(nextSlide));
