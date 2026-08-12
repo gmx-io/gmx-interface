@@ -43,7 +43,7 @@ import VestIcon from "img/ic_increaselimit_16.svg?react";
 import InfoIcon from "img/ic_info_circle_stroke.svg?react";
 
 import { getRewardsDebugMode } from "../rewardsDebug";
-import { getRewardsPath, REWARDS_VESTING_SEARCH_PARAM, REWARDS_VESTING_START_ACTION } from "../rewardsRoutes";
+import { getRewardsOnboardingPath, REWARDS_VESTING_SEARCH_PARAM, REWARDS_VESTING_START_ACTION } from "../rewardsRoutes";
 import {
   getRewardsVestingDebugSnapshot,
   simulateRewardsGmxStake,
@@ -726,7 +726,7 @@ export function RewardsVestingFlow() {
                       <Trans>Earn esGMX rewards from eligible trading activity.</Trans>
                     </div>
                     <ButtonLink
-                      to={getRewardsPath("tiers")}
+                      to={getRewardsOnboardingPath()}
                       className="flex w-fit items-center gap-4 pr-2 text-13 font-medium text-blue-300 -outline-offset-2"
                     >
                       <Trans>Learn how</Trans>

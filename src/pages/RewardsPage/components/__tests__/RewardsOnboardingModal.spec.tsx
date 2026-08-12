@@ -1,10 +1,12 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { REWARDS_ONBOARDING_DISMISSED_KEY } from "config/localStorage";
 
+import { getRewardsOnboardingPath } from "../../rewardsRoutes";
 import { RewardsOnboardingModal } from "../RewardsOnboardingModal";
 
 vi.mock("components/Modal/ModalWithPortal", () => ({
@@ -37,12 +39,29 @@ vi.mock("components/Modal/ModalWithPortal", () => ({
 i18n.load({ en: {} });
 i18n.activate("en");
 
-function renderOnboarding(shouldAutoOpen = true) {
-  return render(
+function LocationProbe() {
+  const { pathname, search } = useLocation();
+
+  return <div data-testid="location">{`${pathname}${search}`}</div>;
+}
+
+function getRouterEntries(entry: string) {
+  return [entry];
+}
+
+function getOnboarding(shouldAutoOpen: boolean, entry: string) {
+  return (
     <I18nProvider i18n={i18n}>
-      <RewardsOnboardingModal shouldAutoOpen={shouldAutoOpen} />
+      <MemoryRouter initialEntries={getRouterEntries(entry)}>
+        <RewardsOnboardingModal shouldAutoOpen={shouldAutoOpen} />
+        <LocationProbe />
+      </MemoryRouter>
     </I18nProvider>
   );
+}
+
+function renderOnboarding(shouldAutoOpen = true, entry = "/rewards") {
+  return render(getOnboarding(shouldAutoOpen, entry));
 }
 
 describe("RewardsOnboardingModal", () => {
@@ -131,11 +150,7 @@ describe("RewardsOnboardingModal", () => {
     const view = renderOnboarding(false);
 
     expect(screen.queryByRole("dialog")).toBeNull();
-    view.rerender(
-      <I18nProvider i18n={i18n}>
-        <RewardsOnboardingModal shouldAutoOpen />
-      </I18nProvider>
-    );
+    view.rerender(getOnboarding(true, "/rewards"));
     expect(await screen.findByRole("dialog", { name: "How it works" })).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Skip" }));
@@ -144,6 +159,19 @@ describe("RewardsOnboardingModal", () => {
     cleanup();
     renderOnboarding();
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("opens from the rewards deep link even after a prior dismissal and clears the action param", async () => {
+    localStorage.setItem(JSON.stringify(REWARDS_ONBOARDING_DISMISSED_KEY), "true");
+
+    renderOnboarding(false, `${getRewardsOnboardingPath()}&rewardsDebug=banners`);
+
+    expect(await screen.findByRole("dialog", { name: "How it works" })).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Welcome to GMX Rewards" })).toBeDefined();
+    expect(screen.getByTestId("location").textContent).toBe("/rewards?rewardsDebug=banners");
+
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 
   it("navigates in both directions with touch swipes", async () => {
