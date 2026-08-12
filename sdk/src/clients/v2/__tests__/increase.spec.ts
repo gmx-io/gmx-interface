@@ -117,7 +117,7 @@ describe("increase orders", () => {
     });
 
     it("larger collateral: position fee scales with size not collateral", async () => {
-      const collateral = { amount: 2000000n, token: "USDC" }; // 2 USDC vs 1 USDC in TEST_COLLATERAL
+      const collateral = { amount: TEST_COLLATERAL.amount * 2n, token: "USDC" };
 
       const [small, large] = await Promise.all([
         sdk.prepareOrder({

@@ -166,7 +166,7 @@ export function HistoricalLists({ chainId, account, dateRange, onDateRangeChange
         />
       )}
       {tabKey === TabKey.Trades && (
-        <TradeHistory account={account} dateRange={dateRange} onDateRangeChange={onDateRangeChange} />
+        <TradeHistory account={account} dateRange={dateRange} onDateRangeChange={onDateRangeChange} hideDashboardLink />
       )}
       {tabKey === TabKey.Claims && <ClaimsHistory />}
     </div>

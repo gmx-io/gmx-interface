@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useAccount } from "wagmi";
 
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -11,6 +12,7 @@ import { useL1ExpressOrderGasReference } from "./useL1ExpressGasReference";
 
 export function useIsOutOfGasPaymentBalance() {
   const { chainId, srcChainId } = useChainId();
+  const { address: account } = useAccount();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const gasPrice = useGasPrice(chainId);
   const gasLimits = useGasLimits(chainId);
@@ -20,6 +22,10 @@ export function useIsOutOfGasPaymentBalance() {
   const relayFeeToken = getByKey(tokensData, getRelayerFeeToken(chainId).address);
 
   return useMemo(() => {
+    if (!account) {
+      return false;
+    }
+
     if (!gasPaymentTokens || !relayFeeToken || gasPrice === undefined || !gasLimits || !tokensData) {
       return false;
     }
@@ -48,5 +54,5 @@ export function useIsOutOfGasPaymentBalance() {
     });
 
     return conditions.every((condition) => condition);
-  }, [chainId, gasLimits, gasPaymentTokens, gasPrice, l1Reference, relayFeeToken, srcChainId, tokensData]);
+  }, [account, chainId, gasLimits, gasPaymentTokens, gasPrice, l1Reference, relayFeeToken, srcChainId, tokensData]);
 }

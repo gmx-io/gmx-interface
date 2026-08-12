@@ -18,7 +18,7 @@ export function useApiPositionsInfoRequest(
 
   const { data: positionsInfoData, ...rest } = useApiDataRequest<ApiPositionsInfoData>(
     chainId,
-    enabled && account && sdk ? ["apiPositionsInfoRequest", chainId, account] : null,
+    account && sdk ? ["apiPositionsInfoRequest", chainId, account] : null,
     async () => {
       const positions: ApiPositionInfo[] = await sdk!.fetchPositionsInfo({
         address: account!,
@@ -26,7 +26,8 @@ export function useApiPositionsInfoRequest(
       });
       return keyBy(positions, "key");
     },
-    FreshnessMetricId.ApiPositionsInfo
+    FreshnessMetricId.ApiPositionsInfo,
+    { enabled }
   );
 
   return {

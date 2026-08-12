@@ -90,9 +90,6 @@ export default defineConfig({
         }),
         lingui(),
       ],
-      optimizeDeps: {
-        include: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
-      },
       resolve: {
         alias: {
           App: path.resolve(__dirname, "src/App"),

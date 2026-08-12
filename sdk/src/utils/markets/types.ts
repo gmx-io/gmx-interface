@@ -51,6 +51,10 @@ export type MarketInfo = Market &
     maxOpenInterestLong: bigint;
     maxOpenInterestShort: bigint;
 
+    maxCollateralSumLongTokenLong: bigint;
+    maxCollateralSumLongTokenShort: bigint;
+    maxCollateralSumShortTokenLong: bigint;
+    maxCollateralSumShortTokenShort: bigint;
     borrowingFactorLong: bigint;
     borrowingFactorShort: bigint;
     borrowingExponentFactorLong: bigint;
@@ -59,11 +63,14 @@ export type MarketInfo = Market &
     fundingFactor: bigint;
     fundingExponentFactor: bigint;
     fundingIncreaseFactorPerSecond: bigint;
+    minFundingIncreaseRatePerSecond: bigint;
     fundingDecreaseFactorPerSecond: bigint;
     thresholdForStableFunding: bigint;
     thresholdForDecreaseFunding: bigint;
-    minFundingFactorPerSecond: bigint;
-    maxFundingFactorPerSecond: bigint;
+    minFundingFactorPerSecondLong: bigint;
+    minFundingFactorPerSecondShort: bigint;
+    maxFundingFactorPerSecondLong: bigint;
+    maxFundingFactorPerSecondShort: bigint;
 
     totalBorrowingFees: bigint;
 
@@ -127,8 +134,10 @@ export type MarketInfo = Market &
     virtualPoolAmountForLongToken: bigint;
     virtualPoolAmountForShortToken: bigint;
     virtualInventoryForPositions: bigint;
+    virtualInventoryForPositionsInTokens: bigint;
 
     virtualMarketId: string;
+    virtualIndexTokenId: string;
     virtualLongTokenId: string;
     virtualShortTokenId: string;
   };
@@ -164,6 +173,7 @@ export const MARKET_VALUES_KEYS = [
   "virtualPoolAmountForLongToken",
   "virtualPoolAmountForShortToken",
   "virtualInventoryForPositions",
+  "virtualInventoryForPositionsInTokens",
 ] as const satisfies readonly (keyof MarketInfo)[];
 
 /**
@@ -187,6 +197,10 @@ export type MarketConfig = Pick<
   | "openInterestReserveFactorShort"
   | "maxOpenInterestLong"
   | "maxOpenInterestShort"
+  | "maxCollateralSumLongTokenLong"
+  | "maxCollateralSumLongTokenShort"
+  | "maxCollateralSumShortTokenLong"
+  | "maxCollateralSumShortTokenShort"
   | "minPositionImpactPoolAmount"
   | "positionImpactPoolDistributionRate"
   | "borrowingFactorLong"
@@ -196,11 +210,14 @@ export type MarketConfig = Pick<
   | "fundingFactor"
   | "fundingExponentFactor"
   | "fundingIncreaseFactorPerSecond"
+  | "minFundingIncreaseRatePerSecond"
   | "fundingDecreaseFactorPerSecond"
   | "thresholdForDecreaseFunding"
   | "thresholdForStableFunding"
-  | "minFundingFactorPerSecond"
-  | "maxFundingFactorPerSecond"
+  | "minFundingFactorPerSecondLong"
+  | "minFundingFactorPerSecondShort"
+  | "maxFundingFactorPerSecondLong"
+  | "maxFundingFactorPerSecondShort"
   | "maxPnlFactorForTradersLong"
   | "maxPnlFactorForTradersShort"
   | "maxPnlFactorForDepositsLong"
@@ -233,6 +250,7 @@ export type MarketConfig = Pick<
   | "withdrawalFeeFactorBalanceWasImproved"
   | "withdrawalFeeFactorBalanceWasNotImproved"
   | "virtualMarketId"
+  | "virtualIndexTokenId"
   | "virtualLongTokenId"
   | "virtualShortTokenId"
 >;
@@ -303,6 +321,26 @@ export type ClaimableFundingData = {
   [marketAddress: string]: ClaimableFunding;
 };
 
+export type TradingCapacityLimitingFactor = "reserve" | "openInterest" | "both" | "notApplicable";
+
+export type JitDataStatus = "available" | "stale" | "unavailable";
+
+export type MarketDataStatus = "fresh" | "stale";
+
+export type TradingCapacity = {
+  availableLiquidity: bigint;
+  baseAvailableLiquidity: bigint;
+  jitAvailableLiquidity: bigint;
+  limitingFactor: TradingCapacityLimitingFactor;
+  jitDataStatus: JitDataStatus;
+  marketDataStatus: MarketDataStatus;
+};
+
+export type GetTradingCapacityParams = {
+  symbol: string;
+  direction: "long" | "short";
+};
+
 export type MarketTicker = {
   symbol: string;
   marketTokenAddress: string;
@@ -331,6 +369,11 @@ export type MarketTicker = {
   borrowingRateShort: bigint;
   netRateLong: bigint;
   netRateShort: bigint;
+};
+
+export type MarketTickerWithCapacity = MarketTicker & {
+  capacityLong?: TradingCapacity;
+  capacityShort?: TradingCapacity;
 };
 
 export type LeverageTier = {

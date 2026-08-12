@@ -24,6 +24,7 @@ export type Position = {
   traderDiscountAmount: bigint;
   uiFeeAmount: bigint;
   pendingImpactAmount: bigint;
+  positionValueInUsd: bigint;
   data: string;
 };
 

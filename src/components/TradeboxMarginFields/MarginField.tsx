@@ -16,7 +16,6 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
@@ -53,7 +52,6 @@ export function MarginField({
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const walletIconUrls = useWalletIconUrls();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
 
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
 
@@ -116,7 +114,7 @@ export function MarginField({
       rightContent={
         <div data-token-selector>
           {fromTokenAddress &&
-            (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
+            (!isSettlementChain(chainId) ? (
               <TokenSelector
                 label={t`Pay`}
                 chainId={chainId}

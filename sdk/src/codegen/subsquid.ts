@@ -264,7 +264,7 @@ export interface AccountPnlSummaryBucketObject {
   pnlBpsRank?: Maybe<Scalars["Int"]["output"]>;
   pnlUsd: Scalars["BigInt"]["output"];
   pnlUsdRank?: Maybe<Scalars["Int"]["output"]>;
-  /** Signed PnL contribution from funding received */
+  /** Signed PnL contribution from positive funding accrued as claimable (claimed or not) */
   positiveFundingFeesUsd: Scalars["BigInt"]["output"];
   /** Field for debug */
   realizedBasePnlUsd: Scalars["BigInt"]["output"];
@@ -327,6 +327,7 @@ export interface AccountStat {
   netCapitalDelta?: Maybe<Scalars["BigInt"]["output"]>;
   period: Scalars["String"]["output"];
   positions: Array<Position>;
+  positiveFundingFeesUsd?: Maybe<Scalars["BigInt"]["output"]>;
   realizedFees: Scalars["BigInt"]["output"];
   realizedPnl: Scalars["BigInt"]["output"];
   realizedPriceImpact: Scalars["BigInt"]["output"];
@@ -429,6 +430,12 @@ export enum AccountStatOrderByInput {
   period_DESC = "period_DESC",
   period_DESC_NULLS_FIRST = "period_DESC_NULLS_FIRST",
   period_DESC_NULLS_LAST = "period_DESC_NULLS_LAST",
+  positiveFundingFeesUsd_ASC = "positiveFundingFeesUsd_ASC",
+  positiveFundingFeesUsd_ASC_NULLS_FIRST = "positiveFundingFeesUsd_ASC_NULLS_FIRST",
+  positiveFundingFeesUsd_ASC_NULLS_LAST = "positiveFundingFeesUsd_ASC_NULLS_LAST",
+  positiveFundingFeesUsd_DESC = "positiveFundingFeesUsd_DESC",
+  positiveFundingFeesUsd_DESC_NULLS_FIRST = "positiveFundingFeesUsd_DESC_NULLS_FIRST",
+  positiveFundingFeesUsd_DESC_NULLS_LAST = "positiveFundingFeesUsd_DESC_NULLS_LAST",
   realizedFees_ASC = "realizedFees_ASC",
   realizedFees_ASC_NULLS_FIRST = "realizedFees_ASC_NULLS_FIRST",
   realizedFees_ASC_NULLS_LAST = "realizedFees_ASC_NULLS_LAST",
@@ -626,6 +633,15 @@ export interface AccountStatWhereInput {
   positions_every?: InputMaybe<PositionWhereInput>;
   positions_none?: InputMaybe<PositionWhereInput>;
   positions_some?: InputMaybe<PositionWhereInput>;
+  positiveFundingFeesUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positiveFundingFeesUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positiveFundingFeesUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positiveFundingFeesUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  positiveFundingFeesUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  positiveFundingFeesUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positiveFundingFeesUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positiveFundingFeesUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positiveFundingFeesUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   realizedFees_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   realizedFees_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   realizedFees_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -861,6 +877,7 @@ export interface AffiliateStatsPoint {
   rebatesUsd: Scalars["BigInt"]["output"];
   timestamp: Scalars["Float"]["output"];
   tradersGained: Scalars["Float"]["output"];
+  tradersGraduated: Scalars["Float"]["output"];
   tradersLost: Scalars["Float"]["output"];
   tradersNet: Scalars["Float"]["output"];
   tradesCount: Scalars["Float"]["output"];
@@ -886,6 +903,8 @@ export interface AffiliateStatsSummary {
   rebatesUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
   tradersGained?: Maybe<Scalars["Float"]["output"]>;
   tradersGainedDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradersGraduated?: Maybe<Scalars["Float"]["output"]>;
+  tradersGraduatedDelta?: Maybe<Scalars["Float"]["output"]>;
   tradersLost?: Maybe<Scalars["Float"]["output"]>;
   tradersLostDelta?: Maybe<Scalars["Float"]["output"]>;
   tradersNet?: Maybe<Scalars["Float"]["output"]>;
@@ -908,6 +927,7 @@ export interface AffiliateTraderStatsByHour {
   id: Scalars["String"]["output"];
   timestamp: Scalars["Int"]["output"];
   tradersGained: Scalars["Int"]["output"];
+  tradersGraduated: Scalars["Int"]["output"];
   tradersLost: Scalars["Int"]["output"];
   tradersNet: Scalars["Int"]["output"];
 }
@@ -943,6 +963,12 @@ export enum AffiliateTraderStatsByHourOrderByInput {
   tradersGained_DESC = "tradersGained_DESC",
   tradersGained_DESC_NULLS_FIRST = "tradersGained_DESC_NULLS_FIRST",
   tradersGained_DESC_NULLS_LAST = "tradersGained_DESC_NULLS_LAST",
+  tradersGraduated_ASC = "tradersGraduated_ASC",
+  tradersGraduated_ASC_NULLS_FIRST = "tradersGraduated_ASC_NULLS_FIRST",
+  tradersGraduated_ASC_NULLS_LAST = "tradersGraduated_ASC_NULLS_LAST",
+  tradersGraduated_DESC = "tradersGraduated_DESC",
+  tradersGraduated_DESC_NULLS_FIRST = "tradersGraduated_DESC_NULLS_FIRST",
+  tradersGraduated_DESC_NULLS_LAST = "tradersGraduated_DESC_NULLS_LAST",
   tradersLost_ASC = "tradersLost_ASC",
   tradersLost_ASC_NULLS_FIRST = "tradersLost_ASC_NULLS_FIRST",
   tradersLost_ASC_NULLS_LAST = "tradersLost_ASC_NULLS_LAST",
@@ -1012,6 +1038,15 @@ export interface AffiliateTraderStatsByHourWhereInput {
   tradersGained_lte?: InputMaybe<Scalars["Int"]["input"]>;
   tradersGained_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
   tradersGained_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradersGraduated_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGraduated_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGraduated_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGraduated_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradersGraduated_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  tradersGraduated_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGraduated_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGraduated_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGraduated_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   tradersLost_eq?: InputMaybe<Scalars["Int"]["input"]>;
   tradersLost_gt?: InputMaybe<Scalars["Int"]["input"]>;
   tradersLost_gte?: InputMaybe<Scalars["Int"]["input"]>;
@@ -1689,6 +1724,7 @@ export interface ClaimableCollateral {
   factor: Scalars["BigInt"]["output"];
   factorByTime: Scalars["BigInt"]["output"];
   group: ClaimableCollateralGroup;
+  groupId: Scalars["String"]["output"];
   id: Scalars["String"]["output"];
   marketAddress: Scalars["String"]["output"];
   reductionFactor: Scalars["BigInt"]["output"];
@@ -1978,6 +2014,23 @@ export interface ClaimableCollateralWhereInput {
   factor_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   factor_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   group?: InputMaybe<ClaimableCollateralGroupWhereInput>;
+  groupId_contains?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_eq?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_gt?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_gte?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  groupId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  groupId_lt?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_lte?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  groupId_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  groupId_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   group_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
   id_contains?: InputMaybe<Scalars["String"]["input"]>;
   id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
@@ -2130,6 +2183,17 @@ export interface ClaimableFundingFeeInfosConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface CodeTierRuleInput {
+  eligibleForTier: Scalars["String"]["input"];
+  shouldFallbackToCode: Scalars["String"]["input"];
+}
+
+export interface CodeUpdateGroup {
+  __typename?: "CodeUpdateGroup";
+  toCode: Scalars["String"]["output"];
+  traders: Array<Scalars["String"]["output"]>;
+}
+
 export interface CollectedFeesInfo {
   __typename?: "CollectedFeesInfo";
   address: Scalars["String"]["output"];
@@ -2138,6 +2202,7 @@ export interface CollectedFeesInfo {
   cumulativeBorrowingFeeUsdForPool: Scalars["BigInt"]["output"];
   cumulativeBorrowingFeeUsdPerPoolValue: Scalars["BigInt"]["output"];
   cumulativeFeeUsdForPool: Scalars["BigInt"]["output"];
+  cumulativeFeeUsdPerGlvToken: Scalars["BigInt"]["output"];
   cumulativeFeeUsdPerPoolValue: Scalars["BigInt"]["output"];
   entityType: EntityType;
   feeUsdForPool: Scalars["BigInt"]["output"];
@@ -2190,6 +2255,12 @@ export enum CollectedFeesInfoOrderByInput {
   cumulativeFeeUsdForPool_DESC = "cumulativeFeeUsdForPool_DESC",
   cumulativeFeeUsdForPool_DESC_NULLS_FIRST = "cumulativeFeeUsdForPool_DESC_NULLS_FIRST",
   cumulativeFeeUsdForPool_DESC_NULLS_LAST = "cumulativeFeeUsdForPool_DESC_NULLS_LAST",
+  cumulativeFeeUsdPerGlvToken_ASC = "cumulativeFeeUsdPerGlvToken_ASC",
+  cumulativeFeeUsdPerGlvToken_ASC_NULLS_FIRST = "cumulativeFeeUsdPerGlvToken_ASC_NULLS_FIRST",
+  cumulativeFeeUsdPerGlvToken_ASC_NULLS_LAST = "cumulativeFeeUsdPerGlvToken_ASC_NULLS_LAST",
+  cumulativeFeeUsdPerGlvToken_DESC = "cumulativeFeeUsdPerGlvToken_DESC",
+  cumulativeFeeUsdPerGlvToken_DESC_NULLS_FIRST = "cumulativeFeeUsdPerGlvToken_DESC_NULLS_FIRST",
+  cumulativeFeeUsdPerGlvToken_DESC_NULLS_LAST = "cumulativeFeeUsdPerGlvToken_DESC_NULLS_LAST",
   cumulativeFeeUsdPerPoolValue_ASC = "cumulativeFeeUsdPerPoolValue_ASC",
   cumulativeFeeUsdPerPoolValue_ASC_NULLS_FIRST = "cumulativeFeeUsdPerPoolValue_ASC_NULLS_FIRST",
   cumulativeFeeUsdPerPoolValue_ASC_NULLS_LAST = "cumulativeFeeUsdPerPoolValue_ASC_NULLS_LAST",
@@ -2299,6 +2370,15 @@ export interface CollectedFeesInfoWhereInput {
   cumulativeFeeUsdForPool_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   cumulativeFeeUsdForPool_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   cumulativeFeeUsdForPool_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeFeeUsdPerGlvToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeFeeUsdPerGlvToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   cumulativeFeeUsdPerPoolValue_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   cumulativeFeeUsdPerPoolValue_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   cumulativeFeeUsdPerPoolValue_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -3037,7 +3117,9 @@ export interface FundingRateSnapshotsConnection {
 
 export interface Glv {
   __typename?: "Glv";
+  cumulativeFeeUsdPerGlvToken: Scalars["BigInt"]["output"];
   glvTokenAddress: Scalars["String"]["output"];
+  glvTokenSupply: Scalars["BigInt"]["output"];
   gmComposition: Array<Scalars["String"]["output"]>;
   id: Scalars["String"]["output"];
   longTokenAddress: Scalars["String"]["output"];
@@ -3066,12 +3148,24 @@ export interface GlvEdge {
 }
 
 export enum GlvOrderByInput {
+  cumulativeFeeUsdPerGlvToken_ASC = "cumulativeFeeUsdPerGlvToken_ASC",
+  cumulativeFeeUsdPerGlvToken_ASC_NULLS_FIRST = "cumulativeFeeUsdPerGlvToken_ASC_NULLS_FIRST",
+  cumulativeFeeUsdPerGlvToken_ASC_NULLS_LAST = "cumulativeFeeUsdPerGlvToken_ASC_NULLS_LAST",
+  cumulativeFeeUsdPerGlvToken_DESC = "cumulativeFeeUsdPerGlvToken_DESC",
+  cumulativeFeeUsdPerGlvToken_DESC_NULLS_FIRST = "cumulativeFeeUsdPerGlvToken_DESC_NULLS_FIRST",
+  cumulativeFeeUsdPerGlvToken_DESC_NULLS_LAST = "cumulativeFeeUsdPerGlvToken_DESC_NULLS_LAST",
   glvTokenAddress_ASC = "glvTokenAddress_ASC",
   glvTokenAddress_ASC_NULLS_FIRST = "glvTokenAddress_ASC_NULLS_FIRST",
   glvTokenAddress_ASC_NULLS_LAST = "glvTokenAddress_ASC_NULLS_LAST",
   glvTokenAddress_DESC = "glvTokenAddress_DESC",
   glvTokenAddress_DESC_NULLS_FIRST = "glvTokenAddress_DESC_NULLS_FIRST",
   glvTokenAddress_DESC_NULLS_LAST = "glvTokenAddress_DESC_NULLS_LAST",
+  glvTokenSupply_ASC = "glvTokenSupply_ASC",
+  glvTokenSupply_ASC_NULLS_FIRST = "glvTokenSupply_ASC_NULLS_FIRST",
+  glvTokenSupply_ASC_NULLS_LAST = "glvTokenSupply_ASC_NULLS_LAST",
+  glvTokenSupply_DESC = "glvTokenSupply_DESC",
+  glvTokenSupply_DESC_NULLS_FIRST = "glvTokenSupply_DESC_NULLS_FIRST",
+  glvTokenSupply_DESC_NULLS_LAST = "glvTokenSupply_DESC_NULLS_LAST",
   id_ASC = "id_ASC",
   id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
   id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
@@ -3115,9 +3209,363 @@ export interface GlvPnlAprsWhereInputWhereInput {
   periodStart: Scalars["Float"]["input"];
 }
 
+export interface GlvTokenBalance {
+  __typename?: "GlvTokenBalance";
+  account: Scalars["String"]["output"];
+  balance: Scalars["BigInt"]["output"];
+  cumulativeIncome: Scalars["BigInt"]["output"];
+  entrySnapshot: Scalars["BigInt"]["output"];
+  glvAddress: Scalars["String"]["output"];
+  id: Scalars["String"]["output"];
+}
+
+export interface GlvTokenBalanceChange {
+  __typename?: "GlvTokenBalanceChange";
+  account: Scalars["String"]["output"];
+  balance: Scalars["BigInt"]["output"];
+  blockNumber: Scalars["Int"]["output"];
+  cumulativeIncome: Scalars["BigInt"]["output"];
+  glvAddress: Scalars["String"]["output"];
+  id: Scalars["String"]["output"];
+  index: Scalars["Int"]["output"];
+  snapshot: Scalars["BigInt"]["output"];
+  timestamp: Scalars["Int"]["output"];
+}
+
+export interface GlvTokenBalanceChangeEdge {
+  __typename?: "GlvTokenBalanceChangeEdge";
+  cursor: Scalars["String"]["output"];
+  node: GlvTokenBalanceChange;
+}
+
+export enum GlvTokenBalanceChangeOrderByInput {
+  account_ASC = "account_ASC",
+  account_ASC_NULLS_FIRST = "account_ASC_NULLS_FIRST",
+  account_ASC_NULLS_LAST = "account_ASC_NULLS_LAST",
+  account_DESC = "account_DESC",
+  account_DESC_NULLS_FIRST = "account_DESC_NULLS_FIRST",
+  account_DESC_NULLS_LAST = "account_DESC_NULLS_LAST",
+  balance_ASC = "balance_ASC",
+  balance_ASC_NULLS_FIRST = "balance_ASC_NULLS_FIRST",
+  balance_ASC_NULLS_LAST = "balance_ASC_NULLS_LAST",
+  balance_DESC = "balance_DESC",
+  balance_DESC_NULLS_FIRST = "balance_DESC_NULLS_FIRST",
+  balance_DESC_NULLS_LAST = "balance_DESC_NULLS_LAST",
+  blockNumber_ASC = "blockNumber_ASC",
+  blockNumber_ASC_NULLS_FIRST = "blockNumber_ASC_NULLS_FIRST",
+  blockNumber_ASC_NULLS_LAST = "blockNumber_ASC_NULLS_LAST",
+  blockNumber_DESC = "blockNumber_DESC",
+  blockNumber_DESC_NULLS_FIRST = "blockNumber_DESC_NULLS_FIRST",
+  blockNumber_DESC_NULLS_LAST = "blockNumber_DESC_NULLS_LAST",
+  cumulativeIncome_ASC = "cumulativeIncome_ASC",
+  cumulativeIncome_ASC_NULLS_FIRST = "cumulativeIncome_ASC_NULLS_FIRST",
+  cumulativeIncome_ASC_NULLS_LAST = "cumulativeIncome_ASC_NULLS_LAST",
+  cumulativeIncome_DESC = "cumulativeIncome_DESC",
+  cumulativeIncome_DESC_NULLS_FIRST = "cumulativeIncome_DESC_NULLS_FIRST",
+  cumulativeIncome_DESC_NULLS_LAST = "cumulativeIncome_DESC_NULLS_LAST",
+  glvAddress_ASC = "glvAddress_ASC",
+  glvAddress_ASC_NULLS_FIRST = "glvAddress_ASC_NULLS_FIRST",
+  glvAddress_ASC_NULLS_LAST = "glvAddress_ASC_NULLS_LAST",
+  glvAddress_DESC = "glvAddress_DESC",
+  glvAddress_DESC_NULLS_FIRST = "glvAddress_DESC_NULLS_FIRST",
+  glvAddress_DESC_NULLS_LAST = "glvAddress_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  index_ASC = "index_ASC",
+  index_ASC_NULLS_FIRST = "index_ASC_NULLS_FIRST",
+  index_ASC_NULLS_LAST = "index_ASC_NULLS_LAST",
+  index_DESC = "index_DESC",
+  index_DESC_NULLS_FIRST = "index_DESC_NULLS_FIRST",
+  index_DESC_NULLS_LAST = "index_DESC_NULLS_LAST",
+  snapshot_ASC = "snapshot_ASC",
+  snapshot_ASC_NULLS_FIRST = "snapshot_ASC_NULLS_FIRST",
+  snapshot_ASC_NULLS_LAST = "snapshot_ASC_NULLS_LAST",
+  snapshot_DESC = "snapshot_DESC",
+  snapshot_DESC_NULLS_FIRST = "snapshot_DESC_NULLS_FIRST",
+  snapshot_DESC_NULLS_LAST = "snapshot_DESC_NULLS_LAST",
+  timestamp_ASC = "timestamp_ASC",
+  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
+  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
+  timestamp_DESC = "timestamp_DESC",
+  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
+  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
+}
+
+export interface GlvTokenBalanceChangeWhereInput {
+  AND?: InputMaybe<Array<GlvTokenBalanceChangeWhereInput>>;
+  OR?: InputMaybe<Array<GlvTokenBalanceChangeWhereInput>>;
+  account_contains?: InputMaybe<Scalars["String"]["input"]>;
+  account_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  account_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_eq?: InputMaybe<Scalars["String"]["input"]>;
+  account_gt?: InputMaybe<Scalars["String"]["input"]>;
+  account_gte?: InputMaybe<Scalars["String"]["input"]>;
+  account_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  account_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  account_lt?: InputMaybe<Scalars["String"]["input"]>;
+  account_lte?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  account_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  balance_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  balance_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  balance_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockNumber_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  blockNumber_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  blockNumber_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  cumulativeIncome_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeIncome_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cumulativeIncome_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  glvAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_eq?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_gt?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_gte?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  glvAddress_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  glvAddress_lt?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_lte?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  glvAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  index_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  index_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  index_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  index_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  index_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  index_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  index_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  index_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  index_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  snapshot_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  snapshot_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  snapshot_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  snapshot_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  snapshot_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  snapshot_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  snapshot_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  snapshot_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  snapshot_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface GlvTokenBalanceChangesConnection {
+  __typename?: "GlvTokenBalanceChangesConnection";
+  edges: Array<GlvTokenBalanceChangeEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface GlvTokenBalanceEdge {
+  __typename?: "GlvTokenBalanceEdge";
+  cursor: Scalars["String"]["output"];
+  node: GlvTokenBalance;
+}
+
+export enum GlvTokenBalanceOrderByInput {
+  account_ASC = "account_ASC",
+  account_ASC_NULLS_FIRST = "account_ASC_NULLS_FIRST",
+  account_ASC_NULLS_LAST = "account_ASC_NULLS_LAST",
+  account_DESC = "account_DESC",
+  account_DESC_NULLS_FIRST = "account_DESC_NULLS_FIRST",
+  account_DESC_NULLS_LAST = "account_DESC_NULLS_LAST",
+  balance_ASC = "balance_ASC",
+  balance_ASC_NULLS_FIRST = "balance_ASC_NULLS_FIRST",
+  balance_ASC_NULLS_LAST = "balance_ASC_NULLS_LAST",
+  balance_DESC = "balance_DESC",
+  balance_DESC_NULLS_FIRST = "balance_DESC_NULLS_FIRST",
+  balance_DESC_NULLS_LAST = "balance_DESC_NULLS_LAST",
+  cumulativeIncome_ASC = "cumulativeIncome_ASC",
+  cumulativeIncome_ASC_NULLS_FIRST = "cumulativeIncome_ASC_NULLS_FIRST",
+  cumulativeIncome_ASC_NULLS_LAST = "cumulativeIncome_ASC_NULLS_LAST",
+  cumulativeIncome_DESC = "cumulativeIncome_DESC",
+  cumulativeIncome_DESC_NULLS_FIRST = "cumulativeIncome_DESC_NULLS_FIRST",
+  cumulativeIncome_DESC_NULLS_LAST = "cumulativeIncome_DESC_NULLS_LAST",
+  entrySnapshot_ASC = "entrySnapshot_ASC",
+  entrySnapshot_ASC_NULLS_FIRST = "entrySnapshot_ASC_NULLS_FIRST",
+  entrySnapshot_ASC_NULLS_LAST = "entrySnapshot_ASC_NULLS_LAST",
+  entrySnapshot_DESC = "entrySnapshot_DESC",
+  entrySnapshot_DESC_NULLS_FIRST = "entrySnapshot_DESC_NULLS_FIRST",
+  entrySnapshot_DESC_NULLS_LAST = "entrySnapshot_DESC_NULLS_LAST",
+  glvAddress_ASC = "glvAddress_ASC",
+  glvAddress_ASC_NULLS_FIRST = "glvAddress_ASC_NULLS_FIRST",
+  glvAddress_ASC_NULLS_LAST = "glvAddress_ASC_NULLS_LAST",
+  glvAddress_DESC = "glvAddress_DESC",
+  glvAddress_DESC_NULLS_FIRST = "glvAddress_DESC_NULLS_FIRST",
+  glvAddress_DESC_NULLS_LAST = "glvAddress_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+}
+
+export interface GlvTokenBalanceWhereInput {
+  AND?: InputMaybe<Array<GlvTokenBalanceWhereInput>>;
+  OR?: InputMaybe<Array<GlvTokenBalanceWhereInput>>;
+  account_contains?: InputMaybe<Scalars["String"]["input"]>;
+  account_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  account_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_eq?: InputMaybe<Scalars["String"]["input"]>;
+  account_gt?: InputMaybe<Scalars["String"]["input"]>;
+  account_gte?: InputMaybe<Scalars["String"]["input"]>;
+  account_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  account_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  account_lt?: InputMaybe<Scalars["String"]["input"]>;
+  account_lte?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  account_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  balance_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  balance_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  balance_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  balance_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeIncome_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeIncome_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cumulativeIncome_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeIncome_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  entrySnapshot_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  entrySnapshot_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  entrySnapshot_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  entrySnapshot_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  entrySnapshot_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  entrySnapshot_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  entrySnapshot_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  entrySnapshot_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  entrySnapshot_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  glvAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_eq?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_gt?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_gte?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  glvAddress_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  glvAddress_lt?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_lte?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  glvAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+}
+
+export interface GlvTokenBalancesConnection {
+  __typename?: "GlvTokenBalancesConnection";
+  edges: Array<GlvTokenBalanceEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface GlvUserEarning {
+  __typename?: "GlvUserEarning";
+  glvAddress: Scalars["String"]["output"];
+  lifetimeFeeUsd: Scalars["BigInt"]["output"];
+  recent7dFeeUsd: Scalars["BigInt"]["output"];
+}
+
 export interface GlvWhereInput {
   AND?: InputMaybe<Array<GlvWhereInput>>;
   OR?: InputMaybe<Array<GlvWhereInput>>;
+  cumulativeFeeUsdPerGlvToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeFeeUsdPerGlvToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeFeeUsdPerGlvToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   glvTokenAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
   glvTokenAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   glvTokenAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -3135,6 +3583,15 @@ export interface GlvWhereInput {
   glvTokenAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   glvTokenAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   glvTokenAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvTokenSupply_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvTokenSupply_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvTokenSupply_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvTokenSupply_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  glvTokenSupply_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  glvTokenSupply_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvTokenSupply_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvTokenSupply_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvTokenSupply_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   gmComposition_containsAll?: InputMaybe<Array<Scalars["String"]["input"]>>;
   gmComposition_containsAny?: InputMaybe<Array<Scalars["String"]["input"]>>;
   gmComposition_containsNone?: InputMaybe<Array<Scalars["String"]["input"]>>;
@@ -3239,6 +3696,21 @@ export interface MarketEdge {
   node: Market;
 }
 
+export interface MarketFeeUsdByPeriod {
+  __typename?: "MarketFeeUsdByPeriod";
+  annualizedBorrowFeeUsdForPool: Scalars["BigInt"]["output"];
+  annualizedFeeUsdForPool: Scalars["BigInt"]["output"];
+  annualizedNonBorrowFeeUsdForPool: Scalars["BigInt"]["output"];
+  borrowFeesFromTimestamp: Scalars["Float"]["output"];
+  borrowFeesToTimestamp: Scalars["Float"]["output"];
+  collectedFeesFromTimestamp: Scalars["Float"]["output"];
+  collectedFeesToTimestamp: Scalars["Float"]["output"];
+  marketAddress: Scalars["String"]["output"];
+  periodBorrowFeeUsdForPool: Scalars["BigInt"]["output"];
+  periodFeeUsdForPool: Scalars["BigInt"]["output"];
+  periodNonBorrowFeeUsdForPool: Scalars["BigInt"]["output"];
+}
+
 export interface MarketInfo {
   __typename?: "MarketInfo";
   aboveOptimalUsageBorrowingFactorLong: Scalars["BigInt"]["output"];
@@ -3273,7 +3745,8 @@ export interface MarketInfo {
   longsPayShorts: Scalars["Boolean"]["output"];
   marketTokenAddress: Scalars["String"]["output"];
   marketTokenSupply: Scalars["BigInt"]["output"];
-  maxFundingFactorPerSecond: Scalars["BigInt"]["output"];
+  maxFundingFactorPerSecondLong: Scalars["BigInt"]["output"];
+  maxFundingFactorPerSecondShort: Scalars["BigInt"]["output"];
   maxLendableImpactFactor: Scalars["BigInt"]["output"];
   maxLendableImpactFactorForWithdrawals: Scalars["BigInt"]["output"];
   maxLendableImpactUsd: Scalars["BigInt"]["output"];
@@ -3292,7 +3765,9 @@ export interface MarketInfo {
   minCollateralFactorForLiquidation: Scalars["BigInt"]["output"];
   minCollateralFactorForOpenInterestLong: Scalars["BigInt"]["output"];
   minCollateralFactorForOpenInterestShort: Scalars["BigInt"]["output"];
-  minFundingFactorPerSecond: Scalars["BigInt"]["output"];
+  minFundingFactorPerSecondLong: Scalars["BigInt"]["output"];
+  minFundingFactorPerSecondShort: Scalars["BigInt"]["output"];
+  minFundingIncreaseRatePerSecond: Scalars["BigInt"]["output"];
   minPositionImpactPoolAmount: Scalars["BigInt"]["output"];
   openInterestReserveFactorLong: Scalars["BigInt"]["output"];
   openInterestReserveFactorShort: Scalars["BigInt"]["output"];
@@ -3539,12 +4014,18 @@ export enum MarketInfoOrderByInput {
   marketTokenSupply_DESC = "marketTokenSupply_DESC",
   marketTokenSupply_DESC_NULLS_FIRST = "marketTokenSupply_DESC_NULLS_FIRST",
   marketTokenSupply_DESC_NULLS_LAST = "marketTokenSupply_DESC_NULLS_LAST",
-  maxFundingFactorPerSecond_ASC = "maxFundingFactorPerSecond_ASC",
-  maxFundingFactorPerSecond_ASC_NULLS_FIRST = "maxFundingFactorPerSecond_ASC_NULLS_FIRST",
-  maxFundingFactorPerSecond_ASC_NULLS_LAST = "maxFundingFactorPerSecond_ASC_NULLS_LAST",
-  maxFundingFactorPerSecond_DESC = "maxFundingFactorPerSecond_DESC",
-  maxFundingFactorPerSecond_DESC_NULLS_FIRST = "maxFundingFactorPerSecond_DESC_NULLS_FIRST",
-  maxFundingFactorPerSecond_DESC_NULLS_LAST = "maxFundingFactorPerSecond_DESC_NULLS_LAST",
+  maxFundingFactorPerSecondLong_ASC = "maxFundingFactorPerSecondLong_ASC",
+  maxFundingFactorPerSecondLong_ASC_NULLS_FIRST = "maxFundingFactorPerSecondLong_ASC_NULLS_FIRST",
+  maxFundingFactorPerSecondLong_ASC_NULLS_LAST = "maxFundingFactorPerSecondLong_ASC_NULLS_LAST",
+  maxFundingFactorPerSecondLong_DESC = "maxFundingFactorPerSecondLong_DESC",
+  maxFundingFactorPerSecondLong_DESC_NULLS_FIRST = "maxFundingFactorPerSecondLong_DESC_NULLS_FIRST",
+  maxFundingFactorPerSecondLong_DESC_NULLS_LAST = "maxFundingFactorPerSecondLong_DESC_NULLS_LAST",
+  maxFundingFactorPerSecondShort_ASC = "maxFundingFactorPerSecondShort_ASC",
+  maxFundingFactorPerSecondShort_ASC_NULLS_FIRST = "maxFundingFactorPerSecondShort_ASC_NULLS_FIRST",
+  maxFundingFactorPerSecondShort_ASC_NULLS_LAST = "maxFundingFactorPerSecondShort_ASC_NULLS_LAST",
+  maxFundingFactorPerSecondShort_DESC = "maxFundingFactorPerSecondShort_DESC",
+  maxFundingFactorPerSecondShort_DESC_NULLS_FIRST = "maxFundingFactorPerSecondShort_DESC_NULLS_FIRST",
+  maxFundingFactorPerSecondShort_DESC_NULLS_LAST = "maxFundingFactorPerSecondShort_DESC_NULLS_LAST",
   maxLendableImpactFactorForWithdrawals_ASC = "maxLendableImpactFactorForWithdrawals_ASC",
   maxLendableImpactFactorForWithdrawals_ASC_NULLS_FIRST = "maxLendableImpactFactorForWithdrawals_ASC_NULLS_FIRST",
   maxLendableImpactFactorForWithdrawals_ASC_NULLS_LAST = "maxLendableImpactFactorForWithdrawals_ASC_NULLS_LAST",
@@ -3653,12 +4134,24 @@ export enum MarketInfoOrderByInput {
   minCollateralFactor_DESC = "minCollateralFactor_DESC",
   minCollateralFactor_DESC_NULLS_FIRST = "minCollateralFactor_DESC_NULLS_FIRST",
   minCollateralFactor_DESC_NULLS_LAST = "minCollateralFactor_DESC_NULLS_LAST",
-  minFundingFactorPerSecond_ASC = "minFundingFactorPerSecond_ASC",
-  minFundingFactorPerSecond_ASC_NULLS_FIRST = "minFundingFactorPerSecond_ASC_NULLS_FIRST",
-  minFundingFactorPerSecond_ASC_NULLS_LAST = "minFundingFactorPerSecond_ASC_NULLS_LAST",
-  minFundingFactorPerSecond_DESC = "minFundingFactorPerSecond_DESC",
-  minFundingFactorPerSecond_DESC_NULLS_FIRST = "minFundingFactorPerSecond_DESC_NULLS_FIRST",
-  minFundingFactorPerSecond_DESC_NULLS_LAST = "minFundingFactorPerSecond_DESC_NULLS_LAST",
+  minFundingFactorPerSecondLong_ASC = "minFundingFactorPerSecondLong_ASC",
+  minFundingFactorPerSecondLong_ASC_NULLS_FIRST = "minFundingFactorPerSecondLong_ASC_NULLS_FIRST",
+  minFundingFactorPerSecondLong_ASC_NULLS_LAST = "minFundingFactorPerSecondLong_ASC_NULLS_LAST",
+  minFundingFactorPerSecondLong_DESC = "minFundingFactorPerSecondLong_DESC",
+  minFundingFactorPerSecondLong_DESC_NULLS_FIRST = "minFundingFactorPerSecondLong_DESC_NULLS_FIRST",
+  minFundingFactorPerSecondLong_DESC_NULLS_LAST = "minFundingFactorPerSecondLong_DESC_NULLS_LAST",
+  minFundingFactorPerSecondShort_ASC = "minFundingFactorPerSecondShort_ASC",
+  minFundingFactorPerSecondShort_ASC_NULLS_FIRST = "minFundingFactorPerSecondShort_ASC_NULLS_FIRST",
+  minFundingFactorPerSecondShort_ASC_NULLS_LAST = "minFundingFactorPerSecondShort_ASC_NULLS_LAST",
+  minFundingFactorPerSecondShort_DESC = "minFundingFactorPerSecondShort_DESC",
+  minFundingFactorPerSecondShort_DESC_NULLS_FIRST = "minFundingFactorPerSecondShort_DESC_NULLS_FIRST",
+  minFundingFactorPerSecondShort_DESC_NULLS_LAST = "minFundingFactorPerSecondShort_DESC_NULLS_LAST",
+  minFundingIncreaseRatePerSecond_ASC = "minFundingIncreaseRatePerSecond_ASC",
+  minFundingIncreaseRatePerSecond_ASC_NULLS_FIRST = "minFundingIncreaseRatePerSecond_ASC_NULLS_FIRST",
+  minFundingIncreaseRatePerSecond_ASC_NULLS_LAST = "minFundingIncreaseRatePerSecond_ASC_NULLS_LAST",
+  minFundingIncreaseRatePerSecond_DESC = "minFundingIncreaseRatePerSecond_DESC",
+  minFundingIncreaseRatePerSecond_DESC_NULLS_FIRST = "minFundingIncreaseRatePerSecond_DESC_NULLS_FIRST",
+  minFundingIncreaseRatePerSecond_DESC_NULLS_LAST = "minFundingIncreaseRatePerSecond_DESC_NULLS_LAST",
   minPositionImpactPoolAmount_ASC = "minPositionImpactPoolAmount_ASC",
   minPositionImpactPoolAmount_ASC_NULLS_FIRST = "minPositionImpactPoolAmount_ASC_NULLS_FIRST",
   minPositionImpactPoolAmount_ASC_NULLS_LAST = "minPositionImpactPoolAmount_ASC_NULLS_LAST",
@@ -4242,15 +4735,24 @@ export interface MarketInfoWhereInput {
   marketTokenSupply_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   marketTokenSupply_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   marketTokenSupply_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  maxFundingFactorPerSecond_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  maxFundingFactorPerSecond_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  maxFundingFactorPerSecond_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  maxFundingFactorPerSecond_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  maxFundingFactorPerSecond_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  maxFundingFactorPerSecond_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  maxFundingFactorPerSecond_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  maxFundingFactorPerSecond_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  maxFundingFactorPerSecond_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  maxFundingFactorPerSecondLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondLong_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  maxFundingFactorPerSecondLong_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  maxFundingFactorPerSecondLong_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondLong_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondLong_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondLong_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  maxFundingFactorPerSecondShort_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondShort_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondShort_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondShort_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  maxFundingFactorPerSecondShort_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  maxFundingFactorPerSecondShort_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondShort_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondShort_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxFundingFactorPerSecondShort_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   maxLendableImpactFactorForWithdrawals_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   maxLendableImpactFactorForWithdrawals_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   maxLendableImpactFactorForWithdrawals_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -4413,15 +4915,33 @@ export interface MarketInfoWhereInput {
   minCollateralFactor_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   minCollateralFactor_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   minCollateralFactor_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  minFundingFactorPerSecond_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  minFundingFactorPerSecond_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  minFundingFactorPerSecond_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  minFundingFactorPerSecond_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  minFundingFactorPerSecond_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  minFundingFactorPerSecond_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  minFundingFactorPerSecond_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  minFundingFactorPerSecond_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  minFundingFactorPerSecond_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minFundingFactorPerSecondLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondLong_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minFundingFactorPerSecondLong_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  minFundingFactorPerSecondLong_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondLong_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondLong_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondLong_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minFundingFactorPerSecondShort_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondShort_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondShort_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondShort_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minFundingFactorPerSecondShort_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  minFundingFactorPerSecondShort_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondShort_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondShort_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingFactorPerSecondShort_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minFundingIncreaseRatePerSecond_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minFundingIncreaseRatePerSecond_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  minFundingIncreaseRatePerSecond_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minFundingIncreaseRatePerSecond_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   minPositionImpactPoolAmount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   minPositionImpactPoolAmount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   minPositionImpactPoolAmount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -5016,6 +5536,12 @@ export interface MarketsConnection {
   edges: Array<MarketEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
+}
+
+export interface MarketsFeeUsdWhereInput {
+  marketAddresses?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  periodEnd: Scalars["Float"]["input"];
+  periodStart: Scalars["Float"]["input"];
 }
 
 export interface MultichainFundingInfo {
@@ -5865,6 +6391,7 @@ export interface Order {
   swapPath: Array<Scalars["String"]["output"]>;
   triggerPrice: Scalars["BigInt"]["output"];
   twapGroupId?: Maybe<Scalars["String"]["output"]>;
+  uiFeeFactor?: Maybe<Scalars["BigInt"]["output"]>;
   uiFeeReceiver: Scalars["String"]["output"];
   updatedAtBlock: Scalars["BigInt"]["output"];
 }
@@ -6044,6 +6571,12 @@ export enum OrderOrderByInput {
   twapGroupId_DESC = "twapGroupId_DESC",
   twapGroupId_DESC_NULLS_FIRST = "twapGroupId_DESC_NULLS_FIRST",
   twapGroupId_DESC_NULLS_LAST = "twapGroupId_DESC_NULLS_LAST",
+  uiFeeFactor_ASC = "uiFeeFactor_ASC",
+  uiFeeFactor_ASC_NULLS_FIRST = "uiFeeFactor_ASC_NULLS_FIRST",
+  uiFeeFactor_ASC_NULLS_LAST = "uiFeeFactor_ASC_NULLS_LAST",
+  uiFeeFactor_DESC = "uiFeeFactor_DESC",
+  uiFeeFactor_DESC_NULLS_FIRST = "uiFeeFactor_DESC_NULLS_FIRST",
+  uiFeeFactor_DESC_NULLS_LAST = "uiFeeFactor_DESC_NULLS_LAST",
   uiFeeReceiver_ASC = "uiFeeReceiver_ASC",
   uiFeeReceiver_ASC_NULLS_FIRST = "uiFeeReceiver_ASC_NULLS_FIRST",
   uiFeeReceiver_ASC_NULLS_LAST = "uiFeeReceiver_ASC_NULLS_LAST",
@@ -6420,6 +6953,15 @@ export interface OrderWhereInput {
   twapGroupId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   twapGroupId_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   twapGroupId_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  uiFeeFactor_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  uiFeeFactor_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  uiFeeFactor_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   uiFeeReceiver_contains?: InputMaybe<Scalars["String"]["input"]>;
   uiFeeReceiver_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   uiFeeReceiver_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -6490,7 +7032,7 @@ export interface PeriodAccountStatObject {
   losses: Scalars["Float"]["output"];
   maxCapital: Scalars["BigInt"]["output"];
   netCapital: Scalars["BigInt"]["output"];
-  /** Positive funding accrued as claimable in the period (claimed or not) */
+  /** Signed PnL contribution from funding received in the period, whether claimed or not. Excluded from realizedFees; add once to PnL. */
   positiveFundingFeesUsd: Scalars["BigInt"]["output"];
   realizedFees: Scalars["BigInt"]["output"];
   realizedPnl: Scalars["BigInt"]["output"];
@@ -6723,6 +7265,7 @@ export interface Position {
   __typename?: "Position";
   account: Scalars["String"]["output"];
   accountStat: AccountStat;
+  accountStatId: Scalars["String"]["output"];
   collateralAmount: Scalars["BigInt"]["output"];
   collateralToken: Scalars["String"]["output"];
   entryPrice: Scalars["BigInt"]["output"];
@@ -7890,6 +8433,129 @@ export interface PositionFeesInfoWithPeriodsConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface PositionLifecycle {
+  __typename?: "PositionLifecycle";
+  currentLifecycleId?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["String"]["output"];
+  isOpen: Scalars["Boolean"]["output"];
+  lastClosedLifecycleId?: Maybe<Scalars["String"]["output"]>;
+  updatedAtBlock: Scalars["Int"]["output"];
+}
+
+export interface PositionLifecycleEdge {
+  __typename?: "PositionLifecycleEdge";
+  cursor: Scalars["String"]["output"];
+  node: PositionLifecycle;
+}
+
+export enum PositionLifecycleOrderByInput {
+  currentLifecycleId_ASC = "currentLifecycleId_ASC",
+  currentLifecycleId_ASC_NULLS_FIRST = "currentLifecycleId_ASC_NULLS_FIRST",
+  currentLifecycleId_ASC_NULLS_LAST = "currentLifecycleId_ASC_NULLS_LAST",
+  currentLifecycleId_DESC = "currentLifecycleId_DESC",
+  currentLifecycleId_DESC_NULLS_FIRST = "currentLifecycleId_DESC_NULLS_FIRST",
+  currentLifecycleId_DESC_NULLS_LAST = "currentLifecycleId_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  isOpen_ASC = "isOpen_ASC",
+  isOpen_ASC_NULLS_FIRST = "isOpen_ASC_NULLS_FIRST",
+  isOpen_ASC_NULLS_LAST = "isOpen_ASC_NULLS_LAST",
+  isOpen_DESC = "isOpen_DESC",
+  isOpen_DESC_NULLS_FIRST = "isOpen_DESC_NULLS_FIRST",
+  isOpen_DESC_NULLS_LAST = "isOpen_DESC_NULLS_LAST",
+  lastClosedLifecycleId_ASC = "lastClosedLifecycleId_ASC",
+  lastClosedLifecycleId_ASC_NULLS_FIRST = "lastClosedLifecycleId_ASC_NULLS_FIRST",
+  lastClosedLifecycleId_ASC_NULLS_LAST = "lastClosedLifecycleId_ASC_NULLS_LAST",
+  lastClosedLifecycleId_DESC = "lastClosedLifecycleId_DESC",
+  lastClosedLifecycleId_DESC_NULLS_FIRST = "lastClosedLifecycleId_DESC_NULLS_FIRST",
+  lastClosedLifecycleId_DESC_NULLS_LAST = "lastClosedLifecycleId_DESC_NULLS_LAST",
+  updatedAtBlock_ASC = "updatedAtBlock_ASC",
+  updatedAtBlock_ASC_NULLS_FIRST = "updatedAtBlock_ASC_NULLS_FIRST",
+  updatedAtBlock_ASC_NULLS_LAST = "updatedAtBlock_ASC_NULLS_LAST",
+  updatedAtBlock_DESC = "updatedAtBlock_DESC",
+  updatedAtBlock_DESC_NULLS_FIRST = "updatedAtBlock_DESC_NULLS_FIRST",
+  updatedAtBlock_DESC_NULLS_LAST = "updatedAtBlock_DESC_NULLS_LAST",
+}
+
+export interface PositionLifecycleWhereInput {
+  AND?: InputMaybe<Array<PositionLifecycleWhereInput>>;
+  OR?: InputMaybe<Array<PositionLifecycleWhereInput>>;
+  currentLifecycleId_contains?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_eq?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_gt?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_gte?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  currentLifecycleId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  currentLifecycleId_lt?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_lte?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  currentLifecycleId_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  currentLifecycleId_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  isOpen_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  isOpen_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  isOpen_not_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lastClosedLifecycleId_contains?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_eq?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_gt?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_gte?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  lastClosedLifecycleId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lastClosedLifecycleId_lt?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_lte?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  lastClosedLifecycleId_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  lastClosedLifecycleId_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedAtBlock_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedAtBlock_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updatedAtBlock_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface PositionLifecyclesConnection {
+  __typename?: "PositionLifecyclesConnection";
+  edges: Array<PositionLifecycleEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface PositionMarketVolumeInfo {
   __typename?: "PositionMarketVolumeInfo";
   market: Scalars["String"]["output"];
@@ -7975,6 +8641,12 @@ export enum PositionOrderByInput {
   accountStat_period_DESC = "accountStat_period_DESC",
   accountStat_period_DESC_NULLS_FIRST = "accountStat_period_DESC_NULLS_FIRST",
   accountStat_period_DESC_NULLS_LAST = "accountStat_period_DESC_NULLS_LAST",
+  accountStat_positiveFundingFeesUsd_ASC = "accountStat_positiveFundingFeesUsd_ASC",
+  accountStat_positiveFundingFeesUsd_ASC_NULLS_FIRST = "accountStat_positiveFundingFeesUsd_ASC_NULLS_FIRST",
+  accountStat_positiveFundingFeesUsd_ASC_NULLS_LAST = "accountStat_positiveFundingFeesUsd_ASC_NULLS_LAST",
+  accountStat_positiveFundingFeesUsd_DESC = "accountStat_positiveFundingFeesUsd_DESC",
+  accountStat_positiveFundingFeesUsd_DESC_NULLS_FIRST = "accountStat_positiveFundingFeesUsd_DESC_NULLS_FIRST",
+  accountStat_positiveFundingFeesUsd_DESC_NULLS_LAST = "accountStat_positiveFundingFeesUsd_DESC_NULLS_LAST",
   accountStat_realizedFees_ASC = "accountStat_realizedFees_ASC",
   accountStat_realizedFees_ASC_NULLS_FIRST = "accountStat_realizedFees_ASC_NULLS_FIRST",
   accountStat_realizedFees_ASC_NULLS_LAST = "accountStat_realizedFees_ASC_NULLS_LAST",
@@ -8335,6 +9007,23 @@ export interface PositionWhereInput {
   AND?: InputMaybe<Array<PositionWhereInput>>;
   OR?: InputMaybe<Array<PositionWhereInput>>;
   accountStat?: InputMaybe<AccountStatWhereInput>;
+  accountStatId_contains?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_eq?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_gt?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_gte?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  accountStatId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  accountStatId_lt?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_lte?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  accountStatId_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  accountStatId_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   accountStat_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
   account_contains?: InputMaybe<Scalars["String"]["input"]>;
   account_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
@@ -8901,6 +9590,13 @@ export interface Query {
   fundingRateSnapshots: Array<FundingRateSnapshot>;
   fundingRateSnapshotsConnection: FundingRateSnapshotsConnection;
   glvById?: Maybe<Glv>;
+  glvTokenBalanceById?: Maybe<GlvTokenBalance>;
+  glvTokenBalanceChangeById?: Maybe<GlvTokenBalanceChange>;
+  glvTokenBalanceChanges: Array<GlvTokenBalanceChange>;
+  glvTokenBalanceChangesConnection: GlvTokenBalanceChangesConnection;
+  glvTokenBalances: Array<GlvTokenBalance>;
+  glvTokenBalancesConnection: GlvTokenBalancesConnection;
+  glvUserEarnings: Array<GlvUserEarning>;
   glvs: Array<Glv>;
   glvsAprByPeriod: Array<GlvApr>;
   glvsConnection: GlvsConnection;
@@ -8912,6 +9608,7 @@ export interface Query {
   markets: Array<Market>;
   marketsAprByPeriod: Array<MarketApr>;
   marketsConnection: MarketsConnection;
+  marketsFeeUsdByPeriod: Array<MarketFeeUsdByPeriod>;
   marketsNetRatesByPeriod: Array<MarketNetRatesResponse>;
   marketsPnlAprByPeriod: Array<MarketPnlApr>;
   multichainFunding: Array<MultichainFundingInfo>;
@@ -8952,6 +9649,9 @@ export interface Query {
   positionFeesInfoWithPeriodById?: Maybe<PositionFeesInfoWithPeriod>;
   positionFeesInfoWithPeriods: Array<PositionFeesInfoWithPeriod>;
   positionFeesInfoWithPeriodsConnection: PositionFeesInfoWithPeriodsConnection;
+  positionLifecycleById?: Maybe<PositionLifecycle>;
+  positionLifecycles: Array<PositionLifecycle>;
+  positionLifecyclesConnection: PositionLifecyclesConnection;
   positionTotalCollateralAmount: Array<PositionTotalCollateralAmount>;
   positionVolumeInfoById?: Maybe<PositionVolumeInfo>;
   positionVolumeInfos: Array<PositionVolumeInfo>;
@@ -8968,6 +9668,13 @@ export interface Query {
   referralCodeOwnerById?: Maybe<ReferralCodeOwner>;
   referralCodeOwners: Array<ReferralCodeOwner>;
   referralCodeOwnersConnection: ReferralCodeOwnersConnection;
+  referralCodeUpdates: ReferralCodeUpdatesResponse;
+  referralTierById?: Maybe<ReferralTier>;
+  referralTiers: Array<ReferralTier>;
+  referralTiersConnection: ReferralTiersConnection;
+  referrerTierById?: Maybe<ReferrerTier>;
+  referrerTiers: Array<ReferrerTier>;
+  referrerTiersConnection: ReferrerTiersConnection;
   squidStatus: SquidStatus;
   stakingPowerById?: Maybe<StakingPower>;
   stakingPowers: Array<StakingPower>;
@@ -8988,6 +9695,9 @@ export interface Query {
   tradeActionById?: Maybe<TradeAction>;
   tradeActions: Array<TradeAction>;
   tradeActionsConnection: TradeActionsConnection;
+  traderFirstReferralById?: Maybe<TraderFirstReferral>;
+  traderFirstReferrals: Array<TraderFirstReferral>;
+  traderFirstReferralsConnection: TraderFirstReferralsConnection;
   traderReferralById?: Maybe<TraderReferral>;
   traderReferralStats: TraderReferralStatsResponse;
   traderReferralTradeStatsByHourById?: Maybe<TraderReferralTradeStatsByHour>;
@@ -9329,6 +10039,46 @@ export interface QueryglvByIdArgs {
   id: Scalars["String"]["input"];
 }
 
+export interface QueryglvTokenBalanceByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryglvTokenBalanceChangeByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryglvTokenBalanceChangesArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<GlvTokenBalanceChangeOrderByInput>>;
+  where?: InputMaybe<GlvTokenBalanceChangeWhereInput>;
+}
+
+export interface QueryglvTokenBalanceChangesConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<GlvTokenBalanceChangeOrderByInput>;
+  where?: InputMaybe<GlvTokenBalanceChangeWhereInput>;
+}
+
+export interface QueryglvTokenBalancesArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<GlvTokenBalanceOrderByInput>>;
+  where?: InputMaybe<GlvTokenBalanceWhereInput>;
+}
+
+export interface QueryglvTokenBalancesConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<GlvTokenBalanceOrderByInput>;
+  where?: InputMaybe<GlvTokenBalanceWhereInput>;
+}
+
+export interface QueryglvUserEarningsArgs {
+  account: Scalars["String"]["input"];
+}
+
 export interface QueryglvsArgs {
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
@@ -9389,6 +10139,10 @@ export interface QuerymarketsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<MarketOrderByInput>;
   where?: InputMaybe<MarketWhereInput>;
+}
+
+export interface QuerymarketsFeeUsdByPeriodArgs {
+  where: MarketsFeeUsdWhereInput;
 }
 
 export interface QuerymarketsNetRatesByPeriodArgs {
@@ -9619,6 +10373,24 @@ export interface QuerypositionFeesInfoWithPeriodsConnectionArgs {
   where?: InputMaybe<PositionFeesInfoWithPeriodWhereInput>;
 }
 
+export interface QuerypositionLifecycleByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QuerypositionLifecyclesArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<PositionLifecycleOrderByInput>>;
+  where?: InputMaybe<PositionLifecycleWhereInput>;
+}
+
+export interface QuerypositionLifecyclesConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<PositionLifecycleOrderByInput>;
+  where?: InputMaybe<PositionLifecycleWhereInput>;
+}
+
 export interface QuerypositionTotalCollateralAmountArgs {
   where?: InputMaybe<PositionTotalCollateralAmountWhereInput>;
 }
@@ -9711,6 +10483,52 @@ export interface QueryreferralCodeOwnersConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<ReferralCodeOwnerOrderByInput>;
   where?: InputMaybe<ReferralCodeOwnerWhereInput>;
+}
+
+export interface QueryreferralCodeUpdatesArgs {
+  affiliateRewardsUsdMin: Scalars["String"]["input"];
+  codeTiersAsc: Array<CodeTierRuleInput>;
+  ignoreCodes?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  ignoreTiers?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  timeSinceTraderCodeAssigning: Scalars["Float"]["input"];
+  vipTiersAsc: Array<VipTierInput>;
+}
+
+export interface QueryreferralTierByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryreferralTiersArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<ReferralTierOrderByInput>>;
+  where?: InputMaybe<ReferralTierWhereInput>;
+}
+
+export interface QueryreferralTiersConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<ReferralTierOrderByInput>;
+  where?: InputMaybe<ReferralTierWhereInput>;
+}
+
+export interface QueryreferrerTierByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryreferrerTiersArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<ReferrerTierOrderByInput>>;
+  where?: InputMaybe<ReferrerTierWhereInput>;
+}
+
+export interface QueryreferrerTiersConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<ReferrerTierOrderByInput>;
+  where?: InputMaybe<ReferrerTierWhereInput>;
 }
 
 export interface QuerystakingPowerByIdArgs {
@@ -9819,6 +10637,24 @@ export interface QuerytradeActionsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<TradeActionOrderByInput>;
   where?: InputMaybe<TradeActionWhereInput>;
+}
+
+export interface QuerytraderFirstReferralByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QuerytraderFirstReferralsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<TraderFirstReferralOrderByInput>>;
+  where?: InputMaybe<TraderFirstReferralWhereInput>;
+}
+
+export interface QuerytraderFirstReferralsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<TraderFirstReferralOrderByInput>;
+  where?: InputMaybe<TraderFirstReferralWhereInput>;
 }
 
 export interface QuerytraderReferralByIdArgs {
@@ -10004,6 +10840,165 @@ export interface ReferralCodeOwnerWhereInput {
 export interface ReferralCodeOwnersConnection {
   __typename?: "ReferralCodeOwnersConnection";
   edges: Array<ReferralCodeOwnerEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface ReferralCodeUpdatesResponse {
+  __typename?: "ReferralCodeUpdatesResponse";
+  updates: Array<CodeUpdateGroup>;
+}
+
+export interface ReferralTier {
+  __typename?: "ReferralTier";
+  discountShare: Scalars["BigInt"]["output"];
+  id: Scalars["String"]["output"];
+  totalRebate: Scalars["BigInt"]["output"];
+}
+
+export interface ReferralTierEdge {
+  __typename?: "ReferralTierEdge";
+  cursor: Scalars["String"]["output"];
+  node: ReferralTier;
+}
+
+export enum ReferralTierOrderByInput {
+  discountShare_ASC = "discountShare_ASC",
+  discountShare_ASC_NULLS_FIRST = "discountShare_ASC_NULLS_FIRST",
+  discountShare_ASC_NULLS_LAST = "discountShare_ASC_NULLS_LAST",
+  discountShare_DESC = "discountShare_DESC",
+  discountShare_DESC_NULLS_FIRST = "discountShare_DESC_NULLS_FIRST",
+  discountShare_DESC_NULLS_LAST = "discountShare_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  totalRebate_ASC = "totalRebate_ASC",
+  totalRebate_ASC_NULLS_FIRST = "totalRebate_ASC_NULLS_FIRST",
+  totalRebate_ASC_NULLS_LAST = "totalRebate_ASC_NULLS_LAST",
+  totalRebate_DESC = "totalRebate_DESC",
+  totalRebate_DESC_NULLS_FIRST = "totalRebate_DESC_NULLS_FIRST",
+  totalRebate_DESC_NULLS_LAST = "totalRebate_DESC_NULLS_LAST",
+}
+
+export interface ReferralTierWhereInput {
+  AND?: InputMaybe<Array<ReferralTierWhereInput>>;
+  OR?: InputMaybe<Array<ReferralTierWhereInput>>;
+  discountShare_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountShare_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountShare_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountShare_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  discountShare_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  discountShare_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountShare_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountShare_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountShare_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  totalRebate_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalRebate_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalRebate_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalRebate_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  totalRebate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  totalRebate_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalRebate_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalRebate_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalRebate_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+}
+
+export interface ReferralTiersConnection {
+  __typename?: "ReferralTiersConnection";
+  edges: Array<ReferralTierEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface ReferrerTier {
+  __typename?: "ReferrerTier";
+  id: Scalars["String"]["output"];
+  tierId: Scalars["String"]["output"];
+}
+
+export interface ReferrerTierEdge {
+  __typename?: "ReferrerTierEdge";
+  cursor: Scalars["String"]["output"];
+  node: ReferrerTier;
+}
+
+export enum ReferrerTierOrderByInput {
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  tierId_ASC = "tierId_ASC",
+  tierId_ASC_NULLS_FIRST = "tierId_ASC_NULLS_FIRST",
+  tierId_ASC_NULLS_LAST = "tierId_ASC_NULLS_LAST",
+  tierId_DESC = "tierId_DESC",
+  tierId_DESC_NULLS_FIRST = "tierId_DESC_NULLS_FIRST",
+  tierId_DESC_NULLS_LAST = "tierId_DESC_NULLS_LAST",
+}
+
+export interface ReferrerTierWhereInput {
+  AND?: InputMaybe<Array<ReferrerTierWhereInput>>;
+  OR?: InputMaybe<Array<ReferrerTierWhereInput>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_contains?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_eq?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_gt?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_gte?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tierId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  tierId_lt?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_lte?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tierId_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  tierId_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+}
+
+export interface ReferrerTiersConnection {
+  __typename?: "ReferrerTiersConnection";
+  edges: Array<ReferrerTierEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
 }
@@ -10944,9 +11939,9 @@ export interface TradeAction {
   orderKey: Scalars["String"]["output"];
   orderType: Scalars["Int"]["output"];
   pnlUsd?: Maybe<Scalars["BigInt"]["output"]>;
+  positionFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   positionKey?: Maybe<Scalars["String"]["output"]>;
   positionLifecycleId?: Maybe<Scalars["String"]["output"]>;
-  positionFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   positionSizeInTokens?: Maybe<Scalars["BigInt"]["output"]>;
   positionSizeInUsd?: Maybe<Scalars["BigInt"]["output"]>;
   priceImpactAmount?: Maybe<Scalars["BigInt"]["output"]>;
@@ -10968,6 +11963,7 @@ export interface TradeAction {
   transactionHash: Scalars["String"]["output"];
   triggerPrice?: Maybe<Scalars["BigInt"]["output"]>;
   twapGroupId?: Maybe<Scalars["String"]["output"]>;
+  uiFeeFactor?: Maybe<Scalars["BigInt"]["output"]>;
   uiFeeReceiver: Scalars["String"]["output"];
 }
 
@@ -11152,6 +12148,12 @@ export enum TradeActionOrderByInput {
   positionKey_DESC = "positionKey_DESC",
   positionKey_DESC_NULLS_FIRST = "positionKey_DESC_NULLS_FIRST",
   positionKey_DESC_NULLS_LAST = "positionKey_DESC_NULLS_LAST",
+  positionLifecycleId_ASC = "positionLifecycleId_ASC",
+  positionLifecycleId_ASC_NULLS_FIRST = "positionLifecycleId_ASC_NULLS_FIRST",
+  positionLifecycleId_ASC_NULLS_LAST = "positionLifecycleId_ASC_NULLS_LAST",
+  positionLifecycleId_DESC = "positionLifecycleId_DESC",
+  positionLifecycleId_DESC_NULLS_FIRST = "positionLifecycleId_DESC_NULLS_FIRST",
+  positionLifecycleId_DESC_NULLS_LAST = "positionLifecycleId_DESC_NULLS_LAST",
   positionSizeInTokens_ASC = "positionSizeInTokens_ASC",
   positionSizeInTokens_ASC_NULLS_FIRST = "positionSizeInTokens_ASC_NULLS_FIRST",
   positionSizeInTokens_ASC_NULLS_LAST = "positionSizeInTokens_ASC_NULLS_LAST",
@@ -11272,6 +12274,12 @@ export enum TradeActionOrderByInput {
   twapGroupId_DESC = "twapGroupId_DESC",
   twapGroupId_DESC_NULLS_FIRST = "twapGroupId_DESC_NULLS_FIRST",
   twapGroupId_DESC_NULLS_LAST = "twapGroupId_DESC_NULLS_LAST",
+  uiFeeFactor_ASC = "uiFeeFactor_ASC",
+  uiFeeFactor_ASC_NULLS_FIRST = "uiFeeFactor_ASC_NULLS_FIRST",
+  uiFeeFactor_ASC_NULLS_LAST = "uiFeeFactor_ASC_NULLS_LAST",
+  uiFeeFactor_DESC = "uiFeeFactor_DESC",
+  uiFeeFactor_DESC_NULLS_FIRST = "uiFeeFactor_DESC_NULLS_FIRST",
+  uiFeeFactor_DESC_NULLS_LAST = "uiFeeFactor_DESC_NULLS_LAST",
   uiFeeReceiver_ASC = "uiFeeReceiver_ASC",
   uiFeeReceiver_ASC_NULLS_FIRST = "uiFeeReceiver_ASC_NULLS_FIRST",
   uiFeeReceiver_ASC_NULLS_LAST = "uiFeeReceiver_ASC_NULLS_LAST",
@@ -11594,6 +12602,23 @@ export interface TradeActionWhereInput {
   positionKey_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   positionKey_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   positionKey_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_contains?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_eq?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_gt?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_gte?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  positionLifecycleId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  positionLifecycleId_lt?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_lte?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  positionLifecycleId_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  positionLifecycleId_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   positionSizeInTokens_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   positionSizeInTokens_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   positionSizeInTokens_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -11804,6 +12829,15 @@ export interface TradeActionWhereInput {
   twapGroupId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   twapGroupId_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   twapGroupId_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  uiFeeFactor_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  uiFeeFactor_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  uiFeeFactor_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  uiFeeFactor_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   uiFeeReceiver_contains?: InputMaybe<Scalars["String"]["input"]>;
   uiFeeReceiver_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   uiFeeReceiver_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -11826,6 +12860,119 @@ export interface TradeActionWhereInput {
 export interface TradeActionsConnection {
   __typename?: "TradeActionsConnection";
   edges: Array<TradeActionEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface TraderFirstReferral {
+  __typename?: "TraderFirstReferral";
+  id: Scalars["String"]["output"];
+  referralCode: Scalars["String"]["output"];
+  timestamp: Scalars["Int"]["output"];
+  trader: Scalars["String"]["output"];
+}
+
+export interface TraderFirstReferralEdge {
+  __typename?: "TraderFirstReferralEdge";
+  cursor: Scalars["String"]["output"];
+  node: TraderFirstReferral;
+}
+
+export enum TraderFirstReferralOrderByInput {
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  referralCode_ASC = "referralCode_ASC",
+  referralCode_ASC_NULLS_FIRST = "referralCode_ASC_NULLS_FIRST",
+  referralCode_ASC_NULLS_LAST = "referralCode_ASC_NULLS_LAST",
+  referralCode_DESC = "referralCode_DESC",
+  referralCode_DESC_NULLS_FIRST = "referralCode_DESC_NULLS_FIRST",
+  referralCode_DESC_NULLS_LAST = "referralCode_DESC_NULLS_LAST",
+  timestamp_ASC = "timestamp_ASC",
+  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
+  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
+  timestamp_DESC = "timestamp_DESC",
+  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
+  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
+  trader_ASC = "trader_ASC",
+  trader_ASC_NULLS_FIRST = "trader_ASC_NULLS_FIRST",
+  trader_ASC_NULLS_LAST = "trader_ASC_NULLS_LAST",
+  trader_DESC = "trader_DESC",
+  trader_DESC_NULLS_FIRST = "trader_DESC_NULLS_FIRST",
+  trader_DESC_NULLS_LAST = "trader_DESC_NULLS_LAST",
+}
+
+export interface TraderFirstReferralWhereInput {
+  AND?: InputMaybe<Array<TraderFirstReferralWhereInput>>;
+  OR?: InputMaybe<Array<TraderFirstReferralWhereInput>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_contains?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_eq?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_gt?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_gte?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  referralCode_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  referralCode_lt?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_lte?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  referralCode_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  trader_contains?: InputMaybe<Scalars["String"]["input"]>;
+  trader_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  trader_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_eq?: InputMaybe<Scalars["String"]["input"]>;
+  trader_gt?: InputMaybe<Scalars["String"]["input"]>;
+  trader_gte?: InputMaybe<Scalars["String"]["input"]>;
+  trader_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  trader_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  trader_lt?: InputMaybe<Scalars["String"]["input"]>;
+  trader_lte?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  trader_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+}
+
+export interface TraderFirstReferralsConnection {
+  __typename?: "TraderFirstReferralsConnection";
+  edges: Array<TraderFirstReferralEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
 }
@@ -11921,6 +13068,7 @@ export interface TraderReferralStatsWhereInput {
 
 export interface TraderReferralTradeStatsByHour {
   __typename?: "TraderReferralTradeStatsByHour";
+  affiliateRewardsUsd: Scalars["BigInt"]["output"];
   discountsUsd: Scalars["BigInt"]["output"];
   id: Scalars["String"]["output"];
   timestamp: Scalars["Int"]["output"];
@@ -11935,6 +13083,12 @@ export interface TraderReferralTradeStatsByHourEdge {
 }
 
 export enum TraderReferralTradeStatsByHourOrderByInput {
+  affiliateRewardsUsd_ASC = "affiliateRewardsUsd_ASC",
+  affiliateRewardsUsd_ASC_NULLS_FIRST = "affiliateRewardsUsd_ASC_NULLS_FIRST",
+  affiliateRewardsUsd_ASC_NULLS_LAST = "affiliateRewardsUsd_ASC_NULLS_LAST",
+  affiliateRewardsUsd_DESC = "affiliateRewardsUsd_DESC",
+  affiliateRewardsUsd_DESC_NULLS_FIRST = "affiliateRewardsUsd_DESC_NULLS_FIRST",
+  affiliateRewardsUsd_DESC_NULLS_LAST = "affiliateRewardsUsd_DESC_NULLS_LAST",
   discountsUsd_ASC = "discountsUsd_ASC",
   discountsUsd_ASC_NULLS_FIRST = "discountsUsd_ASC_NULLS_FIRST",
   discountsUsd_ASC_NULLS_LAST = "discountsUsd_ASC_NULLS_LAST",
@@ -11970,6 +13124,15 @@ export enum TraderReferralTradeStatsByHourOrderByInput {
 export interface TraderReferralTradeStatsByHourWhereInput {
   AND?: InputMaybe<Array<TraderReferralTradeStatsByHourWhereInput>>;
   OR?: InputMaybe<Array<TraderReferralTradeStatsByHourWhereInput>>;
+  affiliateRewardsUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardsUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardsUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardsUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  affiliateRewardsUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  affiliateRewardsUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardsUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardsUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardsUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   discountsUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   discountsUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   discountsUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -12136,6 +13299,11 @@ export interface TraderReferralsConnection {
   edges: Array<TraderReferralEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
+}
+
+export interface VipTierInput {
+  shouldFallbackToCode: Scalars["String"]["input"];
+  withVolumeMoreThan: Scalars["String"]["input"];
 }
 
 export interface VolumeInfo {

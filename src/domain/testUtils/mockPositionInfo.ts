@@ -71,6 +71,7 @@ export function createMockPositionInfo({
     traderDiscountAmount: 0n,
     uiFeeAmount: 0n,
     pendingImpactAmount: 0n,
+    positionValueInUsd: 0n,
     data: "",
 
     marketInfo,

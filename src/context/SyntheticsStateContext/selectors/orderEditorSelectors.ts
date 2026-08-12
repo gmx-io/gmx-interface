@@ -45,6 +45,7 @@ import { BN_ZERO, parseValue } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
+import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
@@ -139,7 +140,8 @@ const selectOrderEditorSwapFees = createSelector((q) => {
     feeDiscountUsd: 0n,
     swapProfitFeeUsd: 0n,
     swapProfitUsdIn: 0n,
-    uiFeeFactor,
+    // execution charges the factor snapshotted on the order, not the live one
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     externalSwapQuote: undefined,
     type: "increase",
   });
@@ -400,7 +402,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
     userReferralInfo,
     minCollateralUsd,
     minPositionSizeUsd,
-    uiFeeFactor,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
     isSetAcceptablePriceImpactEnabled,
   });
@@ -560,20 +562,33 @@ export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {
   const tokensData = q(selectTokensData);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
   const markPrice = order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
+  const existingPosition = q(selectOrderEditorExistingPosition);
+  const sizeDeltaInTokens =
+    isDecreaseOrderType(order.orderType) && existingPosition && sizeDeltaUsd !== undefined
+      ? getDecreasePositionSizeDeltaInTokens({
+          sizeInUsd: existingPosition.sizeInUsd,
+          sizeInTokens: existingPosition.sizeInTokens,
+          sizeDeltaUsd,
+          isLong: existingPosition.isLong,
+        })
+      : undefined;
+  const canCalculatePriceImpact = !isDecreaseOrderType(order.orderType) || sizeDeltaInTokens !== undefined;
 
   const priceImpactFeeBps =
-    market &&
-    getFeeItem(
-      getAcceptablePriceInfo({
-        indexPrice: markPrice!,
-        isIncrease: isIncreaseOrderType(order.orderType),
-        isLimit: isLimitOrderType(order.orderType),
-        isLong: order.isLong,
-        marketInfo: market,
-        sizeDeltaUsd: sizeDeltaUsd!,
-      }).priceImpactDeltaUsd,
-      sizeDeltaUsd
-    )?.bps;
+    market && canCalculatePriceImpact
+      ? getFeeItem(
+          getAcceptablePriceInfo({
+            indexPrice: markPrice!,
+            isIncrease: isIncreaseOrderType(order.orderType),
+            isLimit: isLimitOrderType(order.orderType),
+            isLong: order.isLong,
+            marketInfo: market,
+            sizeDeltaUsd: sizeDeltaUsd!,
+            sizeDeltaInTokens,
+          }).priceImpactDeltaUsd,
+          sizeDeltaUsd
+        )?.bps
+      : undefined;
 
   return priceImpactFeeBps;
 });
@@ -675,7 +690,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
       : existingPosition,
     findSwapPath,
     userReferralInfo,
-    uiFeeFactor,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     strategy: "independent",
     marketsInfoData,
     chainId,

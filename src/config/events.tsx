@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
+import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -14,6 +14,15 @@ import sparkleIcon from "img/sparkle.svg";
 
 export type AnnouncementType = "listing" | "delisting" | "update" | "maintenance";
 export type AnnouncementVariant = "info" | "warning" | "error" | "success";
+
+export type EventLink = {
+  text: string;
+  href: string;
+  /**
+   * @default false
+   */
+  newTab?: boolean;
+};
 
 export type EventData = {
   id: string;
@@ -33,19 +42,103 @@ export type EventData = {
 
   variant?: AnnouncementVariant;
   chains?: number[];
-  link?: {
-    text: string;
-    href: string;
-    /**
-     * @default false
-     */
-    newTab?: boolean;
-  };
+  link?: EventLink;
+  links?: EventLink[];
 
   requiresOpenPosition?: string;
 };
 
 export const appEventsData: EventData[] = [
+  {
+    id: "release-121-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "07 Aug 2026, 08:00",
+    endDate: "14 Aug 2026, 08:00",
+    variant: "info",
+    title: "App Update: Builder and Affiliate Programs, Trader Profiles, Referral Fixes",
+    summary: (
+      <>
+        New Builders and Trader &amp; Affiliate pages, trader profiles moved to /traders, and referral share cards are
+        fixed.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Builders:</span>{" "}
+          <ExternalLink href="https://gmx.io/#/builders">gmx.io/builders</ExternalLink> is a new home for teams building
+          on GMX, with the SDK, REST API and subgraph side by side, a calculator for what a builder code earns, and a
+          direct contact route.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trader &amp; Affiliate Program:</span>{" "}
+          <ExternalLink href="https://gmx.io/#/trader-affiliate-program">a new page</ExternalLink> for high-volume
+          traders and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and
+          marketing support. Apply from the page, or reach the team on Telegram or a call.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trader profiles:</span> trader activity and address
+          pages now live at /traders, and the address page is called Trader Profile. GMX Account keeps its own meaning,
+          your trading balance. Your existing links still work.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Referrals:</span> the share card now prints a code you
+          actually own. A code you transferred away no longer appears on the card, in the QR, or in the copied link, so
+          your shares credit you. The two network warnings on your code are now a single icon.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">GMX Account:</span> you can deposit any asset you hold
+          on Arbitrum, not just ETH, USDC and USDT.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Fixes:</span> your selected pool stays put after you
+          close a position, and the Daily and cumulative PnL chart shows its first and last dates.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "release-120-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "31 Jul 2026, 08:00",
+    endDate: "07 Aug 2026, 08:00",
+    variant: "info",
+    title: "App Update: Smart Wallets, Swap Routing, and App Install",
+    summary: (
+      <>Smart wallets can now use Express and One-Click, swap routing is clearer, and you can install GMX as an app.</>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Smart wallets:</span> Safe, Coinbase Smart Wallet, and
+          other contract accounts can now use Express and One-Click Trading. If your wallet can't sign or is on the
+          wrong network, the app tells you exactly what to fix.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Swaps:</span> the trade box now shows whether your swap
+          routes through GMX pools or an external aggregator, and tells you which one is short on liquidity instead of a
+          generic insufficient-liquidity message.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One-Click Trading:</span> turning One-Click on and off
+          is reliable again. Declining a signature no longer leaves it half-enabled, switching back to Express works
+          without clearing your cache, and changing GMX Account networks no longer asks you to re-sign.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders and positions:</span> market orders that expire
+          before they can be executed are now labeled as expired in Trade History rather than looking like failures, and
+          liquidation time estimates line up with when liquidations actually trigger.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Install as an app:</span> add GMX to your home screen or
+          desktop and launch straight into the app. A more refined experience and further functionality, such as push
+          notifications, are still to come.
+        </span>
+      </span>
+    ),
+  },
   {
     id: "release-118-highlights",
     type: "update",
@@ -73,13 +166,13 @@ export const appEventsData: EventData[] = [
           performance card showing your PnL, win rate, and cumulative PnL curve, carrying your referral code.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now return
-          profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a resting
-          increase order would be liquidatable at its trigger price.
+          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now
+          return profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a
+          resting increase order would be liquidatable at its trigger price.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool settings
-          now survive refreshes.
+          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool
+          settings now survive refreshes.
         </span>
         <span>
           <span className="font-medium text-typography-primary">Support:</span> the menu now shows how many replies came
@@ -146,25 +239,6 @@ export const appEventsData: EventData[] = [
           stuck as pending after executing, and GM pool fee data loads reliably again in Pools and Earn.
         </span>
       </span>
-    ),
-  },
-  {
-    id: "botanix-withdraw-deadline",
-    type: "delisting",
-    isActive: true,
-    startDate: "24 Jun 2026, 16:45",
-    endDate: "01 Aug 2026, 0:00",
-    chains: [BOTANIX],
-    title: "Botanix network is shutting down",
-    summary: <>Remove your GM liquidity and withdraw your funds from Botanix by July 9, 2026.</>,
-    description: (
-      <>
-        In the swap interface, swap pBTC to BTC, or stBTC to pBTC then pBTC to BTC. stBTC can also be unstaked to BTC
-        directly on Botanix. Move your BTC off the network before the deadline.
-        <br />
-        <br />
-        <Link to="/pools">Withdraw liquidity</Link>
-      </>
     ),
   },
   {
@@ -503,18 +577,17 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: "aero-brett-pbtc-listing",
+    id: "aero-brett-listing",
     type: "listing",
     isActive: true,
     startDate: "28 Aug 2025, 10:00",
     endDate: "04 Sep 2025, 12:00",
-    chains: [ARBITRUM, BOTANIX],
-    title: "AERO and BRETT markets added on Arbitrum, BTC market added on Botanix",
+    chains: [ARBITRUM],
+    title: "AERO and BRETT markets added on Arbitrum",
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM{" "}
-        <span className="text-slate-100">[PBTC]</span> for BTC
+        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT
       </>
     ),
   },

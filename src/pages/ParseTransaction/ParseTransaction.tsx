@@ -216,7 +216,7 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        <Trans>Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia</Trans>
+        <Trans>Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia</Trans>
       </div>
     );
   }
@@ -548,7 +548,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
       <span className="flex flex-row items-center gap-8">
         <Link
           className="text-typography-secondary underline"
-          to={`/accounts/${props.value.toString()}?network=${network}&v=2`}
+          to={`/traders/${props.value.toString()}?network=${network}&v=2`}
         >
           {props.value.toString()}
         </Link>

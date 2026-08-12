@@ -35,6 +35,15 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
+export function isSupportedTradeLinkChainId(chainIdFromParams: string, activeChainId: number) {
+  const requestedChainId = Number(chainIdFromParams);
+
+  return (
+    Number.isSafeInteger(requestedChainId) &&
+    (isContractsChain(requestedChainId, isDevelopment()) || isSourceChain(requestedChainId, activeChainId))
+  );
+}
+
 export function useTradeParamsProcessor() {
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
@@ -73,11 +82,20 @@ export function useTradeParamsProcessor() {
         chainId: chainIdFromParams,
       } = searchParams;
 
-      if (
-        chainIdFromParams &&
-        (isContractsChain(Number(chainIdFromParams), isDevelopment()) ||
-          isSourceChain(Number(chainIdFromParams), chainId))
-      ) {
+      if (chainIdFromParams && !isSupportedTradeLinkChainId(chainIdFromParams, chainId)) {
+        const query = new URLSearchParams(history.location.search);
+        query.delete("mode");
+        query.delete("from");
+        query.delete("to");
+        query.delete("market");
+        query.delete("pool");
+        query.delete("collateral");
+        query.delete("chainId");
+        history.replace({ search: query.toString() });
+        return;
+      }
+
+      if (chainIdFromParams) {
         await switchNetwork(Number(chainIdFromParams), true);
       }
 

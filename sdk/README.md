@@ -18,7 +18,7 @@ const sdk = new GmxSdk({
   rpcUrl: "https://arb1.arbitrum.io/rpc",
   oracleUrl: "https://arbitrum-api.gmxinfra.io",
   walletClient: useWallet().walletClient,
-  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum@9c4ad1/api/graphql",
+  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum@bac941/api/graphql",
 });
 
 const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
@@ -230,3 +230,51 @@ sdk.orders.swap({
 ```
 
 Note the distinction between `payTokenAddress` and `collateralTokenAddress`. These represent the ERC20 token addresses for payment and collateral respectively. Some markets use synthetic tokens, so you'll need to provide the correct underlying token address. For example, the BTC/USD [WETH-USDC] market has a synthetic BTC token as its `indexTokenAddress`, so you should pass the WBTC address instead of BTC.
+
+### JIT-aware trading capacity
+
+Use the v2 API client to get the current increase-order capacity for one market side:
+
+```typescript
+import { GmxApiSdk } from "@gmx-io/sdk/v2";
+
+const api = new GmxApiSdk({ chainId: 42161 });
+const capacity = await api.getTradingCapacity({
+  symbol: "ETH/USD [WETH-USDC]",
+  direction: "long",
+});
+
+if (capacity.marketDataStatus !== "fresh") {
+  throw new Error("Trading capacity is based on stale market data");
+}
+
+const safeAccountAgnosticSize = capacity.baseAvailableLiquidity;
+const indicativeGlobalCapacity =
+  capacity.jitDataStatus === "available" ? capacity.availableLiquidity : capacity.baseAvailableLiquidity;
+```
+
+`availableLiquidity` is the current global JIT-aware capacity and remains capped by max open interest.
+It is indicative because the keeper can restrict JIT by account. `baseAvailableLiquidity` is the native capacity without
+JIT, but it is still a market-level snapshot: a collateral swap or intervening market state can reduce the capacity
+available to a specific order. The keeper can use JIT for market, limit, stop-market, and TWAP increases, but availability
+is evaluated again when each order executes. Do not size an order while `marketDataStatus` is `stale`. Treat
+`prepareOrder` as the final request-aware validation; it returns a typed warning when capacity is not authoritative for
+the specific request.
+
+Prepare failures can be narrowed to the typed API contract:
+
+```typescript
+import { parsePrepareOrderError } from "@gmx-io/sdk/v2";
+
+try {
+  await api.prepareOrder(request);
+} catch (error) {
+  const prepareError = parsePrepareOrderError(error);
+  if (prepareError?.code === "INSUFFICIENT_LIQUIDITY") {
+    console.log(prepareError.details.availableLiquidity, prepareError.details.requestedSizeUsd);
+  }
+}
+```
+
+The helper uses the capacity returned by `/v1/markets/trading-capacity`. Existing raw JIT access through
+`fetchJitLiquidityInfo()` remains available for integrations that need shift data.

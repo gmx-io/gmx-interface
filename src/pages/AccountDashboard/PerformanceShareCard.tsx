@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { forwardRef, useMemo } from "react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
@@ -45,39 +46,41 @@ export const PerformanceShareCard = forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
-    // padding points have no values and would prevent rendering a lone data point
+    // padding points have no values and must not be counted as chart points
     const chartPoints = useMemo(
       () => pnlHistory.filter((point) => point.cumulativePnlFloat !== undefined),
       [pnlHistory]
     );
+    const hasChart = chartPoints.length > 1;
 
     return (
       <ShareCardFrame ref={ref} bgImgUrl={sharePerformanceBgImg} loading={loading} cardClassName="flex flex-col">
-        <div className="flex grow justify-between gap-12">
-          <div className="relative -ml-20 grow max-md:-ml-16">
-            <div className="absolute inset-x-0 bottom-0 top-[25%]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartPoints} margin={CHART_MARGIN}>
-                  <defs>
-                    <linearGradient id="performance-share-pnl-gradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="-45%" stopColor="#A4C3F9" stopOpacity={0.5} />
-                      <stop offset="100%" stopColor="#A4C3F9" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    type="monotone"
-                    dataKey="cumulativePnlFloat"
-                    stroke="#A4C3F9"
-                    fill="url(#performance-share-pnl-gradient)"
-                    strokeWidth={2}
-                    dot={chartPoints.length === 1}
-                    baseValue="dataMin"
-                    isAnimationActive={false}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+        <div className={cx("flex grow gap-12", hasChart ? "justify-between" : "justify-end")}>
+          {hasChart && (
+            <div className="relative -ml-20 grow max-md:-ml-16">
+              <div className="absolute inset-x-0 bottom-0 top-[25%]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartPoints} margin={CHART_MARGIN}>
+                    <defs>
+                      <linearGradient id="performance-share-pnl-gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="-45%" stopColor="#A4C3F9" stopOpacity={0.5} />
+                        <stop offset="100%" stopColor="#A4C3F9" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area
+                      type="monotone"
+                      dataKey="cumulativePnlFloat"
+                      stroke="#A4C3F9"
+                      fill="url(#performance-share-pnl-gradient)"
+                      strokeWidth={2}
+                      baseValue="dataMin"
+                      isAnimationActive={false}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
+          )}
           <ShareCardQRCode code={code} className="shrink-0" />
         </div>
 

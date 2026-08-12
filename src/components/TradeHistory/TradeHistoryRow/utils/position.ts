@@ -29,7 +29,7 @@ import {
   roundsToZero,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
+import { PositionTradeAction, TradeActionType, USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
 
 import {
   INEQUALITY_GT,
@@ -44,7 +44,7 @@ import {
   lines,
   numberToState,
 } from "./shared";
-import { actionTextMap, getActionTitle } from "../../keys";
+import { actionTextMap, expiredActionTextMap, getActionTitle } from "../../keys";
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
@@ -155,7 +155,12 @@ export const formatPositionMessage = (
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
   })!;
 
-  const action = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
+  const action = getActionTitle(
+    tradeAction.orderType,
+    tradeAction.eventName,
+    Boolean(tradeAction.twapParams),
+    tradeAction.reason
+  );
   const timestamp = formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp);
   const timestampUTC = formatTradeActionTimestampUTC(tradeAction.timestamp);
 
@@ -199,7 +204,11 @@ export const formatPositionMessage = (
   const getCancelledMarketOrderResult = (
     collateralActionKey: "Deposit-OrderCancelled" | "Withdraw-OrderCancelled"
   ): typeof result => {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap[collateralActionKey]!);
+    const isExpired = tradeAction.reason === USER_INITIATED_CANCEL;
+    const customAction =
+      sizeDeltaUsd > 0
+        ? action
+        : i18n._(isExpired ? expiredActionTextMap[collateralActionKey]! : actionTextMap[collateralActionKey]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -224,16 +233,20 @@ export const formatPositionMessage = (
 
     return {
       action: customAction,
-      actionComment:
-        error &&
-        lines({
-          text: getErrorTooltipTitle(error.name, true, error.args),
-          state: "error",
-        }),
+      actionComment: isExpired
+        ? lines({
+            text: t`Order expired before it could be executed`,
+            state: "muted",
+          })
+        : error &&
+          lines({
+            text: getErrorTooltipTitle(error.name, true, error.args),
+            state: "error",
+          }),
       size: customSize,
       priceComment,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      isActionError: true,
+      isActionError: !isExpired,
       ...(hasMarkPrice ? {} : { price: customPrice }),
     };
   };
@@ -825,6 +838,7 @@ export function getSettlementTooltipLines(
   return lines(
     "",
     t`Settlement`,
+    "",
     openChange
       ? infoRow(t`Initial margin`, formatCollateralAmount(openChange.collateralDeltaAmount + openChange.feesAmount))
       : undefined,
