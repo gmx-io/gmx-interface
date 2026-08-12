@@ -15,6 +15,7 @@ import { expandDecimals } from "lib/numbers";
 import { sendRewardsTransactionResultEvent, sendRewardsVestingModalOpenEvent } from "lib/userAnalytics/rewardsEvents";
 import useWallet from "lib/wallets/useWallet";
 
+import { getRewardsOnboardingPath } from "../../rewardsRoutes";
 import { RewardsVestingFlow } from "../RewardsVestingFlow";
 
 vi.mock("domain/vesting/useRewardsVestingData", () => ({
@@ -264,6 +265,12 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByText(/No esGMX is currently vesting/)).toBeDefined();
     expect(screen.getByRole("button", { name: "Nothing to vest" }).hasAttribute("disabled")).toBe(true);
     expect(screen.getByRole("button", { name: "Nothing to claim" }).hasAttribute("disabled")).toBe(true);
+  });
+
+  it("sends the idle guidance link to the tiers tab with the onboarding action", () => {
+    renderFlow();
+
+    expect(screen.getByRole("link", { name: "Learn how" }).getAttribute("href")).toBe(getRewardsOnboardingPath());
   });
 
   it("renders the designed start-vesting guidance when esGMX is available", () => {
