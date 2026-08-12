@@ -191,7 +191,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
         executionFeeAmount: executionFee.feeTokenAmount,
         executionGasLimit: executionFee.gasLimit,
         referralCode: userReferralInfo?.referralCodeForTxn,
-        collateralTokenAddress: position.collateralTokenAddress,
+        collateralTokenAddress: selectedCollateralAddress,
         collateralDeltaAmount,
         triggerPrice,
         isLong: position.isLong,

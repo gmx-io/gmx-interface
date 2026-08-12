@@ -9,7 +9,10 @@ export type MarginDepositBatchParams = {
   executionFeeAmount: bigint;
   executionGasLimit: bigint;
   referralCode: string | undefined;
-  /** Position collateral token: margin deposits never swap, so it is both the pay and the collateral token. */
+  /**
+   * The position collateral token in its selected form (native or wrapped): margin deposits never swap,
+   * so it is both the pay and the collateral token.
+   */
   collateralTokenAddress: string;
   collateralDeltaAmount: bigint;
   triggerPrice: bigint;

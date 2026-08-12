@@ -14,7 +14,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarginDepositProjections } from "domain/synthetics/orders/marginDeposit";
 import { getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
-import { convertToTokenAmount } from "domain/synthetics/tokens";
+import { convertToTokenAmount, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { Operation } from "../types";
@@ -57,8 +57,9 @@ export function usePositionEditorData({ operation }: Options) {
     const totalFeesUsd = bigMath.abs(fees.totalFees.deltaUsd);
 
     if (isAtPriceDeposit) {
-      // the deposit is denominated in the position collateral token; skip stale renders after a mode switch
-      const isPositionCollateralSelected = collateralToken?.address === position.collateralTokenAddress;
+      // the deposit must resolve to the position collateral token (native and wrapped forms both qualify)
+      const isPositionCollateralSelected =
+        collateralToken !== undefined && getIsEquivalentTokens(collateralToken, position.collateralToken);
 
       if (!isPositionCollateralSelected || triggerPrice === undefined || collateralDeltaAmount === undefined) {
         return {};

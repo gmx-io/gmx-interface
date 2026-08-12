@@ -343,24 +343,11 @@ export function PositionEditor() {
         return;
       }
 
-      // a margin deposit is always denominated in the position collateral token
-      if (isAtPriceDeposit && selectedCollateralAddress !== position.collateralTokenAddress) {
-        handleSetCollateralAddress(position.collateralTokenAddress as Address);
-        return;
-      }
-
       if (!selectedCollateralAddress || !filteredTokensData[selectedCollateralAddress]) {
         handleSetCollateralAddress(position.collateralTokenAddress as Address);
       }
     },
-    [
-      filteredTokensData,
-      handleSetCollateralAddress,
-      isAtPriceDeposit,
-      position,
-      selectedCollateralAddress,
-      setSelectedCollateralAddress,
-    ]
+    [filteredTokensData, handleSetCollateralAddress, position, selectedCollateralAddress, setSelectedCollateralAddress]
   );
 
   useEffect(
@@ -486,6 +473,35 @@ export function PositionEditor() {
                 qa="deposit-mode-tabs"
               />
             )}
+            {isAtPriceDeposit && (
+              <TradeInputField
+                qa="trigger-price-input"
+                label={t`Trigger price`}
+                alternateValue={null}
+                displayMode="usd"
+                showDisplayModeToggle={false}
+                unitLabel="USD"
+                rightHeadline={
+                  <button
+                    type="button"
+                    className="whitespace-nowrap text-typography-secondary hover:text-typography-primary"
+                    onClick={() =>
+                      setTriggerPriceInputValue(
+                        formatMarginDepositPriceInput(markPrice, position.indexToken?.visualMultiplier)
+                      )
+                    }
+                  >
+                    {t`Mark:`}{" "}
+                    <span className="numbers">
+                      {formatUsdPrice(markPrice, { visualMultiplier: position.indexToken?.visualMultiplier })}
+                    </span>
+                  </button>
+                }
+                inputValue={triggerPriceInputValue}
+                onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
+                maxDecimals={USD_DECIMALS}
+              />
+            )}
             <TradeInputBox
               qa="amount-input"
               leftHeadline={localizedOperationLabels[operation]}
@@ -541,7 +557,7 @@ export function PositionEditor() {
               }
               rightContent={
                 <div data-token-selector>
-                  {hasMultipleTokens && !isAtPriceDeposit ? (
+                  {hasMultipleTokens ? (
                     <PositionEditorCollateralSelector
                       chainId={chainId}
                       selectedTokenSymbol={collateralToken?.symbol}
@@ -558,35 +574,6 @@ export function PositionEditor() {
             />
             {maxAvailableAmount !== undefined && maxAvailableAmount > 0n && (
               <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
-            )}
-            {isAtPriceDeposit && (
-              <TradeInputField
-                qa="trigger-price-input"
-                label={t`Trigger price`}
-                alternateValue={null}
-                displayMode="usd"
-                showDisplayModeToggle={false}
-                unitLabel="USD"
-                rightHeadline={
-                  <button
-                    type="button"
-                    className="whitespace-nowrap text-typography-secondary hover:text-typography-primary"
-                    onClick={() =>
-                      setTriggerPriceInputValue(
-                        formatMarginDepositPriceInput(markPrice, position.indexToken?.visualMultiplier)
-                      )
-                    }
-                  >
-                    {t`Mark:`}{" "}
-                    <span className="numbers">
-                      {formatUsdPrice(markPrice, { visualMultiplier: position.indexToken?.visualMultiplier })}
-                    </span>
-                  </button>
-                }
-                inputValue={triggerPriceInputValue}
-                onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
-                maxDecimals={USD_DECIMALS}
-              />
             )}
             <div className="flex flex-col gap-14">
               <HighPriceImpactOrFeesWarningCard
