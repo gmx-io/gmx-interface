@@ -1,6 +1,17 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { resolveRelayProvider } from "config/relay";
+import { setAbFlagEnabled } from "config/ab";
+import { ARBITRUM } from "config/chains";
+import { API_UI_FLAGS_CACHE_KEY } from "config/localStorage";
+import { getRelayProvider, resolveRelayProvider } from "config/relay";
+import { FORCE_GELATO_RELAYER_UI_FLAG } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+
+function persistForceFlag(chainId: number, enabled: boolean) {
+  localStorage.setItem(
+    `${API_UI_FLAGS_CACHE_KEY}-${chainId}`,
+    JSON.stringify({ [FORCE_GELATO_RELAYER_UI_FLAG]: { enabled, createdAt: "", updatedAt: "" } })
+  );
+}
 
 describe("resolveRelayProvider", () => {
   it("keeps a chain on Gelato until it is opted in, whatever the ab flag says", () => {
@@ -16,5 +27,44 @@ describe("resolveRelayProvider", () => {
   it("lets a pinned provider override the flag in both directions", () => {
     expect(resolveRelayProvider("gmx", false)).toBe("gmx");
     expect(resolveRelayProvider("gelato", true)).toBe("gelato");
+  });
+});
+
+describe("getRelayProvider with the force switch", () => {
+  afterEach(() => {
+    localStorage.clear();
+    setAbFlagEnabled("gmxRelay", false);
+    vi.unstubAllEnvs();
+  });
+
+  // the switch exists to end an incident in seconds, so nothing may outrank it
+  it("pulls a user off GMX Relay even when the split put them on it", () => {
+    setAbFlagEnabled("gmxRelay", true);
+    expect(getRelayProvider(ARBITRUM)).toBe("gmx");
+
+    persistForceFlag(ARBITRUM, true);
+    expect(getRelayProvider(ARBITRUM)).toBe("gelato");
+  });
+
+  // the build-time override is captured when the module loads, so it has to be set before the import
+  it("outranks the build-time override too", async () => {
+    vi.stubEnv("VITE_APP_RELAY_PROVIDER", "gmx");
+    vi.resetModules();
+
+    const freshRelay = await import("config/relay");
+    expect(freshRelay.getRelayProvider(ARBITRUM)).toBe("gmx");
+
+    persistForceFlag(ARBITRUM, true);
+    expect(freshRelay.getRelayProvider(ARBITRUM)).toBe("gelato");
+  });
+
+  // an absent or unreadable flag must not quietly undo a rollout
+  it("changes nothing when the flag is absent or false", () => {
+    setAbFlagEnabled("gmxRelay", true);
+
+    expect(getRelayProvider(ARBITRUM)).toBe("gmx");
+
+    persistForceFlag(ARBITRUM, false);
+    expect(getRelayProvider(ARBITRUM)).toBe("gmx");
   });
 });

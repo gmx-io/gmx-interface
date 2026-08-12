@@ -1,3 +1,5 @@
+import { getIsGelatoRelayerForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+
 import { getIsFlagEnabled } from "./ab";
 import { ARBITRUM, ContractsChainId } from "./chains";
 
@@ -25,5 +27,11 @@ export function resolveRelayProvider(rollout: RelayRollout | undefined, isAbEnab
 }
 
 export function getRelayProvider(chainId: ContractsChainId): RelayProvider {
+  // the point of the switch is to end an incident in seconds, so it outranks every other input,
+  // including a chain pinned to `gmx` and the build-time override used for debugging
+  if (getIsGelatoRelayerForced(readPersistedUiFlags(chainId))) {
+    return "gelato";
+  }
+
   return ENV_RELAY_PROVIDER ?? resolveRelayProvider(RELAY_ROLLOUT[chainId], getIsFlagEnabled("gmxRelay"));
 }

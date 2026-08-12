@@ -20,6 +20,16 @@ export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): bo
   return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG]?.enabled !== false;
 }
 
+export const FORCE_GELATO_RELAYER_UI_FLAG = "forceGelatoRelayer";
+
+/**
+ * Pulls every user back to Gelato regardless of the rollout split. Only an explicit `true` forces it,
+ * so an unreachable keeper leaves the split as configured rather than silently undoing a rollout.
+ */
+export function getIsGelatoRelayerForced(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[FORCE_GELATO_RELAYER_UI_FLAG]?.enabled === true;
+}
+
 export const IS_EXPRESS_AVAILABLE_UI_FLAG = "isExpressAvailable";
 
 /**
@@ -40,10 +50,16 @@ const PERSISTED_API_FLAG_KEYS = [
   IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG,
   // a reload mid-incident must restore the last known value rather than blank-default on first paint
   IS_EXPRESS_AVAILABLE_UI_FLAG,
+  FORCE_GELATO_RELAYER_UI_FLAG,
 ];
 
 function getCacheKey(chainId: number): string {
   return `${API_UI_FLAGS_CACHE_KEY}-${chainId}`;
+}
+
+/** For code outside React that has to know a persisted flag before the next fetch resolves. */
+export function readPersistedUiFlags(chainId: number): UiFlags | undefined {
+  return readCachedApiFlags(chainId);
 }
 
 function readCachedApiFlags(chainId: number): UiFlags | undefined {
