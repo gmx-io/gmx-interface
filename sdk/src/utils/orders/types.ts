@@ -71,6 +71,8 @@ export type Order = {
   autoCancel: boolean;
   data: string[];
   uiFeeReceiver: string;
+  // snapshotted at order creation since v2.2c (0n for pre-upgrade orders); undefined when the data source doesn't provide it
+  uiFeeFactor: bigint | undefined;
   validFromTime: bigint;
   title?: string;
 };
@@ -161,4 +163,5 @@ export type ApiOrderInfo = {
   shouldUnwrapNativeToken: boolean;
   isFrozen: boolean;
   autoCancel: boolean;
+  dataList: string[];
 };

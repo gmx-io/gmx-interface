@@ -4,7 +4,7 @@ import { deserializeBigIntsInObject } from "utils/numbers";
 import { ApiOrderInfo } from "./types";
 
 export async function fetchApiOrders(ctx: { api: IHttp }, params: { address: string }): Promise<ApiOrderInfo[]> {
-  const orders: any[] = await ctx.api.fetchJson("/orders", {
+  const orders: any[] = await ctx.api.fetchJson("/v1/orders", {
     query: {
       address: params.address,
     },

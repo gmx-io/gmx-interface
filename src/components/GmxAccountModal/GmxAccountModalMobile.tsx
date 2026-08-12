@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { useGmxAccountModalOpen, useGmxAccountWalletReceiveViewBackTo } from "context/GmxAccountContext/hooks";
 import { userAnalytics } from "lib/userAnalytics";
 import { OneClickPromotionEvent } from "lib/userAnalytics/types";
 
@@ -14,14 +14,20 @@ import { DepositStatusView } from "./DepositStatusView";
 import { DepositView } from "./DepositView";
 import {
   AvailableToTradeAssetsTitle,
+  MainViewTitle,
   TitleRow,
   TitleWithBack,
   TransferDetailsTitle,
+  TransferHistoryScreen,
+  TransferHistoryTitle,
   WithdrawalScreen,
 } from "./GmxAccountModalShared";
+import { useIsActiveAccountEmbeddedWallet } from "./hooks";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
-import { TransferDetailsView } from "./TransferDetailsView";
+import { WalletReceiveOptionsView } from "./WalletReceiveOptionsView";
+import { WalletReceiveView } from "./WalletReceiveView";
+import { WalletSendView } from "./WalletSendView";
 
 function DepositTitle() {
   return (
@@ -55,13 +61,46 @@ function SelectAssetToDepositTitle() {
   );
 }
 
+function ReceiveFundsTitle() {
+  const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+
+  return (
+    <TitleWithBack backTo={walletReceiveViewBackTo ?? "main"}>
+      <Trans>Receive funds</Trans>
+    </TitleWithBack>
+  );
+}
+
+function ReceiveToWalletTitle() {
+  const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
+
+  return (
+    <TitleWithBack backTo={isEmbeddedWallet ? "walletReceiveOptions" : walletReceiveViewBackTo ?? "main"}>
+      <Trans>Receive to Wallet</Trans>
+    </TitleWithBack>
+  );
+}
+
+function SendFromWalletTitle() {
+  return (
+    <TitleWithBack backTo="main">
+      <Trans>Send from Wallet</Trans>
+    </TitleWithBack>
+  );
+}
+
 const SLIDE_MODAL_LABELS: Record<Exclude<GmxAccountModalView, "depositStatus">, ReactNode> = {
-  main: <Trans>GMX Account</Trans>,
+  main: <MainViewTitle />,
   availableToTradeAssets: <AvailableToTradeAssetsTitle />,
   transferDetails: <TransferDetailsTitle />,
+  transferHistory: <TransferHistoryTitle />,
   deposit: <DepositTitle />,
   withdraw: <WithdrawTitle />,
   selectAssetToDeposit: <SelectAssetToDepositTitle />,
+  walletReceiveOptions: <ReceiveFundsTitle />,
+  walletReceive: <ReceiveToWalletTitle />,
+  walletSend: <SendFromWalletTitle />,
 };
 
 export function GmxAccountModalMobile({ account }: { account: string }) {
@@ -81,7 +120,7 @@ export function GmxAccountModalMobile({ account }: { account: string }) {
       data: { action: "UserRejected" },
     });
 
-    setModalState("main");
+    setModalState("transferHistory");
   };
 
   return (
@@ -93,13 +132,19 @@ export function GmxAccountModalMobile({ account }: { account: string }) {
         disableOverflowHandling={true}
         className="text-body-medium"
         contentPadding={false}
+        hideHeaderBorder
       >
         {view === "main" && <MainView account={account} />}
         {view === "availableToTradeAssets" && <AvailableToTradeAssetsView />}
-        {view === "transferDetails" && <TransferDetailsView />}
+        {(view === "transferHistory" || view === "transferDetails") && (
+          <TransferHistoryScreen showDetails={view === "transferDetails"} />
+        )}
         {view === "deposit" && <DepositView />}
         {view === "selectAssetToDeposit" && <SelectAssetToDepositView />}
         {view === "withdraw" && <WithdrawalScreen />}
+        {view === "walletReceiveOptions" && <WalletReceiveOptionsView />}
+        {view === "walletReceive" && <WalletReceiveView />}
+        {view === "walletSend" && <WalletSendView />}
       </SlideModal>
 
       {isDepositStatus && (

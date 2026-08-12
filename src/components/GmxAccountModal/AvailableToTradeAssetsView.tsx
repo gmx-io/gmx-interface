@@ -1,11 +1,12 @@
 import { MessageDescriptor } from "@lingui/core";
-import { msg, t } from "@lingui/macro";
-import cx from "classnames";
+import { Trans, msg } from "@lingui/macro";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { getChainName, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { isSettlementChain } from "config/multichain";
+import type { GmxAccountAvailableAssetsFilter } from "context/GmxAccountContext/GmxAccountContext";
+import { useGmxAccountAvailableAssetsFilter, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -16,14 +17,17 @@ import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
+import Tabs from "components/Tabs/Tabs";
+import type { Option as TabOption } from "components/Tabs/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-type FilterType = "all" | "gmxAccount" | "wallet";
+import { useOpenWalletReceive } from "./hooks";
 
-const FILTERS: FilterType[] = ["all", "wallet", "gmxAccount"];
+type FilterType = GmxAccountAvailableAssetsFilter;
+
+const FILTERS: FilterType[] = ["gmxAccount", "wallet"];
 
 const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
-  all: msg`All`,
   gmxAccount: msg`GMX Account`,
   wallet: msg`Wallet`,
 };
@@ -31,6 +35,7 @@ const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
 type DisplayToken = {
   chainId: number;
   symbol: string;
+  name: string;
   isGmxAccount: boolean;
   balance: bigint | undefined;
   balanceUsd: bigint | undefined;
@@ -55,10 +60,29 @@ const tokenSorter = (a: DisplayToken, b: DisplayToken): 1 | -1 | 0 => {
   return 0;
 };
 
-const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChainFilter?: boolean }) => {
+const AssetsList = ({
+  tokens,
+  noChainFilter,
+  initialFilter = "gmxAccount",
+}: {
+  tokens: DisplayToken[];
+  noChainFilter?: boolean;
+  initialFilter?: FilterType;
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [activeFilter, setActiveFilter] = useState<FilterType>(initialFilter);
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const titles = useLocalizedMap(FILTER_TITLE_MAP);
+  const openWalletReceive = useOpenWalletReceive();
+
+  const handleOpenWalletReceive = () => {
+    openWalletReceive();
+  };
+
+  const tabsOptions = useMemo<TabOption<FilterType>[]>(
+    () => FILTERS.map((filter) => ({ value: filter, label: titles[filter] })),
+    [titles]
+  );
 
   const sortedFilteredTokens = useMemo(() => {
     const filteredTokens = tokens.filter((token) => {
@@ -66,7 +90,6 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
 
       const matchesChainFilter =
         noChainFilter ||
-        activeFilter === "all" ||
         (activeFilter === "gmxAccount" && token.isGmxAccount) ||
         (activeFilter === "wallet" && !token.isGmxAccount);
 
@@ -77,30 +100,17 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
   }, [tokens, searchQuery, noChainFilter, activeFilter]);
 
   return (
-    <div className="flex grow flex-col overflow-y-hidden pt-adaptive">
-      <div className="mb-16 px-adaptive">
+    <div className="flex grow flex-col overflow-y-hidden">
+      <div className="px-adaptive">
         <SearchInput value={searchQuery} setValue={setSearchQuery} noBorder />
       </div>
 
       {!noChainFilter && (
-        <div className="mb-12 flex gap-4 px-adaptive">
-          {FILTERS.map((filter) => (
-            <Button
-              key={filter}
-              type="button"
-              variant={activeFilter === filter ? "secondary" : "ghost"}
-              size="small"
-              className={cx({
-                "!text-typography-primary": activeFilter === filter,
-              })}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {titles[filter]}
-            </Button>
-          ))}
+        <div className="border-b-1/2 border-stroke-primary/80 px-adaptive">
+          <Tabs type="underline" options={tabsOptions} selectedValue={activeFilter} onChange={setActiveFilter} />
         </div>
       )}
-      <VerticalScrollFadeContainer className="flex grow flex-col overflow-y-auto">
+      <VerticalScrollFadeContainer className="flex grow flex-col overflow-y-auto pt-12">
         {sortedFilteredTokens.map((displayToken) => (
           <div
             key={displayToken.symbol + "_" + displayToken.chainId}
@@ -110,11 +120,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
               <TokenIcon symbol={displayToken.symbol} displaySize={40} chainIdBadge={displayToken.chainId} />
               <div>
                 <div>{displayToken.symbol}</div>
-                <div className="text-body-small text-slate-100">
-                  {displayToken.chainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID
-                    ? t`GMX Account`
-                    : getChainName(displayToken.chainId)}
-                </div>
+                <div className="text-body-small text-typography-secondary">{displayToken.name}</div>
               </div>
             </div>
             <div className="text-right">
@@ -124,10 +130,36 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
                 decimals={displayToken.decimals}
                 isStable={displayToken.isStable}
               />
-              <div className="text-body-small text-slate-100 numbers">{formatUsd(displayToken.balanceUsd)}</div>
+              <div className="text-body-small text-typography-secondary numbers">
+                {formatUsd(displayToken.balanceUsd)}
+              </div>
             </div>
           </div>
         ))}
+        {sortedFilteredTokens.length === 0 &&
+          (searchQuery !== "" ? (
+            <div className="flex h-full flex-col items-center justify-center p-adaptive text-typography-secondary">
+              <Trans>No assets found</Trans>
+            </div>
+          ) : !noChainFilter && activeFilter === "wallet" ? (
+            <div className="flex h-full flex-col items-center justify-center gap-12 p-adaptive">
+              <span className="text-typography-secondary">
+                <Trans>No assets in your wallet</Trans>
+              </span>
+              <Button variant="secondary" size="medium" onClick={handleOpenWalletReceive}>
+                <Trans>Receive to Wallet</Trans>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-12 p-adaptive">
+              <span className="text-typography-secondary">
+                <Trans>No assets in your GMX Account</Trans>
+              </span>
+              <Button variant="secondary" size="medium" onClick={() => setIsVisibleOrView("deposit")}>
+                <Trans>Deposit to GMX Account</Trans>
+              </Button>
+            </div>
+          ))}
       </VerticalScrollFadeContainer>
     </div>
   );
@@ -144,6 +176,7 @@ const AssetListMultichain = () => {
         (token): DisplayToken => ({
           chainId: GMX_ACCOUNT_PSEUDO_CHAIN_ID,
           symbol: token.symbol,
+          name: token.name,
           isGmxAccount: true,
           balance: token.gmxAccountBalance,
           balanceUsd: convertToUsd(token.gmxAccountBalance, token.decimals, getMidPrice(token.prices)),
@@ -160,6 +193,7 @@ const AssetListMultichain = () => {
 const AssetListSettlementChain = () => {
   const { chainId, srcChainId } = useChainId();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const [availableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
 
   const displayTokens = useMemo(() => {
     const displayTokens: DisplayToken[] = Object.values(tokensData || {})
@@ -187,7 +221,7 @@ const AssetListSettlementChain = () => {
     return displayTokens;
   }, [chainId, tokensData]);
 
-  return <AssetsList tokens={displayTokens} />;
+  return <AssetsList tokens={displayTokens} initialFilter={availableAssetsFilter} />;
 };
 
 export const AvailableToTradeAssetsView = () => {

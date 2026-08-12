@@ -68,30 +68,12 @@ type EcosystemCommunityProject = {
 
 export const communityProjects: EcosystemCommunityProject[] = [
   {
-    title: msg`GMX Blueberry Club`,
-    link: "https://hub.findgbc.io/",
-    linkLabel: "findgbc.io",
-    about: msg`GMX community with NFTs, trading, and education initiatives`,
-    creatorLabel: "@xm_gbc",
-    creatorLink: "https://t.me/xm_gbc",
-    chainIds: [ARBITRUM],
-  },
-  {
     title: msg`GMX positions bot`,
     link: "https://t.me/GMXv2Positions",
     linkLabel: "t.me",
     about: msg`Telegram bot for GMX position updates`,
     creatorLabel: "@SniperMonke01",
     creatorLink: "https://t.me/SniperMonke01",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
-    title: msg`Blueberry Pulse`,
-    link: "https://blueberrypulse.substack.com/",
-    linkLabel: "substack.com",
-    about: msg`GMX weekly updates`,
-    creatorLabel: "@1tbk1",
-    creatorLink: "https://x.com/1tbk1",
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
@@ -113,15 +95,6 @@ export const communityProjects: EcosystemCommunityProject[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`SNTL esGMX market`,
-    link: "https://sntl.market/",
-    linkLabel: "sntl.market",
-    about: msg`esGMX OTC market`,
-    creatorLabel: "@sntlai",
-    creatorLink: "https://x.com/sntlai",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
     title: msg`Copin`,
     link: "https://app.copin.io",
     linkLabel: "copin.io",
@@ -138,24 +111,6 @@ export const communityProjects: EcosystemCommunityProject[] = [
     creatorLabel: "@gmx_v2_bot",
     creatorLink: "https://t.me/gmx_v2_bot",
     chainIds: [ARBITRUM],
-  },
-  {
-    title: msg`Kudai AI agent`,
-    link: "https://x.com/Kudai_IO",
-    linkLabel: "x.com",
-    about: msg`AI agent for GMX Blueberry Club`,
-    creatorLabel: "@Kudai_IO",
-    creatorLink: "https://x.com/Kudai_IO",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
-    title: msg`Generative Market eXplore - AIGMX agent`,
-    link: "https://x.com/aigmx_agent",
-    linkLabel: "x.com",
-    about: msg`Real-time rants about GMX trades`,
-    creatorLabel: "@aigmx_agent",
-    creatorLink: "https://x.com/aigmx_agent",
-    chainIds: [ARBITRUM, AVALANCHE],
   },
 ];
 
@@ -500,6 +455,13 @@ export const integrations: EcosystemGmxPage[] = [
     link: "https://x.com/torosfinance/",
     linkLabel: "x.com",
     about: msg`Leveraged tokens with protection`,
+    chainIds: [ARBITRUM],
+  },
+  {
+    title: msg`Elfa AI`,
+    link: "https://www.elfa.ai/",
+    linkLabel: "elfa.ai",
+    about: msg`AI trading assistant`,
     chainIds: [ARBITRUM],
   },
 ];

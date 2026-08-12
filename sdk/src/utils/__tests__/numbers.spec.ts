@@ -12,18 +12,26 @@ import {
   formatAmount,
   formatAmountHuman,
   formatBalanceAmount,
+  formatBasisPoints,
+  formatPriceImpactBps,
   formatFactor,
   formatPercentage,
   formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
+  isUint256,
+  MaxUint256,
   numberToBigint,
+  parseUint256DecimalString,
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
   PRECISION_DECIMALS,
+  parseValue,
+  removeTrailingZeros,
   trimZeroDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
+  roundsToZero,
   toBigNumberWithDecimals,
 } from "utils/numbers";
 
@@ -36,6 +44,31 @@ describe("numbers utils", () => {
     expect(BN_ZERO).toBe(0n);
     expect(BN_ONE).toBe(1n);
     expect(BN_NEGATIVE_ONE).toBe(-1n);
+  });
+
+  describe("uint256", () => {
+    it.each([
+      ["0", 0n],
+      ["1", 1n],
+      [MaxUint256.toString(), MaxUint256],
+    ])("parses the canonical decimal string %s", (value, expected) => {
+      expect(parseUint256DecimalString(value)).toBe(expected);
+    });
+
+    it.each([undefined, null, 1, 1n, "", "-1", "+1", "01", "1.0", "0x10", (MaxUint256 + 1n).toString()])(
+      "rejects the non-uint256 decimal value %s",
+      (value) => {
+        expect(parseUint256DecimalString(value)).toBeUndefined();
+      }
+    );
+
+    it("recognizes uint256 bigint values", () => {
+      expect(isUint256(0n)).toBe(true);
+      expect(isUint256(MaxUint256)).toBe(true);
+      expect(isUint256(-1n)).toBe(false);
+      expect(isUint256(MaxUint256 + 1n)).toBe(false);
+      expect(isUint256("1")).toBe(false);
+    });
   });
 
   describe("expandDecimals", () => {
@@ -141,6 +174,22 @@ describe("trimZeroDecimals", () => {
 
   it("leading zeros with trailing zero decimals trims to int", () => {
     expect(trimZeroDecimals("0000123.000")).toBe("123");
+  });
+});
+
+describe("removeTrailingZeros", () => {
+  it("keeps large values in plain decimal notation", () => {
+    expect(removeTrailingZeros("9659861417460889000000.00")).toBe("9659861417460889000000");
+  });
+
+  it("removes trailing fractional zeros without converting the value to a number", () => {
+    expect(removeTrailingZeros("123.4500")).toBe("123.45");
+  });
+});
+
+describe("parseValue", () => {
+  it("returns undefined instead of throwing for scientific notation", () => {
+    expect(parseValue("9.659861417460889e+21", USD_DECIMALS)).toBeUndefined();
   });
 });
 
@@ -408,6 +457,14 @@ describe("formatFactor", () => {
     expect(formatFactor(1000000000000000000000000000n)).toBe("0.001");
     expect(formatFactor(1000000000000000000000000000000n)).toBe("1");
   });
+
+  it("should format percentage-scaled factors", () => {
+    expect(formatFactor(PRECISION * 10n)).toBe("10");
+    expect(formatFactor(PRECISION * 30n)).toBe("30");
+    expect(formatFactor(PRECISION * 80n)).toBe("80");
+    expect(formatFactor(PRECISION * 100n)).toBe("100");
+    expect(formatFactor(PRECISION * 1000n)).toBe("1000");
+  });
 });
 
 describe("formatPercentage", () => {
@@ -429,6 +486,11 @@ describe("formatPercentage", () => {
   it("should format with different displayDecimals", () => {
     expect(formatPercentage(100n, { displayDecimals: 2 })).toBe("1.00%");
     expect(formatPercentage(123456n, { displayDecimals: 1 })).toBe("1234.6%");
+  });
+
+  it("should format with commas when requested", () => {
+    expect(formatPercentage(123456n, { useCommas: true })).toBe("1,234.56%");
+    expect(formatPercentage(-123456n, { signed: true, useCommas: true })).toBe("-\u200a1,234.56%");
   });
 
   it("should handle basis points (bps) formatting", () => {
@@ -542,5 +604,61 @@ describe("formatTokenAmount", () => {
       minThreshold: "0.00000001",
     });
     expect(result).toContain("<");
+  });
+});
+
+describe("roundsToZero", () => {
+  it("is true when the amount is below the smallest displayed unit", () => {
+    expect(roundsToZero(5n, 18, 4)).toBe(true);
+    expect(roundsToZero(-5n, 18, 4)).toBe(true);
+    expect(roundsToZero(0n, 18, 4)).toBe(true);
+  });
+
+  it("is false when the amount reaches the smallest displayed unit", () => {
+    expect(roundsToZero(10n ** 14n, 18, 4)).toBe(false);
+  });
+
+  it("is false when no decimals are hidden", () => {
+    expect(roundsToZero(1n, 6, 6)).toBe(false);
+    expect(roundsToZero(1n, 4, 6)).toBe(false);
+  });
+});
+
+describe("formatBasisPoints", () => {
+  it("formats negative bps values with sign", () => {
+    expect(formatBasisPoints(-81n)).toBe("-81 bps");
+  });
+
+  it("formats positive bps values with plus sign", () => {
+    expect(formatBasisPoints(50n)).toBe("+50 bps");
+  });
+
+  it("formats zero without sign", () => {
+    expect(formatBasisPoints(0n)).toBe("0 bps");
+  });
+
+  it("uses comma separators for large bps values", () => {
+    expect(formatBasisPoints(20000n)).toBe("+20,000 bps");
+  });
+
+  it("returns undefined for missing bps value", () => {
+    expect(formatBasisPoints(undefined)).toBeUndefined();
+  });
+});
+
+describe("formatPriceImpactBps", () => {
+  it("formats the signed bps share of size", () => {
+    expect(formatPriceImpactBps(-81n, 10000n)).toBe("-81 bps");
+    expect(formatPriceImpactBps(50n, 10000n)).toBe("+50 bps");
+    expect(formatPriceImpactBps(0n, 10000n)).toBe("0 bps");
+  });
+
+  it("returns undefined when the price impact is missing", () => {
+    expect(formatPriceImpactBps(undefined, 10000n)).toBeUndefined();
+  });
+
+  it("returns undefined when size is not positive", () => {
+    expect(formatPriceImpactBps(-81n, 0n)).toBeUndefined();
+    expect(formatPriceImpactBps(-81n, -10000n)).toBeUndefined();
   });
 });

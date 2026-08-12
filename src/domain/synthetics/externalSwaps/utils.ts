@@ -1,5 +1,6 @@
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { getExternalAggregatorSwapUrlFromAddresses } from "config/links";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
@@ -9,11 +10,13 @@ import { SwapStrategyForSwapOrders } from "sdk/utils/swap/types";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import { TokenData } from "sdk/utils/tokens/types";
 import {
+  ExternalSwapAggregator,
   ExternalSwapCalculationStrategy,
   ExternalSwapInputs,
   ExternalSwapQuote,
   SwapAmounts,
 } from "sdk/utils/trade/types";
+import { mustNeverExist } from "sdk/utils/types";
 
 import {
   FindSwapPath,
@@ -22,6 +25,7 @@ import {
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
+import { ExternalSwapRequestKey } from "./types";
 
 export function getExternalSwapInputsByFromValue({
   tokenIn,
@@ -262,12 +266,36 @@ export function getExternalSwapRequestKey(params: {
   amountIn: bigint | undefined;
   desiredAmountOut: bigint | undefined;
   slippage: number | undefined;
-}): string | undefined {
+}): ExternalSwapRequestKey | undefined {
   const { fromTokenAddress, toTokenAddress, strategy, amountIn, desiredAmountOut, slippage } = params;
   if (!fromTokenAddress || !toTokenAddress || !strategy || slippage === undefined) return undefined;
   const amount = strategy === "byToValue" ? desiredAmountOut : amountIn;
   if (amount === undefined || amount <= 0n) return undefined;
-  return `${fromTokenAddress}:${toTokenAddress}:${strategy}:${amount}:${slippage}`;
+  return {
+    structuralKey: `${fromTokenAddress}:${toTokenAddress}:${strategy}:${slippage}`,
+    amount,
+    strategy,
+  };
+}
+
+export const EXTERNAL_SWAP_KEY_AMOUNT_TOLERANCE_BPS = 30n;
+
+export function isAmountWithinKeyTolerance(a: bigint, b: bigint): boolean {
+  if (a <= 0n || b <= 0n) return false;
+  if (a === b) return true;
+  const diff = a > b ? a - b : b - a;
+  const reference = a > b ? a : b;
+  return diff * BASIS_POINTS_DIVISOR_BIGINT <= reference * EXTERNAL_SWAP_KEY_AMOUNT_TOLERANCE_BPS;
+}
+
+export function externalSwapRequestKeysMatch(
+  a: ExternalSwapRequestKey | undefined,
+  b: ExternalSwapRequestKey | undefined
+): boolean {
+  if (!a || !b) return false;
+  if (a.structuralKey !== b.structuralKey) return false;
+
+  return a.strategy === "leverageBySize" ? isAmountWithinKeyTolerance(a.amount, b.amount) : a.amount === b.amount;
 }
 
 export function getBestSwapStrategy({
@@ -315,5 +343,36 @@ export function getBestSwapStrategy({
     };
   } else {
     return undefined;
+  }
+}
+
+export function isAbortError(e: unknown): boolean {
+  return (e as Error | undefined)?.name === "AbortError";
+}
+
+export function getExternalAggregatorSwapUrl({
+  chainId,
+  isFromTokenGmxAccount,
+  fromTokenAddress,
+  toTokenAddress,
+}: {
+  chainId: number;
+  isFromTokenGmxAccount: boolean;
+  fromTokenAddress: string | undefined;
+  toTokenAddress: string | undefined;
+}): string | undefined {
+  if (isFromTokenGmxAccount) {
+    return undefined;
+  }
+
+  return getExternalAggregatorSwapUrlFromAddresses(chainId, fromTokenAddress, toTokenAddress);
+}
+
+export function getExternalSwapAggregatorLabel(aggregator: ExternalSwapAggregator): string {
+  switch (aggregator) {
+    case ExternalSwapAggregator.KyberSwap:
+      return "KyberSwap";
+    default:
+      return mustNeverExist(aggregator);
   }
 }

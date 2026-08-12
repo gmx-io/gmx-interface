@@ -10,7 +10,6 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
@@ -29,14 +28,11 @@ const ENV_ARBITRUM_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_ARBIT
 
 const ENV_AVALANCHE_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_AVALANCHE_RPC_URLS);
 
-const ENV_BOTANIX_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_BOTANIX_RPC_URLS);
-
 const ENV_MEGAETH_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_MEGAETH_RPC_URLS);
 
 // Chains that support Alchemy WebSocket endpoints
 const ALCHEMY_WS_SUPPORT_CHAINS = [
   ARBITRUM,
-  BOTANIX,
   MEGAETH,
   ARBITRUM_SEPOLIA,
   SOURCE_BASE_MAINNET,
@@ -177,31 +173,6 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(ARBITRUM_SEPOLIA) ?? []),
   ],
-  [BOTANIX]: [
-    ...["https://rpc.ankr.com/botanix_mainnet"].map((url) => ({
-      url,
-      isPublic: true,
-      purpose: "default",
-    })),
-
-    // Fallback
-    ...(ENV_BOTANIX_RPC_URLS
-      ? ENV_BOTANIX_RPC_URLS.map((url: string) => ({
-          url,
-          isPublic: false,
-          purpose: "fallback",
-        }))
-      : [getAlchemyProvider(BOTANIX, "fallback")]),
-
-    // Large account
-    getAlchemyProvider(BOTANIX, "largeAccount"),
-
-    // Express
-    getAlchemyProvider(BOTANIX, "express"),
-
-    // Debug endpoints from settings
-    ...(_debugRpcTracker?.getDebugRpcEndpoints(BOTANIX) ?? []),
-  ],
   [MEGAETH]: [
     ...["https://mainnet.megaeth.com/rpc"].map((url) => ({
       url,
@@ -230,12 +201,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
   // SOURCE CHAINS
   [SOURCE_BASE_MAINNET]: [
-    ...[
-      "https://mainnet.base.org",
-      "https://base.llamarpc.com",
-      "https://base-rpc.publicnode.com",
-      "https://base.drpc.org",
-    ].map((url) => ({
+    ...["https://mainnet.base.org", "https://base-rpc.publicnode.com", "https://base.drpc.org"].map((url) => ({
       url,
       isPublic: true,
       purpose: "default",
@@ -308,12 +274,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
   // ADDITIONAL CHAINS
   [SOURCE_ETHEREUM_MAINNET]: [
-    ...[
-      "https://eth.llamarpc.com",
-      "https://rpc.ankr.com/eth",
-      "https://eth.drpc.org",
-      "https://ethereum.publicnode.com",
-    ].map((url) => ({
+    ...["https://rpc.ankr.com/eth", "https://eth.drpc.org", "https://ethereum.publicnode.com"].map((url) => ({
       url,
       isPublic: true,
       purpose: "default",
@@ -337,7 +298,6 @@ const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
     getAlchemyProvider(ARBITRUM_SEPOLIA, "fallback", "ws"),
     getAlchemyProvider(ARBITRUM_SEPOLIA, "largeAccount", "ws"),
   ],
-  [BOTANIX]: [getAlchemyProvider(BOTANIX, "fallback", "ws"), getAlchemyProvider(BOTANIX, "largeAccount", "ws")],
   [MEGAETH]: [getAlchemyProvider(MEGAETH, "fallback", "ws"), getAlchemyProvider(MEGAETH, "largeAccount", "ws")],
   [SOURCE_BASE_MAINNET]: [
     getAlchemyProvider(SOURCE_BASE_MAINNET, "fallback", "ws"),
@@ -431,9 +391,6 @@ function getAlchemyProvider(
       break;
     case AVALANCHE:
       baseUrl = `avax-mainnet.g.alchemy.com/v2`;
-      break;
-    case BOTANIX:
-      baseUrl = `botanix-mainnet.g.alchemy.com/v2`;
       break;
     case MEGAETH:
       baseUrl = `megaeth-mainnet.g.alchemy.com/v2`;

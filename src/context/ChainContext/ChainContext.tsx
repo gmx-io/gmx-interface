@@ -1,12 +1,11 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from "react";
 
 import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/chains";
-import { isDevelopment } from "config/env";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainIdImpl } from "lib/chains/useChainIdImpl";
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { AVALANCHE, ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
 type ChainContext = {
   chainId: ContractsChainId;
@@ -17,12 +16,7 @@ type ChainContext = {
   isConnectedToChainId: boolean | undefined;
 };
 
-let initialChainId: ContractsChainId;
-if (isDevelopment()) {
-  initialChainId = ARBITRUM_SEPOLIA;
-} else {
-  initialChainId = ARBITRUM;
-}
+const initialChainId: ContractsChainId = DEFAULT_SETTLEMENT_CHAIN_ID;
 const realChainId = window.ethereum?.chainId ? parseInt(window.ethereum?.chainId) : initialChainId;
 
 const context = createContext<ChainContext>({

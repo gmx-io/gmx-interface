@@ -37,7 +37,6 @@ export function getExecutionFee(
   const gasLimit = baseGasLimit + applyFactor(estimatedGasLimit, multiplierFactor);
   // #endregion
 
-  // avoid botanix gas spikes when chain is not actively used
   const minGasCostUsd = getMinExecutionFeeUsd(chainId as ContractsChainId);
   const minGasCost = convertToTokenAmount(minGasCostUsd, nativeToken.decimals, nativeToken.prices.minPrice);
 
@@ -88,14 +87,6 @@ export function estimateRelayerGasLimit({
   const relayParamsGasLimit = feeSwapsGasLimit + oraclePricesGasLimit + tokenPermitsGasLimit + feeExternalCallsGasLimit;
 
   return relayParamsGasLimit + transactionPayloadGasLimit + l1GasLimit;
-}
-
-const MIN_GAS_LIMIT = 22000n;
-const GAS_BUFFER_BPS = 1000n; // 10%
-
-export function applyGasBuffer(gasLimit: bigint): bigint {
-  const clamped = gasLimit < MIN_GAS_LIMIT ? MIN_GAS_LIMIT : gasLimit;
-  return clamped + (clamped * GAS_BUFFER_BPS) / 10000n;
 }
 
 export function approximateL1GasBuffer({

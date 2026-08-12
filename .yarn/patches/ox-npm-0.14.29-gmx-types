@@ -1,0 +1,160 @@
+diff --git a/_types/core/Hex.d.ts b/_types/core/Hex.d.ts
+--- a/_types/core/Hex.d.ts
++++ b/_types/core/Hex.d.ts
+@@ -3,7 +3,7 @@
+ import * as internal_bytes from './internal/bytes.js';
+ import * as internal from './internal/hex.js';
+ /** Root type for a Hex string. */
+-export type Hex = `0x${string}`;
++export type Hex = string;
+ /**
+  * Asserts if the given value is {@link ox#Hex.Hex}.
+  *
+diff --git a/core/AccessList.ts b/core/AccessList.ts
+--- a/core/AccessList.ts
++++ b/core/AccessList.ts
+@@ -55,7 +55,7 @@
+     if (address) Address.assert(address, { strict: false })
+ 
+     list.push({
+-      address: address,
++      address: address as Address.Address,
+       storageKeys: storageKeys.map((key) =>
+         Hash.validate(key) ? key : Hex.trimLeft(key),
+       ),
+diff --git a/core/Hex.ts b/core/Hex.ts
+--- a/core/Hex.ts
++++ b/core/Hex.ts
+@@ -12,7 +12,7 @@
+ )
+ 
+ /** Root type for a Hex string. */
+-export type Hex = `0x${string}`
++export type Hex = string
+ 
+ /**
+  * Asserts if the given value is {@link ox#Hex.Hex}.
+diff --git a/core/Secp256k1.ts b/core/Secp256k1.ts
+--- a/core/Secp256k1.ts
++++ b/core/Secp256k1.ts
+@@ -395,7 +395,7 @@
+   return secp256k1.verify(
+     options.signature,
+     Bytes.from(payload),
+-    PublicKey.toBytes(options.publicKey),
++    PublicKey.toBytes(options.publicKey!),
+     ...(hash ? [{ prehash: true, lowS: true }] : []),
+   )
+ }
+diff --git a/core/Signature.ts b/core/Signature.ts
+--- a/core/Signature.ts
++++ b/core/Signature.ts
+@@ -284,8 +284,8 @@
+   const signature_ = (() => {
+     if (typeof signature === 'string') return fromHex(signature)
+     if (signature instanceof Uint8Array) return fromBytes(signature)
+-    if (typeof signature.r === 'string') return fromRpc(signature)
+-    if (signature.v) return fromLegacy(signature)
++    if (typeof signature.r === 'string') return fromRpc(signature as Rpc)
++    if (signature.v) return fromLegacy(signature as Legacy)
+     return {
+       r: signature.r,
+       s: signature.s,
+@@ -294,7 +294,7 @@
+         : {}),
+     }
+   })()
+-  assert(signature_)
++  assert(signature_ as Signature)
+   return signature_ as never
+ }
+ 
+diff --git a/tempo/AuthorizationTempo.ts b/tempo/AuthorizationTempo.ts
+--- a/tempo/AuthorizationTempo.ts
++++ b/tempo/AuthorizationTempo.ts
+@@ -415,7 +415,7 @@
+ ): fromTuple.ReturnType<tuple> {
+   const [chainId, address, nonce, signatureSerialized] = tuple
+   const args: AuthorizationTempo = {
+-    address,
++    address: address as `0x${string}`,
+     chainId: chainId === '0x' ? 0 : Number(chainId),
+     nonce: nonce === '0x' ? 0n : BigInt(nonce),
+   }
+diff --git a/tempo/KeyAuthorization.ts b/tempo/KeyAuthorization.ts
+--- a/tempo/KeyAuthorization.ts
++++ b/tempo/KeyAuthorization.ts
+@@ -551,7 +551,7 @@
+     ...(witness !== undefined ? { witness } : {}),
+     ...(isAdmin ? { isAdmin: true } : {}),
+     ...(account !== undefined ? { account } : {}),
+-  }
++  } as Signed
+ }
+ 
+ export declare namespace fromRpc {
+diff --git a/tempo/SignatureEnvelope.ts b/tempo/SignatureEnvelope.ts
+--- a/tempo/SignatureEnvelope.ts
++++ b/tempo/SignatureEnvelope.ts
+@@ -610,7 +610,7 @@
+     const inner = deserialize(Hex.slice(data, 20))
+ 
+     return {
+-      userAddress,
++      userAddress: userAddress as `0x${string}`,
+       inner,
+       type: 'keychain',
+       version: typeId === serializedKeychainV2Type ? 'v2' : 'v1',
+@@ -629,7 +629,7 @@
+     ]
+     return {
+       type: 'multisig',
+-      account,
++      account: account as `0x${string}`,
+       genesisConfigId,
+       signatures: signatures.map((signature) => deserialize(signature)),
+       ...(init && init !== '0x'
+diff --git a/tempo/TokenId.ts b/tempo/TokenId.ts
+--- a/tempo/TokenId.ts
++++ b/tempo/TokenId.ts
+@@ -85,7 +85,7 @@
+   }
+ 
+   const tokenIdHex = Hex.fromNumber(tokenId, { size: 18 })
+-  return Hex.concat(tip20Prefix, tokenIdHex)
++  return Hex.concat(tip20Prefix, tokenIdHex) as `0x${string}`
+ }
+ 
+ /**
+@@ -111,8 +111,8 @@
+ export function compute(value: compute.Value): bigint {
+   const hash = Hash.keccak256(
+     AbiParameters.encode(AbiParameters.from('address, bytes32'), [
+-      TempoAddress.resolve(value.sender),
+-      value.salt,
++      TempoAddress.resolve(value.sender) as `0x${string}`,
++      value.salt as `0x${string}`,
+     ]),
+   )
+   return Hex.toBigInt(Hex.slice(hash, 0, 8))
+diff --git a/tempo/TxEnvelopeTempo.ts b/tempo/TxEnvelopeTempo.ts
+--- a/tempo/TxEnvelopeTempo.ts
++++ b/tempo/TxEnvelopeTempo.ts
+@@ -333,7 +333,7 @@
+   if (Hex.validate(validAfter) && validAfter !== '0x')
+     transaction.validAfter = Number(validAfter)
+   if (Hex.validate(feeToken) && feeToken !== '0x')
+-    transaction.feeToken = feeToken
++    transaction.feeToken = feeToken as `0x${string}`
+ 
+   // Parse calls array
+   if (calls && calls !== '0x') {
+@@ -341,7 +341,7 @@
+     transaction.calls = callsArray.map((callTuple) => {
+       const [to, value, data] = callTuple
+       const call: Call = {}
+-      if (to && to !== '0x') call.to = to
++      if (to && to !== '0x') call.to = to as `0x${string}`
+       if (value && value !== '0x') call.value = BigInt(value)
+       if (data && data !== '0x') call.data = data
+       return call

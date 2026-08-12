@@ -1,30 +1,29 @@
-import { PrivyProvider, type ConnectedWallet, type User } from "@privy-io/react-auth";
+import { PrivyProvider } from "@privy-io/react-auth";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { arbitrum } from "viem/chains";
+import { StyleSheetManager } from "styled-components";
 
 import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import gmxLogo from "img/logo-icon.svg";
 
+import { PRIVY_STYLIS_PLUGINS } from "./privyUiCompat";
 import {
   getWagmiConfig,
   getSupportedChains,
   PRIVY_APP_ID,
   PRIVY_LOGIN_METHODS,
+  PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
   PRIVY_WALLET_LIST,
 } from "./walletConfig";
 
 const queryClient = new QueryClient();
 
 const supportedChains = getSupportedChains();
+const defaultChain = supportedChains[0];
 const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
-
-function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) {
-  return user ? wallets.find((wallet) => wallet.linked) ?? wallets[0] : wallets[0];
-}
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
@@ -40,9 +39,11 @@ export default function WalletProvider({ children }: { children: React.ReactNode
         showWalletLoginFirst: true,
       },
       loginMethods: [...PRIVY_LOGIN_METHODS],
-      globalDisablePasskeys: true,
-      defaultChain: arbitrum,
+      defaultChain,
       supportedChains: [...supportedChains],
+      externalWallets: {
+        signatureRequestTimeouts: PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
+      },
       embeddedWallets: {
         ethereum: {
           createOnLogin: "users-without-wallets" as const,
@@ -53,12 +54,12 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   );
 
   return (
-    <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
-      <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={getActiveWalletForWagmi}>
-          {children}
-        </WagmiProvider>
-      </QueryClientProvider>
-    </PrivyProvider>
+    <StyleSheetManager stylisPlugins={PRIVY_STYLIS_PLUGINS}>
+      <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
+        <QueryClientProvider client={queryClient}>
+          <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>
+        </QueryClientProvider>
+      </PrivyProvider>
+    </StyleSheetManager>
   );
 }

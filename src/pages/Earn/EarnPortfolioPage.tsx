@@ -15,7 +15,6 @@ import useWallet from "lib/wallets/useWallet";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
-import { RecommendedAssets } from "components/Earn/Portfolio/RecommendedAssets/RecommendedAssets";
 import RewardsBar from "components/Earn/Portfolio/RewardsBar";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
@@ -37,11 +36,6 @@ export default function EarnPortfolioPage() {
   const { performance: performance30d, isLoading: isPerformance30dLoading } = usePerformanceAnnualized({
     chainId,
     period: "30d",
-  });
-
-  const { performance: performance90d } = usePerformanceAnnualized({
-    chainId,
-    period: "90d",
   });
 
   const gmGlvAssets = useMemo(() => {
@@ -97,16 +91,6 @@ export default function EarnPortfolioPage() {
                 performance30d={performance30d}
                 isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
                 multichainMarketTokensBalances={multichainMarketTokensBalances}
-              />
-            </ErrorBoundary>
-          )}
-          {performance90d && marketTokensData && marketsInfoData && (
-            <ErrorBoundary id="EarnPortfolio-RecommendedAssets" variant="block" wrapperClassName="rounded-t-8">
-              <RecommendedAssets
-                hasGmxAssets={hasGmxAssets}
-                marketsInfoData={marketsInfoData}
-                marketTokensData={marketTokensData}
-                performance={performance90d}
               />
             </ErrorBoundary>
           )}

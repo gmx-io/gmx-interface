@@ -17,12 +17,14 @@ import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
+import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeInTxn, getBridgeInTxnParams } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -39,6 +41,7 @@ import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -53,6 +56,7 @@ export function BridgeInModal({
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
 }) {
   const { chainId, srcChainId } = useChainId();
+  const withdrawBlockedError = useWithdrawBlockedError();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [bridgeInChain, setBridgeInChain] = useState<SourceChainId | undefined>(srcChainId);
   const [bridgeInInputValue, setBridgeInInputValue] = useState("");
@@ -176,6 +180,7 @@ export function BridgeInModal({
     paySourceChainNativeTokenAmount: undefined,
   });
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
   useEffect(() => {
     if (bridgeInChain !== undefined || !multichainMarketTokenBalances?.balances) {
@@ -232,10 +237,18 @@ export function BridgeInModal({
     }
   };
 
-  const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
+  const buttonState = useMemo((): { text: ReactNode; disabled?: boolean; errorDescription?: ReactNode } => {
     if (hasOutdatedUi) {
       return {
         text: getPageOutdatedError(),
+        disabled: true,
+      };
+    }
+
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
         disabled: true,
       };
     }
@@ -285,12 +298,17 @@ export function BridgeInModal({
       };
     }
 
+    if (withdrawBlockedError) {
+      return withdrawBlockedError;
+    }
+
     return {
       text: t`Deposit`,
       disabled: false,
     };
   }, [
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     isCreatingTxn,
     bridgeInInputValue,
     bridgeInChain,
@@ -298,6 +316,7 @@ export function BridgeInModal({
     bridgeInAmount,
     sourceChainDecimals,
     sourceChainNativeFeeError,
+    withdrawBlockedError,
   ]);
 
   if (!glvOrMarketInfo) {
@@ -354,9 +373,11 @@ export function BridgeInModal({
             />
           </AlertInfoCard>
         )}
-        <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
-          {buttonState.text}
-        </Button>
+        <ButtonTooltipWrapper content={buttonState.errorDescription}>
+          <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
+            {buttonState.text}
+          </Button>
+        </ButtonTooltipWrapper>
         <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(nativeFeeUsd)} />
         <SyntheticsInfoRow
           label={t`GMX Account balance`}

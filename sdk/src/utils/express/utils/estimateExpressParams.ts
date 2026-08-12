@@ -5,7 +5,8 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { bigMath } from "utils/bigmath";
 import { type ErrorLike, extendError, isIgnoredEstimateGasError } from "utils/errors";
-import { applyGasBuffer, approximateL1GasBuffer, estimateRelayerGasLimit } from "utils/fees/executionFee";
+import { approximateL1GasBuffer, estimateRelayerGasLimit } from "utils/fees/executionFee";
+import { applyGasLimitBuffer } from "utils/gas/applyBuffer";
 import type { IMetrics } from "utils/metrics";
 import { noopMetrics } from "utils/metrics";
 import { applyFactor } from "utils/numbers";
@@ -71,6 +72,7 @@ export function getGasPaymentValidations({
   const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasTokenAmountWithBuffer;
 
   const tokenBalance = isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance;
+  const isGasPaymentTokenBalanceLoaded = tokenBalance !== undefined;
   const isOutGasTokenBalance = tokenBalance === undefined || totalGasPaymentTokenAmount > tokenBalance;
 
   const needGasPaymentTokenApproval = isGmxAccount
@@ -78,6 +80,7 @@ export function getGasPaymentValidations({
     : getNeedTokenApprove(gasPaymentAllowanceData, gasPaymentToken.address, totalGasPaymentTokenAmount, tokenPermits);
 
   return {
+    isGasPaymentTokenBalanceLoaded,
     isOutGasTokenBalance,
     needGasPaymentTokenApproval,
     isValid: !isOutGasTokenBalance && !needGasPaymentTokenApproval,
@@ -275,7 +278,7 @@ export async function estimateExpressParams({
         value: 0n,
         stateOverride,
       });
-      gasLimit = applyGasBuffer(estimated);
+      gasLimit = applyGasLimitBuffer(estimated);
     } catch (error) {
       if (!isIgnoredEstimateGasError(error as ErrorLike)) {
         metrics.pushError(extendError(error as ErrorLike, { data: { estimationMethod } }), "expressOrders.estimateGas");

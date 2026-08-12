@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { OrderType } from "domain/synthetics/orders";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
-import { MaxUint256 } from "lib/numbers";
+import { MaxUint256, PRECISION, applyFactor, formatUsd } from "lib/numbers";
 
 import {
   cancelOrderIncreaseLong,
@@ -26,7 +26,8 @@ import {
   undefinedOrder,
   withdraw1Usd,
 } from "./mocks";
-import { formatPositionMessage } from "./utils/position";
+import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
+import { getErrorTooltipTitle } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 i18n.load({ en: {} });
@@ -35,6 +36,27 @@ i18n.activate("en");
 const minCollateralUsd = BigInt(100);
 
 describe("TradeHistoryRow helpers", () => {
+  it("maps known contract error names for action tooltips", () => {
+    expect(getErrorTooltipTitle("InvalidDecreaseOrderSize", false)).toBe("Invalid decrease size");
+  });
+
+  it("maps user-facing trade history errors and preserves raw names in the fallback", () => {
+    expect(getErrorTooltipTitle("DisabledFeature", false)).toBe("This action is currently disabled");
+    expect(getErrorTooltipTitle("InsufficientFundsToPayForCosts", false)).toBe(
+      "Insufficient collateral to cover order costs"
+    );
+    expect(getErrorTooltipTitle("LiquidatablePosition", false)).toBe(
+      "Position would be liquidatable at current prices"
+    );
+    expect(getErrorTooltipTitle("MaxPoolAmountForDepositExceeded", false)).toBe(
+      "Max deposit capacity reached for this pool"
+    );
+    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed");
+    expect(getErrorTooltipTitle("UnexpectedBorrowingFactor", false)).toBe(
+      "Order failed due to a protocol validation error: UnexpectedBorrowingFactor"
+    );
+  });
+
   it("formatPositionMessage", () => {
     expect(Intl.DateTimeFormat().resolvedOptions().timeZone).toBe("Asia/Dubai");
 
@@ -234,14 +256,27 @@ describe("TradeHistoryRow helpers", () => {
           },
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-81 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 16.82",
         "size": "+$ 2,070.19",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+202.62 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
@@ -274,14 +309,27 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-81 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 16.82",
         "size": "+$ 2,070.19",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+202.62 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
@@ -392,7 +440,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": [
           "Mark price for the liquidation",
           "",
-          "Liquidated as max leverage of 0.0x was exceeded when accounting for fees.",
+          "Liquidated as the max allowed leverage was exceeded when accounting for fees.",
           "",
           {
             "key": "Initial margin",
@@ -427,10 +475,7 @@ describe("TradeHistoryRow helpers", () => {
             },
           },
           "",
-          {
-            "key": "Minimum required margin",
-            "value": "< $ 0.01",
-          },
+          undefined,
           {
             "key": "Margin at liquidation",
             "value": "$ 83.95",
@@ -438,10 +483,17 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-26 bps)",
+              },
+            ],
           },
           {
             "key": "Liquidation fee",
@@ -490,14 +542,27 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 0.09",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 0.09",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-17 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 0.09",
         "size": "+$ 49.83",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+5.69 USDC",
+          },
+        ],
         "timestamp": "21 Sep 2023, 19:32",
         "timestampUTC": "UTC: 2023-09-21 15:32:40",
       }
@@ -574,10 +639,17 @@ describe("TradeHistoryRow helpers", () => {
           },
           {
             "key": "Price impact",
-            "value": {
-              "state": "success",
-              "text": "< +$ 0.01",
-            },
+            "value": [
+              {
+                "state": "success",
+                "text": "< +$ 0.01",
+              },
+              " ",
+              {
+                "state": "success",
+                "text": "(0 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "< +$ 0.01",
@@ -726,5 +798,229 @@ describe("TradeHistoryRow helpers", () => {
       sizeDeltaUsd: MaxUint256,
     };
     expect(formatPositionMessage(fullCloseStopLoss, minCollateralUsd).size).toBe("Full position close");
+  });
+
+  it("formatPositionMessage uses block-time minCollateralFactorForLiquidation for liquidations", () => {
+    const currentFactor = PRECISION / 200n;
+    const blockTimeFactor = PRECISION / 100n;
+
+    const historicalLiquidation = {
+      ...liquidated,
+      marketInfo: {
+        ...liquidated.marketInfo,
+        minCollateralFactorForLiquidation: currentFactor,
+      },
+      minCollateralFactorForLiquidation: blockTimeFactor,
+    };
+
+    const details = formatPositionMessage(historicalLiquidation, minCollateralUsd);
+
+    expect(details.priceComment).toContainEqual(
+      "Liquidated as max leverage of 100.0x was exceeded when accounting for fees."
+    );
+
+    const expectedMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, blockTimeFactor));
+    const currentConfigMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, currentFactor));
+    expect(expectedMinMargin).not.toBe(currentConfigMinMargin);
+    expect(details.priceComment).toContainEqual({ key: "Minimum required margin", value: expectedMinMargin });
+  });
+
+  it("formatPositionMessage hides factor-derived rows when the block-time factor is unresolved", () => {
+    for (const unresolved of [undefined, 0n]) {
+      const oldLiquidation = {
+        ...liquidated,
+        marketInfo: {
+          ...liquidated.marketInfo,
+          minCollateralFactorForLiquidation: PRECISION / 100n,
+        },
+        minCollateralFactorForLiquidation: unresolved,
+      };
+
+      const details = formatPositionMessage(oldLiquidation, minCollateralUsd);
+      const rowKeys = (details.priceComment ?? [])
+        .filter((line) => typeof line === "object" && line !== null && "key" in line)
+        .map((line) => (line as { key: string }).key);
+
+      expect(details.priceComment).toContainEqual(
+        "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+      );
+      expect(details.priceComment).not.toContainEqual(
+        "Liquidated as max leverage of 0.0x was exceeded when accounting for fees."
+      );
+      expect(rowKeys).not.toContain("Minimum required margin");
+      expect(rowKeys).toContain("Margin at liquidation");
+    }
+  });
+
+  it("formatPositionMessage includes indexed trader discounts in the fee breakdown", () => {
+    const actionWithFee = {
+      ...executeOrderIncreaseLong,
+      collateralTokenPriceMin: executeOrderIncreaseLong.initialCollateralToken.prices.minPrice,
+      priceImpactUsd: undefined,
+      positionFeeAmount: 10_000_000n,
+      borrowingFeeAmount: undefined,
+      fundingFeeAmount: undefined,
+      swapFeeUsd: undefined,
+      liquidationFeeAmount: undefined,
+      totalImpactUsd: undefined,
+    };
+
+    expect(formatPositionMessage(actionWithFee, minCollateralUsd).fees).toBe("-$ 10.00");
+    expect(formatPositionMessage(actionWithFee, minCollateralUsd).feesTooltip).toEqual([
+      {
+        key: "Open fee",
+        value: "-$ 10.00",
+      },
+    ]);
+
+    expect(formatPositionMessage({ ...actionWithFee, traderDiscountAmount: 500_000n }, minCollateralUsd)).toMatchObject(
+      {
+        fees: "-$ 9.50",
+        feesTooltip: [
+          {
+            key: "Open fee",
+            value: "-$ 10.00",
+          },
+          {
+            key: "Referral discount",
+            value: "+$ 0.50",
+          },
+        ],
+      }
+    );
+  });
+
+  describe("getSettlementTooltipLines", () => {
+    // Arbitrum tx 0x936261d3c5394be68ccd53173b116f8f2e6c5d007dd3ab88943ded9b6e69f38e
+    const fullCloseAction = {
+      orderType: OrderType.MarketDecrease,
+      eventName: TradeActionType.OrderExecuted,
+      srcChainId: 0,
+      swapPath: [],
+      initialCollateralToken: { symbol: "USDC", decimals: 6, isStable: true },
+      collateralTokenPriceMin: 999757458143159100000000000000n,
+      basePnlUsd: 294764671686842964882169505960200n,
+      positionFeeAmount: 3984889n,
+      traderDiscountAmount: 199244n,
+      borrowingFeeAmount: 12850n,
+      fundingFeeAmount: 338315n,
+      liquidationFeeAmount: 0n,
+      totalImpactUsd: 39839233440000000000000000000000n,
+      priceImpactUsd: 16647709627538459795542642163244n,
+      swapFeeUsd: 167301952563420478623863092367n,
+      swapImpactUsd: 40202004253824880382311194750n,
+    } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+
+    const closeChange = {
+      positionKey: "0x5cc6146539659b0e38cf9abf31342fa6f75f6409823735fdfaac09dfebb99f9b",
+      block: 463477048,
+      type: "decrease" as const,
+      sizeInUsd: 0n,
+      sizeDeltaUsd: 9959808360000000000000000000000000n,
+      collateralAmount: 0n,
+      collateralDeltaAmount: 996214440n,
+      feesAmount: 4136810n,
+    };
+
+    const openChange = {
+      positionKey: "0x5cc6146539659b0e38cf9abf31342fa6f75f6409823735fdfaac09dfebb99f9b",
+      block: 463424563,
+      type: "increase" as const,
+      sizeInUsd: 9959808360000000000000000000000000n,
+      sizeDeltaUsd: 9959808360000000000000000000000000n,
+      collateralAmount: 996214440n,
+      collateralDeltaAmount: 996214440n,
+      feesAmount: 3785560n,
+    };
+
+    it("reconciles against the original margin when the opening row is matched", () => {
+      const result = getSettlementTooltipLines(fullCloseAction, closeChange, openChange).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        "",
+        { key: "Initial margin", value: "1,000.00\u00a0USDC" },
+        { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
+      ]);
+    });
+
+    it("falls back to close-side-only settlement when the opening row is not matched", () => {
+      const result = getSettlementTooltipLines(fullCloseAction, closeChange, undefined).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        "",
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
+        "",
+        { text: "Original margin reconciliation requires the opening row.", state: "muted" },
+      ]);
+    });
+
+    it("separates the Settlement heading from the first detail row with an empty line", () => {
+      const withOpenChange = getSettlementTooltipLines(fullCloseAction, closeChange, openChange).filter(
+        (line) => line !== undefined
+      );
+      const withoutOpenChange = getSettlementTooltipLines(fullCloseAction, closeChange, undefined).filter(
+        (line) => line !== undefined
+      );
+
+      for (const result of [withOpenChange, withoutOpenChange]) {
+        const headingIndex = result.indexOf("Settlement");
+
+        expect(headingIndex).toBeGreaterThanOrEqual(0);
+        expect(result[headingIndex + 1]).toBe("");
+        expect(result[headingIndex + 2]).not.toBe("");
+      }
+    });
+
+    it("marks the USD received value as an estimate when the collateral was swapped on close", () => {
+      const swappedAction = {
+        ...fullCloseAction,
+        swapPath: ["0x0000000000000000000000000000000000000001"],
+      } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+
+      const result = getSettlementTooltipLines(swappedAction, closeChange, openChange).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$ 1,326.31" });
+    });
+
+    it("includes the liquidation fee in the settlement for liquidation actions", () => {
+      const liquidationAction = {
+        ...fullCloseAction,
+        orderType: OrderType.Liquidation,
+        liquidationFeeAmount: 1000000n,
+      } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+
+      const result = getSettlementTooltipLines(liquidationAction, closeChange, openChange).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        "",
+        { key: "Initial margin", value: "1,000.00\u00a0USDC" },
+        { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 34.58", state: "success" } },
+        { key: "Wallet received", value: "~1,325.64\u00a0USDC" },
+      ]);
+    });
   });
 });

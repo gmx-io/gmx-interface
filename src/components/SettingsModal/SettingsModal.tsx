@@ -145,68 +145,69 @@ export function SettingsModal({
 
   const handleTradingModeChange = useCallback(
     async (mode: TradingMode) => {
+      if (isTradingModeChanging) {
+        return;
+      }
+
       const prevMode = tradingMode;
       setIsTradingModeChanging(true);
       setTradingMode(mode);
 
-      switch (mode) {
-        case TradingMode.Classic: {
-          if (srcChainId) {
-            // eslint-disable-next-line no-console
-            console.error("Express trading can not be disabled for multichain");
-            setTradingMode(prevMode);
-            setIsTradingModeChanging(false);
-            return;
-          }
-          if (subaccountState.subaccount) {
-            const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
-
-            if (!isSubaccountDeactivated) {
+      try {
+        switch (mode) {
+          case TradingMode.Classic: {
+            if (srcChainId) {
+              // eslint-disable-next-line no-console
+              console.error("Express trading can not be disabled for multichain");
               setTradingMode(prevMode);
-              setIsTradingModeChanging(false);
               return;
             }
+            if (subaccountState.subaccount) {
+              const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
+
+              if (!isSubaccountDeactivated) {
+                setTradingMode(prevMode);
+                return;
+              }
+            }
+
+            settings.setExpressOrdersEnabled(false);
+            break;
           }
+          case TradingMode.Express: {
+            if (subaccountState.subaccount) {
+              const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
 
-          settings.setExpressOrdersEnabled(false);
-          setIsTradingModeChanging(false);
-          break;
-        }
-        case TradingMode.Express: {
-          if (subaccountState.subaccount) {
-            const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
+              if (!isSubaccountDeactivated) {
+                setTradingMode(prevMode);
+                return;
+              }
+            }
 
-            if (!isSubaccountDeactivated) {
+            settings.setExpressOrdersEnabled(true);
+            break;
+          }
+          case TradingMode.Express1CT: {
+            const isSubaccountActivated = await subaccountState.tryEnableSubaccount();
+
+            if (!isSubaccountActivated) {
               setTradingMode(prevMode);
-              setIsTradingModeChanging(false);
               return;
             }
+
+            settings.setExpressOrdersEnabled(true);
+            break;
           }
-
-          settings.setExpressOrdersEnabled(true);
-          setIsTradingModeChanging(false);
-          break;
-        }
-        case TradingMode.Express1CT: {
-          const isSubaccountActivated = await subaccountState.tryEnableSubaccount();
-
-          if (!isSubaccountActivated) {
-            setTradingMode(prevMode);
-            setIsTradingModeChanging(false);
-            return;
+          default: {
+            mustNeverExist(mode);
+            break;
           }
-
-          settings.setExpressOrdersEnabled(true);
-          setIsTradingModeChanging(false);
-          break;
         }
-        default: {
-          mustNeverExist(mode);
-          break;
-        }
+      } finally {
+        setIsTradingModeChanging(false);
       }
     },
-    [settings, srcChainId, subaccountState, tradingMode]
+    [isTradingModeChanging, settings, srcChainId, subaccountState, tradingMode]
   );
 
   useEffect(
@@ -271,6 +272,7 @@ export function SettingsModal({
       qa="settings-modal"
       className="text-body-medium text-typography-secondary"
       desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
+      desktopZIndex={1002}
     >
       <div className="flex flex-col gap-8">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />

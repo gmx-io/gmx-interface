@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { SECONDS_IN_DAY } from "lib/dates";
+import { DAY_MS, SECONDS_IN_DAY } from "lib/dates";
 
 import {
   applySubCategoryFilter,
@@ -15,6 +15,7 @@ const tokens = [
   { address: "0xfet", categories: ["ai"] },
   { address: "0xtao", categories: ["layer1", "ai"] },
   { address: "0xgold", categories: ["tradfi", "commodities"] },
+  { address: "0xspcx", categories: ["tradfi", "stocks"] },
   { address: "0xusdc", categories: undefined },
 ] as any[];
 
@@ -38,7 +39,7 @@ describe("applyTopLevelFilter", () => {
       topLevelTab: "tradfi",
       favoriteAddresses: [],
     });
-    expect(result.map((t) => t.address)).toEqual(["0xgold"]);
+    expect(result.map((t) => t.address)).toEqual(["0xgold", "0xspcx"]);
   });
 
   it("returns favorites only", () => {
@@ -84,6 +85,22 @@ describe("applySubCategoryFilter", () => {
     expect(result.map((t) => t.address)).toEqual(["0xgold"]);
   });
 
+  it("filters to stocks within tradfi", () => {
+    const result = applySubCategoryFilter(tokens, {
+      topLevelTab: "tradfi",
+      subCategoryTab: "stocks",
+    });
+    expect(result.map((t) => t.address)).toEqual(["0xspcx"]);
+  });
+
+  it("returns empty pre-IPO after SPCX moves to stocks", () => {
+    const result = applySubCategoryFilter(tokens, {
+      topLevelTab: "tradfi",
+      subCategoryTab: "pre-ipo",
+    });
+    expect(result).toEqual([]);
+  });
+
   it("ignores sub-cat when parent is not crypto/tradfi", () => {
     expect(applySubCategoryFilter(tokens, { topLevelTab: "all", subCategoryTab: "ai" })).toEqual(tokens);
   });
@@ -114,7 +131,7 @@ describe("getRecentlyListedTokenAddresses", () => {
     const map = {
       "0xAaA": now - 1000,
       "0xBBB": now - RECENTLY_LISTED_WINDOW_MS - 1,
-      "0xccc": now - 5 * 24 * 60 * 60 * 1000,
+      "0xccc": now - 5 * DAY_MS,
     };
     const result = getRecentlyListedTokenAddresses(map, now);
     expect(result.sort()).toEqual(["0xaaa", "0xccc"].sort());

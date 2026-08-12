@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { setByKey, updateByKey, getByKey, objectKeysDeep } from "utils/objects";
+import { setByKey, updateByKey, getByKey, getRecord, getString, isRecord, objectKeysDeep } from "utils/objects";
 describe("setByKey", () => {
   it("should set a key in an object", () => {
     const obj = { a: 1, b: 2 };
@@ -73,6 +73,26 @@ describe("getByKey", () => {
     const key = "c";
 
     expect(getByKey(obj, key)).toEqual(undefined);
+  });
+});
+
+describe("record guards", () => {
+  it("should identify records", () => {
+    expect(isRecord({ a: 1 })).toBe(true);
+    expect(isRecord([])).toBe(false);
+    expect(isRecord(null)).toBe(false);
+  });
+
+  it("should return records only", () => {
+    const record = { a: 1 };
+
+    expect(getRecord(record)).toBe(record);
+    expect(getRecord([])).toBeUndefined();
+  });
+
+  it("should return strings only", () => {
+    expect(getString("abc")).toBe("abc");
+    expect(getString(1)).toBeUndefined();
   });
 });
 

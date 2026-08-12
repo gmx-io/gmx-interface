@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { OrderType, PositionOrderInfo } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { DecreasePositionAmounts } from "domain/synthetics/trade";
 import { expandDecimals, MaxUint256 } from "lib/numbers";
 import { ARBITRUM } from "sdk/configs/chains";
@@ -37,6 +37,7 @@ function makeExistingOrder(overrides: Partial<PositionOrderInfo> = {}): Position
     minOutputAmount: 0n,
     autoCancel: true,
     indexToken: WETH,
+    decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     ...overrides,
   } as unknown as PositionOrderInfo;
 }
@@ -105,6 +106,67 @@ describe("buildTpSlBatchPayloads", () => {
 
     expect(result.createOrderParams).toHaveLength(1);
     expect(result.updateOrderParams).toHaveLength(0);
+  });
+
+  it("preserves no-swap split receive on created orders", () => {
+    const result = buildTpSlBatchPayloads({
+      ...baseParams,
+      entries: [
+        {
+          amounts: makeAmounts({ decreaseSwapType: DecreasePositionSwapType.NoSwap }),
+          executionFeeAmount: 0n,
+          executionGasLimit: 0n,
+        },
+      ],
+    });
+
+    expect(result.createOrderParams).toHaveLength(1);
+    expect(result.createOrderParams[0].orderPayload.decreasePositionSwapType).toBe(DecreasePositionSwapType.NoSwap);
+    expect(result.createOrderParams[0].orderPayload.addresses.swapPath).toEqual([]);
+  });
+
+  it("cancels and recreates instead of updating when the swap type differs from the existing full-close order", () => {
+    const result = buildTpSlBatchPayloads({
+      ...baseParams,
+      entries: [
+        {
+          amounts: makeAmounts({ isFullClose: true, decreaseSwapType: DecreasePositionSwapType.NoSwap }),
+          executionFeeAmount: 0n,
+          executionGasLimit: 0n,
+          existingFullCloseOrder: makeExistingOrder({
+            key: "0xtpkey",
+            decreasePositionSwapType: DecreasePositionSwapType.SwapPnlTokenToCollateralToken,
+          }),
+        },
+      ],
+    });
+
+    expect(result.updateOrderParams).toHaveLength(0);
+    expect(result.cancelOrderParams).toHaveLength(1);
+    expect(result.cancelOrderParams[0].orderKey).toBe("0xtpkey");
+    expect(result.createOrderParams).toHaveLength(1);
+    expect(result.createOrderParams[0].orderPayload.decreasePositionSwapType).toBe(DecreasePositionSwapType.NoSwap);
+  });
+
+  it("updates in place when the swap type matches the existing full-close order", () => {
+    const result = buildTpSlBatchPayloads({
+      ...baseParams,
+      entries: [
+        {
+          amounts: makeAmounts({ isFullClose: true, decreaseSwapType: DecreasePositionSwapType.NoSwap }),
+          executionFeeAmount: 0n,
+          executionGasLimit: 0n,
+          existingFullCloseOrder: makeExistingOrder({
+            key: "0xtpkey",
+            decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+          }),
+        },
+      ],
+    });
+
+    expect(result.updateOrderParams).toHaveLength(1);
+    expect(result.cancelOrderParams).toHaveLength(0);
+    expect(result.createOrderParams).toHaveLength(0);
   });
 
   it("handles TP and SL independently - update one, create the other", () => {

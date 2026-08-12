@@ -5,6 +5,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { convertToTokenAmount } from "sdk/utils/tokens";
+import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
 
 export function clampPercentage(value: number): number {
   if (!Number.isFinite(value)) return 0;
@@ -52,6 +53,7 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
   if (initialCollateralUsd <= 0n) return undefined;
 
   const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: marketInfo.marketTokenAddress,
     minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,
@@ -77,7 +79,15 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
     BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * marketInfo.positionFeeFactorForBalanceWasNotImproved
   );
 
-  const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, conservativeBound, isLong);
+  const conservativeBoundInTokens = convertToTokenAmountForIncrease(
+    conservativeBound,
+    toTokenDecimals,
+    markPrice,
+    isLong
+  );
+  const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, conservativeBound, isLong, {
+    sizeDeltaInTokens: conservativeBoundInTokens,
+  });
   const positionFeeFactor = balanceWasImproved
     ? marketInfo.positionFeeFactorForBalanceWasImproved
     : marketInfo.positionFeeFactorForBalanceWasNotImproved;

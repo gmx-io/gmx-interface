@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { ethers } from "ethers";
+import { ethers, TransactionResponse } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { isAddress, type Hash, zeroAddress, zeroHash } from "viem";
 
@@ -173,7 +173,7 @@ export async function registerReferralCode(
   referralCode: string,
   signer: WalletSigner | undefined,
   opts: CallContractOpts
-) {
+): Promise<TransactionResponse> {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const referralCodeHex = encodeReferralCode(referralCode);
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, signer);
@@ -290,6 +290,7 @@ export function useUserReferralCode(
     userReferralCodeString,
     attachedOnChain,
     referralCodeForTxn,
+    isLoading: referralCodeResult.isLoading,
   };
 }
 
@@ -407,38 +408,71 @@ export async function validateReferralCodeExists(referralCode: string, chainId: 
 
 type AffiliateCodesQueryResponse = {
   affiliateStats: Array<{ referralCode: Hash }>;
+  referralCodes: Array<{ code: Hash }>;
 };
 
-type AffiliateCodesState = {
+export type AffiliateCodesState = {
   code: string | null;
   success: boolean;
 };
 
-export function useAffiliateCodes(chainId: ContractsChainId, account: string | undefined) {
-  const [affiliateCodes, setAffiliateCodes] = useState<AffiliateCodesState>({ code: null, success: false });
-  const query = gql`
-    query userReferralCodes($account: String!) {
-      affiliateStats: affiliateStats(
-        first: 1000
-        orderBy: volume
-        orderDirection: desc
-        where: { period: total, affiliate: $account }
-      ) {
-        referralCode
-      }
+const AFFILIATE_CODES_QUERY = gql`
+  query userReferralCodes($account: String!) {
+    affiliateStats: affiliateStats(
+      first: 1000
+      orderBy: volume
+      orderDirection: desc
+      where: { period: total, affiliate_contains_nocase: $account }
+    ) {
+      referralCode
     }
-  `;
+    referralCodes(first: 1000, where: { owner_contains_nocase: $account }) {
+      code
+    }
+  }
+`;
+
+export function useAffiliateCodes(chainId: ContractsChainId, account: string | undefined, enabled = true) {
+  const [affiliateCodes, setAffiliateCodes] = useState<AffiliateCodesState>({ code: null, success: false });
+
   useEffect(() => {
-    if (!chainId) return;
-    getReferralsGraphClient(chainId)
-      ?.query<AffiliateCodesQueryResponse>({ query, variables: { account: account?.toLowerCase() } })
+    setAffiliateCodes({ code: null, success: false });
+
+    if (!chainId || !account || !enabled) return;
+
+    const client = getReferralsGraphClient(chainId);
+    if (!client) return;
+
+    let cancelled = false;
+
+    client
+      .query<AffiliateCodesQueryResponse>({
+        query: AFFILIATE_CODES_QUERY,
+        variables: { account },
+        fetchPolicy: "network-only",
+      })
       .then((res) => {
-        const parsedAffiliateCodes = res?.data?.affiliateStats.map((c) => decodeReferralCode(c?.referralCode));
-        setAffiliateCodes({ code: parsedAffiliateCodes[0] ?? null, success: true });
+        if (cancelled) return;
+
+        const ownedCodes = res.data.referralCodes.map((item) => item.code);
+        const ownedCodesSet = new Set(ownedCodes);
+        const highestVolumeOwnedCode = res.data.affiliateStats.find((item) =>
+          ownedCodesSet.has(item.referralCode)
+        )?.referralCode;
+        const code = highestVolumeOwnedCode ?? ownedCodes[0];
+
+        setAffiliateCodes({ code: code ? decodeReferralCode(code) : null, success: true });
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setAffiliateCodes({ code: null, success: false });
+        }
       });
+
     return () => {
-      setAffiliateCodes({ code: null, success: false });
+      cancelled = true;
     };
-  }, [chainId, query, account]);
+  }, [chainId, account, enabled]);
+
   return affiliateCodes;
 }

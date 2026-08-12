@@ -34,6 +34,7 @@ export async function wrapChainAction(
 
   if (currentChainId === chainId) {
     const currentWalletClient = await getWalletClient(config);
+    await currentWalletClient.switchChain({ id: chainId });
     const currentSigner = clientToSigner(currentWalletClient, account);
     await action(currentSigner);
     return;

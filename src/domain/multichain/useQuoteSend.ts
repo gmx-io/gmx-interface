@@ -77,6 +77,7 @@ export function useQuoteSendNativeFeeWithGasLimit({
 }): {
   data: QuoteSendResult | undefined;
   isLoading: boolean;
+  error: Error | undefined;
 } {
   const quoteSendCondition =
     sendParams !== undefined &&
@@ -112,5 +113,6 @@ export function useQuoteSendNativeFeeWithGasLimit({
   return {
     data: quoteSendQuery.data,
     isLoading: quoteSendQuery.isLoading,
+    error: quoteSendQuery.error,
   };
 }

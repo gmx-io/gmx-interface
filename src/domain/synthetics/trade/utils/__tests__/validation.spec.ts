@@ -2,10 +2,18 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
+import { TriggerThresholdType } from "sdk/utils/trade/types";
 
-import { getIncreaseError, getSwapError } from "../validation";
+import {
+  getEditCollateralError,
+  getIncreaseError,
+  getNativeGasError,
+  getSwapError,
+  ValidationBannerErrorName,
+  ValidationButtonTooltipName,
+} from "../validation";
 
 const tokensData = mockTokensData({
   ETH: { balance: expandDecimals(100, 18) },
@@ -32,33 +40,40 @@ const baseSwapParams = {
   externalSwapQuote: undefined,
   isExternalSwapLoading: false,
   isWrapOrUnwrap: false,
-  isStakeOrUnstake: false,
+  isFromTokenGmxAccount: false,
   swapLiquidity: 0n, // < toUsd → triggers Insufficient liquidity by default
   isTwap: false,
   numberOfParts: 1,
 };
 
 describe("getSwapError — isExternalSwapLoading gate", () => {
-  it("returns 'Insufficient liquidity' when no external quote and no internal liquidity", () => {
-    expect(getSwapError(baseSwapParams).buttonErrorMessage).toBe("Insufficient liquidity");
+  it("returns 'Insufficient GMX pool liquidity' when no external quote and no internal liquidity", () => {
+    const result = getSwapError(baseSwapParams);
+    expect(result.buttonErrorMessage).toBe("Insufficient GMX pool liquidity");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.insufficientGmxPoolLiquidity);
   });
 
-  it("does NOT return 'Insufficient liquidity' while external swap quote is loading", () => {
+  it("does NOT return 'Insufficient GMX pool liquidity' while external swap quote is loading", () => {
     const result = getSwapError({ ...baseSwapParams, isExternalSwapLoading: true });
-    expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity");
+    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
   });
 
-  it("does NOT return 'Insufficient liquidity' when external quote already exists", () => {
+  it("does NOT return 'Insufficient GMX pool liquidity' when external quote already exists", () => {
     const result = getSwapError({
       ...baseSwapParams,
       externalSwapQuote: mockExternalSwapQuote(),
     });
-    expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity");
+    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
   });
 
   it("ignores liquidity check entirely for limit (non-twap) orders", () => {
     const result = getSwapError({ ...baseSwapParams, isLimit: true });
-    expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity");
+    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
+  });
+
+  it("ignores liquidity check for wrap/unwrap", () => {
+    const result = getSwapError({ ...baseSwapParams, isWrapOrUnwrap: true });
+    expect(result.buttonErrorMessage).not.toBe("Insufficient GMX pool liquidity");
   });
 });
 
@@ -145,5 +160,147 @@ describe("getIncreaseError — isExternalSwapLoading gate", () => {
       } as any,
     });
     expect(result.buttonErrorMessage).not.toBe("Insufficient liquidity to swap collateral");
+  });
+});
+
+describe("getIncreaseError — increase liquidation guard is Market-only", () => {
+  const liqGuardParams = {
+    ...baseIncreaseParams,
+    initialCollateralToken: toToken,
+    targetCollateralToken: toToken,
+    initialCollateralAmount: expandDecimals(1000, 6),
+    collateralLiquidity: expandDecimals(1_000_000, 30),
+    nextPositionValues: {
+      nextCollateralUsd: expandDecimals(1000, 30),
+      nextLiqPrice: expandDecimals(60000, 30),
+    } as any,
+    markPrice: expandDecimals(50000, 30),
+    isLong: true,
+  };
+
+  it("Market Increase: blocks with 'Invalid liquidation price' when liquidatable at mark", () => {
+    const result = getIncreaseError({ ...liqGuardParams, isLimit: false, triggerPrice: undefined });
+    expect(result.buttonErrorMessage).toBe("Invalid liquidation price");
+  });
+
+  it("Limit Increase: does NOT block with 'Invalid liquidation price'", () => {
+    const result = getIncreaseError({
+      ...liqGuardParams,
+      isLimit: true,
+      triggerPrice: expandDecimals(49000, 30),
+      thresholdType: TriggerThresholdType.Below,
+    });
+    expect(result.buttonErrorMessage).not.toBe("Invalid liquidation price");
+  });
+});
+
+describe("getSwapError — GMX Account native token guard", () => {
+  const nativeEth = { ...tokensData.ETH, isNative: true, balance: expandDecimals(100, 18) };
+  const weth = {
+    ...tokensData.ETH,
+    address: "WETH",
+    symbol: "WETH",
+    isWrapped: true,
+    balance: expandDecimals(100, 18),
+  };
+
+  // balance/liquidity pass, so only the GMX Account guard is under test
+  const unwrapParams = {
+    ...baseSwapParams,
+    fromToken: weth,
+    toToken: nativeEth,
+    isWrapOrUnwrap: true,
+    swapLiquidity: expandDecimals(1_000_000, 30),
+  };
+
+  const expectedMessage = "GMX Account swaps cannot use native ETH. Select WETH or withdraw to wallet first.";
+
+  it("allows wallet WETH -> ETH unwrap", () => {
+    const result = getSwapError({ ...unwrapParams, isFromTokenGmxAccount: false });
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+
+  it("blocks GMX Account WETH -> ETH unwrap with clear copy", () => {
+    const result = getSwapError({ ...unwrapParams, isFromTokenGmxAccount: true });
+    expect(result.buttonErrorMessage).toBe(expectedMessage);
+  });
+
+  it("blocks GMX Account ETH -> WETH wrap with clear copy", () => {
+    const result = getSwapError({
+      ...unwrapParams,
+      fromToken: nativeEth,
+      toToken: weth,
+      isFromTokenGmxAccount: true,
+    });
+    expect(result.buttonErrorMessage).toBe(expectedMessage);
+  });
+});
+
+const baseEditCollateralParams = {
+  collateralDeltaAmount: expandDecimals(10, 6),
+  collateralDeltaUsd: expandDecimals(10, 30),
+  nextLiqPrice: undefined,
+  nextLeverage: undefined,
+  position: undefined,
+  isDeposit: true,
+  depositToken: toToken,
+  depositAmount: expandDecimals(10, 6),
+  minDepositUsd: undefined,
+  marketInfo,
+  maxWithdrawAmount: 0n,
+};
+
+describe("getEditCollateralError — min deposit covering pending fees", () => {
+  it("returns the min deposit error when the deposit is below the required minimum", () => {
+    const result = getEditCollateralError({
+      ...baseEditCollateralParams,
+      minDepositUsd: expandDecimals(25, 30),
+    });
+    expect(result.buttonErrorMessage).toBe(`Min deposit: ${formatUsd(expandDecimals(25, 30))}`);
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.minDeposit);
+  });
+
+  it("passes when the deposit covers the required minimum", () => {
+    const result = getEditCollateralError({
+      ...baseEditCollateralParams,
+      collateralDeltaAmount: expandDecimals(30, 6),
+      collateralDeltaUsd: expandDecimals(30, 30),
+      depositAmount: expandDecimals(30, 6),
+      minDepositUsd: expandDecimals(25, 30),
+    });
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+
+  it("keeps ordinary deposits without a pending-fee shortfall unaffected", () => {
+    const result = getEditCollateralError(baseEditCollateralParams);
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+
+  it("does not apply the min deposit check to withdrawals", () => {
+    const result = getEditCollateralError({
+      ...baseEditCollateralParams,
+      isDeposit: false,
+      minDepositUsd: expandDecimals(25, 30),
+      maxWithdrawAmount: expandDecimals(100, 6),
+    });
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+});
+
+describe("getNativeGasError", () => {
+  it("skips validation while the fee or balance is loading", () => {
+    expect(getNativeGasError({ networkFee: undefined, nativeBalance: 0n })).toEqual({});
+    expect(getNativeGasError({ networkFee: 1n, nativeBalance: undefined })).toEqual({});
+  });
+
+  it("allows a balance equal to the network fee", () => {
+    expect(getNativeGasError({ networkFee: 1n, nativeBalance: 1n })).toEqual({});
+  });
+
+  it("returns the native-token balance error when the fee exceeds the balance", () => {
+    expect(getNativeGasError({ networkFee: 2n, nativeBalance: 1n })).toEqual({
+      buttonErrorMessage: "Insufficient gas balance",
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+    });
   });
 });

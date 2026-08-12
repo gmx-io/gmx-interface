@@ -124,6 +124,7 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     indexTokenStats.maxUiAllowedLeverage = Math.max(
       indexTokenStats.maxUiAllowedLeverage,
       getMaxAllowedLeverage({
+        marketAddress: marketInfo.marketTokenAddress,
         minCollateralFactor: marketInfo.minCollateralFactor,
         minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
         positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,

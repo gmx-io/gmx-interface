@@ -9,6 +9,7 @@ import {
   getEntryPrice,
   getLeverage,
   getLiquidationPrice,
+  getMinCollateralUsdForLiquidationPrice,
   getPositionKey,
   getPositionNetValue,
   getPositionNetValueAfterAllFees,
@@ -389,5 +390,180 @@ describe("getLiquidationPrice", () => {
       userReferralInfo: undefined,
     });
     expect(result).toBeDefined();
+  });
+});
+
+describe("getMinCollateralUsdForLiquidationPrice", () => {
+  // Tiny factor magnitudes here round to 0n under PRECISION=1e30 — keeping them this way
+  // lets us assert exact integer results. One test below uses realistic factors to lock in
+  // that the priceImpact cap also works at scale.
+  const marketInfo = {
+    indexToken: {
+      decimals: 8,
+      prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
+    },
+    minCollateralFactorForLiquidation: 1000n,
+    maxPositionImpactFactorForLiquidations: 500n,
+    maxPositionImpactFactorPositive: 1000n,
+    maxPositionImpactFactorNegative: 1000n,
+  } as unknown as MarketInfo;
+
+  beforeEach(() => {
+    (getPositionFee as Mock).mockReturnValue({ positionFeeUsd: 50n });
+    (getPriceImpactForPosition as Mock).mockReturnValue({ priceImpactDeltaUsd: -100n, balanceWasImproved: false });
+    (convertToUsd as Mock).mockReturnValue(0n);
+  });
+
+  it("returns 0 when sizeInUsd <= 0", () => {
+    const result = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 0n,
+      sizeInTokens: 100n,
+      marketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: 200n,
+      pnl: 0n,
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    expect(result).toBe(0n);
+  });
+
+  it("returns 0 when sizeInTokens <= 0", () => {
+    const result = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 1000n,
+      sizeInTokens: 0n,
+      marketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: 200n,
+      pnl: 0n,
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    expect(result).toBe(0n);
+  });
+
+  it("returns liquidationCollateralUsd - pnl - priceImpactDeltaUsd + closingFeeUsd for a profitable position", () => {
+    const result = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 1000n,
+      sizeInTokens: 100n,
+      marketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: 200n,
+      pnl: 500n,
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    expect(result).toBe(-250n);
+  });
+
+  it("returns a larger value for a losing position than a profitable one", () => {
+    const losing = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 1000n,
+      sizeInTokens: 100n,
+      marketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: 200n,
+      pnl: -300n,
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    const profitable = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 1000n,
+      sizeInTokens: 100n,
+      marketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: 200n,
+      pnl: 300n,
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    expect(losing).toBeGreaterThan(profitable);
+    expect(losing).toBe(550n);
+    expect(profitable).toBe(-50n);
+  });
+
+  it("uses minCollateralUsd when it exceeds the factor-based liquidation collateral", () => {
+    const result = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 1000n,
+      sizeInTokens: 100n,
+      marketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: 500n,
+      pnl: 0n,
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    expect(result).toBe(550n);
+  });
+
+  it("includes pendingImpactUsd in priceImpactDeltaUsd", () => {
+    (convertToUsd as Mock).mockReturnValueOnce(-30n);
+    const result = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 1000n,
+      sizeInTokens: 100n,
+      marketInfo,
+      pendingImpactAmount: -100n,
+      minCollateralUsd: 200n,
+      pnl: 0n,
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    expect(result).toBe(250n);
+  });
+
+  it("uses realistic factors so priceImpactDeltaUsd is not capped to zero", () => {
+    const realisticMarketInfo = {
+      indexToken: {
+        decimals: 8,
+        prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
+      },
+      minCollateralFactorForLiquidation: 1000n,
+      maxPositionImpactFactorForLiquidations: expandDecimals(1, 28),
+      maxPositionImpactFactorPositive: 1000n,
+      maxPositionImpactFactorNegative: 1000n,
+    } as unknown as MarketInfo;
+
+    const sizeInUsd = expandDecimals(1000, USD_DECIMALS);
+    (getPositionFee as Mock).mockReturnValueOnce({ positionFeeUsd: expandDecimals(5, USD_DECIMALS) });
+    (getPriceImpactForPosition as Mock).mockReturnValueOnce({
+      priceImpactDeltaUsd: -expandDecimals(20, USD_DECIMALS),
+      balanceWasImproved: false,
+    });
+
+    const result = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd,
+      sizeInTokens: 100n,
+      marketInfo: realisticMarketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: expandDecimals(100, USD_DECIMALS),
+      pnl: expandDecimals(50, USD_DECIMALS),
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    expect(result).toBe(expandDecimals(65, USD_DECIMALS));
+  });
+
+  it("works for short positions identically", () => {
+    const long = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 1000n,
+      sizeInTokens: 100n,
+      marketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: 200n,
+      pnl: 200n,
+      isLong: true,
+      userReferralInfo: undefined,
+    });
+    const short = getMinCollateralUsdForLiquidationPrice({
+      sizeInUsd: 1000n,
+      sizeInTokens: 100n,
+      marketInfo,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: 200n,
+      pnl: 200n,
+      isLong: false,
+      userReferralInfo: undefined,
+    });
+    expect(short).toBe(long);
   });
 });

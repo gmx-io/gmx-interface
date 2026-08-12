@@ -21,3 +21,9 @@ export function WagmiProvider({
     </BaseWagmiProvider>
   );
 }
+
+export function useSetActiveWallet() {
+  return {
+    setActiveWallet: () => Promise.resolve(),
+  };
+}

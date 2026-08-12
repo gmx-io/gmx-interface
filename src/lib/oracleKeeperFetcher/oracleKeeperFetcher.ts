@@ -1,4 +1,5 @@
 import { ContractsChainId } from "config/chains";
+import type { UiFlag } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { withFallback } from "lib/FallbackTracker/withFallback";
@@ -27,6 +28,7 @@ import {
   RawIncentivesStats,
   TickersResponse,
 } from "./types";
+import { consumeUiFlagsPrefetch } from "./uiFlagsPrefetch";
 
 function parseOracleCandle(rawCandle: number[]): Bar {
   const [time, open, high, low, close] = rawCandle;
@@ -229,8 +231,16 @@ export class OracleKeeperFetcher implements OracleFetcher {
     return this.request("/performance/snapshots", { query: { period, address } });
   }
 
-  fetchUiFlags(): Promise<Record<string, boolean>> {
-    return this.request("/ui-flags", {});
+  fetchUiFlags(): Promise<Record<string, UiFlag>> {
+    const prefetched = consumeUiFlagsPrefetch(
+      buildUrl(this.oracleTracker.getCurrentEndpoints().primary, "/ui-flags/v2")
+    );
+
+    if (prefetched) {
+      return prefetched.then((flags) => (flags ? (flags as Record<string, UiFlag>) : this.request("/ui-flags/v2", {})));
+    }
+
+    return this.request("/ui-flags/v2", {});
   }
 
   fetchMarkets(): Promise<ApiMarket[]> {

@@ -10,6 +10,9 @@ export enum TradeActionType {
   OrderFrozen = "OrderFrozen",
 }
 
+/** For market orders this means expired (keeper cancelled after requestExpirationTime). */
+export const USER_INITIATED_CANCEL = "USER_INITIATED_CANCEL";
+
 export type PositionTradeAction = {
   type: "position";
   id: string;
@@ -23,6 +26,10 @@ export type PositionTradeAction = {
   targetCollateralToken: TokenData;
   indexToken: TokenData;
   swapPath: string[];
+  positionKey?: string;
+  positionLifecycleId?: string;
+  positionSizeInUsd?: bigint;
+  positionSizeInTokens?: bigint;
   initialCollateralDeltaAmount: bigint;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens?: bigint;
@@ -39,6 +46,7 @@ export type PositionTradeAction = {
   swapImpactUsd?: bigint;
   swapFeeUsd?: bigint;
   positionFeeAmount?: bigint;
+  traderDiscountAmount?: bigint;
   borrowingFeeAmount?: bigint;
   fundingFeeAmount?: bigint;
   pnlUsd?: bigint;
@@ -51,6 +59,7 @@ export type PositionTradeAction = {
   shouldUnwrapNativeToken: boolean;
   totalImpactUsd?: bigint;
   liquidationFeeAmount?: bigint;
+  minCollateralFactorForLiquidation?: bigint;
   twapParams:
     | {
         twapGroupId: string;

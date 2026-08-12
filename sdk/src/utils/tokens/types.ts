@@ -15,6 +15,7 @@ export type TokenCategory =
   | "defi"
   | "ai"
   | "tradfi"
+  | "pre-ipo"
   | "commodities"
   | "stocks"
   | "indices"
@@ -54,7 +55,6 @@ export type Token = {
   isV1Available?: boolean;
   isPlatformToken?: boolean;
   isPlatformTradingToken?: boolean;
-  isStaking?: boolean;
 };
 
 /**

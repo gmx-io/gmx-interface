@@ -6,7 +6,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getOrderInfo, isPositionOrder, isSwapOrder, isTwapPositionOrder, isTwapSwapOrder } from "sdk/utils/orders";
 import { getTwapOrderKey } from "sdk/utils/twap/index";
-import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
+import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
@@ -105,7 +105,7 @@ const createOrderInfo = ({
   wrappedNativeToken: Token;
   acc: OrdersInfoData;
 }) => {
-  const twapParams = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
+  const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
 
   const orderInfo = getOrderInfo({
     marketsInfoData,

@@ -1,9 +1,5 @@
 import { AbstractSigner, Provider, Signer } from "ethers";
-import {
-  Address,
-  encodeFunctionData,
-  recoverTypedDataAddress,
-} from "viem";
+import { encodeFunctionData, isHex, size } from "viem";
 
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
@@ -20,10 +16,8 @@ import {
   RawRelayParamsPayload,
   RelayParamsPayload,
 } from "domain/synthetics/express";
-import {
-  getSubaccountValidations,
-  Subaccount,
-} from "domain/synthetics/subaccount";
+import type { Subaccount } from "domain/synthetics/subaccount";
+import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { TokenData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { metrics } from "lib/metrics";
@@ -31,15 +25,15 @@ import { getByKey } from "lib/objects";
 import { createProviderRpc } from "lib/rpc/createProviderRpc";
 import { ISigner } from "lib/transactions/iSigner";
 import { WalletSigner } from "lib/wallets";
-import { SignatureDomain, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
+import { getSignatureKind } from "lib/wallets/signatureDiagnostics";
+import { hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import {
-  type ExpressTxnData,
-  estimateExpressParams as sdkEstimateExpressParams,
-} from "sdk/utils/express";
+import { bigMath } from "sdk/utils/bigmath";
+import { type ExpressTxnData, estimateExpressParams as sdkEstimateExpressParams } from "sdk/utils/express";
 import { getBatchTypedData, buildBatchOrderCalldata } from "sdk/utils/express";
 import {
   BatchOrderTxnParams,
@@ -55,6 +49,29 @@ import { hashSubaccountApproval } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { estimateBatchGasLimit, GasLimitsConfig } from "../fees";
+
+export function getPrimaryOrderGasPaymentTokenAmount({
+  expressParams,
+  primaryExecutionFeeAmount,
+}: {
+  expressParams: Pick<ExpressTxnParams, "gasPaymentParams" | "executionFeeAmount">;
+  primaryExecutionFeeAmount: bigint | undefined;
+}): bigint {
+  const { gasPaymentTokenAmount, relayerFeeAmount } = expressParams.gasPaymentParams;
+
+  if (primaryExecutionFeeAmount === undefined) {
+    return gasPaymentTokenAmount;
+  }
+
+  const batchFeeAmount = relayerFeeAmount + expressParams.executionFeeAmount;
+  const primaryFeeAmount = relayerFeeAmount + primaryExecutionFeeAmount;
+
+  if (batchFeeAmount <= 0n || primaryFeeAmount >= batchFeeAmount) {
+    return gasPaymentTokenAmount;
+  }
+
+  return bigMath.mulDiv(gasPaymentTokenAmount, primaryFeeAmount, batchFeeAmount);
+}
 
 export async function estimateBatchExpressParams({
   signer,
@@ -231,9 +248,11 @@ export async function estimateExpressParams({
   });
 }
 
-
-
-export { getGasPaymentValidations, getIsValidExpressParams } from "sdk/utils/express";
+export {
+  getGasPaymentValidations,
+  getIsConfirmedOutOfGasPaymentTokenBalance,
+  getIsValidExpressParams,
+} from "sdk/utils/express";
 
 export async function buildAndSignExpressBatchOrderTxn({
   chainId,
@@ -258,7 +277,7 @@ export async function buildAndSignExpressBatchOrderTxn({
 }): Promise<ExpressTxnData> {
   const messageSigner = subaccount ? subaccount!.signer : signer;
   const crossChainId = isGmxAccount ? await getMultichainInfoFromSigner(signer, chainId) : undefined;
-  const effectiveSrcChainId = isGmxAccount ? (crossChainId ?? chainId) : undefined;
+  const effectiveSrcChainId = isGmxAccount ? crossChainId ?? chainId : undefined;
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
 
   const relayPayload: RelayParamsPayload = {
@@ -289,6 +308,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       typedData: typedData.message,
       domain: typedData.domain,
       shouldUseSignerMethod: subaccount !== undefined,
+      verificationChainId: chainId,
     };
 
     signature = await signTypedData(signatureParams);
@@ -321,7 +341,6 @@ export async function buildAndSignExpressBatchOrderTxn({
     feeAmount: relayerFeeAmount,
   };
 }
-
 
 export async function getMultichainInfoFromSigner(
   signer: Signer,
@@ -467,7 +486,7 @@ async function signBridgeOutPayload({
 
   const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainTransferRouter"));
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId });
 }
 
 export async function signSetTraderReferralCode({
@@ -498,7 +517,7 @@ export async function signSetTraderReferralCode({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }
 
 export async function signRegisterCode({
@@ -529,8 +548,11 @@ export async function signRegisterCode({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }
+
+export const SIGNATURE_VALIDATION_FAILED_ERROR = "Signature validation failed";
+export const SIGNATURE_VALIDATION_UNAVAILABLE_ERROR = "Signature validation unavailable";
 
 async function validateSignature({
   signatureParams,
@@ -539,52 +561,54 @@ async function validateSignature({
   silent = false,
   errorSource = "validateSignature",
 }: {
-  signatureParams: {
-    domain: SignatureDomain;
-    types: Record<string, any>;
-    typedData: Record<string, any>;
-  };
+  signatureParams: Pick<SignTypedDataParams, "domain" | "types" | "typedData" | "verificationChainId">;
   signature: string;
   expectedAccount: string;
   silent?: boolean;
   errorSource?: string;
 }) {
+  const { verificationChainId } = signatureParams;
+  let signedHash: string | undefined;
+
   try {
-    // Validate the signature
-    const recoveredAddress = await recoverTypedDataAddress({
-      domain: {
-        ...signatureParams.domain,
-        verifyingContract: signatureParams.domain.verifyingContract as Address,
-      },
-      types: signatureParams.types,
-      primaryType: "Batch",
-      message: signatureParams.typedData,
-      signature: signature as `0x${string}`,
+    if (!isHex(signature)) {
+      throw new Error("Signature is not a hex string");
+    }
+
+    signedHash = hashSignedTypedData(signatureParams);
+
+    const client = getPublicClientWithRpc(verificationChainId);
+    const isValid = await client.verifyHash({
+      address: expectedAccount,
+      hash: signedHash,
+      signature,
     });
 
-    const isValid = recoveredAddress.toLowerCase() === expectedAccount.toLowerCase();
-
     if (!isValid) {
-      throw extendError(new Error("Signature validation failed"), {
-        data: {
-          recoveredAddress,
-          expectedAccount,
-          signature,
-        },
-      });
+      throw new Error(SIGNATURE_VALIDATION_FAILED_ERROR);
     }
   } catch (error) {
-    metrics.pushError(error, errorSource);
+    const isRejected = error?.message === SIGNATURE_VALIDATION_FAILED_ERROR;
+    // No raw signature in telemetry — it authorizes the order, and viem appends it to the cause.
+    const diagnostics = {
+      signedHash,
+      verificationChainId,
+      signingChainId: signatureParams.domain.chainId,
+      expectedAccount,
+      signatureKind: getSignatureKind(signature),
+      signatureBytes: isHex(signature) ? size(signature) : undefined,
+    };
+    const extended = extendError(isRejected ? error : new Error(SIGNATURE_VALIDATION_UNAVAILABLE_ERROR), {
+      errorSource,
+      data: isRejected ? diagnostics : { ...diagnostics, cause: error?.message?.split("\n")[0] },
+    });
+
+    metrics.pushError(extended, errorSource);
 
     if (silent) {
       return;
     }
 
-    throw extendError(error, {
-      data: {
-        signature,
-        expectedAccount,
-      },
-    });
+    throw extended;
   }
 }

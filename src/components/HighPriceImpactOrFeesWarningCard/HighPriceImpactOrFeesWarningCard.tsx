@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 
 import { DOCS_LINKS } from "config/links";
 import { FeeItem } from "domain/synthetics/fees";
@@ -17,6 +17,7 @@ export type Props = {
   externalSwapFeeItem?: FeeItem;
   executionFeeUsd?: bigint;
   maxNegativeImpactBps?: bigint;
+  swapProfitFeeWarning?: ReactNode;
 };
 
 export function HighPriceImpactOrFeesWarningCard({
@@ -26,10 +27,16 @@ export function HighPriceImpactOrFeesWarningCard({
   externalSwapFeeItem,
   executionFeeUsd,
   maxNegativeImpactBps,
+  swapProfitFeeWarning,
 }: Props) {
   const warnings = useMemo(() => {
-    const warnings: { id: string; key: React.ReactNode; value?: React.ReactNode; tooltipContent?: React.ReactNode }[] =
-      [];
+    const warnings: {
+      id: string;
+      key?: ReactNode;
+      value?: ReactNode;
+      tooltipContent?: ReactNode;
+      content?: ReactNode;
+    }[] = [];
 
     const formattedCap = formatPercentage(maxNegativeImpactBps, { displayDecimals: 1 });
 
@@ -75,8 +82,9 @@ export function HighPriceImpactOrFeesWarningCard({
     if (priceImpactWarningState.shouldShowWarningForSwapProfitFee) {
       warnings.push({
         id: "high-swap-profit-fee",
-        key: t`High swap profit fee`,
-        value: formatUsd(swapProfitFee?.deltaUsd),
+        ...(swapProfitFeeWarning
+          ? { content: swapProfitFeeWarning }
+          : { key: t`High swap profit fee`, value: formatUsd(swapProfitFee?.deltaUsd) }),
       });
     }
 
@@ -101,6 +109,7 @@ export function HighPriceImpactOrFeesWarningCard({
     executionFeeUsd,
     swapPriceImpact?.deltaUsd,
     swapProfitFee?.deltaUsd,
+    swapProfitFeeWarning,
     maxNegativeImpactBps,
   ]);
 
@@ -112,7 +121,9 @@ export function HighPriceImpactOrFeesWarningCard({
     <AlertInfoCard className="h-fit" type="warning" hideClose>
       <div className="flex flex-col gap-4">
         {warnings.map((warning) => {
-          const warningContent = (
+          const warningContent = warning.content ? (
+            <div key={warning.id}>{warning.content}</div>
+          ) : (
             <div key={warning.id} className="flex justify-between gap-4">
               <div>{warning.key}</div>
               <div className="font-medium text-yellow-300">{warning.value}</div>

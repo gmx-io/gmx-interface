@@ -1,11 +1,14 @@
 import noop from "lodash/noop";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, BOTANIX, getExecutionFeeConfig } from "config/chains";
+import { ARBITRUM, getExecutionFeeConfig } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { getIsExpressSupported } from "config/features";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
+  BUY_SELL_ICONS_MODE_KEY,
+  CHART_LINES_SIZE_DENOMINATION_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
@@ -25,19 +28,29 @@ import {
   getExecutionFeeBufferBpsKey,
   getExpressOrdersEnabledKey,
   getGasPaymentTokenAddressKey,
+  getGmxAccountGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { useChainId } from "lib/chains";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { hasStoredLocalStorageValue, useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import useWallet from "lib/wallets/useWallet";
+import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
+
+export type BuySellIconsMode = "off" | "current" | "all";
+
+const DEFAULT_BUY_SELL_ICONS_MODE: BuySellIconsMode = "current";
+
+function getBuySellIconsMode(savedValue: BuySellIconsMode | boolean | undefined): BuySellIconsMode {
+  if (savedValue === false) return "off";
+  if (savedValue === true) return "all";
+  return savedValue ?? DEFAULT_BUY_SELL_ICONS_MODE;
+}
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -61,6 +74,8 @@ export type SettingsContextType = {
   setShouldDisableShareModalPnlCheck: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
+  buySellIconsMode: BuySellIconsMode;
+  setBuySellIconsMode: (val: BuySellIconsMode) => void;
   isAutoCancelTPSL: boolean;
   setIsAutoCancelTPSL: (val: boolean) => void;
   isLeverageSliderEnabled: boolean;
@@ -86,6 +101,8 @@ export type SettingsContextType = {
 
   gasPaymentTokenAddress: string;
   setGasPaymentTokenAddress: (val: string) => void;
+  gmxAccountGasPaymentTokenAddress: string;
+  setGmxAccountGasPaymentTokenAddress: (val: string) => void;
 
   externalSwapsEnabled: boolean;
   setExternalSwapsEnabled: (val: boolean) => void;
@@ -112,6 +129,9 @@ export type SettingsContextType = {
 
   showCloseSizeInTokens: boolean;
   setShowCloseSizeInTokens: (val: boolean) => void;
+
+  chartLinesSizeInTokens: boolean;
+  setChartLinesSizeInTokens: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -123,9 +143,6 @@ export function useSettings() {
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaLoading } = useIsNonEoaAccountOnAnyChain();
-  const isGeminiWallet = useIsGeminiWallet();
-  const isExpressUnsupportedWallet = isNonEoaAccountOnAnyChain || isGeminiWallet;
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -197,10 +214,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
-  const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
-    getExpressOrdersEnabledKey(chainId, account),
-    false
-  );
+  const { canSignTypedData } = useWalletCanSignTypedData();
+  const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
+  const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(expressOrdersEnabledKey, false);
 
   const [receiveToGmxAccount, setReceiveToGmxAccount] = useLocalStorageSerializeKey<boolean | null>(
     getCollateralCloseDestinationKey(chainId, account),
@@ -226,6 +242,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     gasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
   }
 
+  let [gmxAccountGasPaymentTokenAddress, setGmxAccountGasPaymentTokenAddress] = useLocalStorageSerializeKey(
+    getGmxAccountGasPaymentTokenAddressKey(chainId, account),
+    getDefaultGasPaymentToken(chainId)
+  );
+  // Reason: useLocalStorageSerializeKey leaks previous value to the next render even if key is changed
+  if (gmxAccountGasPaymentTokenAddress && !isValidTokenSafe(chainId, gmxAccountGasPaymentTokenAddress)) {
+    gmxAccountGasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
+  }
+
   let [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
     [chainId, DISABLE_ORDER_VALIDATION_KEY],
     false
@@ -249,6 +274,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     true
   );
 
+  const [savedBuySellIconsModeRaw, setSavedBuySellIconsModeRaw] = useLocalStorageSerializeKey<
+    BuySellIconsMode | boolean
+  >([chainId, BUY_SELL_ICONS_MODE_KEY], DEFAULT_BUY_SELL_ICONS_MODE);
+
+  const savedBuySellIconsMode = useMemo(
+    () => getBuySellIconsMode(savedBuySellIconsModeRaw),
+    [savedBuySellIconsModeRaw]
+  );
+
   const [savedTwapNumberOfParts, setSavedTWAPNumberOfParts] = useLocalStorageSerializeKey(
     [chainId, TWAP_NUMBER_OF_PARTS_KEY],
     DEFAULT_TWAP_NUMBER_OF_PARTS
@@ -256,6 +290,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [showCloseSizeInTokens, setShowCloseSizeInTokens] = useLocalStorageSerializeKey(
     CLOSE_SIZE_DENOMINATION_KEY,
+    false
+  );
+
+  const [chartLinesSizeInTokens, setChartLinesSizeInTokens] = useLocalStorageSerializeKey(
+    CHART_LINES_SIZE_DENOMINATION_KEY,
     false
   );
 
@@ -285,21 +324,28 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   ]);
 
   useEffect(
-    function fallbackMultichain() {
-      if (srcChainId && !expressOrdersEnabled && !isExpressUnsupportedWallet && !isNonEoaLoading) {
-        setExpressOrdersEnabled(true);
+    function defaultExpressForSupportedWallets() {
+      if (
+        !account ||
+        expressOrdersEnabled ||
+        !getIsExpressSupported(chainId) ||
+        hasStoredLocalStorageValue(expressOrdersEnabledKey)
+      ) {
+        return;
       }
+
+      setExpressOrdersEnabled(true);
     },
-    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId, isExpressUnsupportedWallet, isNonEoaLoading]
+    [account, chainId, expressOrdersEnabled, expressOrdersEnabledKey, setExpressOrdersEnabled]
   );
 
   useEffect(
-    function disableExpressForUnsupportedWallets() {
-      if (isExpressUnsupportedWallet && expressOrdersEnabled) {
-        setExpressOrdersEnabled(false);
+    function fallbackMultichain() {
+      if (srcChainId && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
       }
     },
-    [isExpressUnsupportedWallet, expressOrdersEnabled, setExpressOrdersEnabled]
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
   );
 
   const contextState: SettingsContextType = useMemo(() => {
@@ -325,6 +371,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableShareModalPnlCheck: setSavedShouldDisableShareModalPnlCheck,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
+      buySellIconsMode: savedBuySellIconsMode!,
+      setBuySellIconsMode: setSavedBuySellIconsModeRaw,
       isAutoCancelTPSL: savedIsAutoCancelTPSL!,
       setIsAutoCancelTPSL: setIsAutoCancelTPSL,
       isLeverageSliderEnabled: isLeverageSliderEnabled!,
@@ -348,13 +396,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
-      expressOrdersEnabled: expressOrdersEnabled!,
+      expressOrdersEnabled: expressOrdersEnabled! && canSignTypedData,
       setExpressOrdersEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
+      gmxAccountGasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress!,
+      setGmxAccountGasPaymentTokenAddress,
 
-      // External swaps are enabled by default on Botanix
-      externalSwapsEnabled: chainId === BOTANIX || externalSwapsEnabled!,
+      externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -371,6 +420,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       showCloseSizeInTokens: showCloseSizeInTokens!,
       setShowCloseSizeInTokens,
+
+      chartLinesSizeInTokens: chartLinesSizeInTokens!,
+      setChartLinesSizeInTokens,
     };
   }, [
     showDebugValues,
@@ -394,6 +446,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableShareModalPnlCheck,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
+    savedBuySellIconsMode,
+    setSavedBuySellIconsModeRaw,
     savedIsAutoCancelTPSL,
     setIsAutoCancelTPSL,
     isLeverageSliderEnabled,
@@ -412,10 +466,12 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlySimulationEnabled,
     isSettingsVisible,
     expressOrdersEnabled,
+    canSignTypedData,
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
-    chainId,
+    gmxAccountGasPaymentTokenAddress,
+    setGmxAccountGasPaymentTokenAddress,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
@@ -428,6 +484,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setReceiveToGmxAccount,
     showCloseSizeInTokens,
     setShowCloseSizeInTokens,
+    chartLinesSizeInTokens,
+    setChartLinesSizeInTokens,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

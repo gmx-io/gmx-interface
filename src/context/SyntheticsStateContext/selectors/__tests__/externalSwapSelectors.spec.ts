@@ -14,12 +14,14 @@ import { ExternalSwapQuote, SwapPathStats, TradeMode, TradeType } from "sdk/util
 
 import { SyntheticsState } from "../../SyntheticsStateContextProvider";
 import {
+  selectExternalSwapBlockReason,
   selectExternalSwapDesirability,
   selectExternalSwapIsLoading,
   selectExternalSwapInputs,
   selectIsExternalSwapDisabledByExpressSchema,
   selectIsWaitingForExternalSwapQuote,
   selectExternalSwapQuote,
+  selectRawExternalSwapDesirability,
   selectShouldRequestExternalSwapQuote,
 } from "../tradeboxSelectors";
 import * as tradeSelectors from "../tradeSelectors";
@@ -407,7 +409,11 @@ describe("externalSwapSelectors", () => {
       const state = createMockState({
         externalSwap: {
           ...defaultState.externalSwap,
-          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+          requestResult: {
+            status: "success",
+            key: { structuralKey: "stale-key", amount: 1n },
+            quote: mockBaseSwapQuote,
+          },
         },
       });
       expect(selectExternalSwapIsLoading(state as SyntheticsState)).toBe(true);
@@ -458,7 +464,11 @@ describe("externalSwapSelectors", () => {
       const state = createMockState({
         externalSwap: {
           ...defaultState.externalSwap,
-          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+          requestResult: {
+            status: "success",
+            key: { structuralKey: "stale-key", amount: 1n },
+            quote: mockBaseSwapQuote,
+          },
         },
       });
 
@@ -513,10 +523,242 @@ describe("externalSwapSelectors", () => {
       const state = createMockState({
         externalSwap: {
           ...defaultState.externalSwap,
-          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+          requestResult: {
+            status: "success",
+            key: { structuralKey: "stale-key", amount: 1n },
+            quote: mockBaseSwapQuote,
+          },
         },
       });
       expect(selectExternalSwapQuote(state as SyntheticsState)).toBeUndefined();
+    });
+  });
+
+  describe("fallback latch with required external route", () => {
+    it("keeps desirability required when the latch is set but there is no internal route", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectExternalSwapDesirability(state)).toBe("required");
+    });
+
+    it("downgrades optional desirability to not_wanted when the latch is set", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectExternalSwapDesirability(state)).toBe("not_wanted");
+    });
+
+    it("keeps requesting quotes for a required route when the latch is set", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectShouldRequestExternalSwapQuote(state)).toBe(true);
+    });
+
+    it("returns the quote for a required route when the latch is set", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectExternalSwapQuote(state as SyntheticsState)).toEqual(mockBaseSwapQuote);
+    });
+  });
+
+  describe("selectRawExternalSwapDesirability", () => {
+    it("ignores the trade mode gate: returns required for Limit when there is no internal route", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Limit },
+      });
+
+      expect(selectRawExternalSwapDesirability(state)).toBe("required");
+      expect(selectExternalSwapDesirability(state)).toBe("not_wanted");
+    });
+  });
+
+  describe("selectExternalSwapBlockReason", () => {
+    it("returns undefined when an external swap is not wanted at all", () => {
+      const state = createMockState();
+
+      expect(selectRawExternalSwapDesirability(state)).toBe("not_wanted");
+      expect(selectExternalSwapBlockReason(state)).toBeUndefined();
+    });
+
+    it("returns undefined when external swaps are disabled by the dev setting", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        settings: { ...defaultState.settings, externalSwapsEnabled: false },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBeUndefined();
+    });
+
+    it("returns orderTypeNotSupported for TWAP when the external route is required", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Twap },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBe("orderTypeNotSupported");
+    });
+
+    it("returns orderTypeNotSupported for Limit even when the failure latch is set", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Limit },
+        externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBe("orderTypeNotSupported");
+    });
+
+    it("returns gasTokenConflict when the express gas token matches the swap to-token", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        settings: {
+          ...defaultState.settings,
+          expressOrdersEnabled: true,
+          gasPaymentTokenAddress: tokensData.USDC.address,
+        },
+        features: {
+          relayRouterEnabled: true,
+          subaccountRelayRouterEnabled: true,
+        },
+        sponsoredCallBalanceData: {
+          isSponsoredCallAllowed: true,
+        },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBe("gasTokenConflict");
+    });
+
+    it("prioritizes gasTokenConflict over the failure latch", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        settings: {
+          ...defaultState.settings,
+          expressOrdersEnabled: true,
+          gasPaymentTokenAddress: tokensData.USDC.address,
+        },
+        features: {
+          relayRouterEnabled: true,
+          subaccountRelayRouterEnabled: true,
+        },
+        sponsoredCallBalanceData: {
+          isSponsoredCallAllowed: true,
+        },
+        externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBe("gasTokenConflict");
+    });
+
+    it("returns temporarilyDisabledByFailure for an optional route paused by the latch", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectRawExternalSwapDesirability(state)).toBe("optional");
+      expect(selectExternalSwapBlockReason(state)).toBe("temporarilyDisabledByFailure");
+    });
+
+    it("returns noRouteFound when the aggregator request failed for the current inputs", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const inputs = selectExternalSwapInputs(createMockState()) as NonNullable<
+        ReturnType<typeof selectExternalSwapInputs>
+      >;
+      const key = getExternalSwapRequestKey({
+        fromTokenAddress: tokensData.ETH.address,
+        toTokenAddress: tokensData.USDC.address,
+        strategy: inputs.strategy,
+        amountIn: inputs.amountIn,
+        desiredAmountOut: undefined,
+        slippage: DEFAULT_SLIPPAGE,
+      })!;
+
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, requestResult: { status: "failed", key } },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBe("noRouteFound");
+    });
+
+    it("returns noRouteFound (not temporarilyDisabledByFailure) for a required route with the latch set", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const inputs = selectExternalSwapInputs(createMockState()) as NonNullable<
+        ReturnType<typeof selectExternalSwapInputs>
+      >;
+      const key = getExternalSwapRequestKey({
+        fromTokenAddress: tokensData.ETH.address,
+        toTokenAddress: tokensData.USDC.address,
+        strategy: inputs.strategy,
+        amountIn: inputs.amountIn,
+        desiredAmountOut: undefined,
+        slippage: DEFAULT_SLIPPAGE,
+      })!;
+
+      const state = createMockState({
+        externalSwap: {
+          ...defaultState.externalSwap,
+          shouldFallbackToInternalSwap: true,
+          requestResult: { status: "failed", key },
+        },
+      });
+
+      expect(selectRawExternalSwapDesirability(state)).toBe("required");
+      expect(selectExternalSwapBlockReason(state)).toBe("noRouteFound");
+    });
+
+    it("returns undefined for a required route with the latch set while the quote is usable", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectExternalSwapQuote(state as SyntheticsState)).toEqual(mockBaseSwapQuote);
+      expect(selectExternalSwapBlockReason(state)).toBeUndefined();
+    });
+
+    it("returns undefined while the required quote is still loading", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, requestResult: undefined },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBeUndefined();
+    });
+
+    it("returns undefined when a usable quote is available", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState();
+
+      expect(selectExternalSwapQuote(state as SyntheticsState)).toEqual(mockBaseSwapQuote);
+      expect(selectExternalSwapBlockReason(state)).toBeUndefined();
     });
   });
 });

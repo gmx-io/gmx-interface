@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { getAbFlags } from "config/ab";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
@@ -23,6 +24,9 @@ export function useConfigureMetrics() {
   const isWindowVisible = useIsWindowVisible();
   const isLargeAccount = getIsLargeAccount();
   const { data: bowser } = useBowser();
+  const apiSdkMarkets = useIsApiSdkEnabled(API_UI_FLAGS.markets);
+  const apiSdkPositions = useIsApiSdkEnabled(API_UI_FLAGS.positions);
+  const apiSdkOrders = useIsApiSdkEnabled(API_UI_FLAGS.orders);
 
   useEffect(() => {
     metrics.subscribeToEvents();
@@ -45,6 +49,9 @@ export function useConfigureMetrics() {
       isWindowVisible,
       isAuthorised: active,
       abFlags: getAbFlags(),
+      apiSdkMarkets,
+      apiSdkPositions,
+      apiSdkOrders,
       isMobile: getIsMobileUserAgent(),
       isHomeSite: isHomeSite(),
       isLargeAccount,
@@ -54,7 +61,17 @@ export function useConfigureMetrics() {
       isInited: Boolean(bowser),
       srcChainId,
     });
-  }, [active, isMobileMetamask, isWindowVisible, isLargeAccount, bowser, srcChainId]);
+  }, [
+    active,
+    isMobileMetamask,
+    isWindowVisible,
+    isLargeAccount,
+    bowser,
+    srcChainId,
+    apiSdkMarkets,
+    apiSdkPositions,
+    apiSdkOrders,
+  ]);
 
   useEffect(() => {
     metrics.updateWalletNames();

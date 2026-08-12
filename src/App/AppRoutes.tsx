@@ -10,8 +10,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useSupportChat } from "domain/supportChat/useSupportChat";
-import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
-import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
 import { getAppBaseUrl, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -28,12 +26,11 @@ import { switchNetwork } from "lib/wallets";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
-import EventToastContainer from "components/EventToast/EventToastContainer";
-import useEventToast from "components/EventToast/useEventToast";
 import { GmxAccountModal } from "components/GmxAccountModal/GmxAccountModal";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { WhatsNewToastContainer } from "components/WhatsNewToast/WhatsNewToastContainer";
 
 import { MainRoutes } from "./MainRoutes";
 
@@ -50,8 +47,6 @@ export function AppRoutes() {
   const location = useLocation();
   const history = useHistory();
 
-  useEventToast();
-  useUiFlagEvents();
   useConfigureMetrics();
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
@@ -106,7 +101,7 @@ export function AppRoutes() {
     }
   }
 
-  const { chainId, lang } = useSearchParams<{ chainId?: string; lang?: string }>();
+  const { chainId, lang, openChat } = useSearchParams<{ chainId?: string; lang?: string; openChat?: string }>();
 
   const deleteSearchParam = useCallback(
     (param: string) => {
@@ -122,7 +117,7 @@ export function AppRoutes() {
 
   useEffect(() => {
     if (chainId && CONTRACTS_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
-      switchNetwork(Number(chainId), true).then(() => {
+      switchNetwork(Number(chainId), true, { fallbackToAppSelectionOnError: true }).then(() => {
         deleteSearchParam("chainId");
       });
     }
@@ -136,6 +131,12 @@ export function AppRoutes() {
     }
   }, [lang, deleteSearchParam]);
 
+  useEffect(() => {
+    if (openChat) {
+      deleteSearchParam("openChat");
+    }
+  }, [openChat, deleteSearchParam]);
+
   const isEarnPage = history.location.pathname.startsWith("/earn");
   useEffect(() => {
     if (isEarnPage) {
@@ -144,7 +145,6 @@ export function AppRoutes() {
   }, [isEarnPage]);
 
   useRealChainIdWarning();
-  useNonEoaAccountChainWarning();
 
   return (
     <>
@@ -165,7 +165,7 @@ export function AppRoutes() {
         icon={false}
         closeButton={CloseToastButton}
       />
-      <EventToastContainer />
+      <WhatsNewToastContainer />
       <RedirectPopupModal
         redirectModalVisible={redirectModalVisible}
         setRedirectModalVisible={setRedirectModalVisible}

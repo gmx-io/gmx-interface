@@ -1,13 +1,19 @@
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM, AVALANCHE_FUJI, MEGAETH } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { JUMPER_EXCHANGE_URL } from "config/links";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals } from "lib/numbers";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import {
+  externalSwapRequestKeysMatch,
+  getExternalAggregatorSwapUrl,
   getExternalSwapRequestKey,
   inflateAmountForSlippage,
+  isAmountWithinKeyTolerance,
   isInternalSwapBetterByFeeRate,
   overrideQuoteWithOraclePrices,
 } from "../utils";
@@ -210,10 +216,11 @@ describe("getExternalSwapRequestKey", () => {
       amountIn: 1000n,
       desiredAmountOut: 5000n,
     });
-    // Two different keys for the same (amountIn, desiredAmountOut) but different strategy
-    expect(fromKey).not.toBe(toKey);
+    expect(fromKey!.structuralKey).not.toEqual(toKey!.structuralKey);
+    expect(fromKey!.amount).toBe(1000n);
+    expect(toKey!.amount).toBe(5000n);
     // Changing the unused amount must not change the key
-    expect(getExternalSwapRequestKey({ ...base, amountIn: 1000n, desiredAmountOut: 9999n })).toBe(fromKey);
+    expect(getExternalSwapRequestKey({ ...base, amountIn: 1000n, desiredAmountOut: 9999n })).toEqual(fromKey);
     expect(
       getExternalSwapRequestKey({
         ...base,
@@ -221,24 +228,159 @@ describe("getExternalSwapRequestKey", () => {
         amountIn: 9999n,
         desiredAmountOut: 5000n,
       })
-    ).toBe(toKey);
+    ).toEqual(toKey);
   });
 
-  it("produces distinct keys for distinct slippage values", () => {
+  it("produces distinct structural keys for distinct slippage values", () => {
     const a = getExternalSwapRequestKey({ ...base, slippage: 50 });
     const b = getExternalSwapRequestKey({ ...base, slippage: 100 });
-    expect(a).not.toBe(b);
+    expect(a!.structuralKey).not.toEqual(b!.structuralKey);
   });
 
-  it("produces distinct keys for distinct token pairs", () => {
+  it("produces distinct structural keys for distinct token pairs", () => {
     const a = getExternalSwapRequestKey(base);
     const b = getExternalSwapRequestKey({ ...base, toTokenAddress: "0xother" });
-    expect(a).not.toBe(b);
+    expect(a!.structuralKey).not.toEqual(b!.structuralKey);
   });
 
-  it("produces distinct keys for distinct strategies", () => {
+  it("produces distinct structural keys for distinct strategies", () => {
     const fromKey = getExternalSwapRequestKey({ ...base, strategy: "byFromValue" });
     const leverageKey = getExternalSwapRequestKey({ ...base, strategy: "leverageBySize" });
-    expect(fromKey).not.toBe(leverageKey);
+    expect(fromKey!.structuralKey).not.toEqual(leverageKey!.structuralKey);
+  });
+
+  it("keeps the amount out of the structural key (so amount drift doesn't change it)", () => {
+    const a = getExternalSwapRequestKey({ ...base, amountIn: 1000n });
+    const b = getExternalSwapRequestKey({ ...base, amountIn: 2000n });
+    expect(a!.structuralKey).toEqual(b!.structuralKey);
+    expect(a!.amount).not.toEqual(b!.amount);
+  });
+});
+
+describe("isAmountWithinKeyTolerance", () => {
+  it("returns true for equal amounts", () => {
+    expect(isAmountWithinKeyTolerance(10_000_000n, 10_000_000n)).toBe(true);
+  });
+
+  it("returns true for drift just inside the tolerance", () => {
+    expect(isAmountWithinKeyTolerance(10_000_000n, 10_030_000n)).toBe(true);
+    expect(isAmountWithinKeyTolerance(10_030_000n, 10_000_000n)).toBe(true);
+  });
+
+  it("returns false for drift just outside the tolerance", () => {
+    expect(isAmountWithinKeyTolerance(10_000_000n, 10_040_000n)).toBe(false);
+  });
+
+  it("returns false for non-positive amounts", () => {
+    expect(isAmountWithinKeyTolerance(0n, 0n)).toBe(false);
+    expect(isAmountWithinKeyTolerance(-1n, -1n)).toBe(false);
+    expect(isAmountWithinKeyTolerance(10_000_000n, 0n)).toBe(false);
+  });
+});
+
+describe("externalSwapRequestKeysMatch", () => {
+  const key = (
+    amountIn: bigint,
+    overrides?: { toTokenAddress?: string; slippage?: number; strategy?: "byFromValue" | "leverageBySize" }
+  ) =>
+    getExternalSwapRequestKey({
+      fromTokenAddress: "0xfrom",
+      toTokenAddress: overrides?.toTokenAddress ?? "0xto",
+      strategy: overrides?.strategy ?? "leverageBySize",
+      amountIn,
+      desiredAmountOut: undefined,
+      slippage: overrides?.slippage ?? 50,
+    });
+
+  it("returns false when either key is undefined", () => {
+    expect(externalSwapRequestKeysMatch(undefined, key(10_000_000n))).toBe(false);
+    expect(externalSwapRequestKeysMatch(key(10_000_000n), undefined)).toBe(false);
+    expect(externalSwapRequestKeysMatch(undefined, undefined)).toBe(false);
+  });
+
+  it("returns true for identical keys", () => {
+    expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n))).toBe(true);
+  });
+
+  it("returns true when only the amount differs within tolerance (the leverageBySize drift case)", () => {
+    expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_030_000n))).toBe(true);
+  });
+
+  it("returns false when the amount differs beyond tolerance (real size change)", () => {
+    expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_040_000n))).toBe(false);
+    expect(externalSwapRequestKeysMatch(key(10_000_000n), key(20_000_000n))).toBe(false);
+  });
+
+  it("requires an exact amount for manual-input strategies — tolerance only applies to leverageBySize", () => {
+    const manualKey = (amountIn: bigint) => key(amountIn, { strategy: "byFromValue" });
+    expect(externalSwapRequestKeysMatch(manualKey(10_000_000n), manualKey(10_030_000n))).toBe(false);
+    expect(externalSwapRequestKeysMatch(manualKey(10_000_000n), manualKey(10_000_000n))).toBe(true);
+  });
+
+  it("requires exact match on the structural parts (tokens / strategy / slippage)", () => {
+    expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n, { toTokenAddress: "0xother" }))).toBe(false);
+    expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n, { slippage: 100 }))).toBe(false);
+    expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n, { strategy: "byFromValue" }))).toBe(false);
+  });
+});
+
+describe("getExternalAggregatorSwapUrl", () => {
+  const USDC = getTokenBySymbol(ARBITRUM, "USDC");
+  const WETH = getTokenBySymbol(ARBITRUM, "WETH");
+  const SOL = getTokenBySymbol(ARBITRUM, "SOL");
+
+  it("builds a 1inch link with the pair preselected by symbols", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: ARBITRUM,
+        isFromTokenGmxAccount: false,
+        fromTokenAddress: USDC.address,
+        toTokenAddress: WETH.address,
+      })
+    ).toBe("https://1inch.com/swap?src=42161:USDC&dst=42161:WETH");
+  });
+
+  it("uses the plain symbol for tokens whose assetSymbol is a display label, not a ticker", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: ARBITRUM,
+        isFromTokenGmxAccount: false,
+        fromTokenAddress: USDC.address,
+        toTokenAddress: SOL.address,
+      })
+    ).toBe("https://1inch.com/swap?src=42161:USDC&dst=42161:SOL");
+  });
+
+  it("returns no link for a GMX Account pay token — the aggregator can't swap funds that aren't in the wallet", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: ARBITRUM,
+        isFromTokenGmxAccount: true,
+        fromTokenAddress: USDC.address,
+        toTokenAddress: WETH.address,
+      })
+    ).toBeUndefined();
+  });
+
+  it("returns no link on a chain without a configured aggregator", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: AVALANCHE_FUJI,
+        isFromTokenGmxAccount: false,
+        fromTokenAddress: undefined,
+        toTokenAddress: undefined,
+      })
+    ).toBeUndefined();
+  });
+
+  it("links to Jumper on MegaETH", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: MEGAETH,
+        isFromTokenGmxAccount: false,
+        fromTokenAddress: undefined,
+        toTokenAddress: undefined,
+      })
+    ).toBe(JUMPER_EXCHANGE_URL);
   });
 });

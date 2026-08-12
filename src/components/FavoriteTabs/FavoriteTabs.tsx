@@ -12,13 +12,14 @@ import { useLocalizedMap } from "lib/i18n";
 import Tabs from "components/Tabs/Tabs";
 import type { Option } from "components/Tabs/types";
 
-const REGULAR_TAB_CLASS_NAME = "!px-0 !pb-11 !pt-13 text-13";
+const REGULAR_TAB_CLASS_NAME = "!px-8 !pb-11 !pt-13 text-13 leading-[18px]";
 
 export function FavoriteTabs({
   favoritesKey,
   className,
   type = "block",
   recentlyListedCount = 0,
+  hasAvailableFavorites,
   excludedTabs = [],
   selectedValue,
 }: {
@@ -26,6 +27,7 @@ export function FavoriteTabs({
   className?: string;
   type?: "inline" | "block";
   recentlyListedCount?: number;
+  hasAvailableFavorites?: boolean;
   excludedTabs?: TopLevelTab[];
   selectedValue?: TopLevelTab;
 }) {
@@ -37,6 +39,7 @@ export function FavoriteTabs({
     return topLevelTabOptions
       .filter((opt) => !excludedTabs.includes(opt))
       .filter((opt) => (opt === "recently-listed" ? recentlyListedCount > 0 : true))
+      .filter((opt) => (opt === "favorites" && hasAvailableFavorites !== undefined ? hasAvailableFavorites : true))
       .map((opt) => ({
         value: opt,
         label:
@@ -51,7 +54,7 @@ export function FavoriteTabs({
             labels[opt]
           ),
       }));
-  }, [excludedTabs, recentlyListedCount, labels]);
+  }, [excludedTabs, recentlyListedCount, hasAvailableFavorites, labels]);
 
   return (
     <Tabs
@@ -61,7 +64,7 @@ export function FavoriteTabs({
       type={type}
       className={className}
       regularOptionClassname={type === "block" ? REGULAR_TAB_CLASS_NAME : undefined}
-      tabsWrapperClassName={type === "block" ? "gap-16" : undefined}
+      tabsWrapperClassName={type === "block" ? "!w-fit" : undefined}
     />
   );
 }

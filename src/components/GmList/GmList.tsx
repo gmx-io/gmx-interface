@@ -23,6 +23,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { useLocalizedMap } from "lib/i18n";
+import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
@@ -79,7 +80,13 @@ export function GmList({
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { active } = useWallet();
-  const { userEarnings } = useUserEarnings(chainId, srcChainId);
+  const {
+    userEarnings,
+    isLoading: isUserEarningsLoading,
+    isUnavailable: isUserEarningsUnavailable,
+    isEstimated365dFeesLoading,
+    isEstimated365dFeesUnavailable,
+  } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
   const { topLevelTab, subCategoryTab, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
@@ -117,7 +124,7 @@ export function GmList({
   const populatedTradfiSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
     if (!marketsInfo) return set;
-    for (const cat of ["commodities", "stocks", "indices", "fx"] as const) {
+    for (const cat of ["stocks", "pre-ipo", "commodities", "indices", "fx"] as const) {
       const found = Object.values(marketsInfo).some(
         (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken?.categories?.includes(cat)
       );
@@ -179,6 +186,14 @@ export function GmList({
   const rows =
     currentData.length > 0 &&
     currentData.map((token) => {
+      const market = getByKey(marketsInfo, token.address);
+      const isRecentlyListed = Boolean(
+        market &&
+          !market.isSpotOnly &&
+          !market.isDisabled &&
+          recentlyListedAddressesSet.has(market.indexTokenAddress.toLowerCase())
+      );
+
       return (
         <GmListItem
           key={token.address}
@@ -192,8 +207,14 @@ export function GmList({
           performance={performance}
           performanceLoading={performanceLoading}
           performanceSnapshots={performanceSnapshots}
+          isRecentlyListed={isRecentlyListed}
           isFavorite={favoriteTokens.includes(token.address)}
           onFavoriteClick={toggleFavoriteToken}
+          userEarnings={userEarnings}
+          isUserEarningsLoading={isUserEarningsLoading}
+          isUserEarningsUnavailable={isUserEarningsUnavailable}
+          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
         />
       );
     });
@@ -210,7 +231,12 @@ export function GmList({
           <div className="flex flex-wrap items-center justify-between gap-12 max-md:flex-wrap-reverse">
             <div className="max-w-full">
               <ButtonRowScrollFadeContainer>
-                <FavoriteTabs favoritesKey="gm-list" recentlyListedCount={recentlyListedCount} type="inline" />
+                <FavoriteTabs
+                  favoritesKey="gm-list"
+                  recentlyListedCount={recentlyListedCount}
+                  selectedValue={topLevelTab}
+                  type="inline"
+                />
               </ButtonRowScrollFadeContainer>
             </div>
 
@@ -294,6 +320,10 @@ export function GmList({
                           balance={userTotalGmInfo?.balance}
                           balanceUsd={userTotalGmInfo?.balanceUsd}
                           userEarnings={userEarnings}
+                          isUserEarningsLoading={isUserEarningsLoading}
+                          isUserEarningsUnavailable={isUserEarningsUnavailable}
+                          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+                          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
                           label={t`BALANCE`}
                         />
                       </Sorter>

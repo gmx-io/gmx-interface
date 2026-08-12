@@ -1,8 +1,8 @@
 import { BaseContract, Contract } from "ethers";
 import { isAddress, isHex } from "viem";
 
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 /**
  * @deprecated use estimateGasLimit instead

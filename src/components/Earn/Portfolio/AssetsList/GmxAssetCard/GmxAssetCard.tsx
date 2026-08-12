@@ -11,8 +11,10 @@ import { zeroAddress } from "viem";
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { getRecentAvgWeeklyBuybackGmx } from "domain/buyback/useBuybackChartData";
+import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
 import { useGmxPrice } from "domain/legacy";
-import { isLoyaltyTrackingActive, useStakingPowerData } from "domain/stake/useStakingPowerData";
+import { getUserEstimatedApr, isLoyaltyTrackingActive, useStakingPowerData } from "domain/stake/useStakingPowerData";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
@@ -47,6 +49,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   const { setPendingTxns } = usePendingTxns();
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
   const { stakingPowerData, isLoading: isStakingPowerLoading } = useStakingPowerData(chainId, { account });
+  const { data: buybackWeeklyStatsData, isLoading: isBuybackStatsLoading } = useBuybackWeeklyStats(chainId);
 
   const [isGmxStakeModalVisible, setIsGmxStakeModalVisible] = useState(false);
   const [gmxStakeValue, setGmxStakeValue] = useState("");
@@ -124,6 +127,29 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
     }
     return bigMath.mulDiv(displayProjectedRewardGmx, gmxPrice, expandDecimals(1, 18));
   }, [displayProjectedRewardGmx, gmxPrice]);
+
+  const avgWeeklyBuybackGmx = useMemo(
+    () => getRecentAvgWeeklyBuybackGmx(buybackWeeklyStatsData),
+    [buybackWeeklyStatsData]
+  );
+
+  const userEstimatedApr = useMemo(
+    () =>
+      getUserEstimatedApr({
+        avgWeeklyBuybackGmx,
+        userStakingPower: stakingPowerData?.cumulativePower,
+        totalNetworkStakingPower: stakingPowerData?.totalNetworkPower,
+        userStakedGmxAndEsGmx: stakingPowerData?.currentStaked,
+      }),
+    [
+      avgWeeklyBuybackGmx,
+      stakingPowerData?.cumulativePower,
+      stakingPowerData?.totalNetworkPower,
+      stakingPowerData?.currentStaked,
+    ]
+  );
+
+  const isUserEstimatedAprLoading = Boolean(account) && (isStakingPowerLoading || isBuybackStatsLoading);
 
   const handleOpenGmxStakeModal = () => {
     sendEarnPortfolioItemClickEvent({ item: "GMX", type: "stake" });
@@ -228,6 +254,36 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
               <span className="text-h3 font-bold text-typography-secondary">—</span>
             )}
           </div>
+          <div className="mt-8">
+            <SyntheticsInfoRow
+              label={
+                <Tooltip
+                  handle={<Trans>Est. APR</Trans>}
+                  content={
+                    <Trans>
+                      Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power
+                      share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance.
+                    </Trans>
+                  }
+                />
+              }
+              value={
+                isUserEstimatedAprLoading ? (
+                  <Skeleton
+                    baseColor="#B4BBFF1A"
+                    highlightColor="#B4BBFF1A"
+                    width={50}
+                    height={16}
+                    className="leading-base"
+                  />
+                ) : userEstimatedApr !== undefined ? (
+                  <span className="numbers">{(userEstimatedApr * 100).toFixed(2)}%</span>
+                ) : (
+                  "—"
+                )
+              }
+            />
+          </div>
         </div>
 
         <div className="mt-12 border-t-1/2 border-slate-600" />
@@ -237,6 +293,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         </div>
 
         <StakingPowerAlerts stakingPowerData={stakingPowerData} />
+
+        <div className="mt-12 border-t-1/2 border-slate-600" />
 
         <div className="mt-12 flex grow flex-col gap-8">
           <SyntheticsInfoRow
@@ -407,20 +465,37 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
         />
       )}
       {hasPower && (
-        <SyntheticsInfoRow
-          label={
-            <Tooltip
-              handle={<Trans>Staking power</Trans>}
-              content={
-                <Trans>
-                  Staking power accrues over time based on your staked GMX balance and determines your share of buyback
-                  rewards
-                </Trans>
-              }
-            />
-          }
-          value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
-        />
+        <>
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Staking power</Trans>}
+                content={
+                  <Trans>
+                    Staking power accrues over time based on your staked GMX balance and determines your share of
+                    buyback rewards
+                  </Trans>
+                }
+              />
+            }
+            value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
+          />
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Staking Power Share</Trans>}
+                content={
+                  <Trans>
+                    Your share of the total network staking power. Treasury rewards will be distributed proportionally
+                    to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual
+                    distribution is subject to DAO governance.
+                  </Trans>
+                }
+              />
+            }
+            value={<span className="numbers">{stakingPowerData.userSharePercent.toFixed(2)}%</span>}
+          />
+        </>
       )}
     </div>
   );

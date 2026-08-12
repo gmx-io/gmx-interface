@@ -20,7 +20,6 @@ import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/com
 import { SponsoredCallBalanceData, useIsSponsoredCallBalanceAvailable } from "domain/synthetics/express";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
-import { useBotanixStakingAssetsPerShare } from "domain/synthetics/externalSwaps/useBotanixStakingAssetsPerShare";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
@@ -42,7 +41,6 @@ import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthet
 import {
   PositionsConstantsResult,
   PositionsInfoResult,
-  usePositions,
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
@@ -114,7 +112,6 @@ export type SyntheticsState = {
     multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 
     glvInfo: ReturnType<typeof useGlvMarketsInfo>;
-    botanixStakingAssetsPerShare: bigint | undefined;
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined, orderOption?: OrderOption) => void;
@@ -198,12 +195,6 @@ export function SyntheticsStateContextProvider({
   const markets = useMarkets(chainId);
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
 
-  const positionsResult = usePositions(chainId, {
-    account,
-    marketsData: markets.marketsData,
-    tokensData: tokensDataResult.tokensData,
-  });
-
   const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
 
   const { isFirstOrder } = useIsFirstOrder(chainId, { account });
@@ -261,7 +252,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const oracleSettings = useOracleSettingsData();
-  const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage });
+  const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage || isAccountPage });
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
@@ -274,12 +265,12 @@ export function SyntheticsStateContextProvider({
     isLoading,
     positionsInfoData,
     error: positionsInfoError,
+    dataSource: positionsInfoDataSource,
   } = usePositionsInfoRequest(chainId, {
     account,
     showPnlInLeverage: settings.isPnlInLeverage,
+    marketsData: markets.marketsData,
     marketsInfoData: marketsInfo.marketsInfoData,
-    positionsData: positionsResult.positionsData,
-    positionsError: positionsResult.error,
     skipLocalReferralCode,
     tokensData: tokensDataResult.tokensData,
   });
@@ -355,6 +346,7 @@ export function SyntheticsStateContextProvider({
     marketsInfo,
     isPositionsInfoLoading: isLoading,
     positionsInfoData,
+    positionsInfoDataSource,
     positionsInfoError,
     isCandlesLoaded,
     pageType,
@@ -364,12 +356,21 @@ export function SyntheticsStateContextProvider({
   const tokenPermitsState = useTokenPermitsContext();
   const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId);
 
+  const gasPaymentTokenAllowanceAddresses = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped"),
+          convertTokenAddress(chainId, settings.gmxAccountGasPaymentTokenAddress, "wrapped"),
+        ])
+      ),
+    [chainId, settings.gasPaymentTokenAddress, settings.gmxAccountGasPaymentTokenAddress]
+  );
+
   const gasPaymentTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
-    tokenAddresses: [convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped")],
+    tokenAddresses: gasPaymentTokenAllowanceAddresses,
   });
-
-  const botanixStakingAssetsPerShare = useBotanixStakingAssetsPerShare({ chainId });
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -384,7 +385,6 @@ export function SyntheticsStateContextProvider({
         ordersInfo,
         positionsConstants,
         glvInfo,
-        botanixStakingAssetsPerShare,
         positionsInfo: {
           isLoading,
           positionsInfoData,
@@ -473,7 +473,6 @@ export function SyntheticsStateContextProvider({
     marketsInfo,
     ordersInfo,
     positionsConstants,
-    botanixStakingAssetsPerShare,
     positionsInfoData,
     progressiveDepositMarketTokensData,
     setClosingPositionKey,

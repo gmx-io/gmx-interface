@@ -109,7 +109,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
           autoClose: false,
           closeButton: false,
           bodyClassName: "!p-0",
-          className: "!bg-[#161825] border-1/2 border-slate-600 !-ml-64",
+          className: "!bg-slate-900 border-1/2 border-slate-600 !-ml-64",
           hideProgressBar: true,
         }
       );
@@ -247,7 +247,11 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           {finishedState === "error" && (
             <div className="flex items-center gap-4 text-red-500">
               <AttentionIcon className="size-16 shrink-0" />
-              <Trans>Buy failed</Trans>
+              {task.operation === Operation.Deposit ? (
+                <Trans>Buy {gmOrGlvLabel} failed</Trans>
+              ) : (
+                <Trans>Sell {gmOrGlvLabel} failed</Trans>
+              )}
             </div>
           )}
         </div>
@@ -452,13 +456,15 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                       {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            {gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your
-                            GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens.
+                            {gmOrGlvLabel} bought successfully, but bridge to {getChainName(task.sourceChainId)} failed.
+                            Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to
+                            withdraw your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            {gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX
-                            Account. Retry the bridge or open GMX Account to withdraw your tokens.
+                            {gmOrGlvLabel} sold successfully, but bridge to {getChainName(task.sourceChainId)} failed.
+                            Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw
+                            your tokens.
                           </Trans>
                         ))}
 

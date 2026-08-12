@@ -14,7 +14,7 @@ import {
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
-import { isMarketInfo } from "domain/synthetics/markets";
+import { getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
@@ -398,6 +398,53 @@ export const selectPoolsDetailsPayShortToken = createSelector((q) => {
   }
 
   return undefined;
+});
+
+export const selectPoolsDetailsDepositableGlvGmMarketAddressesKey = createSelector((q): string | undefined => {
+  const { isDeposit } = q(selectPoolsDetailsFlags);
+  const glvInfo = q(selectPoolsDetailsGlvInfo);
+
+  if (!isDeposit || !glvInfo) {
+    return undefined;
+  }
+
+  const payLongToken = q(selectPoolsDetailsPayLongToken);
+  const payShortToken = q(selectPoolsDetailsPayShortToken);
+  const requiresLong = payLongToken !== undefined;
+  const requiresShort = payShortToken !== undefined;
+
+  if (!requiresLong && !requiresShort) {
+    return undefined;
+  }
+
+  const marketsInfoData = q(selectMarketsInfoData);
+  const marketTokensData = q(selectDepositMarketTokensData);
+
+  const depositable: string[] = [];
+
+  for (const glvMarket of glvInfo.markets) {
+    const marketInfo = getByKey(marketsInfoData, glvMarket.address);
+    const marketToken = getByKey(marketTokensData, glvMarket.address);
+
+    if (!marketInfo || !isMarketInfo(marketInfo) || !marketToken) {
+      depositable.push(glvMarket.address);
+      continue;
+    }
+
+    const { longDepositCapacityAmount, shortDepositCapacityAmount } = getMintableMarketTokens(marketInfo, marketToken);
+
+    const needLong = requiresLong || marketInfo.isSameCollaterals;
+    const needShort = requiresShort || marketInfo.isSameCollaterals;
+
+    const longOk = !needLong || longDepositCapacityAmount > 0n;
+    const shortOk = !needShort || shortDepositCapacityAmount > 0n;
+
+    if (longOk && shortOk) {
+      depositable.push(glvMarket.address);
+    }
+  }
+
+  return depositable.sort().join(",");
 });
 
 export const selectPoolsDetailsFirstTokenAmount = createSelector((q) => {

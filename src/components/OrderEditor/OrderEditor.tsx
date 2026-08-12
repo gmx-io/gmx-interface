@@ -32,6 +32,7 @@ import {
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPositionOrderError,
+  selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
@@ -43,8 +44,11 @@ import {
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   EditingOrderSource,
@@ -77,6 +81,7 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
@@ -85,6 +90,7 @@ import {
 } from "domain/tpsl/utils";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import {
   calculateDisplayDecimals,
@@ -106,6 +112,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -115,9 +122,12 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import SpinnerIcon from "img/ic_spinner.svg?react";
+
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
+import { LiquidatableIncreaseWarningCard } from "../TradeBox/LiquidatableIncreaseWarningCard";
 
 import "./OrderEditor.scss";
 
@@ -134,6 +144,7 @@ export function OrderEditor(p: Props) {
   const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useSelector(selectTokensData);
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
@@ -147,6 +158,7 @@ export function OrderEditor(p: Props) {
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
+  const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
@@ -419,7 +431,7 @@ export function OrderEditor(p: Props) {
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
-  const { expressParams, expressParamsPromise } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
@@ -497,6 +509,26 @@ export function OrderEditor(p: Props) {
     tokensData,
   ]);
 
+  const showLiquidationRiskWarning = useMemo(() => {
+    if (error || !positionOrder) {
+      return false;
+    }
+
+    const isIncreaseLimitOrStop =
+      isLimitIncreaseOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType);
+
+    if (!isIncreaseLimitOrStop) {
+      return false;
+    }
+
+    return getIsIncreaseResultingPositionLiquidatable({
+      currentLiqPrice: existingPosition?.liquidationPrice,
+      nextLiqPrice: nextPositionValuesForIncrease?.nextLiqPrice,
+      triggerPrice,
+      isLong: positionOrder.isLong,
+    });
+  }, [error, positionOrder, existingPosition, nextPositionValuesForIncrease, triggerPrice]);
+
   const onSubmit = useCallback(async () => {
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
       return;
@@ -506,12 +538,26 @@ export function OrderEditor(p: Props) {
 
     const fulfilledExpressParams = await expressParamsPromise;
 
+    const isGmxAccount = srcChainId !== undefined;
+
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName: "Update Order",
+        collateral: p.order.initialCollateralToken.symbol,
+      })
+    ) {
+      setIsSubmitting(false);
+      return;
+    }
+
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       simulationParams: undefined,
       callback: makeOrderTxnCallback({
         actionName: "Update Order",
@@ -564,6 +610,14 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        tooltip: multipleWalletExtensionsChainError.buttonTooltipMessage,
+        disabled: true,
+      };
+    }
+
     if (
       isTriggerDecrease &&
       isFullPositionCloseSizeDeltaUsd((p.order as PositionOrderInfo).sizeDeltaUsd) &&
@@ -596,6 +650,18 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (isMultichainSubmitDisabled) {
+      return {
+        text: (
+          <>
+            {t`Loading network fees…`}
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if (error) {
       return {
         text: error,
@@ -612,6 +678,7 @@ export function OrderEditor(p: Props) {
     };
   }, [
     error,
+    multipleWalletExtensionsChainError,
     hasOutdatedUi,
     isMaxLeverageError,
     p.order,
@@ -619,6 +686,7 @@ export function OrderEditor(p: Props) {
     detectAndSetAvailableMaxLeverage,
     isTriggerDecrease,
     existingPosition,
+    isMultichainSubmitDisabled,
   ]);
 
   useKey(
@@ -719,7 +787,7 @@ export function OrderEditor(p: Props) {
       tooltipClassName="PositionEditor-tooltip"
       handle={buttonContent}
       isHandlerDisabled
-      renderContent={() => submitButtonState.tooltip}
+      content={submitButtonState.tooltip}
     />
   ) : (
     buttonContent
@@ -980,6 +1048,8 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
+          {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
+
           <ExpressTradingWarningCard
             expressParams={expressParams}
             payTokenAddress={undefined}
@@ -987,6 +1057,12 @@ export function OrderEditor(p: Props) {
             isGmxAccount={srcChainId !== undefined}
             onAfterAction={p.onClose}
           />
+
+          {liqPriceWarning && (
+            <AlertInfoCard type="warning" hideClose>
+              {liqPriceWarning}
+            </AlertInfoCard>
+          )}
 
           {button}
         </div>

@@ -60,6 +60,7 @@ const selectPositionSellerCloseUsdInputValue = (state: SyntheticsState) => state
 const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) => state.positionSeller.receiveTokenAddress;
 const selectPositionSellerReceiveTokenAddressChanged = (state: SyntheticsState) =>
   state.positionSeller.isReceiveTokenChanged;
+const selectPositionSellerIsReceiveSeparated = (state: SyntheticsState) => state.positionSeller.isReceiveSeparated;
 const selectPositionSellerNumberOfParts = (state: SyntheticsState) => state.positionSeller.numberOfParts;
 export const selectPositionSellerPosition = createSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
@@ -142,6 +143,24 @@ const selectPositionSellerDecreaseAmountsWithKeepLeverage = createSelector((q) =
   if (!decreaseAmountArgs) return undefined;
 
   const selector = makeSelectDecreasePositionAmounts({ ...decreaseAmountArgs, keepLeverage: true });
+
+  return q(selector);
+});
+
+export const selectPositionSellerSplitReceiveDecreaseAmounts = createSelector((q) => {
+  const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
+
+  if (!decreaseAmountArgs) return undefined;
+
+  const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
+  const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
+  const keepLeverage = keepLeverageDisabledByCollateral ? false : keepLeverageRaw;
+
+  const selector = makeSelectDecreasePositionAmounts({
+    ...decreaseAmountArgs,
+    keepLeverage,
+    forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+  });
 
   return q(selector);
 });
@@ -263,6 +282,11 @@ export const selectPositionSellerFees = createSelector((q) => {
 });
 
 export const selectPositionSellerReceiveToken = createSelector((q) => {
+  // TWAP has no receive-token selector and its legs/UI assume collateral — pin it to collateral.
+  if (q(selectPositionSellerOrderOption) === OrderOption.Twap) {
+    return q(selectPositionSellerPosition)?.collateralToken;
+  }
+
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
   const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
@@ -287,11 +311,16 @@ const selectPositionSellerPnlToken = createSelector((q) => {
 export const selectPositionSellerShouldSwap = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const receiveToken = q(selectPositionSellerReceiveToken);
-  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
 
   if (!position || !receiveToken || getIsEquivalentTokens(position.collateralToken, receiveToken)) {
     return false;
   }
+
+  if (q(selectPositionSellerIsReceiveSeparated)) {
+    return false;
+  }
+
+  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
 
   if (decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
     const pnlToken = q(selectPositionSellerPnlToken);
@@ -366,6 +395,7 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
   const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
   const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
   const chainId = q(selectChainId);
+  const isReceiveSeparated = q(selectPositionSellerIsReceiveSeparated);
 
   const {
     collateralTokenAddress,
@@ -432,6 +462,7 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
     triggerOrderType,
     isSetAcceptablePriceImpactEnabled,
     receiveToken,
+    forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
     findSwapPath,
     findSwapPathFromPnl,
     marketsInfoData,

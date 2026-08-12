@@ -37,6 +37,7 @@ export function usePositionSellerState(
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isReceiveTokenChanged, setIsReceiveTokenChanged] = useState(false);
+  const [isReceiveSeparated, setIsReceiveSeparated] = useState(false);
   const [duration, setDuration] = useState<TwapDuration>(DEFAULT_TWAP_DURATION);
   const [numberOfParts, setNumberOfParts] = useState<number>(DEFAULT_TWAP_NUMBER_OF_PARTS);
 
@@ -56,6 +57,7 @@ export function usePositionSellerState(
     setAllowedSlippage(savedAllowedSlippage);
     setIsSubmitting(false);
     setIsReceiveTokenChanged(false);
+    setIsReceiveSeparated(false);
   }, [savedAllowedSlippage, setReceiveTokenAddress]);
 
   const closingPositionKey = useMemo(() => {
@@ -99,6 +101,8 @@ export function usePositionSellerState(
     resetPositionSeller,
     isReceiveTokenChanged,
     setIsReceiveTokenChanged,
+    isReceiveSeparated,
+    setIsReceiveSeparated,
     defaultReceiveToken,
     setDefaultReceiveToken,
     duration,

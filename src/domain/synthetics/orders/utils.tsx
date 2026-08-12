@@ -13,6 +13,7 @@ import {
   isTwapOrder,
   isTwapSwapOrder,
 } from "sdk/utils/orders";
+import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -21,9 +22,16 @@ import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
 import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
-import { FindSwapPath, getAcceptablePriceInfo, getMaxSwapPathLiquidity, getSwapAmountsByFromValue } from "../trade";
+import {
+  FindSwapPath,
+  NextPositionValues,
+  getAcceptablePriceInfo,
+  getMaxSwapPathLiquidity,
+  getSwapAmountsByFromValue,
+} from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
+import { getIsIncreaseResultingPositionLiquidatable } from "../trade/utils/warnings";
 
 function getSwapOrderTitle() {
   return t`Swap`;
@@ -86,6 +94,7 @@ export function getOrderErrors(p: {
   chainId: number;
   isSetAcceptablePriceImpactEnabled: boolean;
   jitLiquidityMap?: Record<string, JitLiquidityInfo>;
+  nextPositionValues?: NextPositionValues;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
@@ -169,10 +178,20 @@ export function getOrderErrors(p: {
     const positionOrder = order as PositionOrderInfo;
 
     const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(positionOrder, pos.key));
+    const sizeDeltaInTokens =
+      position && isDecreaseOrderType(positionOrder.orderType)
+        ? getDecreasePositionSizeDeltaInTokens({
+            sizeInUsd: position.sizeInUsd,
+            sizeInTokens: position.sizeInTokens,
+            sizeDeltaUsd: positionOrder.sizeDeltaUsd,
+            isLong: position.isLong,
+          })
+        : undefined;
 
     if (
       isSetAcceptablePriceImpactEnabled &&
       [OrderType.LimitDecrease, OrderType.LimitIncrease].includes(positionOrder.orderType) &&
+      (!isDecreaseOrderType(positionOrder.orderType) || sizeDeltaInTokens !== undefined) &&
       !isTwapOrder(order)
     ) {
       const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
@@ -182,6 +201,7 @@ export function getOrderErrors(p: {
         isLong: positionOrder.isLong,
         indexPrice: positionOrder.triggerPrice,
         sizeDeltaUsd: positionOrder.sizeDeltaUsd,
+        sizeDeltaInTokens,
       });
 
       const { acceptablePriceDeltaBps: orderAcceptablePriceDeltaBps } = getPriceImpactByAcceptablePrice({
@@ -328,6 +348,22 @@ export function getOrderErrors(p: {
           level: "error",
         });
       }
+
+      if (
+        isLimitOrderType(order.orderType) &&
+        getIsIncreaseResultingPositionLiquidatable({
+          currentLiqPrice: position?.liquidationPrice,
+          nextLiqPrice: p.nextPositionValues?.nextLiqPrice,
+          triggerPrice: (order as PositionOrderInfo).triggerPrice,
+          isLong: (order as PositionOrderInfo).isLong,
+        })
+      ) {
+        errors.push({
+          key: "resultingLiquidatable",
+          level: "error",
+          msg: t`Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size.`,
+        });
+      }
     }
   }
 
@@ -421,7 +457,8 @@ function getIsMaxLeverageError({
     amountIn: order.initialCollateralDeltaAmount,
     isLimit: false,
     findSwapPath,
-    uiFeeFactor,
+    // execution charges the factor snapshotted on the order, not the live one
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     marketsInfoData: undefined,
     externalSwapQuoteParams: undefined,
     chainId,

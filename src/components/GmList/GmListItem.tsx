@@ -11,11 +11,11 @@ import {
   selectChainId,
   selectGlvAndMarketsInfoData,
   selectMultichainMarketTokensBalancesIsLoading,
-  selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
+  UserEarningsData,
   getGlvDisplayName,
   getGlvOrMarketAddress,
   getMarketBadge,
@@ -26,7 +26,6 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
-import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { ProgressiveTokenData } from "domain/tokens";
 import { PRECISION_DECIMALS, bigintToNumber, formatPercentage } from "lib/numbers";
@@ -38,6 +37,8 @@ import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { RecentlyListedBadge } from "components/FavoriteTabs/RecentlyListedBadge";
+import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
 import { TableTdActionable, TableTrActionable } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -61,9 +62,15 @@ export function GmListItem({
   apyLoading,
   isFavorite,
   onFavoriteClick,
+  isRecentlyListed,
   performance,
   performanceLoading,
   performanceSnapshots,
+  userEarnings = null,
+  isUserEarningsLoading = false,
+  isUserEarningsUnavailable = false,
+  isEstimated365dFeesLoading = false,
+  isEstimated365dFeesUnavailable = false,
 }: {
   token: ProgressiveTokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -74,15 +81,19 @@ export function GmListItem({
   apyLoading: boolean;
   isFavorite: boolean | undefined;
   onFavoriteClick: ((address: string) => void) | undefined;
+  isRecentlyListed?: boolean;
   performanceLoading: boolean;
   performance: PerformanceData | undefined;
   performanceSnapshots: PerformanceSnapshotsData | undefined;
+  userEarnings?: UserEarningsData | null;
+  isUserEarningsLoading?: boolean;
+  isUserEarningsUnavailable?: boolean;
+  isEstimated365dFeesLoading?: boolean;
+  isEstimated365dFeesUnavailable?: boolean;
 }) {
   const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
-  const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { showDebugValues } = useSettings();
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
@@ -131,6 +142,9 @@ export function GmListItem({
     : getNormalizedTokenSymbol(indexToken.symbol);
 
   const tokenIconBadge = getMarketBadge(chainId, marketOrGlv);
+  const showRecentlyListedBadge = Boolean(
+    isRecentlyListed && !isGlv && !marketOrGlv.isSpotOnly && !marketOrGlv.isDisabled
+  );
 
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -156,12 +170,13 @@ export function GmListItem({
               />
             </div>
             <div className="flex flex-col">
-              <div className="text-body-medium flex items-center">
+              <div className="text-body-medium flex flex-wrap items-center gap-x-6">
                 <span className="font-medium">
                   {isGlv
                     ? getGlvDisplayName(marketOrGlv)
                     : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
                 </span>
+                {showRecentlyListedBadge && <RecentlyListedBadge />}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -209,10 +224,15 @@ export function GmListItem({
                 daysConsidered={daysConsidered}
                 earnedRecently={marketEarnings?.recent}
                 earnedTotal={marketEarnings?.total}
+                earnedExpected365d={marketEarnings?.expected365d}
                 isGlv={isGlv}
                 singleLine={true}
                 multichainBalances={multichainMarketTokenBalances}
                 isMultichainBalancesLoading={isMultichainBalancesLoading}
+                isUserEarningsLoading={isUserEarningsLoading}
+                isUserEarningsUnavailable={isUserEarningsUnavailable}
+                isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+                isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
               />
             }
           />
@@ -253,8 +273,8 @@ export function GmListItem({
       <TableTdActionable className="w-[220px] pl-16">
         <div className="flex items-center gap-8">
           {onFavoriteClick && (
-            <Button variant="ghost" className="!p-8" onClick={handleFavoriteClick}>
-              <FavoriteStar isFavorite={isFavorite} />
+            <Button variant="ghost" className="!h-32 !min-h-32 !w-40 !p-0" onClick={handleFavoriteClick}>
+              <RecentlyListedFavoriteSlot isRecentlyListed={showRecentlyListedBadge} isFavorite={isFavorite} />
             </Button>
           )}
 
@@ -306,9 +326,14 @@ export function GmListItem({
           daysConsidered={daysConsidered}
           earnedRecently={marketEarnings?.recent}
           earnedTotal={marketEarnings?.total}
+          earnedExpected365d={marketEarnings?.expected365d}
           multichainBalances={multichainMarketTokenBalances}
           isGlv={isGlv}
           isMultichainBalancesLoading={isMultichainBalancesLoading}
+          isUserEarningsLoading={isUserEarningsLoading}
+          isUserEarningsUnavailable={isUserEarningsUnavailable}
+          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
         />
       </TableTdActionable>
 

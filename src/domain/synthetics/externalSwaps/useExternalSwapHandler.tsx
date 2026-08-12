@@ -23,12 +23,15 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { getContract } from "sdk/configs/contracts";
 
+import { useAutoSwitchGasTokenForRequiredExternalSwap } from "./useAutoSwitchGasTokenForRequiredExternalSwap";
 import { useExternalSwapInputRequest } from "./useExternalSwapInputRequest";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
-import { getExternalSwapRequestKey } from "./utils";
+import { externalSwapRequestKeysMatch, getExternalSwapRequestKey, isAbortError } from "./utils";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
+
+  useAutoSwitchGasTokenForRequiredExternalSwap();
   const { orderStatuses } = useSyntheticsEvents();
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const slippage = useSelector(selectTradeboxAllowedSlippage);
@@ -55,7 +58,12 @@ export function useExternalSwapHandler() {
 
   const isByToValue = externalSwapInputs?.strategy === "byToValue";
 
-  const { quote: outputQuote, error: outputError } = useExternalSwapOutputRequest({
+  const {
+    quote: outputQuote,
+    requestKey: outputRequestKey,
+    error: outputError,
+    isDataUpToDate: isOutputDataUpToDate,
+  } = useExternalSwapOutputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -63,10 +71,16 @@ export function useExternalSwapHandler() {
     receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
+    strategy: externalSwapInputs?.strategy,
     enabled: enabled && !isByToValue,
   });
 
-  const { quote: inputQuote, error: inputError } = useExternalSwapInputRequest({
+  const {
+    quote: inputQuote,
+    requestKey: inputRequestKey,
+    error: inputError,
+    isDataUpToDate: isInputDataUpToDate,
+  } = useExternalSwapInputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -79,7 +93,9 @@ export function useExternalSwapHandler() {
   });
 
   const quote = isByToValue ? inputQuote : outputQuote;
+  const quoteRequestKey = isByToValue ? inputRequestKey : outputRequestKey;
   const requestError = isByToValue ? inputError : outputError;
+  const isRequestDataUpToDate = isByToValue ? isInputDataUpToDate : isOutputDataUpToDate;
 
   if (shouldDebugValues) {
     throttleLog("external swaps", {
@@ -106,6 +122,10 @@ export function useExternalSwapHandler() {
         return;
       }
 
+      if (!isRequestDataUpToDate) {
+        return;
+      }
+
       const key = getExternalSwapRequestKey({
         fromTokenAddress,
         toTokenAddress: swapToToken.address,
@@ -116,14 +136,22 @@ export function useExternalSwapHandler() {
       });
       if (!key) return;
 
+      if (requestError && isAbortError(requestError)) {
+        return;
+      }
+
       if (requestError) {
-        if (storedResult?.status !== "failed" || storedResult.key !== key) {
+        if (storedResult?.status !== "failed" || !externalSwapRequestKeysMatch(storedResult.key, key)) {
           setRequestResult({ status: "failed", key });
         }
         return;
       }
 
       if (quote) {
+        if (!externalSwapRequestKeysMatch(quoteRequestKey, key)) {
+          return;
+        }
+
         if (storedResult?.status !== "success" || storedResult.quote.txnData.data !== quote.txnData.data) {
           setRequestResult({ status: "success", key, quote });
         }
@@ -136,9 +164,11 @@ export function useExternalSwapHandler() {
       externalSwapInputs,
       slippage,
       quote,
+      quoteRequestKey,
       requestError,
       storedResult,
       setRequestResult,
+      isRequestDataUpToDate,
     ]
   );
 

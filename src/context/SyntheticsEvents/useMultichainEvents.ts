@@ -24,7 +24,6 @@ import {
   subscribeToOftSentEvents,
 } from "context/WebsocketContext/subscribeToEvents";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
-import { LayerZeroEndpointId } from "domain/multichain/types";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
@@ -38,6 +37,7 @@ import {
 } from "lib/metrics";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { sendMultichainDepositSuccessEvent, sendMultichainWithdrawalSuccessEvent } from "lib/userAnalytics/utils";
+import { LayerZeroEndpointId } from "sdk/configs/multichain";
 import { getToken } from "sdk/configs/tokens";
 import { adjustForDecimals } from "sdk/utils/numbers";
 import { nowInSeconds } from "sdk/utils/time";
@@ -995,6 +995,13 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             newPendingMultichainFunding[pendingMultichainFundingIndex].id = id;
           }
           return newPendingMultichainFunding;
+        });
+        setSelectedTransferGuid((prev) => {
+          if (!prev || prev !== mockId) {
+            return prev;
+          }
+
+          return id;
         });
       },
     }),

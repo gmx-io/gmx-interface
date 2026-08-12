@@ -16,6 +16,7 @@ import DashboardIcon from "img/dashboard.svg?react";
 import DatabaseIcon from "img/database.svg?react";
 import DocsIcon from "img/docs.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
+import AnnouncementsIcon from "img/ic_announcement.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
 import ReferralsIcon from "img/ic_referrals.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
@@ -104,6 +105,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
 export interface NavItemProps {
   icon: ReactNode;
   label: ReactNode;
+  ariaLabel?: string;
   isActive?: boolean;
   isCollapsed: boolean | undefined;
   onClick?: () => void;
@@ -111,9 +113,22 @@ export interface NavItemProps {
   external?: boolean;
 }
 
-export function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, to, external }: NavItemProps) {
+export function NavItem({
+  icon,
+  label,
+  ariaLabel,
+  isActive = false,
+  isCollapsed = false,
+  onClick,
+  to,
+  external,
+}: NavItemProps) {
   const button = (
-    <button className={cx("group cursor-pointer select-none py-1", { "w-full": !isCollapsed })} onClick={onClick}>
+    <button
+      aria-label={ariaLabel}
+      className={cx("group cursor-pointer select-none py-1 text-left", { "w-full": !isCollapsed })}
+      onClick={onClick}
+    >
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
@@ -201,6 +216,12 @@ export function MenuSection({
     },
     { icon: <LeaderboardIcon className="size-20" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
     { icon: <EcosystemIcon className="size-20" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
+    {
+      icon: <AnnouncementsIcon className="size-20" />,
+      label: t`Announcements`,
+      key: "announcements",
+      to: "/announcements",
+    },
   ];
 
   const { pathname } = useLocation();

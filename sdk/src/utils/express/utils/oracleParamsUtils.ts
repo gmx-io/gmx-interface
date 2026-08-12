@@ -5,7 +5,6 @@ import { getContract } from "configs/contracts";
 import { MARKETS } from "configs/markets";
 import { convertTokenAddress } from "configs/tokens";
 import { getOppositeCollateralFromConfig } from "utils/markets";
-import type { ExternalCallsPayload } from "utils/orderTransactions";
 
 import type { OracleParamsPayload } from "../types";
 
@@ -27,19 +26,13 @@ export function getOracleParamsForRelayParams({
   gasPaymentTokenAddress,
   relayerFeeTokenAddress,
   feeSwapPath,
-  externalCalls,
 }: {
   chainId: ContractsChainId;
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   feeSwapPath: string[];
-  externalCalls: ExternalCallsPayload | undefined;
 }): OracleParamsPayload {
   const tokenAddresses = [gasPaymentTokenAddress, relayerFeeTokenAddress];
-
-  if (externalCalls) {
-    tokenAddresses.push(...externalCalls.sendTokens);
-  }
 
   if (feeSwapPath.length) {
     tokenAddresses.push(

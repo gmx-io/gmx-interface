@@ -161,6 +161,21 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
     expect(result.decreaseAmounts.decreaseSwapType).toBe(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
   });
 
+  it("returns forced no-swap decrease without swap amounts", () => {
+    const result = getOptimalDecreaseAndSwapAmounts({
+      ...baseDecreaseParams,
+      receiveToken: ETH_TOKEN_FIXTURE,
+      forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+      findSwapPath: makeMockFindSwapPath(expandDecimals(500, 30), expandDecimals(500, 18)),
+      findSwapPathFromPnl: makeMockFindSwapPath(expandDecimals(400, 30), expandDecimals(400, 18)),
+    });
+
+    expect(result.swapAmounts).toBeUndefined();
+    expect(result.decreaseAmounts.decreaseSwapType).toBe(DecreasePositionSwapType.NoSwap);
+    expect(result.decreaseAmounts.primaryOutput.amount).toBeGreaterThan(0n);
+    expect(result.decreaseAmounts.secondaryOutput.amount).toBeGreaterThan(0n);
+  });
+
   it("returns pathA when not a third-token case (receive=pnl)", () => {
     const result = getOptimalDecreaseAndSwapAmounts({
       ...baseDecreaseParams,

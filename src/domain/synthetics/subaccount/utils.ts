@@ -2,7 +2,7 @@ import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
 import { decodeFunctionResult, encodeFunctionData, isHex, maxUint256, type Hex, zeroAddress, zeroHash } from "viem";
 
-import type { AnyChainId, ContractsChainId } from "config/chains";
+import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import type {
   SignedSubaccountApproval,
@@ -76,7 +76,7 @@ export function getSubaccountSigner(config: SubaccountSerializedConfig, account:
   return wallet;
 }
 
-function getMaxSubaccountActions(subaccount: {
+export function getMaxSubaccountActions(subaccount: {
   onchainData: SubaccountOnchainData;
   signedApproval: SignedSubaccountApproval | undefined;
 }): bigint {
@@ -87,7 +87,7 @@ function getMaxSubaccountActions(subaccount: {
   return subaccount.onchainData.maxAllowedCount;
 }
 
-function getSubaccountExpiresAt(subaccount: {
+export function getSubaccountExpiresAt(subaccount: {
   onchainData: SubaccountOnchainData;
   signedApproval: SignedSubaccountApproval | undefined;
 }): bigint {
@@ -151,10 +151,6 @@ export function getIsSubaccountNonceExpired({
   signedApproval: SignedSubaccountApproval;
 }): boolean {
   if (getIsEmptySubaccountApproval(signedApproval)) {
-    return false;
-  }
-
-  if (chainId !== signedApproval.signatureChainId) {
     return false;
   }
 
@@ -227,6 +223,17 @@ export function getIsSubaccountApprovalInvalid({
       signedApproval.subaccountRouterAddress !== subaccountRouterAddress);
 
   return result;
+}
+
+export function getSubaccountApprovalContextSrcChainId(
+  chainId: ContractsChainId,
+  signedApproval: SignedSubaccountApproval
+): SourceChainId | undefined {
+  if (isSourceChain(signedApproval.signatureChainId, chainId)) {
+    return signedApproval.signatureChainId;
+  }
+
+  return undefined;
 }
 
 export function getIsSubaccountExpired(subaccount: Subaccount): boolean {
@@ -480,7 +487,13 @@ async function createAndSignSubaccountApproval(
     deadline: params.expiresAt,
   };
 
-  const signature = await signTypedData({ signer: mainAccountSigner, domain, types, typedData });
+  const signature = await signTypedData({
+    signer: mainAccountSigner,
+    domain,
+    types,
+    typedData,
+    verificationChainId: chainId,
+  });
 
   return {
     ...typedData,

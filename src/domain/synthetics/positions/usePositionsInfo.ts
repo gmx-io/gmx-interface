@@ -1,18 +1,27 @@
 import { useMemo } from "react";
 
+import { useIsApiHealthy } from "domain/api/apiHealthTracker";
+import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
+import { ApiDataSource } from "lib/metrics/types";
+import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
 import { getByKey } from "lib/objects";
 import { ContractsChainId } from "sdk/configs/chains";
 import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positions";
 
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
-import { MarketsInfoData } from "../markets";
+import { MarketsData, MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
-import { PositionsData, PositionsInfoData } from "./types";
+import { PositionsInfoData } from "./types";
 import { useApiPositionsInfoRequest } from "./useApiPositionsInfoRequest";
 import { getAllPossiblePositionsKeys, useOptimisticPositionsInfo } from "./useOptimisticPositions";
+import { usePositions } from "./usePositions";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
+
+// Wait this long for API positions before warming the RPC backup. The API is usually fast and a
+// cold RPC detour is slower than waiting, so we give API a grace window before paying RPC load.
+const RPC_WARMUP_DELAY_MS = 5_000;
 
 function composeApiPositionInfo(apiPosition: ApiPositionInfo, marketsInfoData: MarketsInfoData): PositionInfo | null {
   const marketInfo = getByKey(marketsInfoData, apiPosition.marketAddress);
@@ -41,31 +50,25 @@ export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
   error?: Error;
+  dataSource?: ApiDataSource;
 };
 
 export function usePositionsInfoRequest(
   chainId: ContractsChainId,
   p: {
     account: string | undefined;
+    marketsData?: MarketsData;
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
-    positionsData?: PositionsData;
-    positionsError?: Error;
     showPnlInLeverage: boolean;
     skipLocalReferralCode?: boolean;
   }
 ): PositionsInfoResult {
-  const {
-    showPnlInLeverage,
-    marketsInfoData,
-    tokensData,
-    account,
-    skipLocalReferralCode = false,
-    positionsData,
-    positionsError,
-  } = p;
+  const { showPnlInLeverage, marketsInfoData, tokensData, account, skipLocalReferralCode = false } = p;
 
-  const isApiSdkEnabled = useIsApiSdkEnabled(API_UI_FLAGS.positions);
+  // Stale markets ⇒ gmx-api unhealthy ⇒ positions fall back to RPC globally too.
+  const isApiHealthy = useIsApiHealthy(chainId);
+  const isApiSdkEnabled = useIsApiSdkEnabled(API_UI_FLAGS.positions) && isApiHealthy;
 
   const {
     positionsInfoData: apiPositionsInfoData,
@@ -73,7 +76,23 @@ export function usePositionsInfoRequest(
     error: apiError,
   } = useApiPositionsInfoRequest(chainId, { account, enabled: isApiSdkEnabled });
 
-  const shouldFallbackToRpc = !isApiSdkEnabled || apiError || isApiStale;
+  const { shouldFallbackToRpc, isWaitingForInitialApiData, isInitialFallback } = useApiDataFallbackState({
+    chainId,
+    apiEnabled: isApiSdkEnabled,
+    apiData: apiPositionsInfoData,
+    isApiStale,
+    apiError,
+    isEnabled: Boolean(account),
+    resetKey: account,
+    initialFallbackTimeout: RPC_WARMUP_DELAY_MS,
+  });
+
+  const { positionsData, error: positionsError } = usePositions(chainId, {
+    account,
+    marketsData: p.marketsData,
+    tokensData,
+    enabled: shouldFallbackToRpc,
+  });
 
   const { positionsConstants, error: positionsConstantsError } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};
@@ -196,19 +215,52 @@ export function usePositionsInfoRequest(
     uiFeeFactor,
   ]);
 
+  const fallbackPositionsInfoData = rpcPositionsInfoData;
+  // Prefer API data that exists (including data retained across api-health flips) and hand over to
+  // RPC only once the fallback actually has data — a rendered list must never fall back to loading.
+  const shouldUseApiPositionsInfoData =
+    Boolean(apiPositionsInfoData) &&
+    Boolean(recomputedApiPositionsInfoData) &&
+    (!shouldFallbackToRpc || !fallbackPositionsInfoData);
+
   const positionsInfoData = useMemo(() => {
-    if (recomputedApiPositionsInfoData && !isApiStale && !apiError) {
+    if (shouldUseApiPositionsInfoData) {
       return recomputedApiPositionsInfoData;
     }
-    return rpcPositionsInfoData;
-  }, [recomputedApiPositionsInfoData, isApiStale, apiError, rpcPositionsInfoData]);
+    return fallbackPositionsInfoData;
+  }, [recomputedApiPositionsInfoData, fallbackPositionsInfoData, shouldUseApiPositionsInfoData]);
 
   const isLoading =
-    !positionsInfoData && (shouldFallbackToRpc ? !rpcPositionsInfoData : !recomputedApiPositionsInfoData);
+    Boolean(account) &&
+    !positionsInfoData &&
+    (isWaitingForInitialApiData
+      ? true
+      : shouldFallbackToRpc
+        ? !fallbackPositionsInfoData && !shouldUseApiPositionsInfoData
+        : isApiSdkEnabled);
+
+  const dataSource: ApiDataSource | undefined = positionsInfoData
+    ? shouldUseApiPositionsInfoData
+      ? "api"
+      : "rpc"
+    : undefined;
+  const error = shouldFallbackToRpc ? (fallbackPositionsInfoData ? undefined : rpcError) : apiError;
+
+  useApiDataFallbackCounter({
+    domain: "positions",
+    chainId,
+    apiEnabled: isApiSdkEnabled,
+    apiData: apiPositionsInfoData,
+    isApiStale,
+    apiError,
+    isInitialFallback,
+    resetKey: account,
+  });
 
   return {
     positionsInfoData,
     isLoading,
-    error: shouldFallbackToRpc ? rpcError : apiError,
+    error,
+    dataSource,
   };
 }

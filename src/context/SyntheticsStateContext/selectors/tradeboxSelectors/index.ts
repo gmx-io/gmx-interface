@@ -9,7 +9,9 @@ import {
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import type { ExternalSwapBlockReason } from "domain/synthetics/externalSwaps/types";
 import {
+  externalSwapRequestKeysMatch,
   getExternalSwapInputsByFromValue,
   getExternalSwapInputsByLeverageSize,
   getExternalSwapInputsByToValue,
@@ -30,15 +32,15 @@ import {
   getMaxAllowedLeverage,
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
+  isOffHoursMarket,
 } from "domain/synthetics/markets";
 import { PreferredTradeTypePickStrategy, chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { isTradeboxOffHoursLiqRisk } from "domain/synthetics/positions";
 import {
   TokenData,
   TokensRatio,
   convertToUsd,
-  getIsStake,
-  getIsUnstake,
   getIsUnwrap,
   getIsWrap,
   getTokensRatioByPrice,
@@ -57,9 +59,9 @@ import {
 } from "domain/synthetics/trade";
 import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { BOTANIX, MEGAETH } from "sdk/configs/chains";
+import { MEGAETH } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
@@ -68,7 +70,11 @@ import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { selectGasPaymentToken, selectIsExpressTransactionAvailable } from "../expressSelectors";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectIsExpressTransactionAvailable,
+  selectSettlementChainGasPaymentToken,
+} from "../expressSelectors";
 import {
   selectAccount,
   selectChainId,
@@ -77,6 +83,7 @@ import {
   selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
+  selectPositionConstants,
   selectPositionsInfoData,
   selectSubaccountForChainAction,
   selectTokensData,
@@ -85,6 +92,7 @@ import {
 } from "../globalSelectors";
 import {
   selectDebugSwapMarketsConfig,
+  selectExternalSwapsEnabledSetting,
   selectIsLeverageSliderEnabled,
   selectIsPnlInLeverage,
   selectShowDebugValues,
@@ -176,7 +184,7 @@ export const selectExternalSwapIsLoading = createSelector((q) => {
   const currentKey = q(selectCurrentExternalSwapRequestKey);
   if (!currentKey) return false;
 
-  return q(selectExternalSwapRequestResult)?.key !== currentKey;
+  return !externalSwapRequestKeysMatch(currentKey, q(selectExternalSwapRequestResult)?.key);
 });
 
 export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.externalSwap.shouldFallbackToInternalSwap;
@@ -210,9 +218,16 @@ export const selectExternalSwapQuote = createSelector((q) => {
   if (q(selectIsOneClickActiveByUser)) return undefined;
 
   if (!inputs || !tokenIn || !tokenOut) return undefined;
-  if (result?.status !== "success" || result.key !== currentKey || result.quote.amountIn === 0n) return undefined;
+  if (
+    result?.status !== "success" ||
+    !externalSwapRequestKeysMatch(result.key, currentKey) ||
+    result.quote.amountIn === 0n
+  )
+    return undefined;
 
-  if (shouldFallbackToInternalSwap && !shouldForceExternalSwap) return undefined;
+  if (shouldFallbackToInternalSwap && !shouldForceExternalSwap && q(selectExternalSwapDesirability) !== "required") {
+    return undefined;
+  }
 
   const baseOutput = result.quote;
   let amountIn = baseOutput.amountIn;
@@ -257,9 +272,6 @@ export const selectExternalSwapQuote = createSelector((q) => {
   return quote;
 });
 
-const selectExternalSwapsEnabled = (s: SyntheticsState) =>
-  s.settings.externalSwapsEnabled && !s.externalSwap.shouldFallbackToInternalSwap;
-
 const selectDebugForceExternalSwaps = createSelector((q) => {
   const isNeedSwap = q(selectTradeboxIsNeedSwap);
   const swapDebugSettings = getSwapDebugSettings();
@@ -274,7 +286,10 @@ export const selectIsOneClickActiveByUser = createSelector((q) => {
 export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
   if (!q(selectIsExpressTransactionAvailable)) return false;
 
-  const gasPaymentToken = q(selectGasPaymentToken);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
+  const gasPaymentToken = q(
+    isFromTokenGmxAccount ? selectGmxAccountGasPaymentToken : selectSettlementChainGasPaymentToken
+  );
   if (!gasPaymentToken) return false;
 
   // When gasPaymentToken = WNT, relay fee goes directly to the relay router
@@ -287,14 +302,7 @@ export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) =>
   return conflictToken !== undefined && gasPaymentToken.address === conflictToken.address;
 });
 
-export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
-  const tradeMode = q(selectTradeboxTradeMode);
-  const tradeType = q(selectTradeboxTradeType);
-  const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isMarket) return "not_wanted";
-
-  if (!q(selectExternalSwapsEnabled)) return "not_wanted";
-
+export const selectRawExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
   const externalSwapInputs = q(selectExternalSwapInputs);
   if (!externalSwapInputs || externalSwapInputs.amountIn <= 0n) return "not_wanted";
 
@@ -316,6 +324,21 @@ export const selectExternalSwapDesirability = createSelector((q): "not_wanted" |
   return internalSwapTotalFeeItem.bps < thresholdBps ? "optional" : "not_wanted";
 });
 
+export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  if (!tradeFlags.isMarket) return "not_wanted";
+
+  if (!q(selectExternalSwapsEnabledSetting)) return "not_wanted";
+
+  const rawDesirability = q(selectRawExternalSwapDesirability);
+
+  if (rawDesirability === "optional" && q(selectShouldFallbackToInternalSwap)) return "not_wanted";
+
+  return rawDesirability;
+});
+
 export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   if (q(selectIsOneClickActiveByUser)) return false;
   if (q(selectIsExternalSwapDisabledByExpressSchema)) return false;
@@ -323,6 +346,36 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   if (q(selectShouldForceExternalSwap) || q(selectDebugForceExternalSwaps)) return true;
 
   return q(selectExternalSwapDesirability) !== "not_wanted";
+});
+
+export const selectExternalSwapBlockReason = createSelector((q): ExternalSwapBlockReason | undefined => {
+  if (!q(selectExternalSwapsEnabledSetting)) return undefined;
+
+  if (q(selectRawExternalSwapDesirability) === "not_wanted") return undefined;
+
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  if (!tradeFlags.isMarket) return "orderTypeNotSupported";
+
+  if (q(selectIsOneClickActiveByUser)) return "oneClickTrading";
+
+  if (q(selectIsExternalSwapDisabledByExpressSchema)) return "gasTokenConflict";
+
+  if (
+    q(selectShouldFallbackToInternalSwap) &&
+    !q(selectShouldForceExternalSwap) &&
+    q(selectRawExternalSwapDesirability) !== "required"
+  ) {
+    return "temporarilyDisabledByFailure";
+  }
+
+  const result = q(selectExternalSwapRequestResult);
+  if (result?.status === "failed" && externalSwapRequestKeysMatch(result.key, q(selectCurrentExternalSwapRequestKey))) {
+    return "noRouteFound";
+  }
+
+  return undefined;
 });
 
 const selectExternalSwapInputsByFromValue = createSelector((q) => {
@@ -428,6 +481,7 @@ export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.t
 export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.marketAddress);
 export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox?.marketInfo;
+const selectTradeboxUserSelectedMarkets = (s: SyntheticsState) => s.tradebox.userSelectedMarkets;
 export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.collateralAddress);
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
@@ -440,18 +494,25 @@ export const selectTradeboxSwapTokens = createSelector((q) => {
   const { swapTokens } = q(selectTradeboxAvailableTokensOptions);
   const { isSwap } = q(selectTradeboxTradeFlags);
   const chainId = q(selectChainId);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
+
+  // Native token is wallet-only, so it is hidden for GMX Account swaps.
+  const sourceTokens = isFromTokenGmxAccount ? swapTokens.filter((token) => !token.isNative) : swapTokens;
 
   if (isSwap || chainId !== MEGAETH) {
-    return swapTokens;
+    return sourceTokens;
   }
 
-  return swapTokens.filter((token) => !token.isNative && !token.isWrapped);
+  return sourceTokens.filter((token) => !token.isNative && !token.isWrapped);
 });
 
 export const selectTradeboxFromTokenInputValue = (s: SyntheticsState) => s.tradebox.fromTokenInputValue;
+const selectTradeboxSetFromTokenInputValue = (s: SyntheticsState) => s.tradebox.setFromTokenInputValue;
 export const selectTradeboxToTokenInputValue = (s: SyntheticsState) => s.tradebox.toTokenInputValue;
+const selectTradeboxSetToTokenInputValue = (s: SyntheticsState) => s.tradebox.setToTokenInputValue;
 export const selectTradeboxStage = (s: SyntheticsState) => s.tradebox.stage;
 export const selectTradeboxFocusedInput = (s: SyntheticsState) => s.tradebox.focusedInput;
+const selectTradeboxSetFocusedInput = (s: SyntheticsState) => s.tradebox.setFocusedInput;
 export const selectTradeboxDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.defaultTriggerAcceptablePriceImpactBps;
 export const selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
@@ -479,6 +540,9 @@ export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebo
 export const selectTradeboxSetActiveOrder = (s: SyntheticsState) => s.tradebox.setActiveOrder;
 export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.setTradeConfig;
 export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
+const selectTradeboxSetFromTokenAddress = (s: SyntheticsState) => s.tradebox.setFromTokenAddress;
+const selectTradeboxSetTradeMode = (s: SyntheticsState) => s.tradebox.setTradeMode;
+const selectTradeboxSetIsFromTokenGmxAccount = (s: SyntheticsState) => s.tradebox.setIsFromTokenGmxAccount;
 export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
 export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.advancedOptions;
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
@@ -486,7 +550,53 @@ const selectTradeboxAllowedSlippageStateValue = (s: SyntheticsState) => s.tradeb
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
 export const selectTradeboxTokensAllowance = (s: SyntheticsState) => s.tradebox.tokensAllowance;
 export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.duration;
+const selectTradeboxSetTwapDuration = (s: SyntheticsState) => s.tradebox.setDuration;
 export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
+const selectTradeboxSetTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.setNumberOfParts;
+const selectTradeboxSetTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.setTriggerRatioInputValue;
+const selectTradeboxSetLeverageOption = (s: SyntheticsState) => s.tradebox.setLeverageOption;
+const selectTradeboxIsSwitchTokensAllowed = (s: SyntheticsState) => s.tradebox.isSwitchTokensAllowed;
+const selectTradeboxSwitchTokenAddresses = (s: SyntheticsState) => s.tradebox.switchTokenAddresses;
+const selectTradeboxAvailableTradeModes = (s: SyntheticsState) => s.tradebox.availableTradeModes;
+const selectTradeboxLimitPriceWarningHidden = (s: SyntheticsState) => s.tradebox.limitPriceWarningHidden;
+const selectTradeboxSetLimitPriceWarningHidden = (s: SyntheticsState) => s.tradebox.setLimitPriceWarningHidden;
+
+export const selectTradeboxFormState = createSelector((q) => {
+  return {
+    fromTokenInputValue: q(selectTradeboxFromTokenInputValue),
+    setFromTokenInputValue: q(selectTradeboxSetFromTokenInputValue),
+    toTokenInputValue: q(selectTradeboxToTokenInputValue),
+    setToTokenInputValue: q(selectTradeboxSetToTokenInputValue),
+    setFromTokenAddress: q(selectTradeboxSetFromTokenAddress),
+    isFromTokenGmxAccount: q(selectTradeboxIsFromTokenGmxAccount),
+    setIsFromTokenGmxAccount: q(selectTradeboxSetIsFromTokenGmxAccount),
+    setTradeMode: q(selectTradeboxSetTradeMode),
+    focusedInput: q(selectTradeboxFocusedInput),
+    setFocusedInput: q(selectTradeboxSetFocusedInput),
+    setCloseSizeInputValue: q(selectTradeboxSetCloseSizeInputValue),
+    triggerPriceInputValue: q(selectTradeboxTriggerPriceInputValue),
+    setTriggerPriceInputValue: q(selectTradeboxSetTriggerPriceInputValue),
+    triggerRatioInputValue: q(selectTradeboxTriggerRatioInputValue),
+    setTriggerRatioInputValue: q(selectTradeboxSetTriggerRatioInputValue),
+    leverageOption: q(selectTradeboxLeverageOption),
+    setLeverageOption: q(selectTradeboxSetLeverageOption),
+    isSwitchTokensAllowed: q(selectTradeboxIsSwitchTokensAllowed),
+    switchTokenAddresses: q(selectTradeboxSwitchTokenAddresses),
+    tradeMode: q(selectTradeboxTradeMode),
+    tradeType: q(selectTradeboxTradeType),
+    collateralToken: q(selectTradeboxCollateralToken),
+    fromTokenAddress: q(selectTradeboxFromTokenAddress),
+    marketInfo: q(selectTradeboxMarketInfo),
+    toTokenAddress: q(selectTradeboxToTokenAddress),
+    availableTradeModes: q(selectTradeboxAvailableTradeModes),
+    duration: q(selectTradeboxTwapDuration),
+    numberOfParts: q(selectTradeboxTwapNumberOfParts),
+    setNumberOfParts: q(selectTradeboxSetTwapNumberOfParts),
+    setDuration: q(selectTradeboxSetTwapDuration),
+    limitPriceWarningHidden: q(selectTradeboxLimitPriceWarningHidden),
+    setLimitPriceWarningHidden: q(selectTradeboxSetLimitPriceWarningHidden),
+  };
+});
 
 export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
   const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
@@ -499,24 +609,18 @@ export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
   const toToken = q(selectTradeboxToToken);
   const tradeFlags = q(selectTradeboxTradeFlags);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
 
   if (!tradeFlags.isSwap) {
+    return false;
+  }
+
+  // Wrap/unwrap uses the wallet signer, not the GMX Account balance.
+  if (isFromTokenGmxAccount) {
     return false;
   }
 
   return Boolean(fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken)));
-});
-
-export const selectTradeboxIsStakeOrUnstake = createSelector((q) => {
-  const fromToken = q(selectTradeboxFromToken);
-  const toToken = q(selectTradeboxToToken);
-  const tradeFlags = q(selectTradeboxTradeFlags);
-
-  if (!tradeFlags.isSwap) {
-    return false;
-  }
-
-  return Boolean(fromToken && toToken && (getIsStake(fromToken, toToken) || getIsUnstake(fromToken, toToken)));
 });
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
@@ -953,8 +1057,8 @@ export const selectSwapDebugComparison = createSelector((q) => {
 
   const result = q(selectExternalSwapRequestResult);
   const currentKey = q(selectCurrentExternalSwapRequestKey);
-  const isCurrentResult = !!result && result.key === currentKey;
-  const baseOutput = isCurrentResult && result.status === "success" ? result.quote : undefined;
+  const isCurrentResult = externalSwapRequestKeysMatch(result?.key, currentKey);
+  const baseOutput = isCurrentResult && result?.status === "success" ? result.quote : undefined;
   const filteredQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
 
   const staleGuardReason = getStaleGuardReason({
@@ -1050,7 +1154,8 @@ export const selectIncreaseSwapDebugComparison = createSelector((q) => {
 
   const result = q(selectExternalSwapRequestResult);
   const currentKey = q(selectCurrentExternalSwapRequestKey);
-  const baseOutput = result?.status === "success" && result.key === currentKey ? result.quote : undefined;
+  const baseOutput =
+    result?.status === "success" && externalSwapRequestKeysMatch(result.key, currentKey) ? result.quote : undefined;
 
   let oracleUsdIn: bigint | undefined;
   let oracleUsdOut: bigint | undefined;
@@ -1114,14 +1219,11 @@ export const selectTradeboxTradeFeesType = createSelector(
   function selectTradeboxTradeFeesType(q): TradeFeesType | null {
     const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
 
-    const chainId = q(selectChainId);
-    const isBotanix = chainId === BOTANIX;
-
     if (isSwap) {
       const swapAmounts = q(selectTradeboxSwapAmounts);
       const swapPathStats = swapAmounts?.swapStrategy.swapPathStats;
       const isExternalSwap = swapAmounts?.swapStrategy.type === "externalSwap";
-      if (swapPathStats || isExternalSwap || (isBotanix && swapAmounts)) return "swap";
+      if (swapPathStats || isExternalSwap) return "swap";
     }
 
     if (isIncrease) {
@@ -1313,24 +1415,13 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       if (!swapAmounts.swapStrategy.swapPathStats) return undefined;
 
-      // For combined swaps, also use oracle prices for the external quote portion
-      const combinedOracleQuote = swapAmounts.swapStrategy.externalSwapQuote
-        ? overrideQuoteWithOraclePrices(swapAmounts.swapStrategy.externalSwapQuote, {
-            usdIn: swapAmounts.swapStrategy.usdIn,
-            usdOut: swapAmounts.swapStrategy.usdOut,
-            feesUsd: swapAmounts.swapStrategy.feesUsd,
-            priceIn: swapAmounts.swapStrategy.priceIn,
-            priceOut: swapAmounts.swapStrategy.priceOut,
-          })
-        : undefined;
-
       return getTradeFees({
         sizeInUsd: 0n,
         initialCollateralUsd: swapAmounts.usdIn,
         collateralDeltaUsd: 0n,
         sizeDeltaUsd: 0n,
         swapSteps: swapAmounts.swapStrategy.swapPathStats.swapSteps,
-        externalSwapQuote: combinedOracleQuote,
+        externalSwapQuote: undefined,
         positionFeeUsd: 0n,
         swapPriceImpactDeltaUsd: swapAmounts.swapStrategy.swapPathStats.totalSwapPriceImpactDeltaUsd,
         increasePositionPriceImpactDeltaUsd: 0n,
@@ -1579,6 +1670,31 @@ export const selectTradeboxNextPositionValues = createSelector((q) => {
   return isIncrease ? q(selectTradeboxNextPositionValuesForIncrease) : q(selectTradeboxNextPositionValuesForDecrease);
 });
 
+export const selectTradeboxOffHoursLiqRisk = createSelector((q) => {
+  const { isPosition, isIncrease, isTwap, isLong } = q(selectTradeboxTradeFlags);
+  const chainId = q(selectChainId);
+  const marketInfo = q(selectTradeboxMarketInfo);
+
+  if (!isPosition || !isIncrease || isTwap || !isOffHoursMarket(chainId, marketInfo?.marketTokenAddress)) {
+    return { shouldWarn: false };
+  }
+
+  const nextPositionValues = q(selectTradeboxNextPositionValues);
+  const { minCollateralUsd } = q(selectPositionConstants);
+
+  const shouldWarn = isTradeboxOffHoursLiqRisk({
+    chainId,
+    marketInfo,
+    isLong,
+    nextSizeInUsd: nextPositionValues?.nextSizeUsd,
+    nextSizeInTokens: nextPositionValues?.nextSizeInTokens,
+    nextCollateralUsd: nextPositionValues?.nextCollateralUsd,
+    minCollateralUsd,
+  });
+
+  return { shouldWarn };
+});
+
 export const selectTradeboxSelectedPositionKey = createSelector((q) => {
   const account = q(selectAccount);
   const collateralAddress = q(selectTradeboxCollateralTokenAddress);
@@ -1702,10 +1818,15 @@ export const selectTradeboxLeverageTooltipEnabled = createSelector((q) => {
   return !isLeverageSliderEnabled && isIncrease && hasExistingPosition;
 });
 
+const EMPTY_TRADEBOX_TRADE_RATIOS: {
+  markRatio?: TokensRatio;
+  triggerRatio?: TokensRatio;
+} = EMPTY_OBJECT;
+
 export const selectTradeboxTradeRatios = createSelector(function selectTradeboxTradeRatios(q) {
   const { isSwap } = q(selectTradeboxTradeFlags);
 
-  if (!isSwap) return {};
+  if (!isSwap) return EMPTY_TRADEBOX_TRADE_RATIOS;
 
   const triggerRatioValue = q(selectTradeboxTriggerRatioValue);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
@@ -1715,7 +1836,7 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
   const markPrice = q(selectTradeboxMarkPrice);
 
   if (!isSwap || !fromToken || !toToken || fromTokenPrice === undefined || markPrice === undefined) {
-    return {};
+    return EMPTY_TRADEBOX_TRADE_RATIOS;
   }
 
   const markRatio = getTokensRatioByPrice({
@@ -1757,12 +1878,18 @@ export const selectTradeboxMarkPrice = createSelector(function selectTradeboxMar
   return getMarkPrice({ prices: toToken.prices, isIncrease, isLong });
 });
 
+const EMPTY_TRADEBOX_LIQUIDITY: {
+  longLiquidity?: bigint;
+  shortLiquidity?: bigint;
+  isOutPositionLiquidity?: boolean;
+} = EMPTY_OBJECT;
+
 export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiquidity(q) {
   const marketInfo = q(selectTradeboxMarketInfo);
   const { isIncrease, isLong } = q(selectTradeboxTradeFlags);
 
   if (!marketInfo || !isIncrease) {
-    return {};
+    return EMPTY_TRADEBOX_LIQUIDITY;
   }
 
   const jitLiquidityMap = q(selectJitLiquidityMap);
@@ -1793,13 +1920,14 @@ export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) =>
 });
 
 export const selectTradeboxMaxLeverage = createSelector((q) => {
-  const minCollateralFactor = q((s) => s.tradebox.marketInfo?.minCollateralFactor);
-  return getMaxLeverageByMinCollateralFactor(minCollateralFactor);
+  const marketInfo = q(selectTradeboxMarketInfo);
+  return getMaxLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor, marketInfo?.marketTokenAddress);
 });
 
 export const selectTradeboxMaxAllowedLeverage = createSelector((q) => {
-  const marketInfo = q((s) => s.tradebox.marketInfo);
+  const marketInfo = q(selectTradeboxMarketInfo);
   return getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
     minCollateralFactor: marketInfo?.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
@@ -1955,6 +2083,7 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
   const ordersInfo = q(selectOrdersInfoData);
   const tokensData = q(selectTokensData);
   const setTradeConfig = q(selectTradeboxSetTradeConfig);
+  const userSelectedMarkets = q(selectTradeboxUserSelectedMarkets);
 
   const chooseSuitableMarketWrapped = (
     tokenAddress: string,
@@ -1965,7 +2094,7 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
 
     if (!token) return;
 
-    const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+    const { maxLongLiquidityPool, maxShortLiquidityPool, indexTokenPools } = getMaxLongShortLiquidityPool(token);
 
     const effectiveTradeType = currentTradeType ?? tradeType;
 
@@ -1978,6 +2107,8 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
       ordersInfo,
       preferredTradeType: preferredTradeType ?? effectiveTradeType,
       currentTradeType: effectiveTradeType,
+      userSelectedMarkets: userSelectedMarkets?.[tokenAddress],
+      availableIndexTokenPools: indexTokenPools,
     });
 
     if (!suitableParams) return;

@@ -3,50 +3,268 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, MEGAETH } from "config/chains";
+import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import release117PositionFilterPoster from "img/release-117-position-filter-poster.webp";
+import release117PositionFilterDemo from "img/release-117-position-filter.mp4";
 import sparkleIcon from "img/sparkle.svg";
+
+export type AnnouncementType = "listing" | "delisting" | "update" | "maintenance";
+export type AnnouncementVariant = "info" | "warning" | "error" | "success";
+
+export type EventLink = {
+  text: string;
+  href: string;
+  /**
+   * @default false
+   */
+  newTab?: boolean;
+};
 
 export type EventData = {
   id: string;
+  type: AnnouncementType;
   title: ReactNode;
+  summary?: ReactNode;
+  description: ReactNode;
+
   isActive?: boolean;
   /**
    * KLI UI flag ID. When present, overrides `isActive` — visibility is controlled by KLI.
    */
   flagId?: string;
+
   startDate?: string;
   endDate: string;
-  bodyText: ReactNode;
-  variant?: "info" | "warning";
+
+  variant?: AnnouncementVariant;
   chains?: number[];
-  link?: {
-    text: string;
-    href: string;
-    /**
-     * @default false
-     */
-    newTab?: boolean;
-  };
+  link?: EventLink;
+  links?: EventLink[];
+
+  requiresOpenPosition?: string;
 };
-
-export const homeEventsData: EventData[] = [];
-
-export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
-export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
-export const WELL_DELISTING_EVENT_ID = "well-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-121-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "07 Aug 2026, 08:00",
+    endDate: "14 Aug 2026, 08:00",
+    variant: "info",
+    title: "App Update: Builder and Affiliate Programs, Trader Profiles, Referral Fixes",
+    summary: (
+      <>
+        New Builders and Trader &amp; Affiliate pages, trader profiles moved to /traders, and referral share cards are
+        fixed.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Builders:</span>{" "}
+          <ExternalLink href="https://gmx.io/#/builders">gmx.io/builders</ExternalLink> is a new home for teams building
+          on GMX, with the SDK, REST API and subgraph side by side, a calculator for what a builder code earns, and a
+          direct contact route.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trader &amp; Affiliate Program:</span>{" "}
+          <ExternalLink href="https://gmx.io/#/trader-affiliate-program">a new page</ExternalLink> for high-volume
+          traders and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and
+          marketing support. Apply from the page, or reach the team on Telegram or a call.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trader profiles:</span> trader activity and address
+          pages now live at /traders, and the address page is called Trader Profile. GMX Account keeps its own meaning,
+          your trading balance. Your existing links still work.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Referrals:</span> the share card now prints a code you
+          actually own. A code you transferred away no longer appears on the card, in the QR, or in the copied link, so
+          your shares credit you. The two network warnings on your code are now a single icon.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">GMX Account:</span> you can deposit any asset you hold
+          on Arbitrum, not just ETH, USDC and USDT.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Fixes:</span> your selected pool stays put after you
+          close a position, and the Daily and cumulative PnL chart shows its first and last dates.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "release-120-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "31 Jul 2026, 08:00",
+    endDate: "07 Aug 2026, 08:00",
+    variant: "info",
+    title: "App Update: Smart Wallets, Swap Routing, and App Install",
+    summary: (
+      <>Smart wallets can now use Express and One-Click, swap routing is clearer, and you can install GMX as an app.</>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Smart wallets:</span> Safe, Coinbase Smart Wallet, and
+          other contract accounts can now use Express and One-Click Trading. If your wallet can't sign or is on the
+          wrong network, the app tells you exactly what to fix.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Swaps:</span> the trade box now shows whether your swap
+          routes through GMX pools or an external aggregator, and tells you which one is short on liquidity instead of a
+          generic insufficient-liquidity message.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One-Click Trading:</span> turning One-Click on and off
+          is reliable again. Declining a signature no longer leaves it half-enabled, switching back to Express works
+          without clearing your cache, and changing GMX Account networks no longer asks you to re-sign.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders and positions:</span> market orders that expire
+          before they can be executed are now labeled as expired in Trade History rather than looking like failures, and
+          liquidation time estimates line up with when liquidations actually trigger.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Install as an app:</span> add GMX to your home screen or
+          desktop and launch straight into the app. A more refined experience and further functionality, such as push
+          notifications, are still to come.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "release-118-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "16 Jul 2026, 12:00",
+    endDate: "24 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: Passkey Login, Wallet Funding, and Performance Sharing",
+    summary: (
+      <>
+        Sign in with a passkey, fund your wallet with a card, share your performance, and skip swap fees on TP/SL
+        closes.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> create a wallet with just a passkey. Face
+          ID, Touch ID, Windows Hello, or Android biometrics get you trading, with no email or seed phrase required.
+          Funding is built into the Receive flow: buy crypto with a card, Apple Pay, or Google Pay, or transfer from
+          another wallet, exchange, or chain.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> share your results with a
+          performance card showing your PnL, win rate, and cumulative PnL curve, carrying your referral code.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now
+          return profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a
+          resting increase order would be liquidatable at its trigger price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool
+          settings now survive refreshes.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Support:</span> the menu now shows how many replies came
+          in while you were away.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "release-117-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "09 Jul 2026, 14:00",
+    endDate: "20 Jul 2026, 14:00",
+    variant: "info",
+    title: "App Update: PnL Charts, Trade History, and Wallet functionality",
+    summary: (
+      <>
+        Analyze your PnL in more detail, follow any position's full history, and manage funds without leaving the app.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Account Dashboard:</span> the PnL chart now supports
+          daily, weekly, and monthly views, zoom and pan (pinch on mobile), and shares its date range with Trade
+          History. Performance details now show your trader rank and a full breakdown of realized and unrealized PnL and
+          fees.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trade History:</span> filter by position to follow every
+          action in a position's lifecycle, from open to full close.
+        </span>
+        <video
+          aria-label="Filter Trade History by position"
+          className="h-auto w-full rounded-8"
+          autoPlay
+          controls
+          loop
+          muted
+          playsInline
+          poster={release117PositionFilterPoster}
+          preload="metadata"
+          width={800}
+          height={250}
+        >
+          <source src={release117PositionFilterDemo} type="video/mp4" />
+        </video>
+        <span>
+          <span className="font-medium text-typography-primary">Wallet:</span> new Send and Receive buttons for your
+          connected wallet. Receive shows your address as a QR code to copy or scan, and Send transfers tokens to any
+          address, with the network fee shown before you confirm.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">GMX Account:</span> deposits now start by picking the
+          asset you want to move, and each deposit's progress is tracked in Transfer history.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">TP/SL orders:</span> the app now warns when a TP or SL
+          trigger price is beyond your liquidation price.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Additional bug fixes:</span> market orders no longer get
+          stuck as pending after executing, and GM pool fee data loads reliably again in Pools and Earn.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "spcx-stock-arbitrum-transition",
+    type: "update",
+    isActive: true,
+    startDate: "12 Jun 2026, 12:00",
+    endDate: "19 Jun 2026, 12:00",
+    chains: [ARBITRUM],
+    title: "SpaceX pre-IPO market is now a 24/7 stock perp on Arbitrum",
+    description: (
+      <>
+        SpaceX pre-IPO market transitioned into a stock market. <Link to="/trade">Trade SPCX</Link> under TradFi &gt;
+        Stocks. Existing positions transitioned automatically.
+      </>
+    ),
+  },
+  {
     id: "mega-arbitrum-megaeth-listing",
+    type: "listing",
     flagId: "showMegaListingArbitrumMegaeth",
+    startDate: "01 May 2026, 12:00",
     endDate: "07 May 2026, 12:00",
     chains: [ARBITRUM, MEGAETH],
     title: "MEGA market added on Arbitrum and MegaETH",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> MEGA, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum, or GLV{" "}
@@ -56,71 +274,67 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "megaeth-points-program",
+    type: "update",
     flagId: "showMegaethPoints",
+    startDate: "30 Apr 2026, 0:00",
     endDate: "31 Dec 2026, 0:00",
     chains: [MEGAETH],
     title: "Earn points on GMX MegaETH",
-    bodyText: (
-      <span className="block">
-        <span className="mb-12 block text-slate-100">Earn points each epoch across four activities:</span>
-        <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Trading activity</span>
-            <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+    summary: (
+      <>
+        Earn points each epoch across four activities: trading, referral volume, trader PnL, and GLV{" "}
+        <span className="text-slate-100">[USDM-USDM]</span> liquidity.
+      </>
+    ),
+    description: (
+      <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Trading activity</span>
+          <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Referral volume</span>
+          <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">Trader PnL</span>
+          <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
+        </span>
+        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <span>
+          <span className="block font-medium">
+            GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
           </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Referral volume</span>
-            <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
-          </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">Trader PnL</span>
-            <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
-          </span>
-          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
-          <span>
-            <span className="block font-medium">
-              GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
-            </span>
-            <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
-          </span>
+          <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
         </span>
       </span>
     ),
   },
   {
-    id: WELL_DELISTING_EVENT_ID,
-    isActive: true,
-    endDate: "20 Apr 2026, 0:00",
-    title: "WELL/USD delisting",
-    bodyText: (
-      <>
-        Position openings for WELL/USD are no longer available. Please close your existing positions before April 19.
-        Remaining positions may be auto-closed.
-      </>
-    ),
-  },
-  {
     id: "gold-silver-fee-reduction",
+    type: "update",
     flagId: "showGoldSilverFeeReduction",
+    startDate: "16 Apr 2026, 12:00",
     endDate: "21 Apr 2026, 12:00",
+    chains: [ARBITRUM],
     title: "GOLD and SILVER trading fees heavily reduced",
-    bodyText: (
-      <>
-        Position fees for GOLD/USD and SILVER/USD have been lowered to 1/2 bps from 4/6 bps during on-hours.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#fees">Read more</ExternalLink>.
-      </>
+    description: (
+      <>Position fees for GOLD/USD and SILVER/USD have been lowered to 1/2 bps from 4/6 bps during on-hours.</>
     ),
+    link: { text: "Read more", href: "https://docs.gmx.io/docs/trading/overview/#fees", newTab: true },
   },
   {
     id: "gold-silver-arbitrum-listing",
+    type: "listing",
     isActive: true,
     startDate: "10 Apr 2026, 12:00",
     endDate: "17 Apr 2026, 12:00",
+    chains: [ARBITRUM],
     title: "GOLD and SILVER commodity markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> GOLD and SILVER perpetuals 24/7 with up to 100x leverage, or{" "}
         <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>. Find
@@ -130,55 +344,48 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "energy-markets-arbitrum-listing",
+    type: "listing",
     flagId: "showEnergyMarketsArbitrumListing",
+    startDate: "23 Apr 2026, 12:00",
     endDate: "30 Apr 2026, 12:00",
+    chains: [ARBITRUM],
     title: "WTI Crude Oil, Brent Crude Oil and Natural Gas energy commodity markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         Trade WTIOIL, BRENTOIL (up to 100x leverage) and NATGAS (up to 40x leverage) perpetuals 24/7, or{" "}
-        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rwa-and-commodity-markets">
-          Read more
-        </ExternalLink>
-        .
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.
       </>
     ),
+    link: {
+      text: "Read more",
+      href: "https://docs.gmx.io/docs/trading/overview/#rwa-and-commodity-markets",
+      newTab: true,
+    },
   },
   {
     id: "megaeth-launch",
+    type: "update",
     isActive: true,
     startDate: "03 Apr 2026, 0:00",
     endDate: "10 Apr 2026, 16:00",
     title: "GMX is now live on MegaETH",
-    bodyText: (
+    description: (
       <>
         Trade perpetuals, create and share your referral code, and provide liquidity on MegaETH using its native
-        stablecoin: USDm.{" "}
-        <ExternalLink href="https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade">Read more</ExternalLink>.
+        stablecoin: USDm.
       </>
     ),
-  },
-  {
-    id: OM_MANTRA_MIGRATION_EVENT_ID,
-    isActive: true,
-    startDate: "20 Feb 2026, 0:00",
-    endDate: "27 Feb 2026, 0:00",
-    title: "OM to MANTRA migration",
-    variant: "warning",
-    bodyText: (
-      <>
-        ⚠️ OM (Mantra) is migrating to the MANTRA token. Please close your position on the OM/USD market by [08:00 UTC]
-        21 February to avoid auto-closure or forced liquidation.
-      </>
-    ),
+    link: { text: "Read more", href: "https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade", newTab: true },
   },
   {
     id: "cc-met-arbitrum-listing",
+    type: "listing",
     isActive: true,
     startDate: "13 Feb 2026, 14:00",
     endDate: "20 Feb 2026, 14:00",
+    chains: [ARBITRUM],
     title: "CC (Canton) and MET (Meteora) markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>.
@@ -187,11 +394,13 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "xaut-lit-ip-arbitrum-listing",
+    type: "listing",
     isActive: true,
     startDate: "23 Jan 2026, 11:00",
     endDate: "30 Jan 2026, 10:00",
+    chains: [ARBITRUM],
     title: "XAUT (Tether Gold), LIT and IP markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
@@ -200,11 +409,13 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "listing-01-09-26",
+    type: "listing",
     isActive: true,
     startDate: "09 Jan 2026, 10:00",
     endDate: "16 Jan 2026, 12:00",
+    chains: [ARBITRUM],
     title: "AR, DASH, JTO, SYRUP and CHZ markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
@@ -213,11 +424,13 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "mon-sky-zec-listing",
+    type: "listing",
     isActive: true,
     startDate: "22 Dec 2025, 16:10",
     endDate: "29 Dec 2025, 16:10",
+    chains: [ARBITRUM],
     title: "MON (Monad), SKY and ZEC (Zcash) markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
@@ -226,40 +439,28 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "open-interest-calculation-update",
+    type: "update",
     isActive: true,
     startDate: "19 Dec 2025, 08:00",
     endDate: "26 Dec 2025, 08:00",
     title: "Open Interest Calculation Update",
-    bodyText: (
+    description: (
       <>
         From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance
-        accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
+        accuracy.
       </>
     ),
-  },
-  {
-    id: AL16Z_DELISTING_EVENT_ID,
-    isActive: true,
-    startDate: "06 Nov 2025, 08:00",
-    endDate: "06 Dec 2025, 08:00",
-    title: "AI16Z/USD delisting",
-    bodyText: (
-      <>
-        Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is
-        recommended.
-        <br />
-        <br />
-        The listing committee will evaluate the listing of ELIZAOS/USD.
-      </>
-    ),
+    link: { text: "Read more", href: "https://t.me/GMX_Announcements/1175", newTab: true },
   },
   {
     id: "xaut0-avalanche-listing",
+    type: "listing",
     isActive: true,
     startDate: "17 Oct 2025, 10:00",
     endDate: "24 Oct 2025, 10:00",
+    chains: [AVALANCHE],
     title: "XAUt0 markets added on Avalanche",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM{" "}
         <span className="text-slate-100">[XAUt0-XAUt0]</span> or GM <span className="text-slate-100">[XAUt0-USDT]</span>
@@ -268,11 +469,13 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "morpho-glv-lending",
+    type: "update",
     isActive: true,
     startDate: "14 Oct 2025, 6:00",
     endDate: "21 Oct 2025, 6:00",
+    chains: [ARBITRUM],
     title: "Morpho now supports GLV",
-    bodyText: (
+    description: (
       <>
         Lending and borrowing are now available for GLV assets:{" "}
         <TokenIcon symbol="GLV" displaySize={16} className="mb-4" /> <span className="text-slate-100">[BTC-USDC]</span>{" "}
@@ -284,11 +487,13 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "aster-0g-avnt-linea-listing",
+    type: "listing",
     isActive: true,
     startDate: "09 Oct 2025, 14:30",
     endDate: "16 Oct 2025, 12:00",
+    chains: [ARBITRUM],
     title: "0G, ASTER, AVNT and LINEA markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span>, or GLV <span className="text-slate-100">[WBTC-USDC]</span>
@@ -297,11 +502,13 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "xpl-bnb-sol-listing",
+    type: "listing",
     isActive: true,
     startDate: "25 Sep 2025, 16:50",
     endDate: "02 Oct 2025, 18:00",
+    chains: [ARBITRUM],
     title: "XPL (Plasma), BNB and SOL markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>
@@ -310,11 +517,13 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "zora-kta-listing",
+    type: "listing",
     isActive: true,
     startDate: "18 Sep 2025, 14:00",
     endDate: "25 Sep 2025, 12:00",
+    chains: [ARBITRUM],
     title: "ZORA and KTA markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span>
@@ -323,24 +532,28 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "new-interface-and-price-impact-improvements",
+    type: "update",
     isActive: true,
     startDate: "08 Sep 2025, 12:00",
     endDate: "22 Sep 2025, 12:00",
     title: "New interface and price impact improvements",
-    bodyText: (
+    description: (
       <>
         The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on
-        position close. <ExternalLink href="https://x.com/GMX_IO/status/1965077965236056467">Read more</ExternalLink>.
+        position close.
       </>
     ),
+    link: { text: "Read more", href: "https://x.com/GMX_IO/status/1965077965236056467", newTab: true },
   },
   {
     id: "listing-09-04",
+    type: "listing",
     isActive: true,
     startDate: "04 Sep 2025, 10:00",
     endDate: "11 Sep 2025, 12:00",
+    chains: [ARBITRUM],
     title: "LINK, MORPHO, VVV and WELL markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span>
@@ -349,11 +562,13 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "wlfi-listing",
+    type: "listing",
     isActive: true,
     startDate: "01 Sep 2025, 12:00",
     endDate: "07 Sep 2025, 12:00",
+    chains: [AVALANCHE, ARBITRUM],
     title: "WLFI market added on Avalanche and Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> this market, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WAVAX-USDC]</span> for WLFI on Avalanche, and GM or GLV{" "}
@@ -362,16 +577,17 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: "aero-brett-pbtc-listing",
+    id: "aero-brett-listing",
+    type: "listing",
     isActive: true,
     startDate: "28 Aug 2025, 10:00",
     endDate: "04 Sep 2025, 12:00",
-    title: "AERO and BRETT markets added on Arbitrum, BTC market added on Botanix",
-    bodyText: (
+    chains: [ARBITRUM],
+    title: "AERO and BRETT markets added on Arbitrum",
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM{" "}
-        <span className="text-slate-100">[PBTC]</span> for BTC
+        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT
       </>
     ),
   },

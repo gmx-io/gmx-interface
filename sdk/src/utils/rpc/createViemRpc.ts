@@ -34,7 +34,7 @@ export function createViemRpc(client: PublicClient): IRpc {
         value: value ?? 0n,
         stateOverride: mapStateOverride(stateOverride),
       });
-      return result.data ?? "";
+      return result.data ?? "0x";
     },
   };
 }

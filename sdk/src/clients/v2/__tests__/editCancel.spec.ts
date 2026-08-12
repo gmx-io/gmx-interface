@@ -55,7 +55,6 @@ async function createLimitOrder(sdkInstance: ReturnType<typeof getTestSdk>, trig
   return result;
 }
 
-
 describe("edit & cancel orders", () => {
   afterAll(async () => {
     try {
@@ -65,7 +64,6 @@ describe("edit & cancel orders", () => {
       // cleanup best-effort
     }
   });
-
 
   describe("create → edit → cancel (express)", () => {
     let createdOrderKey: string;
@@ -115,10 +113,15 @@ describe("edit & cancel orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (ords) => {
-        const edited = ords.find((o: any) => o.key === orderId);
-        return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
-      }, 30000);
+      const ordersAfter = await waitForOrdersUpdate(
+        sdk,
+        account,
+        (ords) => {
+          const edited = ords.find((o: any) => o.key === orderId);
+          return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
+        },
+        30000
+      );
       const editedOrder = ordersAfter.find((o: any) => o.key === orderId);
       expect(editedOrder).toBeDefined();
       expect(BigInt(editedOrder!.triggerPrice)).not.toBe(triggerBefore);
@@ -144,13 +147,17 @@ describe("edit & cancel orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (ords) => {
-        return !ords.find((o: any) => o.key === orderId);
-      }, 30000);
+      const ordersAfter = await waitForOrdersUpdate(
+        sdk,
+        account,
+        (ords) => {
+          return !ords.find((o: any) => o.key === orderId);
+        },
+        30000
+      );
       expect(ordersAfter.find((o: any) => o.key === orderId)).toBeUndefined();
     });
   });
-
 
   describe("cancel all orders", () => {
     it("create two limit orders", async () => {
@@ -181,7 +188,6 @@ describe("edit & cancel orders", () => {
     });
   });
 
-
   describe("1CT edit + cancel", () => {
     const sdkSub = getTestSdk();
 
@@ -189,7 +195,9 @@ describe("edit & cancel orders", () => {
       try {
         const prepared = await sdk.prepareCancelOrder({ all: true, mode: "express", from: account });
         await signAndSubmit(sdk, prepared);
-      } catch { /* cleanup */ }
+      } catch {
+        /* cleanup */
+      }
       sdkSub.clearSubaccount();
     });
 
@@ -235,10 +243,15 @@ describe("edit & cancel orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const updatedOrders = await waitForOrdersUpdate(sdk, account, (ords) => {
-        const edited = ords.find((o: any) => o.key === orderId);
-        return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
-      }, 30000);
+      const updatedOrders = await waitForOrdersUpdate(
+        sdk,
+        account,
+        (ords) => {
+          const edited = ords.find((o: any) => o.key === orderId);
+          return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
+        },
+        30000
+      );
       const editedOrder = updatedOrders.find((o: any) => o.key === orderId);
       expect(editedOrder).toBeDefined();
       expect(BigInt(editedOrder!.triggerPrice)).not.toBe(triggerBefore);
@@ -284,13 +297,17 @@ describe("edit & cancel orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const updatedOrders = await waitForOrdersUpdate(sdk, account, (ords) => {
-        return !ords.find((o: any) => o.key === orderId);
-      }, 30000);
+      const updatedOrders = await waitForOrdersUpdate(
+        sdk,
+        account,
+        (ords) => {
+          return !ords.find((o: any) => o.key === orderId);
+        },
+        30000
+      );
       expect(updatedOrders.find((o: any) => o.key === orderId)).toBeUndefined();
     });
   });
-
 
   describe("error cases", () => {
     it("edit with empty orderIds rejects", async () => {

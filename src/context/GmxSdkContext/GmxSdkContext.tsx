@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useMemo, useRef } from "react";
 
+import { getUiApiCacheKey, getUiApiOverrideUrl, isUiApiSupported } from "config/api";
 import { GmxApiSdk } from "sdk/clients/v2";
-import { isApiSupported } from "sdk/configs/api";
 import { ContractsChainId } from "sdk/configs/chains";
 
 type GmxSdkContextType = {
@@ -11,20 +11,22 @@ type GmxSdkContextType = {
 const context = createContext<GmxSdkContextType | null>(null);
 
 export function GmxSdkProvider({ children }: PropsWithChildren) {
-  const sdkCache = useRef<Map<ContractsChainId, GmxApiSdk>>(new Map());
+  const sdkCache = useRef<Map<string, GmxApiSdk>>(new Map());
 
   const value = useMemo(
     (): GmxSdkContextType => ({
       getSdk: (chainId: ContractsChainId) => {
-        if (!isApiSupported(chainId)) {
+        if (!isUiApiSupported(chainId)) {
           return undefined;
         }
 
-        let sdk = sdkCache.current.get(chainId);
+        const cacheKey = getUiApiCacheKey(chainId);
+        let sdk = sdkCache.current.get(cacheKey);
 
         if (!sdk) {
-          sdk = new GmxApiSdk({ chainId });
-          sdkCache.current.set(chainId, sdk);
+          const apiUrl = getUiApiOverrideUrl(chainId);
+          sdk = new GmxApiSdk({ chainId, ...(apiUrl && { apiUrl }) });
+          sdkCache.current.set(cacheKey, sdk);
         }
 
         return sdk;

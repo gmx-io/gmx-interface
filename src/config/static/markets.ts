@@ -4,15 +4,7 @@
 
   However, this files can be a dependency for the client code.
 */
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
-  MEGAETH,
-  ContractsChainId,
-} from "sdk/configs/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "sdk/configs/chains";
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
 type MarketUiConfig = {
@@ -553,6 +545,10 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b": {
       enabled: true,
     },
+    // SPCX/USD [WETH-USDC]
+    "0x470128853D74dab7423904a20eA5AA230e9e561B": {
+      enabled: true,
+    },
     // MEGA/USD [WETH-USDC]
     "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
       enabled: true,
@@ -760,20 +756,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
       enabled: true,
     },
   },
-  [BOTANIX]: {
-    // BTC/USD [stBTC-stBTC]
-    "0x6682BB60590a045A956541B1433f016Ed22E361d": {
-      enabled: true,
-    },
-    // BTC/USD [stBTC-USDC.E]
-    "0x2f95a2529328E427d3204555F164B1102086690E": {
-      enabled: true,
-    },
-    // BTC/USD [PBTC-PBTC]
-    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
-      enabled: true,
-    },
-  },
   [MEGAETH]: {
     // BTC/USD [USDM-USDM]
     "0x31EdCc52bE2Fa55Ba68f50409F9e6b7d9EbF3D59": {
@@ -800,45 +782,50 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
 
 export const DEPOSIT_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
-    // ETH side [WETH-USDC]
+    // Price impact distribution campaign still active
     "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d", // KTA/USD
-    "0xac484106d935f0f20F1485b631fA6F65AeEff550", // ZORA/USD
-    "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4", // DOLO/USD
-    "0xb3588455858a49D3244237CEe00880CcB84b91Dd", // WLFI/USD
-    "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636", // TRUMP/USD
-    "0xD9535bB5f58A1a75032416F2dFe7880C30575a41", // LTC/USD
-    "0x9F159014CC218e942E9E9481742fE5BFa9ac5A2C", // ENA/USD
-    "0xB489711B1cB86afDA48924730084e23310EB4883", // SEI/USD
-    "0x4c505e0062459cf8F60FfF13279c92ea15aE6e2D", // RENDER/USD
-    "0x6Ecf2133E2C9751cAAdCb6958b9654baE198a797", // SUI/USD
-    "0x12fD1A4BdB96219E637180Ff5293409502b2951D", // MELANIA/USD
-    "0x41E3bC5B72384C8B26b559B7d16C2B81Fd36fbA2", // CVX/USD
-    "0xfaEaE570B07618D3F10360608E43c241181c4614", // AERO/USD
-    "0x9e79146b3A022Af44E0708c6794F03Ef798381A5", // ZRO/USD
-    "0x00310c6d8A9F821e3FE991f4835f2cA4d87034Cf", // SKY/USD
-    "0x0e46941F9bfF8d0784BFfa3d0D7883CDb82D7aE7", // CRV/USD
-    "0xBeB1f4EBC9af627Ca1E5a75981CE1AE97eFeDA22", // TIA/USD
-    "0x970e578fF01589Bb470CE38a2f1753152A009366", // FET/USD
-    "0x04DecfB37e46075189324817df80a32D22b9eD8D", // AIXBT/USD
-    "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791", // EIGEN/USD
-    // BTC side [WBTC-USDC]
-    "0xBcb8FE13d02b023e8f94f6881Cc0192fd918A5C0", // HYPE/USD
-    "0xe024188850A822409F362209C1EF2cFdc7c4DE4C", // 0G/USD
-    "0x7c54D547FAD72f8AFbf6E5b04403A0168b654C6f", // XMR/USD
-    "0x0164B6c847c65e07C9F6226149ADBFA7C1dE40Cf", // ASTER/USD
-    "0x4b67aa8F754b17b1029Ad2DB4fb6a276CCe350c4", // XPL/USD
-    "0xe55e1A29985488A2c8846a91E925c2B7C6564db1", // TAO/USD
     // Commodity markets — accessible only via GLV
     "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
     "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
     "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
     "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
+    "0x470128853D74dab7423904a20eA5AA230e9e561B", // SPCX/USD
   ]),
 };
 
 export function isDepositDisabledMarket(chainId: number, marketTokenAddress: string): boolean {
   return DEPOSIT_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
+}
+
+export const DELISTING_MARKET_ADDRESSES: Record<number, Set<string>> = {
+  [ARBITRUM]: new Set([
+    "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c", // TON/USD
+    "0x39AC3C494950A4363D739201BA5A0861265C9ae5", // PI/USD
+    "0x12fD1A4BdB96219E637180Ff5293409502b2951D", // MELANIA/USD
+    "0x71237F8C3d1484495A136022E16840b70fF84a69", // BOME/USD
+    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d", // KTA/USD
+    "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366", // SATS/USD
+    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169", // AI16Z/USD
+    "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50", // BRETT/USD
+    "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C", // MEME/USD
+    "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244", // MEW/USD
+    "0x2aE5c5Cd4843cf588AA8D1289894318130acc823", // MKR/USD
+    "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a", // IP/USD
+    "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665", // SWAP-ONLY [USDC-DAI]
+  ]),
+  [AVALANCHE]: new Set([
+    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b", // MELANIA/USD
+    "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b", // SWAP-ONLY [USDC-DAI.e]
+  ]),
+};
+
+export function isDelistingMarket(chainId: number, marketTokenAddress: string): boolean {
+  return DELISTING_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
+}
+
+export function hasDelistingMarkets(chainId: number): boolean {
+  return (DELISTING_MARKET_ADDRESSES[chainId]?.size ?? 0) > 0;
 }
 
 export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
@@ -849,6 +836,7 @@ export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> =
     "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
     "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
+    "0x470128853D74dab7423904a20eA5AA230e9e561B", // SPCX/USD
   ]),
 };
 

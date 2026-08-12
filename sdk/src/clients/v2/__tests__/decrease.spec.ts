@@ -497,7 +497,7 @@ describe("decrease orders", () => {
       const txHash = await signer.sendTransaction({
         to: prepared.payload.to,
         data: prepared.payload.data,
-        value: BigInt(prepared.payload.value ?? 0),
+        value: BigInt(prepared.payload.value),
       });
 
       expect(txHash).toBeDefined();

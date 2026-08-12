@@ -399,3 +399,19 @@ th {
   font-size: 11px;
   letter-spacing: 0.08em;
 }
+
+/**
+ * FEDEV-4037: the rem-based text shrink on Privy screens (html font-size 10px vs Privy's
+ * assumed 16px root) is now fixed globally by the stylis middleware in
+ * lib/wallets/privyUiCompat.ts; only the iframe-specific hack below remains.
+ *
+ * The Copy key / Copy Phrase iframe reserves ~15px for a scrollbar gutter
+ * (its own html { scrollbar-gutter: stable }) while its button row is laid out
+ * for the full 312px passed via the width query param, so the right button gets
+ * clipped when classic (non-overlay) scrollbars are on. Widen the iframe element
+ * by the gutter so the row fits; the extra strip paints the modal background and
+ * stays invisible. Escalated to Privy; remove once fixed on their side.
+ */
+#privy-dialog iframe[src*="embedded-wallets/export"] {
+  width: 327px !important;
+}

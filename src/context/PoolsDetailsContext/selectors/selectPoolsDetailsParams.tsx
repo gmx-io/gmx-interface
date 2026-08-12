@@ -33,7 +33,11 @@ import {
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { CodecUiHelper, GMX_DATA_ACTION_HASH, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
+import {
+  encodeMultichainBridgeOutActionData,
+  GMX_DATA_ACTION_HASH,
+  MultichainActionType,
+} from "domain/multichain/codecs/CodecUiHelper";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import {
   RawCreateDepositParams,
@@ -135,7 +139,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         return undefined;
       }
 
-      const actionHash = CodecUiHelper.encodeMultichainBridgeOutActionData({
+      const actionHash = encodeMultichainBridgeOutActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
@@ -195,7 +199,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         return undefined;
       }
 
-      const actionHash = CodecUiHelper.encodeMultichainBridgeOutActionData({
+      const actionHash = encodeMultichainBridgeOutActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
@@ -302,7 +306,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
       const providerData = numberToHex(dstEid, { size: 32 });
 
-      const actionHash = CodecUiHelper.encodeMultichainBridgeOutActionData({
+      const actionHash = encodeMultichainBridgeOutActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
@@ -412,7 +416,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
       const providerData = numberToHex(dstEid, { size: 32 });
 
-      const actionHash = CodecUiHelper.encodeMultichainBridgeOutActionData({
+      const actionHash = encodeMultichainBridgeOutActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),

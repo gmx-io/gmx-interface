@@ -72,7 +72,6 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
-import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
 import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
@@ -138,6 +137,8 @@ export function SyntheticsPage(p: Props) {
     ListSection.Positions
   );
 
+  const [viewPositionKeyHistory, setViewPositionKeyHistory] = useState<string | undefined>();
+
   const tabsContentTabletRef = useRef<HTMLDivElement>(null);
 
   const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
@@ -202,6 +203,18 @@ export function SyntheticsPage(p: Props) {
     },
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
+
+  const handleViewPositionHistory = useCallback(
+    (positionKey: string) => {
+      setListSection(ListSection.Trades);
+      setViewPositionKeyHistory(positionKey);
+    },
+    [setListSection]
+  );
+
+  const handleViewPositionKeyHistoryConsumed = useCallback(() => {
+    setViewPositionKeyHistory(undefined);
+  }, []);
 
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
@@ -454,7 +467,6 @@ export function SyntheticsPage(p: Props) {
       {isTablet ? <ChartHeader /> : null}
       <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
         <div className="Exchange-left flex grow flex-col gap-8">
-          <OneClickPromoBanner openSettings={openSettings} />
           <Chart onOpenChartTPSLModal={onOpenChartTPSLModal} />
           {!isTablet && (
             <div className="flex grow flex-col overflow-hidden rounded-8" data-qa="trade-table-large">
@@ -472,6 +484,7 @@ export function SyntheticsPage(p: Props) {
                 <ErrorBoundary id="SyntheticsPage-PositionList" variant="block">
                   <PositionList
                     onOrdersClick={handlePositionListOrdersClick}
+                    onViewPositionHistory={handleViewPositionHistory}
                     onSelectPositionClick={onSelectPositionClick}
                     onClosePositionClick={setClosingPositionKey}
                     openSettings={openSettings}
@@ -497,7 +510,11 @@ export function SyntheticsPage(p: Props) {
               )}
               {listSection === ListSection.Trades && (
                 <ErrorBoundary id="SyntheticsPage-TradeHistory" variant="block">
-                  <TradeHistory account={account} />
+                  <TradeHistory
+                    account={account}
+                    viewPositionKeyHistory={viewPositionKeyHistory}
+                    onViewPositionKeyHistoryConsumed={handleViewPositionKeyHistoryConsumed}
+                  />
                 </ErrorBoundary>
               )}
               {listSection === ListSection.Claims && (
@@ -563,6 +580,7 @@ export function SyntheticsPage(p: Props) {
               <ErrorBoundary id="SyntheticsPage-PositionList-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <PositionList
                   onOrdersClick={handlePositionListOrdersClick}
+                  onViewPositionHistory={handleViewPositionHistory}
                   onSelectPositionClick={onSelectPositionClick}
                   onClosePositionClick={setClosingPositionKey}
                   openSettings={openSettings}
@@ -588,7 +606,11 @@ export function SyntheticsPage(p: Props) {
             )}
             {listSection === ListSection.Trades && (
               <ErrorBoundary id="SyntheticsPage-TradeHistory-Mobile" variant="block" wrapperClassName="rounded-t-8">
-                <TradeHistory account={account} />
+                <TradeHistory
+                  account={account}
+                  viewPositionKeyHistory={viewPositionKeyHistory}
+                  onViewPositionKeyHistoryConsumed={handleViewPositionKeyHistoryConsumed}
+                />
               </ErrorBoundary>
             )}
             {listSection === ListSection.Claims && (
