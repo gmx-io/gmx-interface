@@ -45,3 +45,23 @@ export function redirectLegacyHashUrl() {
     // Runs before the app mounts, so a failed rewrite must not take the page down.
   }
 }
+
+/**
+ * Following a legacy link while already sitting on its path only changes the fragment, so the
+ * document is not reloaded and the rewrite above never runs again. The landing page is the exposed
+ * one, since it always sits on `/`. Navigating rather than rewriting the history entry is what
+ * makes the router pick the new path up.
+ */
+export function watchLegacyHashUrl(navigate = (url: string) => window.location.replace(url)) {
+  const handleHashChange = () => {
+    const url = getUrlWithoutLegacyHashRoute(window.location.href);
+
+    if (url) {
+      navigate(url);
+    }
+  };
+
+  window.addEventListener("hashchange", handleHashChange);
+
+  return () => window.removeEventListener("hashchange", handleHashChange);
+}
