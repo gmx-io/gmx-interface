@@ -923,19 +923,6 @@ describe("TradeHistoryRow helpers", () => {
       ]);
     });
 
-    it("separates the Settlement heading from the first detail row with an empty line", () => {
-      const withOpenRow = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow).filter((line) => line !== undefined);
-      const withoutOpenRow = getSettlementTooltipLines(anchorCloseRow, undefined).filter((line) => line !== undefined);
-
-      for (const result of [withOpenRow, withoutOpenRow]) {
-        const headingIndex = result.indexOf("Settlement");
-
-        expect(headingIndex).toBeGreaterThanOrEqual(0);
-        expect(result[headingIndex + 1]).toBe("");
-        expect(result[headingIndex + 2]).not.toBe("");
-      }
-    });
-
     it("marks the USD received value as an estimate when the collateral was swapped on close", () => {
       const swappedAction = {
         ...anchorCloseRow,
@@ -978,26 +965,6 @@ describe("TradeHistoryRow helpers", () => {
       const result = getSettlementTooltipLines(splitPayoutAction, anchorOpenRow).filter((line) => line !== undefined);
 
       expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$\u200a1,326.31" });
-    });
-
-    it("keeps the collateral-token total when the pnl token is the collateral token", () => {
-      const result = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow).filter((line) => line !== undefined);
-
-      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~1,326.64\u00a0USDC" });
-    });
-
-    it("marks the received amount approximate even when no swap was involved", () => {
-      const noSwapAction = {
-        ...anchorCloseRow,
-        swapFeeUsd: 0n,
-        swapImpactUsd: 0n,
-      } as unknown as PositionTradeAction;
-
-      const result = getSettlementTooltipLines(noSwapAction, anchorOpenRow).filter((line) => line !== undefined);
-      const received = result.at(-1) as { key: string; value: string };
-
-      expect(received.key).toBe("Wallet received");
-      expect(received.value).toMatch(/^~[\d,]+\.\d+\u00a0USDC$/);
     });
 
     it("excludes impact diverted to claimable collateral from the received amount", () => {

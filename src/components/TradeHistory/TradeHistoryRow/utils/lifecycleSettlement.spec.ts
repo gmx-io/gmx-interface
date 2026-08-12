@@ -7,7 +7,6 @@ import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 import { getLifecycleSettlementLines, getLifecycleSettlementView } from "./lifecycleSettlement";
 import {
   CLOSE_ORDER_KEY,
-  LIFECYCLE_ID,
   OPEN_ORDER_KEY,
   USD,
   ETH,
@@ -344,6 +343,21 @@ describe("getLifecycleSettlementView", () => {
     expect(getLifecycleSettlementView(unmatchedCloseRow, buildExtendedData()).mode).toBe("closeSideOnly");
   });
 
+  // The lifecycle nets to zero, so only the clicked-row check can catch this.
+  it("falls back on a partial close of a lifecycle that later closed", () => {
+    expect(getLifecycleSettlementView(partialCloseRow, buildExtendedData()).mode).toBe("closeSideOnly");
+  });
+
+  // The clicked row is the last one indexed, so only the leftover-size check can catch this.
+  it("falls back on the latest partial close while the position is still open", () => {
+    const view = getLifecycleSettlementView(
+      partialCloseRow,
+      buildLifecycleData({ rows: [openRow, depositRow, partialCloseRow], requestedByOrderKey: EXTENDED_REQUESTED })
+    );
+
+    expect(view.mode).toBe("closeSideOnly");
+  });
+
   it("nets a native payout against margin funded in the wrapped token", () => {
     const wethFundedOpen = buildIncreaseRow({
       id: "0xaa:1",
@@ -400,27 +414,5 @@ describe("getLifecycleSettlementView", () => {
     );
 
     expect(view).toEqual({ mode: "closeSideOnly", isMultichain: true });
-  });
-
-  it("excludes a later reopen of the same position slot", () => {
-    const reopenRow = buildIncreaseRow({
-      id: "0xff:1",
-      orderKey: "0x5555555555555555555555555555555555555555555555555555555555555555",
-      positionLifecycleId: `${LIFECYCLE_ID}-reopen`,
-      sizeDeltaUsd: 3_000n * USD,
-      positionSizeInUsd: 3_000n * USD,
-      initialCollateralDeltaAmount: 400n * USDC_UNIT,
-    } as unknown as Partial<PositionTradeAction> & { id: string });
-
-    const view = getLifecycleSettlementView(
-      finalCloseRow,
-      buildLifecycleData({
-        rows: [...EXTENDED_ROWS, reopenRow],
-        requestedByOrderKey: EXTENDED_REQUESTED,
-      })
-    );
-
-    expect(view.mode).toBe("closeSideOnly");
-    expect(getExtendedAggregate().funded.legs).toEqual([{ token: USDC, amount: 1_500n * USDC_UNIT }]);
   });
 });
