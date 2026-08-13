@@ -527,11 +527,6 @@ msgstr "Abgelaufene Markterhöhung"
 msgid "Percentage"
 msgstr "Prozentsatz"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Return Bonus"
-msgstr "Rückkehrbonus"
-
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "How it works?"
 msgstr "Wie funktioniert es?"
@@ -667,10 +662,6 @@ msgstr "<0>{0}</0><1>/</1><2>{1}</2> <3>bis zum Status {2} <4>+{3}</4></3>"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "Token auswählen"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Available to eligible historical users while their return bonus cap remains."
-msgstr "Für berechtigte frühere Nutzer verfügbar, solange ihr Rückkehrbonus-Limit nicht ausgeschöpft ist."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
@@ -2237,6 +2228,11 @@ msgstr "Keine SL-Orders"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Comeback Bonus"
+msgstr "Rückkehrbonus"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
@@ -7090,6 +7086,10 @@ msgstr "Volumenschwellenwert"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Available to eligible historical users while their comeback bonus cap remains."
+msgstr "Für berechtigte frühere Nutzer verfügbar, solange ihr Rückkehrbonus-Limit nicht ausgeschöpft ist."
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
