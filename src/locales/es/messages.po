@@ -419,7 +419,7 @@ msgstr "Opera con pares destacados para aumentar el multiplicador y las recompen
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
-msgstr ""
+msgstr "Actualmente no hay esGMX en vesting. Comience el vesting de sus esGMX y conviértalos gradualmente en GMX líquido."
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"

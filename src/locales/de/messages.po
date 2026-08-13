@@ -419,7 +419,7 @@ msgstr "Handeln Sie hervorgehobene Paare, um den Multiplikator und die Belohnung
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
-msgstr ""
+msgstr "Derzeit befinden sich keine esGMX im Vesting. Starten Sie das Vesting Ihrer esGMX und wandeln Sie sie schrittweise in liquide GMX um."
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
