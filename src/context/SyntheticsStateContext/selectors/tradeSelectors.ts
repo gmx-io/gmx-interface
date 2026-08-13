@@ -13,6 +13,7 @@ import {
   getNextPositionValuesForIncreaseTrade,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
+import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
@@ -230,7 +231,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const initialCollateralToken = q((state) => getByKey(selectTokensData(state), initialCollateralTokenAddress));
     const collateralToken = q((state) => getByKey(selectTokensData(state), collateralTokenAddress));
     const marketInfo = getByKey(marketsInfoData, marketAddress);
-    const position = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
+    const existingPosition = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
 
     const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
     const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
@@ -261,6 +262,14 @@ export const makeSelectIncreasePositionAmounts = ({
     ) {
       return undefined;
     }
+
+    const position = getIsPositionLiquidatedBeforeTrigger({
+      liqPrice: existingPosition?.liquidationPrice,
+      triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
+      isLong: tradeFlags.isLong,
+    })
+      ? undefined
+      : existingPosition;
 
     return getIncreasePositionAmounts({
       position,
@@ -468,7 +477,14 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
         const marketInfo = getByKey(marketsInfoData, marketAddress);
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
-        const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
+        const existingPosition = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
+        const position = getIsPositionLiquidatedBeforeTrigger({
+          liqPrice: existingPosition?.liquidationPrice,
+          triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
+          isLong: tradeFlags.isLong,
+        })
+          ? undefined
+          : existingPosition;
 
         if (!tradeFlags.isPosition || minCollateralUsd === undefined || !marketInfo || !collateralToken) {
           return undefined;

@@ -36,10 +36,6 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "已領取價格影響返還"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
-msgstr "訂單可能無法執行：在觸發價格處，所產生的倉位將面臨清算。請增加抵押品或減小規模。"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "或透過 <0>chainlist.org</0> 更新您錢包的 RPC"
@@ -457,10 +453,6 @@ msgstr "收益耕作"
 msgid "Roadmap"
 msgstr "路線圖"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "FULL MARKET"
-msgstr "完整市場"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "目標"
@@ -626,6 +618,14 @@ msgstr "所有 BTC/USD 池的流動性不足"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
 msgstr "未實現基礎 PnL"
+
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Exports are for record-keeping and tax-software compatibility; they do not constitute tax advice."
+msgstr "匯出功能僅用於保存記錄及與稅務軟體相容，並不構成稅務建議。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: liquidity may be insufficient when they trigger."
+msgstr "此訂單的部分內容可能無法執行：觸發時流動性可能不足。"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -1122,9 +1122,18 @@ msgstr "領取獎勵"
 msgid "Minimum required margin"
 msgstr ""
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "GMX Detailed CSV"
+msgstr "GMX Detailed CSV"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
+
+#: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may execute after the current position is liquidated and open a new position."
+msgstr "此訂單可能在目前部位被清算後成交，並開立新部位。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
@@ -1200,6 +1209,10 @@ msgstr ""
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "What is GT token?"
 msgstr "什麼是 GT 代幣？"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order won't execute: the trigger price is beyond the liquidation price. Edit the trigger price."
+msgstr "訂單將無法執行：觸發價格已越過清算價格。請編輯觸發價格。"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
@@ -1354,10 +1367,8 @@ msgstr "Vaultka"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1608,9 +1619,7 @@ msgstr "支付"
 msgid "Creating referral code..."
 msgstr "正在建立推薦碼..."
 
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -1819,6 +1828,10 @@ msgstr "平衡交易門檻"
 msgid "EVENT DATA"
 msgstr "事件資料"
 
+#: src/components/Claims/ClaimsHistory.tsx
+msgid "Export claims history"
+msgstr "匯出領取歷史"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
@@ -1954,6 +1967,7 @@ msgid "Maintenance"
 msgstr "維護"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Swap fee"
 msgstr "兌換費用"
 
@@ -2262,17 +2276,9 @@ msgstr "無手續費"
 msgid "Switch to market order"
 msgstr "切換到市價單"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Warning: may not execute due to low liquidity at your min. receive price"
-msgstr ""
-
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
 msgstr "每月總收入"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Swap liquidity may be insufficient when order triggers"
-msgstr "訂單觸發時兌換流動性可能不足"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Canceling {ordersText}..."
@@ -2434,10 +2440,6 @@ msgstr "提取 {glvOrGm}"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
 msgstr "獲得投票權並參與治理"
-
-#: src/components/Referrals/affiliates/faq.tsx
-msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
-msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
@@ -3036,10 +3038,6 @@ msgstr "轉帳已發起"
 msgid "Updating indexed audit data…"
 msgstr "正在更新已索引的稽核資料…"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Warning: may not execute due to low liquidity at your trigger price"
-msgstr ""
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "金額低於提取下限。請嘗試大於 <0>{lowerLimitFormatted}</0> 的金額。"
@@ -3093,6 +3091,10 @@ msgstr "最多可兌出 {0}"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "無可存入的資產"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
+msgstr "訂單可能無法以{priceText}價格執行：可接受價格影響（{formattedOrderAcceptablePriceImpact}）低於目前市場影響（{formattedCurrentAcceptablePriceImpact}）。請編輯可接受價格影響。"
 
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "{daysRemaining, plural, one {Expires in # day} other {Expires in # days}}"
@@ -3614,6 +3616,10 @@ msgstr "計入費用後，超過最大槓桿 {formattedMaxLeverage}，已被清�
 msgid "Deposited {0} into {positionText}"
 msgstr "已存入 {0} 至 {positionText}"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Preparing export…"
+msgstr "正在準備匯出…"
+
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "Trade & Stake to Earn Your Tiers"
 msgstr "透過交易和質押提升等級"
@@ -4126,6 +4132,11 @@ msgstr "GLV 金庫"
 msgid "Buy GMX from centralized services"
 msgstr "從中心化服務購買 GMX"
 
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
+msgstr "訂單可能無法執行：觸發價格下的流動性不足。請減小訂單規模。"
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -4160,6 +4171,10 @@ msgstr "載入交易歷史記錄失敗"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>設定建議影響值：{0}</0>。"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Position would be liquidated immediately upon execution. Reduce the size."
+msgstr "執行後倉位將立即被清算。請減小規模。"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claiming affiliate rewards failed"
 msgstr "領取推薦獎勵失敗"
@@ -4191,7 +4206,6 @@ msgstr "交易者活動"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/domain/synthetics/orders/utils.tsx
 msgid "Trigger price"
 msgstr "觸發價格"
 
@@ -4231,10 +4245,6 @@ msgstr "新增至歸屬"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "所有未平倉倉位的待結算借貸費用"
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "RPNL ($)"
-msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -4524,6 +4534,11 @@ msgstr "已實現費用"
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "累計的借貸費用和資金費用會在存款改善倉位保證金之前從存款中扣除，因此存款還必須覆蓋這些費用。"
 
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
+msgstr "訂單可能無法執行：產生的倉位在觸發價格下將面臨清算。請存入保證金或減小訂單規模。"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr "資金已存入您的 GMX Account"
@@ -4615,10 +4630,6 @@ msgstr "設定最低存入金額"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Unable to refresh vesting details. Please try again."
 msgstr "無法重新整理歸屬詳情。請再試一次。"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "May lack liquidity for parts of this order when triggered"
-msgstr "觸發時此訂單的部分可能缺乏流動性"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Settlement"
@@ -4803,10 +4814,6 @@ msgstr "申請聯繫"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "傳送中..."
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity for swap at min. receive amount"
-msgstr "以最低接收數量兌換時流動性不足"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
@@ -5218,6 +5225,11 @@ msgstr "虛擬市場 ID"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
 msgstr "您的錢包未連線至此網路"
+
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
+msgstr "訂單可能無法執行：按最小接收金額完成兌換的流動性不足。請編輯最小接收金額或減小兌換規模。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -5635,6 +5647,10 @@ msgstr "{longOrShort} 倉位不需支付資金費率或借貸費用"
 msgid "Turn your audience<0/>into on-chain income."
 msgstr "把您的受眾<0/>變成鏈上收入。"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped."
+msgstr "收款代幣兌換可能會被略過：訂單觸發時流動性可能不足。減倉仍會執行，您將收到未經兌換的抵押代幣。"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
 msgstr "於 {0}"
@@ -5957,13 +5973,13 @@ msgstr "無法載入訂單資料："
 msgid "Network"
 msgstr "網路"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "CoinLedger Margin Gain Manual CSV"
+msgstr "CoinLedger Margin Gain Manual CSV"
+
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "FEES ($)"
-msgstr "費用 ($)"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Pre-IPO"
@@ -6413,10 +6429,6 @@ msgstr "總乘數上限為 10×。"
 msgid "Earn"
 msgstr "賺取"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Position would be immediately liquidated upon execution. Try reducing the size."
-msgstr "倉位在執行後將立即被清算。請嘗試減少規模。"
-
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Explore the Builder Program"
 msgstr "了解 Builder Program"
@@ -6658,7 +6670,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -6912,10 +6923,6 @@ msgstr "GT 會累積在您的帳戶中，並在 GT 代幣生成事件（TGE）�
 msgid "transaction:"
 msgstr "交易："
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "EXECUTION PRICE"
-msgstr "成交價格"
-
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting data is temporarily unavailable."
 msgstr "歸屬資料暫時無法使用。"
@@ -7158,6 +7165,10 @@ msgstr "您將獲得所邀請交易者賺取的全部獎勵的 50%。"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "設定"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers."
+msgstr "訂單可能無法執行：產生的倉位將超過允許的最大槓桿。請在訂單觸發前存入保證金或減小訂單規模。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
@@ -7415,6 +7426,10 @@ msgstr "訂單因協議驗證錯誤而失敗：{errorName}"
 msgid "Send fee"
 msgstr "傳送手續費"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available."
+msgstr "此訂單的部分內容正在等待流動性：流動性充足後將執行。"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
@@ -7574,10 +7589,6 @@ msgstr "GMX Substack"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stop vesting?"
 msgstr "停止歸屬？"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
-msgstr "在觸發價格下，支付代幣至抵押品兌換的流動性不足"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
@@ -8801,10 +8812,6 @@ msgstr ""
 msgid "Win rate"
 msgstr "勝率"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity to execute order at trigger price"
-msgstr "在觸發價格下流動性不足，無法執行訂單"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX 交易統計"
@@ -8949,6 +8956,10 @@ msgstr "出場價格"
 msgid "Transfer failed"
 msgstr "轉帳失敗"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Position would be liquidated immediately. Reduce the withdrawal amount."
+msgstr "倉位將立即被清算。請減少提領金額。"
+
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
 msgstr "過去 90 天"
@@ -8978,10 +8989,6 @@ msgstr "Dune Analytics 儀表板"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Your combined staked balance is high enough to reach a higher tier."
 msgstr "您的合併質押餘額已足以達到更高等級。"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
-msgstr "訂單可能無法執行：超過最大槓桿。請編輯以減少規模。<0>了解更多</0>。"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "No distribution history"
@@ -9202,6 +9209,7 @@ msgstr ""
 msgid "Governance"
 msgstr "治理"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9323,6 +9331,10 @@ msgstr "外匯"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "分享倉位"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity to swap the pay token into the collateral token at the trigger price. Reduce the order size."
+msgstr "訂單可能無法執行：觸發價格下將支付代幣兌換為抵押代幣的流動性不足。請減小訂單規模。"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Persistent multiplier"
@@ -9525,11 +9537,9 @@ msgid "Link copied"
 msgstr "連結已複製"
 
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr "規模"
@@ -9674,10 +9684,6 @@ msgstr "領取 esGMX 獎勵"
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Volume this epoch"
 msgstr "本週期交易量"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
-msgstr "訂單使用 {collateralSymbol}，但現有的{longText}倉位使用 {symbol} 作為抵押品"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
@@ -10000,6 +10006,10 @@ msgstr "池流動性不足"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1> 的 OI 看起來很棒</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>查看更多：<4>https://tradao.xyz/#/open-interest</4></3>"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
@@ -10551,10 +10561,6 @@ msgstr "Jones DAO"
 msgid "Set short Stop Market @ {0}"
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "Failed to download trade history CSV"
-msgstr "交易歷史 CSV 下載失敗"
-
 #: src/components/RewardsShare/RewardsShareCard.tsx
 msgid "I'm ranked #{rank} on GMX."
 msgstr "我在 GMX 上排名第 #{rank}。"
@@ -10714,10 +10720,6 @@ msgstr "起始未實現費用"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account 存款受 Stargate 跨鏈橋流動性限制。請嘗試小於 <0>{upperLimitFormatted}</0> 的金額。"
-
-#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
-msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
-msgstr "在目前倉位狀態下，此訂單可能無法成交。請在觸發前增加抵押品或降低槓桿。"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>"
@@ -11848,7 +11850,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -12179,10 +12180,6 @@ msgstr "倉位影響金額"
 msgid "Boosts"
 msgstr "加成"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "PRICE IMPACT"
-msgstr "價格影響"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
 msgstr "搜尋機會"
@@ -12195,11 +12192,6 @@ msgstr "深色"
 msgid "Confirming..."
 msgstr "確認中..."
 
-#: src/components/Claims/ClaimsHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "ACTION"
-msgstr "操作"
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -12208,6 +12200,7 @@ msgstr "加倉"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "兌換價格影響"
@@ -12349,7 +12342,6 @@ msgstr "GMX Account"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
-#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit price"
 msgstr "限價"
 
@@ -12610,7 +12602,6 @@ msgstr "錢包或網路已變更。請在領取前查看您的 esGMX 獎勵。"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "TRIGGER PRICE"
 msgstr "觸發價格"
 
@@ -12618,9 +12609,17 @@ msgstr "觸發價格"
 msgid "Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as shown."
 msgstr "從 {marketName} 市場的槓桿交易和兌換中累積手續費。如圖所示，曝險於 {exposedToLabel}。"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Export trade history"
+msgstr "匯出交易歷史記錄"
+
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR."
 msgstr "預計年度回購率。按近期平均速度，GMX 回購在一年內將相當於 GMX 總供應量的該百分比。這是協議層面的回購指標，而非個人質押 APR。"
+
+#: src/components/HistoryExport/useHistoryExport.ts
+msgid "The export could not be completed. No file was downloaded."
+msgstr "無法完成匯出。未下載任何檔案。"
 
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Reward shares"
@@ -12919,10 +12918,6 @@ msgstr "GMX positions bot"
 msgid "Reload page"
 msgstr "重新載入頁面"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order won't execute: trigger price beyond liquidation price"
-msgstr "訂單將不會執行：觸發價格超過清算價格"
-
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
 msgstr "結算中..."
@@ -13013,10 +13008,6 @@ msgstr "{count, plural, other {此生命週期中的# 個操作}}"
 msgid "Multicall simulation"
 msgstr "Multicall 模擬"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "ACCEPTABLE PRICE"
-msgstr "可接受價格"
-
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "事件"
@@ -13024,6 +13015,10 @@ msgstr "事件"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting started. Balances will refresh shortly."
 msgstr "歸屬已開始。餘額將很快重新整理。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order won't add to the existing {longText} position: it uses {collateralSymbol} as collateral while the position uses {symbol}. Executing it opens a separate position."
+msgstr "訂單不會加入現有{longText}倉位：訂單使用{collateralSymbol}作為抵押品，而該倉位使用{symbol}。執行後將開立一個獨立倉位。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
@@ -13137,7 +13132,6 @@ msgstr "淨值"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "MARK PRICE"
 msgstr "標記價格"
 
@@ -13273,10 +13267,6 @@ msgstr ""
 msgid "GT"
 msgstr "GT"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Parts of this order will execute once sufficient liquidity is available"
-msgstr "此訂單的部分將在有足夠流動性時執行"
-
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "設定了較高的可接受價格影響。目前影響：{0}。"
@@ -13311,6 +13301,10 @@ msgstr "做多"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "為 {0} 簽署許可時發生錯誤：{1}"
+
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "GMX Claims CSV"
+msgstr "GMX Claims CSV"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
@@ -13455,6 +13449,7 @@ msgstr "儀表板"
 msgid "{label}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "觸發"
@@ -13581,11 +13576,6 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "分享 PnL"
-
-#: src/components/Claims/ClaimsHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "TRANSACTION ID"
-msgstr "交易 ID"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
@@ -13996,6 +13986,7 @@ msgstr "可用："
 msgid "Realized base PnL"
 msgstr "已實現基礎 PnL"
 
+#: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr "限價"
@@ -14040,10 +14031,6 @@ msgstr "30 日績效 APY"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Uniswap"
 msgstr "Uniswap"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderAcceptablePriceImpact}) below market ({formattedCurrentAcceptablePriceImpact}). Click \"Edit\"."
-msgstr "訂單可能無法以{priceText}成交：可接受的價格影響（{formattedOrderAcceptablePriceImpact}）低於市場（{formattedCurrentAcceptablePriceImpact}）。點擊「編輯」。"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx

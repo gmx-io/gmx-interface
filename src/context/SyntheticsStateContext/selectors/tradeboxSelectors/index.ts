@@ -57,6 +57,7 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
+import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
 import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
@@ -1736,6 +1737,24 @@ export const selectTradeboxSelectedPosition = createSelector((q) => {
 
 export const selectTradeboxSelectedPositionSizeInUsd = createSelector((q) => {
   return q(selectTradeboxSelectedPosition)?.sizeInUsd;
+});
+
+export const selectTradeboxIsPositionLiquidatedBeforeTrigger = createSelector((q) => {
+  const { isIncrease, isLimit, isLong } = q(selectTradeboxTradeFlags);
+
+  if (!isIncrease || !isLimit) {
+    return false;
+  }
+
+  return getIsPositionLiquidatedBeforeTrigger({
+    liqPrice: q(selectTradeboxSelectedPosition)?.liquidationPrice,
+    triggerPrice: q(selectTradeboxTriggerPrice),
+    isLong,
+  });
+});
+
+export const selectTradeboxExistingPositionForPreview = createSelector((q) => {
+  return q(selectTradeboxIsPositionLiquidatedBeforeTrigger) ? undefined : q(selectTradeboxSelectedPosition);
 });
 
 const selectTradeboxExistingOrders = createSelector((q) => {

@@ -11,6 +11,8 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
+export const MAX_PERCENTAGE_INPUT_VALUE = 99 * 100; // basis points
+
 function getValueText(value: number) {
   return roundToTwoDecimals((value / BASIS_POINTS_DIVISOR) * 100).toString();
 }
@@ -37,7 +39,7 @@ export default function PercentageInput({
   onChange,
   defaultValue,
   value,
-  maxValue = 99 * 100,
+  maxValue = MAX_PERCENTAGE_INPUT_VALUE,
   highValue,
   lowValue,
   suggestions = DEFAULT_SUGGESTIONS,
