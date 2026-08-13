@@ -771,6 +771,70 @@ describe("TradeHistoryRow helpers", () => {
     `);
   });
 
+  describe("formatSwapMessage settled economics", () => {
+    const swapFeeUsd = (PRECISION * 3n) / 2n;
+    const swapImpactUsd = -PRECISION / 2n;
+
+    it("exposes swap fee and swap price impact for executed swaps", () => {
+      for (const executedSwap of [executeSwap, executeOrderSwap]) {
+        expect(formatSwapMessage({ ...executedSwap, swapFeeUsd, swapImpactUsd })).toMatchObject({
+          fees: "-$ 2.00",
+          feesTooltip: [
+            { key: "Swap fee", value: "-$ 1.50" },
+            { key: "Swap price impact", value: "-$ 0.50" },
+          ],
+          priceImpact: "-$ 0.50",
+        });
+      }
+    });
+
+    it("exposes settled economics for each executed TWAP swap part", () => {
+      const twapSwapPart = {
+        ...executeSwap,
+        twapParams: { twapGroupId: "0x01", numberOfParts: 3 },
+        swapFeeUsd,
+        swapImpactUsd,
+      };
+
+      expect(formatSwapMessage(twapSwapPart)).toMatchObject({
+        action: "Execute TWAP Swap part",
+        fees: "-$ 2.00",
+        priceImpact: "-$ 0.50",
+      });
+    });
+
+    it("keeps a genuine zero visible and omits missing economics", () => {
+      expect(formatSwapMessage({ ...executeSwap, swapFeeUsd, swapImpactUsd: 0n })).toMatchObject({
+        fees: "-$ 1.50",
+        feesTooltip: [
+          { key: "Swap fee", value: "-$ 1.50" },
+          { key: "Swap price impact", value: "$ 0.00" },
+        ],
+        priceImpact: "$ 0.00",
+      });
+
+      const withoutIndexedEconomics = formatSwapMessage({
+        ...executeSwap,
+        swapFeeUsd: undefined,
+        swapImpactUsd: undefined,
+      });
+
+      expect(withoutIndexedEconomics.fees).toBeUndefined();
+      expect(withoutIndexedEconomics.feesTooltip).toBeUndefined();
+      expect(withoutIndexedEconomics.priceImpact).toBeUndefined();
+    });
+
+    it("does not report economics for swap actions that did not execute", () => {
+      for (const notExecutedSwap of [requestSwap, failedSwap]) {
+        const details = formatSwapMessage({ ...notExecutedSwap, swapFeeUsd, swapImpactUsd });
+
+        expect(details.fees).toBeUndefined();
+        expect(details.feesTooltip).toBeUndefined();
+        expect(details.priceImpact).toBeUndefined();
+      }
+    });
+  });
+
   it("formatPositionMessage renders 'Full position close' for full-close TP/SL actions", () => {
     const fullCloseCreate = {
       ...createOrderDecreaseLong,

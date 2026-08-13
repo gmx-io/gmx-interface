@@ -4,7 +4,7 @@ import { DOCS_LINKS } from "config/links";
 import { selectBreakdownNetPriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
-  selectTradeboxSelectedPosition,
+  selectTradeboxExistingPositionForPreview,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatDeltaUsd } from "lib/numbers";
@@ -15,7 +15,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 export function NextStoredImpactRows() {
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
 
@@ -42,9 +42,9 @@ export function NextStoredImpactRows() {
         }
         value={
           nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
-          selectedPosition?.pendingImpactUsd !== undefined ? (
+          existingPosition?.pendingImpactUsd !== undefined ? (
             <ValueTransition
-              from={formatDeltaUsd(selectedPosition?.pendingImpactUsd)}
+              from={formatDeltaUsd(existingPosition?.pendingImpactUsd)}
               to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
             />
           ) : (

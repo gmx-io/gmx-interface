@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import {
   selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
-  selectTradeboxSelectedPosition,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -13,12 +13,12 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 export function EntryPriceRow() {
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const toToken = useSelector(selectTradeboxToToken);
 
-  if (!selectedPosition) {
+  if (!existingPosition) {
     return null;
   }
 
@@ -26,9 +26,9 @@ export function EntryPriceRow() {
     <SyntheticsInfoRow
       label={t`Entry price`}
       value={
-        nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
+        nextPositionValues?.nextEntryPrice || existingPosition?.entryPrice ? (
           <ValueTransition
-            from={formatUsdPrice(selectedPosition?.entryPrice, {
+            from={formatUsdPrice(existingPosition?.entryPrice, {
               visualMultiplier: toToken?.visualMultiplier,
             })}
             to={formatUsdPrice(nextPositionValues?.nextEntryPrice, {

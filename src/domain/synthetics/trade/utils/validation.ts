@@ -711,11 +711,17 @@ export function getEditCollateralError(p: {
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
     if (position?.isLong && nextLiqPrice < maxUint256 && position?.markPrice < nextLiqPrice) {
-      return { buttonErrorMessage: t`Invalid liquidation price` };
+      return {
+        buttonErrorMessage: t`Invalid liquidation price`,
+        buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
+      };
     }
 
     if (!position.isLong && position.markPrice > nextLiqPrice) {
-      return { buttonErrorMessage: t`Invalid liquidation price` };
+      return {
+        buttonErrorMessage: t`Invalid liquidation price`,
+        buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
+      };
     }
   }
 

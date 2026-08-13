@@ -156,6 +156,7 @@ export function DynamicLine({
         .setQuantityBackgroundColor(chartLabelColors.button.bg[theme])
         .setQuantityFont(`normal ${bodyFontSizePt + 4}pt "Relative", sans-serif`)
         .setQuantityBorderColor(orderBodyBgBorderColor)
+        .setQuantityTextColor(chartLabelColors.button.icon[theme])
 
         .setCancelButtonBackgroundColor(chartLabelColors.button.bg[theme])
         .setCancelButtonBorderColor(orderBodyBgBorderColor)

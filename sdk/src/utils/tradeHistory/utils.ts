@@ -57,6 +57,8 @@ export function createRawTradeActionTransformer(
         initialCollateralDeltaAmount: toBigInt(rawAction.initialCollateralDeltaAmount)!,
         minOutputAmount: toBigInt(rawAction.minOutputAmount)!,
         executionAmountOut: rawAction.executionAmountOut ? toBigInt(rawAction.executionAmountOut) : undefined,
+        swapFeeUsd: toBigInt(rawAction.swapFeeUsd),
+        swapImpactUsd: toBigInt(rawAction.swapImpactUsd),
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
         targetCollateralToken,
         initialCollateralToken,

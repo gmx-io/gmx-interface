@@ -12500,6 +12500,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fflate@npm:0.8.3":
+  version: 0.8.3
+  resolution: "fflate@npm:0.8.3"
+  checksum: 10/6ebf528dc9c56e78e715eac615b009b25dc33e15c1920b11ebba44e6d76181c647756a81a23e19247907496b93aa99928514c53090579a65109e026ac2824aa7
+  languageName: node
+  linkType: hard
+
 "figures@npm:^3.0.0":
   version: 3.2.0
   resolution: "figures@npm:3.2.0"
@@ -13086,6 +13093,7 @@ __metadata:
     eslint-plugin-react-perf: "npm:3.3.2"
     eth-testing: "npm:1.9.1"
     ethers: "npm:6.12.1"
+    fflate: "npm:0.8.3"
     framer-motion: "npm:12.35.2"
     graphql: "npm:15.8.0"
     happy-dom: "npm:20.8.9"
