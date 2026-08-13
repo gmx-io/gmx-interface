@@ -89,7 +89,6 @@ import {
   buildIncreaseOrderPayload,
 } from "sdk/utils/orderTransactions";
 
-import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -487,21 +486,29 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return validationResult.buttonTooltipMessage;
     }
 
-    if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.maxLeverage) {
-      return null;
+    if (validationResult.buttonTooltipName === ValidationButtonTooltipName.liqPriceGtMarkPrice) {
+      return <Trans>Position would be liquidated immediately. Reduce the withdrawal amount.</Trans>;
     }
 
-    return (
-      <Trans>
-        Reduce withdrawal to match the max.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
-        <br />
-        <br />
-        <span onClick={detectAndSetMaxSize} className="Tradebox-handle">
-          <Trans>Set max withdrawal</Trans>
-        </span>
-      </Trans>
-    );
+    if (validationResult.buttonTooltipName === ValidationButtonTooltipName.maxLeverage) {
+      return (
+        <Trans>
+          Reduce withdrawal to match the max.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
+          <br />
+          <br />
+          <button
+            type="button"
+            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+            onClick={detectAndSetMaxSize}
+          >
+            <Trans>Set max withdrawal</Trans>
+          </button>
+        </Trans>
+      );
+    }
+
+    return null;
   }, [detectAndSetMaxSize, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   const errorBannerContent = useMemo(() => {
@@ -523,9 +530,15 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
           Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the
           deposit must also cover them.
         </Trans>
-        <ColorfulButtonLink color="red" onClick={setMinDepositValue}>
-          <Trans>Set min deposit</Trans>
-        </ColorfulButtonLink>
+        <div className="mt-4">
+          <button
+            type="button"
+            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+            onClick={setMinDepositValue}
+          >
+            <Trans>Set min deposit</Trans>
+          </button>
+        </div>
       </div>
     );
   }, [setMinDepositValue, validationResult.buttonTooltipName]);

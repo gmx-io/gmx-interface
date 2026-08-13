@@ -68,6 +68,7 @@ import { TradeInputBox } from "components/TradeboxMarginFields/TradeInputBox";
 import { TradeInputField } from "components/TradeboxMarginFields/TradeInputField";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import InfoIcon from "img/ic_info_circle_stroke.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
 import { PositionEditorCollateralSelector } from "../CollateralSelector/PositionEditorCollateralSelector";
@@ -400,7 +401,7 @@ export function PositionEditor() {
 
   const buttonContent = (
     <Button
-      className="w-full"
+      className="w-full gap-4"
       variant="primary-action"
       onClick={submitButtonState.onSubmit}
       disabled={submitButtonState.disabled}
@@ -408,6 +409,7 @@ export function PositionEditor() {
       qa="confirm-button"
     >
       {submitButtonState.text}
+      {submitButtonState.tooltipContent && <InfoIcon className="size-20" />}
     </Button>
   );
 
@@ -419,6 +421,7 @@ export function PositionEditor() {
       handle={buttonContent}
       handleClassName="w-full"
       position="top"
+      variant="none"
     />
   ) : (
     buttonContent

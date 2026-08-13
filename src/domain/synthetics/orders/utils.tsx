@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 
 import { Token } from "domain/tokens";
 import { formatPercentage } from "lib/numbers";
@@ -17,8 +17,6 @@ import {
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-
 import { getMarginDepositProjections, getMarginDepositRiskLevel, isMarginDepositOrder } from "./marginDeposit";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
@@ -34,7 +32,10 @@ import {
 } from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
-import { getIsIncreaseResultingPositionLiquidatable } from "../trade/utils/warnings";
+import {
+  getIsIncreaseResultingPositionLiquidatable,
+  getIsPositionLiquidatedBeforeTrigger,
+} from "../trade/utils/warnings";
 
 function getSwapOrderTitle() {
   return t`Swap`;
@@ -184,13 +185,13 @@ export function getOrderErrors(p: {
       if (currentLiquidity < order.sizeDeltaUsd) {
         if (orderWithValidFromTimeExceeded) {
           errors.push({
-            msg: t`Parts of this order will execute once sufficient liquidity is available`,
+            msg: t`Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available.`,
             level: "warning",
             key: "twap-liquidity1",
           });
         } else {
           errors.push({
-            msg: t`May lack liquidity for parts of this order when triggered`,
+            msg: t`Parts of this order may not execute: liquidity may be insufficient when they trigger.`,
             level: "warning",
             key: "twap-liquidity2",
           });
@@ -223,7 +224,7 @@ export function getOrderErrors(p: {
 
       if (swapPathLiquidity < minOutputUsd && !isTwapOrder(order)) {
         errors.push({
-          msg: t`Insufficient liquidity for swap at min. receive amount`,
+          msg: t`Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size.`,
           level: "error",
           key: "liquidity0",
         });
@@ -285,7 +286,7 @@ export function getOrderErrors(p: {
       });
 
       if (currentAcceptablePriceDeltaBps < 0 && currentAcceptablePriceDeltaBps < orderAcceptablePriceDeltaBps) {
-        const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit price` : t`Trigger price`;
+        const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`limit` : t`trigger`;
         const formattedCurrentAcceptablePriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, {
           signed: true,
         });
@@ -294,7 +295,7 @@ export function getOrderErrors(p: {
         });
 
         errors.push({
-          msg: t`Order may not execute at ${priceText}: acceptable impact (${formattedOrderAcceptablePriceImpact}) below market (${formattedCurrentAcceptablePriceImpact}). Click "Edit".`,
+          msg: t`Order may not execute at the ${priceText} price: the acceptable price impact (${formattedOrderAcceptablePriceImpact}) is below the current market impact (${formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact.`,
           level: "warning",
           key: "acceptablePrice",
         });
@@ -310,7 +311,7 @@ export function getOrderErrors(p: {
 
       if (currentLiquidity < positionOrder.sizeDeltaUsd) {
         errors.push({
-          msg: t`Insufficient liquidity to execute order at trigger price`,
+          msg: t`Order may not execute: insufficient liquidity at the trigger price. Reduce the order size.`,
           level: "error",
           key: "liquidity1",
         });
@@ -331,7 +332,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < collateralSwapUsd) {
           errors.push({
-            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price`,
+            msg: t`Order may not execute: insufficient liquidity to swap the pay token into the collateral token at the trigger price. Reduce the order size.`,
             level: "error",
             key: "liquidity2",
           });
@@ -350,7 +351,7 @@ export function getOrderErrors(p: {
 
       if (sameMarketPosition) {
         errors.push({
-          msg: t`Order uses ${collateralSymbol}, but existing ${longText} position uses ${symbol} as collateral`,
+          msg: t`Order won't add to the existing ${longText} position: it uses ${collateralSymbol} as collateral while the position uses ${symbol}. Executing it opens a separate position.`,
           level: "warning",
           key: "collateralToken",
         });
@@ -370,7 +371,7 @@ export function getOrderErrors(p: {
 
       if (isInvalidTriggerPrice && !isMarketOrderType(order.orderType)) {
         errors.push({
-          msg: t`Order won't execute: trigger price beyond liquidation price`,
+          msg: t`Order won't execute: the trigger price is beyond the liquidation price. Edit the trigger price.`,
           level: "error",
           key: "triggerPrice",
         });
@@ -391,7 +392,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < minOutputUsd) {
           errors.push({
-            msg: t`Swap liquidity may be insufficient when order triggers`,
+            msg: t`The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped.`,
             level: "warning",
             key: "swapPath",
           });
@@ -400,9 +401,27 @@ export function getOrderErrors(p: {
     }
 
     if (isIncreaseOrderType(order.orderType)) {
+      const isPositionLiquidatedBeforeTrigger =
+        isLimitOrderType(order.orderType) &&
+        getIsPositionLiquidatedBeforeTrigger({
+          liqPrice: position?.liquidationPrice,
+          triggerPrice: positionOrder.triggerPrice,
+          isLong: positionOrder.isLong,
+        });
+
+      const positionForPreview = isPositionLiquidatedBeforeTrigger ? undefined : position;
+
+      if (isPositionLiquidatedBeforeTrigger) {
+        errors.push({
+          key: "liquidatedBeforeTrigger",
+          level: "warning",
+          msg: t`This order may execute after the current position is liquidated and open a new position.`,
+        });
+      }
+
       const isMaxLeverageError = getIsMaxLeverageError({
         order: positionOrder,
-        position,
+        position: positionForPreview,
         findSwapPath: p.findSwapPath,
         uiFeeFactor: p.uiFeeFactor,
         chainId: p.chainId,
@@ -410,12 +429,7 @@ export function getOrderErrors(p: {
 
       if (isMaxLeverageError) {
         errors.push({
-          msg: (
-            <Trans>
-              Order may not execute: max leverage exceeded. Edit to reduce size.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
-            </Trans>
-          ),
+          msg: t`Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers.`,
           key: "maxLeverage",
           level: "error",
         });
@@ -433,7 +447,7 @@ export function getOrderErrors(p: {
         errors.push({
           key: "resultingLiquidatable",
           level: "error",
-          msg: t`Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size.`,
+          msg: t`Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size.`,
         });
       }
     }

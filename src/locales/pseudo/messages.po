@@ -36,10 +36,6 @@ msgstr ""
 msgid "Price impact rebates claimed"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size."
-msgstr ""
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr ""
@@ -421,10 +417,6 @@ msgstr ""
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price."
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "FULL MARKET"
-msgstr ""
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr ""
@@ -574,6 +566,14 @@ msgstr ""
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
+msgstr ""
+
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Exports are for record-keeping and tax-software compatibility; they do not constitute tax advice."
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: liquidity may be insufficient when they trigger."
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -1018,8 +1018,17 @@ msgstr ""
 msgid "Minimum required margin"
 msgstr ""
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "GMX Detailed CSV"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
+msgstr ""
+
+#: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may execute after the current position is liquidated and open a new position."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -1084,6 +1093,10 @@ msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order won't execute: the trigger price is beyond the liquidation price. Edit the trigger price."
 msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
@@ -1232,10 +1245,8 @@ msgstr ""
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1451,9 +1462,7 @@ msgstr ""
 msgid "Creating referral code..."
 msgstr ""
 
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -1633,6 +1642,10 @@ msgstr ""
 msgid "EVENT DATA"
 msgstr ""
 
+#: src/components/Claims/ClaimsHistory.tsx
+msgid "Export claims history"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
@@ -1752,6 +1765,7 @@ msgid "Maintenance"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Swap fee"
 msgstr ""
 
@@ -2009,16 +2023,8 @@ msgstr ""
 msgid "Switch to market order"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Warning: may not execute due to low liquidity at your min. receive price"
-msgstr ""
-
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Swap liquidity may be insufficient when order triggers"
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
@@ -2165,10 +2171,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
-msgstr ""
-
-#: src/components/Referrals/affiliates/faq.tsx
-msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -2693,10 +2695,6 @@ msgstr ""
 msgid "Transfer initiated"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Warning: may not execute due to low liquidity at your trigger price"
-msgstr ""
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr ""
@@ -2752,6 +2750,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3181,6 +3183,10 @@ msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
+msgstr ""
+
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Preparing export…"
 msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
@@ -3628,6 +3634,11 @@ msgstr ""
 msgid "Buy GMX from centralized services"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit."
 msgstr ""
@@ -3660,6 +3671,10 @@ msgstr "Failed to load trade history"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -3695,7 +3710,6 @@ msgstr ""
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/domain/synthetics/orders/utils.tsx
 msgid "Trigger price"
 msgstr ""
 
@@ -3729,10 +3743,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
-msgstr ""
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "RPNL ($)"
 msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -3999,6 +4009,11 @@ msgstr ""
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr ""
 
+#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr ""
@@ -4071,10 +4086,6 @@ msgstr ""
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "May lack liquidity for parts of this order when triggered"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4239,10 +4250,6 @@ msgstr ""
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity for swap at min. receive amount"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -4599,6 +4606,11 @@ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -4980,6 +4992,10 @@ msgstr ""
 msgid "Turn your audience<0/>into on-chain income."
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped."
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
 msgstr ""
@@ -5270,12 +5286,12 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-#: src/components/OrdersModal/TPSLInputRow.tsx
-msgid "{secondLabel}"
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "CoinLedger Margin Gain Manual CSV"
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "FEES ($)"
+#: src/components/OrdersModal/TPSLInputRow.tsx
+msgid "{secondLabel}"
 msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -5677,10 +5693,6 @@ msgstr ""
 msgid "Earn"
 msgstr ""
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Position would be immediately liquidated upon execution. Try reducing the size."
-msgstr ""
-
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Explore the Builder Program"
 msgstr ""
@@ -5905,7 +5917,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -6134,10 +6145,6 @@ msgstr ""
 msgid "transaction:"
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "EXECUTION PRICE"
-msgstr ""
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "spinner"
 msgstr ""
@@ -6334,6 +6341,10 @@ msgstr ""
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers."
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
@@ -6557,6 +6568,10 @@ msgstr ""
 msgid "Send fee"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available."
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
@@ -6697,10 +6712,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -7793,10 +7804,6 @@ msgstr ""
 msgid "Win rate"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Insufficient liquidity to execute order at trigger price"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr ""
@@ -7925,6 +7932,10 @@ msgstr ""
 msgid "Edit margin deposit: {suffix}"
 msgstr ""
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Position would be liquidated immediately. Reduce the withdrawal amount."
+msgstr ""
+
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
 msgstr ""
@@ -7949,10 +7960,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics dashboard"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -8145,6 +8152,7 @@ msgstr ""
 msgid "Governance"
 msgstr ""
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -8241,6 +8249,10 @@ msgstr "[!! FX !!]"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: insufficient liquidity to swap the pay token into the collateral token at the trigger price. Reduce the order size."
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -8444,11 +8456,9 @@ msgid "Link copied"
 msgstr ""
 
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr ""
@@ -8564,10 +8574,6 @@ msgstr ""
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -8847,6 +8853,10 @@ msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
+msgstr ""
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -9328,10 +9338,6 @@ msgstr ""
 msgid "Set short Stop Market @ {0}"
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "Failed to download trade history CSV"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -9480,10 +9486,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX Account deposits are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
-msgstr ""
-
-#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
-msgid "This order may fail to execute with the current position state. Add collateral or reduce leverage before it triggers."
 msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -10473,7 +10475,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -10759,10 +10760,6 @@ msgstr ""
 msgid "Position impact amount"
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "PRICE IMPACT"
-msgstr ""
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
 msgstr ""
@@ -10780,11 +10777,6 @@ msgstr ""
 msgid "Deposited:"
 msgstr ""
 
-#: src/components/Claims/ClaimsHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "ACTION"
-msgstr ""
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -10793,6 +10785,7 @@ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr ""
@@ -10924,7 +10917,6 @@ msgstr ""
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
-#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit price"
 msgstr ""
 
@@ -11158,7 +11150,6 @@ msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "TRIGGER PRICE"
 msgstr ""
 
@@ -11166,8 +11157,16 @@ msgstr ""
 msgid "Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as shown."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Export trade history"
+msgstr ""
+
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR."
+msgstr ""
+
+#: src/components/HistoryExport/useHistoryExport.ts
+msgid "The export could not be completed. No file was downloaded."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -11430,10 +11429,6 @@ msgstr ""
 msgid "Reload page"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order won't execute: trigger price beyond liquidation price"
-msgstr ""
-
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
 msgstr ""
@@ -11518,12 +11513,12 @@ msgstr ""
 msgid "Multicall simulation"
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "ACCEPTABLE PRICE"
-msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order won't add to the existing {longText} position: it uses {collateralSymbol} as collateral while the position uses {symbol}. Executing it opens a separate position."
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -11633,7 +11628,6 @@ msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "MARK PRICE"
 msgstr ""
 
@@ -11754,10 +11748,6 @@ msgstr ""
 msgid "Where can I read more?"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Parts of this order will execute once sufficient liquidity is available"
-msgstr ""
-
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr ""
@@ -11791,6 +11781,10 @@ msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
+msgstr ""
+
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "GMX Claims CSV"
 msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -11916,6 +11910,7 @@ msgstr ""
 msgid "{label}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr ""
@@ -12017,11 +12012,6 @@ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
-msgstr ""
-
-#: src/components/Claims/ClaimsHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "TRANSACTION ID"
 msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
@@ -12369,6 +12359,7 @@ msgstr ""
 msgid "Realized base PnL"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr ""
@@ -12408,10 +12399,6 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Uniswap"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderAcceptablePriceImpact}) below market ({formattedCurrentAcceptablePriceImpact}). Click \"Edit\"."
 msgstr ""
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx

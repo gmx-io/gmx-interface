@@ -39,6 +39,7 @@ import {
   TradeMode,
   TradeType,
 } from "domain/synthetics/trade";
+import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
 import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
 import { getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
@@ -682,7 +683,13 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     leverage: existingPosition?.leverage,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
     limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
-    position: existingPosition,
+    position: getIsPositionLiquidatedBeforeTrigger({
+      liqPrice: existingPosition?.liquidationPrice,
+      triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
+      isLong: order.isLong,
+    })
+      ? undefined
+      : existingPosition,
     findSwapPath,
     userReferralInfo,
     uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,

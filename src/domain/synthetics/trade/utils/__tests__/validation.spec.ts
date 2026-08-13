@@ -438,6 +438,27 @@ describe("margin deposit banner copy", () => {
   });
 });
 
+describe("getEditCollateralError — invalid liquidation price tooltip", () => {
+  it.each([
+    { isLong: true, nextLiqPrice: expandDecimals(55_000, 30) },
+    { isLong: false, nextLiqPrice: expandDecimals(45_000, 30) },
+  ])("adds remediation context for a $isLong position", ({ isLong, nextLiqPrice }) => {
+    const result = getEditCollateralError({
+      ...baseEditCollateralParams,
+      isDeposit: false,
+      maxWithdrawAmount: expandDecimals(100, 6),
+      nextLiqPrice,
+      position: {
+        isLong,
+        markPrice: expandDecimals(50_000, 30),
+      } as any,
+    });
+
+    expect(result.buttonErrorMessage).toBe("Invalid liquidation price");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.liqPriceGtMarkPrice);
+  });
+});
+
 describe("getNativeGasError", () => {
   it("skips validation while the fee or balance is loading", () => {
     expect(getNativeGasError({ networkFee: undefined, nativeBalance: 0n })).toEqual({});

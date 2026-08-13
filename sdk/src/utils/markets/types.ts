@@ -101,6 +101,15 @@ export type MarketInfo = Market &
     longInterestInTokens: bigint;
     shortInterestInTokens: bigint;
 
+    longInterestUsdUsingLongToken?: bigint;
+    longInterestUsdUsingShortToken?: bigint;
+    shortInterestUsdUsingLongToken?: bigint;
+    shortInterestUsdUsingShortToken?: bigint;
+    longInterestInTokensUsingLongToken?: bigint;
+    longInterestInTokensUsingShortToken?: bigint;
+    shortInterestInTokensUsingLongToken?: bigint;
+    shortInterestInTokensUsingShortToken?: bigint;
+
     positionFeeFactorForBalanceWasImproved: bigint;
     positionFeeFactorForBalanceWasNotImproved: bigint;
     positionImpactFactorPositive: bigint;
@@ -158,6 +167,14 @@ export const MARKET_VALUES_KEYS = [
   "shortInterestUsd",
   "longInterestInTokens",
   "shortInterestInTokens",
+  "longInterestUsdUsingLongToken",
+  "longInterestUsdUsingShortToken",
+  "shortInterestUsdUsingLongToken",
+  "shortInterestUsdUsingShortToken",
+  "longInterestInTokensUsingLongToken",
+  "longInterestInTokensUsingShortToken",
+  "shortInterestInTokensUsingLongToken",
+  "shortInterestInTokensUsingShortToken",
   "longPoolAmount",
   "shortPoolAmount",
   "poolValueMin",
