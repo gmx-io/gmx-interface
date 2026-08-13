@@ -1,3 +1,4 @@
+import pick from "lodash/pick";
 import { useMemo } from "react";
 import useSWR from "swr";
 
@@ -5,6 +6,7 @@ import { API_UI_FLAGS_CACHE_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { getOracleKeeperUrl } from "sdk/configs/oracleKeeper";
 
 export type UiFlag = {
   enabled: boolean;
@@ -87,6 +89,35 @@ function persistApiFlags(chainId: number, flags: UiFlags) {
   }
 }
 
+/**
+ * The flags arrive from whichever keeper replica the fallback tracker elected, and it elects on
+ * price health — a replica can serve good prices and a stale flag, and stay elected for as long as
+ * its prices are fine. That is survivable for a banner and not for a switch that takes express away,
+ * so before acting on one, ask the configured keeper directly. Only the acting values are worth a
+ * request: the common case costs nothing.
+ */
+export async function confirmRelayControlFlags(chainId: number, flags: UiFlags): Promise<UiFlags> {
+  const isActing =
+    flags[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled === false || flags[FORCE_GELATO_RELAYER_UI_FLAG]?.enabled === true;
+
+  if (!isActing) {
+    return flags;
+  }
+
+  try {
+    const response = await fetch(`${getOracleKeeperUrl(chainId)}/ui-flags/v2`);
+    const canonical = (await response.json()) as UiFlags;
+
+    return {
+      ...flags,
+      ...pick(canonical, [IS_EXPRESS_AVAILABLE_UI_FLAG, FORCE_GELATO_RELAYER_UI_FLAG]),
+    };
+  } catch {
+    // the replica that answered is all we have; acting on it beats ignoring a switch someone threw
+    return flags;
+  }
+}
+
 export function useUiFlagsRequest() {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -96,7 +127,7 @@ export function useUiFlagsRequest() {
   const { data: uiFlags } = useSWR<UiFlags>(
     ["uiFlags", chainId],
     async () => {
-      const result = await oracleKeeperFetcher.fetchUiFlags();
+      const result = await confirmRelayControlFlags(chainId, await oracleKeeperFetcher.fetchUiFlags());
       persistApiFlags(chainId, result);
       return result;
     },
