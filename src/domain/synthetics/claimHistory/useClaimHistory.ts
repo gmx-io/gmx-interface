@@ -178,8 +178,8 @@ export async function fetchRawClaimActions({
       AND: [
         {
           account_eq: account,
-          transaction_timestamp_gte: fromTxTimestamp,
-          transaction_timestamp_lte: toTxTimestamp,
+          timestamp_gte: fromTxTimestamp,
+          timestamp_lte: toTxTimestamp,
           eventName_in: eventName,
         },
         {

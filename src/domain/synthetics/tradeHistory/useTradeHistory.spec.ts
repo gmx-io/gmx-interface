@@ -22,10 +22,12 @@ describe("fetchTwapGroupExecutedActions", () => {
   it("requests executed actions of the given groups in stable ascending order", async () => {
     queryMock.mockResolvedValue({ data: { tradeActions: [] } });
 
-    await fetchTwapGroupExecutedActions({ chainId: 42161, twapGroupIds: ["group-1"] });
+    await fetchTwapGroupExecutedActions({ chainId: 42161, account: "0xAccount", twapGroupIds: ["group-1"] });
 
     expect(queryMock).toHaveBeenCalledTimes(1);
     const body = getQueryBody(0);
+    // account_eq keeps the query on the indexed account column; twapGroupId alone full-scans
+    expect(body).toContain('account_eq:"0xAccount"');
     expect(body).toContain('twapGroupId_in:["group-1"]');
     expect(body).toContain('eventName_eq:"OrderExecuted"');
     expect(body).toContain("orderBy: [timestamp_ASC, id_ASC]");
@@ -35,7 +37,7 @@ describe("fetchTwapGroupExecutedActions", () => {
     queryMock.mockResolvedValue({ data: { tradeActions: [] } });
     const twapGroupIds = Array.from({ length: 150 }, (_, index) => `group-${index}`);
 
-    await fetchTwapGroupExecutedActions({ chainId: 42161, twapGroupIds });
+    await fetchTwapGroupExecutedActions({ chainId: 42161, account: "0xAccount", twapGroupIds });
 
     expect(queryMock).toHaveBeenCalledTimes(2);
     expect(getQueryBody(0)).toContain('"group-0"');
@@ -57,7 +59,11 @@ describe("fetchTwapGroupExecutedActions", () => {
       .mockResolvedValueOnce({ data: { tradeActions: fullPage } })
       .mockResolvedValueOnce({ data: { tradeActions: lastPage } });
 
-    const actions = await fetchTwapGroupExecutedActions({ chainId: 42161, twapGroupIds: ["group-1"] });
+    const actions = await fetchTwapGroupExecutedActions({
+      chainId: 42161,
+      account: "0xAccount",
+      twapGroupIds: ["group-1"],
+    });
 
     expect(queryMock).toHaveBeenCalledTimes(2);
     expect(getQueryBody(0)).toContain("offset: 0,");

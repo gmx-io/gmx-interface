@@ -437,12 +437,15 @@ export type TwapPartTradeAction = Pick<SubsquidTradeAction, "id" | "eventName" |
 
 // Fetches every executed action of the given TWAP groups, so part numbers can be derived from
 // the complete group instead of the actions that happen to fall inside an export window.
+// The account filter is required: twapGroupId alone has no index and scans the whole table.
 export async function fetchTwapGroupExecutedActions({
   chainId,
+  account,
   twapGroupIds,
   abortSignal,
 }: {
   chainId: number;
+  account: string;
   twapGroupIds: string[];
   abortSignal?: AbortSignal;
 }): Promise<TwapPartTradeAction[]> {
@@ -454,6 +457,7 @@ export async function fetchTwapGroupExecutedActions({
   for (let chunkStart = 0; chunkStart < twapGroupIds.length; chunkStart += TWAP_GROUP_IDS_PER_REQUEST) {
     const chunk = twapGroupIds.slice(chunkStart, chunkStart + TWAP_GROUP_IDS_PER_REQUEST);
     const filtersStr = buildFiltersBody({
+      account_eq: account,
       twapGroupId_in: chunk,
       eventName_eq: TradeActionType.OrderExecuted,
     });

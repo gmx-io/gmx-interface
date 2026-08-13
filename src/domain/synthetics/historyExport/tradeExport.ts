@@ -593,17 +593,30 @@ export async function generateTradeCsv({
     marketsInfoData,
     marketsDirectionsFilter,
   });
-  const twapGroupIds = Array.from(
-    new Set(filteredActions.map((action) => action.twapGroupId).filter((groupId): groupId is string => !!groupId))
-  );
-  throwIfExportAborted(signal);
-  const twapGroupActions = twapGroupIds.length
-    ? await withRetry(() => fetchTwapGroupExecutedActions({ chainId, twapGroupIds, abortSignal: signal }), {
-        retryCount: 3,
-        delay: 300,
-        shouldRetry: () => !signal?.aborted,
-      })
-    : [];
+  const twapGroupIdsByAccount = new Map<string, Set<string>>();
+  for (const action of filteredActions) {
+    if (!action.twapGroupId) {
+      continue;
+    }
+    const accountGroupIds = twapGroupIdsByAccount.get(action.account) ?? new Set<string>();
+    accountGroupIds.add(action.twapGroupId);
+    twapGroupIdsByAccount.set(action.account, accountGroupIds);
+  }
+  const twapGroupActions: TwapPartTradeAction[] = [];
+  for (const [actionAccount, accountGroupIds] of twapGroupIdsByAccount) {
+    throwIfExportAborted(signal);
+    const accountActions = await withRetry(
+      () =>
+        fetchTwapGroupExecutedActions({
+          chainId,
+          account: actionAccount,
+          twapGroupIds: Array.from(accountGroupIds),
+          abortSignal: signal,
+        }),
+      { retryCount: 3, delay: 300, shouldRetry: () => !signal?.aborted }
+    );
+    twapGroupActions.push(...accountActions);
+  }
   throwIfExportAborted(signal);
   const rows = buildTradeCsvRows({
     chainId,
