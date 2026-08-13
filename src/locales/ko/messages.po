@@ -409,10 +409,6 @@ msgstr "수익률 파밍"
 msgid "Roadmap"
 msgstr "로드맵"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "FULL MARKET"
-msgstr "전체 마켓"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "받는 사람"
@@ -559,6 +555,10 @@ msgstr "모든 BTC/USD 풀에 유동성 부족"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
 msgstr "미실현 기본 PnL"
+
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Exports are for record-keeping and tax-software compatibility; they do not constitute tax advice."
+msgstr "내보내기는 기록 보관 및 세금 소프트웨어 호환성을 위한 것이며 세무 조언에 해당하지 않습니다."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order may not execute: liquidity may be insufficient when they trigger."
@@ -995,6 +995,10 @@ msgstr "유동성 내"
 msgid "Minimum required margin"
 msgstr ""
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "GMX Detailed CSV"
+msgstr "GMX Detailed CSV"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
@@ -1213,10 +1217,8 @@ msgstr "Vaultka"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1432,9 +1434,7 @@ msgstr "지불"
 msgid "Creating referral code..."
 msgstr "추천 코드 생성 중..."
 
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -1612,6 +1612,10 @@ msgstr "GMX 펀더멘탈"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
 msgstr "이벤트 데이터"
+
+#: src/components/Claims/ClaimsHistory.tsx
+msgid "Export claims history"
+msgstr "청구 내역 내보내기"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
@@ -3139,6 +3143,10 @@ msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}에 {0} 예치"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Preparing export…"
+msgstr "내보내기 준비 중…"
+
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Current price"
 msgstr "현재 가격"
@@ -3686,10 +3694,6 @@ msgstr "GMX를 위한 Dune 분석"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "모든 미결 포지션의 미지급 차입 수수료"
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "RPNL ($)"
-msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -5220,13 +5224,13 @@ msgstr "주문 데이터 로드 실패:"
 msgid "Network"
 msgstr "네트워크"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "CoinLedger Margin Gain Manual CSV"
+msgstr "CoinLedger Margin Gain Manual CSV"
+
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "FEES ($)"
-msgstr "수수료 ($)"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Pre-IPO"
@@ -5851,7 +5855,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -6077,10 +6080,6 @@ msgstr "제휴 보상이 수령되었습니다"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
 msgstr "트랜잭션:"
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "EXECUTION PRICE"
-msgstr "체결가"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "spinner"
@@ -8070,6 +8069,7 @@ msgstr ""
 msgid "Governance"
 msgstr "거버넌스"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -8368,11 +8368,9 @@ msgid "Link copied"
 msgstr "링크 복사됨"
 
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr "규모"
@@ -9246,10 +9244,6 @@ msgstr "Jones DAO"
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
 msgstr ""
-
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "Failed to download trade history CSV"
-msgstr "거래 내역 CSV 다운로드에 실패했습니다"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -10383,7 +10377,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -10668,10 +10661,6 @@ msgstr ""
 msgid "Position impact amount"
 msgstr "포지션 영향 금액"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "PRICE IMPACT"
-msgstr "가격 영향"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
 msgstr "기회 검색"
@@ -10688,11 +10677,6 @@ msgstr "확인 중..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited:"
 msgstr "입금됨:"
-
-#: src/components/Claims/ClaimsHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "ACTION"
-msgstr "거래 유형"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -11063,7 +11047,6 @@ msgstr "{0} (외부)"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "TRIGGER PRICE"
 msgstr "조건가"
 
@@ -11071,9 +11054,17 @@ msgstr "조건가"
 msgid "Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as shown."
 msgstr "{marketName} 시장의 레버리지 거래 및 스왑에서 수수료가 발생합니다. 표시된 바와 같이 {exposedToLabel}에 노출됩니다."
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Export trade history"
+msgstr "거래 내역 내보내기"
+
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR."
 msgstr "추정 연간 바이백 비율. 최근 평균 속도라면 GMX 바이백은 1년 동안 전체 GMX 공급량의 이 비율에 해당합니다. 이는 프로토콜 전체의 바이백 지표이며, 개인 스테이킹 APR이 아닙니다."
+
+#: src/components/HistoryExport/useHistoryExport.ts
+msgid "The export could not be completed. No file was downloaded."
+msgstr "내보내기를 완료할 수 없습니다. 다운로드된 파일이 없습니다."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
@@ -11419,10 +11410,6 @@ msgstr "{count, plural, other {이 수명 주기의 액션 #개}}"
 msgid "Multicall simulation"
 msgstr "Multicall 시뮬레이션"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "ACCEPTABLE PRICE"
-msgstr "ACCEPTABLE PRICE"
-
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "이벤트"
@@ -11534,7 +11521,6 @@ msgstr "순가치"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "MARK PRICE"
 msgstr "기준가"
 
@@ -11689,6 +11675,10 @@ msgstr "롱"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "{0} 허가 서명 오류: {1}"
+
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "GMX Claims CSV"
+msgstr "GMX Claims CSV"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
@@ -11912,11 +11902,6 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "PnL 공유"
-
-#: src/components/Claims/ClaimsHistory.tsx
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
-msgid "TRANSACTION ID"
-msgstr "TRANSACTION ID"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
