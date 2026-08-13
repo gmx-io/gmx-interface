@@ -30,13 +30,13 @@ export function AvailableLiquidityRow() {
 
   if (isSwap && swapAmounts) {
     tooltipContent = isLiquidityRisk
-      ? t`Warning: may not execute due to low liquidity at your min. receive price`
+      ? t`Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size.`
       : t`Executes when liquidity and price conditions are met`;
   }
 
   if (isIncrease && increaseAmounts) {
     tooltipContent = isLiquidityRisk
-      ? t`Warning: may not execute due to low liquidity at your trigger price`
+      ? t`Order may not execute: insufficient liquidity at the trigger price. Reduce the order size.`
       : t`Executes when price and liquidity conditions are met`;
   }
 
