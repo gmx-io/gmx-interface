@@ -14,8 +14,10 @@ import {
   HistoryExportFormat,
   HistoryExportProgress,
   getHistoryExportFilename,
+  throwIfExportAborted,
 } from "domain/synthetics/historyExport/utils";
 import { downloadFile } from "lib/csv";
+import { sleep } from "lib/sleep";
 
 import { useHistoryExport } from "components/HistoryExport/useHistoryExport";
 
@@ -58,6 +60,9 @@ export function useClaimsHistoryExport({
         signal,
         onProgress,
       });
+      // Yield so a pending cancel click is handled before the synchronous provider projection
+      await sleep(0);
+      throwIfExportAborted(signal);
       const filenameParams = {
         surface: "claims-history" as const,
         account,

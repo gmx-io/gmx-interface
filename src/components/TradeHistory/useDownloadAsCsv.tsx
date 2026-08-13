@@ -14,11 +14,13 @@ import {
   HistoryExportFormat,
   HistoryExportProgress,
   getHistoryExportFilename,
+  throwIfExportAborted,
 } from "domain/synthetics/historyExport/utils";
 import { createZipBlob } from "domain/synthetics/historyExport/zip";
 import { OrderType } from "domain/synthetics/orders/types";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
 import { downloadFile } from "lib/csv";
+import { sleep } from "lib/sleep";
 
 import { useHistoryExport } from "components/HistoryExport/useHistoryExport";
 
@@ -76,6 +78,9 @@ export function useDownloadAsCsv({
         signal,
         onProgress,
       });
+      // Yield so a pending cancel click is handled before the synchronous provider projection
+      await sleep(0);
+      throwIfExportAborted(signal);
       const filenameParams = {
         surface: "trade-history" as const,
         account,

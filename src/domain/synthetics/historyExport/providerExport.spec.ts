@@ -45,6 +45,21 @@ describe("provider exports", () => {
     expect(result.rows[2]).toMatchObject({ "Sent Amount": "0.3", Tags: "funding fee" });
   });
 
+  it("emits a ui fee leg and nets it into CoinLedger manual rows", () => {
+    const withUiFee = { ...settledDecrease, ui_fee_usd: "1.5" };
+
+    const koinly = buildKoinlyTradeExport([withUiFee]);
+    expect(koinly.rows).toHaveLength(4);
+    expect(koinly.rows[3]).toMatchObject({
+      "Sent Amount": "1.5",
+      "Sent Currency": "USDC",
+      Tags: "futures fee",
+      Description: "GMX UI fee",
+    });
+
+    expect(buildCoinLedgerTradeExport([withUiFee]).margin.rows[0]).toMatchObject({ Amount: "244.4" });
+  });
+
   it("never folds the claimable price impact diff into a provider result", () => {
     const withClaimableDiff = { ...settledDecrease, claimable_price_impact_diff_usd: "40" };
 

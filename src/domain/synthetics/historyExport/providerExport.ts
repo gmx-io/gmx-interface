@@ -96,10 +96,19 @@ function getActionRows(rows: CsvRow[]): CsvRow[] {
   return rows.filter((row) => getCsvString(row, "row_type") === "action");
 }
 
-function getCashflow(rows: CsvRow[], actionId: string): CsvRow | undefined {
-  return rows.find(
-    (row) => getCsvString(row, "row_type") === "cashflow" && getCsvString(row, "action_id") === actionId
-  );
+function getCashflowByActionId(rows: CsvRow[]): Map<string, CsvRow> {
+  const cashflows = new Map<string, CsvRow>();
+  for (const row of rows) {
+    if (getCsvString(row, "row_type") !== "cashflow") {
+      continue;
+    }
+
+    const actionId = getCsvString(row, "action_id");
+    if (actionId && !cashflows.has(actionId)) {
+      cashflows.set(actionId, row);
+    }
+  }
+  return cashflows;
 }
 
 function getSettledResultUsd(row: CsvRow): string {
@@ -406,9 +415,10 @@ function buildCoinLedgerTransfer(row: CsvRow, cashflow: CsvRow): CsvRow {
 }
 
 export function buildKoinlyTradeExport(canonicalRows: CsvRow[]): ProviderResult {
+  const cashflows = getCashflowByActionId(canonicalRows);
   const rows = getActionRows(canonicalRows).flatMap((row) => {
     if (!isExecuted(row)) return [];
-    const cashflow = getCashflow(canonicalRows, getCsvString(row, "action_id"));
+    const cashflow = cashflows.get(getCsvString(row, "action_id"));
     if (isPureSwap(row)) {
       if (!isSafeSwapCashflow(cashflow)) return [];
       return [buildKoinlySwap(row, cashflow)];
@@ -423,9 +433,10 @@ export function buildKoinlyTradeExport(canonicalRows: CsvRow[]): ProviderResult 
 }
 
 export function buildCoinTrackerTradeExport(canonicalRows: CsvRow[]): ProviderResult {
+  const cashflows = getCashflowByActionId(canonicalRows);
   const rows = getActionRows(canonicalRows).flatMap((row) => {
     if (!isExecuted(row)) return [];
-    const cashflow = getCashflow(canonicalRows, getCsvString(row, "action_id"));
+    const cashflow = cashflows.get(getCsvString(row, "action_id"));
     if (isPureSwap(row)) {
       if (!isSafeSwapCashflow(cashflow)) return [];
       return [buildCoinTrackerSwap(row, cashflow)];
@@ -440,11 +451,12 @@ export function buildCoinTrackerTradeExport(canonicalRows: CsvRow[]): ProviderRe
 }
 
 export function buildCoinLedgerTradeExport(canonicalRows: CsvRow[]): CoinLedgerTradeResult {
+  const cashflows = getCashflowByActionId(canonicalRows);
   const universalRows: CsvRow[] = [];
   const marginRows: CsvRow[] = [];
   for (const row of getActionRows(canonicalRows)) {
     if (!isExecuted(row)) continue;
-    const cashflow = getCashflow(canonicalRows, getCsvString(row, "action_id"));
+    const cashflow = cashflows.get(getCsvString(row, "action_id"));
     if (isPureSwap(row)) {
       if (!isSafeSwapCashflow(cashflow)) continue;
       universalRows.push(buildCoinLedgerSwap(row, cashflow));

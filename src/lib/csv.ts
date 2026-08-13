@@ -51,11 +51,14 @@ export function serializeCsv(headers: readonly string[], data: readonly CsvRow[]
   return values ? `${header}${CSV_LINE_BREAK}${values}${CSV_LINE_BREAK}` : `${header}${CSV_LINE_BREAK}`;
 }
 
-function convertToCSV<T>(data: Partial<T>[], customHeaders?: Partial<Record<keyof T, string>>): string {
+export function convertToCSV<T>(data: Partial<T>[], customHeaders?: Partial<Record<keyof T, string>>): string {
   const keys = customHeaders ? Object.keys(customHeaders) : data[0] ? Object.keys(data[0]) : [];
 
+  // serializeCsv reads cells by header, so rows must be keyed by the display header
   const headers = keys.map((key) => customHeaders?.[key as keyof T] ?? key);
-  const rows = data.map((object) => Object.fromEntries(keys.map((key) => [key, object[key as keyof T]])) as CsvRow);
+  const rows = data.map(
+    (object) => Object.fromEntries(keys.map((key, index) => [headers[index], object[key as keyof T]])) as CsvRow
+  );
 
   return serializeCsv(headers, rows);
 }

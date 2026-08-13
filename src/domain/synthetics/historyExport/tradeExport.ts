@@ -13,11 +13,16 @@ import {
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders/types";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade/utils";
-import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
+import {
+  TwapPartTradeAction,
+  fetchRawTradeActions,
+  fetchTwapGroupExecutedActions,
+} from "domain/synthetics/tradeHistory/useTradeHistory";
 import { CsvRow, serializeCsv } from "lib/csv";
 import { getByKey } from "lib/objects";
 import { TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { applyFactor } from "sdk/utils/numbers";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
@@ -33,6 +38,7 @@ import {
   formatUsdDecimal,
   getExportUpperTimestamp,
   getLogIndexFromIndexerId,
+  throwIfExportAborted,
 } from "./utils";
 
 const TRADE_EXPORT_PAGE_SIZE = 300;
@@ -152,10 +158,10 @@ function formatTokenUsd(amount: string | null | undefined, price: string | null 
   return formatUsdDecimal(BigInt(amount) * BigInt(price));
 }
 
-function getTwapPartByActionId(rawActions: SubsquidTradeAction[]): Map<string, number> {
-  const groups = new Map<string, SubsquidTradeAction[]>();
+function getTwapPartByActionId(actions: TwapPartTradeAction[]): Map<string, number> {
+  const groups = new Map<string, TwapPartTradeAction[]>();
 
-  for (const action of rawActions) {
+  for (const action of actions) {
     if (!action.twapGroupId || action.eventName !== TradeActionType.OrderExecuted) {
       continue;
     }
@@ -165,8 +171,8 @@ function getTwapPartByActionId(rawActions: SubsquidTradeAction[]): Map<string, n
   }
 
   const result = new Map<string, number>();
-  for (const actions of groups.values()) {
-    actions
+  for (const groupActions of groups.values()) {
+    groupActions
       .sort((a, b) => a.timestamp - b.timestamp || a.id.localeCompare(b.id))
       .forEach((action, index) => result.set(action.id, index + 1));
   }
@@ -234,6 +240,11 @@ export function filterRawTradeActionsForExport({
     return rawActions;
   }
 
+  // Mirrors the collateral filtering the table applies in processRawTradeActions: when any
+  // collateral filter is active, limit and trigger-decrease actions must match one of the
+  // filters scoped to their market and direction, even if that market has none. The table
+  // cannot render at all without marketsInfoData; the export keeps limit actions instead,
+  // since rows must not disappear because metadata is unresolved.
   return rawActions.filter((action) => {
     if (isSwapOrderType(action.orderType)) {
       return true;
@@ -244,13 +255,16 @@ export function filterRawTradeActionsForExport({
         filter.direction === (action.isLong ? "long" : "short") &&
         areAddressesEqual(filter.marketAddress, action.marketAddress)
     );
-    if (!matchingFilters.length) {
-      return true;
-    }
 
     if (isLimitOrderType(action.orderType)) {
+      if (!marketsInfoData) {
+        return true;
+      }
       const targetAddress = getTargetTokenAddress({ action, chainId, marketsInfoData });
-      return matchingFilters.some((filter) => areAddressesEqual(targetAddress, filter.collateralAddress));
+      return (
+        targetAddress !== undefined &&
+        matchingFilters.some((filter) => areAddressesEqual(targetAddress, filter.collateralAddress))
+      );
     }
 
     if (isTriggerDecreaseOrderType(action.orderType)) {
@@ -266,15 +280,19 @@ export function filterRawTradeActionsForExport({
 export function buildTradeCsvRows({
   chainId,
   rawActions,
+  twapGroupActions,
   marketsInfoData,
   tokensData,
 }: {
   chainId: number;
   rawActions: SubsquidTradeAction[];
+  // Complete executed actions of every involved TWAP group; part numbers derived from a
+  // filtered subset would change with the export window and break the stable dedup contract.
+  twapGroupActions?: TwapPartTradeAction[];
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
 }): CsvRow[] {
-  const twapParts = getTwapPartByActionId(rawActions);
+  const twapParts = getTwapPartByActionId(twapGroupActions ?? rawActions);
 
   return rawActions.flatMap((action) => {
     const actionId = `${chainId}:${action.id}`;
@@ -308,6 +326,13 @@ export function buildTradeCsvRows({
       reviewReasons.push("swap price impact unavailable");
     }
 
+    const uiFeeFactor =
+      action.uiFeeFactor === null || action.uiFeeFactor === undefined ? undefined : BigInt(action.uiFeeFactor);
+    if (isExecuted && uiFeeFactor !== undefined && uiFeeFactor > 0n && (isSwap || (action.swapPath?.length ?? 0) > 0)) {
+      // Swap legs charge ui fees per hop on amounts the indexer doesn't expose
+      reviewReasons.push("swap ui fee unavailable");
+    }
+
     const collateralPrice = action.collateralTokenPriceMin ?? action.collateralTokenPriceMax;
     const positionImpact = isExecuted
       ? action.srcChainId !== null && action.srcChainId !== undefined && isDecrease
@@ -321,6 +346,16 @@ export function buildTradeCsvRows({
         ? action.priceImpactUsd
         : undefined;
     const signedSizeMultiplier = isDecrease ? -1n : 1n;
+    // The indexer doesn't store ui fees; derive them the way the contract charges them:
+    // usd = applyFactor(sizeDeltaUsd, uiFeeFactor), amount = usd / collateralTokenPrice.min
+    const uiFeeUsd =
+      isExecuted &&
+      !isSwap &&
+      uiFeeFactor !== undefined &&
+      action.sizeDeltaUsd !== null &&
+      action.sizeDeltaUsd !== undefined
+        ? applyFactor(BigInt(action.sizeDeltaUsd), uiFeeFactor)
+        : undefined;
     const row = createCsvRow<TradeCsvHeader>(TRADE_CSV_HEADERS);
 
     row.timestamp_utc = formatTimestampUtc(action.timestamp);
@@ -382,6 +417,11 @@ export function buildTradeCsvRows({
       : "";
     row.liquidation_fee_usd = isExecuted ? formatTokenUsd(action.liquidationFeeAmount, collateralPrice) : "";
     row.swap_fee_usd = isExecuted ? formatUsdDecimal(action.swapFeeUsd) : "";
+    row.ui_fee_usd = uiFeeUsd === undefined ? "" : formatUsdDecimal(uiFeeUsd);
+    row.ui_fee_amount =
+      uiFeeUsd !== undefined && action.collateralTokenPriceMin && BigInt(action.collateralTokenPriceMin) > 0n
+        ? formatDecimal(uiFeeUsd / BigInt(action.collateralTokenPriceMin), collateralToken?.decimals)
+        : "";
     row.trader_discount_amount = isExecuted
       ? formatDecimal(action.traderDiscountAmount, collateralToken?.decimals)
       : "";
@@ -559,7 +599,25 @@ export async function generateTradeCsv({
     marketsInfoData,
     marketsDirectionsFilter,
   });
-  const rows = buildTradeCsvRows({ chainId, rawActions: filteredActions, marketsInfoData, tokensData });
+  const twapGroupIds = Array.from(
+    new Set(filteredActions.map((action) => action.twapGroupId).filter((groupId): groupId is string => !!groupId))
+  );
+  throwIfExportAborted(signal);
+  const twapGroupActions = twapGroupIds.length
+    ? await withRetry(() => fetchTwapGroupExecutedActions({ chainId, twapGroupIds, abortSignal: signal }), {
+        retryCount: 3,
+        delay: 300,
+        shouldRetry: () => !signal?.aborted,
+      })
+    : [];
+  throwIfExportAborted(signal);
+  const rows = buildTradeCsvRows({
+    chainId,
+    rawActions: filteredActions,
+    twapGroupActions,
+    marketsInfoData,
+    tokensData,
+  });
 
   return {
     rows,
