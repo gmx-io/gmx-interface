@@ -212,12 +212,20 @@ function getDefaultErrorMessage(errorData: ErrorData | undefined) {
   return t`Transaction failed`;
 }
 
-function getDebugErrorMessage(errorData: ErrorData | undefined) {
-  if (errorData?.contractError) {
-    return `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`;
+export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  const message = errorData?.contractError
+    ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
+    : errorData?.errorMessage;
+
+  // the one handle that joins a user's report to both our logs and the relay's, and the only one
+  // they can give us — nothing in the response carries a request id
+  const taskId = typeof errorData?.data?.taskId === "string" ? errorData.data.taskId : undefined;
+
+  if (!taskId) {
+    return message;
   }
 
-  return errorData?.errorMessage;
+  return message ? `${message}\ntaskId: ${taskId}` : `taskId: ${taskId}`;
 }
 
 /**
