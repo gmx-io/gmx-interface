@@ -527,11 +527,6 @@ msgstr "Aumento de mercado vencido"
 msgid "Percentage"
 msgstr "Porcentaje"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Return Bonus"
-msgstr "Bonificación de retorno"
-
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "How it works?"
 msgstr "¿Cómo funciona?"
@@ -667,10 +662,6 @@ msgstr "<0>{0}</0><1>/</1><2>{1}</2> <3>para obtener el estado {2} <4>+{3}</4></
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "Seleccionar token"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Available to eligible historical users while their return bonus cap remains."
-msgstr "Disponible para usuarios históricos elegibles mientras quede saldo en su límite de bonificación de retorno."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
@@ -2237,6 +2228,11 @@ msgstr "No hay órdenes SL"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Comeback Bonus"
+msgstr "Bonificación de regreso"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
@@ -7090,6 +7086,10 @@ msgstr "Umbral de volumen"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Available to eligible historical users while their comeback bonus cap remains."
+msgstr "Disponible para usuarios históricos elegibles mientras quede saldo en su límite de bonificación de regreso."
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
