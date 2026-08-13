@@ -332,7 +332,7 @@ export function parseMarketsValuesResponse(
 
       const marketDivisor = getMarketDivisor(market);
 
-      const { longInterestUsd, shortInterestUsd } = getOiUsdFromRawValues(
+      const oiUsd = getOiUsdFromRawValues(
         {
           longInterestUsingLongToken: BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]),
           longInterestUsingShortToken: BigInt(dataStoreValues.longInterestUsingShortToken.returnValues[0]),
@@ -342,7 +342,7 @@ export function parseMarketsValuesResponse(
         marketDivisor
       );
 
-      const { longInterestInTokens, shortInterestInTokens } = getOiInTokensFromRawValues(
+      const oiInTokens = getOiInTokensFromRawValues(
         {
           longInterestInTokensUsingLongToken: BigInt(
             dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]
@@ -378,10 +378,8 @@ export function parseMarketsValuesResponse(
       ];
 
       acc[marketAddress] = {
-        longInterestUsd,
-        shortInterestUsd,
-        longInterestInTokens,
-        shortInterestInTokens,
+        ...oiUsd,
+        ...oiInTokens,
         longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0] / marketDivisor,
         shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0] / marketDivisor,
         poolValueMin: poolValueInfoMin.poolValue,

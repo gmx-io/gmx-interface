@@ -6,7 +6,7 @@ const measurementByMetricType: {
   [key: string]: { requestId: string; inited: boolean; done?: boolean };
 } = {};
 
-const INITIAL_LOCATION = window.location.hash;
+const INITIAL_LOCATION = window.location.pathname;
 
 export function useMeasureComponentMountTime({
   metricType,

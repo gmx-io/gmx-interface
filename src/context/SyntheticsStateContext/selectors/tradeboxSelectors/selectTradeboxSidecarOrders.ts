@@ -20,7 +20,7 @@ import { makeSelectOrdersByPositionKey } from "../orderSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxSelectedPosition,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedPositionSizeInUsd,
   selectTradeboxTradeFlags,
 } from "../tradeboxSelectors";
@@ -108,7 +108,7 @@ export const makeSelectTradeboxSidecarOrdersTotalPercentage = createSelectorFact
 );
 
 export const selectTradeboxSidecarOrdersTotalSizeUsd = createSelector((q) => {
-  const existingPosition = q(selectTradeboxSelectedPosition);
+  const existingPosition = q(selectTradeboxExistingPositionForPreview);
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
   const limitEntries = q(selectTradeboxSidecarOrdersLimitEntries);
 
@@ -179,7 +179,7 @@ export const selectTradeboxMockPosition = createSelector((q) => {
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const collateralToken = q(selectTradeboxCollateralToken);
   const marketInfo = q(selectTradeboxMarketInfo);
-  const existingPosition = q(selectTradeboxSelectedPosition);
+  const existingPosition = q(selectTradeboxExistingPositionForPreview);
   const tradeFlags = q(selectTradeboxTradeFlags);
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);

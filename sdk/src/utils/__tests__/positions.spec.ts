@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach, Mock } from "vitest";
 
 import { bigMath } from "utils/bigmath";
 import { getPositionFee, getPriceImpactForPosition } from "utils/fees";
-import { getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "utils/markets";
+import { getCappedPoolPnl, getPoolUsdWithoutPnl, getPositiveMarketPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { expandDecimals, USD_DECIMALS } from "utils/numbers";
 import {
@@ -25,7 +25,7 @@ import { Token } from "utils/tokens/types";
 
 vi.mock("../markets", () => ({
   ...vi.importActual("../markets"),
-  getMarketPnl: vi.fn(),
+  getPositiveMarketPnl: vi.fn(),
   getPoolUsdWithoutPnl: vi.fn(),
   getCappedPoolPnl: vi.fn(),
 }));
@@ -86,9 +86,9 @@ describe("getPositionPnlUsd", () => {
   const marketInfo = { indexToken: {}, maxPositionImpactFactorForLiquidations: 2n } as MarketInfo;
 
   beforeEach(() => {
-    (getMarketPnl as Mock).mockReturnValue(1000n);
-    (getPoolUsdWithoutPnl as Mock).mockReturnValue(5000n);
-    (getCappedPoolPnl as Mock).mockReturnValue(800n);
+    (getPositiveMarketPnl as Mock).mockReturnValue(expandDecimals(1000, USD_DECIMALS));
+    (getPoolUsdWithoutPnl as Mock).mockReturnValue(expandDecimals(5000, USD_DECIMALS));
+    (getCappedPoolPnl as Mock).mockReturnValue(expandDecimals(800, USD_DECIMALS));
   });
 
   it("returns negative PnL if positionValueUsd < sizeInUsd for a long", () => {
@@ -101,6 +101,20 @@ describe("getPositionPnlUsd", () => {
       isLong: true,
     });
     expect(result).toBe(900n - 1000n); // -100n
+  });
+
+  it("scales a winning position by the positive-only pool pnl", () => {
+    (convertToUsd as Mock).mockReturnValueOnce(expandDecimals(2000, USD_DECIMALS)); // positionValueUsd
+    const result = getPositionPnlUsd({
+      marketInfo,
+      sizeInUsd: expandDecimals(1000, USD_DECIMALS),
+      sizeInTokens: 100n,
+      markPrice: 10n,
+      isLong: true,
+    });
+
+    expect(getPositiveMarketPnl).toHaveBeenCalledWith(marketInfo, true, true);
+    expect(result).toBe(expandDecimals(800, USD_DECIMALS));
   });
 });
 

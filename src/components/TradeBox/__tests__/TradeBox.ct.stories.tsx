@@ -121,6 +121,10 @@ export type TradeBoxStoryProps = {
   connected?: boolean;
   /** Seed an existing 2x ETH/USD long (1 ETH, 1000 USDC collateral); implies connected */
   withPosition?: boolean;
+  /** Make the seeded position a short instead of a long */
+  positionIsShort?: boolean;
+  /** Override the seeded position's liquidation price, in USD (default: ~1050 long / ~2950 short) */
+  positionLiqPriceUsd?: number;
   /** Turn the leverage slider setting off: margin and size become independent inputs */
   manualLeverage?: boolean;
   /** Enable the "set acceptable price impact" setting (off by default) */
@@ -187,6 +191,8 @@ export type TradeBoxStoryProps = {
 export function TradeBoxStory({
   connected = false,
   withPosition = false,
+  positionIsShort = false,
+  positionLiqPriceUsd,
   manualLeverage = false,
   acceptableImpactSetting = false,
   marketScenario,
@@ -217,11 +223,13 @@ export function TradeBoxStory({
       return undefined;
     }
 
-    return createMockMarketInfo(undefined, {
-      longInterestUsd: expandDecimals(2000, 30),
-      longInterestInTokens: expandDecimals(1, 18),
-    });
-  }, [withPosition, withWethCollateralPosition]);
+    return createMockMarketInfo(
+      undefined,
+      positionIsShort
+        ? { shortInterestUsd: expandDecimals(2000, 30), shortInterestInTokens: expandDecimals(1, 18) }
+        : { longInterestUsd: expandDecimals(2000, 30), longInterestInTokens: expandDecimals(1, 18) }
+    );
+  }, [positionIsShort, withPosition, withWethCollateralPosition]);
 
   const marketsInfoData = useMemo<MarketsInfoData | undefined>(() => {
     const primaryMarket = positionMarketInfo ?? createMockMarketInfo();
@@ -334,9 +342,11 @@ export function TradeBoxStory({
       account: MOCK_ACCOUNT,
       marketInfo: positionMarketInfo,
       collateralToken: withWethCollateralPosition ? ETH_TOKEN : undefined,
+      isLong: !positionIsShort,
+      liquidationPrice: positionLiqPriceUsd === undefined ? undefined : expandDecimals(positionLiqPriceUsd, 30),
     });
     return { [position.key]: position };
-  }, [positionMarketInfo, withPosition, withWethCollateralPosition]);
+  }, [positionIsShort, positionLiqPriceUsd, positionMarketInfo, withPosition, withWethCollateralPosition]);
 
   const mockSubaccount = useMemo(
     () => (withOneClickSubaccount ? createMockSubaccount() : undefined),

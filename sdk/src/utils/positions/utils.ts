@@ -11,11 +11,11 @@ import {
 import {
   getCappedPoolPnl,
   getMarketIndexName,
-  getMarketPnl,
   getMarketPoolName,
   getMaxAllowedLeverage,
   getOpenInterestUsd,
   getPoolUsdWithoutPnl,
+  getPositiveMarketPnl,
 } from "utils/markets";
 import { Market, MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, FLOAT_PRECISION_SQRT, getBasisPoints, PRECISION } from "utils/numbers";
@@ -63,7 +63,7 @@ export function getPositionPnlUsd(p: {
     return totalPnl;
   }
 
-  const poolPnl = getMarketPnl(marketInfo, isLong, true);
+  const poolPnl = getPositiveMarketPnl(marketInfo, isLong, true);
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   const cappedPnl = getCappedPoolPnl({

@@ -29,7 +29,7 @@ export function HeaderMenu() {
     >
       <div className="flex w-full items-center justify-center px-16 py-12 sm:px-40 sm:py-16">
         <div className="flex w-[1200px] items-center justify-between">
-          <a href="/#/" aria-label="GMX">
+          <a href="/" aria-label="GMX">
             <IcGmxHeader className="h-20 sm:h-24" />
           </a>
           <div className="flex items-center gap-8 sm:gap-12">
@@ -96,11 +96,11 @@ function useHeaderLinks() {
     return [
       {
         label: t`VIP`,
-        href: "/#/trader-affiliate-program",
+        href: "/trader-affiliate-program",
       },
       {
         label: t`Builders`,
-        href: "/#/builders",
+        href: "/builders",
       },
       {
         label: t`Protocol`,

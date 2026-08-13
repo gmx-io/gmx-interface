@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { Eyebrow } from "landing/pages/Builders/Eyebrow";
 import { CodeSnippet } from "landing/pages/Builders/HeroSection/CodeSnippet";
 
-
 import programGlow from "img/home_program_glow.png";
 import vipCoins from "img/home_program_vip_coins.png";
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
@@ -73,7 +72,7 @@ export function ProgramCards() {
                 Plus personal support.
               </Trans>
             </p>
-            <CardButton href="/#/trader-affiliate-program">
+            <CardButton href="/trader-affiliate-program">
               <Trans>Explore the VIP Desk</Trans>
             </CardButton>
           </div>
@@ -104,7 +103,7 @@ export function ProgramCards() {
                 through you.
               </Trans>
             </p>
-            <CardButton href="/#/builders">
+            <CardButton href="/builders">
               <Trans>Explore the Builder Program</Trans>
             </CardButton>
           </div>

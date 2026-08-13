@@ -47,6 +47,7 @@ import {
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxNextPositionValues,
   selectTradeboxOffHoursLiqRisk,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
@@ -57,7 +58,10 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { selectTradeboxIncreaseLiquidationRiskWarning } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import {
+  selectTradeboxIncreaseFreshPositionWarning,
+  selectTradeboxIncreaseLiquidationRiskWarning,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
@@ -122,6 +126,7 @@ import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
+import { FreshPositionIncreaseWarningCard } from "./FreshPositionIncreaseWarningCard";
 import { LiquidatableIncreaseWarningCard } from "./LiquidatableIncreaseWarningCard";
 import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
@@ -243,7 +248,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPositionForPreview = useSelector(selectTradeboxExistingPositionForPreview);
   const showIncreaseLiquidationRiskWarning = useSelector(selectTradeboxIncreaseLiquidationRiskWarning);
+  const showIncreaseFreshPositionWarning = useSelector(selectTradeboxIncreaseFreshPositionWarning);
 
   const closeSizeHook = useCloseSizeInput({
     positionSizeInUsd: selectedPosition?.sizeInUsd,
@@ -1049,7 +1056,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     }
 
     if (isIncrease && (increaseAmounts === undefined || increaseAmounts.sizeDeltaUsd === 0n)) {
-      if (selectedPosition) {
+      if (existingPositionForPreview) {
         return undefined;
       } else {
         return "-";
@@ -1066,7 +1073,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     increaseAmounts,
     nextPositionValues?.nextLiqPrice,
     toToken?.visualMultiplier,
-    selectedPosition,
+    existingPositionForPreview,
   ]);
 
   const keepLeverage = useSelector(selectTradeboxKeepLeverage);
@@ -1232,6 +1239,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             </AlertInfoCard>
           )}
           {showIncreaseLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
+          {showIncreaseFreshPositionWarning && <FreshPositionIncreaseWarningCard />}
           {gasPaymentTokenWarningContent && (
             <AlertInfoCard hideClose type="warning">
               {gasPaymentTokenWarningContent}
@@ -1304,8 +1312,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             value={
               <ValueTransition
                 from={
-                  selectedPosition
-                    ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                  existingPositionForPreview
+                    ? formatLiquidationPrice(existingPositionForPreview.liquidationPrice, {
                         visualMultiplier: toToken?.visualMultiplier,
                       })
                     : undefined

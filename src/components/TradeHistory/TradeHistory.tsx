@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Address } from "viem";
 
@@ -22,6 +22,7 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
+import { HistoryExportModal, TRADE_EXPORT_OPTIONS } from "components/HistoryExport/HistoryExportModal";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
@@ -31,7 +32,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import DownloadIcon from "img/ic_download2.svg?react";
 import PieChartIcon from "img/ic_pie_chart.svg?react";
-import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -206,14 +206,15 @@ export function TradeHistory(p: Props) {
     );
   }, [account, chainId, hideDashboardLink]);
 
-  const [isLoadingCsv, handleCsvDownload] = useDownloadAsCsv({
+  const historyExport = useDownloadAsCsv({
     account,
     forAllAccounts,
+    startDate,
+    endDate,
     fromTxTimestamp,
     toTxTimestamp,
     marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
-    minCollateralUsd: minCollateralUsd,
     positionLifecycleId,
   });
 
@@ -240,8 +241,13 @@ export function TradeHistory(p: Props) {
 
       <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
 
-      <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
-        {isLoadingCsv ? <SpinnerIcon className="mr-4 animate-spin" /> : <DownloadIcon className="size-16" />}
+      <Button
+        variant="ghost"
+        disabled={!account && !forAllAccounts}
+        onClick={() => historyExport.setIsModalVisible(true)}
+        className="flex items-center gap-4"
+      >
+        <DownloadIcon className="size-16" />
         <Trans>CSV</Trans>
       </Button>
     </>
@@ -251,6 +257,18 @@ export function TradeHistory(p: Props) {
 
   return (
     <div className="TradeHistorySynthetics flex grow flex-col bg-slate-900">
+      <HistoryExportModal
+        isVisible={historyExport.isModalVisible}
+        setIsVisible={historyExport.setIsModalVisible}
+        title={t`Export trade history`}
+        options={TRADE_EXPORT_OPTIONS}
+        isGenerating={historyExport.isGenerating}
+        activeFormat={historyExport.activeFormat}
+        progress={historyExport.progress}
+        error={historyExport.error}
+        onSelect={historyExport.start}
+        onCancel={historyExport.cancel}
+      />
       <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
         {!isMobile ? (
           <span className="text-body-medium font-medium">

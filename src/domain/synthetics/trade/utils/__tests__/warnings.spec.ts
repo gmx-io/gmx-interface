@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { getIsIncreaseResultingPositionLiquidatable, getIsPositionLiquidatableAtPrice } from "../warnings";
+import {
+  getIsIncreaseResultingPositionLiquidatable,
+  getIsPositionLiquidatableAtPrice,
+  getIsPositionLiquidatedBeforeTrigger,
+} from "../warnings";
 
 describe("getIsPositionLiquidatableAtPrice", () => {
   it("long: liquidatable when liqPrice is above the price", () => {
@@ -33,6 +37,29 @@ describe("getIsPositionLiquidatableAtPrice", () => {
 
   it("returns false when price is undefined", () => {
     expect(getIsPositionLiquidatableAtPrice({ liqPrice: 100n, price: undefined, isLong: true })).toBe(false);
+  });
+});
+
+describe("getIsPositionLiquidatedBeforeTrigger", () => {
+  it("long: flags when the liq price is above the trigger price", () => {
+    expect(getIsPositionLiquidatedBeforeTrigger({ liqPrice: 110n, triggerPrice: 100n, isLong: true })).toBe(true);
+  });
+
+  it("long: does not flag when the liq price is below the trigger price", () => {
+    expect(getIsPositionLiquidatedBeforeTrigger({ liqPrice: 90n, triggerPrice: 100n, isLong: true })).toBe(false);
+  });
+
+  it("short: flags when the liq price is below the trigger price", () => {
+    expect(getIsPositionLiquidatedBeforeTrigger({ liqPrice: 90n, triggerPrice: 100n, isLong: false })).toBe(true);
+  });
+
+  it("short: does not flag when the liq price is above the trigger price", () => {
+    expect(getIsPositionLiquidatedBeforeTrigger({ liqPrice: 110n, triggerPrice: 100n, isLong: false })).toBe(false);
+  });
+
+  it("does not flag without a position or a trigger price", () => {
+    expect(getIsPositionLiquidatedBeforeTrigger({ liqPrice: undefined, triggerPrice: 100n, isLong: true })).toBe(false);
+    expect(getIsPositionLiquidatedBeforeTrigger({ liqPrice: 110n, triggerPrice: undefined, isLong: true })).toBe(false);
   });
 });
 

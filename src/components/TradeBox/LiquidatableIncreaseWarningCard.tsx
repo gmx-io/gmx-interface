@@ -6,8 +6,8 @@ export function LiquidatableIncreaseWarningCard() {
   return (
     <AlertInfoCard type="warning" hideClose>
       <Trans>
-        This order may fail to execute with the current position state. Add collateral or reduce leverage before it
-        triggers.
+        Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or
+        reduce the order size.
       </Trans>
     </AlertInfoCard>
   );
