@@ -18,6 +18,7 @@ import {
   fetchRawTradeActions,
   fetchTwapGroupExecutedActions,
 } from "domain/synthetics/tradeHistory/useTradeHistory";
+import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { CsvRow, serializeCsv } from "lib/csv";
 import { getByKey } from "lib/objects";
 import { TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
@@ -346,15 +347,16 @@ export function buildTradeCsvRows({
         ? action.priceImpactUsd
         : undefined;
     const signedSizeMultiplier = isDecrease ? -1n : 1n;
+    const sizeDeltaUsd =
+      action.sizeDeltaUsd === null || action.sizeDeltaUsd === undefined ? undefined : BigInt(action.sizeDeltaUsd);
+    // TP/SL "close entire position" orders store MaxUint256 as a sentinel, not an economic size;
+    // the table shows them as "Full position close" and the executed event carries the real size
+    const isFullPositionClose = sizeDeltaUsd !== undefined && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd);
     // The indexer doesn't store ui fees; derive them the way the contract charges them:
     // usd = applyFactor(sizeDeltaUsd, uiFeeFactor), amount = usd / collateralTokenPrice.min
     const uiFeeUsd =
-      isExecuted &&
-      !isSwap &&
-      uiFeeFactor !== undefined &&
-      action.sizeDeltaUsd !== null &&
-      action.sizeDeltaUsd !== undefined
-        ? applyFactor(BigInt(action.sizeDeltaUsd), uiFeeFactor)
+      isExecuted && !isSwap && uiFeeFactor !== undefined && sizeDeltaUsd !== undefined
+        ? applyFactor(sizeDeltaUsd, uiFeeFactor)
         : undefined;
     const row = createCsvRow<TradeCsvHeader>(TRADE_CSV_HEADERS);
 
@@ -373,9 +375,7 @@ export function buildTradeCsvRows({
     row.data_completeness = reviewReasons.length ? "partial" : "complete";
     row.manual_review_reason = reviewReasons.join("; ");
     row.size_delta_usd =
-      action.sizeDeltaUsd === null || action.sizeDeltaUsd === undefined
-        ? ""
-        : formatUsdDecimal(BigInt(action.sizeDeltaUsd) * signedSizeMultiplier);
+      sizeDeltaUsd === undefined || isFullPositionClose ? "" : formatUsdDecimal(sizeDeltaUsd * signedSizeMultiplier);
     row.size_delta_tokens =
       action.sizeDeltaInTokens === null || action.sizeDeltaInTokens === undefined
         ? ""
@@ -503,13 +503,7 @@ export function buildTradeCsvRows({
           receivedTokenAddress: targetTokenAddress,
         })
       );
-    } else if (
-      isDecrease &&
-      action.sizeDeltaUsd !== null &&
-      action.sizeDeltaUsd !== undefined &&
-      BigInt(action.sizeDeltaUsd) === 0n &&
-      BigInt(action.initialCollateralDeltaAmount) > 0n
-    ) {
+    } else if (isDecrease && sizeDeltaUsd === 0n && BigInt(action.initialCollateralDeltaAmount) > 0n) {
       const receivedRaw = action.executionAmountOut ?? action.initialCollateralDeltaAmount;
       const receivedToken = action.executionAmountOut ? targetToken : collateralToken;
       const receivedAddress = action.executionAmountOut

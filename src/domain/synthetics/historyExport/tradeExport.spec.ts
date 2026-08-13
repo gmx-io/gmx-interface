@@ -468,6 +468,41 @@ describe("buildTradeCsvRows", () => {
     });
   });
 
+  it("leaves size blank on full-position-close TP/SL sentinels instead of a bogus number", () => {
+    const [row] = buildTradeCsvRows({
+      chainId: 42161,
+      rawActions: [
+        {
+          id: "full-close",
+          eventName: TradeActionType.OrderCreated,
+          account: "0xAccount",
+          orderType: OrderType.LimitDecrease,
+          orderKey: "0xOrder",
+          timestamp: 1783425600,
+          transactionHash: "0xHash",
+          marketAddress: "0xMarket",
+          swapPath: [],
+          initialCollateralTokenAddress: "0xUsdc",
+          initialCollateralDeltaAmount: "0",
+          // MaxUint256 marks "close entire position" on TP/SL orders
+          sizeDeltaUsd: "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          isLong: true,
+          shouldUnwrapNativeToken: false,
+        },
+      ] as any,
+      marketsInfoData: {
+        "0xMarket": { indexToken: { symbol: "ETH", decimals: 18 }, indexTokenAddress: "0xEth", isSpotOnly: false },
+      } as any,
+      tokensData: { "0xUsdc": { address: "0xUsdc", symbol: "USDC", decimals: 6 } } as any,
+    });
+
+    expect(row).toMatchObject({
+      order_type: "LimitDecrease",
+      size_delta_usd: "",
+      data_completeness: "complete",
+    });
+  });
+
   it("retains order lifecycle and liquidation statuses", () => {
     const events = [
       ["created", TradeActionType.OrderCreated, OrderType.LimitIncrease],
