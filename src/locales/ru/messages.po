@@ -527,11 +527,6 @@ msgstr "Истёкший рыночный ордер на увеличение"
 msgid "Percentage"
 msgstr "Процент"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Return Bonus"
-msgstr "Бонус за возврат"
-
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "How it works?"
 msgstr "Как это работает?"
@@ -667,10 +662,6 @@ msgstr "<0>{0}</0><1>/</1><2>{1}</2> <3>для получения статуса
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "Выберите токен"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Available to eligible historical users while their return bonus cap remains."
-msgstr "Доступно пользователям с подходящей историей, пока не исчерпан лимит бонуса за возврат."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
@@ -2237,6 +2228,11 @@ msgstr "Нет SL ордеров"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Comeback Bonus"
+msgstr "Бонус за возврат"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
@@ -7090,6 +7086,10 @@ msgstr "Порог объёма"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Available to eligible historical users while their comeback bonus cap remains."
+msgstr "Доступно пользователям с подходящей историей, пока не исчерпан лимит бонуса за возврат."
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."

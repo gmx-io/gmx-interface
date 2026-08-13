@@ -527,11 +527,6 @@ msgstr "만료된 시장 증가"
 msgid "Percentage"
 msgstr "비율"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Return Bonus"
-msgstr "리턴 보너스"
-
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "How it works?"
 msgstr "어떻게 작동하나요?"
@@ -667,10 +662,6 @@ msgstr "<0>{0}</0><1>/</1><2>{1}</2> <3>{2} 상태를 획득하려면 <4>+{3}</4
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "토큰 선택"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Available to eligible historical users while their return bonus cap remains."
-msgstr "리턴 보너스 한도가 남아 있는 동안 자격을 갖춘 기존 사용자에게 제공됩니다."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
@@ -2237,6 +2228,11 @@ msgstr "SL 주문 없음"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Comeback Bonus"
+msgstr "리턴 보너스"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
@@ -7090,6 +7086,10 @@ msgstr "거래량 기준값"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Available to eligible historical users while their comeback bonus cap remains."
+msgstr "리턴 보너스 한도가 남아 있는 동안 자격을 갖춘 기존 사용자에게 제공됩니다."
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
