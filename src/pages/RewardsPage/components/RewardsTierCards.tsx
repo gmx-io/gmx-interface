@@ -794,7 +794,7 @@ function getBoostDescription(boost: BoostConfig, config: IncentivesConfig) {
     return <BoostDescriptionText boost={boost} config={config} />;
   }
 
-  return <Trans>Available to eligible historical users while their return bonus cap remains.</Trans>;
+  return <Trans>Available to eligible historical users while their comeback bonus cap remains.</Trans>;
 }
 
 type BoostDisplayItem =
@@ -832,8 +832,8 @@ function BoostsCard({
     0n
   );
   const activeBoostCount = activePersistentBoostIds.length + (hasReferralBoost ? 1 : 0);
-  const includeReturnBonus = Boolean(status?.boostIds.includes("ManualAllocation"));
-  const orderedBoosts = getBoostsInDisplayOrder(config.boosts, includeReturnBonus);
+  const includeComebackBonus = Boolean(status?.boostIds.includes("ManualAllocation"));
+  const orderedBoosts = getBoostsInDisplayOrder(config.boosts, includeComebackBonus);
   const createMultiplierDisplayItem = (boost: BoostConfig): BoostDisplayItem => {
     const isActivePersistent = activePersistentBoostIds.includes(boost.boost);
     const isQualifiedThisEpoch = qualifiedTransientBoostIds.includes(boost.boost);
@@ -957,7 +957,7 @@ function BoostsCard({
                       ? t`Balancing Trades`
                       : boost.boost === "LifetimeTrading"
                         ? t`Lifetime Volume`
-                        : t`Return Bonus`;
+                        : t`Comeback Bonus`;
 
                 return (
                   <TooltipWithPortal

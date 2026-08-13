@@ -527,11 +527,6 @@ msgstr "已过期的市价增仓"
 msgid "Percentage"
 msgstr "百分比"
 
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
-msgid "Return Bonus"
-msgstr "回归奖励"
-
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "How it works?"
 msgstr "如何运作？"
@@ -667,10 +662,6 @@ msgstr "<0>{0}</0><1>/</1><2>{1}</2> <3>即可获得 {2} 状态 <4>+{3}</4></3>"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "选择代币"
-
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
-msgid "Available to eligible historical users while their return bonus cap remains."
-msgstr "符合条件的历史用户可在回归奖励额度尚未用完时使用。"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
@@ -2237,6 +2228,11 @@ msgstr "无止损订单"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/rewardsTiersShared.tsx
+msgid "Comeback Bonus"
+msgstr "回归奖励"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
@@ -7090,6 +7086,10 @@ msgstr "交易量门槛"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
+
+#: src/pages/RewardsPage/components/RewardsTierCards.tsx
+msgid "Available to eligible historical users while their comeback bonus cap remains."
+msgstr "符合条件的历史用户可在回归奖励额度尚未用完时使用。"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."

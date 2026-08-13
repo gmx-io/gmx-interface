@@ -32,14 +32,14 @@ export const boostLabels: Record<BoostId, React.ReactNode> = {
   FeaturedMarkets: <Trans>Featured Markets</Trans>,
   BalancingTrades: <Trans>Balancing Trades</Trans>,
   LifetimeTrading: <Trans>Lifetime Volume</Trans>,
-  ManualAllocation: <Trans>Return Bonus</Trans>,
+  ManualAllocation: <Trans>Comeback Bonus</Trans>,
 };
 
 const boostDisplayOrder: BoostId[] = ["ManualAllocation", "BalancingTrades", "FeaturedMarkets", "LifetimeTrading"];
 
-export function getBoostsInDisplayOrder(boosts: BoostConfig[], includeReturnBonus: boolean) {
+export function getBoostsInDisplayOrder(boosts: BoostConfig[], includeComebackBonus: boolean) {
   return boostDisplayOrder.flatMap((boostId) => {
-    if (boostId === "ManualAllocation" && !includeReturnBonus) return [];
+    if (boostId === "ManualAllocation" && !includeComebackBonus) return [];
 
     const boost = boosts.find((item) => item.boost === boostId);
     return boost ? [boost] : [];

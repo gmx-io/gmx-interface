@@ -286,7 +286,7 @@ function BoostsTable({
   statusState: AccountDataState;
 }) {
   const orderedBoosts = getBoostsInDisplayOrder(config.boosts, Boolean(status?.boostIds.includes("ManualAllocation")));
-  const returnBonusBoosts = orderedBoosts.filter((boost) => boost.boost === "ManualAllocation");
+  const comebackBonusBoosts = orderedBoosts.filter((boost) => boost.boost === "ManualAllocation");
   const activityBoosts = orderedBoosts.filter((boost) => boost.boost !== "ManualAllocation");
 
   const renderBoostRow = (boost: BoostConfig) => {
@@ -347,7 +347,7 @@ function BoostsTable({
           <TableListSkeleton count={config.boosts.length + 1} Structure={TierLevelsSkeletonRow} />
         ) : (
           <>
-            {returnBonusBoosts.map(renderBoostRow)}
+            {comebackBonusBoosts.map(renderBoostRow)}
             <TierLevelTableTr>
               <TableTd padding="compact" className="text-typography-primary">
                 <span className="flex items-center gap-8 font-medium">

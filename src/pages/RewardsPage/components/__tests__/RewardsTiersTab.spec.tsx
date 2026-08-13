@@ -807,7 +807,7 @@ describe("RewardsTiersTab", () => {
     const featuredMarketsRow = screen.getByRole("row", { name: /Featured Markets/ });
     const balancingTradesRow = screen.getByRole("row", { name: /Balancing Trades/ });
     const lifetimeVolumeRow = screen.getByRole("row", { name: /Lifetime Volume/ });
-    const returnBonusRow = screen.getByRole("row", { name: /Return Bonus/ });
+    const comebackBonusRow = screen.getByRole("row", { name: /Comeback Bonus/ });
     const referralBonusRow = screen.getByRole("row", { name: /Referral Bonus/ });
 
     expect(screen.getByRole("columnheader", { name: "Boost" })).toBeDefined();
@@ -830,9 +830,9 @@ describe("RewardsTiersTab", () => {
     );
     expect(within(lifetimeVolumeRow).getByText("+1x")).toBeDefined();
     expect(within(lifetimeVolumeRow).getByText("Active")).toBeDefined();
-    expect(within(returnBonusRow).getByText("+2x")).toBeDefined();
-    expect(within(returnBonusRow).getByText("Active")).toBeDefined();
-    expect(returnBonusRow.textContent).toContain(
+    expect(within(comebackBonusRow).getByText("+2x")).toBeDefined();
+    expect(within(comebackBonusRow).getByText("Active")).toBeDefined();
+    expect(comebackBonusRow.textContent).toContain(
       "Available to eligible historical users until the incremental reward cap is consumed."
     );
     expect(referralBonusRow.textContent).toContain("Receive 50% of the rewards earned by every trader you invite.");
@@ -842,7 +842,7 @@ describe("RewardsTiersTab", () => {
 
     const activityRows = screen.getAllByRole("row").slice(1);
     expect(activityRows.map((row) => row.querySelector("td")?.textContent)).toEqual([
-      "Return Bonus",
+      "Comeback Bonus",
       "Referral Bonus",
       "Balancing Trades",
       "Featured Markets",
@@ -881,7 +881,7 @@ describe("RewardsTiersTab", () => {
     expect(within(boostsCard as HTMLElement).getByRole("button", { name: "Featured Markets" })).toBeDefined();
   });
 
-  it("marks the Return Bonus inactive when its incremental reward cap is consumed", () => {
+  it("marks the Comeback Bonus inactive when its incremental reward cap is consumed", () => {
     renderTab({
       status: {
         ...status,
@@ -892,8 +892,8 @@ describe("RewardsTiersTab", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
 
-    const returnBonusRow = screen.getByRole("row", { name: /Return Bonus/ });
-    expect(within(returnBonusRow).getByText("Inactive")).toBeDefined();
+    const comebackBonusRow = screen.getByRole("row", { name: /Comeback Bonus/ });
+    expect(within(comebackBonusRow).getByText("Inactive")).toBeDefined();
   });
 
   it("uses the requested boost order without adding the Referral Bonus to the multiplier", () => {
@@ -912,7 +912,7 @@ describe("RewardsTiersTab", () => {
       within(boostsCard as HTMLElement)
         .getAllByRole("button")
         .map((button) => button.getAttribute("aria-label"))
-    ).toEqual(["Return Bonus", "Referral Bonus", "Balancing Trades", "Featured Markets", "Lifetime Volume"]);
+    ).toEqual(["Comeback Bonus", "Referral Bonus", "Balancing Trades", "Featured Markets", "Lifetime Volume"]);
     expect(within(boostsCard as HTMLElement).queryByText("1 qualified this epoch")).toBeNull();
   });
 
@@ -1013,7 +1013,7 @@ describe("RewardsTiersTab", () => {
     expect(referralBonus.querySelector("svg path")?.getAttribute("fill")).toBe("#A0A3C4");
   });
 
-  it("hides the Return Bonus when it is not present for the trader", () => {
+  it("hides the Comeback Bonus when it is not present for the trader", () => {
     renderTab({
       status: {
         ...status,
@@ -1022,11 +1022,11 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    expect(screen.queryByRole("button", { name: "Return Bonus" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Comeback Bonus" })).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "Activity Boosts" }));
 
-    expect(screen.queryByRole("row", { name: /Return Bonus/ })).toBeNull();
+    expect(screen.queryByRole("row", { name: /Comeback Bonus/ })).toBeNull();
     expect(screen.getByRole("row", { name: /Referral Bonus/ })).toBeDefined();
   });
 
