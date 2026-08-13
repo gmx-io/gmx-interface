@@ -16,6 +16,21 @@ describe("getDebugErrorMessage", () => {
     expect(getDebugErrorMessage({ data: { taskId: "0xabc" } })).toContain("0xabc");
   });
 
+  // a request refused before it was relayed never gets a taskId, so the trace id is all there is
+  it("falls back to the trace id when the request never became a task", () => {
+    const message = getDebugErrorMessage({ errorMessage: "refused", data: { traceId: "tr-1" } });
+
+    expect(message).toContain("refused");
+    expect(message).toContain("tr-1");
+  });
+
+  it("shows both when both are known", () => {
+    const message = getDebugErrorMessage({ data: { taskId: "0xabc", traceId: "tr-1" } });
+
+    expect(message).toContain("0xabc");
+    expect(message).toContain("tr-1");
+  });
+
   it("keeps the contract error and its arguments", () => {
     const message = getDebugErrorMessage({
       contractError: "InsufficientExecutionFee",

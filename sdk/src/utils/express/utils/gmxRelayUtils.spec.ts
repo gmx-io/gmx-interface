@@ -29,6 +29,26 @@ describe("sendToGmxRelay", () => {
     vi.unstubAllGlobals();
   });
 
+  // a submit refused before it is relayed never gets a taskId, so the trace id is the only handle
+  // a user can quote back when reporting it
+  it("carries the API's trace id on a refusal", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ message: "nope" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json", "X-Trace-Id": "tr-1" },
+          })
+      )
+    );
+
+    const error = await sendToGmxRelay({ chainId: ARBITRUM, txnData: TXN_DATA }).catch((e) => e);
+
+    expect(error).toBeInstanceOf(GmxRelayError);
+    expect(error.data).toEqual({ traceId: "tr-1" });
+  });
+
   it("posts bare calldata without the Gelato fee suffix", async () => {
     const fetchMock = vi.fn(async () => jsonResponse({ taskId: TASK_ID, status: "pending" }));
     vi.stubGlobal("fetch", fetchMock);

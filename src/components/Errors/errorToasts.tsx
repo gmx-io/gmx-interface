@@ -217,15 +217,14 @@ export function getDebugErrorMessage(errorData: ErrorData | undefined) {
     ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
     : errorData?.errorMessage;
 
-  // the one handle that joins a user's report to both our logs and the relay's, and the only one
-  // they can give us — nothing in the response carries a request id
-  const taskId = typeof errorData?.data?.taskId === "string" ? errorData.data.taskId : undefined;
+  // the handles a user can quote back at us. taskId joins their report to both our logs and the
+  // relay's; traceId covers the requests that failed before they were relayed and never got one
+  const handles = [
+    typeof errorData?.data?.taskId === "string" ? `taskId: ${errorData.data.taskId}` : undefined,
+    typeof errorData?.data?.traceId === "string" ? `traceId: ${errorData.data.traceId}` : undefined,
+  ].filter(Boolean);
 
-  if (!taskId) {
-    return message;
-  }
-
-  return message ? `${message}\ntaskId: ${taskId}` : `taskId: ${taskId}`;
+  return [message, ...handles].filter(Boolean).join("\n") || undefined;
 }
 
 /**

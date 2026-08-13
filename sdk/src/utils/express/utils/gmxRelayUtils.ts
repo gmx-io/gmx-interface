@@ -30,6 +30,9 @@ const WAIT_TIMEOUT_MS = 120_000;
 const POLLING_INTERVAL_MS = 1_000;
 
 export class GmxRelayError extends Error {
+  /** Carried into the parsed error so a failure report can name the request in our logs. */
+  data?: { traceId: string };
+
   constructor(
     message: string,
     public readonly httpStatus?: number,
@@ -191,10 +194,19 @@ async function post<T>(baseUrl: string, path: string, body: unknown, timeout: nu
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");
-    throw new GmxRelayError(
+    const error = new GmxRelayError(
       `GMX Relay ${path} failed: ${extractMessage(text) ?? response.statusText}`,
       response.status
     );
+
+    // a request refused before it was relayed never gets a taskId, so this is the only thing the
+    // caller can quote back at us
+    const traceId = response.headers.get("X-Trace-Id");
+    if (traceId) {
+      error.data = { traceId };
+    }
+
+    throw error;
   }
 
   return (await response.json()) as T;

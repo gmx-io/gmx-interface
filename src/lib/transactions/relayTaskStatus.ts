@@ -68,7 +68,10 @@ async function waitForGmxRelayTaskOutcome({
     // the relay refused the status request itself, so it will never report a verdict for this task.
     // The operation may still land on-chain, so the failure is only recorded against the order and
     // the outcome is left to on-chain events
-    sendTxnErrorMetric(metricId, extendError(error as ErrorLike, { data: { taskId } }), "relayer");
+    // keep whatever the relay attached, the trace id in particular — it is what names this request
+    const data = { ...((error as ErrorLike)?.data ?? {}), taskId };
+
+    sendTxnErrorMetric(metricId, extendError(error as ErrorLike, { data }), "relayer");
 
     return undefined;
   }
