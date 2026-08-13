@@ -142,7 +142,7 @@ export function getRewardsVestingDepositCapacity({
   }
 
   const pairCapacity = getNonNegativeAmount(currentPairAmount) + getNonNegativeAmount(availablePairAmount);
-  // Invert Vester's floored pair requirement without losing the final accepted wei.
+  // Inverts Vester's floored pair requirement, keeping the last accepted wei.
   const maxSupportedRemainingAmount = ((pairCapacity + 1n) * maxVestable - 1n) / averageStaked;
   const maxDepositByPairAmount = bigMath.max(
     maxSupportedRemainingAmount - getNonNegativeAmount(effectiveRemainingAmount),
