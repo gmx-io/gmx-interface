@@ -99,7 +99,7 @@ export const actionTextMap: Partial<
   "Withdraw-OrderExecuted": msg`Withdraw`,
   "Withdraw-OrderCancelled": msg`Failed withdraw`,
 
-  /** Zero-size limit increase: adds margin at a trigger price without changing the position size. */
+  /** Zero-size limit increase that only adds margin at a trigger price. */
   "MarginDeposit-OrderCreated": msg`Create margin deposit`,
   "MarginDeposit-OrderExecuted": msg`Execute margin deposit`,
   "MarginDeposit-OrderCancelled": msg`Cancel margin deposit`,

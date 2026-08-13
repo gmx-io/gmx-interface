@@ -173,7 +173,6 @@ function OrderStatusNotification({
           isStable: initialCollateralToken?.isStable,
         });
 
-        // a margin deposit is an order, so its toast names the action instead of an immediate deposit
         if (isMarginDepositOrder(orderData)) {
           const longShortText = isLong ? t`Long` : t`Short`;
           const txnTypeText = {

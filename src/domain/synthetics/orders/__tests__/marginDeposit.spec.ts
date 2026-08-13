@@ -92,7 +92,6 @@ const baseProjectionParams = {
 
 describe("getMarginDepositProjections", () => {
   it("values index-token collateral at the trigger price", () => {
-    // ETH collateral in an ETH market, current price $1200, trigger $1000
     const projections = getMarginDepositProjections({
       ...baseProjectionParams,
       position: makePosition(marketInfo.longToken.address),
@@ -176,7 +175,6 @@ describe("getMarginDepositProjections", () => {
       triggerPrice: usd(1000),
     });
 
-    // the trigger is below the entry price, so the long is at a loss and leverage is higher
     expect(withPnl!.nextLeverage!).toBeGreaterThan(withoutPnl!.nextLeverage!);
   });
 

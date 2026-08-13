@@ -65,8 +65,8 @@ export function MarginDepositSuggestionCard({ onClose }: { onClose: () => void }
     triggerPriceInputValue,
   ]);
 
-  // Only limit increases on an existing position; stop market shares the isLimit flag and must not show the card.
-  // Size, margin and trigger price values do not matter, dismissal is the only way to hide the card.
+  // not the shared isLimit flag: stop market also carries it and must not show the card
+  // only dismissal hides the card, never the entered values
   const isEligible = tradeMode === TradeMode.Limit && isPosition && isIncrease && !isTwap && position !== undefined;
 
   if (!isEligible) {

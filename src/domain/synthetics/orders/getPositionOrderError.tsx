@@ -32,7 +32,6 @@ export function getPositionOrderError({
   existingPosition: PositionInfoLoaded | undefined;
   nextPositionValuesForIncrease: NextPositionValues | undefined;
   maxAllowedLeverage: number | undefined;
-  /** Liquidation price projected after the deposit at the edited trigger price. Margin deposits only. */
   marginDepositNextLiqPrice?: bigint;
 }): string | undefined {
   const isMarginDeposit = isMarginDepositOrder(positionOrder);
@@ -118,7 +117,7 @@ export function getPositionOrderError({
     }
   }
 
-  // A margin deposit does not change the size, so the standard increase checks below do not apply to it.
+  // the standard increase checks assume a positive size
   if (isMarginDeposit) {
     const riskLevel = getMarginDepositRiskLevel({
       isLong: positionOrder.isLong,

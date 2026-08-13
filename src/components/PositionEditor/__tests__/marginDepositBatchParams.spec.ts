@@ -86,7 +86,6 @@ describe("buildMarginDepositBatchParams", () => {
     expect(orderPayload.numbers.acceptablePrice).toBe(
       convertToContractPrice(applySlippageToPrice(ALLOWED_SLIPPAGE, TRIGGER_PRICE, true, true), WETH.decimals)
     );
-    // slippage moves the acceptable price up for a long increase
     expect(orderPayload.numbers.acceptablePrice > orderPayload.numbers.triggerPrice).toBe(true);
   });
 

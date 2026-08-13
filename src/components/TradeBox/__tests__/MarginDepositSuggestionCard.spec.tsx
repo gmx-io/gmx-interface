@@ -11,8 +11,7 @@ const { openAtPrice, selectorValues } = vi.hoisted(() => ({
   selectorValues: new Map<string, unknown>(),
 }));
 
-// The card is a thin selector consumer, so the selectors are replaced with plain keys
-// and useSelector reads them out of a map the tests control.
+// selectors are mocked to plain keys that useSelector reads from a test-controlled map
 vi.mock("context/SyntheticsStateContext/selectors/tradeboxSelectors", () => ({
   selectTradeboxFromToken: "fromToken",
   selectTradeboxFromTokenAmount: "fromTokenAmount",
@@ -218,7 +217,7 @@ describe("MarginDepositSuggestionCard — dismissal", () => {
     const onClose = vi.fn();
     const { container, getAllByRole } = renderCard({}, onClose);
 
-    // the action link carries the label, the close button is the unlabelled one
+    // the close button is the unlabelled one
     const closeButton = getAllByRole("button").find((button) => button.textContent === "");
 
     fireEvent.click(closeButton!);

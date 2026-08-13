@@ -172,10 +172,7 @@ describe("getOrderErrors — margin deposit orders", () => {
     );
   }
 
-  /**
-   * 10k long/short on BTC at $20,000 (0.5 BTC) with $3,000 of USDC margin, so the untouched
-   * liquidation price sits around $14,200 for a long and $25,800 for a short.
-   */
+  /** 10k BTC position at $20k with $3k USDC margin: liq ≈ $14.2k long, $25.8k short. */
   function makeFundedPosition(p: {
     liquidationPrice: bigint;
     isLong?: boolean;
@@ -330,13 +327,11 @@ describe("getOrderErrors — margin deposit orders", () => {
     const position = makeFundedPosition({ liquidationPrice: expandDecimals(11_000, 30) });
     const positionsInfoData = { [position.key]: position };
 
-    // a comfortable deposit close to liquidation
     const funded = makeDepositOrder({
       key: "deposit-funded",
       initialCollateralDeltaAmount: expandDecimals(2_000, 6),
       triggerPrice: expandDecimals(12_000, 30),
     });
-    // a dust deposit at a trigger that is farther from liquidation, but far too small to save the position
     const dust = makeDepositOrder({
       key: "deposit-dust",
       initialCollateralDeltaAmount: expandDecimals(1, 6),
@@ -423,8 +418,7 @@ describe("getOrderErrors — margin deposit orders", () => {
     const position = makeFundedPosition({ liquidationPrice: expandDecimals(11_000, 30) });
     const positionsInfoData = { [position.key]: position };
 
-    // the position is alive at the trigger and the projected liq price sits above it,
-    // which is exactly what the standard increase path reports as "resultingLiquidatable"
+    // exactly the state the standard increase path reports as "resultingLiquidatable"
     const params = {
       ...depositParams,
       positionsInfoData,
@@ -442,7 +436,7 @@ describe("getOrderErrors — margin deposit orders", () => {
 
     expect(deposit.errors).toEqual([]);
 
-    // control: the very same inputs with a positive size do produce the standard error
+    // control: the same inputs with a positive size do produce the standard error
     const regularIncrease = getOrderErrors({
       ...params,
       order: makeIncreaseOrder(OrderType.LimitIncrease, {

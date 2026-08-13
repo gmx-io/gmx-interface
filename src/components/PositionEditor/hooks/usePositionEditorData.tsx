@@ -57,7 +57,6 @@ export function usePositionEditorData({ operation }: Options) {
     const totalFeesUsd = bigMath.abs(fees.totalFees.deltaUsd);
 
     if (isAtPriceDeposit) {
-      // the deposit must resolve to the position collateral token (native and wrapped forms both qualify)
       const isPositionCollateralSelected =
         collateralToken !== undefined && getIsEquivalentTokens(collateralToken, position.collateralToken);
 

@@ -6552,7 +6552,7 @@ export const executeTwapIncreaseWithFee: PositionTradeAction = {
   pnlUsd: -126_320_000_000_000_000_000_000_000_000_000n,
 };
 
-//#region Margin deposits: limit increases with zero size that only add collateral at the trigger price
+//#region Margin deposits
 export const createMarginDeposit: PositionTradeAction = {
   ...createOrderIncreaseLong,
   id: "0x1290b5858dc8efa0e2eec75a241fa95bdb5f9a58950a57bf540f269edff18751:31",

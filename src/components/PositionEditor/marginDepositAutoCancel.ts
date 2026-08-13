@@ -1,7 +1,4 @@
-/**
- * Margin deposits are always created with auto-cancel, so the position must have a free auto-cancel slot.
- * The order being replaced frees its own slot within the same batch.
- */
+/** Margin deposits always auto-cancel; the order being replaced frees its own slot. */
 export function getIsAutoCancelLimitReached(p: {
   positionOrders: { key: string; autoCancel: boolean }[];
   replacingOrderKey: string | undefined;

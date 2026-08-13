@@ -244,8 +244,7 @@ export function PositionEditor() {
   const submitButtonState = usePositionEditorButtonState(operation);
   const gasPaymentToken = submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken;
 
-  // express params cannot resolve until the order params are complete (e.g. no trigger price yet),
-  // so fall back to the native-token estimate to keep the max amount and the slider available
+  // express params cannot resolve without the trigger price, so fall back to the native-token estimate
   const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
   const gasPaymentTokenForMax =
     expressOrdersEnabled && !collateralToken?.isNative && expressGasPaymentParams !== undefined
@@ -356,7 +355,6 @@ export function PositionEditor() {
 
   useEffect(
     function resetFormAndApplyOpenRequest() {
-      // an "At price" request always starts from a clean amount, then applies its own prefill below
       if (isVisible !== prevIsVisible || atPriceOpenRequest) {
         setCollateralInputValue("");
       }
@@ -372,7 +370,7 @@ export function PositionEditor() {
         visualMultiplier: position?.indexToken?.visualMultiplier,
       });
 
-      // the replaced order is not loaded yet, keep the request pending
+      // keep the request until the replaced order loads
       if (!prefill) {
         return;
       }

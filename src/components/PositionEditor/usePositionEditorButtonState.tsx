@@ -403,7 +403,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     setCollateralInputValue(formatAmountFree(minDepositAmount, selectedCollateralToken.decimals));
   }, [minDepositUsd, selectedCollateralToken, setCollateralInputValue]);
 
-  // deposit auto-cancel is mandatory, so the limit blocks instead of downgrading like TP/SL does
+  // mandatory auto-cancel: the limit blocks instead of downgrading like TP/SL
   const isAutoCancelLimitReached = useMemo(
     () => getIsAutoCancelLimitReached({ positionOrders, replacingOrderKey, maxAutoCancelOrders }),
     [maxAutoCancelOrders, positionOrders, replacingOrderKey]

@@ -335,7 +335,6 @@ function SizeWithIcon({
     );
   }
 
-  // A margin deposit has no size, so its deposited amount is shown instead
   if (isMarginDepositOrder(order)) {
     const depositToken = order.initialCollateralToken;
 

@@ -6,10 +6,7 @@ import { OrderType } from "./types";
 import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "../positions";
 import { TokenData, convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "../tokens";
 
-/**
- * Minimal shape shared by OrderInfo and PositionTradeAction so both can be checked with one helper.
- * `isTwap` is optional: OrderInfo carries it, trade actions do not — those callers must pass it explicitly.
- */
+/** `isTwap` is optional: trade actions lack it and must pass it explicitly. */
 export type MarginDepositOrderLike = {
   orderType: OrderType;
   sizeDeltaUsd: bigint;
@@ -17,9 +14,7 @@ export type MarginDepositOrderLike = {
   isTwap?: boolean;
 };
 
-/**
- * A margin deposit adds collateral to an existing position at a trigger price without changing its size.
- */
+/** Adds collateral to an existing position at a trigger price without changing its size. */
 export function isMarginDepositOrder(order: MarginDepositOrderLike): boolean {
   if (order.isTwap === true) {
     return false;
@@ -30,10 +25,7 @@ export function isMarginDepositOrder(order: MarginDepositOrderLike): boolean {
   );
 }
 
-/**
- * When the collateral is the market's index token (or its wrapped/native/synthetic equivalent) its value at
- * execution follows the trigger price, so the deposit must be valued there instead of at the current price.
- */
+/** Index-token collateral follows the trigger price at execution, so the deposit is valued there. */
 export function getMarginDepositValuationPrice(p: {
   collateralToken: TokenData;
   indexToken: TokenData;
@@ -56,11 +48,7 @@ export type MarginDepositProjections = {
   nextLiqPrice: bigint | undefined;
 };
 
-/**
- * Projects a position after a margin deposit of `depositAmount` executed at `triggerPrice`.
- * Mirrors usePositionEditorData: pending fees are folded into the collateral, then 0n pending fees are
- * passed down to getLeverage/getLiquidationPrice.
- */
+/** Mirrors usePositionEditorData: pending fees are folded into the collateral, 0n fees passed down. */
 export function getMarginDepositProjections(p: {
   position: PositionInfo;
   depositAmount: bigint;
@@ -141,10 +129,7 @@ function getIsComparableLiqPrice(liqPrice: bigint | undefined): liqPrice is bigi
   return liqPrice !== undefined && liqPrice > 0n && liqPrice < maxUint256;
 }
 
-/**
- * "insufficient" — the position would still be liquidatable at the trigger price after the deposit.
- * "beyondCurrentLiq" — the deposit is enough, but the trigger sits at or beyond the current liquidation price.
- */
+/** "insufficient" — still liquidatable at the trigger after the deposit; "beyondCurrentLiq" — trigger at or past the current liq price. */
 export function getMarginDepositRiskLevel(p: {
   isLong: boolean;
   triggerPrice: bigint | undefined;

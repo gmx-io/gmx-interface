@@ -787,12 +787,10 @@ export function getEditCollateralError(p: {
   return {};
 }
 
-/** Full banner copy for {@link ValidationButtonTooltipName.marginDepositAutoCancelLimit}. */
 export function getMarginDepositAutoCancelLimitMessage() {
   return t`Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit.`;
 }
 
-/** Full banner copy for {@link ValidationButtonTooltipName.marginDepositInsufficient}. */
 export function getMarginDepositInsufficientMessage() {
   return t`This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation.`;
 }
@@ -801,11 +799,7 @@ export function getMarginDepositBeyondLiqPriceMessage() {
   return t`This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed.`;
 }
 
-/**
- * Validation for the PositionEditor "At price" deposit mode (a margin deposit order).
- * Blocking states carry a {@link ValidationButtonTooltipName} so the editor can render the full message
- * in an error card while the short `buttonErrorMessage` stays on the disabled CTA.
- */
+/** Blocking "At price" checks; `bannerErrorName` carries the full copy, `buttonErrorMessage` the short CTA text. */
 export function getConditionalDepositError(p: {
   collateralDeltaAmount: bigint | undefined;
   collateralDeltaUsd: bigint | undefined;

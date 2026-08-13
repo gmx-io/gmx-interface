@@ -717,7 +717,6 @@ function calcMarginDepositProjections(p: {
 
   return getMarginDepositProjections({
     position,
-    // margin deposits never swap, so the initial collateral is the position's collateral token
     depositAmount: order.initialCollateralDeltaAmount,
     triggerPrice,
     minCollateralUsd,
@@ -727,7 +726,7 @@ function calcMarginDepositProjections(p: {
   });
 }
 
-/** Position projected after the edited margin deposit executes. Undefined for every other order type. */
+/** Undefined for anything but a margin deposit. */
 export const selectOrderEditorMarginDepositProjections = createSelector((q) => {
   return calcMarginDepositProjections({
     order: q(selectOrderEditorOrder),

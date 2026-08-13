@@ -30,7 +30,7 @@ describe("formatMarginDepositPriceInput", () => {
     const price = expandDecimals(1, USD_DECIMALS) / 1000n;
     const formatted = formatMarginDepositPriceInput(price, 1000);
 
-    // the selector divides the parsed input by the visual multiplier again
+    // the selector divides the parsed input by the visual multiplier
     expect(parseValue(formatted, USD_DECIMALS)! / 1000n).toBe(price);
   });
 });

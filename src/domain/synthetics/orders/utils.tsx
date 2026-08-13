@@ -199,7 +199,7 @@ export function getOrderErrors(p: {
       }
     }
   } else if (isPositionOrder(order) && isMarginDepositOrder(order)) {
-    // margin deposits never change size, so none of the standard increase checks apply
+    // the standard increase checks assume a positive size
     errors.push(
       ...getMarginDepositOrderErrors({
         order,

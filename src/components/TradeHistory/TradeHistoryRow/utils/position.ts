@@ -119,7 +119,6 @@ export const formatPositionMessage = (
 
   const isFullClose = isTriggerDecreaseOrderType(ot) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd);
 
-  // Zero-size limit increase: adds margin at a trigger price, so it is presented by its collateral, not its size.
   const isMarginDeposit = isMarginDepositOrder({
     orderType: ot,
     sizeDeltaUsd,

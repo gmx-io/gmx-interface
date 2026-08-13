@@ -66,7 +66,6 @@ const marketInfo = marketsInfoData["ETH-ETH-USDC"];
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const usd = (value: number) => expandDecimals(value, 30);
 
-// ETH is $1,200 in the mocks; the trigger sits at $1,000
 const TRIGGER_PRICE = usd(1_000);
 const ONE_ETH = expandDecimals(1, 18);
 const ONE_ETH_AT_MARK = usd(1_200);
@@ -105,7 +104,7 @@ beforeEach(() => {
   state.triggerPrice = TRIGGER_PRICE;
   state.collateralToken = marketInfo.longToken;
   state.collateralDeltaAmount = ONE_ETH;
-  // the selector always values the input at the current price; the at-price branch must not use it
+  // valued at the current price on purpose: the at-price branch must ignore it
   state.collateralDeltaUsd = ONE_ETH_AT_MARK;
   state.totalFeesDeltaUsd = -usd(50);
 });

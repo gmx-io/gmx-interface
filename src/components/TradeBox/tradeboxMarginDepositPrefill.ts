@@ -6,12 +6,7 @@ export type TradeboxMarginDepositPrefill = {
   triggerPriceInputValue: string | undefined;
 };
 
-/**
- * Picks the trade box inputs that can be carried over to the "Deposit margin at price" form.
- * The pay amount is only reused when the pay token is the position collateral token (no conversion),
- * the trigger price only when it parses to a positive price. Amounts and prices are passed as the
- * raw input strings, already validated by the caller through the parsed values.
- */
+/** The pay amount carries over only when the pay token is the position collateral (never converted). */
 export function getTradeboxMarginDepositPrefill(p: {
   payToken: Token | undefined;
   payTokenInputValue: string | undefined;

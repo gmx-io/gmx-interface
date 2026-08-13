@@ -172,7 +172,6 @@ export function OrderEditor(p: Props) {
   const isMarginDeposit = isMarginDepositOrder(p.order);
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
-  // subscribed rather than read on demand so the button error follows the edited size and trigger price
   const positionOrderError = useSelector(selectOrderEditorPositionOrderError);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
@@ -222,7 +221,7 @@ export function OrderEditor(p: Props) {
       return false;
     }
 
-    // a margin deposit never opens a fresh position, so it keeps the existing-position preview
+    // a margin deposit never becomes a fresh position
     if (isMarginDeposit) {
       return false;
     }
@@ -275,7 +274,7 @@ export function OrderEditor(p: Props) {
   const openPositionEditorAtPrice = usePositionEditorOpenAtPrice();
   const [, setEditingOrderState] = useEditingOrderState();
 
-  // The deposited amount cannot be updated in place, so it is replaced through the position editor.
+  // the deposited amount cannot be updated in place, only replaced
   const handleReplaceMarginDeposit = useCallback(() => {
     if (!positionKey) {
       return;
@@ -477,7 +476,6 @@ export function OrderEditor(p: Props) {
         existingPosition !== undefined &&
         nextSizeDeltaUsd >= existingPosition.sizeInUsd;
 
-      // a margin deposit has no size input and must stay sizeless
       const updateSizeDeltaUsd = isMarginDeposit
         ? 0n
         : shouldPreserveFullCloseSize
@@ -600,7 +598,6 @@ export function OrderEditor(p: Props) {
   ]);
 
   const showLiquidationRiskWarning = useMemo(() => {
-    // margin deposits get their own liquidation warnings, the "reduce size" copy does not apply to them
     if (error || !positionOrder || isMarginDeposit) {
       return false;
     }

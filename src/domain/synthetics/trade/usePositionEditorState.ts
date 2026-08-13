@@ -52,7 +52,6 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
     setAtPriceOpenRequest(undefined);
   }, []);
 
-  // opening or closing through the plain path always lands on a clean "now" form
   const updateEditingPositionKey = useCallback(
     (positionKey: SetStateAction<string | undefined>) => {
       resetAtPriceState();

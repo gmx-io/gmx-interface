@@ -64,7 +64,6 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
 
       const isMarginDeposit = isMarginDepositOrder(positionOrder);
 
-      // a margin deposit has no size, so its line is labeled with the deposited collateral instead
       const sizeData: ChartLineSizeData | undefined = isMarginDeposit
         ? {
             sizeInUsd:

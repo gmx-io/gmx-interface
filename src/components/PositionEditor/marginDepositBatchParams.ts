@@ -9,10 +9,7 @@ export type MarginDepositBatchParams = {
   executionFeeAmount: bigint;
   executionGasLimit: bigint;
   referralCode: string | undefined;
-  /**
-   * The position collateral token in its selected form (native or wrapped): margin deposits never swap,
-   * so it is both the pay and the collateral token.
-   */
+  /** Pay and collateral token at once: margin deposits never swap. */
   collateralTokenAddress: string;
   collateralDeltaAmount: bigint;
   triggerPrice: bigint;
@@ -20,14 +17,11 @@ export type MarginDepositBatchParams = {
   marketAddress: string;
   indexTokenAddress: string;
   allowedSlippage: number;
-  /** Order to cancel in the same batch when the user edits an existing margin deposit. */
+  /** Cancelled in the same batch when replacing an existing deposit. */
   replacingOrderKey: string | undefined;
 };
 
-/**
- * Conditional margin deposit: a Limit Increase with no size delta and mandatory auto-cancel.
- * Replacing an existing deposit cancels it in the same batch, so one signature covers both.
- */
+/** A Limit Increase with zero size and mandatory auto-cancel; a replaced order is cancelled in the same batch. */
 export function buildMarginDepositBatchParams(p: MarginDepositBatchParams): BatchOrderTxnParams {
   const createOrderParams = buildIncreaseOrderPayload({
     chainId: p.chainId,
