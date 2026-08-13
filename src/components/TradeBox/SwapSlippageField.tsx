@@ -12,6 +12,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatPercentage } from "lib/numbers";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MAX_PERCENTAGE_INPUT_VALUE, NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { useTradeboxChanges } from "./hooks/useTradeboxChanges";
@@ -64,11 +65,26 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
   const handleCustomChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      setCustomValue(value);
 
-      const numValue = parseFloat(value);
-      if (!isNaN(numValue) && numValue >= 0) {
-        const bps = Math.round(numValue * 100);
+      if (value === "") {
+        setCustomValue("");
+        return;
+      }
+
+      const bps = Math.round(parseFloat(value) * 100);
+
+      if (isNaN(bps)) {
+        return;
+      }
+
+      if (bps >= MAX_PERCENTAGE_INPUT_VALUE) {
+        setCustomValue((MAX_PERCENTAGE_INPUT_VALUE / 100).toString());
+        setAllowedSlippage(MAX_PERCENTAGE_INPUT_VALUE);
+        return;
+      }
+
+      if (NUMBER_WITH_TWO_DECIMALS.test(value)) {
+        setCustomValue(value);
         setAllowedSlippage(bps);
       }
     },

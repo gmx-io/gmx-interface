@@ -84,6 +84,8 @@ export type SwapTradeAction = {
   initialCollateralDeltaAmount: bigint;
   minOutputAmount: bigint;
   executionAmountOut?: bigint;
+  swapFeeUsd?: bigint;
+  swapImpactUsd?: bigint;
   orderType: OrderType;
   orderKey: string;
   reason?: string;

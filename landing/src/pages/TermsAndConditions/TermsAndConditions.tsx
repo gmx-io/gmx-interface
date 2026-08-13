@@ -252,7 +252,7 @@ export default function TermsAndConditions() {
                 <p className="text-terms-body mb-24">
                   5.2. GMX.io may revise these Terms from time to time. We will notify you by updating the date at the
                   top of the Terms and maintaining a current version. The most current version of the Terms will always
-                  be at https://gmx.io/#/terms-and-conditions. All modifications will be effective when they are posted.
+                  be at https://gmx.io/terms-and-conditions. All modifications will be effective when they are posted.
                   By continuing to access or use the Site or the Interface after those revisions become effective, you
                   agree to be bound by the revised Terms.
                 </p>

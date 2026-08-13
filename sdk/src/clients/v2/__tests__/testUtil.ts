@@ -23,11 +23,13 @@ export const TEST_CHAIN_ID = ARBITRUM;
 
 export const TEST_SYMBOL = "ETH/USD [WETH-USDC]";
 export const TEST_SIZE_USD = 10n * 10n ** 30n; // $10
-// Must clear MIN_COLLATERAL_USD ($1 on Arbitrum) after fees, otherwise the keeper
-// cancels the order with LiquidatablePosition.
+// Must clear MIN_COLLATERAL_USD ($1 on Arbitrum) after fees, or the keeper cancels the order.
 export const TEST_COLLATERAL = { amount: 3000000n, token: "USDC" }; // 3 USDC
 
 const TERMINAL_STATUSES = new Set(["executed", "cancelled", "relay_failed", "relay_reverted"]);
+// A limit or conditional order rests at "created" until its trigger is hit.
+const PLACED_STATUSES = new Set([...TERMINAL_STATUSES, "created"]);
+export const PLACED_OK_STATUSES = ["created", "executed"];
 const ORDER_PREPARE_PATHS = new Set([
   "/v1/orders/txns/prepare",
   "/v1/orders/txns/edit/prepare",
@@ -179,23 +181,45 @@ export function getOrCreateTestSigner(): PrivateKeySigner {
   return ephemeralSigner;
 }
 
+// TWAP fans out into one paid sub-order per part, so the live flows are opt-in.
+export function shouldRunTwap(): boolean {
+  // eslint-disable-next-line no-restricted-globals
+  return process.env.GMX_TEST_TWAP === "1";
+}
+
+// Concurrent prepares are priced moments apart, so oracle-derived values drift in the last digits.
+export function withinOneBp(a: bigint, b: bigint): boolean {
+  const diff = a > b ? a - b : b - a;
+  return diff * 10_000n <= a;
+}
+
 export function hasRpcUrl(): boolean {
   // eslint-disable-next-line no-restricted-globals
   return !!process.env.GMX_TEST_RPC_URL;
 }
 
-export async function waitForOrderStatus(
+/** For limit and conditional orders: resolves as soon as the order is on the book. */
+export function waitForOrderPlaced(
   sdk: GmxApiSdk,
   requestId: string,
   timeoutMs = 60000
+): Promise<OrderStatusResponse> {
+  return waitForOrderStatus(sdk, requestId, timeoutMs, PLACED_STATUSES);
+}
+
+export async function waitForOrderStatus(
+  sdk: GmxApiSdk,
+  requestId: string,
+  timeoutMs = 60000,
+  stopStatuses: ReadonlySet<string> = TERMINAL_STATUSES
 ): Promise<OrderStatusResponse> {
   const start = Date.now();
 
   while (Date.now() - start < timeoutMs) {
     const status = await sdk.fetchOrderStatus({ requestId });
 
-    if (TERMINAL_STATUSES.has(status.status)) {
-      if (status.status !== "executed") {
+    if (stopStatuses.has(status.status)) {
+      if (!PLACED_OK_STATUSES.includes(status.status)) {
         logOrderFailure(status);
       }
       return status;

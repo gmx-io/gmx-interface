@@ -46,6 +46,16 @@ export function getIsPositionLiquidatableAtPrice(p: {
   return isLong ? liqPrice > price : liqPrice < price;
 }
 
+export function getIsPositionLiquidatedBeforeTrigger(p: {
+  liqPrice: bigint | undefined;
+  triggerPrice: bigint | undefined;
+  isLong: boolean;
+}): boolean {
+  const { liqPrice, triggerPrice, isLong } = p;
+
+  return getIsPositionLiquidatableAtPrice({ liqPrice, price: triggerPrice, isLong });
+}
+
 export function getIsIncreaseResultingPositionLiquidatable(p: {
   currentLiqPrice: bigint | undefined;
   nextLiqPrice: bigint | undefined;

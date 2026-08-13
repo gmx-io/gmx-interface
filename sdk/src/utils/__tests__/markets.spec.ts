@@ -19,6 +19,7 @@ import {
   getMarketPnl,
   getOpenInterestUsd,
   getOpenInterestInTokens,
+  getPositiveMarketPnl,
   getPriceForPnl,
 } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
@@ -455,6 +456,78 @@ describe("getMarketPnl", () => {
     } as MarketInfo;
     // maximize = false => use minPrice for long
     expect(getMarketPnl(marketInfo, true, true)).toBe(0n); // openInterestValue(1000n) - openInterestUsd(1000n) = 0
+  });
+});
+
+describe("getPositiveMarketPnl", () => {
+  const price = expandDecimals(1000, 18);
+
+  function makeMarket(overrides: Partial<MarketInfo>) {
+    return {
+      indexToken: { decimals: 18, prices: { minPrice: price, maxPrice: price } },
+      ...overrides,
+    } as MarketInfo;
+  }
+
+  it("falls back to net pnl when the per-collateral open interest is missing", () => {
+    const marketInfo = makeMarket({ longInterestUsd: 500n, longInterestInTokens: 1n });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(500n);
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(getMarketPnl(marketInfo, true, true));
+  });
+
+  it("drops the losing collateral bucket for longs", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 6000n,
+      longInterestInTokens: 5n,
+      longInterestUsdUsingLongToken: 1000n,
+      longInterestInTokensUsingLongToken: 3n,
+      longInterestUsdUsingShortToken: 5000n,
+      longInterestInTokensUsingShortToken: 2n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(2000n);
+    expect(getMarketPnl(marketInfo, true, true)).toBe(-1000n);
+  });
+
+  it("drops the losing collateral bucket for shorts", () => {
+    const marketInfo = makeMarket({
+      shortInterestUsd: 6000n,
+      shortInterestInTokens: 5n,
+      shortInterestUsdUsingLongToken: 5000n,
+      shortInterestInTokensUsingLongToken: 2n,
+      shortInterestUsdUsingShortToken: 1000n,
+      shortInterestInTokensUsingShortToken: 3n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, false, true)).toBe(3000n);
+    expect(getMarketPnl(marketInfo, false, true)).toBe(1000n);
+  });
+
+  it("treats an empty collateral bucket as zero pnl", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 1000n,
+      longInterestInTokens: 3n,
+      longInterestUsdUsingLongToken: 0n,
+      longInterestInTokensUsingLongToken: 0n,
+      longInterestUsdUsingShortToken: 1000n,
+      longInterestInTokensUsingShortToken: 3n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(2000n);
+  });
+
+  it("returns zero pnl for a bucket that has usd open interest but no tokens", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 1000n,
+      longInterestInTokens: 0n,
+      longInterestUsdUsingLongToken: 1000n,
+      longInterestInTokensUsingLongToken: 0n,
+      longInterestUsdUsingShortToken: 0n,
+      longInterestInTokensUsingShortToken: 0n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(0n);
   });
 });
 

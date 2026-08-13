@@ -1,7 +1,7 @@
 import { withRetry } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM, CONTRACTS_CHAIN_IDS_DEV } from "configs/chains";
+import { ARBITRUM, AVALANCHE, CONTRACTS_CHAIN_IDS_DEV } from "configs/chains";
 import { MARKETS } from "configs/markets";
 import { getOracleKeeperUrl } from "configs/oracleKeeper";
 
@@ -20,6 +20,12 @@ const SKIPPED_KEEPER_MARKETS: Partial<Record<number, Set<string>>> = {
     "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4",
     // AI16Z/USD [WBTC.e-USDC]
     "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169",
+    // SWAP-ONLY [USDC-DAI]
+    "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665",
+  ]),
+  [AVALANCHE]: new Set([
+    // SWAP-ONLY [USDC-DAI.e]
+    "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b",
   ]),
 };
 
