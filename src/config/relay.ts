@@ -1,7 +1,7 @@
 import { getIsGelatoRelayerForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 import { getIsFlagEnabled } from "./ab";
-import { ARBITRUM, ContractsChainId } from "./chains";
+import { ARBITRUM, AVALANCHE, ContractsChainId, MEGAETH } from "./chains";
 
 export type RelayProvider = "gelato" | "gmx";
 
@@ -12,10 +12,12 @@ export type RelayRollout = RelayProvider | "ab";
 const ENV_RELAY_PROVIDER = import.meta.env.VITE_APP_RELAY_PROVIDER as RelayProvider | undefined;
 
 // Per-chain rollout of GMX Relay, so both widening the split and rolling back are config changes
-// rather than a deploy of reverted code. Arbitrum is first; `gmxRelay` sits at 0, so nobody moves
-// by default and a tester opts in with `?gmxRelay=1`.
+// rather than a deploy of reverted code. `gmxRelay` sits at 0, so nobody moves by default and a
+// tester opts in with `?gmxRelay=1`.
 const RELAY_ROLLOUT: Partial<Record<ContractsChainId, RelayRollout>> = {
   [ARBITRUM]: "ab",
+  [AVALANCHE]: "ab",
+  [MEGAETH]: "ab",
 };
 
 export function resolveRelayProvider(rollout: RelayRollout | undefined, isAbEnabled: boolean): RelayProvider {
