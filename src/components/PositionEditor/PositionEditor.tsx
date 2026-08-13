@@ -244,13 +244,16 @@ export function PositionEditor() {
   const submitButtonState = usePositionEditorButtonState(operation);
   const gasPaymentToken = submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken;
 
+  // express params cannot resolve until the order params are complete (e.g. no trigger price yet),
+  // so fall back to the native-token estimate to keep the max amount and the slider available
+  const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
   const gasPaymentTokenForMax =
-    expressOrdersEnabled && !collateralToken?.isNative
-      ? submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken
+    expressOrdersEnabled && !collateralToken?.isNative && expressGasPaymentParams !== undefined
+      ? expressGasPaymentParams.gasPaymentToken
       : nativeToken;
   const gasPaymentTokenAmountForMax =
-    expressOrdersEnabled && !collateralToken?.isNative
-      ? submitButtonState.expressParams?.gasPaymentParams?.gasPaymentTokenAmount
+    expressOrdersEnabled && !collateralToken?.isNative && expressGasPaymentParams !== undefined
+      ? expressGasPaymentParams.gasPaymentTokenAmount
       : executionFee?.feeTokenAmount;
 
   const expressEnabledForMax = expressOrdersEnabled && !collateralToken?.isNative;
