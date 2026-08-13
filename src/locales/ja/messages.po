@@ -419,7 +419,7 @@ msgstr "注目ペアを取引して倍率と報酬を高めましょう"
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
-msgstr ""
+msgstr "現在ベスティング中のesGMXはありません。esGMXのベスティングを開始して、徐々に流動性のあるGMXに変換しましょう。"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"

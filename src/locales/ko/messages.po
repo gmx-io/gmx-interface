@@ -419,7 +419,7 @@ msgstr "추천 페어를 거래하여 배수와 보상을 높이세요"
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
-msgstr ""
+msgstr "현재 베스팅 중인 esGMX가 없습니다. esGMX 베스팅을 시작해 점진적으로 유동성 있는 GMX로 전환하세요."
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
