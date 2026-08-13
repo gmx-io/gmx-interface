@@ -999,6 +999,11 @@ msgstr ""
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
 
+#: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may execute after the current position is liquidated and open a new position."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
 msgstr ""

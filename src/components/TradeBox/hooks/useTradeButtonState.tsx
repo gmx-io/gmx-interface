@@ -46,7 +46,7 @@ import {
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxPayAmount,
-  selectTradeboxSelectedPosition,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxState,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
@@ -711,7 +711,7 @@ function useDetectAndSetAvailableMaxLeverage({
   const toToken = useSelector(selectTradeboxToToken);
   const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
 
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
 
   const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
@@ -743,7 +743,7 @@ function useDetectAndSetAvailableMaxLeverage({
           externalSwapQuote,
           isLong,
           marketInfo,
-          position: selectedPosition,
+          position: existingPosition,
           strategy: "leverageByCollateral",
           uiFeeFactor,
           userReferralInfo,
@@ -761,7 +761,7 @@ function useDetectAndSetAvailableMaxLeverage({
           collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
           collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
           collateralToken,
-          existingPosition: selectedPosition,
+          existingPosition,
           indexPrice: increaseAmounts.indexPrice,
           isLong,
           marketInfo,
@@ -826,7 +826,7 @@ function useDetectAndSetAvailableMaxLeverage({
     marketInfo,
     maxAllowedLeverage,
     minCollateralUsd,
-    selectedPosition,
+    existingPosition,
     selectedTriggerAcceptablePriceImpactBps,
     setLeverageOption,
     setToTokenInputValue,

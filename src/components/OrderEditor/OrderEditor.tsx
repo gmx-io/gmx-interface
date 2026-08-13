@@ -81,7 +81,10 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
+import {
+  getIsIncreaseResultingPositionLiquidatable,
+  getIsPositionLiquidatedBeforeTrigger,
+} from "domain/synthetics/trade/utils/warnings";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
@@ -127,6 +130,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
+import { FreshPositionIncreaseWarningCard } from "../TradeBox/FreshPositionIncreaseWarningCard";
 import { LiquidatableIncreaseWarningCard } from "../TradeBox/LiquidatableIncreaseWarningCard";
 
 import "./OrderEditor.scss";
@@ -200,6 +204,20 @@ export function OrderEditor(p: Props) {
       positionIndexToken ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice) : undefined,
     [positionIndexToken, sizeDeltaUsd, triggerPrice]
   );
+  const isPositionLiquidatedBeforeTrigger = useMemo(() => {
+    if (!positionOrder || !isLimitIncreaseOrderType(positionOrder.orderType)) {
+      return false;
+    }
+
+    return getIsPositionLiquidatedBeforeTrigger({
+      liqPrice: existingPosition?.liquidationPrice,
+      triggerPrice,
+      isLong: positionOrder.isLong,
+    });
+  }, [existingPosition?.liquidationPrice, positionOrder, triggerPrice]);
+
+  const existingPositionForPreview = isPositionLiquidatedBeforeTrigger ? undefined : existingPosition;
+
   const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
   const nextPositionValuesWithoutPnlForIncrease = useSelector(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
 
@@ -284,7 +302,7 @@ export function OrderEditor(p: Props) {
           initialCollateralToken: fromToken,
           isLong: positionOrder.isLong,
           marketInfo: positionOrder.marketInfo,
-          position: existingPosition,
+          position: existingPositionForPreview,
           strategy: "leverageByCollateral",
           uiFeeFactor,
           userReferralInfo,
@@ -303,7 +321,7 @@ export function OrderEditor(p: Props) {
           collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
           collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
           collateralToken,
-          existingPosition,
+          existingPosition: existingPositionForPreview,
           indexPrice: increaseAmounts.indexPrice,
           isLong: positionOrder.isLong,
           marketInfo,
@@ -349,7 +367,7 @@ export function OrderEditor(p: Props) {
     maxAllowedLeverage,
     indexTokenAmount,
     findSwapPath,
-    existingPosition,
+    existingPositionForPreview,
     uiFeeFactor,
     userReferralInfo,
     savedAcceptablePriceImpactBuffer,
@@ -954,7 +972,7 @@ export function OrderEditor(p: Props) {
               label={t`Leverage`}
               value={
                 <ValueTransition
-                  from={formatLeverage(existingPosition?.leverage)}
+                  from={formatLeverage(existingPositionForPreview?.leverage)}
                   to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage) ?? "-"}
                 />
               }
@@ -984,10 +1002,10 @@ export function OrderEditor(p: Props) {
                 />
               )}
 
-              {existingPosition && (
+              {existingPositionForPreview && (
                 <SyntheticsInfoRow
                   label={t`Liquidation price`}
-                  value={formatLiquidationPrice(existingPosition.liquidationPrice, {
+                  value={formatLiquidationPrice(existingPositionForPreview.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
                 />
@@ -1053,6 +1071,7 @@ export function OrderEditor(p: Props) {
           )}
 
           {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
+          {isPositionLiquidatedBeforeTrigger && <FreshPositionIncreaseWarningCard />}
 
           <ExpressTradingWarningCard
             expressParams={expressParams}

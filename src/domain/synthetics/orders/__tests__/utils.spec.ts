@@ -143,3 +143,70 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
     expect(hasLiquidatableError(result)).toBe(true);
   });
 });
+
+describe("getOrderErrors — position liquidated before the trigger price", () => {
+  const shortPositionKey = `0x1111111111111111111111111111111111111111:${marketInfo.marketTokenAddress}:USDC:false`;
+  const longPositionKey = `0x1111111111111111111111111111111111111111:${marketInfo.marketTokenAddress}:USDC:true`;
+
+  function makePosition(key: string, isLong: boolean, liquidationPrice: bigint) {
+    return {
+      key,
+      isLong,
+      sizeInUsd: expandDecimals(20_000, 30),
+      collateralUsd: expandDecimals(2_000, 30),
+      liquidationPrice,
+    } as any;
+  }
+
+  const hasFreshPositionWarning = (result: ReturnType<typeof getOrderErrors>) =>
+    result.errors.some((e) => e.key === "liquidatedBeforeTrigger" && e.level === "warning");
+
+  it("warns for a long Limit Increase when the liq price is above the trigger price", () => {
+    const result = getOrderErrors({
+      ...baseParams,
+      positionsInfoData: { [longPositionKey]: makePosition(longPositionKey, true, expandDecimals(55_000, 30)) },
+      order: makeIncreaseOrder(OrderType.LimitIncrease),
+    });
+
+    expect(hasFreshPositionWarning(result)).toBe(true);
+  });
+
+  it("does not warn for a long Limit Increase when the position survives at the trigger price", () => {
+    const result = getOrderErrors({
+      ...baseParams,
+      positionsInfoData: { [longPositionKey]: makePosition(longPositionKey, true, expandDecimals(45_000, 30)) },
+      order: makeIncreaseOrder(OrderType.LimitIncrease),
+    });
+
+    expect(hasFreshPositionWarning(result)).toBe(false);
+  });
+
+  it("warns for a short Limit Increase when the liq price is below the trigger price", () => {
+    const result = getOrderErrors({
+      ...baseParams,
+      positionsInfoData: { [shortPositionKey]: makePosition(shortPositionKey, false, expandDecimals(45_000, 30)) },
+      order: makeIncreaseOrder(OrderType.LimitIncrease, { isLong: false }),
+    });
+
+    expect(hasFreshPositionWarning(result)).toBe(true);
+  });
+
+  it("does not warn for a short Limit Increase when the position survives at the trigger price", () => {
+    const result = getOrderErrors({
+      ...baseParams,
+      positionsInfoData: { [shortPositionKey]: makePosition(shortPositionKey, false, expandDecimals(55_000, 30)) },
+      order: makeIncreaseOrder(OrderType.LimitIncrease, { isLong: false }),
+    });
+
+    expect(hasFreshPositionWarning(result)).toBe(false);
+  });
+
+  it("does not warn without an existing position", () => {
+    const result = getOrderErrors({
+      ...baseParams,
+      order: makeIncreaseOrder(OrderType.LimitIncrease),
+    });
+
+    expect(hasFreshPositionWarning(result)).toBe(false);
+  });
+});
