@@ -419,7 +419,7 @@ msgstr "交易精选交易对以提高倍数和奖励"
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No esGMX is currently vesting. Begin vesting your esGMX and gradually convert it into liquid GMX."
-msgstr ""
+msgstr "当前没有正在归属的 esGMX。开始归属您的 esGMX，逐步将其转换为可流通的 GMX。"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
