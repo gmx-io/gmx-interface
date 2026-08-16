@@ -2139,6 +2139,10 @@ msgstr "{glvOrGm} 출금"
 msgid "Receive voting power and participate in governance"
 msgstr "투표권 획득 및 거버넌스 참여"
 
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
 msgstr "{0}에서 {1}(으)로의 GMX 스왑 경로를 찾을 수 없습니다. <0>외부 애그리게이터</0>를 사용해 보세요."
@@ -8766,10 +8770,6 @@ msgstr "풀 유동성 부족"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>의 OI가 훌륭합니다</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>더 확인: <4>https://tradao.xyz/#/open-interest</4></3>"
-
-#: src/components/Referrals/affiliates/faq.tsx
-msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
-msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."

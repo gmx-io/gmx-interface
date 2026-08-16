@@ -16,6 +16,7 @@ import { getAppBaseUrl, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useFreshnessMetricsControl } from "lib/metrics/useFreshnessMetricsControl";
+import { useHashQueryParams } from "lib/useHashQueryParams";
 import { sendEarnPageViewEvent } from "lib/userAnalytics/earnEvents";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
@@ -54,12 +55,17 @@ export function AppRoutes() {
 
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();
+  useHashQueryParams();
   useFreshnessMetricsControl();
 
   const query = useRouteQuery();
 
   useEffect(() => {
-    const referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
+    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
+    if (!referralCode || referralCode.length === 0) {
+      const params = new URLSearchParams(window.location.search);
+      referralCode = params.get(REFERRAL_CODE_QUERY_PARAM);
+    }
 
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
