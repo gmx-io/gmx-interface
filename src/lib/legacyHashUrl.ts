@@ -1,3 +1,8 @@
+// Privy puts these into the query string when returning from a social-login (OAuth) redirect and
+// reads them back from location.search to finish login. Rewriting the url out from under the SDK
+// silently broke social login before (89f2d7ac11), so a url carrying them is left alone.
+const PRIVY_OAUTH_QUERY_PARAMS = ["privy_oauth_code", "privy_oauth_state", "privy_oauth_provider", "privy_oauth_error"];
+
 /**
  * The app used to run on hash routing (`https://app.gmx.io/#/trade?ref=CODE`). Old bookmarks,
  * shared links and third-party integrations still point there, and the fragment never reaches the
@@ -9,6 +14,10 @@ export function getUrlWithoutLegacyHashRoute(href: string): string | undefined {
 
   // Plain anchors like `#bridge` are not legacy routes.
   if (!url.hash.startsWith("#/")) {
+    return undefined;
+  }
+
+  if (PRIVY_OAUTH_QUERY_PARAMS.some((param) => url.searchParams.has(param))) {
     return undefined;
   }
 
@@ -49,10 +58,9 @@ export function redirectLegacyHashUrl() {
 /**
  * Following a legacy link while already sitting on its path only changes the fragment, so the
  * document is not reloaded and the rewrite above never runs again. The landing page is the exposed
- * one, since it always sits on `/`. Navigating rather than rewriting the history entry is what
- * makes the router pick the new path up.
+ * one, since it always sits on `/`.
  */
-export function watchLegacyHashUrl(navigate = (url: string) => window.location.replace(url)) {
+export function watchLegacyHashUrl(navigate = replaceUrlInPlace) {
   const handleHashChange = () => {
     const url = getUrlWithoutLegacyHashRoute(window.location.href);
 
@@ -64,4 +72,22 @@ export function watchLegacyHashUrl(navigate = (url: string) => window.location.r
   window.addEventListener("hashchange", handleHashChange);
 
   return () => window.removeEventListener("hashchange", handleHashChange);
+}
+
+/**
+ * Rewrites the url without a document navigation: `location.replace` reloads the app and kills
+ * whatever is in flight, a wallet connect above all. `replaceState` alone is invisible to the
+ * router, so a popstate event follows — it must carry a non-undefined `state`, or react-router
+ * dismisses it as extraneous.
+ */
+function replaceUrlInPlace(url: string) {
+  try {
+    const state = window.history.state ?? null;
+
+    window.history.replaceState(state, "", url);
+    window.dispatchEvent(new PopStateEvent("popstate", { state }));
+  } catch {
+    // Safari throttles history rewrites (SecurityError past 100 in 10 seconds); dropping this one
+    // is better than falling back to a reload.
+  }
 }
