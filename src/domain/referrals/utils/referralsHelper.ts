@@ -118,7 +118,7 @@ export function getCodeError(value: string): string {
 }
 
 export function getReferralCodeTradeUrl(referralCode: string): string {
-  return `${getRootUrl()}/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
+  return `${getRootUrl()}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
 }
 
 export type ProtocolReferralCodeType = "organic" | "graduated";
