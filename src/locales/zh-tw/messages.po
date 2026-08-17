@@ -13327,6 +13327,10 @@ msgstr "分配"
 msgid "<0>Every</0> {minutes} minutes{0}"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+msgid "Partial search covers the top {0} accounts. Search by full address to find any account."
+msgstr "部分搜尋僅涵蓋前 {0} 個帳戶。請輸入完整地址以尋找任意帳戶。"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your own contact on Telegram."
 msgstr "您在 Telegram 上的專屬聯絡窗口。"
