@@ -11,9 +11,8 @@ export type RelayRollout = RelayProvider | "ab";
 
 const ENV_RELAY_PROVIDER = import.meta.env.VITE_APP_RELAY_PROVIDER as RelayProvider | undefined;
 
-// Per-chain rollout of GMX Relay, so both widening the split and rolling back are config changes
-// rather than a deploy of reverted code. `gmxRelay` sits at 0, so nobody moves by default and a
-// tester opts in with `?gmxRelay=1`.
+// Per-chain rollout of GMX Relay. `ab` splits by the `gmxRelay` flag; rolling a chain back is a
+// config change here, and `forceGelatoRelayer` ends an incident without a deploy at all.
 const RELAY_ROLLOUT: Partial<Record<ContractsChainId, RelayRollout>> = {
   [ARBITRUM]: "ab",
   [AVALANCHE]: "ab",

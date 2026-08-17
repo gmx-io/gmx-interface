@@ -14,7 +14,9 @@ type AbStorage = {
 const abFlagsConfig = {
   abSdk3: 0,
   useTestApi: 0,
-  gmxRelay: 0,
+  // a flag is only rolled once per browser, so this has to ship at its target share — raising it
+  // later moves nobody who has already loaded the app
+  gmxRelay: 0.3,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;
