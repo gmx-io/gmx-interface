@@ -1,6 +1,6 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 import { getExplorerUrl } from "config/chains";
@@ -30,7 +30,9 @@ import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
+import { getDebugErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
 import { useToastAutoClose } from "./useToastAutoClose";
@@ -275,7 +277,7 @@ function OrderStatusNotification({
   }, [orderData, orderStatus?.createdTxnHash, isRelayTaskFailed]);
 
   const sendingStatus = useMemo(() => {
-    let text = t`Sending order request...`;
+    let text: ReactNode = t`Sending order request...`;
     let status: TransactionStatusType = "loading";
     let txnHash: string | undefined;
     let txnLink: string | undefined;
@@ -293,7 +295,19 @@ function OrderStatusNotification({
 
     if (isRelayTaskFailed) {
       status = "error";
-      text = t`Relayer request failed`;
+      // the relay reports reasons as `Error(...)`; the wrapper is noise to a reader
+      const reason = relayTaskStatus?.message?.replace(/^Error\((.*)\)$/, "$1");
+      const relayDebugMessage = getDebugErrorMessage({
+        errorMessage: reason,
+        data: { taskId: pendingExpressTxn?.taskId },
+      });
+
+      text = (
+        <div>
+          <Trans>Relayer request failed</Trans>
+          {relayDebugMessage && <ToastifyDebug error={relayDebugMessage} />}
+        </div>
+      );
       txnHash = relayTaskStatus?.transactionHash;
       txnLink = getRelayTaskUrl({
         relayProvider: pendingExpressTxn?.relayProvider,
@@ -313,6 +327,7 @@ function OrderStatusNotification({
     orderData?.txnType,
     isRelayTaskFailed,
     relayTaskStatus?.transactionHash,
+    relayTaskStatus?.message,
     orderStatus?.createdTxnHash,
     orderStatus?.executedTxnHash,
     orderStatus?.updatedTxnHash,
