@@ -25,20 +25,10 @@ vi.mock("lib/chains", () => ({
   useChainId: () => ({ chainId: 42161 }),
 }));
 vi.mock("components/Tooltip/TooltipWithPortal", () => ({
-  default: ({
-    handle,
-    content,
-    maxAllowedWidth,
-  }: {
-    handle: ReactNode;
-    content: ReactNode;
-    maxAllowedWidth?: number;
-  }) => (
+  default: ({ handle, content }: { handle: ReactNode; content: ReactNode }) => (
     <>
       <div data-testid="fees-handle">{handle}</div>
-      <div data-testid="fees-tooltip" data-max-allowed-width={maxAllowedWidth}>
-        {content}
-      </div>
+      <div data-testid="fees-tooltip">{content}</div>
     </>
   ),
 }));
@@ -96,13 +86,14 @@ describe("TradeFeesRow estimated rewards", () => {
     renderRow(ESTIMATED_REWARDS);
 
     const handleText = normalizeText(screen.getByTestId("fees-handle").textContent);
-    const tooltipText = normalizeText(screen.getByTestId("fees-tooltip").textContent);
 
     expect(handleText).toContain("-$20.00");
     expect(handleText).toContain("(+$12.00 rewards)");
-    expect(tooltipText).toContain("Estimated rewards:");
-    expect(tooltipText).toContain("+$12.00 (60% of net position fee)");
-    expect(screen.getByTestId("fees-tooltip").getAttribute("data-max-allowed-width")).toBe("400");
+
+    const rewardsLabel = screen.getByText("Estimated rewards:").closest(".Tooltip-row-label");
+
+    expect(normalizeText(rewardsLabel!.textContent)).toBe("Estimated rewards:(60% of net position fee)");
+    expect(normalizeText(rewardsLabel!.nextElementSibling!.textContent)).toBe("+$12.00");
   });
 
   it("omits the compact and expanded reward details without an estimate", () => {
