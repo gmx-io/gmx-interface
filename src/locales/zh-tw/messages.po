@@ -9322,6 +9322,7 @@ msgstr "已達池最大容量"
 msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "（<0>{0}</0>，佔{operationText}金額）"
 
+#: src/components/Errors/errorToasts.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
@@ -10361,10 +10362,6 @@ msgstr "GMX 社群討論"
 msgid "Sell GM"
 msgstr "賣出 GM"
 
-#: src/components/Errors/errorToasts.tsx
-msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View</4>"
-msgstr "執行費用驗證失敗。<0/><1/>{suggestText}<2/><3/><4>查看</4>"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order can't be updated. Type doesn't support modifications"
 msgstr "無法更新訂單，此類型不支援修改"
@@ -11251,6 +11248,10 @@ msgstr ""
 msgid "Stabilize Protocol"
 msgstr "Stabilize Protocol"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Execution fee validation failed.<0/><1/>{suggestText}"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
 msgstr "自動取消 TP/SL"
@@ -11402,6 +11403,10 @@ msgstr "代幣許可測試"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "無效的清算價格"
+
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "The relay did not report an outcome for this operation."
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"

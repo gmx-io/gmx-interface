@@ -1,5 +1,6 @@
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getRelayProvider } from "config/relay";
 import type { GlobalExpressParams } from "domain/synthetics/express";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
@@ -53,10 +54,15 @@ export const selectGasPaymentToken = createSelector((q) => {
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
   const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
   const isRelayRouterEnabled = q(selectIsRelayRouterEnabled);
+  const chainId = q(selectChainId);
   const isSponsoredCallAvailable = q(selectIsSponsoredCallAvailable);
   const isRelayAvailable = q(selectIsExpressAvailableFlag);
 
-  return isExpressOrdersEnabledSetting && isRelayRouterEnabled && isSponsoredCallAvailable && isRelayAvailable;
+  // Gelato's sponsor balance says nothing about an operation our keeper pays for, and our kill
+  // switch says nothing about one Gelato relays, so each user is judged by their own relay
+  const isRelayHealthy = getRelayProvider(chainId) === "gelato" ? isSponsoredCallAvailable : isRelayAvailable;
+
+  return isExpressOrdersEnabledSetting && isRelayRouterEnabled && isRelayHealthy;
 });
 
 function createSelectExpressFindSwapPath(selectGasPaymentTokenAddressSelector: GasPaymentTokenAddressSelector) {
