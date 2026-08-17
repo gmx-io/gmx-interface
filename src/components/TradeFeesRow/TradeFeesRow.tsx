@@ -38,7 +38,6 @@ type FeeRow = {
   label: ReactNode;
   value: ReactNode;
   className?: string;
-  labelClassName?: string;
 };
 
 export function TradeFeesRow(p: Props) {
@@ -411,17 +410,12 @@ export function TradeFeesRow(p: Props) {
     const rewardsRow = estimatedRewards
       ? {
           label: (
-            <div className="text-typography-primary">
-              <Trans>Estimated rewards</Trans>:
-            </div>
-          ),
-          labelClassName: "whitespace-nowrap text-typography-secondary",
-          value: (
             <>
-              <span className="text-green-500">{formatDeltaUsd(estimatedRewards.rewardsUsd)}</span>
+              <div className="text-typography-primary">
+                <Trans>Estimated rewards</Trans>:
+              </div>
               {rewardsShareBps !== undefined ? (
-                <span className="text-typography-secondary">
-                  {" "}
+                <div>
                   (
                   <Trans>
                     {formatPercentage(rewardsShareBps, {
@@ -430,10 +424,12 @@ export function TradeFeesRow(p: Props) {
                     of net position fee
                   </Trans>
                   )
-                </span>
+                </div>
               ) : null}
             </>
           ),
+          value: formatDeltaUsd(estimatedRewards.rewardsUsd),
+          className: "text-green-500",
           id: "estimatedRewards",
         }
       : undefined;
@@ -599,7 +595,6 @@ export function TradeFeesRow(p: Props) {
       return (
         <TooltipWithPortal
           tooltipClassName="TradeFeesRow-tooltip"
-          maxAllowedWidth={400}
           handleClassName={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
             "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,
@@ -617,7 +612,6 @@ export function TradeFeesRow(p: Props) {
                 <StatsTooltipRow
                   key={feeRow.id}
                   textClassName={feeRow.className}
-                  labelClassName={feeRow.labelClassName}
                   label={feeRow.label}
                   value={feeRow.value}
                   showDollar={false}
