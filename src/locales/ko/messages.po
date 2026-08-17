@@ -1120,6 +1120,10 @@ msgstr "최대 네트워크 수수료 버퍼 정밀도는 0.01%입니다."
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your income"
+msgstr "예상 수익 확인하기"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -1188,6 +1192,10 @@ msgstr "{0} <0/><1> to </1>{1} <2/>"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr "{0}에서 코드 가용성을 확인할 수 없습니다. 코드를 생성할 수는 있으나, 해당 네트워크에서 이미 사용 중일 수 있습니다."
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
+msgstr "GMX 퍼프 기준 실효 왕복 수수료 약 0.05% 가정.<0/>참고용입니다. 정확한 요율은 가입 시 데스크에서 확정합니다."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
@@ -3037,10 +3045,6 @@ msgstr "RESPONSE TIME"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade(이전 GMX Solana)는 다른 웹사이트에서 호스팅되며 별도의 팀이 운영하므로 이용 경험이 다소 다를 수 있습니다"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>고정된 기준선은 없습니다 — 데스크가 최근 및 예상 월간 거래량을 바탕으로 등급을 정합니다. 대부분의 트레이더는 월 $5-10M 안팎부터 자격을 얻으며, 문의해 주시면 정확한 요율을 확인해 드립니다.</0>"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "선택한 기간 동안 거래 내역이 없습니다"
@@ -3186,6 +3190,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "레버리지 거래 및 스왑 수수료를 축적하는 GM 토큰 자동 리밸런싱 볼트입니다. {0} 및 {1}로 담보됩니다."
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
+msgstr "<0>고정된 기준은 없습니다 — 데스크가 최근 및 예상 월간 거래량을 기준으로 티어를 설정합니다. 대부분의 트레이더는 기본 티어 대상입니다. 문의해 주시면 요율을 확인해 드립니다.</0>"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3418,10 +3426,6 @@ msgstr "영향 풀 금액"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
-msgstr "GMX 퍼프 기준 실효 왕복 수수료 약 0.06% 가정.<0/>참고용입니다. 정확한 요율은 가입 시 데스크에서 확정합니다."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -6222,6 +6226,10 @@ msgstr "출금 수수료"
 msgid "TP"
 msgstr "TP"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your savings (at 25%)"
+msgstr "예상 절감액 (25% 기준)"
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
@@ -7955,10 +7963,6 @@ msgstr "지원"
 msgid "Timeline"
 msgstr "타임라인"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
-msgstr "<0>아닙니다. GMX에서는 전적으로 본인의 지갑으로 거래합니다. 자산은 저희가 절대 보관하지 않으며, 할인과 지급금은 온체인에서 지갑 주소로 직접 정산됩니다.</0>"
-
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -8343,6 +8347,10 @@ msgstr "내 자산"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "GMX 계정에서 출금"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
+msgstr "<0>아닙니다. 고객의 자금이 GMX가 통제하는 계정에 보관되는 일은 없습니다. 트레이더는 본인의 지갑에서 직접, 또는 자금을 예치한 GMX Account에서 거래합니다. GMX Account는 본인이 통제하며 언제든 출금할 수 있는 컨트랙트입니다.</0><1>어필리에이트는 아무것도 예치하지 않습니다. 보상은 컨트랙트에 누적되며, 온체인에서 본인 주소로 직접 청구합니다.</1>"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Wallet funds on {sourceChainName} are not used directly for GMX trades."
@@ -9476,10 +9484,6 @@ msgstr "당신"
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Close position"
 msgstr "포지션 종료"
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
-msgstr "실효 수수료 약 0.06% 기준의 참고 값입니다.<0/>실제 수익은 제휴 등급과 각 트레이더의 활동에 따라 달라집니다."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -11093,6 +11097,10 @@ msgstr "메인 계좌로 {balanceFormatted} 출금 완료"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
 msgstr "{positionName} 정산 실패"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
+msgstr "실효 수수료 약 0.05% 기준의 참고 값입니다.<0/>실제 수익은 제휴 등급과 각 트레이더의 활동에 따라 달라집니다."
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"

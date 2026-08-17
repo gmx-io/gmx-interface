@@ -1120,6 +1120,10 @@ msgstr ""
 msgid "DeltaPrime"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your income"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -1187,6 +1191,10 @@ msgstr ""
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr ""
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
 msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -3037,10 +3045,6 @@ msgstr ""
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr ""
@@ -3185,6 +3189,10 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
+msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -3417,10 +3425,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
-msgstr ""
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6222,6 +6226,10 @@ msgstr ""
 msgid "TP"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your savings (at 25%)"
+msgstr ""
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr ""
@@ -7955,10 +7963,6 @@ msgstr ""
 msgid "Timeline"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
-msgstr ""
-
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -8342,6 +8346,10 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
+msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -9475,10 +9483,6 @@ msgstr ""
 
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Close position"
-msgstr ""
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
@@ -11092,6 +11096,10 @@ msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
+msgstr ""
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
 msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
