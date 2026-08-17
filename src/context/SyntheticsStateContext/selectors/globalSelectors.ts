@@ -51,7 +51,7 @@ export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPayme
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
 
-const selectUiFlags = (s: SyntheticsState) => s.uiFlags;
+export const selectUiFlags = (s: SyntheticsState) => s.uiFlags;
 
 export const selectIsExpressAvailableFlag = createSelector((q) => getIsExpressAvailable(q(selectUiFlags)));
 

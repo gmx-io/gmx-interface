@@ -22,6 +22,7 @@ import {
   selectMarketsInfoData,
   selectSrcChainId,
   selectTokensData,
+  selectUiFlags,
 } from "./globalSelectors";
 import {
   selectDebugSwapMarketsConfig,
@@ -59,7 +60,8 @@ export const selectIsExpressTransactionAvailable = createSelector((q) => {
   const isRelayAvailable = q(selectIsExpressAvailableFlag);
 
   // each user is gated by their own relay's health: Gelato's sponsor balance says nothing about a keeper-paid operation
-  const isRelayHealthy = getRelayProvider(chainId) === "gelato" ? isSponsoredCallAvailable : isRelayAvailable;
+  const isRelayHealthy =
+    getRelayProvider(chainId, q(selectUiFlags)) === "gelato" ? isSponsoredCallAvailable : isRelayAvailable;
 
   return isExpressOrdersEnabledSetting && isRelayRouterEnabled && isRelayHealthy;
 });

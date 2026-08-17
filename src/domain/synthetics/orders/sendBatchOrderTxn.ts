@@ -147,8 +147,10 @@ export async function sendBatchOrderTxn({
           return res;
         })
         .catch((error) => {
+          // extendError assigns data unconditionally; without this the relay's traceId is wiped
           throw extendError(error, {
             errorContext: "sending",
+            data: error?.data,
           });
         });
 

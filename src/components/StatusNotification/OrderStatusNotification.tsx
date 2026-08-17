@@ -79,10 +79,13 @@ function OrderStatusNotification({
       return Boolean(orderStatus?.cancelledTxnHash);
     }
 
-    return Boolean(orderStatus?.createdTxnHash);
+    // same disjunction the completion branch uses: a missed creation event with a landed execution
+    // or cancellation still means the operation reached the chain
+    return Boolean(orderStatus?.createdTxnHash ?? orderStatus?.executedTxnHash ?? orderStatus?.cancelledTxnHash);
   }, [
     pendingOrderData.txnType,
     orderStatus?.createdTxnHash,
+    orderStatus?.executedTxnHash,
     orderStatus?.updatedTxnHash,
     orderStatus?.cancelledTxnHash,
   ]);

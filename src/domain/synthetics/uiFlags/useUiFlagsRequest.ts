@@ -92,7 +92,16 @@ export async function confirmRelayControlFlags(chainId: number, flags: UiFlags):
   }
 
   try {
-    const response = await fetch(`${getOracleKeeperUrl(chainId)}/ui-flags/v2`);
+    // this runs mid-incident, when the keeper is likeliest to hang — a stalled socket here would
+    // park the whole uiFlags refresh cycle behind it
+    const response = await fetch(`${getOracleKeeperUrl(chainId)}/ui-flags/v2`, {
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    if (!response.ok) {
+      return flags;
+    }
+
     const canonical = (await response.json()) as UiFlags;
 
     return {

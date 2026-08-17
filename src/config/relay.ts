@@ -1,4 +1,4 @@
-import { getIsGelatoFallbackForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { UiFlags, getIsGelatoFallbackForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 import { getIsFlagEnabled } from "./ab";
 import { ARBITRUM, AVALANCHE, ContractsChainId, MEGAETH } from "./chains";
@@ -7,7 +7,12 @@ export type RelayProvider = "gelato" | "gmx";
 
 export type RelayRollout = RelayProvider | "ab";
 
-const ENV_RELAY_PROVIDER = import.meta.env.VITE_APP_RELAY_PROVIDER as RelayProvider | undefined;
+const rawEnvRelayProvider = import.meta.env.VITE_APP_RELAY_PROVIDER;
+
+// an empty or misspelled value is neither nullish nor a provider; unchecked it would silently
+// override the whole rollout with a name nothing matches
+const ENV_RELAY_PROVIDER: RelayProvider | undefined =
+  rawEnvRelayProvider === "gmx" || rawEnvRelayProvider === "gelato" ? rawEnvRelayProvider : undefined;
 
 const RELAY_ROLLOUT: Partial<Record<ContractsChainId, RelayRollout>> = {
   [ARBITRUM]: "ab",
@@ -23,8 +28,10 @@ export function resolveRelayProvider(rollout: RelayRollout | undefined, isAbEnab
   return rollout ?? "gelato";
 }
 
-export function getRelayProvider(chainId: ContractsChainId): RelayProvider {
-  if (getIsGelatoFallbackForced(readPersistedUiFlags(chainId))) {
+// reactive callers pass the flags they subscribe to, so a thrown switch reaches them on the next
+// poll instead of whenever their memoized inputs happen to change
+export function getRelayProvider(chainId: ContractsChainId, uiFlags?: UiFlags): RelayProvider {
+  if (getIsGelatoFallbackForced(uiFlags ?? readPersistedUiFlags(chainId))) {
     return "gelato";
   }
 

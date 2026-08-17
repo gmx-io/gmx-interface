@@ -107,8 +107,6 @@ import { extractRelayTaskError, getRelayTaskUrl, getPendingOrderKey } from "./ut
 
 const SyntheticsEventsContext = createContext({});
 
-const RELAY_OUTCOME_ATTEMPTS = 2;
-
 export function useSyntheticsEvents(): SyntheticsEventsContextType {
   return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
 }
@@ -1060,15 +1058,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         let outcome: RelayTaskOutcome | undefined;
 
         try {
-          for (let attempt = 0; attempt < RELAY_OUTCOME_ATTEMPTS && !outcome; attempt++) {
-            outcome = await waitForRelayTaskOutcome({
-              chainId: taskChainId,
-              taskId,
-              // a task id is only meaningful to the relay that issued it; mirror the submit-side choice
-              relayProvider: relayProvider ?? getRelayProvider(taskChainId),
-              metricId,
-            });
-          }
+          // the callee owns the wait window and its transient retries; a second window here would
+          // double the pending time and re-fire the failure metric for the same operation
+          outcome = await waitForRelayTaskOutcome({
+            chainId: taskChainId,
+            taskId,
+            // a task id is only meaningful to the relay that issued it; mirror the submit-side choice
+            relayProvider: relayProvider ?? getRelayProvider(taskChainId),
+            metricId,
+          });
         } catch (error) {
           metrics.pushError(error as ErrorLike, "pollRelayTaskOutcome");
         }
