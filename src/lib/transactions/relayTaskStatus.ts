@@ -28,11 +28,7 @@ export function getGmxRelayStatusCode(result: Pick<GmxRelayTaskResult, "status" 
   return result.relayStatus === "reverted" ? StatusCode.Reverted : StatusCode.Rejected;
 }
 
-/**
- * Awaits the terminal status of a relay task from the relay that accepted it. Never rejects:
- * `undefined` means the relay never reached a determinate outcome, so the operation must be judged
- * by on-chain events rather than reported as failed.
- */
+/** Never rejects: `undefined` means the relay reached no determinate outcome and on-chain events must judge the operation. */
 export async function waitForRelayTaskOutcome({
   chainId,
   taskId,
@@ -65,10 +61,6 @@ async function waitForGmxRelayTaskOutcome({
   try {
     result = await waitForGmxRelayTask({ chainId, taskId, apiUrl: getUiApiUrl(chainId) });
   } catch (error) {
-    // the relay refused the status request itself, so it will never report a verdict for this task.
-    // The operation may still land on-chain, so the failure is only recorded against the order and
-    // the outcome is left to on-chain events
-    // keep whatever the relay attached, the trace id in particular — it is what names this request
     const data = { ...((error as ErrorLike)?.data ?? {}), taskId };
 
     sendTxnErrorMetric(metricId, extendError(error as ErrorLike, { data }), "relayer");

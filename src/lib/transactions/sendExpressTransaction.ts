@@ -33,12 +33,9 @@ export async function sendExpressTransaction(p: {
 }
 
 async function sendViaGmxRelay(p: { chainId: ContractsChainId; txnData: ExpressTxnData }): Promise<ExpressTxnResult> {
-  // the relay has to follow whichever API the rest of the UI is pointed at, or a test session would
-  // read from one environment and broadcast through another
+  // without an explicit url the SDK falls back to production; a session on the test API must not broadcast through prod
   const apiUrl = getUiApiUrl(p.chainId);
 
-  // the SDK would fall back to production here, which is precisely the crossing this guards against:
-  // no API for the environment this session is on means there is nowhere legitimate to submit
   if (!apiUrl) {
     throw new Error(`No GMX API is configured for chain ${p.chainId} in this environment.`);
   }
@@ -59,8 +56,6 @@ function makeGmxRelayResultWaiter(chainId: ContractsChainId, taskId: string, api
 
     const result = await waitForGmxRelayTask({ chainId, taskId, apiUrl });
 
-    // `pending` here means the relay never reached a determinate outcome within the wait window;
-    // surface it the same way Gelato surfaced a poll timeout, so on-chain events decide
     if (result.status === "pending") {
       throw new Error(`Relay task ${taskId} did not resolve: ${result.message ?? result.relayStatus}`);
     }

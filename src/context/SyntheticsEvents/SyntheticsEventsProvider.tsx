@@ -107,8 +107,6 @@ import { extractRelayTaskError, getRelayTaskUrl, getPendingOrderKey } from "./ut
 
 const SyntheticsEventsContext = createContext({});
 
-// a relay that is briefly unreadable must not end the operation, so the wait window is retried
-// before the poller gives up on ever hearing a verdict
 const RELAY_OUTCOME_ATTEMPTS = 2;
 
 export function useSyntheticsEvents(): SyntheticsEventsContextType {
@@ -1038,8 +1036,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [chainId, currentAccount]
   );
 
-  // holds every task already handed to the poller, including ones that ended without a verdict and
-  // therefore wrote no status — those must not be picked up again on the next render
   const polledTaskIdsRef = useRef<Set<string>>(new Set());
   const taskChainIdRef = useRef<Map<string, ContractsChainId>>(new Map());
 
@@ -1068,8 +1064,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             outcome = await waitForRelayTaskOutcome({
               chainId: taskChainId,
               taskId,
-              // a task id is only meaningful to the relay that issued it, so an unrecorded provider
-              // has to fall back to the same choice the submit side made, not to a fixed one
+              // a task id is only meaningful to the relay that issued it; mirror the submit-side choice
               relayProvider: relayProvider ?? getRelayProvider(taskChainId),
               metricId,
             });
@@ -1078,8 +1073,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           metrics.pushError(error as ErrorLike, "pollRelayTaskOutcome");
         }
 
-        // a task the relay never gave a verdict on may still land on-chain, and an on-chain result
-        // outranks this, but the notification cannot spin forever on a relay that never answered
         setRelayTaskStatuses((old) =>
           setByKey(old, taskId, {
             taskId,
@@ -1091,8 +1084,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         );
 
         taskChainIdRef.current.delete(taskId);
-        // the status above is recorded on every path and the filter skips anything recorded, so
-        // releasing the id bounds the set instead of re-polling a settled task
         polledTaskIdsRef.current.delete(taskId);
       })();
     }

@@ -22,11 +22,7 @@ export type GelatoRelayResult = {
   relayerClient: GelatoEvmRelayerClient;
 };
 
-/**
- * @deprecated Gelato shuts its relay services down on 2026-09-01. Use `sendToGmxRelay`, which
- * submits the same calldata through GMX Relay and needs no client-held sponsor key. Removed in the
- * next major release.
- */
+/** @deprecated Gelato shuts its relay services down on 2026-09-01; use `sendToGmxRelay`. */
 export async function sendToGelatoRelay({
   chainId,
   txnData,
@@ -65,10 +61,7 @@ export async function sendToGelatoRelay({
   return { taskId, relayerClient };
 }
 
-/**
- * @deprecated Gelato shuts its relay services down on 2026-09-01. Use `waitForGmxRelayTask`.
- * Removed in the next major release.
- */
+/** @deprecated Gelato shuts its relay services down on 2026-09-01; use `waitForGmxRelayTask`. */
 export async function waitForGelatoTask(
   relayerClient: GelatoEvmRelayerClient,
   taskId: string,

@@ -24,20 +24,14 @@ export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): bo
 
 export const FORCE_GELATO_FALLBACK_UI_FLAG = "forceGelatoFallback";
 
-/**
- * Pulls every user back to Gelato regardless of the rollout split. Only an explicit `true` forces it,
- * so an unreachable keeper leaves the split as configured rather than silently undoing a rollout.
- */
+/** Only an explicit `true` forces the fallback: an unreachable keeper must not undo a rollout. */
 export function getIsGelatoFallbackForced(uiFlags: UiFlags | undefined): boolean {
   return uiFlags?.[FORCE_GELATO_FALLBACK_UI_FLAG]?.enabled === true;
 }
 
 export const IS_EXPRESS_AVAILABLE_UI_FLAG = "isExpressAvailable";
 
-/**
- * Fail-open: an unreachable keeper, or a chain that never published the flag, must not take express
- * away from everyone. Only an explicit `false` disables it.
- */
+/** Fail-open: only an explicit `false` disables express — an unreachable keeper or an unpublished flag must not. */
 export function getIsExpressAvailable(uiFlags: UiFlags | undefined): boolean {
   return uiFlags?.[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled !== false;
 }
@@ -59,7 +53,6 @@ function getCacheKey(chainId: number): string {
   return `${API_UI_FLAGS_CACHE_KEY}-${chainId}`;
 }
 
-/** For code outside React that has to know a persisted flag before the next fetch resolves. */
 export function readPersistedUiFlags(chainId: number): UiFlags | undefined {
   return readCachedApiFlags(chainId);
 }
@@ -89,13 +82,7 @@ function persistApiFlags(chainId: number, flags: UiFlags) {
   }
 }
 
-/**
- * The flags arrive from whichever keeper replica the fallback tracker elected, and it elects on
- * price health — a replica can serve good prices and a stale flag, and stay elected for as long as
- * its prices are fine. That is survivable for a banner and not for a switch that takes express away,
- * so before acting on one, ask the configured keeper directly. Only the acting values are worth a
- * request: the common case costs nothing.
- */
+/** A keeper replica is elected on price health alone and can serve a stale flag; acting values are confirmed with the configured keeper. */
 export async function confirmRelayControlFlags(chainId: number, flags: UiFlags): Promise<UiFlags> {
   const isActing =
     flags[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled === false || flags[FORCE_GELATO_FALLBACK_UI_FLAG]?.enabled === true;
@@ -113,7 +100,6 @@ export async function confirmRelayControlFlags(chainId: number, flags: UiFlags):
       ...pick(canonical, [IS_EXPRESS_AVAILABLE_UI_FLAG, FORCE_GELATO_FALLBACK_UI_FLAG]),
     };
   } catch {
-    // the replica that answered is all we have; acting on it beats ignoring a switch someone threw
     return flags;
   }
 }

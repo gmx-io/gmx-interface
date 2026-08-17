@@ -179,8 +179,6 @@ describe("extractRelayTaskError", () => {
     expect(getIsInvalidSignatureError(error).isErrorMatched).toBe(true);
   });
 
-  // the reason is a relay-side human string, so anything that is not an exact ABI round-trip has to
-  // stay unclassified rather than reach a toast with invented arguments
   it.each([
     ["a reason that names no contract error", "deadline passed"],
     ["a reason whose arguments do not fit the ABI", "InsufficientExecutionFee(1200)"],

@@ -88,8 +88,7 @@ function OrderStatusNotification({
   ]);
 
   const isRelayTaskFailed = useMemo(() => {
-    // the chain is the authority: an operation that landed did not fail, whatever the relay later
-    // reported about it, and a relay we could not read at all reports nothing worth believing
+    // an operation that settled on-chain did not fail, whatever the relay later reported about it
     if (isSettledOnChain) {
       return false;
     }

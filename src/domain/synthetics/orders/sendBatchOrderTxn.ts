@@ -132,8 +132,6 @@ export async function sendBatchOrderTxn({
         {
           retryCount: 3,
           delay: 300,
-          // a relay rejection is determinate — resending the same signed payload burns the
-          // submit window without any chance of a different answer
           shouldRetry: ({ error }) => !isPermanentRelayError(error),
         }
       )

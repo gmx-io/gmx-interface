@@ -58,8 +58,7 @@ export const selectIsExpressTransactionAvailable = createSelector((q) => {
   const isSponsoredCallAvailable = q(selectIsSponsoredCallAvailable);
   const isRelayAvailable = q(selectIsExpressAvailableFlag);
 
-  // Gelato's sponsor balance says nothing about an operation our keeper pays for, and our kill
-  // switch says nothing about one Gelato relays, so each user is judged by their own relay
+  // each user is gated by their own relay's health: Gelato's sponsor balance says nothing about a keeper-paid operation
   const isRelayHealthy = getRelayProvider(chainId) === "gelato" ? isSponsoredCallAvailable : isRelayAvailable;
 
   return isExpressOrdersEnabledSetting && isRelayRouterEnabled && isRelayHealthy;

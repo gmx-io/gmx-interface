@@ -31,8 +31,6 @@ describe("selectIsExpressTransactionAvailable", () => {
   });
 
   describe("on GMX Relay", () => {
-    // the gas for these operations comes out of our own keeper wallets, so Gelato's sponsor tank
-    // running dry — or Gelato shutting down entirely — says nothing about them
     it("survives an empty Gelato sponsor balance", () => {
       setAbFlagEnabled("gmxRelay", true);
 
@@ -57,7 +55,6 @@ describe("selectIsExpressTransactionAvailable", () => {
       expect(selectIsExpressTransactionAvailable(state)).toBe(false);
     });
 
-    // our kill switch stops our relay; users an incident never touched must keep trading
     it("survives our kill switch", () => {
       const state = makeState({ isSponsoredCallAllowed: true, isExpressAvailable: false });
 

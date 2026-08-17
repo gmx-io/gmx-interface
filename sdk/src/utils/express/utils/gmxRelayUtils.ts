@@ -30,7 +30,6 @@ const WAIT_TIMEOUT_MS = 120_000;
 const POLLING_INTERVAL_MS = 1_000;
 
 export class GmxRelayError extends Error {
-  /** Carried into the parsed error so a failure report can name the request in our logs. */
   data?: { traceId: string };
 
   constructor(
@@ -42,12 +41,10 @@ export class GmxRelayError extends Error {
     this.name = "GmxRelayError";
   }
 
-  /** A determinate rejection of this operation: retrying the same payload cannot succeed. */
   get isPermanent(): boolean {
     return this.httpStatus !== undefined && this.httpStatus >= 400 && this.httpStatus < 500 && this.httpStatus !== 429;
   }
 
-  /** The relay could not take the operation; the caller should degrade to the classic flow. */
   get isRelayUnavailable(): boolean {
     return this.httpStatus === undefined || this.httpStatus >= 500;
   }
@@ -118,9 +115,7 @@ export async function waitForGmxRelayTask({
     try {
       view = await getGmxRelayTaskStatus({ chainId, taskId, apiUrl });
     } catch (e) {
-      // the operation is already broadcasting, so a blip on the way to the status endpoint must not
-      // decide its outcome. A 404 counts as transient too: the task can be accepted a moment before
-      // it is readable. Only a determinate rejection of the request itself ends the wait.
+      // a 404 is transient here: the task can be accepted a moment before its status becomes readable
       const error = e instanceof GmxRelayError ? e : new GmxRelayError(String(e));
 
       if (error.isPermanent && error.httpStatus !== 404) {
@@ -143,8 +138,7 @@ export async function waitForGmxRelayTask({
     if (view.status !== "pending") {
       return {
         transactionHash: view.txHash,
-        // `unknown` means the relay could not determine the outcome; report it as unresolved
-        // rather than claiming success or failure
+        // relay `unknown` means it could not determine the outcome, so it must not map to failure
         status: view.status === "executed" ? "success" : view.status === "unknown" ? "pending" : "failed",
         relayStatus: view.status,
         message: view.reason,
@@ -178,8 +172,7 @@ async function post<T>(baseUrl: string, path: string, body: unknown, timeout: nu
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
 
-  // the timeout has to outlive the headers: a response that arrives and then stalls its body would
-  // otherwise hang here forever, past every deadline the callers above believe they have
+  // the timer must also cover the body read: a response that stalls after its headers would hang forever
   try {
     const response = await fetch(`${baseUrl}${path}`, {
       method: "POST",
@@ -195,8 +188,7 @@ async function post<T>(baseUrl: string, path: string, body: unknown, timeout: nu
         response.status
       );
 
-      // a request refused before it was relayed never gets a taskId, so this is the only thing the
-      // caller can quote back at us
+      // a request refused before it was relayed never gets a taskId; the trace id is the only handle left
       const traceId = response.headers.get("X-Trace-Id");
       if (traceId) {
         error.data = { traceId };
@@ -226,8 +218,7 @@ function extractMessage(text: string): string | undefined {
     const parsed = JSON.parse(text);
     return parsed?.message ?? parsed?.error;
   } catch {
-    // an edge that answers with an HTML error page is not speaking our protocol, and its markup
-    // has no business being read out to a user or grouped as an error message
+    // a non-JSON body is an edge's HTML error page, not a message to surface to a user
     return undefined;
   }
 }

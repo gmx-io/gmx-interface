@@ -134,12 +134,7 @@ function parseReasonArg(rawArg: string, type: string): unknown {
   return rawArg;
 }
 
-/**
- * GMX Relay reports a failure as an already-decoded `ErrorName(arg,arg)` string rather than as
- * revert data, so the bytes the error matchers decode are rebuilt through the same ABI that
- * produced the string. A reason that does not round-trip exactly is left undecoded instead of
- * guessed at, so a wrong reading can never reach a toast.
- */
+/** GMX Relay reports failures as decoded `ErrorName(arg,arg)` strings, not revert bytes; a reason that does not round-trip the ABI stays undecoded. */
 function encodeRelayReasonAsRevertData(reason: string | undefined): string | undefined {
   const match = reason?.match(DECODED_REVERT_REASON_REGEXP);
 

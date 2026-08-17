@@ -7,8 +7,7 @@ import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction"
 import { StatusCode as sdkGaslessStatusCode } from "sdk/utils/gelatoRelay";
 
 describe("@gelatocloud/gasless dedupe", () => {
-  // this spec exercises the Gelato path; the rollout flag rolls randomly per browser, so it has to
-  // be pinned or the test inherits the roll
+  // the rollout flag rolls randomly per browser; unpinned, this Gelato-path spec inherits the roll
   beforeAll(() => {
     setAbFlagEnabled("gmxRelay", false);
   });

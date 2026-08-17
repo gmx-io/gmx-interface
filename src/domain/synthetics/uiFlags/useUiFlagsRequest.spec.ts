@@ -21,8 +21,6 @@ describe("getIsExpressAvailable", () => {
     expect(getIsExpressAvailable(flags(true))).toBe(true);
   });
 
-  // a keeper that is unreachable, or a chain that never published the flag, must not disable
-  // express for everyone — the per-request failure path covers a relay that is actually down
   it("stays available when the flag is missing entirely", () => {
     expect(getIsExpressAvailable(undefined)).toBe(true);
     expect(getIsExpressAvailable({})).toBe(true);
@@ -48,7 +46,6 @@ describe("confirmRelayControlFlags", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  // the elected replica can serve good prices and a stale flag, and stay elected on that basis
   it("ignores one replica taking express away on its own", async () => {
     vi.stubGlobal(
       "fetch",
@@ -82,7 +79,6 @@ describe("confirmRelayControlFlags", () => {
     expect(getIsGelatoFallbackForced(result)).toBe(false);
   });
 
-  // a switch someone threw deliberately must not be lost because the confirming request failed
   it("acts on what it has when the keeper cannot be reached", async () => {
     vi.stubGlobal(
       "fetch",

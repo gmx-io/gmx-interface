@@ -35,7 +35,6 @@ describe("sendExpressTransaction via GMX Relay", () => {
 
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toContain("/v1/relay/submit");
-    // no Gelato fee suffix: the fee is computed on-chain
     expect(JSON.parse(String(init.body))).toEqual({ to: TXN_DATA.to, data: TXN_DATA.callData });
   });
 

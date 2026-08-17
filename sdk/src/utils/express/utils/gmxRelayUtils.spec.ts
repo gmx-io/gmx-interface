@@ -29,8 +29,6 @@ describe("sendToGmxRelay", () => {
     vi.unstubAllGlobals();
   });
 
-  // a submit refused before it is relayed never gets a taskId, so the trace id is the only handle
-  // a user can quote back when reporting it
   it("carries the API's trace id on a refusal", async () => {
     vi.stubGlobal(
       "fetch",
@@ -175,7 +173,6 @@ describe("waitForGmxRelayTask", () => {
         call++;
         if (call === 1) throw new Error("network blip");
         if (call === 2) return jsonResponse({ message: "upstream" }, 503);
-        // accepted a moment before it became readable
         if (call === 3) return jsonResponse({ message: "no relay operation" }, 404);
         return jsonResponse({ taskId: TASK_ID, status: "executed", txHash: "0xhash" });
       })
@@ -183,7 +180,6 @@ describe("waitForGmxRelayTask", () => {
 
     const result = await waitForGmxRelayTask({ chainId: ARBITRUM, taskId: TASK_ID, pollingInterval: 1 });
 
-    // a broadcasting operation must not be judged by a hiccup on the way to the status endpoint
     expect(result.status).toBe("success");
     expect(result.transactionHash).toBe("0xhash");
     expect(call).toBe(4);

@@ -217,8 +217,6 @@ export function getDebugErrorMessage(errorData: ErrorData | undefined) {
     ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
     : errorData?.errorMessage;
 
-  // the handles a user can quote back at us. taskId joins their report to both our logs and the
-  // relay's; traceId covers the requests that failed before they were relayed and never got one
   const handles = [
     typeof errorData?.data?.taskId === "string" ? `taskId: ${errorData.data.taskId}` : undefined,
     typeof errorData?.data?.traceId === "string" ? `traceId: ${errorData.data.traceId}` : undefined,

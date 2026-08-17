@@ -37,7 +37,6 @@ describe("getRelayProvider with the force switch", () => {
     vi.unstubAllEnvs();
   });
 
-  // the switch exists to end an incident in seconds, so nothing may outrank it
   it("pulls a user off GMX Relay even when the split put them on it", () => {
     setAbFlagEnabled("gmxRelay", true);
     expect(getRelayProvider(ARBITRUM)).toBe("gmx");
@@ -46,7 +45,6 @@ describe("getRelayProvider with the force switch", () => {
     expect(getRelayProvider(ARBITRUM)).toBe("gelato");
   });
 
-  // the build-time override is captured when the module loads, so it has to be set before the import
   it("outranks the build-time override too", async () => {
     vi.stubEnv("VITE_APP_RELAY_PROVIDER", "gmx");
     vi.resetModules();
@@ -58,7 +56,6 @@ describe("getRelayProvider with the force switch", () => {
     expect(freshRelay.getRelayProvider(ARBITRUM)).toBe("gelato");
   });
 
-  // an absent or unreadable flag must not quietly undo a rollout
   it("changes nothing when the flag is absent or false", () => {
     setAbFlagEnabled("gmxRelay", true);
 

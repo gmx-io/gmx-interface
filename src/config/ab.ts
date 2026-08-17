@@ -14,8 +14,7 @@ type AbStorage = {
 const abFlagsConfig = {
   abSdk3: 0,
   useTestApi: 0,
-  // a flag is only rolled once per browser, so this has to ship at its target share — raising it
-  // later moves nobody who has already loaded the app
+  // a flag rolls once per browser, so this ships at its target share — raising it later moves nobody
   gmxRelay: 0.3,
 };
 
