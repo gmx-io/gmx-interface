@@ -51,8 +51,25 @@ describe("LongCrossChainTask", () => {
     await expect(progress.getStepPromise("finished")).resolves.toBeUndefined();
   });
 
-  // TODO: the GLV buy happy path has no coverage — every successful GlvBuyTask fixture is missing;
-  // record a real successful base -> arb GLV buy and add the test.
+  it("glv buy base -> arb successful", async () => {
+    const sourceChainId = SOURCE_BASE_MAINNET;
+    const settlementChainId = ARBITRUM;
+    const initialTxHash = "0x0f143ac5e6d0759c3d47cd7dfc56208633e8524371f11c37100e8030a1016eca";
+    const token = getGlvToken(ARBITRUM, "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9");
+    const amount = expandDecimals(1, 18);
+
+    const progress = new GlvBuyTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+      estimatedFeeUsd: 0n,
+    });
+
+    await expect(progress.getStepPromise("finished")).resolves.toBeUndefined();
+  });
+
   it("glv sell 1 GLV base -> arb", async () => {
     const sourceChainId = SOURCE_BASE_MAINNET;
     const settlementChainId = ARBITRUM;
