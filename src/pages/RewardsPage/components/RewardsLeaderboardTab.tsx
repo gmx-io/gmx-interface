@@ -291,8 +291,11 @@ export function RewardsLeaderboardTab({
   const entriesValidating = isPartialSearch ? searchValidating : isValidating;
   const pageData = useMemo(() => entries ?? [], [entries]);
   const isPinnedEntryVisible = Boolean(account && pageData.some((entry) => isSameAddress(entry.address, account)));
-  const showPinnedRow = Boolean(pinnedEntry) && !isPinnedEntryVisible;
+  // Searching narrows the table to the matches, so the connected account is not pinned on top of them.
+  const isSearchActive = debouncedSearchTerm !== "";
+  const showPinnedRow = !isSearchActive && Boolean(pinnedEntry) && !isPinnedEntryVisible;
   const showEmptyPinnedRow =
+    !isSearchActive &&
     Boolean(account) &&
     pinnedEntries !== undefined &&
     pinnedEntries.length === 0 &&
@@ -421,7 +424,7 @@ export function RewardsLeaderboardTab({
     !showEmptyPinnedRow;
   const visibleMainRowCount = hasNoSearchMatch ? 1 : pageData.length;
   const pinnedRow =
-    account && pinnedEntries === undefined && !pinnedError && !isPinnedEntryVisible ? (
+    !isSearchActive && account && pinnedEntries === undefined && !pinnedError && !isPinnedEntryVisible ? (
       <TableListSkeleton count={1} Structure={RewardsLeaderboardPinnedSkeletonRow} />
     ) : showPinnedRow && pinnedEntry ? (
       <LeaderboardRow
@@ -462,7 +465,7 @@ export function RewardsLeaderboardTab({
         </div>
       </div>
 
-      {pinnedError ? (
+      {pinnedError && !isSearchActive ? (
         <div className="px-20 pb-8 pt-12">
           <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
             <Trans>Your rank is temporarily unavailable.</Trans>

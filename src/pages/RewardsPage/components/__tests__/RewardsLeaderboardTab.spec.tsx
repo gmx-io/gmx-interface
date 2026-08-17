@@ -636,12 +636,13 @@ describe("RewardsLeaderboardTab", () => {
     expect(screen.queryByText("No results found")).toBeNull();
   });
 
-  it("keeps the connected account pinned when an exact-address search has no results", async () => {
+  it("unpins the connected account while a search is active and restores it when cleared", async () => {
     const { container } = renderLeaderboard();
     leaderboardMock.data = [];
     leaderboardMock.totalCount = 0;
 
-    fireEvent.change(screen.getByPlaceholderText(/search address/i), { target: { value: SEARCH_ACCOUNT } });
+    const searchInput = screen.getByPlaceholderText(/search address/i);
+    fireEvent.change(searchInput, { target: { value: SEARCH_ACCOUNT } });
 
     await waitFor(() => {
       expect(getLastPageParams()).toMatchObject({
@@ -652,9 +653,27 @@ describe("RewardsLeaderboardTab", () => {
     });
 
     const rows = container.querySelectorAll("tbody tr");
-    expect(rows).toHaveLength(PAGE_SIZE + 1);
-    expect(rows[0]).toBe(screen.getByTestId("leaderboard-pinned-row"));
-    expect(within(rows[1] as HTMLElement).getByText("No results found")).toBeTruthy();
+    expect(screen.queryByTestId("leaderboard-pinned-row")).toBeNull();
+    expect(rows).toHaveLength(PAGE_SIZE);
+    expect(within(rows[0] as HTMLElement).getByText("No results found")).toBeTruthy();
+
+    leaderboardMock.data = [pageEntry];
+    leaderboardMock.totalCount = 60;
+    fireEvent.change(searchInput, { target: { value: "" } });
+
+    await waitFor(() => expect(screen.getByTestId("leaderboard-pinned-row")).toBeTruthy());
+  });
+
+  it("hides the unavailable rank warning while a search is active", async () => {
+    leaderboardMock.pinnedError = new Error("rank failed");
+
+    renderLeaderboard();
+
+    expect(screen.getByText("Your rank is temporarily unavailable.")).toBeTruthy();
+
+    fireEvent.change(screen.getByPlaceholderText(/search address/i), { target: { value: "0x1234" } });
+
+    await waitFor(() => expect(screen.queryByText("Your rank is temporarily unavailable.")).toBeNull());
   });
 
   it("renders a checksummed You row only after an empty pinned query resolves", () => {
