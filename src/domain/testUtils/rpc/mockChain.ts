@@ -4,6 +4,8 @@ import { ethers } from "ethers";
 import { ARBITRUM } from "sdk/configs/chainIds";
 import { getContract } from "sdk/configs/contracts";
 
+import { RpcRequest, RpcResponder } from "./types";
+
 const abiCoder = ethers.AbiCoder.defaultAbiCoder();
 
 function hashString(value: string): string {
@@ -61,8 +63,16 @@ const IFACE = new ethers.Interface([
   "function containsAddress(bytes32 setKey, address value) view returns (bool)",
   "function getUint(bytes32 key) view returns (uint256)",
   "function getBytes32(bytes32 key) view returns (bytes32)",
+  "function getAddress(bytes32 key) view returns (address)",
   "function subaccountApprovalNonces(address account) view returns (uint256)",
+  "function traderReferralCodes(address account) view returns (bytes32)",
+  "function gasEstimateL1Component(address to, bool contractCreation, bytes data) payable returns (uint64 gasEstimateForL1, uint256 baseFee, uint256 l1BaseFeeEstimate)",
   "function removeSubaccount(address subaccount)",
+  "function balanceOf(address account) view returns (uint256)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+  "function getEthBalance(address account) view returns (uint256)",
+  "function getBlockNumber() view returns (uint256)",
+  "function getCurrentBlockTimestamp() view returns (uint256)",
   "function aggregate((address target, bytes callData)[] calls) returns (uint256 blockNumber, bytes[] returnData)",
   "function aggregate3((address target, bool allowFailure, bytes callData)[] calls) view returns ((bool success, bytes returnData)[] returnData)",
 ]);
@@ -71,8 +81,16 @@ const SELECTORS = {
   containsAddress: IFACE.getFunction("containsAddress")!.selector,
   getUint: IFACE.getFunction("getUint")!.selector,
   getBytes32: IFACE.getFunction("getBytes32")!.selector,
+  getAddress: IFACE.getFunction("getAddress")!.selector,
   subaccountApprovalNonces: IFACE.getFunction("subaccountApprovalNonces")!.selector,
+  traderReferralCodes: IFACE.getFunction("traderReferralCodes")!.selector,
+  gasEstimateL1Component: IFACE.getFunction("gasEstimateL1Component")!.selector,
   removeSubaccount: IFACE.getFunction("removeSubaccount")!.selector,
+  balanceOf: IFACE.getFunction("balanceOf")!.selector,
+  allowance: IFACE.getFunction("allowance")!.selector,
+  getEthBalance: IFACE.getFunction("getEthBalance")!.selector,
+  getBlockNumber: IFACE.getFunction("getBlockNumber")!.selector,
+  getCurrentBlockTimestamp: IFACE.getFunction("getCurrentBlockTimestamp")!.selector,
   aggregate: IFACE.getFunction("aggregate")!.selector,
   aggregate3: IFACE.getFunction("aggregate3")!.selector,
 };
@@ -105,6 +123,7 @@ export type SubaccountOnchainState = {
 };
 
 export type SentTransaction = {
+  chainId: number;
   to: string | undefined;
   data: string;
   from: string | undefined;
@@ -128,7 +147,8 @@ export type MockChainOptions = {
   onchain?: Partial<SubaccountOnchainState>;
 };
 
-export class MockChain {
+/** Synthetic, stateful chain: the test sets the state it wants and the mock derives every answer. */
+export class MockChain implements RpcResponder {
   wallet: ethers.Wallet;
   account: string;
   subaccountAddress: string | undefined;
@@ -146,6 +166,13 @@ export class MockChain {
   balances: Record<string, bigint> = {};
   defaultBalance = 10n * 10n ** 18n;
 
+  /** ERC20 balances: token address -> holder -> amount. Unset pairs read as 0. */
+  tokenBalances: Record<string, Record<string, bigint>> = {};
+  /** DataStore uint slots by key, for everything outside the subaccount keys resolved below. */
+  dataStoreUints: Record<string, bigint> = {};
+  /** DataStore address slots by key. Unset keys read as the zero address. */
+  dataStoreAddresses: Record<string, string> = {};
+
   rejectTypedDataSign = false;
   rejectMessageSign = false;
   rejectSendTransaction = false;
@@ -156,6 +183,8 @@ export class MockChain {
   signedTypedData: SignedTypedDataRecord[] = [];
   signedMessages: { from: string; data: string; signature: string }[] = [];
   unknownMethods = new Set<string>();
+  /** `eth_call` selectors no branch answers — they silently decode as empty data. */
+  unknownCallSelectors = new Set<string>();
   rpcLog: { method: string; error?: string }[] = [];
 
   private blockNumber = 1000;
@@ -171,28 +200,28 @@ export class MockChain {
     this.balances[ethers.getAddress(address)] = value;
   }
 
-  async handleRpcBody(rawBody: string): Promise<string> {
-    const body = JSON.parse(rawBody);
-
-    if (Array.isArray(body)) {
-      const results = await Promise.all(body.map((request) => this.handleSingle(request)));
-      return JSON.stringify(results);
-    }
-
-    return JSON.stringify(await this.handleSingle(body));
+  setTokenBalance({ token, holder, value }: { token: string; holder: string; value: bigint }) {
+    const byHolder = this.tokenBalances[ethers.getAddress(token)] ?? {};
+    byHolder[ethers.getAddress(holder)] = value;
+    this.tokenBalances[ethers.getAddress(token)] = byHolder;
   }
 
-  private async handleSingle(request: { id?: number | string; method: string; params?: unknown[] }) {
-    const { id = 1, method, params = [] } = request;
+  setDataStoreUint(key: string, value: bigint) {
+    this.dataStoreUints[key] = value;
+  }
 
+  setDataStoreAddress(key: string, value: string) {
+    this.dataStoreAddresses[key] = ethers.getAddress(value);
+  }
+
+  async handle(chainId: number, { method, params = [] }: RpcRequest): Promise<unknown> {
     try {
-      const result = await this.dispatch(method, params);
+      const result = await this.dispatch(chainId, method, params as unknown[]);
       this.rpcLog.push({ method });
-      return { jsonrpc: "2.0", id, result };
+      return result;
     } catch (error) {
-      const code = (error as { rpcCode?: number }).rpcCode ?? -32000;
       this.rpcLog.push({ method, error: (error as Error).message });
-      return { jsonrpc: "2.0", id, error: { code, message: (error as Error).message } };
+      throw error;
     }
   }
 
@@ -202,12 +231,12 @@ export class MockChain {
     throw error;
   }
 
-  private async dispatch(method: string, params: unknown[]): Promise<unknown> {
+  private async dispatch(chainId: number, method: string, params: unknown[]): Promise<unknown> {
     switch (method) {
       case "eth_chainId":
-        return "0x" + ARBITRUM.toString(16);
+        return "0x" + chainId.toString(16);
       case "net_version":
-        return String(ARBITRUM);
+        return String(chainId);
       case "eth_accounts":
         return [this.account];
       case "eth_blockNumber":
@@ -240,7 +269,7 @@ export class MockChain {
       case "eth_getLogs":
         return [];
       case "eth_sendTransaction":
-        return this.handleSendTransaction(params[0] as { to?: string; data?: string; from?: string });
+        return this.handleSendTransaction(chainId, params[0] as { to?: string; data?: string; from?: string });
       case "eth_getTransactionReceipt":
         return this.getReceipt(params[0] as string);
       case "eth_getTransactionByHash":
@@ -315,7 +344,7 @@ export class MockChain {
     return signature;
   }
 
-  private handleSendTransaction(tx: { to?: string; data?: string; from?: string }): string {
+  private handleSendTransaction(chainId: number, tx: { to?: string; data?: string; from?: string }): string {
     if (this.rejectSendTransaction) {
       this.rpcError("User rejected the request.", 4001);
     }
@@ -324,7 +353,7 @@ export class MockChain {
     }
 
     const hash = ethers.keccak256(ethers.toUtf8Bytes(`txn-${this.sentTransactions.length}-${tx.data ?? ""}`));
-    this.sentTransactions.push({ to: tx.to, data: tx.data ?? "0x", from: tx.from, hash });
+    this.sentTransactions.push({ chainId, to: tx.to, data: tx.data ?? "0x", from: tx.from, hash });
 
     if (
       isSameAddress(tx.to, ARBITRUM_CONTRACTS.SubaccountRouter) &&
@@ -380,7 +409,7 @@ export class MockChain {
       maxFeePerGas: "0x5f5e100",
       maxPriorityFeePerGas: "0xf4240",
       input: txn.data,
-      chainId: "0xa4b1",
+      chainId: "0x" + txn.chainId.toString(16),
       type: "0x2",
       v: "0x0",
       r: ZERO_HASH,
@@ -428,6 +457,33 @@ export class MockChain {
         const [key] = IFACE.decodeFunctionData("getUint", data) as unknown as [string];
         return IFACE.encodeFunctionResult("getUint", [this.resolveUintKey(key)]);
       }
+      case SELECTORS.getAddress: {
+        const [key] = IFACE.decodeFunctionData("getAddress", data) as unknown as [string];
+        return IFACE.encodeFunctionResult("getAddress", [this.dataStoreAddresses[key] ?? ethers.ZeroAddress]);
+      }
+      case SELECTORS.balanceOf: {
+        const [holder] = IFACE.decodeFunctionData("balanceOf", data) as unknown as [string];
+        const token = to === undefined ? undefined : normalizeAddress(to);
+        const balance = token === undefined ? 0n : this.tokenBalances[token]?.[ethers.getAddress(holder)] ?? 0n;
+        return IFACE.encodeFunctionResult("balanceOf", [balance]);
+      }
+      case SELECTORS.getBlockNumber: {
+        return IFACE.encodeFunctionResult("getBlockNumber", [BigInt(this.blockNumber)]);
+      }
+      case SELECTORS.getCurrentBlockTimestamp: {
+        return IFACE.encodeFunctionResult("getCurrentBlockTimestamp", [BigInt(Math.floor(Date.now() / 1000))]);
+      }
+      case SELECTORS.getEthBalance: {
+        const [holder] = IFACE.decodeFunctionData("getEthBalance", data) as unknown as [string];
+        const address = normalizeAddress(holder);
+        const balance =
+          address !== undefined && address in this.balances ? this.balances[address] : this.defaultBalance;
+        return IFACE.encodeFunctionResult("getEthBalance", [balance]);
+      }
+      case SELECTORS.allowance: {
+        // Allowances are not modelled yet — every pair reads as unlimited so flows never stall on approval.
+        return IFACE.encodeFunctionResult("allowance", [ethers.MaxUint256]);
+      }
       case SELECTORS.getBytes32: {
         const [key] = IFACE.decodeFunctionData("getBytes32", data) as unknown as [string];
         const value =
@@ -435,6 +491,14 @@ export class MockChain {
             ? this.onchain.integrationId
             : ZERO_HASH;
         return IFACE.encodeFunctionResult("getBytes32", [value]);
+      }
+      case SELECTORS.gasEstimateL1Component: {
+        // Arbitrum NodeInterface precompile; the base fee matches the mocked `eth_gasPrice`.
+        return IFACE.encodeFunctionResult("gasEstimateL1Component", [10_000n, 100_000_000n, 100_000_000n]);
+      }
+      case SELECTORS.traderReferralCodes: {
+        // No referral code is modelled — every trader reads as code-less.
+        return IFACE.encodeFunctionResult("traderReferralCodes", [ZERO_HASH]);
       }
       case SELECTORS.subaccountApprovalNonces: {
         let nonce = 0n;
@@ -446,11 +510,16 @@ export class MockChain {
         return IFACE.encodeFunctionResult("subaccountApprovalNonces", [nonce]);
       }
       default:
+        this.unknownCallSelectors.add(selector);
         return "0x";
     }
   }
 
   private resolveUintKey(key: string): bigint {
+    if (key in this.dataStoreUints) {
+      return this.dataStoreUints[key];
+    }
+
     if (!this.subaccountAddress) {
       return 0n;
     }
@@ -482,31 +551,23 @@ export type RelaySentTransaction = {
   taskId: string;
 };
 
-export class MockGelatoRelay {
+/** The relay is chain-agnostic — the chain a transaction targets comes in `params.chainId`. */
+export class MockGelatoRelay implements RpcResponder {
   chain: MockChain;
 
   simulateInsufficientBalanceForToken: string | undefined = undefined;
 
   sentTransactions: RelaySentTransaction[] = [];
   rpcLog: { method: string; error?: string }[] = [];
+  /** Relay methods no branch answers — they are rejected with -32601. */
+  unknownMethods = new Set<string>();
 
   constructor(chain: MockChain) {
     this.chain = chain;
   }
 
-  async handleRpcBody(rawBody: string): Promise<string> {
-    const body = JSON.parse(rawBody);
-
-    if (Array.isArray(body)) {
-      const results = body.map((request) => this.handleSingle(request));
-      return JSON.stringify(results);
-    }
-
-    return JSON.stringify(this.handleSingle(body));
-  }
-
-  private handleSingle(request: { id?: number | string; method: string; params?: Record<string, unknown> }) {
-    const { id = 1, method, params = {} } = request;
+  async handle(_chainId: number, { method, params = {} }: RpcRequest): Promise<unknown> {
+    const relayParams = params as Record<string, unknown>;
 
     switch (method) {
       case "relayer_sendTransaction": {
@@ -517,18 +578,13 @@ export class MockGelatoRelay {
             0n,
             10n ** 6n,
           ]);
-          this.rpcLog.push({ method, error: "Transaction reverted on simulation." });
-          return {
-            jsonrpc: "2.0",
-            id,
-            error: { code: 4211, message: "Transaction reverted on simulation.", data: revertData },
-          };
+          this.rpcError(method, "Transaction reverted on simulation.", 4211, revertData);
         }
 
-        const to = params.to as string;
-        const data = (params.data as string) ?? "0x";
+        const to = relayParams.to as string;
+        const data = (relayParams.data as string) ?? "0x";
         const taskId = ethers.keccak256(ethers.toUtf8Bytes(`gelato-task-${this.sentTransactions.length}-${data}`));
-        this.sentTransactions.push({ chainId: String(params.chainId), to, data, taskId });
+        this.sentTransactions.push({ chainId: String(relayParams.chainId), to, data, taskId });
 
         if (
           isSameAddress(to, ARBITRUM_CONTRACTS.MultichainSubaccountRouter) ||
@@ -538,35 +594,37 @@ export class MockGelatoRelay {
         }
 
         this.rpcLog.push({ method });
-        return { jsonrpc: "2.0", id, result: taskId };
+        return taskId;
       }
       case "relayer_getStatus": {
-        const taskId = params.id as string;
+        const taskId = relayParams.id as string;
         const known = this.sentTransactions.find((t) => t.taskId === taskId);
 
         if (!known) {
-          this.rpcLog.push({ method, error: "Unknown transaction id" });
-          return { jsonrpc: "2.0", id, error: { code: 4207, message: "Unknown transaction id" } };
+          this.rpcError(method, "Unknown transaction id", 4207);
         }
 
         this.rpcLog.push({ method });
         return {
-          jsonrpc: "2.0",
-          id,
-          result: {
-            id: taskId,
-            chainId: Number(known.chainId),
-            createdAt: Date.now(),
-            status: 200,
-            receipt: this.buildRawReceipt(known),
-          },
+          id: taskId,
+          chainId: Number(known.chainId),
+          createdAt: Date.now(),
+          status: 200,
+          receipt: this.buildRawReceipt(known),
         };
       }
-      default: {
-        this.rpcLog.push({ method, error: "Method not found." });
-        return { jsonrpc: "2.0", id, error: { code: -32601, message: "Method not found." } };
-      }
+      default:
+        this.unknownMethods.add(method);
+        this.rpcError(method, "Method not found.", -32601);
     }
+  }
+
+  private rpcError(method: string, message: string, code: number, data?: string): never {
+    this.rpcLog.push({ method, error: message });
+    const error = new Error(message) as Error & { rpcCode: number; rpcData?: string };
+    error.rpcCode = code;
+    error.rpcData = data;
+    throw error;
   }
 
   private buildRawReceipt(txn: RelaySentTransaction) {
@@ -586,92 +644,6 @@ export class MockGelatoRelay {
       status: "0x1",
       type: "0x2",
     };
-  }
-}
-
-type RouteLike = {
-  request: () => {
-    method: () => string;
-    postData: () => string | null;
-    url: () => string;
-  };
-  fulfill: (response: {
-    status: number;
-    contentType?: string;
-    headers?: Record<string, string>;
-    body?: string;
-  }) => Promise<void>;
-  abort: () => Promise<void>;
-};
-
-type WebSocketRouteLike = {
-  onMessage: (handler: (message: string | Buffer) => void) => void;
-  send: (message: string) => void;
-};
-
-type PageLikeForRouting = {
-  route: (url: RegExp, handler: (route: RouteLike) => Promise<void> | void) => Promise<void>;
-  routeWebSocket?: (url: RegExp, handler: (ws: WebSocketRouteLike) => void) => Promise<void>;
-};
-
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "*",
-};
-
-export async function installMockChain(
-  page: PageLikeForRouting,
-  chain: MockChain,
-  options: { gelatoRelay?: MockGelatoRelay } = {}
-): Promise<void> {
-  const { gelatoRelay } = options;
-
-  await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, async (route) => {
-    const request = route.request();
-
-    if (request.method() === "OPTIONS") {
-      await route.fulfill({ status: 204, headers: CORS_HEADERS });
-      return;
-    }
-
-    const postData = request.method() === "POST" ? request.postData() : null;
-
-    if (gelatoRelay && new URL(request.url()).host === GELATO_RELAY_HOST) {
-      if (postData) {
-        const body = await gelatoRelay.handleRpcBody(postData);
-        await route.fulfill({ status: 200, contentType: "application/json", headers: CORS_HEADERS, body });
-        return;
-      }
-
-      await route.abort();
-      return;
-    }
-
-    if (postData && postData.includes("jsonrpc")) {
-      const body = await chain.handleRpcBody(postData);
-      await route.fulfill({ status: 200, contentType: "application/json", headers: CORS_HEADERS, body });
-      return;
-    }
-
-    await route.abort();
-  });
-
-  if (gelatoRelay && page.routeWebSocket) {
-    await page.routeWebSocket(new RegExp(`wss?://${GELATO_RELAY_HOST.replace(/\./g, "\\.")}`), (ws) => {
-      ws.onMessage((raw) => {
-        try {
-          const message = JSON.parse(String(raw)) as { id?: number; method?: string };
-          if (message.method === "subscribe" && message.id !== undefined) {
-            ws.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: `mock-subscription-${message.id}` }));
-          } else if (message.method === "unsubscribe" && message.id !== undefined) {
-            ws.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: true }));
-          }
-        } catch {
-          // non-JSON frames (e.g. pings) are ignored
-        }
-      });
-    });
   }
 }
 
