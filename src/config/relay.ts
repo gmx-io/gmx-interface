@@ -1,4 +1,4 @@
-import { getIsGelatoRelayerForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { getIsGelatoFallbackForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 import { getIsFlagEnabled } from "./ab";
 import { ARBITRUM, AVALANCHE, ContractsChainId, MEGAETH } from "./chains";
@@ -12,7 +12,7 @@ export type RelayRollout = RelayProvider | "ab";
 const ENV_RELAY_PROVIDER = import.meta.env.VITE_APP_RELAY_PROVIDER as RelayProvider | undefined;
 
 // Per-chain rollout of GMX Relay. `ab` splits by the `gmxRelay` flag; rolling a chain back is a
-// config change here, and `forceGelatoRelayer` ends an incident without a deploy at all.
+// config change here, and `forceGelatoFallback` ends an incident without a deploy at all.
 const RELAY_ROLLOUT: Partial<Record<ContractsChainId, RelayRollout>> = {
   [ARBITRUM]: "ab",
   [AVALANCHE]: "ab",
@@ -30,7 +30,7 @@ export function resolveRelayProvider(rollout: RelayRollout | undefined, isAbEnab
 export function getRelayProvider(chainId: ContractsChainId): RelayProvider {
   // the point of the switch is to end an incident in seconds, so it outranks every other input,
   // including a chain pinned to `gmx` and the build-time override used for debugging
-  if (getIsGelatoRelayerForced(readPersistedUiFlags(chainId))) {
+  if (getIsGelatoFallbackForced(readPersistedUiFlags(chainId))) {
     return "gelato";
   }
 

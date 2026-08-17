@@ -3,12 +3,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARBITRUM } from "config/chains";
 
 import {
-  FORCE_GELATO_RELAYER_UI_FLAG,
+  FORCE_GELATO_FALLBACK_UI_FLAG,
   IS_EXPRESS_AVAILABLE_UI_FLAG,
   UiFlags,
   confirmRelayControlFlags,
   getIsExpressAvailable,
-  getIsGelatoRelayerForced,
+  getIsGelatoFallbackForced,
 } from "./useUiFlagsRequest";
 
 function flags(enabled: boolean): UiFlags {
@@ -74,12 +74,12 @@ describe("confirmRelayControlFlags", () => {
   it("confirms the force switch the same way", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response(JSON.stringify({ [FORCE_GELATO_RELAYER_UI_FLAG]: flag(false) })))
+      vi.fn(async () => new Response(JSON.stringify({ [FORCE_GELATO_FALLBACK_UI_FLAG]: flag(false) })))
     );
 
-    const result = await confirmRelayControlFlags(ARBITRUM, { [FORCE_GELATO_RELAYER_UI_FLAG]: flag(true) });
+    const result = await confirmRelayControlFlags(ARBITRUM, { [FORCE_GELATO_FALLBACK_UI_FLAG]: flag(true) });
 
-    expect(getIsGelatoRelayerForced(result)).toBe(false);
+    expect(getIsGelatoFallbackForced(result)).toBe(false);
   });
 
   // a switch someone threw deliberately must not be lost because the confirming request failed

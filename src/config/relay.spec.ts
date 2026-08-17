@@ -4,12 +4,12 @@ import { setAbFlagEnabled } from "config/ab";
 import { ARBITRUM } from "config/chains";
 import { API_UI_FLAGS_CACHE_KEY } from "config/localStorage";
 import { getRelayProvider, resolveRelayProvider } from "config/relay";
-import { FORCE_GELATO_RELAYER_UI_FLAG } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { FORCE_GELATO_FALLBACK_UI_FLAG } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 function persistForceFlag(chainId: number, enabled: boolean) {
   localStorage.setItem(
     `${API_UI_FLAGS_CACHE_KEY}-${chainId}`,
-    JSON.stringify({ [FORCE_GELATO_RELAYER_UI_FLAG]: { enabled, createdAt: "", updatedAt: "" } })
+    JSON.stringify({ [FORCE_GELATO_FALLBACK_UI_FLAG]: { enabled, createdAt: "", updatedAt: "" } })
   );
 }
 

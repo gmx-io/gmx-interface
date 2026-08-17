@@ -22,14 +22,14 @@ export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): bo
   return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG]?.enabled !== false;
 }
 
-export const FORCE_GELATO_RELAYER_UI_FLAG = "forceGelatoRelayer";
+export const FORCE_GELATO_FALLBACK_UI_FLAG = "forceGelatoFallback";
 
 /**
  * Pulls every user back to Gelato regardless of the rollout split. Only an explicit `true` forces it,
  * so an unreachable keeper leaves the split as configured rather than silently undoing a rollout.
  */
-export function getIsGelatoRelayerForced(uiFlags: UiFlags | undefined): boolean {
-  return uiFlags?.[FORCE_GELATO_RELAYER_UI_FLAG]?.enabled === true;
+export function getIsGelatoFallbackForced(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[FORCE_GELATO_FALLBACK_UI_FLAG]?.enabled === true;
 }
 
 export const IS_EXPRESS_AVAILABLE_UI_FLAG = "isExpressAvailable";
@@ -52,7 +52,7 @@ const PERSISTED_API_FLAG_KEYS = [
   IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG,
   // a reload mid-incident must restore the last known value rather than blank-default on first paint
   IS_EXPRESS_AVAILABLE_UI_FLAG,
-  FORCE_GELATO_RELAYER_UI_FLAG,
+  FORCE_GELATO_FALLBACK_UI_FLAG,
 ];
 
 function getCacheKey(chainId: number): string {
@@ -98,7 +98,7 @@ function persistApiFlags(chainId: number, flags: UiFlags) {
  */
 export async function confirmRelayControlFlags(chainId: number, flags: UiFlags): Promise<UiFlags> {
   const isActing =
-    flags[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled === false || flags[FORCE_GELATO_RELAYER_UI_FLAG]?.enabled === true;
+    flags[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled === false || flags[FORCE_GELATO_FALLBACK_UI_FLAG]?.enabled === true;
 
   if (!isActing) {
     return flags;
@@ -110,7 +110,7 @@ export async function confirmRelayControlFlags(chainId: number, flags: UiFlags):
 
     return {
       ...flags,
-      ...pick(canonical, [IS_EXPRESS_AVAILABLE_UI_FLAG, FORCE_GELATO_RELAYER_UI_FLAG]),
+      ...pick(canonical, [IS_EXPRESS_AVAILABLE_UI_FLAG, FORCE_GELATO_FALLBACK_UI_FLAG]),
     };
   } catch {
     // the replica that answered is all we have; acting on it beats ignoring a switch someone threw
