@@ -218,9 +218,9 @@ export default function TermsAndConditions() {
                   4.1. GMX.io own all rights, names, logos, and other marks used on the Site and the Interface,
                   including, without limitation, any copyrights in and to any content, code, data, or other materials
                   that you may access or use on or through the Site or the Interface; however, the code for the GMX
-                  Protocol and the Interface (app.GMX.io) deployed on IPFS is open-sourced. Except as expressly set
-                  forth herein, your use of or access to the Site or the Interface does not grant you any ownership or
-                  other rights therein.
+                  Protocol and the Interface (app.GMX.io) is open-sourced. Except as expressly set forth herein, your
+                  use of or access to the Site or the Interface does not grant you any ownership or other rights
+                  therein.
                 </p>
               </li>
               <li>

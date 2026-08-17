@@ -147,10 +147,6 @@ msgstr ""
 msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
 msgstr "此网络上的钱包资金可存入 GMX Account，用于 {settlementChainName} 交易。如需直接使用 {settlementChainName} 钱包余额进行交易，请<0>切换到 {settlementChainName}</0>。"
 
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "同意"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Rebates earned as an affiliate"
 msgstr ""
@@ -974,10 +970,6 @@ msgstr "可用流动性"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
 msgstr "GMX 池无法完成此交换，且当前没有可用的外部路由。请尝试减少金额。"
-
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
-msgstr "该网站是开源 <0>GMX 前端</0>的社区部署实例，托管在分布式点对点 <1>IPFS 网络</1>上"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
@@ -2156,10 +2148,6 @@ msgstr "VI POSITIONS"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop price"
 msgstr "止损价格"
-
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Leaving GMX.io for a third-party website"
-msgstr "即将离开 GMX.io 前往第三方网站"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -5424,10 +5412,6 @@ msgstr "正向影响因子"
 msgid "All trades"
 msgstr "所有交易"
 
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "替代链接在<0>文档</0>中。<1/><2/>点击同意即表示您接受<3>条款与条件</3>和<4>推荐条款与条件</4>。<5/><6/>"
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GM pools:"
 msgstr "GM 池："
@@ -6540,10 +6524,6 @@ msgstr "订单失败"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Airdrop"
 msgstr "空投"
-
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Launch app"
-msgstr "启动应用"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
@@ -9948,10 +9928,6 @@ msgstr "已预留 {directionLabel}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Distribution rate per day, USD"
 msgstr "每日分配率（USD）"
-
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Don't show for 30 days"
-msgstr "30 天内不再显示"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GMX rewards:"

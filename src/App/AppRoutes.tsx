@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
-import { Hash, zeroHash } from "viem";
+import { zeroHash } from "viem";
 
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
@@ -12,7 +12,7 @@ import { useMultichainFundingToast } from "domain/multichain/useMultichainFundin
 import { useSupportChat } from "domain/supportChat/useSupportChat";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
-import { getAppBaseUrl, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useFreshnessMetricsControl } from "lib/metrics/useFreshnessMetricsControl";
@@ -22,11 +22,10 @@ import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalle
 import useRouteQuery from "lib/useRouteQuery";
 import useSearchParams from "lib/useSearchParams";
 import { switchNetwork } from "lib/wallets";
-import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import { GmxAccountModal } from "components/GmxAccountModal/GmxAccountModal";
-import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { WhatsNewToastContainer } from "components/WhatsNewToast/WhatsNewToastContainer";
@@ -76,24 +75,11 @@ export function AppRoutes() {
     }
   }, [query, history, location]);
 
-  const [redirectModalVisible, setRedirectModalVisible] = useState(false);
-  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
-
   const { isSettingsVisible, setIsSettingsVisible } = useSettings();
 
   const openSettings = useCallback(() => {
     setIsSettingsVisible(true);
   }, [setIsSettingsVisible]);
-
-  const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
-  const baseUrl = getAppBaseUrl();
-  let appRedirectUrl = baseUrl;
-  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== zeroHash) {
-    const decodedRefCode = decodeReferralCode(localStorageCode as Hash);
-    if (decodedRefCode) {
-      appRedirectUrl = `${appRedirectUrl}?ref=${decodedRefCode}`;
-    }
-  }
 
   const { chainId, lang, openChat } = useSearchParams<{ chainId?: string; lang?: string; openChat?: string }>();
 
@@ -160,13 +146,6 @@ export function AppRoutes() {
         closeButton={CloseToastButton}
       />
       <WhatsNewToastContainer />
-      <RedirectPopupModal
-        redirectModalVisible={redirectModalVisible}
-        setRedirectModalVisible={setRedirectModalVisible}
-        appRedirectUrl={appRedirectUrl}
-        setShouldHideRedirectModal={setShouldHideRedirectModal}
-        shouldHideRedirectModal={shouldHideRedirectModal}
-      />
       <GmxAccountModal />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       <NotifyModal />
