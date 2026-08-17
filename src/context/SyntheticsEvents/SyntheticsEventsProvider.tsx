@@ -60,6 +60,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
+import type { RelayTaskOutcome } from "lib/transactions/relayTaskStatus";
 import { waitForRelayTaskOutcome } from "lib/transactions/relayTaskStatus";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
@@ -105,6 +106,10 @@ import { useMultichainEvents } from "./useMultichainEvents";
 import { extractRelayTaskError, getRelayTaskUrl, getPendingOrderKey } from "./utils";
 
 const SyntheticsEventsContext = createContext({});
+
+// a relay that is briefly unreadable must not end the operation, so the wait window is retried
+// before the poller gives up on ever hearing a verdict
+const RELAY_OUTCOME_ATTEMPTS = 2;
 
 export function useSyntheticsEvents(): SyntheticsEventsContextType {
   return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
@@ -1056,28 +1061,39 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       polledTaskIdsRef.current.add(taskId);
 
       (async () => {
-        try {
-          const outcome = await waitForRelayTaskOutcome({
-            chainId: taskChainId,
-            taskId,
-            // a task id is only meaningful to the relay that issued it, so an unrecorded provider
-            // has to fall back to the same choice the submit side made, not to a fixed one
-            relayProvider: relayProvider ?? getRelayProvider(taskChainId),
-            metricId,
-          });
+        let outcome: RelayTaskOutcome | undefined;
 
-          // no outcome means the relay never reached a verdict; leave the operation to be resolved
-          // by on-chain events instead of writing a status the toasts would report as a failure
-          if (outcome) {
-            setRelayTaskStatuses((old) => setByKey(old, taskId, { taskId, ...outcome }));
+        try {
+          for (let attempt = 0; attempt < RELAY_OUTCOME_ATTEMPTS && !outcome; attempt++) {
+            outcome = await waitForRelayTaskOutcome({
+              chainId: taskChainId,
+              taskId,
+              // a task id is only meaningful to the relay that issued it, so an unrecorded provider
+              // has to fall back to the same choice the submit side made, not to a fixed one
+              relayProvider: relayProvider ?? getRelayProvider(taskChainId),
+              metricId,
+            });
           }
         } catch (error) {
-          // nothing above may reject the poller: an unhandled rejection would leave the task marked
-          // as polled and its failure unreported
           metrics.pushError(error as ErrorLike, "pollRelayTaskOutcome");
-        } finally {
-          taskChainIdRef.current.delete(taskId);
         }
+
+        // a task the relay never gave a verdict on may still land on-chain, and an on-chain result
+        // outranks this, but the notification cannot spin forever on a relay that never answered
+        setRelayTaskStatuses((old) =>
+          setByKey(old, taskId, {
+            taskId,
+            ...(outcome ?? {
+              statusCode: StatusCode.Rejected,
+              message: t`The relay did not report an outcome for this operation.`,
+            }),
+          })
+        );
+
+        taskChainIdRef.current.delete(taskId);
+        // the status above is recorded on every path and the filter skips anything recorded, so
+        // releasing the id bounds the set instead of re-polling a settled task
+        polledTaskIdsRef.current.delete(taskId);
       })();
     }
   }, [pendingExpressTxnParams, latestRelayTaskStatuses, chainId]);

@@ -37,6 +37,12 @@ async function sendViaGmxRelay(p: { chainId: ContractsChainId; txnData: ExpressT
   // read from one environment and broadcast through another
   const apiUrl = getUiApiUrl(p.chainId);
 
+  // the SDK would fall back to production here, which is precisely the crossing this guards against:
+  // no API for the environment this session is on means there is nowhere legitimate to submit
+  if (!apiUrl) {
+    throw new Error(`No GMX API is configured for chain ${p.chainId} in this environment.`);
+  }
+
   const { taskId } = await sendToGmxRelay({ chainId: p.chainId, txnData: p.txnData, apiUrl });
 
   return {
@@ -179,4 +185,3 @@ function makeExpressTxnResultWaiter(relayer: ReturnType<typeof getGelatoRelayerC
     }
   };
 }
-

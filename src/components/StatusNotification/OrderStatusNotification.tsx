@@ -70,13 +70,36 @@ function OrderStatusNotification({
 
   const relayTaskStatus = getByKey(relayTaskStatuses, pendingExpressTxn?.taskId);
 
+  const isSettledOnChain = useMemo(() => {
+    if (pendingOrderData.txnType === "update") {
+      return Boolean(orderStatus?.updatedTxnHash);
+    }
+
+    if (pendingOrderData.txnType === "cancel") {
+      return Boolean(orderStatus?.cancelledTxnHash);
+    }
+
+    return Boolean(orderStatus?.createdTxnHash);
+  }, [
+    pendingOrderData.txnType,
+    orderStatus?.createdTxnHash,
+    orderStatus?.updatedTxnHash,
+    orderStatus?.cancelledTxnHash,
+  ]);
+
   const isRelayTaskFailed = useMemo(() => {
+    // the chain is the authority: an operation that landed did not fail, whatever the relay later
+    // reported about it, and a relay we could not read at all reports nothing worth believing
+    if (isSettledOnChain) {
+      return false;
+    }
+
     if (pendingExpressTxn?.sendFailed) {
       return true;
     }
 
     return relayTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(relayTaskStatus.statusCode);
-  }, [relayTaskStatus, pendingExpressTxn?.sendFailed]);
+  }, [relayTaskStatus, pendingExpressTxn?.sendFailed, isSettledOnChain]);
 
   const hasError =
     isRelayTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");

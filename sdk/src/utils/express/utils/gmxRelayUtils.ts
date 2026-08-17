@@ -178,38 +178,47 @@ async function post<T>(baseUrl: string, path: string, body: unknown, timeout: nu
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
 
-  let response: Response;
+  // the timeout has to outlive the headers: a response that arrives and then stalls its body would
+  // otherwise hang here forever, past every deadline the callers above believe they have
   try {
-    response = await fetch(`${baseUrl}${path}`, {
+    const response = await fetch(`${baseUrl}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
       signal: controller.signal,
     });
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      const error = new GmxRelayError(
+        `GMX Relay ${path} failed: ${extractMessage(text) ?? response.statusText}`,
+        response.status
+      );
+
+      // a request refused before it was relayed never gets a taskId, so this is the only thing the
+      // caller can quote back at us
+      const traceId = response.headers.get("X-Trace-Id");
+      if (traceId) {
+        error.data = { traceId };
+      }
+
+      throw error;
+    }
+
+    try {
+      return (await response.json()) as T;
+    } catch (e: any) {
+      throw new GmxRelayError(`GMX Relay ${path} returned an unreadable body`, response.status, e);
+    }
   } catch (e: any) {
+    if (e instanceof GmxRelayError) {
+      throw e;
+    }
+
     throw new GmxRelayError(`GMX Relay request failed: ${e?.message ?? String(e)}`, undefined, e);
   } finally {
     clearTimeout(timer);
   }
-
-  if (!response.ok) {
-    const text = await response.text().catch(() => "");
-    const error = new GmxRelayError(
-      `GMX Relay ${path} failed: ${extractMessage(text) ?? response.statusText}`,
-      response.status
-    );
-
-    // a request refused before it was relayed never gets a taskId, so this is the only thing the
-    // caller can quote back at us
-    const traceId = response.headers.get("X-Trace-Id");
-    if (traceId) {
-      error.data = { traceId };
-    }
-
-    throw error;
-  }
-
-  return (await response.json()) as T;
 }
 
 function extractMessage(text: string): string | undefined {
@@ -217,7 +226,9 @@ function extractMessage(text: string): string | undefined {
     const parsed = JSON.parse(text);
     return parsed?.message ?? parsed?.error;
   } catch {
-    return text || undefined;
+    // an edge that answers with an HTML error page is not speaking our protocol, and its markup
+    // has no business being read out to a user or grouped as an error message
+    return undefined;
   }
 }
 
