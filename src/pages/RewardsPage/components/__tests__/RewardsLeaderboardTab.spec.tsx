@@ -123,6 +123,43 @@ vi.mock("domain/synthetics/incentives/v2/useIncentivesLeaderboard", () => ({
   },
 }));
 
+type LeaderboardSearchParams = {
+  epoch?: number;
+  term: string;
+  orderBy: string;
+  enabled?: boolean;
+  limit: number;
+  offset: number;
+};
+
+const searchMock = vi.hoisted(() => ({
+  data: undefined as LeaderboardEntry[] | undefined,
+  totalCount: undefined as number | undefined,
+  isTruncated: false,
+  error: undefined as Error | undefined,
+  loading: false,
+  isValidating: false,
+  mutate: vi.fn(),
+  params: [] as LeaderboardSearchParams[],
+}));
+
+vi.mock("domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch", () => ({
+  LEADERBOARD_SEARCH_SCAN_LIMIT: 10_000,
+  useIncentivesLeaderboardSearch: (_chainId: number, params: LeaderboardSearchParams) => {
+    searchMock.params.push(params);
+
+    return {
+      data: searchMock.data,
+      totalCount: searchMock.totalCount,
+      isTruncated: searchMock.isTruncated,
+      error: searchMock.error,
+      loading: searchMock.loading,
+      isValidating: searchMock.isValidating,
+      mutate: searchMock.mutate,
+    };
+  },
+}));
+
 import { RewardsLeaderboardTab } from "../RewardsLeaderboardTab";
 
 const USD_UNIT = PRECISION;
@@ -189,6 +226,10 @@ function getLastPageParams() {
   return leaderboardMock.pageParams[leaderboardMock.pageParams.length - 1];
 }
 
+function getLastSearchParams() {
+  return searchMock.params[searchMock.params.length - 1];
+}
+
 function getSortButton(label: string) {
   const button = screen.getByText(label).closest("button");
   if (!button) throw new Error(`No sortable button found for column "${label}"`);
@@ -214,6 +255,14 @@ describe("RewardsLeaderboardTab", () => {
     leaderboardMock.pinnedMutate.mockReset();
     leaderboardMock.pageParams.length = 0;
     leaderboardMock.pinnedParams.length = 0;
+    searchMock.data = undefined;
+    searchMock.totalCount = undefined;
+    searchMock.isTruncated = false;
+    searchMock.error = undefined;
+    searchMock.loading = false;
+    searchMock.isValidating = false;
+    searchMock.mutate.mockReset();
+    searchMock.params.length = 0;
     rewardsShareMock.props.length = 0;
     rewardsAnalyticsMock.sendRewardsLeaderboardShareClickEvent.mockReset();
     rewardsPricesMock.gmxPrice = 2n * PRECISION;
@@ -468,25 +517,123 @@ describe("RewardsLeaderboardTab", () => {
     });
   });
 
-  it("keeps partial and invalid address searches unfiltered", async () => {
+  it("matches partial input against the scanned leaderboard and restores the paged query when cleared", async () => {
+    const searchEntry = makeEntry("0x1234ef2102306220921060314715629080e2fb77", 12);
+    searchMock.data = [searchEntry];
+    searchMock.totalCount = 1;
+
     renderLeaderboard();
 
     const searchInput = screen.getByPlaceholderText(/search address/i);
-    let paramsStart = leaderboardMock.pageParams.length;
-
     fireEvent.change(searchInput, { target: { value: "0x1234" } });
 
-    await waitFor(() => expect((searchInput as HTMLInputElement).value).toBe("0x1234"));
-    expect(leaderboardMock.pageParams.slice(paramsStart).length).toBeGreaterThan(0);
-    expect(leaderboardMock.pageParams.slice(paramsStart).every((params) => params.where === undefined)).toBe(true);
+    await waitFor(() => expect(screen.getByTitle(searchEntry.address)).toBeTruthy());
+    expect(getLastSearchParams()).toMatchObject({
+      term: "0x1234",
+      enabled: true,
+      epoch: config.epochTimestamp,
+      orderBy: "rewardsUsd_DESC",
+      limit: PAGE_SIZE,
+      offset: 0,
+    });
+    expect(getLastPageParams().enabled).toBe(false);
+    expect(screen.queryByTitle(pageEntry.address)).toBeNull();
+    expect(screen.queryByText("No results found")).toBeNull();
 
-    paramsStart = leaderboardMock.pageParams.length;
-    fireEvent.change(searchInput, { target: { value: "not-an-address" } });
+    fireEvent.change(searchInput, { target: { value: "" } });
 
-    await waitFor(() => expect((searchInput as HTMLInputElement).value).toBe("not-an-address"));
-    expect(leaderboardMock.pageParams.slice(paramsStart).length).toBeGreaterThan(0);
-    expect(leaderboardMock.pageParams.slice(paramsStart).every((params) => params.where === undefined)).toBe(true);
-    expect(screen.getByTitle(pageEntry.address)).toBeTruthy();
+    await waitFor(() => expect(screen.getByTitle(pageEntry.address)).toBeTruthy());
+    expect(getLastSearchParams().enabled).toBe(false);
+    expect(getLastPageParams()).toMatchObject({ enabled: true, where: undefined, offset: 0 });
+  });
+
+  it("paginates partial search matches", async () => {
+    searchMock.data = [makeEntry("0x1234ef2102306220921060314715629080e2fb77", 12)];
+    searchMock.totalCount = PAGE_SIZE + 5;
+
+    renderLeaderboard();
+
+    fireEvent.change(screen.getByPlaceholderText(/search address/i), { target: { value: "0x1234" } });
+
+    await waitFor(() => expect(getLastSearchParams().term).toBe("0x1234"));
+    fireEvent.click(screen.getByRole("button", { name: "2" }));
+
+    await waitFor(() => expect(getLastSearchParams()).toMatchObject({ term: "0x1234", offset: PAGE_SIZE }));
+  });
+
+  it("shows the no-results state when a partial search matches nothing", async () => {
+    searchMock.data = [];
+    searchMock.totalCount = 0;
+
+    renderLeaderboard();
+
+    fireEvent.change(screen.getByPlaceholderText(/search address/i), { target: { value: "test" } });
+
+    await waitFor(() => expect(screen.getByText("No results found")).toBeTruthy());
+    expect(screen.queryByTitle(pageEntry.address)).toBeNull();
+    expect(screen.queryByRole("button", { name: "2" })).toBeNull();
+    expect(getLastSearchParams()).toMatchObject({ term: "test", enabled: true });
+  });
+
+  it("holds the empty search state instead of claiming the leaderboard is empty while a cleared input settles", async () => {
+    searchMock.data = [];
+    searchMock.totalCount = 0;
+    leaderboardMock.pinnedData = undefined;
+
+    render(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter>
+          <RewardsLeaderboardTab chainId={ARBITRUM} config={config} />
+        </MemoryRouter>
+      </I18nProvider>
+    );
+
+    const searchInput = screen.getByPlaceholderText(/search address/i);
+    fireEvent.change(searchInput, { target: { value: "zzzz" } });
+
+    await waitFor(() => expect(screen.getByText("No results found")).toBeTruthy());
+
+    fireEvent.change(searchInput, { target: { value: "" } });
+
+    expect(screen.queryByText("No leaderboard entries yet.")).toBeNull();
+    expect(screen.getByText("No results found")).toBeTruthy();
+
+    await waitFor(() => expect(screen.getByTitle(pageEntry.address)).toBeTruthy());
+    expect(screen.queryByText("No results found")).toBeNull();
+    expect(screen.queryByText("No leaderboard entries yet.")).toBeNull();
+  });
+
+  it("warns that a partial search only covers the scanned accounts", async () => {
+    searchMock.data = [];
+    searchMock.totalCount = 0;
+    searchMock.isTruncated = true;
+
+    renderLeaderboard();
+
+    fireEvent.change(screen.getByPlaceholderText(/search address/i), { target: { value: "test" } });
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("Partial search covers the top 10,000 accounts. Search by full address to find any account.")
+      ).toBeTruthy()
+    );
+  });
+
+  it("searches addresses that are not checksummed", async () => {
+    renderLeaderboard();
+
+    fireEvent.change(screen.getByPlaceholderText(/search address/i), {
+      target: { value: pageEntry.address.replace("0xd", "0xD") },
+    });
+
+    await waitFor(() => {
+      expect(getLastPageParams()).toMatchObject({
+        where: { account: pageEntry.address },
+        offset: 0,
+      });
+    });
+    expect(getLastPageParams().enabled).not.toBe(false);
+    expect(screen.queryByText("No results found")).toBeNull();
   });
 
   it("keeps the connected account pinned when an exact-address search has no results", async () => {
