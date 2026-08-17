@@ -13327,6 +13327,10 @@ msgstr "Distribución"
 msgid "<0>Every</0> {minutes} minutes{0}"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+msgid "Partial search covers the top {0} accounts. Search by full address to find any account."
+msgstr "La búsqueda parcial cubre las {0} cuentas principales. Busca por dirección completa para encontrar cualquier cuenta."
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your own contact on Telegram."
 msgstr "Su propio contacto en Telegram."
