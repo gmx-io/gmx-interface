@@ -13327,6 +13327,10 @@ msgstr "분배"
 msgid "<0>Every</0> {minutes} minutes{0}"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+msgid "Partial search covers the top {0} accounts. Search by full address to find any account."
+msgstr "부분 검색은 상위 {0}개 계정만 대상으로 합니다. 모든 계정을 찾으려면 전체 주소로 검색하세요."
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your own contact on Telegram."
 msgstr "Telegram으로 연결되는 담당자"

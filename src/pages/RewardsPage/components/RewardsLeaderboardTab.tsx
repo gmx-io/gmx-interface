@@ -3,7 +3,7 @@ import cx from "classnames";
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { isAddress, isAddressEqual } from "viem";
+import { getAddress, isAddress, isAddressEqual } from "viem";
 
 import "./RewardsLeaderboardTab.scss";
 
@@ -16,8 +16,13 @@ import {
   type IncentivesLeaderboardOrderBy,
   useIncentivesLeaderboard,
 } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
+import {
+  LEADERBOARD_SEARCH_SCAN_LIMIT,
+  useIncentivesLeaderboardSearch,
+} from "domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch";
 import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
-import { formatUsd } from "lib/numbers";
+import { useDebounce } from "lib/debounce/useDebounce";
+import { formatUsd, numberWithCommas } from "lib/numbers";
 import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";
 
 import AddressView from "components/AddressView/AddressView";
@@ -35,6 +40,7 @@ import ShareIcon from "img/ic_share_arrow_filled.svg?react";
 import { RewardsTokenValue } from "./RewardsTokenValue";
 
 const PAGE_SIZE = 20;
+const SEARCH_DEBOUNCE_MS = 300;
 
 const COL_RANK: CSSProperties = { width: "7%" };
 const COL_ADDRESS: CSSProperties = { width: "19%" };
@@ -55,6 +61,11 @@ type SortDirection = "asc" | "desc" | "unspecified";
 
 function isSameAddress(first?: string, second?: string) {
   return Boolean(first && second && isAddress(first) && isAddress(second) && isAddressEqual(first, second));
+}
+
+// Whole addresses are filtered by the leaderboard query; shorter input falls back to a scan.
+function toSearchAccount(value: string) {
+  return isAddress(value, { strict: false }) ? getAddress(value) : undefined;
 }
 
 function RewardsLeaderboardSkeletonRow({ invisible, pinned = false }: { invisible?: boolean; pinned?: boolean }) {
@@ -220,11 +231,10 @@ export function RewardsLeaderboardTab({
   const [isShareOpen, setIsShareOpen] = useState(false);
   const hadConfigRef = useRef(Boolean(config));
   const hasSelectedPeriodRef = useRef(false);
-  const searchAccount = useMemo(() => {
-    const value = searchAddress.trim();
-
-    return isAddress(value) ? value : undefined;
-  }, [searchAddress]);
+  // Every search-driven state reads the debounced term so the table never mixes it with a newer input.
+  const debouncedSearchTerm: string = useDebounce(searchAddress.trim(), SEARCH_DEBOUNCE_MS);
+  const searchAccount = useMemo(() => toSearchAccount(debouncedSearchTerm), [debouncedSearchTerm]);
+  const isPartialSearch = debouncedSearchTerm !== "" && searchAccount === undefined;
   const selectedPeriod = config ? period : "all";
   const epoch = !config
     ? undefined
@@ -238,7 +248,24 @@ export function RewardsLeaderboardTab({
     epoch,
     where: searchAccount ? { account: searchAccount } : undefined,
     orderBy,
+    enabled: !isPartialSearch,
     isMutable: selectedPeriod !== "previous",
+    limit: PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
+  });
+  const {
+    data: searchData,
+    totalCount: searchTotalCount,
+    isTruncated: isSearchTruncated,
+    error: searchError,
+    loading: searchLoading,
+    isValidating: searchValidating,
+    mutate: mutateSearch,
+  } = useIncentivesLeaderboardSearch(chainId, {
+    epoch,
+    term: debouncedSearchTerm,
+    orderBy,
+    enabled: isPartialSearch,
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
   });
@@ -257,7 +284,12 @@ export function RewardsLeaderboardTab({
     offset: 0,
   });
   const pinnedEntry = pinnedEntries?.[0];
-  const pageData = useMemo(() => data ?? [], [data]);
+  const entries = isPartialSearch ? searchData : data;
+  const entriesTotalCount = isPartialSearch ? searchTotalCount : totalCount;
+  const entriesError = isPartialSearch ? searchError : error;
+  const entriesLoading = isPartialSearch ? searchLoading : loading;
+  const entriesValidating = isPartialSearch ? searchValidating : isValidating;
+  const pageData = useMemo(() => entries ?? [], [entries]);
   const isPinnedEntryVisible = Boolean(account && pageData.some((entry) => isSameAddress(entry.address, account)));
   const showPinnedRow = Boolean(pinnedEntry) && !isPinnedEntryVisible;
   const showEmptyPinnedRow =
@@ -266,7 +298,9 @@ export function RewardsLeaderboardTab({
     pinnedEntries.length === 0 &&
     !pinnedError &&
     !isPinnedEntryVisible;
-  const hasNoSearchMatch = Boolean(searchAccount && !loading && data !== undefined && data.length === 0);
+  const hasNoSearchMatch = Boolean(
+    debouncedSearchTerm && !entriesLoading && entries !== undefined && entries.length === 0
+  );
 
   useEffect(() => setPage(1), [account, orderBy, searchAccount, selectedPeriod]);
 
@@ -298,8 +332,8 @@ export function RewardsLeaderboardTab({
   }, [config?.epochTimestamp, selectedPeriod]);
 
   const revalidateMutableLeaderboard = useCallback(
-    () => Promise.allSettled([mutate(), mutatePinned()]),
-    [mutate, mutatePinned]
+    () => Promise.allSettled([mutate(), mutatePinned(), mutateSearch()]),
+    [mutate, mutatePinned, mutateSearch]
   );
 
   useEpochRolloverRevalidation({
@@ -344,9 +378,7 @@ export function RewardsLeaderboardTab({
   }, []);
   const handleSearchAddressChange = useCallback((value: string) => {
     setSearchAddress(value);
-
-    const normalizedValue = value.trim();
-    if (!normalizedValue || isAddress(normalizedValue)) setPage(1);
+    setPage(1);
   }, []);
   const handleShare = useCallback(
     (entry: LeaderboardEntry) => {
@@ -375,12 +407,18 @@ export function RewardsLeaderboardTab({
     [orderBy]
   );
 
-  const pageCount = totalCount === undefined ? page : Math.max(page, 1, Math.ceil(totalCount / PAGE_SIZE));
-  const hasInitialError = Boolean(error && data === undefined);
-  const hasCachedError = Boolean(error && data !== undefined);
-  const isInitialLoading = loading && data === undefined;
+  const pageCount =
+    entriesTotalCount === undefined ? page : Math.max(page, 1, Math.ceil(entriesTotalCount / PAGE_SIZE));
+  const hasInitialError = Boolean(entriesError && entries === undefined);
+  const hasCachedError = Boolean(entriesError && entries !== undefined);
+  const isInitialLoading = entriesLoading && entries === undefined;
   const showEmpty =
-    !searchAccount && !loading && data !== undefined && data.length === 0 && !showPinnedRow && !showEmptyPinnedRow;
+    !debouncedSearchTerm &&
+    !entriesLoading &&
+    entries !== undefined &&
+    entries.length === 0 &&
+    !showPinnedRow &&
+    !showEmptyPinnedRow;
   const visibleMainRowCount = hasNoSearchMatch ? 1 : pageData.length;
   const pinnedRow =
     account && pinnedEntries === undefined && !pinnedError && !isPinnedEntryVisible ? (
@@ -447,6 +485,16 @@ export function RewardsLeaderboardTab({
         </>
       ) : (
         <div className="flex grow flex-col rounded-b-8 bg-slate-900">
+          {isPartialSearch && isSearchTruncated ? (
+            <div className="px-20 pb-8 pt-12">
+              <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
+                <Trans>
+                  Partial search covers the top {numberWithCommas(LEADERBOARD_SEARCH_SCAN_LIMIT)} accounts. Search by
+                  full address to find any account.
+                </Trans>
+              </div>
+            </div>
+          ) : null}
           {hasCachedError ? (
             <div className="px-20 pb-8 pt-12">
               <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
@@ -531,7 +579,7 @@ export function RewardsLeaderboardTab({
                         onShare={handleShare}
                       />
                     ))}
-                    {data !== undefined && visibleMainRowCount < PAGE_SIZE ? (
+                    {entries !== undefined && visibleMainRowCount < PAGE_SIZE ? (
                       <TableListSkeleton
                         invisible
                         count={PAGE_SIZE - visibleMainRowCount}
@@ -546,11 +594,11 @@ export function RewardsLeaderboardTab({
 
           <div className="relative flex h-56 items-center justify-center px-8">
             <div className="text-caption absolute left-20 text-typography-secondary">
-              {(isValidating && data !== undefined) || (pinnedValidating && pinnedEntries !== undefined) ? (
+              {(entriesValidating && entries !== undefined) || (pinnedValidating && pinnedEntries !== undefined) ? (
                 <Trans>Updating...</Trans>
               ) : null}
             </div>
-            {data !== undefined || page > 1 ? (
+            {entries !== undefined || page > 1 ? (
               <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
             ) : null}
           </div>
