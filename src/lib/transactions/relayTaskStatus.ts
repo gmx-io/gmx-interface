@@ -4,9 +4,7 @@ import { getUiApiUrl } from "config/api";
 import { ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { RelayProvider } from "config/relay";
-import { ErrorLike, extendError } from "lib/errors";
-import type { OrderMetricId } from "lib/metrics/types";
-import { sendTxnErrorMetric } from "lib/metrics/utils";
+import { ErrorLike } from "lib/errors";
 import { getTenderlyAccountParams } from "lib/tenderly";
 import { GELATO_API_KEYS } from "sdk/configs/express";
 import type { GmxRelayTaskResult } from "sdk/utils/express";
@@ -33,15 +31,13 @@ export async function waitForRelayTaskOutcome({
   chainId,
   taskId,
   relayProvider,
-  metricId,
 }: {
   chainId: ContractsChainId;
   taskId: string;
   relayProvider: RelayProvider;
-  metricId?: OrderMetricId;
 }): Promise<RelayTaskOutcome | undefined> {
   if (relayProvider === "gmx") {
-    return waitForGmxRelayTaskOutcome({ chainId, taskId, metricId });
+    return waitForGmxRelayTaskOutcome({ chainId, taskId });
   }
 
   return waitForGelatoTaskOutcome({ chainId, taskId });
@@ -50,22 +46,25 @@ export async function waitForRelayTaskOutcome({
 async function waitForGmxRelayTaskOutcome({
   chainId,
   taskId,
-  metricId,
 }: {
   chainId: ContractsChainId;
   taskId: string;
-  metricId?: OrderMetricId;
 }): Promise<RelayTaskOutcome | undefined> {
   let result: GmxRelayTaskResult;
 
   try {
     result = await waitForGmxRelayTask({ chainId, taskId, apiUrl: getUiApiUrl(chainId) });
   } catch (error) {
-    const data = { ...((error as ErrorLike)?.data ?? {}), taskId };
+    // a determinate refusal of the status request: the relay will never report a verdict for this
+    // task. Returning an outcome (rather than a metric here plus a synthesized one upstream) keeps
+    // exactly one failure event per operation — the A/B compares failure counts across providers
+    const message = (error as ErrorLike)?.message ?? String(error);
+    const traceId = (error as ErrorLike)?.data?.traceId;
 
-    sendTxnErrorMetric(metricId, extendError(error as ErrorLike, { data }), "relayer");
-
-    return undefined;
+    return {
+      statusCode: StatusCode.Rejected,
+      message: traceId ? `${message} (traceId: ${traceId})` : message,
+    };
   }
 
   if (result.status === "pending") {

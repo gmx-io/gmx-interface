@@ -35,6 +35,7 @@ import {
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
+  ExpressOrderMetricData,
   metrics,
   OrderMetricId,
   sendOrderSimulatedMetric,
@@ -257,6 +258,22 @@ export function useOrderTxnCallbacks() {
 
         case TxnEventName.Sent: {
           if (ctx.metricId) {
+            // re-record the relay that actually took the operation before the sent event flies:
+            // assignment (the ab flag) and treatment diverge whenever the kill switch is thrown
+            if (e.data.type === "relay") {
+              const cached = metrics.getCachedMetricData<{
+                metricId: OrderMetricId;
+                expressData?: ExpressOrderMetricData;
+              }>(ctx.metricId);
+
+              if (cached?.expressData) {
+                metrics.setCachedMetricData({
+                  ...cached,
+                  expressData: { ...cached.expressData, relayProvider: e.data.relayProvider },
+                });
+              }
+            }
+
             sendTxnSentMetric(ctx.metricId);
 
             if (mainActionType === "create" && batchParams.createOrderParams.length > 0) {

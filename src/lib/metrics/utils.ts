@@ -1,4 +1,6 @@
+import { ContractsChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getRelayProvider } from "config/relay";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -591,6 +593,7 @@ function getExpressMetricData({
   }
 
   const expressData: ExpressOrderMetricData = {
+    relayProvider: getRelayProvider(expressParams.chainId as ContractsChainId),
     isExpressValid: expressParams.gasPaymentValidations.isValid,
     isOutGasTokenBalance: expressParams.gasPaymentValidations.isOutGasTokenBalance,
     needGasTokenApproval: expressParams.gasPaymentValidations.needGasPaymentTokenApproval,

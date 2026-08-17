@@ -17,8 +17,6 @@ vi.mock("sdk/utils/gelatoRelay", async (importOriginal) => ({
 vi.mock("lib/metrics/utils", () => ({ sendTxnErrorMetric: sendTxnErrorMetricMock }));
 
 const TASK_ID = `0x${"ab".repeat(32)}`;
-const METRIC_ID = "position:relay-task-outcome" as const;
-
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 }
@@ -75,24 +73,25 @@ describe("waitForRelayTaskOutcome", () => {
     expect(getGelatoRelayerClientMock).not.toHaveBeenCalled();
   });
 
-  it("keeps a permanently refused status request inside the poller and records it against the order", async () => {
+  // one failure event per operation: the outcome carries the refusal to the single emitter upstream
+  it("turns a permanently refused status request into a rejected outcome without its own metric", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => jsonResponse({ message: "taskId must be a 0x-prefixed 32-byte hex string" }, 400))
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ message: "taskId must be a 0x-prefixed 32-byte hex string" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json", "X-Trace-Id": "tr-9" },
+          })
+      )
     );
 
-    await expect(
-      waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID, relayProvider: "gmx", metricId: METRIC_ID })
-    ).resolves.toBeUndefined();
+    const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID, relayProvider: "gmx" });
 
-    expect(sendTxnErrorMetricMock).toHaveBeenCalledTimes(1);
-
-    const [metricId, error, errorContext] = sendTxnErrorMetricMock.mock.calls[0];
-
-    expect(metricId).toBe(METRIC_ID);
-    expect(errorContext).toBe("relayer");
-    expect(error.message).toContain("taskId must be a 0x-prefixed 32-byte hex string");
-    expect(error.data).toEqual({ taskId: TASK_ID });
+    expect(outcome?.statusCode).toBe(StatusCode.Rejected);
+    expect(outcome?.message).toContain("taskId must be a 0x-prefixed 32-byte hex string");
+    expect(outcome?.message).toContain("tr-9");
+    expect(sendTxnErrorMetricMock).not.toHaveBeenCalled();
   });
 
   it("keeps judging a Gelato task by Gelato", async () => {

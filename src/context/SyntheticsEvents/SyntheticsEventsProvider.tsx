@@ -1045,7 +1045,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     if (pendingTasks.length === 0) return;
 
-    for (const { taskId, relayProvider, metricId } of pendingTasks) {
+    for (const { taskId, relayProvider } of pendingTasks) {
       if (!taskChainIdRef.current.has(taskId)) {
         taskChainIdRef.current.set(taskId, chainId);
       }
@@ -1065,7 +1065,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             taskId,
             // a task id is only meaningful to the relay that issued it; mirror the submit-side choice
             relayProvider: relayProvider ?? getRelayProvider(taskChainId),
-            metricId,
           });
         } catch (error) {
           metrics.pushError(error as ErrorLike, "pollRelayTaskOutcome");
