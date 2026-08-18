@@ -1,6 +1,8 @@
 import "lib/polyfills";
 // Must stay above every other import so the url is normalized before anything reads the location.
 import "lib/legacyHashUrlRedirect";
+// Debug-only wallet connect tracer; inert without the ?walletDebug=1 flag.
+import "lib/walletDebugOverlay";
 import "styles/tailwind.css";
 import "lib/monkeyPatching";
 

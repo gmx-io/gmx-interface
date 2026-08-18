@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MM diag</title>
+    <style>
+      body {
+        background: #111;
+        color: #dfe;
+        font: 14px/1.45 monospace;
+        margin: 0;
+        padding: 10px;
+      }
+      h2 {
+        color: #fc0;
+        font-size: 16px;
+        margin: 6px 0;
+      }
+      button {
+        font: 15px monospace;
+        padding: 10px 12px;
+        margin: 4px 4px 4px 0;
+        background: #234;
+        color: #fff;
+        border: 1px solid #467;
+        border-radius: 6px;
+      }
+      #log {
+        white-space: pre-wrap;
+        word-break: break-all;
+        background: #000;
+        padding: 8px;
+        border-radius: 6px;
+        margin-top: 8px;
+      }
+      .ok {
+        color: #6f6;
+      }
+      .bad {
+        color: #f66;
+      }
+      .warn {
+        color: #fc0;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>MetaMask in-app diagnostics</h2>
+    <div id="hdr"></div>
+    <div>
+      <button onclick="rpc('eth_chainId')">eth_chainId</button>
+      <button onclick="rpc('eth_accounts')">eth_accounts</button>
+      <button onclick="rpc('eth_requestAccounts')">eth_requestAccounts</button>
+      <button onclick="rpc('wallet_requestPermissions',[{eth_accounts:{}}])">wallet_requestPermissions</button>
+      <button onclick="copyLog()">copy log</button>
+    </div>
+    <div id="log"></div>
+    <script>
+      const t0 = performance.now();
+      const logEl = document.getElementById("log");
+      const lines = [];
+      function log(msg, cls) {
+        const t = (performance.now() - t0).toFixed(0).padStart(5);
+        lines.push(`[${t}ms] ${msg}`);
+        const div = document.createElement("div");
+        if (cls) div.className = cls;
+        div.textContent = `[${t}ms] ${msg}`;
+        logEl.appendChild(div);
+      }
+      function copyLog() {
+        navigator.clipboard && navigator.clipboard.writeText(lines.join("\n"));
+      }
+
+      document.getElementById("hdr").textContent = location.href + " | " + navigator.userAgent;
+      log("path: " + location.pathname);
+      log("ethereum at parse: " + typeof window.ethereum, typeof window.ethereum === "object" ? "ok" : "warn");
+
+      // When does window.ethereum appear?
+      let seen = typeof window.ethereum !== "undefined";
+      const poll = setInterval(() => {
+        if (!seen && typeof window.ethereum !== "undefined") {
+          seen = true;
+          log("window.ethereum APPEARED (isMetaMask=" + (window.ethereum.isMetaMask ? "yes" : "no") + ")", "ok");
+          clearInterval(poll);
+        }
+      }, 100);
+      setTimeout(() => {
+        clearInterval(poll);
+        if (!seen) log("window.ethereum NEVER appeared within 15s — provider not injected", "bad");
+      }, 15000);
+
+      window.addEventListener("ethereum#initialized", () => log("event ethereum#initialized fired", "ok"));
+
+      // EIP-6963 discovery
+      window.addEventListener("eip6963:announceProvider", (e) => {
+        log(
+          "eip6963 announce: " + (e.detail && e.detail.info ? e.detail.info.rdns + " / " + e.detail.info.name : "?"),
+          "ok"
+        );
+      });
+      [0, 500, 1500, 4000].forEach((d) =>
+        setTimeout(() => window.dispatchEvent(new Event("eip6963:requestProvider")), d)
+      );
+
+      // RPC probe with hang detection
+      let seq = 0;
+      async function rpc(method, params) {
+        const id = ++seq;
+        if (!window.ethereum) {
+          log(`#${id} ${method}: NO PROVIDER`, "bad");
+          return;
+        }
+        log(`#${id} ${method} -> sent`);
+        const started = performance.now();
+        const pending = setTimeout(() => log(`#${id} ${method}: STILL PENDING after 20s`, "bad"), 20000);
+        try {
+          const res = await window.ethereum.request({ method, params });
+          clearTimeout(pending);
+          log(
+            `#${id} ${method}: resolved in ${(performance.now() - started).toFixed(0)}ms -> ${JSON.stringify(res).slice(0, 120)}`,
+            "ok"
+          );
+        } catch (e) {
+          clearTimeout(pending);
+          log(
+            `#${id} ${method}: rejected in ${(performance.now() - started).toFixed(0)}ms -> code=${e.code} ${String(e.message).slice(0, 120)}`,
+            "warn"
+          );
+        }
+      }
+
+      // Harmless auto-probe once a provider shows up
+      const auto = setInterval(() => {
+        if (window.ethereum) {
+          clearInterval(auto);
+          rpc("eth_chainId");
+          rpc("eth_accounts");
+        }
+      }, 500);
+      setTimeout(() => clearInterval(auto), 16000);
+    </script>
+  </body>
+</html>
