@@ -16,6 +16,7 @@ export type RelayTaskOutcome = {
   transactionHash?: string;
   message?: string;
   revertData?: string;
+  debugUrl?: string;
 };
 
 export function getGmxRelayStatusCode(result: Pick<GmxRelayTaskResult, "status" | "relayStatus">): StatusCode {
@@ -75,6 +76,8 @@ async function waitForGmxRelayTaskOutcome({
     statusCode: getGmxRelayStatusCode(result),
     transactionHash: result.transactionHash,
     message: result.message,
+    revertData: result.revertData,
+    debugUrl: result.debugUrl,
   };
 }
 

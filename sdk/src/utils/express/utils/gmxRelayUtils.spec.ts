@@ -212,11 +212,18 @@ describe("waitForGmxRelayTask", () => {
     expect(result.message).toContain("Could not read");
   });
 
-  it("reports a revert as a failure carrying the reason", async () => {
+  it("reports a revert as a failure carrying the reason and the raw revert bytes", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () =>
-        jsonResponse({ taskId: TASK_ID, status: "reverted", txHash: "0xhash", reason: "InsufficientRelayFee" })
+        jsonResponse({
+          taskId: TASK_ID,
+          status: "reverted",
+          txHash: "0xhash",
+          reason: "InsufficientRelayFee",
+          revertData: "0x08c379a0deadbeef",
+          debug: { tenderlyUrl: "https://dashboard.tenderly.co/simulator/new?x=1" },
+        })
       )
     );
 
@@ -225,6 +232,8 @@ describe("waitForGmxRelayTask", () => {
     expect(result.status).toBe("failed");
     expect(result.relayStatus).toBe("reverted");
     expect(result.message).toBe("InsufficientRelayFee");
+    expect(result.revertData).toBe("0x08c379a0deadbeef");
+    expect(result.debugUrl).toBe("https://dashboard.tenderly.co/simulator/new?x=1");
   });
 
   it("never resolves an undetermined outcome as success or failure", async () => {

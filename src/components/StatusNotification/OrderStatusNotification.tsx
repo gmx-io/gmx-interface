@@ -309,13 +309,16 @@ function OrderStatusNotification({
         </div>
       );
       txnHash = relayTaskStatus?.transactionHash;
-      txnLink = getRelayTaskUrl({
-        relayProvider: pendingExpressTxn?.relayProvider,
-        taskId: pendingExpressTxn?.taskId,
-        isDebug: true,
-        tenderlyAccountSlug,
-        tenderlyProjectSlug,
-      });
+      txnLink =
+        getRelayTaskUrl({
+          relayProvider: pendingExpressTxn?.relayProvider,
+          taskId: pendingExpressTxn?.taskId,
+          isDebug: true,
+          tenderlyAccountSlug,
+          tenderlyProjectSlug,
+        }) ??
+        // GMX Relay has no task page; the keeper hands back a ready-made simulation link instead
+        relayTaskStatus?.debugUrl;
     } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;
@@ -328,6 +331,7 @@ function OrderStatusNotification({
     isRelayTaskFailed,
     relayTaskStatus?.transactionHash,
     relayTaskStatus?.message,
+    relayTaskStatus?.debugUrl,
     orderStatus?.createdTxnHash,
     orderStatus?.executedTxnHash,
     orderStatus?.updatedTxnHash,

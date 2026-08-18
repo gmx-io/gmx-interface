@@ -10,11 +10,26 @@ export type GmxRelayResult = {
   status: GmxRelayStatus;
 };
 
+export type GmxRelayDebugView = {
+  chainId?: number;
+  from?: string | null;
+  to?: string;
+  operationType?: string;
+  account?: string;
+  blockNumber?: number | null;
+  errorCode?: string | null;
+  errorData?: string | null;
+  calldata?: string;
+  tenderlyUrl?: string;
+};
+
 export type GmxRelayStatusView = {
   taskId: string;
   status: GmxRelayStatus;
   txHash?: string;
   reason?: string;
+  revertData?: string;
+  debug?: GmxRelayDebugView | null;
 };
 
 export type GmxRelayTaskResult = {
@@ -22,6 +37,8 @@ export type GmxRelayTaskResult = {
   status: "success" | "failed" | "pending";
   relayStatus: GmxRelayStatus;
   message?: string;
+  revertData?: string;
+  debugUrl?: string;
 };
 
 const SUBMIT_TIMEOUT_MS = 15_000;
@@ -142,6 +159,8 @@ export async function waitForGmxRelayTask({
         status: view.status === "executed" ? "success" : view.status === "unknown" ? "pending" : "failed",
         relayStatus: view.status,
         message: view.reason,
+        revertData: view.revertData,
+        debugUrl: view.debug?.tenderlyUrl,
       };
     }
 
