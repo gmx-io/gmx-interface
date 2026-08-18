@@ -11,6 +11,7 @@ import {
 import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { NextPositionValues } from "domain/synthetics/trade";
 import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
+import { PositionMarginFailureReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
 export function getPositionOrderError({
   positionOrder,
@@ -21,6 +22,8 @@ export function getPositionOrderError({
   existingPosition,
   nextPositionValuesForIncrease,
   maxAllowedLeverage,
+  resultingPositionMarginState,
+  isIncreaseExecutableNow,
 }: {
   positionOrder: PositionOrderInfo;
   markPrice: bigint | undefined;
@@ -30,6 +33,8 @@ export function getPositionOrderError({
   existingPosition: PositionInfoLoaded | undefined;
   nextPositionValuesForIncrease: NextPositionValues | undefined;
   maxAllowedLeverage: number | undefined;
+  resultingPositionMarginState?: PositionMarginState;
+  isIncreaseExecutableNow?: boolean;
 }): string | undefined {
   if (markPrice === undefined) {
     return t`Loading...`;
@@ -120,5 +125,15 @@ export function getPositionOrderError({
     ) {
       return t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
+  }
+
+  if (
+    (isLimitIncreaseOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)) &&
+    resultingPositionMarginState?.isLiquidatable &&
+    isIncreaseExecutableNow
+  ) {
+    return resultingPositionMarginState.reason === PositionMarginFailureReason.MinCollateralForLeverage
+      ? t`Max leverage exceeded`
+      : t`Invalid liquidation price`;
   }
 }

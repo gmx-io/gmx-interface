@@ -44,6 +44,46 @@ export function getOrderThresholdType(orderType: OrderType, isLong: boolean) {
   return undefined;
 }
 
+export function getIsIncreaseOrderExecutableNow(p: {
+  orderType: OrderType | undefined;
+  isLong: boolean;
+  triggerPrice: bigint | undefined;
+  indexTokenPrices: TokenPrices;
+}): boolean {
+  const { orderType, isLong, triggerPrice, indexTokenPrices } = p;
+
+  if (orderType === OrderType.MarketIncrease) {
+    return true;
+  }
+
+  if (triggerPrice === undefined || triggerPrice <= 0n) {
+    return false;
+  }
+
+  if (orderType === OrderType.LimitIncrease) {
+    return isLong ? indexTokenPrices.maxPrice <= triggerPrice : indexTokenPrices.minPrice >= triggerPrice;
+  }
+
+  if (orderType === OrderType.StopIncrease) {
+    return isLong ? indexTokenPrices.maxPrice >= triggerPrice : indexTokenPrices.minPrice <= triggerPrice;
+  }
+
+  return false;
+}
+
+export function getIncreaseEvaluationIndexPrice(p: {
+  orderType: OrderType | undefined;
+  isLong: boolean;
+  triggerPrice: bigint | undefined;
+  indexTokenPrices: TokenPrices;
+}): bigint | undefined {
+  if (p.triggerPrice === undefined || p.triggerPrice <= 0n || getIsIncreaseOrderExecutableNow(p)) {
+    return undefined;
+  }
+
+  return p.triggerPrice;
+}
+
 export function getAcceptablePriceInfo(p: {
   marketInfo: MarketInfo;
   isIncrease: boolean;

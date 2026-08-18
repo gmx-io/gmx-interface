@@ -47,6 +47,7 @@ import {
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxPayAmount,
   selectTradeboxExistingPositionForPreview,
+  selectTradeboxSelectedPosition,
   selectTradeboxState,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
@@ -90,10 +91,13 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
+import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import { TokenData } from "sdk/utils/tokens/types";
 import { TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
+import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import { mustNeverExist } from "sdk/utils/types";
 
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
@@ -307,6 +311,10 @@ export function useTradeboxButtonState({
             </>
           );
 
+          break;
+        }
+        case ValidationButtonTooltipName.resultingPositionMaxLeverage: {
+          tooltipContent = null;
           break;
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
@@ -698,6 +706,7 @@ function useDetectAndSetAvailableMaxLeverage({
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong } = tradeFlags;
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
 
   const { minCollateralUsd } = usePositionsConstants();
 
@@ -712,6 +721,7 @@ function useDetectAndSetAvailableMaxLeverage({
   const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
 
   const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
+  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
 
   const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
@@ -781,8 +791,31 @@ function useDetectAndSetAvailableMaxLeverage({
             increaseAmounts.sizeDeltaUsd
           );
 
+          const resultingPositionMarginState = getIncreaseResultingPositionMarginState({
+            marketInfo,
+            collateralToken,
+            isLong,
+            existingPosition: selectedPosition,
+            sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+            sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+            collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+            minCollateralUsd,
+            userReferralInfo,
+            indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
+              orderType:
+                tradeMode === TradeMode.StopMarket
+                  ? OrderType.StopIncrease
+                  : tradeMode === TradeMode.Limit
+                    ? OrderType.LimitIncrease
+                    : OrderType.MarketIncrease,
+              isLong,
+              triggerPrice,
+              indexTokenPrices: toToken.prices,
+            }),
+          });
+
           return {
-            isValid: !isMaxLeverageExceeded,
+            isValid: !isMaxLeverageExceeded && resultingPositionMarginState?.isLiquidatable !== true,
             returnValue: increaseAmounts.sizeDeltaInTokens,
           };
         }
@@ -827,6 +860,7 @@ function useDetectAndSetAvailableMaxLeverage({
     maxAllowedLeverage,
     minCollateralUsd,
     existingPosition,
+    selectedPosition,
     selectedTriggerAcceptablePriceImpactBps,
     setLeverageOption,
     setToTokenInputValue,
@@ -836,6 +870,7 @@ function useDetectAndSetAvailableMaxLeverage({
     uiFeeFactor,
     userReferralInfo,
     isSetAcceptablePriceImpactEnabled,
+    tradeMode,
   ]);
 }
 

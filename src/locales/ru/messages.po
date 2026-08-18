@@ -3506,6 +3506,9 @@ msgid "Theme"
 msgstr "Тема"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -3625,6 +3628,7 @@ msgstr "Не удалось загрузить историю сделок"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>Установить рекомендуемое влияние: {0}</0>."
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "Позиция будет немедленно ликвидирована при исполнении. Уменьшите размер."
@@ -6279,10 +6283,6 @@ msgstr "Неудачный Стоп-Маркет"
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers."
-msgstr "Ордер может не исполниться: итоговая позиция превысит максимально допустимое кредитное плечо. Внесите маржу или уменьшите размер ордера до его срабатывания."
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "Ежедневно"
@@ -6520,6 +6520,11 @@ msgstr "Предложения GMX"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
+msgstr "Этот ордер может не исполниться, так как итоговая позиция превысит максимально допустимое плечо. Увеличьте маржу позиции или уменьшите размер ордера до его срабатывания."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
@@ -9137,6 +9142,10 @@ msgstr "Выполнение запроса на покупку…"
 msgid "Buy GM failed"
 msgstr "Покупка GM не удалась"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr "Позицию нельзя увеличить при текущем плече. Увеличьте маржу или уменьшите размер."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "Максимальный фактор финансирования (лонг)"
@@ -9876,6 +9885,11 @@ msgstr "Запрос отправлен, но подтвердить его ре
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
+msgstr "Итоговая позиция превысит максимально допустимое плечо. Увеличьте маржу или уменьшите размер."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "No funds available for GMX Account deposit"
@@ -11392,6 +11406,8 @@ msgstr "Получить комиссии финансирования"
 msgid "Token permit testing"
 msgstr "Тестирование разрешений токенов"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

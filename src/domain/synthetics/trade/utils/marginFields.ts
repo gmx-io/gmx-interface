@@ -1,11 +1,17 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getMaxAllowedLeverage } from "domain/synthetics/markets";
+import { getIsPositionLiquidatableAtPrice } from "domain/synthetics/trade/utils/warnings";
 import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, PRECISION } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
+import { getPositionFee } from "sdk/utils/fees";
+import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 import type { MarketInfo } from "sdk/utils/markets/types";
-import { convertToTokenAmount } from "sdk/utils/tokens";
+import { getLiquidationPrice } from "sdk/utils/positions";
+import type { UserReferralInfo } from "sdk/utils/referrals/types";
+import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
+import type { TokenData } from "sdk/utils/tokens/types";
 import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
+import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
 export function clampPercentage(value: number): number {
   if (!Number.isFinite(value)) return 0;
@@ -25,8 +31,136 @@ export type CalcMaxSizeDeltaParams = {
     collateralUsd: bigint;
     pendingBorrowingFeesUsd: bigint;
     pendingFundingFeesUsd: bigint;
+    sizeInTokens?: bigint;
+    collateralAmount?: bigint;
+    pendingImpactAmount?: bigint;
   };
+  collateralToken?: TokenData;
+  minCollateralUsd?: bigint;
+  userReferralInfo?: UserReferralInfo;
+  indexPriceForEvaluation?: bigint;
 };
+
+const RESULTING_POSITION_BISECTION_STEPS = 24;
+
+function capSizeDeltaByResultingPositionMargin({
+  sizeDeltaUsdBound,
+  params,
+}: {
+  sizeDeltaUsdBound: bigint;
+  params: CalcMaxSizeDeltaParams;
+}): bigint {
+  const { marketInfo, initialCollateralUsd, markPrice, isLong, existingPosition, collateralToken, minCollateralUsd } =
+    params;
+
+  if (!collateralToken || minCollateralUsd === undefined || sizeDeltaUsdBound <= 0n) {
+    return sizeDeltaUsdBound;
+  }
+
+  let resultingExistingPosition:
+    | { sizeInUsd: bigint; sizeInTokens: bigint; collateralAmount: bigint; pendingImpactAmount: bigint }
+    | undefined;
+
+  if (existingPosition) {
+    const { sizeInUsd, sizeInTokens, collateralAmount, pendingImpactAmount } = existingPosition;
+
+    if (sizeInTokens === undefined || collateralAmount === undefined || pendingImpactAmount === undefined) {
+      return sizeDeltaUsdBound;
+    }
+
+    resultingExistingPosition = { sizeInUsd, sizeInTokens, collateralAmount, pendingImpactAmount };
+  }
+
+  const pendingFeesUsd =
+    (existingPosition?.pendingBorrowingFeesUsd ?? 0n) + (existingPosition?.pendingFundingFeesUsd ?? 0n);
+
+  const isSizeDeltaValid = (sizeDeltaUsd: bigint): boolean => {
+    if (sizeDeltaUsd <= 0n) return true;
+
+    const sizeDeltaInTokens = convertToTokenAmountForIncrease(
+      sizeDeltaUsd,
+      marketInfo.indexToken.decimals,
+      markPrice,
+      isLong
+    );
+
+    if (sizeDeltaInTokens === undefined || sizeDeltaInTokens <= 0n) return true;
+
+    const { balanceWasImproved } = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong, true, {
+      shouldCapNegativeImpact: false,
+      sizeDeltaInTokens,
+    });
+
+    const { positionFeeUsd } = getPositionFee(marketInfo, sizeDeltaUsd, balanceWasImproved, params.userReferralInfo);
+
+    const collateralDeltaUsd = initialCollateralUsd - positionFeeUsd - pendingFeesUsd;
+    const collateralDeltaAmount =
+      convertToTokenAmount(collateralDeltaUsd, collateralToken.decimals, collateralToken.prices.minPrice) ?? 0n;
+
+    const marginState = getIncreaseResultingPositionMarginState({
+      marketInfo,
+      collateralToken,
+      isLong,
+      existingPosition: resultingExistingPosition,
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+      collateralDeltaAmount,
+      minCollateralUsd,
+      userReferralInfo: params.userReferralInfo,
+      indexPriceForEvaluation: params.indexPriceForEvaluation,
+    });
+
+    if (marginState?.isLiquidatable) {
+      return false;
+    }
+
+    if (params.indexPriceForEvaluation === undefined && resultingExistingPosition !== undefined) {
+      const nextCollateralAmount = resultingExistingPosition.collateralAmount + collateralDeltaAmount;
+      const nextLiqPrice = getLiquidationPrice({
+        marketInfo,
+        collateralToken,
+        sizeInUsd: resultingExistingPosition.sizeInUsd + sizeDeltaUsd,
+        sizeInTokens: resultingExistingPosition.sizeInTokens + sizeDeltaInTokens,
+        collateralAmount: nextCollateralAmount,
+        collateralUsd:
+          convertToUsd(nextCollateralAmount, collateralToken.decimals, collateralToken.prices.minPrice) ?? 0n,
+        minCollateralUsd: minCollateralUsd!,
+        pendingBorrowingFeesUsd: 0n,
+        pendingFundingFeesUsd: 0n,
+        pendingImpactAmount: resultingExistingPosition.pendingImpactAmount,
+        isLong,
+        userReferralInfo: params.userReferralInfo,
+      });
+
+      if (getIsPositionLiquidatableAtPrice({ liqPrice: nextLiqPrice, price: markPrice, isLong })) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  if (isSizeDeltaValid(sizeDeltaUsdBound)) {
+    return sizeDeltaUsdBound;
+  }
+
+  let low = 0n;
+  let high = sizeDeltaUsdBound;
+
+  for (let i = 0; i < RESULTING_POSITION_BISECTION_STEPS && low < high; i++) {
+    const mid = (low + high) / 2n;
+
+    if (mid === low) break;
+
+    if (isSizeDeltaValid(mid)) {
+      low = mid;
+    } else {
+      high = mid - 1n;
+    }
+  }
+
+  return low;
+}
 
 /**
  * Computes the maximum size delta in real index tokens so that the resulting
@@ -92,11 +226,13 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
     ? marketInfo.positionFeeFactorForBalanceWasImproved
     : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
-  const leverageBoundUsd = bigMath.mulDiv(
+  const structuralBoundUsd = bigMath.mulDiv(
     baseNumerator,
     PRECISION,
     BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * positionFeeFactor
   );
+
+  const leverageBoundUsd = capSizeDeltaByResultingPositionMargin({ sizeDeltaUsdBound: structuralBoundUsd, params });
 
   const toIndexTokenAmount = (amountUsd: bigint | undefined): bigint | undefined => {
     if (amountUsd === undefined || amountUsd <= 0n) return undefined;

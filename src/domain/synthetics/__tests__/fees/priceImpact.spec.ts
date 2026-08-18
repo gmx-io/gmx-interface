@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 
 import { applyImpactFactor } from "domain/synthetics/fees";
 import { expandDecimals } from "lib/numbers";
-import { bigMath } from "sdk/utils/bigmath";
 
 describe("applyImpactFactor", () => {
   for (const [diffUsd, exponentFactor, impactFactor, expected] of [
@@ -39,7 +38,7 @@ describe("applyImpactFactor", () => {
     [1000000, "1", "0.0001", "100000000000000000000000000000000"],
     [10000000, "1", "0.0001", "1000000000000000000000000000000000"],
   ]) {
-    it(`should keep difference >1/1e10 from the contract value: ${expected}`, () => {
+    it(`matches the contract value exactly: ${expected}`, () => {
       const result = applyImpactFactor(
         parseUnits(String(diffUsd), 30),
         parseUnits(String(impactFactor), 30),
@@ -48,11 +47,21 @@ describe("applyImpactFactor", () => {
 
       const _expected = BigInt(expected);
 
-      expect(
-        _expected == 0n
-          ? result < expandDecimals(1, 20)
-          : _expected / bigMath.abs(_expected - result!) > expandDecimals(1, 10)
-      ).toBe(true);
+      // applyImpactFactor mirrors the contract's prb-math fixed-point pow bit-for-bit,
+      // so no tolerance is needed (the float implementation it replaced was within 1e-10)
+      expect(_expected == 0n ? result < expandDecimals(1, 20) : result === _expected).toBe(true);
     });
   }
+});
+
+describe("applyImpactFactor — overflow guard", () => {
+  it("degrades to zero instead of throwing when diff^exponent overflows prb-math", () => {
+    // ~1e30 USD of imbalance with exponent 2.4 exceeds exp2's 2^192 input range;
+    // an unclamped size input must not take the page down through an exception
+    const hugeDiff = expandDecimals(1, 60);
+    const exponent = expandDecimals(24, 29); // 2.4
+    const factor = expandDecimals(1, 20);
+
+    expect(applyImpactFactor(hugeDiff, factor, exponent)).toBe(0n);
+  });
 });

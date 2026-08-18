@@ -4,6 +4,7 @@ import { ARBITRUM } from "config/chains";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
+import { PositionMarginFailureReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import { TriggerThresholdType } from "sdk/utils/trade/types";
 
 import {
@@ -112,6 +113,8 @@ const baseIncreaseParams = {
   thresholdType: undefined,
   numberOfParts: 1,
   minPositionSizeUsd: 0n,
+  resultingPositionMarginState: undefined,
+  isResultingPositionCheckBlocking: false,
 };
 
 describe("getIncreaseError — isExternalSwapLoading gate", () => {
@@ -323,5 +326,88 @@ describe("getNativeGasError", () => {
       buttonErrorMessage: "Insufficient gas balance",
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     });
+  });
+});
+
+describe("getIncreaseError — resulting-position margin check", () => {
+  const violation = (reason: PositionMarginFailureReason): PositionMarginState => ({
+    isLiquidatable: true,
+    reason,
+    remainingCollateralUsd: 0n,
+    minCollateralUsd: 0n,
+    minCollateralUsdForLeverage: 0n,
+  });
+
+  // no collateral swap involved, so the swap-liquidity checks do not interfere
+  const marginCheckParams = {
+    ...baseIncreaseParams,
+    initialCollateralToken: toToken,
+    initialCollateralAmount: expandDecimals(1000, 6),
+  };
+
+  const limitParams = {
+    ...marginCheckParams,
+    isLimit: true,
+    triggerPrice: expandDecimals(49_000, 30),
+    thresholdType: TriggerThresholdType.Below,
+  };
+
+  it("hard-blocks a market increase with the reason-specific max-leverage state", () => {
+    const result = getIncreaseError({
+      ...marginCheckParams,
+      resultingPositionMarginState: violation(PositionMarginFailureReason.MinCollateralForLeverage),
+      isResultingPositionCheckBlocking: true,
+    });
+
+    expect(result.buttonErrorMessage).toBe("Max leverage exceeded");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.resultingPositionMaxLeverage);
+  });
+
+  it("blocks non-leverage margin reasons with the invalid-liquidation-price state", () => {
+    const result = getIncreaseError({
+      ...marginCheckParams,
+      resultingPositionMarginState: violation(PositionMarginFailureReason.NonPositiveRemainingMargin),
+      isResultingPositionCheckBlocking: true,
+    });
+
+    expect(result.buttonErrorMessage).toBe("Invalid liquidation price");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.liqPriceGtMarkPrice);
+  });
+
+  it("does not block a resting limit order that is not executable now", () => {
+    const result = getIncreaseError({
+      ...limitParams,
+      resultingPositionMarginState: violation(PositionMarginFailureReason.MinCollateralForLeverage),
+      isResultingPositionCheckBlocking: false,
+    });
+
+    expect(result.buttonErrorMessage).toBe(undefined);
+  });
+
+  it("hard-blocks a limit order that is executable at the current prices", () => {
+    const result = getIncreaseError({
+      ...limitParams,
+      resultingPositionMarginState: violation(PositionMarginFailureReason.MinCollateralForLeverage),
+      isResultingPositionCheckBlocking: true,
+    });
+
+    expect(result.buttonErrorMessage).toBe("Max leverage exceeded");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.resultingPositionMaxLeverage);
+  });
+
+  it("does not block when the margin check passes", () => {
+    const result = getIncreaseError({
+      ...marginCheckParams,
+      resultingPositionMarginState: {
+        isLiquidatable: false,
+        reason: undefined,
+        remainingCollateralUsd: 1n,
+        minCollateralUsd: 0n,
+        minCollateralUsdForLeverage: 1n,
+      },
+      isResultingPositionCheckBlocking: true,
+    });
+
+    expect(result.buttonErrorMessage).toBe(undefined);
   });
 });

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { TOKENS } from "configs/tokens";
+import { mockMarketsInfoData, mockTokensData } from "test/mock";
 import {
   getMarketFullName,
   getMarketIndexName,
@@ -21,9 +22,12 @@ import {
   getOpenInterestInTokens,
   getPositiveMarketPnl,
   getPriceForPnl,
+  getMarketInfoWithOpenInterestDelta,
+  getOpenInterestForBalance,
 } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { BASIS_POINTS_DIVISOR, expandDecimals } from "utils/numbers";
+import { convertToUsd } from "utils/tokens";
 import { Token, TokensData } from "utils/tokens/types";
 
 function getToken(symbol: string) {
@@ -562,5 +566,147 @@ describe("getPriceForPnl", () => {
 
   it("uses maxPrice for short when maximize=false", () => {
     expect(getPriceForPnl({ minPrice: 1000n, maxPrice: 2000n }, false, false)).toBe(2000n);
+  });
+});
+
+describe("getMarketInfoWithOpenInterestDelta", () => {
+  const tokensData = mockTokensData();
+
+  function buildMarket(overrides: Record<string, bigint | boolean | string> = {}) {
+    return mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"], {
+      "ETH-ETH-USDC": {
+        longInterestUsd: expandDecimals(1000, 30),
+        shortInterestUsd: expandDecimals(2000, 30),
+        longInterestInTokens: expandDecimals(1, 18),
+        shortInterestInTokens: expandDecimals(2, 18),
+        ...overrides,
+      },
+    })["ETH-ETH-USDC"];
+  }
+
+  it("returns the market unchanged when there is no delta", () => {
+    const marketInfo = buildMarket();
+
+    expect(
+      getMarketInfoWithOpenInterestDelta({ marketInfo, isLong: true, sizeDeltaUsd: 0n, sizeDeltaInTokens: 0n })
+    ).toBe(marketInfo);
+  });
+
+  it("shifts only the long side for a long increase", () => {
+    const marketInfo = buildMarket();
+
+    const next = getMarketInfoWithOpenInterestDelta({
+      marketInfo,
+      isLong: true,
+      sizeDeltaUsd: expandDecimals(500, 30),
+      sizeDeltaInTokens: expandDecimals(5, 17),
+    });
+
+    expect(next.longInterestUsd).toBe(expandDecimals(1500, 30));
+    expect(next.longInterestInTokens).toBe(expandDecimals(15, 17));
+    expect(next.shortInterestUsd).toBe(marketInfo.shortInterestUsd);
+    expect(next.shortInterestInTokens).toBe(marketInfo.shortInterestInTokens);
+    // the source market must not be mutated, it is shared across selectors
+    expect(marketInfo.longInterestUsd).toBe(expandDecimals(1000, 30));
+  });
+
+  it("shifts only the short side for a short increase", () => {
+    const marketInfo = buildMarket();
+
+    const next = getMarketInfoWithOpenInterestDelta({
+      marketInfo,
+      isLong: false,
+      sizeDeltaUsd: expandDecimals(500, 30),
+      sizeDeltaInTokens: expandDecimals(5, 17),
+    });
+
+    expect(next.shortInterestUsd).toBe(expandDecimals(2500, 30));
+    expect(next.shortInterestInTokens).toBe(expandDecimals(25, 17));
+    expect(next.longInterestUsd).toBe(marketInfo.longInterestUsd);
+    expect(next.longInterestInTokens).toBe(marketInfo.longInterestInTokens);
+  });
+
+  it("carries the delta into the open interest used for balance in both modes", () => {
+    const sizeDeltaUsd = expandDecimals(500, 30);
+    const sizeDeltaInTokens = expandDecimals(5, 17);
+
+    const usdMarket = buildMarket({ useOpenInterestInTokensForBalance: false });
+    const usdNext = getMarketInfoWithOpenInterestDelta({
+      marketInfo: usdMarket,
+      isLong: true,
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+    });
+
+    expect(getOpenInterestForBalance(usdNext, true) - getOpenInterestForBalance(usdMarket, true)).toBe(sizeDeltaUsd);
+
+    const tokensMarket = buildMarket({ useOpenInterestInTokensForBalance: true });
+    const tokensNext = getMarketInfoWithOpenInterestDelta({
+      marketInfo: tokensMarket,
+      isLong: true,
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+    });
+
+    const midPrice = (tokensMarket.indexToken.prices.minPrice + tokensMarket.indexToken.prices.maxPrice) / 2n;
+
+    expect(getOpenInterestForBalance(tokensNext, true) - getOpenInterestForBalance(tokensMarket, true)).toBe(
+      convertToUsd(sizeDeltaInTokens, tokensMarket.indexToken.decimals, midPrice)!
+    );
+  });
+
+  describe("virtual inventory projection", () => {
+    // the contract's `applyDeltaToVirtualInventoryForPositions` no-ops on a zero virtualTokenId
+    const VIRTUAL_INDEX_TOKEN_ID = `0x${"1".repeat(64)}`;
+    const sizeDeltaUsd = expandDecimals(500, 30);
+    const sizeDeltaInTokens = expandDecimals(5, 17);
+
+    it("decreases the net-short virtual inventory for a long increase on a usd-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: false,
+        virtualInventoryForPositions: expandDecimals(300, 30),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({ marketInfo, isLong: true, sizeDeltaUsd, sizeDeltaInTokens });
+
+      expect(next.virtualInventoryForPositions).toBe(-expandDecimals(200, 30));
+      expect(next.virtualInventoryForPositionsInTokens).toBe(marketInfo.virtualInventoryForPositionsInTokens);
+    });
+
+    it("increases the net-short virtual inventory for a short increase on a usd-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: false,
+        virtualInventoryForPositions: expandDecimals(300, 30),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({ marketInfo, isLong: false, sizeDeltaUsd, sizeDeltaInTokens });
+
+      expect(next.virtualInventoryForPositions).toBe(expandDecimals(800, 30));
+    });
+
+    it("shifts the token-denominated virtual inventory on a token-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: true,
+        virtualInventoryForPositionsInTokens: expandDecimals(1, 18),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({ marketInfo, isLong: true, sizeDeltaUsd, sizeDeltaInTokens });
+
+      expect(next.virtualInventoryForPositionsInTokens).toBe(expandDecimals(5, 17));
+      expect(next.virtualInventoryForPositions).toBe(marketInfo.virtualInventoryForPositions);
+    });
+
+    it("leaves the virtual inventory untouched when the market has none configured", () => {
+      // the default mock has virtualIndexTokenId = zeroHash and zero inventory
+      const marketInfo = buildMarket();
+
+      const next = getMarketInfoWithOpenInterestDelta({ marketInfo, isLong: true, sizeDeltaUsd, sizeDeltaInTokens });
+
+      expect(next.virtualInventoryForPositions).toBe(0n);
+      expect(next.virtualInventoryForPositionsInTokens).toBe(0n);
+    });
   });
 });
