@@ -38,7 +38,6 @@ export type GmxRelayTaskResult = {
   relayStatus: GmxRelayStatus;
   message?: string;
   revertData?: string;
-  debugUrl?: string;
 };
 
 const SUBMIT_TIMEOUT_MS = 15_000;
@@ -160,7 +159,6 @@ export async function waitForGmxRelayTask({
         relayStatus: view.status,
         message: view.reason,
         revertData: view.revertData,
-        debugUrl: view.debug?.tenderlyUrl,
       };
     }
 

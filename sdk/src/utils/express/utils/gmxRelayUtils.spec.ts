@@ -222,7 +222,6 @@ describe("waitForGmxRelayTask", () => {
           txHash: "0xhash",
           reason: "InsufficientRelayFee",
           revertData: "0x08c379a0deadbeef",
-          debug: { tenderlyUrl: "https://dashboard.tenderly.co/simulator/new?x=1" },
         })
       )
     );
@@ -233,7 +232,6 @@ describe("waitForGmxRelayTask", () => {
     expect(result.relayStatus).toBe("reverted");
     expect(result.message).toBe("InsufficientRelayFee");
     expect(result.revertData).toBe("0x08c379a0deadbeef");
-    expect(result.debugUrl).toBe("https://dashboard.tenderly.co/simulator/new?x=1");
   });
 
   it("never resolves an undetermined outcome as success or failure", async () => {

@@ -109,7 +109,6 @@ export type RelayTaskStatus = {
   message?: string;
   transactionHash?: string;
   revertData?: string;
-  debugUrl?: string;
 };
 
 export type PendingPositionsUpdates = {

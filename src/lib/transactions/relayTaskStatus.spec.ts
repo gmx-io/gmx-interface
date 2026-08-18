@@ -70,7 +70,6 @@ describe("waitForRelayTaskOutcome", () => {
       txHash: "0xhash",
       reason: "InsufficientRelayFee",
       revertData: "0x08c379a0deadbeef",
-      debug: { tenderlyUrl: "https://dashboard.tenderly.co/simulator/new?x=1" },
     });
 
     const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID, relayProvider: "gmx" });
@@ -78,7 +77,6 @@ describe("waitForRelayTaskOutcome", () => {
     expect(outcome?.statusCode).toBe(StatusCode.Reverted);
     expect(outcome?.message).toBe("InsufficientRelayFee");
     expect(outcome?.revertData).toBe("0x08c379a0deadbeef");
-    expect(outcome?.debugUrl).toBe("https://dashboard.tenderly.co/simulator/new?x=1");
     expect(getGelatoRelayerClientMock).not.toHaveBeenCalled();
   });
 
