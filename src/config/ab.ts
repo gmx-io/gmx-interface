@@ -26,6 +26,9 @@ export type AbFlag = keyof typeof abFlagsConfig;
 
 const flags: AbFlag[] = Object.keys(abFlagsConfig) as AbFlag[];
 
+// the configured flags, not the assigned ones: a lazy flag exists here before any browser holds it
+export const AB_FLAG_NAMES: readonly AbFlag[] = flags;
+
 let abStorage: AbStorage;
 
 function rollAbFlag(flag: AbFlag): AbFlagValue {
