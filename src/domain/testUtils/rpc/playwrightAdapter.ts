@@ -38,15 +38,9 @@ const CORS_HEADERS = {
 };
 
 export type RpcResponderHandle = {
-  /**
-   * Requests no responder answered, and which were therefore aborted. Mostly REST calls the app
-   * tolerates losing (tickers, incentives, config) — kept for debugging, not asserted on.
-   */
+  /** Aborted requests no responder answered — mostly REST the app tolerates losing; for debugging. */
   unhandledRequests: UnhandledRequest[];
-  /**
-   * Hosts that talked JSON-RPC but are missing from `RPC_HOSTS_BY_CHAIN_ID`, so their chain could
-   * not be recovered from the url. They are answered with a JSON-RPC error naming the host.
-   */
+  /** JSON-RPC hosts missing from `RPC_HOSTS_BY_CHAIN_ID`, so their chain could not be recovered. */
   unknownRpcHosts: string[];
 };
 

@@ -6,11 +6,8 @@ import { handleJsonRpcBody } from "./jsonRpcBody";
 import { HttpResponder, RpcResponder } from "./types";
 
 /**
- * The vitest counterpart of {@link installRpcResponder}: stubs `fetch` so the app's own viem
- * transports keep running while every request they make is answered by `responder`.
- *
- * Anything neither the RPC nor the HTTP responder claims throws, so an unmocked network call cannot
- * silently make a test flaky again.
+ * The vitest counterpart of `installRpcResponder`: stubs `fetch` so the app's own viem transports
+ * keep running while `responder` answers every request. Anything neither responder claims throws.
  */
 export function installFetchResponder(
   responder: RpcResponder,

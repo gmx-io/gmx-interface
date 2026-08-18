@@ -5,10 +5,7 @@ import { RpcResponder } from "./types";
 export type RpcHoleSource = {
   responder: RpcResponder;
   gelatoRelay?: MockGelatoRelay;
-  /**
-   * Hosts that talked JSON-RPC but are missing from `RPC_HOSTS_BY_CHAIN_ID`, so their chain could
-   * not be recovered from the url. They are answered with a JSON-RPC error naming the host.
-   */
+  /** JSON-RPC hosts missing from `RPC_HOSTS_BY_CHAIN_ID`, so their chain could not be recovered. */
   unknownRpcHosts?: string[];
   /** Gelato relay methods called while no `MockGelatoRelay` was installed. */
   relayCallsWithoutMock?: string[];
@@ -22,15 +19,11 @@ export function registerRpcHoleSource(source: RpcHoleSource) {
 }
 
 /**
- * Drains and describes every JSON-RPC hole recorded since the last call by the responders the
- * adapters installed — unmapped hosts, relay calls with no `MockGelatoRelay`, and (for
- * {@link MockChain} / {@link MockGelatoRelay}) methods and `eth_call` selectors no branch answers.
- * A hole otherwise only surfaces as an opaque locator timeout, so every spec should wire
- * `test.afterEach(assertNoRpcHoles)`.
- *
- * Aborted non-RPC requests are deliberately not holes — the app tolerates losing them and the
- * specs would otherwise have to mock every incidental REST endpoint. They stay inspectable on
- * `RpcResponderHandle.unhandledRequests`.
+ * Drains every JSON-RPC hole recorded since the last call — methods, `eth_call` selectors, hosts
+ * and relay calls no responder answers. A hole otherwise only surfaces as an opaque locator
+ * timeout, so every spec should wire `test.afterEach(assertNoRpcHoles)`. Aborted non-RPC requests
+ * are deliberately not holes — the app tolerates losing them (see
+ * `RpcResponderHandle.unhandledRequests`).
  */
 export function collectRpcHoles(): string[] {
   const holes: string[] = [];

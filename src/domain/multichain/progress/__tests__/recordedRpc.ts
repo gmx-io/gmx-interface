@@ -3,47 +3,24 @@ import { fileURLToPath } from "url";
 import { createPublicClient, type PublicClient } from "viem";
 
 import { getViemChain } from "config/chains";
-import { installFetchResponder } from "domain/testUtils/rpc/fetchAdapter";
-import { createRecordedResponder } from "domain/testUtils/rpc/recordedResponder";
+import { createRecordedRpcSuite } from "domain/testUtils/rpc/recordedSuite";
 import type { getPublicClientWithRpc as getPublicClientWithRpcType, getRpcTransport } from "lib/wallets/walletConfig";
 import type { AnyChainId } from "sdk/configs/chains";
 
 /**
- * Fixture-backed RPC for the multichain tracker tests. The app's own viem transports stay in place;
- * only `fetch` is intercepted, which is the same seam the component tests use.
+ * Fixture-backed RPC for the multichain progress suites. The app's own viem transports stay in
+ * place; only `fetch` is intercepted, which is the same seam the component tests use.
  *
  * Re-record with:
- *   RECORD_RPC_FIXTURES=1 yarn vitest run src/domain/multichain/progress/__tests__/tracker.spec.ts
+ *   RECORD_RPC_FIXTURES=1 yarn vitest run <spec path>
  */
-const responder = createRecordedResponder({
+const suite = createRecordedRpcSuite({
   fixturesDir: path.join(path.dirname(fileURLToPath(import.meta.url)), "__fixtures__"),
   httpHosts: ["layerzero-api.com"],
-  realFetch: globalThis.fetch,
 });
 
-let restoreFetch: (() => void) | undefined;
-
-export function installRecordedRpc() {
-  restoreFetch = installFetchResponder(responder, { http: responder.http }).restore;
-}
-
-/**
- * Restores `fetch`, saves recorded misses, and in replay mode fails the run when fixtures were
- * missing — the per-request errors get retried away by the fallback transport and would otherwise
- * only surface as opaque test timeouts.
- */
-export function finishRecordedRpc() {
-  restoreFetch?.();
-  restoreFetch = undefined;
-  responder.save();
-
-  if (responder.missingFixtures.length > 0) {
-    throw new Error(
-      "[recordedRpc] fixtures are missing; re-record with RECORD_RPC_FIXTURES=1:\n" +
-        responder.missingFixtures.join("\n")
-    );
-  }
-}
+export const installRecordedRpc = suite.install;
+export const finishRecordedRpc = suite.finish;
 
 /**
  * Keeps the real transport stack but polls fast — replayed fixtures resolve instantly, so viem's
