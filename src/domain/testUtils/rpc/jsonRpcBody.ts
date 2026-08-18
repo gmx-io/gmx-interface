@@ -2,7 +2,6 @@ import { RpcRequest, RpcResponder } from "./types";
 
 type JsonRpcCall = { id?: number | string; method: string; params?: RpcRequest["params"] };
 
-/** Unwraps a (possibly batched) JSON-RPC body, dispatches to `responder` and re-wraps the results. */
 export async function handleJsonRpcBody({
   responder,
   chainId,

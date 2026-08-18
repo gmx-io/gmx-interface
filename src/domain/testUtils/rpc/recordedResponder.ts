@@ -81,8 +81,7 @@ export function createRecordedResponder(options: RecordedResponderOptions): Reco
   }
 
   async function recordRpc(chainId: number, request: RpcRequest): Promise<unknown> {
-    // Express endpoints first — they have the loosest getLogs limits. Some public endpoints are
-    // dead without an api key (e.g. Ankr), so failures fall through to the next provider.
+    // Express first (loosest getLogs limits); some public endpoints are dead without an api key.
     const providers = [
       ...getRpcProviders(chainId as AnyChainId, "express"),
       ...getRpcProviders(chainId as AnyChainId, "default"),

@@ -1,7 +1,6 @@
 import { MockChain, MockGelatoRelay } from "./mockChain";
 import { RpcResponder } from "./types";
 
-/** One installed adapter's contribution to {@link collectRpcHoles}. */
 export type RpcHoleSource = {
   responder: RpcResponder;
   gelatoRelay?: MockGelatoRelay;
@@ -13,17 +12,14 @@ export type RpcHoleSource = {
 
 const installedSources: RpcHoleSource[] = [];
 
-/** Both adapters register here on install, so hole collection works the same in CT and vitest. */
 export function registerRpcHoleSource(source: RpcHoleSource) {
   installedSources.push(source);
 }
 
 /**
- * Drains every JSON-RPC hole recorded since the last call — methods, `eth_call` selectors, hosts
- * and relay calls no responder answers. A hole otherwise only surfaces as an opaque locator
- * timeout, so every spec should wire `test.afterEach(assertNoRpcHoles)`. Aborted non-RPC requests
- * are deliberately not holes — the app tolerates losing them (see
- * `RpcResponderHandle.unhandledRequests`).
+ * Drains every JSON-RPC hole recorded since the last call. A hole otherwise only surfaces as an
+ * opaque locator timeout; aborted non-RPC requests are deliberately not holes — the app tolerates
+ * losing them (see `RpcResponderHandle.unhandledRequests`).
  */
 export function collectRpcHoles(): string[] {
   const holes: string[] = [];
@@ -55,7 +51,6 @@ export function collectRpcHoles(): string[] {
   return holes;
 }
 
-/** `test.afterEach(assertNoRpcHoles)` — fails the test by hole name instead of by opaque timeout. */
 export function assertNoRpcHoles() {
   const holes = collectRpcHoles();
 

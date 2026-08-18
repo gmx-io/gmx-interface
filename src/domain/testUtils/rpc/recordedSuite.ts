@@ -2,9 +2,9 @@ import { installFetchResponder } from "./fetchAdapter";
 import { createRecordedResponder } from "./recordedResponder";
 
 /**
- * Per-suite glue over {@link createRecordedResponder}: binds a fixtures directory and gives the
- * suite `install`/`finish` for `beforeAll`/`afterAll`. `finish` restores `fetch`, saves recorded
- * misses, and fails the replay run when fixtures were missing.
+ * Binds a fixtures directory to `install`/`finish` hooks for a suite's `beforeAll`/`afterAll`.
+ * `finish` fails the replay run when fixtures were missing — transports retry the per-miss errors
+ * away, so a miss would otherwise surface as an opaque test timeout.
  */
 export function createRecordedRpcSuite(options: { fixturesDir: string; httpHosts?: string[] }) {
   const responder = createRecordedResponder({

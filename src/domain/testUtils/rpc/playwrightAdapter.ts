@@ -45,10 +45,8 @@ export type RpcResponderHandle = {
 };
 
 /**
- * Routes every outbound browser request of a Playwright (component) test to `responder`.
- *
- * The chain a JSON-RPC call belongs to is recovered from the request url, so a single responder can
- * serve several chains the way the app actually addresses them.
+ * Routes every outbound browser request of a Playwright (component) test to `responder`, recovering
+ * the chain a JSON-RPC call belongs to from the request url.
  */
 export async function installRpcResponder(
   page: PageLikeForRouting,
@@ -147,7 +145,6 @@ export async function installRpcResponder(
   return handle;
 }
 
-/** Answers every call of a host whose chain is unknown with an error naming the fix. */
 function unknownHostResponder(host: string): RpcResponder {
   return {
     handle: async () => {
@@ -158,7 +155,6 @@ function unknownHostResponder(host: string): RpcResponder {
   };
 }
 
-/** Answers relay calls made while no MockGelatoRelay is installed with an error naming the fix. */
 function missingRelayResponder(relayCallsWithoutMock: string[]): RpcResponder {
   return {
     handle: async (_chainId, { method }) => {
