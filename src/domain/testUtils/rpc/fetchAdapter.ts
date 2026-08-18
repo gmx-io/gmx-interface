@@ -52,7 +52,6 @@ export function installFetchResponder(
   return { restore: () => vi.stubGlobal("fetch", realFetch) };
 }
 
-/** The real `fetch` rejects aborted requests; the code under test branches on that rejection. */
 function throwIfAborted(signal: AbortSignal | undefined | null) {
   if (signal?.aborted) {
     throw signal.reason ?? new DOMException("The operation was aborted.", "AbortError");

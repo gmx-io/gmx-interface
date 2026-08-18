@@ -81,7 +81,6 @@ export function createRecordedResponder(options: RecordedResponderOptions): Reco
   }
 
   async function recordRpc(chainId: number, request: RpcRequest): Promise<unknown> {
-    // Express first (loosest getLogs limits); some public endpoints are dead without an api key.
     const providers = [
       ...getRpcProviders(chainId as AnyChainId, "express"),
       ...getRpcProviders(chainId as AnyChainId, "default"),
@@ -112,8 +111,6 @@ export function createRecordedResponder(options: RecordedResponderOptions): Reco
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: request.method, params: request.params ?? [] }),
     });
-
-    // A failed request (bad key, rate limit) must abort the recording, not become a `null` fixture.
     if (!response.ok) {
       throw new Error(`HTTP ${response.status} ${await response.text()}`);
     }
@@ -126,8 +123,6 @@ export function createRecordedResponder(options: RecordedResponderOptions): Reco
     if (!("result" in payload)) {
       throw new Error(`neither result nor error in ${JSON.stringify(payload)}`);
     }
-
-    // `undefined` would not survive JSON serialization of the fixture file.
     return payload.result ?? null;
   }
 
@@ -165,9 +160,6 @@ export function createRecordedResponder(options: RecordedResponderOptions): Reco
       }
 
       const response = await getRealFetch()(url.toString(), { method: request.method, body: request.body });
-
-      // Semantic statuses (e.g. LayerZero scan 404 for an unindexed tx) are part of the recorded
-      // behavior, but auth failures and transient errors must not become permanent fixtures.
       if (response.status === 401 || response.status === 403 || response.status === 429 || response.status >= 500) {
         throw new Error(`[recordedResponder] ${key} failed while recording: HTTP ${response.status}`);
       }
@@ -206,7 +198,6 @@ function getRpcFixtureKey({ method, params }: RpcRequest) {
   return `${method}|${JSON.stringify(params ?? [])}`;
 }
 
-/** Method and body are part of the key so e.g. two GraphQL POSTs to one endpoint don't collide. */
 function getHttpFixtureKey(url: URL, request: HttpRequestInfo) {
   return `${request.method} ${url.toString()}${request.body ? `|${request.body}` : ""}`;
 }
@@ -219,7 +210,6 @@ function readJsonFile<T>(filePath: string, fallback: T): T {
   return JSON.parse(fs.readFileSync(filePath, "utf8")) as T;
 }
 
-/** One entry per line, sorted by key — keeps the (large) fixture files diffable. */
 function writeFixtureFile(filePath: string, fixtures: Record<string, unknown>) {
   const lines = Object.keys(fixtures)
     .sort()

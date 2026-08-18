@@ -76,8 +76,6 @@ export async function installRpcResponder(
 
     if (url.host === GELATO_RELAY_HOST) {
       if (postData) {
-        // The chain-agnostic relay must not fall through to the per-chain branch — that would
-        // misdiagnose a missing MockGelatoRelay as a missing chain-id mapping.
         const relayResponder = gelatoRelay ?? missingRelayResponder(relayCallsWithoutMock);
         const body = await handleJsonRpcBody({ responder: relayResponder, chainId: 0, rawBody: postData });
         await route.fulfill({ status: 200, contentType: "application/json", headers: CORS_HEADERS, body });
@@ -136,7 +134,7 @@ export async function installRpcResponder(
             ws.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: true }));
           }
         } catch {
-          // non-JSON frames (e.g. pings) are ignored
+          // ignore non-JSON frames
         }
       });
     });

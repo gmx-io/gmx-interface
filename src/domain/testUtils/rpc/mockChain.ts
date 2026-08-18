@@ -481,7 +481,6 @@ export class MockChain implements RpcResponder {
         return IFACE.encodeFunctionResult("getEthBalance", [balance]);
       }
       case SELECTORS.allowance: {
-        // Allowances are not modelled yet — every pair reads as unlimited so flows never stall on approval.
         return IFACE.encodeFunctionResult("allowance", [ethers.MaxUint256]);
       }
       case SELECTORS.getBytes32: {
@@ -493,11 +492,9 @@ export class MockChain implements RpcResponder {
         return IFACE.encodeFunctionResult("getBytes32", [value]);
       }
       case SELECTORS.gasEstimateL1Component: {
-        // Arbitrum NodeInterface precompile; the base fee matches the mocked `eth_gasPrice`.
         return IFACE.encodeFunctionResult("gasEstimateL1Component", [10_000n, 100_000_000n, 100_000_000n]);
       }
       case SELECTORS.traderReferralCodes: {
-        // No referral code is modelled — every trader reads as code-less.
         return IFACE.encodeFunctionResult("traderReferralCodes", [ZERO_HASH]);
       }
       case SELECTORS.subaccountApprovalNonces: {

@@ -51,7 +51,11 @@ RECORD_RPC_FIXTURES=1 yarn vitest run src/domain/multichain/progress/__tests__/t
 ```
 
 Recording talks to the real network, so capture `globalThis.fetch` before the adapter stubs it and
-pass it as `realFetch` (see `domain/multichain/progress/__tests__/recordedRpc.ts`).
+pass it as `realFetch` (see `domain/multichain/progress/__tests__/recordedRpc.ts`). RPC misses are
+recorded via the configured providers in order (express first — loosest `getLogs` limits — some
+public endpoints are dead without an api key); replies that carry an error — non-2xx, JSON-RPC
+`error`, a body with neither result nor error, and for REST 401/403/429/5xx (a semantic 404 is
+recorded) — abort the recording instead of becoming plausible-looking `null` fixtures.
 
 Only record settled transactions: a response captured mid-flight (e.g. an in-progress LayerZero
 status that the app polls until it changes) replays that intermediate state forever.
