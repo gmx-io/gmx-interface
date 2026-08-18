@@ -65,3 +65,44 @@ describe("getRelayProvider with the force switch", () => {
     expect(getRelayProvider(ARBITRUM)).toBe("gmx");
   });
 });
+
+// the split is over browsers that send express operations: the coin is tossed on the first send,
+// never by the read-only consumers (availability gate, poller, metrics)
+describe("lazy assignment of the relay split", () => {
+  afterEach(() => {
+    localStorage.clear();
+    vi.unstubAllGlobals();
+    vi.resetModules();
+  });
+
+  it("assigns nobody at load and nobody on a passive read", async () => {
+    localStorage.clear();
+    vi.resetModules();
+
+    const ab = await import("config/ab");
+    const relay = await import("config/relay");
+
+    expect(ab.getAbStorage().gmxRelay).toBeUndefined();
+    relay.getRelayProvider(ARBITRUM);
+    expect(ab.getAbStorage().gmxRelay).toBeUndefined();
+  });
+
+  it("assigns on the first submit and the assignment sticks", async () => {
+    localStorage.clear();
+    vi.resetModules();
+    vi.stubGlobal("crypto", globalThis.crypto);
+
+    const ab = await import("config/ab");
+    const relay = await import("config/relay");
+
+    const first = relay.getRelayProviderForSubmit(ARBITRUM);
+    const assigned = ab.getAbStorage().gmxRelay;
+
+    expect(assigned).toBeDefined();
+    expect(first).toBe(assigned!.enabled ? "gmx" : "gelato");
+
+    for (let i = 0; i < 5; i++) {
+      expect(relay.getRelayProviderForSubmit(ARBITRUM)).toBe(first);
+    }
+  });
+});

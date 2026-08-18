@@ -1,6 +1,6 @@
 import { UiFlags, getIsGelatoFallbackForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
-import { getIsFlagEnabled } from "./ab";
+import { ensureAbFlagRolled, getIsFlagEnabled } from "./ab";
 import { ARBITRUM, AVALANCHE, ContractsChainId, MEGAETH } from "./chains";
 
 export type RelayProvider = "gelato" | "gmx";
@@ -36,4 +36,14 @@ export function getRelayProvider(chainId: ContractsChainId, uiFlags?: UiFlags): 
   }
 
   return ENV_RELAY_PROVIDER ?? resolveRelayProvider(RELAY_ROLLOUT[chainId], getIsFlagEnabled("gmxRelay"));
+}
+
+// the split is over browsers that send express operations, so the coin is tossed here — at the
+// first send — and everything else (selectors, pollers, metrics) reads the assignment passively
+export function getRelayProviderForSubmit(chainId: ContractsChainId): RelayProvider {
+  if (RELAY_ROLLOUT[chainId] === "ab") {
+    ensureAbFlagRolled("gmxRelay");
+  }
+
+  return getRelayProvider(chainId);
 }

@@ -3,7 +3,7 @@ import { encodePacked } from "viem";
 
 import { getUiApiUrl } from "config/api";
 import { ContractsChainId } from "config/chains";
-import { RelayProvider, getRelayProvider } from "config/relay";
+import { RelayProvider, getRelayProviderForSubmit } from "config/relay";
 import { GelatoPollingTiming, GmxRelayPollingTiming, metrics } from "lib/metrics";
 import { GELATO_API_KEYS } from "sdk/configs/express";
 import type { ExpressTxnData } from "sdk/utils/express";
@@ -25,7 +25,7 @@ export async function sendExpressTransaction(p: {
   chainId: ContractsChainId;
   txnData: ExpressTxnData;
 }): Promise<ExpressTxnResult> {
-  if (getRelayProvider(p.chainId) === "gmx") {
+  if (getRelayProviderForSubmit(p.chainId) === "gmx") {
     return sendViaGmxRelay(p);
   }
 
