@@ -10216,6 +10216,7 @@ msgstr "Недействительные адреса перевода. Пров
 msgid "Copy"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -12355,6 +12356,7 @@ msgstr "Выберите хотя бы одно распределение дл�
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Buy"
 msgstr "Купить"
 
@@ -13345,6 +13347,10 @@ msgstr "Язык"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}с"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
+msgstr "GT — нативный токен проекта GM Trade. Сейчас он не имеет применения; дополнительная функциональность станет доступна после события генерации токенов (TGE)."
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "Индексы"
@@ -13669,6 +13675,7 @@ msgid "How and when do I get paid or credited?"
 msgstr "Как и когда я получу выплату или начисление?"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Sell"
 msgstr "Продать"
 
