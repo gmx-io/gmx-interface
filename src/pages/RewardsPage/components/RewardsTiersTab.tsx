@@ -1,11 +1,13 @@
 import { isAddressEqual, type Address } from "viem";
 
 import type { ContractsChainId } from "config/chains";
+import { useGmxPrice } from "domain/legacy";
 import {
   getStakingRewardsPromoSelection,
   useStableRewardsPromoSelection,
 } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
+import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
 import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
@@ -91,6 +93,11 @@ export function RewardsTiersTab({
 }) {
   const { status: walletStatus } = useWallet();
   const isWalletInitializing = useIsWalletInitializing();
+  const { gmxPrice } = useGmxPrice(chainId, {}, false, {
+    enabled: Boolean(account),
+    fetchAllChains: false,
+  });
+  const { data: gtPrice } = useLatestGtPrice(chainId, { enabled: Boolean(account) });
   const {
     data: vestingData,
     isLoading: vestingLoading,
@@ -161,6 +168,8 @@ export function RewardsTiersTab({
             vestableEsGmx={vestableEsGmx}
             vestableEsGmxUsd={vestableEsGmxUsd}
             hasVestingPosition={(vestingData?.vestingInfo.vestedAmount ?? 0n) > 0n}
+            gmxPrice={gmxPrice}
+            gtPrice={gtPrice?.priceUsd}
           />
           <RewardsTierCards
             config={config}
