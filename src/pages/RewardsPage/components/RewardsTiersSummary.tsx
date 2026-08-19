@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
+import { convertToUsd } from "domain/synthetics/tokens";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
@@ -15,29 +16,50 @@ import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 import { getStartRewardsVestingPath } from "../rewardsRoutes";
 import { AccountValue, type AccountDataState } from "./rewardsTiersShared";
 
-function AllTimeRewardsTooltip({ allTimeSummary }: { allTimeSummary?: LeaderboardEntry }) {
+function AllTimeRewardsTooltip({
+  allTimeSummary,
+  gmxPrice,
+  gtPrice,
+}: {
+  allTimeSummary?: LeaderboardEntry;
+  gmxPrice?: bigint;
+  gtPrice?: bigint;
+}) {
+  const esGmxRewardsUsd = convertToUsd(allTimeSummary?.esGmxRewards ?? 0n, ES_GMX_DECIMALS, gmxPrice);
+  const gtRewardsUsd = convertToUsd(allTimeSummary?.gtRewards ?? 0n, GT_DECIMALS, gtPrice);
+
   return (
     <div className="flex w-[300px] flex-col text-12">
       <div className="flex h-24 items-center justify-between gap-16">
         <span className="font-medium text-typography-secondary">
           <Trans>All-time esGMX</Trans>
         </span>
-        <span className="numbers">
+        <span className="flex items-center gap-4 numbers">
           {formatAmount(allTimeSummary?.esGmxRewards ?? 0n, ES_GMX_DECIMALS, 4, true, {
             trimTrailingZeros: true,
           })}{" "}
           esGMX
+          {esGmxRewardsUsd !== undefined ? (
+            <span className="text-typography-secondary">
+              ({formatUsd(esGmxRewardsUsd, { fallbackToZero: true, displayDecimals: 2 })})
+            </span>
+          ) : null}
         </span>
       </div>
       <div className="flex h-24 items-center justify-between gap-16">
         <span className="font-medium text-typography-secondary">
           <Trans>All-time GT</Trans>
         </span>
-        <span className="numbers">
+        <span className="flex items-center gap-4 numbers">
           {formatAmount(allTimeSummary?.gtRewards ?? 0n, GT_DECIMALS, 4, true, {
             trimTrailingZeros: true,
           })}{" "}
           GT
+          {gtRewardsUsd !== undefined ? (
+            <span className="text-typography-secondary">
+              ({formatUsd(gtRewardsUsd, { fallbackToZero: true, displayDecimals: 2 })})
+            </span>
+          ) : null}
         </span>
       </div>
     </div>
@@ -56,6 +78,8 @@ export function RewardsTiersSummary({
   vestableEsGmx,
   vestableEsGmxUsd,
   hasVestingPosition,
+  gmxPrice,
+  gtPrice,
 }: {
   allTimeSummary?: LeaderboardEntry;
   currentMultiplier?: bigint;
@@ -68,6 +92,8 @@ export function RewardsTiersSummary({
   vestableEsGmx?: bigint;
   vestableEsGmxUsd?: bigint;
   hasVestingPosition?: boolean;
+  gmxPrice?: bigint;
+  gtPrice?: bigint;
 }) {
   const vestingUsdState: AccountDataState =
     vestingState === "ready" && vestableEsGmxUsd === undefined ? "unavailable" : vestingState;
@@ -80,24 +106,12 @@ export function RewardsTiersSummary({
   }
 
   return (
-    <div className="flex min-h-60 items-start gap-20 p-4 max-md:flex-col max-md:items-stretch max-md:gap-12">
+    <div className="flex min-h-60 items-center gap-20 p-4 max-md:flex-col max-md:items-stretch max-md:gap-12">
       <div className="flex min-w-0 shrink-0 flex-col gap-2 max-md:w-full" data-testid="rewards-current-multiplier">
-        <TooltipWithPortal
-          content={
-            <Trans>
-              Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total
-              multiplier is capped at {formatMultiplier(maxMultiplier, multiplierDecimals)}.
-            </Trans>
-          }
-          handle={<Trans>Current Multiplier</Trans>}
-          handleClassName="text-12 font-medium text-typography-secondary"
-          position="bottom-start"
-          variant="iconStroke"
-        />
         {hasProjectedMultiplier ? (
           <TooltipWithPortal
             handle={
-              <span className="flex items-center gap-8 text-16 font-medium leading-[1.25] numbers">
+              <span className="text-h1 flex items-center gap-8 numbers">
                 <span className={hasMultiplier ? "text-green-300" : "text-blue-100"}>
                   {formatMultiplier(currentMultiplier, multiplierDecimals)}
                 </span>
@@ -123,23 +137,31 @@ export function RewardsTiersSummary({
             variant="none"
           />
         ) : (
-          <span
-            className={`text-16 font-medium leading-[1.25] numbers ${
-              hasMultiplier ? "text-green-300" : "text-blue-100"
-            }`}
-          >
+          <span className={`text-h1 numbers ${hasMultiplier ? "text-green-300" : "text-blue-100"}`}>
             <AccountValue state={statusState}>
               {formatMultiplier(currentMultiplier ?? 0n, multiplierDecimals)}
             </AccountValue>
           </span>
         )}
+        <TooltipWithPortal
+          content={
+            <Trans>
+              Your reward multiplier combines your Volume Tier, Staking Tier, and applicable Activity Boosts. The total
+              multiplier is capped at {formatMultiplier(maxMultiplier, multiplierDecimals)}.
+            </Trans>
+          }
+          handle={<Trans>Current Multiplier</Trans>}
+          handleClassName="text-12 font-medium text-typography-secondary"
+          position="bottom-start"
+          variant="iconStroke"
+        />
       </div>
 
       <div className="self-stretch border-l-1/2 border-slate-600 max-md:w-full max-md:border-b-1/2 max-md:border-l-0" />
 
-      <div className="flex min-w-0 shrink-0 flex-col gap-2 max-md:w-full">
+      <div className="grid min-w-0 shrink-0 grid-cols-[1fr_auto] gap-8 max-md:w-full">
         <TooltipWithPortal
-          content={<AllTimeRewardsTooltip allTimeSummary={allTimeSummary} />}
+          content={<AllTimeRewardsTooltip allTimeSummary={allTimeSummary} gmxPrice={gmxPrice} gtPrice={gtPrice} />}
           contentClassName="!gap-4"
           disabled={summaryState !== "ready"}
           handle={
@@ -161,11 +183,6 @@ export function RewardsTiersSummary({
             {formatUsd(allTimeSummary?.rewardsUsd, { fallbackToZero: true, displayDecimals: 0 })}
           </AccountValue>
         </span>
-      </div>
-
-      <div className="self-stretch border-l-1/2 border-slate-600 max-md:w-full max-md:border-b-1/2 max-md:border-l-0" />
-
-      <div className="flex min-w-0 shrink-0 flex-col gap-2 max-md:w-full" data-testid="rewards-vestable-summary">
         <TooltipWithPortal
           content={<Trans>esGMX available to begin vesting.</Trans>}
           contentClassName="!gap-4"
@@ -179,7 +196,7 @@ export function RewardsTiersSummary({
           position="bottom-start"
           variant="none"
         />
-        <div className="flex items-end gap-12 max-sm:flex-wrap">
+        <div className="flex items-end gap-12 max-sm:flex-wrap" data-testid="rewards-vestable-summary">
           {vestingState === "ready" ? (
             <>
               <div className="flex items-end gap-6">
