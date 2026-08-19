@@ -10216,6 +10216,7 @@ msgstr "전송 주소가 유효하지 않습니다. URL을 확인하십시오."
 msgid "Copy"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -12355,6 +12356,7 @@ msgstr "수령할 배분을 최소 한 개 이상 선택하십시오"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Buy"
 msgstr "구매"
 
@@ -13345,6 +13347,10 @@ msgstr "언어"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}초"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
+msgstr "GT는 GM Trade 프로젝트의 네이티브 토큰입니다. 현재는 사용처가 없으며, 추가 기능은 토큰 생성 이벤트(TGE) 이후 제공될 예정입니다."
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "지수"
@@ -13669,6 +13675,7 @@ msgid "How and when do I get paid or credited?"
 msgstr "언제, 어떻게 지급받거나 적립받나요?"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Sell"
 msgstr "판매"
 
