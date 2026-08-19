@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import type { IncentivesConfig } from "domain/synthetics/incentives/v2/types";
@@ -10,7 +10,7 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
   const items: FaqItem[] = useMemo(
     () => [
       {
-        title: t`How does Rewards work?`,
+        title: <Trans>How does Rewards work?</Trans>,
         content: (
           <div className="flex flex-col gap-12">
             <div className="flex flex-col gap-4">
@@ -42,7 +42,7 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
         ),
       },
       {
-        title: t`How are Rewards calculated?`,
+        title: <Trans>How are Rewards calculated?</Trans>,
         content: (
           <div className="flex flex-col gap-12">
             <p>
@@ -68,7 +68,7 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
         ),
       },
       {
-        title: t`How do multipliers work?`,
+        title: <Trans>How do multipliers work?</Trans>,
         content: (
           <div className="flex flex-col gap-12">
             <p>
@@ -84,11 +84,11 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
         ),
       },
       {
-        title: t`How long does a volume tier remain active?`,
+        title: <Trans>How long does a volume tier remain active?</Trans>,
         content: <Trans>A tier applies in the epoch it is achieved and remains active for 4 following epochs.</Trans>,
       },
       {
-        title: t`Are referral Rewards part of my multiplier?`,
+        title: <Trans>Are referral Rewards part of my multiplier?</Trans>,
         content: (
           <div className="flex flex-col gap-12">
             <p>
@@ -104,7 +104,7 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
         ),
       },
       {
-        title: t`What is esGMX token?`,
+        title: <Trans>What is esGMX token?</Trans>,
         content: (
           <div className="flex flex-col gap-12">
             <p>
@@ -139,7 +139,7 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
         ),
       },
       {
-        title: t`What is GT token?`,
+        title: <Trans>What is GT token?</Trans>,
         content: (
           <Trans>
             GT is the native token of GMTrade. It is currently distributed as a reward, while its broader utility is
