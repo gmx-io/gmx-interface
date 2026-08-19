@@ -42,10 +42,14 @@ export function RewardsTiersSummaryStory({
   currentMultiplier = 175n,
   projectedMultiplier,
   summaryState = "ready",
+  gmxPrice = 20n * PRECISION,
+  gtPrice = PRECISION / 20n,
 }: {
   currentMultiplier?: bigint;
   projectedMultiplier?: bigint;
   summaryState?: React.ComponentProps<typeof RewardsTiersSummary>["summaryState"];
+  gmxPrice?: bigint;
+  gtPrice?: bigint;
 }) {
   return (
     <I18nProvider i18n={testI18n}>
@@ -59,6 +63,8 @@ export function RewardsTiersSummaryStory({
           statusState={summaryState}
           summaryState={summaryState}
           vestingState="unavailable"
+          gmxPrice={gmxPrice}
+          gtPrice={gtPrice}
         />
       </MemoryRouter>
     </I18nProvider>
