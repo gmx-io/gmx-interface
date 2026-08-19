@@ -8,10 +8,12 @@ export function ChainContentHeader({
   breadcrumbs,
   leftContentClassName,
   chainId,
+  hideChainData,
 }: {
   breadcrumbs?: React.ReactNode;
   leftContentClassName?: string;
   chainId?: number;
+  hideChainData?: boolean;
 }) {
   return (
     <>
@@ -21,15 +23,17 @@ export function ChainContentHeader({
             <AppHeaderLogo />
             <div className="flex items-center gap-16 max-md:hidden">
               {breadcrumbs}
-              <ChainDataImage chainId={chainId} />
+              {!hideChainData && <ChainDataImage chainId={chainId} />}
             </div>
           </div>
         }
       />
-      <div className={cx("flex items-center gap-12 p-8 md:hidden", leftContentClassName)}>
-        {breadcrumbs}
-        <ChainDataImage />
-      </div>
+      {(breadcrumbs || !hideChainData) && (
+        <div className={cx("flex items-center gap-12 p-8 md:hidden", leftContentClassName)}>
+          {breadcrumbs}
+          {!hideChainData && <ChainDataImage />}
+        </div>
+      )}
     </>
   );
 }
