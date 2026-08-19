@@ -1,12 +1,12 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 import { getExplorerUrl } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { PendingOrderData, getGelatoTaskUrl, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
+import { PendingOrderData, getPendingOrderKey, getRelayTaskUrl, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { findOrderStatusForAllocation } from "context/SyntheticsEvents/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -30,7 +30,9 @@ import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
+import { getDebugErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
 import { useToastAutoClose } from "./useToastAutoClose";
@@ -56,7 +58,7 @@ function OrderStatusNotification({
 }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
-  const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, gelatoTaskStatuses, updatePendingExpressTxn } =
+  const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, relayTaskStatuses, updatePendingExpressTxn } =
     useSyntheticsEvents();
   const { tenderlyAccountSlug, tenderlyProjectSlug } = useSettings();
 
@@ -68,18 +70,43 @@ function OrderStatusNotification({
 
   const pendingExpressTxn = getByKey(pendingExpressTxns, pendingExpressTxnKey);
 
-  const isGelatoTaskFailed = useMemo(() => {
+  const relayTaskStatus = getByKey(relayTaskStatuses, pendingExpressTxn?.taskId);
+
+  const isSettledOnChain = useMemo(() => {
+    if (pendingOrderData.txnType === "update") {
+      return Boolean(orderStatus?.updatedTxnHash);
+    }
+
+    if (pendingOrderData.txnType === "cancel") {
+      return Boolean(orderStatus?.cancelledTxnHash);
+    }
+
+    // same disjunction the completion branch uses: a missed creation event with a landed execution
+    // or cancellation still means the operation reached the chain
+    return Boolean(orderStatus?.createdTxnHash ?? orderStatus?.executedTxnHash ?? orderStatus?.cancelledTxnHash);
+  }, [
+    pendingOrderData.txnType,
+    orderStatus?.createdTxnHash,
+    orderStatus?.executedTxnHash,
+    orderStatus?.updatedTxnHash,
+    orderStatus?.cancelledTxnHash,
+  ]);
+
+  const isRelayTaskFailed = useMemo(() => {
+    // an operation that settled on-chain did not fail, whatever the relay later reported about it
+    if (isSettledOnChain) {
+      return false;
+    }
+
     if (pendingExpressTxn?.sendFailed) {
       return true;
     }
 
-    const gelatoTaskStatus = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
-
-    return gelatoTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(gelatoTaskStatus.statusCode);
-  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId, pendingExpressTxn?.sendFailed]);
+    return relayTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(relayTaskStatus.statusCode);
+  }, [relayTaskStatus, pendingExpressTxn?.sendFailed, isSettledOnChain]);
 
   const hasError =
-    isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
+    isRelayTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -242,15 +269,15 @@ function OrderStatusNotification({
 
     if (orderStatus?.createdTxnHash) {
       status = "success";
-    } else if (isGelatoTaskFailed) {
+    } else if (isRelayTaskFailed) {
       status = "error";
     }
 
     return <TransactionStatus status={status} txnHash={undefined} text={text} />;
-  }, [orderData, orderStatus?.createdTxnHash, isGelatoTaskFailed]);
+  }, [orderData, orderStatus?.createdTxnHash, isRelayTaskFailed]);
 
   const sendingStatus = useMemo(() => {
-    let text = t`Sending order request...`;
+    let text: ReactNode = t`Sending order request...`;
     let status: TransactionStatusType = "loading";
     let txnHash: string | undefined;
     let txnLink: string | undefined;
@@ -266,17 +293,29 @@ function OrderStatusNotification({
       isCompleted = Boolean(orderStatus?.cancelledTxnHash);
     }
 
-    if (isGelatoTaskFailed) {
+    if (isRelayTaskFailed) {
       status = "error";
-      text = t`Relayer request failed`;
-      txnLink = pendingExpressTxn?.taskId
-        ? getGelatoTaskUrl({
-            taskId: pendingExpressTxn.taskId,
-            isDebug: true,
-            tenderlyAccountSlug,
-            tenderlyProjectSlug,
-          })
-        : undefined;
+      // the relay reports reasons as `Error(...)`; the wrapper is noise to a reader
+      const reason = relayTaskStatus?.message?.replace(/^Error\((.*)\)$/, "$1");
+      const relayDebugMessage = getDebugErrorMessage({
+        errorMessage: reason,
+        data: { taskId: pendingExpressTxn?.taskId },
+      });
+
+      text = (
+        <div>
+          <Trans>Relayer request failed</Trans>
+          {relayDebugMessage && <ToastifyDebug error={relayDebugMessage} />}
+        </div>
+      );
+      txnHash = relayTaskStatus?.transactionHash;
+      txnLink = getRelayTaskUrl({
+        relayProvider: pendingExpressTxn?.relayProvider,
+        taskId: pendingExpressTxn?.taskId,
+        isDebug: true,
+        tenderlyAccountSlug,
+        tenderlyProjectSlug,
+      });
     } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;
@@ -286,7 +325,9 @@ function OrderStatusNotification({
     return <TransactionStatus status={status} txnHash={txnHash} txnLink={txnLink} text={text} />;
   }, [
     orderData?.txnType,
-    isGelatoTaskFailed,
+    isRelayTaskFailed,
+    relayTaskStatus?.transactionHash,
+    relayTaskStatus?.message,
     orderStatus?.createdTxnHash,
     orderStatus?.executedTxnHash,
     orderStatus?.updatedTxnHash,
@@ -294,6 +335,7 @@ function OrderStatusNotification({
     tenderlyAccountSlug,
     tenderlyProjectSlug,
     pendingExpressTxn?.taskId,
+    pendingExpressTxn?.relayProvider,
     hideTxLink,
   ]);
 
