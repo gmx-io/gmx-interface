@@ -12,7 +12,7 @@ import { definedOrThrow } from "lib/guards";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
-import { GraphQlFilters, buildFiltersBody } from "sdk/utils/indexers";
+import { GraphQlFilters, buildFiltersBody, queryPaginated } from "sdk/utils/indexers";
 import { TradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
@@ -52,6 +52,7 @@ export const TRADE_ACTION_FIELDS = `
     sizeDeltaUsd
     sizeDeltaInTokens
     triggerPrice
+    contractTriggerPrice
     acceptablePrice
     executionPrice
     minOutputAmount
@@ -66,6 +67,7 @@ export const TRADE_ACTION_FIELDS = `
     borrowingFeeAmount
     fundingFeeAmount
     swapFeeUsd
+    uiFeeFactor
     liquidationFeeAmount
     minCollateralFactorForLiquidation
     pnlUsd
@@ -228,6 +230,7 @@ export async function fetchRawTradeActions({
   orderEventCombinations,
   positionLifecycleId,
   showDebugValues,
+  abortSignal,
 }: {
   chainId: number;
   pageIndex: number;
@@ -248,6 +251,7 @@ export async function fetchRawTradeActions({
     | undefined;
   positionLifecycleId?: string;
   showDebugValues?: boolean;
+  abortSignal?: AbortSignal;
 }): Promise<RawTradeActionsResult | undefined> {
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
@@ -418,7 +422,11 @@ export async function fetchRawTradeActions({
         }
       }`);
 
-  const result = await client!.query({ query, fetchPolicy: "no-cache" });
+  const result = await client!.query({
+    query,
+    fetchPolicy: "no-cache",
+    context: abortSignal ? { fetchOptions: { signal: abortSignal } } : undefined,
+  });
 
   const rawTradeActions = (result.data?.tradeActions || []) as SubsquidTradeAction[];
   const totalCount = result.data?.tradeActionsConnection?.totalCount;
@@ -427,6 +435,66 @@ export async function fetchRawTradeActions({
     tradeActions: rawTradeActions,
     totalCount,
   };
+}
+
+const TWAP_GROUP_IDS_PER_REQUEST = 100;
+
+export type TwapPartTradeAction = Pick<SubsquidTradeAction, "id" | "eventName" | "timestamp" | "twapGroupId">;
+
+// Fetches every executed action of the given TWAP groups, so part numbers can be derived from
+// the complete group instead of the actions that happen to fall inside an export window.
+// The account filter is required: twapGroupId alone has no index and scans the whole table.
+export async function fetchTwapGroupExecutedActions({
+  chainId,
+  account,
+  twapGroupIds,
+  abortSignal,
+}: {
+  chainId: number;
+  account: string;
+  twapGroupIds: string[];
+  abortSignal?: AbortSignal;
+}): Promise<TwapPartTradeAction[]> {
+  const client = getSubsquidGraphClient(chainId);
+  definedOrThrow(client);
+
+  const actions: TwapPartTradeAction[] = [];
+
+  for (let chunkStart = 0; chunkStart < twapGroupIds.length; chunkStart += TWAP_GROUP_IDS_PER_REQUEST) {
+    const chunk = twapGroupIds.slice(chunkStart, chunkStart + TWAP_GROUP_IDS_PER_REQUEST);
+    const filtersStr = buildFiltersBody({
+      account_eq: account,
+      twapGroupId_in: chunk,
+      eventName_eq: TradeActionType.OrderExecuted,
+    });
+
+    const chunkActions = await queryPaginated<TwapPartTradeAction>(async (limit, offset) => {
+      const query = gql(`{
+        tradeActions(
+            offset: ${offset},
+            limit: ${limit},
+            orderBy: [timestamp_ASC, id_ASC],
+            where: ${filtersStr}
+        ) {
+            id
+            eventName
+            timestamp
+            twapGroupId
+        }
+      }`);
+
+      const result = await client.query({
+        query,
+        fetchPolicy: "no-cache",
+        context: abortSignal ? { fetchOptions: { signal: abortSignal } } : undefined,
+      });
+      return (result.data?.tradeActions ?? []) as TwapPartTradeAction[];
+    });
+
+    actions.push(...chunkActions);
+  }
+
+  return actions;
 }
 
 // Resolves a position slot's lifecycle id from its latest indexed action.

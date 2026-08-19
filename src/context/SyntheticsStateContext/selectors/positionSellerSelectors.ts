@@ -491,11 +491,18 @@ export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => 
 
   const reachableTokens = reachableAddresses
     .flatMap((address) => {
-      const token = getByKey(tokensData, address)!;
+      const token = getByKey(tokensData, address);
+
+      if (!token) {
+        return [];
+      }
 
       if (token.isWrapped && !wasNativeTokenInserted) {
+        const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+
         wasNativeTokenInserted = true;
-        return [getByKey(tokensData, NATIVE_TOKEN_ADDRESS)!, token];
+
+        return nativeToken ? [nativeToken, token] : [token];
       }
 
       return [token];

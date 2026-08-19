@@ -46,7 +46,7 @@ import {
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxPayAmount,
-  selectTradeboxSelectedPosition,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxState,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
@@ -297,18 +297,20 @@ export function useTradeboxButtonState({
               .
               <br />
               <br />
-              <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
+              <button
+                type="button"
+                className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+                onClick={detectAndSetAvailableMaxLeverage}
+              >
                 <Trans>Set max leverage</Trans>
-              </span>
+              </button>
             </>
           );
 
           break;
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
-          tooltipContent = (
-            <Trans>Position would be immediately liquidated upon execution. Try reducing the size.</Trans>
-          );
+          tooltipContent = <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>;
           break;
         }
         case ValidationButtonTooltipName.noSwapPath: {
@@ -709,7 +711,7 @@ function useDetectAndSetAvailableMaxLeverage({
   const toToken = useSelector(selectTradeboxToToken);
   const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
 
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
 
   const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
@@ -741,7 +743,7 @@ function useDetectAndSetAvailableMaxLeverage({
           externalSwapQuote,
           isLong,
           marketInfo,
-          position: selectedPosition,
+          position: existingPosition,
           strategy: "leverageByCollateral",
           uiFeeFactor,
           userReferralInfo,
@@ -759,7 +761,7 @@ function useDetectAndSetAvailableMaxLeverage({
           collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
           collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
           collateralToken,
-          existingPosition: selectedPosition,
+          existingPosition,
           indexPrice: increaseAmounts.indexPrice,
           isLong,
           marketInfo,
@@ -824,7 +826,7 @@ function useDetectAndSetAvailableMaxLeverage({
     marketInfo,
     maxAllowedLeverage,
     minCollateralUsd,
-    selectedPosition,
+    existingPosition,
     selectedTriggerAcceptablePriceImpactBps,
     setLeverageOption,
     setToTokenInputValue,
@@ -870,9 +872,13 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
           TWAP swaps use GMX pool liquidity only, which can't fill this order size.
           <br />
           <br />
-          <span onClick={handleSwitchToMarketOrder} className="Tradebox-handle">
+          <button
+            type="button"
+            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+            onClick={handleSwitchToMarketOrder}
+          >
             Switch to a market order
-          </span>{" "}
+          </button>{" "}
           to enable external routes.
         </Trans>
       );
@@ -969,9 +975,13 @@ function NoSwapPathTooltipContent({
       No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
       <br />
       <br />
-      <span onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")} className="Tradebox-handle">
+      <button
+        type="button"
+        className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+        onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}
+      >
         Swap {collateralSymbol}
-      </span>{" "}
+      </button>{" "}
       or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
     </Trans>
   );

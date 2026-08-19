@@ -413,7 +413,7 @@ export function SyntheticsPage(p: Props) {
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
-  useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
+  useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "/trade" });
 
   const { isTablet, isMobile } = useBreakpoints();
 
