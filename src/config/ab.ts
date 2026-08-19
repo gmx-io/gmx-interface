@@ -24,10 +24,8 @@ const LAZY_AB_FLAGS: ReadonlySet<AbFlag> = new Set(["gmxRelay"] as const);
 
 export type AbFlag = keyof typeof abFlagsConfig;
 
-const flags: AbFlag[] = Object.keys(abFlagsConfig) as AbFlag[];
-
 // the configured flags, not the assigned ones: a lazy flag exists here before any browser holds it
-export const AB_FLAG_NAMES: readonly AbFlag[] = flags;
+export const AB_FLAG_NAMES = Object.keys(abFlagsConfig) as readonly AbFlag[];
 
 let abStorage: AbStorage;
 
@@ -38,7 +36,7 @@ function rollAbFlag(flag: AbFlag): AbFlagValue {
 function initAbStorage() {
   abStorage = {} as AbStorage;
 
-  for (const flag of flags) {
+  for (const flag of AB_FLAG_NAMES) {
     if (LAZY_AB_FLAGS.has(flag)) {
       continue;
     }
@@ -60,7 +58,7 @@ function loadAbStorage(): void {
 
       let changed = false;
 
-      for (const flag of flags) {
+      for (const flag of AB_FLAG_NAMES) {
         if (!abStorage[flag]) {
           if (LAZY_AB_FLAGS.has(flag)) {
             continue;
@@ -75,7 +73,7 @@ function loadAbStorage(): void {
       }
 
       for (const flag of Object.keys(abStorage)) {
-        if (!flags.includes(flag as AbFlag)) {
+        if (!AB_FLAG_NAMES.includes(flag as AbFlag)) {
           // @ts-ignore
           delete abStorage[flag];
           changed = true;

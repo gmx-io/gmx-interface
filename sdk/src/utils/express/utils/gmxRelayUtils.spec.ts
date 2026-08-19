@@ -6,7 +6,6 @@ import {
   GmxRelayError,
   getGmxRelayTaskStatus,
   isPermanentRelayError,
-  isRelayUnavailableError,
   sendToGmxRelay,
   waitForGmxRelayTask,
 } from "./gmxRelayUtils";
@@ -81,7 +80,6 @@ describe("sendToGmxRelay", () => {
     expect(error).toBeInstanceOf(GmxRelayError);
     expect(error.message).toContain("allowlisted relay router");
     expect(isPermanentRelayError(error)).toBe(true);
-    expect(isRelayUnavailableError(error)).toBe(false);
   });
 
   it("treats a rate-limited response as retryable rather than permanent", async () => {
@@ -93,22 +91,9 @@ describe("sendToGmxRelay", () => {
     const error = await sendToGmxRelay({ chainId: ARBITRUM, txnData: TXN_DATA }).catch((e) => e);
 
     expect(isPermanentRelayError(error)).toBe(false);
-    expect(isRelayUnavailableError(error)).toBe(false);
   });
 
-  it("flags an unavailable relay so callers can degrade to the classic flow", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => jsonResponse({ message: "relay is disabled" }, 503))
-    );
-
-    const error = await sendToGmxRelay({ chainId: ARBITRUM, txnData: TXN_DATA }).catch((e) => e);
-
-    expect(isRelayUnavailableError(error)).toBe(true);
-    expect(isPermanentRelayError(error)).toBe(false);
-  });
-
-  it("flags a transport failure as unavailable", async () => {
+  it("keeps a transport failure retryable", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => {
@@ -119,7 +104,7 @@ describe("sendToGmxRelay", () => {
     const error = await sendToGmxRelay({ chainId: ARBITRUM, txnData: TXN_DATA }).catch((e) => e);
 
     expect(error).toBeInstanceOf(GmxRelayError);
-    expect(isRelayUnavailableError(error)).toBe(true);
+    expect(isPermanentRelayError(error)).toBe(false);
   });
 });
 

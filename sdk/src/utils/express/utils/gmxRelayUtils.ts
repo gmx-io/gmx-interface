@@ -1,5 +1,8 @@
 import { getApiUrl } from "configs/api";
 import type { ContractsChainId } from "configs/chains";
+import { buildUrl } from "utils/buildUrl";
+import { sleep } from "utils/common";
+import { HttpError } from "utils/http/http";
 
 import type { ExpressTxnData } from "../types";
 
@@ -45,33 +48,26 @@ const STATUS_TIMEOUT_MS = 10_000;
 const WAIT_TIMEOUT_MS = 120_000;
 const POLLING_INTERVAL_MS = 1_000;
 
-export class GmxRelayError extends Error {
+export class GmxRelayError extends HttpError {
   data?: { traceId: string };
 
   constructor(
     message: string,
-    public readonly httpStatus?: number,
+    httpStatus?: number,
     public readonly cause?: unknown
   ) {
-    super(message);
+    // statusCode 0 marks a transport failure that never got an HTTP answer
+    super(httpStatus ?? 0, message);
     this.name = "GmxRelayError";
   }
 
   get isPermanent(): boolean {
-    return this.httpStatus !== undefined && this.httpStatus >= 400 && this.httpStatus < 500 && this.httpStatus !== 429;
-  }
-
-  get isRelayUnavailable(): boolean {
-    return this.httpStatus === undefined || this.httpStatus >= 500;
+    return this.statusCode >= 400 && this.statusCode < 500 && this.statusCode !== 429;
   }
 }
 
 export function isPermanentRelayError(error: unknown): boolean {
   return error instanceof GmxRelayError && error.isPermanent;
-}
-
-export function isRelayUnavailableError(error: unknown): boolean {
-  return error instanceof GmxRelayError && error.isRelayUnavailable;
 }
 
 export async function sendToGmxRelay({
@@ -125,6 +121,7 @@ export async function waitForGmxRelayTask({
 }): Promise<GmxRelayTaskResult> {
   const deadline = Date.now() + timeout;
 
+  // not `while (true)`: the repo lints with no-constant-condition
   for (;;) {
     let view: GmxRelayStatusView;
 
@@ -134,7 +131,7 @@ export async function waitForGmxRelayTask({
       // a 404 is transient here: the task can be accepted a moment before its status becomes readable
       const error = e instanceof GmxRelayError ? e : new GmxRelayError(String(e));
 
-      if (error.isPermanent && error.httpStatus !== 404) {
+      if (error.isPermanent && error.statusCode !== 404) {
         throw error;
       }
 
@@ -182,16 +179,18 @@ function resolveApiUrl(chainId: ContractsChainId, apiUrl?: string): string {
     throw new GmxRelayError(`GMX API url is not configured for chain ${chainId}`);
   }
 
-  return url.replace(/\/$/, "");
+  return url;
 }
 
 async function post<T>(baseUrl: string, path: string, body: unknown, timeout: number): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
 
+  // bespoke fetch rather than postJson: the trace id arrives in a response header on refusals,
+  // and the shared client only surfaces parsed bodies
   // the timer must also cover the body read: a response that stalls after its headers would hang forever
   try {
-    const response = await fetch(`${baseUrl}${path}`, {
+    const response = await fetch(buildUrl(baseUrl, path), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -208,6 +207,7 @@ async function post<T>(baseUrl: string, path: string, body: unknown, timeout: nu
       // a request refused before it was relayed never gets a taskId; the trace id is the only handle left
       const traceId = response.headers.get("X-Trace-Id");
       if (traceId) {
+        error.traceId = traceId;
         error.data = { traceId };
       }
 
@@ -238,8 +238,4 @@ function extractMessage(text: string): string | undefined {
     // a non-JSON body is an edge's HTML error page, not a message to surface to a user
     return undefined;
   }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

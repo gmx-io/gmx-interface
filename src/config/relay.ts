@@ -1,4 +1,4 @@
-import { UiFlags, getIsGelatoFallbackForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { UiFlags, getIsGelatoFallbackForced, readPersistedUiFlags } from "domain/synthetics/uiFlags/uiFlags";
 
 import { ensureAbFlagRolled, getIsFlagEnabled } from "./ab";
 import { ARBITRUM, AVALANCHE, ContractsChainId, MEGAETH } from "./chains";
