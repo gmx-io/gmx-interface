@@ -1,13 +1,18 @@
 import { useMemo } from "react";
 
+import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
+import { GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
+import { useIncentivesLeaderboard } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
+import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { convertToUsd } from "domain/synthetics/tokens";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -55,6 +60,19 @@ export default function EarnPortfolioPage() {
 
   const vestingData = useVestingData(account);
 
+  const { isActive: isIncentivesActive } = useIncentivesV2State();
+  const { data: allTimeRewards } = useIncentivesLeaderboard(chainId, {
+    where: account ? { account } : undefined,
+    isMutable: true,
+    limit: 1,
+    offset: 0,
+    enabled: isIncentivesActive && Boolean(account),
+  });
+  const gtRewards = isIncentivesActive ? allTimeRewards?.[0]?.gtRewards : undefined;
+  const hasGtRewards = gtRewards !== undefined && gtRewards > 0n;
+  const { data: gtPrice } = useLatestGtPrice(chainId, { enabled: hasGtRewards });
+  const gtRewardsUsd = hasGtRewards ? convertToUsd(gtRewards, GT_DECIMALS, gtPrice?.priceUsd) : undefined;
+
   const hasGmxAssets = processedData
     ? (processedData.gmxBalance ?? 0n) > 0n || (processedData.gmxInStakedGmx ?? 0n) > 0n
     : false;
@@ -67,7 +85,7 @@ export default function EarnPortfolioPage() {
 
   const hasGmGlvAssets = gmGlvAssets.length > 0;
 
-  const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets;
+  const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets || hasGtRewards;
 
   const isWalletInitializing = status === "connecting" || status === "reconnecting";
 
@@ -87,6 +105,8 @@ export default function EarnPortfolioPage() {
                 hasGmx={hasGmxAssets}
                 hasEsGmx={hasEsGmxAssets}
                 gmGlvAssets={gmGlvAssets}
+                gtRewards={gtRewards}
+                gtRewardsUsd={gtRewardsUsd}
                 performanceTotal={performanceTotal}
                 performance30d={performance30d}
                 isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
@@ -103,6 +123,8 @@ export default function EarnPortfolioPage() {
                 hasGmx={hasGmxAssets}
                 hasEsGmx={hasEsGmxAssets}
                 gmGlvAssets={gmGlvAssets}
+                gtRewards={gtRewards}
+                gtRewardsUsd={gtRewardsUsd}
                 performanceTotal={performanceTotal}
                 performance30d={performance30d}
                 isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
