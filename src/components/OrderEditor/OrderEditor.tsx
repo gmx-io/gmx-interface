@@ -5,7 +5,11 @@ import { zeroAddress } from "viem";
 
 import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionsConstants,
+  useProDiscountFactor,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useOrderEditorIsSubmittingState,
@@ -242,6 +246,7 @@ export function OrderEditor(p: Props) {
   const findSwapPath = useSelector(selectOrderEditorFindSwapPath);
 
   const userReferralInfo = useUserReferralInfo();
+  const proDiscountFactor = useProDiscountFactor();
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
@@ -364,12 +369,13 @@ export function OrderEditor(p: Props) {
             marketInfo,
             collateralToken,
             isLong: positionOrder.isLong,
-            existingPosition,
+            existingPosition: existingPositionForPreview,
             sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
             sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
             collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
             minCollateralUsd,
             userReferralInfo,
+            proDiscountFactor,
             indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
               orderType: positionOrder.orderType,
               isLong: positionOrder.isLong,
@@ -404,10 +410,10 @@ export function OrderEditor(p: Props) {
     maxAllowedLeverage,
     indexTokenAmount,
     findSwapPath,
-    existingPosition,
     existingPositionForPreview,
     uiFeeFactor,
     userReferralInfo,
+    proDiscountFactor,
     savedAcceptablePriceImpactBuffer,
     acceptablePriceImpactBps,
     triggerPrice,

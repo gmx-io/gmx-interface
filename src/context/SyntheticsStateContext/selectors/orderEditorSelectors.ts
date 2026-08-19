@@ -62,6 +62,7 @@ import {
   selectOrdersInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
+  selectProDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -783,6 +784,7 @@ export const selectOrderEditorIncreaseResultingPositionMarginState = createSelec
     isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
     minCollateralUsd,
     userReferralInfo: q(selectUserReferralInfo),
+    proDiscountFactor: q(selectProDiscountFactor),
   });
 });
 
@@ -918,6 +920,7 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
                 isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
                 minCollateralUsd,
                 userReferralInfo: q(selectUserReferralInfo),
+                proDiscountFactor: q(selectProDiscountFactor),
               })
             : undefined;
 

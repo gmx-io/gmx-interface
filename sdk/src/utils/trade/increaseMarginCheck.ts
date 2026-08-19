@@ -31,6 +31,7 @@ export type PositionMarginStateParams = {
   minCollateralUsd: bigint;
   isLong: boolean;
   userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
   forLiquidation?: boolean;
   shouldValidateMinCollateralUsd?: boolean;
 };
@@ -46,6 +47,7 @@ export function getPositionMarginState(p: PositionMarginStateParams): PositionMa
     minCollateralUsd,
     isLong,
     userReferralInfo,
+    proDiscountFactor,
     forLiquidation = false,
     shouldValidateMinCollateralUsd = true,
   } = p;
@@ -99,11 +101,22 @@ export function getPositionMarginState(p: PositionMarginStateParams): PositionMa
     convertToTokenAmount(applyFactor(sizeInUsd, closingFeeFactor), collateralToken.decimals, collateralToken.prices.minPrice) ??
     0n;
 
+  let discountAmount = 0n;
+
   if (userReferralInfo) {
     const totalRebateAmount = applyFactor(closingFeeAmount, userReferralInfo.totalRebateFactor);
-    const discountAmount = applyFactor(totalRebateAmount, userReferralInfo.discountFactor);
-    closingFeeAmount -= discountAmount;
+    discountAmount = applyFactor(totalRebateAmount, userReferralInfo.discountFactor);
   }
+
+  if (proDiscountFactor !== undefined && proDiscountFactor > 0n) {
+    const proDiscountAmount = applyFactor(closingFeeAmount, proDiscountFactor);
+
+    if (proDiscountAmount > discountAmount) {
+      discountAmount = proDiscountAmount;
+    }
+  }
+
+  closingFeeAmount -= discountAmount;
 
   const closingCostUsd = convertToUsd(closingFeeAmount, collateralToken.decimals, collateralToken.prices.minPrice)!;
 
@@ -153,6 +166,7 @@ export type IncreaseResultingPositionMarginStateParams = {
   collateralDeltaAmount: bigint;
   minCollateralUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
   indexPriceForEvaluation?: bigint;
 };
 
@@ -175,6 +189,7 @@ export function getIncreaseResultingPositionMarginState(
     collateralDeltaAmount,
     minCollateralUsd,
     userReferralInfo,
+    proDiscountFactor,
     indexPriceForEvaluation,
   } = p;
 
@@ -242,6 +257,7 @@ export function getIncreaseResultingPositionMarginState(
     minCollateralUsd,
     isLong,
     userReferralInfo,
+    proDiscountFactor,
     forLiquidation: false,
   });
 }

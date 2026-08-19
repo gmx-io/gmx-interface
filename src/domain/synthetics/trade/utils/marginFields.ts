@@ -38,6 +38,7 @@ export type CalcMaxSizeDeltaParams = {
   collateralToken?: TokenData;
   minCollateralUsd?: bigint;
   userReferralInfo?: UserReferralInfo;
+  proDiscountFactor?: bigint;
   indexPriceForEvaluation?: bigint;
 };
 
@@ -107,6 +108,7 @@ function capSizeDeltaByResultingPositionMargin({
       collateralDeltaAmount,
       minCollateralUsd,
       userReferralInfo: params.userReferralInfo,
+      proDiscountFactor: params.proDiscountFactor,
       indexPriceForEvaluation: params.indexPriceForEvaluation,
     });
 
@@ -233,6 +235,8 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
   );
 
   const leverageBoundUsd = capSizeDeltaByResultingPositionMargin({ sizeDeltaUsdBound: structuralBoundUsd, params });
+
+  if (leverageBoundUsd <= 0n) return undefined;
 
   const toIndexTokenAmount = (amountUsd: bigint | undefined): bigint | undefined => {
     if (amountUsd === undefined || amountUsd <= 0n) return undefined;

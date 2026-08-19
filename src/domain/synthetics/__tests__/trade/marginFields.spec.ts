@@ -743,6 +743,23 @@ describe("calcMaxSizeDeltaInUsdByLeverage — resulting position margin cap", ()
     expect(isSizeDeltaAccepted((capped * 101n) / 100n, baseParams)).toBe(false);
   });
 
+  it("returns undefined instead of the liquidity bound when no size passes the margin check", () => {
+    // 10 000 of size worth 2 000 → 8 000 of unrealized loss eats the collateral entirely,
+    // so the resulting position fails the margin check at any added size
+    const doomedPosition = {
+      ...losingPosition,
+      sizeInTokens: convertToTokenAmount(expandDecimals(2000, USD_DECIMALS), 18, ETH_PRICE)!,
+    };
+    const params = {
+      ...baseParams,
+      existingPosition: doomedPosition,
+      initialCollateralUsd: expandDecimals(100, USD_DECIMALS),
+    };
+
+    expect(structuralOnlyBound(params)).not.toBeUndefined();
+    expect(calcMaxSizeDeltaInUsdByLeverage(params)).toBeUndefined();
+  });
+
   it("leaves the structural bound untouched when the resulting position is healthy", () => {
     // no existing position → nothing but the fresh order's own leverage constrains the size
     const params = { ...baseParams, existingPosition: undefined };

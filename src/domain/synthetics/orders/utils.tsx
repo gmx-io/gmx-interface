@@ -475,6 +475,7 @@ export function getOrderIncreaseResultingPositionMarginState({
   isSetAcceptablePriceImpactEnabled,
   minCollateralUsd,
   userReferralInfo,
+  proDiscountFactor,
 }: {
   order: PositionOrderInfo;
   position: PositionInfo | undefined;
@@ -487,12 +488,23 @@ export function getOrderIncreaseResultingPositionMarginState({
   isSetAcceptablePriceImpactEnabled: boolean;
   minCollateralUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
 }): PositionMarginState | undefined {
   const marketInfo = order.marketInfo;
 
   if (!marketInfo || !isIncreaseOrderType(order.orderType) || triggerPrice === undefined || triggerPrice <= 0n) {
     return undefined;
   }
+
+  const isPositionLiquidatedBeforeTrigger =
+    isLimitOrderType(order.orderType) &&
+    getIsPositionLiquidatedBeforeTrigger({
+      liqPrice: position?.liquidationPrice,
+      triggerPrice,
+      isLong: order.isLong,
+    });
+
+  const positionForProjection = isPositionLiquidatedBeforeTrigger ? undefined : position;
 
   const increaseAmounts = getIncreasePositionAmounts({
     marketInfo,
@@ -505,7 +517,7 @@ export function getOrderIncreaseResultingPositionMarginState({
     externalSwapQuote: undefined,
     triggerPrice,
     limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
-    position,
+    position: positionForProjection,
     findSwapPath,
     userReferralInfo,
     uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
@@ -520,12 +532,13 @@ export function getOrderIncreaseResultingPositionMarginState({
     marketInfo,
     collateralToken: order.targetCollateralToken,
     isLong: order.isLong,
-    existingPosition: position,
+    existingPosition: positionForProjection,
     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
     collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
     minCollateralUsd,
     userReferralInfo,
+    proDiscountFactor,
     indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
       orderType: order.orderType,
       isLong: order.isLong,

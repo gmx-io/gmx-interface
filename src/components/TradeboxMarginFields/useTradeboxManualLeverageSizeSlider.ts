@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
   selectPositionConstants,
+  selectProDiscountFactor,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -65,6 +66,7 @@ export function useTradeboxManualLeverageSizeSlider({
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const { minCollateralUsd } = useSelector(selectPositionConstants);
   const userReferralInfo = useSelector(selectUserReferralInfo);
+  const proDiscountFactor = useSelector(selectProDiscountFactor);
 
   const lastInteractionRef = useRef<"slider" | "field">("field");
   const fixedPercentageRef = useRef<number>(0);
@@ -122,6 +124,7 @@ export function useTradeboxManualLeverageSizeSlider({
       collateralToken,
       minCollateralUsd,
       userReferralInfo,
+      proDiscountFactor,
       indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
         orderType: increaseAmounts?.limitOrderType ?? OrderType.MarketIncrease,
         isLong: tradeFlags.isLong,
@@ -146,6 +149,7 @@ export function useTradeboxManualLeverageSizeSlider({
     tradeFlags.isLong,
     triggerPrice,
     userReferralInfo,
+    proDiscountFactor,
   ]);
 
   const sizePercentage = useMemo(

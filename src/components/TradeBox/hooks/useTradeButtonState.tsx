@@ -26,6 +26,7 @@ import {
 import {
   selectChainId,
   selectMarketsInfoData,
+  selectProDiscountFactor,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -728,6 +729,7 @@ function useDetectAndSetAvailableMaxLeverage({
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
+  const proDiscountFactor = useSelector(selectProDiscountFactor);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
@@ -801,6 +803,7 @@ function useDetectAndSetAvailableMaxLeverage({
             collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
             minCollateralUsd,
             userReferralInfo,
+            proDiscountFactor,
             indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
               orderType:
                 tradeMode === TradeMode.StopMarket
@@ -869,6 +872,7 @@ function useDetectAndSetAvailableMaxLeverage({
     triggerPrice,
     uiFeeFactor,
     userReferralInfo,
+    proDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
   ]);

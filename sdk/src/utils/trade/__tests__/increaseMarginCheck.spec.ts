@@ -8,6 +8,7 @@ import { USD_DECIMALS, expandDecimals, roundUpMagnitudeDivision } from "utils/nu
 import { convertToTokenAmount, convertToUsd } from "utils/tokens";
 import {
   PositionMarginFailureReason,
+  type PositionMarginStateParams,
   getIncreaseResultingPositionMarginState,
   getPositionMarginState,
 } from "utils/trade/increaseMarginCheck";
@@ -163,6 +164,51 @@ describe("getPositionMarginState", () => {
 
     expect(state.remainingCollateralUsd).toBe(expandDecimals(50, USD_DECIMALS));
     expect(state.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
+  });
+
+  it("applies the pro-tier discount to the closing fee", () => {
+    // 0.5% closing fee on 10 000 = 50; a 50% pro discount returns 25 of it
+    const state = getPositionMarginState({
+      ...baseParams({
+        marketInfo: buildMarket({
+          positionFeeFactorForBalanceWasImproved: expandDecimals(5, 27),
+          positionFeeFactorForBalanceWasNotImproved: expandDecimals(5, 27),
+        }),
+      }),
+      proDiscountFactor: expandDecimals(5, 29),
+    });
+
+    expect(state.remainingCollateralUsd).toBe(expandDecimals(75, USD_DECIMALS));
+  });
+
+  it("takes the larger of the pro and referral discounts, not their sum", () => {
+    const params = baseParams({
+      marketInfo: buildMarket({
+        positionFeeFactorForBalanceWasImproved: expandDecimals(5, 27),
+        positionFeeFactorForBalanceWasNotImproved: expandDecimals(5, 27),
+      }),
+    });
+    // 20% rebate × 50% trader share → a 10% referral discount, 5 of the 50 fee
+    const userReferralInfo = {
+      totalRebateFactor: expandDecimals(2, 29),
+      discountFactor: expandDecimals(5, 29),
+    } as unknown as NonNullable<PositionMarginStateParams["userReferralInfo"]>;
+
+    // 50% pro discount (25) beats the referral 5
+    const proWins = getPositionMarginState({
+      ...params,
+      userReferralInfo,
+      proDiscountFactor: expandDecimals(5, 29),
+    });
+    expect(proWins.remainingCollateralUsd).toBe(expandDecimals(75, USD_DECIMALS));
+
+    // 5% pro discount (2.5) loses to the referral 5
+    const referralWins = getPositionMarginState({
+      ...params,
+      userReferralInfo,
+      proDiscountFactor: expandDecimals(5, 28),
+    });
+    expect(referralWins.remainingCollateralUsd).toBe(expandDecimals(55, USD_DECIMALS));
   });
 });
 

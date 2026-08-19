@@ -1,6 +1,7 @@
 import {
   selectChainId,
   selectPositionConstants,
+  selectProDiscountFactor,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -117,6 +118,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
       collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
       minCollateralUsd,
       userReferralInfo,
+      proDiscountFactor: q(selectProDiscountFactor),
       indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
         orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
         isLong,

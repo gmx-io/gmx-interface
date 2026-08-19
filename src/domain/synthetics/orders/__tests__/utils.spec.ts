@@ -464,6 +464,29 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
     expect(state?.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
   });
 
+  it("projects onto a fresh position when the existing one is liquidated before the trigger", () => {
+    const doomed = makeLosingPosition(
+      expandDecimals(100_000, 30),
+      expandDecimals(99_000, 30),
+      expandDecimals(100, 30)
+    );
+    doomed.liquidationPrice = expandDecimals(21_000, 30);
+
+    const state = getOrderIncreaseResultingPositionMarginState({
+      ...baseArgs,
+      order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
+      position: doomed,
+    });
+    const fresh = getOrderIncreaseResultingPositionMarginState({
+      ...baseArgs,
+      order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
+      position: undefined,
+    });
+
+    expect(state?.isLiquidatable).toBe(false);
+    expect(state).toEqual(fresh);
+  });
+
   it("charges the ui fee factor snapshotted on the order, not the live one", () => {
     const order = makeIncreaseOrder(OrderType.LimitIncrease, {
       triggerPrice,

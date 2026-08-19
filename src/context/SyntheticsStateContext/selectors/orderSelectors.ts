@@ -18,6 +18,7 @@ import {
   selectJitLiquidityMap,
   selectMarketsInfoData,
   selectPositionConstants,
+  selectProDiscountFactor,
   selectPositionsInfoData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -59,6 +60,7 @@ const makeSelectOrderIncreaseResultingPositionMarginState = createSelectorFactor
       isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
       minCollateralUsd,
       userReferralInfo: q(selectUserReferralInfo),
+      proDiscountFactor: q(selectProDiscountFactor),
     });
   })
 );
