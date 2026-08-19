@@ -385,7 +385,7 @@ function VolumeCard({
                   <button
                     type="button"
                     aria-label={t`Volume Tier`}
-                    className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/volume-bar:scale-y-150 group-focus-within/volume-bar:bg-cold-blue-700 group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-cold-blue-700"
+                    className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/volume-bar:scale-y-150 group-focus-within/volume-bar:bg-button-secondaryHover group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-button-secondaryHover"
                   >
                     <div
                       className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color,width] duration-300 ease-out"
@@ -755,7 +755,7 @@ function StakingProgressBar({
               nextWithProgress ? (
                 <button
                   type="button"
-                  className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/segment:scale-y-150 group-focus-within/segment:bg-cold-blue-700 group-hover/segment:scale-y-150 group-hover/segment:bg-cold-blue-700"
+                  className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-focus-within/segment:scale-y-150 group-focus-within/segment:bg-button-secondaryHover group-hover/segment:scale-y-150 group-hover/segment:bg-button-secondaryHover"
                 >
                   <div className="absolute left-0 top-0 h-full rounded-8 bg-blue-300" style={nextTierProgressStyle} />
                   <span className="sr-only">
@@ -771,7 +771,7 @@ function StakingProgressBar({
                       ? isMaxTier
                         ? "bg-green-300"
                         : "bg-blue-300"
-                      : "bg-cold-blue-900 group-focus-within/segment:bg-cold-blue-700 group-hover/segment:bg-cold-blue-700"
+                      : "bg-cold-blue-900 group-focus-within/segment:bg-button-secondaryHover group-hover/segment:bg-button-secondaryHover"
                   )}
                 >
                   <span className="sr-only">
