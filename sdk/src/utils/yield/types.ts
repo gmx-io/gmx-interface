@@ -20,7 +20,7 @@ export type GmPoolYieldPnlEntry = {
   tradersPnlApr: number | null;
   timeWeightedPoolValue: number | null;
   window: GmPoolYieldPnlWindow;
-  components?: GmPoolYieldPnlComponents | null;
+  components?: GmPoolYieldPnlComponents;
 };
 
 export type GmPoolsYieldPnlResponse = {
