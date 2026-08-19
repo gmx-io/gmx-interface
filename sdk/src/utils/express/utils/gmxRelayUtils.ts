@@ -121,8 +121,8 @@ export async function waitForGmxRelayTask({
 }): Promise<GmxRelayTaskResult> {
   const deadline = Date.now() + timeout;
 
-  // not `while (true)`: the repo lints with no-constant-condition
-  for (;;) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
     let view: GmxRelayStatusView;
 
     try {
