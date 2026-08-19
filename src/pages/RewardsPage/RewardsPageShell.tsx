@@ -7,7 +7,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 
 export function RewardsPageLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AppPageLayout title={t`Rewards`} header={<ChainContentHeader />} contentClassName="!max-w-none">
+    <AppPageLayout title={t`Rewards`} header={<ChainContentHeader hideChainData />} contentClassName="!max-w-none">
       <PageTitle
         title={t`Rewards`}
         subtitle={<Trans>Stake GMX, trade, and earn rewards worth up to 120% of your fees.</Trans>}
