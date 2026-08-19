@@ -153,6 +153,8 @@ function renderZeroBalanceAssetsList(operation: "stake-gmx" | "stake-es-gmx") {
           hasGmx={false}
           hasEsGmx={false}
           gmGlvAssets={EMPTY_GM_GLV_ASSETS}
+          gtRewards={undefined}
+          gtRewardsUsd={undefined}
           performanceTotal={undefined}
           performance30d={undefined}
           isPerformanceLoading={false}

@@ -25,10 +25,12 @@ import {
   EARN_OPERATION_STAKE_GMX,
 } from "./GmxAssetCard/constants";
 import { GmxAssetCard } from "./GmxAssetCard/GmxAssetCard";
+import { GtAssetCard } from "./GtAssetCard";
 
 type AssetItem =
   | { type: "gmx"; usdValue: bigint; hasEsGmx: boolean }
-  | { type: "gmGlv"; info: GlvOrMarketInfo; usdValue: bigint };
+  | { type: "gmGlv"; info: GlvOrMarketInfo; usdValue: bigint }
+  | { type: "gt"; usdValue: bigint; gtRewards: bigint; gtRewardsUsd: bigint | undefined };
 
 function getSortedAssets({
   hasGmx,
@@ -38,6 +40,8 @@ function getSortedAssets({
   hasEsGmx,
   gmGlvAssets,
   multichainMarketTokensBalances,
+  gtRewards,
+  gtRewardsUsd,
 }: {
   hasGmx: boolean;
   forceGmxCard: boolean;
@@ -46,6 +50,8 @@ function getSortedAssets({
   hasEsGmx: boolean;
   gmGlvAssets: GlvOrMarketInfo[];
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  gtRewards: bigint | undefined;
+  gtRewardsUsd: bigint | undefined;
 }) {
   const assets: AssetItem[] = [];
 
@@ -61,6 +67,10 @@ function getSortedAssets({
     const tokenAddress = getGlvOrMarketAddress(info);
     const usdValue = multichainMarketTokensBalances?.[tokenAddress]?.totalBalanceUsd ?? 0n;
     assets.push({ type: "gmGlv", info, usdValue });
+  }
+
+  if (gtRewards !== undefined && gtRewards > 0n) {
+    assets.push({ type: "gt", usdValue: gtRewardsUsd ?? 0n, gtRewards, gtRewardsUsd });
   }
 
   return assets.sort((a, b) => {
@@ -79,6 +89,8 @@ function AssetsList({
   hasGmx,
   hasEsGmx,
   gmGlvAssets,
+  gtRewards,
+  gtRewardsUsd,
 
   performanceTotal,
   performance30d,
@@ -91,6 +103,8 @@ function AssetsList({
   hasGmx: boolean;
   hasEsGmx: boolean;
   gmGlvAssets: GlvOrMarketInfo[];
+  gtRewards: bigint | undefined;
+  gtRewardsUsd: bigint | undefined;
   performanceTotal: PerformanceData | undefined;
   performance30d: PerformanceData | undefined;
   isPerformanceLoading: boolean;
@@ -101,7 +115,8 @@ function AssetsList({
   const forceEsGmxCard = operation === EARN_OPERATION_STAKE_ES_GMX;
   const shouldShowAssets = hasAnyAssets || forceGmxCard;
   const hasGmxCard = hasGmx || hasEsGmx || forceGmxCard;
-  const cardsCount = (hasGmxCard ? 1 : 0) + gmGlvAssets.length;
+  const hasGtCard = gtRewards !== undefined && gtRewards > 0n;
+  const cardsCount = (hasGmxCard ? 1 : 0) + gmGlvAssets.length + (hasGtCard ? 1 : 0);
   const { isMobile } = useBreakpoints();
 
   const isEnoughSpaceFor3Columns = useMedia(`(min-width: 1340px)`);
@@ -121,8 +136,20 @@ function AssetsList({
       hasEsGmx,
       gmGlvAssets,
       multichainMarketTokensBalances,
+      gtRewards,
+      gtRewardsUsd,
     });
-  }, [forceEsGmxCard, forceGmxCard, hasGmx, hasEsGmx, processedData, gmGlvAssets, multichainMarketTokensBalances]);
+  }, [
+    forceEsGmxCard,
+    forceGmxCard,
+    hasGmx,
+    hasEsGmx,
+    processedData,
+    gmGlvAssets,
+    multichainMarketTokensBalances,
+    gtRewards,
+    gtRewardsUsd,
+  ]);
 
   return (
     <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
@@ -160,6 +187,9 @@ function AssetsList({
                   multichainMarketTokenBalances={multichainMarketTokensBalances?.[getGlvOrMarketAddress(info)]}
                 />
               );
+            }
+            if (asset.type === "gt") {
+              return <GtAssetCard key="gt" gtRewards={asset.gtRewards} gtRewardsUsd={asset.gtRewardsUsd} />;
             }
             return null;
           })}
