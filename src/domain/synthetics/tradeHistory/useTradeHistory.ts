@@ -290,6 +290,8 @@ export async function fetchRawTradeActions({
         timestamp_gte: fromTxTimestamp,
         timestamp_lte: toTxTimestamp,
         positionLifecycleId_eq: positionLifecycleId,
+        // Settle executions are indexed as zero-size decreases; they belong to the Claims tab, not here.
+        isFundingFeeSettle_eq: false,
       },
       {
         OR: !hasPureDirectionFilters
