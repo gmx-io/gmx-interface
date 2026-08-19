@@ -6,7 +6,7 @@ test.describe("RewardsTiersSummary", () => {
   test("shows indexed token totals in the all-time tooltip", async ({ mount, page }) => {
     const component = await mount(<RewardsTiersSummaryStory />);
 
-    await expect(component.getByText("1.75x")).toHaveClass(/text-16/);
+    await expect(component.getByText("1.75x")).toHaveClass(/text-h1/);
     await expect(component.getByText("1.75x")).toHaveClass(/text-green-300/);
     await expect(component.getByText("Current Multiplier")).toBeVisible();
 
@@ -14,8 +14,10 @@ test.describe("RewardsTiersSummary", () => {
 
     await expect(page.getByText("All-time esGMX")).toBeVisible();
     await expect(page.getByText("12 esGMX")).toBeVisible();
+    await expect(page.getByText("($ 240.00)")).toBeVisible();
     await expect(page.getByText("All-time GT")).toBeVisible();
     await expect(page.getByText("150 GT")).toBeVisible();
+    await expect(page.getByText("($ 7.50)")).toBeVisible();
   });
 
   test("hides account totals while disconnected", async ({ mount }) => {

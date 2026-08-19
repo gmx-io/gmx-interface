@@ -48,6 +48,22 @@ vi.mock("lib/userAnalytics/rewardsEvents", () => ({
   sendRewardsNavigationEvent: vi.fn(),
 }));
 
+const rewardsPricesMock = vi.hoisted(() => ({
+  gmxPrice: undefined as bigint | undefined,
+  gtPrice: undefined as bigint | undefined,
+}));
+
+vi.mock("domain/legacy", () => ({
+  useGmxPrice: () => ({ gmxPrice: rewardsPricesMock.gmxPrice }),
+}));
+
+vi.mock("domain/synthetics/incentives/v2/useLatestGtPrice", () => ({
+  useLatestGtPrice: () => ({
+    data:
+      rewardsPricesMock.gtPrice === undefined ? undefined : { priceUsd: rewardsPricesMock.gtPrice, timestamp: 1_000 },
+  }),
+}));
+
 vi.mock("components/Table/Table", () => ({
   Table: ({ children }: { children: React.ReactNode }) => <table>{children}</table>,
   TableTd: ({ children }: { children: React.ReactNode }) => <td>{children}</td>,
