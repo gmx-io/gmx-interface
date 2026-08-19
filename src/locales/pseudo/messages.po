@@ -9328,6 +9328,7 @@ msgstr ""
 msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
@@ -10363,10 +10364,6 @@ msgstr ""
 msgid "Sell GM"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
-msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View</4>"
-msgstr ""
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order can't be updated. Type doesn't support modifications"
 msgstr ""
@@ -11250,6 +11247,10 @@ msgstr ""
 msgid "Stabilize Protocol"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Execution fee validation failed.<0/><1/>{suggestText}"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
 msgstr ""
@@ -11396,6 +11397,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
+msgstr ""
+
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "The relay did not report an outcome for this operation."
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx

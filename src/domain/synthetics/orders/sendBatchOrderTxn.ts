@@ -15,6 +15,7 @@ import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
+import { isPermanentRelayError } from "sdk/utils/express";
 import {
   BatchOrderTxnParams,
   getBatchOrderMulticallPayload,
@@ -131,6 +132,7 @@ export async function sendBatchOrderTxn({
         {
           retryCount: 3,
           delay: 300,
+          shouldRetry: ({ error }) => !isPermanentRelayError(error),
         }
       )
         .then(async (res) => {
@@ -138,14 +140,17 @@ export async function sendBatchOrderTxn({
             eventBuilder.Sent({
               type: "relay",
               relayTaskId: res.taskId,
+              relayProvider: res.relayProvider,
             })
           );
 
           return res;
         })
         .catch((error) => {
+          // extendError assigns data unconditionally; without this the relay's traceId is wiped
           throw extendError(error, {
             errorContext: "sending",
+            data: error?.data,
           });
         });
 

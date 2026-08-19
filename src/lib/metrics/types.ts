@@ -368,6 +368,9 @@ export type ErrorEvent = {
 };
 
 export type ExpressOrderMetricData = {
+  // where the operation is routed; re-recorded at Sent with the relay that actually took it, so a
+  // thrown kill switch shows in the data instead of silently poisoning the A/B comparison
+  relayProvider: "gelato" | "gmx" | undefined;
   isExpressValid: boolean;
   isOutGasTokenBalance: boolean;
   needGasTokenApproval: boolean;
@@ -582,6 +585,14 @@ export type MulticallRequestTiming = {
 
 export type GelatoPollingTiming = {
   event: "express.pollGelatoTask.finalStatus";
+  data: {
+    status: string;
+  };
+};
+
+// kept separate from GelatoPollingTiming so the Gelato-era latency baseline stays comparable
+export type GmxRelayPollingTiming = {
+  event: "express.pollRelayTask.finalStatus";
   data: {
     status: string;
   };

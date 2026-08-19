@@ -1,18 +1,23 @@
 import { TransactionRevertedError, TransactionRejectedError, SimulationFailedRpcError } from "@gelatocloud/gasless";
 import { encodePacked } from "viem";
 
+import { getUiApiUrl } from "config/api";
 import { ContractsChainId } from "config/chains";
-import { GelatoPollingTiming, metrics } from "lib/metrics";
+import { RelayProvider, getRelayProviderForSubmit } from "config/relay";
+import { GelatoPollingTiming, GmxRelayPollingTiming, metrics } from "lib/metrics";
 import { GELATO_API_KEYS } from "sdk/configs/express";
 import type { ExpressTxnData } from "sdk/utils/express";
+import { sendToGmxRelay, waitForGmxRelayTask } from "sdk/utils/express";
 import { StatusCode, getGelatoRelayerClient } from "sdk/utils/gelatoRelay";
 
+import { getGmxRelayStatusCode } from "./relayTaskStatus";
 import type { TransactionWaiterResult } from "./types";
 
 export type { ExpressTxnData } from "sdk/utils/express";
 
 export type ExpressTxnResult = {
   taskId: string;
+  relayProvider: RelayProvider;
   wait: () => Promise<TransactionWaiterResult>;
 };
 
@@ -20,6 +25,61 @@ export async function sendExpressTransaction(p: {
   chainId: ContractsChainId;
   txnData: ExpressTxnData;
 }): Promise<ExpressTxnResult> {
+  if (getRelayProviderForSubmit(p.chainId) === "gmx") {
+    return sendViaGmxRelay(p);
+  }
+
+  return sendViaGelato(p);
+}
+
+async function sendViaGmxRelay(p: { chainId: ContractsChainId; txnData: ExpressTxnData }): Promise<ExpressTxnResult> {
+  // without an explicit url the SDK falls back to production; a session on the test API must not broadcast through prod
+  const apiUrl = getUiApiUrl(p.chainId);
+
+  if (!apiUrl) {
+    throw new Error(`No GMX API is configured for chain ${p.chainId} in this environment.`);
+  }
+
+  const { taskId } = await sendToGmxRelay({ chainId: p.chainId, txnData: p.txnData, apiUrl });
+
+  return {
+    taskId,
+    relayProvider: "gmx",
+    wait: makeGmxRelayResultWaiter(p.chainId, taskId, apiUrl),
+  };
+}
+
+function makeGmxRelayResultWaiter(chainId: ContractsChainId, taskId: string, apiUrl: string | undefined) {
+  return async (): Promise<TransactionWaiterResult> => {
+    const timerId = `pollRelayTask ${taskId}`;
+    metrics.startTimer(timerId);
+
+    const result = await waitForGmxRelayTask({ chainId, taskId, apiUrl });
+
+    if (result.status === "pending") {
+      throw new Error(`Relay task ${taskId} did not resolve: ${result.message ?? result.relayStatus}`);
+    }
+
+    const statusCode = getGmxRelayStatusCode(result);
+
+    metrics.pushTiming<GmxRelayPollingTiming>("express.pollRelayTask.finalStatus", metrics.getTime(timerId) ?? 0, {
+      status: String(statusCode),
+    });
+
+    return {
+      transactionHash: result.transactionHash,
+      blockNumber: undefined,
+      status: result.status,
+      relayStatus: {
+        taskId,
+        statusCode,
+        message: result.message,
+      },
+    };
+  };
+}
+
+async function sendViaGelato(p: { chainId: ContractsChainId; txnData: ExpressTxnData }): Promise<ExpressTxnResult> {
   const data = encodePacked(
     ["bytes", "address", "address", "uint256"],
     [p.txnData.callData, p.txnData.to, p.txnData.feeToken, p.txnData.feeAmount]
@@ -50,6 +110,7 @@ export async function sendExpressTransaction(p: {
 
   return {
     taskId,
+    relayProvider: "gelato",
     wait: makeExpressTxnResultWaiter(relayer, taskId),
   };
 }
@@ -118,25 +179,4 @@ function makeExpressTxnResultWaiter(relayer: ReturnType<typeof getGelatoRelayerC
       throw error;
     }
   };
-}
-
-export function getGelatoRelayerForChain(chainId: number) {
-  const apiKey = GELATO_API_KEYS[chainId as ContractsChainId];
-  if (!apiKey) return undefined;
-  return getGelatoRelayerClient(apiKey);
-}
-
-const GELATO_API = "https://api.gelato.digital";
-
-export async function getGelatoTaskDebugInfo(taskId: string, accountSlug?: string, projectSlug?: string) {
-  const accountParams =
-    accountSlug && projectSlug ? `?tenderlyUsername=${accountSlug}&tenderlyProjectName=${projectSlug}` : "";
-
-  try {
-    const res = await fetch(`${GELATO_API}/tasks/status/${taskId}/debug${accountParams}`);
-    const debugData = await res.json();
-    return debugData;
-  } catch (error) {
-    return undefined;
-  }
 }
