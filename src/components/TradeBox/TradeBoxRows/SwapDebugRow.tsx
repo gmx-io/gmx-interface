@@ -24,7 +24,7 @@ export function SwapDebugRow() {
 }
 
 function SwapDebugRowContent() {
-  const { isSwap, isIncrease } = useSelector(selectTradeboxTradeFlags);
+  const { isSwap, isIncrease, isMarket } = useSelector(selectTradeboxTradeFlags);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const fromToken = useSelector(selectTradeboxFromToken);
@@ -34,7 +34,7 @@ function SwapDebugRowContent() {
 
   const comparison = isSwap ? swapComparison : increaseComparison;
 
-  if (!fromToken || !toToken || !comparison) return null;
+  if (!isMarket || !fromToken || !toToken || !comparison) return null;
   if (isSwap && !swapAmounts) return null;
   if (isIncrease && !increaseAmounts) return null;
 
