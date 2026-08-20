@@ -11,7 +11,7 @@ export function isDevelopment() {
       Boolean((self as DedicatedWorkerGlobalScope).PRODUCTION_PREVIEW_KEY)
     : Boolean(localStorage.getItem(PRODUCTION_PREVIEW_KEY));
 
-  return !self.location.host?.includes("gmx.io") && !self.location.host?.includes("ipfs.io") && !isProductionPreview;
+  return !self.location.host?.includes("gmx.io") && !isProductionPreview;
 }
 
 export function isLocal() {
