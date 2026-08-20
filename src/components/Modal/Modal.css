@@ -68,6 +68,7 @@
 }
 
 .Modal-close-button {
+  cursor: pointer;
   text-align: right;
 }
 

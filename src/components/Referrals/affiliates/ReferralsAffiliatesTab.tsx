@@ -8,6 +8,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import { Faq } from "components/Faq/Faq";
 import Loader from "components/Loader/Loader";
+import { AffiliateRewardsPromoBanner } from "components/Referrals/affiliates/AffiliateRewardsPromoBanner";
 import { AffiliatesStats } from "components/Referrals/affiliates/dashboard/AffiliatesStats";
 import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
 
@@ -68,7 +69,7 @@ export function ReferralsAffiliatesTab({
 
   return (
     <div className="flex gap-8 max-md:flex-col">
-      <div className="flex grow flex-col gap-8">
+      <div className="flex grow flex-col gap-8 max-md:order-2">
         <CreateAffiliateWizard
           onGoToAffiliateDashboard={handleGoToAffiliateDashboard}
           handleCreateReferralCode={handleCreateReferralCode}
@@ -77,8 +78,11 @@ export function ReferralsAffiliatesTab({
         />
         <HowToStartEarning />
       </div>
-      <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
-        <Faq items={AFFILIATE_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
+      <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:contents">
+        <div className="max-md:order-3">
+          <Faq items={AFFILIATE_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
+        </div>
+        <AffiliateRewardsPromoBanner account={account} className="max-md:order-4" />
       </div>
     </div>
   );

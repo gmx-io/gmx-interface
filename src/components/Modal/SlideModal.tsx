@@ -1,5 +1,6 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
-import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { PropsWithChildren, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -11,6 +12,7 @@ import Portal from "components/Portal/Portal";
 import CloseIcon from "img/ic_close.svg?react";
 
 import Modal from "./Modal";
+import { ModalFocusScopeProvider, useModalFocusScope } from "./modalFocusScope";
 
 const TOP_OFFSET = 52;
 const DECELERATION = 0.01;
@@ -58,6 +60,7 @@ function MobileSlideModal({
     [fitContent, bottomInset]
   );
   const curtainRef = useRef<HTMLDivElement | null>(null);
+  const titleId = useId();
 
   const isPointerDownRef = useRef(false);
   const isDraggingRef = useRef(false);
@@ -101,6 +104,11 @@ function MobileSlideModal({
     setIsOpen(false);
     handleAnimate(false);
   }, [setIsOpen, handleAnimate]);
+  const focusScope = useModalFocusScope({
+    contentRef: curtainRef,
+    isVisible: isOpen,
+    onClose: handleClose,
+  });
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!curtainRef.current) {
@@ -256,66 +264,80 @@ function MobileSlideModal({
   if (isHideTransitionFinished) return null;
 
   return (
-    <Portal>
-      <div
-        className={cx(
-          "fixed inset-0 z-[9999] bg-black/70 transition-opacity duration-300",
-          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-        )}
-        onTransitionEnd={handleTransitionEnd}
-        onClick={handleClose}
-      />
-      <RemoveScroll enabled={isOpen} shards={PRIVY_DIALOG_SCROLL_SHARDS}>
+    <ModalFocusScopeProvider scope={focusScope}>
+      <Portal>
         <div
-          data-qa={qa}
-          ref={setCurtainRef}
           className={cx(
-            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-slate-700 bg-slate-900",
-            className
+            "fixed inset-0 z-[9999] bg-black/70 transition-opacity duration-300",
+            isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
           )}
-          style={curtainStyle}
-          onClick={stopPropagation}
-        >
+          onTransitionEnd={handleTransitionEnd}
+          onClick={handleClose}
+        />
+        <RemoveScroll enabled={isOpen} shards={PRIVY_DIALOG_SCROLL_SHARDS}>
           <div
-            className={cx("pb-12", hideHeaderBorder ? "" : "border-b-1/2 border-slate-600")}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
+            data-qa={qa}
+            ref={setCurtainRef}
+            className={cx(
+              "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-slate-700 bg-slate-900",
+              className
+            )}
+            style={curtainStyle}
+            onClick={stopPropagation}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={label ? titleId : undefined}
+            tabIndex={-1}
           >
-            <div className="mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
-              <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
+            <div
+              className={cx("pb-12", hideHeaderBorder ? "" : "border-b-1/2 border-slate-600")}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+            >
+              <div className="mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
+                <div id={titleId} className="text-body-medium grow font-medium text-typography-primary">
+                  {label}
+                </div>
 
-              <CloseIcon
-                className="size-20 cursor-pointer text-typography-secondary hover:opacity-90"
-                onClick={handleClose}
-              />
+                <button
+                  type="button"
+                  className="cursor-pointer text-typography-secondary hover:opacity-90"
+                  onClick={handleClose}
+                  aria-label={t`Close`}
+                >
+                  <CloseIcon className="size-20" />
+                </button>
+              </div>
+              {headerRef ? (
+                <div className="px-adaptive" ref={headerRef} />
+              ) : headerContent ? (
+                <div className="px-adaptive">{headerContent}</div>
+              ) : null}
             </div>
-            {headerRef ? (
-              <div className="px-adaptive" ref={headerRef} />
-            ) : headerContent ? (
-              <div className="px-adaptive">{headerContent}</div>
-            ) : null}
-          </div>
 
-          <div
-            className="flex grow flex-col overflow-y-auto"
-            ref={scrollableContainerRef}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerCancel}
-          >
-            <div className={cx("flex grow flex-col overflow-y-auto", { "p-adaptive": contentPadding })}>{children}</div>
+            <div
+              className="flex grow flex-col overflow-y-auto"
+              ref={scrollableContainerRef}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerCancel}
+            >
+              <div className={cx("flex grow flex-col overflow-y-auto", { "p-adaptive": contentPadding })}>
+                {children}
+              </div>
+            </div>
+            {footerContent && (
+              <>
+                <div className="border-b-1/2 border-slate-600" />
+                <div>{footerContent}</div>
+              </>
+            )}
           </div>
-          {footerContent && (
-            <>
-              <div className="border-b-1/2 border-slate-600" />
-              <div>{footerContent}</div>
-            </>
-          )}
-        </div>
-      </RemoveScroll>
-    </Portal>
+        </RemoveScroll>
+      </Portal>
+    </ModalFocusScopeProvider>
   );
 }
 

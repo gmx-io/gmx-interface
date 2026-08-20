@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce, useMeasure, useWindowSize } from "react-use";
@@ -235,9 +236,12 @@ function ScrollFadeControls({
 
   return (
     <div className="pointer-events-none absolute flex h-full w-full flex-row justify-between" ref={absoluteRef}>
-      <div
+      <button
+        type="button"
+        aria-label={t`Scroll left`}
+        disabled={scrollLeft <= 0}
         className={cx(
-          "group z-[20] h-full max-w-50 cursor-pointer transition-opacity",
+          "text-inherit group z-[20] h-full max-w-50 cursor-pointer border-0 p-0 transition-opacity",
           "bg-gradient-to-l from-[transparent]",
           toColor,
           "flex justify-start",
@@ -251,14 +255,17 @@ function ScrollFadeControls({
         onClick={scrollToLeft}
       >
         {scrollLeft > 0 && (
-          <div className={cx("sticky py-12", isContainerLarge ? "top-1/2" : "bottom-0 top-0")}>
+          <span className={cx("sticky py-12", isContainerLarge ? "top-1/2" : "bottom-0 top-0")}>
             <ChevronLeftIcon className="size-16 opacity-70 group-hover:opacity-100" />
-          </div>
+          </span>
         )}
-      </div>
-      <div
+      </button>
+      <button
+        type="button"
+        aria-label={t`Scroll right`}
+        disabled={scrollRight <= 0}
         className={cx(
-          "group z-[20] h-full max-w-50 cursor-pointer transition-opacity",
+          "text-inherit group z-[20] h-full max-w-50 cursor-pointer border-0 p-0 transition-opacity",
           "bg-gradient-to-r from-[transparent]",
           toColor,
           "flex justify-end",
@@ -272,11 +279,11 @@ function ScrollFadeControls({
         onClick={scrollToRight}
       >
         {scrollRight > 0 && (
-          <div className={cx("sticky py-12", isContainerLarge ? "top-1/2" : "bottom-0 top-0")}>
+          <span className={cx("sticky py-12", isContainerLarge ? "top-1/2" : "bottom-0 top-0")}>
             <ChevronRightIcon className="size-16 opacity-70 group-hover:opacity-100" />
-          </div>
+          </span>
         )}
-      </div>
+      </button>
     </div>
   );
 }
@@ -286,7 +293,13 @@ export function TableScrollFadeContainer({
   disableScrollFade,
   hideControls,
   className,
-}: PropsWithChildren<{ disableScrollFade?: boolean; hideControls?: boolean; className?: string }>) {
+  ariaLabel,
+}: PropsWithChildren<{
+  disableScrollFade?: boolean;
+  hideControls?: boolean;
+  className?: string;
+  ariaLabel?: string;
+}>) {
   const tableScrollFade = useTableScrollFade();
 
   useEffect(() => {
@@ -305,6 +318,9 @@ export function TableScrollFadeContainer({
           "is-scrollable-right": !disableScrollFade && tableScrollFade.scrollRight > 0,
         })}
         ref={tableScrollFade.setScrollableRef}
+        role={ariaLabel ? "region" : undefined}
+        aria-label={ariaLabel}
+        tabIndex={!disableScrollFade && ariaLabel ? 0 : undefined}
       >
         {children}
       </div>

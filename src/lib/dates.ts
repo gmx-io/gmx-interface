@@ -69,6 +69,19 @@ export function getDaysAgo(timestamp: number) {
   return Math.floor(diff / 86400);
 }
 
+export function formatTimeLeft(seconds: number, options: { alwaysShowDays?: boolean } = {}): string {
+  if (seconds <= 0) return "";
+
+  const days = Math.floor(seconds / SECONDS_IN_DAY);
+  const hours = Math.floor((seconds % SECONDS_IN_DAY) / 3600);
+
+  if (days > 0 || options.alwaysShowDays) return `${days}d ${hours}h`;
+
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  return `${hours}h ${minutes}m`;
+}
+
 export function toUtcDayStartByCalendarDate(date: Date) {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 1000;
 }

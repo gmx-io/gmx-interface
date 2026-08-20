@@ -11,6 +11,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
+import useSearchParams from "lib/useSearchParams";
 import useWallet from "lib/wallets/useWallet";
 
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
@@ -18,39 +19,58 @@ import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletBut
 import EarnIcon from "img/ic_earn.svg?react";
 
 import { GmGlvAssetCard } from "./GmGlvAssetCard";
+import {
+  EARN_OPERATION_QUERY_PARAM,
+  EARN_OPERATION_STAKE_ES_GMX,
+  EARN_OPERATION_STAKE_GMX,
+} from "./GmxAssetCard/constants";
 import { GmxAssetCard } from "./GmxAssetCard/GmxAssetCard";
+import { GtAssetCard } from "./GtAssetCard";
 
 type AssetItem =
   | { type: "gmx"; usdValue: bigint; hasEsGmx: boolean }
-  | { type: "gmGlv"; info: GlvOrMarketInfo; usdValue: bigint };
+  | { type: "gmGlv"; info: GlvOrMarketInfo; usdValue: bigint }
+  | { type: "gt"; usdValue: bigint; gtRewards: bigint; gtRewardsUsd: bigint | undefined };
 
 function getSortedAssets({
   hasGmx,
+  forceGmxCard,
+  forceEsGmxCard,
   processedData,
   hasEsGmx,
   gmGlvAssets,
   multichainMarketTokensBalances,
+  gtRewards,
+  gtRewardsUsd,
 }: {
   hasGmx: boolean;
+  forceGmxCard: boolean;
+  forceEsGmxCard: boolean;
   processedData: StakingProcessedData | undefined;
   hasEsGmx: boolean;
   gmGlvAssets: GlvOrMarketInfo[];
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  gtRewards: bigint | undefined;
+  gtRewardsUsd: bigint | undefined;
 }) {
   const assets: AssetItem[] = [];
 
-  if ((hasGmx || hasEsGmx) && processedData) {
+  if ((hasGmx || hasEsGmx || forceGmxCard) && processedData) {
     const gmxUsdValue = hasGmx ? (processedData.gmxBalanceUsd ?? 0n) + (processedData.gmxInStakedGmxUsd ?? 0n) : 0n;
     const esGmxUsdValue = hasEsGmx
       ? (processedData.esGmxBalanceUsd ?? 0n) + (processedData.esGmxInStakedGmxUsd ?? 0n)
       : 0n;
-    assets.push({ type: "gmx", usdValue: gmxUsdValue + esGmxUsdValue, hasEsGmx });
+    assets.push({ type: "gmx", usdValue: gmxUsdValue + esGmxUsdValue, hasEsGmx: hasEsGmx || forceEsGmxCard });
   }
 
   for (const info of gmGlvAssets) {
     const tokenAddress = getGlvOrMarketAddress(info);
     const usdValue = multichainMarketTokensBalances?.[tokenAddress]?.totalBalanceUsd ?? 0n;
     assets.push({ type: "gmGlv", info, usdValue });
+  }
+
+  if (gtRewards !== undefined && gtRewards > 0n) {
+    assets.push({ type: "gt", usdValue: gtRewardsUsd ?? 0n, gtRewards, gtRewardsUsd });
   }
 
   return assets.sort((a, b) => {
@@ -69,6 +89,8 @@ function AssetsList({
   hasGmx,
   hasEsGmx,
   gmGlvAssets,
+  gtRewards,
+  gtRewardsUsd,
 
   performanceTotal,
   performance30d,
@@ -81,13 +103,20 @@ function AssetsList({
   hasGmx: boolean;
   hasEsGmx: boolean;
   gmGlvAssets: GlvOrMarketInfo[];
+  gtRewards: bigint | undefined;
+  gtRewardsUsd: bigint | undefined;
   performanceTotal: PerformanceData | undefined;
   performance30d: PerformanceData | undefined;
   isPerformanceLoading: boolean;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
-  const hasGmxCard = hasGmx || hasEsGmx;
-  const cardsCount = (hasGmxCard ? 1 : 0) + gmGlvAssets.length;
+  const { [EARN_OPERATION_QUERY_PARAM]: operation } = useSearchParams<{ [EARN_OPERATION_QUERY_PARAM]?: string }>();
+  const forceGmxCard = operation === EARN_OPERATION_STAKE_GMX || operation === EARN_OPERATION_STAKE_ES_GMX;
+  const forceEsGmxCard = operation === EARN_OPERATION_STAKE_ES_GMX;
+  const shouldShowAssets = hasAnyAssets || forceGmxCard;
+  const hasGmxCard = hasGmx || hasEsGmx || forceGmxCard;
+  const hasGtCard = gtRewards !== undefined && gtRewards > 0n;
+  const cardsCount = (hasGmxCard ? 1 : 0) + gmGlvAssets.length + (hasGtCard ? 1 : 0);
   const { isMobile } = useBreakpoints();
 
   const isEnoughSpaceFor3Columns = useMedia(`(min-width: 1340px)`);
@@ -101,12 +130,26 @@ function AssetsList({
   const sortedAssets = useMemo(() => {
     return getSortedAssets({
       hasGmx,
+      forceGmxCard,
+      forceEsGmxCard,
       processedData,
       hasEsGmx,
       gmGlvAssets,
       multichainMarketTokensBalances,
+      gtRewards,
+      gtRewardsUsd,
     });
-  }, [hasGmx, hasEsGmx, processedData, gmGlvAssets, multichainMarketTokensBalances]);
+  }, [
+    forceEsGmxCard,
+    forceGmxCard,
+    hasGmx,
+    hasEsGmx,
+    processedData,
+    gmGlvAssets,
+    multichainMarketTokensBalances,
+    gtRewards,
+    gtRewardsUsd,
+  ]);
 
   return (
     <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
@@ -114,7 +157,7 @@ function AssetsList({
         <Trans>My assets</Trans>
       </h2>
 
-      {hasAnyAssets && (
+      {shouldShowAssets && (
         <div
           className={cx(
             "grid grid-cols-1 items-start gap-12 p-12",
@@ -145,12 +188,15 @@ function AssetsList({
                 />
               );
             }
+            if (asset.type === "gt") {
+              return <GtAssetCard key="gt" gtRewards={asset.gtRewards} gtRewardsUsd={asset.gtRewardsUsd} />;
+            }
             return null;
           })}
         </div>
       )}
 
-      {!hasAnyAssets && (
+      {!shouldShowAssets && (
         <div className="flex h-full flex-col items-center justify-center gap-12 p-20">
           <EarnIcon className="size-20 text-blue-300" />
           <span className="text-body-small text-center font-medium text-typography-secondary">

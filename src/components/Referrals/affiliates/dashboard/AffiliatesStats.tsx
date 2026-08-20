@@ -23,6 +23,7 @@ import { Faq } from "components/Faq/Faq";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
+import { AffiliateRewardsPromoBanner } from "components/Referrals/affiliates/AffiliateRewardsPromoBanner";
 import { GridCell, GridHeaderCell, GridRow } from "components/Referrals/distributions/table/Grid";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -383,6 +384,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
         <div className="max-md:order-4">
           <Faq items={AFFILIATE_POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
         </div>
+        <AffiliateRewardsPromoBanner account={account} className="max-md:order-5" />
       </div>
     </div>
   );
