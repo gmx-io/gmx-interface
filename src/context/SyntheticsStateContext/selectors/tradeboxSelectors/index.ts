@@ -325,11 +325,15 @@ export const selectRawExternalSwapDesirability = createSelector((q): "not_wanted
   return internalSwapTotalFeeItem.bps < thresholdBps ? "optional" : "not_wanted";
 });
 
-export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
+const selectIsExternalSwapSupportedForOrderType = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isMarket) return "not_wanted";
+  return tradeFlags.isMarket || (tradeFlags.isIncrease && tradeMode === TradeMode.Limit);
+});
+
+export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
+  if (!q(selectIsExternalSwapSupportedForOrderType)) return "not_wanted";
 
   if (!q(selectExternalSwapsEnabledSetting)) return "not_wanted";
 
@@ -354,10 +358,7 @@ export const selectExternalSwapBlockReason = createSelector((q): ExternalSwapBlo
 
   if (q(selectRawExternalSwapDesirability) === "not_wanted") return undefined;
 
-  const tradeMode = q(selectTradeboxTradeMode);
-  const tradeType = q(selectTradeboxTradeType);
-  const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isMarket) return "orderTypeNotSupported";
+  if (!q(selectIsExternalSwapSupportedForOrderType)) return "orderTypeNotSupported";
 
   if (q(selectIsOneClickActiveByUser)) return "oneClickTrading";
 
@@ -1131,7 +1132,7 @@ export const selectIncreaseSwapDebugComparison = createSelector((q) => {
   const tradeType = q(selectTradeboxTradeType);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isIncrease || !tradeFlags.isMarket) return null;
+  if (!tradeFlags.isIncrease || !q(selectIsExternalSwapSupportedForOrderType)) return null;
 
   const fromToken = q(selectTradeboxFromToken);
   const swapToToken = q(selectTradeboxSelectSwapToToken);

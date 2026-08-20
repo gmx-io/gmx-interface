@@ -1120,6 +1120,10 @@ msgstr "網路費用緩衝精度上限為 0.01%"
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your income"
+msgstr "試算您的收益"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -1188,6 +1192,10 @@ msgstr "{0} <0/><1> 至 </1>{1} <2/>"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr "無法在 {0} 上驗證代碼是否可用。您仍然可以建立代碼，但該代碼在這些網路上可能已被使用。"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
+msgstr "按 GMX 永續合約約 0.05% 的實際往返費率估算。<0/>僅供參考——您的確切費率將在註冊時由服務台確認。"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
@@ -1479,10 +1487,18 @@ msgstr "止損"
 msgid "External swap {0} to {1}"
 msgstr "外部兌換 {0} 至 {1}"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net wallet result"
+msgstr "錢包淨結果"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
 msgstr "使用 {0} 支付 Gas"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total margin funded"
+msgstr "累計投入保證金"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Earn up to 15% in<0/> rebates as an affiliate"
@@ -2002,6 +2018,11 @@ msgstr "每月總收入"
 msgid "Canceling {ordersText}..."
 msgstr "正在取消 {ordersText}..."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close (GMX balance)"
+msgstr "平倉時收到（GMX 餘額）"
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "規模（倉位 %）"
@@ -2302,6 +2323,10 @@ msgstr "GMX 餘額"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Avalanche 上的價格"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Lifecycle RPNL"
+msgstr "生命週期已實現盈虧"
 
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
@@ -3037,10 +3062,6 @@ msgstr "回應時間"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade（前身為 GMX Solana）託管在另一個網站上，由不同的團隊運營，因此體驗可能略有不同"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>沒有固定門檻——VIP 團隊會根據您近期與預期的每月交易量，設定您的等級。大多數交易者只要每月交易量達約 $5-10M 即可符合資格，歡迎與我們聯繫，我們將為您確認費率。</0>"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "您在所選期間內未進行任何交易"
@@ -3186,6 +3207,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "自動再平衡的 GM 代幣金庫，從槓桿交易和兌換中累積手續費。由 {0} 和 {1} 支持。"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
+msgstr "<0>沒有固定門檻 — 團隊會根據您近期及預期的月交易量設定您的等級。大多數交易者符合基礎等級;聯絡我們,我們將確認您的費率。</0>"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3419,10 +3444,6 @@ msgstr "影響池數量"
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
-msgstr "按 GMX 永續合約約 0.06% 的實際往返費率估算。<0/>僅供參考——您的確切費率將在註冊時由服務台確認。"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "最大可借出影響 USD"
@@ -3578,6 +3599,10 @@ msgstr "加倉（市價）"
 #: src/domain/synthetics/markets/createBridgeInTxn.ts
 msgid "Bridge transfer sent"
 msgstr "跨鏈轉帳已發送"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Wallet received at close"
+msgstr "平倉時錢包收到"
 
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
@@ -3748,17 +3773,9 @@ msgstr "顯示錯誤邊界除錯觸發器"
 msgid "Autocompound"
 msgstr "自動複投"
 
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Liquidity to withdraw:"
-msgstr "待提取流動性："
-
 #: src/components/TVChart/Chart.tsx
 msgid "Market graph"
 msgstr "市場圖表"
-
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "After the deadline, trading and withdrawals on these markets are disabled, and capital left in them won't be accessible from the app. Close your positions and withdraw your liquidity now."
-msgstr "截止時間過後，這些市場將停止交易和提領，留在其中的資金將無法透過應用程式存取。請立即平倉並提取流動性。"
 
 #: src/domain/referrals/utils/referralsHelper.ts
 msgid "Only letters, numbers, and underscores allowed"
@@ -3820,11 +3837,6 @@ msgstr "存入已送出"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you."
 msgstr "以穩定幣支付的鏈上收入 — 你自己的構建者費用，<0/>加上 GMX 手續費分成，每當有人透過你<1/>交易即可獲得。"
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Final notice: market delistings"
-msgstr "最終通知：市場下架"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -3926,6 +3938,11 @@ msgstr "此觸發價格超過目前清算價格。在此 TP/SL 訂單執行之�
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating..."
 msgstr "建立中..."
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{0, plural, one {is} other {are}}"
+msgstr "{0, plural, one {即將} other {即將}}"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -4118,10 +4135,6 @@ msgstr "淨價格影響 / 費用"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "訂單已取消"
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Original margin reconciliation requires the opening row."
-msgstr "核對初始保證金需要開倉記錄。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM pool liquidity"
@@ -4528,6 +4541,10 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and accrued fees"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total margin funded (GMX balance)"
+msgstr "累計投入保證金（GMX 餘額）"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
@@ -5170,10 +5187,6 @@ msgstr "永續合約聚合器"
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
 
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Positions to close:"
-msgstr "待平倉位："
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "純 {indexSymbol} 做空。風險敞口僅來自倉位。"
@@ -5492,6 +5505,10 @@ msgstr "每月交易量"
 msgid "Min TWAP parts: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close (GMX balance)"
+msgstr "平倉前收到（GMX 餘額）"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
 msgstr "未平倉量 {directionLabel}"
@@ -5742,7 +5759,6 @@ msgstr "<0>GMX 的交易是透過動態平衡的流動性池執行，不同於�
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
-#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -6117,6 +6133,10 @@ msgstr "無法將 {nativeTokenSymbol} 轉帳至 {chainName}"
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Lifecycle settlement"
+msgstr "生命週期結算"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
@@ -6221,6 +6241,10 @@ msgstr "提取手續費"
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "止盈"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your savings (at 25%)"
+msgstr "您節省的金額（以 25% 計算）"
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
@@ -7381,10 +7405,6 @@ msgstr "預計清算時間"
 msgid "Mark price for the liquidation"
 msgstr "清算的標記價格"
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{markets} will be disabled after August 5, 2026, 23:59 UTC. Close your {positionNoun} before then. Collateral left in open positions won't be accessible after that."
-msgstr "{markets} 將於 2026 年 8 月 5 日 23:59（UTC）後停用。請在此之前平掉您的{positionNoun}。此後，留在未平倉位中的抵押品將無法存取。"
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
@@ -7484,6 +7504,10 @@ msgstr "正在提取 {balanceFormatted} 至主帳戶..."
 msgid "Symbol (A to Z)"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
+msgstr "由於此倉位的部分歷史紀錄無法可靠比對，目前無法提供完整的生命週期對帳。"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} 已更新"
@@ -7571,10 +7595,6 @@ msgstr "所有倉位皆屬於同一個已連接的錢包，並會一起顯示，
 msgid "Approving {tokenSymbol}..."
 msgstr "正在授權 {tokenSymbol}..."
 
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Your wallet {account} still holds capital in markets that are being delisted. These markets will be disabled after August 5, 2026, 23:59 UTC."
-msgstr "您的錢包 {account} 仍在即將下架的市場中持有資金。這些市場將於 2026 年 8 月 5 日 23:59（UTC）後停用。"
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr "PnL 排名 (%)"
@@ -7644,6 +7664,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
 msgstr "執行緒"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "This position was funded from your GMX multichain balance; amounts are balance movements, not wallet transfers."
+msgstr "此倉位由您的 GMX 多鏈餘額提供資金；金額為餘額變動，而非錢包轉帳。"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fees reduce margin and affect liquidation price."
@@ -7811,6 +7835,10 @@ msgstr "開倉費用 / 折扣"
 msgid "Size, $"
 msgstr "規模, $"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Wallet received before close"
+msgstr "平倉前錢包收到"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "保證流動性"
@@ -7939,6 +7967,10 @@ msgstr "扣除費用前的已實現 PnL"
 msgid "24H%"
 msgstr "24H%"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net lifecycle fees / impact"
+msgstr "生命週期淨費用／價格影響"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading settings"
 msgstr "交易設定"
@@ -7954,10 +7986,6 @@ msgstr "合作夥伴"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Timeline"
 msgstr "時間表"
-
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
-msgstr "<0>不會，您完全透過自己的錢包在 GMX 上交易。我們絕不持有您的資產——折扣與收益都會鏈上結算至您的地址。</0>"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -8344,6 +8372,10 @@ msgstr "我的資產"
 msgid "Withdraw from GMX Account"
 msgstr "從 GMX Account 提取"
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
+msgstr "<0>不會。您的資金在任何時刻都不會存放在由 GMX 控制的帳戶中。交易者直接透過自己的錢包交易，或使用已入金的 GMX Account——一個由您掌控、可隨時提領的合約。</0><1>聯盟推廣者無需存入任何資金。獎勵累積在合約中，由您自己在鏈上領取至您的地址。</1>"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Wallet funds on {sourceChainName} are not used directly for GMX trades."
 msgstr "{sourceChainName} 上的錢包資金不會直接用於 GMX 交易。"
@@ -8366,6 +8398,10 @@ msgstr "今天"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "連結已複製"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total wallet received"
+msgstr "錢包累計收到"
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -8733,9 +8769,17 @@ msgstr "最小倉位大小：{0}"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
+msgstr "{markets} {verb}下架。請平掉您現有的{positionNoun}，剩餘倉位可能會被自動平倉。"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr "離線"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received (GMX balance)"
+msgstr "累計收到（GMX 餘額）"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide other assets"
@@ -9072,6 +9116,10 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Excludes claimed funding, price impact rebates and execution fees."
+msgstr "不包括已領取的資金費、價格影響返還與執行費。"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -9312,6 +9360,10 @@ msgstr "~5 分鐘"
 msgid "New tier:"
 msgstr "新等級："
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Market delistings"
+msgstr "市場下架"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
@@ -9478,10 +9530,6 @@ msgstr "您"
 msgid "Close position"
 msgstr "平倉"
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
-msgstr "僅供參考，按約 0.06% 的實際費率估算。<0/>實際收益取決於聯盟等級及每位交易者的活躍度。"
-
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
 msgstr "以 100 倍槓桿"
@@ -9491,7 +9539,6 @@ msgid "No price impact. Single execution price for<0/>increasing longs or decrea
 msgstr "無價格影響。在此規模下加倉做多<0/>或減倉做空為<1/>單一成交價格。"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
 msgid "Close positions"
 msgstr "平倉"
 
@@ -9838,6 +9885,10 @@ msgstr "當價格和流動性條件滿足時執行"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "一般帳戶"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result (GMX balance)"
+msgstr "淨結果（GMX 餘額）"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive (approximate)"
@@ -11091,6 +11142,10 @@ msgstr "已提取 {balanceFormatted} 至主帳戶"
 msgid "{positionName} failed to settle"
 msgstr "{positionName} 結算失敗"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
+msgstr "僅供參考，按約 0.05% 的實際費率估算。<0/>實際收益取決於聯盟等級及每位交易者的活躍度。"
+
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
 msgstr "接收至此錢包"
@@ -11182,10 +11237,6 @@ msgstr "託管 GMX APR"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "歸屬僅在 {chainNames} 上可用。請切換網路以繼續。"
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{pools} will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that."
-msgstr "{pools} 將於 2026 年 8 月 5 日 23:59（UTC）後停用。請在此之前提取您的流動性。此後，留在已停用池中的 GM 代幣將無法存取。"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -11455,6 +11506,10 @@ msgstr "透過 <0>Camelot</0> 在 Arbitrum 上購買 APE"
 msgid "Depositing..."
 msgstr "存入中..."
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
+msgstr "{pools} {verb}下架。存入已不可用，請提取您的流動性，或將其轉入 GLV 以繼續賺取收益。"
+
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -11630,6 +11685,10 @@ msgstr "GMX trading chat"
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs trading simulations"
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Manage liquidity"
+msgstr "管理流動性"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr "做多 PnL"
@@ -11771,11 +11830,6 @@ msgstr "GMX 儀表板與分析"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Withdraw liquidity"
-msgstr "提取流動性"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
