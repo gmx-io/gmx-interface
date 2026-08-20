@@ -147,10 +147,6 @@ msgstr ""
 msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
 msgstr "このネットワークのウォレット資金は、{settlementChainName}での取引のためにGMX Accountに入金できます。{settlementChainName}のウォレット残高で直接取引するには、<0>{settlementChainName}に切り替えてください</0>。"
 
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "同意する"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Rebates earned as an affiliate"
 msgstr ""
@@ -974,10 +970,6 @@ msgstr "利用可能な流動性"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
 msgstr "GMXプールではこのスワップを約定できず、現在利用可能な外部ルートもありません。金額を減らしてみてください。"
-
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
-msgstr "このウェブサイトは、分散型ピアツーピア<1>IPFSネットワーク</1>上でホストされた、オープンソースの<0>GMXフロントエンド</0>のコミュニティデプロイ版です"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
@@ -2177,10 +2169,6 @@ msgstr "VI POSITIONS"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop price"
 msgstr "ストップ価格"
-
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Leaving GMX.io for a third-party website"
-msgstr "GMX.ioから外部サイトへ移動します"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -5437,10 +5425,6 @@ msgstr "正の影響係数"
 msgid "All trades"
 msgstr "すべての取引"
 
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "代替リンクは<0>ドキュメント</0>に記載されています。<1/><2/>「同意する」をクリックすると、<3>利用規約</3>および<4>リファラル利用規約</4>に同意したことになります。<5/><6/>"
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GM pools:"
 msgstr "GM プール:"
@@ -6564,10 +6548,6 @@ msgstr "注文失敗"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Airdrop"
 msgstr "エアドロップ"
-
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Launch app"
-msgstr "アプリを起動"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
@@ -10000,10 +9980,6 @@ msgstr "予約済み {directionLabel}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Distribution rate per day, USD"
 msgstr "1日あたりの分配レート（USD）"
-
-#: src/components/ModalViews/RedirectModal.tsx
-msgid "Don't show for 30 days"
-msgstr "30日間表示しない"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GMX rewards:"
