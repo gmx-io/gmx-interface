@@ -190,7 +190,7 @@ export function RewardsPage() {
           <Trans>Rewards configuration could not be refreshed. Showing the latest loaded data.</Trans>
         </div>
       ) : null}
-      {showTierAccountWarnings && pageData.isMixedEpoch ? (
+      {showTierAccountWarnings && pageData.isMixedEpochPersistent ? (
         <div className="text-body-small rounded-8 border-l-2 border-yellow-300 bg-yellow-300/10 p-12">
           <Trans>The new epoch is being indexed. Account totals will update shortly.</Trans>
         </div>
@@ -208,9 +208,11 @@ export function RewardsPage() {
           account={account}
           status={pageData.accountStatus}
           allTimeSummary={pageData.allTimeSummary}
-          statusLoading={pageData.accountStatusLoading}
+          statusLoading={pageData.accountStatusLoading || (pageData.isMixedEpoch && !pageData.isMixedEpochPersistent)}
           summaryLoading={pageData.allTimeSummaryLoading}
-          statusUnavailable={Boolean(pageData.isMixedEpoch || (pageData.accountStatusError && !pageData.accountStatus))}
+          statusUnavailable={Boolean(
+            pageData.isMixedEpochPersistent || (pageData.accountStatusError && !pageData.accountStatus)
+          )}
           summaryUnavailable={Boolean(pageData.allTimeSummaryError && !pageData.allTimeSummaryLoaded)}
         />
       ) : activeTab === "history" ? (

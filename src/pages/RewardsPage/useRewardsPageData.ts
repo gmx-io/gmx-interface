@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
 import { useIncentivesLeaderboard } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+
+const MIXED_EPOCH_WARNING_DELAY = 30_000;
 
 type RewardsPageDataParams = {
   chainId: number;
@@ -55,6 +58,31 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
   const accountStatus = shouldLoadAccountData && !isMixedEpoch ? accountStatusData : undefined;
   const allTimeSummary = shouldLoadAccountData ? allTimeSummaryData?.[0] : undefined;
   const allTimeSummaryLoaded = shouldLoadAccountData && allTimeSummaryData !== undefined;
+  // Surface the mixed-epoch warning only when the mismatch outlives the normal rollover races,
+  // counting from when the mismatch is first observed even if the page mounts mid-mismatch.
+  const [hasMixedEpochPersisted, setHasMixedEpochPersisted] = useState(false);
+  const isMixedEpochPersistent = isMixedEpoch && hasMixedEpochPersisted;
+
+  useEffect(() => {
+    if (!isMixedEpoch) {
+      setHasMixedEpochPersisted(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => setHasMixedEpochPersisted(true), MIXED_EPOCH_WARNING_DELAY);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isMixedEpoch]);
+
+  // The indexer serves the config from a shared response cache, so it can keep returning the
+  // previous epoch right after a boundary; refresh it until it matches the account status again.
+  useEffect(() => {
+    if (!isMixedEpoch) return;
+
+    const intervalId = window.setInterval(() => void mutateConfig(), FREQUENT_UPDATE_INTERVAL);
+
+    return () => window.clearInterval(intervalId);
+  }, [isMixedEpoch, mutateConfig]);
 
   const revalidateAccountData = useCallback(
     () => Promise.allSettled([mutateAccountStatus(), mutateAllTimeSummary()]),
@@ -107,6 +135,7 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
       allTimeSummary,
       allTimeSummaryLoaded,
       isMixedEpoch,
+      isMixedEpochPersistent,
       accountStatusError: shouldLoadAccountData ? accountStatusError : undefined,
       allTimeSummaryError: shouldLoadAccountData ? allTimeSummaryError : undefined,
       accountStatusLoading: shouldLoadAccountData && accountStatusLoading,
@@ -132,6 +161,7 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
       canLoadAllTimeLeaderboard,
       config,
       isMixedEpoch,
+      isMixedEpochPersistent,
       mutateAccountStatus,
       mutateAllTimeSummary,
       mutateConfig,

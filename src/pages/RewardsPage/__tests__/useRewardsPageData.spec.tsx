@@ -218,6 +218,75 @@ describe("useRewardsPageData", () => {
     expect(latestResult.allTimeSummary).toBe(allTimeSummary);
   });
 
+  it("keeps refreshing the config while epochs are mixed", async () => {
+    vi.useFakeTimers();
+    try {
+      setAccountStatusRequest({ ...accountStatus, epochTimestamp: config.epochTimestamp - config.epochDuration });
+      const { rerender } = render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5_000);
+      });
+      expect(mutateConfig).toHaveBeenCalledTimes(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5_000);
+      });
+      expect(mutateConfig).toHaveBeenCalledTimes(2);
+
+      setAccountStatusRequest(accountStatus);
+      rerender(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(20_000);
+      });
+      expect(mutateConfig).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("reports a persistent mixed epoch only after the warning delay", async () => {
+    vi.useFakeTimers();
+    try {
+      const { rerender } = render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+      expect(latestResult.isMixedEpochPersistent).toBe(false);
+
+      setAccountStatusRequest({ ...accountStatus, epochTimestamp: config.epochTimestamp - config.epochDuration });
+      rerender(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+      expect(latestResult.isMixedEpoch).toBe(true);
+      expect(latestResult.isMixedEpochPersistent).toBe(false);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(30_000);
+      });
+      expect(latestResult.isMixedEpochPersistent).toBe(true);
+
+      setAccountStatusRequest(accountStatus);
+      rerender(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+      expect(latestResult.isMixedEpoch).toBe(false);
+      expect(latestResult.isMixedEpochPersistent).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("applies the warning delay even when mounted into an already mixed state", async () => {
+    vi.useFakeTimers();
+    try {
+      setAccountStatusRequest({ ...accountStatus, epochTimestamp: config.epochTimestamp - config.epochDuration });
+      render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+
+      expect(latestResult.isMixedEpoch).toBe(true);
+      expect(latestResult.isMixedEpochPersistent).toBe(false);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(30_000);
+      });
+      expect(latestResult.isMixedEpochPersistent).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("preserves a loaded empty all-time summary when its refresh fails", () => {
     const refreshError = new Error("refresh failed");
     setAllTimeSummaryRequest([], false, refreshError);
