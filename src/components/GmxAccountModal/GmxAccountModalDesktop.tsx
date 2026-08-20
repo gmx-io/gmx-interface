@@ -95,15 +95,12 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
   const showMainViewInBackground = isOverlayView(view);
   const isMainViewContent = view === "main" || showMainViewInBackground;
 
+  const handleOverlayBack = view === "walletReceive" ? () => setModalState("walletReceiveOptions") : undefined;
+
   const handleOverlayClose = (nextVisible: boolean) => {
     if (nextVisible) return;
 
-    if (view === "walletReceive") {
-      setModalState("walletReceiveOptions");
-      return;
-    }
-
-    if (view === "walletReceiveOptions" && walletReceiveViewBackTo !== undefined) {
+    if ((view === "walletReceive" || view === "walletReceiveOptions") && walletReceiveViewBackTo !== undefined) {
       setModalState(walletReceiveViewBackTo);
       return;
     }
@@ -146,6 +143,7 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
           label={OVERLAY_MODAL_LABELS[view]}
           isVisible={isOpen}
           setIsVisible={handleOverlayClose}
+          onBack={handleOverlayBack}
           contentPadding={false}
           disableOverflowHandling={true}
           contentClassName={
