@@ -19,10 +19,11 @@ import {
   OrderType,
   PositionOrderInfo,
 } from "domain/synthetics/orders";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfo, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getDecreasePositionAmounts, getDecreaseReceiveOutputs } from "domain/synthetics/trade";
 import { getPositionCloseSizeDeltaUsdForDisplay, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
-import { formatDeltaUsd, formatUsd, formatPercentage } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd, formatUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -154,13 +155,15 @@ function useTPSLOrderViewModel({
   const [isCancelling, cancelOrder] = useCancelOrder(order);
 
   const isIncrease = isIncreaseOrderType(order.orderType);
+  const isMarginDeposit = isMarginDepositOrder(order);
 
   const orderType = useMemo(() => {
     if (isLimitDecreaseOrderType(order.orderType)) return t`Take-Profit`;
     if (isStopLossOrderType(order.orderType)) return t`Stop-Loss`;
+    if (isMarginDeposit) return t`Deposit margin`;
     if (isLimitIncreaseOrderType(order.orderType)) return t`Limit`;
     return t`Stop Market`;
-  }, [order.orderType]);
+  }, [order.orderType, isMarginDeposit]);
 
   const triggerPriceDisplay = useMemo(
     () =>
@@ -172,6 +175,19 @@ function useTPSLOrderViewModel({
   );
 
   const sizeDisplay = useMemo(() => {
+    if (isMarginDeposit) {
+      return (
+        <span>
+          {formatBalanceAmount(
+            order.initialCollateralDeltaAmount,
+            order.initialCollateralToken.decimals,
+            order.initialCollateralToken.symbol,
+            { isStable: order.initialCollateralToken.isStable }
+          )}
+        </span>
+      );
+    }
+
     if (isIncrease) {
       return <span>+{formatUsd(order.sizeDeltaUsd)}</span>;
     }
@@ -195,7 +211,14 @@ function useTPSLOrderViewModel({
         <span className="ml-4 text-typography-secondary">(-{formatPercentage(sizePercentage)})</span>
       </span>
     );
-  }, [order.sizeDeltaUsd, position, isIncrease]);
+  }, [
+    order.sizeDeltaUsd,
+    order.initialCollateralDeltaAmount,
+    order.initialCollateralToken,
+    position,
+    isIncrease,
+    isMarginDeposit,
+  ]);
 
   const estimatedPnl = useMemo(() => {
     if (isIncrease || !position) {

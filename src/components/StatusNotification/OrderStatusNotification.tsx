@@ -18,6 +18,7 @@ import {
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
@@ -198,6 +199,17 @@ function OrderStatusNotification({
         const amountText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken?.decimals, symbol, {
           isStable: initialCollateralToken?.isStable,
         });
+
+        if (isMarginDepositOrder(orderData)) {
+          const longShortText = isLong ? t`Long` : t`Short`;
+          const txnTypeText = {
+            create: t`Create`,
+            cancel: t`Cancel`,
+            update: t`Update`,
+          }[txnType];
+
+          return t`${txnTypeText} margin deposit: ${amountText} to ${indexTokenText} ${longShortText}`;
+        }
 
         if (isIncreaseOrderType(orderType)) {
           return isLong

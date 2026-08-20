@@ -88,6 +88,7 @@ function getDynamicLabelWidthPx(line: DynamicChartLine, fontSizePt: number) {
     marketName: line.marketName,
     orderType: line.orderType,
     sizeData: line.sizeData,
+    isMarginDeposit: line.isMarginDeposit,
   };
   const textWidthPx = Math.max(
     measureTextWidthPx(getOrderLineLabel(resolve, { ...labelParams, showSizeInTokens: false }), fontSizePt),

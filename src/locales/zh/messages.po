@@ -381,6 +381,10 @@ msgstr "发现"
 msgid "GM airdrop"
 msgstr "GM 空投"
 
+#: src/components/PositionEditor/types.ts
+msgid "At price"
+msgstr "按价格"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "交易量"
@@ -400,6 +404,10 @@ msgstr "收益挖矿"
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "路线图"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price."
+msgstr "该保证金存入可能无法在清算前执行：其触发价格已达到或超出预估清算价格。"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
@@ -428,6 +436,10 @@ msgstr "许可详情"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Network fees increased. Additional fee required."
 msgstr "网络费用已上涨。需要支付额外费用。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+msgstr "该保证金存入可能无法执行：它无法使仓位在触发价格处保持在清算要求之上。请增加存入金额，或将触发价格设置得离清算更远。"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
@@ -601,6 +613,13 @@ msgstr "未实现费用贡献"
 msgid "Funding"
 msgstr "资金费"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
+#: src/components/TVChartContainer/constants.ts
+msgid "Deposit margin"
+msgstr "存入保证金"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
 msgstr "取消质押中..."
@@ -749,6 +768,7 @@ msgstr "{networkName}上所有交易者的GMX {VERSION_NAME}操作"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "订单成交价格"
 
@@ -767,6 +787,10 @@ msgstr "推荐码尚未在以下网络注册：{nonTakenNetworkNamesJoined}。�
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Failed margin deposit"
+msgstr "保证金存入失败"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD pool"
@@ -1111,6 +1135,11 @@ msgstr "DeltaPrime"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Estimate your income"
 msgstr "预估收益金额"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Replace margin deposit"
+msgstr "替换保证金存入"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
@@ -1586,6 +1615,7 @@ msgstr ""
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
 msgstr "基于近期GMX回购速度、您的质押力占比以及您当前质押的GMX + esGMX计算出的钱包专属预计年化收益率。实际分配将取决于DAO治理。"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2102,6 +2132,11 @@ msgstr "完成账户转账"
 msgid "Discounts"
 msgstr ""
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient deposit at trigger price"
+msgstr "触发价格处存入金额不足"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Borrow fee / day"
 msgstr "借贷费用 / 天"
@@ -2510,6 +2545,10 @@ msgstr "在支持的地区使用借记卡/信用卡、Apple Pay 或 Google Pay�
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
 msgstr "第二名"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Auto-cancel order limit reached"
+msgstr "已达到自动取消订单上限"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -2978,6 +3017,10 @@ msgstr "帮助我们改进 GMX。出于安全考虑，我们不会主动联系�
 msgid "GM Pools"
 msgstr "GM池"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Cancel margin deposit"
+msgstr "取消保证金存入"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "附属"
@@ -3165,6 +3208,7 @@ msgid "Current price"
 msgstr "当前价格"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "标记价："
@@ -3415,6 +3459,7 @@ msgstr "<0>存入</0>或<1>购买</1> {wrappedNativeTokenSymbol}。"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
@@ -3608,6 +3653,10 @@ msgstr "从中心化服务购买 GMX"
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
 msgstr "订单可能无法执行：触发价格下的流动性不足。请减小订单规模。"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit."
+msgstr "该仓位的自动取消订单数量已达上限。请取消一个现有订单以创建新的保证金存入。"
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -3670,8 +3719,10 @@ msgstr "四种接入方式。"
 msgid "Trader activity"
 msgstr "交易者活动"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Trigger price"
 msgstr "触发价格"
@@ -4165,6 +4216,10 @@ msgstr "Gas 不足，无法支付网络费用"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} 到"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+msgstr "该存入无法使仓位在触发价格处保持在清算要求之上。请增加存入金额，或将触发价格设置得离清算更远。"
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -4859,6 +4914,10 @@ msgstr ""
 msgid "Liquidated"
 msgstr "已清算"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Update margin deposit"
+msgstr "更新保证金存入"
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "大家在构建什么。"
@@ -5179,6 +5238,10 @@ msgstr "永续合约聚合器"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "请求市场交换"
+
+#: src/components/TradeBox/MarginDepositSuggestionCard.tsx
+msgid "Want to add margin without increasing your position size?"
+msgstr "想要在不增加仓位大小的情况下增加保证金吗？"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -5873,6 +5936,7 @@ msgstr ""
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5901,6 +5965,7 @@ msgid "Apply to program"
 msgstr "申请加入"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a price"
@@ -6820,6 +6885,10 @@ msgstr "Arbitrum 上的价格"
 msgid "Approval signing failed"
 msgstr "授权签名失败"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "margin deposit"
+msgstr "保证金存入"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -7162,6 +7231,11 @@ msgstr "正在执行卖出请求…"
 msgid "Close short"
 msgstr ""
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/TradeHistory/keys.ts
+msgid "Create margin deposit"
+msgstr "创建保证金存入"
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "{0} claimed"
 msgstr "{0} 已领取"
@@ -7439,6 +7513,8 @@ msgstr "治理提醒"
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -7860,6 +7936,10 @@ msgstr "来自 {BLOCKCHAIN_COUNT} 个区块链"
 msgid "Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation. Consider lowering leverage or adding margin."
 msgstr "非交易时段风险：当该市场切换到非交易时段模式时，此仓位可能接近清算。请考虑降低杠杆或增加保证金。"
 
+#: src/components/PositionEditor/types.ts
+msgid "Now"
+msgstr "立即"
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -7873,6 +7953,10 @@ msgstr "出场价格"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr "转账失败"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Edit margin deposit: {suffix}"
+msgstr "编辑保证金存入：{suffix}"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Position would be liquidated immediately. Reduce the withdrawal amount."
@@ -8104,6 +8188,7 @@ msgstr "治理"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "取消"
@@ -8295,6 +8380,10 @@ msgstr "平均使用杠杆"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "取消止损"
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Adds margin without increasing your position size when the trigger price is reached."
+msgstr "当达到触发价格时增加保证金，而不增加仓位大小。"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
@@ -8939,6 +9028,10 @@ msgstr ""
 msgid "Claimed"
 msgstr "已领取"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Deposit amount"
+msgstr "存入金额"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "不到一分钟"
@@ -8960,6 +9053,7 @@ msgstr "更多信息"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
@@ -9474,6 +9568,10 @@ msgstr "做空仓位"
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "您的钱包无法签署消息。请使用经典模式进行交易。"
+
+#: src/components/TradeBox/MarginDepositSuggestionCard.tsx
+msgid "Deposit margin at price"
+msgstr "按价格存入保证金"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10221,6 +10319,7 @@ msgstr "净平仓费用 / 影响"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order trigger price"
 msgstr "订单触发价格"
 
@@ -10441,6 +10540,7 @@ msgstr ""
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -11058,6 +11158,10 @@ msgstr "Express 交易数据仍在加载中。请几秒后重试。"
 msgid "Nonce:"
 msgstr "Nonce："
 
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
+msgstr "{txnTypeText}保证金存入：{amountText} 至 {indexTokenText} {longShortText}"
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr ""
@@ -11553,6 +11657,10 @@ msgstr "最新价格"
 msgid "Cancelling {orderText}..."
 msgstr "正在取消 {orderText}…"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Execute margin deposit"
+msgstr "执行保证金存入"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Estimate your savings"
 msgstr "预估节省金额"
@@ -11933,6 +12041,10 @@ msgstr "EIP-4844, 3 月 20-27 日"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Lifetime rewards"
 msgstr "累计奖励"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
+msgstr "该触发价格已达到或超出预估清算价格。符合条件时将在清算前尝试执行保证金存入，但不保证执行成功。"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -12428,6 +12540,10 @@ msgstr "已过期的市场交换"
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "毕业的交易者在达到推荐计划的毕业门槛后，已被转移至 GMX 协议码。"
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+msgid "Enter a new price"
+msgstr "请输入新价格"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
@@ -12500,6 +12616,7 @@ msgstr "Express Trading 已启用。在<0>设置</0>中禁用"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr ""
 
@@ -12546,6 +12663,7 @@ msgstr "操作层级的费用和价格影响的净总和。将鼠标悬停在数
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below mark price"
 msgstr ""

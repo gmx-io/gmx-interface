@@ -381,6 +381,10 @@ msgstr "発見"
 msgid "GM airdrop"
 msgstr "GMエアドロップ"
 
+#: src/components/PositionEditor/types.ts
+msgid "At price"
+msgstr "指定価格"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "出来高"
@@ -400,6 +404,10 @@ msgstr "イールドファーミング"
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "ロードマップ"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price."
+msgstr "この証拠金入金は清算前に執行されない可能性があります：トリガーが推定清算価格かそれを超えた水準にあります。"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
@@ -428,6 +436,10 @@ msgstr "パーミットの詳細"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Network fees increased. Additional fee required."
 msgstr "ネットワーク手数料が増加しました。追加の手数料が必要です。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+msgstr "この証拠金入金は執行されない可能性があります：トリガー価格でポジションが清算基準を上回りません。入金額を増やすか、トリガーを清算からさらに遠ざけてください。"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
@@ -601,6 +613,13 @@ msgstr "未実現手数料の寄与"
 msgid "Funding"
 msgstr "ファンディング"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
+#: src/components/TVChartContainer/constants.ts
+msgid "Deposit margin"
+msgstr "証拠金を入金"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
 msgstr "ステーキング解除中..."
@@ -749,6 +768,7 @@ msgstr "{networkName}の全トレーダーによるGMX {VERSION_NAME}アクシ�
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "注文約定価格"
 
@@ -767,6 +787,10 @@ msgstr "コードが未登録のネットワーク: {nonTakenNetworkNamesJoined}
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Failed margin deposit"
+msgstr "証拠金入金に失敗"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD pool"
@@ -1111,6 +1135,11 @@ msgstr "DeltaPrime"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Estimate your income"
 msgstr "収入シミュレーション"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Replace margin deposit"
+msgstr "証拠金入金を差し替え"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
@@ -1586,6 +1615,7 @@ msgstr ""
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
 msgstr "直近のGMXバイバックペース、あなたのステーキングパワーの割合、現在ステーキング中のGMX + esGMXに基づく、ウォレット固有の推定年率です。実際の分配はDAOガバナンスにより決定されます。"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2102,6 +2132,11 @@ msgstr "アカウント送金の完了"
 msgid "Discounts"
 msgstr ""
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient deposit at trigger price"
+msgstr "トリガー価格での入金額が不足しています"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Borrow fee / day"
 msgstr "借入手数料 / 日"
@@ -2510,6 +2545,10 @@ msgstr "デビット/クレジットカード、Apple Pay、Google Pay（対応�
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
 msgstr "2位"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Auto-cancel order limit reached"
+msgstr "自動キャンセル注文の上限に達しました"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -2978,6 +3017,10 @@ msgstr "GMXの改善にご協力ください。セキュリティのため、こ
 msgid "GM Pools"
 msgstr "GMプール"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Cancel margin deposit"
+msgstr "証拠金入金をキャンセル"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "アフィリエイト"
@@ -3165,6 +3208,7 @@ msgid "Current price"
 msgstr "現在の価格"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "マーク:"
@@ -3415,6 +3459,7 @@ msgstr "<0>入金</0>または<1>購入</1>{wrappedNativeTokenSymbol}。"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
@@ -3608,6 +3653,10 @@ msgstr "中央集権型サービスからGMXを購入"
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
 msgstr "注文は約定しない可能性があります：トリガー価格で流動性が不足しています。注文サイズを減らしてください。"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit."
+msgstr "このポジションの自動キャンセル注文の上限に達しました。別の証拠金入金を作成するには、既存の注文をキャンセルしてください。"
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -3670,8 +3719,10 @@ msgstr "4つの入り口。"
 msgid "Trader activity"
 msgstr "トレーダーアクティビティ"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Trigger price"
 msgstr "トリガー価格"
@@ -4165,6 +4216,10 @@ msgstr "ネットワーク手数料に必要な Gas が不足しています"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText}から"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
+msgstr "この入金では、トリガー価格でポジションが清算基準を上回りません。入金額を増やすか、トリガーを清算からさらに遠ざけてください。"
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -4859,6 +4914,10 @@ msgstr ""
 msgid "Liquidated"
 msgstr "清算済"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Update margin deposit"
+msgstr "証拠金入金を更新"
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "みんなが作っているもの。"
@@ -5179,6 +5238,10 @@ msgstr "パーペチュアルアグリゲーター"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "マーケットスワップリクエスト"
+
+#: src/components/TradeBox/MarginDepositSuggestionCard.tsx
+msgid "Want to add margin without increasing your position size?"
+msgstr "ポジションサイズを増やさずに証拠金を追加しませんか？"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -5873,6 +5936,7 @@ msgstr ""
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5901,6 +5965,7 @@ msgid "Apply to program"
 msgstr "プログラムに応募"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a price"
@@ -6820,6 +6885,10 @@ msgstr "Arbitrum上の価格"
 msgid "Approval signing failed"
 msgstr "承認署名に失敗しました"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "margin deposit"
+msgstr "証拠金入金"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -7162,6 +7231,11 @@ msgstr "売りリクエストを実行中…"
 msgid "Close short"
 msgstr ""
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/TradeHistory/keys.ts
+msgid "Create margin deposit"
+msgstr "証拠金入金を作成"
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "{0} claimed"
 msgstr "{0}を受け取りました"
@@ -7439,6 +7513,8 @@ msgstr "ガバナンスアラート"
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -7860,6 +7936,10 @@ msgstr "{BLOCKCHAIN_COUNT} ブロックチェーンから"
 msgid "Off-hours risk: when this market moves to off-hours mode, this position may be close to liquidation. Consider lowering leverage or adding margin."
 msgstr "時間外リスク：このマーケットが時間外モードに移行すると、このポジションは清算に近づく可能性があります。レバレッジを下げるか証拠金を追加することをご検討ください。"
 
+#: src/components/PositionEditor/types.ts
+msgid "Now"
+msgstr "今すぐ"
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -7873,6 +7953,10 @@ msgstr "決済価格"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr "送金失敗"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Edit margin deposit: {suffix}"
+msgstr "証拠金入金を編集: {suffix}"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Position would be liquidated immediately. Reduce the withdrawal amount."
@@ -8104,6 +8188,7 @@ msgstr "ガバナンス"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "キャンセル"
@@ -8295,6 +8380,10 @@ msgstr "平均使用レバレッジ"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "ストップロスをキャンセル"
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Adds margin without increasing your position size when the trigger price is reached."
+msgstr "トリガー価格に達したときに、ポジションサイズを増やさずに証拠金を追加します。"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "We reply within ~2 hours during market hours. No obligation — just a conversation."
@@ -8939,6 +9028,10 @@ msgstr ""
 msgid "Claimed"
 msgstr "受け取り完了"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Deposit amount"
+msgstr "入金額"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "1分未満"
@@ -8960,6 +9053,7 @@ msgstr "詳細情報"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
@@ -9474,6 +9568,10 @@ msgstr "ショートポジション"
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "ウォレットはメッセージに署名できません。取引するにはクラシックモードを使用してください。"
+
+#: src/components/TradeBox/MarginDepositSuggestionCard.tsx
+msgid "Deposit margin at price"
+msgstr "指定価格で証拠金を入金"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
@@ -10221,6 +10319,7 @@ msgstr "正味の決済手数料 / 影響"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order trigger price"
 msgstr "注文トリガー価格"
 
@@ -10441,6 +10540,7 @@ msgstr ""
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -11058,6 +11158,10 @@ msgstr "Express トランザクションのデータを読み込み中です。�
 msgid "Nonce:"
 msgstr "Nonce:"
 
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
+msgstr "{txnTypeText} 証拠金入金: {amountText}（{indexTokenText} {longShortText}）"
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr ""
@@ -11553,6 +11657,10 @@ msgstr "最終価格"
 msgid "Cancelling {orderText}..."
 msgstr "{orderText}をキャンセル中…"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Execute margin deposit"
+msgstr "証拠金入金を執行"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Estimate your savings"
 msgstr "節約額シミュレーション"
@@ -11933,6 +12041,10 @@ msgstr "EIP-4844、3月20-27日"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Lifetime rewards"
 msgstr "累計報酬"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
+msgstr "このトリガーは推定清算価格かそれを超えた水準にあります。証拠金入金は対象となる場合に清算前に試行されますが、執行は保証されません。"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -12428,6 +12540,10 @@ msgstr "期限切れの市場スワップ"
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "卒業したトレーダーは、紹介プログラムの卒業しきい値に達したため、GMXプロトコルコードに移行されました。"
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+msgid "Enter a new price"
+msgstr "新しい価格を入力してください"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
@@ -12500,6 +12616,7 @@ msgstr "Express Tradingが有効になりました。<0>設定</0>で無効に�
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr ""
 
@@ -12546,6 +12663,7 @@ msgstr "アクションレベルの手数料と価格への影響の正味合計
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below mark price"
 msgstr ""
