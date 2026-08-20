@@ -5433,6 +5433,10 @@ msgstr "Все сделки"
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Альтернативные ссылки находятся в <0>документации</0>.<1/><2/>Нажимая «Принять», вы соглашаетесь с <3>Условиями использования</3> и <4>Условиями реферальной программы</4>.<5/><6/>"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
+msgstr "Анстейкинг более 20% от вашего исторического максимума застейканных GMX или esGMX обнулит накопленные награды."
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Нет влияния на цену. Единая цена исполнения для<0/>увеличения шортов или уменьшения лонгов при<1/>данном размере."
@@ -10041,6 +10045,10 @@ msgstr "<0>С большинством голосов 75.5% GMX выбрал Lay
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Current safe limit: <0>{0}</0> combined."
+msgstr "Текущий безопасный лимит: <0>{0}</0> суммарно."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."

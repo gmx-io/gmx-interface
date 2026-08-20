@@ -5433,6 +5433,10 @@ msgstr "所有交易"
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "替代連結請參閱<0>文件</0>。<1/><2/>點擊「同意」即表示您接受<3>條款與細則</3>及<4>推薦條款與細則</4>。<5/><6/>"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
+msgstr "解除質押超過歷史最高質押GMX或esGMX的20%將重置您累積的獎勵。"
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "無價格影響。以此規模<0/>加倉做空或減倉做多時<1/>採用單一成交價格。"
@@ -10041,6 +10045,10 @@ msgstr "<0>以 75.5% 的多數票，GMX 選擇了 LayerZero 作為其多鏈擴�
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Current safe limit: <0>{0}</0> combined."
+msgstr "當前安全上限:<0>{0}</0>(合計)。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."

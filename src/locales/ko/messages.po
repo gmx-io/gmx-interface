@@ -5433,6 +5433,10 @@ msgstr "모든 거래"
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "대체 링크는 <0>문서</0>에서 확인할 수 있습니다.<1/><2/>동의를 클릭하면 <3>이용약관</3> 및 <4>추천 이용약관</4>에 동의하게 됩니다.<5/><6/>"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
+msgstr "과거 최대 스테이킹 GMX 또는 esGMX의 20%를 초과하여 언스테이킹하면 누적 보상이 초기화됩니다."
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "가격 영향 없음. 이 규모에서<0/>숏 증가 또는 롱 감소 시<1/>단일 체결가가 적용됩니다."
@@ -10041,6 +10045,10 @@ msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Current safe limit: <0>{0}</0> combined."
+msgstr "현재 안전 한도: <0>{0}</0> (합산)."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."

@@ -5433,6 +5433,10 @@ msgstr "すべての取引"
 msgid "Alternative links are in the <0>docs</0>.<1/><2/>By clicking Agree, you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "代替リンクは<0>ドキュメント</0>に記載されています。<1/><2/>「同意する」をクリックすると、<3>利用規約</3>および<4>リファラル利用規約</4>に同意したことになります。<5/><6/>"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
+msgstr "過去最大のステーク済みGMXまたはesGMXの20%を超えてアンステークすると、累積報酬がリセットされます。"
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "価格への影響はありません。このサイズでの<0/>ショートの増加またはロングの減少に対して<1/>単一の約定価格が適用されます。"
@@ -10041,6 +10045,10 @@ msgstr "<0>75.5%の多数決でGMXはマルチチェーン拡張のメッセー�
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Current safe limit: <0>{0}</0> combined."
+msgstr "現在の安全上限:<0>{0}</0>(合算)。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."
