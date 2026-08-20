@@ -11,7 +11,7 @@ export default function TermsAndConditions() {
         <div className="text-center">
           <div className="text-heading-3">GMX</div>
           <div className="text-heading-4 my-24">Terms and Conditions</div>
-          <div className="text-14">Last modified: August 1st, 2022</div>
+          <div className="text-14">Last modified: August 20th, 2026</div>
         </div>
         <div className="mt-74 space-y-74">
           <div>
