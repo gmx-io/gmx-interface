@@ -4052,6 +4052,10 @@ msgstr ""
 msgid "Trade confirmations"
 msgstr "交易确认"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Month"
+msgstr "月份"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr "GLV 流动性不足"
@@ -4093,6 +4097,10 @@ msgstr "Telegram 中的 GMX V2 数据分析"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "完全在公共链上运行"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "USD 数值是根据每个所示月份的 GMX 平均价格估算的。由于执行时机、兑换和价格波动，实际回购执行金额可能有所不同。"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
@@ -6134,6 +6142,11 @@ msgstr ""
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "转换仅在 {chainNames} 或 {lastChainName} 上可用。请切换网络以继续。"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Monthly bought"
+msgstr "月度回购量"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -7116,10 +7129,6 @@ msgstr "最大杠杆"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
-msgstr "USD 数值是根据每个所示周的 GMX 平均价格估算的。由于执行时机、兑换和价格波动，实际回购执行金额可能有所不同。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -10115,11 +10124,6 @@ msgstr "每日分配率（USD）"
 msgid "Wallet trading only on these networks"
 msgstr "这些网络仅支持钱包交易"
 
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Weekly bought"
-msgstr ""
-
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "质押 GMX 并购买 GLV 或 GM 以赚取奖励"
@@ -12721,10 +12725,6 @@ msgstr "由于费用和价格影响，成交价格可能与限价不同。您将
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "私有"
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Week"
-msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"

@@ -4052,6 +4052,10 @@ msgstr ""
 msgid "Trade confirmations"
 msgstr "Handelsbestätigungen"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Month"
+msgstr "Monat"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr "Unzureichende GLV-Liquidität"
@@ -4093,6 +4097,10 @@ msgstr "GMX V2 Datenanalyse in Telegram"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "Läuft vollständig auf öffentlichen Chains"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "USD-Werte werden anhand des durchschnittlichen GMX-Preises für jeden angezeigten Monat geschätzt. Die tatsächlichen Rückkaufbeträge können aufgrund des Ausführungszeitpunkts, von Umwandlungen und Preisbewegungen abweichen."
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
@@ -6134,6 +6142,11 @@ msgstr ""
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Verschiebung nur verfügbar auf {chainNames} oder {lastChainName}. Wechseln Sie das Netzwerk, um fortzufahren."
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Monthly bought"
+msgstr "Monatlich gekauft"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -7116,10 +7129,6 @@ msgstr "Maximaler Hebel"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
-msgstr "USD-Werte werden anhand des durchschnittlichen GMX-Preises für jede angezeigte Woche geschätzt. Die tatsächlichen Rückkaufbeträge können aufgrund des Ausführungszeitpunkts, von Umwandlungen und Preisbewegungen abweichen."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -10115,11 +10124,6 @@ msgstr "Verteilungsrate pro Tag, USD"
 msgid "Wallet trading only on these networks"
 msgstr "Nur Wallet-Trading auf diesen Netzwerken"
 
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Weekly bought"
-msgstr ""
-
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "Staken Sie GMX und kaufen Sie GLV oder GM, um Belohnungen zu erhalten"
@@ -12721,10 +12725,6 @@ msgstr "Der Ausführungspreis kann aufgrund von Gebühren und Preiseinfluss vom 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "Privat"
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Week"
-msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"

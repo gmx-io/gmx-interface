@@ -4052,6 +4052,10 @@ msgstr ""
 msgid "Trade confirmations"
 msgstr "Подтверждения сделок"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Month"
+msgstr "Месяц"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr "Недостаточно ликвидности GLV"
@@ -4093,6 +4097,10 @@ msgstr "Аналитика данных GMX V2 в Telegram"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "Работает полностью на публичных цепях"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "Значения в USD рассчитываются на основе средней цены GMX за каждый отображаемый месяц. Фактические суммы выкупа могут отличаться из-за времени исполнения, конвертаций и изменений цены."
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
@@ -6134,6 +6142,11 @@ msgstr ""
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Перемещение доступно только на {chainNames} или {lastChainName}. Переключите сеть для продолжения."
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Monthly bought"
+msgstr "Куплено за месяц"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -7116,10 +7129,6 @@ msgstr "Макс. кредитное плечо"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
-msgstr "Значения в USD рассчитываются на основе средней цены GMX за каждую отображаемую неделю. Фактические суммы выкупа могут отличаться из-за времени исполнения, конвертаций и изменений цены."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -10115,11 +10124,6 @@ msgstr "Ставка распределения в день, USD"
 msgid "Wallet trading only on these networks"
 msgstr "Торговля только через кошелёк в этих сетях"
 
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Weekly bought"
-msgstr ""
-
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "Стейкайте GMX и покупайте GLV или GM для получения вознаграждений"
@@ -12721,10 +12725,6 @@ msgstr "Цена исполнения может отличаться от ли�
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "Приватный"
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Week"
-msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"
