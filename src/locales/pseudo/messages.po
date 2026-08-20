@@ -1116,6 +1116,10 @@ msgstr ""
 msgid "DeltaPrime"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your income"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -1183,6 +1187,10 @@ msgstr ""
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr ""
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
 msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -1475,9 +1483,17 @@ msgstr ""
 msgid "External swap {0} to {1}"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net wallet result"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total margin funded"
 msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -2002,6 +2018,11 @@ msgstr ""
 msgid "Canceling {ordersText}..."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close (GMX balance)"
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr ""
@@ -2301,6 +2322,10 @@ msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Lifecycle RPNL"
 msgstr ""
 
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
@@ -3041,10 +3066,6 @@ msgstr ""
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr ""
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr ""
@@ -3189,6 +3210,10 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
+msgstr ""
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -3419,10 +3444,6 @@ msgstr ""
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr ""
@@ -3577,6 +3598,10 @@ msgstr ""
 
 #: src/domain/synthetics/markets/createBridgeInTxn.ts
 msgid "Bridge transfer sent"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Wallet received at close"
 msgstr ""
 
 #: src/components/GmList/GlvList.tsx
@@ -3748,16 +3773,8 @@ msgstr ""
 msgid "Autocompound"
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Liquidity to withdraw:"
-msgstr ""
-
 #: src/components/TVChart/Chart.tsx
 msgid "Market graph"
-msgstr ""
-
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "After the deadline, trading and withdrawals on these markets are disabled, and capital left in them won't be accessible from the app. Close your positions and withdraw your liquidity now."
 msgstr ""
 
 #: src/domain/referrals/utils/referralsHelper.ts
@@ -3819,11 +3836,6 @@ msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you."
-msgstr ""
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Final notice: market delistings"
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
@@ -3925,6 +3937,11 @@ msgstr ""
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating..."
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{0, plural, one {is} other {are}}"
 msgstr ""
 
 #: src/pages/Jobs/Jobs.tsx
@@ -4117,10 +4134,6 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order canceled"
-msgstr ""
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Original margin reconciliation requires the opening row."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4528,6 +4541,10 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and accrued fees"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total margin funded (GMX balance)"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5175,10 +5192,6 @@ msgstr ""
 msgid "Request Market Swap"
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Positions to close:"
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr ""
@@ -5497,6 +5510,10 @@ msgstr ""
 msgid "Min TWAP parts: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close (GMX balance)"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
 msgstr ""
@@ -5747,7 +5764,6 @@ msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
-#: src/components/DelistingExitAnnouncements/DelistingBanner.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -6122,6 +6138,10 @@ msgstr ""
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Lifecycle settlement"
+msgstr ""
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
@@ -6229,6 +6249,10 @@ msgstr ""
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
+msgstr ""
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your savings (at 25%)"
 msgstr ""
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
@@ -7398,10 +7422,6 @@ msgstr ""
 msgid "Mark price for the liquidation"
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{markets} will be disabled after August 5, 2026, 23:59 UTC. Close your {positionNoun} before then. Collateral left in open positions won't be accessible after that."
-msgstr ""
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Projected from last {daysConsidered} days' APY"
@@ -7501,6 +7521,10 @@ msgstr ""
 msgid "Symbol (A to Z)"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr ""
@@ -7588,10 +7612,6 @@ msgstr ""
 msgid "Approving {tokenSymbol}..."
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Your wallet {account} still holds capital in markets that are being delisted. These markets will be disabled after August 5, 2026, 23:59 UTC."
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr ""
@@ -7660,6 +7680,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "This position was funded from your GMX multichain balance; amounts are balance movements, not wallet transfers."
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
@@ -7828,6 +7852,10 @@ msgstr ""
 msgid "Size, $"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Wallet received before close"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr ""
@@ -7956,6 +7984,10 @@ msgstr "[!! Realized PnL before fees !!]"
 msgid "24H%"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net lifecycle fees / impact"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading settings"
 msgstr ""
@@ -7970,10 +8002,6 @@ msgstr ""
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Timeline"
-msgstr ""
-
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
 msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -8367,6 +8395,10 @@ msgstr ""
 msgid "Withdraw from GMX Account"
 msgstr ""
 
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
+msgstr ""
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Wallet funds on {sourceChainName} are not used directly for GMX trades."
 msgstr ""
@@ -8388,6 +8420,10 @@ msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total wallet received"
 msgstr ""
 
 #: src/components/Claims/ClaimsHistory.tsx
@@ -8761,8 +8797,16 @@ msgstr ""
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received (GMX balance)"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
@@ -9100,6 +9144,10 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Excludes claimed funding, price impact rebates and execution fees."
+msgstr ""
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -9340,6 +9388,10 @@ msgstr ""
 msgid "New tier:"
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Market delistings"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
@@ -9356,6 +9408,7 @@ msgstr ""
 msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
@@ -9509,10 +9562,6 @@ msgstr ""
 msgid "Close position"
 msgstr ""
 
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
-msgstr ""
-
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
 msgstr ""
@@ -9522,7 +9571,6 @@ msgid "No price impact. Single execution price for<0/>increasing longs or decrea
 msgstr ""
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
 msgid "Close positions"
 msgstr ""
 
@@ -9868,6 +9916,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result (GMX balance)"
 msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
@@ -10389,10 +10441,6 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
-msgstr ""
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View</4>"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -11132,6 +11180,10 @@ msgstr ""
 msgid "{positionName} failed to settle"
 msgstr ""
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
 msgstr ""
@@ -11224,10 +11276,6 @@ msgstr ""
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr ""
 
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-msgid "{pools} will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that."
-msgstr ""
-
 #: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "esGMX rewards:"
 msgstr ""
@@ -11284,6 +11332,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Execution fee validation failed.<0/><1/>{suggestText}"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -11434,6 +11486,10 @@ msgstr ""
 msgid "Invalid liquidation price"
 msgstr ""
 
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "The relay did not report an outcome for this operation."
+msgstr ""
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
 msgstr ""
@@ -11484,6 +11540,10 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
+msgstr ""
+
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr ""
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
@@ -11661,6 +11721,10 @@ msgstr ""
 msgid "Compass Labs trading simulations"
 msgstr ""
 
+#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
+msgid "Manage liquidity"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr ""
@@ -11801,11 +11865,6 @@ msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
-msgstr ""
-
-#: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
-#: src/components/DelistingExitAnnouncements/personalDelistingAnnouncement.tsx
-msgid "Withdraw liquidity"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx

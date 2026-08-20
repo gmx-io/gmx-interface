@@ -1,9 +1,14 @@
+import { type Abi, encodeErrorResult } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { parseError } from "lib/errors";
+import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
+import { abis } from "sdk/abis";
+import { StatusCode } from "sdk/utils/gelatoRelay";
 
 import type { OrderCreatedEventData, OrderStatus, PendingOrderData } from "./types";
-import { findMatchedOrderStatus, findOrderStatusForAllocation } from "./utils";
+import { extractRelayTaskError, findMatchedOrderStatus, findOrderStatusForAllocation, getRelayTaskUrl } from "./utils";
 
 function makePendingOrder(overrides: Partial<PendingOrderData> = {}): PendingOrderData {
   return {
@@ -138,5 +143,70 @@ describe("findMatchedOrderStatus", () => {
 
     expect(findOrderStatusForAllocation([cancelledCreatedStatus], pendingCreate)).toBeUndefined();
     expect(findMatchedOrderStatus([cancelledCreatedStatus], pendingCreate)).toBe(cancelledCreatedStatus);
+  });
+});
+
+describe("extractRelayTaskError", () => {
+  const taskId = "0xtask";
+
+  function makeRelayTaskStatus(message: string | undefined, revertData?: string) {
+    return { taskId, statusCode: StatusCode.Reverted, message, revertData };
+  }
+
+  it("classifies an execution fee failure the GMX relay reported as a decoded reason", () => {
+    const error = extractRelayTaskError(makeRelayTaskStatus("InsufficientExecutionFee(1200,1000)"));
+
+    expect(getIsInsufficientExecutionFeeError(error)).toMatchObject({
+      isErrorMatched: true,
+      args: { minExecutionFee: 1200n, executionFee: 1000n },
+    });
+  });
+
+  it("classifies an invalid signature the GMX relay reported as a decoded reason", () => {
+    const error = extractRelayTaskError(makeRelayTaskStatus("InvalidSignature(subaccountApproval)"));
+
+    expect(getIsInvalidSignatureError(error).isErrorMatched).toBe(true);
+  });
+
+  it("keeps revert data the relay supplied in preference to its decoded reason", () => {
+    const revertData = encodeErrorResult({
+      abi: abis.CustomErrors as Abi,
+      errorName: "InvalidSignature",
+      args: ["order"],
+    });
+    const error = extractRelayTaskError(makeRelayTaskStatus("InsufficientExecutionFee(1200,1000)", revertData));
+
+    expect(getIsInvalidSignatureError(error).isErrorMatched).toBe(true);
+  });
+
+  it.each([
+    ["a reason that names no contract error", "deadline passed"],
+    ["a reason whose arguments do not fit the ABI", "InsufficientExecutionFee(1200)"],
+    ["a reason whose arguments are not decodable", "InsufficientExecutionFee(some,thing)"],
+    ["a truncated reason", "InsufficientExecutionFee(1200,10"],
+  ])("leaves %s unclassified", (_label, message) => {
+    const error = extractRelayTaskError(makeRelayTaskStatus(message));
+
+    expect(parseError(error)?.contractError).toBeUndefined();
+    expect(getIsInsufficientExecutionFeeError(error).isErrorMatched).toBe(false);
+  });
+});
+
+describe("getRelayTaskUrl", () => {
+  const taskId = "0xtask";
+
+  it("offers no Gelato task page for a task the GMX relay issued", () => {
+    expect(getRelayTaskUrl({ relayProvider: "gmx", taskId, isDebug: true })).toBeUndefined();
+    expect(getRelayTaskUrl({ relayProvider: "gmx", taskId, isDebug: false })).toBeUndefined();
+  });
+
+  it("offers no task page when the provider was not recorded", () => {
+    expect(getRelayTaskUrl({ relayProvider: undefined, taskId, isDebug: true })).toBeUndefined();
+  });
+
+  it("keeps the Gelato task page for a task Gelato issued", () => {
+    expect(getRelayTaskUrl({ relayProvider: "gelato", taskId, isDebug: true })).toContain(
+      `https://api.gelato.digital/tasks/status/${taskId}/debug`
+    );
   });
 });

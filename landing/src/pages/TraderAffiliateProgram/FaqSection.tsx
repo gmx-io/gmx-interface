@@ -16,8 +16,12 @@ export function FaqSection() {
           >
             <Trans>
               <p>
-                No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts
-                settle on-chain to your address.
+                No. There is no GMX-controlled account holding your money at any point. Traders trade directly from
+                their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.
+              </p>
+              <p>
+                Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself,
+                on-chain, to your address.
               </p>
             </Trans>
           </FaqItem>
@@ -25,7 +29,7 @@ export function FaqSection() {
             <Trans>
               <p>
                 There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most
-                traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.
+                traders qualify for the base tier; reach out and we'll confirm your rate.
               </p>
             </Trans>
           </FaqItem>
