@@ -1,0 +1,100 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - button "Deposit gas payment token" [ref=e3] [cursor=pointer]
+    - generic [ref=e5]:
+      - alert [ref=e6]:
+        - generic [ref=e9]:
+          - generic [ref=e10]: Deactivate 1CT
+          - generic [ref=e11]:
+            - generic [ref=e13]:
+              - img [ref=e14]
+              - generic [ref=e16]: Deactivation failed
+            - generic [ref=e17]: An unexpected error occurred. Please retry.
+      - button "close" [ref=e18] [cursor=pointer]:
+        - img [ref=e19]
+  - dialog "Settings" [active] [ref=e25]:
+    - generic [ref=e27]:
+      - generic [ref=e29]: Settings
+      - button "Close" [ref=e30] [cursor=pointer]:
+        - img [ref=e31]
+    - generic [ref=e35]:
+      - generic [ref=e37]:
+        - button "Trading settings" [ref=e38] [cursor=pointer]
+        - button "Display settings" [ref=e39] [cursor=pointer]
+        - button "Debug settings" [ref=e40] [cursor=pointer]
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]: Trading mode
+          - generic [ref=e46] [cursor=pointer]:
+            - img [ref=e48]
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - generic [ref=e52]:
+                  - generic [ref=e53]: Express
+                  - img [ref=e57]
+                - generic [ref=e59]: High execution reliability using premium RPCs
+              - generic [ref=e61]: Optimal
+          - generic [ref=e62] [cursor=pointer]:
+            - img [ref=e64]
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - generic [ref=e68]:
+                  - generic [ref=e69]: Express + One-Click
+                  - img [ref=e73]
+                - generic [ref=e75]: Seamless trading with Express reliability
+              - generic [ref=e77]: Fastest
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - img [ref=e81]
+              - generic [ref=e83]:
+                - text: 9.9999692 ETH remaining in old 1CT subaccount
+                - button "Withdraw" [ref=e84] [cursor=pointer]:
+                  - text: Withdraw
+                  - img [ref=e85]
+            - button [ref=e87] [cursor=pointer]:
+              - img [ref=e88]
+          - button "One-Click settings" [ref=e93] [cursor=pointer]:
+            - generic [ref=e96]: One-Click settings
+            - img [ref=e98]
+          - generic [ref=e100]:
+            - generic [ref=e101]: Gas payment token
+            - generic [ref=e103] [cursor=pointer]:
+              - generic [ref=e106]: GMX Account
+              - img [ref=e107]
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - generic [ref=e115]:
+              - text: Default allowed
+              - generic [ref=e116]:
+                - text: slippage
+                - img [ref=e117]
+            - generic [ref=e123]:
+              - textbox "1" [ref=e124]
+              - generic [ref=e125]: "%"
+          - generic [ref=e126]:
+            - generic [ref=e131]:
+              - text: TWAP number of
+              - generic [ref=e132]:
+                - text: parts
+                - img [ref=e133]
+            - textbox [ref=e137]: "5"
+          - generic [ref=e138]:
+            - generic [ref=e143]:
+              - text: Max network fee
+              - generic [ref=e144]:
+                - text: buffer
+                - img [ref=e145]
+            - generic [ref=e151]:
+              - textbox "0.3" [ref=e152]: "30"
+              - generic [ref=e153]: "%"
+          - generic [ref=e159]:
+            - text: Auto-cancel
+            - generic [ref=e160]:
+              - text: TP/SL
+              - img [ref=e161]
+          - generic [ref=e167]: Enable external swaps
+          - generic [ref=e172]: Set acceptable price impact
+```
