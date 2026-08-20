@@ -44,8 +44,9 @@ import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementCha
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import Tabs from "components/Tabs/Tabs";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import WarnIcon from "img/ic_warn.svg?react";
+import AlertIcon from "img/ic_alert.svg?react";
 
 import { GMX_DAO_LINKS } from "./constants";
 
@@ -482,16 +483,36 @@ export function StakeModal(props: {
                 />
               </div>
               <div className="flex justify-between text-12">
-                <span
-                  className={cx(
+                <TooltipWithPortal
+                  handleClassName={cx(
                     "font-medium",
                     exceedsLimit ? "text-red-500" : isApproachingLimit ? "text-yellow-300" : "text-typography-secondary"
                   )}
-                >
-                  <Trans>
-                    Safe unstake limit: {numberWithCommas(formatAmountFree(safeUnstakeLimit!, 18, 5))} GMX / esGMX
-                  </Trans>
-                </span>
+                  handle={
+                    <Trans>
+                      Safe unstake limit: {numberWithCommas(formatAmountFree(safeUnstakeLimit!, 18, 5))} GMX / esGMX
+                    </Trans>
+                  }
+                  content={
+                    <div className="flex flex-col gap-8">
+                      <div>
+                        <Trans>
+                          Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued
+                          rewards.
+                        </Trans>
+                      </div>
+                      <div>
+                        <Trans>
+                          Current safe limit:{" "}
+                          <span className="text-typography-primary numbers">
+                            {numberWithCommas(formatAmountFree(safeUnstakeLimit!, 18, 5))}
+                          </span>{" "}
+                          combined.
+                        </Trans>
+                      </div>
+                    </div>
+                  }
+                />
                 <span
                   className={cx(
                     "font-medium",
@@ -534,14 +555,14 @@ export function StakeModal(props: {
           )}
 
           {isApproachingLimit && !wouldResetPower && showSafeUnstakeBar && (
-            <ColorfulBanner color="yellow" icon={WarnIcon}>
+            <ColorfulBanner color="yellow" icon={AlertIcon}>
               <Trans>Unstaking this amount will bring you close to the 20% reset threshold</Trans>
             </ColorfulBanner>
           )}
 
           {activeTab === "unstake" && wouldResetPower && (
             <>
-              <ColorfulBanner color="red" icon={WarnIcon}>
+              <ColorfulBanner color="red" icon={AlertIcon}>
                 <div>
                   <Trans>
                     Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards

@@ -310,10 +310,6 @@ msgstr "Performance"
 msgid "Open fees"
 msgstr "Open fees"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Total earned"
-msgstr "Total earned"
-
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "May take a few minutes"
 msgstr "May take a few minutes"
@@ -1663,6 +1659,10 @@ msgstr "Virtual long token ID"
 msgid "Deactivating..."
 msgstr "Deactivating..."
 
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+msgid "Total pending claimable"
+msgstr "Total pending claimable"
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Not yet"
 msgstr "Not yet"
@@ -2366,8 +2366,7 @@ msgstr "PURPOSE"
 msgid "GMX pools"
 msgstr "GMX pools"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "{nativeTokenSymbol} rewards:"
 
@@ -2605,10 +2604,6 @@ msgstr "GMX pools can't fill this swap size, and no external route is currently 
 msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Coming soon"
-msgstr "Coming soon"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
 msgstr "Update Stop-Loss"
@@ -2659,6 +2654,7 @@ msgid "Short borrowing rate"
 msgstr "Short borrowing rate"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -2970,9 +2966,17 @@ msgstr "Show PnL after fees"
 msgid "No eligible holdings detected"
 msgstr "No eligible holdings detected"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Native ETH / AVAX"
+msgstr "Native ETH / AVAX"
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "GM Pools"
+msgstr "GM Pools"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
@@ -3274,10 +3278,6 @@ msgstr "Net rate projection:"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX market token price chart"
 msgstr "GMX market token price chart"
-
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Lifetime LP rewards"
-msgstr "Lifetime LP rewards"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
@@ -4519,6 +4519,7 @@ msgstr "Withdrawal failed"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "esGMX"
 msgstr "esGMX"
 
@@ -4617,6 +4618,10 @@ msgstr "Withdrawing..."
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims match the selected filters"
 msgstr "No claims match the selected filters"
+
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Staking"
+msgstr "Staking"
 
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
@@ -5425,9 +5430,9 @@ msgstr "Positive impact factor"
 msgid "All trades"
 msgstr "All trades"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "GM pools:"
-msgstr "GM pools:"
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
+msgstr "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
@@ -6125,6 +6130,10 @@ msgstr "Lifecycle settlement"
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Expected 365d Fees"
+msgstr "Expected 365d Fees"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Claims unavailable on Avalanche Fuji"
@@ -6414,6 +6423,10 @@ msgstr "GLV (GMX Liquidity Vault) holds various GM tokens, giving you diversifie
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Paused"
+msgstr "Paused"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -6430,10 +6443,6 @@ msgstr "Details"
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
 msgstr "GLV bonus incentive"
-
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Lifetime staking rewards"
-msgstr "Lifetime staking rewards"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
@@ -6533,10 +6542,6 @@ msgstr "Activate someone's referral code to receive a permanent discount on all 
 msgid "See more"
 msgstr "See more"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Total pending rewards"
-msgstr "Total pending rewards"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
@@ -6603,6 +6608,10 @@ msgstr "Your rebates depend on your tier level, which you can view <0>here</0>. 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr "Swap token unavailable"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "GLV Vaults"
+msgstr "GLV Vaults"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -6709,6 +6718,10 @@ msgstr "Voting"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "Update TWAP Swap part"
+
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+msgid "Total Investment Value"
+msgstr "Total Investment Value"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
@@ -6884,6 +6897,10 @@ msgstr "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "Max network fee includes a buffer for gas spikes. Unused fees refunded."
+
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+msgid "Investment Value"
+msgstr "Investment Value"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
@@ -7997,6 +8014,12 @@ msgstr "Version:"
 msgid "Available"
 msgstr "Available"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Last 7 days"
+msgstr "Last 7 days"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap profit fee"
 msgstr "Swap profit fee"
@@ -8612,6 +8635,7 @@ msgstr "Min deposit: {0}"
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1h"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -8739,6 +8763,10 @@ msgstr "market"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Trade from wallet or GMX Account"
 msgstr "Trade from wallet or GMX Account"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
+msgstr "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
@@ -9467,6 +9495,10 @@ msgstr "Claim {0}"
 msgid "Borrowing exponent short"
 msgstr "Borrowing exponent short"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Expected 365d"
+msgstr "Expected 365d"
+
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -9981,10 +10013,6 @@ msgstr "Reserved {directionLabel}"
 msgid "Distribution rate per day, USD"
 msgstr "Distribution rate per day, USD"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "GMX rewards:"
-msgstr "GMX rewards:"
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "Wallet trading only on these networks"
@@ -10045,6 +10073,10 @@ msgstr "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messagi
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr "Loading position..."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Current safe limit: <0>{0}</0> combined."
+msgstr "Current safe limit: <0>{0}</0> combined."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."
@@ -10151,10 +10183,6 @@ msgstr "Share and receive rebates"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Telegram account"
 msgstr "Telegram account"
-
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Total investment value"
-msgstr "Total investment value"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Performance and chart data are based on UTC times"
@@ -10485,6 +10513,10 @@ msgstr "Deposit submitted"
 msgid "Yield vaults"
 msgstr "Yield vaults"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "7d Earnings"
+msgstr "7d Earnings"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
 msgstr "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
@@ -10643,6 +10675,10 @@ msgstr "Top PnL ($)"
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
 msgstr "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "LP"
+msgstr "LP"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Leverage trading terminal"
@@ -10818,7 +10854,7 @@ msgstr "Used referral code"
 msgid "Integrating or shipping"
 msgstr "Integrating or shipping"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "Vested claimable GMX:"
 msgstr "Vested claimable GMX:"
 
@@ -10826,6 +10862,8 @@ msgstr "Vested claimable GMX:"
 msgid "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
 msgstr "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
 
+#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
@@ -11214,8 +11252,7 @@ msgstr "Escrowed GMX APR"
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "Vesting only available on {chainNames}. Switch networks to continue."
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "esGMX rewards:"
 msgstr "esGMX rewards:"
 
@@ -11223,7 +11260,6 @@ msgstr "esGMX rewards:"
 msgid "Optimal usage factor long"
 msgstr "Optimal usage factor long"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -11751,13 +11787,13 @@ msgstr "Language"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
 
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+msgid "My earnings"
+msgstr "My earnings"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "Indices"
-
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "GLV vaults:"
-msgstr "GLV vaults:"
 
 #: src/components/DownloadAsCsv/DownloadAsCsv.tsx
 msgid "Download as CSV"
@@ -11892,6 +11928,11 @@ msgstr "Insufficient funds for order costs"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Lifetime rewards"
+msgstr "Lifetime rewards"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -12208,7 +12249,7 @@ msgstr "Swap impact amount {0}"
 msgid "Join an anonymous one-on-one chat to share your experience"
 msgstr "Join an anonymous one-on-one chat to share your experience"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "GMX staked rewards:"
 msgstr "GMX staked rewards:"
 
@@ -12239,6 +12280,10 @@ msgstr "Debug settings"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "Anonymous chat with GMX"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Lifetime"
+msgstr "Lifetime"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
@@ -12443,6 +12488,10 @@ msgstr "Approval submitted<0/><1/><2>View</2>"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL CAP LONG"
 msgstr "POOL CAP LONG"
+
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+msgid "Total lifetime earned"
+msgstr "Total lifetime earned"
 
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"
