@@ -10,7 +10,9 @@ import type { IncentivesConfig } from "./types";
 import { useIncentivesIndexerUrl } from "./useIncentivesIndexerUrl";
 
 const CONFIG_SAFETY_REFRESH_INTERVAL = 5 * CONFIG_UPDATE_INTERVAL;
-const BOUNDARY_RETRY_DELAYS = [5_000, 15_000, 30_000];
+// The last retry must land beyond the indexer's 60s response cache TTL,
+// which can serve the previous epoch right after a boundary.
+const BOUNDARY_RETRY_DELAYS = [5_000, 15_000, 30_000, 45_000];
 
 export function useIncentivesConfig(chainId: number, params: { enabled?: boolean } = {}) {
   const { enabled = true } = params;
@@ -54,7 +56,8 @@ export function useIncentivesConfig(chainId: number, params: { enabled?: boolean
 
       if (cancelled) return;
 
-      if (nextConfig?.epochTimestamp !== data.epochTimestamp) {
+      const hasRolledOver = nextConfig !== undefined && nextConfig?.epochTimestamp !== data.epochTimestamp;
+      if (hasRolledOver) {
         revalidatedBoundaryRef.current = { boundary, endpoint };
         return;
       }
