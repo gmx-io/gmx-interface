@@ -86,13 +86,19 @@ vi.mock("pages/RewardsPage/components/RewardsTiersTab", () => ({
   RewardsTiersTab: ({
     config,
     summaryUnavailable,
+    statusLoading,
+    statusUnavailable,
   }: {
     config: { epochTimestamp?: number };
     summaryUnavailable: boolean;
+    statusLoading: boolean;
+    statusUnavailable: boolean;
   }) => (
     <div
       data-config-epoch={config.epochTimestamp}
       data-summary-unavailable={String(summaryUnavailable)}
+      data-status-loading={String(statusLoading)}
+      data-status-unavailable={String(statusUnavailable)}
       data-testid="tiers-tab"
     />
   ),
@@ -155,6 +161,7 @@ function getPageData(
     allTimeSummary: undefined,
     allTimeSummaryLoaded: false,
     isMixedEpoch: false,
+    isMixedEpochPersistent: false,
     accountStatusError: undefined,
     allTimeSummaryError: undefined,
     accountStatusLoading: false,
@@ -290,6 +297,35 @@ describe("RewardsPage", () => {
 
     expect(screen.getByText("Rewards are available on Arbitrum")).toBeDefined();
     expect(screen.getByTestId("location").textContent).toBe("/rewards/leaderboard?epoch=previous");
+  });
+
+  it("masks a transient mixed epoch as loading without the warning banner", () => {
+    mockUseRewardsPageData.mockReturnValue({
+      ...getPageData({ status: "active", config: mockConfig, isStale: false }),
+      isMixedEpoch: true,
+    });
+
+    renderPage("/rewards");
+
+    expect(screen.queryByText("The new epoch is being indexed. Account totals will update shortly.")).toBeNull();
+    const tiersTab = screen.getByTestId("tiers-tab");
+    expect(tiersTab.getAttribute("data-status-loading")).toBe("true");
+    expect(tiersTab.getAttribute("data-status-unavailable")).toBe("false");
+  });
+
+  it("shows the mixed-epoch warning and unavailable status once the mismatch persists", () => {
+    mockUseRewardsPageData.mockReturnValue({
+      ...getPageData({ status: "active", config: mockConfig, isStale: false }),
+      isMixedEpoch: true,
+      isMixedEpochPersistent: true,
+    });
+
+    renderPage("/rewards");
+
+    expect(screen.getByText("The new epoch is being indexed. Account totals will update shortly.")).toBeDefined();
+    const tiersTab = screen.getByTestId("tiers-tab");
+    expect(tiersTab.getAttribute("data-status-loading")).toBe("false");
+    expect(tiersTab.getAttribute("data-status-unavailable")).toBe("true");
   });
 
   it("renders the active tab with the current chain and account", () => {
