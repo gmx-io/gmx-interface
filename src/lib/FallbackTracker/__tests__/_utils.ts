@@ -71,6 +71,7 @@ export const createMockEndpointStats = <TCheckStats>(
 ): EndpointStats<TCheckStats> => ({
   endpoint: testEndpoints.endpoint1,
   banned: undefined,
+  bannedEmitted: undefined,
   failureTimestamps: [],
   failureThrottleTimeout: undefined,
   checkResults: [],

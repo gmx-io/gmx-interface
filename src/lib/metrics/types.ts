@@ -639,6 +639,14 @@ export type KyberSwapQuoteTiming = {
   event: "kyberSwap.quote.timing";
 };
 
+export type WorkerMulticallErrorCounter = {
+  event: "worker.multicall.error";
+  data: {
+    errorName: string;
+    errorMessage: string;
+  };
+};
+
 export type MulticallRequestCounter = {
   event: `multicall.request.${"call" | "timeout" | "error"}`;
   data: {
