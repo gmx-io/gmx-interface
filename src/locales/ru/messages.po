@@ -1120,6 +1120,10 @@ msgstr "Максимальная точность буфера сетевой к
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your income"
+msgstr "Оценить свой доход"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -1188,6 +1192,10 @@ msgstr "{0} <0/><1> до </1>{1} <2/>"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr "Не удалось проверить доступность кода на {0}. Вы всё равно можете создать код, но он может быть уже занят в этих сетях."
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
+msgstr "Из расчёта эффективной комиссии ~0,05% за полный цикл сделки на перпах GMX.<0/>Только для иллюстрации — точную ставку деск подтвердит при подключении."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
@@ -3037,10 +3045,6 @@ msgstr "ВРЕМЯ ОТВЕТА"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade (ранее GMX Solana) размещён на другом сайте и управляется другой командой, поэтому работа может незначительно отличаться"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>Фиксированного порога нет — деск определяет ваш уровень исходя из текущего и ожидаемого месячного объёма. Большинство трейдеров получают право на участие начиная примерно с $5–10 млн в месяц; свяжитесь с нами, и мы подтвердим вашу ставку.</0>"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "Вы не совершали сделок за выбранный период"
@@ -3186,6 +3190,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "Автоматически ребалансируемое хранилище GM токенов, которое накапливает комиссии от торговли с кредитным плечом и свопов. Обеспечено {0} и {1}."
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
+msgstr "<0>Фиксированного порога нет — деск определяет ваш уровень по недавнему и ожидаемому месячному объёму. Большинство трейдеров попадают в базовый уровень; свяжитесь с нами, и мы подтвердим вашу ставку.</0>"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3418,10 +3426,6 @@ msgstr "Объём пула влияния на цену"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
-msgstr "Из расчёта эффективной комиссии ~0,06% за полный цикл сделки на перпах GMX.<0/>Только для иллюстрации — точную ставку деск подтвердит при подключении."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -6222,6 +6226,10 @@ msgstr "Комиссия за вывод"
 msgid "TP"
 msgstr "TP"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your savings (at 25%)"
+msgstr "Ваша экономия (при 25%)"
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
@@ -7955,10 +7963,6 @@ msgstr "Поддерживается"
 msgid "Timeline"
 msgstr "Сроки"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
-msgstr "<0>Нет, вы торгуете полностью со своего собственного кошелька на GMX. Мы никогда не храним ваши активы — скидки и выплаты происходят ончейн прямо на ваш адрес.</0>"
-
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -8343,6 +8347,10 @@ msgstr "Мои активы"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "Вывести со счета GMX"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
+msgstr "<0>Нет. Ваши деньги ни в какой момент не находятся на счёте под контролем GMX. Трейдеры торгуют напрямую со своего кошелька или со своего пополненного GMX Account — контракта, который вы контролируете и из которого можете вывести средства в любой момент.</0><1>Аффилиаты ничего не вносят. Вознаграждения накапливаются в контрактах, и вы сами клеймите их ончейн на свой адрес.</1>"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Wallet funds on {sourceChainName} are not used directly for GMX trades."
@@ -9477,10 +9485,6 @@ msgstr "Вы"
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Close position"
 msgstr "Закрыть позицию"
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
-msgstr "Иллюстративно, из расчёта эффективной комиссии ~0,06%.<0/>Фактический доход зависит от уровня аффилиата и активности каждого трейдера."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -11090,6 +11094,10 @@ msgstr "Выведено {balanceFormatted} на основной аккаунт
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
 msgstr "{positionName} — ошибка расчёта"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
+msgstr "Иллюстративно, из расчёта эффективной комиссии ~0,05%.<0/>Фактический доход зависит от уровня аффилиата и активности каждого трейдера."
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"

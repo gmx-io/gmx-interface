@@ -1120,6 +1120,10 @@ msgstr "最大网络费用缓冲精度为 0.01%"
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your income"
+msgstr "预估收益金额"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -1188,6 +1192,10 @@ msgstr "{0} <0/><1> 到 </1>{1} <2/>"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr "无法在 {0} 上验证代码可用性。您仍可创建该代码，但在这些网络上可能已被占用。"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
+msgstr "按 GMX 永续合约约 0.05% 的实际往返费率估算。<0/>仅供参考——您的确切费率将在注册时由服务台确认。"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
@@ -3037,10 +3045,6 @@ msgstr "RESPONSE TIME"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade（前身为 GMX Solana）托管在另一个网站上，由另一支团队运营，因此体验可能略有不同"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>没有固定门槛——交易台会根据您近期及预期的月交易量为您设定等级。大多数交易者从约 500 万–1000 万美元/月起即可符合条件；请联系我们，我们将为您确认费率。</0>"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "您在所选时间段内没有交易记录"
@@ -3186,6 +3190,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "GM 代币自动再平衡金库，通过杠杆交易和兑换累积费用。由 {0} 和 {1} 支持。"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
+msgstr "<0>没有固定门槛 — 团队会根据您近期及预期的月交易量设定您的等级。大多数交易者符合基础等级；联系我们,我们将确认您的费率。</0>"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3418,10 +3426,6 @@ msgstr "影响池金额"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
-msgstr "按 GMX 永续合约约 0.06% 的实际往返费率估算。<0/>仅供参考——您的确切费率将在注册时由服务台确认。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -6222,6 +6226,10 @@ msgstr "提取费用"
 msgid "TP"
 msgstr "TP"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your savings (at 25%)"
+msgstr "您节省的金额（25%）"
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
@@ -7955,10 +7963,6 @@ msgstr "支持者"
 msgid "Timeline"
 msgstr "时间表"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
-msgstr "<0>不会。您完全通过自己的钱包在 GMX 上交易。我们绝不托管您的资产——折扣与收益都会以链上方式结算至您的地址。</0>"
-
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -8343,6 +8347,10 @@ msgstr "我的资产"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "从 GMX 账户提取"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
+msgstr "<0>不会。您的资金在任何时刻都不会存放在由 GMX 控制的账户中。交易者直接通过自己的钱包交易，或使用已入金的 GMX Account——一个由您掌控、可随时提取的合约。</0><1>联盟推广者无需存入任何资金。奖励累积在合约中，由您自己在链上领取至您的地址。</1>"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Wallet funds on {sourceChainName} are not used directly for GMX trades."
@@ -9477,10 +9485,6 @@ msgstr "您"
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Close position"
 msgstr "平仓"
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
-msgstr "仅供参考，按约 0.06% 的实际费率估算。<0/>实际收益取决于联盟等级及每位交易者的活跃度。"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -11090,6 +11094,10 @@ msgstr "已提取 {balanceFormatted} 至主账户"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle"
 msgstr "{positionName} 结算失败"
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
+msgstr "仅供参考，按约 0.05% 的实际费率估算。<0/>实际收益取决于联盟等级及每位交易者的活跃度。"
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
