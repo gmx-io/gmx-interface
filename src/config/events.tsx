@@ -43,7 +43,6 @@ export type EventData = {
   variant?: AnnouncementVariant;
   chains?: number[];
   link?: EventLink;
-  links?: EventLink[];
 
   requiresOpenPosition?: string;
 };
