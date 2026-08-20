@@ -29,12 +29,12 @@ describe("getUrlWithoutLegacyHashRoute", () => {
     );
   });
 
-  // Relocating these out of the query once broke social login: the Privy SDK reads them from
-  // window.location.search to finish the OAuth redirect flow.
-  it("keeps Privy OAuth redirect params in the query", () => {
-    expect(getUrlWithoutLegacyHashRoute("https://app.gmx.io/?privy_oauth_code=abc&privy_oauth_state=xyz#/trade")).toBe(
-      "https://app.gmx.io/trade?privy_oauth_code=abc&privy_oauth_state=xyz"
-    );
+  // The Privy SDK reads these from window.location.search to finish the OAuth redirect flow, and
+  // any rewrite mid-flow silently breaks social login — the url must be left completely alone.
+  it("leaves a url with Privy OAuth redirect params untouched", () => {
+    expect(
+      getUrlWithoutLegacyHashRoute("https://app.gmx.io/?privy_oauth_code=abc&privy_oauth_state=xyz#/trade")
+    ).toBeUndefined();
   });
 
   it("keeps the anchor of the hash route", () => {
@@ -82,6 +82,39 @@ describe("watchLegacyHashUrl", () => {
 
     const target = new URL(navigate.mock.calls[0][0]);
     expect(`${target.pathname}${target.search}`).toBe("/trade?ref=CODE");
+    stop();
+  });
+
+  // The default navigation must stay in-document: a `location.replace` reloads the app and kills
+  // whatever is in flight, a wallet connect above all.
+  it("rewrites the url in place by default, without a document navigation", () => {
+    window.history.replaceState({}, "", "/");
+    const onPopState = vi.fn();
+    window.addEventListener("popstate", onPopState);
+    const stop = watchLegacyHashUrl();
+
+    window.history.replaceState({}, "", "/#/builders?utm_source=x");
+    window.dispatchEvent(new Event("hashchange"));
+
+    expect(`${window.location.pathname}${window.location.search}`).toBe("/builders?utm_source=x");
+    expect(window.location.hash).toBe("");
+    // react-router re-reads the location on popstate, but dismisses events with an undefined state.
+    expect(onPopState).toHaveBeenCalledTimes(1);
+    expect(onPopState.mock.calls[0][0].state).not.toBeUndefined();
+
+    window.removeEventListener("popstate", onPopState);
+    stop();
+  });
+
+  it("does not navigate while a Privy OAuth redirect is being finished", () => {
+    window.history.replaceState({}, "", "/?privy_oauth_code=abc");
+    const navigate = vi.fn();
+    const stop = watchLegacyHashUrl(navigate);
+
+    window.history.replaceState({}, "", "/?privy_oauth_code=abc#/trade");
+    window.dispatchEvent(new Event("hashchange"));
+
+    expect(navigate).not.toHaveBeenCalled();
     stop();
   });
 

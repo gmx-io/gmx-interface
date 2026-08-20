@@ -622,6 +622,7 @@ msgid "Funding"
 msgstr "Financiación"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/constants.ts
 msgid "Deposit margin"
@@ -1143,6 +1144,10 @@ msgstr "La precisión máxima del buffer de comisión de red es 0.01%"
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Estimate your income"
+msgstr "Calcule sus ingresos"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Replace margin deposit"
@@ -1216,6 +1221,10 @@ msgstr "{0} <0/><1> a </1>{1} <2/>"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr "No se ha podido verificar la disponibilidad del código en {0}. Aún puede crear el código, pero es posible que ya esté en uso en esas redes."
+
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
+msgstr "Asume una comisión efectiva de ida y vuelta de ~0,05% en perps de GMX.<0/>Solo ilustrativo: el desk confirmará su tarifa exacta al registrarse."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
@@ -3079,10 +3088,6 @@ msgstr "TIEMPO DE RESPUESTA"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
 msgstr "GMTrade (anteriormente GMX Solana) está alojado en otro sitio web y gestionado por un equipo diferente, por lo que la experiencia puede variar ligeramente"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify starting around $5-10M/month; reach out and we'll confirm your rate.</0>"
-msgstr "<0>No hay un límite fijo — el equipo determina su nivel según su volumen mensual reciente y esperado. La mayoría de los traders califican a partir de unos $5-10M/mes; contáctenos y le confirmaremos su tarifa.</0>"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "No ha operado durante el período seleccionado"
@@ -3229,6 +3234,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "Vault de tokens GM con reequilibrio automático que acumula comisiones del trading con apalancamiento y los intercambios. Respaldado por {0} y {1}."
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
+msgstr "<0>No hay un límite fijo — el equipo establece tu nivel según tu volumen mensual reciente y previsto. La mayoría de los traders califican para el nivel base; contáctanos y confirmaremos tu tarifa.</0>"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3462,10 +3471,6 @@ msgstr "Cantidad del pool de impacto"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Assumes a ~0.06% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
-msgstr "Asume una comisión efectiva de ida y vuelta de ~0,06% en perps de GMX.<0/>Solo ilustrativo: el desk confirmará su tarifa exacta al registrarse."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -6286,6 +6291,10 @@ msgstr "Comisión de retirada"
 msgid "TP"
 msgstr "TP"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Your savings (at 25%)"
+msgstr "Su ahorro (al 25%)"
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Rest API"
 msgstr "Rest API"
@@ -8038,10 +8047,6 @@ msgstr "Soportado por"
 msgid "Timeline"
 msgstr "Plazos"
 
-#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
-msgid "<0>No, You trade entirely from your own wallet on GMX. We never hold your assets — discounts and payouts settle on-chain to your address.</0>"
-msgstr "<0>No. Usted opera en todo momento desde su propio monedero en GMX. Nunca custodiamos sus activos — los descuentos y pagos se liquidan on-chain en su dirección.</0>"
-
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -8431,6 +8436,10 @@ msgstr "Mis activos"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "Retirar de Cuenta GMX"
+
+#: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
+msgstr "<0>No. En ningún momento hay una cuenta controlada por GMX que custodie su dinero. Los traders operan directamente desde su propio monedero o desde su GMX Account con fondos; un contrato que usted controla y del que puede retirar cuando quiera.</0><1>Los afiliados nunca depositan nada. Las recompensas se acumulan en los contratos y usted mismo las reclama, on-chain, en su dirección.</1>"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Wallet funds on {sourceChainName} are not used directly for GMX trades."
@@ -9421,6 +9430,7 @@ msgstr "Capacidad máxima del pool alcanzada"
 msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "(<0>{0}</0> del importe de {operationText})"
 
+#: src/components/Errors/errorToasts.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
@@ -9573,10 +9583,6 @@ msgstr "Tú"
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Close position"
 msgstr "Cerrar posición"
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Illustrative, based on a ~0.06% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
-msgstr "Ilustrativo, basado en una comisión efectiva de ~0,06%.<0/>Las ganancias reales dependen del nivel de afiliado y de la actividad de cada trader."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -10461,10 +10467,6 @@ msgstr "Discusión comunitaria de GMX"
 msgid "Sell GM"
 msgstr "Vender GM"
 
-#: src/components/Errors/errorToasts.tsx
-msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View</4>"
-msgstr "Error en la validación de la tarifa de ejecución.<0/><1/>{suggestText}<2/><3/><4>Ver</4>"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order can't be updated. Type doesn't support modifications"
 msgstr "La orden no puede actualizarse. El tipo no admite modificaciones"
@@ -11197,6 +11199,10 @@ msgstr "{balanceFormatted} retirados a la cuenta principal"
 msgid "{positionName} failed to settle"
 msgstr "{positionName} no se ha podido liquidar"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
+msgstr "Ilustrativo, basado en una comisión efectiva de ~0,05%.<0/>Las ganancias reales dependen del nivel de afiliado y de la actividad de cada trader."
+
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
 msgstr "Recibir en este monedero"
@@ -11353,6 +11359,10 @@ msgstr ""
 msgid "Stabilize Protocol"
 msgstr "Protocolo Stabilize"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Execution fee validation failed.<0/><1/>{suggestText}"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
 msgstr "Cancelar TP/SL automáticamente"
@@ -11500,6 +11510,10 @@ msgstr "Pruebas de permisos de tokens"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liquidation price"
 msgstr "Precio de liquidación no válido"
+
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "The relay did not report an outcome for this operation."
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
