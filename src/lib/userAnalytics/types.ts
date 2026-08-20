@@ -295,13 +295,6 @@ export type ReferralShareEvent = {
   };
 };
 
-export type LandingPageAgreementConfirmationEvent = {
-  event: "LandingPageAction";
-  data: {
-    action: "AgreementConfirmationDialogShown" | "AgreementConfirmationAgreeClick";
-  };
-};
-
 export type DepthChartInteractionEvent = {
   event: "TradePageAction";
   data: {

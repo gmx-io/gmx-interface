@@ -20,7 +20,6 @@ import {
   TransferHistoryTitle,
   WithdrawalScreen,
 } from "./GmxAccountModalShared";
-import { useIsActiveAccountEmbeddedWallet } from "./hooks";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
 import { WalletReceiveOptionsView } from "./WalletReceiveOptionsView";
@@ -88,7 +87,6 @@ function OverlayContent({ view }: { view: OverlayView }) {
 export function GmxAccountModalDesktop({ account }: { account: string }) {
   const [modalState, setModalState] = useGmxAccountModalOpen();
   const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
-  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
 
   const isOpen = modalState !== false;
   const view: GmxAccountModalView = typeof modalState === "string" ? modalState : "main";
@@ -100,12 +98,12 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
   const handleOverlayClose = (nextVisible: boolean) => {
     if (nextVisible) return;
 
-    if (view === "walletReceive" && isEmbeddedWallet) {
+    if (view === "walletReceive") {
       setModalState("walletReceiveOptions");
       return;
     }
 
-    if ((view === "walletReceive" || view === "walletReceiveOptions") && walletReceiveViewBackTo !== undefined) {
+    if (view === "walletReceiveOptions" && walletReceiveViewBackTo !== undefined) {
       setModalState(walletReceiveViewBackTo);
       return;
     }
