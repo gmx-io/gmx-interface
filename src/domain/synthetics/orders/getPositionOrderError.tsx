@@ -11,7 +11,7 @@ import {
 import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { NextPositionValues } from "domain/synthetics/trade";
 import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
-import { PositionMarginFailureReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
 export function getPositionOrderError({
   positionOrder,
@@ -132,7 +132,7 @@ export function getPositionOrderError({
     resultingPositionMarginState?.isLiquidatable &&
     isIncreaseExecutableNow
   ) {
-    return resultingPositionMarginState.reason === PositionMarginFailureReason.MinCollateralForLeverage
+    return getIsMaxLeverageMarginReason(resultingPositionMarginState.reason)
       ? t`Max leverage exceeded`
       : t`Invalid liquidation price`;
   }

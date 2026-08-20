@@ -456,9 +456,10 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
     const state = getOrderIncreaseResultingPositionMarginState({
       ...baseArgs,
       order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
-      // 100 000 of size now worth 99 000 → 1 000 of loss against 1 100 of margin,
-      // while the resulting 110 000 of size needs 1 100
-      position: makeLosingPosition(expandDecimals(100_000, 30), expandDecimals(99_000, 30), expandDecimals(100, 30)),
+      // 100 000 of size now worth 99 000 → 1 000 of loss against 1 300 of margin: the raw-collateral
+      // sufficiency gate passes (1 300 > 1 100 the resulting 110 000 of size needs), while the
+      // pnl-aware validation is left with ~300
+      position: makeLosingPosition(expandDecimals(100_000, 30), expandDecimals(99_000, 30), expandDecimals(300, 30)),
     });
 
     expect(state?.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);

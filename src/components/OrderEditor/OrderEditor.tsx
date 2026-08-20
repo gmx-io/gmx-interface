@@ -122,7 +122,7 @@ import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTra
 import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import {
   getIncreaseResultingPositionMarginState,
-  PositionMarginFailureReason,
+  getIsMaxLeverageMarginReason,
 } from "sdk/utils/trade/increaseMarginCheck";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
@@ -278,7 +278,7 @@ export function OrderEditor(p: Props) {
   const isIncreaseExecutableNow = useSelector(selectOrderEditorIsIncreaseExecutableNow);
 
   const isResultingPositionMaxLeverageError =
-    resultingPositionMarginState?.reason === PositionMarginFailureReason.MinCollateralForLeverage;
+    getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason);
 
   const isResultingPositionBlocking = isIncreaseExecutableNow && resultingPositionMarginState?.isLiquidatable === true;
 

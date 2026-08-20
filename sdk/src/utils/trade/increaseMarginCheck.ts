@@ -1,5 +1,5 @@
 import { capPositionImpactUsdByMaxPriceImpactFactor, getPriceImpactForPosition } from "utils/fees";
-import { getMarketInfoWithOpenInterestDelta, getPriceForPnl } from "utils/markets";
+import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
 import { getPositionPnlUsd } from "utils/positions";
@@ -11,6 +11,14 @@ export enum PositionMarginFailureReason {
   MinCollateral = "min collateral",
   NonPositiveRemainingMargin = "< 0",
   MinCollateralForLeverage = "min collateral for leverage",
+  InsufficientCollateralUsd = "insufficient collateral usd",
+}
+
+export function getIsMaxLeverageMarginReason(reason: PositionMarginFailureReason | undefined): boolean {
+  return (
+    reason === PositionMarginFailureReason.MinCollateralForLeverage ||
+    reason === PositionMarginFailureReason.InsufficientCollateralUsd
+  );
 }
 
 export type PositionMarginState = {
@@ -247,12 +255,45 @@ export function getIncreaseResultingPositionMarginState(
     sizeDeltaInTokens,
   });
 
+  const nextCollateralAmountClamped = nextCollateralAmount < 0n ? 0n : nextCollateralAmount;
+
+  const remainingCollateralUsdForOpenInterest = convertToUsd(
+    nextCollateralAmountClamped,
+    collateralToken.decimals,
+    collateralToken.prices.minPrice
+  )!;
+
+  const minCollateralFactorMultiplier = isLong
+    ? nextMarketInfo.minCollateralFactorForOpenInterestLong
+    : nextMarketInfo.minCollateralFactorForOpenInterestShort;
+
+  let minCollateralFactorForOpenInterest = applyFactor(
+    getOpenInterestUsd(nextMarketInfo, isLong),
+    minCollateralFactorMultiplier
+  );
+
+  if (nextMarketInfo.minCollateralFactor > minCollateralFactorForOpenInterest) {
+    minCollateralFactorForOpenInterest = nextMarketInfo.minCollateralFactor;
+  }
+
+  const minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
+
+  if (remainingCollateralUsdForOpenInterest < minCollateralUsdForOpenInterest) {
+    return {
+      isLiquidatable: true,
+      reason: PositionMarginFailureReason.InsufficientCollateralUsd,
+      remainingCollateralUsd: remainingCollateralUsdForOpenInterest,
+      minCollateralUsd,
+      minCollateralUsdForLeverage: minCollateralUsdForOpenInterest,
+    };
+  }
+
   return getPositionMarginState({
     marketInfo: nextMarketInfo,
     collateralToken,
     sizeInUsd: nextSizeInUsd,
     sizeInTokens: nextSizeInTokens,
-    collateralAmount: nextCollateralAmount < 0n ? 0n : nextCollateralAmount,
+    collateralAmount: nextCollateralAmountClamped,
     pendingImpactAmount: nextPendingImpactAmount,
     minCollateralUsd,
     isLong,

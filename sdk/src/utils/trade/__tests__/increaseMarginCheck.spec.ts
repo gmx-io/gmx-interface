@@ -10,6 +10,7 @@ import {
   PositionMarginFailureReason,
   type PositionMarginStateParams,
   getIncreaseResultingPositionMarginState,
+  getIsMaxLeverageMarginReason,
   getPositionMarginState,
 } from "utils/trade/increaseMarginCheck";
 
@@ -603,6 +604,65 @@ describe("contract parity — MarketIncreaseOrder «validates collateral amount�
     expect(state?.minCollateralUsdForLeverage).toBe(expandDecimals(400, USD_DECIMALS));
     expect(state?.isLiquidatable).toBe(false);
     expect(state?.reason).toBeUndefined();
+  });
+});
+
+describe("getIncreaseResultingPositionMarginState — open-interest min collateral gate", () => {
+  // 2e-8 multiplier: with 1 000 000 of post-order side OI the OI-scaled factor is 2%,
+  // above the 1% market minCollateralFactor
+  const OI_MULTIPLIER = expandDecimals(2, 22);
+
+  function gateArgs(collateralUsd: number, marketOverrides: Record<string, bigint | boolean> = {}) {
+    return {
+      marketInfo: buildMarket({
+        minCollateralFactorForOpenInterestLong: OI_MULTIPLIER,
+        longInterestUsd: expandDecimals(990_000, USD_DECIMALS),
+        ...marketOverrides,
+      }),
+      collateralToken: usdc,
+      isLong: true,
+      existingPosition: undefined,
+      sizeDeltaUsd: expandDecimals(10_000, USD_DECIMALS),
+      sizeDeltaInTokens: btcAmount(10_000),
+      collateralDeltaAmount: usdcAmount(collateralUsd),
+      minCollateralUsd: expandDecimals(1, USD_DECIMALS),
+      userReferralInfo: undefined,
+    };
+  }
+
+  it("fails with its own reason when the OI-scaled factor exceeds the market one", () => {
+    // post-order OI 1 000 000 → factor 2%, threshold 200; the plain leverage gate (1% → 100) passes
+    const state = getIncreaseResultingPositionMarginState(gateArgs(150));
+
+    expect(state?.isLiquidatable).toBe(true);
+    expect(state?.reason).toBe(PositionMarginFailureReason.InsufficientCollateralUsd);
+    expect(getIsMaxLeverageMarginReason(state?.reason)).toBe(true);
+    expect(state?.remainingCollateralUsd).toBe(expandDecimals(150, USD_DECIMALS));
+    expect(state?.minCollateralUsdForLeverage).toBe(expandDecimals(200, USD_DECIMALS));
+  });
+
+  it("passes at exact equality with the threshold", () => {
+    expect(getIncreaseResultingPositionMarginState(gateArgs(200))?.isLiquidatable).toBe(false);
+  });
+
+  it("evaluates the factor against the post-order open interest", () => {
+    // pre-order OI would give 1.98% → 198 and let 199 pass; post-order 2% → 200 rejects it
+    const state = getIncreaseResultingPositionMarginState(gateArgs(199));
+
+    expect(state?.reason).toBe(PositionMarginFailureReason.InsufficientCollateralUsd);
+  });
+
+  it("takes precedence over the leverage reason when both fail", () => {
+    expect(getIncreaseResultingPositionMarginState(gateArgs(50))?.reason).toBe(
+      PositionMarginFailureReason.InsufficientCollateralUsd
+    );
+  });
+
+  it("falls back to the market factor when the multiplier contribution is smaller", () => {
+    // 10 000 of post-order OI → OI factor 0.02%, the 1% market factor governs → 150 passes
+    const state = getIncreaseResultingPositionMarginState(gateArgs(150, { longInterestUsd: 0n }));
+
+    expect(state?.isLiquidatable).toBe(false);
   });
 });
 

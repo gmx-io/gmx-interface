@@ -36,7 +36,7 @@ import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
-import { PositionMarginFailureReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -498,7 +498,7 @@ export function getIncreaseError(p: {
 
   if (
     isResultingPositionCheckBlocking &&
-    resultingPositionMarginState?.reason === PositionMarginFailureReason.MinCollateralForLeverage
+    getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason)
   ) {
     return {
       buttonErrorMessage: t`Max leverage exceeded`,
