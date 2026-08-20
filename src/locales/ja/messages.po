@@ -1516,10 +1516,18 @@ msgstr "ストップロス"
 msgid "External swap {0} to {1}"
 msgstr "外部スワップ {0} → {1}"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net wallet result"
+msgstr "ウォレットの純収支"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Use {0} for gas"
 msgstr "ガスに {0} を使用"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total margin funded"
+msgstr "拠出証拠金の合計"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Earn up to 15% in<0/> rebates as an affiliate"
@@ -2040,6 +2048,11 @@ msgstr "合計月間収益"
 msgid "Canceling {ordersText}..."
 msgstr "{ordersText} をキャンセル中..."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close (GMX balance)"
+msgstr "クローズ時の受取額（GMX残高）"
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "サイズ（ポジションの %）"
@@ -2345,6 +2358,10 @@ msgstr "GMX 残高"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Avalanche上の価格"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Lifecycle RPNL"
+msgstr "ライフサイクルRPNL"
 
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
@@ -3628,6 +3645,10 @@ msgstr "サイズを増加（Market）"
 msgid "Bridge transfer sent"
 msgstr "ブリッジ送金が送信されました"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Wallet received at close"
+msgstr "クローズ時のウォレット受取額"
+
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4174,10 +4195,6 @@ msgstr "正味の価格への影響 / 手数料"
 msgid "Order canceled"
 msgstr "注文がキャンセルされました"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Original margin reconciliation requires the opening row."
-msgstr "当初証拠金の照合にはオープン時の行が必要です。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM pool liquidity"
 msgstr ""
@@ -4587,6 +4604,10 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and accrued fees"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total margin funded (GMX balance)"
+msgstr "拠出証拠金の合計（GMX残高）"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
@@ -5559,6 +5580,10 @@ msgstr "月間取引高"
 msgid "Min TWAP parts: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close (GMX balance)"
+msgstr "クローズ前の受取額（GMX残高）"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
 msgstr "建玉 {directionLabel}"
@@ -6185,6 +6210,10 @@ msgstr "{chainName} への {nativeTokenSymbol} の送金オプションがあり
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Notifiが提供する通知はGMXと提携していません。購読することで、Notifiに提供した情報がその</0><1>プライバシーポリシー</1><2>および</2><3>利用規約</3>に従うことに同意します。"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Lifecycle settlement"
+msgstr "ライフサイクル精算"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
@@ -7568,6 +7597,10 @@ msgstr "メインアカウントに{balanceFormatted}を出金中…"
 msgid "Symbol (A to Z)"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
+msgstr "このポジションの履歴の一部を確実に照合できなかったため、ライフサイクル全体の照合は利用できません。"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText}が更新されました"
@@ -7728,6 +7761,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
 msgstr "THREAD"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "This position was funded from your GMX multichain balance; amounts are balance movements, not wallet transfers."
+msgstr "このポジションはGMXマルチチェーン残高から資金提供されています。金額は残高の移動であり、ウォレットの送金ではありません。"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fees reduce margin and affect liquidation price."
@@ -7895,6 +7932,10 @@ msgstr "オープン手数料 / 割引"
 msgid "Size, $"
 msgstr "サイズ, $"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Wallet received before close"
+msgstr "クローズ前のウォレット受取額"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "保証された流動性"
@@ -8030,6 +8071,10 @@ msgstr "手数料前の実現PnL"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
 msgstr "24時間%"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net lifecycle fees / impact"
+msgstr "ライフサイクルの正味手数料／価格影響"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading settings"
@@ -8464,6 +8509,10 @@ msgstr "今日"
 msgid "Link copied"
 msgstr "リンクをコピーしました"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total wallet received"
+msgstr "ウォレット受取額の合計"
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -8834,6 +8883,10 @@ msgstr ""
 msgid "Down"
 msgstr "停止"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received (GMX balance)"
+msgstr "受取額の合計（GMX残高）"
+
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide other assets"
 msgstr ""
@@ -9173,6 +9226,10 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Excludes claimed funding, price impact rebates and execution fees."
+msgstr "請求済みのファンディング、価格影響リベート、執行手数料は含まれません。"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -9940,6 +9997,10 @@ msgstr "価格および流動性の条件が満たされた時に執行されま
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "通常アカウント"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result (GMX balance)"
+msgstr "純収支（GMX残高）"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive (approximate)"
