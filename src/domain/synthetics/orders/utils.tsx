@@ -8,13 +8,16 @@ import {
   isLimitOrderType,
   isMarketOrderType,
   isOrderForPosition,
+  isPositionOrder,
   isSwapOrder,
   isSwapOrderType,
   isTwapOrder,
   isTwapSwapOrder,
 } from "sdk/utils/orders";
+import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 
+import { getMarginDepositProjections, getMarginDepositRiskLevel, isMarginDepositOrder } from "./marginDeposit";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
@@ -86,6 +89,63 @@ export function setOrderInfoTitle(order: OrderInfo, indexToken?: Token) {
   return order;
 }
 
+function getMarginDepositOrderErrors(p: {
+  order: PositionOrderInfo;
+  positionsInfoData: PositionsInfoData | undefined;
+  minCollateralUsd: bigint | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+}): OrderError[] {
+  const { order, positionsInfoData, minCollateralUsd, userReferralInfo } = p;
+
+  if (!positionsInfoData) {
+    return [];
+  }
+
+  const position = Object.values(positionsInfoData).find((pos) => isOrderForPosition(order, pos.key));
+
+  let riskLevel: ReturnType<typeof getMarginDepositRiskLevel> = "insufficient";
+
+  if (position) {
+    const projections = getMarginDepositProjections({
+      position,
+      depositAmount: order.initialCollateralDeltaAmount,
+      triggerPrice: order.triggerPrice,
+      minCollateralUsd,
+      userReferralInfo,
+      pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
+    });
+
+    riskLevel = getMarginDepositRiskLevel({
+      isLong: order.isLong,
+      triggerPrice: order.triggerPrice,
+      currentLiqPrice: position.liquidationPrice,
+      nextLiqPrice: projections?.nextLiqPrice,
+    });
+  }
+
+  if (riskLevel === "insufficient") {
+    return [
+      {
+        msg: t`This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation.`,
+        level: "error",
+        key: "marginDepositInsufficient",
+      },
+    ];
+  }
+
+  if (riskLevel === "beyondCurrentLiq") {
+    return [
+      {
+        msg: t`This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price.`,
+        level: "warning",
+        key: "marginDepositBeyondLiqPrice",
+      },
+    ];
+  }
+
+  return [];
+}
+
 export function getOrderErrors(p: {
   order: OrderInfo;
   marketsInfoData: MarketsInfoData;
@@ -96,6 +156,8 @@ export function getOrderErrors(p: {
   isSetAcceptablePriceImpactEnabled: boolean;
   jitLiquidityMap?: Record<string, JitLiquidityInfo>;
   nextPositionValues?: NextPositionValues;
+  minCollateralUsd?: bigint;
+  userReferralInfo?: UserReferralInfo;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
@@ -136,6 +198,16 @@ export function getOrderErrors(p: {
         }
       }
     }
+  } else if (isPositionOrder(order) && isMarginDepositOrder(order)) {
+    // the standard increase checks assume a positive size
+    errors.push(
+      ...getMarginDepositOrderErrors({
+        order,
+        positionsInfoData,
+        minCollateralUsd: p.minCollateralUsd,
+        userReferralInfo: p.userReferralInfo,
+      })
+    );
   } else {
     if (isSwapOrder(order)) {
       const swapPathLiquidity = getMaxSwapPathLiquidity({

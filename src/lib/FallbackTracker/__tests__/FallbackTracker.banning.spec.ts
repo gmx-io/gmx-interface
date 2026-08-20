@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { suppressConsole } from "lib/__testUtils__/_utils";
 
+import { addFallbackTrackerListener } from "../events";
 import { FallbackTracker } from "../FallbackTracker";
 import { createMockConfig, testEndpoints } from "./_utils";
 
@@ -231,6 +232,51 @@ describe("FallbackTracker - endpoint banning", () => {
       // Banning unused endpoint
       tracker2.banEndpoint(testEndpoints.fallback, "Test ban");
       expect(selectSpy2).toHaveBeenCalledWith({ keepPrimary: true });
+    });
+
+    it("should emit endpointBanned only on the first ban of an endpoint", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      const listener = vi.fn();
+      const cleanup = addFallbackTrackerListener("endpointBanned", tracker.trackerKey, listener);
+
+      tracker.banEndpoint(config.primary, "First ban");
+      const firstBanTimestamp = tracker.state.endpointsState[config.primary].banned?.timestamp;
+
+      vi.advanceTimersByTime(1000);
+      tracker.banEndpoint(config.primary, "Repeated ban");
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ endpoint: config.primary, reason: "First ban" }));
+
+      // Repeated ban still refreshes the banned state
+      const banned = tracker.state.endpointsState[config.primary].banned;
+      expect(banned?.reason).toBe("Repeated ban");
+      expect(banned?.timestamp).toBeGreaterThan(firstBanTimestamp!);
+
+      cleanup();
+    });
+
+    it("should emit endpointBanned again in a new session even when the ban is restored from cache", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      tracker.banEndpoint(config.primary, "First session ban");
+
+      // New session: the ban is restored from the localStorage cache
+      const restoredTracker = new FallbackTracker(createMockConfig());
+      expect(restoredTracker.state.endpointsState[config.primary].banned).toBeDefined();
+
+      const listener = vi.fn();
+      const cleanup = addFallbackTrackerListener("endpointBanned", restoredTracker.trackerKey, listener);
+
+      restoredTracker.banEndpoint(config.primary, "Second session ban");
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({ endpoint: config.primary, reason: "Second session ban" })
+      );
+
+      cleanup();
     });
 
     // Error handling

@@ -11,7 +11,7 @@ export default function TermsAndConditions() {
         <div className="text-center">
           <div className="text-heading-3">GMX</div>
           <div className="text-heading-4 my-24">Terms and Conditions</div>
-          <div className="text-14">Last modified: August 1st, 2022</div>
+          <div className="text-14">Last modified: August 20th, 2026</div>
         </div>
         <div className="mt-74 space-y-74">
           <div>
@@ -218,9 +218,9 @@ export default function TermsAndConditions() {
                   4.1. GMX.io own all rights, names, logos, and other marks used on the Site and the Interface,
                   including, without limitation, any copyrights in and to any content, code, data, or other materials
                   that you may access or use on or through the Site or the Interface; however, the code for the GMX
-                  Protocol and the Interface (app.GMX.io) deployed on IPFS is open-sourced. Except as expressly set
-                  forth herein, your use of or access to the Site or the Interface does not grant you any ownership or
-                  other rights therein.
+                  Protocol and the Interface (app.GMX.io) is open-sourced. Except as expressly set forth herein, your
+                  use of or access to the Site or the Interface does not grant you any ownership or other rights
+                  therein.
                 </p>
               </li>
               <li>
@@ -252,7 +252,7 @@ export default function TermsAndConditions() {
                 <p className="text-terms-body mb-24">
                   5.2. GMX.io may revise these Terms from time to time. We will notify you by updating the date at the
                   top of the Terms and maintaining a current version. The most current version of the Terms will always
-                  be at https://gmx.io/#/terms-and-conditions. All modifications will be effective when they are posted.
+                  be at https://gmx.io/terms-and-conditions. All modifications will be effective when they are posted.
                   By continuing to access or use the Site or the Interface after those revisions become effective, you
                   agree to be bound by the revised Terms.
                 </p>

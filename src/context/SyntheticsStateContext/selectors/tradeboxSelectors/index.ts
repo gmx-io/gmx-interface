@@ -325,11 +325,15 @@ export const selectRawExternalSwapDesirability = createSelector((q): "not_wanted
   return internalSwapTotalFeeItem.bps < thresholdBps ? "optional" : "not_wanted";
 });
 
-export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
+const selectIsExternalSwapSupportedForOrderType = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isMarket) return "not_wanted";
+  return tradeFlags.isMarket || (tradeFlags.isIncrease && tradeMode === TradeMode.Limit);
+});
+
+export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
+  if (!q(selectIsExternalSwapSupportedForOrderType)) return "not_wanted";
 
   if (!q(selectExternalSwapsEnabledSetting)) return "not_wanted";
 
@@ -354,10 +358,7 @@ export const selectExternalSwapBlockReason = createSelector((q): ExternalSwapBlo
 
   if (q(selectRawExternalSwapDesirability) === "not_wanted") return undefined;
 
-  const tradeMode = q(selectTradeboxTradeMode);
-  const tradeType = q(selectTradeboxTradeType);
-  const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isMarket) return "orderTypeNotSupported";
+  if (!q(selectIsExternalSwapSupportedForOrderType)) return "orderTypeNotSupported";
 
   if (q(selectIsOneClickActiveByUser)) return "oneClickTrading";
 
@@ -561,6 +562,9 @@ const selectTradeboxSwitchTokenAddresses = (s: SyntheticsState) => s.tradebox.sw
 const selectTradeboxAvailableTradeModes = (s: SyntheticsState) => s.tradebox.availableTradeModes;
 const selectTradeboxLimitPriceWarningHidden = (s: SyntheticsState) => s.tradebox.limitPriceWarningHidden;
 const selectTradeboxSetLimitPriceWarningHidden = (s: SyntheticsState) => s.tradebox.setLimitPriceWarningHidden;
+const selectTradeboxMarginDepositSuggestionHidden = (s: SyntheticsState) => s.tradebox.marginDepositSuggestionHidden;
+const selectTradeboxSetMarginDepositSuggestionHidden = (s: SyntheticsState) =>
+  s.tradebox.setMarginDepositSuggestionHidden;
 
 export const selectTradeboxFormState = createSelector((q) => {
   return {
@@ -596,6 +600,8 @@ export const selectTradeboxFormState = createSelector((q) => {
     setDuration: q(selectTradeboxSetTwapDuration),
     limitPriceWarningHidden: q(selectTradeboxLimitPriceWarningHidden),
     setLimitPriceWarningHidden: q(selectTradeboxSetLimitPriceWarningHidden),
+    marginDepositSuggestionHidden: q(selectTradeboxMarginDepositSuggestionHidden),
+    setMarginDepositSuggestionHidden: q(selectTradeboxSetMarginDepositSuggestionHidden),
   };
 });
 
@@ -1131,7 +1137,7 @@ export const selectIncreaseSwapDebugComparison = createSelector((q) => {
   const tradeType = q(selectTradeboxTradeType);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isIncrease || !tradeFlags.isMarket) return null;
+  if (!tradeFlags.isIncrease || !q(selectIsExternalSwapSupportedForOrderType)) return null;
 
   const fromToken = q(selectTradeboxFromToken);
   const swapToToken = q(selectTradeboxSelectSwapToToken);

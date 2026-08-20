@@ -10,7 +10,12 @@ import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
 import { AVALANCHE, ContractsChainId, SourceChainId } from "config/chains";
-import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import {
+  getKeepLeverageKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+  MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY,
+} from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -302,6 +307,10 @@ export function useTradeboxState(
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
     "limit-price-warning-hidden",
+    false
+  );
+  const [marginDepositSuggestionHidden, setMarginDepositSuggestionHidden] = useLocalStorageSerializeKey(
+    MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY,
     false
   );
 
@@ -780,6 +789,8 @@ export function useTradeboxState(
     setKeepLeverage,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
+    marginDepositSuggestionHidden,
+    setMarginDepositSuggestionHidden,
     advancedOptions,
     setAdvancedOptions,
     allowedSlippage,

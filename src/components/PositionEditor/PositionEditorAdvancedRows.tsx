@@ -50,11 +50,6 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
       <SyntheticsInfoRow
-        label={t`Leverage`}
-        value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
-      />
-      <SyntheticsInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
-      <SyntheticsInfoRow
         label={
           <TooltipWithPortal
             handle={
@@ -73,6 +68,11 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
           />
         }
       />
+      <SyntheticsInfoRow
+        label={t`Leverage`}
+        value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
+      />
+      <SyntheticsInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
     </ExpandableRow>
   );
 }

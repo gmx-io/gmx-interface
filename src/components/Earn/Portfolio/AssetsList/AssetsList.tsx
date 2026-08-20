@@ -7,7 +7,11 @@ import { ContractsChainId } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { useGlvUserEarnings } from "domain/synthetics/markets/useGlvUserEarnings";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -17,8 +21,10 @@ import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletBut
 
 import EarnIcon from "img/ic_earn.svg?react";
 
-import { GmGlvAssetCard } from "./GmGlvAssetCard";
+import { AssetCardEarnings, GmGlvAssetCard } from "./GmGlvAssetCard";
 import { GmxAssetCard } from "./GmxAssetCard/GmxAssetCard";
+
+const ZERO_EARNINGS: AssetCardEarnings = { total: 0n, recent: 0n, expected365d: 0n };
 
 type AssetItem =
   | { type: "gmx"; usdValue: bigint; hasEsGmx: boolean }
@@ -98,6 +104,18 @@ function AssetsList({
   const { account } = useWallet();
   const { openConnectModal } = useConnectModal();
 
+  const { srcChainId } = useChainId();
+  const {
+    userEarnings,
+    isLoading: isGmEarningsLoading,
+    isUnavailable: isGmEarningsUnavailable,
+  } = useUserEarnings(chainId, srcChainId);
+  const {
+    glvUserEarnings,
+    isLoading: isGlvEarningsLoading,
+    isUnavailable: isGlvEarningsUnavailable,
+  } = useGlvUserEarnings(chainId, srcChainId);
+
   const sortedAssets = useMemo(() => {
     return getSortedAssets({
       hasGmx,
@@ -133,15 +151,27 @@ function AssetsList({
             }
             if (asset.type === "gmGlv") {
               const info = asset.info;
+              const address = getGlvOrMarketAddress(info);
+              const isGlv = isGlvInfo(info);
+
+              const earnings = isGlv
+                ? glvUserEarnings?.byGlvAddress[address]
+                : userEarnings?.byMarketAddress[address];
+              const isEarningsLoading = isGlv ? isGlvEarningsLoading : isGmEarningsLoading;
+              const isEarningsUnavailable = isGlv ? isGlvEarningsUnavailable : isGmEarningsUnavailable;
+
               return (
                 <GmGlvAssetCard
-                  key={getGlvOrMarketAddress(info)}
+                  key={address}
                   marketInfo={info}
                   chainId={chainId}
-                  totalPerformanceApy={getByKey(performanceTotal, getGlvOrMarketAddress(info))}
-                  performanceApy30d={getByKey(performance30d, getGlvOrMarketAddress(info))}
+                  totalPerformanceApy={getByKey(performanceTotal, address)}
+                  performanceApy30d={getByKey(performance30d, address)}
                   isPerformanceLoading={isPerformanceLoading}
-                  multichainMarketTokenBalances={multichainMarketTokensBalances?.[getGlvOrMarketAddress(info)]}
+                  multichainMarketTokenBalances={multichainMarketTokensBalances?.[address]}
+                  earnings={earnings ?? (isEarningsLoading || isEarningsUnavailable ? undefined : ZERO_EARNINGS)}
+                  isEarningsLoading={isEarningsLoading}
+                  isEarningsAvailable={!isEarningsUnavailable}
                 />
               );
             }

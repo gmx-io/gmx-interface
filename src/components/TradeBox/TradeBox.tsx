@@ -128,6 +128,7 @@ import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { FreshPositionIncreaseWarningCard } from "./FreshPositionIncreaseWarningCard";
 import { LiquidatableIncreaseWarningCard } from "./LiquidatableIncreaseWarningCard";
+import { MarginDepositSuggestionCard } from "./MarginDepositSuggestionCard";
 import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
@@ -220,6 +221,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
+    marginDepositSuggestionHidden,
+    setMarginDepositSuggestionHidden,
   } = useSelector(selectTradeboxFormState);
 
   const isTwapModeAvailable = useMemo(
@@ -1237,6 +1240,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 .
               </Trans>
             </AlertInfoCard>
+          )}
+          {!marginDepositSuggestionHidden && (
+            <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}
           {showIncreaseLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
           {showIncreaseFreshPositionWarning && <FreshPositionIncreaseWarningCard />}
