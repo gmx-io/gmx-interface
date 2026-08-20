@@ -415,12 +415,10 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         values.swapStrategy = swapAmounts.swapStrategy;
       }
 
-      const swapAmountIn = values.swapStrategy.amountIn;
-      const baseCollateralUsd = convertToUsd(
-        swapAmountIn,
-        initialCollateralToken.decimals,
-        values.initialCollateralPrice
-      )!;
+      const swapAmountOut = values.swapStrategy.amountOut;
+      const baseCollateralUsd = convertToUsd(swapAmountOut, collateralToken.decimals, values.collateralPrice)!;
+      const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(values.swapStrategy.swapPathStats?.swapSteps);
+      values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
       values.collateralDeltaUsd =
         baseCollateralUsd -
