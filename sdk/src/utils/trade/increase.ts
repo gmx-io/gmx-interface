@@ -568,7 +568,7 @@ export function leverageBySizeValues({
   uiFeeUsd: bigint;
   swapUiFeeUsd: bigint;
 }) {
-  const collateralDeltaUsd = bigMath.mulDiv(sizeDeltaUsd, BASIS_POINTS_DIVISOR_BIGINT, leverage);
+  const collateralDeltaUsd = leverage > 0n ? bigMath.mulDiv(sizeDeltaUsd, BASIS_POINTS_DIVISOR_BIGINT, leverage) : 0n;
   const collateralDeltaAmount = convertToTokenAmount(collateralDeltaUsd, collateralToken.decimals, collateralPrice)!;
 
   const baseCollateralUsd =

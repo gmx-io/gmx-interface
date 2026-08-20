@@ -5,6 +5,7 @@ import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { TOKENS_MAP } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { CustomErrorName } from "sdk/utils/errors/transactionsErrors";
+import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
 
 export function getContractErrorMessage({
   chainId,
@@ -37,7 +38,20 @@ export function getContractErrorMessage({
     }
 
     case CustomErrorName.LiquidatablePosition: {
+      const reason = getStringContractErrorArg(args, 0, "reason");
       const remainingCollateralUsd = getBigIntContractErrorArg(args, 1, "remainingCollateralUsd");
+
+      if (reason === PositionMarginFailureReason.MinCollateralForLeverage) {
+        const minCollateralUsdForLeverage = getBigIntContractErrorArg(args, 3, "minCollateralUsdForLeverage");
+
+        const remainingCollateralUsdText = formatUsd(remainingCollateralUsd);
+        const minCollateralUsdForLeverageText = formatUsd(minCollateralUsdForLeverage);
+
+        return remainingCollateralUsdText && minCollateralUsdForLeverageText
+          ? t`The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}`
+          : t`The position cannot be increased at the current leverage. Increase margin or reduce size.`;
+      }
+
       const minCollateralUsd = getBigIntContractErrorArg(args, 2, "minCollateralUsd");
 
       const remainingCollateralUsdText = formatUsd(remainingCollateralUsd);

@@ -1,4 +1,4 @@
-import { zeroAddress } from "viem";
+import { zeroAddress, zeroHash } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
@@ -411,6 +411,53 @@ export function getOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
 
 export function getOpenInterestInTokens(marketInfo: MarketInfo, isLong: boolean) {
   return isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
+}
+
+export function getMarketInfoWithOpenInterestDelta({
+  marketInfo,
+  isLong,
+  sizeDeltaUsd,
+  sizeDeltaInTokens,
+}: {
+  marketInfo: MarketInfo;
+  isLong: boolean;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+}): MarketInfo {
+  if (sizeDeltaUsd === 0n && sizeDeltaInTokens === 0n) {
+    return marketInfo;
+  }
+
+  const next = isLong
+    ? {
+        ...marketInfo,
+        longInterestUsd: marketInfo.longInterestUsd + sizeDeltaUsd,
+        longInterestInTokens: marketInfo.longInterestInTokens + sizeDeltaInTokens,
+      }
+    : {
+        ...marketInfo,
+        shortInterestUsd: marketInfo.shortInterestUsd + sizeDeltaUsd,
+        shortInterestInTokens: marketInfo.shortInterestInTokens + sizeDeltaInTokens,
+      };
+
+  const hasVirtualInventory =
+    typeof marketInfo.virtualIndexTokenId === "string"
+      ? marketInfo.virtualIndexTokenId !== zeroHash
+      : marketInfo.useOpenInterestInTokensForBalance
+        ? marketInfo.virtualInventoryForPositionsInTokens !== 0n
+        : marketInfo.virtualInventoryForPositions !== 0n;
+
+  if (hasVirtualInventory) {
+    if (marketInfo.useOpenInterestInTokensForBalance) {
+      next.virtualInventoryForPositionsInTokens =
+        marketInfo.virtualInventoryForPositionsInTokens + (isLong ? -sizeDeltaInTokens : sizeDeltaInTokens);
+    } else {
+      next.virtualInventoryForPositions =
+        marketInfo.virtualInventoryForPositions + (isLong ? -sizeDeltaUsd : sizeDeltaUsd);
+    }
+  }
+
+  return next;
 }
 
 export function getOpenInterestForBalance(marketInfo: MarketInfo, isLong: boolean): bigint {

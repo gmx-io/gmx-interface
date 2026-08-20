@@ -30,6 +30,8 @@ import {
   selectOrderEditorMaxAllowedLeverage,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
+  selectOrderEditorIncreaseResultingPositionMarginState,
+  selectOrderEditorIsIncreaseExecutableNow,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPositionOrderError,
   selectOrderEditorTpSlLiqPriceWarning,
@@ -113,6 +115,11 @@ import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
+import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
+import {
+  getIncreaseResultingPositionMarginState,
+  PositionMarginFailureReason,
+} from "sdk/utils/trade/increaseMarginCheck";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -132,6 +139,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { FreshPositionIncreaseWarningCard } from "../TradeBox/FreshPositionIncreaseWarningCard";
 import { LiquidatableIncreaseWarningCard } from "../TradeBox/LiquidatableIncreaseWarningCard";
+import { ResultingMarginAlertCard } from "../TradeBox/ResultingMarginWarningCard";
 
 import "./OrderEditor.scss";
 
@@ -261,6 +269,14 @@ export function OrderEditor(p: Props) {
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
+  const resultingPositionMarginState = useSelector(selectOrderEditorIncreaseResultingPositionMarginState);
+  const isIncreaseExecutableNow = useSelector(selectOrderEditorIsIncreaseExecutableNow);
+
+  const isResultingPositionMaxLeverageError =
+    resultingPositionMarginState?.reason === PositionMarginFailureReason.MinCollateralForLeverage;
+
+  const isResultingPositionBlocking = isIncreaseExecutableNow && resultingPositionMarginState?.isLiquidatable === true;
+
   const isMaxLeverageError = useMemo(() => {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
       if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
@@ -277,6 +293,9 @@ export function OrderEditor(p: Props) {
     }
     return false;
   }, [p.order, sizeDeltaUsd, nextPositionValuesWithoutPnlForIncrease?.nextLeverage]);
+
+  const showResultingPositionMaxLeverageWarning =
+    !isIncreaseExecutableNow && !isMaxLeverageError && resultingPositionMarginState?.isLiquidatable === true;
 
   const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
@@ -341,8 +360,26 @@ export function OrderEditor(p: Props) {
             increaseAmounts.sizeDeltaUsd
           );
 
+          const marginState = getIncreaseResultingPositionMarginState({
+            marketInfo,
+            collateralToken,
+            isLong: positionOrder.isLong,
+            existingPosition,
+            sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+            sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+            collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+            minCollateralUsd,
+            userReferralInfo,
+            indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
+              orderType: positionOrder.orderType,
+              isLong: positionOrder.isLong,
+              triggerPrice,
+              indexTokenPrices: marketInfo.indexToken.prices,
+            }),
+          });
+
           return {
-            isValid: !isMaxLeverageExceeded,
+            isValid: !isMaxLeverageExceeded && marginState?.isLiquidatable !== true,
             returnValue: increaseAmounts.sizeDeltaUsd,
           };
         }
@@ -367,6 +404,7 @@ export function OrderEditor(p: Props) {
     maxAllowedLeverage,
     indexTokenAmount,
     findSwapPath,
+    existingPosition,
     existingPositionForPreview,
     uiFeeFactor,
     userReferralInfo,
@@ -539,13 +577,17 @@ export function OrderEditor(p: Props) {
       return false;
     }
 
+    if (resultingPositionMarginState?.isLiquidatable) {
+      return false;
+    }
+
     return getIsIncreaseResultingPositionLiquidatable({
       currentLiqPrice: existingPosition?.liquidationPrice,
       nextLiqPrice: nextPositionValuesForIncrease?.nextLiqPrice,
       triggerPrice,
       isLong: positionOrder.isLong,
     });
-  }, [error, positionOrder, existingPosition, nextPositionValuesForIncrease, triggerPrice]);
+  }, [error, positionOrder, existingPosition, nextPositionValuesForIncrease, triggerPrice, resultingPositionMarginState]);
 
   const onSubmit = useCallback(async () => {
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
@@ -672,6 +714,20 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (isResultingPositionBlocking) {
+      return {
+        text: isResultingPositionMaxLeverageError ? t`Max leverage exceeded` : t`Invalid liquidation price`,
+        tooltip: isResultingPositionMaxLeverageError ? (
+          <Trans>
+            The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+          </Trans>
+        ) : (
+          <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>
+        ),
+        disabled: true,
+      };
+    }
+
     if (isMultichainSubmitDisabled) {
       return {
         text: (
@@ -703,6 +759,8 @@ export function OrderEditor(p: Props) {
     multipleWalletExtensionsChainError,
     hasOutdatedUi,
     isMaxLeverageError,
+    isResultingPositionBlocking,
+    isResultingPositionMaxLeverageError,
     p.order,
     onSubmit,
     detectAndSetAvailableMaxLeverage,
@@ -1070,6 +1128,7 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
+          {showResultingPositionMaxLeverageWarning && <ResultingMarginAlertCard level="warning" />}
           {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
           {isPositionLiquidatedBeforeTrigger && <FreshPositionIncreaseWarningCard />}
 

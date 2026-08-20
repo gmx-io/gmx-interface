@@ -3506,6 +3506,9 @@ msgid "Theme"
 msgstr "主題"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -3625,6 +3628,7 @@ msgstr "載入交易歷史記錄失敗"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>設定建議影響值：{0}</0>。"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "執行後倉位將立即被清算。請減小規模。"
@@ -6279,10 +6283,6 @@ msgstr "止損市價單失敗"
 msgid "Settings"
 msgstr "設定"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers."
-msgstr "訂單可能無法執行：產生的倉位將超過允許的最大槓桿。請在訂單觸發前存入保證金或減小訂單規模。"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "每日"
@@ -6520,6 +6520,11 @@ msgstr "GMX 提案"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
+msgstr "由於最終倉位將超過允許的最大槓桿，此訂單可能無法執行。請在觸發前增加倉位保證金或減小訂單規模。"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
@@ -9137,6 +9142,10 @@ msgstr "正在執行買入請求..."
 msgid "Buy GM failed"
 msgstr "購買 GM 失敗"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr "當前槓桿下無法增加倉位。請增加保證金或減小規模。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "最大資金因子（多頭）"
@@ -9877,6 +9886,11 @@ msgstr "請求已送出，但無法確認其結果。它可能已經完成 — �
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
+msgstr "最終倉位將超過允許的最大槓桿。請增加保證金或減小規模。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "No funds available for GMX Account deposit"
@@ -11393,6 +11407,8 @@ msgstr "領取資金費用"
 msgid "Token permit testing"
 msgstr "代幣許可測試"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

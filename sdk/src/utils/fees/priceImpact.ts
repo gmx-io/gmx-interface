@@ -4,6 +4,7 @@ import { bigMath } from "utils/bigmath";
 import { getOpenInterestForBalance, getTokenPoolType } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import {
+  applyExponentFactor,
   applyFactor,
   BASIS_POINTS_DECIMALS,
   expandDecimals,
@@ -579,22 +580,11 @@ export function calculateImpactForCrossoverRebalance(p: {
 }
 
 export function applyImpactFactor(diff: bigint, factor: bigint, exponent: bigint) {
-  // Convert diff and exponent to float js numbers
-  const _diff = Number(diff) / 10 ** 30;
-  const _exponent = Number(exponent) / 10 ** 30;
-
-  // Pow and convert back to BigInt with 30 decimals
-  const powered = _diff ** _exponent * 10 ** 30;
-
-  if (!isFinite(powered) || isNaN(powered)) {
+  try {
+    return applyFactor(applyExponentFactor(diff, exponent), factor);
+  } catch {
     return 0n;
   }
-
-  let result = BigInt(Math.round(powered));
-
-  result = (result * factor) / expandDecimals(1, 30);
-
-  return result;
 }
 
 export function getCappedPriceImpactPercentageFromFees({
