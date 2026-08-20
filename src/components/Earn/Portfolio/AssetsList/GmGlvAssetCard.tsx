@@ -1,4 +1,6 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
+import { ReactNode } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
@@ -14,13 +16,14 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
-import { formatPercentage } from "lib/numbers";
+import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
 import { EarnPagePortfolioItemType, sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
+import { EarningValue } from "components/EarningValue/EarningValue";
 import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
@@ -36,6 +39,12 @@ import sparkleIcon from "img/sparkle.svg";
 
 import { BaseAssetCard } from "./BaseAssetCard";
 
+export type AssetCardEarnings = {
+  total: bigint;
+  recent: bigint;
+  expected365d: bigint;
+};
+
 type Props = {
   marketInfo: GlvOrMarketInfo;
   chainId: ContractsChainId;
@@ -43,7 +52,67 @@ type Props = {
   performanceApy30d: bigint | undefined;
   isPerformanceLoading: boolean;
   multichainMarketTokenBalances: MultichainMarketTokenBalances | undefined;
+  earnings: AssetCardEarnings | undefined;
+  isEarningsLoading: boolean;
+  isEarningsAvailable: boolean;
 };
+
+function EarningsStripCell({
+  label,
+  children,
+  align = "left",
+}: {
+  label: ReactNode;
+  children: ReactNode;
+  align?: "left" | "center" | "right";
+}) {
+  return (
+    <div
+      className={cx("flex min-w-0 flex-col gap-2 px-8 first:pl-0 last:pr-0", {
+        "items-start": align === "left",
+        "items-center": align === "center",
+        "items-end": align === "right",
+      })}
+    >
+      <span className="text-body-small whitespace-nowrap font-medium text-typography-secondary">{label}</span>
+      <span className="text-body-small whitespace-nowrap font-medium text-typography-primary numbers">{children}</span>
+    </div>
+  );
+}
+
+function EarningsStrip({
+  earnings,
+  isLoading,
+  isAvailable,
+}: {
+  earnings: AssetCardEarnings | undefined;
+  isLoading: boolean;
+  isAvailable: boolean;
+}) {
+  return (
+    <div className="grid grid-cols-3 divide-x-1/2 divide-dashed divide-slate-600 rounded-8 border-1/2 border-dashed border-slate-600 bg-slate-900/[0.88] px-12 py-6">
+      <EarningsStripCell label={<Trans>7d Earnings</Trans>}>
+        <EarningValue value={earnings?.recent} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={40}>
+          {(value) => (
+            <span className={cx({ "text-green-500": value > 0n })}>
+              {value > 0n ? formatDeltaUsd(value, undefined, { hidePercentage: true }) : formatUsd(value)}
+            </span>
+          )}
+        </EarningValue>
+      </EarningsStripCell>
+      <EarningsStripCell label={<Trans>Expected 365d</Trans>} align="center">
+        <EarningValue value={earnings?.expected365d} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={40}>
+          {(value) => <span className="text-blue-100">~{formatUsd(value)}</span>}
+        </EarningValue>
+      </EarningsStripCell>
+      <EarningsStripCell label={<Trans>Lifetime</Trans>} align="right">
+        <EarningValue value={earnings?.total} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={40}>
+          {(value) => <>{formatUsd(value)}</>}
+        </EarningValue>
+      </EarningsStripCell>
+    </div>
+  );
+}
 
 export function GmGlvAssetCard({
   marketInfo,
@@ -52,6 +121,9 @@ export function GmGlvAssetCard({
   performanceApy30d,
   isPerformanceLoading,
   multichainMarketTokenBalances,
+  earnings,
+  isEarningsLoading,
+  isEarningsAvailable,
 }: Props) {
   const marketAddress = getGlvOrMarketAddress(marketInfo);
   const isMegaethPointsActive = useMegaethPointsActive();
@@ -127,6 +199,7 @@ export function GmGlvAssetCard({
       }
     >
       <div className="flex flex-col gap-12">
+        <EarningsStrip earnings={earnings} isLoading={isEarningsLoading} isAvailable={isEarningsAvailable} />
         {showMegaethPointsBadge && (
           <TooltipWithPortal
             variant="none"
@@ -146,7 +219,7 @@ export function GmGlvAssetCard({
           />
         )}
         <SyntheticsInfoRow
-          label={<Trans>Wallet</Trans>}
+          label={<Trans>Balance</Trans>}
           value={
             balance !== 0n ? (
               tooltipContent ? (
