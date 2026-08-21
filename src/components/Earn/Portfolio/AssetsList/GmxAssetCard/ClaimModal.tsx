@@ -91,8 +91,11 @@ export function ClaimModal(props: {
 
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
-  const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
+  const hasUndelegatedGovToken =
+    chainId === ARBITRUM &&
+    govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS &&
+    govTokenAmount !== undefined &&
+    govTokenAmount > 0n;
 
   const gmxAddress = getContract(chainId, "GMX");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
@@ -126,12 +129,7 @@ export function ClaimModal(props: {
     (totalNativeTokenRewards !== undefined && totalNativeTokenRewards > 0n);
 
   const isPrimaryEnabled =
-    !isClaiming &&
-    !isApproving &&
-    !isUndelegatedGovToken &&
-    hasAnyPendingRewards &&
-    isAnySelectedToClaim &&
-    !hasOutdatedUi;
+    !isClaiming && !isApproving && hasAnyPendingRewards && isAnySelectedToClaim && !hasOutdatedUi;
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
@@ -297,13 +295,14 @@ export function ClaimModal(props: {
           />
         )}
       </div>
-      {isUndelegatedGovToken ? (
-        <AlertInfoCard type="error" hideClose>
+      {hasUndelegatedGovToken ? (
+        <AlertInfoCard type="warning" hideClose>
           <Trans>
+            Delegating your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO voting power is optional for
+            claiming.{" "}
             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-              Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
+              Delegate voting power
             </ExternalLink>
-            voting power before claiming
           </Trans>
         </AlertInfoCard>
       ) : null}

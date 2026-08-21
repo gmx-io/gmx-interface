@@ -117,9 +117,12 @@ export function StakeModal(props: {
 
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
-  const isUndelegatedGovToken = useMemo(
+  const hasUndelegatedGovToken = useMemo(
     () =>
-      chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0,
+      chainId === ARBITRUM &&
+      govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS &&
+      govTokenAmount !== undefined &&
+      govTokenAmount > 0n,
     [chainId, govTokenDelegatesAddress, govTokenAmount]
   );
 
@@ -219,7 +222,6 @@ export function StakeModal(props: {
     !stakeError &&
     !isApproving &&
     !isStaking &&
-    !isUndelegatedGovToken &&
     !hasOutdatedUi &&
     !multipleWalletExtensionsChainError.buttonErrorMessage;
 
@@ -537,13 +539,14 @@ export function StakeModal(props: {
             </AlertInfoCard>
           )}
 
-          {activeTab === "stake" && isUndelegatedGovToken ? (
-            <AlertInfoCard type="error" className={cx("DelegateGMXAlertInfo !mb-0")} hideClose>
+          {activeTab === "stake" && hasUndelegatedGovToken ? (
+            <AlertInfoCard type="warning" className="!mb-0" hideClose>
               <Trans>
+                Delegating your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO voting power is optional
+                for staking.{" "}
                 <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                  Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
-                </ExternalLink>{" "}
-                voting power before staking
+                  Delegate voting power
+                </ExternalLink>
               </Trans>
             </AlertInfoCard>
           ) : null}
