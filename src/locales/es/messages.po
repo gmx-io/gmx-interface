@@ -4657,7 +4657,7 @@ msgstr "Icono de monedero"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Delegating your undelegated {0} GMX DAO voting power is optional for staking. <0>Delegate voting power</0>"
-msgstr ""
+msgstr "Delegar tu poder de voto no delegado de {0} GMX DAO es opcional para hacer stake. <0>Delegar poder de voto</0>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -10162,7 +10162,7 @@ msgstr "Capa 1"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Delegating your undelegated {0} GMX DAO voting power is optional for claiming. <0>Delegate voting power</0>"
-msgstr ""
+msgstr "Delegar tu poder de voto no delegado de {0} GMX DAO es opcional para reclamar. <0>Delegar poder de voto</0>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position would be liquidatable at current prices"

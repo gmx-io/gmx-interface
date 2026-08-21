@@ -4657,7 +4657,7 @@ msgstr "ウォレットアイコン"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Delegating your undelegated {0} GMX DAO voting power is optional for staking. <0>Delegate voting power</0>"
-msgstr ""
+msgstr "未委任の{0} GMX DAO投票権の委任は、ステーキングでは任意です。<0>投票権を委任</0>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -10162,7 +10162,7 @@ msgstr "レイヤー1"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Delegating your undelegated {0} GMX DAO voting power is optional for claiming. <0>Delegate voting power</0>"
-msgstr ""
+msgstr "未委任の{0} GMX DAO投票権の委任は、請求では任意です。<0>投票権を委任</0>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position would be liquidatable at current prices"
