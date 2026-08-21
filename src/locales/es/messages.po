@@ -3743,10 +3743,6 @@ msgstr "Analíticas de GMX V2 en Telegram y Discord"
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking"
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages"
 msgstr "Páginas del ecosistema GMX"
@@ -4658,6 +4654,10 @@ msgstr "Comisiones obtenidas en {daysConsidered}d"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Wallet icon"
 msgstr "Icono de monedero"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Delegating your undelegated {0} GMX DAO voting power is optional for staking. <0>Delegate voting power</0>"
+msgstr "Delegar tu poder de voto no delegado de {0} GMX DAO es opcional para hacer stake. <0>Delegar poder de voto</0>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -10160,6 +10160,10 @@ msgstr "Profundidad"
 msgid "Layer 1"
 msgstr "Capa 1"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Delegating your undelegated {0} GMX DAO voting power is optional for claiming. <0>Delegate voting power</0>"
+msgstr "Delegar tu poder de voto no delegado de {0} GMX DAO es opcional para reclamar. <0>Delegar poder de voto</0>"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position would be liquidatable at current prices"
 msgstr "La posición sería liquidable a los precios actuales"
@@ -12490,10 +12494,6 @@ msgstr "Compartir en"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "Rastreador de cartera de derivados"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming"
-msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
