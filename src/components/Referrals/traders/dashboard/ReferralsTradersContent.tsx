@@ -1,10 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { lightFormat } from "date-fns";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
-import { useCopyToClipboard, useMeasure } from "react-use";
+import { useCopyToClipboard } from "react-use";
 import { useAccount } from "wagmi";
 
 import { BALANCER_PROGRAM_URL, REFERRALS_DOCS_URL } from "config/links";
@@ -38,6 +38,7 @@ import { TraderReferralChartContainer } from "components/Referrals/shared/charts
 import { REFERRALS_TIME_RANGE_INFOS, TimeRangeFilter } from "components/Referrals/shared/TimeRangeFilter";
 import { POST_WIZARD_FAQS } from "components/Referrals/traders/faq";
 import { ReferralCodeEditFormContainer } from "components/Referrals/traders/joinCode/ReferralCodeEditFormContainer";
+import { ScaledText } from "components/ScaledText/ScaledText";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
@@ -75,6 +76,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
   const currentTierRebate = getSharePercentage(discountShare, tierDiscountShare, totalRebate, true);
   const isBalancerProgramCode = isBalancerProgramTier(traderTier);
   const isCodeOwnedByAccount = Boolean(account && codeOwner && account === codeOwner);
+  const isOwnAccountView = !hasAddressInUrl || isAccountOwner;
   const lastUpdated = traderStats?.to ? `${lightFormat(traderStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC` : "--";
 
   return (
@@ -94,8 +96,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
           <TradersPromoCard account={account} />
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
             <OverviewChartCard
-              label={<Trans>Trading volume</Trans>}
-              tooltipContent={<Trans>Volume traded by this account with an active referral code</Trans>}
+              label={isOwnAccountView ? <Trans>Your trading volume</Trans> : <Trans>Trading volume</Trans>}
               value={formatUsd(traderStats?.summary.volumeUsd ?? 0n)}
               valueChange={
                 traderStats?.summary.volumeUsdDelta !== undefined
@@ -114,8 +115,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
               />
             </OverviewChartCard>
             <OverviewChartCard
-              label={<Trans>Discounts</Trans>}
-              tooltipContent={<Trans>Discounts earned by this account as a trader</Trans>}
+              label={isOwnAccountView ? <Trans>Your discounts</Trans> : <Trans>Discounts</Trans>}
               value={formatUsd(traderStats?.summary.discountsUsd ?? 0n)}
               valueChange={
                 traderStats?.summary.discountsUsdDelta !== undefined
@@ -232,27 +232,6 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={cx("rounded-8 border-1/2 border-stroke-primary bg-slate-950/50 p-12", className)}>{children}</div>
-  );
-}
-
-function ScaledText({ children, className }: { children: React.ReactNode; className?: string }) {
-  const [wrapperRef, { width: wrapperWidth }] = useMeasure<HTMLDivElement>();
-  const [textRef, { width: textWidth }] = useMeasure<HTMLSpanElement>();
-
-  const isMeasured = wrapperWidth > 0;
-  const scale = isMeasured && textWidth > wrapperWidth ? wrapperWidth / textWidth : 1;
-  const scaleStyle = useMemo(() => (scale < 1 ? { transform: `scale(${scale})` } : undefined), [scale]);
-
-  return (
-    <div ref={wrapperRef} className="min-w-0 overflow-hidden">
-      <span
-        ref={textRef}
-        className={cx("inline-block origin-left whitespace-nowrap", { "opacity-0": !isMeasured }, className)}
-        style={scaleStyle}
-      >
-        {children}
-      </span>
-    </div>
   );
 }
 

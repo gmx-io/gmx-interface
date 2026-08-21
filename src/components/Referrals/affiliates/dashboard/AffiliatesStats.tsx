@@ -63,7 +63,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
     isVisible: boolean;
     referralCode: string;
     totalDiscountsUsd?: bigint;
-    hasReferredUsers?: boolean;
   }>({
     isVisible: false,
     referralCode: "",
@@ -154,7 +153,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
             </div>
             <AffiliatesPromoCard account={account} />
             <div className="flex flex-col gap-12">
-              <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
+              <div className="grid grid-cols-4 gap-12 max-xl:grid-cols-2 max-lg:grid-cols-1">
                 <TradingVolumeChartCard
                   stats={referralStats}
                   isLoading={isReferralStatsLoading}
@@ -162,9 +161,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                   referralCode={affiliateReferralCodesStats?.[0]?.referralCode}
                   traderDiscountPercentage={currentTraderDiscountPercentage}
                   totalDiscountsUsd={referralsData?.chains?.[chainId]?.affiliateTotalStats?.discountUsd}
-                  hasReferredUsers={
-                    (referralsData?.chains?.[chainId]?.affiliateTotalStats?.registeredReferralsCount ?? 0) > 0
-                  }
                 />
                 <NumberOfTradesChartCard
                   stats={referralStats}
@@ -327,7 +323,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                                     isVisible: true,
                                     referralCode: stat.referralCode,
                                     totalDiscountsUsd: stat.discountUsd,
-                                    hasReferredUsers: stat.registeredReferralsCount > 0,
                                   });
                                 }}
                               >
@@ -369,7 +364,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
             referralCode={shareModalState.referralCode}
             traderDiscountPercentage={currentTraderDiscountPercentage}
             totalDiscountsUsd={shareModalState.totalDiscountsUsd}
-            hasReferredUsers={shareModalState.hasReferredUsers}
           />
         </div>
       </div>
@@ -406,12 +400,7 @@ function ReferralCodesMobileTable({
   trackCopyCode: () => void;
   trackShare: () => void;
   copyToClipboard: (text: string) => void;
-  setShareModalState: (state: {
-    isVisible: boolean;
-    referralCode: string;
-    totalDiscountsUsd?: bigint;
-    hasReferredUsers?: boolean;
-  }) => void;
+  setShareModalState: (state: { isVisible: boolean; referralCode: string; totalDiscountsUsd?: bigint }) => void;
 }) {
   const [selectedCode, setSelectedCode] = useState<string | undefined>(undefined);
 
@@ -498,7 +487,6 @@ function ReferralCodesMobileTable({
                         isVisible: true,
                         referralCode: stat.referralCode,
                         totalDiscountsUsd: stat.discountUsd,
-                        hasReferredUsers: stat.registeredReferralsCount > 0,
                       });
                     }}
                   >

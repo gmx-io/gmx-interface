@@ -2,10 +2,10 @@ import { t } from "@lingui/macro";
 import identity from "lodash/identity";
 
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getReferralCodeOwner } from "domain/referrals";
 import { isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
-import { formatAmount, removeTrailingZeros } from "lib/numbers";
+import { expandDecimals, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -136,4 +136,33 @@ export function getProtocolReferralCodeType(codeString: string | undefined): Pro
   }
 
   return PROTOCOL_REFERRAL_CODES[codeString];
+}
+
+const SHARE_CARD_DISCOUNTS_THRESHOLD_USD = expandDecimals(100, USD_DECIMALS);
+
+export function shouldShowShareCardDiscounts(totalDiscountsUsd: bigint | undefined): boolean {
+  return totalDiscountsUsd !== undefined && totalDiscountsUsd >= SHARE_CARD_DISCOUNTS_THRESHOLD_USD;
+}
+
+export function shouldShowCreateReferralCodeTabLabel({
+  hasAddressInUrl,
+  hasAccount,
+  isReferralsDataLoading,
+  hasAnyAffiliateCode,
+}: {
+  hasAddressInUrl: boolean;
+  hasAccount: boolean;
+  isReferralsDataLoading: boolean;
+  hasAnyAffiliateCode: boolean;
+}): boolean {
+  // Another wallet's page is not yours to create a code on
+  if (hasAddressInUrl) {
+    return false;
+  }
+
+  if (!hasAccount) {
+    return true;
+  }
+
+  return !isReferralsDataLoading && !hasAnyAffiliateCode;
 }
