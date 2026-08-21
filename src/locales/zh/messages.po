@@ -538,6 +538,10 @@ msgstr "在计入费用后超出最大允许杠杆，仓位已被清算。"
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "出售 {gmOrGlvLabel} 失败"
 
+#: src/pages/Referrals/Referrals.tsx
+msgid "Affiliate Dashboard"
+msgstr "附属仪表板"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1516,10 +1520,6 @@ msgstr "使用 {0} 支付 Gas"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "累计投入保证金"
-
-#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
-msgid "Earn up to 15% in<0/> rebates as an affiliate"
-msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -2593,6 +2593,10 @@ msgstr "未找到交换路径"
 msgid "Set long Stop Market @ {0}"
 msgstr ""
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your discounts"
+msgstr "您的折扣"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Can I change my referral code?"
 msgstr ""
@@ -2773,10 +2777,6 @@ msgstr ""
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 出售成功，但跨链至 {0} 失败。您的资金安全地保存在您的 GMX 账户中。请重试跨链，或打开 GMX 账户提取您的代币。"
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Discounts earned by this account as a trader"
-msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -3020,10 +3020,6 @@ msgstr "GM池"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "取消保证金存入"
-
-#: src/pages/Referrals/Referrals.tsx
-msgid "Affiliates"
-msgstr "附属"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
@@ -3288,6 +3284,10 @@ msgstr "地址"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "更新止盈"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
+msgstr "通过GMX<0/>推荐计划获得费用折扣并赚取高达25%的佣金"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
@@ -5408,6 +5408,10 @@ msgstr "在杠杆显示中包含 PnL"
 msgid "No claims yet"
 msgstr "暂无领取"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trading volume"
+msgstr "您的交易量"
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
 msgstr "强制外部兑换失败"
@@ -6760,6 +6764,10 @@ msgstr "允许的操作"
 msgid "Your discount is now active!"
 msgstr ""
 
+#: src/pages/Referrals/Referrals.tsx
+msgid "Create Referral Code"
+msgstr "创建推荐码"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "24h"
@@ -7218,10 +7226,6 @@ msgstr "当前规模无可用流动性用于增加做多。<0/>最大做多规�
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "推荐"
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Volume traded by this account with an active referral code"
-msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling sell request..."
@@ -8511,6 +8515,10 @@ msgstr "预约 30 分钟通话"
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
 msgstr "从"
+
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Earn up to 25% in<0/> rebates as an affiliate"
+msgstr "成为附属，赚取高达25%的<0/>返佣"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -9876,10 +9884,6 @@ msgstr "持续时间"
 msgid "PNL"
 msgstr "PnL"
 
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn up to 15% commission through the GMX <0/> referral program"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Bridge and swap tokens"
 msgstr "跨链桥接和兑换代币"
@@ -10893,7 +10897,6 @@ msgid "Staked"
 msgstr "已质押"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "交易者"
 
@@ -12226,6 +12229,10 @@ msgstr "交易已取消"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "请求市场减少"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Trader Benefits"
+msgstr "交易者福利"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
