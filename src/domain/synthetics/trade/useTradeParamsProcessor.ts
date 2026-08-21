@@ -44,6 +44,19 @@ export function isSupportedTradeLinkChainId(chainIdFromParams: string, activeCha
   );
 }
 
+const TRADE_LINK_SEARCH_PARAMS = ["mode", "from", "to", "market", "pool", "collateral", "chainId"];
+
+export function getSearchWithoutTradeLinkParams(search: string): string | undefined {
+  const query = new URLSearchParams(search);
+  const currentSearch = query.toString();
+
+  TRADE_LINK_SEARCH_PARAMS.forEach((param) => query.delete(param));
+
+  const nextSearch = query.toString();
+
+  return nextSearch === currentSearch ? undefined : nextSearch;
+}
+
 export function useTradeParamsProcessor() {
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
@@ -70,6 +83,14 @@ export function useTradeParamsProcessor() {
     }
     changingNetwork.current = true;
 
+    function dropTradeLinkParamsFromUrl() {
+      const nextSearch = getSearchWithoutTradeLinkParams(history.location.search);
+
+      if (nextSearch !== undefined) {
+        history.replace({ search: nextSearch });
+      }
+    }
+
     async function changeNetwork() {
       const { tradeType } = params;
       const {
@@ -83,15 +104,7 @@ export function useTradeParamsProcessor() {
       } = searchParams;
 
       if (chainIdFromParams && !isSupportedTradeLinkChainId(chainIdFromParams, chainId)) {
-        const query = new URLSearchParams(history.location.search);
-        query.delete("mode");
-        query.delete("from");
-        query.delete("to");
-        query.delete("market");
-        query.delete("pool");
-        query.delete("collateral");
-        query.delete("chainId");
-        history.replace({ search: query.toString() });
+        dropTradeLinkParamsFromUrl();
         return;
       }
 
@@ -166,19 +179,7 @@ export function useTradeParamsProcessor() {
             tradeOptions.marketAddress = marketPool?.marketTokenAddress;
           }
         }
-        setTimeout(() => {
-          if (history.location.search) {
-            const query = new URLSearchParams(history.location.search);
-            query.delete("mode");
-            query.delete("from");
-            query.delete("to");
-            query.delete("market");
-            query.delete("pool");
-            query.delete("collateral");
-            query.delete("chainId");
-            history.replace({ search: query.toString() });
-          }
-        }, 2000);
+        setTimeout(dropTradeLinkParamsFromUrl, 2000);
       }
 
       if (!isMatch(latestTradeOptions.current, tradeOptions)) {
@@ -186,19 +187,7 @@ export function useTradeParamsProcessor() {
       }
 
       if (history.location.search && !toToken && !pool) {
-        setTimeout(() => {
-          if (history.location.search) {
-            const query = new URLSearchParams(history.location.search);
-            query.delete("mode");
-            query.delete("from");
-            query.delete("to");
-            query.delete("market");
-            query.delete("pool");
-            query.delete("collateral");
-            query.delete("chainId");
-            history.replace({ search: query.toString() });
-          }
-        }, 2000);
+        setTimeout(dropTradeLinkParamsFromUrl, 2000);
       }
     }
 
