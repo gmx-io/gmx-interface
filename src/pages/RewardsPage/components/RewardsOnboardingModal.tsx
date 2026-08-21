@@ -18,7 +18,7 @@ import { REWARDS_ONBOARDING_OPEN_ACTION, REWARDS_ONBOARDING_SEARCH_PARAM } from 
 
 const SLIDE_COUNT = 4;
 const SWIPE_THRESHOLD_PX = 40;
-const DIAGRAM_OFFSETS = [0, 308, 605, 844] as const;
+const DIAGRAM_OFFSETS = [0, 308, 605, 880] as const;
 const SLIDE_TRACK_STYLES = Array.from({ length: SLIDE_COUNT }, (_, index) => ({
   transform: `translate3d(${-index * 100}%, 0, 0)`,
 }));
@@ -40,7 +40,7 @@ function RewardsFlowDiagram({ activeSlide }: { activeSlide: number }) {
           aria-hidden="true"
           draggable={false}
           data-testid="rewards-onboarding-diagram-track"
-          className="pointer-events-none absolute left-20 top-0 h-[200px] w-[1304px] max-w-none select-none transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none"
+          className="pointer-events-none absolute left-20 top-0 h-[200px] w-[1340px] max-w-none select-none transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none"
           style={DIAGRAM_TRACK_STYLES[activeSlide]}
         />
         {activeSlide > 0 ? (
