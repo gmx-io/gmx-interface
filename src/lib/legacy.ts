@@ -670,10 +670,10 @@ export function getHomeUrl() {
 
 export function getTradePageUrl() {
   if (isLocal()) {
-    return "http://localhost:3011/trade";
+    return "http://localhost:3011/#/trade";
   }
 
-  return PRODUCTION_HOST + "/trade";
+  return PRODUCTION_HOST + "/#/trade";
 }
 
 export function getRootShareApiUrl() {
