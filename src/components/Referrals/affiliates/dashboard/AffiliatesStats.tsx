@@ -153,7 +153,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
             </div>
             <AffiliatesPromoCard account={account} />
             <div className="flex flex-col gap-12">
-              <div className="grid grid-cols-4 gap-12 max-xl:grid-cols-2 max-lg:grid-cols-1">
+              <div className="grid grid-cols-4 gap-12 max-[1500px]:grid-cols-2 max-lg:grid-cols-1">
                 <TradingVolumeChartCard
                   stats={referralStats}
                   isLoading={isReferralStatsLoading}
