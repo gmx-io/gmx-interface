@@ -50,13 +50,13 @@ import {
 } from "domain/synthetics/positions";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMarkPrice, getMaxWithdrawAmount, getMinRequiredCollateralUsdForPosition } from "domain/synthetics/trade";
+import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import {
   getCommonError,
   getConditionalDepositError,
   getEditCollateralError,
   getExpressError,
   getMarginDepositAutoCancelLimitMessage,
-  getMarginDepositInsufficientMessage,
   takeValidationResult,
   ValidationBannerErrorName,
   ValidationButtonTooltipName,
@@ -89,7 +89,9 @@ import {
   buildIncreaseOrderPayload,
 } from "sdk/utils/orderTransactions";
 
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -97,7 +99,7 @@ import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { getIsAutoCancelLimitReached } from "./marginDepositAutoCancel";
 import { buildMarginDepositBatchParams } from "./marginDepositBatchParams";
-import { OPERATION_LABELS, Operation } from "./types";
+import { OPERATION_LABELS } from "./types";
 
 type PositionEditorButtonState = {
   text: ReactNode;
@@ -497,13 +499,9 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
           <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
           <br />
           <br />
-          <button
-            type="button"
-            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-            onClick={detectAndSetMaxSize}
-          >
+          <EmbeddedActionButton onClick={detectAndSetMaxSize}>
             <Trans>Set max withdrawal</Trans>
-          </button>
+          </EmbeddedActionButton>
         </Trans>
       );
     }
@@ -517,7 +515,8 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     }
 
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositInsufficient) {
-      return getMarginDepositInsufficientMessage();
+      // the amount input is right here, so the phrase stays non-actionable
+      return <MarginDepositInsufficientMessage />;
     }
 
     if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.minDeposit) {
@@ -531,13 +530,9 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
           deposit must also cover them.
         </Trans>
         <div className="mt-4">
-          <button
-            type="button"
-            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-            onClick={setMinDepositValue}
-          >
+          <EmbeddedActionButton onClick={setMinDepositValue}>
             <Trans>Set min deposit</Trans>
-          </button>
+          </EmbeddedActionButton>
         </div>
       </div>
     );

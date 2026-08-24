@@ -2,7 +2,7 @@ import { cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
-import type { PositionEditorDepositMode } from "domain/synthetics/trade/usePositionEditorState";
+import { Operation, type PositionEditorDepositMode } from "domain/synthetics/trade/usePositionEditorState";
 import { expandDecimals } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import type { TokenData } from "sdk/utils/tokens/types";
@@ -57,7 +57,6 @@ vi.mock("../hooks/usePositionEditorFees", () => ({
 }));
 
 import { usePositionEditorData } from "../hooks/usePositionEditorData";
-import { Operation } from "../types";
 
 const tokensData = mockTokensData();
 const marketsInfoData = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"]);
