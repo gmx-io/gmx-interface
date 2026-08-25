@@ -130,6 +130,7 @@ function getVestModal(
     claimableEsGmxAmount?: bigint;
     onSimulatedClaim?: () => Promise<void>;
     onSimulatedStake?: (stakeAmount: bigint) => Promise<void>;
+    onVestingStarted?: () => void;
   }
 ) {
   return (
@@ -140,6 +141,7 @@ function getVestModal(
         data={data}
         mutate={mutate}
         onBuyGmx={onBuyGmx}
+        onVestingStarted={options?.onVestingStarted}
         claimableEsGmxAmount={options?.claimableEsGmxAmount}
         onSimulatedClaim={options?.onSimulatedClaim}
         onSimulatedStake={options?.onSimulatedStake}
@@ -926,6 +928,43 @@ describe("RewardsVestingModal", () => {
     expect(mutate).toHaveBeenCalledTimes(2);
     expect(setIsVisible).toHaveBeenCalledWith(false);
     expect(setIsVisible.mock.invocationCallOrder[0]).toBeLessThan(mutate.mock.invocationCallOrder[1]);
+  });
+
+  it("announces the started vesting once the modal closes after a successful deposit", async () => {
+    const onVestingStarted = vi.fn();
+    const wait = vi.fn(async () => undefined);
+    mockCallContract.mockResolvedValueOnce({ wait } as any);
+    mutate.mockResolvedValueOnce(baseData).mockResolvedValueOnce(baseData);
+    const { rerender } = render(getVestModal(baseData, true, undefined, { onVestingStarted }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
+
+    await waitFor(() => expect(setIsVisible).toHaveBeenCalledWith(false));
+    expect(onVestingStarted).not.toHaveBeenCalled();
+
+    rerender(getVestModal(baseData, false, undefined, { onVestingStarted }));
+
+    expect(onVestingStarted).toHaveBeenCalledTimes(1);
+
+    rerender(getVestModal(baseData, true, undefined, { onVestingStarted }));
+    rerender(getVestModal(baseData, false, undefined, { onVestingStarted }));
+
+    expect(onVestingStarted).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not announce started vesting when the deposit is rejected", async () => {
+    const onVestingStarted = vi.fn();
+    mockCallContract.mockRejectedValueOnce(new Error("rejected"));
+    mutate.mockResolvedValueOnce(baseData);
+    const { rerender } = render(getVestModal(baseData, true, undefined, { onVestingStarted }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
+
+    await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
+
+    rerender(getVestModal(baseData, false, undefined, { onVestingStarted }));
+
+    expect(onVestingStarted).not.toHaveBeenCalled();
   });
 
   it("does not deposit when the refreshed funding preview changed", async () => {

@@ -2045,6 +2045,7 @@ msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
 msgstr "Saldo de Gas insuficiente. Deposite más {gasPaymentTokensText}."
 
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
 msgid "Skip"
 msgstr "Omitir"
 
@@ -5385,6 +5386,10 @@ msgstr ""
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Bonus remaining"
 msgstr "Bonificación restante"
+
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
+msgid "Your esGMX is now vesting!"
+msgstr "¡Tu esGMX ya está en vesting!"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
@@ -9231,6 +9236,10 @@ msgstr "Hasta 25% de descuento en comisiones para traders de alto volumen.<0/>Ha
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
+msgid "Did you know you can earn more rewards by inviting other traders? Receive 50% of the rewards earned by traders you refer."
+msgstr "¿Sabías que puedes ganar más recompensas invitando a otros traders? Recibe el 50 % de las recompensas que ganen los traders que refieras."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
 msgstr "Grupo de Telegram"
@@ -9286,6 +9295,7 @@ msgid "TVL (supply)"
 msgstr "TVL (oferta)"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
 msgid "Invite traders"
 msgstr "Invitar traders"
 
