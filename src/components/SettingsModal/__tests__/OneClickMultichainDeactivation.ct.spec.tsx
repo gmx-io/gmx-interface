@@ -92,6 +92,16 @@ test.describe("Trading Settings: multichain Express+1CT -> Express deactivation 
     gelatoRelay.simulateInsufficientBalanceForToken = ARBITRUM_WETH_ADDRESS;
     await installRpcResponder(page, chain, { gelatoRelay });
 
+    // the rollout pins express to GMX Relay; this spec is about the deactivation UX, and its
+    // harness speaks Gelato — route through the incident switch until the sunset cleanup moves
+    // the harness onto /v1/relay/*
+    await page.evaluate(() => {
+      localStorage.setItem(
+        "api-ui-flags-cache-v2-42161",
+        JSON.stringify({ forceGelatoFallback: { enabled: true, createdAt: "", updatedAt: "" } })
+      );
+    });
+
     await mount(
       <OneClickMultichainDeactivationStory
         seedSubaccountAddress={SEEDED_SUBACCOUNT_ADDRESS}
