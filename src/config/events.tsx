@@ -49,6 +49,21 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "qqq-spy-arbitrum-listing",
+    type: "listing",
+    flagId: "showQqqSpyArbitrumListing",
+    endDate: "01 Sep 2026, 12:00",
+    chains: [ARBITRUM],
+    title: "QQQ and SPY markets added on Arbitrum",
+    description: (
+      <>
+        <Link to="/trade">Trade</Link> QQQ and SPY perpetuals 24/7, or <Link to="/pools">provide liquidity</Link> via
+        GLV <span className="text-slate-100">[WETH-USDC]</span>. Find them under TradFi &gt; Indices in the market
+        dropdown.
+      </>
+    ),
+  },
+  {
     id: "release-122-123-highlights",
     type: "update",
     isActive: true,
