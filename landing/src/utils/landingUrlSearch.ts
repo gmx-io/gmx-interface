@@ -1,5 +1,13 @@
-// Legacy hash routes are rewritten to real paths in landing/src/index.tsx, so their query
-// params are already merged into the search by the time this is read.
+// Hash search overrides outer search to match main app's useHashQueryParams.
 export function getLandingUrlSearch(): URLSearchParams {
-  return new URLSearchParams(window.location.search);
+  const merged = new URLSearchParams(window.location.search);
+
+  const hashQueryIndex = window.location.hash.indexOf("?");
+  if (hashQueryIndex !== -1) {
+    new URLSearchParams(window.location.hash.slice(hashQueryIndex)).forEach((value, key) => {
+      merged.set(key, value);
+    });
+  }
+
+  return merged;
 }
