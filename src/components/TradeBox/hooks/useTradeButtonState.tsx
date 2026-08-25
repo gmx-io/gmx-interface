@@ -48,7 +48,6 @@ import {
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxPayAmount,
   selectTradeboxExistingPositionForPreview,
-  selectTradeboxSelectedPosition,
   selectTradeboxState,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
@@ -699,7 +698,7 @@ export function useTradeboxButtonState({
   ]);
 }
 
-function useDetectAndSetAvailableMaxLeverage({
+export function useDetectAndSetAvailableMaxLeverage({
   setToTokenInputValue,
 }: {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
@@ -722,7 +721,6 @@ function useDetectAndSetAvailableMaxLeverage({
   const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
 
   const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
 
   const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
@@ -759,6 +757,7 @@ function useDetectAndSetAvailableMaxLeverage({
           strategy: "leverageByCollateral",
           uiFeeFactor,
           userReferralInfo,
+          proDiscountFactor,
           acceptablePriceImpactBuffer,
           fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
           leverage,
@@ -797,7 +796,7 @@ function useDetectAndSetAvailableMaxLeverage({
             marketInfo,
             collateralToken,
             isLong,
-            existingPosition: selectedPosition,
+            existingPosition,
             sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
             sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
             collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
@@ -811,9 +810,7 @@ function useDetectAndSetAvailableMaxLeverage({
                   : tradeMode === TradeMode.Limit
                     ? OrderType.LimitIncrease
                     : OrderType.MarketIncrease,
-              isLong,
               triggerPrice,
-              indexTokenPrices: toToken.prices,
             }),
           });
 
@@ -863,7 +860,6 @@ function useDetectAndSetAvailableMaxLeverage({
     maxAllowedLeverage,
     minCollateralUsd,
     existingPosition,
-    selectedPosition,
     selectedTriggerAcceptablePriceImpactBps,
     setLeverageOption,
     setToTokenInputValue,

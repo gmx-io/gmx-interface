@@ -20,6 +20,8 @@ export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.markets
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 export const selectProDiscountFactor = (s: SyntheticsState) => s.globals.proDiscountFactor;
+export const selectIsProDiscountFactorReady = (s: SyntheticsState) =>
+  s.globals.account === undefined || s.globals.proDiscountFactor !== undefined;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectSrcChainId = (s: SyntheticsState) => s.globals.srcChainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;

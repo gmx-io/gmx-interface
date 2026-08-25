@@ -175,15 +175,18 @@ describe("getIsIncreaseOrderExecutableNow", () => {
 });
 
 describe("getIncreaseEvaluationIndexPrice", () => {
-  const prices = { minPrice: 1000n, maxPrice: 1100n };
-
   it("keeps current prices for a market increase", () => {
     expect(
       getIncreaseEvaluationIndexPrice({
         orderType: OrderType.MarketIncrease,
-        isLong: true,
         triggerPrice: undefined,
-        indexTokenPrices: prices,
+      })
+    ).toBeUndefined();
+
+    expect(
+      getIncreaseEvaluationIndexPrice({
+        orderType: OrderType.MarketIncrease,
+        triggerPrice: 1000n,
       })
     ).toBeUndefined();
   });
@@ -193,27 +196,20 @@ describe("getIncreaseEvaluationIndexPrice", () => {
       expect(
         getIncreaseEvaluationIndexPrice({
           orderType: OrderType.LimitIncrease,
-          isLong: true,
           triggerPrice,
-          indexTokenPrices: prices,
         })
       ).toBeUndefined();
     }
   });
 
   it.each([
-    // a resting order is predicted at its trigger; an executable-now order at current prices
-    [OrderType.LimitIncrease, true, 900n, 900n],
-    [OrderType.LimitIncrease, true, 1200n, undefined],
-    [OrderType.LimitIncrease, false, 1200n, 1200n],
-    [OrderType.LimitIncrease, false, 900n, undefined],
-    [OrderType.StopIncrease, true, 1200n, 1200n],
-    [OrderType.StopIncrease, true, 900n, undefined],
-    [OrderType.StopIncrease, false, 900n, 900n],
-    [OrderType.StopIncrease, false, 1200n, undefined],
-  ])("orderType=%s isLong=%s trigger=%s → %s", (orderType, isLong, triggerPrice, expected) => {
-    expect(
-      getIncreaseEvaluationIndexPrice({ orderType, isLong, triggerPrice, indexTokenPrices: prices })
-    ).toBe(expected);
+    // amounts are always sized at the trigger price, so the evaluation stays there as well —
+    // including the window where the order is already executable (prices 1000 / 1100)
+    [OrderType.LimitIncrease, 900n, 900n],
+    [OrderType.LimitIncrease, 1200n, 1200n],
+    [OrderType.StopIncrease, 1200n, 1200n],
+    [OrderType.StopIncrease, 900n, 900n],
+  ])("orderType=%s trigger=%s → %s", (orderType, triggerPrice, expected) => {
+    expect(getIncreaseEvaluationIndexPrice({ orderType, triggerPrice })).toBe(expected);
   });
 });

@@ -17,7 +17,11 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectIsProDiscountFactorReady,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -276,11 +280,13 @@ export function OrderEditor(p: Props) {
 
   const resultingPositionMarginState = useSelector(selectOrderEditorIncreaseResultingPositionMarginState);
   const isIncreaseExecutableNow = useSelector(selectOrderEditorIsIncreaseExecutableNow);
+  const isProDiscountFactorReady = useSelector(selectIsProDiscountFactorReady);
 
   const isResultingPositionMaxLeverageError =
     getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason);
 
-  const isResultingPositionBlocking = isIncreaseExecutableNow && resultingPositionMarginState?.isLiquidatable === true;
+  const isResultingPositionBlocking =
+    isIncreaseExecutableNow && isProDiscountFactorReady && resultingPositionMarginState?.isLiquidatable === true;
 
   const isMaxLeverageError = useMemo(() => {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
@@ -330,6 +336,7 @@ export function OrderEditor(p: Props) {
           strategy: "leverageByCollateral",
           uiFeeFactor,
           userReferralInfo,
+          proDiscountFactor,
           acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
           fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
           externalSwapQuote: undefined,
@@ -378,9 +385,7 @@ export function OrderEditor(p: Props) {
             proDiscountFactor,
             indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
               orderType: positionOrder.orderType,
-              isLong: positionOrder.isLong,
               triggerPrice,
-              indexTokenPrices: marketInfo.indexToken.prices,
             }),
           });
 

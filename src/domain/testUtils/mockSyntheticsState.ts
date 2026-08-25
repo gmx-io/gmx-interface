@@ -5,8 +5,10 @@ import { mock } from "wagmi/connectors";
 
 import { ARBITRUM } from "config/chains";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { PositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import type { DeepPartial } from "lib/types";
 import type { MarketInfo } from "sdk/utils/markets/types";
+import type { PositionsInfoData } from "sdk/utils/positions/types";
 import type { TokenData } from "sdk/utils/tokens/types";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
@@ -28,6 +30,11 @@ export type MockSyntheticsStateOverrides = {
   marketAddress?: string;
   tokensData?: Record<string, TokenData>;
   marketInfo?: MarketInfo;
+  collateralAddress?: string;
+  uiFeeFactor?: bigint;
+  positionsConstants?: PositionsConstants;
+  account?: string;
+  positionsInfoData?: PositionsInfoData;
 };
 
 /**
@@ -48,6 +55,11 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
     marketAddress,
     tokensData = { [USDC_ADDRESS]: USDC_TOKEN, [ETH_ADDRESS]: ETH_TOKEN },
     marketInfo,
+    collateralAddress = fromTokenAddress,
+    uiFeeFactor = 0n,
+    positionsConstants,
+    account,
+    positionsInfoData = {},
   } = overrides;
 
   const state: DeepPartial<SyntheticsState> = {
@@ -59,12 +71,13 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       marketsInfo: {
         marketsInfoData: marketInfo ? { [marketInfo.marketTokenAddress]: marketInfo } : {},
       },
-      positionsInfo: { positionsInfoData: {} },
+      positionsInfo: { positionsInfoData },
       ordersInfo: { ordersInfoData: {} },
-      uiFeeFactor: 0n,
+      uiFeeFactor,
       jitLiquidityData: {},
       isFirstOrder: false,
-      account: undefined,
+      account,
+      positionsConstants,
     },
     externalSwap: {
       requestResult: undefined,
@@ -85,8 +98,8 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       toTokenAddress,
       marketAddress: marketInfo ? marketInfo.marketTokenAddress : marketAddress,
       marketInfo: marketInfo ?? undefined,
-      collateralAddress: fromTokenAddress,
-      collateralToken: tokensData[fromTokenAddress] ?? USDC_TOKEN,
+      collateralAddress,
+      collateralToken: tokensData[collateralAddress] ?? USDC_TOKEN,
       focusedInput,
       fromTokenInputValue,
       toTokenInputValue,

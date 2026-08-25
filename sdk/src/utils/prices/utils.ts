@@ -73,11 +73,14 @@ export function getIsIncreaseOrderExecutableNow(p: {
 
 export function getIncreaseEvaluationIndexPrice(p: {
   orderType: OrderType | undefined;
-  isLong: boolean;
   triggerPrice: bigint | undefined;
-  indexTokenPrices: TokenPrices;
 }): bigint | undefined {
-  if (p.triggerPrice === undefined || p.triggerPrice <= 0n || getIsIncreaseOrderExecutableNow(p)) {
+  if (
+    p.triggerPrice === undefined ||
+    p.triggerPrice <= 0n ||
+    p.orderType === undefined ||
+    p.orderType === OrderType.MarketIncrease
+  ) {
     return undefined;
   }
 

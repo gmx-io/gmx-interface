@@ -520,6 +520,7 @@ export function getOrderIncreaseResultingPositionMarginState({
     position: positionForProjection,
     findSwapPath,
     userReferralInfo,
+    proDiscountFactor,
     uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     strategy: "independent",
     marketsInfoData,
@@ -527,6 +528,10 @@ export function getOrderIncreaseResultingPositionMarginState({
     externalSwapQuoteParams: undefined,
     isSetAcceptablePriceImpactEnabled,
   });
+
+  if (order.initialCollateralDeltaAmount > 0n && increaseAmounts.swapStrategy.amountOut <= 0n) {
+    return undefined;
+  }
 
   return getIncreaseResultingPositionMarginState({
     marketInfo,
@@ -541,9 +546,7 @@ export function getOrderIncreaseResultingPositionMarginState({
     proDiscountFactor,
     indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
       orderType: order.orderType,
-      isLong: order.isLong,
       triggerPrice,
-      indexTokenPrices: marketInfo.indexToken.prices,
     }),
   });
 }

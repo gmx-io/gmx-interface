@@ -62,6 +62,7 @@ import {
   selectOrdersInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
+  selectIsProDiscountFactorReady,
   selectProDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
@@ -711,6 +712,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
       : existingPosition,
     findSwapPath,
     userReferralInfo,
+    proDiscountFactor: q(selectProDiscountFactor),
     uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     strategy: "independent",
     marketsInfoData,
@@ -838,7 +840,8 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     nextPositionValuesForIncrease,
     maxAllowedLeverage,
     resultingPositionMarginState: q(selectOrderEditorIncreaseResultingPositionMarginState),
-    isIncreaseExecutableNow: q(selectOrderEditorIsIncreaseExecutableNow),
+    isResultingPositionCheckBlocking:
+      q(selectOrderEditorIsIncreaseExecutableNow) && q(selectIsProDiscountFactorReady),
   });
 });
 
@@ -942,7 +945,7 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
         nextPositionValuesForIncrease,
         maxAllowedLeverage,
         resultingPositionMarginState,
-        isIncreaseExecutableNow,
+        isResultingPositionCheckBlocking: isIncreaseExecutableNow && q(selectIsProDiscountFactorReady),
       });
     });
   }

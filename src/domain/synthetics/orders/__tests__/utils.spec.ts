@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { ARBITRUM } from "config/chains";
 import { expandDecimals } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
-import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
 import { convertToTokenAmount } from "sdk/utils/tokens";
+import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
 
 import { NextPositionValues } from "../../trade";
 import { OrderType, PositionOrderInfo } from "../types";
@@ -334,6 +334,21 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
     expect(maxLeverageErrors(result)).toHaveLength(0);
   });
 
+  it("does not flag a healthy long limit whose trigger the market has already crossed", () => {
+    // the market fell through the trigger, so the keeper can execute right now; the order is
+    // still sized at 21 000, and evaluating those tokens at the current 20 000 would book a
+    // phantom 190 of loss against 200 of margin and block a 20x order
+    const executableNow = makeCleanOrder(OrderType.LimitIncrease, {
+      triggerPrice: expandDecimals(21_000, 30),
+      sizeDeltaUsd: expandDecimals(4_000, 30),
+      initialCollateralDeltaAmount: expandDecimals(200, 6),
+    });
+
+    const result = runOrderErrors(executableNow);
+
+    expect(maxLeverageErrors(result)).toHaveLength(0);
+  });
+
   it("does not flag a resting order with sufficient margin", () => {
     const wellMargined = makeCleanOrder(OrderType.LimitIncrease, {
       triggerPrice: expandDecimals(18_000, 30),
@@ -512,5 +527,56 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
 
     expect(orderFactor!.remainingCollateralUsd).toBeLessThan(noFee!.remainingCollateralUsd);
     expect(orderZeroFactor!.remainingCollateralUsd).toBe(noFee!.remainingCollateralUsd);
+  });
+});
+
+describe("getOrderIncreaseResultingPositionMarginState — degraded inputs never become a violation", () => {
+  const triggerPrice = expandDecimals(18_000, 30);
+
+  function makeSwapCollateralOrder(initialCollateralToken: PositionOrderInfo["initialCollateralToken"]) {
+    const isSameToken = initialCollateralToken.address === tokensData.USDC.address;
+
+    return makeIncreaseOrder(OrderType.LimitIncrease, {
+      initialCollateralToken,
+      initialCollateralTokenAddress: initialCollateralToken.address,
+      targetCollateralToken: tokensData.USDC,
+      swapPath: isSameToken ? [] : ["0xswapMarket"],
+      triggerPrice,
+      sizeDeltaUsd: expandDecimals(1_000, 30),
+      // 500 USD of margin on 1 000 of size — healthy at a 1% min collateral factor
+      initialCollateralDeltaAmount: isSameToken
+        ? expandDecimals(500, 6)
+        : convertToTokenAmount(
+            expandDecimals(500, 30),
+            initialCollateralToken.decimals,
+            initialCollateralToken.prices.minPrice
+          )!,
+    });
+  }
+
+  function runProjection(order: PositionOrderInfo) {
+    return getOrderIncreaseResultingPositionMarginState({
+      order,
+      position: undefined,
+      triggerPrice,
+      sizeDeltaUsd: order.sizeDeltaUsd,
+      // no route: what `makeSelectFindSwapPath` returns while markets load or a route is gone
+      findSwapPath: (() => undefined) as any,
+      uiFeeFactor: 0n,
+      chainId: ARBITRUM,
+      marketsInfoData,
+      isSetAcceptablePriceImpactEnabled: false,
+      minCollateralUsd: expandDecimals(1, 30),
+      userReferralInfo: undefined,
+    });
+  }
+
+  it("projects a same-token deposit without a route and finds it healthy", () => {
+    expect(runProjection(makeSwapCollateralOrder(tokensData.USDC))?.isLiquidatable).toBe(false);
+  });
+
+  it("gives up instead of reading an unroutable swap deposit as an empty one", () => {
+    // the swap yields nothing, so the deposit cannot be valued — the healthy order must not be flagged
+    expect(runProjection(makeSwapCollateralOrder(tokensData.ETH))).toBeUndefined();
   });
 });

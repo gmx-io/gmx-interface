@@ -1,5 +1,6 @@
 import {
   selectChainId,
+  selectIsProDiscountFactorReady,
   selectPositionConstants,
   selectProDiscountFactor,
   selectUserReferralInfo,
@@ -105,7 +106,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
       return undefined;
     }
 
-    const existingPosition = q(selectTradeboxSelectedPosition);
+    const existingPosition = q(selectTradeboxExistingPositionForPreview);
     const userReferralInfo = q(selectUserReferralInfo);
 
     return getIncreaseResultingPositionMarginState({
@@ -121,9 +122,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
       proDiscountFactor: q(selectProDiscountFactor),
       indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
         orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
-        isLong,
         triggerPrice: q(selectTradeboxTriggerPrice),
-        indexTokenPrices: marketInfo.indexToken.prices,
       }),
     });
   }
@@ -173,7 +172,8 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const chainId = q(selectChainId);
   const isExternalSwapLoading = q(selectExternalSwapIsLoading);
   const resultingPositionMarginState = q(selectTradeboxIncreaseResultingPositionMarginState);
-  const isResultingPositionCheckBlocking = q(selectTradeboxIsIncreaseExecutableNow);
+  const isResultingPositionCheckBlocking =
+    q(selectTradeboxIsIncreaseExecutableNow) && q(selectIsProDiscountFactorReady);
 
   return getIncreaseError({
     marketInfo,

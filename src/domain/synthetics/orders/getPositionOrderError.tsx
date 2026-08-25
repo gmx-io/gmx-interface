@@ -23,7 +23,7 @@ export function getPositionOrderError({
   nextPositionValuesForIncrease,
   maxAllowedLeverage,
   resultingPositionMarginState,
-  isIncreaseExecutableNow,
+  isResultingPositionCheckBlocking,
 }: {
   positionOrder: PositionOrderInfo;
   markPrice: bigint | undefined;
@@ -34,7 +34,7 @@ export function getPositionOrderError({
   nextPositionValuesForIncrease: NextPositionValues | undefined;
   maxAllowedLeverage: number | undefined;
   resultingPositionMarginState?: PositionMarginState;
-  isIncreaseExecutableNow?: boolean;
+  isResultingPositionCheckBlocking?: boolean;
 }): string | undefined {
   if (markPrice === undefined) {
     return t`Loading...`;
@@ -130,7 +130,7 @@ export function getPositionOrderError({
   if (
     (isLimitIncreaseOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)) &&
     resultingPositionMarginState?.isLiquidatable &&
-    isIncreaseExecutableNow
+    isResultingPositionCheckBlocking
   ) {
     return getIsMaxLeverageMarginReason(resultingPositionMarginState.reason)
       ? t`Max leverage exceeded`

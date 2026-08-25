@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   selectPositionConstants,
   selectProDiscountFactor,
+  selectUiFeeFactor,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -12,8 +13,8 @@ import {
   selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxLiquidity,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxMarkPrice,
-  selectTradeboxSelectedPosition,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
@@ -61,12 +62,13 @@ export function useTradeboxManualLeverageSizeSlider({
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
   const { marketInfo, collateralToken } = useSelector(selectTradeboxState);
   const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
-  const existingPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const { minCollateralUsd } = useSelector(selectPositionConstants);
   const userReferralInfo = useSelector(selectUserReferralInfo);
   const proDiscountFactor = useSelector(selectProDiscountFactor);
+  const uiFeeFactor = useSelector(selectUiFeeFactor);
 
   const lastInteractionRef = useRef<"slider" | "field">("field");
   const fixedPercentageRef = useRef<number>(0);
@@ -112,9 +114,14 @@ export function useTradeboxManualLeverageSizeSlider({
 
     const initialCollateralUsd = convertToUsd(fromTokenAmount, fromToken.decimals, fromToken.prices.minPrice) ?? 0n;
 
+    const baseCollateralUsd = increaseAmounts
+      ? increaseAmounts.collateralDeltaUsd + increaseAmounts.positionFeeUsd + increaseAmounts.uiFeeUsd
+      : undefined;
+
     return calcMaxSizeDeltaInUsdByLeverage({
       marketInfo,
       initialCollateralUsd,
+      baseCollateralUsd,
       markPrice,
       toTokenDecimals: toToken.decimals,
       isLong: tradeFlags.isLong,
@@ -125,11 +132,10 @@ export function useTradeboxManualLeverageSizeSlider({
       minCollateralUsd,
       userReferralInfo,
       proDiscountFactor,
+      uiFeeFactor,
       indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
         orderType: increaseAmounts?.limitOrderType ?? OrderType.MarketIncrease,
-        isLong: tradeFlags.isLong,
         triggerPrice,
-        indexTokenPrices: marketInfo.indexToken.prices,
       }),
     });
   }, [
@@ -137,7 +143,7 @@ export function useTradeboxManualLeverageSizeSlider({
     existingPosition,
     fromToken,
     fromTokenAmount,
-    increaseAmounts?.limitOrderType,
+    increaseAmounts,
     isLeverageSliderEnabled,
     longLiquidity,
     markPrice,
@@ -148,6 +154,7 @@ export function useTradeboxManualLeverageSizeSlider({
     tradeFlags.isIncrease,
     tradeFlags.isLong,
     triggerPrice,
+    uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
   ]);
