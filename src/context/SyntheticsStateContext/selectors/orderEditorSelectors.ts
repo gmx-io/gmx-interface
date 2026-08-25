@@ -20,8 +20,9 @@ import {
   PositionOrderInfo,
 } from "domain/synthetics/orders";
 import { getPositionOrderError } from "domain/synthetics/orders/getPositionOrderError";
+import { getMarginDepositProjections, isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { getOrderIncreaseResultingPositionMarginState } from "domain/synthetics/orders/utils";
-import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { getIsPositionInfoLoaded, PositionInfoLoaded } from "domain/synthetics/positions";
 import {
   convertToTokenAmount,
   convertToUsd,
@@ -47,6 +48,7 @@ import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
 import { getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
+import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 import { PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
@@ -722,6 +724,56 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
   });
 });
 
+function calcMarginDepositProjections(p: {
+  order: OrderInfo | undefined;
+  position: PositionInfoLoaded | undefined;
+  triggerPrice: bigint | undefined;
+  minCollateralUsd: bigint | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+  isPnlInLeverage: boolean;
+}) {
+  const { order, position, triggerPrice, minCollateralUsd, userReferralInfo, isPnlInLeverage } = p;
+
+  if (!order || !position || !isMarginDepositOrder(order)) {
+    return undefined;
+  }
+
+  return getMarginDepositProjections({
+    position,
+    depositAmount: order.initialCollateralDeltaAmount,
+    triggerPrice,
+    minCollateralUsd,
+    userReferralInfo,
+    pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
+    isPnlInLeverage,
+  });
+}
+
+/** Undefined for anything but a margin deposit. */
+export const selectOrderEditorMarginDepositProjections = createSelector((q) => {
+  return calcMarginDepositProjections({
+    order: q(selectOrderEditorOrder),
+    position: q(selectOrderEditorExistingPosition),
+    triggerPrice: q(selectOrderEditorTriggerPrice),
+    minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
+    userReferralInfo: q(selectUserReferralInfo),
+    isPnlInLeverage: q(selectIsPnlInLeverage),
+  });
+});
+
+const makeSelectOrderEditorMarginDepositProjections = createSelectorFactory((orderKey: string, triggerPrice: bigint) =>
+  createSelector((q) => {
+    return calcMarginDepositProjections({
+      order: q((state) => getByKey(selectOrdersInfoData(state), orderKey)),
+      position: q(makeSelectOrderEditorExistingPosition(orderKey)),
+      triggerPrice,
+      minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
+      userReferralInfo: q(selectUserReferralInfo),
+      isPnlInLeverage: q(selectIsPnlInLeverage),
+    });
+  })
+);
+
 export const selectOrderEditorFindSwapPath = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
   if (!order) throw new Error("selectOrderEditorSwapRoutes: Order is not defined");
@@ -829,6 +881,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
   const existingPosition = q(selectOrderEditorExistingPosition);
   const nextPositionValuesForIncrease = q(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
   const maxAllowedLeverage = q(selectOrderEditorMaxAllowedLeverage);
+  const marginDepositProjections = q(selectOrderEditorMarginDepositProjections);
 
   return getPositionOrderError({
     positionOrder,
@@ -842,6 +895,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     resultingPositionMarginState: q(selectOrderEditorIncreaseResultingPositionMarginState),
     isResultingPositionCheckBlocking:
       q(selectOrderEditorIsIncreaseExecutableNow) && q(selectIsProDiscountFactorReady),
+    marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
   });
 });
 
@@ -870,6 +924,7 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
       triggerPrice
     );
     const selectMaxAllowedLeverage = makeSelectOrderEditorMaxAllowedLeverage(orderKey);
+    const selectMarginDepositProjections = makeSelectOrderEditorMarginDepositProjections(orderKey, triggerPrice);
 
     return createSelector((q) => {
       const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
@@ -898,6 +953,7 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
 
       const nextPositionValuesForIncrease = q(selectNextPositionValuesForIncrease);
       const maxAllowedLeverage = q(selectMaxAllowedLeverage);
+      const marginDepositProjections = q(selectMarginDepositProjections);
 
       let resultingPositionMarginState: PositionMarginState | undefined;
       let isIncreaseExecutableNow = false;
@@ -946,6 +1002,7 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
         maxAllowedLeverage,
         resultingPositionMarginState,
         isResultingPositionCheckBlocking: isIncreaseExecutableNow && q(selectIsProDiscountFactorReady),
+        marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
       });
     });
   }

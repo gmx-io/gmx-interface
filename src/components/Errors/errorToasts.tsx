@@ -212,12 +212,17 @@ function getDefaultErrorMessage(errorData: ErrorData | undefined) {
   return t`Transaction failed`;
 }
 
-function getDebugErrorMessage(errorData: ErrorData | undefined) {
-  if (errorData?.contractError) {
-    return `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`;
-  }
+export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  const message = errorData?.contractError
+    ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
+    : errorData?.errorMessage;
 
-  return errorData?.errorMessage;
+  const handles = [
+    typeof errorData?.data?.taskId === "string" ? `taskId: ${errorData.data.taskId}` : undefined,
+    typeof errorData?.data?.traceId === "string" ? `traceId: ${errorData.data.traceId}` : undefined,
+  ].filter(Boolean);
+
+  return [message, ...handles].filter(Boolean).join("\n") || undefined;
 }
 
 /**
@@ -438,7 +443,7 @@ export function getInsufficientExecutionFeeToastContent({
   chainId: number;
   executionFeeBufferBps: number | undefined;
   estimatedExecutionGasLimit: bigint;
-  txUrl: string;
+  txUrl: string | undefined;
   errorMessage: string | undefined;
   shouldOfferExpress: boolean;
   setIsSettingsVisible: (isVisible: boolean) => void;
@@ -485,10 +490,16 @@ export function getInsufficientExecutionFeeToastContent({
         <br />
         <br />
         {suggestText}
-        <br />
-        <br />
-        <ExternalLink href={txUrl}>View</ExternalLink>
       </Trans>
+      {txUrl && (
+        <>
+          <br />
+          <br />
+          <ExternalLink href={txUrl}>
+            <Trans>View</Trans>
+          </ExternalLink>
+        </>
+      )}
       <br />
       <br />
       {errorMessage && <ToastifyDebug error={errorMessage} />}

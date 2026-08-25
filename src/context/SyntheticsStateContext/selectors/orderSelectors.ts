@@ -95,6 +95,9 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
           )
         : undefined;
 
+    const { minCollateralUsd } = q(selectPositionConstants);
+    const userReferralInfo = q(selectUserReferralInfo);
+
     const { errors, level } = getOrderErrors({
       order: orderInfo,
       positionsInfoData,
@@ -105,6 +108,8 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       isSetAcceptablePriceImpactEnabled,
       jitLiquidityMap,
       nextPositionValues,
+      minCollateralUsd,
+      userReferralInfo,
       resultingPositionMarginState: q(makeSelectOrderIncreaseResultingPositionMarginState(orderInfo.key)),
     });
 

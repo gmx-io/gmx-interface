@@ -4,13 +4,17 @@ import { describe, expect, it } from "vitest";
 import { OrderType } from "domain/synthetics/orders";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
 import { MaxUint256, PRECISION, applyFactor, formatUsd } from "lib/numbers";
+import { USER_INITIATED_CANCEL, type PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import {
+  cancelMarginDeposit,
   cancelOrderIncreaseLong,
+  createMarginDeposit,
   createOrderDecreaseLong,
   createOrderIncreaseLong,
   createOrderStopMarketLong,
   deposit1Usd,
+  executeMarginDeposit,
   executeOrderIncreaseLong,
   executeOrderMarketIncreaseLongWithFee,
   executeOrderStopMarketLong,
@@ -18,16 +22,19 @@ import {
   executeSwap,
   executeTwapIncreaseWithFee,
   failedSwap,
+  frozenMarginDeposit,
   frozenOrderIncreaseShort,
   increaseLongETH,
   liquidated,
   requestIncreasePosition,
   requestSwap,
   undefinedOrder,
+  updateMarginDeposit,
   withdraw1Usd,
 } from "./mocks";
 import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
-import { getErrorTooltipTitle } from "./utils/shared";
+import { anchorCloseRow, anchorOpenRow } from "./utils/settlementMocks";
+import { INEQUALITY_GT, INEQUALITY_LT, getErrorTooltipTitle } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 i18n.load({ en: {} });
@@ -954,53 +961,85 @@ describe("TradeHistoryRow helpers", () => {
     );
   });
 
+  describe("margin deposits", () => {
+    it("labels every event and shows the deposited collateral as the size", () => {
+      const created = formatPositionMessage(createMarginDeposit, minCollateralUsd);
+      expect(created.action).toBe("Create margin deposit");
+      expect(created.size).toBe("0.25000 WETH");
+      expect(created.price).toBe(`${INEQUALITY_LT}$ 1.00`);
+      expect(created.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+      expect(created.priceComment).toEqual(["Trigger price for the order"]);
+
+      const updated = formatPositionMessage(updateMarginDeposit, minCollateralUsd);
+      expect(updated.action).toBe("Update margin deposit");
+      expect(updated.size).toBe("0.25000 WETH");
+      expect(updated.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+
+      const cancelled = formatPositionMessage(cancelMarginDeposit, minCollateralUsd);
+      expect(cancelled.action).toBe("Cancel margin deposit");
+      expect(cancelled.size).toBe("0.25000 WETH");
+      expect(cancelled.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+
+      const executed = formatPositionMessage(executeMarginDeposit, minCollateralUsd);
+      expect(executed.action).toBe("Execute margin deposit");
+      expect(executed.size).toBe("500.00 USDC");
+      expect(executed.triggerPrice).toBe(`${INEQUALITY_GT}$ 0.83600`);
+      expect(executed.priceComment).toContainEqual({
+        key: "Order trigger price",
+        value: `${INEQUALITY_GT}$ 0.83600`,
+      });
+
+      const frozen = formatPositionMessage(frozenMarginDeposit, minCollateralUsd);
+      expect(frozen.action).toBe("Failed margin deposit");
+      expect(frozen.size).toBe("250.00 USDC.e");
+      expect(frozen.price).toBe(`${INEQUALITY_GT}$ 27,210.00`);
+      expect(frozen.triggerPrice).toBe(`${INEQUALITY_GT}$ 27,210.00`);
+      expect(frozen.isActionError).toBe(true);
+    });
+
+    it("never renders a zero USD size", () => {
+      const marginDeposits = [
+        createMarginDeposit,
+        updateMarginDeposit,
+        cancelMarginDeposit,
+        executeMarginDeposit,
+        frozenMarginDeposit,
+      ];
+
+      for (const marginDeposit of marginDeposits) {
+        expect(formatPositionMessage(marginDeposit, minCollateralUsd).size).not.toContain("$");
+      }
+    });
+
+    it("reads as cancelled for user initiated cancels, not expired", () => {
+      const userCancelled = { ...cancelMarginDeposit, reason: USER_INITIATED_CANCEL };
+
+      expect(formatPositionMessage(userCancelled, minCollateralUsd).action).toBe("Cancel margin deposit");
+    });
+
+    it("leaves limit increases with a size untouched", () => {
+      const details = formatPositionMessage(createOrderIncreaseLong, minCollateralUsd);
+
+      expect(details.action).toBe("Create Limit");
+      expect(details.size).toBe("+$ 2.64");
+    });
+
+    it("leaves zero size twap increases untouched", () => {
+      const twapDeposit = {
+        ...createMarginDeposit,
+        twapParams: { twapGroupId: "0xtwap-group-deposit", numberOfParts: 3 },
+      };
+
+      const details = formatPositionMessage(twapDeposit, minCollateralUsd);
+
+      expect(details.action).toBe("Create TWAP");
+      expect(details.price).toBe("N/A");
+    });
+  });
+
   describe("getSettlementTooltipLines", () => {
-    // Arbitrum tx 0x936261d3c5394be68ccd53173b116f8f2e6c5d007dd3ab88943ded9b6e69f38e
-    const fullCloseAction = {
-      orderType: OrderType.MarketDecrease,
-      eventName: TradeActionType.OrderExecuted,
-      srcChainId: 0,
-      swapPath: [],
-      initialCollateralToken: { symbol: "USDC", decimals: 6, isStable: true },
-      collateralTokenPriceMin: 999757458143159100000000000000n,
-      basePnlUsd: 294764671686842964882169505960200n,
-      positionFeeAmount: 3984889n,
-      traderDiscountAmount: 199244n,
-      borrowingFeeAmount: 12850n,
-      fundingFeeAmount: 338315n,
-      liquidationFeeAmount: 0n,
-      totalImpactUsd: 39839233440000000000000000000000n,
-      priceImpactUsd: 16647709627538459795542642163244n,
-      swapFeeUsd: 167301952563420478623863092367n,
-      swapImpactUsd: 40202004253824880382311194750n,
-    } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
-
-    const closeChange = {
-      positionKey: "0x5cc6146539659b0e38cf9abf31342fa6f75f6409823735fdfaac09dfebb99f9b",
-      block: 463477048,
-      type: "decrease" as const,
-      sizeInUsd: 0n,
-      sizeDeltaUsd: 9959808360000000000000000000000000n,
-      collateralAmount: 0n,
-      collateralDeltaAmount: 996214440n,
-      feesAmount: 4136810n,
-    };
-
-    const openChange = {
-      positionKey: "0x5cc6146539659b0e38cf9abf31342fa6f75f6409823735fdfaac09dfebb99f9b",
-      block: 463424563,
-      type: "increase" as const,
-      sizeInUsd: 9959808360000000000000000000000000n,
-      sizeDeltaUsd: 9959808360000000000000000000000000n,
-      collateralAmount: 996214440n,
-      collateralDeltaAmount: 996214440n,
-      feesAmount: 3785560n,
-    };
-
     it("reconciles against the original margin when the opening row is matched", () => {
-      const result = getSettlementTooltipLines(fullCloseAction, closeChange, openChange).filter(
-        (line) => line !== undefined
-      );
+      const result = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow).filter((line) => line !== undefined);
 
       expect(result).toEqual([
         "",
@@ -1016,9 +1055,7 @@ describe("TradeHistoryRow helpers", () => {
     });
 
     it("falls back to close-side-only settlement when the opening row is not matched", () => {
-      const result = getSettlementTooltipLines(fullCloseAction, closeChange, undefined).filter(
-        (line) => line !== undefined
-      );
+      const result = getSettlementTooltipLines(anchorCloseRow, undefined).filter((line) => line !== undefined);
 
       expect(result).toEqual([
         "",
@@ -1028,51 +1065,28 @@ describe("TradeHistoryRow helpers", () => {
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
         { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
         { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
-        "",
-        { text: "Original margin reconciliation requires the opening row.", state: "muted" },
       ]);
-    });
-
-    it("separates the Settlement heading from the first detail row with an empty line", () => {
-      const withOpenChange = getSettlementTooltipLines(fullCloseAction, closeChange, openChange).filter(
-        (line) => line !== undefined
-      );
-      const withoutOpenChange = getSettlementTooltipLines(fullCloseAction, closeChange, undefined).filter(
-        (line) => line !== undefined
-      );
-
-      for (const result of [withOpenChange, withoutOpenChange]) {
-        const headingIndex = result.indexOf("Settlement");
-
-        expect(headingIndex).toBeGreaterThanOrEqual(0);
-        expect(result[headingIndex + 1]).toBe("");
-        expect(result[headingIndex + 2]).not.toBe("");
-      }
     });
 
     it("marks the USD received value as an estimate when the collateral was swapped on close", () => {
       const swappedAction = {
-        ...fullCloseAction,
+        ...anchorCloseRow,
         swapPath: ["0x0000000000000000000000000000000000000001"],
-      } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+      } as unknown as PositionTradeAction;
 
-      const result = getSettlementTooltipLines(swappedAction, closeChange, openChange).filter(
-        (line) => line !== undefined
-      );
+      const result = getSettlementTooltipLines(swappedAction, anchorOpenRow).filter((line) => line !== undefined);
 
       expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$ 1,326.31" });
     });
 
     it("includes the liquidation fee in the settlement for liquidation actions", () => {
       const liquidationAction = {
-        ...fullCloseAction,
+        ...anchorCloseRow,
         orderType: OrderType.Liquidation,
         liquidationFeeAmount: 1000000n,
-      } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+      } as unknown as PositionTradeAction;
 
-      const result = getSettlementTooltipLines(liquidationAction, closeChange, openChange).filter(
-        (line) => line !== undefined
-      );
+      const result = getSettlementTooltipLines(liquidationAction, anchorOpenRow).filter((line) => line !== undefined);
 
       expect(result).toEqual([
         "",
@@ -1085,6 +1099,51 @@ describe("TradeHistoryRow helpers", () => {
         { key: "Net close fees / impact", value: { text: "+$ 34.58", state: "success" } },
         { key: "Wallet received", value: "~1,325.64\u00a0USDC" },
       ]);
+    });
+
+    it("reports a combined USD total when profit could have been paid in the pnl token", () => {
+      const splitPayoutAction = {
+        ...anchorCloseRow,
+        isLong: true,
+      } as unknown as PositionTradeAction;
+
+      const result = getSettlementTooltipLines(splitPayoutAction, anchorOpenRow).filter((line) => line !== undefined);
+
+      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$\u200a1,326.31" });
+    });
+
+    it("excludes impact diverted to claimable collateral from the received amount", () => {
+      const withDiffAction = {
+        ...anchorCloseRow,
+        priceImpactDiffUsd: 100n * 10n ** 30n,
+      } as unknown as PositionTradeAction;
+
+      const withoutDiff = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow).at(-1) as { value: string };
+      const withDiff = getSettlementTooltipLines(withDiffAction, anchorOpenRow).at(-1) as { value: string };
+
+      expect(withoutDiff.value).toBe("~1,326.64\u00a0USDC");
+      expect(withDiff.value).toBe("~1,226.61\u00a0USDC");
+    });
+
+    it("clamps the received amount to zero when costs wipe out the position", () => {
+      const wipedOutAction = {
+        ...anchorCloseRow,
+        orderType: OrderType.Liquidation,
+        basePnlUsd: -2_000n * 10n ** 30n,
+        liquidationFeeAmount: 1_000_000n,
+      } as unknown as PositionTradeAction;
+
+      const result = getSettlementTooltipLines(wipedOutAction, anchorOpenRow).at(-1) as { value: string };
+
+      expect(result.value).toBe("~0.00\u00a0USDC");
+    });
+
+    it("relabels the received row as a GMX balance movement for multichain closes", () => {
+      const result = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow, true).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result.at(-1)).toEqual({ key: "Received at close (GMX balance)", value: "~1,326.64\u00a0USDC" });
     });
   });
 });

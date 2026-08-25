@@ -1,6 +1,7 @@
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
+import { getIsExpressAvailable } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
@@ -52,6 +53,10 @@ export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPayme
 
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
+
+export const selectUiFlags = (s: SyntheticsState) => s.uiFlags;
+
+export const selectIsExpressAvailableFlag = createSelector((q) => getIsExpressAvailable(q(selectUiFlags)));
 
 const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
   return createSelector((q) => {

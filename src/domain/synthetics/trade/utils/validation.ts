@@ -27,6 +27,7 @@ import {
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import type { GmPaySource } from "domain/synthetics/markets/types";
+import { getMarginDepositRiskLevel } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
@@ -56,6 +57,8 @@ export enum ValidationButtonTooltipName {
   noSwapPath = "noSwapPath",
   minDeposit = "minDeposit",
   insufficientGmxPoolLiquidity = "insufficientGmxPoolLiquidity",
+  marginDepositAutoCancelLimit = "marginDepositAutoCancelLimit",
+  marginDepositInsufficient = "marginDepositInsufficient",
 }
 
 export enum ValidationBannerErrorName {
@@ -673,6 +676,39 @@ export function getDecreaseError(p: {
   return {};
 }
 
+function getCollateralDeltaAmountError(p: {
+  collateralDeltaAmount: bigint | undefined;
+  collateralDeltaUsd: bigint | undefined;
+  isDeposit: boolean;
+  depositToken: TokenData | undefined;
+  depositAmount: bigint | undefined;
+  minDepositUsd: bigint | undefined;
+}): ValidationResult {
+  const { collateralDeltaAmount, collateralDeltaUsd, isDeposit, depositToken, depositAmount, minDepositUsd } = p;
+
+  if (
+    collateralDeltaAmount === undefined ||
+    collateralDeltaUsd === undefined ||
+    collateralDeltaAmount == 0n ||
+    collateralDeltaUsd == 0n
+  ) {
+    return { buttonErrorMessage: t`Enter an amount` };
+  }
+
+  if (isDeposit && depositToken && depositAmount !== undefined && depositAmount > (depositToken.balance ?? 0)) {
+    return { buttonErrorMessage: t`Insufficient ${depositToken.symbol} balance` };
+  }
+
+  if (isDeposit && minDepositUsd !== undefined && minDepositUsd > 0 && collateralDeltaUsd < minDepositUsd) {
+    return {
+      buttonErrorMessage: t`Min deposit: ${formatUsd(minDepositUsd)}`,
+      buttonTooltipName: ValidationButtonTooltipName.minDeposit,
+    };
+  }
+
+  return {};
+}
+
 export function getEditCollateralError(p: {
   collateralDeltaAmount: bigint | undefined;
   collateralDeltaUsd: bigint | undefined;
@@ -706,24 +742,17 @@ export function getEditCollateralError(p: {
     return { buttonErrorMessage: t`Withdrawal not available` };
   }
 
-  if (
-    collateralDeltaAmount === undefined ||
-    collateralDeltaUsd === undefined ||
-    collateralDeltaAmount == 0n ||
-    collateralDeltaUsd == 0n
-  ) {
-    return { buttonErrorMessage: t`Enter an amount` };
-  }
+  const amountError = getCollateralDeltaAmountError({
+    collateralDeltaAmount,
+    collateralDeltaUsd,
+    isDeposit,
+    depositToken,
+    depositAmount,
+    minDepositUsd,
+  });
 
-  if (isDeposit && depositToken && depositAmount !== undefined && depositAmount > (depositToken.balance ?? 0)) {
-    return { buttonErrorMessage: t`Insufficient ${depositToken.symbol} balance` };
-  }
-
-  if (isDeposit && minDepositUsd !== undefined && minDepositUsd > 0 && collateralDeltaUsd < minDepositUsd) {
-    return {
-      buttonErrorMessage: t`Min deposit: ${formatUsd(minDepositUsd)}`,
-      buttonTooltipName: ValidationButtonTooltipName.minDeposit,
-    };
+  if (collateralDeltaAmount === undefined || collateralDeltaUsd === undefined || amountError.buttonErrorMessage) {
+    return amountError;
   }
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
@@ -773,6 +802,104 @@ export function getEditCollateralError(p: {
   }
 
   return {};
+}
+
+export function getMarginDepositAutoCancelLimitMessage() {
+  return t`Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit.`;
+}
+
+export function getMarginDepositInsufficientMessage() {
+  return t`This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation.`;
+}
+
+export function getMarginDepositBeyondLiqPriceMessage() {
+  return t`This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed.`;
+}
+
+/** Blocking "At price" checks; `bannerErrorName` carries the full copy, `buttonErrorMessage` the short CTA text. */
+export function getConditionalDepositError(p: {
+  collateralDeltaAmount: bigint | undefined;
+  collateralDeltaUsd: bigint | undefined;
+  depositToken: TokenData | undefined;
+  depositAmount: bigint | undefined;
+  minDepositUsd: bigint | undefined;
+  isLong: boolean;
+  markPrice: bigint | undefined;
+  triggerPrice: bigint | undefined;
+  currentLiqPrice: bigint | undefined;
+  nextLiqPrice: bigint | undefined;
+  isAutoCancelLimitReached: boolean;
+}): ValidationResult {
+  const {
+    collateralDeltaAmount,
+    collateralDeltaUsd,
+    depositToken,
+    depositAmount,
+    minDepositUsd,
+    isLong,
+    markPrice,
+    triggerPrice,
+    currentLiqPrice,
+    nextLiqPrice,
+    isAutoCancelLimitReached,
+  } = p;
+
+  const amountError = getCollateralDeltaAmountError({
+    collateralDeltaAmount,
+    collateralDeltaUsd,
+    isDeposit: true,
+    depositToken,
+    depositAmount,
+    minDepositUsd,
+  });
+
+  if (amountError.buttonErrorMessage) {
+    return amountError;
+  }
+
+  if (triggerPrice === undefined || triggerPrice <= 0n) {
+    return { buttonErrorMessage: t`Enter a price` };
+  }
+
+  if (markPrice !== undefined) {
+    if (isLong && triggerPrice >= markPrice) {
+      return { buttonErrorMessage: t`Set trigger price below mark price` };
+    }
+
+    if (!isLong && triggerPrice <= markPrice) {
+      return { buttonErrorMessage: t`Set trigger price above mark price` };
+    }
+  }
+
+  if (isAutoCancelLimitReached) {
+    return {
+      buttonErrorMessage: t`Auto-cancel order limit reached`,
+      buttonTooltipName: ValidationButtonTooltipName.marginDepositAutoCancelLimit,
+    };
+  }
+
+  if (getMarginDepositRiskLevel({ isLong, triggerPrice, currentLiqPrice, nextLiqPrice }) === "insufficient") {
+    return {
+      buttonErrorMessage: t`Insufficient deposit at trigger price`,
+      buttonTooltipName: ValidationButtonTooltipName.marginDepositInsufficient,
+    };
+  }
+
+  return {};
+}
+
+/** Non-blocking counterpart of {@link getConditionalDepositError}. */
+export function getConditionalDepositWarning(p: {
+  isLong: boolean;
+  triggerPrice: bigint | undefined;
+  currentLiqPrice: bigint | undefined;
+  nextLiqPrice: bigint | undefined;
+}): string | undefined {
+  if (getMarginDepositRiskLevel(p) === "beyondCurrentLiq") {
+    return getMarginDepositBeyondLiqPriceMessage();
+  }
+
+  return undefined;
 }
 
 function getTokenBalanceByPaySource(

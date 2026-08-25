@@ -11,8 +11,11 @@ import {
   RpcTrackerEndpointTiming,
   RpcTrackerUpdateEndpointsEvent,
 } from ".";
+import { createEndpointsPairDedup } from "./endpointsPairDedup";
 
 export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
+  const shouldReportEndpointsPair = createEndpointsPairDedup();
+
   const cleanupBannedSubscription = addFallbackTrackerListener(
     "endpointBanned",
     tracker.trackerKey,
@@ -36,10 +39,15 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
     (p) => {
       const { primary, fallbacks, endpointsStats } = p;
 
+      const secondary: string | undefined = fallbacks[0];
+
+      if (!shouldReportEndpointsPair(primary, secondary)) {
+        return;
+      }
+
       const bestBlock = getBestBlock(endpointsStats);
 
       const primaryStats = endpointsStats.find((stat) => stat.endpoint === primary);
-      const secondary = fallbacks[0];
       const secondaryStats = secondary ? endpointsStats.find((stat) => stat.endpoint === secondary) : undefined;
 
       metrics.pushEvent<RpcTrackerUpdateEndpointsEvent>({

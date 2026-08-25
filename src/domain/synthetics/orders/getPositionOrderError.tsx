@@ -8,6 +8,7 @@ import {
   isStopIncreaseOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
+import { getMarginDepositRiskLevel, isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { NextPositionValues } from "domain/synthetics/trade";
 import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
@@ -22,6 +23,7 @@ export function getPositionOrderError({
   existingPosition,
   nextPositionValuesForIncrease,
   maxAllowedLeverage,
+  marginDepositNextLiqPrice,
   resultingPositionMarginState,
   isResultingPositionCheckBlocking,
 }: {
@@ -33,9 +35,12 @@ export function getPositionOrderError({
   existingPosition: PositionInfoLoaded | undefined;
   nextPositionValuesForIncrease: NextPositionValues | undefined;
   maxAllowedLeverage: number | undefined;
+  marginDepositNextLiqPrice?: bigint;
   resultingPositionMarginState?: PositionMarginState;
   isResultingPositionCheckBlocking?: boolean;
 }): string | undefined {
+  const isMarginDeposit = isMarginDepositOrder(positionOrder);
+
   if (markPrice === undefined) {
     return t`Loading...`;
   }
@@ -53,7 +58,7 @@ export function getPositionOrderError({
     triggerPrice === positionOrder.triggerPrice! &&
     acceptablePrice === positionOrder.acceptablePrice
   ) {
-    return t`Enter a new amount or price`;
+    return isMarginDeposit ? t`Enter a new price` : t`Enter a new amount or price`;
   }
 
   if (isLimitIncreaseOrderType(positionOrder.orderType)) {
@@ -115,6 +120,22 @@ export function getPositionOrderError({
         return t`Set trigger price above mark price`;
       }
     }
+  }
+
+  // the standard increase checks assume a positive size
+  if (isMarginDeposit) {
+    const riskLevel = getMarginDepositRiskLevel({
+      isLong: positionOrder.isLong,
+      triggerPrice,
+      currentLiqPrice: existingPosition?.liquidationPrice,
+      nextLiqPrice: marginDepositNextLiqPrice,
+    });
+
+    if (riskLevel === "insufficient") {
+      return t`Insufficient deposit at trigger price`;
+    }
+
+    return undefined;
   }
 
   if (isLimitIncreaseOrderType(positionOrder.orderType)) {

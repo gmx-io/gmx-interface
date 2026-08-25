@@ -1,11 +1,16 @@
 import { StatusCode as appGaslessStatusCode } from "@gelatocloud/gasless";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { setAbFlagEnabled } from "config/ab";
 import { ARBITRUM } from "config/chains";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { StatusCode as sdkGaslessStatusCode } from "sdk/utils/gelatoRelay";
 
 describe("@gelatocloud/gasless dedupe", () => {
+  // the rollout flag rolls randomly per browser; unpinned, this Gelato-path spec inherits the roll
+  beforeAll(() => {
+    setAbFlagEnabled("gmxRelay", false);
+  });
   it("app and sdk imports resolve to the same module instance", () => {
     expect(sdkGaslessStatusCode).toBe(appGaslessStatusCode);
   });
