@@ -6,16 +6,17 @@ describe("legacyHashUrlRedirect", () => {
     vi.restoreAllMocks();
   });
 
-  it("does not rewrite in the MetaMask iOS in-app browser", async () => {
+  it("moves a clean route to the root hash in the MetaMask iOS in-app browser", async () => {
     vi.spyOn(window.navigator, "userAgent", "get").mockReturnValue(
       "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 WebView MetaMaskMobile"
     );
-    window.history.replaceState({}, "", "/#/trade");
+    window.history.replaceState({}, "", "/trade?chainId=42161");
 
     await import("./legacyHashUrlRedirect");
 
     expect(window.location.pathname).toBe("/");
-    expect(window.location.hash).toBe("#/trade");
+    expect(window.location.search).toBe("");
+    expect(window.location.hash).toBe("#/trade?chainId=42161");
   });
 
   it("rewrites a legacy hash url while the module is being imported", async () => {

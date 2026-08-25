@@ -9,8 +9,35 @@ export function isMetaMaskIosInAppBrowser(userAgent: string): boolean {
   );
 }
 
-export function shouldUseLegacyHashRouter(href: string, userAgent: string): boolean {
-  return isMetaMaskIosInAppBrowser(userAgent) && new URL(href).hash.startsWith("#/");
+export function shouldUseLegacyHashRouter(userAgent: string): boolean {
+  return isMetaMaskIosInAppBrowser(userAgent);
+}
+
+export function getUrlForMetaMaskIosHashRouter(href: string): string | undefined {
+  const url = new URL(href);
+
+  if (url.hash.startsWith("#/")) {
+    const cleanUrl = getUrlWithoutLegacyHashRoute(href);
+    const normalizedUrl = cleanUrl && getUrlForMetaMaskIosHashRouter(cleanUrl);
+
+    return normalizedUrl === href ? undefined : normalizedUrl;
+  }
+
+  const routeParams = new URLSearchParams();
+  const privyParams = new URLSearchParams();
+
+  url.searchParams.forEach((value, key) => {
+    if (PRIVY_OAUTH_QUERY_PARAMS.includes(key)) {
+      privyParams.append(key, value);
+    } else {
+      routeParams.append(key, value);
+    }
+  });
+
+  const routeSearch = routeParams.toString();
+  const privySearch = privyParams.toString();
+
+  return `${url.origin}/${privySearch ? `?${privySearch}` : ""}#${url.pathname}${routeSearch ? `?${routeSearch}` : ""}${url.hash}`;
 }
 
 /**
@@ -56,6 +83,12 @@ export function getUrlWithoutLegacyHashRoute(href: string): string | undefined {
 export function redirectLegacyHashUrl() {
   try {
     if (isMetaMaskIosInAppBrowser(window.navigator.userAgent)) {
+      const url = getUrlForMetaMaskIosHashRouter(window.location.href);
+
+      if (url) {
+        window.history.replaceState(window.history.state, "", url);
+      }
+
       return;
     }
 
