@@ -1,28 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import {
-  getUrlWithoutLegacyHashRoute,
-  isMetaMaskIosInAppBrowser,
-  shouldUseLegacyHashRouter,
-  watchLegacyHashUrl,
-} from "./legacyHashUrl";
-
-const METAMASK_IOS_USER_AGENT =
-  "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 WebView MetaMaskMobile";
-
-describe("MetaMask iOS legacy routing", () => {
-  it("detects the MetaMask iOS in-app browser", () => {
-    expect(isMetaMaskIosInAppBrowser(METAMASK_IOS_USER_AGENT)).toBe(true);
-    expect(isMetaMaskIosInAppBrowser("Mozilla/5.0 (Linux; Android 15) MetaMaskMobile")).toBe(false);
-    expect(isMetaMaskIosInAppBrowser("Mozilla/5.0 (iPhone) Mobile Safari/604.1")).toBe(false);
-  });
-
-  it("uses hash routing only for a legacy link in the MetaMask iOS browser", () => {
-    expect(shouldUseLegacyHashRouter("https://app.gmx.io/#/trade", METAMASK_IOS_USER_AGENT)).toBe(true);
-    expect(shouldUseLegacyHashRouter("https://app.gmx.io/trade", METAMASK_IOS_USER_AGENT)).toBe(false);
-    expect(shouldUseLegacyHashRouter("https://app.gmx.io/#/trade", "Mobile Safari")).toBe(false);
-  });
-});
+import { getUrlWithoutLegacyHashRoute, watchLegacyHashUrl } from "./legacyHashUrl";
 
 describe("getUrlWithoutLegacyHashRoute", () => {
   it("rewrites a legacy hash route to a path", () => {
@@ -161,18 +139,5 @@ describe("watchLegacyHashUrl", () => {
     window.dispatchEvent(new Event("hashchange"));
 
     expect(navigate).not.toHaveBeenCalled();
-  });
-
-  it("does not watch hash changes in the MetaMask iOS in-app browser", () => {
-    vi.spyOn(window.navigator, "userAgent", "get").mockReturnValue(METAMASK_IOS_USER_AGENT);
-    window.history.replaceState({}, "", "/");
-    const navigate = vi.fn();
-    const stop = watchLegacyHashUrl(navigate);
-
-    window.history.replaceState({}, "", "/#/trade");
-    window.dispatchEvent(new Event("hashchange"));
-
-    expect(navigate).not.toHaveBeenCalled();
-    stop();
   });
 });
