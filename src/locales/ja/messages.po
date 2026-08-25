@@ -4399,6 +4399,10 @@ msgstr "4〜18位"
 msgid "Set acceptable price impact"
 msgstr "許容可能な価格への影響を設定する"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
+msgstr "この証拠金入金のポジションは決済されましたが、入金は引き続き有効です。キャンセルして資金を回収してください。"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11898,6 +11902,10 @@ msgstr "{idleSeconds}秒"
 #: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "My earnings"
 msgstr "収益"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
+msgstr "{0, plural, one {決済すると、保留中の証拠金入金もキャンセルされ、資金が返却されます。} other {決済すると、保留中の#件の証拠金入金もキャンセルされ、資金が返却されます。}}"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"

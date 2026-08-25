@@ -4399,6 +4399,10 @@ msgstr "4-18위"
 msgid "Set acceptable price impact"
 msgstr "허용 가격 영향 설정"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
+msgstr "이 증거금 예치의 포지션이 종료되었지만 예치는 여전히 활성 상태입니다. 예치를 취소하여 자금을 회수하세요."
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11898,6 +11902,10 @@ msgstr "{idleSeconds}초"
 #: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "My earnings"
 msgstr "내 수익"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
+msgstr "{0, plural, one {포지션을 종료하면 대기 중인 증거금 예치도 취소되고 자금이 반환됩니다.} other {포지션을 종료하면 대기 중인 #건의 증거금 예치도 취소되고 자금이 반환됩니다.}}"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"

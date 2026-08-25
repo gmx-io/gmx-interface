@@ -4399,6 +4399,10 @@ msgstr "Puestos 4-18"
 msgid "Set acceptable price impact"
 msgstr "Establecer impacto en el precio aceptable"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
+msgstr "La posición de este depósito de margen se cerró, pero el depósito sigue activo. Cancélalo para recuperar sus fondos."
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11898,6 +11902,10 @@ msgstr "{idleSeconds}s"
 #: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "My earnings"
 msgstr "Mis ganancias"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
+msgstr "{0, plural, one {Al cerrar también se cancelará tu depósito de margen pendiente y se devolverán sus fondos.} other {Al cerrar también se cancelarán tus # depósitos de margen pendientes y se devolverán sus fondos.}}"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"

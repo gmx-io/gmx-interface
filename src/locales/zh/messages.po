@@ -4399,6 +4399,10 @@ msgstr "第 4-18 名"
 msgid "Set acceptable price impact"
 msgstr "设置可接受的价格影响"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
+msgstr "该保证金存入的仓位已平仓，但存入仍处于活跃状态。请取消该订单以取回资金。"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11898,6 +11902,10 @@ msgstr "{idleSeconds}s"
 #: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
 msgid "My earnings"
 msgstr "我的收益"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
+msgstr "{0, plural, one {平仓时也会取消您待处理的保证金存入并退回其资金。} other {平仓时也会取消您 # 笔待处理的保证金存入并退回其资金。}}"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
