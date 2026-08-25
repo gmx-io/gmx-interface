@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   getUrlWithoutLegacyHashRoute,
-  getUrlForMetaMaskIosHashRouter,
   isMetaMaskIosInAppBrowser,
   shouldUseLegacyHashRouter,
   watchLegacyHashUrl,
@@ -18,33 +17,10 @@ describe("MetaMask iOS legacy routing", () => {
     expect(isMetaMaskIosInAppBrowser("Mozilla/5.0 (iPhone) Mobile Safari/604.1")).toBe(false);
   });
 
-  it("uses hash routing for every route in the MetaMask iOS browser", () => {
-    expect(shouldUseLegacyHashRouter(METAMASK_IOS_USER_AGENT)).toBe(true);
-    expect(shouldUseLegacyHashRouter("Mobile Safari")).toBe(false);
-  });
-
-  it("moves a clean route into the hash without a document navigation", () => {
-    expect(getUrlForMetaMaskIosHashRouter("https://app.gmx.io/trade?chainId=42161#orders")).toBe(
-      "https://app.gmx.io/#/trade?chainId=42161#orders"
-    );
-  });
-
-  it("leaves Privy OAuth params in the outer query", () => {
-    expect(
-      getUrlForMetaMaskIosHashRouter(
-        "https://app.gmx.io/trade?privy_oauth_code=abc&privy_oauth_state=xyz&chainId=42161"
-      )
-    ).toBe("https://app.gmx.io/?privy_oauth_code=abc&privy_oauth_state=xyz#/trade?chainId=42161");
-  });
-
-  it("does not rewrite a route that is already hash based", () => {
-    expect(getUrlForMetaMaskIosHashRouter("https://app.gmx.io/#/trade")).toBeUndefined();
-  });
-
-  it("merges an outer query into an existing hash route", () => {
-    expect(getUrlForMetaMaskIosHashRouter("https://app.gmx.io/?ref=CODE#/trade?chainId=42161")).toBe(
-      "https://app.gmx.io/#/trade?chainId=42161&ref=CODE"
-    );
+  it("uses hash routing only for a legacy link in the MetaMask iOS browser", () => {
+    expect(shouldUseLegacyHashRouter("https://app.gmx.io/#/trade", METAMASK_IOS_USER_AGENT)).toBe(true);
+    expect(shouldUseLegacyHashRouter("https://app.gmx.io/trade", METAMASK_IOS_USER_AGENT)).toBe(false);
+    expect(shouldUseLegacyHashRouter("https://app.gmx.io/#/trade", "Mobile Safari")).toBe(false);
   });
 });
 
