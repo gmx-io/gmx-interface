@@ -7,6 +7,7 @@ import { useHistory, useLocation } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
+import { REWARDS_VESTING_STARTED_MODAL_DISMISSED_KEY } from "config/localStorage";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
@@ -21,6 +22,7 @@ import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWal
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { GMX_DECIMALS } from "lib/legacy";
+import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -57,6 +59,7 @@ import { RewardsVestingChainGuard } from "./RewardsVestingChainGuard";
 import { RewardsVestingDebugPanel } from "./RewardsVestingDebugPanel";
 import { RewardsStopVestingModal, RewardsVestingModal } from "./RewardsVestingModals";
 import { RewardsVestingSimulatorApprovalModal } from "./RewardsVestingSimulatorApprovalModal";
+import { RewardsVestingStartedModal } from "./RewardsVestingStartedModal";
 
 const SIMULATED_TRANSACTION_DELAY = 1_000;
 
@@ -235,6 +238,11 @@ export function RewardsVestingFlow() {
   const isInteractiveDebug = isDebugFixture && data !== undefined;
   const [isVestingModalVisible, setIsVestingModalVisible] = useState(false);
   const [isStopModalVisible, setIsStopModalVisible] = useState(false);
+  const [hasJustStartedVesting, setHasJustStartedVesting] = useState(false);
+  const [isVestingStartedModalDismissed, setIsVestingStartedModalDismissed] = useLocalStorageSerializeKeySafe<boolean>(
+    [REWARDS_VESTING_STARTED_MODAL_DISMISSED_KEY, account],
+    false
+  );
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
@@ -639,6 +647,17 @@ export function RewardsVestingFlow() {
     setIsBuyGmxModalVisible(true);
   };
 
+  const handleVestingStarted = () => {
+    if (isVestingStartedModalDismissed) return;
+
+    setHasJustStartedVesting(true);
+  };
+
+  const closeVestingStartedModal = () => {
+    setHasJustStartedVesting(false);
+    setIsVestingStartedModalDismissed(true);
+  };
+
   const openStopVestingModal = () => {
     sendRewardsVestingModalOpenEvent("Stop");
     setIsStopModalVisible(true);
@@ -920,6 +939,7 @@ export function RewardsVestingFlow() {
             data={data}
             mutate={mutate}
             onBuyGmx={openBuyGmxModal}
+            onVestingStarted={handleVestingStarted}
             claimableEsGmxAmount={data.claimableEsGmxRewards}
             onSimulatedClaim={isInteractiveDebug ? simulateEsGmxClaim : undefined}
             onSimulatedStake={isInteractiveDebug ? simulateGmxStake : undefined}
@@ -934,6 +954,7 @@ export function RewardsVestingFlow() {
           />
         </>
       ) : null}
+      <RewardsVestingStartedModal isVisible={hasJustStartedVesting} onClose={closeVestingStartedModal} />
       <StandaloneBuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       <RewardsVestingSimulatorApprovalModal
         action={simulatedTransactionAction}

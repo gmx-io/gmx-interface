@@ -78,6 +78,7 @@ export const REWARDS_PAGE_BANNERS_DISMISSED_KEY = "rewards-page-banners-dismisse
 export const REFERRALS_REWARDS_PROMO_DISMISSED_KEY = "referrals-rewards-promo-dismissed-v2";
 export const REWARDS_ONE_CLICK_ACTION_ENABLED_KEY = "rewards-one-click-action-enabled";
 export const REWARDS_ONBOARDING_DISMISSED_KEY = "rewards-onboarding-dismissed-v2";
+export const REWARDS_VESTING_STARTED_MODAL_DISMISSED_KEY = "rewards-vesting-started-modal-dismissed-v2";
 export const INCENTIVES_TEST_SQUID_KEY = "incentives-test-squid";
 export const HISTORICAL_REWARDS_ALLOCATION_MODAL_DISMISSED_KEY = "historical-rewards-allocation-modal-dismissed-v2";
 
