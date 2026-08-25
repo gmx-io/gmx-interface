@@ -6,9 +6,9 @@ import "lib/monkeyPatching";
 
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter as Router } from "react-router-dom";
 
 import { ThemeProvider } from "context/ThemeContext/ThemeContext";
+import { LegacyCompatibleRouter } from "lib/LegacyCompatibleRouter";
 import { registerPreloadErrorRecovery } from "lib/pwa/registerPreloadErrorRecovery";
 import { registerServiceWorker } from "lib/pwa/registerServiceWorker";
 import WalletProvider from "lib/wallets/WalletProvider";
@@ -20,13 +20,13 @@ registerPreloadErrorRecovery();
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Router>
+    <LegacyCompatibleRouter>
       <ThemeProvider>
         <WalletProvider>
           <App />
         </WalletProvider>
       </ThemeProvider>
-    </Router>
+    </LegacyCompatibleRouter>
   </React.StrictMode>
 );
 

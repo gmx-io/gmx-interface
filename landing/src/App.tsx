@@ -1,12 +1,12 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { useEffect } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
 import { SWRConfig } from "swr";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
+import { LegacyCompatibleRouter } from "lib/LegacyCompatibleRouter";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { ARBITRUM } from "sdk/configs/chainIds";
 
@@ -29,7 +29,7 @@ export default function App() {
   }, [fetcher]);
 
   return (
-    <Router>
+    <LegacyCompatibleRouter>
       <SWRConfig>
         <I18nProvider i18n={i18n as any}>
           <ThemeProvider>
@@ -41,6 +41,6 @@ export default function App() {
           </ThemeProvider>
         </I18nProvider>
       </SWRConfig>
-    </Router>
+    </LegacyCompatibleRouter>
   );
 }

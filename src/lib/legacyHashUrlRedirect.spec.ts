@@ -3,6 +3,19 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 describe("legacyHashUrlRedirect", () => {
   beforeEach(() => {
     vi.resetModules();
+    vi.restoreAllMocks();
+  });
+
+  it("does not rewrite in the MetaMask iOS in-app browser", async () => {
+    vi.spyOn(window.navigator, "userAgent", "get").mockReturnValue(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 WebView MetaMaskMobile"
+    );
+    window.history.replaceState({}, "", "/#/trade");
+
+    await import("./legacyHashUrlRedirect");
+
+    expect(window.location.pathname).toBe("/");
+    expect(window.location.hash).toBe("#/trade");
   });
 
   it("rewrites a legacy hash url while the module is being imported", async () => {

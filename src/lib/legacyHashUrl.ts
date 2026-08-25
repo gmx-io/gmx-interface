@@ -3,6 +3,16 @@
 // silently broke social login before (89f2d7ac11), so a url carrying them is left alone.
 const PRIVY_OAUTH_QUERY_PARAMS = ["privy_oauth_code", "privy_oauth_state", "privy_oauth_provider", "privy_oauth_error"];
 
+export function isMetaMaskIosInAppBrowser(userAgent: string): boolean {
+  return (
+    /MetaMaskMobile/i.test(userAgent) && !/Android/i.test(userAgent) && /iPhone|iPad|iPod|Macintosh/i.test(userAgent)
+  );
+}
+
+export function shouldUseLegacyHashRouter(href: string, userAgent: string): boolean {
+  return isMetaMaskIosInAppBrowser(userAgent) && new URL(href).hash.startsWith("#/");
+}
+
 /**
  * The app used to run on hash routing (`https://app.gmx.io/#/trade?ref=CODE`). Old bookmarks,
  * shared links and third-party integrations still point there, and the fragment never reaches the
@@ -45,6 +55,10 @@ export function getUrlWithoutLegacyHashRoute(href: string): string | undefined {
 
 export function redirectLegacyHashUrl() {
   try {
+    if (isMetaMaskIosInAppBrowser(window.navigator.userAgent)) {
+      return;
+    }
+
     const url = getUrlWithoutLegacyHashRoute(window.location.href);
 
     if (url) {
@@ -61,6 +75,10 @@ export function redirectLegacyHashUrl() {
  * one, since it always sits on `/`.
  */
 export function watchLegacyHashUrl(navigate = replaceUrlInPlace) {
+  if (isMetaMaskIosInAppBrowser(window.navigator.userAgent)) {
+    return () => undefined;
+  }
+
   const handleHashChange = () => {
     const url = getUrlWithoutLegacyHashRoute(window.location.href);
 
