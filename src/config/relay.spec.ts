@@ -87,22 +87,29 @@ describe("lazy assignment of the relay split", () => {
     expect(ab.getAbStorage().gmxRelay).toBeUndefined();
   });
 
-  it("assigns on the first submit and the assignment sticks", async () => {
+  // a pinned chain routes everyone without assigning; the coin machinery stays for a revert to "ab"
+  it("routes a pinned chain to gmx without tossing the coin", async () => {
     localStorage.clear();
     vi.resetModules();
-    vi.stubGlobal("crypto", globalThis.crypto);
 
     const ab = await import("config/ab");
     const relay = await import("config/relay");
 
-    const first = relay.getRelayProviderForSubmit(ARBITRUM);
-    const assigned = ab.getAbStorage().gmxRelay;
+    expect(relay.getRelayProviderForSubmit(ARBITRUM)).toBe("gmx");
+    expect(ab.getAbStorage().gmxRelay).toBeUndefined();
+  });
 
-    expect(assigned).toBeDefined();
-    expect(first).toBe(assigned!.enabled ? "gmx" : "gelato");
+  it("tosses the coin once and the assignment sticks", async () => {
+    localStorage.clear();
+    vi.resetModules();
+
+    const ab = await import("config/ab");
+
+    const first = ab.ensureAbFlagRolled("gmxRelay");
+    expect(ab.getAbStorage().gmxRelay).toBeDefined();
 
     for (let i = 0; i < 5; i++) {
-      expect(relay.getRelayProviderForSubmit(ARBITRUM)).toBe(first);
+      expect(ab.ensureAbFlagRolled("gmxRelay")).toBe(first);
     }
   });
 });

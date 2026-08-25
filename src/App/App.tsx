@@ -1,6 +1,7 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { useEffect } from "react";
+import { HashRouter as Router } from "react-router-dom";
 import { SWRConfig } from "swr";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -78,6 +79,7 @@ function App() {
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <GmxSdkProvider>{app}</GmxSdkProvider>;
+  app = <Router>{app}</Router>;
 
   return app;
 }
