@@ -185,8 +185,7 @@ export function useTradeboxState(
         if (latestEnabled.current && newState.tradeType !== oldState.tradeType) {
           latestHistory.current.replace({
             pathname: `/trade/${newState.tradeType.toLowerCase()}`,
-            // Deep link params (`?to=`, `?pool=`, `?collateral=`) are only applied once markets load,
-            // and this sync runs before that — replacing the path alone would drop them unapplied.
+            // The search still carries deep link params here, they are applied once markets load.
             search: latestHistory.current.location.search,
           });
         }
@@ -232,9 +231,8 @@ export function useTradeboxState(
 
       setStoredOptionsOnChain((oldState) => ({
         ...INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
-        // A `/trade/short` link is applied before the chain defaults resolve, so falling back to the
-        // initial trade type here would bounce a first-time visitor back to long.
-        tradeType: oldState.tradeType,
+        // A `/trade/short` link is applied before the chain defaults resolve, so keep its trade type.
+        tradeType: oldState.tradeType ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.tradeType,
         markets: {
           [market.indexTokenAddress]: {
             long: market.marketTokenAddress,

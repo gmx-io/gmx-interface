@@ -63,10 +63,7 @@ export function getCleanedTradeSearch(search: string): string | undefined {
   return cleaned.toString();
 }
 
-/**
- * `/trade?to=BTC` carries no trade type in the path, so such a link has to be resolved against the
- * one the tradebox is already on — otherwise `to` matches neither token list and is dropped unapplied.
- */
+// A link without a trade type in the path is resolved against the one the tradebox is already on.
 export function getTradeLinkTradeType(
   tradeTypeFromPath: string | undefined,
   currentTradeType: TradeType | undefined
@@ -104,7 +101,13 @@ export function useTradeParamsProcessor() {
   const changingNetwork = useRef(false);
   const cleanupTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
-  useEffect(() => () => clearTimeout(cleanupTimerRef.current), []);
+  useEffect(
+    () => () => {
+      clearTimeout(cleanupTimerRef.current);
+      cleanupTimerRef.current = undefined;
+    },
+    []
+  );
 
   useEffect(() => {
     if (changingNetwork.current) {
@@ -114,7 +117,7 @@ export function useTradeParamsProcessor() {
 
     // One pending timer only: rescheduling on every effect pass would keep pushing the cleanup out.
     const scheduleSearchCleanup = () => {
-      if (cleanupTimerRef.current !== undefined) {
+      if (cleanupTimerRef.current !== undefined || getCleanedTradeSearch(history.location.search) === undefined) {
         return;
       }
 
@@ -223,14 +226,17 @@ export function useTradeParamsProcessor() {
         setTradeConfig(tradeOptions);
       }
 
-      if (history.location.search && !toToken && !pool) {
+      if (history.location.search && !toToken) {
         scheduleSearchCleanup();
       }
     }
 
-    changeNetwork().then(() => {
-      changingNetwork.current = false;
-    });
+    changeNetwork()
+      // A declined network switch must not latch the guard.
+      .catch(() => undefined)
+      .then(() => {
+        changingNetwork.current = false;
+      });
   }, [
     params,
     searchParams,
