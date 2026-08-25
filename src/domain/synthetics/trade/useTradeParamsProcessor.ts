@@ -63,6 +63,25 @@ export function getCleanedTradeSearch(search: string): string | undefined {
   return cleaned.toString();
 }
 
+/**
+ * `/trade?to=BTC` carries no trade type in the path, so such a link has to be resolved against the
+ * one the tradebox is already on — otherwise `to` matches neither token list and is dropped unapplied.
+ */
+export function getTradeLinkTradeType(
+  tradeTypeFromPath: string | undefined,
+  currentTradeType: TradeType | undefined
+): TradeType | undefined {
+  if (tradeTypeFromPath) {
+    const validTradeType = getMatchingValueFromObject(TradeType, tradeTypeFromPath);
+
+    if (validTradeType) {
+      return validTradeType as TradeType;
+    }
+  }
+
+  return currentTradeType;
+}
+
 export function useTradeParamsProcessor() {
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
@@ -134,13 +153,12 @@ export function useTradeParamsProcessor() {
 
       const toToken = to ?? market;
 
+      const linkTradeType = getTradeLinkTradeType(tradeType, latestTradeOptions.current.tradeType);
+
       const tradeOptions: TradeOptions = {};
 
-      if (tradeType) {
-        const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
-        if (validTradeType) {
-          tradeOptions.tradeType = validTradeType as TradeType;
-        }
+      if (linkTradeType) {
+        tradeOptions.tradeType = linkTradeType;
       }
 
       if (tradeMode) {
@@ -178,9 +196,8 @@ export function useTradeParamsProcessor() {
         });
 
         if (toTokenInfo) {
-          const isSwapTrade = tradeOptions.tradeType === TradeType.Swap;
-          const isLongOrShortTrade =
-            tradeOptions.tradeType === TradeType.Long || tradeOptions.tradeType === TradeType.Short;
+          const isSwapTrade = linkTradeType === TradeType.Swap;
+          const isLongOrShortTrade = linkTradeType === TradeType.Long || linkTradeType === TradeType.Short;
           const isTokenInSwapList = isSwapTrade && isTokenInList(toTokenInfo, swapTokens);
           const isTokenInIndexList = isLongOrShortTrade && isTokenInList(toTokenInfo, indexTokens);
 
