@@ -2045,6 +2045,7 @@ msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
 msgstr "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
 
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
 msgid "Skip"
 msgstr "Skip"
 
@@ -5385,6 +5386,10 @@ msgstr "Referral discounts apply to opening and closing fees for leverage tradin
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Bonus remaining"
 msgstr "Bonus remaining"
+
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
+msgid "Your esGMX is now vesting!"
+msgstr "Your esGMX is now vesting!"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
@@ -9231,6 +9236,10 @@ msgstr "Up to 25% off fees for high-volume traders.<0/>Up to 25% earnings for af
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
+msgid "Did you know you can earn more rewards by inviting other traders? Receive 50% of the rewards earned by traders you refer."
+msgstr "Did you know you can earn more rewards by inviting other traders? Receive 50% of the rewards earned by traders you refer."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
 msgstr "Telegram group"
@@ -9286,6 +9295,7 @@ msgid "TVL (supply)"
 msgstr "TVL (supply)"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
 msgid "Invite traders"
 msgstr "Invite traders"
 
