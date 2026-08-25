@@ -11,7 +11,7 @@ import {
   getTotalSwapVolumeFromSwapStats,
 } from "utils/fees";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
-import { applyFactor } from "utils/numbers";
+import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
 import { OrderType, SwapPricingType } from "utils/orders/types";
 import {
   getEntryPrice,
@@ -29,7 +29,12 @@ import {
 } from "utils/prices";
 import { UserReferralInfo } from "utils/referrals/types";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue, getSwapPathStats } from "utils/swap";
-import { ExternalSwapStrategy, NoSwapStrategy, SwapStrategyForIncreaseOrders } from "utils/swap/types";
+import {
+  ExternalSwapStrategy,
+  InternalSwapStrategy,
+  NoSwapStrategy,
+  SwapStrategyForIncreaseOrders,
+} from "utils/swap/types";
 import {
   convertToTokenAmount,
   convertToTokenAmountForIncrease,
@@ -101,7 +106,15 @@ function getBaseCollateralUsdFromSwapStrategy({
   return convertToUsd(grossAmountOut, collateralToken.decimals, collateralPrice)!;
 }
 
-function getSwapPathStatsAtEvaluationPrice({
+type SwapRouteAtEvaluationPrice = {
+  marketsInfoData: MarketsInfoData;
+  swapPath: string[];
+  tokenInAddress: string;
+  priceIn: bigint;
+  wrappedNativeTokenAddress: string;
+};
+
+function getSwapRouteAtEvaluationPrice({
   swapStrategy,
   marketsInfoData,
   indexToken,
@@ -115,7 +128,7 @@ function getSwapPathStatsAtEvaluationPrice({
   initialCollateralToken: TokenData;
   evaluationPrice: bigint | undefined;
   chainId: number;
-}): SwapPathStats | undefined {
+}): SwapRouteAtEvaluationPrice | undefined {
   if (evaluationPrice === undefined || swapStrategy.type !== "internalSwap" || !marketsInfoData) {
     return undefined;
   }
@@ -158,16 +171,159 @@ function getSwapPathStatsAtEvaluationPrice({
     return undefined;
   }
 
-  return getSwapPathStats({
+  return {
     marketsInfoData: repricedMarketsInfoData,
     swapPath,
-    initialCollateralAddress: tokenInAddress,
+    tokenInAddress,
+    priceIn,
     wrappedNativeTokenAddress: getWrappedToken(chainId).address,
-    usdIn: convertToUsd(swapStrategy.amountIn, initialCollateralToken.decimals, priceIn)!,
+  };
+}
+
+function getSwapPathStatsOnRoute(route: SwapRouteAtEvaluationPrice, usdIn: bigint): SwapPathStats | undefined {
+  return getSwapPathStats({
+    marketsInfoData: route.marketsInfoData,
+    swapPath: route.swapPath,
+    initialCollateralAddress: route.tokenInAddress,
+    wrappedNativeTokenAddress: route.wrappedNativeTokenAddress,
+    usdIn,
     shouldUnwrapNativeToken: false,
     shouldApplyPriceImpact: true,
     swapPricingType: SwapPricingType.Swap,
   });
+}
+
+function getSwapPathStatsAtEvaluationPrice(p: {
+  swapStrategy: SwapStrategyForIncreaseOrders;
+  marketsInfoData: MarketsInfoData | undefined;
+  indexToken: TokenData;
+  initialCollateralToken: TokenData;
+  evaluationPrice: bigint | undefined;
+  chainId: number;
+}): SwapPathStats | undefined {
+  const route = getSwapRouteAtEvaluationPrice(p);
+
+  if (!route) {
+    return undefined;
+  }
+
+  return getSwapPathStatsOnRoute(
+    route,
+    convertToUsd(p.swapStrategy.amountIn, p.initialCollateralToken.decimals, route.priceIn)!
+  );
+}
+
+const SWAP_AMOUNT_IN_AT_EVALUATION_PRICE_ITERATIONS = 2;
+
+function getSwapAmountInForCollateralAtEvaluationPrice({
+  swapStrategy,
+  marketsInfoData,
+  indexToken,
+  initialCollateralToken,
+  collateralToken,
+  collateralPrice,
+  evaluationPrice,
+  chainId,
+  targetCollateralUsd,
+  uiFeeFactor,
+}: {
+  swapStrategy: SwapStrategyForIncreaseOrders;
+  marketsInfoData: MarketsInfoData | undefined;
+  indexToken: TokenData;
+  initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  collateralPrice: bigint;
+  evaluationPrice: bigint | undefined;
+  chainId: number;
+  targetCollateralUsd: bigint;
+  uiFeeFactor: bigint;
+}): bigint | undefined {
+  if (targetCollateralUsd <= 0n) {
+    return undefined;
+  }
+
+  const route = getSwapRouteAtEvaluationPrice({
+    swapStrategy,
+    marketsInfoData,
+    indexToken,
+    initialCollateralToken,
+    evaluationPrice,
+    chainId,
+  });
+
+  if (!route || route.priceIn <= 0n) {
+    return undefined;
+  }
+
+  let usdIn = targetCollateralUsd;
+
+  for (let i = 0; i < SWAP_AMOUNT_IN_AT_EVALUATION_PRICE_ITERATIONS; i++) {
+    const swapPathStats = getSwapPathStatsOnRoute(route, usdIn);
+
+    if (!swapPathStats) {
+      return undefined;
+    }
+
+    const collateralUsd =
+      convertToUsd(swapPathStats.amountOut, collateralToken.decimals, collateralPrice)! -
+      applyFactor(getTotalSwapVolumeFromSwapStats(swapPathStats.swapSteps), uiFeeFactor);
+
+    if (collateralUsd <= 0n) {
+      return undefined;
+    }
+
+    usdIn = bigMath.mulDiv(usdIn, targetCollateralUsd, collateralUsd);
+  }
+
+  return roundUpMagnitudeDivision(usdIn * expandDecimals(1, initialCollateralToken.decimals), route.priceIn);
+}
+
+function getInternalSwapStrategyForAmountIn({
+  swapStrategy,
+  amountIn,
+  marketsInfoData,
+  initialCollateralToken,
+  collateralToken,
+  chainId,
+}: {
+  swapStrategy: InternalSwapStrategy;
+  amountIn: bigint;
+  marketsInfoData: MarketsInfoData;
+  initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  chainId: number;
+}): InternalSwapStrategy | undefined {
+  const { swapPath, tokenInAddress } = swapStrategy.swapPathStats;
+  const priceIn = initialCollateralToken.prices.minPrice;
+  const usdIn = convertToUsd(amountIn, initialCollateralToken.decimals, priceIn)!;
+
+  const swapPathStats = getSwapPathStats({
+    marketsInfoData,
+    swapPath,
+    initialCollateralAddress: tokenInAddress,
+    wrappedNativeTokenAddress: getWrappedToken(chainId).address,
+    usdIn,
+    shouldUnwrapNativeToken: false,
+    shouldApplyPriceImpact: true,
+    swapPricingType: SwapPricingType.Swap,
+  });
+
+  if (!swapPathStats) {
+    return undefined;
+  }
+
+  return {
+    type: "internalSwap",
+    swapPathStats,
+    externalSwapQuote: undefined,
+    amountIn,
+    amountOut: swapPathStats.amountOut,
+    usdIn,
+    usdOut: swapPathStats.usdOut,
+    priceIn,
+    priceOut: collateralToken.prices.maxPrice,
+    feesUsd: usdIn - swapPathStats.usdOut,
+  };
 }
 
 export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreasePositionAmounts {
@@ -442,7 +598,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
     values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
-    const { collateralDeltaUsd, collateralDeltaAmount, baseCollateralAmount } = leverageBySizeValues({
+    const { collateralDeltaUsd, collateralDeltaAmount, baseCollateralUsd, baseCollateralAmount } = leverageBySizeValues({
       collateralToken,
       leverage,
       sizeDeltaUsd: values.sizeDeltaUsd,
@@ -483,6 +639,37 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         manualPath,
       });
       values.swapStrategy = swapAmounts.swapStrategy;
+
+      if (values.swapStrategy.type === "internalSwap" && marketsInfoData) {
+        const amountInAtEvaluationPrice = getSwapAmountInForCollateralAtEvaluationPrice({
+          swapStrategy: values.swapStrategy,
+          marketsInfoData,
+          indexToken,
+          initialCollateralToken,
+          collateralToken,
+          collateralPrice: values.collateralPrice,
+          evaluationPrice,
+          chainId,
+          targetCollateralUsd: baseCollateralUsd - values.swapUiFeeUsd,
+          uiFeeFactor,
+        });
+
+        const swapStrategyAtEvaluationPrice =
+          amountInAtEvaluationPrice === undefined
+            ? undefined
+            : getInternalSwapStrategyForAmountIn({
+                swapStrategy: values.swapStrategy,
+                amountIn: amountInAtEvaluationPrice,
+                marketsInfoData,
+                initialCollateralToken,
+                collateralToken,
+                chainId,
+              });
+
+        if (swapStrategyAtEvaluationPrice) {
+          values.swapStrategy = swapStrategyAtEvaluationPrice;
+        }
+      }
     }
 
     const swapAmountIn = values.swapStrategy.amountIn;

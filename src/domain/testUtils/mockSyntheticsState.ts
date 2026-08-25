@@ -25,6 +25,7 @@ export type MockSyntheticsStateOverrides = {
   focusedInput?: "from" | "to";
   triggerPriceInputValue?: string;
   isLeverageSliderEnabled?: boolean;
+  leverageOption?: number;
   fromTokenAddress?: string;
   toTokenAddress?: string;
   marketAddress?: string;
@@ -50,6 +51,7 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
     focusedInput = "from",
     triggerPriceInputValue = "",
     isLeverageSliderEnabled = true,
+    leverageOption = 20000,
     fromTokenAddress = USDC_ADDRESS,
     toTokenAddress = ETH_ADDRESS,
     marketAddress,
@@ -105,7 +107,7 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       toTokenInputValue,
       triggerPriceInputValue,
       isFromTokenGmxAccount: false,
-      leverageOption: 20000,
+      leverageOption,
       availableTokensOptions: {
         swapTokens: Object.values(tokensData),
         infoTokens: tokensData,

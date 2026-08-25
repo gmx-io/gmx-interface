@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { ARBITRUM } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { mockMarketsInfoData, mockTokensData } from "test/mock";
+import { bigMath } from "utils/bigmath";
 import type { MarketsInfoData } from "utils/markets/types";
 import { USD_DECIMALS, expandDecimals } from "utils/numbers";
 import { OrderType, SwapPricingType } from "utils/orders/types";
@@ -410,4 +411,69 @@ describe("getIncreasePositionAmounts — internal swap of the index token on a r
     );
   });
 
+  it("pays the deposit that reaches the requested leverage at the trigger when the size drives the swap", () => {
+    const leverage = 5n * BASIS_POINTS_DIVISOR_BIGINT;
+    const values = build({
+      strategy: "leverageBySize",
+      leverage,
+      indexTokenAmount: convertToTokenAmount(expandDecimals(500, USD_DECIMALS), eth.decimals, triggerPrice),
+    });
+
+    // 500 of size at 5× needs 100 of collateral once the order executes at the trigger
+    const targetCollateralUsd = bigMath.mulDiv(values.sizeDeltaUsd, BASIS_POINTS_DIVISOR_BIGINT, leverage);
+    const toleranceUsd = targetCollateralUsd / 10_000n;
+
+    expect(bigMath.abs(values.collateralDeltaUsd - targetCollateralUsd)).toBeLessThanOrEqual(toleranceUsd);
+
+    // the deposit is priced at the trigger: the current 1 200 price would ask for less ETH
+    const grossCollateralUsd = targetCollateralUsd + values.positionFeeUsd;
+    const depositUsdAtTrigger = convertToUsd(values.swapStrategy.amountIn, eth.decimals, triggerPrice)!;
+    expect(depositUsdAtTrigger).toBeGreaterThan(grossCollateralUsd);
+    expect(depositUsdAtTrigger).toBeLessThan((grossCollateralUsd * 102n) / 100n);
+
+    // typing that deposit into the margin field sizes the same order back
+    const byCollateral = build({
+      strategy: "leverageByCollateral",
+      leverage,
+      initialCollateralAmount: values.swapStrategy.amountIn,
+      indexTokenAmount: undefined,
+    });
+
+    expect(bigMath.abs(byCollateral.sizeDeltaUsd - values.sizeDeltaUsd)).toBeLessThanOrEqual(
+      values.sizeDeltaUsd / 10_000n
+    );
+  });
+
+  it("pays the deposit that reaches the requested leverage at the trigger when the collateral is the index token", () => {
+    // USDC → ETH: the deposit keeps its price, the collateral it buys is worth the trigger at execution
+    const usdcSwapStatsOn = (markets: MarketsInfoData, usdIn: bigint) =>
+      getSwapPathStats({
+        marketsInfoData: markets,
+        swapPath: [marketInfo.marketTokenAddress],
+        initialCollateralAddress: usdc.address,
+        wrappedNativeTokenAddress: eth.address,
+        usdIn,
+        shouldUnwrapNativeToken: false,
+        shouldApplyPriceImpact: true,
+        swapPricingType: SwapPricingType.Swap,
+      })!;
+
+    const leverage = 5n * BASIS_POINTS_DIVISOR_BIGINT;
+    const values = build({
+      strategy: "leverageBySize",
+      leverage,
+      initialCollateralToken: usdc,
+      collateralToken: eth,
+      initialCollateralAmount: undefined,
+      indexTokenAmount: convertToTokenAmount(expandDecimals(500, USD_DECIMALS), eth.decimals, triggerPrice),
+      findSwapPath: ((usdIn: bigint) => usdcSwapStatsOn(marketsInfoData, usdIn)) as never,
+    });
+
+    const targetCollateralUsd = bigMath.mulDiv(values.sizeDeltaUsd, BASIS_POINTS_DIVISOR_BIGINT, leverage);
+
+    expect(values.swapStrategy.type).toBe("internalSwap");
+    expect(bigMath.abs(values.collateralDeltaUsd - targetCollateralUsd)).toBeLessThanOrEqual(
+      targetCollateralUsd / 10_000n
+    );
+  });
 });
