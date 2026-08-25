@@ -11,7 +11,7 @@ import {
   type PositionMarginStateParams,
   getIncreaseResultingPositionMarginState,
   getIsMaxLeverageMarginReason,
-  getPositionMarginState,
+  getResultingPositionMarginState,
 } from "utils/trade/increaseMarginCheck";
 
 const BTC_PRICE = expandDecimals(20000, 30);
@@ -57,7 +57,7 @@ function btcAmount(usd: number) {
   return convertToTokenAmount(expandDecimals(usd, USD_DECIMALS), tokensData.BTC.decimals, BTC_PRICE)!;
 }
 
-function baseParams(overrides: Partial<Parameters<typeof getPositionMarginState>[0]> = {}) {
+function baseParams(overrides: Partial<Parameters<typeof getResultingPositionMarginState>[0]> = {}) {
   return {
     marketInfo: buildMarket(),
     collateralToken: usdc,
@@ -73,10 +73,10 @@ function baseParams(overrides: Partial<Parameters<typeof getPositionMarginState>
   };
 }
 
-describe("getPositionMarginState", () => {
+describe("getResultingPositionMarginState", () => {
   it("passes when remaining margin equals the leverage-based minimum", () => {
     // 1% of 10 000 = 100, and the position has exactly 100 of collateral
-    const state = getPositionMarginState(baseParams());
+    const state = getResultingPositionMarginState(baseParams());
 
     expect(state.minCollateralUsdForLeverage).toBe(expandDecimals(100, USD_DECIMALS));
     expect(state.remainingCollateralUsd).toBe(expandDecimals(100, USD_DECIMALS));
@@ -85,7 +85,7 @@ describe("getPositionMarginState", () => {
   });
 
   it("fails with the leverage reason just below the minimum", () => {
-    const state = getPositionMarginState(baseParams({ collateralAmount: usdcAmount(99.99) }));
+    const state = getResultingPositionMarginState(baseParams({ collateralAmount: usdcAmount(99.99) }));
 
     expect(state.isLiquidatable).toBe(true);
     expect(state.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
@@ -95,13 +95,12 @@ describe("getPositionMarginState", () => {
     // 0.5% of 10 000 = 50, so a liquidation-factor check would pass at 60 of collateral
     const params = baseParams({ collateralAmount: usdcAmount(60) });
 
-    expect(getPositionMarginState(params).reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
-    expect(getPositionMarginState({ ...params, forLiquidation: true }).isLiquidatable).toBe(false);
+    expect(getResultingPositionMarginState(params).reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
   });
 
   it("counts unrealized loss against the remaining margin for a long", () => {
     // bought 10 000 USD worth of BTC at 25 000 while the oracle is at 20 000 → -2 000 pnl
-    const state = getPositionMarginState(
+    const state = getResultingPositionMarginState(
       baseParams({
         sizeInTokens: convertToTokenAmount(
           expandDecimals(10_000, USD_DECIMALS),
@@ -118,7 +117,7 @@ describe("getPositionMarginState", () => {
 
   it("counts unrealized loss against the remaining margin for a short", () => {
     // a short holding more tokens than it sold is losing when priced at the oracle max
-    const state = getPositionMarginState(
+    const state = getResultingPositionMarginState(
       baseParams({
         isLong: false,
         sizeInTokens: btcAmount(12_000),
@@ -131,7 +130,7 @@ describe("getPositionMarginState", () => {
   });
 
   it("reports the fixed minimum before the leverage reason", () => {
-    const state = getPositionMarginState(
+    const state = getResultingPositionMarginState(
       baseParams({
         collateralAmount: usdcAmount(0.5),
         minCollateralUsd: expandDecimals(1, USD_DECIMALS),
@@ -142,7 +141,7 @@ describe("getPositionMarginState", () => {
   });
 
   it("reports non-positive remaining margin before the leverage reason", () => {
-    const state = getPositionMarginState(
+    const state = getResultingPositionMarginState(
       baseParams({
         collateralAmount: 0n,
         minCollateralUsd: 0n,
@@ -154,7 +153,7 @@ describe("getPositionMarginState", () => {
 
   it("deducts the full-close position fee once", () => {
     // 0.5% closing fee on 10 000 = 50
-    const state = getPositionMarginState(
+    const state = getResultingPositionMarginState(
       baseParams({
         marketInfo: buildMarket({
           positionFeeFactorForBalanceWasImproved: expandDecimals(5, 27),
@@ -169,7 +168,7 @@ describe("getPositionMarginState", () => {
 
   it("applies the pro-tier discount to the closing fee", () => {
     // 0.5% closing fee on 10 000 = 50; a 50% pro discount returns 25 of it
-    const state = getPositionMarginState({
+    const state = getResultingPositionMarginState({
       ...baseParams({
         marketInfo: buildMarket({
           positionFeeFactorForBalanceWasImproved: expandDecimals(5, 27),
@@ -196,7 +195,7 @@ describe("getPositionMarginState", () => {
     } as unknown as NonNullable<PositionMarginStateParams["userReferralInfo"]>;
 
     // 50% pro discount (25) beats the referral 5
-    const proWins = getPositionMarginState({
+    const proWins = getResultingPositionMarginState({
       ...params,
       userReferralInfo,
       proDiscountFactor: expandDecimals(5, 29),
@@ -204,7 +203,7 @@ describe("getPositionMarginState", () => {
     expect(proWins.remainingCollateralUsd).toBe(expandDecimals(75, USD_DECIMALS));
 
     // 5% pro discount (2.5) loses to the referral 5
-    const referralWins = getPositionMarginState({
+    const referralWins = getResultingPositionMarginState({
       ...params,
       userReferralInfo,
       proDiscountFactor: expandDecimals(5, 28),
@@ -341,7 +340,7 @@ describe("getIncreaseResultingPositionMarginState", () => {
   });
 });
 
-describe("getPositionMarginState — oracle sides", () => {
+describe("getResultingPositionMarginState — oracle sides", () => {
   // a spread on both tokens, so picking the wrong side is visible
   const spreadTokens = mockTokensData({
     BTC: { prices: { minPrice: expandDecimals(20_000, 30), maxPrice: expandDecimals(25_000, 30) } },
@@ -393,12 +392,12 @@ describe("getPositionMarginState — oracle sides", () => {
 
   it("values the collateral at its min price", () => {
     // 1 000 USDC at 0.99, not at 1.01 or at the mid price
-    expect(getPositionMarginState(spreadParams).remainingCollateralUsd).toBe(expandDecimals(990, USD_DECIMALS));
+    expect(getResultingPositionMarginState(spreadParams).remainingCollateralUsd).toBe(expandDecimals(990, USD_DECIMALS));
   });
 
   it("ignores a net-positive pending impact", () => {
     // the contract clamps the total impact at zero, so favourable impact never adds margin
-    const state = getPositionMarginState({
+    const state = getResultingPositionMarginState({
       ...spreadParams,
       pendingImpactAmount: convertToTokenAmount(
         expandDecimals(50, USD_DECIMALS),
@@ -417,7 +416,7 @@ describe("getPositionMarginState — oracle sides", () => {
       expandDecimals(25_000, 30)
     )!;
 
-    const state = getPositionMarginState({ ...spreadParams, pendingImpactAmount });
+    const state = getResultingPositionMarginState({ ...spreadParams, pendingImpactAmount });
 
     const atMaxPrice = convertToUsd(pendingImpactAmount, spreadBtc.decimals, expandDecimals(25_000, 30))!;
     const atMinPrice = convertToUsd(pendingImpactAmount, spreadBtc.decimals, expandDecimals(20_000, 30))!;
@@ -503,7 +502,7 @@ describe("getIncreaseResultingPositionMarginState — open interest projection",
         userReferralInfo: undefined,
       };
 
-      const expected = getPositionMarginState({
+      const expected = getResultingPositionMarginState({
         ...resultingPosition,
         marketInfo: getMarketInfoWithOpenInterestDelta({ marketInfo, isLong: true, sizeDeltaUsd, sizeDeltaInTokens }),
       });
@@ -511,7 +510,7 @@ describe("getIncreaseResultingPositionMarginState — open interest projection",
       expect(actual).toEqual(expected);
 
       // and the projection is not a no-op: the pre-order market gives a different close impact
-      const withoutProjection = getPositionMarginState({ ...resultingPosition, marketInfo });
+      const withoutProjection = getResultingPositionMarginState({ ...resultingPosition, marketInfo });
 
       expect(withoutProjection.remainingCollateralUsd).not.toBe(expected.remainingCollateralUsd);
     }

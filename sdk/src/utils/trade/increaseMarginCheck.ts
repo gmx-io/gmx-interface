@@ -40,11 +40,9 @@ export type PositionMarginStateParams = {
   isLong: boolean;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
-  forLiquidation?: boolean;
-  shouldValidateMinCollateralUsd?: boolean;
 };
 
-export function getPositionMarginState(p: PositionMarginStateParams): PositionMarginState {
+export function getResultingPositionMarginState(p: PositionMarginStateParams): PositionMarginState {
   const {
     marketInfo,
     collateralToken,
@@ -56,8 +54,6 @@ export function getPositionMarginState(p: PositionMarginStateParams): PositionMa
     isLong,
     userReferralInfo,
     proDiscountFactor,
-    forLiquidation = false,
-    shouldValidateMinCollateralUsd = true,
   } = p;
 
   const { indexToken } = marketInfo;
@@ -130,11 +126,7 @@ export function getPositionMarginState(p: PositionMarginStateParams): PositionMa
 
   const remainingCollateralUsd = collateralUsd + positionPnlUsd + totalImpactUsd - closingCostUsd;
 
-  const minCollateralFactor = forLiquidation
-    ? marketInfo.minCollateralFactorForLiquidation
-    : marketInfo.minCollateralFactor;
-
-  const minCollateralUsdForLeverage = applyFactor(sizeInUsd, minCollateralFactor);
+  const minCollateralUsdForLeverage = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
 
   const state: Omit<PositionMarginState, "isLiquidatable" | "reason"> = {
     remainingCollateralUsd,
@@ -142,7 +134,7 @@ export function getPositionMarginState(p: PositionMarginStateParams): PositionMa
     minCollateralUsdForLeverage,
   };
 
-  if (shouldValidateMinCollateralUsd && remainingCollateralUsd < minCollateralUsd) {
+  if (remainingCollateralUsd < minCollateralUsd) {
     return { ...state, isLiquidatable: true, reason: PositionMarginFailureReason.MinCollateral };
   }
 
@@ -288,7 +280,7 @@ export function getIncreaseResultingPositionMarginState(
     };
   }
 
-  return getPositionMarginState({
+  return getResultingPositionMarginState({
     marketInfo: nextMarketInfo,
     collateralToken,
     sizeInUsd: nextSizeInUsd,
@@ -299,6 +291,5 @@ export function getIncreaseResultingPositionMarginState(
     isLong,
     userReferralInfo,
     proDiscountFactor,
-    forLiquidation: false,
   });
 }
