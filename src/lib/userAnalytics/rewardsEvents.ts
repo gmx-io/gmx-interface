@@ -79,6 +79,13 @@ type RewardsPageActionEvent = {
         mode: "Start" | "Stop";
       }
     | {
+        action: "VestingStartedDialogShown";
+      }
+    | {
+        action: "VestingStartedDialogAction";
+        dialogAction: "InviteTraders" | "Skip";
+      }
+    | {
         action: "TransactionResult";
         transaction: RewardsTransaction;
         result: RewardsTransactionResult;
@@ -196,6 +203,28 @@ export function sendRewardsVestingModalOpenEvent(mode: "Start" | "Stop") {
     data: {
       action: "VestingModalOpen",
       mode,
+    },
+  });
+}
+
+export function sendRewardsVestingStartedDialogShownEvent() {
+  userAnalytics.pushEvent<RewardsPageActionEvent>(
+    {
+      event: "RewardsPageAction",
+      data: {
+        action: "VestingStartedDialogShown",
+      },
+    },
+    { dedupKey: "rewards-vesting-started-dialog-shown" }
+  );
+}
+
+export function sendRewardsVestingStartedDialogActionEvent(dialogAction: "InviteTraders" | "Skip") {
+  userAnalytics.pushEvent<RewardsPageActionEvent>({
+    event: "RewardsPageAction",
+    data: {
+      action: "VestingStartedDialogAction",
+      dialogAction,
     },
   });
 }

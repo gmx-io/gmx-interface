@@ -2045,6 +2045,7 @@ msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
 msgstr "Gas 잔액이 부족합니다. {gasPaymentTokensText}을(를) 추가로 입금하십시오."
 
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
 msgid "Skip"
 msgstr "건너뛰기"
 
@@ -5385,6 +5386,10 @@ msgstr ""
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Bonus remaining"
 msgstr "남은 보너스"
+
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
+msgid "Your esGMX is now vesting!"
+msgstr "esGMX 베스팅이 시작되었습니다!"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
@@ -9231,6 +9236,10 @@ msgstr "대량 거래자는 수수료 최대 25% 할인.<0/>제휴자는 최대 
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
+msgid "Did you know you can earn more rewards by inviting other traders? Receive 50% of the rewards earned by traders you refer."
+msgstr "다른 트레이더를 초대하면 더 많은 보상을 받을 수 있다는 사실을 알고 계셨나요? 추천한 트레이더가 획득한 보상의 50%를 받으세요."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
 msgstr "Telegram 그룹"
@@ -9286,6 +9295,7 @@ msgid "TVL (supply)"
 msgstr "TVL (공급량)"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
 msgid "Invite traders"
 msgstr "트레이더 초대"
 

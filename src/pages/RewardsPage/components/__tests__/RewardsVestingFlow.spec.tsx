@@ -73,6 +73,8 @@ vi.mock("lib/useCurrentUnixTimestamp", () => ({
 vi.mock("lib/userAnalytics/rewardsEvents", () => ({
   sendRewardsTransactionResultEvent: vi.fn(),
   sendRewardsVestingModalOpenEvent: vi.fn(),
+  sendRewardsVestingStartedDialogActionEvent: vi.fn(),
+  sendRewardsVestingStartedDialogShownEvent: vi.fn(),
 }));
 
 vi.mock("lib/chains", () => ({
@@ -85,14 +87,19 @@ vi.mock("../RewardsVestingModals", () => ({
     onSimulatedClaim,
     onSimulatedStake,
     onSimulatedVest,
+    onVestingStarted,
   }: {
     isVisible: boolean;
     onSimulatedClaim?: () => Promise<void>;
     onSimulatedStake?: (amount: bigint) => Promise<void>;
     onSimulatedVest?: (amount: bigint) => Promise<void>;
+    onVestingStarted?: () => void;
   }) =>
     isVisible ? (
       <div data-testid="vesting-modal" data-simulated={Boolean(onSimulatedVest)}>
+        <button type="button" onClick={() => onVestingStarted?.()}>
+          Announce started vesting
+        </button>
         {onSimulatedClaim ? (
           <button
             type="button"
@@ -232,6 +239,7 @@ function setVestingData(data?: RewardsVestingData, options?: { loading?: boolean
 describe("RewardsVestingFlow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.localStorage.clear();
     mockCallContract.mockReset();
     mockUseMultipleWalletExtensionsChainError.mockReturnValue({});
     mockUseSettings.mockReturnValue({
@@ -372,6 +380,73 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByTestId("vesting-modal")).toBeDefined();
     expect(mockHelperToastInfo).not.toHaveBeenCalled();
     expect(mockSendRewardsVestingModalOpenEvent).toHaveBeenCalledWith("Start");
+  });
+
+  it("offers the referral invite the first time a vest starts", async () => {
+    setVestingData({
+      ...idleData,
+      claimableEsGmxRewards: 100n * TOKEN_UNIT,
+      freePairAmount: 100n * TOKEN_UNIT,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        maxVestableAmount: 100n * TOKEN_UNIT,
+        averageStakedAmount: 100n * TOKEN_UNIT,
+      },
+    });
+    const view = renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Start vesting" }));
+    expect(screen.queryByRole("dialog", { name: "Your esGMX is now vesting!" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Announce started vesting" }));
+
+    await waitFor(() => expect(screen.getByRole("dialog", { name: "Your esGMX is now vesting!" })).toBeDefined());
+    expect(screen.getByRole("link", { name: "Invite traders" }).getAttribute("href")).toBe("/referrals/affiliates");
+
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
+
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Your esGMX is now vesting!" })).toBeNull());
+
+    view.unmount();
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Start vesting" }));
+    fireEvent.click(screen.getByRole("button", { name: "Announce started vesting" }));
+
+    expect(screen.queryByRole("dialog", { name: "Your esGMX is now vesting!" })).toBeNull();
+  });
+
+  it("keeps the referral invite for an account that has not seen it yet", async () => {
+    setVestingData({
+      ...idleData,
+      claimableEsGmxRewards: 100n * TOKEN_UNIT,
+      freePairAmount: 100n * TOKEN_UNIT,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        maxVestableAmount: 100n * TOKEN_UNIT,
+        averageStakedAmount: 100n * TOKEN_UNIT,
+      },
+    });
+    const view = renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Start vesting" }));
+    fireEvent.click(screen.getByRole("button", { name: "Announce started vesting" }));
+    await waitFor(() => expect(screen.getByRole("dialog", { name: "Your esGMX is now vesting!" })).toBeDefined());
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
+    view.unmount();
+
+    mockUseWallet.mockReturnValue({
+      account: "0x456",
+      active: true,
+      chainId: ARBITRUM,
+      signer: {},
+    } as ReturnType<typeof useWallet>);
+    renderFlow();
+
+    fireEvent.click(screen.getByRole("button", { name: "Start vesting" }));
+    fireEvent.click(screen.getByRole("button", { name: "Announce started vesting" }));
+
+    await waitFor(() => expect(screen.getByRole("dialog", { name: "Your esGMX is now vesting!" })).toBeDefined());
   });
 
   it("consumes a one-click preview deep link once and preserves other query parameters", async () => {

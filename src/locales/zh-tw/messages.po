@@ -2045,6 +2045,7 @@ msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
 msgstr "Gas 餘額不足。請存入更多 {gasPaymentTokensText}。"
 
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
 msgid "Skip"
 msgstr "跳過"
 
@@ -5385,6 +5386,10 @@ msgstr ""
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Bonus remaining"
 msgstr "剩餘獎勵額度"
+
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
+msgid "Your esGMX is now vesting!"
+msgstr "您的 esGMX 已開始歸屬！"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
@@ -9231,6 +9236,10 @@ msgstr "高交易量交易者最高可享 25% 手續費折扣。<0/>推廣者最
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
+msgid "Did you know you can earn more rewards by inviting other traders? Receive 50% of the rewards earned by traders you refer."
+msgstr "您知道邀請其他交易者可以賺取更多獎勵嗎？您可以獲得所推薦交易者所獲獎勵的 50%。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
 msgstr "Telegram 群組"
@@ -9286,6 +9295,7 @@ msgid "TVL (supply)"
 msgstr "TVL（供給量）"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStartedModal.tsx
 msgid "Invite traders"
 msgstr "邀請交易者"
 

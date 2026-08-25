@@ -57,6 +57,7 @@ type RewardsVestingModalProps = {
   data: RewardsVestingData;
   mutate: RewardsVestingDataMutator;
   onBuyGmx: () => void;
+  onVestingStarted?: () => void;
   claimableEsGmxAmount?: bigint;
   onSimulatedClaim?: () => Promise<void>;
   onSimulatedStake?: (stakeAmount: bigint) => Promise<void>;
@@ -219,6 +220,7 @@ export function RewardsVestingModal({
   data,
   mutate,
   onBuyGmx,
+  onVestingStarted,
   claimableEsGmxAmount,
   onSimulatedClaim,
   onSimulatedStake,
@@ -257,6 +259,9 @@ export function RewardsVestingModal({
   const [hasInterruptedTransaction, setHasInterruptedTransaction] = useState(false);
   const calculationData = isSimulation ? getRewardsVestingDebugCalculationData(data) : data;
   const wasVisible = useRef(false);
+  const hasStartedVestingRef = useRef(false);
+  const onVestingStartedRef = useRef(onVestingStarted);
+  onVestingStartedRef.current = onVestingStarted;
   const transactionSessionRef = useRef(0);
   const signerReady = Boolean(signer);
   const connectorUid = connector?.uid;
@@ -349,6 +354,10 @@ export function RewardsVestingModal({
     }
     if (wasVisible.current && !isVisible) {
       governanceReadSessionRef.current += 1;
+      if (hasStartedVestingRef.current) {
+        hasStartedVestingRef.current = false;
+        onVestingStartedRef.current?.();
+      }
     }
     if (isOpening || walletChanged) {
       setValue(vestingLimit > 0n ? formatAmountFree(vestingLimit, GMX_DECIMALS, GMX_DECIMALS) : "");
@@ -356,6 +365,7 @@ export function RewardsVestingModal({
       setTransactionProgress(EMPTY_TRANSACTION_PROGRESS);
       setShowTransactionSteps(false);
       setHasInterruptedTransaction(false);
+      hasStartedVestingRef.current = false;
     }
     wasVisible.current = isVisible;
     visibleWalletStateRef.current = { account, active, connectorUid, signerReady, walletChainId };
@@ -454,6 +464,7 @@ export function RewardsVestingModal({
         await onSimulatedVest(depositAmount);
         if (transactionSessionRef.current !== transactionSession) return;
         setTransactionProgress((current) => ({ ...current, vesting: true }));
+        hasStartedVestingRef.current = true;
         setValue("");
         if (!hasClaimStep && !hasStakingStep) {
           setIsVisible(false);
@@ -755,6 +766,7 @@ export function RewardsVestingModal({
       attemptedTransaction = undefined;
       if (hasCurrentTransaction()) {
         setTransactionProgress((current) => ({ ...current, vesting: true }));
+        hasStartedVestingRef.current = true;
         setValue("");
         if (!hasClaimStep && !completedStakeThisFlow && !completedApprovalThisFlow) {
           setIsVisible(false);
