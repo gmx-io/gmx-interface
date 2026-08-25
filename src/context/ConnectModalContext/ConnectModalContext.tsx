@@ -10,6 +10,8 @@ import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
+import { isMetaMaskIosInAppBrowser, waitForMetaMaskIosProvider } from "lib/wallets/metamaskInAppBrowser";
+import { getPrivyWalletList } from "lib/wallets/walletConfig";
 
 export type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
@@ -82,19 +84,27 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    connectRequestInFlightRef.current = true;
-    setConnectModalOpen(true);
-    try {
-      // Privy rejects connectOrCreateWallet for already-authenticated sessions.
-      if (authenticated) {
-        connectWallet();
-      } else {
-        connectOrCreateWallet();
+    const connect = () => {
+      setConnectModalOpen(true);
+      try {
+        // Privy rejects connectOrCreateWallet for already-authenticated sessions.
+        if (authenticated) {
+          connectWallet({ walletList: [...getPrivyWalletList(window.navigator.userAgent)] });
+        } else {
+          connectOrCreateWallet();
+        }
+      } catch (error) {
+        connectRequestInFlightRef.current = false;
+        setConnectModalOpen(false);
+        metrics.pushError(error, "connectModal.open");
       }
-    } catch (error) {
-      connectRequestInFlightRef.current = false;
-      setConnectModalOpen(false);
-      metrics.pushError(error, "connectModal.open");
+    };
+
+    connectRequestInFlightRef.current = true;
+    if (isMetaMaskIosInAppBrowser(window.navigator.userAgent) && !window.ethereum?.isMetaMask) {
+      void waitForMetaMaskIosProvider().then(connect);
+    } else {
+      connect();
     }
   }, [authenticated, connectOrCreateWallet, connectWallet]);
 

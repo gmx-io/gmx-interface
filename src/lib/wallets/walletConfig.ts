@@ -22,6 +22,8 @@ import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
+import { isMetaMaskIosInAppBrowser } from "./metamaskInAppBrowser";
+
 export { PRIVY_APP_ID };
 
 export const PRIVY_WALLET_LIST = [
@@ -37,6 +39,12 @@ export const PRIVY_WALLET_LIST = [
   "phantom",
   "wallet_connect",
 ] as const;
+
+const PRIVY_METAMASK_IN_APP_WALLET_LIST = ["detected_ethereum_wallets"] as const;
+
+export function getPrivyWalletList(userAgent: string) {
+  return isMetaMaskIosInAppBrowser(userAgent) ? PRIVY_METAMASK_IN_APP_WALLET_LIST : PRIVY_WALLET_LIST;
+}
 
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord", "passkey"] as const;
 
