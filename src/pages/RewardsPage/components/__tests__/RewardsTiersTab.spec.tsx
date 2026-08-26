@@ -537,7 +537,7 @@ describe("RewardsTiersTab", () => {
 
     const volumeCard = screen.getByRole("heading", { name: "Ranked" }).closest(".group");
     const stakingCard = screen.getByRole("heading", { name: "Supporter" }).closest(".group");
-    const boostsCard = screen.getByRole("heading", { name: "2 active boosts" }).closest(".group");
+    const boostsCard = screen.getByRole("heading", { name: "3 active boosts" }).closest(".group");
 
     expect(within(volumeCard as HTMLElement).getByText("+0.25x")).toBeDefined();
     expect(within(stakingCard as HTMLElement).getByText("+0.1x")).toBeDefined();
@@ -881,7 +881,7 @@ describe("RewardsTiersTab", () => {
     expect(referralBonusRow.querySelector("svg path")?.getAttribute("fill")).toBe("#A0A3C4");
   });
 
-  it("labels the active boosts card when only a transient activity qualifies", () => {
+  it("counts boosts qualified this epoch as active on the boosts card", () => {
     renderTab({
       status: {
         ...status,
@@ -890,11 +890,33 @@ describe("RewardsTiersTab", () => {
       },
     });
 
-    const boostsHeading = screen.getByRole("heading", { name: "Trading activities" });
+    const boostsHeading = screen.getByRole("heading", { name: "1 active boost" });
     const boostsCard = boostsHeading.closest(".group");
 
     expect(boostsCard).toBeDefined();
     expect(within(boostsCard as HTMLElement).getByRole("button", { name: "Featured Markets" })).toBeDefined();
+    expect(screen.queryByRole("heading", { name: "Trading activities" })).toBeNull();
+  });
+
+  it("counts persistent, qualified and referral boosts together on the boosts card", () => {
+    renderTab({
+      status: {
+        ...status,
+        boostIds: ["FeaturedMarkets", "LifetimeTrading"],
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const boostsCard = screen.getByRole("heading", { name: "3 active boosts" }).closest(".group") as HTMLElement;
+    const isDimmed = (button: HTMLElement) => Boolean(button.firstElementChild?.classList.contains("opacity-40"));
+
+    expect(
+      within(boostsCard)
+        .getAllByRole("button")
+        .filter((button) => !isDimmed(button))
+        .map((button) => button.getAttribute("aria-label"))
+    ).toEqual(["Referral Bonus", "Featured Markets", "Lifetime Volume"]);
+    expect(isDimmed(within(boostsCard).getByRole("button", { name: "Balancing Trades" }))).toBe(true);
   });
 
   it("marks the Comeback Bonus inactive when its incremental reward cap is consumed", () => {
@@ -960,7 +982,7 @@ describe("RewardsTiersTab", () => {
 
     const volumeCard = screen.getByRole("heading", { name: "Ranked" }).closest(".group") as HTMLElement;
     const stakingCard = screen.getByRole("heading", { name: "Advocate" }).closest(".group") as HTMLElement;
-    const boostsCard = screen.getByRole("heading", { name: "2 active boosts" }).closest(".group") as HTMLElement;
+    const boostsCard = screen.getByRole("heading", { name: "3 active boosts" }).closest(".group") as HTMLElement;
 
     expect(volumeCard.querySelector(".mt-auto")?.textContent).toContain("Volume this epoch");
     expect(stakingCard.querySelector(".mt-auto")?.textContent).toContain("GMX staked");

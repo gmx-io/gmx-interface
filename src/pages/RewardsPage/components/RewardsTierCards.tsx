@@ -831,7 +831,8 @@ function BoostsCard({
     (total, boost) => (activePersistentBoostIds.includes(boost.boost) ? total + boost.multiplier : total),
     0n
   );
-  const activeBoostCount = activePersistentBoostIds.length + (hasReferralBoost ? 1 : 0);
+  const activeBoostCount =
+    activePersistentBoostIds.length + qualifiedTransientBoostIds.length + (hasReferralBoost ? 1 : 0);
   const includeComebackBonus = Boolean(status?.boostIds.includes("ManualAllocation"));
   const orderedBoosts = getBoostsInDisplayOrder(config.boosts, includeComebackBonus);
   const createMultiplierDisplayItem = (boost: BoostConfig): BoostDisplayItem => {
@@ -893,13 +894,7 @@ function BoostsCard({
               <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-blue-300/60 bg-blue-300/10 drop-shadow-[0_0_4px_rgba(120,133,255,0.9)]">
                 <BoostSvg className="size-24 text-blue-300" />
               </div>
-              <span className="flex flex-col">
-                {activeBoostCount > 0 ? (
-                  <span>{plural(activeBoostCount, { one: "# active boost", other: "# active boosts" })}</span>
-                ) : (
-                  <Trans>Trading activities</Trans>
-                )}
-              </span>
+              <span>{plural(activeBoostCount, { one: "# active boost", other: "# active boosts" })}</span>
             </h3>
             <div className="mt-auto flex flex-nowrap gap-12">
               {boostDisplayItems.map((item) => {
