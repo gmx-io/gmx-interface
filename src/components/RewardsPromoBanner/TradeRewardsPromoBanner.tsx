@@ -19,10 +19,9 @@ import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsL
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
-import rewardsBannerCoinGmx from "img/rewards_banner_coin_gmx.png";
-import rewardsBannerCoinWallet from "img/rewards_banner_coin_wallet.png";
 
-import { rewardsBannerStyles } from "./rewardsBannerStyles";
+import { rewardsBannerArt } from "./rewardsBannerArt";
+import { rewardsBannerAccentStyles } from "./rewardsBannerStyles";
 import { getRewardsPromoCopy } from "./rewardsPromoCopy";
 
 export function TradeRewardsPromoBanner({ className }: { className?: string }) {
@@ -67,10 +66,11 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
         variant: promoSelection.variant,
         analyticsBanner: "trade-manual-reward" as const,
         ...copy,
+        accent: "bonus" as const,
         actionLabel: <Trans>Learn more</Trans>,
         actionIcon: <ArrowRightIcon className="size-12" />,
         to: "/rewards",
-        coin: rewardsBannerCoinWallet,
+        art: "bonus" as const,
       };
     }
 
@@ -79,10 +79,11 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
         variant: promoSelection.variant,
         analyticsBanner: "trade-recent-activity" as const,
         ...copy,
+        accent: "stakeGmx" as const,
         actionLabel: <Trans>Stake GMX</Trans>,
         actionIcon: <GmxIcon className="size-16" />,
         to: EARN_PORTFOLIO_STAKE_GMX_LINK,
-        coin: rewardsBannerCoinGmx,
+        art: "stake" as const,
       };
     }
 
@@ -90,10 +91,11 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
       variant: "rewards-program" as const,
       analyticsBanner: "trade-rewards-program" as const,
       ...copy,
+      accent: "stakeGmx" as const,
       actionLabel: <Trans>Learn more</Trans>,
       actionIcon: <ArrowRightIcon className="size-12" />,
       to: "/rewards",
-      coin: rewardsBannerCoinGmx,
+      art: "stake" as const,
     };
   }, [promoSelection]);
 
@@ -130,7 +132,7 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
     <div className={cx("flex justify-center", className)} data-testid="trade-rewards-promo">
       <div
         className="relative grid min-h-[110px] w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-950 p-16"
-        style={rewardsBannerStyles}
+        style={rewardsBannerAccentStyles[promo.accent]}
       >
         <Link className="relative z-10 flex min-w-0 flex-col gap-4 pr-4" onClick={handleActionClick} to={promo.to}>
           <div className="flex flex-col gap-2">
@@ -145,10 +147,10 @@ export function TradeRewardsPromoBanner({ className }: { className?: string }) {
         </Link>
 
         <img
-          src={promo.coin}
+          src={rewardsBannerArt[promo.art].src}
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-[-30px] right-[-12px] size-[126px] select-none max-sm:bottom-[-22px] max-sm:right-[-36px] max-sm:size-[124px]"
+          className={cx("pointer-events-none absolute select-none", rewardsBannerArt[promo.art].className)}
         />
 
         <button

@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -10,11 +11,11 @@ import {
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
-import { rewardsBannerStyles } from "components/RewardsPromoBanner/rewardsBannerStyles";
+import { rewardsBannerArt } from "components/RewardsPromoBanner/rewardsBannerArt";
+import { rewardsBannerAccentStyles } from "components/RewardsPromoBanner/rewardsBannerStyles";
 
 import RewardsIcon from "img/ic_rewards.svg?react";
 import ShareIcon from "img/ic_share_arrow_filled.svg?react";
-import rewardsBannerCoinGmx from "img/rewards_banner_coin_gmx.png";
 
 type Props = {
   isVisible: boolean;
@@ -121,7 +122,7 @@ export function HistoricalRewardsAllocationModal({
               onClose();
             }}
             className="relative grid grid-cols-[minmax(0,1fr)_72px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-950 p-12"
-            style={rewardsBannerStyles}
+            style={rewardsBannerAccentStyles.referral}
           >
             <div className="relative z-10 flex min-w-0 flex-col gap-2">
               <h6 className="text-14 font-medium text-typography-primary">
@@ -136,10 +137,10 @@ export function HistoricalRewardsAllocationModal({
               </span>
             </div>
             <img
-              src={rewardsBannerCoinGmx}
+              src={rewardsBannerArt.referral.src}
               alt=""
               aria-hidden="true"
-              className="pointer-events-none absolute bottom-[-24px] right-[-10px] size-[122px] select-none"
+              className={cx("pointer-events-none absolute select-none", rewardsBannerArt.referral.className)}
             />
           </Link>
         </div>

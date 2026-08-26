@@ -10,7 +10,6 @@ import { sendRewardsBannerEvent, sendRewardsNavigationEvent } from "lib/userAnal
 import { RewardsPromoBannerCard } from "components/RewardsPromoBanner/RewardsPromoBannerCard";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
-import rewardsBannerCoinWallet from "img/rewards_banner_coin_wallet.png";
 
 export function AffiliateRewardsPromoBanner({ account, className }: { account?: string; className?: string }) {
   const { isActive } = useIncentivesV2State();
@@ -40,7 +39,8 @@ export function AffiliateRewardsPromoBanner({ account, className }: { account?: 
   return (
     <RewardsPromoBannerCard
       className={className}
-      coin={rewardsBannerCoinWallet}
+      accent="referral"
+      art="referral"
       onClose={handleDismiss}
       data-testid="affiliate-rewards-promo-banner"
     >
