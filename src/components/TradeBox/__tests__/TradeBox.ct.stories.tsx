@@ -232,7 +232,11 @@ export function TradeBoxStory({
   }, [positionIsShort, withPosition, withWethCollateralPosition]);
 
   const marketsInfoData = useMemo<MarketsInfoData | undefined>(() => {
-    const primaryMarket = positionMarketInfo ?? createMockMarketInfo();
+    // the fixture's default impact (2e-5 at exponent 2) moves the price ~1 % on a $50k order, so the
+    // resulting-position cap would bind on impact; the manual-leverage tests want a market-like impact
+    const primaryMarket =
+      positionMarketInfo ??
+      createMockMarketInfo(undefined, manualLeverage ? { positionImpactFactorNegative: expandDecimals(3, 20) } : {});
 
     if (marketScenario === "cappedLongOI") {
       const data: MarketsInfoData = {
@@ -297,12 +301,12 @@ export function TradeBoxStory({
       return data;
     }
 
-    if (positionMarketInfo) {
-      return { [MOCK_MARKET_ADDRESS]: positionMarketInfo };
+    if (positionMarketInfo || manualLeverage) {
+      return { [MOCK_MARKET_ADDRESS]: primaryMarket };
     }
 
     return undefined;
-  }, [marketScenario, positionMarketInfo, withSecondEthPool]);
+  }, [manualLeverage, marketScenario, positionMarketInfo, withSecondEthPool]);
 
   const tokensData: TokensData | undefined = useMemo(() => {
     if (zeroBalances) {
