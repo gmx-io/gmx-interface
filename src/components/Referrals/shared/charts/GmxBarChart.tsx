@@ -72,7 +72,7 @@ export function GmxBarChart({
   chartData: any[];
 }) {
   return (
-    <div className="h-[180px] w-full grow">
+    <div className="h-[250px] w-full grow">
       <ResponsiveContainer width="100%" height="100%" debounce={500}>
         <ComposedChart data={chartData} margin={CHART_MARGIN} barSize={2} stackOffset="sign">
           <CartesianGrid

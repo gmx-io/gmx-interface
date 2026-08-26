@@ -1,10 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { lightFormat } from "date-fns";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
-import { useCopyToClipboard } from "react-use";
+import { useCopyToClipboard, useMeasure } from "react-use";
 import { useAccount } from "wagmi";
 
 import { BALANCER_PROGRAM_URL, REFERRALS_DOCS_URL } from "config/links";
@@ -38,7 +38,6 @@ import { TraderReferralChartContainer } from "components/Referrals/shared/charts
 import { REFERRALS_TIME_RANGE_INFOS, TimeRangeFilter } from "components/Referrals/shared/TimeRangeFilter";
 import { POST_WIZARD_FAQS } from "components/Referrals/traders/faq";
 import { ReferralCodeEditFormContainer } from "components/Referrals/traders/joinCode/ReferralCodeEditFormContainer";
-import { ScaledText } from "components/ScaledText/ScaledText";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
@@ -232,6 +231,27 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={cx("rounded-8 border-1/2 border-stroke-primary bg-slate-950/50 p-12", className)}>{children}</div>
+  );
+}
+
+function ScaledText({ children, className }: { children: React.ReactNode; className?: string }) {
+  const [wrapperRef, { width: wrapperWidth }] = useMeasure<HTMLDivElement>();
+  const [textRef, { width: textWidth }] = useMeasure<HTMLSpanElement>();
+
+  const isMeasured = wrapperWidth > 0;
+  const scale = isMeasured && textWidth > wrapperWidth ? wrapperWidth / textWidth : 1;
+  const scaleStyle = useMemo(() => (scale < 1 ? { transform: `scale(${scale})` } : undefined), [scale]);
+
+  return (
+    <div ref={wrapperRef} className="min-w-0 overflow-hidden">
+      <span
+        ref={textRef}
+        className={cx("inline-block origin-left whitespace-nowrap", { "opacity-0": !isMeasured }, className)}
+        style={scaleStyle}
+      >
+        {children}
+      </span>
+    </div>
   );
 }
 

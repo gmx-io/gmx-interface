@@ -138,55 +138,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
     <div className="flex gap-8 max-md:flex-col max-md:pb-[100px]">
       <div className="flex grow flex-col gap-8 max-md:order-2">
         <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-adaptive">
-            <div className="flex items-center justify-between">
-              <div className="text-body-large font-medium text-typography-primary">
-                <Trans>Overview</Trans>
-              </div>
-              <div className="flex items-center gap-8">
-                <TimeRangeFilter
-                  timeRange={timeRangeInfo.slug}
-                  setTimeRange={setTimeRange}
-                  timeRangeInfos={REFERRALS_TIME_RANGE_INFOS}
-                />
-              </div>
-            </div>
-            <AffiliatesPromoCard account={account} />
-            <div className="flex flex-col gap-12">
-              <div className="grid grid-cols-4 gap-12 max-[1500px]:grid-cols-2 max-lg:grid-cols-1">
-                <TradingVolumeChartCard
-                  stats={referralStats}
-                  isLoading={isReferralStatsLoading}
-                  timeRangeInfo={timeRangeInfo}
-                  referralCode={affiliateReferralCodesStats?.[0]?.referralCode}
-                  traderDiscountPercentage={currentTraderDiscountPercentage}
-                  totalDiscountsUsd={referralsData?.chains?.[chainId]?.affiliateTotalStats?.discountUsd}
-                />
-                <NumberOfTradesChartCard
-                  stats={referralStats}
-                  isLoading={isReferralStatsLoading}
-                  timeRangeInfo={timeRangeInfo}
-                />
-                <TradersReferredChartCard
-                  stats={referralStats}
-                  isLoading={isReferralStatsLoading}
-                  timeRangeInfo={timeRangeInfo}
-                />
-                <RebatesChartCard
-                  stats={referralStats}
-                  isLoading={isReferralStatsLoading}
-                  timeRangeInfo={timeRangeInfo}
-                />
-              </div>
-            </div>
-            <div className="text-body-small font-medium text-typography-secondary">
-              <span className="text-slate-500">
-                <Trans>Last updated:</Trans>
-              </span>{" "}
-              {lastUpdated ?? "—"}
-            </div>
-          </div>
-
           <div className="flex w-full flex-col gap-8 rounded-8 bg-slate-900 pb-4">
             <div className="flex flex-wrap items-center justify-between px-adaptive pt-adaptive">
               <div className="flex flex-wrap items-center gap-8">
@@ -343,6 +294,55 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
               pageCount={affiliatesPageCount}
               onPageChange={setCurrentAffiliatesPage}
             />
+          </div>
+
+          <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-adaptive">
+            <div className="flex items-center justify-between">
+              <div className="text-body-large font-medium text-typography-primary">
+                <Trans>Overview</Trans>
+              </div>
+              <div className="flex items-center gap-8">
+                <TimeRangeFilter
+                  timeRange={timeRangeInfo.slug}
+                  setTimeRange={setTimeRange}
+                  timeRangeInfos={REFERRALS_TIME_RANGE_INFOS}
+                />
+              </div>
+            </div>
+            <AffiliatesPromoCard account={account} />
+            <div className="flex flex-col gap-12">
+              <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
+                <TradingVolumeChartCard
+                  stats={referralStats}
+                  isLoading={isReferralStatsLoading}
+                  timeRangeInfo={timeRangeInfo}
+                  referralCode={affiliateReferralCodesStats?.[0]?.referralCode}
+                  traderDiscountPercentage={currentTraderDiscountPercentage}
+                  totalDiscountsUsd={referralsData?.chains?.[chainId]?.affiliateTotalStats?.discountUsd}
+                />
+                <NumberOfTradesChartCard
+                  stats={referralStats}
+                  isLoading={isReferralStatsLoading}
+                  timeRangeInfo={timeRangeInfo}
+                />
+                <TradersReferredChartCard
+                  stats={referralStats}
+                  isLoading={isReferralStatsLoading}
+                  timeRangeInfo={timeRangeInfo}
+                />
+                <RebatesChartCard
+                  stats={referralStats}
+                  isLoading={isReferralStatsLoading}
+                  timeRangeInfo={timeRangeInfo}
+                />
+              </div>
+            </div>
+            <div className="text-body-small font-medium text-typography-secondary">
+              <span className="text-slate-500">
+                <Trans>Last updated:</Trans>
+              </span>{" "}
+              {lastUpdated ?? "—"}
+            </div>
           </div>
 
           <ModalWithPortal

@@ -144,7 +144,7 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ba
       valueChange={formatCountDelta(stats?.summary.tradersNetDelta)}
       isValueChangePositive={(stats?.summary.tradersNetDelta ?? 0) >= 0}
       topRightContent={
-        <div className="text-body-small flex flex-wrap items-center gap-x-[13px] gap-y-4 font-medium text-typography-secondary">
+        <div className="text-body-small flex items-center gap-[13px] font-medium text-typography-secondary">
           <span className="flex items-center gap-[9px]">
             <span className="size-[6px] shrink-0 rounded-full bg-green-500" />
             <Trans>Gained</Trans>
