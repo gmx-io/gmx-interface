@@ -9997,8 +9997,8 @@ msgid "Real-time referral dashboard"
 msgstr "即時推薦儀表板"
 
 #: src/components/Referrals/affiliates/AffiliateRewardsPromoBanner.tsx
-msgid "Refer traders and earn 50% of their rewards while the program is live."
-msgstr "推薦交易者，在活動期間賺取其獎勵的 50%。"
+msgid "Refer traders and earn 50% of their rewards while the reward program is live."
+msgstr "推薦交易者，在獎勵計畫期間賺取其獎勵的 50%。"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"

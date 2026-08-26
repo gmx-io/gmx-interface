@@ -49,7 +49,9 @@ describe("AffiliateRewardsPromoBanner", () => {
     renderBanner();
 
     expect(screen.getByRole("heading", { name: "Referral Bonus" })).toBeDefined();
-    expect(screen.getByText("Refer traders and earn 50% of their rewards while the program is live.")).toBeDefined();
+    expect(
+      screen.getByText("Refer traders and earn 50% of their rewards while the reward program is live.")
+    ).toBeDefined();
 
     const readMoreLink = screen.getByRole("link", { name: "Read more" });
     expect(readMoreLink.getAttribute("href")).toBe("/rewards");

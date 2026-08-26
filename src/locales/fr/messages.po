@@ -9997,8 +9997,8 @@ msgid "Real-time referral dashboard"
 msgstr "Tableau de bord de parrainage en temps réel"
 
 #: src/components/Referrals/affiliates/AffiliateRewardsPromoBanner.tsx
-msgid "Refer traders and earn 50% of their rewards while the program is live."
-msgstr "Parrainez des traders et gagnez 50 % de leurs récompenses pendant toute la durée du programme."
+msgid "Refer traders and earn 50% of their rewards while the reward program is live."
+msgstr "Parrainez des traders et gagnez 50 % de leurs récompenses pendant toute la durée du programme de récompenses."
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
