@@ -16,16 +16,14 @@ import {
   EARN_PORTFOLIO_STAKE_ES_GMX_LINK,
   EARN_PORTFOLIO_STAKE_GMX_LINK,
 } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
+import type { RewardsBannerArtKey } from "components/RewardsPromoBanner/rewardsBannerArt";
+import type { RewardsBannerAccent } from "components/RewardsPromoBanner/rewardsBannerStyles";
 import { RewardsPromoBannerCard } from "components/RewardsPromoBanner/RewardsPromoBannerCard";
 import { getRewardsPromoCopy } from "components/RewardsPromoBanner/rewardsPromoCopy";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import TradeIcon from "img/ic_candles_filled.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
-import rewardsBannerCoinGmx from "img/rewards_banner_coin_gmx.png";
-import rewardsBannerCoinMultiplier from "img/rewards_banner_coin_multiplier.png";
-import rewardsBannerCoinTrade from "img/rewards_banner_coin_trade.png";
-import rewardsBannerCoinWallet from "img/rewards_banner_coin_wallet.png";
 
 import { getRewardsDebugMode } from "../rewardsDebug";
 import { getStartRewardsVestingPath } from "../rewardsRoutes";
@@ -51,7 +49,8 @@ type RewardsBannerContent = {
   title: ReactNode;
   description: ReactNode;
   actions: RewardsBannerAction[];
-  coin: string;
+  accent: RewardsBannerAccent;
+  art: RewardsBannerArtKey;
 };
 
 type DismissedRewardsBanners = Partial<Record<RewardsBannerType, boolean>>;
@@ -84,10 +83,11 @@ export function getRewardsPromotionalBannerContent({
     const { title } = getRewardsPromoCopy(promoSelection);
     banners.push({
       type: "manual-reward",
+      accent: "bonus",
       title,
       description: <Trans>Start trading to activate it and get your rewards.</Trans>,
       actions: [{ label: <Trans>Trade</Trans>, type: "trade", to: "/trade" }],
-      coin: rewardsBannerCoinWallet,
+      art: "bonus",
     });
   }
 
@@ -95,10 +95,11 @@ export function getRewardsPromotionalBannerContent({
     const gmxAmount = formatAmount(walletGmx, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true });
     banners.push({
       type: "gmx-ready-to-stake",
+      accent: "stakeGmx",
       title: <Trans>You have GMX ready to stake</Trans>,
       description: <Trans>You have {gmxAmount} GMX unstaked - stake now to earn more rewards.</Trans>,
       actions: [{ label: <Trans>Stake GMX</Trans>, type: "stake", to: EARN_PORTFOLIO_STAKE_GMX_LINK }],
-      coin: rewardsBannerCoinGmx,
+      art: "stake",
     });
   }
 
@@ -108,22 +109,24 @@ export function getRewardsPromotionalBannerContent({
     });
     banners.push({
       type: "esgmx-ready-to-stake",
+      accent: "stakeEsGmx",
       title: <Trans>You have esGMX available</Trans>,
       description: <Trans>You have {esGmxAmount} esGMX – stake it or vest to get additional rewards</Trans>,
       actions: [
         { label: <Trans>Stake</Trans>, type: "stake", to: EARN_PORTFOLIO_STAKE_ES_GMX_LINK },
         { label: <Trans>Vest</Trans>, type: "stake", to: getStartRewardsVestingPath() },
       ],
-      coin: rewardsBannerCoinGmx,
+      art: "stake",
     });
   }
 
   banners.push({
     type: "referral",
+    accent: "referral",
     title: <Trans>Referral Bonus</Trans>,
     description: <Trans>Refer other traders and receive 50% of their rewards</Trans>,
     actions: [{ label: <Trans>Invite</Trans>, type: "invite", to: "/referrals/affiliates" }],
-    coin: rewardsBannerCoinWallet,
+    art: "referral",
   });
 
   if (!status || !promoSelection?.isActiveUser) return banners;
@@ -145,6 +148,7 @@ export function getRewardsPromotionalBannerContent({
 
       banners.push({
         type: "next-volume-tier",
+        accent: "tier",
         title: <Trans>Almost at the next tier</Trans>,
         description: (
           <Trans>
@@ -152,7 +156,7 @@ export function getRewardsPromotionalBannerContent({
           </Trans>
         ),
         actions: [{ label: <Trans>Trade</Trans>, type: "trade", to: "/trade" }],
-        coin: rewardsBannerCoinMultiplier,
+        art: "tier",
       });
     }
   }
@@ -162,19 +166,21 @@ export function getRewardsPromotionalBannerContent({
   if (hasFeaturedMarketOpportunity) {
     banners.push({
       type: "pair-boosts",
+      accent: "boost",
       title: <Trans>Activate Pair Boosts</Trans>,
       description: <Trans>Trade featured pairs to boost multiplier and rewards</Trans>,
       actions: [{ label: <Trans>Trade</Trans>, type: "trade", to: "/trade" }],
-      coin: rewardsBannerCoinTrade,
+      art: "trade",
     });
   }
 
   banners.push({
     type: "restake-rewards",
+    accent: "restake",
     title: <Trans>Restake your rewards</Trans>,
     description: <Trans>Restake rewards to boost earnings and unlock more GMX yield.</Trans>,
     actions: [{ label: <Trans>Stake rewards</Trans>, type: "stake", to: EARN_PORTFOLIO_STAKE_GMX_LINK }],
-    coin: rewardsBannerCoinGmx,
+    art: "stake",
   });
 
   return banners;
@@ -385,7 +391,8 @@ export function RewardsPromotionalBanners({
       <RewardsPromoBannerCard
         key={current.type}
         className={cx("[touch-action:pan-y]", !prefersReducedMotion && bannerAnimationClass)}
-        coin={current.coin}
+        accent={current.accent}
+        art={current.art}
         onClose={handleDismiss}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
