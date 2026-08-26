@@ -9997,8 +9997,8 @@ msgid "Real-time referral dashboard"
 msgstr "실시간 추천 대시보드"
 
 #: src/components/Referrals/affiliates/AffiliateRewardsPromoBanner.tsx
-msgid "Refer traders and earn 50% of their rewards while the program is live."
-msgstr "트레이더를 추천하고 프로그램이 진행되는 동안 해당 트레이더 보상의 50%를 받으세요."
+msgid "Refer traders and earn 50% of their rewards while the reward program is live."
+msgstr "트레이더를 추천하고 보상 프로그램이 진행되는 동안 해당 트레이더 보상의 50%를 받으세요."
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
