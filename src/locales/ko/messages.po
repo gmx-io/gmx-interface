@@ -1198,6 +1198,10 @@ msgstr "{activeBoostCount, plural, one {#개의 활성 부스트} other {#개의
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr "이 주소로는 <0>{chainName} 호환 자산</0>만 보내십시오!"
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Multiplier is at the core of the rewards program"
+msgstr "배수는 보상 프로그램의 핵심입니다"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr "Plutus"
@@ -1744,10 +1748,6 @@ msgstr "대회 에어드롭"
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Slide {0} of {SLIDE_COUNT}"
 msgstr "총 {SLIDE_COUNT}개 중 {0}번째 슬라이드"
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "How rewards are distributed"
-msgstr "보상 분배 방식"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Keep vesting"
@@ -5523,6 +5523,10 @@ msgstr "새 비율 또는 허용 슬리피지 입력"
 msgid "All time (aggregated by account)"
 msgstr "전체 기간(계정별 집계)"
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "GMX Rewards is a program for active traders and affiliates. Trade and stake on GMX to earn up to 120% of your fees as rewards."
+msgstr "GMX Rewards는 활발히 활동하는 트레이더와 제휴사를 위한 프로그램입니다. GMX에서 거래하고 스테이킹하여 수수료의 최대 120%를 보상으로 받으세요."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Safe unstake limit: {0} GMX / esGMX"
 msgstr ""
@@ -6399,6 +6403,10 @@ msgstr "GMX 위에 구축하고<0/>모든 거래에서 수익을 얻으세요."
 msgid "Page outdated. Refresh"
 msgstr "페이지가 만료되었습니다. 새로고침"
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "Using Your Rewards"
+msgstr "보상 활용 방법"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -6919,10 +6927,6 @@ msgstr "롱"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Affiliate rewards claimed"
 msgstr "제휴 보상이 수령되었습니다"
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "GT accumulates in your account and will become available after the GT token generation event (TGE)."
-msgstr "GT는 계정에 누적되며 GT 토큰 생성 이벤트(TGE) 이후 사용할 수 있습니다."
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
@@ -8374,6 +8378,10 @@ msgstr ""
 msgid "Comfortable with Builder / Referral Code attribution"
 msgstr "Builder / Referral Code 어트리뷰션에 익숙함"
 
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "esGMX tokens can be converted into liquid GMX through vesting."
+msgstr "esGMX 토큰은 베스팅을 통해 유동성 있는 GMX로 전환할 수 있습니다."
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
 msgstr ""
@@ -8884,10 +8892,6 @@ msgstr "입금할 자산을 선택하십시오"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "True"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "GMX Rewards is a rewards program for active traders and affiliates. Trade and stake on GMX to earn up to 120% of your fees as rewards."
-msgstr "GMX Rewards는 활발히 활동하는 트레이더와 제휴사를 위한 보상 프로그램입니다. GMX에서 거래하고 스테이킹하여 수수료의 최대 120%를 보상으로 받으세요."
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
@@ -11958,7 +11962,6 @@ msgid "Using a referral code gives you a 5-10% discount on trading fees for ever
 msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
-#: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trading activities"
 msgstr "거래 활동"
 
@@ -12736,10 +12739,6 @@ msgstr ""
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>포지션에서 발생한 양(+)의 펀딩 수수료</0>"
 
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "esGMX can be converted into GMX through vesting."
-msgstr "esGMX는 베스팅을 통해 GMX로 전환할 수 있습니다."
-
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Message us on Telegram"
 msgstr "Telegram으로 메시지 보내기"
@@ -12913,10 +12912,6 @@ msgstr "Uniswap에서 GMX를 구매하거나 GMX에서 직접 구매하십시오
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Oracle price"
 msgstr "Oracle 가격"
-
-#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
-msgid "Your multiplier is at the core of the rewards program"
-msgstr "배수는 보상 프로그램의 핵심입니다"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "SIZE (% OF POSITION)"
@@ -13675,6 +13670,10 @@ msgstr "수익 시작"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancellation failed"
 msgstr "{orderText} 취소에 실패했습니다"
+
+#: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
+msgid "GT token available for buyback on GMTrade – GMX’s sister protocol"
+msgstr "GT 토큰은 GMX의 자매 프로토콜인 GMTrade에서 바이백으로 이용할 수 있습니다"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "This is not a valid Ethereum address."

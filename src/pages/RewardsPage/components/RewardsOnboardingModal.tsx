@@ -18,7 +18,7 @@ import { REWARDS_ONBOARDING_OPEN_ACTION, REWARDS_ONBOARDING_SEARCH_PARAM } from 
 
 const SLIDE_COUNT = 4;
 const SWIPE_THRESHOLD_PX = 40;
-const DIAGRAM_OFFSETS = [0, 308, 605, 880] as const;
+const DIAGRAM_OFFSETS = [0, 410, 605, 880] as const;
 const SLIDE_TRACK_STYLES = Array.from({ length: SLIDE_COUNT }, (_, index) => ({
   transform: `translate3d(${-index * 100}%, 0, 0)`,
 }));
@@ -63,8 +63,8 @@ function SlideContent({ index }: { index: number }) {
         </h2>
         <p className="text-body-medium max-w-[360px] text-typography-secondary">
           <Trans>
-            GMX Rewards is a rewards program for active traders and affiliates. Trade and stake on GMX to earn up to
-            120% of your fees as rewards.
+            GMX Rewards is a program for active traders and affiliates. Trade and stake on GMX to earn up to 120% of
+            your fees as rewards.
           </Trans>
         </p>
       </div>
@@ -75,7 +75,7 @@ function SlideContent({ index }: { index: number }) {
     return (
       <div className="flex min-h-[104px] w-full max-w-[360px] flex-col items-center gap-8 text-center">
         <h2 className="text-h2 text-typography-primary">
-          <Trans>Your multiplier is at the core of the rewards program</Trans>
+          <Trans>Multiplier is at the core of the rewards program</Trans>
         </h2>
         <p className="text-body-medium max-w-[360px] text-typography-secondary">
           <Trans>
@@ -103,16 +103,14 @@ function SlideContent({ index }: { index: number }) {
   return (
     <div className="flex min-h-[104px] w-full max-w-[360px] flex-col items-center gap-8 text-center">
       <h2 className="text-h2 text-typography-primary">
-        <Trans>How rewards are distributed</Trans>
+        <Trans>Using Your Rewards</Trans>
       </h2>
       <ul className="text-body-medium w-full list-disc space-y-4 pl-16 text-left text-typography-secondary">
         <li>
-          <Trans>esGMX can be converted into GMX through vesting.</Trans>
+          <Trans>esGMX tokens can be converted into liquid GMX through vesting.</Trans>
         </li>
         <li>
-          <Trans>
-            GT accumulates in your account and will become available after the GT token generation event (TGE).
-          </Trans>
+          <Trans>GT token available for buyback on GMTrade – GMX’s sister protocol</Trans>
         </li>
       </ul>
     </div>

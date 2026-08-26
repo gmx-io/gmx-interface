@@ -112,6 +112,15 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         >
           Vesting simulator
         </Link>
+        <Link
+          to="/rewards?rewardsDebug=banners"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          Promo banners preview
+        </Link>
       </SettingsSection>
     </div>
   );

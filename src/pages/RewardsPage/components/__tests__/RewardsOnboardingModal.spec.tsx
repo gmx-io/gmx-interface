@@ -109,13 +109,11 @@ describe("RewardsOnboardingModal", () => {
     expect(screen.queryByRole("button", { name: "Close dialog" })).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: /Next/ }));
-    expect(diagramTrack.style.transform).toBe("translate3d(-308px, 0, 0)");
+    expect(diagramTrack.style.transform).toBe("translate3d(-410px, 0, 0)");
     expect(track.style.transform).toBe("translate3d(-100%, 0, 0)");
     expect(screen.getByText("Slide 2 of 4")).toBeDefined();
     expect(screen.queryByRole("heading", { name: "Welcome to GMX Rewards" })).toBeNull();
-    expect(
-      screen.getByRole("heading", { name: "Your multiplier is at the core of the rewards program" })
-    ).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Multiplier is at the core of the rewards program" })).toBeDefined();
 
     fireEvent.keyDown(screen.getByRole("region", { name: "How GMX Rewards works" }), {
       key: "ArrowRight",
@@ -129,7 +127,7 @@ describe("RewardsOnboardingModal", () => {
     fireEvent.click(dots[3]);
     expect(diagramTrack.style.transform).toBe("translate3d(-880px, 0, 0)");
     expect(track.style.transform).toBe("translate3d(-300%, 0, 0)");
-    expect(screen.getByRole("heading", { name: "How rewards are distributed" })).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Using Your Rewards" })).toBeDefined();
     expect(dots[3].getAttribute("aria-current")).toBe("true");
 
     fireEvent.click(screen.getByRole("button", { name: "Get started" }));
@@ -182,12 +180,10 @@ describe("RewardsOnboardingModal", () => {
     fireEvent.pointerDown(slide, { pointerType: "touch", pointerId: 1, clientX: 200, clientY: 20 });
     fireEvent.pointerUp(slide, { pointerType: "touch", pointerId: 1, clientX: 120, clientY: 24 });
     expect(screen.getByTestId("rewards-onboarding-diagram-track").getAttribute("style")).toContain(
-      "translate3d(-308px, 0, 0)"
+      "translate3d(-410px, 0, 0)"
     );
     expect(screen.getByTestId("rewards-onboarding-track").getAttribute("style")).toContain("translate3d(-100%, 0, 0)");
-    expect(
-      screen.getByRole("heading", { name: "Your multiplier is at the core of the rewards program" })
-    ).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Multiplier is at the core of the rewards program" })).toBeDefined();
 
     fireEvent.pointerDown(slide, { pointerType: "touch", pointerId: 2, clientX: 200, clientY: 20 });
     fireEvent.pointerUp(slide, { pointerType: "touch", pointerId: 2, clientX: 150, clientY: 100 });
