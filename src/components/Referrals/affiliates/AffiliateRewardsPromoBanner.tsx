@@ -50,7 +50,7 @@ export function AffiliateRewardsPromoBanner({ account, className }: { account?: 
             <Trans>Referral Bonus</Trans>
           </h3>
           <p className="text-13 text-typography-secondary">
-            <Trans>Refer traders and earn 50% of their rewards while the program is live.</Trans>
+            <Trans>Refer traders and earn 50% of their rewards while the reward program is live.</Trans>
           </p>
         </div>
         <Link
