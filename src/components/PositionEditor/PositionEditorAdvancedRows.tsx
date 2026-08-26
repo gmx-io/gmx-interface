@@ -52,12 +52,9 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
       <SyntheticsInfoRow
         label={
           <TooltipWithPortal
-            handle={
-              <span className="Exchange-info-label">
-                <Trans>Margin ({position?.collateralToken?.symbol})</Trans>
-              </span>
-            }
+            handle={<Trans>Margin ({position?.collateralToken?.symbol})</Trans>}
             position="left-start"
+            variant="iconStroke"
             content={<Trans>Margin before pending borrow and funding fees</Trans>}
           />
         }
