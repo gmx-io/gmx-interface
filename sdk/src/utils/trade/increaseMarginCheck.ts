@@ -42,6 +42,10 @@ export type PositionMarginStateParams = {
   proDiscountFactor?: bigint;
 };
 
+/**
+ * Port of `PositionUtils.isPositionLiquidatable` (gmx-synthetics release-v2.2c) for a position whose
+ * pending fees have just been settled — the state the contract validates right after an increase.
+ */
 export function getResultingPositionMarginState(p: PositionMarginStateParams): PositionMarginState {
   const {
     marketInfo,
@@ -178,6 +182,11 @@ function withPriceOverride<T extends TokenData>(token: T, indexToken: TokenData,
   return { ...token, prices: { minPrice: price, maxPrice: price } };
 }
 
+/**
+ * Mirrors the post-increase gates of `IncreasePositionUtils.increasePosition` (gmx-synthetics
+ * release-v2.2c): `willPositionCollateralBeSufficient` on the updated open interest, then
+ * `validatePosition` on the resulting position.
+ */
 export function getIncreaseResultingPositionMarginState(
   p: IncreaseResultingPositionMarginStateParams
 ): PositionMarginState | undefined {
