@@ -263,6 +263,7 @@ msgid "(rebated)"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
 msgstr ""
 
@@ -2585,10 +2586,6 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
-msgid "Total value"
-msgstr ""
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr ""
@@ -3340,6 +3337,10 @@ msgstr ""
 msgid "GMX market token price chart"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "Lifetime LP rewards"
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr ""
@@ -3517,10 +3518,6 @@ msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
-msgstr ""
-
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-msgid "Accumulating for you"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
@@ -4696,7 +4693,6 @@ msgstr ""
 msgid "No claims match the selected filters"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr ""
@@ -6554,6 +6550,10 @@ msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
+msgstr ""
+
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "Lifetime staking rewards"
 msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -9323,6 +9323,10 @@ msgstr ""
 msgid "Fulfilling buy request..."
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Covers all chains, including GM and GLV held in your GMX Account and on source chains."
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr ""
@@ -10795,7 +10799,6 @@ msgstr ""
 msgid "SNAPSHOT"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/pages/Announcements/Announcements.tsx
 #: src/pages/Announcements/Announcements.tsx
 msgid "All chains"
@@ -10826,7 +10829,6 @@ msgstr ""
 msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr ""
@@ -10996,6 +10998,10 @@ msgstr ""
 msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Total portfolio value"
+msgstr ""
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Used referral code"
 msgstr ""
@@ -11012,8 +11018,6 @@ msgstr ""
 msgid "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
 msgstr "[!! Total PnL percentage after fees and price impact. Hover the value to see the breakdown. !!]"
 
-#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx

@@ -263,8 +263,9 @@ msgid "(rebated)"
 msgstr "（已返還）"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "累計獎勵"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -2585,10 +2586,6 @@ msgstr "GMX（中文）"
 msgid "Search"
 msgstr "搜尋"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
-msgid "Total value"
-msgstr "總價值"
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr "過去的費用"
@@ -3340,6 +3337,10 @@ msgstr ""
 msgid "GMX market token price chart"
 msgstr "GMX 市場代幣價格圖表"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "Lifetime LP rewards"
+msgstr "累計 LP 獎勵"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "無效的減少規模"
@@ -3518,10 +3519,6 @@ msgstr "您的 GMX Account 中沒有資產"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "訂單類型"
-
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-msgid "Accumulating for you"
-msgstr "為您累積中"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -4696,7 +4693,6 @@ msgstr "提取中..."
 msgid "No claims match the selected filters"
 msgstr "沒有符合所選篩選條件的領取記錄"
 
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "質押"
@@ -6555,6 +6551,10 @@ msgstr "詳情"
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
 msgstr "GLV 額外激勵"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "Lifetime staking rewards"
+msgstr "累計質押獎勵"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
@@ -9323,6 +9323,10 @@ msgstr "觸發行情報價失敗"
 msgid "Fulfilling buy request..."
 msgstr "正在執行買入請求..."
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Covers all chains, including GM and GLV held in your GMX Account and on source chains."
+msgstr "涵蓋所有鏈，包括您 GMX Account 中以及來源鏈上持有的 GM 與 GLV。"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "購買 GM 失敗"
@@ -10795,7 +10799,6 @@ msgstr "DeFi"
 msgid "SNAPSHOT"
 msgstr "快照"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/pages/Announcements/Announcements.tsx
 #: src/pages/Announcements/Announcements.tsx
 msgid "All chains"
@@ -10826,7 +10829,6 @@ msgstr "最高 PnL ($)"
 msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
 msgstr "<0>一旦您的等級確認後，交易者折扣將自動套用至您的帳戶。推廣夥伴回饋則即時累積，您隨時可以從推薦儀表板在鏈上領取。</0>"
 
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
@@ -10996,6 +10998,10 @@ msgstr "Telegram 群組（葡萄牙語）"
 msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "純粹 {indexSymbol} 做多。風險敞口僅來自該倉位。"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Total portfolio value"
+msgstr "投資組合總價值"
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Used referral code"
 msgstr ""
@@ -11012,8 +11018,6 @@ msgstr "已歸屬可領取的 GMX："
 msgid "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
 msgstr "扣除費用和價格影響後的總 PnL 百分比。將滑鼠懸停在數值上可查看明細。"
 
-#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx

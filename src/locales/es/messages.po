@@ -263,8 +263,9 @@ msgid "(rebated)"
 msgstr "(reembolsado)"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "Recompensas acumuladas"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -2585,10 +2586,6 @@ msgstr "GMX (Chino)"
 msgid "Search"
 msgstr "Buscar"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
-msgid "Total value"
-msgstr "Valor total"
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr "Comisiones para el pasado"
@@ -3340,6 +3337,10 @@ msgstr ""
 msgid "GMX market token price chart"
 msgstr "Gráfico de precios de tokens de mercado de GMX"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "Lifetime LP rewards"
+msgstr "Recompensas de LP totales"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "Tamaño de reducción no válido"
@@ -3518,10 +3519,6 @@ msgstr "No hay activos en tu GMX Account"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "Tipo de orden"
-
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-msgid "Accumulating for you"
-msgstr "Acumulándose para ti"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -4696,7 +4693,6 @@ msgstr "Retirando..."
 msgid "No claims match the selected filters"
 msgstr "No hay reclamos que coincidan con los filtros seleccionados"
 
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "Staking"
@@ -6555,6 +6551,10 @@ msgstr "Detalles"
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
 msgstr "Incentivo adicional GLV"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "Lifetime staking rewards"
+msgstr "Recompensas de staking totales"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
@@ -9323,6 +9323,10 @@ msgstr "Fallo de tickers de activación"
 msgid "Fulfilling buy request..."
 msgstr "Ejecutando solicitud de compra…"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Covers all chains, including GM and GLV held in your GMX Account and on source chains."
+msgstr "Cubre todas las cadenas, incluidos los GM y GLV en tu GMX Account y en las cadenas de origen."
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "La compra de GM ha fallado"
@@ -10795,7 +10799,6 @@ msgstr "DeFi"
 msgid "SNAPSHOT"
 msgstr "SNAPSHOT"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/pages/Announcements/Announcements.tsx
 #: src/pages/Announcements/Announcements.tsx
 msgid "All chains"
@@ -10826,7 +10829,6 @@ msgstr "PnL Máximo ($)"
 msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
 msgstr "<0>Los descuentos de trader se aplican automáticamente a su cuenta una vez que se confirma su nivel. Los reembolsos de afiliado se acumulan en tiempo real y pueden reclamarse on-chain desde su panel de referidos en cualquier momento.</0>"
 
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
@@ -10996,6 +10998,10 @@ msgstr "Grupo de Telegram (portugués)"
 msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "Posición largo pura en {indexSymbol}. La exposición proviene únicamente de la posición."
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Total portfolio value"
+msgstr "Valor total de la cartera"
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Used referral code"
 msgstr ""
@@ -11012,8 +11018,6 @@ msgstr "GMX adquirido reclamable:"
 msgid "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
 msgstr "Porcentaje total de PnL después de comisiones e impacto en el precio. Pasa el cursor sobre el valor para ver el desglose."
 
-#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx

@@ -263,8 +263,9 @@ msgid "(rebated)"
 msgstr "(리베이트 적용)"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "누적 보상"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -2585,10 +2586,6 @@ msgstr "GMX (중국어)"
 msgid "Search"
 msgstr "검색"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
-msgid "Total value"
-msgstr "총 가치"
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr "과거 수수료"
@@ -3340,6 +3337,10 @@ msgstr ""
 msgid "GMX market token price chart"
 msgstr "GMX 마켓 토큰 가격 차트"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "Lifetime LP rewards"
+msgstr "누적 LP 보상"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "유효하지 않은 감소 규모"
@@ -3518,10 +3519,6 @@ msgstr "GMX Account에 자산이 없습니다"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "주문 유형"
-
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-msgid "Accumulating for you"
-msgstr "귀하를 위해 누적 중"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -4696,7 +4693,6 @@ msgstr "출금 중..."
 msgid "No claims match the selected filters"
 msgstr "선택한 필터와 일치하는 수령이 없습니다"
 
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "스테이킹"
@@ -6555,6 +6551,10 @@ msgstr "상세"
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
 msgstr "GLV 보너스 인센티브"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "Lifetime staking rewards"
+msgstr "누적 스테이킹 보상"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
@@ -9323,6 +9323,10 @@ msgstr "Trigger tickers 장애"
 msgid "Fulfilling buy request..."
 msgstr "매수 요청을 실행하는 중…"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Covers all chains, including GM and GLV held in your GMX Account and on source chains."
+msgstr "GMX Account 및 소스 체인에 보유한 GM과 GLV를 포함한 모든 체인을 포함합니다."
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "GM 구매 실패"
@@ -10795,7 +10799,6 @@ msgstr "DeFi"
 msgid "SNAPSHOT"
 msgstr "스냅샷"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/pages/Announcements/Announcements.tsx
 #: src/pages/Announcements/Announcements.tsx
 msgid "All chains"
@@ -10826,7 +10829,6 @@ msgstr "상위 PnL ($)"
 msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
 msgstr "<0>트레이더 할인은 등급이 확정되면 계정에 자동으로 적용됩니다. 제휴 리베이트는 실시간으로 누적되며, 언제든지 추천 대시보드에서 온체인으로 청구할 수 있습니다.</0>"
 
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
@@ -10996,6 +10998,10 @@ msgstr "Telegram 그룹 (포르투갈어)"
 msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "순수 {indexSymbol} 롱. 익스포저는 포지션에서만 발생합니다."
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Total portfolio value"
+msgstr "총 포트폴리오 가치"
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Used referral code"
 msgstr ""
@@ -11012,8 +11018,6 @@ msgstr "베스팅 완료 수령 가능 GMX:"
 msgid "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
 msgstr "수수료와 가격 영향을 반영한 총 PnL 비율입니다. 값을 가리키면 내역을 볼 수 있습니다."
 
-#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/OriginChips.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx

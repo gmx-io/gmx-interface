@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 
-import { getChainNativeTokenSymbol, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
+import { getChainNativeTokenSymbol } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getGlvOrMarketAddress, GlvOrMarketInfo, useMarketTokensData } from "domain/synthetics/markets";
+import { useMarketTokensData } from "domain/synthetics/markets";
 import { useGlvUserEarnings } from "domain/synthetics/markets/useGlvUserEarnings";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getTotalGlvInfo, getTotalGmInfo } from "domain/synthetics/markets/utils";
@@ -16,7 +16,6 @@ import { EarningsBand, InvestmentValueBreakdown } from "./EarningsBand";
 import { roundEarningsUsd } from "./earningsMath";
 import { LifetimeEarningsBreakdown } from "./LifetimeEarningsTooltip";
 import { LpPanel } from "./LpPanel";
-import { EarningsOrigin } from "./OriginChips";
 import { StakingPanel } from "./StakingPanel";
 
 const DAYS_IN_WEEK = 7n;
@@ -43,11 +42,9 @@ function getStakingNext7dUsd(processedData: StakingProcessedData | undefined): b
 export function EarningsOverview({
   processedData,
   mutateProcessedData,
-  gmGlvAssets,
 }: {
   processedData: StakingProcessedData | undefined;
   mutateProcessedData: () => void;
-  gmGlvAssets: GlvOrMarketInfo[];
 }) {
   const { chainId, srcChainId } = useChainId();
   const nativeTokenSymbol = getChainNativeTokenSymbol(chainId);
@@ -153,42 +150,6 @@ export function EarningsOverview({
     };
   }, [isInvestmentValueLoading, marketTokensData, multichainMarketTokensBalances, processedData]);
 
-  const connectedOrigin: EarningsOrigin = srcChainId !== undefined ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId;
-
-  const connectedOrigins: EarningsOrigin[] = useMemo(() => [connectedOrigin], [connectedOrigin]);
-
-  const lpOrigins: EarningsOrigin[] = useMemo(() => {
-    const origins = new Set<EarningsOrigin>();
-
-    for (const info of gmGlvAssets) {
-      const balances = multichainMarketTokensBalances?.[getGlvOrMarketAddress(info)]?.balances;
-
-      if (!balances) continue;
-
-      for (const [balanceChainId, balanceData] of Object.entries(balances)) {
-        if ((balanceData?.balanceUsd ?? 0n) > 0n) {
-          origins.add(Number(balanceChainId) as EarningsOrigin);
-        }
-      }
-    }
-
-    if (origins.size === 0) {
-      return [];
-    }
-
-    const sorted = Array.from(origins).sort((a, b) => {
-      if (a === GMX_ACCOUNT_PSEUDO_CHAIN_ID) return 1;
-      if (b === GMX_ACCOUNT_PSEUDO_CHAIN_ID) return -1;
-      return a - b;
-    });
-
-    if (sorted.length === 1 && sorted[0] === connectedOrigin) {
-      return [];
-    }
-
-    return sorted;
-  }, [connectedOrigin, gmGlvAssets, multichainMarketTokensBalances]);
-
   return (
     <div className="flex flex-col gap-8">
       <EarningsBand
@@ -200,7 +161,6 @@ export function EarningsOverview({
         processedData={processedData}
         mutateProcessedData={mutateProcessedData}
         nativeTokenSymbol={nativeTokenSymbol}
-        connectedOrigins={connectedOrigins}
       />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -220,7 +180,6 @@ export function EarningsOverview({
           isUnavailable={isLpUnavailable}
           isExpected365dLoading={isGmExpected365dLoading || isGlvExpected365dLoading}
           isExpected365dUnavailable={isGmExpected365dUnavailable || isGlvExpected365dUnavailable}
-          origins={lpOrigins}
         />
       </div>
     </div>

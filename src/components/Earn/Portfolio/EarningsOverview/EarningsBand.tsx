@@ -9,7 +9,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ClaimRewardsButton } from "../ClaimRewardsButton";
 import { EarningsStat, formatUsdExpanded, UsdStatValue } from "./EarningsStat";
 import { LifetimeEarningsBreakdown, LifetimeEarningsTooltipContent } from "./LifetimeEarningsTooltip";
-import { EarningsOrigin, OriginChip, OriginChips } from "./OriginChips";
 
 const MOBILE_ROW_CLASS_NAME = "max-md:flex-row max-md:items-center max-md:justify-between";
 
@@ -53,6 +52,9 @@ function TotalValue({ breakdown, isLoading }: { breakdown: InvestmentValueBreakd
             showDollar={false}
             value={<span className="numbers">{formatUsdExpanded(breakdown.glvUsd)}</span>}
           />
+          <span className="text-typography-tertiary mt-8">
+            <Trans>Covers all chains, including GM and GLV held in your GMX Account and on source chains.</Trans>
+          </span>
         </div>
       }
     />
@@ -182,7 +184,6 @@ export function EarningsBand({
   processedData,
   mutateProcessedData,
   nativeTokenSymbol,
-  connectedOrigins,
 }: {
   lifetimeBreakdown: LifetimeEarningsBreakdown | undefined;
   isEarningsLoading: boolean;
@@ -192,28 +193,17 @@ export function EarningsBand({
   processedData: StakingProcessedData | undefined;
   mutateProcessedData: () => void;
   nativeTokenSymbol: string;
-  connectedOrigins: EarningsOrigin[];
 }) {
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
-      <div className="flex items-center justify-between gap-8">
-        <h3 className="text-body-large font-medium text-typography-primary">
-          <Trans>Summary</Trans>
-        </h3>
-        <OriginChips origins={connectedOrigins} />
-      </div>
+      <h3 className="text-body-large font-medium text-typography-primary">
+        <Trans>Summary</Trans>
+      </h3>
 
       <div className="flex items-end gap-x-40 gap-y-12 max-md:flex-col max-md:items-stretch">
         <EarningsStat
           className={`max-md:order-1 ${MOBILE_ROW_CLASS_NAME}`}
-          label={
-            <>
-              <Trans>Total value</Trans>
-              <OriginChip>
-                <Trans>All chains</Trans>
-              </OriginChip>
-            </>
-          }
+          label={<Trans>Total portfolio value</Trans>}
         >
           <TotalValue breakdown={investmentBreakdown} isLoading={isInvestmentValueLoading} />
         </EarningsStat>

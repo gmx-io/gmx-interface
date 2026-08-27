@@ -37,7 +37,7 @@ function RewardsPausedBadge() {
 function TreasuryProjectionLabel() {
   return (
     <TooltipWithPortal
-      handle={<Trans>Accumulating for you</Trans>}
+      handle={<Trans>Accumulated rewards</Trans>}
       content={
         <Trans>
           Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual

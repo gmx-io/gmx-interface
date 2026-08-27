@@ -55,13 +55,13 @@ export function LifetimeEarningsTooltipContent({
 }) {
   return (
     <div className="flex flex-col gap-8">
-      <Group title={<Trans>Staking</Trans>}>
+      <Group title={<Trans>Lifetime staking rewards</Trans>}>
         <LeafRow label={<Trans>GMX rewards</Trans>} usd={breakdown.stakingGmxUsd} />
         <LeafRow label={<Trans>esGMX rewards</Trans>} usd={breakdown.stakingEsGmxUsd} />
         <LeafRow label={<Trans>{nativeTokenSymbol} rewards</Trans>} usd={breakdown.stakingNativeUsd} />
       </Group>
 
-      <Group title={<Trans>LP</Trans>}>
+      <Group title={<Trans>Lifetime LP rewards</Trans>}>
         <LeafRow label={<Trans>GM pools</Trans>} usd={breakdown.gmUsd} />
         <LeafRow label={<Trans>GLV vaults</Trans>} usd={breakdown.glvUsd} />
       </Group>

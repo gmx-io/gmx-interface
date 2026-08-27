@@ -12,7 +12,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 import { EarningsStat, UsdStatValue, UsdText } from "./EarningsStat";
-import { EarningsOrigin, OriginChips } from "./OriginChips";
 
 function LpRowLabel({ to, children }: { to: string; children: ReactNode }) {
   return (
@@ -49,7 +48,6 @@ export function LpPanel({
   isUnavailable,
   isExpected365dLoading,
   isExpected365dUnavailable,
-  origins,
 }: {
   lifetimeUsd: bigint | undefined;
   last7dUsd: bigint | undefined;
@@ -60,19 +58,15 @@ export function LpPanel({
   isUnavailable: boolean;
   isExpected365dLoading: boolean;
   isExpected365dUnavailable: boolean;
-  origins: EarningsOrigin[];
 }) {
   const isAvailable = !isUnavailable;
 
   return (
     <div className="flex h-full flex-col rounded-8 bg-slate-900">
       <div className="flex flex-col gap-12 p-20">
-        <div className="flex items-center justify-between gap-8">
-          <h3 className="text-body-large font-medium text-typography-primary">
-            <Trans>LP</Trans>
-          </h3>
-          <OriginChips origins={origins} />
-        </div>
+        <h3 className="text-body-large font-medium text-typography-primary">
+          <Trans>LP</Trans>
+        </h3>
 
         <div className="flex gap-28">
           <EarningsStat label={<Trans>Lifetime rewards</Trans>}>
