@@ -78,7 +78,8 @@ export function PositionItemOrdersLarge({
       <TooltipWithPortal
         className="Position-list-active-orders"
         handle={
-          <>
+          // focusable so the keyboard can open the tooltip and reach the remediation action inside
+          <span tabIndex={0}>
             <Trans>Orders ({ordersWithErrors.length})</Trans>
             {ordersWarningsList.length > 0 || ordersErrorList.length > 0 ? (
               <div
@@ -88,7 +89,7 @@ export function PositionItemOrdersLarge({
                 })}
               />
             ) : null}
-          </>
+          </span>
         }
         position="bottom"
         handleClassName={cx([

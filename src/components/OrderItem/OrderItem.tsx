@@ -985,7 +985,9 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
     <TooltipWithPortal
       variant="none"
       handle={
+        // focusable so the keyboard can open the tooltip and reach the remediation action inside
         <span
+          tabIndex={0}
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-red-500 decoration-red-500/50": level === "error",
             "text-yellow-300 decoration-yellow-300/50": level === "warning",
