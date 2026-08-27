@@ -183,7 +183,11 @@ export function useTradeboxState(
         localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
 
         if (latestEnabled.current && newState.tradeType !== oldState.tradeType) {
-          latestHistory.current.replace(`/trade/${newState.tradeType.toLowerCase()}`);
+          latestHistory.current.replace({
+            pathname: `/trade/${newState.tradeType.toLowerCase()}`,
+            // The search still carries deep link params here, they are applied once markets load.
+            search: latestHistory.current.location.search,
+          });
         }
         return newState;
       });
@@ -225,8 +229,10 @@ export function useTradeboxState(
         return;
       }
 
-      setStoredOptionsOnChain({
+      setStoredOptionsOnChain((oldState) => ({
         ...INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
+        // A `/trade/short` link is applied before the chain defaults resolve, so keep its trade type.
+        tradeType: oldState.tradeType ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.tradeType,
         markets: {
           [market.indexTokenAddress]: {
             long: market.marketTokenAddress,
@@ -237,7 +243,7 @@ export function useTradeboxState(
           indexTokenAddress: market.indexTokenAddress,
           fromTokenAddress: market.shortTokenAddress,
         },
-      });
+      }));
       setSyncedChainId(chainId);
     },
     [

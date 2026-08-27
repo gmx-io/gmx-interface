@@ -265,7 +265,7 @@ msgstr "(리베이트 적용)"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr "누적 보상"
+msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -3027,9 +3027,17 @@ msgstr "수수료 차감 후 PnL 표시"
 msgid "No eligible holdings detected"
 msgstr "적격 보유 자산이 감지되지 않았습니다"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+#~ msgid "Native ETH / AVAX"
+#~ msgstr "네이티브 ETH / AVAX"
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 먼저 연락드리지 않습니다. 공식 계정으로 \"I have feedback\"를 보내주십시오:"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#~ msgid "GM Pools"
+#~ msgstr "GM 풀"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
@@ -4068,6 +4076,10 @@ msgstr ""
 msgid "Trade confirmations"
 msgstr "거래 확인 알림"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Month"
+msgstr "월"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr "GLV 유동성 부족"
@@ -4109,6 +4121,10 @@ msgstr "Telegram 내 GMX V2 데이터 분석"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "전체적으로 공개 체인에서 실행"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "USD 금액은 표시된 각 월의 평균 GMX 가격을 사용하여 추정됩니다. 실제 바이백 실행 금액은 실행 시점, 전환, 가격 변동으로 인해 다를 수 있습니다."
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
@@ -4418,6 +4434,10 @@ msgstr "4-18위"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Set acceptable price impact"
 msgstr "허용 가격 영향 설정"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
+msgstr "이 증거금 예치의 포지션이 종료되었지만 예치는 여전히 활성 상태입니다. 예치를 취소하여 자금을 회수하세요."
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -5497,7 +5517,7 @@ msgstr "보너스 APR"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulating..."
-msgstr "누적 중..."
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX for liquidity providers. For security, we won't contact you first. Send \"I'm a Liquidity Provider\" to our official Telegram account:"
@@ -6180,6 +6200,11 @@ msgstr ""
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "시프팅은 {chainNames} 또는 {lastChainName}에서만 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Monthly bought"
+msgstr "월간 매입량"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -6244,6 +6269,10 @@ msgstr "라이프사이클 정산"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#~ msgid "Expected 365d Fees"
+#~ msgstr "365일 예상 수수료"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -6539,6 +6568,10 @@ msgstr "GLV (GMX Liquidity Vault)는 다양한 GM 토큰을 보유하여 GMX 마
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "정산 네트워크가 Arbitrum으로 변경되었으나 $12.50이 Base GMX Account에 남아 있습니다"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+#~ msgid "Paused"
+#~ msgstr "일시 중지됨"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -6725,6 +6758,10 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#~ msgid "GLV Vaults"
+#~ msgstr "GLV 볼트"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show buy/sell icons on chart"
@@ -6834,6 +6871,10 @@ msgstr "투표"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "TWAP 스왑 파트 업데이트"
+
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#~ msgid "Total Investment Value"
+#~ msgstr "총 투자 가치"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
@@ -7014,6 +7055,10 @@ msgstr "{chainName}에서 직접 {nativeTokenSymbol}을(를) 구매하거나 전
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "최대 네트워크 수수료에는 Gas 급등에 대비한 버퍼가 포함됩니다. 미사용 수수료는 환불됩니다."
 
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#~ msgid "Investment Value"
+#~ msgstr "투자 가치"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "주문 체결 실패"
@@ -7155,10 +7200,6 @@ msgstr "최대 레버리지"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
-msgstr "USD 금액은 표시된 각 주의 평균 GMX 가격을 사용하여 추정됩니다. 실제 바이백 실행 금액은 실행 시점, 전환, 가격 변동으로 인해 다를 수 있습니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -8905,6 +8946,10 @@ msgstr "시장"
 msgid "Trade from wallet or GMX Account"
 msgstr "지갑 또는 GMX Account에서 거래"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#~ msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
+#~ msgstr "향후 365일간의 예상 수수료: 각 풀 또는 볼트의 기본 수수료 APY를 현재 잔액에 적용한 값입니다. 인센티브는 제외됩니다."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
 msgstr "최소 포지션 크기: {0}"
@@ -9575,6 +9620,10 @@ msgstr "언스테이킹에 실패했습니다"
 msgid "[{0}]"
 msgstr "[{0}]"
 
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Total amount of GMX bought back since tracking began. The USD value is based on the current GMX price."
+msgstr "추적 시작 이후 바이백된 GMX의 총량입니다. USD 가치는 현재 GMX 가격을 기준으로 합니다."
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net rate / 1h"
@@ -9794,10 +9843,6 @@ msgstr "포지션 규모가 가용 미결제약정을 초과합니다. 델타: {
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Yes"
 msgstr "예"
-
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Total amount of GMX bought back since tracking began"
-msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
@@ -10159,11 +10204,6 @@ msgstr "일일 분배율, USD"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "해당 네트워크에서는 지갑 거래만 가능합니다"
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Weekly bought"
-msgstr ""
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
@@ -11949,6 +11989,14 @@ msgstr "언어"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}초"
 
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#~ msgid "My earnings"
+#~ msgstr "내 수익"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
+msgstr "{0, plural, one {포지션을 종료하면 대기 중인 증거금 예치도 취소되고 자금이 반환됩니다.} other {포지션을 종료하면 대기 중인 #건의 증거금 예치도 취소되고 자금이 반환됩니다.}}"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "지수"
@@ -12775,10 +12823,6 @@ msgstr "수수료 및 가격 영향으로 인해 체결가가 지정가와 다�
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "비공개"
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Week"
-msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"

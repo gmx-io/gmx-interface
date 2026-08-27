@@ -265,7 +265,7 @@ msgstr "（已返還）"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr "累計獎勵"
+msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -3027,9 +3027,17 @@ msgstr "顯示扣除費用後的 PnL"
 msgid "No eligible holdings detected"
 msgstr "未偵測到符合條件的持倉"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+#~ msgid "Native ETH / AVAX"
+#~ msgstr "原生ETH / AVAX"
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "幫助我們改善 GMX。為了安全，我們不會主動聯絡您。請發送「I have feedback」至我們的官方帳號："
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#~ msgid "GM Pools"
+#~ msgstr "GM池"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
@@ -4068,6 +4076,10 @@ msgstr ""
 msgid "Trade confirmations"
 msgstr "交易確認通知"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Month"
+msgstr "月份"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr "GLV 流動性不足"
@@ -4109,6 +4121,10 @@ msgstr "Telegram 內的 GMX V2 數據分析"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "完全在公共鏈上運行"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "USD 數值是根據每個所示月份的 GMX 平均價格估算的。由於執行時機、兌換和價格波動，實際回購執行金額可能有所不同。"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
@@ -4418,6 +4434,10 @@ msgstr "第 4-18 名"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Set acceptable price impact"
 msgstr "設定可接受的價格影響"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
+msgstr "該保證金存入的倉位已平倉，但存入仍處於活躍狀態。請取消該訂單以取回資金。"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -5497,7 +5517,7 @@ msgstr "額外 APR"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulating..."
-msgstr "累積中..."
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX for liquidity providers. For security, we won't contact you first. Send \"I'm a Liquidity Provider\" to our official Telegram account:"
@@ -6180,6 +6200,11 @@ msgstr ""
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Shifting 僅適用於 {chainNames} 或 {lastChainName}。請切換網路以繼續。"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Monthly bought"
+msgstr "月度回購量"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -6244,6 +6269,10 @@ msgstr "生命週期結算"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#~ msgid "Expected 365d Fees"
+#~ msgstr "預期365天費用"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -6539,6 +6568,10 @@ msgstr "GLV（GMX Liquidity Vault）持有各種 GM 代幣，為您提供對 GMX
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "結算網路已切換至 Arbitrum，但您的 Base GMX Account 中仍有 $12.50"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+#~ msgid "Paused"
+#~ msgstr "已暫停"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -6725,6 +6758,10 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#~ msgid "GLV Vaults"
+#~ msgstr "GLV金庫"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show buy/sell icons on chart"
@@ -6834,6 +6871,10 @@ msgstr "投票"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "更新 TWAP 兌換部分"
+
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#~ msgid "Total Investment Value"
+#~ msgstr "總投資價值"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
@@ -7014,6 +7055,10 @@ msgstr "直接在 {chainName} 上購買 {nativeTokenSymbol} 或將其轉入"
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "最大網路費用包含應對 Gas 飆升的緩衝。未使用的費用將退還。"
 
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#~ msgid "Investment Value"
+#~ msgstr "投資價值"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "訂單執行失敗"
@@ -7155,10 +7200,6 @@ msgstr "最大槓桿"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
-msgstr "USD 數值是根據每個所示週的 GMX 平均價格估算的。由於執行時機、兌換和價格波動，實際回購執行金額可能有所不同。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -8905,6 +8946,10 @@ msgstr "市價"
 msgid "Trade from wallet or GMX Account"
 msgstr "從錢包或 GMX Account 交易"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#~ msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
+#~ msgstr "未來365天的預計費用:將每個池或金庫的基礎費用APY應用於您當前的餘額。不包括激勵。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
 msgstr "最小倉位大小：{0}"
@@ -9575,6 +9620,10 @@ msgstr "解除質押失敗"
 msgid "[{0}]"
 msgstr "[{0}]"
 
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Total amount of GMX bought back since tracking began. The USD value is based on the current GMX price."
+msgstr "自開始追蹤以來回購的 GMX 總量。USD 價值基於目前 GMX 價格。"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net rate / 1h"
@@ -9794,10 +9843,6 @@ msgstr "倉位規模超過可用未平倉量。差額：{usdDeltaText}，最大 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Yes"
 msgstr "是"
-
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Total amount of GMX bought back since tracking began"
-msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
@@ -10159,11 +10204,6 @@ msgstr "每日分配率（USD）"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "僅在這些網路上使用錢包交易"
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Weekly bought"
-msgstr ""
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
@@ -11949,6 +11989,14 @@ msgstr "語言"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
 
+#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#~ msgid "My earnings"
+#~ msgstr "我的收益"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
+msgstr "{0, plural, one {平倉時也會取消您待處理的保證金存入並退回其資金。} other {平倉時也會取消您 # 筆待處理的保證金存入並退回其資金。}}"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "指數"
@@ -12775,10 +12823,6 @@ msgstr "由於費用和價格影響，成交價格可能與限價不同。您將
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "私有"
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Week"
-msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"

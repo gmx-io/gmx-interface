@@ -5,7 +5,12 @@ import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 
-import { getMarginDepositProjections, getMarginDepositRiskLevel, isMarginDepositOrder } from "../marginDeposit";
+import {
+  getMarginDepositCancelOrderParams,
+  getMarginDepositProjections,
+  getMarginDepositRiskLevel,
+  isMarginDepositOrder,
+} from "../marginDeposit";
 import { OrderType } from "../types";
 
 const tokensData = mockTokensData();
@@ -67,6 +72,55 @@ describe("isMarginDepositOrder", () => {
         isTwap: true,
       })
     ).toBe(false);
+  });
+});
+
+describe("getMarginDepositCancelOrderParams", () => {
+  const depositOrder = {
+    key: "0xdeposit",
+    orderType: OrderType.LimitIncrease,
+    sizeDeltaUsd: 0n,
+    initialCollateralDeltaAmount: expandDecimals(100, 6),
+  };
+  const stopLossOrder = {
+    key: "0xstopLoss",
+    orderType: OrderType.StopLossDecrease,
+    sizeDeltaUsd: usd(1000),
+    initialCollateralDeltaAmount: 0n,
+  };
+  const limitIncreaseOrder = {
+    key: "0xlimitIncrease",
+    orderType: OrderType.LimitIncrease,
+    sizeDeltaUsd: usd(1000),
+    initialCollateralDeltaAmount: expandDecimals(100, 6),
+  };
+  const twapDepositLikeOrder = {
+    key: "0xtwap",
+    orderType: OrderType.LimitIncrease,
+    sizeDeltaUsd: 0n,
+    initialCollateralDeltaAmount: expandDecimals(100, 6),
+    isTwap: true,
+  };
+
+  it("cancels only margin deposits, leaving TP/SL and regular increases untouched", () => {
+    expect(
+      getMarginDepositCancelOrderParams([stopLossOrder, depositOrder, limitIncreaseOrder, twapDepositLikeOrder])
+    ).toEqual([{ orderKey: "0xdeposit" }]);
+  });
+
+  it("cancels every margin deposit of the position", () => {
+    expect(getMarginDepositCancelOrderParams([depositOrder, { ...depositOrder, key: "0xdeposit2" }])).toEqual([
+      { orderKey: "0xdeposit" },
+      { orderKey: "0xdeposit2" },
+    ]);
+  });
+
+  it("cancels nothing when the position has no margin deposits", () => {
+    expect(getMarginDepositCancelOrderParams([stopLossOrder, limitIncreaseOrder])).toEqual([]);
+  });
+
+  it("cancels nothing when the position has no orders", () => {
+    expect(getMarginDepositCancelOrderParams([])).toEqual([]);
   });
 });
 
