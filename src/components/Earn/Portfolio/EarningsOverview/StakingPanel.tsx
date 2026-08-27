@@ -19,7 +19,7 @@ function RewardsPausedBadge() {
     <TooltipWithPortal
       variant="none"
       handle={
-        <Badge className="!bg-transparent border-1/2 border-dashed border-slate-600">
+        <Badge className="-my-1 !bg-transparent border-1/2 border-dashed border-slate-600">
           <Trans>Rewards paused</Trans>
         </Badge>
       }
