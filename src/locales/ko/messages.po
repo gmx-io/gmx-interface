@@ -703,6 +703,7 @@ msgstr "판매"
 msgid "Insufficient GMX pool liquidity"
 msgstr "GMX 풀 유동성 부족"
 
+#: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "{0}으로 전환"
@@ -1470,6 +1471,10 @@ msgstr "날짜"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Solana"
 msgstr "솔라나"
+
+#: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
+msgid "For deeper liquidity and the most complete GMX trading experience, use Arbitrum."
+msgstr "더 깊은 유동성과 가장 완전한 GMX 거래 경험을 위해 Arbitrum을 이용하세요."
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
