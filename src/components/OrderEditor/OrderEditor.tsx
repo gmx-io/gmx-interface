@@ -786,7 +786,7 @@ export function OrderEditor(p: Props) {
   useKey(
     "Enter",
     () => {
-      // the position editor can stack on top (margin remediation); Enter must submit only the top modal
+      // modals listen for Enter globally; the position editor can stack on top of this one
       if (!submitButtonState.disabled && !editingPosition) {
         submitButtonState.onClick?.();
       }

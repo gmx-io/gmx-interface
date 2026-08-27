@@ -170,7 +170,7 @@ export function HistoricalLists({ chainId, account, dateRange, onDateRangeChange
         <TradeHistory account={account} dateRange={dateRange} onDateRangeChange={onDateRangeChange} hideDashboardLink />
       )}
       {tabKey === TabKey.Claims && <ClaimsHistory />}
-      {/* margin-remediation actions in order risk tooltips open Edit margin for the connected account */}
+      {/* order risk tooltips here open Edit margin */}
       <PositionEditor />
     </div>
   );

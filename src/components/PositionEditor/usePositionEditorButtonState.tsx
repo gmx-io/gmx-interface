@@ -515,7 +515,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     }
 
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositInsufficient) {
-      // the amount input is right here, so the phrase stays non-actionable
+      // the deposit input is already on this screen
       return <MarginDepositInsufficientMessage />;
     }
 

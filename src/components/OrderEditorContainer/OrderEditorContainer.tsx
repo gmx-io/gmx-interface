@@ -12,7 +12,7 @@ export function OrderEditorContainer() {
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const editingPosition = usePositionEditorPosition();
 
-  // the position editor can stack on top (margin remediation); Escape must close only the top modal
+  // modals listen for Escape globally; the position editor can stack on top of this one
   const isUnderPositionEditor = Boolean(editingPosition);
 
   const handleClose = useMemo(

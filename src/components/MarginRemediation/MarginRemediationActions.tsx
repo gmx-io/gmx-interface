@@ -10,7 +10,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 
-/** The remediation must never open the editor for a position the connected wallet cannot edit. */
+// the dashboard renders other accounts' positions; only the owner can edit margin
 function useRemediablePositionKey(positionKey: string | undefined): string | undefined {
   const { account } = useWallet();
 
@@ -20,10 +20,6 @@ function useRemediablePositionKey(positionKey: string | undefined): string | und
   return isRemediable ? positionKey : undefined;
 }
 
-/**
- * Margin-remediation phrase that opens `Edit margin` → `Deposit` → `Now` for the position.
- * Renders plain text when the position cannot be resolved for the connected wallet.
- */
 export function DepositMarginNowAction({
   positionKey,
   children,
@@ -38,11 +34,6 @@ export function DepositMarginNowAction({
   return <EmbeddedActionButton onClick={() => openDepositNow(remediablePositionKey)}>{children}</EmbeddedActionButton>;
 }
 
-/**
- * Remediation phrase for an existing conditional margin deposit that opens the `At price`
- * replace flow bound to that order, prefilled with its deposit amount and trigger price.
- * Renders plain text when the position or order cannot be resolved for the connected wallet.
- */
 export function ReplaceMarginDepositAction({
   positionKey,
   orderKey,
@@ -64,7 +55,6 @@ export function ReplaceMarginDepositAction({
   );
 }
 
-/** Shared liquidatable-at-trigger copy; the phrase opens the deposit-now flow when the position resolves. */
 export function LiquidatableIncreaseMessage({ positionKey }: { positionKey: string | undefined }) {
   return (
     <Trans>
@@ -75,7 +65,6 @@ export function LiquidatableIncreaseMessage({ positionKey }: { positionKey: stri
   );
 }
 
-/** Shared insufficient-deposit copy; actionable only where the replaced order is bound. */
 export function MarginDepositInsufficientMessage({
   positionKey,
   orderKey,

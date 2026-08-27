@@ -17,7 +17,7 @@ import { getOrderErrors } from "../utils";
 
 type RemediationActionElement = ReactElement<{ positionKey?: string; orderKey?: string }>;
 
-/** Order-error messages with embedded actions compile to a Trans element with the action as component <0>. */
+// Trans compiles an embedded action into props.components["0"]
 function getTransProps(msg: unknown) {
   const element = msg as ReactElement<{
     message?: string;
@@ -90,7 +90,6 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
 
     const message = getMessageElement(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg);
     expect(message.type).toBe(LiquidatableIncreaseMessage);
-    // no position resolves here, so the phrase stays non-actionable
     expect(message.props.positionKey).toBeUndefined();
     expect(result.level).toBe("error");
   });
@@ -253,7 +252,6 @@ describe("getOrderErrors — margin deposit orders", () => {
     expect(message).toBe(
       "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. <0>Increase the deposit amount</0> or move the trigger farther from liquidation."
     );
-    // the phrase opens the At price replace flow bound to this order
     expect(action?.type).toBe(ReplaceMarginDepositAction);
     expect(action?.props.positionKey).toBe(position.key);
     expect(action?.props.orderKey).toBe("order-key");
@@ -305,7 +303,6 @@ describe("getOrderErrors — margin deposit orders", () => {
     // the standard path would add the "collateralToken" mismatch warning here
     expect(errorKeys(result)).toEqual(["marginDepositInsufficient"]);
 
-    // without a resolvable position the phrase stays non-actionable
     const { action } = getTransProps(result.errors[0].msg);
     expect(action?.props.positionKey).toBeUndefined();
   });

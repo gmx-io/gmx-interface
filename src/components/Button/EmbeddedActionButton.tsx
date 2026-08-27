@@ -1,10 +1,6 @@
 import cx from "classnames";
 import type { ButtonHTMLAttributes } from "react";
 
-/**
- * Shared accessible action embedded in tooltip, banner, and validation copy:
- * real button semantics, keyboard focus/activation, and touch activation.
- */
 export function EmbeddedActionButton({ className, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
