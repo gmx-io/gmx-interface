@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { TradeType } from "sdk/utils/trade/types";
 
-import { getCleanedTradeSearch, isSupportedTradeLinkChainId } from "./useTradeParamsProcessor";
+import { getCleanedTradeSearch, getTradeLinkTradeType, isSupportedTradeLinkChainId } from "./useTradeParamsProcessor";
 
 describe("isSupportedTradeLinkChainId", () => {
   it("accepts supported settlement-chain links", () => {
@@ -34,5 +35,27 @@ describe("getCleanedTradeSearch", () => {
 
   it("ignores encoding-only differences instead of rewriting the url forever", () => {
     expect(getCleanedTradeSearch("?utm_content=a%20b")).toBe(undefined);
+  });
+});
+
+describe("getTradeLinkTradeType", () => {
+  it("takes the trade type from the path", () => {
+    expect(getTradeLinkTradeType("short", TradeType.Long)).toBe(TradeType.Short);
+  });
+
+  it("matches the path trade type case-insensitively", () => {
+    expect(getTradeLinkTradeType("SWAP", TradeType.Long)).toBe(TradeType.Swap);
+  });
+
+  it("falls back to the current trade type when the link carries none", () => {
+    expect(getTradeLinkTradeType(undefined, TradeType.Short)).toBe(TradeType.Short);
+  });
+
+  it("falls back to the current trade type when the link carries an unknown one", () => {
+    expect(getTradeLinkTradeType("perp", TradeType.Swap)).toBe(TradeType.Swap);
+  });
+
+  it("stays undefined while the tradebox has no trade type yet", () => {
+    expect(getTradeLinkTradeType(undefined, undefined)).toBeUndefined();
   });
 });
