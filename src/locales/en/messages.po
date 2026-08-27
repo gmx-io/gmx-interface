@@ -538,6 +538,10 @@ msgstr "Liquidated as the max allowed leverage was exceeded when accounting for 
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "Sell {gmOrGlvLabel} failed"
 
+#: src/pages/Referrals/Referrals.tsx
+msgid "Affiliate Dashboard"
+msgstr "Affiliate Dashboard"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1516,10 +1520,6 @@ msgstr "Use {0} for gas"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "Total margin funded"
-
-#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
-msgid "Earn up to 15% in<0/> rebates as an affiliate"
-msgstr "Earn up to 15% in<0/> rebates as an affiliate"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -2597,6 +2597,10 @@ msgstr "No swap path found"
 msgid "Set long Stop Market @ {0}"
 msgstr "Set long Stop Market @ {0}"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your discounts"
+msgstr "Your discounts"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Can I change my referral code?"
 msgstr "Can I change my referral code?"
@@ -2777,10 +2781,6 @@ msgstr "Only positions with over {0} in capital used are ranked.<0/><1/>The capi
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Discounts earned by this account as a trader"
-msgstr "Discounts earned by this account as a trader"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -3024,10 +3024,6 @@ msgstr "GM Pools"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "Cancel margin deposit"
-
-#: src/pages/Referrals/Referrals.tsx
-msgid "Affiliates"
-msgstr "Affiliates"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
@@ -3292,6 +3288,10 @@ msgstr "Address"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "Update Take-Profit"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
+msgstr "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
@@ -5412,6 +5412,10 @@ msgstr "Include PnL in leverage display"
 msgid "No claims yet"
 msgstr "No claims yet"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trading volume"
+msgstr "Your trading volume"
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
 msgstr "Fail external swaps"
@@ -6764,6 +6768,10 @@ msgstr "Allowed actions"
 msgid "Your discount is now active!"
 msgstr "Your discount is now active!"
 
+#: src/pages/Referrals/Referrals.tsx
+msgid "Create Referral Code"
+msgstr "Create Referral Code"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "24h"
@@ -7222,10 +7230,6 @@ msgstr "No liquidity available for increasing longs at<0/>this size. Max long si
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Referrals"
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Volume traded by this account with an active referral code"
-msgstr "Volume traded by this account with an active referral code"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling sell request..."
@@ -8515,6 +8519,10 @@ msgstr "Book a 30-min call"
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
 msgstr "From"
+
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Earn up to 25% in<0/> rebates as an affiliate"
+msgstr "Earn up to 25% in<0/> rebates as an affiliate"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -9876,10 +9884,6 @@ msgstr "Duration"
 msgid "PNL"
 msgstr "PNL"
 
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn up to 15% commission through the GMX <0/> referral program"
-msgstr "Get fee discounts and earn up to 15% commission through the GMX <0/> referral program"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Bridge and swap tokens"
 msgstr "Bridge and swap tokens"
@@ -10897,7 +10901,6 @@ msgid "Staked"
 msgstr "Staked"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "Traders"
 
@@ -12230,6 +12233,10 @@ msgstr "Transaction canceled"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "Request Market Decrease"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Trader Benefits"
+msgstr "Trader Benefits"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
