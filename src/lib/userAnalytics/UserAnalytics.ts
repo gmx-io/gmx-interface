@@ -17,6 +17,7 @@ type CommonEventParams = WalletAnalyticsProvenance &
     browserName?: string;
     ordersCount?: number;
     isWalletConnected?: boolean;
+    isInstalledApp: boolean;
     isTest: boolean;
     isInited?: boolean;
   };

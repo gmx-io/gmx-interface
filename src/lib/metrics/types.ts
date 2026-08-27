@@ -15,6 +15,7 @@ export type GlobalMetricData = {
   apiSdkPositions?: boolean;
   apiSdkOrders?: boolean;
   isMobile: boolean;
+  isInstalledApp: boolean;
   isHomeSite: boolean;
   browserName?: string;
   browserVersion?: string;
