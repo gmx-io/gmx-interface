@@ -98,6 +98,10 @@ msgstr "Оцените GMX"
 msgid "Order simulation failed"
 msgstr "Симуляция ордера не удалась"
 
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "Reload now"
+msgstr "Перезагрузить"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana support</0><1>GMX Express</1>"
 msgstr "<0>Поддержка Solana</0><1>GMX Express</1>"
@@ -3065,6 +3069,10 @@ msgstr "Своп не выполнен"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>Нужно следить за <1>@GMX_IO</1> здесь. Пока весь DeFi в руинах, GMX продолжает демонстрировать впечатляющую устойчивую производительность в пользователях, AUM, объеме/комиссиях, открытом интересе и использовании капитала. Лучшее место для свопа между основными активами на Arbitrum и экспозиции к airdrop Arb</0>"
+
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "Update available"
+msgstr "Доступно обновление"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -6987,6 +6995,10 @@ msgstr "Кредитование и заимствование"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX governance page"
 msgstr "Страница управления GMX"
+
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "A new version of GMX is ready. Reload when you are done to switch to it."
+msgstr "Доступна новая версия GMX. Перезагрузите страницу, когда закончите, чтобы перейти на неё."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"

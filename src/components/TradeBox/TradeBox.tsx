@@ -39,6 +39,7 @@ import {
   selectTradeboxFees,
   selectTradeboxFormState,
   selectTradeboxFromToken,
+  selectTradeboxHasPendingInput,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxKeepLeverage,
@@ -92,6 +93,7 @@ import {
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
@@ -224,6 +226,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     marginDepositSuggestionHidden,
     setMarginDepositSuggestionHidden,
   } = useSelector(selectTradeboxFormState);
+
+  const hasPendingInput = useSelector(selectTradeboxHasPendingInput);
+  useBlockAutoReload(hasPendingInput);
 
   const isTwapModeAvailable = useMemo(
     () =>

@@ -58,6 +58,7 @@ import {
   getTradeFees,
 } from "domain/synthetics/trade";
 import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
+import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
@@ -565,6 +566,19 @@ const selectTradeboxSetLimitPriceWarningHidden = (s: SyntheticsState) => s.trade
 const selectTradeboxMarginDepositSuggestionHidden = (s: SyntheticsState) => s.tradebox.marginDepositSuggestionHidden;
 const selectTradeboxSetMarginDepositSuggestionHidden = (s: SyntheticsState) =>
   s.tradebox.setMarginDepositSuggestionHidden;
+
+/** Amounts the user typed in, which a reload would throw away. Idle fields hold "" or "0". */
+export const selectTradeboxHasPendingInput = createSelector((q) => {
+  const inputValues = [
+    q(selectTradeboxFromTokenInputValue),
+    q(selectTradeboxToTokenInputValue),
+    q(selectTradeboxCloseSizeInputValue),
+    q(selectTradeboxTriggerPriceInputValue),
+    q(selectTradeboxTriggerRatioInputValue),
+  ];
+
+  return inputValues.some(getIsEnteredAmount);
+});
 
 export const selectTradeboxFormState = createSelector((q) => {
   return {

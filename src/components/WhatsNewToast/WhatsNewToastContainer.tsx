@@ -1,11 +1,13 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
+import { useAppUpdateBanner } from "components/AppUpdateBanner/useAppUpdateBanner";
 import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/BalancerProgramAnnouncement";
 import { useBalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/useBalancerProgramAnnouncement";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
@@ -14,6 +16,8 @@ import { useWalletExtensionConnectionBanner } from "components/WalletExtensionCo
 
 import { useWhatsNewAnnouncements } from "./useWhatsNewAnnouncements";
 import { WhatsNewToast } from "./WhatsNewToast";
+
+const APP_UPDATE_RELOAD_LABEL = <Trans>Reload now</Trans>;
 
 const MOTION_INITIAL = { opacity: 0, y: -8, height: 0, overflow: "hidden" } as const;
 const MOTION_ANIMATE = {
@@ -41,6 +45,8 @@ export function WhatsNewToastContainer() {
   const { pathname } = useLocation();
   const { isVisible: isWalletExtensionBannerVisible, dismiss: dismissWalletExtensionBanner } =
     useWalletExtensionConnectionBanner(pathname);
+  const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate } = useAppUpdateBanner();
+  const appUpdateFooterLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: applyUpdate }), [applyUpdate]);
 
   const warningUiFlagEvents = activeUiFlagEvents.filter(
     (event) => event.data.variant === "warning" || event.data.variant === "error"
@@ -101,6 +107,22 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           ))}
+          {isAppUpdateVisible && (
+            <motion.div key="app-update" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <AnnouncementBanner
+                  className="pointer-events-auto"
+                  variant="info"
+                  headerLabel={<Trans>Update available</Trans>}
+                  headerIcon="info"
+                  onClose={dismissAppUpdate}
+                  footerLink={appUpdateFooterLink}
+                >
+                  <Trans>A new version of GMX is ready. Reload when you are done to switch to it.</Trans>
+                </AnnouncementBanner>
+              </div>
+            </motion.div>
+          )}
           {isBalancerProgramAnnouncementVisible && (
             <motion.div key="balancer-program" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <div className="pb-12">
