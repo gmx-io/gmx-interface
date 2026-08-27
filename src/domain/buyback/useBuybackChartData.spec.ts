@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import type { Bar } from "domain/tradingview/types";
 
-import { buildBuybackChartPoints, computeMonthlyUsdSeries, getRecentAvgWeeklyBuybackGmx } from "./useBuybackChartData";
+import {
+  buildBuybackChartPoints,
+  computeMonthlyUsdSeries,
+  getRecentAvgWeeklyBuybackGmx,
+  getTotalBoughtUsd,
+} from "./useBuybackChartData";
 import type { BuybackMonthData, BuybackWeekData, BuybackWeeklyStatsResponse } from "./useBuybackWeeklyStats";
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
@@ -10,6 +15,10 @@ const SECONDS_PER_WEEK = 7 * SECONDS_PER_DAY;
 
 function gmx(amount: number): string {
   return (BigInt(amount) * 10n ** 18n).toString();
+}
+
+function usd(amount: number): bigint {
+  return BigInt(Math.round(amount * 100)) * 10n ** 28n;
 }
 
 function makeWeek(index: number, accruedGmx: number, { partial = false }: { partial?: boolean } = {}): BuybackWeekData {
@@ -117,6 +126,28 @@ describe("getRecentAvgWeeklyBuybackGmx", () => {
       makeWeek(4, 400, { partial: true }),
     ]);
     expect(getRecentAvgWeeklyBuybackGmx(data)).toBeUndefined();
+  });
+});
+
+describe("getTotalBoughtUsd", () => {
+  it("returns undefined when the current GMX price is unavailable", () => {
+    expect(getTotalBoughtUsd(BigInt(gmx(1000)), undefined)).toBeUndefined();
+  });
+
+  it("returns undefined for a zero GMX price", () => {
+    expect(getTotalBoughtUsd(BigInt(gmx(1000)), 0n)).toBeUndefined();
+  });
+
+  it("values the cumulative GMX amount at the current GMX price", () => {
+    expect(getTotalBoughtUsd(BigInt(gmx(415_781)), usd(6.25))).toBeCloseTo(2_598_631.25);
+  });
+
+  it("keeps fractional GMX amounts", () => {
+    expect(getTotalBoughtUsd(15n * 10n ** 17n, usd(2))).toBeCloseTo(3);
+  });
+
+  it("returns zero when nothing was bought", () => {
+    expect(getTotalBoughtUsd(0n, usd(6.25))).toBe(0);
   });
 });
 

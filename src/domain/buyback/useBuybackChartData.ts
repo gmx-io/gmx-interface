@@ -2,9 +2,11 @@ import { tz } from "@date-fns/tz";
 import { format } from "date-fns";
 import { useMemo } from "react";
 
+import { USD_DECIMALS } from "config/factors";
 import type { Bar } from "domain/tradingview/types";
 import { GMX_DECIMALS } from "lib/legacy";
-import { bigintToNumber } from "lib/numbers";
+import { bigintToNumber, expandDecimals } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 import { periodToSeconds } from "sdk/utils/time";
 
 import type { BuybackMonthData, BuybackWeeklyStatsResponse } from "./useBuybackWeeklyStats";
@@ -125,11 +127,23 @@ export function getRecentAvgWeeklyBuybackGmx(data: BuybackWeeklyStatsResponse | 
   );
 }
 
-export function useBuybackChartData(
-  data: BuybackWeeklyStatsResponse | undefined,
-  candles: readonly Bar[] | undefined,
-  totalGmxSupply: number | undefined
-) {
+export function getTotalBoughtUsd(totalAccrued: bigint, gmxPrice: bigint | undefined): number | undefined {
+  if (gmxPrice === undefined || gmxPrice === 0n) return undefined;
+
+  return bigintToNumber(bigMath.mulDiv(totalAccrued, gmxPrice, expandDecimals(1, GMX_DECIMALS)), USD_DECIMALS);
+}
+
+export function useBuybackChartData({
+  data,
+  candles,
+  gmxPrice,
+  totalGmxSupply,
+}: {
+  data: BuybackWeeklyStatsResponse | undefined;
+  candles: readonly Bar[] | undefined;
+  gmxPrice: bigint | undefined;
+  totalGmxSupply: number | undefined;
+}) {
   const monthlyUsdSeries = useMemo<MonthlyUsdPoint[]>(
     () => computeMonthlyUsdSeries(data?.months, candles),
     [data, candles]
@@ -143,8 +157,9 @@ export function useBuybackChartData(
   const metrics = useMemo<BuybackDerivedMetrics | undefined>(() => {
     if (!data?.summary || !data.weeks) return undefined;
 
-    const totalBoughtGmx = bigintToNumber(BigInt(data.summary.totalAccrued), GMX_DECIMALS);
-    const totalBoughtUsd = monthlyUsdSeries.at(-1)?.cumulativeUsd;
+    const totalAccrued = BigInt(data.summary.totalAccrued);
+    const totalBoughtGmx = bigintToNumber(totalAccrued, GMX_DECIMALS);
+    const totalBoughtUsd = getTotalBoughtUsd(totalAccrued, gmxPrice);
     const avgWeeklyBoughtGmx = getRecentAvgWeeklyBuybackGmx(data);
 
     let annualizedRate: number | undefined;
@@ -157,7 +172,7 @@ export function useBuybackChartData(
       totalBoughtUsd,
       annualizedRate,
     };
-  }, [data, monthlyUsdSeries, totalGmxSupply]);
+  }, [data, gmxPrice, totalGmxSupply]);
 
   return { chartData, metrics };
 }
