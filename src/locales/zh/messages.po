@@ -3181,6 +3181,10 @@ msgstr "硬币"
 msgid "Previous"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Expected 365d fees"
+msgstr "预期365天费用"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
 msgstr "上架"
@@ -9323,10 +9327,6 @@ msgstr "触发行情获取失败"
 msgid "Fulfilling buy request..."
 msgstr "正在执行买入请求…"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
-msgid "Covers all chains, including GM and GLV held in your GMX Account and on source chains."
-msgstr "涵盖所有链，包括您 GMX Account 中以及源链上持有的 GM 和 GLV。"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "买入 GM 失败"
@@ -9997,10 +9997,6 @@ msgstr "选择抵押品"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Size per part"
 msgstr "每个部分的大小"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "Est. next 365 days"
-msgstr "预计未来 365 天"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add endpoint"
@@ -11459,6 +11455,10 @@ msgstr "限价减少"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Gas payment token"
 msgstr "Gas 支付代币"
+
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Staked GMX and esGMX are counted on {chainName} only. GM and GLV are counted across your wallet, GMX Account and source chains."
+msgstr "已质押的 GMX 和 esGMX 仅在 {chainName} 上计入。GM 和 GLV 会计入您的钱包、GMX Account 和源链。"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Yes, set {chosenLabel} as default"

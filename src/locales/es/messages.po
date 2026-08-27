@@ -3181,6 +3181,10 @@ msgstr "Moneda"
 msgid "Previous"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Expected 365d fees"
+msgstr "Comisiones esperadas 365d"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
 msgstr "Listados"
@@ -9323,10 +9327,6 @@ msgstr "Fallo de tickers de activación"
 msgid "Fulfilling buy request..."
 msgstr "Ejecutando solicitud de compra…"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
-msgid "Covers all chains, including GM and GLV held in your GMX Account and on source chains."
-msgstr "Cubre todas las cadenas, incluidos los GM y GLV en tu GMX Account y en las cadenas de origen."
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "La compra de GM ha fallado"
@@ -9997,10 +9997,6 @@ msgstr "Seleccionar una garantía"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Size per part"
 msgstr "Tamaño por parte"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "Est. next 365 days"
-msgstr "Est. próximos 365 días"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add endpoint"
@@ -11459,6 +11455,10 @@ msgstr "Disminución Límite"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Gas payment token"
 msgstr "Token de pago de Gas"
+
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Staked GMX and esGMX are counted on {chainName} only. GM and GLV are counted across your wallet, GMX Account and source chains."
+msgstr "El GMX y esGMX en staking se cuentan solo en {chainName}. GM y GLV se cuentan en tu billetera, tu GMX Account y las cadenas de origen."
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Yes, set {chosenLabel} as default"

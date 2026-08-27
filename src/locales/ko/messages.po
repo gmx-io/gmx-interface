@@ -3181,6 +3181,10 @@ msgstr "Coin"
 msgid "Previous"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Expected 365d fees"
+msgstr "365일 예상 수수료"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
 msgstr "상장"
@@ -9323,10 +9327,6 @@ msgstr "Trigger tickers 장애"
 msgid "Fulfilling buy request..."
 msgstr "매수 요청을 실행하는 중…"
 
-#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
-msgid "Covers all chains, including GM and GLV held in your GMX Account and on source chains."
-msgstr "GMX Account 및 소스 체인에 보유한 GM과 GLV를 포함한 모든 체인을 포함합니다."
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "GM 구매 실패"
@@ -9997,10 +9997,6 @@ msgstr "담보 선택"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Size per part"
 msgstr "부분당 크기"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "Est. next 365 days"
-msgstr "향후 365일 예상"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add endpoint"
@@ -11459,6 +11455,10 @@ msgstr "지정가 감소"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Gas payment token"
 msgstr "Gas 결제 토큰"
+
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Staked GMX and esGMX are counted on {chainName} only. GM and GLV are counted across your wallet, GMX Account and source chains."
+msgstr "스테이킹된 GMX와 esGMX는 {chainName}에서만 집계됩니다. GM과 GLV는 지갑, GMX Account, 소스 체인 전체에서 집계됩니다."
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Yes, set {chosenLabel} as default"

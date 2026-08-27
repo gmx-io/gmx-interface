@@ -20,7 +20,15 @@ export type InvestmentValueBreakdown = {
   totalUsd: bigint;
 };
 
-function TotalValue({ breakdown, isLoading }: { breakdown: InvestmentValueBreakdown | undefined; isLoading: boolean }) {
+function TotalValue({
+  breakdown,
+  isLoading,
+  chainName,
+}: {
+  breakdown: InvestmentValueBreakdown | undefined;
+  isLoading: boolean;
+  chainName: string;
+}) {
   const valueElement = <UsdStatValue usd={breakdown?.totalUsd} isLoading={isLoading} />;
 
   if (!breakdown) {
@@ -53,7 +61,10 @@ function TotalValue({ breakdown, isLoading }: { breakdown: InvestmentValueBreakd
             value={<span className="numbers">{formatUsdExpanded(breakdown.glvUsd)}</span>}
           />
           <span className="text-typography-tertiary mt-8">
-            <Trans>Covers all chains, including GM and GLV held in your GMX Account and on source chains.</Trans>
+            <Trans>
+              Staked GMX and esGMX are counted on {chainName} only. GM and GLV are counted across your wallet, GMX
+              Account and source chains.
+            </Trans>
           </span>
         </div>
       }
@@ -184,6 +195,7 @@ export function EarningsBand({
   processedData,
   mutateProcessedData,
   nativeTokenSymbol,
+  chainName,
 }: {
   lifetimeBreakdown: LifetimeEarningsBreakdown | undefined;
   isEarningsLoading: boolean;
@@ -193,6 +205,7 @@ export function EarningsBand({
   processedData: StakingProcessedData | undefined;
   mutateProcessedData: () => void;
   nativeTokenSymbol: string;
+  chainName: string;
 }) {
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
@@ -205,7 +218,7 @@ export function EarningsBand({
           className={`max-md:order-1 ${MOBILE_ROW_CLASS_NAME}`}
           label={<Trans>Total portfolio value</Trans>}
         >
-          <TotalValue breakdown={investmentBreakdown} isLoading={isInvestmentValueLoading} />
+          <TotalValue breakdown={investmentBreakdown} isLoading={isInvestmentValueLoading} chainName={chainName} />
         </EarningsStat>
 
         <EarningsStat

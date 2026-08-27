@@ -106,7 +106,7 @@ export function LpPanel({
           <SyntheticsInfoRow
             label={
               <TooltipWithPortal
-                handle={<Trans>Est. next 365 days</Trans>}
+                handle={<Trans>Expected 365d fees</Trans>}
                 content={
                   <Trans>
                     Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current

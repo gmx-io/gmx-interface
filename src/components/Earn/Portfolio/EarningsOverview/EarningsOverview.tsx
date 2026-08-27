@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { getChainNativeTokenSymbol } from "config/chains";
+import { getChainName, getChainNativeTokenSymbol } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -161,6 +161,7 @@ export function EarningsOverview({
         processedData={processedData}
         mutateProcessedData={mutateProcessedData}
         nativeTokenSymbol={nativeTokenSymbol}
+        chainName={getChainName(chainId)}
       />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
