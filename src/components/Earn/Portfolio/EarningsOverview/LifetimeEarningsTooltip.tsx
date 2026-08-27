@@ -6,6 +6,8 @@ import { formatUsd } from "lib/numbers";
 import { EarningUnavailableNote } from "components/EarningValue/EarningValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
+import { formatUsdExpanded } from "./EarningsStat";
+
 export type LifetimeEarningsBreakdown = {
   stakingGmxUsd: bigint;
   stakingEsGmxUsd: bigint;
@@ -26,7 +28,7 @@ function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) 
             <Trans>N/A</Trans>
           </span>
         ) : (
-          <span className="numbers">{formatUsd(usd)}</span>
+          <span className="numbers">{formatUsdExpanded(usd)}</span>
         )
       }
     />

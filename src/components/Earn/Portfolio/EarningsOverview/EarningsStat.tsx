@@ -34,6 +34,10 @@ export function formatFullPrecisionUsd(usd: bigint): string {
   return formatUsd(usd, { displayDecimals: FULL_PRECISION_DISPLAY_DECIMALS, minThreshold: "0" })!;
 }
 
+export function formatUsdExpanded(usd: bigint): string {
+  return isAbbreviatedUsd(usd) ? formatFullPrecisionUsd(usd) : formatUsd(usd)!;
+}
+
 export function UsdText({ usd, className }: { usd: bigint; className?: string }) {
   const handle = <span className={className}>{formatUsd(usd)}</span>;
 

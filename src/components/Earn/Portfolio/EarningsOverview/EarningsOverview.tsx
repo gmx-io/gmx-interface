@@ -105,19 +105,22 @@ export function EarningsOverview({
       return undefined;
     }
 
-    const stakingGmxUsd = roundEarningsUsd(processedData.cumulativeGmxRewardsUsd ?? 0n);
-    const stakingEsGmxUsd = roundEarningsUsd(processedData.cumulativeEsGmxRewardsUsd ?? 0n);
-    const stakingNativeUsd = roundEarningsUsd(processedData.cumulativeNativeTokenRewardsUsd ?? 0n);
-    const gmUsd = gmLifetimeUsd === undefined ? undefined : roundEarningsUsd(gmLifetimeUsd);
-    const glvUsd = glvLifetimeUsd === undefined ? undefined : roundEarningsUsd(glvLifetimeUsd);
+    const stakingGmxUsd = processedData.cumulativeGmxRewardsUsd ?? 0n;
+    const stakingEsGmxUsd = processedData.cumulativeEsGmxRewardsUsd ?? 0n;
+    const stakingNativeUsd = processedData.cumulativeNativeTokenRewardsUsd ?? 0n;
 
     return {
       stakingGmxUsd,
       stakingEsGmxUsd,
       stakingNativeUsd,
-      gmUsd,
-      glvUsd,
-      totalUsd: stakingGmxUsd + stakingEsGmxUsd + stakingNativeUsd + (gmUsd ?? 0n) + (glvUsd ?? 0n),
+      gmUsd: gmLifetimeUsd,
+      glvUsd: glvLifetimeUsd,
+      totalUsd:
+        roundEarningsUsd(stakingGmxUsd) +
+        roundEarningsUsd(stakingEsGmxUsd) +
+        roundEarningsUsd(stakingNativeUsd) +
+        roundEarningsUsd(gmLifetimeUsd ?? 0n) +
+        roundEarningsUsd(glvLifetimeUsd ?? 0n),
     };
   }, [processedData, isMyEarningsLoading, gmLifetimeUsd, glvLifetimeUsd]);
 
@@ -132,17 +135,21 @@ export function EarningsOverview({
     const totalGmInfo = getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
     const totalGlvInfo = getTotalGlvInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
 
-    const stakedGmxUsd = roundEarningsUsd(processedData?.gmxInStakedGmxUsd ?? 0n);
-    const stakedEsGmxUsd = roundEarningsUsd(processedData?.esGmxInStakedGmxUsd ?? 0n);
-    const gmUsd = roundEarningsUsd(totalGmInfo.balanceUsd);
-    const glvUsd = roundEarningsUsd(totalGlvInfo.balanceUsd);
+    const stakedGmxUsd = processedData?.gmxInStakedGmxUsd ?? 0n;
+    const stakedEsGmxUsd = processedData?.esGmxInStakedGmxUsd ?? 0n;
+    const gmUsd = totalGmInfo.balanceUsd;
+    const glvUsd = totalGlvInfo.balanceUsd;
 
     return {
       stakedGmxUsd,
       stakedEsGmxUsd,
       gmUsd,
       glvUsd,
-      totalUsd: stakedGmxUsd + stakedEsGmxUsd + gmUsd + glvUsd,
+      totalUsd:
+        roundEarningsUsd(stakedGmxUsd) +
+        roundEarningsUsd(stakedEsGmxUsd) +
+        roundEarningsUsd(gmUsd) +
+        roundEarningsUsd(glvUsd),
     };
   }, [isInvestmentValueLoading, marketTokensData, multichainMarketTokensBalances, processedData]);
 

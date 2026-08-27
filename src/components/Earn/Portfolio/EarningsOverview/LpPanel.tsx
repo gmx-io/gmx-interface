@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
@@ -10,7 +11,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
-import { EarningsStat, UsdStatValue } from "./EarningsStat";
+import { EarningsStat, UsdStatValue, UsdText } from "./EarningsStat";
 import { EarningsOrigin, OriginChips } from "./OriginChips";
 
 function LpRowLabel({ to, children }: { to: string; children: ReactNode }) {
@@ -33,7 +34,7 @@ function LpRowValue({
 }) {
   return (
     <EarningValue value={usd} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={60}>
-      {(value) => <span className={value === 0n ? "text-slate-500 numbers" : "numbers"}>{formatUsd(value)}</span>}
+      {(value) => <UsdText usd={value} className={cx("numbers", { "text-slate-500": value === 0n })} />}
     </EarningValue>
   );
 }

@@ -1,14 +1,13 @@
 import { Trans } from "@lingui/macro";
 
 import { StakingProcessedData } from "lib/legacy";
-import { formatUsd } from "lib/numbers";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ClaimRewardsButton } from "../ClaimRewardsButton";
-import { EarningsStat, UsdStatValue } from "./EarningsStat";
+import { EarningsStat, formatUsdExpanded, UsdStatValue } from "./EarningsStat";
 import { LifetimeEarningsBreakdown, LifetimeEarningsTooltipContent } from "./LifetimeEarningsTooltip";
 import { EarningsOrigin, OriginChip, OriginChips } from "./OriginChips";
 
@@ -37,22 +36,22 @@ function TotalValue({ breakdown, isLoading }: { breakdown: InvestmentValueBreakd
           <StatsTooltipRow
             label={<Trans>Staked GMX:</Trans>}
             showDollar={false}
-            value={<span className="numbers">{formatUsd(breakdown.stakedGmxUsd)}</span>}
+            value={<span className="numbers">{formatUsdExpanded(breakdown.stakedGmxUsd)}</span>}
           />
           <StatsTooltipRow
             label={<Trans>Staked esGMX:</Trans>}
             showDollar={false}
-            value={<span className="numbers">{formatUsd(breakdown.stakedEsGmxUsd)}</span>}
+            value={<span className="numbers">{formatUsdExpanded(breakdown.stakedEsGmxUsd)}</span>}
           />
           <StatsTooltipRow
             label={<Trans>GM:</Trans>}
             showDollar={false}
-            value={<span className="numbers">{formatUsd(breakdown.gmUsd)}</span>}
+            value={<span className="numbers">{formatUsdExpanded(breakdown.gmUsd)}</span>}
           />
           <StatsTooltipRow
             label={<Trans>GLV:</Trans>}
             showDollar={false}
-            value={<span className="numbers">{formatUsd(breakdown.glvUsd)}</span>}
+            value={<span className="numbers">{formatUsdExpanded(breakdown.glvUsd)}</span>}
           />
         </div>
       }
