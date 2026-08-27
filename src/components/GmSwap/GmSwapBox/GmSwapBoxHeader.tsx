@@ -2,16 +2,15 @@ import { msg } from "@lingui/macro";
 import { useMemo } from "react";
 
 import {
+  selectPoolsDetailsAvailableOperations,
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsOperation,
   selectPoolsDetailsSetOperation,
 } from "context/PoolsDetailsContext/selectors";
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Operation } from "domain/synthetics/markets/types";
-import { getGlvOrMarketAddress } from "domain/synthetics/markets/utils";
 import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 
@@ -28,8 +27,6 @@ const OPERATION_LABELS_GLV = {
   [Operation.Withdrawal]: msg`Sell GLV`,
   [Operation.Shift]: msg`Shift GM`,
 };
-
-const OPERATIONS = [Operation.Deposit, Operation.Withdrawal, Operation.Shift];
 
 const operationClassNames = {
   [Operation.Deposit]: {
@@ -53,24 +50,9 @@ export function GmSwapBoxHeader({ isInCurtain }: Props) {
   const setOperation = useSelector(selectPoolsDetailsSetOperation);
 
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
-  const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const marketInfo = getByKey(marketsInfoData, selectedGlvOrMarketAddress);
 
-  const availableOperations = useMemo(() => {
-    if (shiftAvailableMarkets.length === 0) {
-      return [Operation.Deposit, Operation.Withdrawal];
-    }
-
-    const isSelectedMarketShiftAvailable = Boolean(
-      shiftAvailableMarkets.find((market) => getGlvOrMarketAddress(market) === selectedGlvOrMarketAddress)
-    );
-
-    if (!isSelectedMarketShiftAvailable) {
-      return [Operation.Deposit, Operation.Withdrawal];
-    }
-
-    return OPERATIONS;
-  }, [selectedGlvOrMarketAddress, shiftAvailableMarkets]);
+  const availableOperations = useSelector(selectPoolsDetailsAvailableOperations);
 
   const localizedOperationLabelsGM = useLocalizedMap(OPERATION_LABELS_GM);
   const localizedOperationLabelsGLV = useLocalizedMap(OPERATION_LABELS_GLV);
