@@ -175,6 +175,10 @@ msgstr "<0>Multichain</0><1>MegaETH 지원</1><2>적시 유동성 공급</2>"
 msgid "Create TWAP Swap"
 msgstr "TWAP 스왑 생성"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Rewards paused"
+msgstr "보상 일시 중지됨"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -784,6 +788,10 @@ msgstr ""
 msgid "Switch to Classic Trading"
 msgstr "Classic Trading으로 전환"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "GLV:"
+msgstr "GLV:"
+
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
 msgstr "코드가 등록되지 않은 네트워크: {nonTakenNetworkNamesJoined}. 네트워크를 전환하여 등록하고 리베이트를 받으십시오."
@@ -1367,6 +1375,10 @@ msgstr "트랜잭션:"
 msgid "Unstake {tokenSymbol}"
 msgstr "{tokenSymbol} 언스테이킹"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
+msgstr "스테이킹 보상이 일시 중지되었습니다. 대신 프로토콜 수수료의 27%가 트레저리에 누적되며, GMX가 $90에 도달하면 DAO 거버넌스에 따라 분배됩니다. 귀하의 몫은 스테이킹 파워(기간 × 스테이킹 수량)를 기준으로 합니다."
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "유효하지 않은 슬리피지 값"
@@ -1689,7 +1701,7 @@ msgstr "가상 롱 토큰 ID"
 msgid "Deactivating..."
 msgstr "비활성화 중..."
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total pending claimable"
 msgstr "청구 가능 대기 총액"
 
@@ -1976,6 +1988,7 @@ msgstr "APR"
 msgid "Affiliate address:"
 msgstr "추천인 주소:"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
@@ -2035,6 +2048,10 @@ msgstr "시장가 주문으로 전환"
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
 msgstr "월간 합산 수익"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives. An estimate, not a measured figure."
+msgstr "향후 365일 예상 수수료: 각 풀 또는 볼트의 기본 수수료 APY를 현재 잔액에 적용한 값입니다. 인센티브는 제외됩니다. 실측치가 아닌 추정치입니다."
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Canceling {ordersText}..."
@@ -2405,7 +2422,7 @@ msgstr "용도"
 msgid "GMX pools"
 msgstr "GMX 풀"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "{nativeTokenSymbol} 보상:"
 
@@ -2568,6 +2585,10 @@ msgstr "GMX (중국어)"
 msgid "Search"
 msgstr "검색"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Total value"
+msgstr "총 가치"
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr "과거 수수료"
@@ -2701,7 +2722,6 @@ msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -2949,6 +2969,7 @@ msgstr "{0, plural, one {주문 취소} other {# 주문 취소}}"
 msgid "Terms are still being finalized — apply or reach out to the team for the current details."
 msgstr "조건은 아직 확정 중입니다. 지원하거나 팀에 문의하여 최신 세부 정보를 확인하세요."
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3009,17 +3030,9 @@ msgstr "수수료 차감 후 PnL 표시"
 msgid "No eligible holdings detected"
 msgstr "적격 보유 자산이 감지되지 않았습니다"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-msgid "Native ETH / AVAX"
-msgstr "네이티브 ETH / AVAX"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 먼저 연락드리지 않습니다. 공식 계정으로 \"I have feedback\"를 보내주십시오:"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "GM Pools"
-msgstr "GM 풀"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
@@ -3506,6 +3519,10 @@ msgstr "GMX Account에 자산이 없습니다"
 msgid "Order type"
 msgstr "주문 유형"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Accumulating for you"
+msgstr "귀하를 위해 누적 중"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
@@ -3641,6 +3658,8 @@ msgstr "브릿지 전송이 전송되었습니다"
 msgid "Wallet received at close"
 msgstr "청산 시 지갑 수령액"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4574,7 +4593,6 @@ msgstr "출금 실패"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "esGMX"
 msgstr "esGMX"
 
@@ -4678,6 +4696,7 @@ msgstr "출금 중..."
 msgid "No claims match the selected filters"
 msgstr "선택한 필터와 일치하는 수령이 없습니다"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "스테이킹"
@@ -5121,6 +5140,10 @@ msgstr "연간 매수 압력:"
 msgid "TWAP"
 msgstr "TWAP"
 
+#: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
+msgid "Nothing is claimable on {0} right now."
+msgstr "현재 {0}에서 청구할 수 있는 것이 없습니다."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min impact pool amount"
 msgstr "최소 영향 풀 수량"
@@ -5321,6 +5344,8 @@ msgstr "시작 전에 자금부터 바라는 경우"
 msgid "High swap profit fee"
 msgstr "높은 스왑 이익 수수료"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5470,8 +5495,9 @@ msgstr "보너스 APR"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulating..."
-msgstr ""
+msgstr "누적 중..."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX for liquidity providers. For security, we won't contact you first. Send \"I'm a Liquidity Provider\" to our official Telegram account:"
@@ -5529,6 +5555,10 @@ msgstr "아직 요청을 취소할 수 없습니다. 취소 지연 시간이 지
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName}"
 msgstr "{orderTypeName} 업데이트"
+
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "GMX paid out to your stake by protocol buybacks. Vested esGMX is not counted here: vesting converts esGMX that is already counted in the esGMX rewards row, so counting it again would double count the same reward."
+msgstr "프로토콜 바이백으로 스테이킹에 지급된 GMX입니다. 베스팅 중인 esGMX는 여기에 포함되지 않습니다: 베스팅은 이미 esGMX 보상 행에 집계된 esGMX를 전환하므로, 다시 집계하면 같은 보상을 이중으로 계산하게 됩니다."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -5841,6 +5871,10 @@ msgstr "<0>GMX는 전통적인 주문장과 달리 동적으로 균형 잡힌 �
 msgid "Read more"
 msgstr "더 알아보기"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "GM and GLV include markets you no longer hold."
+msgstr "GM과 GLV에는 더 이상 보유하지 않는 마켓도 포함됩니다."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
@@ -5849,6 +5883,10 @@ msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr ""
+
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Staked esGMX:"
+msgstr "스테이킹된 esGMX:"
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
@@ -6109,6 +6147,10 @@ msgstr "자산 관리"
 msgid "Leveraged tokens with protection"
 msgstr "보호 기능이 있는 레버리지 토큰"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
+msgstr "현재 스테이킹 파워 기준 트레저리에서의 예상 몫입니다. 최선의 추정치일 뿐이며, 실제 분배는 DAO 거버넌스에 따릅니다."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr "손절매 실패"
@@ -6202,10 +6244,6 @@ msgstr "라이프사이클 정산"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "Expected 365d Fees"
-msgstr "365일 예상 수수료"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -6302,6 +6340,11 @@ msgstr "추천 코드 생성에 실패했습니다"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "출금 수수료"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "esGMX rewards"
+msgstr "esGMX 보상"
 
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
@@ -6496,10 +6539,6 @@ msgstr "GLV (GMX Liquidity Vault)는 다양한 GM 토큰을 보유하여 GMX 마
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "정산 네트워크가 Arbitrum으로 변경되었으나 $12.50이 Base GMX Account에 남아 있습니다"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-msgid "Paused"
-msgstr "일시 중지됨"
-
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -6682,10 +6721,6 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "GLV Vaults"
-msgstr "GLV 볼트"
-
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show buy/sell icons on chart"
@@ -6795,10 +6830,6 @@ msgstr "투표"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "TWAP 스왑 파트 업데이트"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-msgid "Total Investment Value"
-msgstr "총 투자 가치"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
@@ -6978,10 +7009,6 @@ msgstr "{chainName}에서 직접 {nativeTokenSymbol}을(를) 구매하거나 전
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "최대 네트워크 수수료에는 Gas 급등에 대비한 버퍼가 포함됩니다. 미사용 수수료는 환불됩니다."
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-msgid "Investment Value"
-msgstr "투자 가치"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
@@ -8107,8 +8134,6 @@ msgid "Available"
 msgstr "사용 가능"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Last 7 days"
 msgstr "최근 7일"
 
@@ -8264,6 +8289,7 @@ msgstr "TVL (공급량)"
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Summary"
 msgstr "요약"
@@ -8429,6 +8455,11 @@ msgstr "-"
 msgid "liquidation"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "{nativeTokenSymbol} rewards"
+msgstr "{nativeTokenSymbol} 보상"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "RPC endpoints"
 msgstr "RPC endpoints"
@@ -8560,6 +8591,10 @@ msgstr "지정가 증가"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring..."
 msgstr "전송 중..."
+
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Staked GMX:"
+msgstr "스테이킹된 GMX:"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
@@ -8696,6 +8731,7 @@ msgstr "{0} 롱 최대치 초과"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8864,10 +8900,6 @@ msgstr "시장"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Trade from wallet or GMX Account"
 msgstr "지갑 또는 GMX Account에서 거래"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
-msgstr "향후 365일간의 예상 수수료: 각 풀 또는 볼트의 기본 수수료 APY를 현재 잔액에 적용한 값입니다. 인센티브는 제외됩니다."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
@@ -9479,6 +9511,11 @@ msgstr "마켓 상장 폐지"
 msgid "Last updated:"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "GMX rewards"
+msgstr "GMX 보상"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "최대 풀 용량에 도달했습니다"
@@ -9956,6 +9993,10 @@ msgstr "담보 선택"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Size per part"
 msgstr "부분당 크기"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Est. next 365 days"
+msgstr "향후 365일 예상"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add endpoint"
@@ -10754,6 +10795,7 @@ msgstr "DeFi"
 msgid "SNAPSHOT"
 msgstr "스냅샷"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/pages/Announcements/Announcements.tsx
 #: src/pages/Announcements/Announcements.tsx
 msgid "All chains"
@@ -10784,6 +10826,7 @@ msgstr "상위 PnL ($)"
 msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
 msgstr "<0>트레이더 할인은 등급이 확정되면 계정에 자동으로 적용됩니다. 제휴 리베이트는 실시간으로 누적되며, 언제든지 추천 대시보드에서 온체인으로 청구할 수 있습니다.</0>"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
@@ -10961,7 +11004,7 @@ msgstr ""
 msgid "Integrating or shipping"
 msgstr "통합 또는 출시 중"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Vested claimable GMX:"
 msgstr "베스팅 완료 수령 가능 GMX:"
 
@@ -11363,7 +11406,7 @@ msgstr "에스크로 GMX APR"
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "베스팅은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "esGMX rewards:"
 msgstr "esGMX 보상:"
 
@@ -11902,10 +11945,6 @@ msgstr "언어"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}초"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-msgid "My earnings"
-msgstr "내 수익"
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "지수"
@@ -12372,7 +12411,7 @@ msgstr "스왑 영향 금액 {0}"
 msgid "Join an anonymous one-on-one chat to share your experience"
 msgstr "익명 일대일 채팅에 참여하여 경험을 공유해 주십시오"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "GMX staked rewards:"
 msgstr "GMX 스테이킹 보상:"
 
@@ -12563,6 +12602,10 @@ msgstr ""
 msgid "General performance details"
 msgstr "일반 성과 상세"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Est. next 7 days"
+msgstr "향후 7일 예상"
+
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
 msgstr ""
@@ -12612,7 +12655,7 @@ msgstr "승인이 제출되었습니다<0/><1/><2>보기</2>"
 msgid "POOL CAP LONG"
 msgstr "POOL CAP LONG"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "누적 총 수익"
 

@@ -12,15 +12,17 @@ import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { EarningsBand, InvestmentValueBreakdown } from "./EarningsBand";
+import { roundEarningsUsd } from "./earningsMath";
+import { LifetimeEarningsBreakdown } from "./LifetimeEarningsTooltip";
 import { LpPanel } from "./LpPanel";
-import { MyEarningsCard } from "./MyEarningsCard";
 import { EarningsOrigin } from "./OriginChips";
 import { StakingPanel } from "./StakingPanel";
 
 const DAYS_IN_WEEK = 7n;
 const DAYS_IN_YEAR = 365n;
 
-function getStakingLast7dUsd(processedData: StakingProcessedData | undefined): bigint | undefined {
+function getStakingNext7dUsd(processedData: StakingProcessedData | undefined): bigint | undefined {
   if (!processedData) {
     return undefined;
   }
@@ -31,7 +33,9 @@ function getStakingLast7dUsd(processedData: StakingProcessedData | undefined): b
 
   const stakedUsd = (processedData.gmxInStakedGmxUsd ?? 0n) + (processedData.esGmxInStakedGmxUsd ?? 0n);
   const aprBasisPoints =
-    (processedData.gmxAprForEsGmx ?? 0n) + (processedData.gmxAprForNativeToken ?? 0n) + (processedData.gmxAprForGmx ?? 0n);
+    (processedData.gmxAprForEsGmx ?? 0n) +
+    (processedData.gmxAprForNativeToken ?? 0n) +
+    (processedData.gmxAprForGmx ?? 0n);
 
   return bigMath.mulDiv(stakedUsd * aprBasisPoints, DAYS_IN_WEEK, BASIS_POINTS_DIVISOR_BIGINT * DAYS_IN_YEAR);
 }
@@ -72,36 +76,79 @@ export function EarningsOverview({
 
   const gmLifetimeUsd = userEarnings?.allMarkets.total;
   const glvLifetimeUsd = glvUserEarnings?.allGlvs.total;
-  const lpLifetimeUsd = (gmLifetimeUsd ?? 0n) + (glvLifetimeUsd ?? 0n);
+  const lpLifetimeUsd = roundEarningsUsd(gmLifetimeUsd ?? 0n) + roundEarningsUsd(glvLifetimeUsd ?? 0n);
   const lpLast7dUsd = (userEarnings?.allMarkets.recent ?? 0n) + (glvUserEarnings?.allGlvs.recent ?? 0n);
-  const lpExpected365dUsd = (userEarnings?.allMarkets.expected365d ?? 0n) + (glvUserEarnings?.allGlvs.expected365d ?? 0n);
+  const lpExpected365dUsd =
+    (userEarnings?.allMarkets.expected365d ?? 0n) + (glvUserEarnings?.allGlvs.expected365d ?? 0n);
 
-  const stakingLast7dUsd = getStakingLast7dUsd(processedData);
-  const stakingLifetimeUsd = processedData ? (processedData.cumulativeTotalRewardsUsd ?? 0n) : undefined;
+  const stakingNext7dUsd = getStakingNext7dUsd(processedData);
 
   const isStakingLoading = processedData === undefined;
   const isLpValueMissing = isLpUnavailable && !userEarnings && !glvUserEarnings;
 
-  const totalLifetimeUsd =
-    stakingLifetimeUsd === undefined ? undefined : stakingLifetimeUsd + lpLifetimeUsd;
-  const totalLast7dUsd = stakingLast7dUsd === undefined ? undefined : stakingLast7dUsd + lpLast7dUsd;
+  const stakingLifetimeUsd = useMemo(() => {
+    if (!processedData) {
+      return undefined;
+    }
+
+    return (
+      roundEarningsUsd(processedData.cumulativeGmxRewardsUsd ?? 0n) +
+      roundEarningsUsd(processedData.cumulativeEsGmxRewardsUsd ?? 0n) +
+      roundEarningsUsd(processedData.cumulativeNativeTokenRewardsUsd ?? 0n)
+    );
+  }, [processedData]);
+
   const isMyEarningsLoading = isStakingLoading || (isLpLoading && !isLpValueMissing);
 
-  const totalInvestmentUsd = useMemo(() => {
-    const totalGmInfo = getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
-    const totalGlvInfo = getTotalGlvInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
-    const stakedGmxUsd = (processedData?.gmxInStakedGmxUsd ?? 0n) + (processedData?.esGmxInStakedGmxUsd ?? 0n);
+  const lifetimeBreakdown: LifetimeEarningsBreakdown | undefined = useMemo(() => {
+    if (!processedData || isMyEarningsLoading) {
+      return undefined;
+    }
 
-    return stakedGmxUsd + totalGmInfo.balanceUsd + totalGlvInfo.balanceUsd;
-  }, [marketTokensData, multichainMarketTokensBalances, processedData]);
+    const stakingGmxUsd = roundEarningsUsd(processedData.cumulativeGmxRewardsUsd ?? 0n);
+    const stakingEsGmxUsd = roundEarningsUsd(processedData.cumulativeEsGmxRewardsUsd ?? 0n);
+    const stakingNativeUsd = roundEarningsUsd(processedData.cumulativeNativeTokenRewardsUsd ?? 0n);
+    const gmUsd = gmLifetimeUsd === undefined ? undefined : roundEarningsUsd(gmLifetimeUsd);
+    const glvUsd = glvLifetimeUsd === undefined ? undefined : roundEarningsUsd(glvLifetimeUsd);
+
+    return {
+      stakingGmxUsd,
+      stakingEsGmxUsd,
+      stakingNativeUsd,
+      gmUsd,
+      glvUsd,
+      totalUsd: stakingGmxUsd + stakingEsGmxUsd + stakingNativeUsd + (gmUsd ?? 0n) + (glvUsd ?? 0n),
+    };
+  }, [processedData, isMyEarningsLoading, gmLifetimeUsd, glvLifetimeUsd]);
 
   const isInvestmentValueLoading =
     processedData === undefined || marketTokensData === undefined || multichainMarketTokensBalances === undefined;
 
-  const stakingOrigins: EarningsOrigin[] = useMemo(
-    () => [srcChainId !== undefined ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId],
-    [chainId, srcChainId]
-  );
+  const investmentBreakdown: InvestmentValueBreakdown | undefined = useMemo(() => {
+    if (isInvestmentValueLoading) {
+      return undefined;
+    }
+
+    const totalGmInfo = getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
+    const totalGlvInfo = getTotalGlvInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
+
+    const stakedGmxUsd = roundEarningsUsd(processedData?.gmxInStakedGmxUsd ?? 0n);
+    const stakedEsGmxUsd = roundEarningsUsd(processedData?.esGmxInStakedGmxUsd ?? 0n);
+    const gmUsd = roundEarningsUsd(totalGmInfo.balanceUsd);
+    const glvUsd = roundEarningsUsd(totalGlvInfo.balanceUsd);
+
+    return {
+      stakedGmxUsd,
+      stakedEsGmxUsd,
+      gmUsd,
+      glvUsd,
+      totalUsd: stakedGmxUsd + stakedEsGmxUsd + gmUsd + glvUsd,
+    };
+  }, [isInvestmentValueLoading, marketTokensData, multichainMarketTokensBalances, processedData]);
+
+  const connectedOrigin: EarningsOrigin = srcChainId !== undefined ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId;
+
+  const connectedOrigins: EarningsOrigin[] = useMemo(() => [connectedOrigin], [connectedOrigin]);
 
   const lpOrigins: EarningsOrigin[] = useMemo(() => {
     const origins = new Set<EarningsOrigin>();
@@ -119,46 +166,56 @@ export function EarningsOverview({
     }
 
     if (origins.size === 0) {
-      return [chainId];
+      return [];
     }
 
-    return Array.from(origins).sort((a, b) => {
+    const sorted = Array.from(origins).sort((a, b) => {
       if (a === GMX_ACCOUNT_PSEUDO_CHAIN_ID) return 1;
       if (b === GMX_ACCOUNT_PSEUDO_CHAIN_ID) return -1;
       return a - b;
     });
-  }, [chainId, gmGlvAssets, multichainMarketTokensBalances]);
+
+    if (sorted.length === 1 && sorted[0] === connectedOrigin) {
+      return [];
+    }
+
+    return sorted;
+  }, [connectedOrigin, gmGlvAssets, multichainMarketTokensBalances]);
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
-      <MyEarningsCard
-        totalLifetimeUsd={totalLifetimeUsd}
-        last7dUsd={totalLast7dUsd}
+    <div className="flex flex-col gap-8">
+      <EarningsBand
+        lifetimeBreakdown={lifetimeBreakdown}
         isEarningsLoading={isMyEarningsLoading}
-        investmentValueUsd={totalInvestmentUsd}
+        isLpUnavailable={isLpUnavailable}
+        investmentBreakdown={investmentBreakdown}
         isInvestmentValueLoading={isInvestmentValueLoading}
         processedData={processedData}
         mutateProcessedData={mutateProcessedData}
         nativeTokenSymbol={nativeTokenSymbol}
+        connectedOrigins={connectedOrigins}
       />
-      <StakingPanel
-        processedData={processedData}
-        last7dUsd={stakingLast7dUsd}
-        origins={stakingOrigins}
-        nativeTokenSymbol={nativeTokenSymbol}
-      />
-      <LpPanel
-        lifetimeUsd={isLpLoading ? undefined : lpLifetimeUsd}
-        last7dUsd={isLpLoading ? undefined : lpLast7dUsd}
-        gmLifetimeUsd={gmLifetimeUsd ?? (isGmEarningsLoading ? undefined : 0n)}
-        glvLifetimeUsd={glvLifetimeUsd ?? (isGlvEarningsLoading ? undefined : 0n)}
-        expected365dUsd={isLpLoading ? undefined : lpExpected365dUsd}
-        isLoading={isLpLoading}
-        isUnavailable={isLpUnavailable}
-        isExpected365dLoading={isGmExpected365dLoading || isGlvExpected365dLoading}
-        isExpected365dUnavailable={isGmExpected365dUnavailable || isGlvExpected365dUnavailable}
-        origins={lpOrigins}
-      />
+
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <StakingPanel
+          processedData={processedData}
+          lifetimeUsd={stakingLifetimeUsd}
+          next7dUsd={stakingNext7dUsd}
+          nativeTokenSymbol={nativeTokenSymbol}
+        />
+        <LpPanel
+          lifetimeUsd={isLpLoading ? undefined : lpLifetimeUsd}
+          last7dUsd={isLpLoading ? undefined : lpLast7dUsd}
+          gmLifetimeUsd={gmLifetimeUsd ?? (isGmEarningsLoading ? undefined : 0n)}
+          glvLifetimeUsd={glvLifetimeUsd ?? (isGlvEarningsLoading ? undefined : 0n)}
+          expected365dUsd={isLpLoading ? undefined : lpExpected365dUsd}
+          isLoading={isLpLoading}
+          isUnavailable={isLpUnavailable}
+          isExpected365dLoading={isGmExpected365dLoading || isGlvExpected365dLoading}
+          isExpected365dUnavailable={isGmExpected365dUnavailable || isGlvExpected365dUnavailable}
+          origins={lpOrigins}
+        />
+      </div>
     </div>
   );
 }

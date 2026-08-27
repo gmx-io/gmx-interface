@@ -175,6 +175,10 @@ msgstr "<0>多鏈</0><1>MegaETH 支援</1><2>即時流動性</2>"
 msgid "Create TWAP Swap"
 msgstr "建立 TWAP 兌換"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Rewards paused"
+msgstr "獎勵已暫停"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -784,6 +788,10 @@ msgstr ""
 msgid "Switch to Classic Trading"
 msgstr "切換到 Classic Trading"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "GLV:"
+msgstr "GLV:"
+
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
 msgstr "推薦碼尚未在以下網路註冊：{nonTakenNetworkNamesJoined}。請切換網路以完成註冊並賺取返傭。"
@@ -1367,6 +1375,10 @@ msgstr "交易："
 msgid "Unstake {tokenSymbol}"
 msgstr "解除質押 {tokenSymbol}"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
+msgstr "質押獎勵已暫停。取而代之的是，27% 的協議費用正在累積至金庫中，待 GMX 達到 $90 時分配，實際以 DAO 治理決定為準。您的份額取決於質押力（時長 × 質押數量）。"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "無效的滑點值"
@@ -1689,7 +1701,7 @@ msgstr "虛擬做多代幣 ID"
 msgid "Deactivating..."
 msgstr "停用中..."
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total pending claimable"
 msgstr "待領取總額"
 
@@ -1976,6 +1988,7 @@ msgstr "APR"
 msgid "Affiliate address:"
 msgstr "推廣夥伴地址："
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
@@ -2035,6 +2048,10 @@ msgstr "切換到市價單"
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
 msgstr "每月總收入"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives. An estimate, not a measured figure."
+msgstr "未來 365 天的預計費用：將各資金池或金庫的基礎費用 APY 套用於您目前的餘額。不含激勵。這是估算值，而非實測值。"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Canceling {ordersText}..."
@@ -2405,7 +2422,7 @@ msgstr "用途"
 msgid "GMX pools"
 msgstr "GMX 池"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "{nativeTokenSymbol} 獎勵："
 
@@ -2568,6 +2585,10 @@ msgstr "GMX（中文）"
 msgid "Search"
 msgstr "搜尋"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Total value"
+msgstr "總價值"
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr "過去的費用"
@@ -2701,7 +2722,6 @@ msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -2949,6 +2969,7 @@ msgstr "{0, plural, one {取消訂單} other {取消 # 筆訂單}}"
 msgid "Terms are still being finalized — apply or reach out to the team for the current details."
 msgstr "條款仍在最終確定中——請申請或聯絡團隊了解當前詳情。"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3009,17 +3030,9 @@ msgstr "顯示扣除費用後的 PnL"
 msgid "No eligible holdings detected"
 msgstr "未偵測到符合條件的持倉"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-msgid "Native ETH / AVAX"
-msgstr "原生ETH / AVAX"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "幫助我們改善 GMX。為了安全，我們不會主動聯絡您。請發送「I have feedback」至我們的官方帳號："
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "GM Pools"
-msgstr "GM池"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
@@ -3506,6 +3519,10 @@ msgstr "您的 GMX Account 中沒有資產"
 msgid "Order type"
 msgstr "訂單類型"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Accumulating for you"
+msgstr "為您累積中"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
@@ -3641,6 +3658,8 @@ msgstr "跨鏈轉帳已發送"
 msgid "Wallet received at close"
 msgstr "平倉時錢包收到"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4574,7 +4593,6 @@ msgstr "提取失敗"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "esGMX"
 msgstr "esGMX"
 
@@ -4678,6 +4696,7 @@ msgstr "提取中..."
 msgid "No claims match the selected filters"
 msgstr "沒有符合所選篩選條件的領取記錄"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "質押"
@@ -5121,6 +5140,10 @@ msgstr "年化買入壓力："
 msgid "TWAP"
 msgstr "TWAP"
 
+#: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
+msgid "Nothing is claimable on {0} right now."
+msgstr "目前在 {0} 上沒有可領取的內容。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min impact pool amount"
 msgstr "最小影響池數量"
@@ -5321,6 +5344,8 @@ msgstr "尚未投入就想先拿到資金"
 msgid "High swap profit fee"
 msgstr "兌換利潤費用偏高"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5470,8 +5495,9 @@ msgstr "額外 APR"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulating..."
-msgstr ""
+msgstr "累積中..."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX for liquidity providers. For security, we won't contact you first. Send \"I'm a Liquidity Provider\" to our official Telegram account:"
@@ -5529,6 +5555,10 @@ msgstr "請求暫時無法取消。請在取消延遲結束後重試"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName}"
 msgstr "更新{orderTypeName}"
+
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "GMX paid out to your stake by protocol buybacks. Vested esGMX is not counted here: vesting converts esGMX that is already counted in the esGMX rewards row, so counting it again would double count the same reward."
+msgstr "由協議回購支付給您質押的 GMX。此處不計入歸屬中的 esGMX：歸屬會轉換已在 esGMX 獎勵列中計入的 esGMX，再次計入會導致同一筆獎勵被重複計算。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -5841,6 +5871,10 @@ msgstr "<0>GMX 的交易是透過動態平衡的流動性池執行，不同於�
 msgid "Read more"
 msgstr "了解更多"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+msgid "GM and GLV include markets you no longer hold."
+msgstr "GM 與 GLV 包含您已不再持有的市場。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "透過此操作可多賺取 {0}% 的獎勵"
@@ -5849,6 +5883,10 @@ msgstr "透過此操作可多賺取 {0}% 的獎勵"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr ""
+
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Staked esGMX:"
+msgstr "已質押 esGMX："
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
@@ -6109,6 +6147,10 @@ msgstr "資產管理"
 msgid "Leveraged tokens with protection"
 msgstr "具有保護機制的槓桿代幣"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
+msgstr "依您目前的質押力預計可從金庫獲得的份額。僅為盡力估算，實際分配以 DAO 治理決定為準。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr "止損失敗"
@@ -6202,10 +6244,6 @@ msgstr "生命週期結算"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "Expected 365d Fees"
-msgstr "預期365天費用"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -6302,6 +6340,11 @@ msgstr "推薦碼建立失敗"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "提取手續費"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "esGMX rewards"
+msgstr "esGMX 獎勵"
 
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
@@ -6496,10 +6539,6 @@ msgstr "GLV（GMX Liquidity Vault）持有各種 GM 代幣，為您提供對 GMX
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "結算網路已切換至 Arbitrum，但您的 Base GMX Account 中仍有 $12.50"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-msgid "Paused"
-msgstr "已暫停"
-
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -6682,10 +6721,6 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "GLV Vaults"
-msgstr "GLV金庫"
-
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show buy/sell icons on chart"
@@ -6795,10 +6830,6 @@ msgstr "投票"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "更新 TWAP 兌換部分"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-msgid "Total Investment Value"
-msgstr "總投資價值"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
@@ -6978,10 +7009,6 @@ msgstr "直接在 {chainName} 上購買 {nativeTokenSymbol} 或將其轉入"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "最大網路費用包含應對 Gas 飆升的緩衝。未使用的費用將退還。"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-msgid "Investment Value"
-msgstr "投資價值"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
@@ -8107,8 +8134,6 @@ msgid "Available"
 msgstr "可用"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Last 7 days"
 msgstr "最近7天"
 
@@ -8264,6 +8289,7 @@ msgstr "TVL（供給量）"
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Summary"
 msgstr "摘要"
@@ -8429,6 +8455,11 @@ msgstr "-"
 msgid "liquidation"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "{nativeTokenSymbol} rewards"
+msgstr "{nativeTokenSymbol} 獎勵"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "RPC endpoints"
 msgstr "RPC 端點"
@@ -8560,6 +8591,10 @@ msgstr "Limit Increase"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring..."
 msgstr "轉帳中..."
+
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+msgid "Staked GMX:"
+msgstr "已質押 GMX："
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
@@ -8696,6 +8731,7 @@ msgstr "超過 {0} 最大做多量"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8864,10 +8900,6 @@ msgstr "市價"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Trade from wallet or GMX Account"
 msgstr "從錢包或 GMX Account 交易"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
-msgstr "未來365天的預計費用:將每個池或金庫的基礎費用APY應用於您當前的餘額。不包括激勵。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
@@ -9479,6 +9511,11 @@ msgstr "市場下架"
 msgid "Last updated:"
 msgstr ""
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "GMX rewards"
+msgstr "GMX 獎勵"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "已達池最大容量"
@@ -9956,6 +9993,10 @@ msgstr "選擇抵押品"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Size per part"
 msgstr "每份規模"
+
+#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+msgid "Est. next 365 days"
+msgstr "預計未來 365 天"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add endpoint"
@@ -10754,6 +10795,7 @@ msgstr "DeFi"
 msgid "SNAPSHOT"
 msgstr "快照"
 
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 #: src/pages/Announcements/Announcements.tsx
 #: src/pages/Announcements/Announcements.tsx
 msgid "All chains"
@@ -10784,6 +10826,7 @@ msgstr "最高 PnL ($)"
 msgid "<0>Trader discounts apply automatically to your account once your tier is confirmed. Affiliate rebates accrue in real time and can be claimed on-chain from your referral dashboard at any time.</0>"
 msgstr "<0>一旦您的等級確認後，交易者折扣將自動套用至您的帳戶。推廣夥伴回饋則即時累積，您隨時可以從推薦儀表板在鏈上領取。</0>"
 
+#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
@@ -10961,7 +11004,7 @@ msgstr ""
 msgid "Integrating or shipping"
 msgstr "正在整合或交付"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Vested claimable GMX:"
 msgstr "已歸屬可領取的 GMX："
 
@@ -11363,7 +11406,7 @@ msgstr "託管 GMX APR"
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "歸屬僅在 {chainNames} 上可用。請切換網路以繼續。"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "esGMX rewards:"
 msgstr "esGMX 獎勵："
 
@@ -11902,10 +11945,6 @@ msgstr "語言"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-msgid "My earnings"
-msgstr "我的收益"
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "指數"
@@ -12372,7 +12411,7 @@ msgstr "兌換影響金額 {0}"
 msgid "Join an anonymous one-on-one chat to share your experience"
 msgstr "加入匿名一對一對話，分享您的使用體驗"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "GMX staked rewards:"
 msgstr "GMX 質押獎勵："
 
@@ -12563,6 +12602,10 @@ msgstr ""
 msgid "General performance details"
 msgstr "整體績效詳情"
 
+#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+msgid "Est. next 7 days"
+msgstr "預計未來 7 天"
+
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
 msgstr ""
@@ -12612,7 +12655,7 @@ msgstr "已提交批准<0/><1/><2>查看</2>"
 msgid "POOL CAP LONG"
 msgstr "做多池上限"
 
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
+#: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "累計總收益"
 

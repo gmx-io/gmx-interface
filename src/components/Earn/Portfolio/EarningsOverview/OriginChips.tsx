@@ -14,7 +14,7 @@ function getOriginName(origin: EarningsOrigin): string {
   return origin === GMX_ACCOUNT_PSEUDO_CHAIN_ID ? "GMX Account" : getChainName(origin);
 }
 
-function OriginChip({ children }: { children: React.ReactNode }) {
+export function OriginChip({ children }: { children: React.ReactNode }) {
   return (
     <span className="text-body-small flex items-center gap-4 rounded-full bg-slate-700 px-6 py-2 font-medium text-typography-secondary">
       {children}
