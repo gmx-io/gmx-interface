@@ -43,7 +43,12 @@ import Tooltip from "components/Tooltip/Tooltip";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
-import { getIsSettlementLikelyToFail, shouldPreSelectPosition } from "./utils";
+import {
+  SETTLEMENT_COLLATERAL_DELTA_AMOUNT,
+  getIsPositionSettleable,
+  getSettlementBlockReason,
+  shouldPreSelectPosition,
+} from "./utils";
 
 import "./SettleAccruedFundingFeeModal.scss";
 
@@ -97,13 +102,13 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [preCheckedPositionKeys, isUntouched]);
 
   const selectedPositions = useMemo(
-    () => positiveFeePositions.filter((position) => positionKeys.includes(position.key)),
+    () =>
+      positiveFeePositions.filter(
+        (position) => positionKeys.includes(position.key) && getIsPositionSettleable(position)
+      ),
     [positionKeys, positiveFeePositions]
   );
-  const hasSelectedPositionsLikelyToFail = useMemo(
-    () => selectedPositions.some(getIsSettlementLikelyToFail),
-    [selectedPositions]
-  );
+  const selectedPositionKeys = useMemo(() => selectedPositions.map((position) => position.key), [selectedPositions]);
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
   const totalStr = formatDeltaUsd(total);
 
@@ -120,7 +125,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           marketAddress: position.marketAddress,
           indexTokenAddress: position.indexToken.address,
           collateralTokenAddress: position.collateralTokenAddress,
-          collateralDeltaAmount: 1n,
+          collateralDeltaAmount: SETTLEMENT_COLLATERAL_DELTA_AMOUNT,
           receiveTokenAddress: position.collateralToken.address,
           sizeDeltaUsd: 0n,
           sizeDeltaInTokens: 0n,
@@ -201,7 +206,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
     if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
-    if (positionKeys.length === 0) return [t`Select positions`, true];
+    if (selectedPositions.length === 0) return [t`Select positions`, true];
 
     if (!isAllowanceLoaded) return [t`Loading...`, true];
 
@@ -215,7 +220,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     hasOutdatedUi,
     isMultichainSubmitDisabled,
     isSubmitting,
-    positionKeys.length,
+    selectedPositions.length,
     isAllowanceLoaded,
     tokensToApprove,
     isApproving,
@@ -354,22 +359,13 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               key={position.key}
               position={position}
               isMarketDisabled={position.marketInfo?.isDisabled ?? false}
-              isSettlementLikelyToFail={getIsSettlementLikelyToFail(position)}
-              isSelected={positionKeys.includes(position.key)}
+              blockReason={getSettlementBlockReason(position)}
+              isSelected={selectedPositionKeys.includes(position.key)}
               onCheckboxChange={handleRowCheckboxChange}
             />
           ))}
         </div>
       </div>
-      {hasSelectedPositionsLikelyToFail && (
-        <AlertInfo type="warning" compact textColor="text-yellow-300">
-          <Trans>
-            Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is
-            likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce
-            or close enough of those positions for the realized profit to cover the shortfall.
-          </Trans>
-        </AlertInfo>
-      )}
       <AlertInfo type="info" compact>
         <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
       </AlertInfo>

@@ -171,6 +171,50 @@ export function getLeverage(p: {
   return bigMath.mulDiv(sizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, remainingCollateralUsd);
 }
 
+export function getLiquidationPriceImpactDeltaUsd(p: {
+  marketInfo: MarketInfo;
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  pendingImpactAmount: bigint;
+  isLong: boolean;
+  useMaxPriceImpact?: boolean;
+}) {
+  const { marketInfo, sizeInUsd, sizeInTokens, pendingImpactAmount, isLong, useMaxPriceImpact } = p;
+
+  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
+
+  if (useMaxPriceImpact) {
+    return maxNegativePriceImpactUsd;
+  }
+
+  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+    fallbackToZero: true,
+    sizeDeltaInTokens: sizeInTokens,
+  }).priceImpactDeltaUsd;
+
+  if (priceImpactDeltaUsd > 0) {
+    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
+  }
+
+  const pendingImpactUsd = convertToUsd(
+    pendingImpactAmount,
+    marketInfo.indexToken.decimals,
+    pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
+  )!;
+
+  priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
+
+  if (priceImpactDeltaUsd > 0) {
+    return 0n;
+  }
+
+  if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
+    return maxNegativePriceImpactUsd;
+  }
+
+  return priceImpactDeltaUsd;
+}
+
 export function getLiquidationPrice(p: {
   sizeInUsd: bigint;
   sizeInTokens: bigint;
@@ -212,37 +256,14 @@ export function getLiquidationPrice(p: {
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
   const totalFeesUsd = totalPendingFeesUsd + closingFeeUsd;
 
-  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
-
-  let priceImpactDeltaUsd = 0n;
-
-  if (useMaxPriceImpact) {
-    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
-  } else {
-    const priceImpactForPosition = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
-      fallbackToZero: true,
-      sizeDeltaInTokens: sizeInTokens,
-    });
-    priceImpactDeltaUsd = priceImpactForPosition.priceImpactDeltaUsd;
-
-    if (priceImpactDeltaUsd > 0) {
-      priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
-    }
-
-    const pendingImpactUsd = convertToUsd(
-      pendingImpactAmount,
-      marketInfo.indexToken.decimals,
-      pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
-    )!;
-
-    priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
-
-    if (priceImpactDeltaUsd > 0) {
-      priceImpactDeltaUsd = 0n;
-    } else if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
-      priceImpactDeltaUsd = maxNegativePriceImpactUsd;
-    }
-  }
+  const priceImpactDeltaUsd = getLiquidationPriceImpactDeltaUsd({
+    marketInfo,
+    sizeInUsd,
+    sizeInTokens,
+    pendingImpactAmount,
+    isLong,
+    useMaxPriceImpact,
+  });
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
   if (liquidationCollateralUsd < minCollateralUsd) {
@@ -317,30 +338,13 @@ export function getMinCollateralUsdForLiquidationPrice(p: {
 
   const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
 
-  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
-
-  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
-    fallbackToZero: true,
-    sizeDeltaInTokens: sizeInTokens,
-  }).priceImpactDeltaUsd;
-
-  if (priceImpactDeltaUsd > 0) {
-    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
-  }
-
-  const pendingImpactUsd = convertToUsd(
+  const priceImpactDeltaUsd = getLiquidationPriceImpactDeltaUsd({
+    marketInfo,
+    sizeInUsd,
+    sizeInTokens,
     pendingImpactAmount,
-    marketInfo.indexToken.decimals,
-    pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
-  )!;
-
-  priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
-
-  if (priceImpactDeltaUsd > 0) {
-    priceImpactDeltaUsd = 0n;
-  } else if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
-    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
-  }
+    isLong,
+  });
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
   if (liquidationCollateralUsd < minCollateralUsd) {
@@ -348,6 +352,51 @@ export function getMinCollateralUsdForLiquidationPrice(p: {
   }
 
   return liquidationCollateralUsd - pnl - priceImpactDeltaUsd + closingFeeUsd;
+}
+
+export function getIsPositionBelowMinCollateralForLeverage(position: PositionInfoLoaded, collateralDeltaAmount = 0n) {
+  const {
+    marketInfo,
+    sizeInUsd,
+    sizeInTokens,
+    isLong,
+    pendingImpactAmount,
+    pnl,
+    closingFeeUsd,
+    remainingCollateralUsd,
+    collateralAmount,
+    collateralToken,
+  } = position;
+
+  if (sizeInUsd <= 0 || sizeInTokens <= 0) {
+    return false;
+  }
+
+  if (collateralAmount < collateralDeltaAmount) {
+    return true;
+  }
+
+  const collateralUsdAfterDelta = convertToUsd(
+    collateralAmount - collateralDeltaAmount,
+    collateralToken.decimals,
+    collateralToken.prices.minPrice
+  )!;
+
+  if (collateralUsdAfterDelta < applyFactor(sizeInUsd, getMinCollateralFactorForPosition(position, 0n))) {
+    return true;
+  }
+
+  const priceImpactDeltaUsd = getLiquidationPriceImpactDeltaUsd({
+    marketInfo,
+    sizeInUsd,
+    sizeInTokens,
+    pendingImpactAmount,
+    isLong,
+  });
+
+  const marginUsd = remainingCollateralUsd + pnl + priceImpactDeltaUsd - closingFeeUsd;
+
+  return marginUsd <= 0n || marginUsd < applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
 }
 
 export function getNetPriceImpactDeltaUsdForDecrease({

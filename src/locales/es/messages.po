@@ -4114,6 +4114,10 @@ msgstr "Factor de financiación mínimo (largo)"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "¿Qué hace a GMX más eficiente en costos que otras plataformas perpetuas?"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Margin is below the minimum required for the position size"
+msgstr "El margen está por debajo del mínimo requerido para el tamaño de la posición"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr ""
@@ -7225,6 +7229,10 @@ msgstr "No se puede retirar la garantía. La garantía restante quedaría por de
 msgid "Approving..."
 msgstr "Aprobando..."
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
+msgstr "Esta posición tiene un margen negativo después de las comisiones pendientes de préstamo y financiación, por lo que la compensación probablemente falle: la financiación positiva solo se vuelve reclamable tras una compensación exitosa. Añada margen, o cierre la posición lo suficiente para que el beneficio realizado cubra el déficit."
+
 #: src/config/uiFlagEvents.tsx
 msgid "Service Disruption"
 msgstr "Interrupción del servicio"
@@ -7268,10 +7276,6 @@ msgstr "Reciba al menos {toAmountText} si se ejecuta. El precio se actualiza seg
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
-msgstr "Esta posición tiene un margen negativo después de las comisiones pendientes de préstamo y financiación, por lo que la compensación probablemente falle: la financiación positiva solo se vuelve reclamable tras una compensación exitosa. Añada margen, o reduzca o cierre la posición lo suficiente para que el beneficio realizado cubra el déficit."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
@@ -9308,6 +9312,10 @@ msgstr "Ejecutando solicitud de compra…"
 msgid "Buy GM failed"
 msgstr "La compra de GM ha fallado"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
+msgstr "El margen de esta posición está por debajo del mínimo requerido para su tamaño, por lo que la compensación fallará. Añada margen o cierre la posición. Al cerrarla, la financiación se compensa automáticamente."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "Factor de financiación máximo (largo)"
@@ -10404,10 +10412,6 @@ msgstr "Margen mín.: {0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Mercado"
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
-msgstr "Algunas posiciones seleccionadas tienen un margen negativo después de las comisiones pendientes de préstamo y financiación, por lo que su compensación probablemente falle: la financiación positiva solo se vuelve reclamable tras una compensación exitosa. Añada margen, o reduzca o cierre esas posiciones lo suficiente para que el beneficio realizado cubra el déficit."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
@@ -11973,6 +11977,10 @@ msgstr "{column}"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
 msgstr ""
+
+#: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} failed to settle: {cancellationReason}"
+msgstr "{positionName} no se ha podido liquidar: {cancellationReason}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
