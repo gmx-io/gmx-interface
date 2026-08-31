@@ -115,7 +115,7 @@ export const GmTokensBalanceInfo = ({
             value={
               <EarningValue
                 value={earnedTotal}
-                isLoading={earnedTotal === undefined && shouldShowFeesLoading}
+                isLoading={!shouldShowFeesUnattributed && earnedTotal === undefined && shouldShowFeesLoading}
                 isAvailable={!shouldShowFeesUnattributed && (earnedTotal !== undefined || !shouldShowFeesUnavailable)}
               >
                 {(value) => formatDeltaUsd(value, undefined)}
@@ -136,7 +136,7 @@ export const GmTokensBalanceInfo = ({
             value={
               <EarningValue
                 value={earnedRecently}
-                isLoading={earnedRecently === undefined && shouldShowFeesLoading}
+                isLoading={!shouldShowFeesUnattributed && earnedRecently === undefined && shouldShowFeesLoading}
                 isAvailable={
                   !shouldShowFeesUnattributed && (earnedRecently !== undefined || !shouldShowFeesUnavailable)
                 }
@@ -286,7 +286,7 @@ export const GmTokensTotalBalanceInfo = ({
               value={
                 <EarningValue
                   value={userEarnings?.allMarkets.total}
-                  isLoading={isEarningsLoading}
+                  isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
                   isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
                 >
                   {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
@@ -305,7 +305,7 @@ export const GmTokensTotalBalanceInfo = ({
               value={
                 <EarningValue
                   value={userEarnings?.allMarkets.recent}
-                  isLoading={isEarningsLoading}
+                  isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
                   isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
                 >
                   {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}

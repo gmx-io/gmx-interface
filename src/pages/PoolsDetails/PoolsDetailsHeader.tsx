@@ -221,7 +221,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                     value={
                       <EarningValue
                         value={marketEarnings?.total}
-                        isLoading={!marketEarnings && isUserEarningsLoading}
+                        isLoading={!hasBalanceOutsideWallet && !marketEarnings && isUserEarningsLoading}
                         isAvailable={
                           !hasBalanceOutsideWallet && (Boolean(marketEarnings) || !isUserEarningsUnavailable)
                         }

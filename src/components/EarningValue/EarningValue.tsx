@@ -24,12 +24,12 @@ export function EarningValue<T>({
   skeletonWidth = 60,
   children,
 }: EarningValueProps<T>) {
-  if (!isAvailable) {
-    return <EarningNotAvailable tooltip={unavailableTooltip} />;
-  }
-
   if (isLoading) {
     return <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={skeletonWidth} className="leading-base" />;
+  }
+
+  if (!isAvailable) {
+    return <EarningNotAvailable tooltip={unavailableTooltip} />;
   }
 
   if (value == null) {

@@ -81,12 +81,16 @@ export function LpPanel({
 
         <div className="flex gap-28">
           <EarningsStat label={<Trans>Lifetime rewards</Trans>}>
-            <UsdStatValue usd={lifetimeUsd} isLoading={isLoading} isAvailable={isAvailable && isLpAttributable} />
+            <UsdStatValue
+              usd={lifetimeUsd}
+              isLoading={isLpAttributable && isLoading}
+              isAvailable={isAvailable && isLpAttributable}
+            />
           </EarningsStat>
           <EarningsStat label={<Trans>Last 7 days</Trans>}>
             <UsdStatValue
               usd={last7dUsd}
-              isLoading={isLoading}
+              isLoading={isLpAttributable && isLoading}
               isAvailable={isAvailable && isLpAttributable}
               highlightPositive
             />
@@ -104,7 +108,11 @@ export function LpPanel({
             </LpRowLabel>
           }
           value={
-            <LpRowValue usd={gmLifetimeUsd} isLoading={isLoading} isAvailable={isAvailable && !isGmUnattributed} />
+            <LpRowValue
+              usd={gmLifetimeUsd}
+              isLoading={!isGmUnattributed && isLoading}
+              isAvailable={isAvailable && !isGmUnattributed}
+            />
           }
         />
         <SyntheticsInfoRow
@@ -114,7 +122,11 @@ export function LpPanel({
             </LpRowLabel>
           }
           value={
-            <LpRowValue usd={glvLifetimeUsd} isLoading={isLoading} isAvailable={isAvailable && !isGlvUnattributed} />
+            <LpRowValue
+              usd={glvLifetimeUsd}
+              isLoading={!isGlvUnattributed && isLoading}
+              isAvailable={isAvailable && !isGlvUnattributed}
+            />
           }
         />
         {isUnavailable && <EarningUnavailableNote />}

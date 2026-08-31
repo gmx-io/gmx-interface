@@ -100,7 +100,7 @@ function EarningsStrip({
       <EarningsStripCell label={<Trans>7d Earnings</Trans>}>
         <EarningValue
           value={earnings?.recent}
-          isLoading={isLoading}
+          isLoading={isAttributable && isLoading}
           isAvailable={isAvailable && isAttributable}
           unavailableTooltip={attributionNote}
           skeletonWidth={40}
@@ -120,7 +120,7 @@ function EarningsStrip({
       <EarningsStripCell label={<Trans>Lifetime</Trans>} align="right">
         <EarningValue
           value={earnings?.total}
-          isLoading={isLoading}
+          isLoading={isAttributable && isLoading}
           isAvailable={isAvailable && isAttributable}
           unavailableTooltip={attributionNote}
           skeletonWidth={40}
