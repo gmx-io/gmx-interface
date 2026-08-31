@@ -30,11 +30,7 @@ export function getIsNewerBuildId(currentBuildId: string | undefined, candidateB
   return Number.isSafeInteger(current) && Number.isSafeInteger(candidate) && candidate > current;
 }
 
-/**
- * Reads the build id the network currently serves. The service worker only intercepts navigations
- * and `/assets/`, so this bypasses the cached app shell and reaches the origin. Callers that ask at
- * the same time share one request, since boot has two of them.
- */
+/** The service worker only intercepts navigations and `/assets/`, so this reaches the origin. */
 export function fetchNetworkBuildId() {
   if (!networkBuildIdRequest) {
     networkBuildIdRequest = readNetworkBuildId().finally(() => {

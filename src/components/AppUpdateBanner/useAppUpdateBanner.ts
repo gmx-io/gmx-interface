@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { metrics } from "lib/metrics";
 import { AppUpdateCounter } from "lib/metrics/types";
+import { APP_UPDATE_DEBUG, getIsAppUpdateDebug } from "lib/pwa/appUpdateDebug";
 import { AppUpdateStatus, getAppUpdateAction, SNOOZE_MS, UPDATE_CHECK_INTERVAL_MS } from "lib/pwa/appUpdateDecision";
 import { useIsAutoReloadBlocked } from "lib/pwa/blockAutoReload";
 import { fetchNetworkBuildId, getDocumentBuildId, getIsNewerBuildId, UNKNOWN_BUILD_ID } from "lib/pwa/buildId";
@@ -28,14 +29,11 @@ function writeItem(key: string, value: string) {
   try {
     getSessionStorage()?.setItem(key, value);
   } catch {
-    // Storage is best-effort: without it the loop guard costs at most one more reload.
+    // Without storage the loop guard costs at most one more reload.
   }
 }
 
-/**
- * The reload tears the document down before the metrics queue is flushed, so the counter is handed
- * over to the next launch.
- */
+/** The reload outruns the metrics queue, so the counter is handed to the next launch. */
 function takePendingCounter() {
   const rawCounter = readItem(PENDING_COUNTER_KEY);
   try {
@@ -46,14 +44,11 @@ function takePendingCounter() {
   }
 }
 
-/**
- * Notices that a newer build is being served and moves the app onto it. A launch nobody has touched
- * and an app that is out of sight reload on their own; one with work in progress is offered a reload.
- */
 export function useAppUpdateBanner() {
   const isReloadBlocked = useIsAutoReloadBlocked();
 
-  const currentBuildId = useRef(getDocumentBuildId()).current;
+  const isDebug = useRef(getIsAppUpdateDebug()).current;
+  const currentBuildId = useRef(isDebug ? APP_UPDATE_DEBUG.buildId : getDocumentBuildId()).current;
   const appStartedAt = useRef(Date.now()).current;
   const [updateBuildId, setUpdateBuildId] = useState<string>();
   const [snoozedUntil, setSnoozedUntil] = useState<number>();
@@ -121,7 +116,6 @@ export function useAppUpdateBanner() {
   }, []);
 
   useEffect(function trackActivity() {
-    // Only the first interaction matters, so the listeners take themselves off straight away.
     const handleInteraction = () => {
       hasInteracted.current = true;
       removeInteractionListeners();
@@ -147,7 +141,7 @@ export function useAppUpdateBanner() {
 
   useEffect(
     function checkForUpdates() {
-      if (!currentBuildId || !import.meta.env.PROD || import.meta.env.VITE_APP_DISABLE_PWA === "true") {
+      if (!currentBuildId || (!import.meta.env.PROD && !isDebug) || import.meta.env.VITE_APP_DISABLE_PWA === "true") {
         return;
       }
 
@@ -172,20 +166,24 @@ export function useAppUpdateBanner() {
       const runCheck = () => void check();
 
       // Without a controller the document came straight from the network, so it is already current.
-      if (navigator.serviceWorker?.controller) {
-        runCheck();
-      }
-
-      const intervalId = window.setInterval(runCheck, UPDATE_CHECK_INTERVAL_MS);
+      const shouldCheckNow = isDebug || Boolean(navigator.serviceWorker?.controller);
+      const firstCheckId = shouldCheckNow
+        ? window.setTimeout(runCheck, isDebug ? APP_UPDATE_DEBUG.checkDelayMs : 0)
+        : undefined;
+      const intervalId = window.setInterval(
+        runCheck,
+        isDebug ? APP_UPDATE_DEBUG.checkIntervalMs : UPDATE_CHECK_INTERVAL_MS
+      );
       window.addEventListener("online", runCheck);
 
       return () => {
         isCancelled = true;
+        window.clearTimeout(firstCheckId);
         window.clearInterval(intervalId);
         window.removeEventListener("online", runCheck);
       };
     },
-    [currentBuildId, evaluate, stateRef]
+    [currentBuildId, evaluate, isDebug, stateRef]
   );
 
   useEffect(
@@ -215,7 +213,7 @@ export function useAppUpdateBanner() {
   );
 
   const dismiss = useCallback(() => {
-    setSnoozedUntil(Date.now() + SNOOZE_MS);
+    setSnoozedUntil(Date.now() + (isDebug ? APP_UPDATE_DEBUG.snoozeMs : SNOOZE_MS));
     setIsOffered(false);
 
     if (updateBuildId) {
@@ -224,7 +222,7 @@ export function useAppUpdateBanner() {
         toBuildId: updateBuildId,
       });
     }
-  }, [currentBuildId, updateBuildId]);
+  }, [currentBuildId, isDebug, updateBuildId]);
 
   const applyUpdate = useCallback(() => {
     if (updateBuildId) {

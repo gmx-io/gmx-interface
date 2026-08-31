@@ -50,7 +50,6 @@ import {
   selectPoolsDetailsWithdrawalMarketTokensData,
 } from "./baseSelectors";
 
-/** Amounts the user typed into the pool form, which a reload would throw away. */
 export const selectPoolsDetailsHasPendingInput = createSelector((q) => {
   const inputValues = [
     q(selectPoolsDetailsFirstTokenInputValue),

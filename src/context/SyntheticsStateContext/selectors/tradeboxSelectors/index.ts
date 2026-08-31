@@ -567,7 +567,6 @@ const selectTradeboxMarginDepositSuggestionHidden = (s: SyntheticsState) => s.tr
 const selectTradeboxSetMarginDepositSuggestionHidden = (s: SyntheticsState) =>
   s.tradebox.setMarginDepositSuggestionHidden;
 
-/** Amounts the user typed in, which a reload would throw away. Idle fields hold "" or "0". */
 export const selectTradeboxHasPendingInput = createSelector((q) => {
   const inputValues = [
     q(selectTradeboxFromTokenInputValue),

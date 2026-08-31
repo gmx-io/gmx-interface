@@ -23,10 +23,7 @@ function changeBlockersCount(delta: number) {
   }
 }
 
-/**
- * Marks work a reload would throw away, such as an open modal or a filled in order form. It does not
- * hide the update offer, it only stops the app from reloading on its own while the work is in progress.
- */
+/** Marks work a reload would throw away. It holds back the silent reload, not the offer. */
 export function useBlockAutoReload(isBlocking: boolean) {
   useEffect(() => {
     if (!isBlocking) {
