@@ -1,7 +1,10 @@
 import { useMemo } from "react";
 
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
-import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectGlvAndMarketsInfoData,
+  selectMultichainMarketTokensBalancesIsLoading,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
@@ -69,6 +72,9 @@ export default function EarnPortfolioPage() {
 
   const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets;
 
+  const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
+  const areAssetsLoading = !marketsInfoData || !marketTokensData || isMultichainBalancesLoading;
+
   const isWalletInitializing = status === "connecting" || status === "reconnecting";
 
   return (
@@ -82,7 +88,7 @@ export default function EarnPortfolioPage() {
           />
         </ErrorBoundary>
       )}
-      {processedData && !isWalletInitializing ? (
+      {processedData && !areAssetsLoading && !isWalletInitializing ? (
         <ErrorBoundary id="EarnPortfolio-AssetsList" variant="block" wrapperClassName="rounded-t-8">
           <AssetsList
             processedData={processedData}

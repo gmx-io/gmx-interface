@@ -21,6 +21,7 @@ import {
   ApyPeriod,
   BatchReportBody,
   DayPriceCandle,
+  GmUserEarningsResponse,
   OracleFetcher,
   PerformanceAnnualizedResponse,
   PerformancePeriod,
@@ -199,6 +200,19 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
   fetchApys(period: ApyPeriod): Promise<ApyInfo> {
     return this.request("/apy", { query: { period } });
+  }
+
+  fetchGmUserEarnings(account: string): Promise<GmUserEarningsResponse> {
+    return this.request("/yield/gm-user-earnings", {
+      query: { account },
+      validate: (res) => {
+        if (!res || !Array.isArray(res.pools)) {
+          return new Error("Invalid GM user earnings response");
+        }
+
+        return undefined;
+      },
+    });
   }
 
   async fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>> {
