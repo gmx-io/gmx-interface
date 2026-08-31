@@ -48,6 +48,66 @@ export type EventData = {
 };
 
 export const appEventsData: EventData[] = [
+  // TEST-ONLY mock announcements for FEDEV-4262 QA. Do not merge into release.
+  {
+    id: "qa-mock-tall",
+    type: "update",
+    isActive: true,
+    startDate: "30 Aug 2026, 10:00",
+    endDate: "31 Dec 2027, 0:00",
+    variant: "info",
+    title: "QA mock: a deliberately long announcement title that wraps onto two lines",
+    summary: (
+      <>
+        This is the tallest card in the set. Its summary runs for three full lines, so it defines the height that every
+        other announcement in the rotation has to hold while the toast is open.
+      </>
+    ),
+    description: (
+      <>
+        Tallest card of the QA set: a two line title with a three line summary. It sets the height of the What's new
+        card, so the shorter announcements in the rotation keep that height instead of resizing.
+      </>
+    ),
+  },
+  {
+    id: "qa-mock-one-line",
+    type: "update",
+    isActive: true,
+    startDate: "30 Aug 2026, 9:00",
+    endDate: "31 Dec 2027, 0:00",
+    variant: "success",
+    title: "QA mock: one line announcement",
+    summary: <>A single line of text.</>,
+    description: (
+      <>
+        Shortest card of the QA set: one line of title and one line of summary. Following the tall card, it should keep
+        the same card height, with the extra space sitting above the See more link.
+      </>
+    ),
+  },
+  {
+    id: "qa-mock-links",
+    type: "update",
+    isActive: true,
+    startDate: "30 Aug 2026, 8:00",
+    endDate: "31 Dec 2027, 0:00",
+    variant: "warning",
+    title: "QA mock: announcement with inline links",
+    summary: (
+      <>
+        Open <Link to="/trade">Trade</Link> or <Link to="/pools">Pools</Link>, or follow{" "}
+        <ExternalLink href="https://x.com/GMX_IO">GMX on X</ExternalLink>. All three stay clickable during a slide
+        change.
+      </>
+    ),
+    description: (
+      <>
+        Links card of the QA set. Use it to check that links inside a summary stay clickable throughout a slide change,
+        and that the announcement leaving the screen never intercepts a click meant for the incoming one.
+      </>
+    ),
+  },
   {
     id: "qqq-spy-arbitrum-listing",
     type: "listing",
