@@ -142,7 +142,7 @@ function getMarginDepositOrderErrors(p: {
           <Trans>
             This margin deposit may not execute: it would not leave the position above the liquidation requirement at
             the trigger price.{" "}
-            <ReplaceMarginDepositAction positionKey={position?.key} orderKey={order.key}>
+            <ReplaceMarginDepositAction positionKey={position.key} orderKey={order.key}>
               Increase the deposit amount
             </ReplaceMarginDepositAction>{" "}
             or move the trigger farther from liquidation.
