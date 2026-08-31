@@ -1,6 +1,7 @@
 import { AbFlag, getAbFlagUrlParams } from "config/ab";
 import { getStoredUtmParams } from "domain/utm";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
+import type { DisplayMode } from "lib/pwa/getDisplayMode";
 import { sleep } from "lib/sleep";
 
 import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";
@@ -17,7 +18,7 @@ type CommonEventParams = WalletAnalyticsProvenance &
     browserName?: string;
     ordersCount?: number;
     isWalletConnected?: boolean;
-    isInstalledApp: boolean;
+    displayMode: DisplayMode;
     isTest: boolean;
     isInited?: boolean;
   };

@@ -2,6 +2,7 @@ import type { SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
+import type { DisplayMode } from "lib/pwa/getDisplayMode";
 import type { TradeMode } from "sdk/utils/trade/types";
 import type { TwapDuration } from "sdk/utils/twap/types";
 
@@ -15,7 +16,7 @@ export type GlobalMetricData = {
   apiSdkPositions?: boolean;
   apiSdkOrders?: boolean;
   isMobile: boolean;
-  isInstalledApp: boolean;
+  displayMode: DisplayMode;
   isHomeSite: boolean;
   browserName?: string;
   browserVersion?: string;
