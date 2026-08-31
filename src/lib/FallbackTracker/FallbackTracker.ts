@@ -102,6 +102,7 @@ export type EndpointState = {
         reason: string;
       }
     | undefined;
+  bannedEmitted: boolean | undefined;
   failureTimestamps: number[];
   failureThrottleTimeout: number | undefined;
 };
@@ -171,6 +172,7 @@ export class FallbackTracker<TCheckStats> {
             endpoint,
             failureTimestamps: [],
             banned: cachedEndpointsState[endpoint]?.banned,
+            bannedEmitted: undefined,
             failureThrottleTimeout: undefined,
           };
           return acc;
@@ -313,6 +315,9 @@ export class FallbackTracker<TCheckStats> {
       return;
     }
 
+    const isFirstBan = !endpointState.bannedEmitted;
+    endpointState.bannedEmitted = true;
+
     endpointState.banned = {
       timestamp: Date.now(),
       reason,
@@ -324,7 +329,9 @@ export class FallbackTracker<TCheckStats> {
       cachedEndpointsState: this.getCachedEndpointsState(),
     });
 
-    emitEndpointBanned({ endpoint, reason, trackerKey: this.trackerKey });
+    if (isFirstBan) {
+      emitEndpointBanned({ endpoint, reason, trackerKey: this.trackerKey });
+    }
 
     this.warn(`Ban endpoint "${endpoint}" with reason "${reason}"`);
 

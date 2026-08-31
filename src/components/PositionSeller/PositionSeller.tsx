@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
@@ -24,6 +24,7 @@ import {
   selectBlockTimestampData,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
@@ -49,6 +50,7 @@ import {
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { OrderType } from "domain/synthetics/orders";
+import { getMarginDepositCancelOrderParams } from "domain/synthetics/orders/marginDeposit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
@@ -87,6 +89,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -280,6 +283,13 @@ export function PositionSeller() {
   const markPrice = useSelector(selectPositionSellerMarkPrice);
   const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(position?.key));
+
+  // only market 100% closes: a TWAP close executes over a window where the deposit still protects the position
+  const marginDepositCancelParams = useMemo(
+    () => (isMarket && decreaseAmounts?.isFullClose ? getMarginDepositCancelOrderParams(positionOrders) : EMPTY_ARRAY),
+    [isMarket, decreaseAmounts?.isFullClose, positionOrders]
+  );
 
   useDebugExecutionPrice(chainId, {
     skip: true,
@@ -427,7 +437,7 @@ export function PositionSeller() {
     return {
       createOrderParams,
       updateOrderParams: [],
-      cancelOrderParams: [],
+      cancelOrderParams: marginDepositCancelParams,
     };
   }, [
     account,
@@ -443,6 +453,7 @@ export function PositionSeller() {
     executionFee?.gasLimit,
     isMarket,
     isTwap,
+    marginDepositCancelParams,
     marketsInfoData,
     numberOfParts,
     position,
@@ -1193,6 +1204,16 @@ export function PositionSeller() {
                 {twapSplitReceiveSwapProfitFeeWarning && (
                   <AlertInfoCard type="warning" hideClose>
                     {twapSplitReceiveSwapProfitFeeWarning}
+                  </AlertInfoCard>
+                )}
+
+                {marginDepositCancelParams.length > 0 && (
+                  <AlertInfoCard hideClose>
+                    <Plural
+                      value={marginDepositCancelParams.length}
+                      one="Closing will also cancel your pending margin deposit and return its funds."
+                      other="Closing will also cancel your # pending margin deposits and return their funds."
+                    />
                   </AlertInfoCard>
                 )}
 

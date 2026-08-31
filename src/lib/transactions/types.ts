@@ -1,3 +1,4 @@
+import { RelayProvider } from "config/relay";
 import { ErrorLike } from "lib/errors";
 import { StatusCode } from "sdk/utils/gelatoRelay";
 
@@ -64,7 +65,11 @@ export class TxnEventBuilder<TParams> {
     return this._build(TxnEventName.Sending, {});
   }
 
-  Sent(params: { type: "wallet"; transactionHash: string } | { type: "relay"; relayTaskId: string }) {
+  Sent(
+    params:
+      | { type: "wallet"; transactionHash: string }
+      | { type: "relay"; relayTaskId: string; relayProvider: RelayProvider }
+  ) {
     return this._build(TxnEventName.Sent, params);
   }
 }

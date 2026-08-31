@@ -3,8 +3,11 @@ import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { OracleKeeperFallbackTracker } from "lib/oracleKeeperFetcher/OracleFallbackTracker";
 
 import { metrics, OracleKeeperEndpointBannedEvent, OracleKeeperUpdateEndpointsEvent } from ".";
+import { createEndpointsPairDedup } from "./endpointsPairDedup";
 
 export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTracker) {
+  const shouldReportEndpointsPair = createEndpointsPairDedup();
+
   const cleanupBannedSubscription = addFallbackTrackerListener(
     "endpointBanned",
     tracker.trackerKey,
@@ -27,7 +30,11 @@ export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTr
     tracker.trackerKey,
     (p) => {
       const { primary, fallbacks } = p;
-      const secondary = fallbacks[0];
+      const secondary: string | undefined = fallbacks[0];
+
+      if (!shouldReportEndpointsPair(primary, secondary)) {
+        return;
+      }
 
       metrics.pushEvent<OracleKeeperUpdateEndpointsEvent>({
         event: "oracleKeeper.endpoint.updated",

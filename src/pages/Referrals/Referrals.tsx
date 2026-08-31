@@ -3,7 +3,10 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { useReferralsData, useUserReferralCode } from "domain/referrals";
-import { CREATE_REFERRAL_CODE_QUERY_PARAM } from "domain/referrals/utils/referralsHelper";
+import {
+  CREATE_REFERRAL_CODE_QUERY_PARAM,
+  shouldShowCreateReferralCodeTabLabel,
+} from "domain/referrals/utils/referralsHelper";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -33,8 +36,8 @@ export enum ReferralsTab {
 
 export const TAB_OPTIONS = [ReferralsTab.Traders, ReferralsTab.Affiliates, ReferralsTab.Distributions];
 const TAB_OPTION_LABELS = {
-  [ReferralsTab.Traders]: msg`Traders`,
-  [ReferralsTab.Affiliates]: msg`Affiliates`,
+  [ReferralsTab.Traders]: msg`Trader Benefits`,
+  [ReferralsTab.Affiliates]: msg`Affiliate Dashboard`,
   [ReferralsTab.Distributions]: msg`Distributions`,
 };
 
@@ -64,6 +67,13 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
   const isOnAffiliatesDashboard = activeTab === ReferralsTab.Affiliates && hasAnyAffiliateCode && !hasAddressInUrl;
   const isMegaethPointsActive = useMegaethPointsActive();
 
+  const isCreateReferralCodeTabLabel = shouldShowCreateReferralCodeTabLabel({
+    hasAddressInUrl,
+    hasAccount: Boolean(account),
+    isReferralsDataLoading: isLoading,
+    hasAnyAffiliateCode,
+  });
+
   const tabsOptions = useMemo((): Option<ReferralsTab>[] => {
     return TAB_OPTIONS.map((option): RegularOption<ReferralsTab> => {
       const isDistributionsLocked = option === ReferralsTab.Distributions && !hasAffiliateCode;
@@ -72,7 +82,10 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
         (option === ReferralsTab.Affiliates && isOnTradersDashboard && !hasAnyAffiliateCode) ||
         (option === ReferralsTab.Traders && isOnAffiliatesDashboard && !hasTraderCode);
 
-      const baseLabel = localizedTabOptionLabels[option];
+      const baseLabel =
+        option === ReferralsTab.Affiliates && isCreateReferralCodeTabLabel
+          ? t`Create Referral Code`
+          : localizedTabOptionLabels[option];
       const labelNode =
         isMegaethPointsActive && option === ReferralsTab.Affiliates ? (
           <span className="inline-flex items-center gap-4">
@@ -99,6 +112,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
     hasAnyAffiliateCode,
     hasTraderCode,
     isMegaethPointsActive,
+    isCreateReferralCodeTabLabel,
   ]);
 
   const setActiveTab = useCallback(
@@ -130,7 +144,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
             title={t`Referrals`}
             subtitle={
               <Trans>
-                Get fee discounts and earn up to 15% commission through the GMX <br /> referral program
+                Get fee discounts and earn up to 25% commission through the GMX <br /> referral program
               </Trans>
             }
             qa="referrals-page"

@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
+import { shouldShowShareCardDiscounts } from "domain/referrals/utils/referralsHelper";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getHomeUrl, getTwitterIntentURL } from "lib/legacy";
@@ -27,7 +28,6 @@ type ShareReferralCardModalProps = {
   referralCode: string;
   traderDiscountPercentage?: string | number;
   totalDiscountsUsd?: bigint;
-  hasReferredUsers?: boolean;
 };
 
 export function ShareReferralCardModal({
@@ -36,13 +36,12 @@ export function ShareReferralCardModal({
   referralCode,
   traderDiscountPercentage,
   totalDiscountsUsd,
-  hasReferredUsers = true,
 }: ShareReferralCardModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [, copyToClipboard] = useCopyToClipboard();
   const { isMobile } = useBreakpoints();
   const homeURL = getHomeUrl();
-  const referralLink = `${homeURL}/trade/?ref=${referralCode}`;
+  const referralLink = `${homeURL}/#/trade/?ref=${referralCode}`;
   const totalDiscountsFormatted = useMemo(
     () => formatUsd(totalDiscountsUsd, { fallbackToZero: true }),
     [totalDiscountsUsd]
@@ -52,13 +51,14 @@ export function ShareReferralCardModal({
     [traderDiscountPercentage]
   );
   const [isUploading, setIsUploading] = useState(false);
+  const showDiscountsLine = shouldShowShareCardDiscounts(totalDiscountsUsd);
 
   const getTweetText = useCallback(() => {
-    const discountsText = hasReferredUsers
+    const discountsText = showDiscountsLine
       ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCode}`
       : "";
     return `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
-  }, [traderDiscountPercentageLabel, hasReferredUsers, totalDiscountsFormatted, referralCode]);
+  }, [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCode]);
 
   const handleShareOnX = useCallback(async () => {
     const element = cardRef.current;
@@ -121,7 +121,7 @@ export function ShareReferralCardModal({
           referralCode={referralCode}
           traderDiscountPercentageLabel={traderDiscountPercentageLabel}
           totalDiscountsFormatted={totalDiscountsFormatted}
-          hasReferredUsers={hasReferredUsers}
+          showDiscountsLine={showDiscountsLine}
         />
 
         <div className="flex gap-12">
@@ -181,14 +181,14 @@ function ScaledReferralCard({
   referralCode,
   traderDiscountPercentageLabel,
   totalDiscountsFormatted,
-  hasReferredUsers,
+  showDiscountsLine,
 }: {
   cardRef: React.Ref<HTMLDivElement>;
   referralLink: string;
   referralCode: string;
   traderDiscountPercentageLabel: string;
   totalDiscountsFormatted: string | undefined;
-  hasReferredUsers: boolean;
+  showDiscountsLine: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -238,7 +238,7 @@ function ScaledReferralCard({
                 <br /> trade on GMX
               </Trans>
             </h3>
-            {hasReferredUsers && (
+            {showDiscountsLine && (
               <p className="text-body-medium mt-12 font-medium text-typography-secondary">
                 <Trans>
                   So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code:{" "}

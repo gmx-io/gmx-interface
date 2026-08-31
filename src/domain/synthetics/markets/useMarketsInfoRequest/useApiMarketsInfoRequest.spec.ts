@@ -16,6 +16,14 @@ function value(marketTokenAddress: string, updatedAt: number | null): RawMarketV
     marketTokenAddress,
     updatedAt,
     virtualInventoryForPositionsInTokens: 0n,
+    longInterestUsdUsingLongToken: 0n,
+    longInterestUsdUsingShortToken: 0n,
+    shortInterestUsdUsingLongToken: 0n,
+    shortInterestUsdUsingShortToken: 0n,
+    longInterestInTokensUsingLongToken: 0n,
+    longInterestInTokensUsingShortToken: 0n,
+    shortInterestInTokensUsingLongToken: 0n,
+    shortInterestInTokensUsingShortToken: 0n,
   } as RawMarketValues;
 }
 
@@ -107,6 +115,27 @@ describe("hasStaleMarketValues", () => {
       )
     ).toBe(true);
     expect(hasIncompleteMarketValues([config("0xa")], [], new Set())).toBe(true);
+  });
+
+  it("flags values without the per-collateral open interest split as incomplete", () => {
+    const withoutSplit = {
+      ...value("0xa", 1_000_000),
+      shortInterestInTokensUsingShortToken: undefined,
+    } as unknown as RawMarketValues;
+
+    expect(hasIncompleteMarketValues([config("0xa")], [withoutSplit], new Set())).toBe(true);
+    expect(hasStaleMarketValues([config("0xa")], [withoutSplit], new Set())).toBe(true);
+  });
+
+  it("ignores a missing per-collateral split for disabled markets", () => {
+    const withoutSplit = {
+      ...value("0xdisabled", 1_000_000),
+      longInterestUsdUsingLongToken: undefined,
+    } as unknown as RawMarketValues;
+
+    expect(hasIncompleteMarketValues([config("0xdisabled", true)], [withoutSplit], new Set(["0xdisabled"]))).toBe(
+      false
+    );
   });
 
   it("ignores disabled markets even when their values are null or stale", () => {

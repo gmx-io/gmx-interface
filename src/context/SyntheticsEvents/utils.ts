@@ -1,7 +1,11 @@
+import { type Abi, encodeErrorResult } from "viem";
+
+import type { RelayProvider } from "config/relay";
 import { extendError } from "lib/errors";
+import { abis } from "sdk/abis";
 
 import type {
-  GelatoTaskStatus,
+  RelayTaskStatus,
   OrderStatus,
   PendingDepositData,
   PendingOrderData,
@@ -114,26 +118,97 @@ export function getPendingShiftKey(data: PendingShiftData) {
 }
 
 const BYTECODE_REGEXP = /0x[a-fA-F0-9]+/;
+const DECODED_REVERT_REASON_REGEXP = /^(\w+)\((.*)\)$/;
 
-export function extractGelatoError(gelatoTaskStatus: GelatoTaskStatus) {
-  if (gelatoTaskStatus.revertData) {
-    return extendError(new Error(`data="${gelatoTaskStatus.revertData}"`), {
-      data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
+const CUSTOM_ERRORS_ABI = abis.CustomErrors as Abi;
+
+function parseReasonArg(rawArg: string, type: string): unknown {
+  if (/^u?int\d*$/.test(type)) {
+    return BigInt(rawArg);
+  }
+
+  if (type === "bool") {
+    return rawArg === "true";
+  }
+
+  return rawArg;
+}
+
+/** GMX Relay reports failures as decoded `ErrorName(arg,arg)` strings, not revert bytes; a reason that does not round-trip the ABI stays undecoded. */
+function encodeRelayReasonAsRevertData(reason: string | undefined): string | undefined {
+  const match = reason?.match(DECODED_REVERT_REASON_REGEXP);
+
+  if (!match) {
+    return undefined;
+  }
+
+  const [, errorName, joinedArgs] = match;
+
+  const abiError = CUSTOM_ERRORS_ABI.find((item) => item.type === "error" && item.name === errorName);
+
+  if (abiError?.type !== "error") {
+    return undefined;
+  }
+
+  const rawArgs = joinedArgs === "" ? [] : joinedArgs.split(",");
+
+  if (rawArgs.length !== abiError.inputs.length) {
+    return undefined;
+  }
+
+  try {
+    return encodeErrorResult({
+      abi: CUSTOM_ERRORS_ABI,
+      errorName,
+      args: rawArgs.map((rawArg, index) => parseReasonArg(rawArg, abiError.inputs[index].type)),
+    });
+  } catch {
+    return undefined;
+  }
+}
+
+export function extractRelayTaskError(relayTaskStatus: RelayTaskStatus) {
+  const revertData = relayTaskStatus.revertData ?? encodeRelayReasonAsRevertData(relayTaskStatus.message);
+
+  if (revertData) {
+    return extendError(new Error(`data="${revertData}"`), {
+      data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
     });
   }
 
-  const bytecodeMatch = gelatoTaskStatus.message?.match(BYTECODE_REGEXP);
+  const bytecodeMatch = relayTaskStatus.message?.match(BYTECODE_REGEXP);
 
   if (bytecodeMatch) {
     const bytecode = bytecodeMatch[0];
     return extendError(new Error(`data="${bytecode}"`), {
-      data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
+      data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
     });
   }
 
-  return extendError(new Error(`Gelato task cancelled, unknown reason`), {
-    data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
+  return extendError(new Error(`Relay task cancelled, unknown reason`), {
+    data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
   });
+}
+
+export function getRelayTaskUrl({
+  relayProvider,
+  taskId,
+  isDebug,
+  tenderlyAccountSlug,
+  tenderlyProjectSlug,
+}: {
+  relayProvider: RelayProvider | undefined;
+  taskId: string | undefined;
+  isDebug: boolean;
+  tenderlyAccountSlug?: string;
+  tenderlyProjectSlug?: string;
+}) {
+  // only Gelato publishes a task page; a GMX Relay task id resolves to nothing on gelato.digital
+  if (relayProvider !== "gelato" || !taskId) {
+    return undefined;
+  }
+
+  return getGelatoTaskUrl({ taskId, isDebug, tenderlyAccountSlug, tenderlyProjectSlug });
 }
 
 export function getGelatoTaskUrl({

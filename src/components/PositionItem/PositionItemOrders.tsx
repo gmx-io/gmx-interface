@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
@@ -16,10 +16,11 @@ import {
   isMarketOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { isFullClosePositionOrder } from "domain/tpsl/utils";
-import { calculateDisplayDecimals, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
@@ -203,10 +204,11 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
     getPositionKey(order.account, order.marketAddress, order.targetCollateralToken.address, order.isLong)
   );
   const isFullClose = isFullClosePositionOrder(order, position?.sizeInUsd);
+  const isMarginDeposit = isMarginDepositOrder(order);
 
   return (
     <div key={order.key} className="text-start">
-      {getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
+      {isMarginDeposit ? t`Deposit margin` : getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
       {!isTwap && !isMarketOrderType(order.orderType) ? `: ${triggerThresholdType} ` : null}
       {!isTwap && !isMarketOrderType(order.orderType) && (
         <span className="numbers">
@@ -224,6 +226,13 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
       <span className="numbers">
         {isFullClose ? (
           <Trans>Full position close</Trans>
+        ) : isMarginDeposit ? (
+          formatBalanceAmount(
+            order.initialCollateralDeltaAmount,
+            order.initialCollateralToken.decimals,
+            order.initialCollateralToken.symbol,
+            { isStable: order.initialCollateralToken.isStable }
+          )
         ) : (
           <>
             {isIncrease ? "+" : "-"}

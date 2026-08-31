@@ -373,9 +373,17 @@ describe("externalSwapSelectors", () => {
   });
 
   describe("selectShouldRequestExternalSwapQuote — gates", () => {
-    it("returns false when tradeMode is Limit", () => {
+    it("returns true for limit increase", () => {
       const state = createMockState({
         tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Limit },
+      });
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+      expect(selectShouldRequestExternalSwapQuote(state)).toBe(true);
+    });
+
+    it("returns false for limit swap", () => {
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeType: TradeType.Swap, tradeMode: TradeMode.Limit },
       });
       mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
       expect(selectShouldRequestExternalSwapQuote(state)).toBe(false);
@@ -585,6 +593,16 @@ describe("externalSwapSelectors", () => {
       });
 
       expect(selectRawExternalSwapDesirability(state)).toBe("required");
+      expect(selectExternalSwapDesirability(state)).toBe("required");
+    });
+
+    it("keeps the trade mode gate for limit swaps", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeType: TradeType.Swap, tradeMode: TradeMode.Limit },
+      });
+
       expect(selectExternalSwapDesirability(state)).toBe("not_wanted");
     });
   });
@@ -617,12 +635,22 @@ describe("externalSwapSelectors", () => {
       expect(selectExternalSwapBlockReason(state)).toBe("orderTypeNotSupported");
     });
 
-    it("returns orderTypeNotSupported for Limit even when the failure latch is set", () => {
+    it("does not block limit increase by order type even when the failure latch is set", () => {
       findSwapPathFn = vi.fn().mockReturnValue(undefined);
 
       const state = createMockState({
         tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Limit },
         externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBeUndefined();
+    });
+
+    it("returns orderTypeNotSupported for limit swaps", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeType: TradeType.Swap, tradeMode: TradeMode.Limit },
       });
 
       expect(selectExternalSwapBlockReason(state)).toBe("orderTypeNotSupported");

@@ -19,7 +19,6 @@ const EMPTY_EXPOSURE: DelistingExposure = {
 
 export function useDelistingExposure(): DelistingExposure & {
   account: string | undefined;
-  chainId: number;
 } {
   const { account } = useWallet();
   const { chainId, srcChainId } = useChainId();
@@ -55,5 +54,5 @@ export function useDelistingExposure(): DelistingExposure & {
     [chainId, enabled, marketTokensData, marketsInfoData, positions.positionsData]
   );
 
-  return { account, chainId, ...exposure };
+  return { account, ...exposure };
 }
