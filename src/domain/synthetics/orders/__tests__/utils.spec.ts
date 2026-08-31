@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
+import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 
@@ -141,6 +142,322 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
     });
 
     expect(hasLiquidatableError(result)).toBe(true);
+  });
+});
+
+describe("getOrderErrors — margin deposit orders", () => {
+  const ACCOUNT = "0x1111111111111111111111111111111111111111";
+
+  function makeDepositOrder(overrides: Partial<PositionOrderInfo> = {}) {
+    return makeIncreaseOrder(OrderType.LimitIncrease, {
+      account: ACCOUNT,
+      sizeDeltaUsd: 0n,
+      initialCollateralDeltaAmount: expandDecimals(5_000, 6),
+      triggerPrice: expandDecimals(18_500, 30),
+      ...overrides,
+    });
+  }
+
+  function makeDepositPosition(liquidationPrice: bigint) {
+    return mockPositionInfo(
+      {
+        marketInfo,
+        collateralTokenAddress: tokensData.USDC.address,
+        account: ACCOUNT,
+        isLong: true,
+        sizeInUsd: expandDecimals(10_000, 30),
+        collateralUsd: expandDecimals(1_000, 30),
+      },
+      { liquidationPrice }
+    );
+  }
+
+  /** 10k BTC position at $20k with $3k USDC margin: liq ≈ $14.2k long, $25.8k short. */
+  function makeFundedPosition(p: {
+    liquidationPrice: bigint;
+    isLong?: boolean;
+    pendingBorrowingFeesUsd?: bigint;
+    pendingFundingFeesUsd?: bigint;
+  }) {
+    const isLong = p.isLong ?? true;
+
+    return mockPositionInfo(
+      {
+        marketInfo,
+        collateralTokenAddress: tokensData.USDC.address,
+        account: ACCOUNT,
+        isLong,
+        sizeInUsd: expandDecimals(10_000, 30),
+        collateralUsd: expandDecimals(3_000, 30),
+      },
+      {
+        isLong,
+        liquidationPrice: p.liquidationPrice,
+        pendingBorrowingFeesUsd: p.pendingBorrowingFeesUsd ?? 0n,
+        pendingFundingFeesUsd: p.pendingFundingFeesUsd ?? 0n,
+      }
+    );
+  }
+
+  const depositParams = {
+    ...baseParams,
+    minCollateralUsd: expandDecimals(10, 30),
+    userReferralInfo: undefined,
+  };
+
+  const errorKeys = (result: ReturnType<typeof getOrderErrors>) => result.errors.map((e) => e.key);
+
+  it("returns the red state when the deposit still leaves the position liquidatable at the trigger", () => {
+    const position = makeDepositPosition(expandDecimals(19_000, 30));
+
+    const result = getOrderErrors({
+      ...depositParams,
+      positionsInfoData: { [position.key]: position },
+      order: makeDepositOrder({
+        initialCollateralDeltaAmount: expandDecimals(1, 6),
+        triggerPrice: expandDecimals(15_000, 30),
+      }),
+    });
+
+    expect(errorKeys(result)).toEqual(["marginDepositInsufficient"]);
+    expect(result.level).toBe("error");
+  });
+
+  it("returns the yellow state when the trigger is at or beyond the current liquidation price", () => {
+    const position = makeDepositPosition(expandDecimals(19_000, 30));
+
+    const result = getOrderErrors({
+      ...depositParams,
+      positionsInfoData: { [position.key]: position },
+      order: makeDepositOrder(),
+    });
+
+    expect(errorKeys(result)).toEqual(["marginDepositBeyondLiqPrice"]);
+    expect(result.level).toBe("warning");
+  });
+
+  it("returns no state when the trigger is a safe distance from liquidation", () => {
+    const position = makeDepositPosition(expandDecimals(15_000, 30));
+
+    const result = getOrderErrors({
+      ...depositParams,
+      positionsInfoData: { [position.key]: position },
+      order: makeDepositOrder(),
+    });
+
+    expect(result.errors).toEqual([]);
+    expect(result.level).toBeUndefined();
+  });
+
+  it("reports an orphaned deposit and skips the standard increase checks when no position matches", () => {
+    const otherCollateralPosition = mockPositionInfo({
+      marketInfo,
+      collateralTokenAddress: tokensData.BTC.address,
+      account: ACCOUNT,
+      isLong: true,
+      sizeInUsd: expandDecimals(10_000, 30),
+      collateralUsd: expandDecimals(1_000, 30),
+    });
+
+    const result = getOrderErrors({
+      ...depositParams,
+      isSetAcceptablePriceImpactEnabled: true,
+      positionsInfoData: { [otherCollateralPosition.key]: otherCollateralPosition },
+      order: makeDepositOrder(),
+    });
+
+    // the standard path would add the "collateralToken" mismatch warning here
+    expect(errorKeys(result)).toEqual(["marginDepositNoPosition"]);
+    expect(result.level).toBe("error");
+  });
+
+  it("reports an orphaned deposit when the account has no positions at all", () => {
+    const result = getOrderErrors({
+      ...depositParams,
+      positionsInfoData: {},
+      order: makeDepositOrder(),
+    });
+
+    expect(errorKeys(result)).toEqual(["marginDepositNoPosition"]);
+    expect(result.level).toBe("error");
+  });
+
+  it("stays silent while positions are still loading", () => {
+    const result = getOrderErrors({
+      ...depositParams,
+      positionsInfoData: undefined,
+      order: makeDepositOrder(),
+    });
+
+    expect(result.errors).toEqual([]);
+  });
+
+  it("leaves a regular Limit Increase with a positive size on the standard path", () => {
+    const otherCollateralPosition = mockPositionInfo({
+      marketInfo,
+      collateralTokenAddress: tokensData.BTC.address,
+      account: ACCOUNT,
+      isLong: true,
+      sizeInUsd: expandDecimals(10_000, 30),
+      collateralUsd: expandDecimals(1_000, 30),
+    });
+
+    const result = getOrderErrors({
+      ...depositParams,
+      positionsInfoData: { [otherCollateralPosition.key]: otherCollateralPosition },
+      order: makeIncreaseOrder(OrderType.LimitIncrease, { account: ACCOUNT }),
+    });
+
+    expect(errorKeys(result)).toContain("collateralToken");
+    expect(errorKeys(result)).not.toContain("marginDepositInsufficient");
+    expect(errorKeys(result)).not.toContain("marginDepositBeyondLiqPrice");
+  });
+
+  it("flips to the red state once accrued fees eat into the deposit", () => {
+    const order = makeDepositOrder({
+      initialCollateralDeltaAmount: expandDecimals(2_000, 6),
+      triggerPrice: expandDecimals(12_000, 30),
+    });
+
+    const withoutFees = makeFundedPosition({ liquidationPrice: expandDecimals(11_000, 30) });
+    const withFees = makeFundedPosition({
+      liquidationPrice: expandDecimals(11_000, 30),
+      pendingBorrowingFeesUsd: expandDecimals(900, 30),
+      pendingFundingFeesUsd: expandDecimals(600, 30),
+    });
+
+    expect(
+      getOrderErrors({ ...depositParams, positionsInfoData: { [withoutFees.key]: withoutFees }, order }).errors
+    ).toEqual([]);
+
+    expect(
+      errorKeys(getOrderErrors({ ...depositParams, positionsInfoData: { [withFees.key]: withFees }, order }))
+    ).toEqual(["marginDepositInsufficient"]);
+  });
+
+  it("evaluates concurrent deposits against their own amount and trigger only", () => {
+    const position = makeFundedPosition({ liquidationPrice: expandDecimals(11_000, 30) });
+    const positionsInfoData = { [position.key]: position };
+
+    const funded = makeDepositOrder({
+      key: "deposit-funded",
+      initialCollateralDeltaAmount: expandDecimals(2_000, 6),
+      triggerPrice: expandDecimals(12_000, 30),
+    });
+    const dust = makeDepositOrder({
+      key: "deposit-dust",
+      initialCollateralDeltaAmount: expandDecimals(1, 6),
+      triggerPrice: expandDecimals(13_500, 30),
+    });
+
+    expect(getOrderErrors({ ...depositParams, positionsInfoData, order: funded }).errors).toEqual([]);
+    expect(errorKeys(getOrderErrors({ ...depositParams, positionsInfoData, order: dust }))).toEqual([
+      "marginDepositInsufficient",
+    ]);
+  });
+
+  it("clears the red state once the trigger moves away from liquidation", () => {
+    const position = makeFundedPosition({ liquidationPrice: expandDecimals(11_000, 30) });
+    const positionsInfoData = { [position.key]: position };
+
+    const nearLiquidation = makeDepositOrder({
+      initialCollateralDeltaAmount: expandDecimals(1, 6),
+      triggerPrice: expandDecimals(13_500, 30),
+    });
+    const movedAway = makeDepositOrder({
+      initialCollateralDeltaAmount: expandDecimals(1, 6),
+      triggerPrice: expandDecimals(16_000, 30),
+    });
+
+    expect(errorKeys(getOrderErrors({ ...depositParams, positionsInfoData, order: nearLiquidation }))).toEqual([
+      "marginDepositInsufficient",
+    ]);
+    expect(getOrderErrors({ ...depositParams, positionsInfoData, order: movedAway }).errors).toEqual([]);
+  });
+
+  describe("short positions", () => {
+    const shortDepositOrder = (overrides: Partial<PositionOrderInfo> = {}) =>
+      makeDepositOrder({ isLong: false, ...overrides });
+
+    it("returns the red state when the deposit leaves the short liquidatable at the trigger", () => {
+      const position = makeFundedPosition({ isLong: false, liquidationPrice: expandDecimals(29_000, 30) });
+
+      const result = getOrderErrors({
+        ...depositParams,
+        positionsInfoData: { [position.key]: position },
+        order: shortDepositOrder({
+          initialCollateralDeltaAmount: expandDecimals(1, 6),
+          triggerPrice: expandDecimals(27_000, 30),
+        }),
+      });
+
+      expect(errorKeys(result)).toEqual(["marginDepositInsufficient"]);
+    });
+
+    it("returns the yellow state when the short trigger is at or beyond the current liquidation price", () => {
+      const position = makeFundedPosition({ isLong: false, liquidationPrice: expandDecimals(27_000, 30) });
+
+      const result = getOrderErrors({
+        ...depositParams,
+        positionsInfoData: { [position.key]: position },
+        order: shortDepositOrder({
+          initialCollateralDeltaAmount: expandDecimals(2_000, 6),
+          triggerPrice: expandDecimals(28_000, 30),
+        }),
+      });
+
+      expect(errorKeys(result)).toEqual(["marginDepositBeyondLiqPrice"]);
+      expect(result.level).toBe("warning");
+    });
+
+    it("returns no state for a short trigger a safe distance from liquidation", () => {
+      const position = makeFundedPosition({ isLong: false, liquidationPrice: expandDecimals(27_000, 30) });
+
+      const result = getOrderErrors({
+        ...depositParams,
+        positionsInfoData: { [position.key]: position },
+        order: shortDepositOrder({
+          initialCollateralDeltaAmount: expandDecimals(2_000, 6),
+          triggerPrice: expandDecimals(26_000, 30),
+        }),
+      });
+
+      expect(result.errors).toEqual([]);
+    });
+  });
+
+  it("skips the standard increase checks that the same order would trip with a size", () => {
+    const position = makeFundedPosition({ liquidationPrice: expandDecimals(11_000, 30) });
+    const positionsInfoData = { [position.key]: position };
+
+    // exactly the state the standard increase path reports as "resultingLiquidatable"
+    const params = {
+      ...depositParams,
+      positionsInfoData,
+      isSetAcceptablePriceImpactEnabled: true,
+      nextPositionValues: nextValues(expandDecimals(13_000, 30)),
+    };
+
+    const deposit = getOrderErrors({
+      ...params,
+      order: makeDepositOrder({
+        initialCollateralDeltaAmount: expandDecimals(2_000, 6),
+        triggerPrice: expandDecimals(12_000, 30),
+      }),
+    });
+
+    expect(deposit.errors).toEqual([]);
+
+    // control: the same inputs with a positive size do produce the standard error
+    const regularIncrease = getOrderErrors({
+      ...params,
+      order: makeIncreaseOrder(OrderType.LimitIncrease, {
+        account: ACCOUNT,
+        triggerPrice: expandDecimals(12_000, 30),
+      }),
+    });
+
+    expect(errorKeys(regularIncrease)).toContain("resultingLiquidatable");
   });
 });
 

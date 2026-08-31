@@ -14,7 +14,8 @@ import icSparkle from "img/trader_affiliate_sparkle.svg";
 import { ArrowButton } from "./ArrowButton";
 import {
   AFFILIATE_VOLUME_TIERS,
-  DEFAULT_VOLUME_INDEX,
+  DEFAULT_AFFILIATE_VOLUME_INDEX,
+  DEFAULT_TRADER_VOLUME_INDEX,
   EFFECTIVE_FEE_RATE,
   FEE_SHARE_RATE,
   GRADIENT_TEXT_CLASS,
@@ -34,7 +35,9 @@ type TabContent = {
   heading: React.ReactNode;
   subtext: string;
   benefits: Benefit[];
+  calcTitle: string;
   volumeLabel: string;
+  incomeLabel: string;
   disclaimer: React.ReactNode;
   cta: string;
 };
@@ -63,10 +66,12 @@ function useTabContent(tab: TabKey): TabContent {
             description: t`Trade from your own wallet — no deposits.`,
           },
         ],
+        calcTitle: t`Estimate your savings`,
         volumeLabel: t`MONTHLY VOLUME`,
+        incomeLabel: t`Your savings (at 25%)`,
         disclaimer: (
           <Trans>
-            Assumes a ~0.06% effective round-trip fee on GMX perps.
+            Assumes a ~0.05% effective round-trip fee on GMX perps.
             <br className="hidden sm:block" />
             Illustrative only — your exact rate is confirmed by the desk on signup.
           </Trans>
@@ -102,10 +107,12 @@ function useTabContent(tab: TabKey): TabContent {
           description: t`Banners, links and a partner manager.`,
         },
       ],
+      calcTitle: t`Estimate your income`,
       volumeLabel: t`REFERRED MONTHLY VOLUME`,
+      incomeLabel: t`Your income (at 25%)`,
       disclaimer: (
         <Trans>
-          Illustrative, based on a ~0.06% effective fee.
+          Illustrative, based on a ~0.05% effective fee.
           <br className="hidden sm:block" />
           Real earnings depend on referral tier and each trader's activity.
         </Trans>
@@ -132,8 +139,8 @@ const incomeFormatter = new Intl.NumberFormat("en-US", {
 export function TraderAffiliateWidget() {
   const [tab, setTab] = useState<TabKey>("trader");
   const [volumeIndexByTab, setVolumeIndexByTab] = useState<Record<TabKey, number>>({
-    trader: DEFAULT_VOLUME_INDEX,
-    affiliate: DEFAULT_VOLUME_INDEX,
+    trader: DEFAULT_TRADER_VOLUME_INDEX,
+    affiliate: DEFAULT_AFFILIATE_VOLUME_INDEX,
   });
 
   const content = useTabContent(tab);
@@ -214,9 +221,7 @@ export function TraderAffiliateWidget() {
         <div className="relative overflow-hidden rounded-20 bg-slate-900 p-28">
           <img src={calcBg} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
           <div className="relative">
-            <div className="text-18 font-medium -tracking-[0.576px] text-white">
-              <Trans>Estimate your savings</Trans>
-            </div>
+            <div className="text-18 font-medium -tracking-[0.576px] text-white">{content.calcTitle}</div>
             <div className="mt-20 text-12 uppercase tracking-[0.864px] text-slate-500">{content.volumeLabel}</div>
             <div className="mt-8 flex flex-wrap gap-12">
               {volumeTiers.map((tierVolume, index) => (
@@ -234,7 +239,7 @@ export function TraderAffiliateWidget() {
               ))}
             </div>
             <div className={cx("mt-24 w-fit text-12 tracking-[0.024px]", GRADIENT_TEXT_CLASS)}>
-              <Trans>Your income (at 25%)</Trans>
+              {content.incomeLabel}
             </div>
             <div className="mt-12 flex items-baseline gap-8">
               <span className={cx("text-[68px] font-medium leading-[1] -tracking-[3.4px]", GRADIENT_TEXT_CLASS)}>

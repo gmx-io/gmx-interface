@@ -6,13 +6,13 @@ import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localSt
 import {
   ARBITRUM_CONTRACTS,
   deriveGeneratedSubaccount,
-  installMockChain,
   MOCK_ACCOUNT_PRIVATE_KEY,
   MockChain,
   SEEDED_SUBACCOUNT_ADDRESS,
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
   SUBACCOUNT_MESSAGE,
-} from "domain/testUtils/oneClickCtRpcHarness";
+} from "domain/testUtils/rpc/mockChain";
+import { assertNoRpcHoles, installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { ARBITRUM } from "sdk/configs/chainIds";
 
 import { OneClickTradingModeStory } from "./OneClickTradingMode.ct.stories";
@@ -24,6 +24,8 @@ const FAR_FUTURE = 9999999999n;
 const INSUFFICIENT_FUNDS_RPC_ERROR = "insufficient funds for gas * price + value: balance 0, tx cost 21000000000000";
 
 test.setTimeout(60_000);
+
+test.afterEach(assertNoRpcHoles);
 
 type PageLike = {
   locator: (selector: string) => Locator;
@@ -72,7 +74,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
       },
     });
     chain.estimateGasError = INSUFFICIENT_FUNDS_RPC_ERROR;
-    await installMockChain(page, chain);
+    await installRpcResponder(page, chain);
 
     await mount(
       <OneClickTradingModeStory
@@ -127,7 +129,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
       },
     });
     chain.rejectSendTransaction = true;
-    await installMockChain(page, chain);
+    await installRpcResponder(page, chain);
 
     await mount(
       <OneClickTradingModeStory
@@ -185,7 +187,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
       subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
       onchain: { active: false },
     });
-    await installMockChain(page, chain);
+    await installRpcResponder(page, chain);
 
     await mount(
       <OneClickTradingModeStory
@@ -220,7 +222,7 @@ test.describe("Trading Settings: enabling One-Click with real signatures (FEDEV-
       onchain: { active: false },
     });
     chain.rejectTypedDataSign = true;
-    await installMockChain(page, chain);
+    await installRpcResponder(page, chain);
 
     await mount(
       <OneClickTradingModeStory
@@ -268,7 +270,7 @@ test.describe("Trading Settings: enabling One-Click with real signatures (FEDEV-
     });
     chain.setBalance(generated.address, 2n * 10n ** 15n);
     chain.rejectTypedDataSign = true;
-    await installMockChain(page, chain);
+    await installRpcResponder(page, chain);
 
     await mount(<OneClickTradingModeStory expressEnabled />);
 

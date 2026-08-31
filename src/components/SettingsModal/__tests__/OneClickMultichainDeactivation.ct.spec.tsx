@@ -5,13 +5,13 @@ import { ethers } from "ethers";
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import {
   ARBITRUM_CONTRACTS,
-  installMockChain,
   MOCK_ACCOUNT_PRIVATE_KEY,
   MockChain,
   MockGelatoRelay,
   SEEDED_SUBACCOUNT_ADDRESS,
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
-} from "domain/testUtils/oneClickCtRpcHarness";
+} from "domain/testUtils/rpc/mockChain";
+import { assertNoRpcHoles, installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import MultichainSubaccountRouterAbi from "sdk/abis/MultichainSubaccountRouter";
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -36,6 +36,8 @@ const SETTLEMENT_APPROVAL_KEY = getSubaccountApprovalKey(ARBITRUM, MOCK_ACCOUNT,
 const BASE_APPROVAL_KEY = getSubaccountApprovalKey(ARBITRUM, MOCK_ACCOUNT, SOURCE_BASE_MAINNET);
 
 test.setTimeout(90_000);
+
+test.afterEach(assertNoRpcHoles);
 
 type PageLike = {
   locator: (selector: string) => Locator;
@@ -88,7 +90,17 @@ test.describe("Trading Settings: multichain Express+1CT -> Express deactivation 
     });
     const gelatoRelay = new MockGelatoRelay(chain);
     gelatoRelay.simulateInsufficientBalanceForToken = ARBITRUM_WETH_ADDRESS;
-    await installMockChain(page, chain, { gelatoRelay });
+    await installRpcResponder(page, chain, { gelatoRelay });
+
+    // the rollout pins express to GMX Relay; this spec is about the deactivation UX, and its
+    // harness speaks Gelato — route through the incident switch until the sunset cleanup moves
+    // the harness onto /v1/relay/*
+    await page.evaluate(() => {
+      localStorage.setItem(
+        "api-ui-flags-cache-v2-42161",
+        JSON.stringify({ forceGelatoFallback: { enabled: true, createdAt: "", updatedAt: "" } })
+      );
+    });
 
     await mount(
       <OneClickMultichainDeactivationStory

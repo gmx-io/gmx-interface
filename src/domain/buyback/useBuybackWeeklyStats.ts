@@ -5,7 +5,7 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { BuybackWeeklyStatsResponse } from "sdk/clients/v2";
 import type { ContractsChainId } from "sdk/configs/chains";
 
-export type { BuybackWeekData, BuybackSummary, BuybackWeeklyStatsResponse } from "sdk/clients/v2";
+export type { BuybackWeekData, BuybackMonthData, BuybackSummary, BuybackWeeklyStatsResponse } from "sdk/clients/v2";
 
 export function useBuybackWeeklyStats(chainId: ContractsChainId) {
   const sdk = useGmxSdk(chainId);

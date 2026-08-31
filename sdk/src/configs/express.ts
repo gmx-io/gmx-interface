@@ -17,6 +17,7 @@ export const DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION = periodToSeconds(1, "1h");
 
 export const MIN_RELAYER_FEE_USD = 5n ** BigInt(USD_DECIMALS - 1); // 0.5$
 
+/** @deprecated Gelato shuts its relay services down on 2026-09-01; use GMX Relay (`sendToGmxRelay`). */
 export const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
   [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
   [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",

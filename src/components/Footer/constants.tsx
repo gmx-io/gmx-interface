@@ -11,7 +11,6 @@ type Link = {
   label: ReactNode;
   link: string;
   external?: boolean;
-  isAppLink?: boolean;
 };
 
 type SocialLink = {

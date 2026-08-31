@@ -22,7 +22,6 @@ import {
   TransferHistoryTitle,
   WithdrawalScreen,
 } from "./GmxAccountModalShared";
-import { useIsActiveAccountEmbeddedWallet } from "./hooks";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
 import { WalletReceiveOptionsView } from "./WalletReceiveOptionsView";
@@ -72,11 +71,8 @@ function ReceiveFundsTitle() {
 }
 
 function ReceiveToWalletTitle() {
-  const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
-  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
-
   return (
-    <TitleWithBack backTo={isEmbeddedWallet ? "walletReceiveOptions" : walletReceiveViewBackTo ?? "main"}>
+    <TitleWithBack backTo="walletReceiveOptions">
       <Trans>Receive to Wallet</Trans>
     </TitleWithBack>
   );

@@ -24,24 +24,38 @@ export function joinMarketNames(names: string[]): string {
 
 export function buildPositionsBodyText(marketNames: string[], positionCount: number): string {
   const markets = joinMarketNames(marketNames);
+  const verb = plural(marketNames.length, { one: "is", other: "are" });
   const positionNoun = plural(positionCount, { one: "position", other: "positions" });
-  return t`${markets} will be disabled after August 5, 2026, 23:59 UTC. Close your ${positionNoun} before then. Collateral left in open positions won't be accessible after that.`;
+  return t`${markets} ${verb} being delisted. Close your existing ${positionNoun} as remaining positions may be auto-closed.`;
 }
 
 export function buildLiquidityBodyText(poolNames: string[]): string {
   const pools = joinMarketNames(poolNames);
-  return t`${pools} will be disabled after August 5, 2026, 23:59 UTC. Withdraw your liquidity before then. GM tokens left in a disabled pool won't be accessible after that.`;
+  const verb = plural(poolNames.length, { one: "is", other: "are" });
+  return t`${pools} ${verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning.`;
+}
+
+// A market disabled onchain can no longer be traded out of or withdrawn from, so it must drop out of the
+// announcement on its own, with no list edit. `isDisabled` carries the onchain IS_MARKET_DISABLED flag on
+// every data path. A missing entry fails closed: still loading, or dropped from the merge and unnameable.
+export function isMarketOpenOnchain(marketsInfoData: MarketsInfoData | undefined, marketAddress: string): boolean {
+  const marketInfo = getByKey(marketsInfoData, marketAddress);
+  return marketInfo !== undefined && !marketInfo.isDisabled;
 }
 
 export function computeAffectedPositionMarkets(
   chainId: number,
-  positionsInfoData: PositionsData | undefined
+  positionsInfoData: PositionsData | undefined,
+  marketsInfoData: MarketsInfoData | undefined
 ): { marketAddresses: string[]; positionCount: number } {
   const marketAddresses = new Set<string>();
   let positionCount = 0;
 
   for (const position of Object.values(positionsInfoData ?? {})) {
-    if (isDelistingMarket(chainId, position.marketAddress)) {
+    if (
+      isDelistingMarket(chainId, position.marketAddress) &&
+      isMarketOpenOnchain(marketsInfoData, position.marketAddress)
+    ) {
       marketAddresses.add(position.marketAddress);
       positionCount += 1;
     }
@@ -52,12 +66,17 @@ export function computeAffectedPositionMarkets(
 
 export function computeAffectedLiquidityMarkets(
   chainId: number,
-  depositMarketTokensData: TokensData | undefined
+  depositMarketTokensData: TokensData | undefined,
+  marketsInfoData: MarketsInfoData | undefined
 ): string[] {
   const result: string[] = [];
 
   for (const [address, token] of Object.entries(depositMarketTokensData ?? {})) {
-    if ((token.balance ?? 0n) > 0n && isDelistingMarket(chainId, address)) {
+    if (
+      (token.balance ?? 0n) > 0n &&
+      isDelistingMarket(chainId, address) &&
+      isMarketOpenOnchain(marketsInfoData, address)
+    ) {
       result.push(address);
     }
   }
@@ -89,9 +108,10 @@ export function getDelistingExposure(params: {
 
   const { marketAddresses: positionMarkets, positionCount } = computeAffectedPositionMarkets(
     chainId,
-    positionsInfoData
+    positionsInfoData,
+    marketsInfoData
   );
-  const liquidityMarkets = computeAffectedLiquidityMarkets(chainId, depositMarketTokensData);
+  const liquidityMarkets = computeAffectedLiquidityMarkets(chainId, depositMarketTokensData, marketsInfoData);
 
   return {
     positionMarkets,
@@ -142,8 +162,8 @@ export function shouldShowDelistingAnnouncement(toastId: string, affectedAddress
   return affectedAddresses.some((address) => !record.markets.includes(address));
 }
 
-export const POSITIONS_TOAST_ID = "delisting-final-notice-positions";
-export const LIQUIDITY_TOAST_ID = "delisting-final-notice-liquidity";
+export const POSITIONS_TOAST_ID = "delisting-positions";
+export const LIQUIDITY_TOAST_ID = "delisting-liquidity";
 
 export type DelistingToast = {
   id: string;
@@ -161,7 +181,7 @@ export function getActiveDelistingAnnouncementsForExposure(
   const { positionMarkets, positionNames, positionCount, liquidityMarkets, liquidityNames, now } = params;
 
   const toShow: DelistingToast[] = [];
-  const title = t`Final notice: market delistings`;
+  const title = t`Market delistings`;
 
   if (positionNames.length > 0 && shouldShowDelistingAnnouncement(POSITIONS_TOAST_ID, positionMarkets, now)) {
     toShow.push({
@@ -179,7 +199,7 @@ export function getActiveDelistingAnnouncementsForExposure(
       title,
       bodyText: buildLiquidityBodyText(liquidityNames),
       markets: liquidityMarkets,
-      link: { text: t`Withdraw liquidity`, href: "/pools" },
+      link: { text: t`Manage liquidity`, href: "/pools" },
     });
   }
 

@@ -78,7 +78,7 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
   return (
     <div className={cx("flex justify-end max-lg:w-full", className)}>
       <Button
-        variant="secondary"
+        variant="primary"
         onClick={handleClick}
         className="max-lg:w-full"
         disabled={!hasGmxRewards && !hasEsGmxRewards && !hasNativeRewards}

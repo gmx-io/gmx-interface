@@ -166,6 +166,7 @@ export function getOrderLineLabel(
     sizeData,
     showSizeInTokens,
     isPartial,
+    isMarginDeposit,
   }: {
     isLong: boolean;
     marketName: string;
@@ -173,11 +174,16 @@ export function getOrderLineLabel(
     sizeData?: ChartLineSizeData;
     showSizeInTokens: boolean;
     isPartial?: boolean;
+    isMarginDeposit?: boolean;
   }
 ) {
   const directionText = translate(isLong ? msg`Long` : msg`Short`);
   const orderTypeTitle = orderTypeToTitle[orderType];
   let orderTitleText = orderTypeTitle ? translate(orderTypeTitle) : translate(msg`Unknown order`);
+
+  if (isMarginDeposit) {
+    orderTitleText = translate(msg`Deposit margin`);
+  }
 
   if (isPartial) {
     if (orderType === OrderType.LimitDecrease) {

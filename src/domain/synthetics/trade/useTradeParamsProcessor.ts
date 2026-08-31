@@ -44,6 +44,41 @@ export function isSupportedTradeLinkChainId(chainIdFromParams: string, activeCha
   );
 }
 
+const TRADE_LINK_SEARCH_PARAMS = ["mode", "from", "to", "market", "pool", "collateral", "chainId"];
+
+// Returns the search without the consumed trade params, or `undefined` when nothing would change:
+// replacing the url with an identical search re-runs the effect and loops into WebKit's replaceState rate limit.
+export function getCleanedTradeSearch(search: string): string | undefined {
+  const original = new URLSearchParams(search);
+  const cleaned = new URLSearchParams(search);
+
+  for (const param of TRADE_LINK_SEARCH_PARAMS) {
+    cleaned.delete(param);
+  }
+
+  if (cleaned.toString() === original.toString()) {
+    return undefined;
+  }
+
+  return cleaned.toString();
+}
+
+// A link without a trade type in the path is resolved against the one the tradebox is already on.
+export function getTradeLinkTradeType(
+  tradeTypeFromPath: string | undefined,
+  currentTradeType: TradeType | undefined
+): TradeType | undefined {
+  if (tradeTypeFromPath) {
+    const validTradeType = getMatchingValueFromObject(TradeType, tradeTypeFromPath);
+
+    if (validTradeType) {
+      return validTradeType as TradeType;
+    }
+  }
+
+  return currentTradeType;
+}
+
 export function useTradeParamsProcessor() {
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
@@ -64,11 +99,36 @@ export function useTradeParamsProcessor() {
   });
 
   const changingNetwork = useRef(false);
+  const cleanupTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(
+    () => () => {
+      clearTimeout(cleanupTimerRef.current);
+      cleanupTimerRef.current = undefined;
+    },
+    []
+  );
+
   useEffect(() => {
     if (changingNetwork.current) {
       return;
     }
     changingNetwork.current = true;
+
+    // One pending timer only: rescheduling on every effect pass would keep pushing the cleanup out.
+    const scheduleSearchCleanup = () => {
+      if (cleanupTimerRef.current !== undefined || getCleanedTradeSearch(history.location.search) === undefined) {
+        return;
+      }
+
+      cleanupTimerRef.current = setTimeout(() => {
+        cleanupTimerRef.current = undefined;
+        const cleanedSearch = getCleanedTradeSearch(history.location.search);
+        if (cleanedSearch !== undefined) {
+          history.replace({ search: cleanedSearch });
+        }
+      }, 2000);
+    };
 
     async function changeNetwork() {
       const { tradeType } = params;
@@ -83,15 +143,10 @@ export function useTradeParamsProcessor() {
       } = searchParams;
 
       if (chainIdFromParams && !isSupportedTradeLinkChainId(chainIdFromParams, chainId)) {
-        const query = new URLSearchParams(history.location.search);
-        query.delete("mode");
-        query.delete("from");
-        query.delete("to");
-        query.delete("market");
-        query.delete("pool");
-        query.delete("collateral");
-        query.delete("chainId");
-        history.replace({ search: query.toString() });
+        const cleanedSearch = getCleanedTradeSearch(history.location.search);
+        if (cleanedSearch !== undefined) {
+          history.replace({ search: cleanedSearch });
+        }
         return;
       }
 
@@ -101,13 +156,12 @@ export function useTradeParamsProcessor() {
 
       const toToken = to ?? market;
 
+      const linkTradeType = getTradeLinkTradeType(tradeType, latestTradeOptions.current.tradeType);
+
       const tradeOptions: TradeOptions = {};
 
-      if (tradeType) {
-        const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
-        if (validTradeType) {
-          tradeOptions.tradeType = validTradeType as TradeType;
-        }
+      if (linkTradeType) {
+        tradeOptions.tradeType = linkTradeType;
       }
 
       if (tradeMode) {
@@ -145,9 +199,8 @@ export function useTradeParamsProcessor() {
         });
 
         if (toTokenInfo) {
-          const isSwapTrade = tradeOptions.tradeType === TradeType.Swap;
-          const isLongOrShortTrade =
-            tradeOptions.tradeType === TradeType.Long || tradeOptions.tradeType === TradeType.Short;
+          const isSwapTrade = linkTradeType === TradeType.Swap;
+          const isLongOrShortTrade = linkTradeType === TradeType.Long || linkTradeType === TradeType.Short;
           const isTokenInSwapList = isSwapTrade && isTokenInList(toTokenInfo, swapTokens);
           const isTokenInIndexList = isLongOrShortTrade && isTokenInList(toTokenInfo, indexTokens);
 
@@ -166,45 +219,24 @@ export function useTradeParamsProcessor() {
             tradeOptions.marketAddress = marketPool?.marketTokenAddress;
           }
         }
-        setTimeout(() => {
-          if (history.location.search) {
-            const query = new URLSearchParams(history.location.search);
-            query.delete("mode");
-            query.delete("from");
-            query.delete("to");
-            query.delete("market");
-            query.delete("pool");
-            query.delete("collateral");
-            query.delete("chainId");
-            history.replace({ search: query.toString() });
-          }
-        }, 2000);
+        scheduleSearchCleanup();
       }
 
       if (!isMatch(latestTradeOptions.current, tradeOptions)) {
         setTradeConfig(tradeOptions);
       }
 
-      if (history.location.search && !toToken && !pool) {
-        setTimeout(() => {
-          if (history.location.search) {
-            const query = new URLSearchParams(history.location.search);
-            query.delete("mode");
-            query.delete("from");
-            query.delete("to");
-            query.delete("market");
-            query.delete("pool");
-            query.delete("collateral");
-            query.delete("chainId");
-            history.replace({ search: query.toString() });
-          }
-        }, 2000);
+      if (history.location.search && !toToken) {
+        scheduleSearchCleanup();
       }
     }
 
-    changeNetwork().then(() => {
-      changingNetwork.current = false;
-    });
+    changeNetwork()
+      // A declined network switch must not latch the guard.
+      .catch(() => undefined)
+      .then(() => {
+        changingNetwork.current = false;
+      });
   }, [
     params,
     searchParams,

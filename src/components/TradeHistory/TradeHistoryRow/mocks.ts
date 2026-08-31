@@ -6551,3 +6551,42 @@ export const executeTwapIncreaseWithFee: PositionTradeAction = {
   },
   pnlUsd: -126_320_000_000_000_000_000_000_000_000_000n,
 };
+
+//#region Margin deposits
+export const createMarginDeposit: PositionTradeAction = {
+  ...createOrderIncreaseLong,
+  id: "0x1290b5858dc8efa0e2eec75a241fa95bdb5f9a58950a57bf540f269edff18751:31",
+  sizeDeltaUsd: 0n,
+  // 0.25 WETH
+  initialCollateralDeltaAmount: 250_000_000_000_000_000n,
+};
+
+export const updateMarginDeposit: PositionTradeAction = {
+  ...createMarginDeposit,
+  id: "0x1290b5858dc8efa0e2eec75a241fa95bdb5f9a58950a57bf540f269edff18751:32",
+  eventName: TradeActionType.OrderUpdated,
+};
+
+export const cancelMarginDeposit: PositionTradeAction = {
+  ...createMarginDeposit,
+  id: "0x1290b5858dc8efa0e2eec75a241fa95bdb5f9a58950a57bf540f269edff18751:33",
+  eventName: TradeActionType.OrderCancelled,
+};
+
+export const executeMarginDeposit: PositionTradeAction = {
+  ...executeOrderIncreaseLong,
+  id: "0xf57f245966c3313a01526c6b86406e3af5d61eedcf380e4595fabfab1c5d0d7e:31",
+  sizeDeltaUsd: 0n,
+  // 500 USDC
+  initialCollateralDeltaAmount: 500_000_000n,
+  priceImpactUsd: 0n,
+};
+
+export const frozenMarginDeposit: PositionTradeAction = {
+  ...frozenOrderIncreaseShort,
+  id: "0xba090183c17bcc5dbfcb4b19c59aa420df42e72ae8c8bce6be8fe07f3769c3b1:31",
+  sizeDeltaUsd: 0n,
+  // 250 USDC.e
+  initialCollateralDeltaAmount: 250_000_000n,
+};
+//#endregion Margin deposits

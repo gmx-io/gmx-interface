@@ -3,6 +3,7 @@ export * from "./oracleParamsUtils";
 export * from "./relayParamsUtils";
 export * from "./batchOrderUtils";
 export * from "./gelatoRelayUtils";
+export * from "./gmxRelayUtils";
 export * from "./globalExpressParams";
 export * from "./expressParamsUtils";
 export * from "./estimateExpressParams";

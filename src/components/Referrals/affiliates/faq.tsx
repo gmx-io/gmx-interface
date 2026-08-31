@@ -68,8 +68,8 @@ export const AFFILIATE_POST_WIZARD_FAQS: FaqItem[] = [
     title: <Trans>How do I share my code?</Trans>,
     content: (
       <Trans>
-        You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content,
-        or directly with friends.
+        You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your
+        content, or directly with friends.
       </Trans>
     ),
   },

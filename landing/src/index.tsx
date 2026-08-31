@@ -1,5 +1,3 @@
-// Must stay above every other import so the url is normalized before anything reads the location.
-import "lib/legacyHashUrlRedirect";
 import "./main.css";
 
 import React from "react";

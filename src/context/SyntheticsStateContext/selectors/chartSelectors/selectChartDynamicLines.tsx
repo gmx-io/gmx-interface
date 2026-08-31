@@ -13,7 +13,8 @@ import {
   isMarketOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
-import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
+import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { getPositionKey } from "lib/legacy";
 import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
@@ -61,19 +62,33 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
 
       const priceDecimal = calculateDisplayDecimals(positionOrder.triggerPrice, USD_DECIMALS, tokenVisualMultiplier);
 
-      const sizeData: ChartLineSizeData | undefined = isIncreaseOrderType(positionOrder.orderType)
+      const isMarginDeposit = isMarginDepositOrder(positionOrder);
+
+      const sizeData: ChartLineSizeData | undefined = isMarginDeposit
         ? {
-            sizeInUsd: positionOrder.sizeDeltaUsd,
-            sizeInTokens:
-              (convertToTokenAmount(
-                positionOrder.sizeDeltaUsd,
-                positionOrder.indexToken.decimals,
-                positionOrder.triggerPrice
-              ) ?? 0n) / BigInt(tokenVisualMultiplier ?? 1),
-            tokenSymbol: `${getTokenVisualMultiplier(positionOrder.indexToken)}${positionOrder.indexToken.symbol}`,
-            tokenDecimals: positionOrder.indexToken.decimals,
+            sizeInUsd:
+              convertToUsd(
+                positionOrder.initialCollateralDeltaAmount,
+                positionOrder.initialCollateralToken.decimals,
+                positionOrder.initialCollateralToken.prices.minPrice
+              ) ?? 0n,
+            sizeInTokens: positionOrder.initialCollateralDeltaAmount,
+            tokenSymbol: positionOrder.initialCollateralToken.symbol,
+            tokenDecimals: positionOrder.initialCollateralToken.decimals,
           }
-        : undefined;
+        : isIncreaseOrderType(positionOrder.orderType)
+          ? {
+              sizeInUsd: positionOrder.sizeDeltaUsd,
+              sizeInTokens:
+                (convertToTokenAmount(
+                  positionOrder.sizeDeltaUsd,
+                  positionOrder.indexToken.decimals,
+                  positionOrder.triggerPrice
+                ) ?? 0n) / BigInt(tokenVisualMultiplier ?? 1),
+              tokenSymbol: `${getTokenVisualMultiplier(positionOrder.indexToken)}${positionOrder.indexToken.symbol}`,
+              tokenDecimals: positionOrder.indexToken.decimals,
+            }
+          : undefined;
 
       const isTpsl =
         positionOrder.orderType === OrderType.LimitDecrease || positionOrder.orderType === OrderType.StopLossDecrease;
@@ -121,6 +136,7 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
         sizeDeltaUsd,
         indexTokenVisualMultiplier: tokenVisualMultiplier ?? 1,
         isPartial,
+        isMarginDeposit,
       };
     });
 

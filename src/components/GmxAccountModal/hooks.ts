@@ -1,7 +1,5 @@
-import { getEmbeddedConnectedWallet, useWallets } from "@privy-io/react-auth";
 import { useCallback, useMemo } from "react";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
-import { isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
@@ -477,27 +475,17 @@ export function useGmxAccountDepositEligibility(): {
   }, [chainId, tokenChainDataArray, tokensData, isBalanceDataLoading, isWalletBalancesLoaded]);
 }
 
-export function useIsActiveAccountEmbeddedWallet(): boolean {
-  const { address: account } = useAccount();
-  const { wallets } = useWallets();
-
-  const embeddedWallet = getEmbeddedConnectedWallet(wallets);
-
-  return Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
-}
-
 export function useOpenWalletReceive(): (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => void {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
   const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
-  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
 
   return useCallback(
     (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => {
       setWalletReceiveViewChain(opts?.chain);
       setWalletReceiveViewBackTo(opts?.backTo);
-      setIsVisibleOrView(isEmbeddedWallet ? "walletReceiveOptions" : "walletReceive");
+      setIsVisibleOrView("walletReceiveOptions");
     },
-    [isEmbeddedWallet, setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
+    [setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
   );
 }

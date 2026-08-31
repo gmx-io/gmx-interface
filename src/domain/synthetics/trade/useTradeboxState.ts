@@ -10,7 +10,12 @@ import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
 import { AVALANCHE, ContractsChainId, SourceChainId } from "config/chains";
-import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import {
+  getKeepLeverageKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+  MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY,
+} from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -178,7 +183,11 @@ export function useTradeboxState(
         localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
 
         if (latestEnabled.current && newState.tradeType !== oldState.tradeType) {
-          latestHistory.current.replace(`/trade/${newState.tradeType.toLowerCase()}`);
+          latestHistory.current.replace({
+            pathname: `/trade/${newState.tradeType.toLowerCase()}`,
+            // The search still carries deep link params here, they are applied once markets load.
+            search: latestHistory.current.location.search,
+          });
         }
         return newState;
       });
@@ -220,8 +229,10 @@ export function useTradeboxState(
         return;
       }
 
-      setStoredOptionsOnChain({
+      setStoredOptionsOnChain((oldState) => ({
         ...INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
+        // A `/trade/short` link is applied before the chain defaults resolve, so keep its trade type.
+        tradeType: oldState.tradeType ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.tradeType,
         markets: {
           [market.indexTokenAddress]: {
             long: market.marketTokenAddress,
@@ -232,7 +243,7 @@ export function useTradeboxState(
           indexTokenAddress: market.indexTokenAddress,
           fromTokenAddress: market.shortTokenAddress,
         },
-      });
+      }));
       setSyncedChainId(chainId);
     },
     [
@@ -302,6 +313,10 @@ export function useTradeboxState(
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
     "limit-price-warning-hidden",
+    false
+  );
+  const [marginDepositSuggestionHidden, setMarginDepositSuggestionHidden] = useLocalStorageSerializeKey(
+    MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY,
     false
   );
 
@@ -780,6 +795,8 @@ export function useTradeboxState(
     setKeepLeverage,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
+    marginDepositSuggestionHidden,
+    setMarginDepositSuggestionHidden,
     advancedOptions,
     setAdvancedOptions,
     allowedSlippage,

@@ -40,6 +40,7 @@ export function DynamicLine({
   sizeDeltaUsd,
   indexTokenVisualMultiplier,
   isPartial,
+  isMarginDeposit,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -81,6 +82,7 @@ export function DynamicLine({
         sizeData,
         showSizeInTokens: chartLinesSizeInTokens,
         isPartial,
+        isMarginDeposit,
       });
 
       if (positionEntryPrice === undefined || positionSizeInUsd === undefined || sizeDeltaUsd === undefined) {
@@ -104,6 +106,7 @@ export function DynamicLine({
       orderType,
       sizeData,
       isPartial,
+      isMarginDeposit,
       positionEntryPrice,
       positionSizeInUsd,
       sizeDeltaUsd,

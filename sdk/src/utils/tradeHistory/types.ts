@@ -1,5 +1,5 @@
 import { MarketInfo } from "utils/markets/types";
-import { OrderType } from "utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { TokenData } from "utils/tokens/types";
 
 export enum TradeActionType {
@@ -52,6 +52,7 @@ export type PositionTradeAction = {
   pnlUsd?: bigint;
   basePnlUsd?: bigint;
   orderType: OrderType;
+  decreasePositionSwapType?: DecreasePositionSwapType;
   orderKey: string;
   isLong: boolean;
   reason?: string;

@@ -12,7 +12,7 @@ type Props<V extends string | number> = {
   onOptionClick: ((value: V) => void) | undefined;
   regularOptionClassname?: string;
   qa?: string;
-  type: "inline" | "block" | "inline-primary" | "underline";
+  type: "inline" | "block" | "inline-primary" | "underline" | "pill";
 };
 
 export default function RegularTab<V extends string | number>({
@@ -47,6 +47,34 @@ export default function RegularTab<V extends string | number>({
           {option.icon}
           {label}
         </Button>
+      </Wrap>
+    );
+  }
+
+  if (type === "pill") {
+    return (
+      <Wrap content={option.disabledMessage} variant="none">
+        <button
+          type="button"
+          onClick={() => !isDisabled && onOptionClick?.(option.value)}
+          key={option.value}
+          data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
+          disabled={isDisabled}
+          className={cx(
+            "text-body-medium flex items-center justify-center gap-6 rounded-full border-1/2 px-12 py-6 font-medium transition-colors",
+            optionClassName,
+            regularOptionClassname,
+            {
+              "border-[transparent] bg-button-secondary text-typography-primary": isActive,
+              "border-slate-600 text-typography-secondary hover:border-slate-500 hover:text-typography-primary":
+                !isActive,
+              "cursor-not-allowed opacity-50": isDisabled,
+            }
+          )}
+        >
+          {option.icon}
+          {label}
+        </button>
       </Wrap>
     );
   }

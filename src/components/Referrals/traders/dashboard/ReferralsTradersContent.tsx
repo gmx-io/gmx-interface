@@ -75,6 +75,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
   const currentTierRebate = getSharePercentage(discountShare, tierDiscountShare, totalRebate, true);
   const isBalancerProgramCode = isBalancerProgramTier(traderTier);
   const isCodeOwnedByAccount = Boolean(account && codeOwner && account === codeOwner);
+  const isOwnAccountView = !hasAddressInUrl || isAccountOwner;
   const lastUpdated = traderStats?.to ? `${lightFormat(traderStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC` : "--";
 
   return (
@@ -94,8 +95,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
           <TradersPromoCard account={account} />
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
             <OverviewChartCard
-              label={<Trans>Trading volume</Trans>}
-              tooltipContent={<Trans>Volume traded by this account with an active referral code</Trans>}
+              label={isOwnAccountView ? <Trans>Your trading volume</Trans> : <Trans>Trading volume</Trans>}
               value={formatUsd(traderStats?.summary.volumeUsd ?? 0n)}
               valueChange={
                 traderStats?.summary.volumeUsdDelta !== undefined
@@ -114,8 +114,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
               />
             </OverviewChartCard>
             <OverviewChartCard
-              label={<Trans>Discounts</Trans>}
-              tooltipContent={<Trans>Discounts earned by this account as a trader</Trans>}
+              label={isOwnAccountView ? <Trans>Your discounts</Trans> : <Trans>Discounts</Trans>}
               value={formatUsd(traderStats?.summary.discountsUsd ?? 0n)}
               valueChange={
                 traderStats?.summary.discountsUsdDelta !== undefined
