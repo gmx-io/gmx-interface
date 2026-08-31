@@ -301,7 +301,14 @@ export function Curtain({
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerCancel}
           >
-            <div className="flex grow flex-col">{children}</div>
+            <div
+              aria-hidden={!isOpen}
+              className={cx("flex grow flex-col", {
+                invisible: !isOpen,
+              })}
+            >
+              {children}
+            </div>
           </div>
         </div>
       </RemoveScroll>
