@@ -20,7 +20,7 @@ import useWallet from "lib/wallets/useWallet";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
-import RewardsBar from "components/Earn/Portfolio/RewardsBar";
+import { EarningsOverview } from "components/Earn/Portfolio/EarningsOverview/EarningsOverview";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
 
@@ -91,48 +91,32 @@ export default function EarnPortfolioPage() {
 
   return (
     <EarnPageLayout>
-      {processedData && !isWalletInitializing && (
-        <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />
+      {account && !isWalletInitializing && (
+        <ErrorBoundary id="EarnPortfolio-EarningsOverview" variant="block" wrapperClassName="rounded-t-8">
+          <EarningsOverview
+            processedData={processedData}
+            mutateProcessedData={mutateProcessedData}
+            gmGlvAssets={gmGlvAssets}
+          />
+        </ErrorBoundary>
       )}
       {processedData && !isWalletInitializing ? (
-        <>
-          {hasAnyAssets && (
-            <ErrorBoundary id="EarnPortfolio-AssetsList" variant="block" wrapperClassName="rounded-t-8">
-              <AssetsList
-                processedData={processedData}
-                chainId={chainId}
-                hasAnyAssets={hasAnyAssets}
-                hasGmx={hasGmxAssets}
-                hasEsGmx={hasEsGmxAssets}
-                gmGlvAssets={gmGlvAssets}
-                gtRewards={gtRewards}
-                gtRewardsUsd={gtRewardsUsd}
-                performanceTotal={performanceTotal}
-                performance30d={performance30d}
-                isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
-                multichainMarketTokensBalances={multichainMarketTokensBalances}
-              />
-            </ErrorBoundary>
-          )}
-          {!hasAnyAssets && (
-            <ErrorBoundary id="EarnPortfolio-AssetsListEmpty" variant="block" wrapperClassName="rounded-t-8">
-              <AssetsList
-                processedData={processedData}
-                chainId={chainId}
-                hasAnyAssets={hasAnyAssets}
-                hasGmx={hasGmxAssets}
-                hasEsGmx={hasEsGmxAssets}
-                gmGlvAssets={gmGlvAssets}
-                gtRewards={gtRewards}
-                gtRewardsUsd={gtRewardsUsd}
-                performanceTotal={performanceTotal}
-                performance30d={performance30d}
-                isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
-                multichainMarketTokensBalances={multichainMarketTokensBalances}
-              />
-            </ErrorBoundary>
-          )}
-        </>
+        <ErrorBoundary id="EarnPortfolio-AssetsList" variant="block" wrapperClassName="rounded-t-8">
+          <AssetsList
+            processedData={processedData}
+            chainId={chainId}
+            hasAnyAssets={hasAnyAssets}
+            hasGmx={hasGmxAssets}
+            hasEsGmx={hasEsGmxAssets}
+            gmGlvAssets={gmGlvAssets}
+            gtRewards={gtRewards}
+            gtRewardsUsd={gtRewardsUsd}
+            performanceTotal={performanceTotal}
+            performance30d={performance30d}
+            isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
+            multichainMarketTokensBalances={multichainMarketTokensBalances}
+          />
+        </ErrorBoundary>
       ) : (
         <Loader />
       )}

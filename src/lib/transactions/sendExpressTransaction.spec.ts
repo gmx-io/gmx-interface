@@ -1,11 +1,20 @@
 import { StatusCode as appGaslessStatusCode } from "@gelatocloud/gasless";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
+import { API_UI_FLAGS_CACHE_KEY } from "config/localStorage";
+import { FORCE_GELATO_FALLBACK_UI_FLAG } from "domain/synthetics/uiFlags/uiFlags";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { StatusCode as sdkGaslessStatusCode } from "sdk/utils/gelatoRelay";
 
 describe("@gelatocloud/gasless dedupe", () => {
+  // with the rollout pinned to gmx, the incident switch is what still routes a user to Gelato
+  beforeAll(() => {
+    localStorage.setItem(
+      `${API_UI_FLAGS_CACHE_KEY}-${ARBITRUM}`,
+      JSON.stringify({ [FORCE_GELATO_FALLBACK_UI_FLAG]: { enabled: true, createdAt: "", updatedAt: "" } })
+    );
+  });
   it("app and sdk imports resolve to the same module instance", () => {
     expect(sdkGaslessStatusCode).toBe(appGaslessStatusCode);
   });

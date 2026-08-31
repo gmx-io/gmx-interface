@@ -50,19 +50,11 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
       <SyntheticsInfoRow
-        label={t`Leverage`}
-        value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
-      />
-      <SyntheticsInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
-      <SyntheticsInfoRow
         label={
           <TooltipWithPortal
-            handle={
-              <span className="Exchange-info-label">
-                <Trans>Margin ({position?.collateralToken?.symbol})</Trans>
-              </span>
-            }
+            handle={<Trans>Margin ({position?.collateralToken?.symbol})</Trans>}
             position="left-start"
+            variant="iconStroke"
             content={<Trans>Margin before pending borrow and funding fees</Trans>}
           />
         }
@@ -73,6 +65,11 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
           />
         }
       />
+      <SyntheticsInfoRow
+        label={t`Leverage`}
+        value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
+      />
+      <SyntheticsInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
     </ExpandableRow>
   );
 }

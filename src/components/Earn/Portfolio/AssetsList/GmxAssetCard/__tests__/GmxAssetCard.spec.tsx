@@ -46,6 +46,26 @@ vi.mock("domain/stake/useStakingPowerData", () => ({
   useStakingPowerData: vi.fn(),
 }));
 
+vi.mock("domain/synthetics/markets/useUserEarnings", () => ({
+  useUserEarnings: vi.fn(() => ({
+    userEarnings: undefined,
+    isLoading: false,
+    isUnavailable: false,
+    isEstimated365dFeesLoading: false,
+    isEstimated365dFeesUnavailable: false,
+  })),
+}));
+
+vi.mock("domain/synthetics/markets/useGlvUserEarnings", () => ({
+  useGlvUserEarnings: vi.fn(() => ({
+    glvUserEarnings: undefined,
+    isLoading: false,
+    isUnavailable: false,
+    isEstimated365dFeesLoading: false,
+    isEstimated365dFeesUnavailable: false,
+  })),
+}));
+
 vi.mock("lib/chains", () => ({
   useChainId: vi.fn(),
 }));

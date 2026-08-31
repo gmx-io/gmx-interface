@@ -20,7 +20,6 @@ export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const PENDING_REFERRAL_CODE_KEY = "GMX-pending-referral-code";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
-export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 const LEVERAGE_OPTION_KEY = "leverage-option";
 const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
@@ -59,6 +58,8 @@ export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-nat
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
 export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
+
+export const MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY = "margin-deposit-suggestion-hidden";
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";

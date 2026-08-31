@@ -92,7 +92,7 @@ export function SocialSection() {
           </div>
           <div className="flex w-full flex-row flex-wrap items-center gap-12 py-20 text-12 font-medium tracking-[0.024px] text-slate-500">
             <a
-              href="/referral-terms"
+              href="/#/referral-terms"
               target="_blank"
               rel="noopener noreferrer"
               className="duration-180 transition-colors hover:text-white active:text-white/80"
@@ -107,7 +107,7 @@ export function SocialSection() {
             >
               <Trans>Media kit</Trans>
             </a>
-            <a className="inline sm:hidden" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+            <a className="inline sm:hidden" href="/#/terms-and-conditions" target="_blank" rel="noopener noreferrer">
               <Trans>Terms and conditions</Trans>
             </a>
             <div className="mx-0 flex flex-row items-center gap-8 text-white sm:mx-auto">
@@ -118,7 +118,7 @@ export function SocialSection() {
             </div>
             <a
               className="duration-180 hidden transition-colors hover:text-white active:text-white/80 sm:inline"
-              href="/terms-and-conditions"
+              href="/#/terms-and-conditions"
               target="_blank"
               rel="noopener noreferrer"
             >
