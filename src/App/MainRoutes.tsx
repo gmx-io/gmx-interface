@@ -1,5 +1,4 @@
-import { Trans } from "@lingui/macro";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, type ComponentType } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
@@ -7,33 +6,14 @@ import { ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
-import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { NETWORK_QUERY_PARAM, NETWORK_SLUGS_ID_MAP } from "pages/AccountDashboard/constants";
-import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer";
-import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
-import { AccountsRouter } from "pages/Actions/ActionsRouter";
-import AnnouncementsPage from "pages/Announcements/Announcements";
-import BuyGMX from "pages/BuyGMX/BuyGMX";
-import DashboardV2 from "pages/Dashboard/DashboardV2";
-import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
-import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
-import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
-import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
-import Ecosystem from "pages/Ecosystem/Ecosystem";
-import Jobs from "pages/Jobs/Jobs";
-import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
-import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
-import Pools from "pages/Pools/Pools";
-import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
-import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
-import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
-import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
-import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
+import Loader from "components/Loader/Loader";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LEGACY_TRADER_PROFILE_PATHS = ["/accounts/:account", "/actions/:account"];
@@ -44,52 +24,78 @@ function getChainIdFromSearch(search: string, fallbackChainId: ContractsChainId)
   return (NETWORK_SLUGS_ID_MAP[networkSlug ?? ""] as ContractsChainId | undefined) ?? fallbackChainId;
 }
 
-const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
-const UiPage = () => (
-  <Suspense fallback={<Trans>Loading...</Trans>}>
-    <LazyUiPage />
-  </Suspense>
-);
+// Every page is code-split to keep the boot bundle small, except the trade page
+// (the default route) and PageNotFound (must render even if chunk loading fails).
+// The boundary keeps a failed chunk load from unmounting the whole app.
+function lazyPage(load: () => Promise<{ default: ComponentType }>) {
+  const LazyComponent = lazy(load);
 
-const LazyRpcDebug = lazy(() => import("pages/RpcDebug/RpcDebug"));
-const RpcDebugPage = () => (
-  <Suspense fallback={<Trans>Loading...</Trans>}>
-    <LazyRpcDebug />
-  </Suspense>
-);
+  return function LazyPage() {
+    return (
+      <ErrorBoundary id="LazyPage" variant="page">
+        <Suspense fallback={<Loader />}>
+          <LazyComponent />
+        </Suspense>
+      </ErrorBoundary>
+    );
+  };
+}
 
-const LazyDebugOracleKeeper = lazy(() => import("pages/DebugOracleKeeper/DebugOracleKeeper"));
-const OracleDebugPage = () => (
-  <Suspense fallback={<Trans>Loading...</Trans>}>
-    <LazyDebugOracleKeeper />
-  </Suspense>
+const AccountDashboard = lazyPage(() =>
+  import("pages/AccountDashboard/AccountDashboard").then((module) => ({ default: module.AccountDashboard }))
 );
-
-const LazyTestPermits = lazy(() =>
+const BeginAccountTransfer = lazyPage(() => import("pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer"));
+const CompleteAccountTransfer = lazyPage(
+  () => import("pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer")
+);
+const AccountsRouter = lazyPage(() =>
+  import("pages/Actions/ActionsRouter").then((module) => ({ default: module.AccountsRouter }))
+);
+const AnnouncementsPage = lazyPage(() => import("pages/Announcements/Announcements"));
+const BuyGMX = lazyPage(() => import("pages/BuyGMX/BuyGMX"));
+const DashboardV2 = lazyPage(() => import("pages/Dashboard/DashboardV2"));
+const EarnAdditionalOpportunitiesPage = lazyPage(() => import("pages/Earn/EarnAdditionalOpportunitiesPage"));
+const EarnDiscoveryPage = lazyPage(() => import("pages/Earn/EarnDiscoveryPage"));
+const EarnDistributionsPage = lazyPage(() => import("pages/Earn/EarnDistributionsPage"));
+const EarnPortfolioPage = lazyPage(() => import("pages/Earn/EarnPortfolioPage"));
+const Ecosystem = lazyPage(() => import("pages/Ecosystem/Ecosystem"));
+const Jobs = lazyPage(() => import("pages/Jobs/Jobs"));
+const LeaderboardPage = lazyPage(() =>
+  import("pages/LeaderboardPage/LeaderboardPage").then((module) => ({ default: module.LeaderboardPage }))
+);
+const CompetitionRedirect = lazyPage(() =>
+  import("pages/LeaderboardPage/LeaderboardPage").then((module) => ({ default: module.CompetitionRedirect }))
+);
+const ParseTransactionPage = lazyPage(() =>
+  import("pages/ParseTransaction/ParseTransaction").then((module) => ({ default: module.ParseTransactionPage }))
+);
+const Pools = lazyPage(() => import("pages/Pools/Pools"));
+const PoolsDetails = lazyPage(() =>
+  import("pages/PoolsDetails/PoolsDetails").then((module) => ({ default: module.PoolsDetails }))
+);
+const PriceImpactRebatesStatsPage = lazyPage(() =>
+  import("pages/PriceImpactRebatesStats/PriceImpactRebatesStats").then((module) => ({
+    default: module.PriceImpactRebatesStatsPage,
+  }))
+);
+const ReferralsRouter = lazyPage(() =>
+  import("pages/Referrals/ReferralsRouter").then((module) => ({ default: module.ReferralsRouter }))
+);
+const ReferralsTier = lazyPage(() => import("pages/ReferralsTier/ReferralsTier"));
+const SyntheticsStats = lazyPage(() =>
+  import("pages/SyntheticsStats/SyntheticsStats").then((module) => ({ default: module.SyntheticsStats }))
+);
+const UiPage = lazyPage(() => import("pages/UiPage/UiPage"));
+const RpcDebugPage = lazyPage(() => import("pages/RpcDebug/RpcDebug"));
+const OracleDebugPage = lazyPage(() => import("pages/DebugOracleKeeper/DebugOracleKeeper"));
+const TestPermitsPage = lazyPage(() =>
   import("pages/TestPermits/TestPermits").then((module) => ({ default: module.TestPermits }))
 );
-const TestPermitsPage = () => (
-  <Suspense fallback={<Trans>Loading...</Trans>}>
-    <LazyTestPermits />
-  </Suspense>
-);
-
-const LazyAccountEvents = lazy(() =>
+const AccountEventsPage = lazyPage(() =>
   import("pages/AccountEvents/AccountEvents").then((module) => ({ default: module.AccountEvents }))
 );
-const AccountEventsPage = () => (
-  <Suspense fallback={<Trans>Loading...</Trans>}>
-    <LazyAccountEvents />
-  </Suspense>
-);
-
-const LazyDecodeError = lazy(() =>
+const DecodeErrorPage = lazyPage(() =>
   import("pages/DecodeError/DecodeError").then((module) => ({ default: module.DecodeError }))
-);
-const DecodeErrorPage = () => (
-  <Suspense fallback={<Trans>Loading...</Trans>}>
-    <LazyDecodeError />
-  </Suspense>
 );
 
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {

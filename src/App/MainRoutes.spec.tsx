@@ -1,4 +1,4 @@
-import { cleanup, render } from "@testing-library/react";
+import { act, cleanup, render } from "@testing-library/react";
 import { MemoryRouter, Route } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -46,22 +46,31 @@ function renderAt(entry: string) {
     </MemoryRouter>
   );
 
-  return { url, text: container.textContent ?? "" };
+  return { url, container };
+}
+
+// Pages are lazy; act flushes let the chunk import resolve and Suspense re-render.
+// RTL v11's waitFor doesn't flush suspense retries in this environment, so retry manually.
+async function waitForText(container: HTMLElement, text: string) {
+  for (let attempt = 0; attempt < 20 && !container.textContent?.includes(text); attempt++) {
+    await act(() => Promise.resolve());
+  }
+  expect(container.textContent).toContain(text);
 }
 
 describe("MainRoutes trader routes", () => {
-  it("renders the trader activity page on /traders", () => {
-    const { url, text } = renderAt("/traders?network=arbitrum&v=2");
+  it("renders the trader activity page on /traders", async () => {
+    const { url, container } = renderAt("/traders?network=arbitrum&v=2");
 
     expect(url).toBe("/traders?network=arbitrum&v=2");
-    expect(text).toContain("trader-activity-page");
+    await waitForText(container, "trader-activity-page");
   });
 
-  it("renders the trader profile page on /traders/:account", () => {
-    const { url, text } = renderAt(`/traders/${ACCOUNT}?network=arbitrum&v=2`);
+  it("renders the trader profile page on /traders/:account", async () => {
+    const { url, container } = renderAt(`/traders/${ACCOUNT}?network=arbitrum&v=2`);
 
     expect(url).toBe(`/traders/${ACCOUNT}?network=arbitrum&v=2`);
-    expect(text).toContain("trader-profile-page");
+    await waitForText(container, "trader-profile-page");
   });
 
   describe("redirects legacy urls to /traders", () => {
@@ -78,10 +87,10 @@ describe("MainRoutes trader routes", () => {
     });
   });
 
-  it("keeps an invalid address in the url so the page can report it", () => {
-    const { url, text } = renderAt("/accounts/not-an-address?network=arbitrum&v=2");
+  it("keeps an invalid address in the url so the page can report it", async () => {
+    const { url, container } = renderAt("/accounts/not-an-address?network=arbitrum&v=2");
 
     expect(url).toBe("/traders/not-an-address?network=arbitrum&v=2");
-    expect(text).toContain("trader-profile-page");
+    await waitForText(container, "trader-profile-page");
   });
 });

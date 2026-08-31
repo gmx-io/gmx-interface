@@ -19,6 +19,21 @@ import type { MarketsData } from "sdk/utils/markets/types";
 import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { useMarketsConstantsRequest } from "./useMarketsConstantsRequest";
 
+const PREBUILT_KEYS_WARMUP_DELAY = 5000;
+
+// Prefetches the code-split prebuilt key map chunks off the boot critical path,
+// so the RPC fallback request builders never wait on a chunk download.
+function usePrebuiltKeysWarmup() {
+  useEffect(() => {
+    const timerId = window.setTimeout(() => {
+      import("sdk/codegen/prebuilt/hashedMarketValuesKeys.json").catch(() => undefined);
+      import("sdk/codegen/prebuilt/hashedMarketConfigKeys.json").catch(() => undefined);
+    }, PREBUILT_KEYS_WARMUP_DELAY);
+
+    return () => window.clearTimeout(timerId);
+  }, []);
+}
+
 export function useRpcMarketsInfoRequest({
   chainId,
   tokensData,
@@ -28,6 +43,8 @@ export function useRpcMarketsInfoRequest({
   tokensData: TokensData | undefined;
   enabled?: boolean;
 }) {
+  usePrebuiltKeysWarmup();
+
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId, { enabled });
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { data: marketsConstantsData } = useMarketsConstantsRequest(chainId, { enabled });

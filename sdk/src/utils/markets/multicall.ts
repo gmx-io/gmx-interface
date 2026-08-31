@@ -1,5 +1,4 @@
 import type { ContractCallsConfig } from "clients/v1/multicall";
-import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "codegen/prebuilt";
 import { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import {
@@ -173,6 +172,9 @@ export async function buildMarketsValuesRequest(
     tokensData: TokensData | undefined;
   }
 ) {
+  // Loaded on demand to keep the large prebuilt key map out of the boot bundle
+  const { default: HASHED_MARKET_VALUES_KEYS } = await import("codegen/prebuilt/hashedMarketValuesKeys.json");
+
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
   const request: Record<string, ContractCallsConfig<any>> = {};
@@ -414,6 +416,9 @@ export async function buildMarketsConfigsRequest(
     marketsData: MarketsData | undefined;
   }
 ) {
+  // Loaded on demand to keep the large prebuilt key map out of the boot bundle
+  const { default: HASHED_MARKET_CONFIG_KEYS } = await import("codegen/prebuilt/hashedMarketConfigKeys.json");
+
   const dataStoreAddress = getContract(chainId, "DataStore");
   const request: Record<string, ContractCallsConfig<any>> = {};
   for (const marketAddress of marketsAddresses || []) {
