@@ -12,6 +12,8 @@ import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { getEarningAttributionScope } from "components/EarningValue/EarningValue";
+
 import { EarningsBand, InvestmentValueBreakdown } from "./EarningsBand";
 import { roundEarningsUsd } from "./earningsMath";
 import { LifetimeEarningsBreakdown } from "./LifetimeEarningsTooltip";
@@ -51,6 +53,19 @@ export function EarningsOverview({
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+
+  const totalGmInfo = useMemo(
+    () => getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances, chainId }),
+    [chainId, marketTokensData, multichainMarketTokensBalances]
+  );
+  const totalGlvInfo = useMemo(
+    () => getTotalGlvInfo({ tokensData: marketTokensData, multichainMarketTokensBalances, chainId }),
+    [chainId, marketTokensData, multichainMarketTokensBalances]
+  );
+
+  const isGmUnattributed = totalGmInfo.hasBalanceOutsideWallet;
+  const isGlvUnattributed = totalGlvInfo.hasBalanceOutsideWallet;
+  const lpAttributionScope = getEarningAttributionScope({ gm: isGmUnattributed, glv: isGlvUnattributed });
 
   const {
     userEarnings,
@@ -110,16 +125,25 @@ export function EarningsOverview({
       stakingGmxUsd,
       stakingEsGmxUsd,
       stakingNativeUsd,
-      gmUsd: gmLifetimeUsd,
-      glvUsd: glvLifetimeUsd,
-      totalUsd:
-        roundEarningsUsd(stakingGmxUsd) +
-        roundEarningsUsd(stakingEsGmxUsd) +
-        roundEarningsUsd(stakingNativeUsd) +
-        roundEarningsUsd(gmLifetimeUsd ?? 0n) +
-        roundEarningsUsd(glvLifetimeUsd ?? 0n),
+      gmUsd: isGmUnattributed ? undefined : gmLifetimeUsd,
+      glvUsd: isGlvUnattributed ? undefined : glvLifetimeUsd,
+      totalUsd: lpAttributionScope
+        ? undefined
+        : roundEarningsUsd(stakingGmxUsd) +
+          roundEarningsUsd(stakingEsGmxUsd) +
+          roundEarningsUsd(stakingNativeUsd) +
+          roundEarningsUsd(gmLifetimeUsd ?? 0n) +
+          roundEarningsUsd(glvLifetimeUsd ?? 0n),
     };
-  }, [processedData, isMyEarningsLoading, gmLifetimeUsd, glvLifetimeUsd]);
+  }, [
+    processedData,
+    isMyEarningsLoading,
+    gmLifetimeUsd,
+    glvLifetimeUsd,
+    isGmUnattributed,
+    isGlvUnattributed,
+    lpAttributionScope,
+  ]);
 
   const isInvestmentValueLoading =
     processedData === undefined || marketTokensData === undefined || multichainMarketTokensBalances === undefined;
@@ -128,9 +152,6 @@ export function EarningsOverview({
     if (isInvestmentValueLoading) {
       return undefined;
     }
-
-    const totalGmInfo = getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
-    const totalGlvInfo = getTotalGlvInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
 
     const stakedGmxUsd = processedData?.gmxInStakedGmxUsd ?? 0n;
     const stakedEsGmxUsd = processedData?.esGmxInStakedGmxUsd ?? 0n;
@@ -148,7 +169,7 @@ export function EarningsOverview({
         roundEarningsUsd(gmUsd) +
         roundEarningsUsd(glvUsd),
     };
-  }, [isInvestmentValueLoading, marketTokensData, multichainMarketTokensBalances, processedData]);
+  }, [isInvestmentValueLoading, totalGmInfo, totalGlvInfo, processedData]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -156,6 +177,7 @@ export function EarningsOverview({
         lifetimeBreakdown={lifetimeBreakdown}
         isEarningsLoading={isMyEarningsLoading}
         isLpUnavailable={isLpUnavailable}
+        lpAttributionScope={lpAttributionScope}
         investmentBreakdown={investmentBreakdown}
         isInvestmentValueLoading={isInvestmentValueLoading}
         processedData={processedData}
@@ -179,6 +201,8 @@ export function EarningsOverview({
           expected365dUsd={isLpLoading ? undefined : lpExpected365dUsd}
           isLoading={isLpLoading}
           isUnavailable={isLpUnavailable}
+          isGmUnattributed={isGmUnattributed}
+          isGlvUnattributed={isGlvUnattributed}
           isExpected365dLoading={isGmExpected365dLoading || isGlvExpected365dLoading}
           isExpected365dUnavailable={isGmExpected365dUnavailable || isGlvExpected365dUnavailable}
         />

@@ -1028,6 +1028,10 @@ msgstr "GMX Detailed CSV"
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
 
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GM held in your wallet on {chainName}. GM in a GMX Account or on another chain still earns fees, but they can't be attributed per account yet."
+msgstr "獲得手数料は、{chainName}のウォレットに保有するGMについてのみ集計されます。GMX Accountや他のチェーンにあるGMも引き続き手数料を獲得しますが、まだアカウントごとに帰属させることはできません。"
+
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order may execute after the current position is liquidated and open a new position."
@@ -3027,17 +3031,9 @@ msgstr "手数料控除後のPnLを表示"
 msgid "No eligible holdings detected"
 msgstr "対象となる保有資産が検出されませんでした"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-#~ msgid "Native ETH / AVAX"
-#~ msgstr "ネイティブETH / AVAX"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMXの改善にご協力ください。セキュリティのため、こちらから先にご連絡することはありません。公式アカウントに「I have feedback」とお送りください:"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "GM Pools"
-#~ msgstr "GMプール"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
@@ -6270,10 +6266,6 @@ msgstr "ライフサイクル精算"
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "Expected 365d Fees"
-#~ msgstr "365日間の予想手数料"
-
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji では受け取りをご利用いただけません"
@@ -6568,10 +6560,6 @@ msgstr "GLV（GMX Liquidity Vault）は様々なGMトークンを保有し、GMX
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "決済ネットワークがArbitrumに変更されましたが、$12.50がBaseのGMX Accountに残っています"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-#~ msgid "Paused"
-#~ msgstr "一時停止中"
-
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -6758,10 +6746,6 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "GLV Vaults"
-#~ msgstr "GLVボールト"
-
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show buy/sell icons on chart"
@@ -6871,10 +6855,6 @@ msgstr "投票"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "TWAPスワップパートを更新"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "Total Investment Value"
-#~ msgstr "総投資額"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
@@ -7054,10 +7034,6 @@ msgstr "{chainName}で直接{nativeTokenSymbol}を購入するか、送金して
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "最大ネットワーク手数料にはガス急騰時のバッファーが含まれています。未使用の手数料は返金されます。"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "Investment Value"
-#~ msgstr "投資額"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
@@ -7505,6 +7481,10 @@ msgstr ""
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Comfortable with Builder / Referral Code attribution"
 msgstr "Builder／Referral Codeのアトリビューションに抵抗がない"
+
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
+msgstr "獲得手数料は、{chainName}のウォレットに保有するGMとGLVについてのみ集計されます。GMX Accountや他のチェーンにあるGMとGLVも引き続き手数料を獲得しますが、まだアカウントごとに帰属させることはできません。"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
@@ -8776,7 +8756,6 @@ msgstr "{0}の最大ロング値を超過しています"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8945,10 +8924,6 @@ msgstr "市場"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Trade from wallet or GMX Account"
 msgstr "ウォレットまたはGMX Accountから取引"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
-#~ msgstr "今後365日間の予想手数料:各プールまたはボールトの基本手数料APYを現在の残高に適用したものです。インセンティブは含まれません。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
@@ -9446,6 +9421,10 @@ msgstr "GMX announcements"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "決済手数料"
+
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GLV held in your wallet on {chainName}. GLV in a GMX Account or on another chain still earns fees, but they can't be attributed per account yet."
+msgstr "獲得手数料は、{chainName}のウォレットに保有するGLVについてのみ集計されます。GMX Accountや他のチェーンにあるGLVも引き続き手数料を獲得しますが、まだアカウントごとに帰属させることはできません。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Solo, anonymous account"
@@ -11988,10 +11967,6 @@ msgstr "言語"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}秒"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "My earnings"
-#~ msgstr "収益"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"

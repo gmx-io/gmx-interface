@@ -1028,6 +1028,10 @@ msgstr "GMX Detailed CSV"
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
 
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GM held in your wallet on {chainName}. GM in a GMX Account or on another chain still earns fees, but they can't be attributed per account yet."
+msgstr "已赚取的费用仅针对您在 {chainName} 钱包中持有的 GM 进行统计。GMX Account 或其他链上的 GM 仍会赚取费用，但目前还无法按账户归属。"
+
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order may execute after the current position is liquidated and open a new position."
@@ -3027,17 +3031,9 @@ msgstr "显示扣除费用后的 PnL"
 msgid "No eligible holdings detected"
 msgstr "未检测到符合条件的持仓"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-#~ msgid "Native ETH / AVAX"
-#~ msgstr "原生ETH / AVAX"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "帮助我们改进 GMX。出于安全考虑，我们不会主动联系您。请向我们的官方帐号发送\"I have feedback\"："
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "GM Pools"
-#~ msgstr "GM池"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
@@ -6270,10 +6266,6 @@ msgstr "生命周期结算"
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "Expected 365d Fees"
-#~ msgstr "预期365天费用"
-
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji 上无法领取"
@@ -6568,10 +6560,6 @@ msgstr "GLV（GMX Liquidity Vault）持有多种 GM 代币，为您提供对 GMX
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "结算网络已切换至 Arbitrum，但您的 Base GMX Account 中仍有 $12.50 余额"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-#~ msgid "Paused"
-#~ msgstr "已暂停"
-
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -6758,10 +6746,6 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "GLV Vaults"
-#~ msgstr "GLV金库"
-
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show buy/sell icons on chart"
@@ -6871,10 +6855,6 @@ msgstr "投票"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "更新 TWAP 兑换部分"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "Total Investment Value"
-#~ msgstr "总投资价值"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
@@ -7054,10 +7034,6 @@ msgstr "在 {chainName} 上直接买入 {nativeTokenSymbol} 或将其转账至�
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "最大网络费用包含 Gas 波动的缓冲。未使用的费用将退还。"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "Investment Value"
-#~ msgstr "投资价值"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
@@ -7505,6 +7481,10 @@ msgstr ""
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Comfortable with Builder / Referral Code attribution"
 msgstr "接受 Builder / Referral Code 归因"
+
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
+msgstr "已赚取的费用仅针对您在 {chainName} 钱包中持有的 GM 和 GLV 进行统计。GMX Account 或其他链上的 GM 和 GLV 仍会赚取费用，但目前还无法按账户归属。"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
@@ -8776,7 +8756,6 @@ msgstr "超过最大 {0} 多头"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8945,10 +8924,6 @@ msgstr "市场"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Trade from wallet or GMX Account"
 msgstr "从钱包或 GMX Account 进行交易"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
-#~ msgstr "未来365天的预计费用:将每个池或金库的基础费用APY应用于您当前的余额。不包括激励。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
@@ -9446,6 +9421,10 @@ msgstr "GMX announcements"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "平仓费用"
+
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GLV held in your wallet on {chainName}. GLV in a GMX Account or on another chain still earns fees, but they can't be attributed per account yet."
+msgstr "已赚取的费用仅针对您在 {chainName} 钱包中持有的 GLV 进行统计。GMX Account 或其他链上的 GLV 仍会赚取费用，但目前还无法按账户归属。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Solo, anonymous account"
@@ -11988,10 +11967,6 @@ msgstr "语言"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "My earnings"
-#~ msgstr "我的收益"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"

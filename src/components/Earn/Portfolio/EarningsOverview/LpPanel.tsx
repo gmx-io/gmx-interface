@@ -5,7 +5,12 @@ import { Link } from "react-router-dom";
 
 import { formatUsd } from "lib/numbers";
 
-import { EarningUnavailableNote, EarningValue } from "components/EarningValue/EarningValue";
+import {
+  EarningAttributionNote,
+  EarningUnavailableNote,
+  EarningValue,
+  getEarningAttributionScope,
+} from "components/EarningValue/EarningValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -46,6 +51,8 @@ export function LpPanel({
   expected365dUsd,
   isLoading,
   isUnavailable,
+  isGmUnattributed,
+  isGlvUnattributed,
   isExpected365dLoading,
   isExpected365dUnavailable,
 }: {
@@ -56,10 +63,14 @@ export function LpPanel({
   expected365dUsd: bigint | undefined;
   isLoading: boolean;
   isUnavailable: boolean;
+  isGmUnattributed: boolean;
+  isGlvUnattributed: boolean;
   isExpected365dLoading: boolean;
   isExpected365dUnavailable: boolean;
 }) {
   const isAvailable = !isUnavailable;
+  const attributionScope = getEarningAttributionScope({ gm: isGmUnattributed, glv: isGlvUnattributed });
+  const isLpAttributable = attributionScope === undefined;
 
   return (
     <div className="flex h-full flex-col rounded-8 bg-slate-900">
@@ -70,10 +81,15 @@ export function LpPanel({
 
         <div className="flex gap-28">
           <EarningsStat label={<Trans>Lifetime rewards</Trans>}>
-            <UsdStatValue usd={lifetimeUsd} isLoading={isLoading} isAvailable={isAvailable} />
+            <UsdStatValue usd={lifetimeUsd} isLoading={isLoading} isAvailable={isAvailable && isLpAttributable} />
           </EarningsStat>
           <EarningsStat label={<Trans>Last 7 days</Trans>}>
-            <UsdStatValue usd={last7dUsd} isLoading={isLoading} isAvailable={isAvailable} highlightPositive />
+            <UsdStatValue
+              usd={last7dUsd}
+              isLoading={isLoading}
+              isAvailable={isAvailable && isLpAttributable}
+              highlightPositive
+            />
           </EarningsStat>
         </div>
       </div>
@@ -87,7 +103,9 @@ export function LpPanel({
               <Trans>GM pools</Trans>
             </LpRowLabel>
           }
-          value={<LpRowValue usd={gmLifetimeUsd} isLoading={isLoading} isAvailable={isAvailable} />}
+          value={
+            <LpRowValue usd={gmLifetimeUsd} isLoading={isLoading} isAvailable={isAvailable && !isGmUnattributed} />
+          }
         />
         <SyntheticsInfoRow
           label={
@@ -95,9 +113,12 @@ export function LpPanel({
               <Trans>GLV vaults</Trans>
             </LpRowLabel>
           }
-          value={<LpRowValue usd={glvLifetimeUsd} isLoading={isLoading} isAvailable={isAvailable} />}
+          value={
+            <LpRowValue usd={glvLifetimeUsd} isLoading={isLoading} isAvailable={isAvailable && !isGlvUnattributed} />
+          }
         />
         {isUnavailable && <EarningUnavailableNote />}
+        {attributionScope && <EarningAttributionNote scope={attributionScope} />}
       </div>
 
       <div className="mt-auto">

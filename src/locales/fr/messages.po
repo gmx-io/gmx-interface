@@ -1028,6 +1028,10 @@ msgstr "GMX Detailed CSV"
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
 
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GM held in your wallet on {chainName}. GM in a GMX Account or on another chain still earns fees, but they can't be attributed per account yet."
+msgstr "Les frais gagnés ne sont suivis que pour les GM détenus dans votre portefeuille sur {chainName}. Les GM dans un GMX Account ou sur une autre chaîne continuent de générer des frais, mais ils ne peuvent pas encore être attribués par compte."
+
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order may execute after the current position is liquidated and open a new position."
@@ -3027,17 +3031,9 @@ msgstr "Afficher le PnL après frais"
 msgid "No eligible holdings detected"
 msgstr "Aucun actif éligible détecté"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-#~ msgid "Native ETH / AVAX"
-#~ msgstr "ETH / AVAX natif"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "Aidez-nous à améliorer GMX. Pour des raisons de sécurité, nous ne vous contacterons pas en premier. Envoyez « I have feedback » à notre compte officiel :"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "GM Pools"
-#~ msgstr "Pools GM"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
@@ -6270,10 +6266,6 @@ msgstr "Règlement du cycle de vie"
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "Expected 365d Fees"
-#~ msgstr "Frais attendus sur 365j"
-
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Récupérations indisponibles sur Avalanche Fuji"
@@ -6568,10 +6560,6 @@ msgstr "GLV (GMX Liquidity Vault) détient divers jetons GM, vous offrant une ex
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "Le réseau de règlement a été changé pour Arbitrum, mais 12,50 $ restent dans votre GMX Account sur Base"
 
-#: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
-#~ msgid "Paused"
-#~ msgstr "En pause"
-
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -6758,10 +6746,6 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "GLV Vaults"
-#~ msgstr "Vaults GLV"
-
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show buy/sell icons on chart"
@@ -6871,10 +6855,6 @@ msgstr "Vote"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "Mise à jour d'une partie TWAP Swap"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "Total Investment Value"
-#~ msgstr "Valeur totale de l'investissement"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
@@ -7054,10 +7034,6 @@ msgstr "Achetez {nativeTokenSymbol} directement sur {chainName} ou transférez-l
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "Les frais de réseau maximum incluent une marge pour les pics de Gas. Les frais non utilisés sont remboursés."
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "Investment Value"
-#~ msgstr "Valeur de l'investissement"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
@@ -7505,6 +7481,10 @@ msgstr ""
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Comfortable with Builder / Referral Code attribution"
 msgstr "À l'aise avec l'attribution Builder / Referral Code"
+
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
+msgstr "Les frais gagnés ne sont suivis que pour les GM et GLV détenus dans votre portefeuille sur {chainName}. Les GM et GLV dans un GMX Account ou sur une autre chaîne continuent de générer des frais, mais ils ne peuvent pas encore être attribués par compte."
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
@@ -8776,7 +8756,6 @@ msgstr "Long {0} maximal dépassé"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8945,10 +8924,6 @@ msgstr "marché"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Trade from wallet or GMX Account"
 msgstr "Négociez depuis le portefeuille ou le GMX Account"
-
-#: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
-#~ msgid "Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives."
-#~ msgstr "Frais projetés pour les 365 prochains jours : l'APY de frais de base de chaque pool ou vault appliqué à votre solde actuel. Hors incitations."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
@@ -9446,6 +9421,10 @@ msgstr "GMX announcements"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "Frais de clôture"
+
+#: src/components/EarningValue/EarningValue.tsx
+msgid "Earned fees are only tracked for GLV held in your wallet on {chainName}. GLV in a GMX Account or on another chain still earns fees, but they can't be attributed per account yet."
+msgstr "Les frais gagnés ne sont suivis que pour les GLV détenus dans votre portefeuille sur {chainName}. Les GLV dans un GMX Account ou sur une autre chaîne continuent de générer des frais, mais ils ne peuvent pas encore être attribués par compte."
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Solo, anonymous account"
@@ -11988,10 +11967,6 @@ msgstr "Langue"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
-
-#: src/components/Earn/Portfolio/EarningsOverview/MyEarningsCard.tsx
-#~ msgid "My earnings"
-#~ msgstr "Mes gains"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"

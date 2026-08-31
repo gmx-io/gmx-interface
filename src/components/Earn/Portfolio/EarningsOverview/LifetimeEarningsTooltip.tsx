@@ -3,7 +3,12 @@ import { ReactNode } from "react";
 
 import { formatUsd } from "lib/numbers";
 
-import { EarningUnavailableNote } from "components/EarningValue/EarningValue";
+import {
+  EarningAttributionNote,
+  EarningAttributionScope,
+  EarningNotAvailable,
+  EarningUnavailableNote,
+} from "components/EarningValue/EarningValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import { formatUsdExpanded } from "./EarningsStat";
@@ -14,7 +19,7 @@ export type LifetimeEarningsBreakdown = {
   stakingNativeUsd: bigint;
   gmUsd: bigint | undefined;
   glvUsd: bigint | undefined;
-  totalUsd: bigint;
+  totalUsd: bigint | undefined;
 };
 
 function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) {
@@ -22,15 +27,7 @@ function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) 
     <StatsTooltipRow
       label={label}
       showDollar={false}
-      value={
-        usd === undefined ? (
-          <span className="text-typography-secondary">
-            <Trans>N/A</Trans>
-          </span>
-        ) : (
-          <span className="numbers">{formatUsdExpanded(usd)}</span>
-        )
-      }
+      value={usd === undefined ? <EarningNotAvailable /> : <span className="numbers">{formatUsdExpanded(usd)}</span>}
     />
   );
 }
@@ -48,10 +45,12 @@ export function LifetimeEarningsTooltipContent({
   breakdown,
   nativeTokenSymbol,
   isLpUnavailable,
+  lpAttributionScope,
 }: {
   breakdown: LifetimeEarningsBreakdown;
   nativeTokenSymbol: string;
   isLpUnavailable: boolean;
+  lpAttributionScope: EarningAttributionScope | undefined;
 }) {
   return (
     <div className="flex flex-col gap-8">
@@ -71,7 +70,13 @@ export function LifetimeEarningsTooltipContent({
       <StatsTooltipRow
         label={<Trans>Total</Trans>}
         showDollar={false}
-        value={<span className="numbers">{formatUsd(breakdown.totalUsd)}</span>}
+        value={
+          breakdown.totalUsd === undefined ? (
+            <EarningNotAvailable />
+          ) : (
+            <span className="numbers">{formatUsd(breakdown.totalUsd)}</span>
+          )
+        }
       />
 
       <span className="text-typography-tertiary">
@@ -79,6 +84,7 @@ export function LifetimeEarningsTooltipContent({
       </span>
 
       {isLpUnavailable && <EarningUnavailableNote />}
+      {lpAttributionScope && <EarningAttributionNote scope={lpAttributionScope} />}
     </div>
   );
 }

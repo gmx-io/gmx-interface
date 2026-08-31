@@ -3,6 +3,7 @@ import { Trans } from "@lingui/macro";
 import { StakingProcessedData } from "lib/legacy";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import type { EarningAttributionScope } from "components/EarningValue/EarningValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -77,11 +78,13 @@ function LifetimeEarnedValue({
   isLoading,
   nativeTokenSymbol,
   isLpUnavailable,
+  lpAttributionScope,
 }: {
   breakdown: LifetimeEarningsBreakdown | undefined;
   isLoading: boolean;
   nativeTokenSymbol: string;
   isLpUnavailable: boolean;
+  lpAttributionScope: EarningAttributionScope | undefined;
 }) {
   const valueElement = <UsdStatValue usd={breakdown?.totalUsd} isLoading={isLoading} />;
 
@@ -97,6 +100,7 @@ function LifetimeEarnedValue({
           breakdown={breakdown}
           nativeTokenSymbol={nativeTokenSymbol}
           isLpUnavailable={isLpUnavailable}
+          lpAttributionScope={lpAttributionScope}
         />
       }
     />
@@ -190,6 +194,7 @@ export function EarningsBand({
   lifetimeBreakdown,
   isEarningsLoading,
   isLpUnavailable,
+  lpAttributionScope,
   investmentBreakdown,
   isInvestmentValueLoading,
   processedData,
@@ -200,6 +205,7 @@ export function EarningsBand({
   lifetimeBreakdown: LifetimeEarningsBreakdown | undefined;
   isEarningsLoading: boolean;
   isLpUnavailable: boolean;
+  lpAttributionScope: EarningAttributionScope | undefined;
   investmentBreakdown: InvestmentValueBreakdown | undefined;
   isInvestmentValueLoading: boolean;
   processedData: StakingProcessedData | undefined;
@@ -230,6 +236,7 @@ export function EarningsBand({
             isLoading={isEarningsLoading}
             nativeTokenSymbol={nativeTokenSymbol}
             isLpUnavailable={isLpUnavailable}
+            lpAttributionScope={lpAttributionScope}
           />
         </EarningsStat>
 
