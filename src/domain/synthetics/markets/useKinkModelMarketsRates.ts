@@ -5,6 +5,7 @@ import { useMarkets } from "domain/synthetics/markets";
 import { useMulticall } from "lib/multicall";
 import type { ContractCallsConfig, MulticallRequestConfig } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/codegen/prebuilt";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 export type KinkModelMarketsRatesResult = {
@@ -31,13 +32,8 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
 
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 
-    request: async () => {
-      // Loaded on demand to keep the large prebuilt key map out of the boot bundle
-      const { default: HASHED_KINK_MODEL_MARKET_RATES_KEYS } = await import(
-        "sdk/codegen/prebuilt/hashedKinkModelMarketRatesKeys.json"
-      );
-
-      return marketsAddresses.reduce<MulticallRequestConfig>((acc, marketAddress) => {
+    request: () =>
+      marketsAddresses.reduce<MulticallRequestConfig>((acc, marketAddress) => {
         // @ts-expect-error
         const prebuiltHashedKeys = HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId]?.[marketAddress];
 
@@ -79,8 +75,7 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
         } satisfies ContractCallsConfig<any>;
 
         return acc;
-      }, {});
-    },
+      }, {}),
     parseResponse: (res) => {
       const result = marketsAddresses!.reduce(
         (acc, marketAddress) => {

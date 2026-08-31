@@ -16,8 +16,8 @@ import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { fetchBlockNumber, fetchEthCall } from "lib/rpc/fetchRpc";
 import { abis } from "sdk/abis";
+import { HASHED_MARKET_CONFIG_KEYS } from "sdk/codegen/prebuilt";
 import { getContract } from "sdk/configs/contracts";
-import { minCollateralFactorKey } from "sdk/configs/dataStore";
 import { getMarketsByChainId } from "sdk/configs/markets";
 
 export type RpcTrackerConfig = FallbackTrackerConfig & {
@@ -156,12 +156,12 @@ export class RpcTracker {
     const markets = getMarketsByChainId(chainId);
     const probeMarket = Object.values(markets)[0];
     const probeMarketAddress = probeMarket?.marketTokenAddress;
+    const marketHashes = HASHED_MARKET_CONFIG_KEYS[chainId] as Record<string, Record<string, string>> | undefined;
+    const probeFieldKey = probeMarketAddress && marketHashes?.[probeMarketAddress]?.["minCollateralFactor"];
 
-    if (!probeMarketAddress) {
+    if (!probeMarketAddress || !probeFieldKey) {
       throw new Error("Failed to get params for RPC check");
     }
-
-    const probeFieldKey = minCollateralFactorKey(probeMarketAddress);
 
     const response = await fetchEthCall({
       url: endpoint,
