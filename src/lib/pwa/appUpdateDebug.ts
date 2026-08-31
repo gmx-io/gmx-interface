@@ -1,6 +1,6 @@
-const DEBUG_PARAM = "pwaUpdateDebug";
+const DEBUG_PARAM = "appUpdateDebug";
 
-/** `?pwaUpdateDebug=1` makes the running build look older, so the real check finds a real update. */
+/** `?appUpdateDebug=1` makes the running build look older, so the real check finds a real update. */
 export const APP_UPDATE_DEBUG = {
   buildId: "1",
   checkDelayMs: 5 * 1000,
