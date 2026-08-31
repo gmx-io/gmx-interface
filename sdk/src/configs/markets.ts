@@ -961,6 +961,20 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // QQQ/USD [WETH-USDC]
+    "0x1C132E43029efCd57435eE79ceA98006C6227A6f": {
+      marketTokenAddress: "0x1C132E43029efCd57435eE79ceA98006C6227A6f",
+      indexTokenAddress: "0xfe71D55D0080b6995Ec2C3f48b7702c86e200766",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // SPY/USD [WETH-USDC]
+    "0xcBd4c1b0c89D50793c5A3e8d96d98FcB4f1B1c47": {
+      marketTokenAddress: "0xcBd4c1b0c89D50793c5A3e8d96d98FcB4f1B1c47",
+      indexTokenAddress: "0x0315441076FF6d3eA09814a2F90a1f980cF03e9e",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
     // MEGA/USD [WETH-USDC]
     "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
       marketTokenAddress: "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1",

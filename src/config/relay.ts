@@ -14,10 +14,12 @@ const rawEnvRelayProvider = import.meta.env.VITE_APP_RELAY_PROVIDER;
 const ENV_RELAY_PROVIDER: RelayProvider | undefined =
   rawEnvRelayProvider === "gmx" || rawEnvRelayProvider === "gelato" ? rawEnvRelayProvider : undefined;
 
+// pinned after the split proved parity: reverting a chain to "ab" restores the 30/70 experiment,
+// and `forceGelatoFallback` remains the instant incident switch above every pin
 const RELAY_ROLLOUT: Partial<Record<ContractsChainId, RelayRollout>> = {
-  [ARBITRUM]: "ab",
-  [AVALANCHE]: "ab",
-  [MEGAETH]: "ab",
+  [ARBITRUM]: "gmx",
+  [AVALANCHE]: "gmx",
+  [MEGAETH]: "gmx",
 };
 
 export function resolveRelayProvider(rollout: RelayRollout | undefined, isAbEnabled: boolean): RelayProvider {

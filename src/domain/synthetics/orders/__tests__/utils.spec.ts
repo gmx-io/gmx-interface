@@ -283,7 +283,7 @@ describe("getOrderErrors — margin deposit orders", () => {
     expect(result.level).toBeUndefined();
   });
 
-  it("returns the red state and skips the standard increase checks when no position matches", () => {
+  it("reports an orphaned deposit and skips the standard increase checks when no position matches", () => {
     const otherCollateralPosition = mockPositionInfo({
       marketInfo,
       collateralTokenAddress: tokensData.BTC.address,
@@ -301,10 +301,19 @@ describe("getOrderErrors — margin deposit orders", () => {
     });
 
     // the standard path would add the "collateralToken" mismatch warning here
-    expect(errorKeys(result)).toEqual(["marginDepositInsufficient"]);
+    expect(errorKeys(result)).toEqual(["marginDepositNoPosition"]);
+    expect(result.level).toBe("error");
+  });
 
-    const { action } = getTransProps(result.errors[0].msg);
-    expect(action?.props.positionKey).toBeUndefined();
+  it("reports an orphaned deposit when the account has no positions at all", () => {
+    const result = getOrderErrors({
+      ...depositParams,
+      positionsInfoData: {},
+      order: makeDepositOrder(),
+    });
+
+    expect(errorKeys(result)).toEqual(["marginDepositNoPosition"]);
+    expect(result.level).toBe("error");
   });
 
   it("stays silent while positions are still loading", () => {
