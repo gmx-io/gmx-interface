@@ -53,11 +53,11 @@ export function useMeasureLoadTime({
       }
 
       if (!measure.location) {
-        measure.location = window.location.pathname;
+        measure.location = window.location.hash;
       }
 
       return () => {
-        if (measure.requestId && window.location.pathname !== measure.location) {
+        if (measure.requestId && window.location.hash !== measure.location) {
           clearTimeout(measure.timeoutId);
           measure.done = true;
           // reset timer

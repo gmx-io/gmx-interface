@@ -43,4 +43,5 @@ export type DynamicChartLine = {
   sizeDeltaUsd?: bigint;
   indexTokenVisualMultiplier: number;
   isPartial: boolean;
+  isMarginDeposit: boolean;
 };

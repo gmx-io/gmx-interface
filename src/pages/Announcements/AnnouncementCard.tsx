@@ -30,7 +30,6 @@ export function AnnouncementCard({
 }: AnnouncementCardProps) {
   const date = getEventSortDate(event, uiFlags);
   const titleText = reactNodeToText(event.title);
-  const links = event.links ?? (event.link ? [event.link] : []);
 
   return (
     <article
@@ -56,22 +55,18 @@ export function AnnouncementCard({
           {event.summary !== undefined && <div>{highlightNode(event.summary, searchTokens)}</div>}
           <div>{highlightNode(event.description, searchTokens)}</div>
         </div>
-        {links.length > 0 && (
-          <div className="flex flex-wrap gap-8">
-            {links.map((link) => (
-              <Button
-                key={`${link.href}-${link.text}`}
-                variant="secondary"
-                size="small"
-                to={link.href}
-                newTab={link.newTab}
-                showExternalLinkArrow={false}
-              >
-                {link.text}
-                <UpRightArrowIcon className="size-16" />
-              </Button>
-            ))}
-          </div>
+        {event.link && (
+          <Button
+            variant="secondary"
+            size="small"
+            className="self-start"
+            to={event.link.href}
+            newTab={event.link.newTab}
+            showExternalLinkArrow={false}
+          >
+            {event.link.text}
+            <UpRightArrowIcon className="size-16" />
+          </Button>
         )}
       </div>
     </article>

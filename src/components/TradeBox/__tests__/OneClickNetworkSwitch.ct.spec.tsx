@@ -3,12 +3,12 @@ import { ethers } from "ethers";
 
 import { getSubaccountApprovalKey } from "config/localStorage";
 import {
-  installMockChain,
   MOCK_ACCOUNT_PRIVATE_KEY,
   MockChain,
   SEEDED_SUBACCOUNT_ADDRESS,
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
-} from "domain/testUtils/oneClickCtRpcHarness";
+} from "domain/testUtils/rpc/mockChain";
+import { assertNoRpcHoles, installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 
 import { OneClickNetworkSwitchStory } from "./OneClickNetworkSwitch.ct.stories";
@@ -21,6 +21,8 @@ const SLOT_B_KEY = getSubaccountApprovalKey(ARBITRUM, MOCK_ACCOUNT, SOURCE_BASE_
 const ANOTHER_NETWORK_WARNING = /One-Click Trading needs a one-time signature for the current network/;
 
 test.setTimeout(60_000);
+
+test.afterEach(assertNoRpcHoles);
 
 type PageLike = {
   evaluate: <R, Arg>(fn: (arg: Arg) => R, arg: Arg) => Promise<R>;
@@ -40,7 +42,7 @@ test.describe("One-Click approval slots on source-network switch (FEDEV-2334)", 
       subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
       onchain: { active: false },
     });
-    await installMockChain(page, chain);
+    await installRpcResponder(page, chain);
 
     await mount(
       <OneClickNetworkSwitchStory

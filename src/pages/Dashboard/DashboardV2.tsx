@@ -96,7 +96,7 @@ export default function DashboardV2() {
             </div>
 
             <div className="mt-16">
-              <BuybackDashboard totalGmxSupply={totalGmxSupply} />
+              <BuybackDashboard gmxPrice={gmxPrice} totalGmxSupply={totalGmxSupply} />
             </div>
 
             <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">

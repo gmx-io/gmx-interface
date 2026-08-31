@@ -13,7 +13,7 @@ export const emptySyntheticsEventsState: SyntheticsEventsContextType = {
   positionIncreaseEvents: [],
   positionDecreaseEvents: [],
   pendingExpressTxns: {},
-  gelatoTaskStatuses: {},
+  relayTaskStatuses: {},
   setPendingExpressTxn: noop,
   updatePendingExpressTxn: noop,
   setPendingOrder: noop,

@@ -549,6 +549,14 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x470128853D74dab7423904a20eA5AA230e9e561B": {
       enabled: true,
     },
+    // QQQ/USD [WETH-USDC]
+    "0x1C132E43029efCd57435eE79ceA98006C6227A6f": {
+      enabled: true,
+    },
+    // SPY/USD [WETH-USDC]
+    "0xcBd4c1b0c89D50793c5A3e8d96d98FcB4f1B1c47": {
+      enabled: true,
+    },
     // MEGA/USD [WETH-USDC]
     "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
       enabled: true,
@@ -784,13 +792,15 @@ export const DEPOSIT_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
     // Price impact distribution campaign still active
     "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d", // KTA/USD
-    // Commodity markets — accessible only via GLV
+    // GLV-only markets — accessible only via GLV
     "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
     "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
     "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
     "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
     "0x470128853D74dab7423904a20eA5AA230e9e561B", // SPCX/USD
+    "0x1C132E43029efCd57435eE79ceA98006C6227A6f", // QQQ/USD
+    "0xcBd4c1b0c89D50793c5A3e8d96d98FcB4f1B1c47", // SPY/USD
   ]),
 };
 
@@ -830,13 +840,15 @@ export function hasDelistingMarkets(chainId: number): boolean {
 
 export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
-    // Commodity markets — accessible only via GLV
+    // GLV-only markets — accessible only via GLV
     "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
     "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
     "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
     "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
     "0x470128853D74dab7423904a20eA5AA230e9e561B", // SPCX/USD
+    "0x1C132E43029efCd57435eE79ceA98006C6227A6f", // QQQ/USD
+    "0xcBd4c1b0c89D50793c5A3e8d96d98FcB4f1B1c47", // SPY/USD
   ]),
 };
 

@@ -8,7 +8,7 @@ export function BuildersFooter() {
   return (
     <footer className="relative w-full px-16 py-16 sm:px-40">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-between gap-16 text-12 text-white sm:flex-row">
-        <a href="/" aria-label="GMX">
+        <a href="/#/" aria-label="GMX">
           <IcGmxFooter className="h-24" />
         </a>
         <div className="flex items-center gap-12">
@@ -29,7 +29,7 @@ export function BuildersFooter() {
             <Trans>Stats</Trans>
           </a>
           <a
-            href="/terms-and-conditions"
+            href="/#/terms-and-conditions"
             target="_blank"
             rel="noopener noreferrer"
             className="duration-180 transition-colors hover:text-white/80"

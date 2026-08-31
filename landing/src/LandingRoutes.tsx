@@ -21,7 +21,7 @@ function TermsPageLoader() {
   );
 }
 
-// Preserves search so /trade/?ref=<code> doesn't lose the ref on redirect.
+// Preserves search so /#/trade/?ref=<code> doesn't lose the ref on redirect.
 function RedirectToHomeWithSearch({ location }: RouteComponentProps) {
   return <Redirect to={`/${location.search}`} />;
 }

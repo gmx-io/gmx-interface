@@ -16,7 +16,7 @@ type Props<V extends string | number> = {
   commonOptionClassname?: string;
   onOptionClick: ((value: V) => void) | undefined;
   qa?: string;
-  type?: "inline" | "block" | "inline-primary" | "underline";
+  type?: "inline" | "block" | "inline-primary" | "underline" | "pill";
 };
 
 export default function NestedTab<V extends string | number>({

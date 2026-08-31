@@ -31,7 +31,7 @@ function AffiliatePromos() {
     <>
       <h2 className="text-[40px] font-medium max-md:text-[32px]">
         <Trans>
-          Earn up to 15% in
+          Earn up to 25% in
           <br className="max-md:hidden" /> rebates as an affiliate
         </Trans>
       </h2>
@@ -169,7 +169,6 @@ export function CreateAffiliateWizard({
         setIsVisible={setIsShareModalVisible}
         referralCode={createdReferralCode}
         traderDiscountPercentage={traderDiscountPercentage}
-        hasReferredUsers={false}
       />
     </div>
   );

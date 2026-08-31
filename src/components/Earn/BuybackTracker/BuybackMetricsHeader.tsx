@@ -26,7 +26,11 @@ export function BuybackMetricsHeader({
     <div className="flex gap-28 max-md:flex-col max-md:gap-12">
       <MetricItem
         label={<Trans>Total bought GMX</Trans>}
-        tooltip={<Trans>Total amount of GMX bought back since tracking began</Trans>}
+        tooltip={
+          <Trans>
+            Total amount of GMX bought back since tracking began. The USD value is based on the current GMX price.
+          </Trans>
+        }
         value={metrics ? `${numberWithCommas(Math.round(metrics.totalBoughtGmx))} GMX` : "N/A"}
         subtitle={
           metrics?.totalBoughtUsd !== undefined

@@ -43,12 +43,87 @@ export type EventData = {
   variant?: AnnouncementVariant;
   chains?: number[];
   link?: EventLink;
-  links?: EventLink[];
 
   requiresOpenPosition?: string;
 };
 
 export const appEventsData: EventData[] = [
+  {
+    id: "qqq-spy-arbitrum-listing",
+    type: "listing",
+    flagId: "showQqqSpyArbitrumListing",
+    endDate: "01 Sep 2026, 12:00",
+    chains: [ARBITRUM],
+    title: "QQQ and SPY markets added on Arbitrum",
+    description: (
+      <>
+        <Link to="/trade">Trade</Link> QQQ and SPY perpetuals 24/7, or <Link to="/pools">provide liquidity</Link> via
+        GLV <span className="text-slate-100">[WETH-USDC]</span>. Find them under TradFi &gt; Indices in the market
+        dropdown.
+      </>
+    ),
+  },
+  {
+    id: "release-122-123-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "21 Aug 2026, 08:00",
+    endDate: "28 Aug 2026, 08:00",
+    variant: "info",
+    title: "App Update: Earnings Overview, Conditional Margin Deposits, Tax Exports",
+    summary: (
+      <>
+        Earn Portfolio now shows what you've earned, margin deposits can wait for a trigger, and history exports for tax
+        tools.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Earn Portfolio:</span> the Portfolio tab now shows what
+          you have earned without hovering. Lifetime and last-7-day totals sit above your assets, split into Staking and
+          LP, and GLV vault earnings appear for the first time. Every GM pool and GLV card carries its own 7d, expected
+          365d and lifetime line.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Margin deposits:</span> Edit margin now takes a trigger
+          price, so you can queue extra margin that only lands if the market reaches it. It shows as a Deposit margin
+          order you can edit or replace from the Orders tab.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">History exports:</span> the CSV button on Trade History
+          and Claims History now opens an export picker, with a detailed GMX format plus Koinly, CoinTracker and
+          CoinLedger. Exports cover your full filtered history, not just the rows on screen.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trade History:</span> the settlement tooltip on a closed
+          position now reconciles the whole lifecycle, from the margin you put in through every increase, withdrawal and
+          partial close to the final payout. Executed swaps show their swap fee and price impact alongside.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Order warnings:</span> the copy for an order that cannot
+          execute is now the same across the Orders tab, the tradebox and position editing, and each one tells you what
+          to do about it. A limit increase with a trigger beyond your liquidation price is now previewed as a fresh
+          position and warns you.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Wallet funding:</span> Buy with card and Transfer from
+          another chain are available from Receive for every wallet, not just email and social logins. On desktop,
+          Receive to Wallet has a proper Back button.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Links:</span> app URLs no longer contain "#". Your old
+          links and bookmarks still work and are rewritten in place, keeping your referral code, network and page.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Fixes:</span> position PnL matches what the contract
+          settles when the pool PnL cap applies, Staking Power Share shows three decimals on the GMX card so you can see
+          small changes in your share, swap slippage no longer accepts values above 99%, and the TP/SL edit icon on the
+          chart is visible again in light mode.
+        </span>
+      </span>
+    ),
+  },
   {
     id: "release-121-highlights",
     type: "update",

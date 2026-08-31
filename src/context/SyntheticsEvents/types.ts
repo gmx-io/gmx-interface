@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import type { RelayProvider } from "config/relay";
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { DecreasePositionSwapType, OrderTxnType, OrderType } from "domain/synthetics/orders";
@@ -84,6 +85,7 @@ export type PendingPositionUpdate = {
 export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
+  relayProvider?: RelayProvider;
   isGmxAccount: boolean;
   subaccountApproval?: SignedSubaccountApproval;
   tokenPermits?: SignedTokenPermit[];
@@ -101,7 +103,7 @@ export type PendingExpressTxnParams = {
   sendFailed?: boolean;
 };
 
-export type GelatoTaskStatus = {
+export type RelayTaskStatus = {
   taskId: string;
   statusCode: StatusCode;
   message?: string;
@@ -178,7 +180,7 @@ export type SyntheticsEventsContextType = MultichainEventsState & {
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   pendingExpressTxns: PendingExpressTxns;
-  gelatoTaskStatuses: { [taskId: string]: GelatoTaskStatus };
+  relayTaskStatuses: { [taskId: string]: RelayTaskStatus };
   setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
   updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
   setPendingOrder: SetPendingOrder;

@@ -7,7 +7,7 @@ import { type AnyChainId } from "config/chains";
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
-import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
+import { MetricEventParams, MulticallTimeoutEvent, WorkerMulticallErrorCounter } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { getCurrentRpcUrls } from "lib/rpc/useRpcUrls";
@@ -158,15 +158,11 @@ export async function executeMulticallWorker(
         request
       );
     } else {
-      emitMetricEvent({
+      emitMetricCounter<WorkerMulticallErrorCounter>({
         event: "worker.multicall.error",
-        isError: true,
         data: {
-          isInMainThread: false,
           errorName: error.name,
-          errorGroup: "Worker multicall error",
-          errorMessage: error.message,
-          errorStack: error.stack,
+          errorMessage: (error.message ?? "").slice(0, 150),
         },
       });
 

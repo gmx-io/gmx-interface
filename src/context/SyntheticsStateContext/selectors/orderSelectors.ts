@@ -14,8 +14,10 @@ import {
   selectChainId,
   selectJitLiquidityMap,
   selectMarketsInfoData,
+  selectPositionConstants,
   selectPositionsInfoData,
   selectUiFeeFactor,
+  selectUserReferralInfo,
 } from "./globalSelectors";
 import { makeSelectOrderEditorNextPositionValuesForIncrease } from "./orderEditorSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "./settingsSelectors";
@@ -53,6 +55,9 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
           )
         : undefined;
 
+    const { minCollateralUsd } = q(selectPositionConstants);
+    const userReferralInfo = q(selectUserReferralInfo);
+
     const { errors, level } = getOrderErrors({
       order: orderInfo,
       positionsInfoData,
@@ -63,6 +68,8 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       isSetAcceptablePriceImpactEnabled,
       jitLiquidityMap,
       nextPositionValues,
+      minCollateralUsd,
+      userReferralInfo,
     });
 
     return { errors, level };

@@ -72,7 +72,7 @@ export function ProgramCards() {
                 Plus personal support.
               </Trans>
             </p>
-            <CardButton href="/trader-affiliate-program">
+            <CardButton href="/#/trader-affiliate-program">
               <Trans>Explore the VIP Desk</Trans>
             </CardButton>
           </div>
@@ -103,7 +103,7 @@ export function ProgramCards() {
                 through you.
               </Trans>
             </p>
-            <CardButton href="/builders">
+            <CardButton href="/#/builders">
               <Trans>Explore the Builder Program</Trans>
             </CardButton>
           </div>
