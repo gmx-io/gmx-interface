@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 
-import type { RelayProvider } from "config/relay";
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { DecreasePositionSwapType, OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubaccountApproval } from "domain/synthetics/subaccount";
 import type { OrderMetricId } from "lib/metrics/types";
-import type { StatusCode } from "sdk/utils/gelatoRelay";
+import type { StatusCode } from "sdk/utils/express";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
@@ -85,7 +84,6 @@ export type PendingPositionUpdate = {
 export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
-  relayProvider?: RelayProvider;
   isGmxAccount: boolean;
   subaccountApproval?: SignedSubaccountApproval;
   tokenPermits?: SignedTokenPermit[];

@@ -432,7 +432,6 @@ export function TradeBoxStory({
       marketsInfoData={marketsInfoData}
       tokensData={tokensData}
       features={expressOn ? EXPRESS_ON_FEATURES : undefined}
-      sponsoredCallBalanceData={expressOn ? EXPRESS_ON_SPONSORED_CALL : undefined}
       subaccount={mockSubaccount}
     >
       {withExternalSwapHandler && <ExternalSwapHandlerHost />}

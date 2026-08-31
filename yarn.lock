@@ -3257,19 +3257,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gelatocloud/gasless@npm:0.0.10":
-  version: 0.0.10
-  resolution: "@gelatocloud/gasless@npm:0.0.10"
-  dependencies:
-    isomorphic-ws: "npm:^5.0.0"
-    ws: "npm:^8.19.0"
-    zod: "npm:4.1.13"
-  peerDependencies:
-    viem: ^2.0.0
-  checksum: 10/247e7068f058e4e13c0f5c4ada98a65d65dd5495038d1bb9a88cf5462e6ecdaa9810285a80cd8cbd5e5de4a3c2f909ed39a622a3e64a042d80324ee9aa4b543d
-  languageName: node
-  linkType: hard
-
 "@gemini-wallet/core@npm:0.3.2":
   version: 0.3.2
   resolution: "@gemini-wallet/core@npm:0.3.2"
@@ -13032,7 +13019,6 @@ __metadata:
     "@davatar/react": "npm:1.8.1"
     "@floating-ui/dom": "npm:1.6.7"
     "@floating-ui/react": "npm:0.26.19"
-    "@gelatocloud/gasless": "npm:0.0.10"
     "@headlessui/react": "npm:1.7.19"
     "@intercom/messenger-js-sdk": "npm:0.0.18"
     "@layerzerolabs/lz-v2-utilities": "npm:3.0.85"
@@ -14062,15 +14048,6 @@ __metadata:
   peerDependencies:
     ws: "*"
   checksum: 10/d7190eadefdc28bdb93d67b5f0c603385aaf87724fa2974abb382ac1ec9756ed2cfb27065cbe76122879c2d452e2982bc4314317f3d6c737ddda6c047328771a
-  languageName: node
-  linkType: hard
-
-"isomorphic-ws@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "isomorphic-ws@npm:5.0.0"
-  peerDependencies:
-    ws: "*"
-  checksum: 10/e20eb2aee09ba96247465fda40c6d22c1153394c0144fa34fe6609f341af4c8c564f60ea3ba762335a7a9c306809349f9b863c8beedf2beea09b299834ad5398
   languageName: node
   linkType: hard
 
@@ -20487,17 +20464,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:4.1.13, zod@npm:^4.1.5":
-  version: 4.1.13
-  resolution: "zod@npm:4.1.13"
-  checksum: 10/0679190318928f69fcb07751063719de232c663b13955fcdb55db59839569d39f3f29b955cb0cba7af0b724233f88c06b3e84c550397ad4e68f8088fa6799d88
-  languageName: node
-  linkType: hard
-
 "zod@npm:^3.24.2, zod@npm:^3.24.4, zod@npm:^3.25.76":
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995
+  languageName: node
+  linkType: hard
+
+"zod@npm:^4.1.5":
+  version: 4.1.13
+  resolution: "zod@npm:4.1.13"
+  checksum: 10/0679190318928f69fcb07751063719de232c663b13955fcdb55db59839569d39f3f29b955cb0cba7af0b724233f88c06b3e84c550397ad4e68f8088fa6799d88
   languageName: node
   linkType: hard
 

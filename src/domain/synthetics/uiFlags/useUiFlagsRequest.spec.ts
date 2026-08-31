@@ -3,12 +3,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARBITRUM } from "config/chains";
 
 import {
-  FORCE_GELATO_FALLBACK_UI_FLAG,
   IS_EXPRESS_AVAILABLE_UI_FLAG,
   UiFlags,
   confirmRelayControlFlags,
   getIsExpressAvailable,
-  getIsGelatoFallbackForced,
 } from "./useUiFlagsRequest";
 
 function flags(enabled: boolean): UiFlags {
@@ -66,17 +64,6 @@ describe("confirmRelayControlFlags", () => {
     const result = await confirmRelayControlFlags(ARBITRUM, { [IS_EXPRESS_AVAILABLE_UI_FLAG]: flag(false) });
 
     expect(getIsExpressAvailable(result)).toBe(false);
-  });
-
-  it("confirms the force switch the same way", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => new Response(JSON.stringify({ [FORCE_GELATO_FALLBACK_UI_FLAG]: flag(false) })))
-    );
-
-    const result = await confirmRelayControlFlags(ARBITRUM, { [FORCE_GELATO_FALLBACK_UI_FLAG]: flag(true) });
-
-    expect(getIsGelatoFallbackForced(result)).toBe(false);
   });
 
   it("acts on what it has when the keeper cannot be reached", async () => {

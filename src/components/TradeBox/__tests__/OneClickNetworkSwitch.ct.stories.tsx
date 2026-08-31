@@ -47,7 +47,6 @@ function SyntheticsStateWithAppChainContext({ children }: { children: ReactNode 
   return (
     <MockSyntheticsStateProvider
       features={EXPRESS_AVAILABLE_FEATURES}
-      sponsoredCallBalanceData={SPONSORED_CALL_ALLOWED}
       srcChainId={srcChainId}
     >
       {children}

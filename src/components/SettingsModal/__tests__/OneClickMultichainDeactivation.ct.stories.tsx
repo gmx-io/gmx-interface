@@ -39,7 +39,6 @@ function MultichainSyntheticsState({ children }: { children: ReactNode }) {
   return (
     <MockSyntheticsStateProvider
       features={EXPRESS_AVAILABLE_FEATURES}
-      sponsoredCallBalanceData={SPONSORED_CALL_ALLOWED}
       srcChainId={srcChainId}
       l1ExpressOrderGasReference={MOCK_L1_EXPRESS_ORDER_GAS_REFERENCE}
       tokensData={tokensData}

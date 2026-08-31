@@ -43,8 +43,6 @@ export const selectProgressiveDepositMarketTokensDataWithoutGlv = createSelector
 
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
 const selectFeatures = (s: SyntheticsState) => s.features;
-export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
-  s.sponsoredCallBalanceData?.isSponsoredCallAllowed ?? false;
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
 export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
 

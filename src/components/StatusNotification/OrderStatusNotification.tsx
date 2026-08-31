@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { getExplorerUrl } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { PendingOrderData, getPendingOrderKey, getRelayTaskUrl, useSyntheticsEvents } from "context/SyntheticsEvents";
+import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { findOrderStatusForAllocation } from "context/SyntheticsEvents/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -39,7 +39,7 @@ import { TransactionStatus, TransactionStatusType } from "components/Transaction
 import { useToastAutoClose } from "./useToastAutoClose";
 
 // eslint-disable-next-line import/order
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import "./StatusNotification.scss";
 
 type Props = {
@@ -321,13 +321,6 @@ function OrderStatusNotification({
         </div>
       );
       txnHash = relayTaskStatus?.transactionHash;
-      txnLink = getRelayTaskUrl({
-        relayProvider: pendingExpressTxn?.relayProvider,
-        taskId: pendingExpressTxn?.taskId,
-        isDebug: true,
-        tenderlyAccountSlug,
-        tenderlyProjectSlug,
-      });
     } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;
@@ -344,10 +337,7 @@ function OrderStatusNotification({
     orderStatus?.executedTxnHash,
     orderStatus?.updatedTxnHash,
     orderStatus?.cancelledTxnHash,
-    tenderlyAccountSlug,
-    tenderlyProjectSlug,
     pendingExpressTxn?.taskId,
-    pendingExpressTxn?.relayProvider,
     hideTxLink,
   ]);
 

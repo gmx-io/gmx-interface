@@ -5,10 +5,10 @@ import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { parseError } from "lib/errors";
 import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
 import { abis } from "sdk/abis";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 
 import type { OrderCreatedEventData, OrderStatus, PendingOrderData } from "./types";
-import { extractRelayTaskError, findMatchedOrderStatus, findOrderStatusForAllocation, getRelayTaskUrl } from "./utils";
+import { extractRelayTaskError, findMatchedOrderStatus, findOrderStatusForAllocation } from "./utils";
 
 function makePendingOrder(overrides: Partial<PendingOrderData> = {}): PendingOrderData {
   return {
@@ -192,21 +192,3 @@ describe("extractRelayTaskError", () => {
   });
 });
 
-describe("getRelayTaskUrl", () => {
-  const taskId = "0xtask";
-
-  it("offers no Gelato task page for a task the GMX relay issued", () => {
-    expect(getRelayTaskUrl({ relayProvider: "gmx", taskId, isDebug: true })).toBeUndefined();
-    expect(getRelayTaskUrl({ relayProvider: "gmx", taskId, isDebug: false })).toBeUndefined();
-  });
-
-  it("offers no task page when the provider was not recorded", () => {
-    expect(getRelayTaskUrl({ relayProvider: undefined, taskId, isDebug: true })).toBeUndefined();
-  });
-
-  it("keeps the Gelato task page for a task Gelato issued", () => {
-    expect(getRelayTaskUrl({ relayProvider: "gelato", taskId, isDebug: true })).toContain(
-      `https://api.gelato.digital/tasks/status/${taskId}/debug`
-    );
-  });
-});

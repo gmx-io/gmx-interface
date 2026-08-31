@@ -1,7 +1,7 @@
 import { chainIdFromRpcUrl } from "./chainIdFromRpcUrl";
 import { registerRpcHoleSource } from "./holes";
 import { handleJsonRpcBody } from "./jsonRpcBody";
-import { GELATO_RELAY_HOST, MockGelatoRelay } from "./mockChain";
+import { MockGmxRelay } from "./mockChain";
 import { HttpResponder, RpcResponder, UnhandledRequest } from "./types";
 
 export { assertNoRpcHoles, collectRpcHoles } from "./holes";
@@ -52,16 +52,15 @@ export async function installRpcResponder(
   page: PageLikeForRouting,
   responder: RpcResponder,
   options: {
-    gelatoRelay?: MockGelatoRelay;
+    gmxRelay?: MockGmxRelay;
     http?: HttpResponder;
   } = {}
 ): Promise<RpcResponderHandle> {
-  const { gelatoRelay, http } = options;
+  const { gmxRelay, http } = options;
   const unhandledRequests: UnhandledRequest[] = [];
   const unknownRpcHosts: string[] = [];
-  const relayCallsWithoutMock: string[] = [];
   const handle: RpcResponderHandle = { unhandledRequests, unknownRpcHosts };
-  registerRpcHoleSource({ responder, gelatoRelay, unknownRpcHosts, relayCallsWithoutMock });
+  registerRpcHoleSource({ responder, unknownRpcHosts });
 
   await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, async (route) => {
     const request = route.request();
@@ -74,16 +73,14 @@ export async function installRpcResponder(
     const url = new URL(request.url());
     const postData = request.method() === "POST" ? request.postData() : null;
 
-    if (url.host === GELATO_RELAY_HOST) {
-      if (postData) {
-        const relayResponder = gelatoRelay ?? missingRelayResponder(relayCallsWithoutMock);
-        const body = await handleJsonRpcBody({ responder: relayResponder, chainId: 0, rawBody: postData });
-        await route.fulfill({ status: 200, contentType: "application/json", headers: CORS_HEADERS, body });
-        return;
-      }
-
-      unhandledRequests.push({ method: request.method(), url: request.url() });
-      await route.abort();
+    const relayResponse = await gmxRelay?.handle(url, { method: request.method(), body: postData ?? undefined });
+    if (relayResponse) {
+      await route.fulfill({
+        status: relayResponse.status,
+        contentType: "application/json",
+        headers: CORS_HEADERS,
+        body: relayResponse.body,
+      });
       return;
     }
 
@@ -123,23 +120,6 @@ export async function installRpcResponder(
     await route.abort();
   });
 
-  if (gelatoRelay && page.routeWebSocket) {
-    await page.routeWebSocket(new RegExp(`wss?://${GELATO_RELAY_HOST.replace(/\./g, "\\.")}`), (ws) => {
-      ws.onMessage((raw) => {
-        try {
-          const message = JSON.parse(String(raw)) as { id?: number; method?: string };
-          if (message.method === "subscribe" && message.id !== undefined) {
-            ws.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: `mock-subscription-${message.id}` }));
-          } else if (message.method === "unsubscribe" && message.id !== undefined) {
-            ws.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: true }));
-          }
-        } catch {
-          // ignore non-JSON frames
-        }
-      });
-    });
-  }
-
   return handle;
 }
 
@@ -153,13 +133,3 @@ function unknownHostResponder(host: string): RpcResponder {
   };
 }
 
-function missingRelayResponder(relayCallsWithoutMock: string[]): RpcResponder {
-  return {
-    handle: async (_chainId, { method }) => {
-      relayCallsWithoutMock.push(method);
-      throw new Error(
-        `[testUtils/rpc] Gelato relay call ${method} but no MockGelatoRelay installed — pass options.gelatoRelay to installRpcResponder`
-      );
-    },
-  };
-}

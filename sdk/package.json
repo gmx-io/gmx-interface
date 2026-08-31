@@ -530,7 +530,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@gelatocloud/gasless": "0.0.10",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "cross-fetch": "4.0.0",
     "crypto-js": "4.2.0",

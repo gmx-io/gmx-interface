@@ -1,9 +1,8 @@
 import { describe, expect, it, vi, afterEach, beforeAll } from "vitest";
 
-import { setAbFlagEnabled } from "config/ab";
 import { ARBITRUM } from "config/chains";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 
 const TASK_ID = `0x${"ab".repeat(32)}`;
 
@@ -19,11 +18,6 @@ function jsonResponse(body: unknown, status = 200) {
 }
 
 describe("sendExpressTransaction via GMX Relay", () => {
-  // the real config, pinned onto the gmx side of the split
-  beforeAll(() => {
-    setAbFlagEnabled("gmxRelay", true);
-  });
-
   afterEach(() => {
     vi.unstubAllGlobals();
   });

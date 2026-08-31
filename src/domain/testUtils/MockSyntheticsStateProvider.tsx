@@ -6,7 +6,6 @@ import { useSubaccountContext } from "context/SubaccountContext/SubaccountContex
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { latestStateRef, StateCtx } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import type { SponsoredCallBalanceData } from "domain/synthetics/express";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import type { MarketsInfoData } from "domain/synthetics/markets";
@@ -48,7 +47,6 @@ export type MockSyntheticsStateProviderProps = {
   uiFeeFactor?: bigint;
   isFirstOrder?: boolean;
   features?: FeaturesSettings;
-  sponsoredCallBalanceData?: SponsoredCallBalanceData;
   subaccount?: SyntheticsState["subaccountState"]["subaccount"];
   srcChainId?: SourceChainId;
   l1ExpressOrderGasReference?: L1ExpressOrderGasReference;
@@ -68,7 +66,6 @@ export function MockSyntheticsStateProvider({
   uiFeeFactor = 0n,
   isFirstOrder = false,
   features,
-  sponsoredCallBalanceData,
   subaccount,
   srcChainId,
   l1ExpressOrderGasReference,
@@ -170,7 +167,6 @@ export function MockSyntheticsStateProvider({
       // populate if the component under test grows feature-gated or oracle-based behavior
       features,
       uiFlags: undefined,
-      sponsoredCallBalanceData,
       gasPaymentTokenAllowance: undefined,
       l1ExpressOrderGasReference,
     };
@@ -189,7 +185,6 @@ export function MockSyntheticsStateProvider({
     uiFeeFactor,
     isFirstOrder,
     features,
-    sponsoredCallBalanceData,
     l1ExpressOrderGasReference,
     settings,
     subaccountState,

@@ -2,16 +2,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import { waitForRelayTaskOutcome } from "lib/transactions/relayTaskStatus";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 
-const { getGelatoRelayerClientMock, sendTxnErrorMetricMock } = vi.hoisted(() => ({
-  getGelatoRelayerClientMock: vi.fn(),
+const { sendTxnErrorMetricMock } = vi.hoisted(() => ({
   sendTxnErrorMetricMock: vi.fn(),
-}));
-
-vi.mock("sdk/utils/gelatoRelay", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("sdk/utils/gelatoRelay")>()),
-  getGelatoRelayerClient: getGelatoRelayerClientMock,
 }));
 
 vi.mock("lib/metrics/utils", () => ({ sendTxnErrorMetric: sendTxnErrorMetricMock }));
@@ -38,18 +32,16 @@ function stubRelayStatus(body: unknown) {
 describe("waitForRelayTaskOutcome", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
-    getGelatoRelayerClientMock.mockReset();
     sendTxnErrorMetricMock.mockReset();
   });
 
-  it("judges a GMX Relay task by the GMX relay, never by Gelato", async () => {
+  it("judges a task by the GMX relay", async () => {
     const requestedUrls = stubRelayStatus({ taskId: TASK_ID, status: "executed", txHash: "0xhash" });
 
-    const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID, relayProvider: "gmx" });
+    const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID });
 
     expect(outcome?.statusCode).toBe(StatusCode.Success);
     expect(outcome?.transactionHash).toBe("0xhash");
-    expect(getGelatoRelayerClientMock).not.toHaveBeenCalled();
     expect(requestedUrls).toContainEqual(expect.stringContaining("/v1/relay/status"));
     expect(requestedUrls).not.toContainEqual(expect.stringContaining("gelato"));
   });
@@ -58,9 +50,8 @@ describe("waitForRelayTaskOutcome", () => {
     stubRelayStatus({ taskId: TASK_ID, status: "unknown", txHash: "0xhash" });
 
     await expect(
-      waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID, relayProvider: "gmx" })
+      waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID })
     ).resolves.toBeUndefined();
-    expect(getGelatoRelayerClientMock).not.toHaveBeenCalled();
   });
 
   it("reports a reverted GMX Relay task with the reason and revert bytes the relay gave", async () => {
@@ -72,12 +63,11 @@ describe("waitForRelayTaskOutcome", () => {
       revertData: "0x08c379a0deadbeef",
     });
 
-    const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID, relayProvider: "gmx" });
+    const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID });
 
     expect(outcome?.statusCode).toBe(StatusCode.Reverted);
     expect(outcome?.message).toBe("InsufficientRelayFee");
     expect(outcome?.revertData).toBe("0x08c379a0deadbeef");
-    expect(getGelatoRelayerClientMock).not.toHaveBeenCalled();
   });
 
   // one failure event per operation: the outcome carries the refusal to the single emitter upstream
@@ -93,7 +83,7 @@ describe("waitForRelayTaskOutcome", () => {
       )
     );
 
-    const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID, relayProvider: "gmx" });
+    const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID });
 
     expect(outcome?.statusCode).toBe(StatusCode.Rejected);
     expect(outcome?.message).toContain("taskId must be a 0x-prefixed 32-byte hex string");
@@ -101,15 +91,4 @@ describe("waitForRelayTaskOutcome", () => {
     expect(sendTxnErrorMetricMock).not.toHaveBeenCalled();
   });
 
-  it("keeps judging a Gelato task by Gelato", async () => {
-    stubRelayStatus({});
-    const waitForReceipt = vi.fn(async () => ({ transactionHash: "0xhash" }));
-    getGelatoRelayerClientMock.mockReturnValue({ waitForReceipt });
-
-    const outcome = await waitForRelayTaskOutcome({ chainId: ARBITRUM, taskId: TASK_ID, relayProvider: "gelato" });
-
-    expect(waitForReceipt).toHaveBeenCalledWith(expect.objectContaining({ id: TASK_ID }));
-    expect(outcome?.statusCode).toBe(StatusCode.Success);
-    expect(outcome?.transactionHash).toBe("0xhash");
-  });
 });

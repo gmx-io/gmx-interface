@@ -1,6 +1,5 @@
 import { ContractsChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { getRelayProviderForSubmit } from "config/relay";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -593,7 +592,7 @@ function getExpressMetricData({
   }
 
   const expressData: ExpressOrderMetricData = {
-    relayProvider: getRelayProviderForSubmit(expressParams.chainId as ContractsChainId),
+    relayProvider: "gmx",
     isExpressValid: expressParams.gasPaymentValidations.isValid,
     isOutGasTokenBalance: expressParams.gasPaymentValidations.isOutGasTokenBalance,
     needGasTokenApproval: expressParams.gasPaymentValidations.needGasPaymentTokenApproval,

@@ -140,7 +140,6 @@ export async function sendBatchOrderTxn({
             eventBuilder.Sent({
               type: "relay",
               relayTaskId: res.taskId,
-              relayProvider: res.relayProvider,
             })
           );
 

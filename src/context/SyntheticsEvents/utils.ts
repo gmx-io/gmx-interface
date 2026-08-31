@@ -1,6 +1,5 @@
 import { type Abi, encodeErrorResult } from "viem";
 
-import type { RelayProvider } from "config/relay";
 import { extendError } from "lib/errors";
 import { abis } from "sdk/abis";
 
@@ -190,42 +189,3 @@ export function extractRelayTaskError(relayTaskStatus: RelayTaskStatus) {
   });
 }
 
-export function getRelayTaskUrl({
-  relayProvider,
-  taskId,
-  isDebug,
-  tenderlyAccountSlug,
-  tenderlyProjectSlug,
-}: {
-  relayProvider: RelayProvider | undefined;
-  taskId: string | undefined;
-  isDebug: boolean;
-  tenderlyAccountSlug?: string;
-  tenderlyProjectSlug?: string;
-}) {
-  // only Gelato publishes a task page; a GMX Relay task id resolves to nothing on gelato.digital
-  if (relayProvider !== "gelato" || !taskId) {
-    return undefined;
-  }
-
-  return getGelatoTaskUrl({ taskId, isDebug, tenderlyAccountSlug, tenderlyProjectSlug });
-}
-
-export function getGelatoTaskUrl({
-  taskId,
-  isDebug,
-  tenderlyAccountSlug,
-  tenderlyProjectSlug,
-}: {
-  taskId: string;
-  isDebug: boolean;
-  tenderlyAccountSlug?: string;
-  tenderlyProjectSlug?: string;
-}) {
-  const tenderlySlugs =
-    tenderlyAccountSlug && tenderlyProjectSlug
-      ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
-      : "";
-
-  return `https://api.gelato.digital/tasks/status/${taskId}/${isDebug ? "debug" : ""}?${tenderlySlugs}`;
-}

@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { useLatest } from "react-use";
 
 import { ContractsChainId } from "config/chains";
-import { getRelayProvider } from "config/relay";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -67,7 +66,7 @@ import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalyt
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
@@ -103,7 +102,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMultichainEvents } from "./useMultichainEvents";
-import { extractRelayTaskError, getRelayTaskUrl, getPendingOrderKey } from "./utils";
+import { extractRelayTaskError, getPendingOrderKey } from "./utils";
 
 const SyntheticsEventsContext = createContext({});
 
@@ -1045,7 +1044,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     if (pendingTasks.length === 0) return;
 
-    for (const { taskId, relayProvider } of pendingTasks) {
+    for (const { taskId } of pendingTasks) {
       if (!taskChainIdRef.current.has(taskId)) {
         taskChainIdRef.current.set(taskId, chainId);
       }
@@ -1060,12 +1059,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         try {
           // the callee owns the wait window and its transient retries; a second window here would
           // double the pending time and re-fire the failure metric for the same operation
-          outcome = await waitForRelayTaskOutcome({
-            chainId: taskChainId,
-            taskId,
-            // a task id is only meaningful to the relay that issued it; mirror the submit-side choice
-            relayProvider: relayProvider ?? getRelayProvider(taskChainId),
-          });
+          outcome = await waitForRelayTaskOutcome({ chainId: taskChainId, taskId });
         } catch (error) {
           metrics.pushError(error as ErrorLike, "pollRelayTaskOutcome");
         }
@@ -1128,11 +1122,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   chainId,
                   executionFeeBufferBps,
                   estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit ?? 0n,
-                  txUrl: getRelayTaskUrl({
-                    relayProvider: pendingExpressTxn.relayProvider,
-                    taskId: pendingExpressTxn.taskId,
-                    isDebug: false,
-                  }),
+                  txUrl: undefined,
                   errorMessage: executionFeeErrorParams.errorData.errorMessage,
                   shouldOfferExpress: false,
                   setIsSettingsVisible,

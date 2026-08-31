@@ -1,13 +1,10 @@
-import { MockChain, MockGelatoRelay } from "./mockChain";
+import { MockChain } from "./mockChain";
 import { RpcResponder } from "./types";
 
 export type RpcHoleSource = {
   responder: RpcResponder;
-  gelatoRelay?: MockGelatoRelay;
   /** JSON-RPC hosts missing from `RPC_HOSTS_BY_CHAIN_ID`, so their chain could not be recovered. */
   unknownRpcHosts?: string[];
-  /** Gelato relay methods called while no `MockGelatoRelay` was installed. */
-  relayCallsWithoutMock?: string[];
 };
 
 const installedSources: RpcHoleSource[] = [];
@@ -24,14 +21,11 @@ export function registerRpcHoleSource(source: RpcHoleSource) {
 export function collectRpcHoles(): string[] {
   const holes: string[] = [];
 
-  for (const { responder, gelatoRelay, unknownRpcHosts = [], relayCallsWithoutMock = [] } of installedSources.splice(
+  for (const { responder, unknownRpcHosts = [] } of installedSources.splice(
     0
   )) {
     for (const host of unknownRpcHosts) {
       holes.push(`JSON-RPC host missing from RPC_HOSTS_BY_CHAIN_ID: ${host}`);
-    }
-    for (const method of relayCallsWithoutMock) {
-      holes.push(`Gelato relay call but no MockGelatoRelay installed (pass options.gelatoRelay): ${method}`);
     }
     if (responder instanceof MockChain) {
       for (const method of responder.unknownMethods) {
@@ -39,11 +33,6 @@ export function collectRpcHoles(): string[] {
       }
       for (const selector of responder.unknownCallSelectors) {
         holes.push(`eth_call selector no MockChain branch answers: ${selector}`);
-      }
-    }
-    if (gelatoRelay) {
-      for (const method of gelatoRelay.unknownMethods) {
-        holes.push(`relay method no MockGelatoRelay branch answers: ${method}`);
       }
     }
   }

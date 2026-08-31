@@ -535,12 +535,6 @@ export class MockChain implements RpcResponder {
   }
 }
 
-export const GELATO_RELAY_HOST = "api.gelato.cloud";
-
-const GELATO_ERRORS_IFACE = new ethers.Interface([
-  "error InsufficientMultichainBalance(address account, address token, uint256 balance, uint256 amount)",
-]);
-
 export type RelaySentTransaction = {
   chainId: string;
   to: string;
@@ -548,99 +542,61 @@ export type RelaySentTransaction = {
   taskId: string;
 };
 
-/** The relay is chain-agnostic — the chain a transaction targets comes in `params.chainId`. */
-export class MockGelatoRelay implements RpcResponder {
+/** GMX Relay over HTTP: gmx-api's /v1/relay/* wire, backed by the same mock chain. */
+export class MockGmxRelay {
   chain: MockChain;
 
-  simulateInsufficientBalanceForToken: string | undefined = undefined;
-
   sentTransactions: RelaySentTransaction[] = [];
-  rpcLog: { method: string; error?: string }[] = [];
-  /** Relay methods no branch answers — they are rejected with -32601. */
-  unknownMethods = new Set<string>();
+  requestLog: { path: string }[] = [];
 
   constructor(chain: MockChain) {
     this.chain = chain;
   }
 
-  async handle(_chainId: number, { method, params = {} }: RpcRequest): Promise<unknown> {
-    const relayParams = params as Record<string, unknown>;
+  async handle(url: URL, request: { method: string; body?: string }): Promise<{ status: number; body: string } | undefined> {
+    if (!/\.gmxapi\.(io|ai)$/.test(url.host)) {
+      return undefined;
+    }
 
-    switch (method) {
-      case "relayer_sendTransaction": {
-        if (this.simulateInsufficientBalanceForToken) {
-          const revertData = GELATO_ERRORS_IFACE.encodeErrorResult("InsufficientMultichainBalance", [
-            this.chain.account,
-            this.simulateInsufficientBalanceForToken,
-            0n,
-            10n ** 6n,
-          ]);
-          this.rpcError(method, "Transaction reverted on simulation.", 4211, revertData);
-        }
+    if (url.pathname === "/v1/relay/submit" && request.method === "POST") {
+      this.requestLog.push({ path: url.pathname });
+      const { to, data } = JSON.parse(request.body ?? "{}") as { to: string; data: string };
+      const taskId = ethers.keccak256(ethers.toUtf8Bytes(`gmx-task-${this.sentTransactions.length}-${data}`));
+      this.sentTransactions.push({ chainId: String(ARBITRUM), to, data, taskId });
 
-        const to = relayParams.to as string;
-        const data = (relayParams.data as string) ?? "0x";
-        const taskId = ethers.keccak256(ethers.toUtf8Bytes(`gelato-task-${this.sentTransactions.length}-${data}`));
-        this.sentTransactions.push({ chainId: String(relayParams.chainId), to, data, taskId });
-
-        if (
-          isSameAddress(to, ARBITRUM_CONTRACTS.MultichainSubaccountRouter) ||
-          isSameAddress(to, ARBITRUM_CONTRACTS.SubaccountGelatoRelayRouter)
-        ) {
-          this.chain.onchain.active = false;
-        }
-
-        this.rpcLog.push({ method });
-        return taskId;
+      if (
+        isSameAddress(to, ARBITRUM_CONTRACTS.MultichainSubaccountRouter) ||
+        isSameAddress(to, ARBITRUM_CONTRACTS.SubaccountGelatoRelayRouter)
+      ) {
+        this.chain.onchain.active = false;
       }
-      case "relayer_getStatus": {
-        const taskId = relayParams.id as string;
-        const known = this.sentTransactions.find((t) => t.taskId === taskId);
 
-        if (!known) {
-          this.rpcError(method, "Unknown transaction id", 4207);
-        }
+      return { status: 200, body: JSON.stringify({ taskId, status: "pending" }) };
+    }
 
-        this.rpcLog.push({ method });
+    if (url.pathname === "/v1/relay/status" && request.method === "POST") {
+      this.requestLog.push({ path: url.pathname });
+      const { taskId } = JSON.parse(request.body ?? "{}") as { taskId: string };
+      const known = this.sentTransactions.find((t) => t.taskId === taskId);
+
+      if (!known) {
         return {
-          id: taskId,
-          chainId: Number(known.chainId),
-          createdAt: Date.now(),
-          status: 200,
-          receipt: this.buildRawReceipt(known),
+          status: 404,
+          body: JSON.stringify({ message: "No relay operation was submitted under this taskId", code: "NOT_FOUND" }),
         };
       }
-      default:
-        this.unknownMethods.add(method);
-        this.rpcError(method, "Method not found.", -32601);
+
+      return {
+        status: 200,
+        body: JSON.stringify({
+          taskId,
+          status: "executed",
+          txHash: ethers.keccak256(ethers.toUtf8Bytes(`gmx-txn-${taskId}`)),
+        }),
+      };
     }
-  }
 
-  private rpcError(method: string, message: string, code: number, data?: string): never {
-    this.rpcLog.push({ method, error: message });
-    const error = new Error(message) as Error & { rpcCode: number; rpcData?: string };
-    error.rpcCode = code;
-    error.rpcData = data;
-    throw error;
-  }
-
-  private buildRawReceipt(txn: RelaySentTransaction) {
-    return {
-      transactionHash: ethers.keccak256(ethers.toUtf8Bytes(`gelato-txn-${txn.taskId}`)),
-      transactionIndex: "0x0",
-      blockHash: ethers.keccak256(ethers.toUtf8Bytes(`gelato-block-${txn.taskId}`)),
-      blockNumber: "0x3e9",
-      from: this.chain.account,
-      to: txn.to,
-      cumulativeGasUsed: "0x5208",
-      gasUsed: "0x5208",
-      effectiveGasPrice: "0x5f5e100",
-      contractAddress: null,
-      logs: [],
-      logsBloom: "0x" + "0".repeat(512),
-      status: "0x1",
-      type: "0x2",
-    };
+    return undefined;
   }
 }
 
