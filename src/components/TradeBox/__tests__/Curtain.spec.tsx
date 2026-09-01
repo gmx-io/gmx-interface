@@ -32,4 +32,16 @@ describe("Curtain", () => {
     expect(content?.className).toContain("invisible");
     expect(content?.getAttribute("aria-hidden")).toBe("true");
   });
+
+  it("extends its background through the bottom safe area", () => {
+    const { container } = render(
+      <Curtain header={<span>Header</span>} dataQa="curtain">
+        <span>Content</span>
+      </Curtain>
+    );
+    const curtain = container.querySelector('[data-qa="curtain"]');
+
+    expect(curtain?.className).toContain("after:h-[var(--safe-area-inset-bottom)]");
+    expect(curtain?.className).toContain("after:bg-slate-900");
+  });
 });

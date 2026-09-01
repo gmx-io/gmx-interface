@@ -260,7 +260,7 @@ export function Curtain({
         <div
           data-qa={dataQa}
           ref={curtainRef}
-          className="text-body-medium fixed z-[901] flex flex-col rounded-t-4"
+          className="text-body-medium fixed z-[901] flex flex-col rounded-t-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-[var(--safe-area-inset-bottom)] after:bg-slate-900 after:content-['']"
           style={curtainStyle}
         >
           <div
