@@ -39,7 +39,6 @@ function writeItem(key: string, value: string) {
   }
 }
 
-/** The reload outruns the metrics queue, so the counter is handed to the next launch. */
 function takePendingCounter() {
   const rawCounter = readItem(PENDING_COUNTER_KEY);
   try {
@@ -56,9 +55,9 @@ export function useAppUpdateBanner() {
   const isDebug = useRef(getIsAppUpdateDebug()).current;
   const currentBuildId = useRef(isDebug ? APP_UPDATE_DEBUG.buildId : getDocumentBuildId()).current;
   const appStartedAt = useRef(Date.now()).current;
-  const canPersistReload = useRef<boolean>();
-  if (canPersistReload.current === undefined) {
-    canPersistReload.current = getCanUseSessionStorage();
+  const canPersistReloadRef = useRef<boolean>();
+  if (canPersistReloadRef.current === undefined) {
+    canPersistReloadRef.current = getCanUseSessionStorage();
   }
   const [updateBuildId, setUpdateBuildId] = useState<string>();
   const [snoozedUntil, setSnoozedUntil] = useState<number>();
@@ -67,24 +66,6 @@ export function useAppUpdateBanner() {
   const hiddenSince = useRef(document.visibilityState === "hidden" ? Date.now() : undefined);
   const hasInteracted = useRef(false);
   const stateRef = useLatestValueRef({ updateBuildId, snoozedUntil, isReloadBlocked });
-
-  const getStatus = useCallback(
-    (overrides?: Partial<AppUpdateStatus>): AppUpdateStatus => {
-      const status = {
-        ...stateRef.current,
-        isOnline: navigator.onLine,
-        hiddenSince: hiddenSince.current,
-        hasInteracted: hasInteracted.current,
-        appStartedAt,
-        canPersistReload: canPersistReload.current ?? false,
-        now: Date.now(),
-        ...overrides,
-      };
-
-      return { ...status, hasReloaded: readItem(RELOADED_BUILD_KEY) === status.updateBuildId };
-    },
-    [appStartedAt, stateRef]
-  );
 
   const reload = useCallback(
     (buildId: string, event: PendingCounter["event"]) => {
@@ -96,7 +77,7 @@ export function useAppUpdateBanner() {
 
       const didPersistReload = writeItem(RELOADED_BUILD_KEY, buildId);
       if (!didPersistReload && event === "reloaded") {
-        canPersistReload.current = false;
+        canPersistReloadRef.current = false;
         return false;
       }
 
@@ -109,8 +90,20 @@ export function useAppUpdateBanner() {
 
   const evaluate = useCallback(
     (overrides?: Partial<AppUpdateStatus>) => {
-      const status = getStatus(overrides);
-      const action = getAppUpdateAction(status);
+      const status = {
+        ...stateRef.current,
+        isOnline: navigator.onLine,
+        hiddenSince: hiddenSince.current,
+        hasInteracted: hasInteracted.current,
+        appStartedAt,
+        canPersistReload: canPersistReloadRef.current ?? false,
+        now: Date.now(),
+        ...overrides,
+      };
+      const action = getAppUpdateAction({
+        ...status,
+        hasReloaded: readItem(RELOADED_BUILD_KEY) === status.updateBuildId,
+      });
 
       if (action === "reload" && status.updateBuildId) {
         if (!reload(status.updateBuildId, "reloaded")) {
@@ -121,7 +114,7 @@ export function useAppUpdateBanner() {
 
       setIsOffered(action === "offer");
     },
-    [getStatus, reload]
+    [appStartedAt, reload, stateRef]
   );
 
   useEffect(function reportPreviousReload() {

@@ -15,14 +15,10 @@ export function getCanUseSessionStorage(storage: Storage | undefined = getSessio
 
   try {
     storage.setItem(SESSION_STORAGE_TEST_KEY, "1");
-    return storage.getItem(SESSION_STORAGE_TEST_KEY) === "1";
+    const canUseStorage = storage.getItem(SESSION_STORAGE_TEST_KEY) === "1";
+    storage.removeItem(SESSION_STORAGE_TEST_KEY);
+    return canUseStorage;
   } catch {
     return false;
-  } finally {
-    try {
-      storage.removeItem(SESSION_STORAGE_TEST_KEY);
-    } catch {
-      // Ignore cleanup errors.
-    }
   }
 }
