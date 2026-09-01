@@ -2187,10 +2187,6 @@ msgstr "Retirer {glvOrGm}"
 msgid "Receive voting power and participate in governance"
 msgstr "Recevoir du pouvoir de vote et participer à la gouvernance"
 
-#: src/components/Referrals/affiliates/faq.tsx
-msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
-msgstr ""
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
 msgstr "Aucune route de swap GMX trouvée de {0} vers {1}. Essayez <0>un agrégateur externe</0>."
@@ -8932,6 +8928,10 @@ msgstr "Liquidité du pool insuffisante"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1> OI a l'air génial</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Vérifiez plus : <4>https://tradao.xyz/#/open-interest</4></3>"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
