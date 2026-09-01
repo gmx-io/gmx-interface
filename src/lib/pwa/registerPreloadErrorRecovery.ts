@@ -77,7 +77,6 @@ export function registerPreloadErrorRecovery(options: PreloadErrorRecoveryOption
   }
 
   const handlePreloadError = (event: VitePreloadErrorEvent) => {
-    // The failed module belongs to the build the page is already leaving.
     if (getIsReloadingFromNetwork()) {
       return;
     }

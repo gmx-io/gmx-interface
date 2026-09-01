@@ -30,7 +30,6 @@ export function getIsNewerBuildId(currentBuildId: string | undefined, candidateB
   return Number.isSafeInteger(current) && Number.isSafeInteger(candidate) && candidate > current;
 }
 
-/** The service worker only intercepts navigations and `/assets/`, so this reaches the origin. */
 export function fetchNetworkBuildId() {
   if (!networkBuildIdRequest) {
     networkBuildIdRequest = readNetworkBuildId().finally(() => {

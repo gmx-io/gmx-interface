@@ -23,7 +23,6 @@ function changeBlockersCount(delta: number) {
   }
 }
 
-/** Marks work a reload would throw away. It holds back the silent reload, not the offer. */
 export function useBlockAutoReload(isBlocking: boolean) {
   useEffect(() => {
     if (!isBlocking) {

@@ -9,7 +9,6 @@ export type AppUpdateStatus = {
   isOnline: boolean;
   hiddenSince: number | undefined;
   snoozedUntil: number | undefined;
-  /** A reload for this build already happened and did not land on it, so it must not be retried. */
   hasReloaded: boolean;
   hasInteracted: boolean;
   appStartedAt: number;
@@ -27,8 +26,6 @@ function getCanReloadUnseen(status: AppUpdateStatus) {
     return true;
   }
 
-  // A visible app is never reloaded from under the user: interaction inside the chart iframe does
-  // not reach us, so an app that looks idle can still be in use.
   return status.hiddenSince !== undefined && status.now - status.hiddenSince >= HIDDEN_IDLE_MS;
 }
 
