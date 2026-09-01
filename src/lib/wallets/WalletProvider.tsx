@@ -13,10 +13,10 @@ import { PRIVY_STYLIS_PLUGINS } from "./privyUiCompat";
 import {
   getWagmiConfig,
   getSupportedChains,
-  getPrivyWalletList,
   PRIVY_APP_ID,
   PRIVY_LOGIN_METHODS,
   PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
+  PRIVY_WALLET_LIST,
 } from "./walletConfig";
 
 const queryClient = new QueryClient();
@@ -35,7 +35,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
         accentColor: colors.blue[600][theme] as `#${string}`,
         logo: gmxLogoElement,
         walletChainType: "ethereum-only" as const,
-        walletList: [...getPrivyWalletList(window.navigator.userAgent)],
+        walletList: [...PRIVY_WALLET_LIST],
         showWalletLoginFirst: true,
       },
       loginMethods: [...PRIVY_LOGIN_METHODS],

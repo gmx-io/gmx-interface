@@ -2,20 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, DEFAULT_SETTLEMENT_CHAIN_ID } from "config/chains";
 
-import { getPrivyWalletList, getSupportedChains, PRIVY_WALLET_LIST } from "./walletConfig";
-
-const METAMASK_IOS_USER_AGENT =
-  "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 WebView MetaMaskMobile";
-
-describe("getPrivyWalletList", () => {
-  it("only offers the injected connector inside MetaMask iOS", () => {
-    expect(getPrivyWalletList(METAMASK_IOS_USER_AGENT)).toEqual(["detected_ethereum_wallets"]);
-  });
-
-  it("keeps the configured wallet list in other browsers", () => {
-    expect(getPrivyWalletList("Mobile Safari")).toBe(PRIVY_WALLET_LIST);
-  });
-});
+import { getSupportedChains } from "./walletConfig";
 
 describe("getSupportedChains", () => {
   it("uses Arbitrum as the default settlement chain", () => {

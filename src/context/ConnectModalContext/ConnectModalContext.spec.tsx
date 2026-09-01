@@ -13,9 +13,6 @@ const mocks = vi.hoisted(() => ({
   pushError: vi.fn(),
   switchNetwork: vi.fn(),
 }));
-const METAMASK_IOS_USER_AGENT =
-  "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 WebView MetaMaskMobile";
-const originalEthereumDescriptor = Object.getOwnPropertyDescriptor(window, "ethereum");
 
 vi.mock("@privy-io/react-auth", () => ({
   usePrivy: () => ({
@@ -79,14 +76,7 @@ describe("ConnectModalProvider", () => {
 
   afterEach(() => {
     cleanup();
-    vi.useRealTimers();
-    vi.restoreAllMocks();
     vi.clearAllMocks();
-    if (originalEthereumDescriptor) {
-      Object.defineProperty(window, "ethereum", originalEthereumDescriptor);
-    } else {
-      delete window.ethereum;
-    }
   });
 
   it("uses connectOrCreateWallet for unauthenticated users", () => {
@@ -111,42 +101,6 @@ describe("ConnectModalProvider", () => {
 
     expect(mocks.connectWallet).toHaveBeenCalledTimes(1);
     expect(mocks.connectOrCreateWallet).not.toHaveBeenCalled();
-    expect(getContext().connectModalOpen).toBe(true);
-  });
-
-  it("uses only the injected wallet inside the MetaMask iOS browser", () => {
-    mocks.authenticated = true;
-    vi.spyOn(window.navigator, "userAgent", "get").mockReturnValue(METAMASK_IOS_USER_AGENT);
-    Object.defineProperty(window, "ethereum", { configurable: true, value: { isMetaMask: true } });
-    const getContext = setup();
-
-    act(() => {
-      getContext().openConnectModal?.();
-    });
-
-    expect(mocks.connectWallet).toHaveBeenCalledWith({ walletList: ["detected_ethereum_wallets"] });
-  });
-
-  it("waits for MetaMask iOS to inject its provider before opening Privy", async () => {
-    vi.useFakeTimers();
-    vi.spyOn(window.navigator, "userAgent", "get").mockReturnValue(METAMASK_IOS_USER_AGENT);
-    Object.defineProperty(window, "ethereum", { configurable: true, value: undefined });
-    const getContext = setup();
-
-    act(() => {
-      getContext().openConnectModal?.();
-    });
-
-    expect(mocks.connectOrCreateWallet).not.toHaveBeenCalled();
-    expect(getContext().connectModalOpen).toBe(false);
-
-    await act(async () => {
-      Object.defineProperty(window, "ethereum", { configurable: true, value: { isMetaMask: true } });
-      window.dispatchEvent(new Event("ethereum#initialized"));
-      await Promise.resolve();
-    });
-
-    expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(1);
     expect(getContext().connectModalOpen).toBe(true);
   });
 
