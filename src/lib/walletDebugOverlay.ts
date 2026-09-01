@@ -79,6 +79,7 @@ function start() {
   // Page lifecycle — a reload or navigation here explains a request that never resolves.
   window.addEventListener("pagehide", () => log("EVENT pagehide (document is going away)", "#f66"));
   window.addEventListener("beforeunload", () => log("EVENT beforeunload", "#f66"));
+  window.addEventListener("pageshow", (event) => log(`EVENT pageshow (persisted=${event.persisted})`));
   window.addEventListener("hashchange", () => log(`EVENT hashchange -> ${window.location.href}`, "#fc0"));
   window.addEventListener("popstate", () => log(`EVENT popstate -> ${window.location.href}`, "#fc0"));
   document.addEventListener("visibilitychange", () => log(`EVENT visibility -> ${document.visibilityState}`));
@@ -149,6 +150,101 @@ function start() {
     }
   });
   window.dispatchEvent(new Event("eip6963:requestProvider"));
+
+  // Privy API and captcha traffic — the SDK calls auth.privy.io from the host page, so a connect
+  // that dies in bot protection or a hanging login request is visible here.
+  const TRACED_FETCH_HOSTS = /privy\.io|hcaptcha\.com|challenges\.cloudflare\.com/;
+  const originalFetch = window.fetch.bind(window);
+  window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+    if (!TRACED_FETCH_HOSTS.test(url)) {
+      return originalFetch(input, init);
+    }
+    const id = ++seq;
+    const started = performance.now();
+    const method = init?.method ?? (input instanceof Request ? input.method : "GET");
+    let path = url;
+    try {
+      const parsed = new URL(url, window.location.href);
+      path = `${parsed.host}${parsed.pathname}`;
+    } catch {
+      path = url;
+    }
+    log(`#${id} fetch ${method} ${path} -> sent`);
+    const pending = window.setTimeout(() => log(`#${id} fetch ${path} STILL PENDING after 20s`, "#f66"), 20_000);
+    try {
+      const response = await originalFetch(input, init);
+      window.clearTimeout(pending);
+      log(
+        `#${id} fetch ${path} -> ${response.status} in ${(performance.now() - started).toFixed(0)}ms`,
+        response.ok ? "#6f6" : "#fc0"
+      );
+      return response;
+    } catch (error) {
+      window.clearTimeout(pending);
+      log(
+        `#${id} fetch ${path} -> NETWORK ERROR in ${(performance.now() - started).toFixed(0)}ms: ${String(error).slice(0, 80)}`,
+        "#f66"
+      );
+      throw error;
+    }
+  };
+
+  // Challenge frames and scripts inserted into the host page (Privy bot protection). A challenge
+  // that never completes leaves the connect promise unsettled with no visible error.
+  const CHALLENGE_SRC = /hcaptcha\.com|challenges\.cloudflare\.com|turnstile/i;
+  const challengeObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (!(node instanceof HTMLIFrameElement) && !(node instanceof HTMLScriptElement)) {
+          continue;
+        }
+        const src = node.src;
+        if (!src || !CHALLENGE_SRC.test(src)) {
+          continue;
+        }
+        const kind = node instanceof HTMLIFrameElement ? "iframe" : "script";
+        const host = src.replace(/^https?:\/\//, "").split("/")[0];
+        log(`CHALLENGE ${kind} inserted: ${host}`, "#fc0");
+        node.addEventListener("load", () => log(`CHALLENGE ${kind} loaded: ${host}`), { once: true });
+        node.addEventListener("error", () => log(`CHALLENGE ${kind} FAILED to load: ${host}`, "#f66"), { once: true });
+      }
+    }
+  });
+  challengeObserver.observe(document.documentElement, { childList: true, subtree: true });
+
+  // history rewrite bursts — WebKit throws SecurityError past ~100 calls in 10s, and the quota is
+  // page global, so our rewrites and Privy's login rewrites exhaust it together.
+  const historyCalls: number[] = [];
+  let historyLogsSuppressed = false;
+  const wrapHistory = (methodName: "replaceState" | "pushState") => {
+    const original = window.history[methodName].bind(window.history);
+    window.history[methodName] = (data: unknown, unused: string, url?: string | URL | null) => {
+      const now = performance.now();
+      historyCalls.push(now);
+      while (historyCalls.length > 0 && now - historyCalls[0] > 10_000) {
+        historyCalls.shift();
+      }
+      if (historyCalls.length <= 15) {
+        historyLogsSuppressed = false;
+        log(`history.${methodName} #${historyCalls.length}/10s -> ${String(url ?? "").slice(0, 80)}`);
+      } else if (!historyLogsSuppressed) {
+        historyLogsSuppressed = true;
+        log("history rewrites continuing, suppressing individual logs", "#fc0");
+      }
+      if (historyCalls.length === 80) {
+        log("history quota WARNING: 80 rewrites in 10s, WebKit throws at ~100", "#f66");
+      }
+      try {
+        return original(data, unused, url);
+      } catch (error) {
+        log(`history.${methodName} THREW: ${String(error).slice(0, 100)}`, "#f66");
+        throw error;
+      }
+    };
+  };
+  wrapHistory("replaceState");
+  wrapHistory("pushState");
 }
 
 if (typeof window !== "undefined" && isEnabled()) {
