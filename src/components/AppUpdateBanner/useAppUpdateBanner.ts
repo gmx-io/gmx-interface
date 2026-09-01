@@ -7,7 +7,7 @@ import { AppUpdateStatus, getAppUpdateAction, SNOOZE_MS, UPDATE_CHECK_INTERVAL_M
 import { useIsAutoReloadBlocked } from "lib/pwa/blockAutoReload";
 import { fetchNetworkBuildId, getDocumentBuildId, getIsNewerBuildId, UNKNOWN_BUILD_ID } from "lib/pwa/buildId";
 import { reloadFromNetwork } from "lib/pwa/recoveryNavigation";
-import { getSessionStorage } from "lib/pwa/sessionStorage";
+import { getCanUseSessionStorage, getSessionStorage } from "lib/pwa/sessionStorage";
 import { useLatestValueRef } from "lib/useLatestValueRef";
 
 const RELOADED_BUILD_KEY = "gmx-pwa-update-reloaded-build";
@@ -27,9 +27,15 @@ function readItem(key: string) {
 
 function writeItem(key: string, value: string) {
   try {
-    getSessionStorage()?.setItem(key, value);
+    const storage = getSessionStorage();
+    if (!storage) {
+      return false;
+    }
+
+    storage.setItem(key, value);
+    return storage.getItem(key) === value;
   } catch {
-    // Without storage the loop guard costs at most one more reload.
+    return false;
   }
 }
 
@@ -50,6 +56,10 @@ export function useAppUpdateBanner() {
   const isDebug = useRef(getIsAppUpdateDebug()).current;
   const currentBuildId = useRef(isDebug ? APP_UPDATE_DEBUG.buildId : getDocumentBuildId()).current;
   const appStartedAt = useRef(Date.now()).current;
+  const canPersistReload = useRef<boolean>();
+  if (canPersistReload.current === undefined) {
+    canPersistReload.current = getCanUseSessionStorage();
+  }
   const [updateBuildId, setUpdateBuildId] = useState<string>();
   const [snoozedUntil, setSnoozedUntil] = useState<number>();
   const [isOffered, setIsOffered] = useState(false);
@@ -66,6 +76,7 @@ export function useAppUpdateBanner() {
         hiddenSince: hiddenSince.current,
         hasInteracted: hasInteracted.current,
         appStartedAt,
+        canPersistReload: canPersistReload.current ?? false,
         now: Date.now(),
         ...overrides,
       };
@@ -83,9 +94,15 @@ export function useAppUpdateBanner() {
         toBuildId: buildId,
       };
 
-      writeItem(RELOADED_BUILD_KEY, buildId);
+      const didPersistReload = writeItem(RELOADED_BUILD_KEY, buildId);
+      if (!didPersistReload && event === "reloaded") {
+        canPersistReload.current = false;
+        return false;
+      }
+
       writeItem(PENDING_COUNTER_KEY, JSON.stringify(counter));
       reloadFromNetwork(buildId);
+      return true;
     },
     [currentBuildId]
   );
@@ -96,7 +113,9 @@ export function useAppUpdateBanner() {
       const action = getAppUpdateAction(status);
 
       if (action === "reload" && status.updateBuildId) {
-        reload(status.updateBuildId, "reloaded");
+        if (!reload(status.updateBuildId, "reloaded")) {
+          setIsOffered(true);
+        }
         return;
       }
 

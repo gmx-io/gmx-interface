@@ -10,6 +10,7 @@ export type AppUpdateStatus = {
   hiddenSince: number | undefined;
   snoozedUntil: number | undefined;
   hasReloaded: boolean;
+  canPersistReload: boolean;
   hasInteracted: boolean;
   appStartedAt: number;
   now: number;
@@ -18,7 +19,7 @@ export type AppUpdateStatus = {
 export type AppUpdateAction = "reload" | "offer" | "none";
 
 function getCanReloadUnseen(status: AppUpdateStatus) {
-  if (status.isReloadBlocked || !status.isOnline || status.hasReloaded) {
+  if (status.isReloadBlocked || !status.isOnline || status.hasReloaded || !status.canPersistReload) {
     return false;
   }
 

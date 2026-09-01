@@ -12,6 +12,7 @@ function getStatus(overrides: Partial<AppUpdateStatus> = {}): AppUpdateStatus {
     hiddenSince: undefined,
     snoozedUntil: undefined,
     hasReloaded: false,
+    canPersistReload: true,
     hasInteracted: true,
     appStartedAt: NOW - FRESH_SESSION_MS,
     now: NOW,
@@ -56,6 +57,13 @@ describe("getAppUpdateAction", () => {
 
   it("never reloads twice for the same build", () => {
     const outOfSight = { hiddenSince: NOW - HIDDEN_IDLE_MS, hasReloaded: true };
+
+    expect(getAppUpdateAction(getStatus(outOfSight))).toBe("offer");
+    expect(getAppUpdateAction(getStatus({ ...outOfSight, hasInteracted: false, appStartedAt: NOW }))).toBe("offer");
+  });
+
+  it("offers instead of automatically reloading when the loop guard cannot be persisted", () => {
+    const outOfSight = { hiddenSince: NOW - HIDDEN_IDLE_MS, canPersistReload: false };
 
     expect(getAppUpdateAction(getStatus(outOfSight))).toBe("offer");
     expect(getAppUpdateAction(getStatus({ ...outOfSight, hasInteracted: false, appStartedAt: NOW }))).toBe("offer");
