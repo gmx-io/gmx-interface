@@ -707,6 +707,7 @@ msgstr "sell"
 msgid "Insufficient GMX pool liquidity"
 msgstr "Insufficient GMX pool liquidity"
 
+#: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "Switch to {0}"
@@ -1474,6 +1475,10 @@ msgstr "DATE"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Solana"
 msgstr "Solana"
+
+#: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
+msgid "For deeper liquidity and the most complete GMX trading experience, use Arbitrum."
+msgstr "For deeper liquidity and the most complete GMX trading experience, use Arbitrum."
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
