@@ -72,6 +72,8 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import { HistoricalRewardsAllocationModal } from "components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal";
+import { useHistoricalRewardsAllocationModal } from "components/HistoricalRewardsAllocationModal/useHistoricalRewardsAllocationModal";
 import { OrderList } from "components/OrderList/OrderList";
 import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
@@ -128,6 +130,7 @@ export function SyntheticsPage(p: Props) {
     onDoNotShowAgainChange: handleShareSuccessDoNotShowAgainChange,
     onShareAction: handleShareSuccessShareAction,
   } = useShareSuccessClosedPosition({ chainId, account });
+  const historicalRewardsAllocationModal = useHistoricalRewardsAllocationModal({ chainId, account });
 
   useExternalSwapHandler();
 
@@ -653,6 +656,13 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
+      <HistoricalRewardsAllocationModal
+        isVisible={historicalRewardsAllocationModal.isVisible}
+        onClose={historicalRewardsAllocationModal.close}
+        rewardCapUsd={historicalRewardsAllocationModal.rewardCapUsd}
+        rewardConsumedUsd={historicalRewardsAllocationModal.rewardConsumedUsd}
+        rewardRemainingUsd={historicalRewardsAllocationModal.rewardRemainingUsd}
+      />
     </AppPageLayout>
   );
 }

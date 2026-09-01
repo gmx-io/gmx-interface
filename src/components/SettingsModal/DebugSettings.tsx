@@ -9,6 +9,8 @@ import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDeb
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
+import { IncentivesIndexerSettings } from "./IncentivesIndexerSettings";
+import { RewardsActionSettings } from "./RewardsActionSettings";
 import { RpcDebugSettings } from "./RpcDebugSettings";
 import { SettingsSection } from "./shared";
 
@@ -46,6 +48,10 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         >
           <Trans>Disable share modal PnL check</Trans>
         </ToggleSwitch>
+
+        <RewardsActionSettings />
+
+        <IncentivesIndexerSettings />
 
         <AbFlagSettings />
 
@@ -96,6 +102,24 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           }}
         >
           <Trans>Permits testing</Trans>
+        </Link>
+        <Link
+          to="/rewards/history?rewardsDebug=vesting-idle"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          Vesting simulator
+        </Link>
+        <Link
+          to="/rewards?rewardsDebug=banners"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          Promo banners preview
         </Link>
       </SettingsSection>
     </div>
