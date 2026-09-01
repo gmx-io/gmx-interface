@@ -139,6 +139,7 @@ export function LpPanel({
           <SyntheticsInfoRow
             label={
               <TooltipWithPortal
+                variant="iconStroke"
                 handle={<Trans>Expected 365d fees</Trans>}
                 content={
                   <Trans>

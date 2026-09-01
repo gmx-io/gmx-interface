@@ -37,6 +37,7 @@ function RewardsPausedBadge() {
 function TreasuryProjectionLabel() {
   return (
     <TooltipWithPortal
+      variant="iconStroke"
       handle={<Trans>Accumulated rewards</Trans>}
       content={
         <Trans>
@@ -175,6 +176,7 @@ export function StakingPanel({
         <StakingRewardRow
           label={
             <TooltipWithPortal
+              variant="iconStroke"
               handle={<Trans>GMX rewards</Trans>}
               content={
                 <Trans>

@@ -190,6 +190,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         <div className="mt-12">
           <span className="text-body-small text-typography-secondary">
             <Tooltip
+              variant="iconStroke"
               handle={<Trans>Accumulated rewards</Trans>}
               content={
                 <>
@@ -241,6 +242,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             <SyntheticsInfoRow
               label={
                 <Tooltip
+                  variant="iconStroke"
                   handle={<Trans>Est. APR</Trans>}
                   content={
                     <Trans>
@@ -431,6 +433,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
         <SyntheticsInfoRow
           label={
             <Tooltip
+              variant="iconStroke"
               handle={<Trans>Loyalty</Trans>}
               content={
                 <Trans>
@@ -452,6 +455,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
           <SyntheticsInfoRow
             label={
               <Tooltip
+                variant="iconStroke"
                 handle={<Trans>Staking power</Trans>}
                 content={
                   <Trans>
@@ -466,6 +470,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
           <SyntheticsInfoRow
             label={
               <Tooltip
+                variant="iconStroke"
                 handle={<Trans>Staking Power Share</Trans>}
                 content={
                   <Trans>
