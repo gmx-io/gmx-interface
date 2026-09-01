@@ -98,20 +98,6 @@ export type ApyInfo = {
   glvs: Record<string, ApyInfoEntry>;
 };
 
-export type GmUserEarningsResponse = {
-  account: string;
-  window: {
-    days: number;
-    startTimestamp: number;
-    endTimestamp: number;
-  };
-  pools: {
-    marketToken: string;
-    lifetimeFeeUsd: string;
-    recent7dFeeUsd: string;
-  }[];
-};
-
 export type PerformanceInfo = {
   address: string;
   entity: string;
@@ -150,7 +136,6 @@ export interface OracleFetcher {
   fetchPostBatchReport(body: BatchReportBody): Promise<Response>;
   fetchUiVersion(currentVersion: number, active: boolean): Promise<number>;
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
-  fetchGmUserEarnings(account: string): Promise<GmUserEarningsResponse>;
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
   fetchUiFlags(): Promise<Record<string, UiFlag>>;

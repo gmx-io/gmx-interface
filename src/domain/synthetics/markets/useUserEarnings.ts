@@ -3,9 +3,9 @@ import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
 import { getIndexerUrl } from "config/indexers";
+import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { bigMath } from "sdk/utils/bigmath";
@@ -22,7 +22,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const sdk = useGmxSdk(chainId);
 
   const marketAddresses = useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
@@ -34,16 +34,16 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
     period: "7d",
   });
 
-  const isSupported = Boolean(getIndexerUrl(chainId, "syntheticsStats"));
+  const isSupported = Boolean(sdk) && Boolean(getIndexerUrl(chainId, "syntheticsStats"));
   const key = isSupported && account ? ["gmUserEarnings", chainId, account] : null;
 
   const { data, error, isLoading } = useSWR<Record<string, MarketEarnings> | null>(key, {
     fetcher: async () => {
-      if (!account) {
+      if (!account || !sdk) {
         return null;
       }
 
-      const response = await oracleKeeperFetcher.fetchGmUserEarnings(account);
+      const response = await sdk.fetchGmUserEarnings({ account });
       const byMarketAddress: Record<string, MarketEarnings> = {};
 
       for (const pool of response.pools) {
