@@ -538,6 +538,10 @@ msgstr "수수료를 고려했을 때 최대 허용 레버리지를 초과하여
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "{gmOrGlvLabel} 판매 실패"
 
+#: src/pages/Referrals/Referrals.tsx
+msgid "Affiliate Dashboard"
+msgstr "제휴 대시보드"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -703,6 +707,7 @@ msgstr "판매"
 msgid "Insufficient GMX pool liquidity"
 msgstr "GMX 풀 유동성 부족"
 
+#: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "{0}으로 전환"
@@ -1471,6 +1476,10 @@ msgstr "날짜"
 msgid "Solana"
 msgstr "솔라나"
 
+#: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
+msgid "For deeper liquidity and the most complete GMX trading experience, use Arbitrum."
+msgstr "더 깊은 유동성과 가장 완전한 GMX 거래 경험을 위해 Arbitrum을 이용하세요."
+
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr "자동 취소 TP/SL 주문은 최대 {allowedAutoCancelOrdersNumber}건까지 허용됩니다. 초과 주문은 수동으로 취소해야 합니다. 기존 주문은 포지션과 함께 청산됩니다. <0>자세히 보기</0>."
@@ -1516,10 +1525,6 @@ msgstr "가스로 {0} 사용"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "총 납입 증거금"
-
-#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
-msgid "Earn up to 15% in<0/> rebates as an affiliate"
-msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -2187,6 +2192,10 @@ msgstr "{glvOrGm} 출금"
 msgid "Receive voting power and participate in governance"
 msgstr "투표권 획득 및 거버넌스 참여"
 
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
 msgstr "{0}에서 {1}(으)로의 GMX 스왑 경로를 찾을 수 없습니다. <0>외부 애그리게이터</0>를 사용해 보세요."
@@ -2593,6 +2602,10 @@ msgstr "스왑 경로 없음"
 msgid "Set long Stop Market @ {0}"
 msgstr ""
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your discounts"
+msgstr "내 할인"
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Can I change my referral code?"
 msgstr ""
@@ -2773,10 +2786,6 @@ msgstr ""
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 판매에 성공했지만 {0}(으)로의 브리지에 실패했습니다. 자금은 GMX 계정에 안전하게 보관되어 있습니다. 브리지를 다시 시도하거나 GMX 계정을 열어 토큰을 출금하세요."
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Discounts earned by this account as a trader"
-msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -3020,10 +3029,6 @@ msgstr "GM 풀"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "증거금 예치 취소"
-
-#: src/pages/Referrals/Referrals.tsx
-msgid "Affiliates"
-msgstr "제휴사"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
@@ -3288,6 +3293,10 @@ msgstr "주소"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "익절매 업데이트"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
+msgstr "GMX <0/> 추천 프로그램을 통해 수수료 할인을 받고 최대 25%의 커미션을 획득하세요"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
@@ -3747,10 +3756,6 @@ msgstr "GMX V2 Telegram & Discord 분석"
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking"
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages"
 msgstr "GMX 생태계 페이지"
@@ -4052,6 +4057,10 @@ msgstr ""
 msgid "Trade confirmations"
 msgstr "거래 확인 알림"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Month"
+msgstr "월"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr "GLV 유동성 부족"
@@ -4093,6 +4102,10 @@ msgstr "Telegram 내 GMX V2 데이터 분석"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "전체적으로 공개 체인에서 실행"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "USD 금액은 표시된 각 월의 평균 GMX 가격을 사용하여 추정됩니다. 실제 바이백 실행 금액은 실행 시점, 전환, 가격 변동으로 인해 다를 수 있습니다."
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set min deposit"
@@ -4403,6 +4416,10 @@ msgstr "4-18위"
 msgid "Set acceptable price impact"
 msgstr "허용 가격 영향 설정"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
+msgstr "이 증거금 예치의 포지션이 종료되었지만 예치는 여전히 활성 상태입니다. 예치를 취소하여 자금을 회수하세요."
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -4662,6 +4679,10 @@ msgstr "{daysConsidered}일 수수료 수익"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Wallet icon"
 msgstr "지갑 아이콘"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Delegating your undelegated {0} GMX DAO voting power is optional for staking. <0>Delegate voting power</0>"
+msgstr "위임되지 않은 {0} GMX DAO 투표권 위임은 스테이킹 시 선택 사항입니다. <0>투표권 위임</0>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5412,6 +5433,10 @@ msgstr "레버리지 표시에 PnL 포함"
 msgid "No claims yet"
 msgstr "수령 없음"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Your trading volume"
+msgstr "내 거래량"
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
 msgstr "외부 스왑 실패 처리"
@@ -6134,6 +6159,11 @@ msgstr ""
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "시프팅은 {chainNames} 또는 {lastChainName}에서만 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Monthly bought"
+msgstr "월간 매입량"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -6765,6 +6795,10 @@ msgstr "허용된 작업"
 msgid "Your discount is now active!"
 msgstr ""
 
+#: src/pages/Referrals/Referrals.tsx
+msgid "Create Referral Code"
+msgstr "추천 코드 생성"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "24h"
@@ -7118,10 +7152,6 @@ msgstr "최대 레버리지"
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
 
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
-msgstr "USD 금액은 표시된 각 주의 평균 GMX 가격을 사용하여 추정됩니다. 실제 바이백 실행 금액은 실행 시점, 전환, 가격 변동으로 인해 다를 수 있습니다."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
 msgstr "Elfa AI"
@@ -7223,10 +7253,6 @@ msgstr "이 규모에서 롱 증가를 위한 유동성이 없습니다.<0/>최�
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "추천"
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Volume traded by this account with an active referral code"
-msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling sell request..."
@@ -7901,6 +7927,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "열려 있는 포지션 없음"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr "혜택 보기"
@@ -8517,6 +8547,10 @@ msgstr "30분 통화 예약"
 msgid "From"
 msgstr "부터"
 
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Earn up to 25% in<0/> rebates as an affiliate"
+msgstr "제휴사로서 최대 25%의<0/> 리베이트를 받으세요"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No events"
@@ -8912,10 +8946,6 @@ msgstr "풀 유동성 부족"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>의 OI가 훌륭합니다</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>더 확인: <4>https://tradao.xyz/#/open-interest</4></3>"
-
-#: src/components/Referrals/affiliates/faq.tsx
-msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
-msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
@@ -9535,6 +9565,10 @@ msgstr "언스테이킹에 실패했습니다"
 msgid "[{0}]"
 msgstr "[{0}]"
 
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Total amount of GMX bought back since tracking began. The USD value is based on the current GMX price."
+msgstr "추적 시작 이후 바이백된 GMX의 총량입니다. USD 가치는 현재 GMX 가격을 기준으로 합니다."
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net rate / 1h"
@@ -9755,10 +9789,6 @@ msgstr "포지션 규모가 가용 미결제약정을 초과합니다. 델타: {
 msgid "Yes"
 msgstr "예"
 
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Total amount of GMX bought back since tracking began"
-msgstr ""
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
 msgstr "규모 증가 (TWAP)"
@@ -9884,10 +9914,6 @@ msgstr "기간"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PNL"
 msgstr "PNL"
-
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn up to 15% commission through the GMX <0/> referral program"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Bridge and swap tokens"
@@ -10129,11 +10155,6 @@ msgstr "일일 분배율, USD"
 msgid "Wallet trading only on these networks"
 msgstr "해당 네트워크에서는 지갑 거래만 가능합니다"
 
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Weekly bought"
-msgstr ""
-
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "GMX를 스테이킹하고 GLV 또는 GM을 구매하여 보상을 받으십시오"
@@ -10173,6 +10194,10 @@ msgstr "깊이"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 1"
 msgstr "레이어 1"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Delegating your undelegated {0} GMX DAO voting power is optional for claiming. <0>Delegate voting power</0>"
+msgstr "위임되지 않은 {0} GMX DAO 투표권 위임은 수령 시 선택 사항입니다. <0>투표권 위임</0>"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position would be liquidatable at current prices"
@@ -10907,7 +10932,6 @@ msgid "Staked"
 msgstr "스테이킹됨"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "트레이더"
 
@@ -11915,6 +11939,10 @@ msgstr "{idleSeconds}초"
 msgid "My earnings"
 msgstr "내 수익"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
+msgstr "{0, plural, one {포지션을 종료하면 대기 중인 증거금 예치도 취소되고 자금이 반환됩니다.} other {포지션을 종료하면 대기 중인 #건의 증거금 예치도 취소되고 자금이 반환됩니다.}}"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "지수"
@@ -12243,6 +12271,10 @@ msgstr "거래가 취소되었습니다"
 msgid "Request Market Decrease"
 msgstr "시장 감소 요청"
 
+#: src/pages/Referrals/Referrals.tsx
+msgid "Trader Benefits"
+msgstr "트레이더 혜택"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount but no longer generate affiliate rewards. <0>Read more</0>"
 msgstr "선택한 기간의 순 추천 트레이더 수(획득 - 졸업 - 상실)입니다. 졸업한 트레이더는 추천 프로그램의 졸업 기준에 도달하여 GMX 프로토콜 코드로 이동되었으며, 수수료 할인은 유지되지만 더 이상 제휴 보상이 발생하지 않습니다. <0>자세히 보기</0>"
@@ -12507,10 +12539,6 @@ msgstr "공유 위치"
 msgid "Derivatives portfolio tracker"
 msgstr "파생상품 포트폴리오 트래커"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming"
-msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
 msgstr "체결가가 허용 가격을 충족하지 못했습니다. 조건이 충족되면 주문이 체결됩니다."
@@ -12737,10 +12765,6 @@ msgstr "수수료 및 가격 영향으로 인해 체결가가 지정가와 다�
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "비공개"
-
-#: src/components/Earn/BuybackTracker/BuybackChart.tsx
-msgid "Week"
-msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"

@@ -109,25 +109,31 @@ function getMarginDepositOrderErrors(p: {
 
   const position = Object.values(positionsInfoData).find((pos) => isOrderForPosition(order, pos.key));
 
-  let riskLevel: ReturnType<typeof getMarginDepositRiskLevel> = "insufficient";
-
-  if (position) {
-    const projections = getMarginDepositProjections({
-      position,
-      depositAmount: order.initialCollateralDeltaAmount,
-      triggerPrice: order.triggerPrice,
-      minCollateralUsd,
-      userReferralInfo,
-      pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
-    });
-
-    riskLevel = getMarginDepositRiskLevel({
-      isLong: order.isLong,
-      triggerPrice: order.triggerPrice,
-      currentLiqPrice: position.liquidationPrice,
-      nextLiqPrice: projections?.nextLiqPrice,
-    });
+  if (!position) {
+    return [
+      {
+        msg: t`This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds.`,
+        level: "error",
+        key: "marginDepositNoPosition",
+      },
+    ];
   }
+
+  const projections = getMarginDepositProjections({
+    position,
+    depositAmount: order.initialCollateralDeltaAmount,
+    triggerPrice: order.triggerPrice,
+    minCollateralUsd,
+    userReferralInfo,
+    pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
+  });
+
+  const riskLevel = getMarginDepositRiskLevel({
+    isLong: order.isLong,
+    triggerPrice: order.triggerPrice,
+    currentLiqPrice: position.liquidationPrice,
+    nextLiqPrice: projections?.nextLiqPrice,
+  });
 
   if (riskLevel === "insufficient") {
     return [
