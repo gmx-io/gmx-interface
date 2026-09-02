@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import type { PropsWithChildren } from "react";
+import type { CSSProperties, PropsWithChildren } from "react";
 import { isAddressEqual, type Address } from "viem";
 
 import {
@@ -11,7 +11,10 @@ import useWallet from "lib/wallets/useWallet";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 
-const remediationActionClassName = "font-medium !text-red-500 !decoration-red-500";
+const remediationActionStyle = {
+  color: "var(--colorful-banner-accent-color, inherit)",
+  textDecorationColor: "currentColor",
+} satisfies CSSProperties;
 
 // the dashboard renders other accounts' positions; only the owner can edit margin
 function useRemediablePositionKey(positionKey: string | undefined): string | undefined {
@@ -38,7 +41,8 @@ export function DepositMarginNowAction({
 
   return (
     <EmbeddedActionButton
-      className={remediationActionClassName}
+      className="font-medium"
+      style={remediationActionStyle}
       onClick={() => openDepositNow(remediablePositionKey)}
     >
       {children}
@@ -60,7 +64,8 @@ export function ReplaceMarginDepositAction({
 
   return (
     <EmbeddedActionButton
-      className={remediationActionClassName}
+      className="font-medium"
+      style={remediationActionStyle}
       onClick={() => openAtPrice({ positionKey: remediablePositionKey, replacingOrderKey: orderKey })}
     >
       {children}
