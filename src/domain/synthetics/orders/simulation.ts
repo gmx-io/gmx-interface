@@ -13,6 +13,7 @@ import {
 
 import { getContract, tryGetContract } from "config/contracts";
 import { isDevelopment } from "config/env";
+import { getBlockNumberCall } from "config/multichain";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
@@ -129,8 +130,10 @@ export function isTemporaryError(error: any): boolean {
 
 export async function getBlockTimestampAndNumber(
   client: PublicClient,
+  chainId: ContractsChainId,
   multicallAddress: string
 ): Promise<{ blockTimestamp: bigint; blockNumber: bigint }> {
+  const blockNumberCall = getBlockNumberCall(chainId);
   const [blockTimestampResult, currentBlockNumberResult] = await client.multicall({
     multicallAddress,
     contracts: [
@@ -140,9 +143,9 @@ export async function getBlockTimestampAndNumber(
         functionName: "getCurrentBlockTimestamp",
       },
       {
-        address: multicallAddress,
-        abi: abis.Multicall,
-        functionName: "getBlockNumber",
+        address: blockNumberCall.contractAddress,
+        abi: abis[blockNumberCall.abiId],
+        functionName: blockNumberCall.methodName,
       },
     ],
   });
@@ -185,7 +188,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
   if (p.blockTimestampData) {
     blockTimestamp = adjustBlockTimestamp(p.blockTimestampData);
   } else {
-    const result = await getBlockTimestampAndNumber(client, multicallAddress);
+    const result = await getBlockTimestampAndNumber(client, chainId, multicallAddress);
     blockTimestamp = result.blockTimestamp;
     blockNumber = result.blockNumber;
   }

@@ -174,6 +174,31 @@ export const MULTICALLS_MAP: Record<AnyChainId, string> = {
   [MEGAETH]: getContract(MEGAETH, "Multicall"),
 };
 
+export type BlockNumberCall = {
+  contractAddress: string;
+  abiId: "ArbSys" | "Multicall";
+  methodName: "arbBlockNumber" | "getBlockNumber";
+};
+
+const ARB_SYS_BLOCK_NUMBER_CALLS: Partial<Record<AnyChainId, BlockNumberCall>> = {
+  [ARBITRUM]: { contractAddress: getContract(ARBITRUM, "ArbSys"), abiId: "ArbSys", methodName: "arbBlockNumber" },
+  [ARBITRUM_SEPOLIA]: {
+    contractAddress: getContract(ARBITRUM_SEPOLIA, "ArbSys"),
+    abiId: "ArbSys",
+    methodName: "arbBlockNumber",
+  },
+};
+
+export function getBlockNumberCall(chainId: AnyChainId): BlockNumberCall {
+  return (
+    ARB_SYS_BLOCK_NUMBER_CALLS[chainId] ?? {
+      contractAddress: MULTICALLS_MAP[chainId],
+      abiId: "Multicall",
+      methodName: "getBlockNumber",
+    }
+  );
+}
+
 export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string> = {
   [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", // USDC.SG
   [ARBITRUM]: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", // USDC
