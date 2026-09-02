@@ -95,7 +95,7 @@ import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import { TokenData } from "sdk/utils/tokens/types";
-import { TradeMode, TradeType } from "sdk/utils/trade";
+import { getLimitOrderTypeByTradeMode, TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import { mustNeverExist } from "sdk/utils/types";
@@ -282,6 +282,16 @@ export function useTradeboxButtonState({
       nativeGasError
     );
 
+    const setMaxLeverageButton = (
+      <button
+        type="button"
+        className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+        onClick={detectAndSetAvailableMaxLeverage}
+      >
+        <Trans>Set max leverage</Trans>
+      </button>
+    );
+
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipMessage) {
       tooltipContent = validationResult.buttonTooltipMessage;
@@ -301,20 +311,23 @@ export function useTradeboxButtonState({
               .
               <br />
               <br />
-              <button
-                type="button"
-                className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-                onClick={detectAndSetAvailableMaxLeverage}
-              >
-                <Trans>Set max leverage</Trans>
-              </button>
+              {setMaxLeverageButton}
             </>
           );
 
           break;
         }
         case ValidationButtonTooltipName.resultingPositionMaxLeverage: {
-          tooltipContent = null;
+          tooltipContent = (
+            <>
+              <Trans>
+                The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+              </Trans>
+              <br />
+              <br />
+              {setMaxLeverageButton}
+            </>
+          );
           break;
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
@@ -740,6 +753,8 @@ export function useDetectAndSetAvailableMaxLeverage({
   return useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
 
+    const limitOrderType = getLimitOrderTypeByTradeMode(tradeMode);
+
     const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<bigint | undefined>(
       1,
       // "10 *" means we do 1..50 search but with 0.1x step
@@ -764,7 +779,8 @@ export function useDetectAndSetAvailableMaxLeverage({
           acceptablePriceImpactBuffer,
           fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
           leverage,
-          triggerPrice,
+          triggerPrice: limitOrderType !== undefined ? triggerPrice : undefined,
+          limitOrderType,
           marketsInfoData,
           chainId,
           externalSwapQuoteParams,
@@ -807,12 +823,7 @@ export function useDetectAndSetAvailableMaxLeverage({
             userReferralInfo,
             proDiscountFactor,
             indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
-              orderType:
-                tradeMode === TradeMode.StopMarket
-                  ? OrderType.StopIncrease
-                  : tradeMode === TradeMode.Limit
-                    ? OrderType.LimitIncrease
-                    : OrderType.MarketIncrease,
+              orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
               triggerPrice,
             }),
           });

@@ -24,7 +24,7 @@ import {
   getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
   getTokenSwapPathsForTokenPairPrebuilt,
 } from "sdk/utils/swap/swapRouting";
-import { createTradeFlags } from "sdk/utils/trade";
+import { createTradeFlags, getLimitOrderTypeByTradeMode } from "sdk/utils/trade";
 import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/utils/trade/types";
 
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
@@ -244,14 +244,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
     const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
 
-    let limitOrderType: OrderType | undefined = undefined;
-    if (tradeFlags.isLimit) {
-      if (tradeMode === TradeMode.Limit) {
-        limitOrderType = OrderType.LimitIncrease;
-      } else if (tradeMode === TradeMode.StopMarket) {
-        limitOrderType = OrderType.StopIncrease;
-      }
-    }
+    const limitOrderType = getLimitOrderTypeByTradeMode(tradeMode);
 
     if (
       indexTokenAmount === undefined ||

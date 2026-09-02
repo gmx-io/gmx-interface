@@ -10075,6 +10075,7 @@ msgid "Short funding rate"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
 msgstr "Итоговая позиция превысит максимально допустимое плечо. Увеличьте маржу или уменьшите размер."

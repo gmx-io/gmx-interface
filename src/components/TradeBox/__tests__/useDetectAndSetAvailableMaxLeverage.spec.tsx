@@ -21,7 +21,7 @@ const SURVIVES_TO_TRIGGER = expandDecimals(1500, 30);
 
 const marketInfo = createMockMarketInfo();
 
-function buildState(liquidationPrice: bigint | undefined): SyntheticsState {
+function buildState(liquidationPrice: bigint | undefined, triggerPrice = TRIGGER_PRICE): SyntheticsState {
   const position =
     liquidationPrice === undefined
       ? undefined
@@ -41,7 +41,7 @@ function buildState(liquidationPrice: bigint | undefined): SyntheticsState {
     marketInfo,
     isLeverageSliderEnabled: false,
     tradeMode: TradeMode.Limit,
-    triggerPriceInputValue: TRIGGER_PRICE,
+    triggerPriceInputValue: triggerPrice,
     fromTokenInputValue: "1000",
     toTokenInputValue: "0",
     positionsConstants: MOCK_POSITIONS_CONSTANTS,
@@ -63,13 +63,13 @@ function Inner({
 }
 
 /** The size in index tokens the max-leverage detection settles on. */
-function detectMaxLeverageSize(liquidationPrice: bigint | undefined): string {
+function detectMaxLeverageSize(liquidationPrice: bigint | undefined, triggerPrice = TRIGGER_PRICE): string {
   const setToTokenInputValue = vi.fn();
   // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
   const actionsRef: { current: (() => void) | null } = { current: null };
 
   render(
-    <StateCtx.Provider value={buildState(liquidationPrice)}>
+    <StateCtx.Provider value={buildState(liquidationPrice, triggerPrice)}>
       <Inner setToTokenInputValue={setToTokenInputValue} actionsRef={actionsRef} />
     </StateCtx.Provider>
   );
@@ -98,5 +98,22 @@ describe("useDetectAndSetAvailableMaxLeverage — searches on the position the a
 
     expect(Number(alive)).toBeGreaterThan(0);
     expect(alive).not.toBe(fresh);
+  });
+});
+
+describe("useDetectAndSetAvailableMaxLeverage — sizes a resting order at its trigger price", () => {
+  afterEach(cleanup);
+
+  it("finds the same usd notional whether the trigger sits at the mark price or below it", () => {
+    // sized at the mark price but evaluated at the trigger, the search would see a phantom 10 % loss
+    const atMark = Number(detectMaxLeverageSize(undefined, "2000"));
+    const belowMark = Number(detectMaxLeverageSize(undefined, TRIGGER_PRICE));
+
+    expect(atMark).toBeGreaterThan(0);
+
+    const notionalAtMark = atMark * 2000;
+    const notionalBelowMark = belowMark * Number(TRIGGER_PRICE);
+
+    expect(Math.abs(notionalBelowMark - notionalAtMark) / notionalAtMark).toBeLessThan(0.01);
   });
 });

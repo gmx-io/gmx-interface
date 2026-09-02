@@ -132,6 +132,7 @@ import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import {
@@ -345,8 +346,7 @@ export function OrderEditor(p: Props) {
   const isIncreaseExecutableNow = useSelector(selectOrderEditorIsIncreaseExecutableNow);
   const isProDiscountFactorReady = useSelector(selectIsProDiscountFactorReady);
 
-  const isResultingPositionMaxLeverageError =
-    getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason);
+  const isResultingPositionMaxLeverageError = getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason);
 
   const isResultingPositionBlocking =
     isIncreaseExecutableNow && isProDiscountFactorReady && resultingPositionMarginState?.isLiquidatable === true;
@@ -380,6 +380,12 @@ export function OrderEditor(p: Props) {
 
     if (!positionIndexToken || !fromToken || minCollateralUsd === undefined) return;
 
+    const limitOrderType = isLimitIncreaseOrderType(positionOrder.orderType)
+      ? OrderType.LimitIncrease
+      : isStopIncreaseOrderType(positionOrder.orderType)
+        ? OrderType.StopIncrease
+        : undefined;
+
     const { returnValue: newSizeDeltaUsd } = numericBinarySearch<bigint | undefined>(
       1,
       // "10 *" means we do 1..50 search but with 0.1x step
@@ -405,6 +411,7 @@ export function OrderEditor(p: Props) {
           externalSwapQuote: undefined,
           leverage,
           triggerPrice,
+          limitOrderType,
           marketsInfoData,
           chainId,
           externalSwapQuoteParams: undefined,
@@ -752,6 +759,16 @@ export function OrderEditor(p: Props) {
   ]);
 
   const submitButtonState = useMemo(() => {
+    const setMaxLeverageButton = (
+      <button
+        type="button"
+        className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+        onClick={detectAndSetAvailableMaxLeverage}
+      >
+        <Trans>Set max leverage</Trans>
+      </button>
+    );
+
     if (hasOutdatedUi) {
       return {
         text: getPageOutdatedError(),
@@ -790,13 +807,7 @@ export function OrderEditor(p: Props) {
             .
             <br />
             <br />
-            <button
-              type="button"
-              className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-              onClick={detectAndSetAvailableMaxLeverage}
-            >
-              <Trans>Set max leverage</Trans>
-            </button>
+            {setMaxLeverageButton}
           </>
         ),
         disabled: true,
@@ -807,9 +818,14 @@ export function OrderEditor(p: Props) {
       return {
         text: isResultingPositionMaxLeverageError ? t`Max leverage exceeded` : t`Invalid liquidation price`,
         tooltip: isResultingPositionMaxLeverageError ? (
-          <Trans>
-            The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
-          </Trans>
+          <>
+            <Trans>
+              The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+            </Trans>
+            <br />
+            <br />
+            {setMaxLeverageButton}
+          </>
         ) : (
           <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>
         ),
