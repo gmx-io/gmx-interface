@@ -10,7 +10,7 @@ export function useProDiscountFactorRequest(
   chainId: ContractsChainId,
   account: string | undefined
 ): bigint | undefined {
-  const { data: proTier } = useMulticall(chainId, "useProTraderTier", {
+  const { data: proTier, error: proTierError } = useMulticall(chainId, "useProTraderTier", {
     key: account ? [account] : null,
     refreshInterval: CONFIG_UPDATE_INTERVAL,
     request: () => ({
@@ -28,7 +28,7 @@ export function useProDiscountFactorRequest(
     parseResponse: (res) => res.data.dataStore.proTraderTier.returnValues[0] as bigint,
   });
 
-  const { data: discountFactor } = useMulticall(chainId, "useProDiscountFactor", {
+  const { data: discountFactor, error: discountFactorError } = useMulticall(chainId, "useProDiscountFactor", {
     key: proTier !== undefined && proTier > 0n ? [proTier.toString()] : null,
     refreshInterval: CONFIG_UPDATE_INTERVAL,
     request: () => ({
@@ -47,14 +47,22 @@ export function useProDiscountFactorRequest(
   });
 
   return useMemo(() => {
-    if (!account || proTier === undefined) {
+    if (!account) {
       return undefined;
+    }
+
+    if (proTier === undefined) {
+      return proTierError ? 0n : undefined;
     }
 
     if (proTier === 0n) {
       return 0n;
     }
 
+    if (discountFactor === undefined) {
+      return discountFactorError ? 0n : undefined;
+    }
+
     return discountFactor;
-  }, [account, proTier, discountFactor]);
+  }, [account, proTier, proTierError, discountFactor, discountFactorError]);
 }
