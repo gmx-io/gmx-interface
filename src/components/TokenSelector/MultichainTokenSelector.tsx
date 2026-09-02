@@ -17,7 +17,7 @@ import type { TokenChainData } from "domain/multichain/types";
 import { getMarketBadge } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, Token, TokensData } from "domain/tokens";
-import { getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
+import { createTokenSortSequenceComparator, getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -405,27 +405,17 @@ function useAvailableToTradeTokenList({
       }
     }
 
+    const compareBySortSequence = createTokenSortSequenceComparator<DisplayToken>(extendedSortSequence);
+
     const sortedTokensWithBalance: DisplayToken[] = tokensWithBalance.sort((a, b) => {
-      if (a.balanceUsd === b.balanceUsd) {
-        return 0;
-      }
-      return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
-    });
-
-    const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort((a, b) => {
-      if (extendedSortSequence) {
-        // making sure to use the wrapped address if it exists in the extended sort sequence
-        const aAddress =
-          a.wrappedAddress && extendedSortSequence.includes(a.wrappedAddress) ? a.wrappedAddress : a.address;
-
-        const bAddress =
-          b.wrappedAddress && extendedSortSequence.includes(b.wrappedAddress) ? b.wrappedAddress : b.address;
-
-        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
+      if (a.balanceUsd !== b.balanceUsd) {
+        return b.balanceUsd > a.balanceUsd ? 1 : -1;
       }
 
-      return 0;
+      return compareBySortSequence(a, b);
     });
+
+    const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort(compareBySortSequence);
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
   }, [

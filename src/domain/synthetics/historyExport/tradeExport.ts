@@ -302,16 +302,21 @@ export function buildTradeCsvRows({
     const isIncrease = isIncreaseOrderType(action.orderType);
     const isDecrease = isDecreaseOrderType(action.orderType) || isLiquidationOrderType(action.orderType);
     const marketInfo = getMetadata(marketsInfoData, action.marketAddress);
-    const collateralToken = getMetadata(tokensData, action.initialCollateralTokenAddress);
+    const initialCollateralToken = getMetadata(tokensData, action.initialCollateralTokenAddress);
     const targetTokenAddress = getTargetTokenAddress({ action, chainId, marketsInfoData });
     const targetToken = getMetadata(tokensData, targetTokenAddress);
+    const usesTargetCollateralToken = isExecuted && isIncrease && Boolean(action.swapPath?.length);
+    const collateralTokenAddress = usesTargetCollateralToken
+      ? targetTokenAddress
+      : action.initialCollateralTokenAddress;
+    const collateralToken = usesTargetCollateralToken ? targetToken : initialCollateralToken;
     const indexToken = marketInfo?.indexToken;
     const reviewReasons: string[] = [];
 
     if (!isSwap && action.marketAddress && !marketInfo) {
       reviewReasons.push("market metadata unavailable");
     }
-    if (action.initialCollateralTokenAddress && !collateralToken) {
+    if (action.initialCollateralTokenAddress && !initialCollateralToken) {
       reviewReasons.push("collateral token metadata unavailable");
     }
     if ((action.swapPath?.length ?? 0) > 0 && !targetTokenAddress) {
@@ -319,6 +324,9 @@ export function buildTradeCsvRows({
     }
     if (targetTokenAddress && !targetToken) {
       reviewReasons.push("output token metadata unavailable");
+    }
+    if (usesTargetCollateralToken && BigInt(action.initialCollateralDeltaAmount ?? 0) > 0n) {
+      reviewReasons.push("increase pay-token amount unavailable after swap");
     }
     if (isSwap && isExecuted && (action.swapFeeUsd === null || action.swapFeeUsd === undefined)) {
       reviewReasons.push("swap fee unavailable");
@@ -365,7 +373,7 @@ export function buildTradeCsvRows({
     row.event_name = action.eventName;
     row.status = getTradeStatus(action.eventName);
     row.market_name = isSwap
-      ? [collateralToken?.symbol, targetToken?.symbol].filter(Boolean).join("/")
+      ? [initialCollateralToken?.symbol, targetToken?.symbol].filter(Boolean).join("/")
       : marketInfo
         ? getMarketIndexName(marketInfo)
         : "";
@@ -388,8 +396,10 @@ export function buildTradeCsvRows({
     row.acceptable_price = formatContractPriceDecimal(action.acceptablePrice, indexToken?.decimals);
     row.execution_price = formatContractPriceDecimal(action.executionPrice, indexToken?.decimals);
     row.contract_trigger_price = formatContractPriceDecimal(action.contractTriggerPrice, indexToken?.decimals);
-    row.input_amount = isSwap ? formatDecimal(action.initialCollateralDeltaAmount, collateralToken?.decimals) : "";
-    row.input_token_symbol = isSwap ? collateralToken?.symbol ?? "" : "";
+    row.input_amount = isSwap
+      ? formatDecimal(action.initialCollateralDeltaAmount, initialCollateralToken?.decimals)
+      : "";
+    row.input_token_symbol = isSwap ? initialCollateralToken?.symbol ?? "" : "";
     row.output_amount = formatDecimal(action.executionAmountOut, targetToken?.decimals);
     row.output_token_symbol =
       action.executionAmountOut !== null && action.executionAmountOut !== undefined ? targetToken?.symbol ?? "" : "";
@@ -433,7 +443,7 @@ export function buildTradeCsvRows({
     row.index_token_symbol = indexToken?.symbol ?? "";
     row.index_token_address = marketInfo?.indexTokenAddress ?? "";
     row.collateral_token_symbol = collateralToken?.symbol ?? "";
-    row.collateral_token_address = action.initialCollateralTokenAddress ?? "";
+    row.collateral_token_address = collateralTokenAddress ?? "";
     row.input_token_address = isSwap ? action.initialCollateralTokenAddress ?? "" : "";
     row.output_token_address =
       action.executionAmountOut !== null && action.executionAmountOut !== undefined ? targetTokenAddress ?? "" : "";
@@ -471,15 +481,15 @@ export function buildTradeCsvRows({
           actionRow: row,
           actionId,
           legIndex: 0,
-          sentAmount: formatDecimal(action.initialCollateralDeltaAmount, collateralToken?.decimals),
-          sentCurrency: collateralToken?.symbol,
+          sentAmount: formatDecimal(action.initialCollateralDeltaAmount, initialCollateralToken?.decimals),
+          sentCurrency: initialCollateralToken?.symbol,
           sentTokenAddress: action.initialCollateralTokenAddress ?? undefined,
           receivedAmount: formatDecimal(action.executionAmountOut, targetToken?.decimals),
           receivedCurrency: targetToken?.symbol,
           receivedTokenAddress: targetTokenAddress,
         })
       );
-    } else if (isIncrease && BigInt(action.initialCollateralDeltaAmount) > 0n) {
+    } else if (isIncrease && !usesTargetCollateralToken && BigInt(action.initialCollateralDeltaAmount) > 0n) {
       rows.push(
         createCashflowRow({
           actionRow: row,
@@ -487,7 +497,7 @@ export function buildTradeCsvRows({
           legIndex: 0,
           sentAmount: formatDecimal(action.initialCollateralDeltaAmount, collateralToken?.decimals),
           sentCurrency: collateralToken?.symbol,
-          sentTokenAddress: action.initialCollateralTokenAddress ?? undefined,
+          sentTokenAddress: collateralTokenAddress ?? undefined,
           usdValuation: formatTokenUsd(action.initialCollateralDeltaAmount, collateralPrice),
           valuationSource: collateralPrice ? "indexed collateral token price" : undefined,
         })
@@ -506,9 +516,7 @@ export function buildTradeCsvRows({
     } else if (isDecrease && sizeDeltaUsd === 0n && BigInt(action.initialCollateralDeltaAmount) > 0n) {
       const receivedRaw = action.executionAmountOut ?? action.initialCollateralDeltaAmount;
       const receivedToken = action.executionAmountOut ? targetToken : collateralToken;
-      const receivedAddress = action.executionAmountOut
-        ? targetTokenAddress
-        : action.initialCollateralTokenAddress ?? undefined;
+      const receivedAddress = action.executionAmountOut ? targetTokenAddress : collateralTokenAddress ?? undefined;
       rows.push(
         createCashflowRow({
           actionRow: row,

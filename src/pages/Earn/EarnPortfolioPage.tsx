@@ -82,11 +82,7 @@ export default function EarnPortfolioPage() {
     <EarnPageLayout>
       {account && !isWalletInitializing && (
         <ErrorBoundary id="EarnPortfolio-EarningsOverview" variant="block" wrapperClassName="rounded-t-8">
-          <EarningsOverview
-            processedData={processedData}
-            mutateProcessedData={mutateProcessedData}
-            gmGlvAssets={gmGlvAssets}
-          />
+          <EarningsOverview processedData={processedData} mutateProcessedData={mutateProcessedData} />
         </ErrorBoundary>
       )}
       {isWalletInitializing || areAssetsLoading ? (

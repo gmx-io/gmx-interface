@@ -169,7 +169,12 @@ export type {
 } from "utils/performance/types";
 export type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 export type { ApiParameterPeriod, MarketRates, RatesParams, RatesSnapshot } from "utils/rates/types";
-export type { BuybackWeekData, BuybackSummary, BuybackWeeklyStatsResponse } from "utils/buyback/types";
+export type {
+  BuybackWeekData,
+  BuybackMonthData,
+  BuybackSummary,
+  BuybackWeeklyStatsResponse,
+} from "utils/buyback/types";
 export type {
   FetchJitLiquidityInfoParams,
   GlvShiftParam,

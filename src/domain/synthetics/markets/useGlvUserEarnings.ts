@@ -3,6 +3,8 @@ import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
 import { getIndexerUrl } from "config/indexers";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
@@ -37,6 +39,7 @@ export function useGlvUserEarnings(chainId: ContractsChainId, srcChainId: Source
   const subsquidUrl = getIndexerUrl(chainId, "subsquid");
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
   const { glvApyInfoData, isLoading: isGlvApyLoading } = useGmMarketsApy(chainId, srcChainId, { period: "7d" });
 
   const key = subsquidUrl && account ? ["glvUserEarnings", chainId, account] : null;
@@ -92,7 +95,7 @@ export function useGlvUserEarnings(chainId: ContractsChainId, srcChainId: Source
 
     for (const [glvAddress, apy] of Object.entries(glvApyInfoData)) {
       const token = marketTokensData[glvAddress];
-      const balance = token?.balance;
+      const balance = multichainMarketTokensBalances[glvAddress]?.totalBalance ?? token?.balance;
 
       if (apy === undefined || balance === undefined || balance === 0n) continue;
 
@@ -113,7 +116,7 @@ export function useGlvUserEarnings(chainId: ContractsChainId, srcChainId: Source
     }
 
     return result;
-  }, [data, glvApyInfoData, marketTokensData]);
+  }, [data, glvApyInfoData, marketTokensData, multichainMarketTokensBalances]);
 
   const isDataLoading = isLoading || !marketTokensData;
   const isUnavailable = Boolean(key && !isDataLoading && (error || data === null));

@@ -4,6 +4,8 @@ import useSWR from "swr";
 import { USD_DECIMALS } from "config/factors";
 import { getIndexerUrl } from "config/indexers";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
@@ -23,6 +25,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
   const sdk = useGmxSdk(chainId);
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const marketAddresses = useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
@@ -86,7 +89,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
     marketAddresses.forEach((marketAddress) => {
       const apy = marketsTokensApyData[marketAddress];
       const token = marketTokensData[marketAddress];
-      const balance = token?.balance;
+      const balance = multichainMarketTokensBalances[marketAddress]?.totalBalance ?? token?.balance;
 
       if (apy === undefined || balance === undefined || balance === 0n) return;
 
@@ -107,7 +110,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
     });
 
     return result;
-  }, [data, marketAddresses, marketsTokensApyData, marketTokensData]);
+  }, [data, marketAddresses, marketsTokensApyData, marketTokensData, multichainMarketTokensBalances]);
   const isUnavailable = Boolean(key && !isDataLoading && (error || data === null));
   const isEstimated365dFeesLoading = Boolean(userEarnings && !marketsTokensApyData && isMarketsTokensApyLoading);
   const isEstimated365dFeesUnavailable = Boolean(userEarnings && !marketsTokensApyData && !isMarketsTokensApyLoading);
