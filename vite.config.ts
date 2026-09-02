@@ -4,7 +4,7 @@ import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
-import { defineConfig, loadEnv, type PluginOption } from "vite";
+import { defineConfig, loadEnv, type ConfigEnv, type PluginOption, type UserConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -50,6 +50,21 @@ const SDK_SRC_DIR = path.resolve(__dirname, "sdk/src");
 const SOLANA_SYSTEM_MODULE_ID = "@solana-program/system";
 const SOLANA_SYSTEM_STUB_ID = "\0gmx:solana-system-stub";
 const PWA_METADATA_PLACEHOLDER = "<!-- gmx-pwa-metadata -->";
+const APP_REDIRECTS = "/ /trade 302\n";
+
+function appRedirects(): PluginOption {
+  return {
+    name: "gmx-app-redirects",
+    apply: "build",
+    generateBundle() {
+      this.emitFile({
+        type: "asset",
+        fileName: "_redirects",
+        source: APP_REDIRECTS,
+      });
+    },
+  };
+}
 
 function pwaMetadata(buildId: string, isEnabled: boolean): PluginOption {
   return {
@@ -201,7 +216,10 @@ function optionalSolanaSystemStub(): PluginOption {
   };
 }
 
-export default defineConfig(({ mode }) => {
+export function createViteConfig(
+  { mode }: ConfigEnv,
+  { emitAppRedirects = true }: { emitAppRedirects?: boolean } = {}
+): UserConfig {
   const env = loadEnv(mode, process.cwd(), "");
   const pwaBuildId = env.VITE_APP_PWA_GENERATION || Date.now().toString();
 
@@ -232,6 +250,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
+      emitAppRedirects && appRedirects(),
       pwaMetadata(pwaBuildId, env.VITE_APP_DISABLE_PWA !== "true"),
       svgr({
         include: "**/*.svg?react",
@@ -283,4 +302,6 @@ export default defineConfig(({ mode }) => {
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
     },
   };
-});
+}
+
+export default defineConfig((props) => createViteConfig(props));
