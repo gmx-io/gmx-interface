@@ -14,6 +14,7 @@ import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerforman
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
@@ -23,7 +24,8 @@ import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
 
 export default function EarnPortfolioPage() {
-  const { account, status } = useWallet();
+  const { account } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
   const { data: processedData, mutate: mutateProcessedData } = useStakingProcessedData();
 
   const { chainId, srcChainId } = useChainId();
@@ -73,9 +75,8 @@ export default function EarnPortfolioPage() {
   const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets;
 
   const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
-  const areAssetsLoading = !marketsInfoData || !marketTokensData || isMultichainBalancesLoading;
-
-  const isWalletInitializing = status === "connecting" || status === "reconnecting";
+  const areAssetsLoading =
+    Boolean(account) && (!processedData || !marketsInfoData || !marketTokensData || isMultichainBalancesLoading);
 
   return (
     <EarnPageLayout>
@@ -88,7 +89,9 @@ export default function EarnPortfolioPage() {
           />
         </ErrorBoundary>
       )}
-      {processedData && !areAssetsLoading && !isWalletInitializing ? (
+      {isWalletInitializing || areAssetsLoading ? (
+        <Loader />
+      ) : (
         <ErrorBoundary id="EarnPortfolio-AssetsList" variant="block" wrapperClassName="rounded-t-8">
           <AssetsList
             processedData={processedData}
@@ -103,8 +106,6 @@ export default function EarnPortfolioPage() {
             multichainMarketTokensBalances={multichainMarketTokensBalances}
           />
         </ErrorBoundary>
-      ) : (
-        <Loader />
       )}
     </EarnPageLayout>
   );
