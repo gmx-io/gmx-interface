@@ -7,7 +7,7 @@ import { getMarketBadge, getMarketIndexName, getMarketPoolName, MarketsInfoData 
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
-import { stripBlacklistedWords } from "domain/tokens/utils";
+import { createTokenSortSequenceComparator, stripBlacklistedWords } from "domain/tokens/utils";
 import { expandDecimals, formatBalanceAmount, formatBigUsd } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 import { getToken } from "sdk/configs/tokens";
@@ -126,70 +126,46 @@ export default function TokenSelector(props: Props) {
   }, [props.chainId, searchKeyword, visibleTokens]);
 
   const sortedFilteredTokens = useMemo(() => {
+    const compareBySortSequence = createTokenSortSequenceComparator<ExtendedToken>(extendedSortSequence);
+
     const tokensWithBalance: ExtendedToken[] = [];
-    const tokensWithoutBalance: ExtendedToken[] = showBalances ? [] : filteredTokens;
+    const tokensWithoutBalance: ExtendedToken[] = [];
+    const balanceUsdByAddress: { [address: string]: bigint } = {};
 
     for (const token of filteredTokens) {
-      const info = infoTokens?.[token.address];
-      if (showBalances) {
-        if (info?.balance && info?.balance > 0) {
-          tokensWithBalance.push(token);
-        } else {
-          tokensWithoutBalance.push(token);
-        }
+      const info = showBalances ? infoTokens?.[token.address] : undefined;
+
+      if (info?.balance !== undefined && info.balance > 0n) {
+        balanceUsdByAddress[token.address] =
+          info.minPrice === undefined ? 0n : convertToUsd(info.balance, token.decimals, info.minPrice) ?? 0n;
+        tokensWithBalance.push(token);
+      } else {
+        tokensWithoutBalance.push(token);
       }
     }
 
-    const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
-      const aInfo = infoTokens?.[a.address];
-      const bInfo = infoTokens?.[b.address];
+    tokensWithBalance.sort((a, b) => {
+      const aBalanceUsd = balanceUsdByAddress[a.address];
+      const bBalanceUsd = balanceUsdByAddress[b.address];
 
-      if (!aInfo || !bInfo) return 0;
-
-      if (aInfo?.balance && bInfo?.balance && aInfo?.maxPrice && bInfo?.maxPrice) {
-        const aBalanceUsd = convertToUsd(aInfo.balance, a.decimals, aInfo.minPrice);
-        const bBalanceUsd = convertToUsd(bInfo.balance, b.decimals, bInfo.minPrice);
-
-        if (bBalanceUsd === undefined) return -1;
-
-        return bBalanceUsd - (aBalanceUsd ?? 0n) > 0 ? 1 : -1;
-      }
-      return 0;
-    });
-
-    const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
-      const aInfo = infoTokens?.[a.address];
-      const bInfo = infoTokens?.[b.address];
-
-      if (!aInfo || !bInfo) return 0;
-
-      if (extendedSortSequence) {
-        // making sure to use the wrapped address if it exists in the extended sort sequence
-        const aAddress =
-          aInfo.wrappedAddress && extendedSortSequence.includes(aInfo.wrappedAddress)
-            ? aInfo.wrappedAddress
-            : aInfo.address;
-
-        const bAddress =
-          bInfo.wrappedAddress && extendedSortSequence.includes(bInfo.wrappedAddress)
-            ? bInfo.wrappedAddress
-            : bInfo.address;
-
-        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
+      if (aBalanceUsd !== bBalanceUsd) {
+        return bBalanceUsd > aBalanceUsd ? 1 : -1;
       }
 
-      return 0;
+      return compareBySortSequence(a, b);
     });
 
-    return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
+    tokensWithoutBalance.sort(compareBySortSequence);
+
+    return [...tokensWithBalance, ...tokensWithoutBalance];
   }, [filteredTokens, infoTokens, extendedSortSequence, showBalances]);
 
   const _handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();
-      if (filteredTokens.length > 0) {
-        onSelectToken(filteredTokens[0]);
+      if (sortedFilteredTokens.length > 0) {
+        onSelectToken(sortedFilteredTokens[0]);
       }
     }
   };

@@ -7,6 +7,7 @@ import { type AnyChainId } from "config/chains";
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
+import { isIOS } from "lib/headlessUiIsMobile";
 import { MetricEventParams, MulticallTimeoutEvent, WorkerMulticallErrorCounter } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
@@ -18,8 +19,10 @@ import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { MAX_PRIMARY_TIMEOUT } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
+const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
+
 let executorWorker: Worker | null = null;
-if (typeof window !== "undefined" && !import.meta.env?.TEST) {
+if (typeof window !== "undefined" && !import.meta.env?.TEST && !isIOS()) {
   try {
     executorWorker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
   } catch (error) {
@@ -29,13 +32,23 @@ if (typeof window !== "undefined" && !import.meta.env?.TEST) {
 }
 
 if (executorWorker) {
-  executorWorker.onerror = (error) => {
+  const handleWorkerError = (error: ErrorEvent | Error) => {
     // eslint-disable-next-line no-console
     console.error("[executeMulticallWorker] Worker error:", error);
-  };
-}
 
-const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
+    const workerError = error instanceof Error ? error : new Error(error.message || "Multicall worker failed");
+
+    for (const promise of Object.values(promises)) {
+      promise.reject(workerError);
+    }
+
+    executorWorker?.terminate();
+    executorWorker = null;
+  };
+
+  executorWorker.onerror = handleWorkerError;
+  executorWorker.onmessageerror = () => handleWorkerError(new Error("Failed to read multicall worker response"));
+}
 
 if (executorWorker) {
   executorWorker.onmessage = (event) => {
@@ -116,19 +129,23 @@ export async function executeMulticallWorker(
   const currentRpcEndpoints = getCurrentRpcUrls(chainId) as CurrentRpcEndpoints;
   const debugState = _debugMulticall?.getDebugState();
 
-  executorWorker.postMessage({
-    id,
-    chainId,
-    providerUrls: currentRpcEndpoints,
-    request,
-    abFlags: getAbFlags(),
-    isLargeAccount: getIsLargeAccount(),
-    PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
-    debugState,
-  });
-
   const { promise, resolve, reject } = Promise.withResolvers<MulticallResult<any> | undefined>();
   promises[id] = { resolve, reject };
+
+  try {
+    executorWorker.postMessage({
+      id,
+      chainId,
+      providerUrls: currentRpcEndpoints,
+      request,
+      abFlags: getAbFlags(),
+      isLargeAccount: getIsLargeAccount(),
+      PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
+      debugState,
+    });
+  } catch (error) {
+    reject(error);
+  }
 
   const timeoutBuffer = 500;
 

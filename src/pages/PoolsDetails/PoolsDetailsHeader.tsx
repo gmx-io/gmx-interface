@@ -12,6 +12,7 @@ import {
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectMultichainMarketTokensBalancesIsLoading } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getHasBalanceOutsideWallet } from "domain/multichain/getHasBalanceOutsideWallet";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
@@ -26,7 +27,7 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
 import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
-import { EarningValue } from "components/EarningValue/EarningValue";
+import { EarningAttributionNote, EarningValue } from "components/EarningValue/EarningValue";
 import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
@@ -80,13 +81,14 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
     : undefined;
   const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
   const hasMultichainBreakdown = useHasMultichainBreakdown(multichainMarketTokenBalances);
+  const hasBalanceOutsideWallet = !isGlv && getHasBalanceOutsideWallet(multichainMarketTokenBalances, chainId);
 
   const totalBalance = multichainMarketTokenBalances?.totalBalance;
   const marketBalanceUsd = multichainMarketTokenBalances?.totalBalanceUsd;
   const hasGmBalance = !isGlv && typeof totalBalance === "bigint" && totalBalance > 0n;
   const shouldShowEarningsFallback =
     !marketEarnings && hasGmBalance && (isUserEarningsLoading || isUserEarningsUnavailable);
-  const shouldShowEarningsHeader = !isGlv && (marketEarnings || shouldShowEarningsFallback);
+  const shouldShowEarningsHeader = !isGlv && (marketEarnings || shouldShowEarningsFallback || hasBalanceOutsideWallet);
 
   const [isOpen, setIsOpen] = useState(true);
 
@@ -219,8 +221,11 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                     value={
                       <EarningValue
                         value={marketEarnings?.total}
-                        isLoading={!marketEarnings && isUserEarningsLoading}
-                        isAvailable={Boolean(marketEarnings) || !isUserEarningsUnavailable}
+                        isLoading={!hasBalanceOutsideWallet && !marketEarnings && isUserEarningsLoading}
+                        isAvailable={
+                          !hasBalanceOutsideWallet && (Boolean(marketEarnings) || !isUserEarningsUnavailable)
+                        }
+                        unavailableTooltip={hasBalanceOutsideWallet ? <EarningAttributionNote scope="gm" /> : undefined}
                       >
                         {(value) => formatUsd(value)}
                       </EarningValue>

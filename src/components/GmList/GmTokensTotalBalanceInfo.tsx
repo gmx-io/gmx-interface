@@ -11,7 +11,7 @@ import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
-import { EarningUnavailableNote, EarningValue } from "components/EarningValue/EarningValue";
+import { EarningAttributionNote, EarningUnavailableNote, EarningValue } from "components/EarningValue/EarningValue";
 import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
@@ -36,6 +36,7 @@ export const GmTokensBalanceInfo = ({
   isUserEarningsUnavailable = false,
   isEstimated365dFeesLoading = false,
   isEstimated365dFeesUnavailable = false,
+  hasBalanceOutsideWallet = false,
 }: {
   token: ProgressiveTokenData | undefined;
   earnedTotal?: bigint;
@@ -50,6 +51,7 @@ export const GmTokensBalanceInfo = ({
   isUserEarningsUnavailable?: boolean;
   isEstimated365dFeesLoading?: boolean;
   isEstimated365dFeesUnavailable?: boolean;
+  hasBalanceOutsideWallet?: boolean;
 }) => {
   const balance = multichainBalances?.totalBalance ?? 0n;
   const balanceUsd = getPlatformTokenBalanceAfterThreshold(multichainBalances?.totalBalanceUsd);
@@ -82,7 +84,9 @@ export const GmTokensBalanceInfo = ({
   const hasEstimated365dFees = earnedExpected365d !== undefined && earnedExpected365d > 0n;
   const shouldShowFeesLoading = !isGlv && isUserEarningsLoading && balance !== 0n;
   const shouldShowFeesUnavailable = !isGlv && isUserEarningsUnavailable && balance !== 0n;
-  const shouldShowEarnedFeeRows = hasEarnedFees || shouldShowFeesLoading || shouldShowFeesUnavailable;
+  const shouldShowFeesUnattributed = !isGlv && hasBalanceOutsideWallet && balance !== 0n;
+  const shouldShowEarnedFeeRows =
+    hasEarnedFees || shouldShowFeesLoading || shouldShowFeesUnavailable || shouldShowFeesUnattributed;
   const shouldShowEstimated365dFeesLoading =
     !isGlv && balance !== 0n && (shouldShowFeesLoading || isEstimated365dFeesLoading);
   const shouldShowEstimated365dFeesUnavailable =
@@ -103,12 +107,16 @@ export const GmTokensBalanceInfo = ({
           <StatsTooltipRow
             showDollar={false}
             label={t`Total earned fees`}
-            textClassName={earnedTotal !== undefined ? getPositiveOrNegativeClass(earnedTotal) : undefined}
+            textClassName={
+              earnedTotal !== undefined && !shouldShowFeesUnattributed
+                ? getPositiveOrNegativeClass(earnedTotal)
+                : undefined
+            }
             value={
               <EarningValue
                 value={earnedTotal}
-                isLoading={earnedTotal === undefined && shouldShowFeesLoading}
-                isAvailable={earnedTotal !== undefined || !shouldShowFeesUnavailable}
+                isLoading={!shouldShowFeesUnattributed && earnedTotal === undefined && shouldShowFeesLoading}
+                isAvailable={!shouldShowFeesUnattributed && (earnedTotal !== undefined || !shouldShowFeesUnavailable)}
               >
                 {(value) => formatDeltaUsd(value, undefined)}
               </EarningValue>
@@ -119,13 +127,19 @@ export const GmTokensBalanceInfo = ({
         {shouldShowEarnedFeeRows && (
           <StatsTooltipRow
             showDollar={false}
-            textClassName={earnedRecently !== undefined ? getPositiveOrNegativeClass(earnedRecently) : undefined}
+            textClassName={
+              earnedRecently !== undefined && !shouldShowFeesUnattributed
+                ? getPositiveOrNegativeClass(earnedRecently)
+                : undefined
+            }
             label={t`${daysConsidered}d earned fees`}
             value={
               <EarningValue
                 value={earnedRecently}
-                isLoading={earnedRecently === undefined && shouldShowFeesLoading}
-                isAvailable={earnedRecently !== undefined || !shouldShowFeesUnavailable}
+                isLoading={!shouldShowFeesUnattributed && earnedRecently === undefined && shouldShowFeesLoading}
+                isAvailable={
+                  !shouldShowFeesUnattributed && (earnedRecently !== undefined || !shouldShowFeesUnavailable)
+                }
               >
                 {(value) => formatDeltaUsd(value, undefined)}
               </EarningValue>
@@ -158,7 +172,13 @@ export const GmTokensBalanceInfo = ({
             <EarningUnavailableNote />
           </>
         )}
-        {hasEarnedFees && (
+        {shouldShowFeesUnattributed && (
+          <>
+            <br />
+            <EarningAttributionNote scope="gm" />
+          </>
+        )}
+        {hasEarnedFees && !shouldShowFeesUnattributed && (
           <>
             <br />
             <div className="text-typography-primary">
@@ -191,6 +211,7 @@ export const GmTokensBalanceInfo = ({
     shouldShowEstimated365dFeesUnavailable,
     shouldShowFeeRows,
     shouldShowFeesLoading,
+    shouldShowFeesUnattributed,
     shouldShowFeesUnavailable,
   ]);
 
@@ -216,6 +237,7 @@ export const GmTokensTotalBalanceInfo = ({
   isUserEarningsUnavailable = false,
   isEstimated365dFeesLoading = false,
   isEstimated365dFeesUnavailable = false,
+  hasBalanceOutsideWallet = false,
   tooltipPosition,
   label,
 }: {
@@ -226,13 +248,14 @@ export const GmTokensTotalBalanceInfo = ({
   isUserEarningsUnavailable?: boolean;
   isEstimated365dFeesLoading?: boolean;
   isEstimated365dFeesUnavailable?: boolean;
+  hasBalanceOutsideWallet?: boolean;
   tooltipPosition?: TooltipPosition;
   label: string;
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
   const shouldShowEarningsFallback = !userEarnings && (isUserEarningsLoading || isUserEarningsUnavailable);
-  const shouldShowEarningsRows = Boolean(userEarnings) || shouldShowEarningsFallback;
+  const shouldShowEarningsRows = Boolean(userEarnings) || shouldShowEarningsFallback || hasBalanceOutsideWallet;
   const isEarningsLoading = !userEarnings && isUserEarningsLoading;
   const areEarningsAvailable = Boolean(userEarnings) || !isUserEarningsUnavailable;
   const hasGmBalance = balance !== undefined && balance > 0n;
@@ -256,13 +279,15 @@ export const GmTokensTotalBalanceInfo = ({
             <StatsTooltipRow
               label={t`Total earned fees`}
               textClassName={
-                userEarnings !== null ? getPositiveOrNegativeClass(userEarnings.allMarkets.total) : undefined
+                userEarnings !== null && !hasBalanceOutsideWallet
+                  ? getPositiveOrNegativeClass(userEarnings.allMarkets.total)
+                  : undefined
               }
               value={
                 <EarningValue
                   value={userEarnings?.allMarkets.total}
-                  isLoading={isEarningsLoading}
-                  isAvailable={areEarningsAvailable}
+                  isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
+                  isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
                 >
                   {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
                 </EarningValue>
@@ -273,13 +298,15 @@ export const GmTokensTotalBalanceInfo = ({
             <StatsTooltipRow
               label={t`${daysConsidered}d earned fees`}
               textClassName={
-                userEarnings !== null ? getPositiveOrNegativeClass(userEarnings.allMarkets.recent) : undefined
+                userEarnings !== null && !hasBalanceOutsideWallet
+                  ? getPositiveOrNegativeClass(userEarnings.allMarkets.recent)
+                  : undefined
               }
               value={
                 <EarningValue
                   value={userEarnings?.allMarkets.recent}
-                  isLoading={isEarningsLoading}
-                  isAvailable={areEarningsAvailable}
+                  isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
+                  isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
                 >
                   {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
                 </EarningValue>
@@ -326,6 +353,12 @@ export const GmTokensTotalBalanceInfo = ({
                   )}
               </>
             )}
+            {hasBalanceOutsideWallet && (
+              <>
+                <br />
+                <EarningAttributionNote scope="gm" />
+              </>
+            )}
             {isUserEarningsUnavailable && (
               <>
                 <br />
@@ -342,6 +375,7 @@ export const GmTokensTotalBalanceInfo = ({
     areEarningsAvailable,
     areEstimated365dFeesAvailable,
     daysConsidered,
+    hasBalanceOutsideWallet,
     isEarningsLoading,
     isEstimated365dFeesValueLoading,
     isUserEarningsUnavailable,
