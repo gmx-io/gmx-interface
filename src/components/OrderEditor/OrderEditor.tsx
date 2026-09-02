@@ -5,7 +5,11 @@ import { zeroAddress } from "viem";
 
 import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionsConstants,
+  useProDiscountFactor,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useEditingOrderState,
@@ -15,7 +19,11 @@ import {
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { usePositionEditorOpenAtPrice } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectIsProDiscountFactorReady,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -33,6 +41,8 @@ import {
   selectOrderEditorMaxAllowedLeverage,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
+  selectOrderEditorIncreaseResultingPositionMarginState,
+  selectOrderEditorIsIncreaseExecutableNow,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPositionKey,
   selectOrderEditorPositionOrderError,
@@ -122,7 +132,13 @@ import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
+import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
+import {
+  getIncreaseResultingPositionMarginState,
+  getIsMaxLeverageMarginReason,
+} from "sdk/utils/trade/increaseMarginCheck";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -143,6 +159,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { FreshPositionIncreaseWarningCard } from "../TradeBox/FreshPositionIncreaseWarningCard";
 import { LiquidatableIncreaseWarningCard } from "../TradeBox/LiquidatableIncreaseWarningCard";
+import { ResultingMarginAlertCard } from "../TradeBox/ResultingMarginWarningCard";
 
 import "./OrderEditor.scss";
 
@@ -297,6 +314,7 @@ export function OrderEditor(p: Props) {
   const findSwapPath = useSelector(selectOrderEditorFindSwapPath);
 
   const userReferralInfo = useUserReferralInfo();
+  const proDiscountFactor = useProDiscountFactor();
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
@@ -324,6 +342,15 @@ export function OrderEditor(p: Props) {
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
+  const resultingPositionMarginState = useSelector(selectOrderEditorIncreaseResultingPositionMarginState);
+  const isIncreaseExecutableNow = useSelector(selectOrderEditorIsIncreaseExecutableNow);
+  const isProDiscountFactorReady = useSelector(selectIsProDiscountFactorReady);
+
+  const isResultingPositionMaxLeverageError = getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason);
+
+  const isResultingPositionBlocking =
+    isIncreaseExecutableNow && isProDiscountFactorReady && resultingPositionMarginState?.isLiquidatable === true;
+
   const isMaxLeverageError = useMemo(() => {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
       if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
@@ -341,6 +368,9 @@ export function OrderEditor(p: Props) {
     return false;
   }, [p.order, sizeDeltaUsd, nextPositionValuesWithoutPnlForIncrease?.nextLeverage]);
 
+  const showResultingPositionMaxLeverageWarning =
+    !isIncreaseExecutableNow && !isMaxLeverageError && resultingPositionMarginState?.isLiquidatable === true;
+
   const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
@@ -349,6 +379,12 @@ export function OrderEditor(p: Props) {
     const collateralToken = positionOrder.targetCollateralToken;
 
     if (!positionIndexToken || !fromToken || minCollateralUsd === undefined) return;
+
+    const limitOrderType = isLimitIncreaseOrderType(positionOrder.orderType)
+      ? OrderType.LimitIncrease
+      : isStopIncreaseOrderType(positionOrder.orderType)
+        ? OrderType.StopIncrease
+        : undefined;
 
     const { returnValue: newSizeDeltaUsd } = numericBinarySearch<bigint | undefined>(
       1,
@@ -369,11 +405,13 @@ export function OrderEditor(p: Props) {
           strategy: "leverageByCollateral",
           uiFeeFactor,
           userReferralInfo,
+          proDiscountFactor,
           acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
           fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
           externalSwapQuote: undefined,
           leverage,
           triggerPrice,
+          limitOrderType,
           marketsInfoData,
           chainId,
           externalSwapQuoteParams: undefined,
@@ -404,8 +442,25 @@ export function OrderEditor(p: Props) {
             increaseAmounts.sizeDeltaUsd
           );
 
+          const marginState = getIncreaseResultingPositionMarginState({
+            marketInfo,
+            collateralToken,
+            isLong: positionOrder.isLong,
+            existingPosition: existingPositionForPreview,
+            sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+            sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+            collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+            minCollateralUsd,
+            userReferralInfo,
+            proDiscountFactor,
+            indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
+              orderType: positionOrder.orderType,
+              triggerPrice,
+            }),
+          });
+
           return {
-            isValid: !isMaxLeverageExceeded,
+            isValid: !isMaxLeverageExceeded && marginState?.isLiquidatable !== true,
             returnValue: increaseAmounts.sizeDeltaUsd,
           };
         }
@@ -433,6 +488,7 @@ export function OrderEditor(p: Props) {
     existingPositionForPreview,
     uiFeeFactor,
     userReferralInfo,
+    proDiscountFactor,
     savedAcceptablePriceImpactBuffer,
     acceptablePriceImpactBps,
     triggerPrice,
@@ -609,13 +665,25 @@ export function OrderEditor(p: Props) {
       return false;
     }
 
+    if (resultingPositionMarginState?.isLiquidatable) {
+      return false;
+    }
+
     return getIsIncreaseResultingPositionLiquidatable({
       currentLiqPrice: existingPosition?.liquidationPrice,
       nextLiqPrice: nextPositionValuesForIncrease?.nextLiqPrice,
       triggerPrice,
       isLong: positionOrder.isLong,
     });
-  }, [error, positionOrder, isMarginDeposit, existingPosition, nextPositionValuesForIncrease, triggerPrice]);
+  }, [
+    error,
+    positionOrder,
+    isMarginDeposit,
+    existingPosition,
+    nextPositionValuesForIncrease,
+    triggerPrice,
+    resultingPositionMarginState,
+  ]);
 
   const onSubmit = useCallback(async () => {
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
@@ -691,6 +759,16 @@ export function OrderEditor(p: Props) {
   ]);
 
   const submitButtonState = useMemo(() => {
+    const setMaxLeverageButton = (
+      <button
+        type="button"
+        className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+        onClick={detectAndSetAvailableMaxLeverage}
+      >
+        <Trans>Set max leverage</Trans>
+      </button>
+    );
+
     if (hasOutdatedUi) {
       return {
         text: getPageOutdatedError(),
@@ -729,14 +807,27 @@ export function OrderEditor(p: Props) {
             .
             <br />
             <br />
-            <button
-              type="button"
-              className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-              onClick={detectAndSetAvailableMaxLeverage}
-            >
-              <Trans>Set max leverage</Trans>
-            </button>
+            {setMaxLeverageButton}
           </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isResultingPositionBlocking) {
+      return {
+        text: isResultingPositionMaxLeverageError ? t`Max leverage exceeded` : t`Invalid liquidation price`,
+        tooltip: isResultingPositionMaxLeverageError ? (
+          <>
+            <Trans>
+              The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+            </Trans>
+            <br />
+            <br />
+            {setMaxLeverageButton}
+          </>
+        ) : (
+          <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>
         ),
         disabled: true,
       };
@@ -774,6 +865,8 @@ export function OrderEditor(p: Props) {
     hasOutdatedUi,
     isMarginDeposit,
     isMaxLeverageError,
+    isResultingPositionBlocking,
+    isResultingPositionMaxLeverageError,
     p.order,
     onSubmit,
     detectAndSetAvailableMaxLeverage,
@@ -1178,6 +1271,7 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
+          {showResultingPositionMaxLeverageWarning && <ResultingMarginAlertCard level="warning" />}
           {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
           {isPositionLiquidatedBeforeTrigger && <FreshPositionIncreaseWarningCard />}
 

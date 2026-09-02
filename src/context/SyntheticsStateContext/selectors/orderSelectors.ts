@@ -2,11 +2,14 @@ import {
   OrderErrors,
   PositionOrderInfo,
   getOrderErrors,
+  isIncreaseOrderType,
   isLimitIncreaseOrderType,
   isOrderForPosition,
   isStopIncreaseOrderType,
+  isTwapOrder,
   sortPositionOrders,
 } from "domain/synthetics/orders";
+import { getOrderIncreaseResultingPositionMarginState } from "domain/synthetics/orders/utils";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
@@ -15,6 +18,7 @@ import {
   selectJitLiquidityMap,
   selectMarketsInfoData,
   selectPositionConstants,
+  selectProDiscountFactor,
   selectPositionsInfoData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -24,6 +28,42 @@ import { selectIsSetAcceptablePriceImpactEnabled } from "./settingsSelectors";
 import { makeSelectFindSwapPath } from "./tradeSelectors";
 
 const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
+
+const makeSelectOrderIncreaseResultingPositionMarginState = createSelectorFactory((orderKey: string) =>
+  createSelector(function selectOrderIncreaseResultingPositionMarginState(q) {
+    const order = q((s) => selectOrdersInfoData(s)?.[orderKey]);
+
+    if (!order || !isIncreaseOrderType(order.orderType) || isTwapOrder(order)) {
+      return undefined;
+    }
+
+    const positionOrder = order as PositionOrderInfo;
+    const { minCollateralUsd } = q(selectPositionConstants);
+
+    if (!positionOrder.marketInfo || minCollateralUsd === undefined) {
+      return undefined;
+    }
+
+    return getOrderIncreaseResultingPositionMarginState({
+      order: positionOrder,
+      position: q((s) =>
+        Object.values(selectPositionsInfoData(s) || {}).find((pos) => isOrderForPosition(order, pos.key))
+      ),
+      triggerPrice: positionOrder.triggerPrice,
+      sizeDeltaUsd: positionOrder.sizeDeltaUsd,
+      findSwapPath: q(
+        makeSelectFindSwapPath(order.initialCollateralToken.address, order.targetCollateralToken.address)
+      ),
+      uiFeeFactor: q(selectUiFeeFactor),
+      chainId: q(selectChainId),
+      marketsInfoData: q(selectMarketsInfoData),
+      isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
+      minCollateralUsd,
+      userReferralInfo: q(selectUserReferralInfo),
+      proDiscountFactor: q(selectProDiscountFactor),
+    });
+  })
+);
 
 export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: string | undefined) =>
   createSelector(function selectOrderErrorByOrderId(q): OrderErrors {
@@ -70,6 +110,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       nextPositionValues,
       minCollateralUsd,
       userReferralInfo,
+      resultingPositionMarginState: q(makeSelectOrderIncreaseResultingPositionMarginState(orderInfo.key)),
     });
 
     return { errors, level };

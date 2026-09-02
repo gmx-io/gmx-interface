@@ -61,6 +61,7 @@ import {
 import {
   selectTradeboxIncreaseFreshPositionWarning,
   selectTradeboxIncreaseLiquidationRiskWarning,
+  selectTradeboxIncreaseMaxLeverageAlert,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
@@ -129,6 +130,7 @@ import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { FreshPositionIncreaseWarningCard } from "./FreshPositionIncreaseWarningCard";
 import { LiquidatableIncreaseWarningCard } from "./LiquidatableIncreaseWarningCard";
 import { MarginDepositSuggestionCard } from "./MarginDepositSuggestionCard";
+import { ResultingMarginAlertCard } from "./ResultingMarginWarningCard";
 import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
@@ -254,6 +256,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const existingPositionForPreview = useSelector(selectTradeboxExistingPositionForPreview);
   const showIncreaseLiquidationRiskWarning = useSelector(selectTradeboxIncreaseLiquidationRiskWarning);
   const showIncreaseFreshPositionWarning = useSelector(selectTradeboxIncreaseFreshPositionWarning);
+  const increaseMaxLeverageAlert = useSelector(selectTradeboxIncreaseMaxLeverageAlert);
 
   const closeSizeHook = useCloseSizeInput({
     positionSizeInUsd: selectedPosition?.sizeInUsd,
@@ -1241,6 +1244,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </Trans>
             </AlertInfoCard>
           )}
+          {increaseMaxLeverageAlert && <ResultingMarginAlertCard level={increaseMaxLeverageAlert} />}
           {!marginDepositSuggestionHidden && (
             <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}

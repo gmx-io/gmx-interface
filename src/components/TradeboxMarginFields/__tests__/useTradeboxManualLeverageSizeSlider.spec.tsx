@@ -1,10 +1,16 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { selectTradeboxIncreaseResultingPositionMarginState } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { StateCtx } from "context/SyntheticsStateContext/utils";
+import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
+import { MOCK_POSITIONS_CONSTANTS } from "domain/testUtils/mockChainData";
 import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import { createMockSyntheticsState, type MockSyntheticsStateOverrides } from "domain/testUtils/mockSyntheticsState";
+import { ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
+import { expandDecimals } from "lib/numbers";
+import { TradeMode } from "sdk/utils/trade/types";
 
 import { useTradeboxManualLeverageSizeSlider } from "../useTradeboxManualLeverageSizeSlider";
 
@@ -12,7 +18,17 @@ type HookResult = ReturnType<typeof useTradeboxManualLeverageSizeSlider>;
 
 type Opts = Pick<
   MockSyntheticsStateOverrides,
-  "isLeverageSliderEnabled" | "fromTokenInputValue" | "toTokenInputValue"
+  | "isLeverageSliderEnabled"
+  | "fromTokenInputValue"
+  | "toTokenInputValue"
+  | "fromTokenAddress"
+  | "collateralAddress"
+  | "tradeMode"
+  | "triggerPriceInputValue"
+  | "uiFeeFactor"
+  | "positionsConstants"
+  | "account"
+  | "positionsInfoData"
 > & {
   hasMarketInfo?: boolean;
 };
@@ -175,6 +191,121 @@ describe("useTradeboxManualLeverageSizeSlider", () => {
       act(() => actionsRef.current!.markFieldInteraction());
 
       expect(setTo.mock.calls.length).toBe(callsAfterSlider);
+    });
+  });
+});
+
+describe("useTradeboxManualLeverageSizeSlider — the slider cap stays inside the validation", () => {
+  afterEach(cleanup);
+
+  /** The size the slider hands to the size field at 100%, in index token units. */
+  function sizeAt100(opts: Opts): string {
+    const { setTo, actionsRef } = setup(opts);
+
+    act(() => actionsRef.current!.handleSizePercentageChange(100));
+
+    expect(setTo).toHaveBeenCalled();
+
+    return String(setTo.mock.calls.at(-1)![0]);
+  }
+
+  /** The blocking check the tradebox runs on the resulting position for that same size. */
+  function isAcceptedByValidation(opts: Opts, toTokenInputValue: string): boolean {
+    const state = buildState({ ...opts, toTokenInputValue });
+
+    return selectTradeboxIncreaseResultingPositionMarginState(state)?.isLiquidatable !== true;
+  }
+
+  const marginOpts: Opts = {
+    isLeverageSliderEnabled: false,
+    hasMarketInfo: true,
+    fromTokenInputValue: "1000",
+    toTokenInputValue: "0",
+    positionsConstants: MOCK_POSITIONS_CONSTANTS,
+  };
+
+  it("a market increase paid in the collateral token", () => {
+    const size = sizeAt100(marginOpts);
+
+    expect(Number(size)).toBeGreaterThan(0);
+    expect(isAcceptedByValidation(marginOpts, size)).toBe(true);
+  });
+
+  it("a market increase with a non-zero ui fee factor", () => {
+    // 0.1%, the factor a third-party frontend would charge
+    const opts: Opts = { ...marginOpts, uiFeeFactor: expandDecimals(1, 27) };
+
+    const size = sizeAt100(opts);
+
+    expect(Number(size)).toBeGreaterThan(0);
+    expect(isAcceptedByValidation(opts, size)).toBe(true);
+  });
+
+  it("a market increase paid in a token that has to be swapped into the collateral", () => {
+    const opts: Opts = { ...marginOpts, fromTokenAddress: ETH_ADDRESS, collateralAddress: USDC_ADDRESS, fromTokenInputValue: "1" };
+
+    const size = sizeAt100(opts);
+
+    expect(Number(size)).toBeGreaterThan(0);
+    expect(isAcceptedByValidation(opts, size)).toBe(true);
+  });
+
+  it("a limit increase resting below the market", () => {
+    // ETH is mocked at 2 000
+    const opts: Opts = { ...marginOpts, tradeMode: TradeMode.Limit, triggerPriceInputValue: "1800" };
+
+    const size = sizeAt100(opts);
+    const marketSize = sizeAt100(marginOpts);
+
+    // the trigger-priced size buys more tokens for the same margin, and nothing collapses it
+    expect(Number(size)).toBeGreaterThan(Number(marketSize));
+    expect(isAcceptedByValidation(opts, size)).toBe(true);
+  });
+
+  describe("caps against the position the amounts are built from", () => {
+    const ACCOUNT = "0x1111111111111111111111111111111111111111";
+    const marketInfo = createMockMarketInfo();
+
+    function withPosition(liquidationPrice: bigint | undefined): Opts {
+      const position =
+        liquidationPrice === undefined
+          ? undefined
+          : mockPositionInfo(
+              {
+                marketInfo,
+                collateralTokenAddress: USDC_ADDRESS,
+                account: ACCOUNT,
+                isLong: true,
+                sizeInUsd: expandDecimals(10_000, 30),
+                collateralUsd: expandDecimals(2_000, 30),
+              },
+              { isLong: true, liquidationPrice }
+            );
+
+      return {
+        ...marginOpts,
+        tradeMode: TradeMode.Limit,
+        triggerPriceInputValue: "1800",
+        account: ACCOUNT,
+        positionsInfoData: position ? { [position.key]: position } : {},
+      };
+    }
+
+    it("drops a position that cannot survive to the trigger price", () => {
+      // liquidated at 1 900, on the way from the 2 000 mark down to the 1 800 trigger
+      const doomed = sizeAt100(withPosition(expandDecimals(1900, 30)));
+      const fresh = sizeAt100(withPosition(undefined));
+
+      expect(Number(fresh)).toBeGreaterThan(0);
+      expect(doomed).toBe(fresh);
+    });
+
+    it("keeps a position that does survive to the trigger price", () => {
+      const alive = sizeAt100(withPosition(expandDecimals(1500, 30)));
+      const fresh = sizeAt100(withPosition(undefined));
+
+      expect(Number(alive)).toBeGreaterThan(0);
+      expect(alive).not.toBe(fresh);
     });
   });
 });

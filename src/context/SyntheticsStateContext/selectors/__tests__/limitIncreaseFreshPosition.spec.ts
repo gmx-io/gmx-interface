@@ -13,6 +13,7 @@ import {
   selectTradeboxIsPositionLiquidatedBeforeTrigger,
   selectTradeboxNextPositionValues,
 } from "../tradeboxSelectors";
+import { selectTradeboxIncreaseResultingPositionMarginState } from "../tradeboxSelectors/selectTradeboxTradeErrors";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const marketKey = "ETH-ETH-USDC";
@@ -28,10 +29,12 @@ function createState({
   isLong,
   liquidationPrice,
   triggerPriceInputValue,
+  hasPosition = true,
 }: {
   isLong: boolean;
   liquidationPrice: bigint;
   triggerPriceInputValue: string;
+  hasPosition?: boolean;
 }): SyntheticsState {
   const position = mockPositionInfo(
     {
@@ -52,7 +55,7 @@ function createState({
       account: ACCOUNT,
       marketsInfo: { marketsInfoData },
       tokensDataResult: { tokensData },
-      positionsInfo: { positionsInfoData: { [position.key]: position } },
+      positionsInfo: { positionsInfoData: hasPosition ? { [position.key]: position } : {} },
       positionsConstants: {
         minCollateralUsd: expandDecimals(1, 30),
         minPositionSizeUsd: expandDecimals(1, 30),
@@ -149,6 +152,43 @@ describe("Limit Increase beyond the current liquidation price", () => {
         expect(nextPositionValues!.nextCollateralUsd).toBeLessThan(POSITION_COLLATERAL_USD);
         expect(nextPositionValues!.nextEntryPrice).toBeGreaterThan((triggerPrice * 95n) / 100n);
         expect(nextPositionValues!.nextEntryPrice).toBeLessThan((triggerPrice * 105n) / 100n);
+      });
+
+      it("runs the resulting-margin check on the same fresh projection the amounts use", () => {
+        const doomed = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenLiquidated,
+          triggerPriceInputValue,
+        });
+        const withoutPosition = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenLiquidated,
+          triggerPriceInputValue,
+          hasPosition: false,
+        });
+
+        const marginState = selectTradeboxIncreaseResultingPositionMarginState(doomed);
+
+        expect(marginState).toBeDefined();
+        expect(marginState).toEqual(selectTradeboxIncreaseResultingPositionMarginState(withoutPosition));
+      });
+
+      it("keeps the surviving position in the resulting-margin check", () => {
+        const alive = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenAlive,
+          triggerPriceInputValue,
+        });
+        const withoutPosition = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenAlive,
+          triggerPriceInputValue,
+          hasPosition: false,
+        });
+
+        expect(selectTradeboxIncreaseResultingPositionMarginState(alive)).not.toEqual(
+          selectTradeboxIncreaseResultingPositionMarginState(withoutPosition)
+        );
       });
     }
   );
