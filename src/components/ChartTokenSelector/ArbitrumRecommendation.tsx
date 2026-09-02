@@ -27,7 +27,10 @@ export function ArbitrumRecommendation() {
         helperToast.error(getSmartWalletChainUnavailableToastContent(ARBITRUM));
       }
 
-      metrics.pushError(extendError(error, { data: { chainId: ARBITRUM } }), "chartTokenSelector.switchToArbitrum");
+      metrics.pushError(
+        extendError(error, { data: { chainId: ARBITRUM } }),
+        "chartTokenSelector.switchToArbitrum"
+      );
     });
   }, [isConnected]);
 

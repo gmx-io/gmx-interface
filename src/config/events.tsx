@@ -148,9 +148,9 @@ export const appEventsData: EventData[] = [
         </span>
         <span>
           <span className="font-medium text-typography-primary">Trader &amp; Affiliate Program:</span>{" "}
-          <ExternalLink href="https://gmx.io/trader-affiliate-program">a new page</ExternalLink> for high-volume traders
-          and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and marketing
-          support. Apply from the page, or reach the team on Telegram or a call.
+          <ExternalLink href="https://gmx.io/trader-affiliate-program">a new page</ExternalLink> for high-volume
+          traders and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and
+          marketing support. Apply from the page, or reach the team on Telegram or a call.
         </span>
         <span>
           <span className="font-medium text-typography-primary">Trader profiles:</span> trader activity and address
