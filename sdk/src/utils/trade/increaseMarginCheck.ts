@@ -106,8 +106,11 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
     : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
   let closingFeeAmount =
-    convertToTokenAmount(applyFactor(sizeInUsd, closingFeeFactor), collateralToken.decimals, collateralToken.prices.minPrice) ??
-    0n;
+    convertToTokenAmount(
+      applyFactor(sizeInUsd, closingFeeFactor),
+      collateralToken.decimals,
+      collateralToken.prices.minPrice
+    ) ?? 0n;
 
   let discountAmount = 0n;
 
@@ -221,11 +224,7 @@ export function getIncreaseResultingPositionMarginState(
 
   const { indexToken } = marketInfo;
 
-  if (
-    indexToken.prices.minPrice <= 0n ||
-    indexToken.prices.maxPrice <= 0n ||
-    collateralToken.prices.minPrice <= 0n
-  ) {
+  if (indexToken.prices.minPrice <= 0n || indexToken.prices.maxPrice <= 0n || collateralToken.prices.minPrice <= 0n) {
     return undefined;
   }
 
@@ -242,7 +241,10 @@ export function getIncreaseResultingPositionMarginState(
   const increasePendingImpactAmount =
     increaseImpactUsd > 0n
       ? convertToTokenAmount(increaseImpactUsd, indexToken.decimals, indexToken.prices.maxPrice)!
-      : roundUpMagnitudeDivision(increaseImpactUsd * expandDecimals(1, indexToken.decimals), indexToken.prices.minPrice);
+      : roundUpMagnitudeDivision(
+          increaseImpactUsd * expandDecimals(1, indexToken.decimals),
+          indexToken.prices.minPrice
+        );
 
   const nextSizeInUsd = (existingPosition?.sizeInUsd ?? 0n) + sizeDeltaUsd;
   const nextSizeInTokens = (existingPosition?.sizeInTokens ?? 0n) + sizeDeltaInTokens;
@@ -251,6 +253,7 @@ export function getIncreaseResultingPositionMarginState(
 
   const nextMarketInfo = getMarketInfoWithOpenInterestDelta({
     marketInfo,
+    collateralToken,
     isLong,
     sizeDeltaUsd,
     sizeDeltaInTokens,

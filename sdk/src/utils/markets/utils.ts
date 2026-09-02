@@ -10,7 +10,7 @@ import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fe
 import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { periodToSeconds } from "utils/time";
-import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "utils/tokens";
+import { convertToContractTokenPrices, convertToUsd, getIsEquivalentTokens, getMidPrice } from "utils/tokens";
 import type { Token, TokenPrices, TokensData } from "utils/tokens/types";
 
 import type {
@@ -415,11 +415,13 @@ export function getOpenInterestInTokens(marketInfo: MarketInfo, isLong: boolean)
 
 export function getMarketInfoWithOpenInterestDelta({
   marketInfo,
+  collateralToken,
   isLong,
   sizeDeltaUsd,
   sizeDeltaInTokens,
 }: {
   marketInfo: MarketInfo;
+  collateralToken: Token;
   isLong: boolean;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
@@ -439,6 +441,35 @@ export function getMarketInfoWithOpenInterestDelta({
         shortInterestUsd: marketInfo.shortInterestUsd + sizeDeltaUsd,
         shortInterestInTokens: marketInfo.shortInterestInTokens + sizeDeltaInTokens,
       };
+
+  const isLongTokenCollateral = getIsEquivalentTokens(collateralToken, marketInfo.longToken);
+
+  const usdByCollateralKey = isLong
+    ? isLongTokenCollateral
+      ? "longInterestUsdUsingLongToken"
+      : "longInterestUsdUsingShortToken"
+    : isLongTokenCollateral
+      ? "shortInterestUsdUsingLongToken"
+      : "shortInterestUsdUsingShortToken";
+
+  const tokensByCollateralKey = isLong
+    ? isLongTokenCollateral
+      ? "longInterestInTokensUsingLongToken"
+      : "longInterestInTokensUsingShortToken"
+    : isLongTokenCollateral
+      ? "shortInterestInTokensUsingLongToken"
+      : "shortInterestInTokensUsingShortToken";
+
+  const usdByCollateral = marketInfo[usdByCollateralKey];
+  const tokensByCollateral = marketInfo[tokensByCollateralKey];
+
+  if (usdByCollateral !== undefined) {
+    next[usdByCollateralKey] = usdByCollateral + sizeDeltaUsd;
+  }
+
+  if (tokensByCollateral !== undefined) {
+    next[tokensByCollateralKey] = tokensByCollateral + sizeDeltaInTokens;
+  }
 
   const hasVirtualInventory =
     typeof marketInfo.virtualIndexTokenId === "string"

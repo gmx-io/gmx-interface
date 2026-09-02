@@ -392,7 +392,9 @@ describe("getResultingPositionMarginState — oracle sides", () => {
 
   it("values the collateral at its min price", () => {
     // 1 000 USDC at 0.99, not at 1.01 or at the mid price
-    expect(getResultingPositionMarginState(spreadParams).remainingCollateralUsd).toBe(expandDecimals(990, USD_DECIMALS));
+    expect(getResultingPositionMarginState(spreadParams).remainingCollateralUsd).toBe(
+      expandDecimals(990, USD_DECIMALS)
+    );
   });
 
   it("ignores a net-positive pending impact", () => {
@@ -504,7 +506,13 @@ describe("getIncreaseResultingPositionMarginState — open interest projection",
 
       const expected = getResultingPositionMarginState({
         ...resultingPosition,
-        marketInfo: getMarketInfoWithOpenInterestDelta({ marketInfo, isLong: true, sizeDeltaUsd, sizeDeltaInTokens }),
+        marketInfo: getMarketInfoWithOpenInterestDelta({
+          marketInfo,
+          collateralToken: usdc,
+          isLong: true,
+          sizeDeltaUsd,
+          sizeDeltaInTokens,
+        }),
       });
 
       expect(actual).toEqual(expected);
