@@ -9,7 +9,12 @@ import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck
 
 import { NextPositionValues } from "../../trade";
 import { OrderType, PositionOrderInfo } from "../types";
-import { getOrderErrors, getOrderIncreaseResultingPositionMarginState } from "../utils";
+import {
+  getOrderErrors,
+  getOrderIncreaseNextPositionValues,
+  getOrderIncreaseProjection,
+  getOrderIncreaseResultingPositionMarginState,
+} from "../utils";
 
 const tokensData = mockTokensData();
 const marketsInfoData = mockMarketsInfoData(tokensData, ["BTC-BTC-USDC"], {
@@ -54,6 +59,17 @@ const baseParams = {
 };
 
 const nextValues = (nextLiqPrice: bigint) => ({ nextLiqPrice }) as NextPositionValues;
+
+type ProjectionArgs = Parameters<typeof getOrderIncreaseProjection>[0];
+
+function marginStateFor(args: ProjectionArgs & { minCollateralUsd: bigint }) {
+  return getOrderIncreaseResultingPositionMarginState({
+    projection: getOrderIncreaseProjection(args),
+    minCollateralUsd: args.minCollateralUsd,
+    userReferralInfo: args.userReferralInfo,
+    proDiscountFactor: args.proDiscountFactor,
+  });
+}
 
 const hasLiquidatableError = (result: ReturnType<typeof getOrderErrors>) =>
   result.errors.some((e) => e.key === "resultingLiquidatable" && e.level === "error");
@@ -602,7 +618,7 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
       marketsInfoData: cleanMarketsInfoData,
       positionsInfoData,
       order,
-      resultingPositionMarginState: getOrderIncreaseResultingPositionMarginState({
+      resultingPositionMarginState: marginStateFor({
         order,
         position,
         triggerPrice: order.triggerPrice,
@@ -687,7 +703,7 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
       marketsInfoData: cleanMarketsInfoData,
       order: restingBelowMarket,
       nextPositionValues: { nextLiqPrice: expandDecimals(19_000, 30) } as NextPositionValues,
-      resultingPositionMarginState: getOrderIncreaseResultingPositionMarginState({
+      resultingPositionMarginState: marginStateFor({
         order: restingBelowMarket,
         position,
         triggerPrice: restingBelowMarket.triggerPrice,
@@ -720,6 +736,77 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
 
     expect(maxLeverageErrors(both)).toHaveLength(1);
     expect(maxLeverageErrors(both)[0].level).toBe("error");
+  });
+});
+
+describe("getOrderIncreaseProjection", () => {
+  const triggerPrice = expandDecimals(20_000, 30);
+
+  const baseArgs = {
+    position: undefined,
+    triggerPrice,
+    sizeDeltaUsd: expandDecimals(10_000, 30),
+    findSwapPath: (() => undefined) as any,
+    uiFeeFactor: 0n,
+    chainId: ARBITRUM,
+    marketsInfoData,
+    isSetAcceptablePriceImpactEnabled: true,
+    minCollateralUsd: expandDecimals(1, 30),
+    userReferralInfo: undefined,
+  };
+
+  it("keeps a stop increase a stop instead of pricing it as a limit", () => {
+    const limit = getOrderIncreaseProjection({
+      ...baseArgs,
+      order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
+    })!;
+    const stop = getOrderIncreaseProjection({
+      ...baseArgs,
+      order: makeIncreaseOrder(OrderType.StopIncrease, { triggerPrice }),
+    })!;
+
+    expect(stop.increaseAmounts.limitOrderType).toBe(OrderType.StopIncrease);
+    expect(limit.increaseAmounts.limitOrderType).toBe(OrderType.LimitIncrease);
+    // a stop has no acceptable-price protection, a limit gets the recommended one
+    expect(stop.increaseAmounts.acceptablePrice).not.toBe(limit.increaseAmounts.acceptablePrice);
+    // the projection itself is the same at the same trigger
+    expect(stop.increaseAmounts.collateralDeltaUsd).toBe(limit.increaseAmounts.collateralDeltaUsd);
+    expect(stop.increaseAmounts.sizeDeltaInTokens).toBe(limit.increaseAmounts.sizeDeltaInTokens);
+  });
+
+  it("derives the next position values from the same projection the margin check uses", () => {
+    const projection = getOrderIncreaseProjection({
+      ...baseArgs,
+      order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
+    })!;
+
+    const next = getOrderIncreaseNextPositionValues({
+      projection,
+      minCollateralUsd: baseArgs.minCollateralUsd,
+      userReferralInfo: undefined,
+      isPnlInLeverage: false,
+    })!;
+
+    expect(next.nextSizeUsd).toBe(projection.increaseAmounts.sizeDeltaUsd);
+    expect(next.nextCollateralUsd).toBe(projection.increaseAmounts.collateralDeltaUsd);
+    expect(next.nextLeverage).toBeGreaterThan(0n);
+  });
+
+  it("skips the next position values for an increase without a deposit", () => {
+    const projection = getOrderIncreaseProjection({
+      ...baseArgs,
+      order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice, initialCollateralDeltaAmount: 0n }),
+    });
+
+    expect(projection).toBeDefined();
+    expect(
+      getOrderIncreaseNextPositionValues({
+        projection,
+        minCollateralUsd: baseArgs.minCollateralUsd,
+        userReferralInfo: undefined,
+        isPnlInLeverage: false,
+      })
+    ).toBeUndefined();
   });
 });
 
@@ -758,7 +845,7 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
 
   it("returns undefined without a usable trigger price", () => {
     expect(
-      getOrderIncreaseResultingPositionMarginState({
+      marginStateFor({
         ...baseArgs,
         order: makeIncreaseOrder(OrderType.LimitIncrease),
         triggerPrice: 0n,
@@ -768,7 +855,7 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
 
   it("returns undefined for a decrease order", () => {
     expect(
-      getOrderIncreaseResultingPositionMarginState({
+      marginStateFor({
         ...baseArgs,
         order: makeIncreaseOrder(OrderType.LimitDecrease),
       })
@@ -776,7 +863,7 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
   });
 
   it("passes for a healthy standalone order", () => {
-    const state = getOrderIncreaseResultingPositionMarginState({
+    const state = marginStateFor({
       ...baseArgs,
       order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
     });
@@ -785,7 +872,7 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
   });
 
   it("fails when the existing position's loss eats the resulting margin", () => {
-    const state = getOrderIncreaseResultingPositionMarginState({
+    const state = marginStateFor({
       ...baseArgs,
       order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
       // 100 000 of size now worth 99 000 → 1 000 of loss against 1 300 of margin: the raw-collateral
@@ -805,12 +892,12 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
     );
     doomed.liquidationPrice = expandDecimals(21_000, 30);
 
-    const state = getOrderIncreaseResultingPositionMarginState({
+    const state = marginStateFor({
       ...baseArgs,
       order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
       position: doomed,
     });
-    const fresh = getOrderIncreaseResultingPositionMarginState({
+    const fresh = marginStateFor({
       ...baseArgs,
       order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
       position: undefined,
@@ -826,17 +913,17 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
       uiFeeFactor: expandDecimals(1, 28),
     } as any);
 
-    const noFee = getOrderIncreaseResultingPositionMarginState({
+    const noFee = marginStateFor({
       ...baseArgs,
       order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice }),
       uiFeeFactor: 0n,
     });
 
     // the order carries the factor, the live one is zero → the fee must still be charged
-    const orderFactor = getOrderIncreaseResultingPositionMarginState({ ...baseArgs, order, uiFeeFactor: 0n });
+    const orderFactor = marginStateFor({ ...baseArgs, order, uiFeeFactor: 0n });
 
     // the order carries an explicit zero → the live factor must be ignored
-    const orderZeroFactor = getOrderIncreaseResultingPositionMarginState({
+    const orderZeroFactor = marginStateFor({
       ...baseArgs,
       order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice, uiFeeFactor: 0n } as any),
       uiFeeFactor: expandDecimals(1, 28),
@@ -872,7 +959,7 @@ describe("getOrderIncreaseResultingPositionMarginState — degraded inputs never
   }
 
   function runProjection(order: PositionOrderInfo) {
-    return getOrderIncreaseResultingPositionMarginState({
+    return marginStateFor({
       order,
       position: undefined,
       triggerPrice,

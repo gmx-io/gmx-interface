@@ -30,10 +30,12 @@ import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import {
   FindSwapPath,
+  IncreasePositionAmounts,
   NextPositionValues,
   getAcceptablePriceInfo,
   getIncreasePositionAmounts,
   getMaxSwapPathLiquidity,
+  getNextPositionValuesForIncreaseTrade,
   getSwapAmountsByFromValue,
 } from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
@@ -540,7 +542,14 @@ export function sortSwapOrders(
   });
 }
 
-export function getOrderIncreaseResultingPositionMarginState({
+export type OrderIncreaseProjection = {
+  order: PositionOrderInfo;
+  increaseAmounts: IncreasePositionAmounts;
+  position: PositionInfo | undefined;
+  triggerPrice: bigint;
+};
+
+export function getOrderIncreaseProjection({
   order,
   position,
   triggerPrice,
@@ -550,7 +559,6 @@ export function getOrderIncreaseResultingPositionMarginState({
   chainId,
   marketsInfoData,
   isSetAcceptablePriceImpactEnabled,
-  minCollateralUsd,
   userReferralInfo,
   proDiscountFactor,
 }: {
@@ -563,10 +571,9 @@ export function getOrderIncreaseResultingPositionMarginState({
   chainId: number;
   marketsInfoData: MarketsInfoData | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
-  minCollateralUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
-}): PositionMarginState | undefined {
+}): OrderIncreaseProjection | undefined {
   const marketInfo = order.marketInfo;
 
   if (!marketInfo || !isIncreaseOrderType(order.orderType) || triggerPrice === undefined || triggerPrice <= 0n) {
@@ -610,11 +617,65 @@ export function getOrderIncreaseResultingPositionMarginState({
     return undefined;
   }
 
+  return { order, increaseAmounts, position: positionForProjection, triggerPrice };
+}
+
+export function getOrderIncreaseNextPositionValues({
+  projection,
+  minCollateralUsd,
+  userReferralInfo,
+  isPnlInLeverage,
+}: {
+  projection: OrderIncreaseProjection | undefined;
+  minCollateralUsd: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+  isPnlInLeverage: boolean;
+}): NextPositionValues | undefined {
+  if (!projection || projection.increaseAmounts.initialCollateralAmount <= 0n) {
+    return undefined;
+  }
+
+  const { order, increaseAmounts, position } = projection;
+
+  return getNextPositionValuesForIncreaseTrade({
+    marketInfo: order.marketInfo,
+    collateralToken: order.targetCollateralToken,
+    existingPosition: position,
+    isLong: order.isLong,
+    collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+    collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+    sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+    positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
+    indexPrice: increaseAmounts.indexPrice,
+    showPnlInLeverage: isPnlInLeverage,
+    minCollateralUsd,
+    userReferralInfo,
+  });
+}
+
+export function getOrderIncreaseResultingPositionMarginState({
+  projection,
+  minCollateralUsd,
+  userReferralInfo,
+  proDiscountFactor,
+}: {
+  projection: OrderIncreaseProjection | undefined;
+  minCollateralUsd: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
+}): PositionMarginState | undefined {
+  if (!projection) {
+    return undefined;
+  }
+
+  const { order, increaseAmounts, position, triggerPrice } = projection;
+
   return getIncreaseResultingPositionMarginState({
-    marketInfo,
+    marketInfo: order.marketInfo,
     collateralToken: order.targetCollateralToken,
     isLong: order.isLong,
-    existingPosition: positionForProjection,
+    existingPosition: position,
     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
     collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
@@ -627,6 +688,7 @@ export function getOrderIncreaseResultingPositionMarginState({
     }),
   });
 }
+
 function getIsMaxLeverageError({
   order,
   position,

@@ -5,9 +5,11 @@ import { mock } from "wagmi/connectors";
 
 import { ARBITRUM } from "config/chains";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { EditingOrderState } from "domain/synthetics/orders/types";
 import type { PositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import type { DeepPartial } from "lib/types";
 import type { MarketInfo } from "sdk/utils/markets/types";
+import type { OrdersInfoData } from "sdk/utils/orders/types";
 import type { PositionsInfoData } from "sdk/utils/positions/types";
 import type { TokenData } from "sdk/utils/tokens/types";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
@@ -36,6 +38,14 @@ export type MockSyntheticsStateOverrides = {
   positionsConstants?: PositionsConstants;
   account?: string;
   positionsInfoData?: PositionsInfoData;
+  ordersInfoData?: OrdersInfoData;
+  orderEditor?: {
+    editingOrderState?: EditingOrderState;
+    sizeInputValue?: string;
+    triggerPriceInputValue?: string;
+  };
+  isPnlInLeverage?: boolean;
+  isSetAcceptablePriceImpactEnabled?: boolean;
 };
 
 /**
@@ -62,6 +72,10 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
     positionsConstants,
     account,
     positionsInfoData = {},
+    ordersInfoData = {},
+    orderEditor,
+    isPnlInLeverage = false,
+    isSetAcceptablePriceImpactEnabled = false,
   } = overrides;
 
   const state: DeepPartial<SyntheticsState> = {
@@ -74,7 +88,7 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
         marketsInfoData: marketInfo ? { [marketInfo.marketTokenAddress]: marketInfo } : {},
       },
       positionsInfo: { positionsInfoData },
-      ordersInfo: { ordersInfoData: {} },
+      ordersInfo: { ordersInfoData },
       uiFeeFactor,
       jitLiquidityData: {},
       isFirstOrder: false,
@@ -116,6 +130,14 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
     },
     settings: {
       isLeverageSliderEnabled,
+      isPnlInLeverage,
+      isSetAcceptablePriceImpactEnabled,
+    },
+    orderEditor: {
+      editingOrderState: undefined,
+      sizeInputValue: "",
+      triggerPriceInputValue: "",
+      ...orderEditor,
     },
   };
 

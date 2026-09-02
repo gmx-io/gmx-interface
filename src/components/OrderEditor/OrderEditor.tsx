@@ -403,7 +403,7 @@ export function OrderEditor(p: Props) {
           marketInfo: positionOrder.marketInfo,
           position: existingPositionForPreview,
           strategy: "leverageByCollateral",
-          uiFeeFactor,
+          uiFeeFactor: positionOrder.uiFeeFactor ?? uiFeeFactor,
           userReferralInfo,
           proDiscountFactor,
           acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
