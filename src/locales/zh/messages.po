@@ -7823,6 +7823,10 @@ msgstr "禁用验证以进行测试"
 msgid "GMX icon"
 msgstr "GMX 图标"
 
+#: src/domain/tokens/insufficientApproval.tsx
+msgid "The approved amount is lower than the required amount. Approve again or reduce the amount."
+msgstr "已批准的数量低于所需数量。请重新授权或减少数量。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size"
 msgstr "价格影响超过订单规模"
@@ -8496,6 +8500,10 @@ msgstr ""
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "质押仅在 {chainNames} 或 {lastChainName} 上可用。请切换网络以继续。"
+
+#: src/domain/tokens/insufficientApproval.tsx
+msgid "Approved {approved}, but {required} is required. Approve again or reduce the amount."
+msgstr "已批准 {approved}，但需要 {required}。请重新授权或减少数量。"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards."

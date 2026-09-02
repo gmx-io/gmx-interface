@@ -7823,6 +7823,10 @@ msgstr "Отключить валидацию для тестирования"
 msgid "GMX icon"
 msgstr "Иконка GMX"
 
+#: src/domain/tokens/insufficientApproval.tsx
+msgid "The approved amount is lower than the required amount. Approve again or reduce the amount."
+msgstr "Одобренная сумма меньше требуемой. Одобрите ещё раз или уменьшите сумму."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size"
 msgstr "Влияние на цену превышает размер ордера"
@@ -8496,6 +8500,10 @@ msgstr ""
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Стейкинг доступен только на {chainNames} или {lastChainName}. Переключите сеть, чтобы продолжить."
+
+#: src/domain/tokens/insufficientApproval.tsx
+msgid "Approved {approved}, but {required} is required. Approve again or reduce the amount."
+msgstr "Одобрено {approved}, но требуется {required}. Одобрите ещё раз или уменьшите сумму."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards."
