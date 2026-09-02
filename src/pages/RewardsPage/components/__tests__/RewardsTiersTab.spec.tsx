@@ -306,6 +306,14 @@ describe("RewardsTiersTab", () => {
     expect(screen.getByText("5.00 esGMX")).toBeDefined();
   });
 
+  it("shows integer-rounded zero all-time rewards without a threshold sign", () => {
+    renderTab({ allTimeSummary: { ...allTimeSummary, rewardsUsd: 1n } });
+
+    const summaryText = normalizeText(document.body.textContent);
+    expect(summaryText).toContain("All-timeRewards$0");
+    expect(summaryText).not.toContain("All-timeRewards<$0");
+  });
+
   it("uses an unpadded referral glyph in the boosts card and keeps the centered table icon", () => {
     renderTab();
 
@@ -1112,6 +1120,34 @@ describe("RewardsTiersTab", () => {
     expect(volumeCardText).toContain(normalizeText("Trade $600 to reach the Ranked tier and earn rewards."));
     expect(within(volumeCard as HTMLElement).getByText("Trade More. Earn More.")).toBeDefined();
     expect(within(volumeCard as HTMLElement).getByRole("link", { name: "Start trading" })).toBeDefined();
+  });
+
+  it("promotes a rounded volume target to the next compact suffix", () => {
+    renderTab({
+      config: {
+        ...config,
+        volumeTiers: [
+          { tier: "Tier1", threshold: usd(1_000_000n), multiplier: 25n },
+          { tier: "Tier2", threshold: usd(10_000_000n), multiplier: 50n },
+        ],
+      },
+      status: {
+        ...status,
+        volumeTier: null,
+        projectedVolumeTier: null,
+        tradingVolume: usd(1n),
+        tierVolume: usd(1n),
+        boostIds: [],
+        referralVolume: 0n,
+        manualRewardRemainingUsd: 0n,
+      },
+    });
+
+    const volumeCard = screen.getByText("Volume Tier").closest(".group");
+    const volumeCardText = normalizeText(volumeCard?.textContent);
+
+    expect(volumeCardText).toContain(normalizeText("Trade $1M to reach the Ranked tier and earn rewards."));
+    expect(volumeCardText).not.toContain(normalizeText("$1000K"));
   });
 
   it("uses the staking banner below the first tier and shows the remaining amount", () => {

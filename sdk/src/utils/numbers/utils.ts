@@ -455,11 +455,11 @@ export function formatNumberHuman(n: number, showDollar = false, displayDecimals
   const absN = Math.abs(n);
   const sign = showDollar ? "$\u200a" : "";
 
-  if (absN >= 1_000_000_000) {
+  if (absN >= 1_000_000_000 || (absN >= 1_000_000 && Number((absN / 1_000_000).toFixed(displayDecimals)) >= 1000)) {
     return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000_000).toFixed(displayDecimals)}b`;
   }
 
-  if (absN >= 1_000_000) {
+  if (absN >= 1_000_000 || (absN >= 1000 && Number((absN / 1000).toFixed(displayDecimals)) >= 1000)) {
     return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000).toFixed(displayDecimals)}m`;
   }
 
