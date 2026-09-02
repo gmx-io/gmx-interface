@@ -125,11 +125,26 @@ function hasVestingFundingPreviewChanged(currentData: RewardsVestingData, nextDa
   );
 }
 
-function ModalValueRow({ label, value, qa }: { label: React.ReactNode; value: React.ReactNode; qa?: string }) {
+function ModalValueRow({
+  label,
+  value,
+  unit,
+  qa,
+}: {
+  label: React.ReactNode;
+  value: string;
+  unit: string;
+  qa?: string;
+}) {
   return (
-    <div className="flex items-center justify-between gap-12 text-14 leading-[1.25]" data-qa={qa}>
-      <span className="text-typography-secondary">{label}</span>
-      <span className="shrink-0 text-typography-primary numbers">{value}</span>
+    <div className="flex min-w-0 items-center justify-between gap-12 text-14 leading-[1.25]" data-qa={qa}>
+      <span className="shrink-0 text-typography-secondary">{label}</span>
+      <span className="flex min-w-0 flex-1 justify-end text-right text-typography-primary numbers">
+        <span className="min-w-0 truncate" title={value}>
+          {value}
+        </span>
+        <span className="ml-4 shrink-0 text-typography-secondary">{unit}</span>
+      </span>
     </div>
   );
 }
@@ -439,6 +454,7 @@ export function RewardsVestingModal({
 
     if (onSimulatedVest) {
       const hasStakingStep = preview.stakeShortfallAmount > 0n || transactionProgress.staking;
+      let hasCompletedStep = transactionProgress.claim || transactionProgress.staking;
       try {
         if (needsEsGmxClaim) {
           if (!onSimulatedClaim) return;
@@ -446,6 +462,7 @@ export function RewardsVestingModal({
           setTransactionStep("claiming");
           await onSimulatedClaim();
           if (transactionSessionRef.current !== transactionSession) return;
+          hasCompletedStep = true;
           setTransactionProgress((current) => ({ ...current, claim: true }));
 
           if (!hasEnoughWalletGmx) return;
@@ -457,6 +474,7 @@ export function RewardsVestingModal({
           setTransactionStep("staking");
           await onSimulatedStake(preview.stakeShortfallAmount);
           if (transactionSessionRef.current !== transactionSession) return;
+          hasCompletedStep = true;
           setTransactionProgress((current) => ({ ...current, staking: true }));
         }
 
@@ -472,6 +490,7 @@ export function RewardsVestingModal({
       } catch {
         if (transactionSessionRef.current === transactionSession) {
           setHasInterruptedTransaction(true);
+          setShowTransactionSteps(hasCompletedStep);
         }
       } finally {
         if (transactionSessionRef.current === transactionSession) {
@@ -489,6 +508,7 @@ export function RewardsVestingModal({
     const submittedConnectorUid = connectorUid;
     let currentData = data;
     let currentPreview = getVestingPreview(currentData, depositAmount);
+    let completedClaimThisFlow = transactionProgress.claim;
     let completedApprovalThisFlow = transactionProgress.approval;
     let completedStakeThisFlow = transactionProgress.staking;
     let attemptedTransaction: "ClaimEsGmx" | "ApproveGmx" | "StakeCollateral" | "StartVesting" | undefined;
@@ -559,6 +579,7 @@ export function RewardsVestingModal({
           return;
         }
 
+        completedClaimThisFlow = true;
         setTransactionProgress((current) => ({ ...current, claim: true }));
         try {
           const claimedData = await mutate();
@@ -780,6 +801,7 @@ export function RewardsVestingModal({
     } catch {
       if (attemptedTransaction !== undefined && transactionSessionRef.current === transactionSession) {
         setHasInterruptedTransaction(true);
+        setShowTransactionSteps(completedClaimThisFlow || completedApprovalThisFlow || completedStakeThisFlow);
       }
       if (attemptedTransaction === "ClaimEsGmx") {
         sendRewardsTransactionResultEvent({
@@ -967,11 +989,8 @@ export function RewardsVestingModal({
                 <Trans>Collateral required for vest</Trans>
               </TooltipWithPortal>
             }
-            value={
-              <>
-                {formatTokenAmount(depositAmount ?? 0n)} <span className="text-typography-secondary">GMX</span>
-              </>
-            }
+            value={formatTokenAmount(depositAmount ?? 0n)}
+            unit="GMX"
           />
           <ModalValueRow
             qa="rewards-vesting-collateral-available"
@@ -984,16 +1003,17 @@ export function RewardsVestingModal({
                 <Trans>Collateral available</Trans>
               </TooltipWithPortal>
             }
-            value={
-              <>
-                {formatTokenAmount(collateralAvailable)} <span className="text-typography-secondary">GMX</span>
-              </>
-            }
+            value={formatTokenAmount(collateralAvailable)}
+            unit="GMX"
           />
         </div>
 
         {!hasEnoughWalletGmx && preview.stakeShortfallAmount > 0n ? (
-          <ColorfulBanner color="blue" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
+          <ColorfulBanner
+            color="blue"
+            icon={InfoIcon}
+            className="min-w-0 overflow-hidden !text-13 [overflow-wrap:anywhere] [&>div]:!items-start"
+          >
             <div>
               {data.walletGmxBalance === 0n ? (
                 <Trans>Vesting needs GMX staked as collateral, but you have no GMX to stake.</Trans>
@@ -1039,7 +1059,11 @@ export function RewardsVestingModal({
         ) : null}
 
         {preview.stakeShortfallAmount > 0n && hasEnoughWalletGmx ? (
-          <ColorfulBanner color="blue" icon={InfoIcon} className="!text-13 [&>div]:!items-start">
+          <ColorfulBanner
+            color="blue"
+            icon={InfoIcon}
+            className="min-w-0 overflow-hidden !text-13 [overflow-wrap:anywhere] [&>div]:!items-start"
+          >
             <span className="font-medium text-blue-300">
               <Trans>You need {formatTokenAmount(preview.stakeShortfallAmount)} more GMX staked as collateral.</Trans>
             </span>{" "}
