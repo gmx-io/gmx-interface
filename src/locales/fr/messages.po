@@ -442,10 +442,6 @@ msgstr "Détails du permis"
 msgid "Network fees increased. Additional fee required."
 msgstr "Les frais de réseau ont augmenté. Des frais supplémentaires sont requis."
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
-msgstr "Ce dépôt de marge pourrait ne pas être exécuté : il ne maintiendrait pas la position au-dessus de l'exigence de liquidation au prix de déclenchement. Augmentez le montant du dépôt ou éloignez le déclencheur de la liquidation."
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
 msgstr ""
@@ -1837,6 +1833,10 @@ msgstr ""
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generation failed"
 msgstr "Échec de la génération de la session"
+
+#: src/components/MarginRemediation/MarginRemediationActions.tsx
+msgid "This deposit would not leave the position above its liquidation requirement at the trigger price. <0>Increase the deposit amount</0> or move the trigger farther from liquidation."
+msgstr "Ce dépôt ne maintiendrait pas la position au-dessus de son exigence de liquidation au prix de déclenchement. <0>Augmentez le montant du dépôt</0> ou éloignez le déclencheur de la liquidation."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -4044,11 +4044,6 @@ msgstr "Frais réalisés"
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "Les frais d'emprunt et de financement accumulés sont déduits du dépôt avant qu'il n'améliore la marge de la position, le dépôt doit donc également les couvrir."
 
-#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
-msgstr "L'ordre peut ne pas s'exécuter : la position résultante serait liquidable au prix de déclenchement. Déposez de la marge ou réduisez la taille de l'ordre."
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr "Les fonds sont maintenant dans votre GMX Account"
@@ -4253,10 +4248,6 @@ msgstr "Gas insuffisant pour les frais de réseau"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} à"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
-msgstr "Ce dépôt ne maintiendrait pas la position au-dessus de son exigence de liquidation au prix de déclenchement. Augmentez le montant du dépôt ou éloignez le déclencheur de la liquidation."
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5466,6 +5457,10 @@ msgstr "Votre volume de négociation"
 msgid "Fail external swaps"
 msgstr "Forcer l'échec des swaps externes"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
+msgstr "L'ordre peut ne pas s'exécuter : la position résultante dépasserait l'effet de levier maximal autorisé. <0>Déposez de la marge</0> ou réduisez la taille de l'ordre avant son déclenchement."
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5795,6 +5790,10 @@ msgstr ""
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>Votre {walletName} n'est pas disponible sur {0}</0><1/><2>Ajoutez {1} à votre {walletName}, puis reconnectez-vous et réessayez</2>"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. <0>Increase the deposit amount</0> or move the trigger farther from liquidation."
+msgstr "Ce dépôt de marge pourrait ne pas être exécuté : il ne maintiendrait pas la position au-dessus de l'exigence de liquidation au prix de déclenchement. <0>Augmentez le montant du dépôt</0> ou éloignez le déclencheur de la liquidation."
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For affiliates"
@@ -6437,10 +6436,6 @@ msgstr "Stop Market échoué"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "Paramètres"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers."
-msgstr "L'ordre peut ne pas s'exécuter : la position résultante dépasserait l'effet de levier maximal autorisé. Déposez de la marge ou réduisez la taille de l'ordre avant son déclenchement."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
@@ -11069,6 +11064,10 @@ msgstr "Sélectionnez au moins une distribution à récupérer"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "Acheter"
+
+#: src/components/MarginRemediation/MarginRemediationActions.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
+msgstr "L'ordre peut ne pas s'exécuter : la position résultante serait liquidable au prix de déclenchement. <0>Déposez de la marge</0> ou réduisez la taille de l'ordre."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"

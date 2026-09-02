@@ -442,10 +442,6 @@ msgstr "パーミットの詳細"
 msgid "Network fees increased. Additional fee required."
 msgstr "ネットワーク手数料が増加しました。追加の手数料が必要です。"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
-msgstr "この証拠金入金は執行されない可能性があります：トリガー価格でポジションが清算基準を上回りません。入金額を増やすか、トリガーを清算からさらに遠ざけてください。"
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
 msgstr ""
@@ -1837,6 +1833,10 @@ msgstr ""
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generation failed"
 msgstr "セッションの生成に失敗しました"
+
+#: src/components/MarginRemediation/MarginRemediationActions.tsx
+msgid "This deposit would not leave the position above its liquidation requirement at the trigger price. <0>Increase the deposit amount</0> or move the trigger farther from liquidation."
+msgstr "この入金では、トリガー価格でポジションが清算基準を上回りません。<0>入金額を増やす</0>か、トリガーを清算からさらに遠ざけてください。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -4044,11 +4044,6 @@ msgstr "実現手数料"
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "未払いの借入手数料とファンディング手数料は、入金がポジションの証拠金を改善する前に入金額から差し引かれるため、入金額はこれらの手数料も賄う必要があります。"
 
-#: src/components/TradeBox/LiquidatableIncreaseWarningCard.tsx
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
-msgstr "注文は約定しない可能性があります：結果として生じるポジションはトリガー価格で清算対象となります。証拠金を入金するか、注文サイズを減らしてください。"
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr "資金が GMX Account に入金されました"
@@ -4253,10 +4248,6 @@ msgstr "ネットワーク手数料に必要な Gas が不足しています"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText}から"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
-msgstr "この入金では、トリガー価格でポジションが清算基準を上回りません。入金額を増やすか、トリガーを清算からさらに遠ざけてください。"
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5466,6 +5457,10 @@ msgstr "あなたの取引高"
 msgid "Fail external swaps"
 msgstr "外部スワップを失敗させる"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
+msgstr "注文は約定しない可能性があります：結果として生じるポジションが最大許容レバレッジを超えます。トリガー前に<0>証拠金を入金する</0>か、注文サイズを減らしてください。"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5795,6 +5790,10 @@ msgstr ""
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>{walletName}は{0}で利用できません</0><1/><2>{walletName}に{1}を追加し、再接続してからもう一度お試しください</2>"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. <0>Increase the deposit amount</0> or move the trigger farther from liquidation."
+msgstr "この証拠金入金は執行されない可能性があります：トリガー価格でポジションが清算基準を上回りません。<0>入金額を増やす</0>か、トリガーを清算からさらに遠ざけてください。"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For affiliates"
@@ -6437,10 +6436,6 @@ msgstr "ストップマーケット失敗"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "設定"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers."
-msgstr "注文は約定しない可能性があります：結果として生じるポジションが最大許容レバレッジを超えます。トリガー前に証拠金を入金するか、注文サイズを減らしてください。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
@@ -11069,6 +11064,10 @@ msgstr "受け取る配布を1つ以上選択してください"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "購入"
+
+#: src/components/MarginRemediation/MarginRemediationActions.tsx
+msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
+msgstr "注文は約定しない可能性があります：結果として生じるポジションはトリガー価格で清算対象となります。<0>証拠金を入金する</0>か、注文サイズを減らしてください。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"
