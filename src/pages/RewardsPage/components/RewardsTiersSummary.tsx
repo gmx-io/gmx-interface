@@ -180,7 +180,11 @@ export function RewardsTiersSummary({
         />
         <span className="text-16 font-medium leading-[1.25] numbers">
           <AccountValue state={summaryState}>
-            {formatUsd(allTimeSummary?.rewardsUsd, { fallbackToZero: true, displayDecimals: 0 })}
+            {formatUsd(allTimeSummary?.rewardsUsd, {
+              fallbackToZero: true,
+              displayDecimals: 0,
+              minThreshold: "0",
+            })}
           </AccountValue>
         </span>
         <TooltipWithPortal
