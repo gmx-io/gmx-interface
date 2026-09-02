@@ -1,9 +1,9 @@
-import chunk from "lodash/chunk";
 import { useMemo } from "react";
 import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
 import { getIndexerUrl } from "config/indexers";
+import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GMX_DECIMALS } from "lib/legacy";
@@ -11,215 +11,52 @@ import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { bigMath } from "sdk/utils/bigmath";
-import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
 import { UserEarningsData } from "./types";
-import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useGmMarketsApy } from "./useGmMarketsApy";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useTokensDataRequest } from "../tokens";
 
-type RawBalanceChange = {
-  cumulativeIncome: string;
-  cumulativeFeeUsdPerGmToken: string;
-  tokensBalance: string;
-};
-
-type BalanceChange = {
-  tokensBalance: bigint;
-  cumulativeIncome: bigint;
-  cumulativeFeeUsdPerGmToken: bigint;
-};
-
-type RawCollectedMarketFeesInfo = {
-  cumulativeFeeUsdPerGmToken: string;
-};
-
-function createQuery(marketAddress: string) {
-  return `
-  _${marketAddress}_balanceChanges: userGmTokensBalanceChanges(
-      orderBy: index
-      orderDirection: asc
-      where: {
-          account: $account
-          marketAddress: "${marketAddress.toLowerCase()}"
-          timestamp_gte: $startOfPeriod
-      }
-  ) {
-      cumulativeIncome
-      tokensBalance
-      cumulativeFeeUsdPerGmToken
-  }
-  _${marketAddress}_balanceChange_before: userGmTokensBalanceChanges(
-      first: 1
-      orderBy: index
-      orderDirection: desc
-      where: {
-        account: $account
-        marketAddress: "${marketAddress.toLowerCase()}"
-        timestamp_lt: $startOfPeriod
-      }
-    ) {
-      cumulativeIncome
-      tokensBalance
-      cumulativeFeeUsdPerGmToken
-    }
-  _${marketAddress}_fees_start: collectedMarketFeesInfos(
-      first: 1
-      orderBy: timestampGroup
-      orderDirection: desc
-      where: {
-          marketAddress: "${marketAddress.toLowerCase()}"
-          period: "1h"
-          timestampGroup_lte: $startOfPeriod
-      }
-  ) {
-      cumulativeFeeUsdPerGmToken
-  }
-
-  _${marketAddress}_fees_recent: collectedMarketFeesInfos(
-      first: 1
-      orderBy: timestampGroup
-      orderDirection: desc
-      where: {
-          marketAddress: "${marketAddress.toLowerCase()}"
-          period: "1h"
-      }
-  ) {
-      cumulativeFeeUsdPerGmToken
-  }
-`;
-}
-
-const MARKETS_BATCH_SIZE = 15;
+type MarketEarnings = { total: bigint; recent: bigint };
 
 export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceChainId | undefined) => {
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
+  const sdk = useGmxSdk(chainId);
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
-  const subgraphUrl = getIndexerUrl(chainId, "syntheticsStats");
   const marketAddresses = useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
   );
 
-  const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
   const { marketsTokensApyData, isLoading: isMarketsTokensApyLoading } = useGmMarketsApy(chainId, srcChainId, {
     period: "7d",
   });
 
-  const key =
-    marketAddresses.length && marketTokensData && subgraphUrl && account
-      ? marketAddresses.concat("userEarnings", account, String(daysConsidered)).join(",")
-      : null;
+  const isSupported = Boolean(sdk) && Boolean(getIndexerUrl(chainId, "syntheticsStats"));
+  const key = isSupported && account ? ["gmUserEarnings", chainId, account] : null;
 
-  const { data, error, isLoading } = useSWR<UserEarningsData | null>(key, {
-    fetcher: async (): Promise<UserEarningsData | null> => {
-      if (!account) {
+  const { data, error, isLoading } = useSWR<Record<string, MarketEarnings> | null>(key, {
+    fetcher: async () => {
+      if (!account || !sdk) {
         return null;
       }
 
-      const startOfPeriod = Math.floor(Date.now() / 1000) - daysConsidered * 24 * 60 * 60;
+      const response = await sdk.fetchGmUserEarnings({ account });
+      const byMarketAddress: Record<string, MarketEarnings> = {};
 
-      const chunks = chunk(marketAddresses, MARKETS_BATCH_SIZE);
-      const requests: Promise<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]> | undefined>[] = [];
-
-      for (const chunk of chunks) {
-        let queryBody = "";
-
-        chunk.forEach((marketAddress) => {
-          queryBody += createQuery(marketAddress);
-        });
-
-        queryBody = `query ($account: String, $startOfPeriod: Int) {${queryBody}}`;
-
-        const request = graphqlFetcher<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]>>(
-          subgraphUrl!,
-          queryBody,
-          {
-            account: account.toLowerCase(),
-            startOfPeriod,
-          }
-        );
-
-        requests.push(request);
+      for (const pool of response.pools) {
+        byMarketAddress[pool.marketToken] = {
+          total: BigInt(pool.lifetimeFeeUsd),
+          recent: BigInt(pool.recent7dFeeUsd),
+        };
       }
 
-      const chunkResponses = await Promise.all(requests);
-      const response = chunkResponses.reduce<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]>>(
-        (acc, chunkResponse) => {
-          if (!chunkResponse) {
-            throw new Error("User earnings response is empty");
-          }
-
-          return {
-            ...acc,
-            ...chunkResponse,
-          };
-        },
-        {}
-      );
-
-      const result: UserEarningsData = {
-        byMarketAddress: {},
-        allMarkets: {
-          total: 0n,
-          recent: 0n,
-          expected365d: 0n,
-        },
-      };
-
-      marketAddresses.forEach((marketAddress) => {
-        const rawBalanceChanges = response[`_${marketAddress}_balanceChanges`] as RawBalanceChange[];
-        const prevRawBalanceChange = response[`_${marketAddress}_balanceChange_before`][0] as RawBalanceChange;
-        const feesStart = response[`_${marketAddress}_fees_start`][0] as RawCollectedMarketFeesInfo;
-        const feesRecent = response[`_${marketAddress}_fees_recent`][0] as RawCollectedMarketFeesInfo;
-
-        const balanceChanges = rawBalanceChanges.map(rawBalanceChangeToBalanceChange);
-        const balanceChangesTotal = prevRawBalanceChange
-          ? [rawBalanceChangeToBalanceChange(prevRawBalanceChange), ...balanceChanges]
-          : [...balanceChanges];
-
-        const balanceChangesRecent = prevRawBalanceChange
-          ? [
-              rawBalanceChangeToBalanceChange({
-                ...prevRawBalanceChange,
-                cumulativeFeeUsdPerGmToken: feesStart.cumulativeFeeUsdPerGmToken,
-              }),
-              ...balanceChanges,
-            ]
-          : [...balanceChanges];
-
-        if (balanceChangesRecent.length === 0 || balanceChangesTotal.length === 0) return;
-
-        const lastChangeTotal = balanceChangesTotal[balanceChangesTotal.length - 1];
-        const lastChangeRecent = balanceChangesRecent[balanceChangesRecent.length - 1];
-
-        if (!lastChangeTotal) throw new Error("balanceChangesTotal is undefined");
-        if (!lastChangeRecent) throw new Error("balanceChangesRecent is undefined");
-
-        const latestFeeUsdPerGmToken = BigInt(feesRecent.cumulativeFeeUsdPerGmToken);
-
-        const endOfPeriodIncomeRecent = calcEndOfPeriodIncome(lastChangeRecent, latestFeeUsdPerGmToken);
-        const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken);
-        const recentIncome = calcRecentIncome(balanceChangesRecent) + endOfPeriodIncomeRecent;
-        const totalIncome = lastChangeTotal.cumulativeIncome + endOfPeriodIncomeTotal;
-
-        result.byMarketAddress[marketAddress] = {
-          total: totalIncome,
-          recent: recentIncome,
-          expected365d: 0n,
-        };
-
-        result.allMarkets.total = result.allMarkets.total + totalIncome;
-        result.allMarkets.recent = result.allMarkets.recent + recentIncome;
-      });
-
-      return result;
+      return byMarketAddress;
     },
   });
 
@@ -230,12 +67,24 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
       return null;
     }
 
-    if (!marketsTokensApyData || !marketTokensData) {
-      return data;
+    const result: UserEarningsData = {
+      byMarketAddress: {},
+      allMarkets: {
+        total: 0n,
+        recent: 0n,
+        expected365d: 0n,
+      },
+    };
+
+    for (const [marketAddress, earnings] of Object.entries(data)) {
+      result.byMarketAddress[marketAddress] = { ...earnings, expected365d: 0n };
+      result.allMarkets.total = result.allMarkets.total + earnings.total;
+      result.allMarkets.recent = result.allMarkets.recent + earnings.recent;
     }
 
-    let expected365d = 0n;
-    const byMarketAddress: UserEarningsData["byMarketAddress"] = { ...data.byMarketAddress };
+    if (!marketsTokensApyData || !marketTokensData) {
+      return result;
+    }
 
     marketAddresses.forEach((marketAddress) => {
       const apy = marketsTokensApyData[marketAddress];
@@ -247,12 +96,12 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
       const price = token.prices.maxPrice;
       const marketExpected365d = bigMath.mulDiv(apy * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
 
-      expected365d = expected365d + marketExpected365d;
+      result.allMarkets.expected365d = result.allMarkets.expected365d + marketExpected365d;
 
-      const marketEarnings = byMarketAddress[marketAddress];
+      const marketEarnings = result.byMarketAddress[marketAddress];
 
       if (marketEarnings || marketExpected365d > 0n) {
-        byMarketAddress[marketAddress] = {
+        result.byMarketAddress[marketAddress] = {
           total: marketEarnings?.total ?? 0n,
           recent: marketEarnings?.recent ?? 0n,
           expected365d: marketExpected365d,
@@ -260,14 +109,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
       }
     });
 
-    return {
-      ...data,
-      byMarketAddress,
-      allMarkets: {
-        ...data.allMarkets,
-        expected365d,
-      },
-    };
+    return result;
   }, [data, marketAddresses, marketsTokensApyData, marketTokensData, multichainMarketTokensBalances]);
   const isUnavailable = Boolean(key && !isDataLoading && (error || data === null));
   const isEstimated365dFeesLoading = Boolean(userEarnings && !marketsTokensApyData && isMarketsTokensApyLoading);
@@ -281,37 +123,3 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
     isEstimated365dFeesUnavailable,
   };
 };
-
-function calcEndOfPeriodIncome(latestBalanceChange: BalanceChange, latestCumulativeFeeUsdPerGmToken: bigint): bigint {
-  if (latestBalanceChange.tokensBalance == 0n) return 0n;
-
-  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken - latestBalanceChange.cumulativeFeeUsdPerGmToken;
-
-  return bigMath.mulDiv(feeUsdPerGmTokenDelta, latestBalanceChange.tokensBalance, expandDecimals(1, 18));
-}
-
-function calcRecentIncome(balanceChanges: BalanceChange[]): bigint {
-  let cumulativeIncome = 0n;
-
-  for (let i = 1; i < balanceChanges.length; i++) {
-    const prevChange = balanceChanges[i - 1];
-    const change = balanceChanges[i];
-    const income = bigMath.mulDiv(
-      change.cumulativeFeeUsdPerGmToken - prevChange.cumulativeFeeUsdPerGmToken,
-      prevChange.tokensBalance,
-      expandDecimals(1, 18)
-    );
-
-    cumulativeIncome = cumulativeIncome + income;
-  }
-
-  return cumulativeIncome;
-}
-
-function rawBalanceChangeToBalanceChange(rawBalanceChange: RawBalanceChange): BalanceChange {
-  return {
-    cumulativeFeeUsdPerGmToken: BigInt(rawBalanceChange.cumulativeFeeUsdPerGmToken),
-    cumulativeIncome: BigInt(rawBalanceChange.cumulativeIncome),
-    tokensBalance: BigInt(rawBalanceChange.tokensBalance),
-  };
-}
