@@ -306,6 +306,19 @@ async function validateAppShell(response, requireMatchingBuild) {
   return html;
 }
 
+function toCacheableAppShell(response, html) {
+  // Navigations reject a cached response that followed a redirect (their redirect mode is "manual"),
+  // and the edge redirects `/` to `/trade`, so store a plain copy of the shell instead.
+  if (!response.redirected) {
+    return response;
+  }
+  return new Response(html, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+
 async function cacheAppShell() {
   const response = await fetch(APP_SHELL_URL);
   const html = await validateAppShell(response, true);
@@ -331,7 +344,7 @@ async function cacheAppShell() {
       }
       await stagingCache.put(assetUrl, assetResponse);
     }
-    await stagingCache.put(OFFLINE_SHELL_KEY, response);
+    await stagingCache.put(OFFLINE_SHELL_KEY, toCacheableAppShell(response, html));
 
     if (
       (await isPwaDisabled()) ||

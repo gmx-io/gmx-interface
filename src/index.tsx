@@ -1,4 +1,6 @@
 import "lib/polyfills";
+// Must stay above every other import so the url is normalized before anything reads the location.
+import "lib/legacyHashUrlRedirect";
 import "styles/tailwind.css";
 import "lib/monkeyPatching";
 
