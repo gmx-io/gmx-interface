@@ -7823,6 +7823,10 @@ msgstr "テスト用にバリデーションを無効化"
 msgid "GMX icon"
 msgstr "GMXアイコン"
 
+#: src/domain/tokens/insufficientApproval.tsx
+msgid "The approved amount is lower than the required amount. Approve again or reduce the amount."
+msgstr "承認された数量が必要な数量を下回っています。再度承認するか、数量を減らしてください。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size"
 msgstr "価格への影響が注文サイズを超えています"
@@ -8496,6 +8500,10 @@ msgstr ""
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "ステークは{chainNames}または{lastChainName}でのみ利用可能です。続行するにはネットワークを切り替えてください。"
+
+#: src/domain/tokens/insufficientApproval.tsx
+msgid "Approved {approved}, but {required} is required. Approve again or reduce the amount."
+msgstr "{approved} が承認されましたが、{required} が必要です。再度承認するか、数量を減らしてください。"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards."
