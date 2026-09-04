@@ -14,11 +14,13 @@ const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
 
-function getCurtainStyle(headerHeight: number, bottomInset: number): CSSProperties {
+export function getCurtainStyle(headerHeight: number, bottomInset: number): CSSProperties {
   return {
-    bottom: `${bottomInset}px`,
+    bottom: `calc(${bottomInset}px + var(--safe-area-inset-bottom))`,
+    left: "var(--safe-area-inset-left)",
+    right: "var(--safe-area-inset-right)",
     transform: `translateY(calc(100% - ${headerHeight}px))`,
-    height: `calc(100dvh - ${headerHeight + bottomInset}px)`,
+    height: `calc(100dvh - ${headerHeight + bottomInset}px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))`,
   };
 }
 
@@ -126,7 +128,9 @@ export function Curtain({
 
     const curtainRect = curtainRef.current.getBoundingClientRect();
 
-    const viewportBottom = window.innerHeight - getOverlayedBottomInset();
+    const resolvedBottomInset = Number.parseFloat(window.getComputedStyle(curtainRef.current).bottom);
+    const viewportBottom =
+      window.innerHeight - (Number.isFinite(resolvedBottomInset) ? resolvedBottomInset : getOverlayedBottomInset());
 
     currentRelativeY.current = (viewportBottom - curtainRect.bottom) * -1;
 
@@ -256,7 +260,7 @@ export function Curtain({
         <div
           data-qa={dataQa}
           ref={curtainRef}
-          className="text-body-medium fixed left-0 right-0 z-[901] flex flex-col rounded-t-4"
+          className="text-body-medium fixed z-[901] flex flex-col rounded-t-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-[var(--safe-area-inset-bottom)] after:bg-slate-900 after:content-['']"
           style={curtainStyle}
         >
           <div
@@ -297,7 +301,14 @@ export function Curtain({
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerCancel}
           >
-            <div className="flex grow flex-col">{children}</div>
+            <div
+              aria-hidden={!isOpen}
+              className={cx("flex grow flex-col", {
+                invisible: !isOpen,
+              })}
+            >
+              {children}
+            </div>
           </div>
         </div>
       </RemoveScroll>

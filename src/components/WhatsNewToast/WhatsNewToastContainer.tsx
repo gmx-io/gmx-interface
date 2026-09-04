@@ -72,7 +72,7 @@ export function WhatsNewToastContainer() {
   return (
     <div
       className={cx(
-        "pointer-events-none fixed right-[23px] top-[56px] z-[801] transition-transform duration-200 will-change-transform",
+        "pointer-events-none fixed right-[calc(23px+var(--safe-area-inset-right))] top-[calc(56px+var(--safe-area-inset-top))] z-[801] transition-transform duration-200 will-change-transform",
         isScrolled && "-translate-y-[40px]"
       )}
       data-qa="whats-new-toast-container"
