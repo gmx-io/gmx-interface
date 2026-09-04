@@ -1,8 +1,8 @@
+import { BUILD_ID_PATTERN, fetchNetworkBuildId, getDocumentBuildId } from "lib/pwa/buildId";
+
 const PWA_CACHE_PREFIX = "gmx-pwa-";
 const PWA_CONTROL_CACHE = "gmx-pwa-control-v2";
 const PWA_DISABLED_KEY_PREFIX = "/__gmx_pwa_disabled__/";
-const PWA_BUILD_ID_PATTERN = /<meta\s+name=["']gmx-pwa-build-id["']\s+content=["']([^"']+)["'][^>]*>/i;
-const BUILD_ID_PATTERN = /^\d+$/;
 
 function shouldDeletePwaCache(cacheName: string, disabledGeneration: number | undefined) {
   if (!cacheName.startsWith(PWA_CACHE_PREFIX) || cacheName === PWA_CONTROL_CACHE) {
@@ -38,27 +38,13 @@ function isRegistrationSuperseded(registration: ServiceWorkerRegistration, disab
     .some((generation) => generation !== undefined && generation > disabledGeneration);
 }
 
-function getDocumentBuildId() {
-  return document.querySelector<HTMLMetaElement>('meta[name="gmx-pwa-build-id"]')?.content;
-}
-
 async function getCurrentBuildId() {
   const documentBuildId = getDocumentBuildId();
   if (!navigator.serviceWorker.controller) {
     return documentBuildId;
   }
 
-  try {
-    const response = await fetch("/", { cache: "no-store" });
-    if (!response.ok || !response.headers.get("content-type")?.toLowerCase().includes("text/html")) {
-      return documentBuildId;
-    }
-
-    const buildId = (await response.text()).match(PWA_BUILD_ID_PATTERN)?.[1];
-    return buildId && BUILD_ID_PATTERN.test(buildId) ? buildId : documentBuildId;
-  } catch {
-    return documentBuildId;
-  }
+  return (await fetchNetworkBuildId()) ?? documentBuildId;
 }
 
 export function registerServiceWorker() {

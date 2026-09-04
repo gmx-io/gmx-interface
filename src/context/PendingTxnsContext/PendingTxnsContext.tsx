@@ -8,6 +8,7 @@ import { parseError } from "lib/errors";
 import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
@@ -90,6 +91,8 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
   const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
+
+  useBlockAutoReload(pendingTxns.length > 0);
 
   useEffect(() => {
     const checkPendingTxns = async () => {

@@ -58,6 +58,7 @@ import {
   getTradeFees,
 } from "domain/synthetics/trade";
 import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
+import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
@@ -536,6 +537,8 @@ export const selectTradeboxSetCloseSizeInputValue = (s: SyntheticsState) => s.tr
 export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
 export const selectTradeboxSetTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.setTriggerPriceInputValue;
 const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
+const selectTradeboxSlEntries = (s: SyntheticsState) => s.tradebox.sidecarOrders.slEntries;
+const selectTradeboxTpEntries = (s: SyntheticsState) => s.tradebox.sidecarOrders.tpEntries;
 export const selectTradeboxLeverageOption = (s: SyntheticsState) => s.tradebox.leverageOption;
 export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.keepLeverage;
 export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebox.setActivePosition;
@@ -565,6 +568,24 @@ const selectTradeboxSetLimitPriceWarningHidden = (s: SyntheticsState) => s.trade
 const selectTradeboxMarginDepositSuggestionHidden = (s: SyntheticsState) => s.tradebox.marginDepositSuggestionHidden;
 const selectTradeboxSetMarginDepositSuggestionHidden = (s: SyntheticsState) =>
   s.tradebox.setMarginDepositSuggestionHidden;
+
+export const selectTradeboxHasPendingInput = createSelector((q) => {
+  const { isIncrease, isLimit, isSwap, isTrigger } = q(selectTradeboxTradeFlags);
+  const inputValues = isTrigger
+    ? [q(selectTradeboxCloseSizeInputValue), q(selectTradeboxTriggerPriceInputValue)]
+    : [
+        q(selectTradeboxFromTokenInputValue),
+        q(selectTradeboxToTokenInputValue),
+        isLimit ? q(isSwap ? selectTradeboxTriggerRatioInputValue : selectTradeboxTriggerPriceInputValue) : undefined,
+      ];
+
+  const hasPendingSidecarOrder =
+    isIncrease &&
+    q(selectTradeboxAdvancedOptions).limitOrTPSL &&
+    [...q(selectTradeboxSlEntries), ...q(selectTradeboxTpEntries)].some((entry) => entry.txnType !== null);
+
+  return hasPendingSidecarOrder || inputValues.some(getIsEnteredAmount);
+});
 
 export const selectTradeboxFormState = createSelector((q) => {
   return {
