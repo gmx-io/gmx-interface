@@ -9,7 +9,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { formatUsd } from "lib/numbers";
+import { formatChartTooltipUsd, integerYAxisTickFormatter, usdYAxisTickFormatter } from "./chartValueUtils";
 
 const CHART_MARGIN = { top: 8, right: 0, bottom: 0, left: 0 };
 
@@ -34,25 +34,6 @@ const CHART_CURSOR_PROPS = {
   strokeWidth: 1,
   strokeDasharray: "2 2",
 };
-
-function usdYAxisTickFormatter(value: number) {
-  if (!isFinite(value) || value === 0) return "0";
-
-  return formatCompactNumber(value, 2);
-}
-
-function integerYAxisTickFormatter(value: number) {
-  if (!isFinite(value) || value === 0) return "0";
-
-  return formatCompactNumber(value, 0);
-}
-
-function formatCompactNumber(value: number, maximumFractionDigits: number) {
-  return new Intl.NumberFormat("en-US", {
-    notation: "compact",
-    maximumFractionDigits,
-  }).format(value);
-}
 
 const MIN_POINT_SIZE_PX = 3;
 
@@ -137,7 +118,7 @@ function SimpleChartTooltip({
 }) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload;
-  const value = isUsd ? formatUsd(item[fieldName]) : item[fieldName];
+  const value = isUsd ? formatChartTooltipUsd(item[fieldName]) : item[fieldName];
 
   return (
     <div className="rounded-8 border border-stroke-primary bg-slate-900 p-10">

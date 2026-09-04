@@ -1,7 +1,7 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { useEffect } from "react";
-import { HashRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { SWRConfig } from "swr";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";

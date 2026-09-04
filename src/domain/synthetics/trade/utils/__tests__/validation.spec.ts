@@ -13,7 +13,6 @@ import {
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
   getMarginDepositBeyondLiqPriceMessage,
-  getMarginDepositInsufficientMessage,
   getNativeGasError,
   getSwapError,
   ValidationBannerErrorName,
@@ -428,9 +427,6 @@ describe("margin deposit banner copy", () => {
   it("exposes the exact blocking and warning messages", () => {
     expect(getMarginDepositAutoCancelLimitMessage()).toBe(
       "Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit."
-    );
-    expect(getMarginDepositInsufficientMessage()).toBe(
-      "This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
     );
     expect(getMarginDepositBeyondLiqPriceMessage()).toBe(
       "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
