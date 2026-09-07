@@ -400,7 +400,7 @@ function MarketsList() {
   }, [isSwap]);
 
   const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
-  const shouldSearchAllPerpMarkets = !isSwap && topLevelTab !== "all";
+  const shouldSearchAllMarkets = topLevelTab !== "all";
 
   return (
     <>
@@ -556,12 +556,14 @@ function MarketsList() {
                   <Button
                     type="button"
                     variant="secondary"
-                    onClick={() =>
-                      shouldSearchAllPerpMarkets ? setTopLevelTab("all") : setMode(isSwap ? "perp" : "swap")
-                    }
+                    onClick={() => (shouldSearchAllMarkets ? setTopLevelTab("all") : setMode(isSwap ? "perp" : "swap"))}
                   >
-                    {shouldSearchAllPerpMarkets ? (
-                      <Trans>Search in all perpetual markets</Trans>
+                    {shouldSearchAllMarkets ? (
+                      isSwap ? (
+                        <Trans>Search in all swap markets</Trans>
+                      ) : (
+                        <Trans>Search in all perpetual markets</Trans>
+                      )
                     ) : isSwap ? (
                       <Trans>Search in perpetuals markets</Trans>
                     ) : (

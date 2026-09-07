@@ -5395,6 +5395,10 @@ msgstr "参数"
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "通过 GMX 账户创建推荐码需要在 {1} 上拥有 USDC 和 {0}。请存入资金或切换到其他网络。"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all swap markets"
+msgstr "搜索所有兑换市场"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"

@@ -5395,6 +5395,10 @@ msgstr "Argumentos"
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "Necesitas USDC y {0} en {1} para crear un código de referido a través de la Cuenta GMX. Deposita fondos o cambia a una red diferente."
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all swap markets"
+msgstr "Buscar en todos los mercados swap"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"

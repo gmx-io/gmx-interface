@@ -5395,6 +5395,10 @@ msgstr "引数"
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "GMX Accountを介して紹介コードを作成するには、{1}にUSDCと{0}が必要です。資金を入金するか、別のネットワークに切り替えてください。"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all swap markets"
+msgstr "すべてのスワップ市場を検索"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
