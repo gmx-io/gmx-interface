@@ -7,7 +7,6 @@ import { zeroAddress } from "viem";
 
 import { ARBITRUM, ContractsChainId } from "config/chains";
 import { type ChainIcons, getIcons } from "config/icons";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusPercentage";
 import {
@@ -25,10 +24,9 @@ import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWal
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { StakingProcessedData } from "lib/legacy";
-import { formatAmount, formatAmountFree, formatUsd, limitDecimals, numberWithCommas, parseValue } from "lib/numbers";
+import { formatAmount, formatAmountFree, formatUsd, numberWithCommas, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
@@ -129,7 +127,6 @@ export function StakeModal(props: {
   const [isStaking, setIsStaking] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
-  const isMetamaskMobile = useIsMetamaskMobile();
   const icons = getIcons(chainId);
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
@@ -331,12 +328,8 @@ export function StakeModal(props: {
 
   const handleStakeMax = useCallback(() => {
     if (stakeMaxAmount === undefined) return;
-    const formattedMaxAmount = formatAmountFree(stakeMaxAmount, 18, 18);
-    const finalMaxAmount = isMetamaskMobile
-      ? limitDecimals(formattedMaxAmount, MAX_METAMASK_MOBILE_DECIMALS)
-      : formattedMaxAmount;
-    setStakeValue(finalMaxAmount);
-  }, [isMetamaskMobile, setStakeValue, stakeMaxAmount]);
+    setStakeValue(formatAmountFree(stakeMaxAmount, 18, 18));
+  }, [setStakeValue, stakeMaxAmount]);
 
   const handleUnstakeMax = useCallback(() => {
     if (unstakeMaxAmount === undefined) return;

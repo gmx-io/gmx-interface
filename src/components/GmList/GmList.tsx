@@ -180,8 +180,8 @@ export function GmList({
 
   const userTotalGmInfo = useMemo(() => {
     if (!active || !marketTokensData) return;
-    return getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
-  }, [active, marketTokensData, multichainMarketTokensBalances]);
+    return getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances, chainId });
+  }, [active, chainId, marketTokensData, multichainMarketTokensBalances]);
 
   const rows =
     currentData.length > 0 &&
@@ -324,6 +324,7 @@ export function GmList({
                           isUserEarningsUnavailable={isUserEarningsUnavailable}
                           isEstimated365dFeesLoading={isEstimated365dFeesLoading}
                           isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
+                          hasBalanceOutsideWallet={userTotalGmInfo?.hasBalanceOutsideWallet}
                           label={t`BALANCE`}
                         />
                       </Sorter>

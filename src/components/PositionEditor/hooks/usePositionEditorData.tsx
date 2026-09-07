@@ -15,9 +15,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarginDepositProjections } from "domain/synthetics/orders/marginDeposit";
 import { getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
 import { convertToTokenAmount, getIsEquivalentTokens } from "domain/synthetics/tokens";
+import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { Operation } from "../types";
 import { Options, usePositionEditorFees } from "./usePositionEditorFees";
 
 export function usePositionEditorData({ operation }: Options) {

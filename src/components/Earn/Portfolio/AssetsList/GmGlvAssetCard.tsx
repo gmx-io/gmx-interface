@@ -23,7 +23,7 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
-import { EarningValue } from "components/EarningValue/EarningValue";
+import { EarningAttributionNote, EarningAttributionScope, EarningValue } from "components/EarningValue/EarningValue";
 import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
@@ -52,6 +52,7 @@ type Props = {
   performanceApy30d: bigint | undefined;
   isPerformanceLoading: boolean;
   multichainMarketTokenBalances: MultichainMarketTokenBalances | undefined;
+  hasBalanceOutsideWallet: boolean;
   earnings: AssetCardEarnings | undefined;
   isEarningsLoading: boolean;
   isEarningsAvailable: boolean;
@@ -84,15 +85,26 @@ function EarningsStrip({
   earnings,
   isLoading,
   isAvailable,
+  attributionScope,
 }: {
   earnings: AssetCardEarnings | undefined;
   isLoading: boolean;
   isAvailable: boolean;
+  attributionScope: EarningAttributionScope | undefined;
 }) {
+  const isAttributable = attributionScope === undefined;
+  const attributionNote = attributionScope ? <EarningAttributionNote scope={attributionScope} /> : undefined;
+
   return (
     <div className="grid grid-cols-3 divide-x-1/2 divide-dashed divide-slate-600 rounded-8 border-1/2 border-dashed border-slate-600 bg-slate-900/[0.88] px-12 py-6">
       <EarningsStripCell label={<Trans>7d Earnings</Trans>}>
-        <EarningValue value={earnings?.recent} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={40}>
+        <EarningValue
+          value={earnings?.recent}
+          isLoading={isAttributable && isLoading}
+          isAvailable={isAvailable && isAttributable}
+          unavailableTooltip={attributionNote}
+          skeletonWidth={40}
+        >
           {(value) => (
             <span className={cx({ "text-green-500": value > 0n })}>
               {value > 0n ? formatDeltaUsd(value, undefined, { hidePercentage: true }) : formatUsd(value)}
@@ -106,7 +118,13 @@ function EarningsStrip({
         </EarningValue>
       </EarningsStripCell>
       <EarningsStripCell label={<Trans>Lifetime</Trans>} align="right">
-        <EarningValue value={earnings?.total} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={40}>
+        <EarningValue
+          value={earnings?.total}
+          isLoading={isAttributable && isLoading}
+          isAvailable={isAvailable && isAttributable}
+          unavailableTooltip={attributionNote}
+          skeletonWidth={40}
+        >
           {(value) => <>{formatUsd(value)}</>}
         </EarningValue>
       </EarningsStripCell>
@@ -121,6 +139,7 @@ export function GmGlvAssetCard({
   performanceApy30d,
   isPerformanceLoading,
   multichainMarketTokenBalances,
+  hasBalanceOutsideWallet,
   earnings,
   isEarningsLoading,
   isEarningsAvailable,
@@ -137,6 +156,11 @@ export function GmGlvAssetCard({
   const balanceUsd = multichainMarketTokenBalances?.totalBalanceUsd ?? 0n;
   const symbol = isGlv ? "GLV" : "GM";
   const hasMultichainBreakdown = useHasMultichainBreakdown(multichainMarketTokenBalances);
+  const attributionScope: EarningAttributionScope | undefined = hasBalanceOutsideWallet
+    ? isGlv
+      ? "glv"
+      : "gm"
+    : undefined;
 
   const tooltipContent = hasMultichainBreakdown ? (
     <MultichainBalanceTooltip
@@ -199,7 +223,12 @@ export function GmGlvAssetCard({
       }
     >
       <div className="flex flex-col gap-12">
-        <EarningsStrip earnings={earnings} isLoading={isEarningsLoading} isAvailable={isEarningsAvailable} />
+        <EarningsStrip
+          earnings={earnings}
+          isLoading={isEarningsLoading}
+          isAvailable={isEarningsAvailable}
+          attributionScope={attributionScope}
+        />
         {showMegaethPointsBadge && (
           <TooltipWithPortal
             variant="none"

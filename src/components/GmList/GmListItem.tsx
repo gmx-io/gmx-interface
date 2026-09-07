@@ -13,6 +13,7 @@ import {
   selectMultichainMarketTokensBalancesIsLoading,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getHasBalanceOutsideWallet } from "domain/multichain/getHasBalanceOutsideWallet";
 import {
   MarketTokensAPRData,
   UserEarningsData,
@@ -99,6 +100,7 @@ export function GmListItem({
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
   const multichainMarketTokenBalances = multichainMarketTokensBalances[token.address];
   const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
+  const hasBalanceOutsideWallet = getHasBalanceOutsideWallet(multichainMarketTokenBalances, chainId);
 
   const marketOrGlv = getByKey(marketsInfoData, token?.address);
 
@@ -233,6 +235,7 @@ export function GmListItem({
                 isUserEarningsUnavailable={isUserEarningsUnavailable}
                 isEstimated365dFeesLoading={isEstimated365dFeesLoading}
                 isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
+                hasBalanceOutsideWallet={hasBalanceOutsideWallet}
               />
             }
           />
@@ -334,6 +337,7 @@ export function GmListItem({
           isUserEarningsUnavailable={isUserEarningsUnavailable}
           isEstimated365dFeesLoading={isEstimated365dFeesLoading}
           isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
+          hasBalanceOutsideWallet={hasBalanceOutsideWallet}
         />
       </TableTdActionable>
 
