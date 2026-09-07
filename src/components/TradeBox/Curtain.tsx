@@ -59,6 +59,7 @@ export function Curtain({
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [externalIsCurtainOpen, setExternalIsCurtainOpen] = useIsCurtainOpen();
   const bottomInset = useOverlayedBottomInset();
 
@@ -151,6 +152,7 @@ export function Curtain({
           isDirectionLocked.current = true;
           isDraggingRef.current = isVertical;
           if (!isVertical) return;
+          setIsDragging(true);
         }
       }
 
@@ -186,6 +188,7 @@ export function Curtain({
 
   const handlePointerUp = useCallback(() => {
     isPointerDownRef.current = false;
+    setIsDragging(false);
 
     if (!isDraggingRef.current || !curtainRef.current) {
       return;
@@ -216,6 +219,7 @@ export function Curtain({
   const handlePointerCancel = useCallback(() => {
     isPointerDownRef.current = false;
     isDraggingRef.current = false;
+    setIsDragging(false);
   }, []);
 
   useEffect(() => {
@@ -246,6 +250,7 @@ export function Curtain({
   }, [externalIsCurtainOpen, isOpen, handleAnimate]);
 
   const curtainStyle = useMemo(() => getCurtainStyle(headerHeight, bottomInset), [headerHeight, bottomInset]);
+  const isContentVisible = isOpen || isDragging;
 
   return (
     <>
@@ -275,6 +280,7 @@ export function Curtain({
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
           >
             <div className="grow overflow-hidden" onClick={headerClick}>
               {header}
@@ -302,9 +308,9 @@ export function Curtain({
             onPointerCancel={handlePointerCancel}
           >
             <div
-              aria-hidden={!isOpen}
+              aria-hidden={!isContentVisible}
               className={cx("flex grow flex-col", {
-                invisible: !isOpen,
+                invisible: !isContentVisible,
               })}
             >
               {children}

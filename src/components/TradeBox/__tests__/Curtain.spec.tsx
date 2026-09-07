@@ -1,4 +1,4 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("lib/wallets/oneKeyUiCompat", () => ({
@@ -28,6 +28,28 @@ describe("Curtain", () => {
       </Curtain>
     );
     const content = getByText("Content").parentElement;
+
+    expect(content?.className).toContain("invisible");
+    expect(content?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("reveals its content while dragging from the collapsed state", () => {
+    const { getByText } = render(
+      <Curtain header={<span>Header</span>}>
+        <span>Content</span>
+      </Curtain>
+    );
+    const header = getByText("Header").parentElement?.parentElement;
+    const content = getByText("Content").parentElement;
+
+    expect(header).not.toBeNull();
+    fireEvent.pointerDown(header!, { screenX: 0, screenY: 100 });
+    fireEvent.pointerMove(header!, { screenX: 0, screenY: 80 });
+
+    expect(content?.className).not.toContain("invisible");
+    expect(content?.getAttribute("aria-hidden")).toBe("false");
+
+    fireEvent.pointerCancel(header!);
 
     expect(content?.className).toContain("invisible");
     expect(content?.getAttribute("aria-hidden")).toBe("true");
