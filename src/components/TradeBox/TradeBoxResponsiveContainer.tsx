@@ -12,14 +12,11 @@ export function TradeBoxResponsiveContainer() {
 
   if (!isTablet) {
     return (
-      <div className="flex flex-col gap-8">
-        <div className="text-body-medium flex flex-col rounded-8" data-qa="tradebox">
-          <TradeBoxHeaderTabs />
-          <ErrorBoundary id="TradeBox" variant="block">
-            <TradeBox isMobile={isTablet} />
-          </ErrorBoundary>
-        </div>
-        <TradeRewardsPromoBanner />
+      <div className="text-body-medium flex flex-col rounded-8" data-qa="tradebox">
+        <TradeBoxHeaderTabs />
+        <ErrorBoundary id="TradeBox" variant="block">
+          <TradeBox isMobile={isTablet} />
+        </ErrorBoundary>
       </div>
     );
   }

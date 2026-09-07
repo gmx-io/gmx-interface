@@ -79,6 +79,7 @@ import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModa
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
 import { PositionList } from "components/PositionList/PositionList";
 import { PositionSeller } from "components/PositionSeller/PositionSeller";
+import { TradeRewardsPromoBanner } from "components/RewardsPromoBanner/TradeRewardsPromoBanner";
 import { SwapCard } from "components/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 import Tabs from "components/Tabs/Tabs";
@@ -544,14 +545,14 @@ export function SyntheticsPage(p: Props) {
             )}
           </>
         ) : (
-          <div className="w-[40rem] shrink-0">
+          <div className="flex w-[40rem] shrink-0 flex-col gap-8">
             <TradeBoxResponsiveContainer />
 
             {isSwap && !isTwap && (
-              <div className="mt-8 flex flex-col gap-12">
-                <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
-              </div>
+              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
             )}
+
+            <TradeRewardsPromoBanner />
           </div>
         )}
 
