@@ -6,6 +6,7 @@ import values from "lodash/values";
 
 import { type AnyChainId } from "config/chains";
 import { isDevelopment } from "config/env";
+import { isIOS } from "lib/headlessUiIsMobile";
 import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -304,7 +305,7 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
 }
 
 function executeWorkerOrMainThread(chainId: AnyChainId, requestConfig: MulticallRequestConfig<any>, callCount: number) {
-  if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isOldIOS()) {
+  if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isIOS()) {
     return executeMulticallWorker(chainId, requestConfig);
   } else {
     return executeMulticallMainThread(chainId, requestConfig);
@@ -375,22 +376,4 @@ function getRequest(callEntries: [string, { callData: MulticallFetcherConfig[num
   }
 
   return requests;
-}
-
-function isOldIOS() {
-  // An issue was identified with sending messages from the worker to the main thread on iOS 16 and earlier versions.
-  // Therefore, it was decided not to use workers for these versions.
-  const THRESHOLD = 16;
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator?.userAgent);
-
-  if (!isIOS) {
-    return false;
-  }
-
-  const versionMatch = navigator.userAgent.match(/OS (\d+)?/);
-  if (versionMatch?.[1]) {
-    return parseInt(versionMatch[1], 10) <= THRESHOLD;
-  }
-
-  return false;
 }

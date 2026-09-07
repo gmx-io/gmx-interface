@@ -1,16 +1,21 @@
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { Address } from "viem";
 
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { helperToast } from "lib/helperToast";
 import { EMPTY_ARRAY } from "lib/objects";
 import type { WalletSigner } from "lib/wallets";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { abis } from "sdk/abis";
 import type { AnyChainId } from "sdk/configs/chains";
 
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
 import { approveTokens } from "./approveTokens";
+import { getInsufficientApprovalToastContent } from "./insufficientApproval";
 
 interface TokenToApprove {
   tokenAddress: string;
@@ -30,6 +35,11 @@ export interface HandleApproveOptions {
   onApproveFail?: () => void;
 }
 
+type MinedApproval = {
+  tokenAddress: string;
+  allowance: bigint;
+};
+
 interface UseTokenApprovalReturn {
   tokensToApprove: string[];
   needsApproval: boolean;
@@ -48,6 +58,7 @@ export function useTokenApproval({
   allowPermit = false,
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
+  const [minedApproval, setMinedApproval] = useState<MinedApproval | undefined>();
   const { tokenPermits, addTokenPermit, isPermitsDisabled, setIsPermitsDisabled } = useTokenPermitsContext();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
 
@@ -101,6 +112,55 @@ export function useTokenApproval({
     }
   }, [approvingToken, tokensToApprove]);
 
+  useEffect(() => {
+    if (minedApproval === undefined || chainId === undefined) {
+      return;
+    }
+
+    setMinedApproval(undefined);
+
+    const { tokenAddress, allowance } = minedApproval;
+    const requiredAmount = mergedTokens.find((token) => token.tokenAddress === tokenAddress)?.amount;
+
+    if (
+      requiredAmount === undefined ||
+      !getNeedTokenApprove({ [tokenAddress]: allowance }, tokenAddress, requiredAmount, permitsOrEmpty)
+    ) {
+      return;
+    }
+
+    setApprovingToken((current) => (current === tokenAddress ? undefined : current));
+    helperToast.error(
+      getInsufficientApprovalToastContent({ chainId, tokenAddress, approvedAmount: allowance, requiredAmount })
+    );
+  }, [chainId, mergedTokens, minedApproval, permitsOrEmpty]);
+
+  const watchApprovalReceipt = useCallback(
+    async (approvalChainId: AnyChainId, tokenAddress: string, spender: string, hash: `0x${string}`) => {
+      const client = getPublicClientWithRpc(approvalChainId);
+      const receipt = await client.waitForTransactionReceipt({ hash }).catch(() => undefined);
+      const allowance =
+        receipt?.status === "success"
+          ? await client
+              .readContract({
+                address: tokenAddress as Address,
+                abi: abis.ERC20,
+                functionName: "allowance",
+                args: [receipt.from, spender as Address],
+              })
+              .catch(() => undefined)
+          : undefined;
+
+      if (allowance === undefined) {
+        setApprovingToken((current) => (current === tokenAddress ? undefined : current));
+        return;
+      }
+
+      setMinedApproval({ tokenAddress, allowance });
+    },
+    []
+  );
+
   const handleApprove = useCallback(
     async (options?: HandleApproveOptions) => {
       const tokenAddress = tokensToApprove[0];
@@ -110,7 +170,7 @@ export function useTokenApproval({
 
       const doApprove = async (signerToUse: WalletSigner) => {
         setApprovingToken(tokenAddress);
-        await approveTokens({
+        const result = await approveTokens({
           setIsApproving: noop,
           signer: signerToUse,
           tokenAddress,
@@ -123,6 +183,10 @@ export function useTokenApproval({
             options?.onApproveFail?.();
           },
         });
+
+        if (result) {
+          watchApprovalReceipt(chainId, tokenAddress, spenderAddress, result.hash);
+        }
       };
 
       try {
@@ -143,6 +207,7 @@ export function useTokenApproval({
       setSettlementChainId,
       spenderAddress,
       tokensToApprove,
+      watchApprovalReceipt,
     ]
   );
 

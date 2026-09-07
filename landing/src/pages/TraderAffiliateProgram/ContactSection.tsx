@@ -157,7 +157,7 @@ export function ContactSection() {
       </div>
 
       <div className="relative mt-76 flex w-full max-w-[1200px] flex-col items-center gap-16 pb-16 text-12 tracking-[0.024px] text-white sm:flex-row sm:justify-between">
-        <a href="/#/" aria-label="GMX">
+        <a href="/" aria-label="GMX">
           <img src={footerLogo} alt="GMX" className="h-16 w-[70px]" />
         </a>
         <p className="text-center">
@@ -181,7 +181,7 @@ export function ContactSection() {
             <Trans>Stats</Trans>
           </a>
           <a
-            href="/#/terms-and-conditions"
+            href="/terms-and-conditions"
             target="_blank"
             rel="noopener noreferrer"
             className="duration-180 transition-colors hover:text-white/80"

@@ -4,7 +4,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import { getChainNativeTokenSymbol, getChainWrappedTokenSymbol } from "config/chains";
+import { getChainName, getChainNativeTokenSymbol, getChainWrappedTokenSymbol } from "config/chains";
 import { getContract } from "config/contracts";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -15,6 +15,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import { ClaimModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
@@ -75,17 +76,24 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
     mutateProcessedData?.();
   };
 
+  const hasClaimableRewards = hasGmxRewards || hasEsGmxRewards || hasNativeRewards;
+
+  const button = (
+    <Button variant="primary" onClick={handleClick} className="max-md:w-full" disabled={!hasClaimableRewards}>
+      <EarnIcon className="size-16" />
+      <Trans>Claim rewards</Trans>
+    </Button>
+  );
+
   return (
-    <div className={cx("flex justify-end max-lg:w-full", className)}>
-      <Button
-        variant="primary"
-        onClick={handleClick}
-        className="max-lg:w-full"
-        disabled={!hasGmxRewards && !hasEsGmxRewards && !hasNativeRewards}
+    <div className={cx("flex justify-end max-md:w-full", className)}>
+      <ButtonTooltipWrapper
+        content={
+          hasClaimableRewards ? undefined : <Trans>Nothing is claimable on {getChainName(chainId)} right now.</Trans>
+        }
       >
-        <EarnIcon className="size-16" />
-        <Trans>Claim rewards</Trans>
-      </Button>
+        {button}
+      </ButtonTooltipWrapper>
 
       <ClaimModal
         isVisible={isClaimModalVisible}

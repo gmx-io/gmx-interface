@@ -66,6 +66,7 @@ import LongIcon from "img/long.svg?react";
 import SearchIconComponent from "img/search.svg?react";
 import ShortIcon from "img/short.svg?react";
 
+import { ArbitrumRecommendation } from "./ArbitrumRecommendation";
 import {
   applySubCategoryFilter,
   applyTopLevelFilter,
@@ -433,6 +434,7 @@ function MarketsList() {
   return (
     <>
       <div className="flex flex-col">
+        <ArbitrumRecommendation />
         <div className="mb-4 flex items-center gap-12 px-12 pt-12 max-md:flex-col max-md:gap-8">
           <ModeTabs mode={mode} setMode={setMode} />
           <SearchInput

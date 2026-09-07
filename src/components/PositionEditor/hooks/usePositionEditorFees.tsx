@@ -15,10 +15,9 @@ import {
 } from "domain/synthetics/fees";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TradeFees } from "domain/synthetics/trade";
+import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { useChainId } from "lib/chains";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-
-import { Operation } from "../types";
 
 export type Options = {
   operation: Operation;
