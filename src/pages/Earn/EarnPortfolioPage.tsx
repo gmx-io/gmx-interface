@@ -2,7 +2,10 @@ import { useMemo } from "react";
 
 import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
-import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectGlvAndMarketsInfoData,
+  selectMultichainMarketTokensBalancesIsLoading,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
@@ -16,6 +19,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
@@ -25,7 +29,8 @@ import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
 
 export default function EarnPortfolioPage() {
-  const { account, status } = useWallet();
+  const { account } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
   const { data: processedData, mutate: mutateProcessedData } = useStakingProcessedData();
 
   const { chainId, srcChainId } = useChainId();
@@ -87,20 +92,20 @@ export default function EarnPortfolioPage() {
 
   const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets || hasGtRewards;
 
-  const isWalletInitializing = status === "connecting" || status === "reconnecting";
+  const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
+  const areAssetsLoading =
+    Boolean(account) && (!processedData || !marketsInfoData || !marketTokensData || isMultichainBalancesLoading);
 
   return (
     <EarnPageLayout>
       {account && !isWalletInitializing && (
         <ErrorBoundary id="EarnPortfolio-EarningsOverview" variant="block" wrapperClassName="rounded-t-8">
-          <EarningsOverview
-            processedData={processedData}
-            mutateProcessedData={mutateProcessedData}
-            gmGlvAssets={gmGlvAssets}
-          />
+          <EarningsOverview processedData={processedData} mutateProcessedData={mutateProcessedData} />
         </ErrorBoundary>
       )}
-      {processedData && !isWalletInitializing ? (
+      {isWalletInitializing || areAssetsLoading ? (
+        <Loader />
+      ) : (
         <ErrorBoundary id="EarnPortfolio-AssetsList" variant="block" wrapperClassName="rounded-t-8">
           <AssetsList
             processedData={processedData}
@@ -117,8 +122,6 @@ export default function EarnPortfolioPage() {
             multichainMarketTokensBalances={multichainMarketTokensBalances}
           />
         </ErrorBoundary>
-      ) : (
-        <Loader />
       )}
     </EarnPageLayout>
   );

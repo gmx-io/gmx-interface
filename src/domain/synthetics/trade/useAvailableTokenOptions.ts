@@ -19,6 +19,7 @@ import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
 
 import { isGlvInfo } from "../markets/glv";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
+import { getTokenAddressesSortedByPoolValue } from "./utils/tokenSorting";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -119,8 +120,7 @@ export function useAvailableTokenOptions(
 
     const collaterals = new Set<TokenData>();
 
-    const longTokensWithPoolValue: { [address: string]: bigint } = {};
-    const shortTokensWithPoolValue: { [address: string]: bigint } = {};
+    const swapTokenPoolValues: { tokenAddress: string; poolValueUsd: bigint }[] = [];
 
     for (const marketInfo of marketsInfo) {
       if (isGlvInfo(marketInfo)) {
@@ -172,11 +172,10 @@ export function useAvailableTokenOptions(
         getMidPrice(marketInfo.shortToken.prices)
       )!;
 
-      longTokensWithPoolValue[longToken.address] =
-        (longTokensWithPoolValue[longToken.address] ?? 0n) + longPoolAmountUsd;
-
-      shortTokensWithPoolValue[shortToken.address] =
-        (shortTokensWithPoolValue[shortToken.address] ?? 0n) + shortPoolAmountUsd;
+      swapTokenPoolValues.push(
+        { tokenAddress: longToken.address, poolValueUsd: longPoolAmountUsd },
+        { tokenAddress: shortToken.address, poolValueUsd: shortPoolAmountUsd }
+      );
 
       const isSpcxMarket = marketInfo.marketTokenAddress === "0x470128853D74dab7423904a20eA5AA230e9e561B";
 
@@ -206,15 +205,7 @@ export function useAvailableTokenOptions(
 
     const sortedMarketConfigs = getSortedMarketsConfigs(marketsData, sortedMarketAddressesRef.current);
 
-    const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort((a, b) => {
-      return longTokensWithPoolValue[b] > longTokensWithPoolValue[a] ? 1 : -1;
-    });
-
-    const sortedShortTokens = Object.keys(shortTokensWithPoolValue).sort((a, b) => {
-      return shortTokensWithPoolValue[b] > shortTokensWithPoolValue[a] ? 1 : -1;
-    });
-
-    const sortedLongAndShortTokens = sortedLongTokens.concat(sortedShortTokens);
+    const sortedLongAndShortTokens = getTokenAddressesSortedByPoolValue(swapTokenPoolValues);
 
     const collateralAddresses = new Set(Array.from(collaterals).map((c) => c.address));
 
@@ -248,7 +239,7 @@ export function useAvailableTokenOptions(
         ...adaptToV1InfoTokens(marketTokens || {}),
       },
       sortedIndexTokensWithPoolValue,
-      sortedLongAndShortTokens: Array.from(new Set(sortedLongAndShortTokens)),
+      sortedLongAndShortTokens,
       sortedAllMarkets,
       sortedMarketConfigs,
     };

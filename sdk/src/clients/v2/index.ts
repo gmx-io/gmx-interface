@@ -130,8 +130,13 @@ import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from
 import { fetchApiTokens } from "utils/tokens/api";
 import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
 import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
-import { fetchApiGmPoolYieldPnl } from "utils/yield/api";
-import { GmPoolsYieldPnlParams, GmPoolsYieldPnlResponse } from "utils/yield/types";
+import { fetchApiGmPoolYieldPnl, fetchApiGmUserEarnings } from "utils/yield/api";
+import {
+  GmPoolsYieldPnlParams,
+  GmPoolsYieldPnlResponse,
+  GmUserEarningsParams,
+  GmUserEarningsResponse,
+} from "utils/yield/types";
 
 export type { ApyEntry, ApyParams, ApyResponse } from "utils/apy/types";
 export type {
@@ -140,6 +145,10 @@ export type {
   GmPoolYieldPnlWindow,
   GmPoolsYieldPnlParams,
   GmPoolsYieldPnlResponse,
+  GmUserEarningEntry,
+  GmUserEarningsParams,
+  GmUserEarningsResponse,
+  GmUserEarningsWindow,
 } from "utils/yield/types";
 export type {
   GetTradingCapacityParams,
@@ -366,6 +375,10 @@ export class GmxApiSdk {
 
   fetchGmPoolYieldPnl(params?: GmPoolsYieldPnlParams): Promise<GmPoolsYieldPnlResponse> {
     return fetchApiGmPoolYieldPnl(this.ctx, params);
+  }
+
+  fetchGmUserEarnings(params: GmUserEarningsParams): Promise<GmUserEarningsResponse> {
+    return fetchApiGmUserEarnings(this.ctx, params);
   }
 
   fetchBuybackWeeklyStats(): Promise<BuybackWeeklyStatsResponse> {

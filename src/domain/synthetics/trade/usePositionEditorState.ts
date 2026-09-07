@@ -14,6 +14,11 @@ import { parsePositionKey } from "../positions";
 
 export type PositionEditorState = ReturnType<typeof usePositionEditorState>;
 
+export enum Operation {
+  Deposit = "Deposit",
+  Withdraw = "Withdraw",
+}
+
 export type PositionEditorDepositMode = "now" | "atPrice";
 
 export type PositionEditorAtPriceOpenRequest = {
@@ -28,6 +33,7 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
   const { expressOrdersEnabled } = useSettings();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const [collateralInputValue, setCollateralInputValue] = useState("");
+  const [operation, setOperation] = useState(Operation.Deposit);
   const [depositMode, setDepositMode] = useState<PositionEditorDepositMode>("now");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
   const [replacingOrderKey, setReplacingOrderKey] = useState<string>();
@@ -61,12 +67,21 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
   );
 
   const openAtPrice = useCallback((request: PositionEditorAtPriceOpenRequest) => {
+    setOperation(Operation.Deposit);
     setDepositMode("atPrice");
     setTriggerPriceInputValue(request.triggerPriceInputValue ?? "");
     setReplacingOrderKey(request.replacingOrderKey);
     setAtPriceOpenRequest(request);
     setEditingPositionKey(request.positionKey);
   }, []);
+
+  const openDepositNow = useCallback(
+    (positionKey: string) => {
+      setOperation(Operation.Deposit);
+      updateEditingPositionKey(positionKey);
+    },
+    [updateEditingPositionKey]
+  );
 
   const clearAtPriceOpenRequest = useCallback(() => {
     setAtPriceOpenRequest(undefined);
@@ -114,6 +129,8 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
       setSelectedCollateralAddress,
       isCollateralTokenFromGmxAccount,
       setIsCollateralTokenFromGmxAccount,
+      operation,
+      setOperation,
       depositMode,
       setDepositMode,
       triggerPriceInputValue,
@@ -123,6 +140,7 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
       atPriceOpenRequest,
       clearAtPriceOpenRequest,
       openAtPrice,
+      openDepositNow,
     }),
     [
       collateralInputValue,
@@ -132,12 +150,14 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
       setSelectedCollateralAddress,
       isCollateralTokenFromGmxAccount,
       setIsCollateralTokenFromGmxAccount,
+      operation,
       depositMode,
       triggerPriceInputValue,
       replacingOrderKey,
       atPriceOpenRequest,
       clearAtPriceOpenRequest,
       openAtPrice,
+      openDepositNow,
     ]
   );
 }

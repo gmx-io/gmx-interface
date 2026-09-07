@@ -85,6 +85,9 @@ export const selectPositionEditorSelectedCollateralToken = createSelector((q) =>
   return { ...token, balanceType: TokenBalanceType.Wallet, balance: token.walletBalance };
 });
 
+export const selectPositionEditorOperation = (state: SyntheticsState) => state.positionEditor.operation;
+export const selectPositionEditorSetOperation = (state: SyntheticsState) => state.positionEditor.setOperation;
+
 export const selectPositionEditorDepositMode = (state: SyntheticsState) => state.positionEditor.depositMode;
 export const selectPositionEditorSetDepositMode = (state: SyntheticsState) => state.positionEditor.setDepositMode;
 
@@ -103,6 +106,8 @@ export const selectPositionEditorClearAtPriceOpenRequest = (state: SyntheticsSta
   state.positionEditor.clearAtPriceOpenRequest;
 
 export const selectPositionEditorOpenAtPrice = (state: SyntheticsState) => state.positionEditor.openAtPrice;
+
+export const selectPositionEditorOpenDepositNow = (state: SyntheticsState) => state.positionEditor.openDepositNow;
 
 export const selectPositionEditorTriggerPrice = createSelector((q) => {
   const triggerPriceInputValue = q(selectPositionEditorTriggerPriceInputValue);

@@ -1,35 +1,59 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useIsPresent, Variants } from "framer-motion";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { EventData } from "config/events";
+import { usePrefersReducedMotion } from "lib/usePrefersReducedMotion";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
+
+import { INITIAL_SLIDE_STATE, SlideDirection, jumpToSlide, stepSlide } from "./whatsNewSlideState";
 
 const AUTO_ROTATE_INTERVAL_MS = 5000;
 const SWIPE_THRESHOLD_PX = 40;
 const WHEEL_MIN_DELTA_PX = 4;
 const WHEEL_STEP_INTERVAL_MS = 350;
+const SLIDE_ENTER_OFFSET_PX = 12;
+const SLIDE_EXIT_OFFSET_PX = 8;
 const WHATS_NEW_LABEL = <Trans>What's new</Trans>;
 const SEE_MORE_LABEL = <Trans>See more</Trans>;
 
+const SLIDE_VARIANTS: Variants = {
+  enter: (shift: number) => ({ opacity: 0, x: shift * SLIDE_ENTER_OFFSET_PX }),
+  center: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      opacity: { duration: 0.18, ease: "linear" },
+      x: { duration: 0.24, ease: [0.16, 1, 0.3, 1] },
+    },
+  },
+  exit: (shift: number) => ({
+    opacity: 0,
+    x: -shift * SLIDE_EXIT_OFFSET_PX,
+    transition: { duration: 0.12, ease: "easeIn" },
+  }),
+};
+
 export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss: () => void }) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [slide, setSlide] = useState(INITIAL_SLIDE_STATE);
   const [isPaused, setIsPaused] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (activeIndex >= cards.length && cards.length > 0) {
-      setActiveIndex(0);
+    if (slide.index >= cards.length && cards.length > 0) {
+      setSlide(INITIAL_SLIDE_STATE);
     }
-  }, [cards.length, activeIndex]);
+  }, [cards.length, slide.index]);
 
   useEffect(() => {
     if (cards.length <= 1 || isPaused) return;
     const id = window.setTimeout(() => {
-      setActiveIndex((prev) => (prev + 1) % cards.length);
+      setSlide((prev) => stepSlide(prev, 1, cards.length));
     }, AUTO_ROTATE_INTERVAL_MS);
     return () => window.clearTimeout(id);
-  }, [cards.length, isPaused, activeIndex]);
+  }, [cards.length, isPaused, slide.index]);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -41,10 +65,10 @@ export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss:
     if (e.pointerType !== "mouse") return;
     setIsPaused(false);
   }, []);
-  const handleDotClick = useCallback((index: number) => setActiveIndex(index), []);
+  const handleDotClick = useCallback((index: number) => setSlide((prev) => jumpToSlide(prev, index)), []);
 
   const goRelative = useCallback(
-    (direction: 1 | -1) => setActiveIndex((prev) => (prev + direction + cards.length) % cards.length),
+    (step: SlideDirection) => setSlide((prev) => stepSlide(prev, step, cards.length)),
     [cards.length]
   );
 
@@ -124,7 +148,7 @@ export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss:
     return () => node.removeEventListener("wheel", onWheel);
   }, [cards.length, goRelative]);
 
-  const safeIndex = cards.length > 0 ? Math.min(activeIndex, cards.length - 1) : 0;
+  const safeIndex = cards.length > 0 ? Math.min(slide.index, cards.length - 1) : 0;
   const current = cards[safeIndex];
 
   const footerLink = useMemo(
@@ -150,6 +174,7 @@ export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss:
   if (!current) return null;
 
   const isCarousel = cards.length > 1;
+  const slideShift = prefersReducedMotion ? 0 : slide.direction;
 
   return (
     <div
@@ -180,9 +205,40 @@ export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss:
         footerLink={footerLink}
         dots={dots}
       >
-        <CardContent event={current} variant={current.variant ?? "info"} />
+        <div className="grid grid-cols-1">
+          {isCarousel &&
+            cards.map((card) => (
+              <div key={card.id} aria-hidden className="invisible col-start-1 row-start-1">
+                <CardContent event={card} variant={card.variant ?? "info"} />
+              </div>
+            ))}
+          <AnimatePresence initial={false} custom={slideShift}>
+            <Slide key={current.id} shift={slideShift}>
+              <CardContent event={current} variant={current.variant ?? "info"} />
+            </Slide>
+          </AnimatePresence>
+        </div>
       </AnnouncementBanner>
     </div>
+  );
+}
+
+function Slide({ shift, children }: { shift: number; children: ReactNode }) {
+  const isPresent = useIsPresent();
+
+  return (
+    <motion.div
+      className={cx("col-start-1 row-start-1", !isPresent && "pointer-events-none")}
+      aria-hidden={isPresent ? undefined : true}
+      custom={shift}
+      variants={SLIDE_VARIANTS}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      data-qa="whats-new-slide"
+    >
+      {children}
+    </motion.div>
   );
 }
 

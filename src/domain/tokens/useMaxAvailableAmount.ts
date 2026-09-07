@@ -1,9 +1,7 @@
 import { getSourceChainDecimalsMapped } from "config/multichain";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { absDiffBps, formatAmountFree, formatBalanceAmount } from "lib/numbers";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getResidualGasUsd, RESIDUAL_GAS_AMOUNT_MULTIPLIER } from "sdk/configs/fees";
 import { bigMath } from "sdk/utils/bigmath";
@@ -185,7 +183,6 @@ export function useMaxAvailableAmount({
   gasPaymentTokenWarningContent: string | undefined;
 } {
   const { chainId } = useChainId();
-  const isMetamaskMobile = useIsMetamaskMobile();
 
   const { maxAvailableAmount, safeMaxAvailableAmount } = getMaxAvailableTokenAmount({
     chainId,
@@ -250,11 +247,7 @@ export function useMaxAvailableAmount({
     });
   }
 
-  const formattedMaxAvailableAmount = formatAmountFree(
-    maxAvailableAmount,
-    decimals,
-    isMetamaskMobile ? MAX_METAMASK_MOBILE_DECIMALS : undefined
-  );
+  const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, decimals);
 
   const isFromTokenInputValueNearMax = absDiffBps(fromTokenAmount, maxAvailableAmount) < 100n; /* 1% */
 
