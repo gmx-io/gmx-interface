@@ -32,3 +32,25 @@ export type GmPoolsYieldPnlParams = {
   period?: ApiParameterPeriod;
   includeComponents?: boolean;
 };
+
+export type GmUserEarningsWindow = {
+  days: number;
+  startTimestamp: number;
+  endTimestamp: number;
+};
+
+export type GmUserEarningEntry = {
+  marketToken: string;
+  lifetimeFeeUsd: string;
+  recent7dFeeUsd: string;
+};
+
+export type GmUserEarningsResponse = {
+  account: string;
+  window: GmUserEarningsWindow;
+  pools: GmUserEarningEntry[];
+};
+
+export type GmUserEarningsParams = {
+  account: string;
+};

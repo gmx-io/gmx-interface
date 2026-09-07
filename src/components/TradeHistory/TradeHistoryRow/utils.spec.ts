@@ -661,6 +661,12 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": "< +$ 0.01",
         "size": "+$ 3.62",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+3.02 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
@@ -1034,6 +1040,82 @@ describe("TradeHistoryRow helpers", () => {
 
       expect(details.action).toBe("Create TWAP");
       expect(details.price).toBe("N/A");
+    });
+
+    it("uses the position collateral token for executed increases with a swap path", () => {
+      const gmxToken = {
+        ...executeOrderIncreaseLong.targetCollateralToken,
+        name: "GMX",
+        symbol: "GMX",
+        decimals: 18,
+        address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+        isStable: false,
+      };
+      const executedIncrease = {
+        ...executeOrderIncreaseLong,
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        targetCollateralToken: gmxToken,
+        initialCollateralDeltaAmount: 204_579_982_339_079_771n,
+      };
+
+      expect(formatPositionMessage(executedIncrease, minCollateralUsd).sizeComment).toEqual([
+        { key: "Margin delta", value: "+0.20458\u00a0GMX" },
+      ]);
+      expect(formatPositionMessage({ ...executedIncrease, sizeDeltaUsd: 0n }, minCollateralUsd).size).toBe(
+        "0.20458\u00a0GMX"
+      );
+    });
+
+    it("does not hide a non-zero target collateral amount with fewer decimals", () => {
+      const executedIncrease = {
+        ...executeOrderIncreaseLong,
+        initialCollateralToken: {
+          ...executeOrderIncreaseLong.initialCollateralToken,
+          name: "Wrapped Ether",
+          symbol: "WETH",
+          decimals: 18,
+          address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          isStable: false,
+        },
+        initialCollateralTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        initialCollateralDeltaAmount: 1_510_000n,
+      };
+
+      expect(formatPositionMessage(executedIncrease, minCollateralUsd).sizeComment).toEqual([
+        { key: "Margin delta", value: "+1.51\u00a0USDC" },
+      ]);
+    });
+
+    it("keeps request and decrease rows denominated in the initial collateral token", () => {
+      const gmxToken = {
+        ...executeOrderIncreaseLong.targetCollateralToken,
+        name: "GMX",
+        symbol: "GMX",
+        decimals: 18,
+        address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+        isStable: false,
+      };
+      const action = {
+        ...executeOrderIncreaseLong,
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        targetCollateralToken: gmxToken,
+        initialCollateralDeltaAmount: 1_510_000n,
+      };
+
+      const request = formatPositionMessage(
+        { ...action, eventName: TradeActionType.OrderCreated, sizeDeltaUsd: 0n },
+        minCollateralUsd
+      );
+      const decrease = formatPositionMessage({ ...action, orderType: OrderType.MarketDecrease }, minCollateralUsd);
+      const withdrawal = formatPositionMessage(
+        { ...action, orderType: OrderType.MarketDecrease, sizeDeltaUsd: 0n },
+        minCollateralUsd
+      );
+
+      expect(request.size).toBe("1.51\u00a0USDC");
+      expect(decrease.sizeComment).toEqual([{ key: "Margin delta", value: "-1.51\u00a0USDC" }]);
+      expect(withdrawal.size).toBe("1.51\u00a0USDC");
     });
   });
 

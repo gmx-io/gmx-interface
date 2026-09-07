@@ -1,3 +1,4 @@
+import type { ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
@@ -430,21 +431,25 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
 export function getTotalGmInfo({
   tokensData,
   multichainMarketTokensBalances,
+  chainId,
 }: {
   tokensData: TokensData | undefined;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  chainId: ContractsChainId;
 }) {
-  return getTotalTokensBalance(tokensData, ["GM"], multichainMarketTokensBalances);
+  return getTotalTokensBalance({ tokensData, tokenSymbols: ["GM"], multichainMarketTokensBalances, chainId });
 }
 
 export function getTotalGlvInfo({
   tokensData,
   multichainMarketTokensBalances,
+  chainId,
 }: {
   tokensData: TokensData | undefined;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  chainId: ContractsChainId;
 }) {
-  return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
+  return getTotalTokensBalance({ tokensData, tokenSymbols: ["GLV"], multichainMarketTokensBalances, chainId });
 }
 
 export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {

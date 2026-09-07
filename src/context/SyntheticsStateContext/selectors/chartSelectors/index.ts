@@ -17,6 +17,7 @@ import {
   getOpenInterestForBalance,
   getOpenInterestInTokens,
 } from "domain/synthetics/markets";
+import { createTokenSortSequenceComparator } from "domain/tokens/utils";
 import { CHART_PERIODS } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -35,15 +36,9 @@ function getAvailableChartTokensInternal(q: QueryFunction<SyntheticsState>, forS
   );
 
   const availableChartTokens = forSwap ? swapTokens : indexTokens;
-  const sortedAvailableChartTokens = availableChartTokens.sort((a, b) => {
-    if (sortedIndexTokensWithPoolValue || sortedLongAndShortTokens) {
-      const currentSortReferenceList = forSwap ? sortedLongAndShortTokens : sortedIndexTokensWithPoolValue;
-      return currentSortReferenceList.indexOf(a.address) - currentSortReferenceList.indexOf(b.address);
-    }
-    return 0;
-  });
+  const currentSortReferenceList = forSwap ? sortedLongAndShortTokens : sortedIndexTokensWithPoolValue;
 
-  return sortedAvailableChartTokens;
+  return [...availableChartTokens].sort(createTokenSortSequenceComparator(currentSortReferenceList));
 }
 
 export const selectAvailableChartTokens = createSelector(function selectAvailableChartTokensImpl(q) {

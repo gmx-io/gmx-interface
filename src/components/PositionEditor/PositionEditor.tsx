@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import pickBy from "lodash/pickBy";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey } from "react-use";
 import { Address } from "viem";
 
@@ -17,6 +17,7 @@ import {
   usePositionEditorCollateralInputValue,
   usePositionEditorDepositMode,
   usePositionEditorIsCollateralTokenFromGmxAccount,
+  usePositionEditorOperation,
   usePositionEditorPosition,
   usePositionEditorPositionState,
   usePositionEditorReplacingOrder,
@@ -34,6 +35,7 @@ import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
+import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/validation";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -79,7 +81,7 @@ import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { formatMarginDepositPriceInput, getMarginDepositPrefill } from "./marginDepositPrefill";
 import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
-import { DEPOSIT_MODE_LABELS, DEPOSIT_MODES, Operation, OPERATION_LABELS } from "./types";
+import { DEPOSIT_MODE_LABELS, DEPOSIT_MODES, OPERATION_LABELS } from "./types";
 import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 
 import "./PositionEditor.scss";
@@ -101,7 +103,7 @@ export function PositionEditor() {
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
 
-  const [operation, setOperation] = useState(Operation.Deposit);
+  const [operation, setOperation] = usePositionEditorOperation();
   const isDeposit = operation === Operation.Deposit;
 
   const [depositMode, setDepositMode] = usePositionEditorDepositMode();
@@ -374,8 +376,6 @@ export function PositionEditor() {
       if (!prefill) {
         return;
       }
-
-      setOperation(Operation.Deposit);
 
       if (prefill.collateralInputValue !== undefined) {
         setCollateralInputValue(prefill.collateralInputValue);

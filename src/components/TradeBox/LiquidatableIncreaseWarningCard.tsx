@@ -1,14 +1,10 @@
-import { Trans } from "@lingui/macro";
-
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { LiquidatableIncreaseMessage } from "components/MarginRemediation/MarginRemediationActions";
 
-export function LiquidatableIncreaseWarningCard() {
+export function LiquidatableIncreaseWarningCard({ positionKey }: { positionKey: string | undefined }) {
   return (
     <AlertInfoCard type="warning" hideClose>
-      <Trans>
-        Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or
-        reduce the order size.
-      </Trans>
+      <LiquidatableIncreaseMessage positionKey={positionKey} />
     </AlertInfoCard>
   );
 }

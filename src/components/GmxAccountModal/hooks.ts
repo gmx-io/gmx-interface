@@ -269,11 +269,10 @@ export function useMultichainMarketTokensBalancesRequest({
   isLoading: boolean;
 } {
   const platformTokens = MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined;
+  const isSubscribed = Boolean(account && platformTokens?.length && enabled);
 
   const { data: balancesResult } = useSWRSubscription(
-    account && platformTokens?.length && enabled
-      ? ["multichain-market-tokens-balances", chainId, account, platformTokens, undefined]
-      : null,
+    isSubscribed && account ? ["multichain-market-tokens-balances", chainId, account, platformTokens, undefined] : null,
     // TODO MLTCH optimistically update useSourceChainTokensDataRequest
     subscribeMultichainTokenBalances
   );
@@ -314,7 +313,7 @@ export function useMultichainMarketTokensBalancesRequest({
 
   return {
     tokenBalances: balances,
-    isLoading: balancesResult?.isLoading ?? true,
+    isLoading: isSubscribed ? balancesResult?.isLoading ?? true : false,
   };
 }
 

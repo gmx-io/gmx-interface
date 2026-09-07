@@ -1,12 +1,7 @@
 import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 
-import type { PositionEditorDepositMode } from "domain/synthetics/trade/usePositionEditorState";
-
-export enum Operation {
-  Deposit = "Deposit",
-  Withdraw = "Withdraw",
-}
+import { Operation, type PositionEditorDepositMode } from "domain/synthetics/trade/usePositionEditorState";
 
 export const OPERATION_LABELS = {
   [Operation.Deposit]: msg`Deposit`,
