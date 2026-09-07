@@ -27,6 +27,7 @@ export type PendingTransaction = {
   metricId?: OrderMetricId;
   data?: PendingTransactionData;
   actionName?: TradingActionName;
+  onError?: () => void;
 };
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
@@ -103,6 +104,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
         const receipt = await provider.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
+            pendingTxn.onError?.();
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             const { error: onchainError, txnData } = await getCallStaticError(
               chainId,

@@ -39,6 +39,7 @@ import {
 } from "domain/synthetics/tradeHistory/orderStatusesBackfill";
 import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrderStatusesBackfill";
 import { TokenBalanceType } from "domain/tokens";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { ErrorLike } from "lib/errors";
@@ -153,6 +154,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { setWebsocketTokenBalancesUpdates, setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
+  const [pendingTpSlOrderBatches, setPendingTpSlOrderBatches] = useState<PendingTpSlOrderBatch[]>([]);
   const [pendingOrdersUpdates, setPendingOrdersUpdates] = useState<PendingOrdersUpdates>({});
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [awaitingBackfillOrders, setAwaitingBackfillOrders] = useState<PendingOrderData[]>([]);
@@ -1245,6 +1247,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       shiftStatuses,
       approvalStatuses,
       pendingOrdersUpdates,
+      pendingTpSlOrderBatches,
+      setPendingTpSlOrderBatches,
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
@@ -1400,6 +1404,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     shiftStatuses,
     approvalStatuses,
     pendingOrdersUpdates,
+    pendingTpSlOrderBatches,
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,

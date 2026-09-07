@@ -9,6 +9,8 @@ export const emptySyntheticsEventsState: SyntheticsEventsContextType = {
   shiftStatuses: {},
   approvalStatuses: {},
   pendingOrdersUpdates: {},
+  pendingTpSlOrderBatches: [],
+  setPendingTpSlOrderBatches: noop,
   pendingPositionsUpdates: {},
   positionIncreaseEvents: [],
   positionDecreaseEvents: [],

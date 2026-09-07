@@ -47,7 +47,7 @@ import { getByKey } from "lib/objects";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "sdk/utils/orders";
+import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "sdk/utils/orders";
 import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
@@ -84,11 +84,13 @@ export function useOrderTxnCallbacks() {
   const { setPendingTxns } = usePendingTxns();
   const {
     setPendingOrder,
+    setPendingTpSlOrderBatches,
     setPendingPosition,
     setPendingOrderUpdate,
     updatePendingExpressTxn,
     setPendingExpressTxn,
     setPendingFundingFeeSettlement,
+    orderStatuses,
   } = useSyntheticsEvents();
   const { chainId, srcChainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
@@ -105,7 +107,7 @@ export function useOrderTxnCallbacks() {
         console.log("TXN EVENT", e, ctx);
       }
 
-      const { expressParams, batchParams } = e.data;
+      const { expressParams, batchParams, batchId } = e.data;
       const isSubaccount = Boolean(expressParams?.subaccount);
 
       const actionsCount = getBatchRequiredActions(batchParams);
@@ -231,6 +233,24 @@ export function useOrderTxnCallbacks() {
 
       switch (e.event) {
         case TxnEventName.Submitted: {
+          const orders = batchParams.createOrderParams
+            .filter(
+              (cp) => isTriggerDecreaseOrderType(cp.orderPayload.orderType) && !getIsTwapOrderPayload(cp.orderPayload)
+            )
+            .map((cp) => getPendingCreateOrder(cp));
+
+          if (orders.length > 0) {
+            setPendingTpSlOrderBatches((batches) => [
+              ...batches,
+              {
+                id: batchId,
+                chainId,
+                orders,
+                existingOrderKeys: [...Object.keys(ordersInfoData ?? {}), ...Object.keys(orderStatuses)],
+              },
+            ]);
+          }
+
           if (isSubaccount) {
             handleTxnSubmitted();
           }
@@ -257,6 +277,20 @@ export function useOrderTxnCallbacks() {
         }
 
         case TxnEventName.Sent: {
+          const sentData = e.data;
+          setPendingTpSlOrderBatches((batches) =>
+            batches.map((batch) =>
+              batch.id === batchId
+                ? {
+                    ...batch,
+                    ...(sentData.type === "wallet"
+                      ? { transactionHash: sentData.transactionHash }
+                      : { relayTaskId: sentData.relayTaskId }),
+                  }
+                : batch
+            )
+          );
+
           if (ctx.metricId) {
             // re-record the relay that actually took the operation before the sent event flies:
             // assignment (the ab flag) and treatment diverge whenever the kill switch is thrown
@@ -309,6 +343,7 @@ export function useOrderTxnCallbacks() {
 
             const pendingTxn: PendingTransaction = {
               hash: e.data.transactionHash,
+              onError: () => setPendingTpSlOrderBatches((batches) => batches.filter((batch) => batch.id !== batchId)),
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               actionName: ctx.actionName,
@@ -327,6 +362,7 @@ export function useOrderTxnCallbacks() {
         }
 
         case TxnEventName.Error: {
+          setPendingTpSlOrderBatches((batches) => batches.filter((batch) => batch.id !== batchId));
           const { error } = e.data;
           const errorData = parseError(error);
 
@@ -437,6 +473,8 @@ export function useOrderTxnCallbacks() {
       chainId,
       srcChainId,
       ordersInfoData,
+      orderStatuses,
+      setPendingTpSlOrderBatches,
       resetTokenPermits,
       setIsPermitsDisabled,
       setIsSettingsVisible,

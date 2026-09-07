@@ -1517,6 +1517,7 @@ msgstr "Liquidität nur auf {chainNames} verfügbar. Wechseln Sie das Netzwerk, 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
@@ -2072,6 +2073,7 @@ msgstr "{ordersText} werden storniert..."
 msgid "Received at close (GMX balance)"
 msgstr "Eingang beim Schließen (GMX-Guthaben)"
 
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "Größe (% der Position)"
@@ -3750,6 +3752,7 @@ msgstr "Trader-Aktivität"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3997,6 +4000,7 @@ msgid "This trigger price is beyond the current liquidation price. Your position
 msgstr "Dieser Auslösepreis liegt jenseits des aktuellen Liquidationspreises. Deine Position könnte liquidiert werden, bevor diese TP/SL-Order ausgeführt werden kann."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -4967,6 +4971,7 @@ msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds 
 msgstr "{gmOrGlvLabel} erfolgreich gekauft, aber die Bridge zu {0} ist fehlgeschlagen. Ihre Gelder sind sicher in Ihrem GMX-Konto. Wiederholen Sie die Bridge oder gehen Sie zum {indexName}-Pool, um Ihre {gmOrGlvLabel}-Token abzuheben."
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -12656,6 +12661,7 @@ msgstr "Abgelaufene Einzahlung"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"

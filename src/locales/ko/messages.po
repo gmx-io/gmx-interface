@@ -1517,6 +1517,7 @@ msgstr "유동성은 {chainNames}에서만 이용 가능합니다. 계속하려�
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
@@ -2072,6 +2073,7 @@ msgstr "{ordersText} 취소 중..."
 msgid "Received at close (GMX balance)"
 msgstr "청산 시 수령액 (GMX 잔액)"
 
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "크기 (포지션의 %)"
@@ -3750,6 +3752,7 @@ msgstr "트레이더 활동"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3997,6 +4000,7 @@ msgid "This trigger price is beyond the current liquidation price. Your position
 msgstr "이 조건가는 현재 청산가를 초과합니다. 이 TP/SL 주문이 실행되기 전에 포지션이 청산될 수 있습니다."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -4967,6 +4971,7 @@ msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds 
 msgstr "{gmOrGlvLabel} 구매에 성공했지만 {0}(으)로의 브리지에 실패했습니다. 자금은 GMX 계정에 안전하게 보관되어 있습니다. 브리지를 다시 시도하거나 {indexName} 풀로 이동하여 {gmOrGlvLabel} 토큰을 출금하세요."
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -12656,6 +12661,7 @@ msgstr "만료된 예치"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
