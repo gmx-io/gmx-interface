@@ -12,6 +12,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   ContractsChainId,
+  isContractsChain,
   MEGAETH,
   SETTLEMENT_CHAIN_IDS,
   SETTLEMENT_CHAIN_IDS_DEV,
@@ -26,7 +27,7 @@ import {
 import { isDevelopment } from "config/env";
 import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
-import { getContract } from "sdk/configs/contracts";
+import { getContract, tryGetContract } from "sdk/configs/contracts";
 import {
   CHAIN_ID_TO_ENDPOINT_ID,
   isSettlementChain,
@@ -180,23 +181,14 @@ export type BlockNumberCall = {
   methodName: "arbBlockNumber" | "getBlockNumber";
 };
 
-const ARB_SYS_BLOCK_NUMBER_CALLS: Partial<Record<AnyChainId, BlockNumberCall>> = {
-  [ARBITRUM]: { contractAddress: getContract(ARBITRUM, "ArbSys"), abiId: "ArbSys", methodName: "arbBlockNumber" },
-  [ARBITRUM_SEPOLIA]: {
-    contractAddress: getContract(ARBITRUM_SEPOLIA, "ArbSys"),
-    abiId: "ArbSys",
-    methodName: "arbBlockNumber",
-  },
-};
-
 export function getBlockNumberCall(chainId: AnyChainId): BlockNumberCall {
-  return (
-    ARB_SYS_BLOCK_NUMBER_CALLS[chainId] ?? {
-      contractAddress: MULTICALLS_MAP[chainId],
-      abiId: "Multicall",
-      methodName: "getBlockNumber",
-    }
-  );
+  const arbSysAddress = isContractsChain(chainId, true) ? tryGetContract(chainId, "ArbSys") : undefined;
+
+  if (arbSysAddress) {
+    return { contractAddress: arbSysAddress, abiId: "ArbSys", methodName: "arbBlockNumber" };
+  }
+
+  return { contractAddress: MULTICALLS_MAP[chainId], abiId: "Multicall", methodName: "getBlockNumber" };
 }
 
 export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string> = {
