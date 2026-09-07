@@ -427,13 +427,29 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Enter an amount` };
   }
 
-  if (!isLimit) {
+  if (!isLimit && !isTwap) {
     if (isLong && (longLiquidity === undefined || longLiquidity < sizeDeltaUsd)) {
-      return { buttonErrorMessage: t`Max ${indexToken.symbol} long exceeded` };
+      const maxSize = formatUsd(longLiquidity);
+
+      return {
+        buttonErrorMessage: t`Max ${indexToken.symbol} long exceeded`,
+        buttonTooltipMessage:
+          longLiquidity === undefined
+            ? undefined
+            : t`Order won't execute: size exceeds the max long size of ${maxSize}. Reduce the order size.`,
+      };
     }
 
     if (!isLong && (shortLiquidity === undefined || shortLiquidity < sizeDeltaUsd)) {
-      return { buttonErrorMessage: t`Max ${indexToken.symbol} short exceeded` };
+      const maxSize = formatUsd(shortLiquidity);
+
+      return {
+        buttonErrorMessage: t`Max ${indexToken.symbol} short exceeded`,
+        buttonTooltipMessage:
+          shortLiquidity === undefined
+            ? undefined
+            : t`Order won't execute: size exceeds the max short size of ${maxSize}. Reduce the order size.`,
+      };
     }
   }
 

@@ -14,9 +14,7 @@ import {
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
-  TokenOption,
   selectTradeboxChooseSuitableMarket,
-  selectTradeboxGetMaxLongShortLiquidityPool,
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
   selectTradeboxTradeType,
@@ -167,15 +165,9 @@ export default function ChartTokenSelector(props: Props) {
   );
 }
 
-type SortField =
-  | "lastPrice"
-  | "24hChange"
-  | "24hVolume"
-  | "longLiquidity"
-  | "shortLiquidity"
-  | "combinedAvailableLiquidity"
-  | "combinedOpenInterest"
-  | "unspecified";
+type SortField = "lastPrice" | "24hChange" | "24hVolume" | "combinedOpenInterest" | "unspecified";
+
+const SORT_FIELDS: SortField[] = ["lastPrice", "24hChange", "24hVolume", "combinedOpenInterest", "unspecified"];
 
 function MarketsList() {
   const chainId = useSelector(selectChainId);
@@ -293,9 +285,12 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>(
-    `chart-token-selector-${isSwap ? "spot" : "perp"}`
-  );
+  const {
+    orderBy: storedOrderBy,
+    direction,
+    getSorterProps,
+  } = useSorterHandlers<SortField>(`chart-token-selector-${isSwap ? "spot" : "perp"}`);
+  const orderBy = SORT_FIELDS.includes(storedOrderBy) ? storedOrderBy : "unspecified";
 
   const [searchKeyword, setSearchKeyword] = useState("");
 
@@ -398,8 +393,6 @@ function MarketsList() {
     return t`Search market`;
   }, [isSwap]);
 
-  const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
-
   return (
     <>
       <div className="flex flex-col">
@@ -499,16 +492,11 @@ function MarketsList() {
                     </Sorter>
                   </th>
                   {!isMobile && (
-                    <>
-                      <th className={thClassName} colSpan={2}>
-                        <Sorter {...getSorterProps("combinedOpenInterest")}>
-                          <Trans>OPEN INTEREST</Trans>
-                        </Sorter>
-                      </th>
-                      <th className={thClassName} colSpan={2}>
-                        <Sorter {...getSorterProps("combinedAvailableLiquidity")}>{availableLiquidityLabel}</Sorter>
-                      </th>
-                    </>
+                    <th className={thClassName} colSpan={2}>
+                      <Sorter {...getSorterProps("combinedOpenInterest")}>
+                        <Trans>OPEN INTEREST</Trans>
+                      </Sorter>
+                    </th>
                   )}
                 </>
               )}
@@ -622,8 +610,6 @@ function useFilterSortTokens({
     return applySubCategoryFilter(afterTopLevel, { topLevelTab, subCategoryTab });
   }, [options, searchKeyword, isSwap, topLevelTab, subCategoryTab, favoriteTokens, recentlyListedAddressesSet]);
 
-  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
-
   const sortedTokens = useMemo(() => {
     const [favorites, nonFavorites] = partition(filteredTokens, (token) => favoriteTokens.includes(token.address));
 
@@ -635,7 +621,6 @@ function useFilterSortTokens({
       dayPriceDeltaMap,
       dayVolumes,
       indexTokenStatsMap,
-      getMaxLongShortLiquidityPool,
     });
 
     const sortedFavorites = favorites.slice().sort(sorter);
@@ -652,7 +637,6 @@ function useFilterSortTokens({
     dayPriceDeltaMap,
     dayVolumes,
     indexTokenStatsMap,
-    getMaxLongShortLiquidityPool,
     favoriteTokens,
   ]);
 
@@ -703,10 +687,6 @@ function MarketListItem({
   onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
   listingDate?: number;
 }) {
-  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
-
-  const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
-
   const handleFavoriteClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -719,22 +699,6 @@ function MarketListItem({
     (e: React.MouseEvent<HTMLTableCellElement | HTMLTableRowElement>) => {
       e.stopPropagation();
       onMarketSelect(token.address, "largestPosition");
-    },
-    [onMarketSelect, token.address]
-  );
-
-  const handleSelectLong = useCallback(
-    (e: React.MouseEvent<HTMLTableCellElement>) => {
-      e.stopPropagation();
-      onMarketSelect(token.address, TradeType.Long);
-    },
-    [onMarketSelect, token.address]
-  );
-
-  const handleSelectShort = useCallback(
-    (e: React.MouseEvent<HTMLTableCellElement>) => {
-      e.stopPropagation();
-      onMarketSelect(token.address, TradeType.Short);
     },
     [onMarketSelect, token.address]
   );
@@ -841,23 +805,6 @@ function MarketListItem({
           </td>
         </>
       )}
-
-      {!isMobile ? (
-        <>
-          <td className={cx(tdClassName, "group pr-4 numbers hover:bg-slate-800")} onClick={handleSelectLong}>
-            <div className="inline-flex items-center justify-end gap-6">
-              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
-            </div>
-          </td>
-          <td className={cx(tdClassName, "group pl-4 numbers hover:bg-slate-800")} onClick={handleSelectShort}>
-            <div className="inline-flex items-center justify-end gap-6">
-              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
-            </div>
-          </td>
-        </>
-      ) : null}
     </tr>
   );
 }
@@ -870,7 +817,6 @@ function tokenSortingComparatorBuilder({
   dayPriceDeltaMap,
   dayVolumes,
   indexTokenStatsMap,
-  getMaxLongShortLiquidityPool,
 }: {
   chainId: number;
   orderBy: SortField;
@@ -879,10 +825,6 @@ function tokenSortingComparatorBuilder({
   dayPriceDeltaMap: PriceDeltaMap | undefined;
   dayVolumes: Record<Address, bigint> | undefined;
   indexTokenStatsMap: Partial<IndexTokensStats> | undefined;
-  getMaxLongShortLiquidityPool: (token: Token) => {
-    maxLongLiquidityPool: TokenOption;
-    maxShortLiquidityPool: TokenOption;
-  };
 }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
@@ -925,15 +867,6 @@ function tokenSortingComparatorBuilder({
       const aChange = dayPriceDeltaMap?.[a.address]?.deltaPercentage || 0;
       const bChange = dayPriceDeltaMap?.[b.address]?.deltaPercentage || 0;
       return aChange > bChange ? directionMultiplier : -directionMultiplier;
-    }
-
-    if (orderBy === "combinedAvailableLiquidity") {
-      const { maxLongLiquidityPool: aLongLiq, maxShortLiquidityPool: aShortLiq } = getMaxLongShortLiquidityPool(a);
-      const { maxLongLiquidityPool: bLongLiq, maxShortLiquidityPool: bShortLiq } = getMaxLongShortLiquidityPool(b);
-
-      const aTotalLiq = aLongLiq.maxLongLiquidity + aShortLiq.maxShortLiquidity;
-      const bTotalLiq = bLongLiq.maxLongLiquidity + bShortLiq.maxShortLiquidity;
-      return aTotalLiq > bTotalLiq ? directionMultiplier : -directionMultiplier;
     }
 
     if (orderBy === "combinedOpenInterest") {

@@ -932,6 +932,11 @@ msgstr "Начисленные комиссии за фондирование, �
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "Конвертируйте esGMX в токены GMX. Ознакомьтесь с условиями вестинга перед использованием хранилищ."
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Order won't execute: size exceeds the max long size of {maxSize}. Reduce the order size."
+msgstr "Ордер не исполнится: размер превышает максимальный размер лонга {maxSize}. Уменьшите размер ордера."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
@@ -989,13 +994,6 @@ msgstr "Некорректный токен обеспечения. {tokenSymbol
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on centralized exchanges"
 msgstr "Купить GMX на централизованных биржах"
-
-#: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-#: src/components/TVChart/ChartHeader.tsx
-#: src/components/TVChart/ChartHeader.tsx
-msgid "Available liquidity"
-msgstr "Доступная ликвидность"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
@@ -2300,10 +2298,6 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "Сохранить левередж на {0}"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAIL. LIQ."
-msgstr "ДОСТ. ЛИКВ."
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr "Торговля в один клик отключена. Превышен лимит действий."
@@ -2783,7 +2777,6 @@ msgstr ""
 msgid "Pair"
 msgstr "Пара"
 
-#: src/components/SwapCard/SwapCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max {0} out"
 msgstr "Макс {0} выход"
@@ -3677,7 +3670,6 @@ msgstr "Хранилища GLV"
 msgid "Buy GMX from centralized services"
 msgstr "Купить GMX на централизованных сервисах"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
 msgstr "Ордер может не исполниться: недостаточная ликвидность по цене срабатывания. Уменьшите размер ордера."
@@ -3991,6 +3983,10 @@ msgstr "Экспонента (положительная)"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Deposit in progress..."
 msgstr "Депозит в процессе..."
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order may not execute: size exceeds the max long size of {maxSize} at the trigger price. Reduce the order size."
+msgstr "Ордер может не исполниться: размер превышает максимальный размер лонга {maxSize} по триггерной цене. Уменьшите размер ордера."
 
 #: src/domain/tpsl/utils.ts
 msgid "This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute."
@@ -4345,6 +4341,10 @@ msgstr "Торговля"
 msgid "No deposits required"
 msgstr "Нет необходимости в депозитах"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max long size"
+msgstr "Максимальный размер лонга"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
 msgstr "Торговый аирдроп"
@@ -4642,7 +4642,7 @@ msgstr "Виртуальный ID рынка"
 msgid "Your wallet is not connected to this network"
 msgstr "Ваш кошелёк не подключён к этой сети"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
 msgstr "Ордер может не исполниться: недостаточно ликвидности для исполнения свопа с минимальной суммой получения. Измените минимальную сумму получения или уменьшите размер свопа."
@@ -4921,6 +4921,10 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
 msgstr "Своп отправлен"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order may not execute: size exceeds the max short size of {maxSize} at the trigger price. Reduce the order size."
+msgstr "Ордер может не исполниться: размер превышает максимальный размер шорта {maxSize} по триггерной цене. Уменьшите размер ордера."
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
@@ -5719,6 +5723,10 @@ msgstr "Стройте на GMX.<0/>Зарабатывайте на каждой
 msgid "Page outdated. Refresh"
 msgstr "Страница устарела. Обновите"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max swap size"
+msgstr "Максимальный размер свопа"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -5806,6 +5814,10 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
 msgstr "<0>Нет. GMX некастодиален и не требует разрешений — вы подключаете кошелёк и торгуете. Верификация личности не требуется.</0>"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Parts of this order may not execute: size exceeds the max long size of {maxSize}. Reduce the order size."
+msgstr "Части этого ордера могут не исполниться: размер превышает максимальный размер лонга {maxSize}. Уменьшите размер ордера."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -6581,6 +6593,10 @@ msgstr "Награды за стейкинг за всё время"
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
 msgstr "Для One-Click Trading требуется однократная подпись для текущей сети. Подписи, сделанные для других сетей, не затрагиваются. Подпишите повторно, чтобы включить One-Click Trading здесь."
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max short size"
+msgstr "Максимальный размер шорта"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "Ваши средства в безопасности в LayerZero на целевой сети. Повторите транзакцию получения в LayerZero Scan или обратитесь в службу поддержки."
@@ -7108,10 +7124,6 @@ msgstr ""
 msgid "Less info"
 msgstr "Меньше информации"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "LIQ."
-msgstr "ЛИКВ."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "Хранилища с автокомпаундингом GLP и GMX"
@@ -7168,10 +7180,6 @@ msgstr "Недостаточная ликвидность в пуле {0}. Вы�
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max leverage"
 msgstr "Макс. кредитное плечо"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAILABLE LIQUIDITY"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -9506,6 +9514,11 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "Купить GM за {0} в пределах лимитов ниже"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Order won't execute: size exceeds the max short size of {maxSize}. Reduce the order size."
+msgstr "Ордер не исполнится: размер превышает максимальный размер шорта {maxSize}. Уменьшите размер ордера."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "Аналитика протокола"
@@ -9700,6 +9713,10 @@ msgstr "Получите его в любой момент на вкладке <
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "It accrues to the code owner ({0})."
 msgstr "Он начисляется владельцу кода ({0})."
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Parts of this order may not execute: size exceeds the max short size of {maxSize}. Reduce the order size."
+msgstr "Части этого ордера могут не исполниться: размер превышает максимальный размер шорта {maxSize}. Уменьшите размер ордера."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -10065,10 +10082,6 @@ msgstr "Комиссия ретрансляции превышает допус�
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr "Ожидаемая скидка до {0}% от комиссии за открытие. Распределяется в виде токенов {incentivesTokenTitle} пропорционально. <0><1>Подробнее</1>.</0>"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Executes when price and liquidity conditions are met"
-msgstr "Исполняется при выполнении условий по цене и ликвидности"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "Обычный аккаунт"
@@ -10167,7 +10180,7 @@ msgstr "Запросы"
 msgid "Date"
 msgstr "Дата"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "Исполняется при выполнении условий по ликвидности и цене"
 
@@ -12328,6 +12341,10 @@ msgstr "Дельта-нейтральные хранилища"
 msgid "Sending shift request..."
 msgstr "Отправка запроса на перемещение…"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The most this market can add to short positions right now. Updates live and can change before a resting order triggers."
+msgstr "Максимальная сумма, которую сейчас можно добавить к шорт-позициям на этом рынке. Значение обновляется в реальном времени и может измениться до срабатывания отложенного ордера."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order expired before it could be executed"
@@ -12579,6 +12596,10 @@ msgstr "Поделиться в"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "Трекер портфеля деривативов"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The most this market can add to long positions right now. Updates live and can change before a resting order triggers."
+msgstr "Максимальная сумма, которую сейчас можно добавить к лонг-позициям на этом рынке. Значение обновляется в реальном времени и может измениться до срабатывания отложенного ордера."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
