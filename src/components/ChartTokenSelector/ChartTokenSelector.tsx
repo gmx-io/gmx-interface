@@ -190,6 +190,7 @@ function MarketsList() {
     subCategoryTab: storedSubCategoryTab,
     mode,
     setMode,
+    setTopLevelTab,
     setSubCategoryTab,
     favoriteTokens,
     toggleFavoriteToken,
@@ -399,6 +400,7 @@ function MarketsList() {
   }, [isSwap]);
 
   const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
+  const shouldSearchAllPerpMarkets = !isSwap && topLevelTab !== "all";
 
   return (
     <>
@@ -551,8 +553,20 @@ function MarketsList() {
                   <span className="text-12">
                     <Trans>No markets matched.</Trans>
                   </span>
-                  <Button type="button" variant="secondary" onClick={() => setMode(isSwap ? "perp" : "swap")}>
-                    {isSwap ? <Trans>Search in perpetuals markets</Trans> : <Trans>Search in swap markets</Trans>}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() =>
+                      shouldSearchAllPerpMarkets ? setTopLevelTab("all") : setMode(isSwap ? "perp" : "swap")
+                    }
+                  >
+                    {shouldSearchAllPerpMarkets ? (
+                      <Trans>Search in all perpetual markets</Trans>
+                    ) : isSwap ? (
+                      <Trans>Search in perpetuals markets</Trans>
+                    ) : (
+                      <Trans>Search in swap markets</Trans>
+                    )}
                     <SearchIconComponent className="size-16" />
                   </Button>
                 </div>

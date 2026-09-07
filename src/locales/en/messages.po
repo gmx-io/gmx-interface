@@ -12698,6 +12698,10 @@ msgstr "POOL CAP LONG"
 msgid "Total lifetime earned"
 msgstr "Total lifetime earned"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all perpetual markets"
+msgstr "Search in all perpetual markets"
+
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"
 msgstr "Express Trading enabled. Disable in <0>settings</0>"

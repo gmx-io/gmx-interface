@@ -12698,6 +12698,10 @@ msgstr "做多池上限"
 msgid "Total lifetime earned"
 msgstr "累計總收益"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all perpetual markets"
+msgstr "搜尋所有永續合約市場"
+
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"
 msgstr "Express Trading 已啟用。可在<0>設定</0>中停用"
