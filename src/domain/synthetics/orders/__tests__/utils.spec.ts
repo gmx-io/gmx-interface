@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
@@ -7,6 +8,12 @@ import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { convertToTokenAmount } from "sdk/utils/tokens";
 import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
 
+import {
+  DepositMarginNowAction,
+  LiquidatableIncreaseMessage,
+  ReplaceMarginDepositAction,
+} from "components/MarginRemediation/MarginRemediationActions";
+
 import { NextPositionValues } from "../../trade";
 import { OrderType, PositionOrderInfo } from "../types";
 import {
@@ -15,6 +22,22 @@ import {
   getOrderIncreaseProjection,
   getOrderIncreaseResultingPositionMarginState,
 } from "../utils";
+
+type RemediationActionElement = ReactElement<{ positionKey?: string; orderKey?: string }>;
+
+// Trans compiles an embedded action into props.components["0"]
+function getTransProps(msg: unknown) {
+  const element = msg as ReactElement<{
+    message?: string;
+    components?: Record<string, RemediationActionElement>;
+  }>;
+
+  return { message: element.props.message, action: element.props.components?.["0"] };
+}
+
+function getMessageElement(msg: unknown) {
+  return msg as ReactElement<{ positionKey?: string }>;
+}
 
 const tokensData = mockTokensData();
 const marketsInfoData = mockMarketsInfoData(tokensData, ["BTC-BTC-USDC"], {
@@ -83,9 +106,10 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
     });
 
     expect(hasLiquidatableError(result)).toBe(true);
-    expect(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg).toBe(
-      "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
-    );
+
+    const message = getMessageElement(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg);
+    expect(message.type).toBe(LiquidatableIncreaseMessage);
+    expect(message.props.positionKey).toBeUndefined();
     expect(result.level).toBe("error");
   });
 
@@ -160,6 +184,9 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
     });
 
     expect(hasLiquidatableError(result)).toBe(true);
+
+    const message = getMessageElement(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg);
+    expect(message.props.positionKey).toBe(positionKey);
   });
 });
 
@@ -239,6 +266,14 @@ describe("getOrderErrors — margin deposit orders", () => {
 
     expect(errorKeys(result)).toEqual(["marginDepositInsufficient"]);
     expect(result.level).toBe("error");
+
+    const { message, action } = getTransProps(result.errors[0].msg);
+    expect(message).toBe(
+      "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. <0>Increase the deposit amount</0> or move the trigger farther from liquidation."
+    );
+    expect(action?.type).toBe(ReplaceMarginDepositAction);
+    expect(action?.props.positionKey).toBe(position.key);
+    expect(action?.props.orderKey).toBe("order-key");
   });
 
   it("returns the yellow state when the trigger is at or beyond the current liquidation price", () => {
@@ -592,26 +627,27 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
       sizeInUsd,
       sizeInTokens: convertToTokenAmount(sizeInUsd, cleanMarketInfo.indexToken.decimals, currentPrice)!,
       collateralUsd: expandDecimals(p.collateralUsd, 30),
-      collateralAmount: convertToTokenAmount(expandDecimals(p.collateralUsd, 30), tokensData.USDC.decimals, expandDecimals(1, 30))!,
+      collateralAmount: convertToTokenAmount(
+        expandDecimals(p.collateralUsd, 30),
+        tokensData.USDC.decimals,
+        expandDecimals(1, 30)
+      )!,
       pendingImpactAmount: 0n,
       pendingBorrowingFeesUsd: 0n,
       pendingFundingFeesUsd: 0n,
     } as any;
   }
 
+  // the same key composition isOrderForPosition matches on, so the order-level check
+  // sees the position exactly like in production
+  function positionKeyFor(order: PositionOrderInfo) {
+    return `${order.account}:${order.marketAddress}:${order.targetCollateralToken.address}:${order.isLong}`;
+  }
+
   // the full production chain: order + position + market → projection at the evaluation
   // price → contract margin check → order error mark; no hand-made intermediate state
   function runOrderErrors(order: PositionOrderInfo, position?: any) {
-    // the same key composition isOrderForPosition matches on, so the order-level check
-    // sees the position exactly like in production
-    const positionsInfoData = position
-      ? {
-          [`${order.account}:${order.marketAddress}:${order.targetCollateralToken.address}:${order.isLong}`]: {
-            ...position,
-            key: `${order.account}:${order.marketAddress}:${order.targetCollateralToken.address}:${order.isLong}`,
-          },
-        }
-      : {};
+    const positionsInfoData = position ? { [positionKeyFor(order)]: { ...position, key: positionKeyFor(order) } } : {};
 
     return getOrderErrors({
       ...baseParams,
@@ -657,6 +693,13 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
 
     expect(maxLeverageErrors(result)).toHaveLength(1);
     expect(maxLeverageErrors(result)[0].level).toBe("error");
+
+    const { message, action } = getTransProps(maxLeverageErrors(result)[0].msg);
+    expect(message).toBe(
+      "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+    );
+    expect(action?.type).toBe(DepositMarginNowAction);
+    expect(action?.props.positionKey).toBe(positionKeyFor(restingBelowMarket));
   });
 
   it("does not flag a stop above the market whose position is healthy at the trigger", () => {
@@ -885,11 +928,7 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
   });
 
   it("projects onto a fresh position when the existing one is liquidated before the trigger", () => {
-    const doomed = makeLosingPosition(
-      expandDecimals(100_000, 30),
-      expandDecimals(99_000, 30),
-      expandDecimals(100, 30)
-    );
+    const doomed = makeLosingPosition(expandDecimals(100_000, 30), expandDecimals(99_000, 30), expandDecimals(100, 30));
     doomed.liquidationPrice = expandDecimals(21_000, 30);
 
     const state = marginStateFor({

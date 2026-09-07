@@ -617,8 +617,7 @@ export function getStakingProcessedData(
     stakingData.stakedGmxTracker.cumulativeRewards + stakingData.stakedGlpTracker.cumulativeRewards;
   const cumulativeEsGmxRewardsUsd = mulDiv(cumulativeEsGmxRewards, gmxPrice, expandDecimals(1, 18)) ?? 0n;
 
-  const cumulativeGmxRewards =
-    stakingData.extendedGmxTracker.cumulativeRewards + vestingData.gmxVesterClaimSum + vestingData.glpVesterClaimSum;
+  const cumulativeGmxRewards = stakingData.extendedGmxTracker.cumulativeRewards;
   const cumulativeGmxRewardsUsd = mulDiv(cumulativeGmxRewards, gmxPrice, expandDecimals(1, 18)) ?? 0n;
 
   const cumulativeNativeTokenRewards =
@@ -670,10 +669,10 @@ export function getHomeUrl() {
 
 export function getTradePageUrl() {
   if (isLocal()) {
-    return "http://localhost:3011/#/trade";
+    return "http://localhost:3011/trade";
   }
 
-  return PRODUCTION_HOST + "/#/trade";
+  return PRODUCTION_HOST + "/trade";
 }
 
 export function getRootShareApiUrl() {

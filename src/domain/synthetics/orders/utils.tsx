@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 import { Token } from "domain/tokens";
 import { formatPercentage } from "lib/numbers";
@@ -17,10 +17,13 @@ import {
 import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
+import { getIncreaseResultingPositionMarginState, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+
 import {
-  getIncreaseResultingPositionMarginState,
-  PositionMarginState,
-} from "sdk/utils/trade/increaseMarginCheck";
+  DepositMarginNowAction,
+  LiquidatableIncreaseMessage,
+  ReplaceMarginDepositAction,
+} from "components/MarginRemediation/MarginRemediationActions";
 
 import { getMarginDepositProjections, getMarginDepositRiskLevel, isMarginDepositOrder } from "./marginDeposit";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
@@ -140,7 +143,16 @@ function getMarginDepositOrderErrors(p: {
   if (riskLevel === "insufficient") {
     return [
       {
-        msg: t`This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation.`,
+        msg: (
+          <Trans>
+            This margin deposit may not execute: it would not leave the position above the liquidation requirement at
+            the trigger price.{" "}
+            <ReplaceMarginDepositAction positionKey={position.key} orderKey={order.key}>
+              Increase the deposit amount
+            </ReplaceMarginDepositAction>{" "}
+            or move the trigger farther from liquidation.
+          </Trans>
+        ),
         level: "error",
         key: "marginDepositInsufficient",
       },
@@ -446,7 +458,15 @@ export function getOrderErrors(p: {
 
       if (isMaxLeverageError || isResultingPositionMarginError) {
         errors.push({
-          msg: t`This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers.`,
+          msg: (
+            <Trans>
+              This order may fail to execute because the resulting position would exceed the maximum allowed leverage.{" "}
+              <DepositMarginNowAction positionKey={position?.key}>
+                Increase the position's margin
+              </DepositMarginNowAction>{" "}
+              or reduce the order size before it triggers.
+            </Trans>
+          ),
           key: "maxLeverage",
           level: "error",
         });
@@ -465,7 +485,7 @@ export function getOrderErrors(p: {
         errors.push({
           key: "resultingLiquidatable",
           level: "error",
-          msg: t`Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size.`,
+          msg: <LiquidatableIncreaseMessage positionKey={position?.key} />,
         });
       }
     }

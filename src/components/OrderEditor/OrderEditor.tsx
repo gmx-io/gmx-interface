@@ -18,7 +18,10 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { usePositionEditorOpenAtPrice } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import {
+  usePositionEditorOpenAtPrice,
+  usePositionEditorPosition,
+} from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import {
   selectIsProDiscountFactorReady,
   selectMarketsInfoData,
@@ -99,7 +102,6 @@ import {
   getConditionalDepositWarning,
   getExpressError,
   getIsMaxLeverageExceeded,
-  getMarginDepositInsufficientMessage,
 } from "domain/synthetics/trade/utils/validation";
 import {
   getIsIncreaseResultingPositionLiquidatable,
@@ -143,9 +145,11 @@ import {
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -208,6 +212,7 @@ export function OrderEditor(p: Props) {
       })
     : undefined;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
+  const editingPosition = usePositionEditorPosition();
 
   const executionFee = useSelector(selectOrderEditorExecutionFee);
 
@@ -760,13 +765,9 @@ export function OrderEditor(p: Props) {
 
   const submitButtonState = useMemo(() => {
     const setMaxLeverageButton = (
-      <button
-        type="button"
-        className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-        onClick={detectAndSetAvailableMaxLeverage}
-      >
+      <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
         <Trans>Set max leverage</Trans>
-      </button>
+      </EmbeddedActionButton>
     );
 
     if (hasOutdatedUi) {
@@ -878,12 +879,13 @@ export function OrderEditor(p: Props) {
   useKey(
     "Enter",
     () => {
-      if (!submitButtonState.disabled) {
+      // modals listen for Enter globally; the position editor can stack on top of this one
+      if (!submitButtonState.disabled && !editingPosition) {
         submitButtonState.onClick?.();
       }
     },
     {},
-    [submitButtonState]
+    [submitButtonState, editingPosition]
   );
 
   useEffect(
@@ -1272,12 +1274,12 @@ export function OrderEditor(p: Props) {
           )}
 
           {showResultingPositionMaxLeverageWarning && <ResultingMarginAlertCard level="warning" />}
-          {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
+          {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard positionKey={existingPosition?.key} />}
           {isPositionLiquidatedBeforeTrigger && <FreshPositionIncreaseWarningCard />}
 
           {marginDepositRisk?.level === "insufficient" && (
             <AlertInfoCard type="error" hideClose>
-              {getMarginDepositInsufficientMessage()}
+              <MarginDepositInsufficientMessage positionKey={existingPosition?.key} orderKey={p.order.key} />
             </AlertInfoCard>
           )}
 

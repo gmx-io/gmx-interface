@@ -5,6 +5,7 @@ import { useMedia } from "react-use";
 
 import { ContractsChainId } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
+import { getHasBalanceOutsideWallet } from "domain/multichain/getHasBalanceOutsideWallet";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -154,9 +155,7 @@ function AssetsList({
               const address = getGlvOrMarketAddress(info);
               const isGlv = isGlvInfo(info);
 
-              const earnings = isGlv
-                ? glvUserEarnings?.byGlvAddress[address]
-                : userEarnings?.byMarketAddress[address];
+              const earnings = isGlv ? glvUserEarnings?.byGlvAddress[address] : userEarnings?.byMarketAddress[address];
               const isEarningsLoading = isGlv ? isGlvEarningsLoading : isGmEarningsLoading;
               const isEarningsUnavailable = isGlv ? isGlvEarningsUnavailable : isGmEarningsUnavailable;
 
@@ -169,6 +168,10 @@ function AssetsList({
                   performanceApy30d={getByKey(performance30d, address)}
                   isPerformanceLoading={isPerformanceLoading}
                   multichainMarketTokenBalances={multichainMarketTokensBalances?.[address]}
+                  hasBalanceOutsideWallet={getHasBalanceOutsideWallet(
+                    multichainMarketTokensBalances?.[address],
+                    chainId
+                  )}
                   earnings={earnings ?? (isEarningsLoading || isEarningsUnavailable ? undefined : ZERO_EARNINGS)}
                   isEarningsLoading={isEarningsLoading}
                   isEarningsAvailable={!isEarningsUnavailable}

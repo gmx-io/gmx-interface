@@ -1248,7 +1248,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           {!marginDepositSuggestionHidden && (
             <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}
-          {showIncreaseLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
+          {showIncreaseLiquidationRiskWarning && (
+            <LiquidatableIncreaseWarningCard positionKey={selectedPosition?.key} />
+          )}
           {showIncreaseFreshPositionWarning && <FreshPositionIncreaseWarningCard />}
           {gasPaymentTokenWarningContent && (
             <AlertInfoCard hideClose type="warning">
