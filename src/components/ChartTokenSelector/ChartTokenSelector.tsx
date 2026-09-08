@@ -450,7 +450,28 @@ function MarketsList() {
           "max-h-[444px] overflow-x-auto": !isMobile,
         })}
       >
-        <table className="text-body-small w-full border-separate border-spacing-0">
+        <table
+          className={cx("text-body-small w-full border-separate border-spacing-0", {
+            "table-fixed": !isMobile,
+          })}
+        >
+          {!isMobile && (
+            <colgroup>
+              <col className="w-44" />
+              <col className={isSwap ? "w-[240px]" : "w-[190px]"} />
+              <col className={isSwap ? "w-[130px]" : "w-96"} />
+              {isSwap ? (
+                <col />
+              ) : (
+                <>
+                  <col className="w-64" />
+                  <col className="w-[86px]" />
+                  <col className="w-[100px]" />
+                  <col />
+                </>
+              )}
+            </colgroup>
+          )}
           <thead>
             <tr>
               <th className={favoriteThClassName} colSpan={1}></th>
