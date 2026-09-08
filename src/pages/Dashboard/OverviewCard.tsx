@@ -443,11 +443,13 @@ export function OverviewCard({
                         showDollar={false}
                         value={formatAmountHuman(displayTvlMegaeth, USD_DECIMALS, true, 2)}
                       />
-                      <StatsTooltipRow
-                        label="Solana (GMTrade)"
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlGmtrade, USD_DECIMALS, true, 2)}
-                      />
+                      {gmTvlGmtrade !== undefined && (
+                        <StatsTooltipRow
+                          label="Solana (GMTrade)"
+                          showDollar={false}
+                          value={formatAmountHuman(gmTvlGmtrade, USD_DECIMALS, true, 2)}
+                        />
+                      )}
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
                         label={t`Total`}
@@ -488,11 +490,13 @@ export function OverviewCard({
                         showDollar={false}
                         value={formatAmountHuman(gmTvlMegaeth, USD_DECIMALS, true, 2)}
                       />
-                      <StatsTooltipRow
-                        label="Solana (GMTrade)"
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlGmtrade, USD_DECIMALS, true, 2)}
-                      />
+                      {gmTvlGmtrade !== undefined && (
+                        <StatsTooltipRow
+                          label="Solana (GMTrade)"
+                          showDollar={false}
+                          value={formatAmountHuman(gmTvlGmtrade, USD_DECIMALS, true, 2)}
+                        />
+                      )}
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
                         label={t`Total`}
