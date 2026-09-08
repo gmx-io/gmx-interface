@@ -3,6 +3,8 @@ import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, MEGAETH, ContractsChainIdProduction } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
+import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
@@ -36,6 +38,11 @@ export function StatsCard() {
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2MegaethOverview = useV2Stats(MEGAETH);
+  const gmtradeStats = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana;
+  const gmtradeTotalFees = parseProtocolStatsUsd(gmtradeStats?.fees.total);
+  const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total);
+  // users.all counts a wallet on its first action of any kind, the same basis as the V2 totalUsers entries
+  const gmtradeUsers = gmtradeStats?.users.all ?? undefined;
 
   const uniqueUsers = useUniqueUsers();
 
@@ -46,7 +53,8 @@ export function StatsCard() {
     v1AvalancheTotalFees?.totalFees,
     v2ArbitrumOverview.totalFees,
     v2AvalancheOverview.totalFees,
-    v2MegaethOverview.totalFees
+    v2MegaethOverview.totalFees,
+    gmtradeTotalFees
   );
 
   // #endregion Fees
@@ -75,6 +83,7 @@ export function StatsCard() {
       "V2 MegaETH": v2MegaethOverview?.totalFees,
       "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
       "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
+      "GMTrade Solana": gmtradeTotalFees,
     }),
     [
       v1AvalancheTotalFees?.totalFees,
@@ -82,6 +91,7 @@ export function StatsCard() {
       v2ArbitrumOverview?.totalFees,
       v2AvalancheOverview?.totalFees,
       v2MegaethOverview?.totalFees,
+      gmtradeTotalFees,
     ]
   );
 
@@ -92,8 +102,15 @@ export function StatsCard() {
       "V2 MegaETH": v2MegaethOverview?.totalVolume,
       "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
       "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
+      "GMTrade Solana": gmtradeTotalVolume,
     }),
-    [v1TotalVolume, v2ArbitrumOverview?.totalVolume, v2AvalancheOverview?.totalVolume, v2MegaethOverview?.totalVolume]
+    [
+      v1TotalVolume,
+      v2ArbitrumOverview?.totalVolume,
+      v2AvalancheOverview?.totalVolume,
+      v2MegaethOverview?.totalVolume,
+      gmtradeTotalVolume,
+    ]
   );
 
   const uniqueUsersEntries = useMemo(
@@ -103,8 +120,15 @@ export function StatsCard() {
       "V2 MegaETH": v2MegaethOverview?.totalUsers,
       "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
       "V1 Avalanche": uniqueUsers?.[AVALANCHE],
+      "GMTrade Solana": gmtradeUsers,
     }),
-    [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2MegaethOverview?.totalUsers]
+    [
+      gmtradeUsers,
+      uniqueUsers,
+      v2ArbitrumOverview?.totalUsers,
+      v2AvalancheOverview?.totalUsers,
+      v2MegaethOverview?.totalUsers,
+    ]
   );
 
   return (
@@ -142,7 +166,8 @@ export function StatsCard() {
                   v1TotalVolume?.[MEGAETH],
                   v2ArbitrumOverview?.totalVolume,
                   v2AvalancheOverview?.totalVolume,
-                  v2MegaethOverview?.totalVolume
+                  v2MegaethOverview?.totalVolume,
+                  gmtradeTotalVolume
                 ),
                 USD_DECIMALS,
                 true,
@@ -168,7 +193,8 @@ export function StatsCard() {
                   uniqueUsers?.[MEGAETH],
                   v2ArbitrumOverview?.totalUsers,
                   v2AvalancheOverview?.totalUsers,
-                  v2MegaethOverview?.totalUsers
+                  v2MegaethOverview?.totalUsers,
+                  gmtradeUsers
                 ),
                 0,
                 false,

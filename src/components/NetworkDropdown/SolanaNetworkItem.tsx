@@ -40,11 +40,11 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
         contentClassName="!max-w-[420px]"
       >
         <div className="flex flex-col gap-16">
+          <p className="text-15 text-typography-secondary">
+            <Trans>GMX on Solana (GMTrade) is currently served from a separate domain</Trans>
+          </p>
           <p className="mb-8 text-15 text-typography-secondary">
-            <Trans>
-              GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the
-              experience may vary. Opens in a new tab.
-            </Trans>
+            <Trans>Opens GMTrade in a new tab</Trans>
           </p>
 
           <Button variant="primary-action" className="w-full" to="https://gmtrade.xyz" newTab>

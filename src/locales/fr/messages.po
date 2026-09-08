@@ -849,10 +849,6 @@ msgstr "Classique"
 msgid "Orders"
 msgstr "Ordres"
 
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the experience may vary. Opens in a new tab."
-msgstr "GMTrade (anciennement GMX Solana) est hébergé sur un site distinct et géré par une équipe différente, l'expérience peut donc varier. S'ouvre dans un nouvel onglet."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size. Size delta ({sizeDeltaUsdText}) exceeds position size ({positionSizeInUsdText})"
 msgstr "Taille de réduction invalide. Le delta de taille ({sizeDeltaUsdText}) dépasse la taille de la position ({positionSizeInUsdText})"
@@ -3108,10 +3104,6 @@ msgstr "Chargement des paramètres Express…"
 msgid "RESPONSE TIME"
 msgstr "TEMPS DE RÉPONSE"
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
-msgstr "GMTrade (anciennement GMX Solana) est hébergé sur un autre site web et géré par une équipe différente, l'expérience peut donc varier légèrement"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "Vous n'avez pas effectué de transactions durant la période sélectionnée"
@@ -5335,6 +5327,11 @@ msgstr "CoinLedger Margin Gain Manual CSV"
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
+
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana (GMTrade) is currently served from a separate domain"
+msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Pre-IPO"
@@ -9389,6 +9386,7 @@ msgid "Close price impact"
 msgstr "Impact sur le prix de clôture"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "Ouvre GMTrade dans un nouvel onglet"
 

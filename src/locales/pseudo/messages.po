@@ -849,10 +849,6 @@ msgstr ""
 msgid "Orders"
 msgstr ""
 
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the experience may vary. Opens in a new tab."
-msgstr ""
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size. Size delta ({sizeDeltaUsdText}) exceeds position size ({positionSizeInUsdText})"
 msgstr ""
@@ -3108,10 +3104,6 @@ msgstr ""
 msgid "RESPONSE TIME"
 msgstr ""
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr ""
@@ -5334,6 +5326,11 @@ msgstr ""
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
+msgstr ""
+
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana (GMTrade) is currently served from a separate domain"
 msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -9389,6 +9386,7 @@ msgid "Close price impact"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr ""
 
