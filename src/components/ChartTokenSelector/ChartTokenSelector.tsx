@@ -99,7 +99,7 @@ export default function ChartTokenSelector(props: Props) {
       })}
       desktopPanelClassName={cx("max-w-[100vw] shadow-md", {
         "w-[520px]": !shouldUsePerpPanelWidth,
-        "w-[880px]": shouldUsePerpPanelWidth,
+        "w-[680px]": shouldUsePerpPanelWidth,
       })}
       chevronClassName="hidden"
       label={
