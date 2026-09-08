@@ -6,6 +6,7 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
+import { useProtocolStatsFeesInfo } from "domain/protocolStats/useProtocolStatsFeesInfo";
 import { useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
@@ -43,6 +44,7 @@ export function OverviewCard({
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2MegaethOverview = useV2Stats(MEGAETH);
   const gmtradeOverview = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana;
+  const gmtradeFees = useProtocolStatsFeesInfo({ networks: ["solana"] });
 
   const { data: positionStats } = useSWR<
     {
@@ -214,13 +216,15 @@ export function OverviewCard({
   const v2ArbitrumEpochFees = v2ArbitrumOverview?.epochFees;
   const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
   const v2MegaethEpochFees = v2MegaethOverview?.epochFees;
+  const gmtradeEpochFees = gmtradeFees?.epochFees;
 
   const totalEpochFeesUsd = sumBigInts(
     v1ArbitrumEpochFees,
     v1AvalancheEpochFees,
     v2ArbitrumEpochFees,
     v2AvalancheEpochFees,
-    v2MegaethEpochFees
+    v2MegaethEpochFees,
+    gmtradeEpochFees
   );
 
   const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
@@ -229,13 +233,15 @@ export function OverviewCard({
   const v2ArbitrumWeeklyFees = v2ArbitrumOverview?.weeklyFees;
   const v2AvalancheWeeklyFees = v2AvalancheOverview?.weeklyFees;
   const v2MegaethWeeklyFees = v2MegaethOverview?.weeklyFees;
+  const gmtradeWeeklyFees = gmtradeFees?.weeklyFees;
 
   const totalWeeklyFeesUsd = sumBigInts(
     v1ArbitrumWeeklyFees,
     v1AvalancheWeeklyFees,
     v2ArbitrumWeeklyFees,
     v2AvalancheWeeklyFees,
-    v2MegaethWeeklyFees
+    v2MegaethWeeklyFees,
+    gmtradeWeeklyFees
   );
 
   // #endregion Fees
@@ -321,8 +327,16 @@ export function OverviewCard({
       "V2 MegaETH": v2MegaethEpochFees,
       "V1 Arbitrum": v1ArbitrumEpochFees,
       "V1 Avalanche": v1AvalancheEpochFees,
+      "GMTrade Solana": gmtradeEpochFees,
     }),
-    [v1ArbitrumEpochFees, v1AvalancheEpochFees, v2ArbitrumEpochFees, v2AvalancheEpochFees, v2MegaethEpochFees]
+    [
+      v1ArbitrumEpochFees,
+      v1AvalancheEpochFees,
+      v2ArbitrumEpochFees,
+      v2AvalancheEpochFees,
+      v2MegaethEpochFees,
+      gmtradeEpochFees,
+    ]
   );
 
   const [formattedDuration, setFormattedDuration] = useState(() => getFormattedFeesDuration());
@@ -335,6 +349,7 @@ export function OverviewCard({
   }, []);
 
   const feesSubtotal = useMemo(() => {
+    // GMTrade allocates nothing to buybacks since 2026-01-16, so it only joins the annualized fees
     const v1BuyingPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
     const v2BuyingPressure =
       (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n) + (v2MegaethWeeklyFees ?? 0n)) * 27n) / 100n;
