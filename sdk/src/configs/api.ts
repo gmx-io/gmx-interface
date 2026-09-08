@@ -48,10 +48,9 @@ export function isApiSupported(chainId: number, environment: ApiEnvironment = "p
   return getApiUrl(chainId, environment) !== undefined;
 }
 
-// Stats are chain-agnostic and served by the Arbitrum test stand; production has no deployment with the
-// stats flag yet, and calling it there would only fill its error log with 503s.
+// Stats are chain-agnostic, so one deployment per environment serves them for every network
 const STATS_API_URLS: Record<ApiEnvironment, string | undefined> = {
-  production: undefined,
+  production: API_URLS.production[ARBITRUM],
   test: API_URLS.test[ARBITRUM],
 };
 
