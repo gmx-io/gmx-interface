@@ -143,13 +143,15 @@ export function OverviewCard({
   const v2ArbitrumDailyVolume = v2ArbitrumOverview.dailyVolume;
   const v2AvalancheDailyVolume = v2AvalancheOverview.dailyVolume;
   const v2MegaethDailyVolume = v2MegaethOverview.dailyVolume;
+  const gmtradeDailyVolume = parseProtocolStatsUsd(gmtradeOverview?.volume24h?.total);
 
   const totalDailyVolume = sumBigInts(
     v1ArbitrumDailyVolume,
     v1AvalancheDailyVolume,
     v2ArbitrumDailyVolume,
     v2AvalancheDailyVolume,
-    v2MegaethDailyVolume
+    v2MegaethDailyVolume,
+    gmtradeDailyVolume
   );
   // #endregion Daily Volume
 
@@ -253,8 +255,10 @@ export function OverviewCard({
       "V2 MegaETH": v2MegaethOverview?.dailyVolume,
       "V1 Arbitrum": v1ArbitrumDailyVolume,
       "V1 Avalanche": v1AvalancheDailyVolume,
+      "GMTrade Solana": gmtradeDailyVolume,
     }),
     [
+      gmtradeDailyVolume,
       v1ArbitrumDailyVolume,
       v1AvalancheDailyVolume,
       v2ArbitrumOverview?.dailyVolume,

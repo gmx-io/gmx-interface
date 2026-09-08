@@ -41,6 +41,8 @@ export function StatsCard() {
   const gmtradeStats = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana;
   const gmtradeTotalFees = parseProtocolStatsUsd(gmtradeStats?.fees.total);
   const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total);
+  // users.all counts a wallet on its first action of any kind, the same basis as the V2 totalUsers entries
+  const gmtradeUsers = gmtradeStats?.users.all ?? undefined;
 
   const uniqueUsers = useUniqueUsers();
 
@@ -118,8 +120,15 @@ export function StatsCard() {
       "V2 MegaETH": v2MegaethOverview?.totalUsers,
       "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
       "V1 Avalanche": uniqueUsers?.[AVALANCHE],
+      "GMTrade Solana": gmtradeUsers,
     }),
-    [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2MegaethOverview?.totalUsers]
+    [
+      gmtradeUsers,
+      uniqueUsers,
+      v2ArbitrumOverview?.totalUsers,
+      v2AvalancheOverview?.totalUsers,
+      v2MegaethOverview?.totalUsers,
+    ]
   );
 
   return (
@@ -184,7 +193,8 @@ export function StatsCard() {
                   uniqueUsers?.[MEGAETH],
                   v2ArbitrumOverview?.totalUsers,
                   v2AvalancheOverview?.totalUsers,
-                  v2MegaethOverview?.totalUsers
+                  v2MegaethOverview?.totalUsers,
+                  gmtradeUsers
                 ),
                 0,
                 false,
