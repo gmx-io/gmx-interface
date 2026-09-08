@@ -44,8 +44,5 @@ export function getUiStatsApiUrl() {
     }
   }
 
-  const url = getStatsApiUrl(getUiApiEnvironment());
-
-  // the test stand is the only deployment serving stats, so previews and local builds fall back to it
-  return url ?? (isDevelopment() ? getStatsApiUrl("test") : undefined);
+  return getStatsApiUrl(getUiApiEnvironment());
 }
