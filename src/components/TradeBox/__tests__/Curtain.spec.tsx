@@ -11,6 +11,7 @@ import { Curtain, getCurtainStyle } from "../Curtain";
 afterEach(() => {
   cleanup();
   delete (HTMLElement.prototype as Partial<HTMLElement>).animate;
+  vi.useRealTimers();
 });
 
 describe("Curtain", () => {
@@ -36,7 +37,8 @@ describe("Curtain", () => {
     expect(content?.getAttribute("aria-hidden")).toBe("true");
   });
 
-  it("restores the collapsed position when a drag is cancelled", () => {
+  it("restores the collapsed position when a landscape drag is interrupted", () => {
+    vi.useFakeTimers();
     const animate = vi.fn(() => {
       const animation = {
         addEventListener: (_event: string, listener: EventListener) => listener(new Event("finish")),
@@ -64,7 +66,7 @@ describe("Curtain", () => {
     expect(content?.className).not.toContain("invisible");
     expect(content?.getAttribute("aria-hidden")).toBe("false");
 
-    fireEvent.pointerCancel(header!);
+    fireEvent.touchCancel(window);
 
     expect(animate).toHaveBeenCalledWith(
       { transform: "translateY(calc(100% - 39px))" },
@@ -76,7 +78,8 @@ describe("Curtain", () => {
 
     fireEvent.pointerDown(header!, { screenX: 0, screenY: 100 });
     fireEvent.pointerMove(header!, { screenX: 0, screenY: 80 });
-    fireEvent.pointerCancel(header!);
+    fireEvent(window, new Event("resize"));
+    vi.advanceTimersByTime(50);
 
     expect(animate).toHaveBeenCalledTimes(2);
     expect(curtain?.style.transform).toBe("translateY(calc(100% - 39px))");

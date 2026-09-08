@@ -187,6 +187,10 @@ export function Curtain({
   );
 
   const handlePointerUp = useCallback(() => {
+    if (!isPointerDownRef.current) {
+      return;
+    }
+
     isPointerDownRef.current = false;
     setIsDragging(false);
 
@@ -217,6 +221,10 @@ export function Curtain({
   }, [handleAnimate, setExternalIsCurtainOpen]);
 
   const handlePointerCancel = useCallback(() => {
+    if (!isPointerDownRef.current) {
+      return;
+    }
+
     const wasDragging = isDraggingRef.current;
 
     isPointerDownRef.current = false;
@@ -230,9 +238,26 @@ export function Curtain({
   }, [handleAnimate, isOpen]);
 
   useEffect(() => {
+    // WebKit can lose pointer events when a touch crosses the browser chrome.
+    window.addEventListener("pointerup", handlePointerUp, true);
+    window.addEventListener("pointercancel", handlePointerCancel, true);
+    window.addEventListener("touchend", handlePointerUp, true);
+    window.addEventListener("touchcancel", handlePointerCancel, true);
+
+    return () => {
+      window.removeEventListener("pointerup", handlePointerUp, true);
+      window.removeEventListener("pointercancel", handlePointerCancel, true);
+      window.removeEventListener("touchend", handlePointerUp, true);
+      window.removeEventListener("touchcancel", handlePointerCancel, true);
+    };
+  }, [handlePointerCancel, handlePointerUp]);
+
+  useEffect(() => {
     const handler = throttle(
       () => {
-        if (isOpen && !isDraggingRef.current) {
+        if (isPointerDownRef.current) {
+          handlePointerCancel();
+        } else if (isOpen) {
           handleAnimate(true);
         }
       },
@@ -244,7 +269,7 @@ export function Curtain({
     return () => {
       window.removeEventListener("resize", handler);
     };
-  }, [handleAnimate, isOpen]);
+  }, [handleAnimate, handlePointerCancel, isOpen]);
 
   useEffect(() => {
     if (externalIsCurtainOpen && !isOpen) {
