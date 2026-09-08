@@ -8,7 +8,10 @@ vi.mock("lib/wallets/oneKeyUiCompat", () => ({
 
 import { Curtain, getCurtainStyle } from "../Curtain";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  delete (HTMLElement.prototype as Partial<HTMLElement>).animate;
+});
 
 describe("Curtain", () => {
   it("combines device safe areas with the browser overlay inset", () => {
@@ -33,13 +36,25 @@ describe("Curtain", () => {
     expect(content?.getAttribute("aria-hidden")).toBe("true");
   });
 
-  it("reveals its content while dragging from the collapsed state", () => {
+  it("restores the collapsed position when a drag is cancelled", () => {
+    const animate = vi.fn(() => {
+      const animation = {
+        addEventListener: (_event: string, listener: EventListener) => listener(new Event("finish")),
+        cancel: vi.fn(),
+        commitStyles: vi.fn(),
+      };
+
+      return animation as unknown as Animation;
+    });
+    Object.defineProperty(HTMLElement.prototype, "animate", { configurable: true, value: animate });
+
     const { getByText } = render(
       <Curtain header={<span>Header</span>}>
         <span>Content</span>
       </Curtain>
     );
     const header = getByText("Header").parentElement?.parentElement;
+    const curtain = header?.parentElement;
     const content = getByText("Content").parentElement;
 
     expect(header).not.toBeNull();
@@ -51,8 +66,20 @@ describe("Curtain", () => {
 
     fireEvent.pointerCancel(header!);
 
+    expect(animate).toHaveBeenCalledWith(
+      { transform: "translateY(calc(100% - 39px))" },
+      { duration: 150, easing: "ease-out", fill: "both" }
+    );
     expect(content?.className).toContain("invisible");
     expect(content?.getAttribute("aria-hidden")).toBe("true");
+    expect(curtain?.style.transform).toBe("translateY(calc(100% - 39px))");
+
+    fireEvent.pointerDown(header!, { screenX: 0, screenY: 100 });
+    fireEvent.pointerMove(header!, { screenX: 0, screenY: 80 });
+    fireEvent.pointerCancel(header!);
+
+    expect(animate).toHaveBeenCalledTimes(2);
+    expect(curtain?.style.transform).toBe("translateY(calc(100% - 39px))");
   });
 
   it("extends its background through the bottom safe area", () => {

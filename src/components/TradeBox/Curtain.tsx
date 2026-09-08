@@ -217,10 +217,17 @@ export function Curtain({
   }, [handleAnimate, setExternalIsCurtainOpen]);
 
   const handlePointerCancel = useCallback(() => {
+    const wasDragging = isDraggingRef.current;
+
     isPointerDownRef.current = false;
     isDraggingRef.current = false;
     setIsDragging(false);
-  }, []);
+
+    if (wasDragging && curtainRef.current) {
+      curtainRef.current.style.willChange = "";
+      handleAnimate(isOpen);
+    }
+  }, [handleAnimate, isOpen]);
 
   useEffect(() => {
     const handler = throttle(
