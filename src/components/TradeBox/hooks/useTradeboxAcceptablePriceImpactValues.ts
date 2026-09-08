@@ -33,59 +33,47 @@ export function useTradeboxAcceptablePriceImpactValues() {
 
   const isAnyValueChanged = Object.values(tradeboxChanges).some(Boolean);
 
-  /**
-   * Drop selected acceptable price impact when user changes market/pool/trade type/limit price
-   */
-  useEffect(() => {
-    if (isAnyValueChanged) {
-      setDefaultTriggerAcceptablePriceImpactBps(undefined);
-      setSelectedAcceptablePriceImpactBps(undefined);
-    }
-  }, [isAnyValueChanged, setDefaultTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImpactBps]);
+  let recommendedAcceptablePriceImpactBps: bigint | undefined;
 
-  /**
-   * Set initial value for limit / stop market orders
-   */
-  useEffect(() => {
-    if (
-      isLimit &&
-      increaseAmounts?.acceptablePrice &&
-      defaultTriggerAcceptablePriceImpactBps === undefined &&
-      selectedTriggerAcceptablePriceImpactBps === undefined
-    ) {
-      setSelectedAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
-      setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
-    }
-  }, [
-    defaultTriggerAcceptablePriceImpactBps,
-    increaseAmounts?.acceptablePrice,
-    increaseAmounts?.acceptablePriceDeltaBps,
-    isLimit,
-    selectedTriggerAcceptablePriceImpactBps,
-    setDefaultTriggerAcceptablePriceImpactBps,
-    setSelectedAcceptablePriceImpactBps,
-  ]);
+  if (isLimit && increaseAmounts?.acceptablePrice) {
+    recommendedAcceptablePriceImpactBps = bigMath.abs(increaseAmounts.recommendedAcceptablePriceDeltaBps);
+  } else if (isTrigger && decreaseAmounts?.acceptablePrice !== undefined) {
+    recommendedAcceptablePriceImpactBps = bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps);
+  }
 
-  /**
-   * Set initial values from TP/SL orders
-   */
-  useEffect(() => {
-    if (
-      isTrigger &&
-      decreaseAmounts?.acceptablePrice !== undefined &&
-      defaultTriggerAcceptablePriceImpactBps === undefined &&
-      selectedTriggerAcceptablePriceImpactBps === undefined
-    ) {
-      setSelectedAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
-      setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
-    }
-  }, [
-    decreaseAmounts?.acceptablePrice,
-    decreaseAmounts?.recommendedAcceptablePriceDeltaBps,
-    defaultTriggerAcceptablePriceImpactBps,
-    isTrigger,
-    selectedTriggerAcceptablePriceImpactBps,
-    setDefaultTriggerAcceptablePriceImpactBps,
-    setSelectedAcceptablePriceImpactBps,
-  ]);
+  useEffect(
+    function resetAcceptablePriceImpactOnTradeboxChanges() {
+      if (isAnyValueChanged) {
+        setDefaultTriggerAcceptablePriceImpactBps(undefined);
+        setSelectedAcceptablePriceImpactBps(undefined);
+      }
+    },
+    [isAnyValueChanged, setDefaultTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImpactBps]
+  );
+
+  useEffect(
+    function followRecommendedAcceptablePriceImpact() {
+      if (recommendedAcceptablePriceImpactBps === undefined) {
+        return;
+      }
+
+      const isCustomized =
+        selectedTriggerAcceptablePriceImpactBps !== undefined &&
+        defaultTriggerAcceptablePriceImpactBps !== undefined &&
+        selectedTriggerAcceptablePriceImpactBps !== defaultTriggerAcceptablePriceImpactBps;
+
+      if (!isCustomized) {
+        setSelectedAcceptablePriceImpactBps(recommendedAcceptablePriceImpactBps);
+      }
+
+      setDefaultTriggerAcceptablePriceImpactBps(recommendedAcceptablePriceImpactBps);
+    },
+    [
+      defaultTriggerAcceptablePriceImpactBps,
+      recommendedAcceptablePriceImpactBps,
+      selectedTriggerAcceptablePriceImpactBps,
+      setDefaultTriggerAcceptablePriceImpactBps,
+      setSelectedAcceptablePriceImpactBps,
+    ]
+  );
 }
