@@ -932,7 +932,6 @@ msgstr "可供结算的累计资金费用"
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "将 esGMX 转换为 GMX 代币。使用金库前请阅读归属期详情。"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Order won't execute: size exceeds the max long size of {maxSize}. Reduce the order size."
 msgstr "订单将无法执行：规模超过最大多头规模 {maxSize}。请减小订单规模。"
@@ -1067,6 +1066,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
 msgstr "兑换费用"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max {positionSide} size"
+msgstr "最大{positionSide}规模"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -3089,6 +3092,10 @@ msgstr "在 {chainName} 上购买 GMX"
 msgid "Size"
 msgstr "规模"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order may not execute: size exceeds the max {positionSide} size of {maxSize} at the trigger price. Reduce the order size."
+msgstr "订单可能无法执行：规模超过触发价格下的最大{positionSide}规模 {maxSize}。请减小订单规模。"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Trade from your own wallet — no deposits."
 msgstr "直接用您自己的钱包交易——无需存款。"
@@ -3259,6 +3266,10 @@ msgstr "GM 代币自动再平衡金库，通过杠杆交易和兑换累积费用
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>没有固定门槛 — 团队会根据您近期及预期的月交易量设定您的等级。大多数交易者符合基础等级；联系我们,我们将确认您的费率。</0>"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The most this market can add to {positionSide} positions right now. Updates live and can change before a resting order triggers."
+msgstr "这是该市场当前可增加到{positionSide}仓位的最大规模。该数值实时更新，并可能在挂单触发前发生变化。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3984,10 +3995,6 @@ msgstr "指数（正）"
 msgid "Deposit in progress..."
 msgstr "存入处理中..."
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Order may not execute: size exceeds the max long size of {maxSize} at the trigger price. Reduce the order size."
-msgstr "订单可能无法执行：规模超过触发价格下的最大多头规模 {maxSize}。请减小订单规模。"
-
 #: src/domain/tpsl/utils.ts
 msgid "This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute."
 msgstr "此触发价格超过当前清算价格。在此 TP/SL 订单执行之前，您的仓位可能会被清算。"
@@ -4340,10 +4347,6 @@ msgstr "交易"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr "无需存入"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Max long size"
-msgstr "最大多头规模"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
@@ -4921,10 +4924,6 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
 msgstr "兑换已提交"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Order may not execute: size exceeds the max short size of {maxSize} at the trigger price. Reduce the order size."
-msgstr "订单可能无法执行：规模超过触发价格下的最大空头规模 {maxSize}。请减小订单规模。"
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
@@ -5815,10 +5814,6 @@ msgstr ""
 msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
 msgstr "<0>不需要。GMX 是自托管且无需许可的——您只需连接钱包即可交易。无需身份验证。</0>"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Parts of this order may not execute: size exceeds the max long size of {maxSize}. Reduce the order size."
-msgstr "该订单可能有部分无法执行：规模超过最大多头规模 {maxSize}。请减小订单规模。"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -6593,10 +6588,6 @@ msgstr "累计质押奖励"
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
 msgstr "One-Click Trading 需要针对当前网络进行一次性签名。为其他网络签署的授权不受影响。请重新签名以在此启用 One-Click Trading。"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Max short size"
-msgstr "最大空头规模"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "您的资金安全存放在目标链上的 LayerZero 中。请在 LayerZero Scan 中重试接收交易或联系客服。"
@@ -7204,6 +7195,10 @@ msgstr "访问密钥"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "扣除盈亏和所有费用后的仓位价值"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Parts of this order may not execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "该订单可能有部分无法执行：规模超过最大{positionSide}规模 {maxSize}。请减小订单规模。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -9514,7 +9509,6 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "使用 {0} 买入 GM，上限如下"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Order won't execute: size exceeds the max short size of {maxSize}. Reduce the order size."
 msgstr "订单将无法执行：规模超过最大空头规模 {maxSize}。请减小订单规模。"
@@ -9713,10 +9707,6 @@ msgstr "随时在<0>附属</0>标签页领取。"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "It accrues to the code owner ({0})."
 msgstr "返佣累积给代码所有者（{0}）。"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Parts of this order may not execute: size exceeds the max short size of {maxSize}. Reduce the order size."
-msgstr "该订单可能有部分无法执行：规模超过最大空头规模 {maxSize}。请减小订单规模。"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -11950,6 +11940,7 @@ msgstr "仅当前持仓"
 msgid "GMX token icon"
 msgstr "GMX 代币图标"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr "多头"
@@ -12193,6 +12184,10 @@ msgstr "分享盈亏"
 msgid "Frequency"
 msgstr "频率"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "订单将无法执行：规模超过最大{positionSide}规模 {maxSize}。请减小订单规模。"
+
 #: src/pages/UiPage/BannerTest.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Switch to WBTC-USDC pool"
@@ -12275,6 +12270,7 @@ msgstr "卖出"
 msgid "Lent position impact pool amount"
 msgstr "借出的仓位影响池金额"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "空头"
@@ -12340,10 +12336,6 @@ msgstr "Delta 中性金库"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."
 msgstr "正在发送转移请求…"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "The most this market can add to short positions right now. Updates live and can change before a resting order triggers."
-msgstr "这是该市场当前可增加到空头仓位的最大规模。该数值实时更新，并可能在挂单触发前发生变化。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -12596,10 +12588,6 @@ msgstr "分享到"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "衍生品投资组合追踪器"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "The most this market can add to long positions right now. Updates live and can change before a resting order triggers."
-msgstr "这是该市场当前可增加到多头仓位的最大规模。该数值实时更新，并可能在挂单触发前发生变化。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."

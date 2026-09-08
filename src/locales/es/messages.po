@@ -932,7 +932,6 @@ msgstr "Comisiones de financiación acumuladas disponibles para compensación"
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "Convierta esGMX en tokens GMX. Lea los detalles del periodo de consolidación antes de utilizar las bóvedas."
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Order won't execute: size exceeds the max long size of {maxSize}. Reduce the order size."
 msgstr "La orden no se ejecutará: el tamaño supera el tamaño máximo en largo de {maxSize}. Reduce el tamaño de la orden."
@@ -1067,6 +1066,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
 msgstr "Comisiones de intercambio"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max {positionSide} size"
+msgstr "Tamaño máximo en {positionSide}"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -3089,6 +3092,10 @@ msgstr "Comprar GMX en {chainName}"
 msgid "Size"
 msgstr "Tamaño"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order may not execute: size exceeds the max {positionSide} size of {maxSize} at the trigger price. Reduce the order size."
+msgstr "Es posible que la orden no se ejecute: el tamaño supera el tamaño máximo en {positionSide} de {maxSize} al precio de activación. Reduce el tamaño de la orden."
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Trade from your own wallet — no deposits."
 msgstr "Opere desde su propio monedero — sin depósitos."
@@ -3259,6 +3266,10 @@ msgstr "Vault de tokens GM con reequilibrio automático que acumula comisiones d
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>No hay un límite fijo — el equipo establece tu nivel según tu volumen mensual reciente y previsto. La mayoría de los traders califican para el nivel base; contáctanos y confirmaremos tu tarifa.</0>"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The most this market can add to {positionSide} positions right now. Updates live and can change before a resting order triggers."
+msgstr "El máximo que este mercado puede añadir a las posiciones en {positionSide} ahora mismo. Se actualiza en tiempo real y puede cambiar antes de que se active una orden pendiente."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3984,10 +3995,6 @@ msgstr "Exponente (positivo)"
 msgid "Deposit in progress..."
 msgstr "Depósito en curso..."
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Order may not execute: size exceeds the max long size of {maxSize} at the trigger price. Reduce the order size."
-msgstr "Es posible que la orden no se ejecute: el tamaño supera el tamaño máximo en largo de {maxSize} al precio de activación. Reduce el tamaño de la orden."
-
 #: src/domain/tpsl/utils.ts
 msgid "This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute."
 msgstr "Este precio de activación supera el precio de liquidación actual. Tu posición podría liquidarse antes de que esta orden TP/SL pueda ejecutarse."
@@ -4340,10 +4347,6 @@ msgstr "Trading"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr "No se requieren depósitos"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Max long size"
-msgstr "Tamaño máximo en largo"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
@@ -4921,10 +4924,6 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
 msgstr "Intercambio enviado"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Order may not execute: size exceeds the max short size of {maxSize} at the trigger price. Reduce the order size."
-msgstr "Es posible que la orden no se ejecute: el tamaño supera el tamaño máximo en corto de {maxSize} al precio de activación. Reduce el tamaño de la orden."
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
@@ -5815,10 +5814,6 @@ msgstr ""
 msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
 msgstr "<0>No. GMX es de autocustodia y sin permisos — usted conecta un monedero y opera. Sin necesidad de verificación de identidad.</0>"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Parts of this order may not execute: size exceeds the max long size of {maxSize}. Reduce the order size."
-msgstr "Es posible que algunas partes de esta orden no se ejecuten: el tamaño supera el tamaño máximo en largo de {maxSize}. Reduce el tamaño de la orden."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -6593,10 +6588,6 @@ msgstr "Recompensas de staking totales"
 msgid "One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are unaffected. Re-sign to enable One-Click Trading here."
 msgstr "One-Click Trading necesita una firma única para la red actual. Las aprobaciones firmadas para otras redes no se ven afectadas. Vuelva a firmar para activar One-Click Trading aquí."
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Max short size"
-msgstr "Tamaño máximo en corto"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "Sus fondos están seguros en LayerZero en la cadena de destino. Reintente la transacción de recepción en LayerZero Scan o contacte con soporte."
@@ -7204,6 +7195,10 @@ msgstr "Clave de acceso"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "Valor de la posición después de PnL y todas las tarifas"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Parts of this order may not execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "Es posible que algunas partes de esta orden no se ejecuten: el tamaño supera el tamaño máximo en {positionSide} de {maxSize}. Reduce el tamaño de la orden."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -9514,7 +9509,6 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "Comprar GM con {0} hasta los límites indicados a continuación"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Order won't execute: size exceeds the max short size of {maxSize}. Reduce the order size."
 msgstr "La orden no se ejecutará: el tamaño supera el tamaño máximo en corto de {maxSize}. Reduce el tamaño de la orden."
@@ -9713,10 +9707,6 @@ msgstr "Reclámala cuando quieras en la pestaña <0>Afiliados</0>."
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "It accrues to the code owner ({0})."
 msgstr "Se acumula para el propietario del código ({0})."
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Parts of this order may not execute: size exceeds the max short size of {maxSize}. Reduce the order size."
-msgstr "Es posible que algunas partes de esta orden no se ejecuten: el tamaño supera el tamaño máximo en corto de {maxSize}. Reduce el tamaño de la orden."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -11950,6 +11940,7 @@ msgstr "Solo la posición actual"
 msgid "GMX token icon"
 msgstr "Icono del token GMX"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr "largo"
@@ -12193,6 +12184,10 @@ msgstr "Compartir PnL"
 msgid "Frequency"
 msgstr "Frecuencia"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "La orden no se ejecutará: el tamaño supera el tamaño máximo en {positionSide} de {maxSize}. Reduce el tamaño de la orden."
+
 #: src/pages/UiPage/BannerTest.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Switch to WBTC-USDC pool"
@@ -12275,6 +12270,7 @@ msgstr "Vender"
 msgid "Lent position impact pool amount"
 msgstr "Cantidad prestada del pool de impacto de posición"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "corto"
@@ -12340,10 +12336,6 @@ msgstr "Bóvedas delta neutral"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."
 msgstr "Enviando solicitud de cambio…"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "The most this market can add to short positions right now. Updates live and can change before a resting order triggers."
-msgstr "El máximo que este mercado puede añadir a las posiciones cortas ahora mismo. Se actualiza en tiempo real y puede cambiar antes de que se active una orden pendiente."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -12596,10 +12588,6 @@ msgstr "Compartir en"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "Rastreador de cartera de derivados"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "The most this market can add to long positions right now. Updates live and can change before a resting order triggers."
-msgstr "El máximo que este mercado puede añadir a las posiciones largas ahora mismo. Se actualiza en tiempo real y puede cambiar antes de que se active una orden pendiente."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
