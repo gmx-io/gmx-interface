@@ -390,6 +390,7 @@ msgstr "Airdrop de GM"
 msgid "At price"
 msgstr "A precio"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "Volumen"
@@ -448,6 +449,7 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
 msgstr "Comisiones"
@@ -826,6 +828,10 @@ msgstr "No"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "/ mo"
 msgstr "/ mes"
+
+#: src/domain/protocolStats/utils.ts
+msgid "Stale"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -2005,6 +2011,8 @@ msgstr "Dirección del afiliado:"
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -2054,6 +2062,10 @@ msgstr "Sin tarifa"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Switch to market order"
 msgstr "Cambiar a orden de mercado"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Every source is fresh."
+msgstr ""
 
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
@@ -2143,6 +2155,10 @@ msgstr "Icono de alerta"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
 msgstr "Gestión pasiva"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Lighter bars are provisional: a source has not finalized those days yet, so their values can still change."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
@@ -2286,6 +2302,10 @@ msgstr "Express Trading no está disponible para envolver o desenvolver el token
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual short token ID"
 msgstr "ID del token corto virtual"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Perps and swaps. LP deposits and withdrawals are not included."
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Build on GMX. Get<0/>paid on every trade."
@@ -3599,6 +3619,7 @@ msgstr "Falló la reclamación de tarifas de funding"
 #. Total Value Locked
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "TVL"
 msgstr "TVL"
 
@@ -4008,6 +4029,10 @@ msgstr "Creando…"
 msgid "{0, plural, one {is} other {are}}"
 msgstr "{0, plural, one {está} other {están}}"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Stale, {lag} behind"
+msgstr ""
+
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
 msgstr "GMX no está contratando activamente. Si cree que puede contribuir, envíe un correo electrónico a <0>jobs@gmx.io</0>."
@@ -4015,6 +4040,10 @@ msgstr "GMX no está contratando activamente. Si cree que puede contribuir, env�
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings"
 msgstr "Ofertas de empleo"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Perp trades"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4281,6 +4310,10 @@ msgstr "Enviando..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max capacity:"
 msgstr "Capacidad máxima:"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "As of"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
@@ -4804,6 +4837,7 @@ msgstr "Mostrar rPnL después de comisiones"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "Open interest"
 msgstr "Interés abierto"
 
@@ -5297,6 +5331,11 @@ msgstr "App deshabilitada, pendiente actualización de {0}"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "v:"
 msgstr "v:"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Provisional"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -6007,6 +6046,7 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6692,6 +6732,7 @@ msgid "This competition is held on the {0} network. <0>Change your network</0> t
 msgstr "Esta competencia se lleva a cabo en la red {0}. <0>Cambia tu red</0> para participar."
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "All networks"
 msgstr "Todas las redes"
 
@@ -6763,6 +6804,10 @@ msgstr "No hay operaciones elegibles durante el período de competición"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GMX staking is available on Arbitrum and Avalanche. GLV vaults and GM tokens vary by chain. Visit the pools page to see liquidity options for your connected network."
 msgstr "El staking de GMX está disponible en Arbitrum y Avalanche. Los vaults GLV y los tokens GM varían según la cadena. Visite la página de pools para ver las opciones de liquidez de su red conectada."
+
+#: src/domain/protocolStats/utils.ts
+msgid "Missing"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
@@ -8993,6 +9038,10 @@ msgstr "Las órdenes TP/SL se cancelan automáticamente al cerrar la posición. 
 msgid "fees"
 msgstr "comisiones"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Protocol revenue"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
 msgstr "No se pudo completar la aprobación con permiso."
@@ -9297,6 +9346,7 @@ msgstr "Excluye el financiamiento reclamado, los reembolsos por impacto en el pr
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "24h volume"
 msgstr "Volumen 24h"
 
@@ -9414,6 +9464,10 @@ msgstr "Retraso de garantía reclamable"
 msgid "Debug controls"
 msgstr "Controles de depuración"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Fresh, {lag} behind"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Concluded"
 msgstr "Concluido"
@@ -9458,6 +9512,10 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
 msgstr "{0} GMX"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Up to date"
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
@@ -9509,6 +9567,10 @@ msgstr "Comprar GM con {0} hasta los límites indicados a continuación"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "Análisis de datos del protocolo"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Volume by network, last {days} days"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
@@ -9678,6 +9740,10 @@ msgstr "Reclamar {0}"
 msgid "Borrowing exponent short"
 msgstr "Exponente de préstamo corto"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Share of fees kept by the protocol under each network's fee distribution. LP and buyback shares are not included."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Expected 365d"
 msgstr "Esperado 365d"
@@ -9800,6 +9866,10 @@ msgstr "Solicitud de venta enviada"
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error"
 msgstr "Error de retirada"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Partial data"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
@@ -10164,6 +10234,7 @@ msgstr "Reclamaciones"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 msgid "Date"
 msgstr "Fecha"
 
@@ -10626,6 +10697,7 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10968,7 +11040,12 @@ msgstr ""
 msgid "Staked"
 msgstr "Stakeado"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Fresh"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "Traders"
 msgstr "Traders"
 
@@ -11523,6 +11600,10 @@ msgstr "PnL corto"
 msgid "A dedicated account manager"
 msgstr "Un gestor de cuenta dedicado"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Position, borrowing, liquidation and swap fees."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr "Ocultar desglose"
@@ -11608,6 +11689,7 @@ msgstr ""
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 msgid "No data available"
 msgstr "No hay datos disponibles"
 
@@ -11706,6 +11788,10 @@ msgstr "Comprar APE en Arbitrum con <0>Camelot</0>"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "Depositando…"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Value of GM pools. GLV vaults hold GM tokens, so they are already included."
+msgstr ""
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
@@ -12059,6 +12145,10 @@ msgstr "Solicitar retirada"
 msgid "Last 30d"
 msgstr "Últimos 30d"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Wallets with an executed position change, counted once per network."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "Paneles"
@@ -12150,6 +12240,10 @@ msgstr "No se encontraron mercados"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to enter a code on each network?"
+msgstr ""
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Some sources are stale or missing, so the totals are incomplete."
 msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx

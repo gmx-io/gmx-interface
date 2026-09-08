@@ -390,6 +390,7 @@ msgstr "GM airdrop"
 msgid "At price"
 msgstr "At price"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "Volume"
@@ -448,6 +449,7 @@ msgstr "Insufficient pool balance to claim this funding fee"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
 msgstr "Fees"
@@ -826,6 +828,10 @@ msgstr "No"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "/ mo"
 msgstr "/ mo"
+
+#: src/domain/protocolStats/utils.ts
+msgid "Stale"
+msgstr "Stale"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -2005,6 +2011,8 @@ msgstr "Affiliate address:"
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -2054,6 +2062,10 @@ msgstr "No fee"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Switch to market order"
 msgstr "Switch to market order"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Every source is fresh."
+msgstr "Every source is fresh."
 
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
@@ -2143,6 +2155,10 @@ msgstr "Alert icon"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
 msgstr "Passive management"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Lighter bars are provisional: a source has not finalized those days yet, so their values can still change."
+msgstr "Lighter bars are provisional: a source has not finalized those days yet, so their values can still change."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
@@ -2286,6 +2302,10 @@ msgstr "Express Trading is unavailable for wrapping or unwrapping native token {
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual short token ID"
 msgstr "Virtual short token ID"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Perps and swaps. LP deposits and withdrawals are not included."
+msgstr "Perps and swaps. LP deposits and withdrawals are not included."
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Build on GMX. Get<0/>paid on every trade."
@@ -3599,6 +3619,7 @@ msgstr "Claiming funding fees failed"
 #. Total Value Locked
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "TVL"
 msgstr "TVL"
 
@@ -4008,6 +4029,10 @@ msgstr "Creating..."
 msgid "{0, plural, one {is} other {are}}"
 msgstr "{0, plural, one {is} other {are}}"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Stale, {lag} behind"
+msgstr "Stale, {lag} behind"
+
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
 msgstr "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -4015,6 +4040,10 @@ msgstr "GMX is not actively hiring. If you think you can contribute, email <0>jo
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings"
 msgstr "Job openings"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Perp trades"
+msgstr "Perp trades"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4281,6 +4310,10 @@ msgstr "Sending..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max capacity:"
 msgstr "Max capacity:"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "As of"
+msgstr "As of"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
@@ -4804,6 +4837,7 @@ msgstr "Show rPnL after fees"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "Open interest"
 msgstr "Open interest"
 
@@ -5297,6 +5331,11 @@ msgstr "App disabled, pending {0} upgrade"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "v:"
 msgstr "v:"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Provisional"
+msgstr "Provisional"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -6007,6 +6046,7 @@ msgstr "Connect wallet to view distributions"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6692,6 +6732,7 @@ msgid "This competition is held on the {0} network. <0>Change your network</0> t
 msgstr "This competition is held on the {0} network. <0>Change your network</0> to participate."
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "All networks"
 msgstr "All networks"
 
@@ -6763,6 +6804,10 @@ msgstr "No eligible trades during the competition window"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GMX staking is available on Arbitrum and Avalanche. GLV vaults and GM tokens vary by chain. Visit the pools page to see liquidity options for your connected network."
 msgstr "GMX staking is available on Arbitrum and Avalanche. GLV vaults and GM tokens vary by chain. Visit the pools page to see liquidity options for your connected network."
+
+#: src/domain/protocolStats/utils.ts
+msgid "Missing"
+msgstr "Missing"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
@@ -8993,6 +9038,10 @@ msgstr "TP/SL orders auto-cancel when the position closes. Applies only to order
 msgid "fees"
 msgstr "fees"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Protocol revenue"
+msgstr "Protocol revenue"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
 msgstr "Permit approval could not be completed."
@@ -9297,6 +9346,7 @@ msgstr "Excludes claimed funding, price impact rebates and execution fees."
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "24h volume"
 msgstr "24h volume"
 
@@ -9414,6 +9464,10 @@ msgstr "Claimable collateral delay"
 msgid "Debug controls"
 msgstr "Debug controls"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Fresh, {lag} behind"
+msgstr "Fresh, {lag} behind"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Concluded"
 msgstr "Concluded"
@@ -9458,6 +9512,10 @@ msgstr "Loading fees..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
 msgstr "{0} GMX"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Up to date"
+msgstr "Up to date"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
@@ -9509,6 +9567,10 @@ msgstr "Buy GM with {0} up to the caps below"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "Protocol analytics"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Volume by network, last {days} days"
+msgstr "Volume by network, last {days} days"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
@@ -9678,6 +9740,10 @@ msgstr "Claim {0}"
 msgid "Borrowing exponent short"
 msgstr "Borrowing exponent short"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Share of fees kept by the protocol under each network's fee distribution. LP and buyback shares are not included."
+msgstr "Share of fees kept by the protocol under each network's fee distribution. LP and buyback shares are not included."
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Expected 365d"
 msgstr "Expected 365d"
@@ -9800,6 +9866,10 @@ msgstr "Sell request sent"
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error"
 msgstr "Withdrawal error"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Partial data"
+msgstr "Partial data"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
@@ -10164,6 +10234,7 @@ msgstr "Claims"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 msgid "Date"
 msgstr "Date"
 
@@ -10626,6 +10697,7 @@ msgstr "Unable to fetch swap route. Please try again."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10968,7 +11040,12 @@ msgstr "Failed to export image"
 msgid "Staked"
 msgstr "Staked"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Fresh"
+msgstr "Fresh"
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "Traders"
 msgstr "Traders"
 
@@ -11523,6 +11600,10 @@ msgstr "PnL short"
 msgid "A dedicated account manager"
 msgstr "A dedicated account manager"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Position, borrowing, liquidation and swap fees."
+msgstr "Position, borrowing, liquidation and swap fees."
+
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr "Hide breakdown"
@@ -11608,6 +11689,7 @@ msgstr "GMX | decentralized perpetual exchange"
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 msgid "No data available"
 msgstr "No data available"
 
@@ -11706,6 +11788,10 @@ msgstr "Buy APE on Arbitrum with <0>Camelot</0>"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "Depositing..."
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Value of GM pools. GLV vaults hold GM tokens, so they are already included."
+msgstr "Value of GM pools. GLV vaults hold GM tokens, so they are already included."
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
@@ -12059,6 +12145,10 @@ msgstr "Request withdraw"
 msgid "Last 30d"
 msgstr "Last 30d"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Wallets with an executed position change, counted once per network."
+msgstr "Wallets with an executed position change, counted once per network."
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -12151,6 +12241,10 @@ msgstr "No markets found"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to enter a code on each network?"
 msgstr "Do I need to enter a code on each network?"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Some sources are stale or missing, so the totals are incomplete."
+msgstr "Some sources are stale or missing, so the totals are incomplete."
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Update default destination"

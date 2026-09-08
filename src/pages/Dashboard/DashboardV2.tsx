@@ -22,6 +22,8 @@ import V2Icon from "img/ic_v2.svg?react";
 import { GmCard } from "./GmCard";
 import { GmxCard } from "./GmxCard";
 import { OverviewCard } from "./OverviewCard";
+import { ProtocolStatsCard } from "./ProtocolStatsCard";
+import { ProtocolStatsVolumeChart } from "./ProtocolStatsVolumeChart";
 import { StatsCard } from "./StatsCard";
 import { useDashboardChainStatsMulticall } from "./useDashboardChainStatsMulticall";
 
@@ -76,6 +78,8 @@ export default function DashboardV2() {
           }
         />
         <div className="flex flex-col gap-20">
+          <ProtocolStatsCard />
+          <ProtocolStatsVolumeChart />
           <div className="DashboardV2-cards">
             <OverviewCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
             <StatsCard />

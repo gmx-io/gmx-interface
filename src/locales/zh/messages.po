@@ -390,6 +390,7 @@ msgstr "GM 空投"
 msgid "At price"
 msgstr "按价格"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "交易量"
@@ -448,6 +449,7 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
 msgstr "费用"
@@ -826,6 +828,10 @@ msgstr "否"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "/ mo"
 msgstr "/月"
+
+#: src/domain/protocolStats/utils.ts
+msgid "Stale"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -2005,6 +2011,8 @@ msgstr "推广者地址："
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -2054,6 +2062,10 @@ msgstr "无费用"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Switch to market order"
 msgstr "切换到市价单"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Every source is fresh."
+msgstr ""
 
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
@@ -2143,6 +2155,10 @@ msgstr "警告图标"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
 msgstr "被动管理"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Lighter bars are provisional: a source has not finalized those days yet, so their values can still change."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
@@ -2286,6 +2302,10 @@ msgstr "Express Trading 不支持原生代币 {0} 的包装或解包装操作"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual short token ID"
 msgstr "虚拟做空代币 ID"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Perps and swaps. LP deposits and withdrawals are not included."
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Build on GMX. Get<0/>paid on every trade."
@@ -3599,6 +3619,7 @@ msgstr "申领资金费用失败"
 #. Total Value Locked
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "TVL"
 msgstr "TVL"
 
@@ -4008,6 +4029,10 @@ msgstr "正在创建…"
 msgid "{0, plural, one {is} other {are}}"
 msgstr "{0, plural, one {即将} other {即将}}"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Stale, {lag} behind"
+msgstr ""
+
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
 msgstr "GMX 目前没有招聘计划。如果您认为可以做出贡献，请发送邮件至 <0>jobs@gmx.io</0>。"
@@ -4015,6 +4040,10 @@ msgstr "GMX 目前没有招聘计划。如果您认为可以做出贡献，请�
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings"
 msgstr "职位招聘"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Perp trades"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4281,6 +4310,10 @@ msgstr "发送中..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max capacity:"
 msgstr "最大容量："
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "As of"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
@@ -4804,6 +4837,7 @@ msgstr "显示扣除费用后的已实现 PnL"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "Open interest"
 msgstr "未平仓量"
 
@@ -5297,6 +5331,11 @@ msgstr "应用程序禁用，待 {0} 升级"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "v:"
 msgstr "v:"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Provisional"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -6007,6 +6046,7 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6692,6 +6732,7 @@ msgid "This competition is held on the {0} network. <0>Change your network</0> t
 msgstr "此竞赛在 {0} 网络上举行。<0>更改您的网络</0> 以参与。"
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "All networks"
 msgstr "所有网络"
 
@@ -6763,6 +6804,10 @@ msgstr "比赛期间内无符合条件的交易"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GMX staking is available on Arbitrum and Avalanche. GLV vaults and GM tokens vary by chain. Visit the pools page to see liquidity options for your connected network."
 msgstr "GMX 质押可在 Arbitrum 和 Avalanche 上使用。GLV 金库和 GM 代币因链而异。请访问资金池页面查看您所连接网络的流动性选项。"
+
+#: src/domain/protocolStats/utils.ts
+msgid "Missing"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
@@ -8993,6 +9038,10 @@ msgstr "仓位关闭时 TP/SL 订单将自动取消。仅适用于启用后创�
 msgid "fees"
 msgstr "费用"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Protocol revenue"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
 msgstr "无法完成 Permit 授权。"
@@ -9297,6 +9346,7 @@ msgstr "不包括已领取的资金费、价格影响返还和执行费。"
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "24h volume"
 msgstr "24小时交易量"
 
@@ -9414,6 +9464,10 @@ msgstr "可领取抵押品延迟"
 msgid "Debug controls"
 msgstr "调试控制"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Fresh, {lag} behind"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Concluded"
 msgstr "已结束"
@@ -9458,6 +9512,10 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
 msgstr "{0} GMX"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Up to date"
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
@@ -9509,6 +9567,10 @@ msgstr "使用 {0} 买入 GM，上限如下"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "协议分析"
+
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
+msgid "Volume by network, last {days} days"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
@@ -9678,6 +9740,10 @@ msgstr "领取 {0}"
 msgid "Borrowing exponent short"
 msgstr "做空借贷指数"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Share of fees kept by the protocol under each network's fee distribution. LP and buyback shares are not included."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Expected 365d"
 msgstr "预期365天"
@@ -9800,6 +9866,10 @@ msgstr "卖出请求已发送"
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error"
 msgstr "提取错误"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Partial data"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
@@ -10164,6 +10234,7 @@ msgstr "领取"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 msgid "Date"
 msgstr "日期"
 
@@ -10626,6 +10697,7 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10968,7 +11040,12 @@ msgstr ""
 msgid "Staked"
 msgstr "已质押"
 
+#: src/domain/protocolStats/utils.ts
+msgid "Fresh"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "Traders"
 msgstr "交易者"
 
@@ -11523,6 +11600,10 @@ msgstr "做空 PnL"
 msgid "A dedicated account manager"
 msgstr "专属客户经理"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Position, borrowing, liquidation and swap fees."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr "隐藏明细"
@@ -11608,6 +11689,7 @@ msgstr ""
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
+#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 msgid "No data available"
 msgstr "无可用数据"
 
@@ -11706,6 +11788,10 @@ msgstr "在 Arbitrum 上通过 <0>Camelot</0> 买入 APE"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "正在存入…"
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Value of GM pools. GLV vaults hold GM tokens, so they are already included."
+msgstr ""
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
@@ -12059,6 +12145,10 @@ msgstr "请求提取"
 msgid "Last 30d"
 msgstr "过去 30 天"
 
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Wallets with an executed position change, counted once per network."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "仪表板"
@@ -12150,6 +12240,10 @@ msgstr "未找到市场"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to enter a code on each network?"
+msgstr ""
+
+#: src/pages/Dashboard/ProtocolStatsCard.tsx
+msgid "Some sources are stale or missing, so the totals are incomplete."
 msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx

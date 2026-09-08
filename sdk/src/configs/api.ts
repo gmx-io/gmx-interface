@@ -47,3 +47,14 @@ export function getApiFallbackUrls(chainId: number, environment: ApiEnvironment 
 export function isApiSupported(chainId: number, environment: ApiEnvironment = "production") {
   return getApiUrl(chainId, environment) !== undefined;
 }
+
+// Stats are chain-agnostic and served by the Arbitrum test stand; production has no deployment with the
+// stats flag yet, and calling it there would only fill its error log with 503s.
+const STATS_API_URLS: Record<ApiEnvironment, string | undefined> = {
+  production: undefined,
+  test: API_URLS.test[ARBITRUM],
+};
+
+export function getStatsApiUrl(environment: ApiEnvironment = "production") {
+  return STATS_API_URLS[environment];
+}
