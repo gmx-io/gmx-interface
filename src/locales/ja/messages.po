@@ -932,6 +932,10 @@ msgstr "esGMXをGMXトークンに変換します。ボールトを使用する�
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No {marketTypeLabel} match \"{query}\"."
+msgstr "{marketTypeLabel}に「{query}」と一致するものはありません。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
 msgstr "マイナスの値：トレーダーがファンディングを支払います"
@@ -2241,6 +2245,10 @@ msgstr ""
 msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr "このスワップには外部ルーティングが必要ですが、ガス支払いトークンが受け取るトークンと同じ間は利用できず、他のガストークンにも十分な残高がありません。"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all {marketTypeLabel}"
+msgstr "すべての{marketTypeLabel}を検索"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
 msgstr "分散型取引プロトコル"
@@ -3040,6 +3048,10 @@ msgstr "GMXの改善にご協力ください。セキュリティのため、こ
 msgid "Cancel margin deposit"
 msgstr "証拠金入金をキャンセル"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Swap tokens"
+msgstr "スワップトークン"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "グローバルネットワーク"
@@ -3115,10 +3127,6 @@ msgstr "GMTrade（旧GMX Solana）は別のウェブサイトでホストされ�
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "選択した期間中に取引はありませんでした"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No perpetual markets match \"{query}\"."
-msgstr "「{query}」に一致する無期限市場はありません。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
@@ -4724,6 +4732,10 @@ msgstr "ステーキング"
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "分散型パーペチュアル取引所 | GMX"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "perpetual markets"
+msgstr "無期限市場"
 
 #: src/components/Footer/constants.tsx
 msgid "V1"
@@ -9310,10 +9322,6 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No Swap tokens match \"{query}\"."
-msgstr "「{query}」に一致するスワップトークンはありません。"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "請求済みのファンディング、価格影響リベート、執行手数料は含まれません。"
@@ -9648,10 +9656,6 @@ msgstr "言語を選択"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "不明な値"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all Swap tokens"
-msgstr "すべてのスワップトークンを検索"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -12720,10 +12724,6 @@ msgstr "POOL CAP LONG"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "累計収益合計"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all perpetual markets"
-msgstr "すべての無期限先物市場を検索"
 
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"

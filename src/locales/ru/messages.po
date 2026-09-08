@@ -932,6 +932,10 @@ msgstr "Конвертируйте esGMX в токены GMX. Ознакомьт
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No {marketTypeLabel} match \"{query}\"."
+msgstr "В категории «{marketTypeLabel}» нет результатов по запросу «{query}»."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
 msgstr "Отрицательное значение: трейдеры выплачивают фондирование"
@@ -2241,6 +2245,10 @@ msgstr ""
 msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr "Для этого свопа нужен внешний маршрут, который недоступен, пока токен оплаты газа совпадает с получаемым токеном, а у других газовых токенов недостаточно баланса."
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all {marketTypeLabel}"
+msgstr "Искать во всей категории «{marketTypeLabel}»"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
 msgstr "Децентрализованный торговый протокол"
@@ -3040,6 +3048,10 @@ msgstr "Помогите нам улучшить GMX. В целях безопа
 msgid "Cancel margin deposit"
 msgstr "Отменить депозит маржи"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Swap tokens"
+msgstr "Токены для свопа"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "Глобальная сеть"
@@ -3115,10 +3127,6 @@ msgstr "GMTrade (ранее GMX Solana) размещён на другом са�
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "Вы не совершали сделок за выбранный период"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No perpetual markets match \"{query}\"."
-msgstr "Нет бессрочных рынков, соответствующих запросу «{query}»."
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
@@ -4724,6 +4732,10 @@ msgstr "Стейкинг"
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "Децентрализованная бессрочная биржа | GMX"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "perpetual markets"
+msgstr "Бессрочные рынки"
 
 #: src/components/Footer/constants.tsx
 msgid "V1"
@@ -9310,10 +9322,6 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No Swap tokens match \"{query}\"."
-msgstr "Нет токенов для свопа, соответствующих запросу «{query}»."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "Не включает полученное финансирование, компенсации за влияние на цену и комиссии за исполнение."
@@ -9648,10 +9656,6 @@ msgstr "Выберите язык"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "Неизвестное значение"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all Swap tokens"
-msgstr "Искать среди всех токенов для свопа"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -12720,10 +12724,6 @@ msgstr "POOL CAP LONG"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "Всего заработано"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all perpetual markets"
-msgstr "Поиск по всем бессрочным рынкам"
 
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"

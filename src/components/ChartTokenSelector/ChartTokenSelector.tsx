@@ -432,6 +432,7 @@ function MarketsList() {
   }, [isSwap]);
 
   const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
+  const marketTypeLabel = isSwap ? t`Swap tokens` : t`perpetual markets`;
   const { shouldOfferSearchAll, shouldOfferOtherMode } = getMarketSearchEmptyStateActions({
     hasActiveFilter: topLevelTab !== "all",
     hasCurrentModeMatches: Boolean(currentModeSearchResults?.length),
@@ -589,19 +590,15 @@ function MarketsList() {
                   <span className="text-12 text-typography-secondary">
                     {shouldOfferSearchAll ? (
                       <Trans>No results with the selected filters.</Trans>
-                    ) : isSwap ? (
-                      <Trans>No Swap tokens match "{query}".</Trans>
                     ) : (
-                      <Trans>No perpetual markets match "{query}".</Trans>
+                      <Trans>
+                        No {marketTypeLabel} match "{query}".
+                      </Trans>
                     )}
                   </span>
                   {shouldOfferSearchAll && (
                     <Button type="button" variant="secondary" onClick={() => setModeAndResetFilters(mode)}>
-                      {isSwap ? (
-                        <Trans>Search in all Swap tokens</Trans>
-                      ) : (
-                        <Trans>Search in all perpetual markets</Trans>
-                      )}
+                      <Trans>Search in all {marketTypeLabel}</Trans>
                       <SearchIconComponent className="size-16" />
                     </Button>
                   )}

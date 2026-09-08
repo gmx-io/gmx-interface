@@ -932,6 +932,10 @@ msgstr "将 esGMX 转换为 GMX 代币。使用金库前请阅读归属期详情
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No {marketTypeLabel} match \"{query}\"."
+msgstr "{marketTypeLabel}中没有与“{query}”匹配的结果。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
 msgstr "负值：交易者支付资金费用"
@@ -2241,6 +2245,10 @@ msgstr ""
 msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr "此交换需要外部路由，但当 Gas 支付代币与您接收的代币相同时不可用，且没有其他 Gas 代币有足够余额。"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all {marketTypeLabel}"
+msgstr "搜索所有{marketTypeLabel}"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
 msgstr "去中心化交易协议"
@@ -3040,6 +3048,10 @@ msgstr "帮助我们改进 GMX。出于安全考虑，我们不会主动联系�
 msgid "Cancel margin deposit"
 msgstr "取消保证金存入"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Swap tokens"
+msgstr "交换代币"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "全球网络"
@@ -3115,10 +3127,6 @@ msgstr "GMTrade（前身为 GMX Solana）托管在另一个网站上，由另一
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "您在所选时间段内没有交易记录"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No perpetual markets match \"{query}\"."
-msgstr "没有与“{query}”匹配的永续合约市场。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
@@ -4724,6 +4732,10 @@ msgstr "质押"
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "去中心化永续合约交易所 | GMX"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "perpetual markets"
+msgstr "永续合约市场"
 
 #: src/components/Footer/constants.tsx
 msgid "V1"
@@ -9310,10 +9322,6 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No Swap tokens match \"{query}\"."
-msgstr "没有与“{query}”匹配的交换代币。"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "不包括已领取的资金费、价格影响返还和执行费。"
@@ -9648,10 +9656,6 @@ msgstr "选择语言"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "未知值"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all Swap tokens"
-msgstr "搜索所有交换代币"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -12720,10 +12724,6 @@ msgstr "POOL CAP LONG"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "累计总收益"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all perpetual markets"
-msgstr "搜索所有永续合约市场"
 
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"
