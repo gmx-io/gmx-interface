@@ -523,10 +523,6 @@ msgstr "ポジションと担保による{indexSymbol}の二重エクスポー�
 msgid "GMX Account balance"
 msgstr "GMX Account残高"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in perpetuals markets"
-msgstr "無期限市場を検索"
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "アドレスがコピーされました！"
@@ -1542,6 +1538,10 @@ msgstr "拠出証拠金の合計"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "{0} で GMX を購入するには、<0>ネットワークを切り替えてください</0>"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Perpetuals."
+msgstr "無期限に検索結果があります。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -3116,6 +3116,10 @@ msgstr "GMTrade（旧GMX Solana）は別のウェブサイトでホストされ�
 msgid "You have not traded during the selected period"
 msgstr "選択した期間中に取引はありませんでした"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No perpetual markets match \"{query}\"."
+msgstr "「{query}」に一致する無期限市場はありません。"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
 msgstr "TWAP注文のデフォルト分割数"
@@ -3137,6 +3141,10 @@ msgstr "システム"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "紹介コードを共有して報酬を獲得しましょう"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Swap."
+msgstr "スワップに検索結果があります。"
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
@@ -3246,6 +3254,10 @@ msgstr "ロングポジション"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Perpetuals"
+msgstr "無期限の結果を表示"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -5395,10 +5407,6 @@ msgstr "引数"
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "GMX Accountを介して紹介コードを作成するには、{1}にUSDCと{0}が必要です。資金を入金するか、別のネットワークに切り替えてください。"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all swap markets"
-msgstr "すべてのスワップ市場を検索"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -5782,6 +5790,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Bond ProtocolでGMXボンドを短いベスティング期間で割引購入します"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No results with the selected filters."
+msgstr "選択したフィルターに一致する結果はありません。"
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7976,6 +7988,10 @@ msgstr "サイズ, $"
 msgid "Wallet received before close"
 msgstr "クローズ前のウォレット受取額"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Swap"
+msgstr "スワップの結果を表示"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "保証された流動性"
@@ -9294,6 +9310,10 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No Swap tokens match \"{query}\"."
+msgstr "「{query}」に一致するスワップトークンはありません。"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "請求済みのファンディング、価格影響リベート、執行手数料は含まれません。"
@@ -9628,6 +9648,10 @@ msgstr "言語を選択"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "不明な値"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all Swap tokens"
+msgstr "すべてのスワップトークンを検索"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -11198,7 +11222,6 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "GMX向けに設計された透明性の高いサブセカンドChainlink価格フィードで、プライスウィックを回避できます"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr "一致する市場がありません。"
 
@@ -11835,10 +11858,6 @@ msgstr "もっと取引して、もっと安く。<0/>紹介して、稼ぐ。"
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "一致するプールなし"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in swap markets"
-msgstr "スワップ市場を検索"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"

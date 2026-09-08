@@ -523,10 +523,6 @@ msgstr "仓位和抵押品带来双重 {indexSymbol} 敞口。清算价格高于
 msgid "GMX Account balance"
 msgstr "GMX Account 余额"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in perpetuals markets"
-msgstr "搜索永续合约市场"
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "地址已复制！"
@@ -1542,6 +1538,10 @@ msgstr "累计投入保证金"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "要在 {0} 上买入 GMX，请<0>切换您的网络</0>"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Perpetuals."
+msgstr "永续合约中有可用结果。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -3116,6 +3116,10 @@ msgstr "GMTrade（前身为 GMX Solana）托管在另一个网站上，由另一
 msgid "You have not traded during the selected period"
 msgstr "您在所选时间段内没有交易记录"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No perpetual markets match \"{query}\"."
+msgstr "没有与“{query}”匹配的永续合约市场。"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
 msgstr "TWAP 订单的默认份数"
@@ -3137,6 +3141,10 @@ msgstr "系统"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "分享推荐码赚取奖励"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Swap."
+msgstr "交换中有可用结果。"
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
@@ -3246,6 +3254,10 @@ msgstr "做多仓位"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Perpetuals"
+msgstr "查看永续合约中的结果"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -5395,10 +5407,6 @@ msgstr "参数"
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "通过 GMX 账户创建推荐码需要在 {1} 上拥有 USDC 和 {0}。请存入资金或切换到其他网络。"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all swap markets"
-msgstr "搜索所有兑换市场"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -5782,6 +5790,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "在 Bond Protocol 上以折扣价购买 GMX 债券，归属期较短"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No results with the selected filters."
+msgstr "所选筛选条件下没有结果。"
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7976,6 +7988,10 @@ msgstr "大小，$"
 msgid "Wallet received before close"
 msgstr "平仓前钱包收到"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Swap"
+msgstr "查看交换中的结果"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "保障流动性"
@@ -9294,6 +9310,10 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No Swap tokens match \"{query}\"."
+msgstr "没有与“{query}”匹配的交换代币。"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "不包括已领取的资金费、价格影响返还和执行费。"
@@ -9628,6 +9648,10 @@ msgstr "选择语言"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "未知值"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all Swap tokens"
+msgstr "搜索所有交换代币"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -11198,7 +11222,6 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "利用 Chainlink 为 GMX 量身定制的透明、亚秒级价格馈送，避免价格插针"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr "没有匹配的市场。"
 
@@ -11835,10 +11858,6 @@ msgstr "交易更多，费用更低。<0/>推荐好友，赚取收益。"
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "没有匹配的资金池"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in swap markets"
-msgstr "搜索兑换市场"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"

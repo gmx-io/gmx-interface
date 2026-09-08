@@ -523,10 +523,6 @@ msgstr "포지션과 담보에서 {indexSymbol}에 대한 이중 노출이 발�
 msgid "GMX Account balance"
 msgstr "GMX Account 잔액"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in perpetuals markets"
-msgstr "무기한 시장 검색"
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "주소가 복사되었습니다!"
@@ -1542,6 +1538,10 @@ msgstr "총 납입 증거금"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "{0}에서 GMX를 구매하려면 <0>네트워크를 변경하십시오</0>"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Perpetuals."
+msgstr "무기한에 검색 결과가 있습니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -3116,6 +3116,10 @@ msgstr "GMTrade(이전 GMX Solana)는 다른 웹사이트에서 호스팅되며 
 msgid "You have not traded during the selected period"
 msgstr "선택한 기간 동안 거래 내역이 없습니다"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No perpetual markets match \"{query}\"."
+msgstr "\"{query}\"와 일치하는 무기한 시장이 없습니다."
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
 msgstr "TWAP 주문의 기본 분할 수"
@@ -3137,6 +3141,10 @@ msgstr "시스템"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "추천 코드를 공유하여 보상을 받으십시오"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Swap."
+msgstr "스왑에 검색 결과가 있습니다."
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
@@ -3246,6 +3254,10 @@ msgstr "롱 포지션"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Perpetuals"
+msgstr "무기한 결과 보기"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -5395,10 +5407,6 @@ msgstr "인수"
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "GMX 계정을 통해 추천 코드를 생성하려면 {1}에서 USDC와 {0}이(가) 필요합니다. 자금을 입금하거나 다른 네트워크로 전환하세요."
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in all swap markets"
-msgstr "모든 스왑 시장 검색"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -5782,6 +5790,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Bond Protocol에서 짧은 베스팅 기간으로 GMX 채권을 할인 구매하십시오"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No results with the selected filters."
+msgstr "선택한 필터와 일치하는 결과가 없습니다."
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7976,6 +7988,10 @@ msgstr "크기, $"
 msgid "Wallet received before close"
 msgstr "청산 전 지갑 수령액"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Swap"
+msgstr "스왑 결과 보기"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "보장된 유동성"
@@ -9294,6 +9310,10 @@ msgstr ""
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No Swap tokens match \"{query}\"."
+msgstr "\"{query}\"와 일치하는 스왑 토큰이 없습니다."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "청구된 펀딩비, 가격 영향 리베이트 및 실행 수수료는 제외됩니다."
@@ -9628,6 +9648,10 @@ msgstr "언어 선택"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "알 수 없는 값"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all Swap tokens"
+msgstr "모든 스왑 토큰 검색"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -11198,7 +11222,6 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "GMX 전용으로 설계된 투명하고 1초 미만의 Chainlink 가격 피드로 가격 위크를 방지합니다"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr "일치하는 시장이 없습니다."
 
@@ -11835,10 +11858,6 @@ msgstr "더 많이 거래하고, 더 적게 내세요.<0/>추천하고 수익을
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "일치하는 풀 없음"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in swap markets"
-msgstr "스왑 시장 검색"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"
