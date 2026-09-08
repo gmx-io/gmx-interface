@@ -390,7 +390,6 @@ msgstr "GM 에어드롭"
 msgid "At price"
 msgstr "지정가"
 
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "거래량"
@@ -449,7 +448,6 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
 msgstr "수수료"
@@ -829,10 +827,6 @@ msgstr "아니오"
 msgid "/ mo"
 msgstr "/월"
 
-#: src/domain/protocolStats/utils.ts
-msgid "Stale"
-msgstr ""
-
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -854,10 +848,6 @@ msgstr "클래식"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders"
 msgstr "주문"
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the experience may vary. Opens in a new tab."
-msgstr "GMTrade(이전 GMX Solana)는 별도의 웹사이트에서 호스팅되며 다른 팀이 운영하므로 이용 경험이 다를 수 있습니다. 새 탭에서 열립니다."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size. Size delta ({sizeDeltaUsdText}) exceeds position size ({positionSizeInUsdText})"
@@ -2011,8 +2001,6 @@ msgstr "추천인 주소:"
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -2062,10 +2050,6 @@ msgstr "수수료 없음"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Switch to market order"
 msgstr "시장가 주문으로 전환"
-
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Every source is fresh."
-msgstr ""
 
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
@@ -2155,10 +2139,6 @@ msgstr "알림 아이콘"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
 msgstr "패시브 운용"
-
-#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
-msgid "Lighter bars are provisional: a source has not finalized those days yet, so their values can still change."
-msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
@@ -2302,10 +2282,6 @@ msgstr "네이티브 토큰 {0}의 래핑 또는 언래핑에는 Express Trading
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual short token ID"
 msgstr "가상 숏 토큰 ID"
-
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Perps and swaps. LP deposits and withdrawals are not included."
-msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Build on GMX. Get<0/>paid on every trade."
@@ -3619,7 +3595,6 @@ msgstr "펀딩 수수료 청구 실패"
 #. Total Value Locked
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "TVL"
 msgstr "TVL"
 
@@ -4029,10 +4004,6 @@ msgstr "생성 중…"
 msgid "{0, plural, one {is} other {are}}"
 msgstr "{0, plural, one {곧} other {곧}}"
 
-#: src/domain/protocolStats/utils.ts
-msgid "Stale, {lag} behind"
-msgstr ""
-
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
 msgstr "GMX는 현재 채용을 진행하고 있지 않습니다. 기여할 수 있다고 생각하시면 <0>jobs@gmx.io</0>로 이메일을 보내 주십시오."
@@ -4040,10 +4011,6 @@ msgstr "GMX는 현재 채용을 진행하고 있지 않습니다. 기여할 수 
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings"
 msgstr "채용 공고"
-
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Perp trades"
-msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4310,10 +4277,6 @@ msgstr "전송 중..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max capacity:"
 msgstr "최대 용량:"
-
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "As of"
-msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
@@ -4837,7 +4800,6 @@ msgstr "수수료 차감 후 실현 PnL 표시"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "Open interest"
 msgstr "미결제약정"
 
@@ -5332,11 +5294,6 @@ msgstr "{0} 업그레이드 대기 중 앱 비활성화"
 msgid "v:"
 msgstr "v:"
 
-#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
-#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
-msgid "Provisional"
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5374,6 +5331,10 @@ msgstr "CoinLedger Margin Gain Manual CSV"
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana (GMTrade) is currently served from a separate domain"
+msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Pre-IPO"
@@ -6046,7 +6007,6 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6732,7 +6692,6 @@ msgid "This competition is held on the {0} network. <0>Change your network</0> t
 msgstr "이 대회는 {0} 네트워크에서 개최됩니다. 참여하려면 <0>네트워크 변경</0>."
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "All networks"
 msgstr "전체 네트워크"
 
@@ -6804,10 +6763,6 @@ msgstr "대회 기간 중 해당 거래 없음"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GMX staking is available on Arbitrum and Avalanche. GLV vaults and GM tokens vary by chain. Visit the pools page to see liquidity options for your connected network."
 msgstr "GMX 스테이킹은 Arbitrum 및 Avalanche에서 이용 가능합니다. GLV 볼트 및 GM 토큰은 체인별로 상이합니다. 풀 페이지를 방문하여 연결된 네트워크의 유동성 옵션을 확인하십시오."
-
-#: src/domain/protocolStats/utils.ts
-msgid "Missing"
-msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
@@ -9038,10 +8993,6 @@ msgstr "포지션 종료 시 TP/SL 주문이 자동 취소됩니다. 활성화 �
 msgid "fees"
 msgstr "수수료"
 
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Protocol revenue"
-msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
 msgstr "퍼밋 승인을 완료할 수 없습니다."
@@ -9346,7 +9297,6 @@ msgstr "청구된 펀딩비, 가격 영향 리베이트 및 실행 수수료는 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "24h volume"
 msgstr "24시간 거래량"
 
@@ -9439,6 +9389,7 @@ msgid "Close price impact"
 msgstr "청산 가격 영향"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "새 탭에서 GMTrade를 엽니다"
 
@@ -9463,10 +9414,6 @@ msgstr "수령 가능 담보 지연"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Debug controls"
 msgstr "디버그 제어"
-
-#: src/domain/protocolStats/utils.ts
-msgid "Fresh, {lag} behind"
-msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Concluded"
@@ -9512,10 +9459,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
 msgstr "{0} GMX"
-
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Up to date"
-msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
@@ -9567,10 +9510,6 @@ msgstr "아래 한도까지 {0}(으)로 GM을 구매할 수 있습니다"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
-
-#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
-msgid "Volume by network, last {days} days"
-msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
@@ -9740,10 +9679,6 @@ msgstr "{0} 수령"
 msgid "Borrowing exponent short"
 msgstr "차입 지수 (숏)"
 
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Share of fees kept by the protocol under each network's fee distribution. LP and buyback shares are not included."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Expected 365d"
 msgstr "365일 예상"
@@ -9866,10 +9801,6 @@ msgstr "판매 요청이 전송되었습니다"
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error"
 msgstr "출금 오류"
-
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Partial data"
-msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
@@ -10234,7 +10165,6 @@ msgstr "청구"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
-#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 msgid "Date"
 msgstr "일자"
 
@@ -10697,7 +10627,6 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11040,12 +10969,7 @@ msgstr ""
 msgid "Staked"
 msgstr "스테이킹됨"
 
-#: src/domain/protocolStats/utils.ts
-msgid "Fresh"
-msgstr ""
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
 msgid "Traders"
 msgstr "트레이더"
 
@@ -11600,10 +11524,6 @@ msgstr "PnL 숏"
 msgid "A dedicated account manager"
 msgstr "전담 매니저"
 
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Position, borrowing, liquidation and swap fees."
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr "내역 숨기기"
@@ -11689,7 +11609,6 @@ msgstr ""
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
-#: src/pages/Dashboard/ProtocolStatsVolumeChart.tsx
 msgid "No data available"
 msgstr "데이터 없음"
 
@@ -11788,10 +11707,6 @@ msgstr "<0>Camelot</0>을 통해 Arbitrum에서 APE를 구매하십시오"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "입금 중…"
-
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Value of GM pools. GLV vaults hold GM tokens, so they are already included."
-msgstr ""
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
@@ -12145,10 +12060,6 @@ msgstr "출금 요청"
 msgid "Last 30d"
 msgstr "최근 30일"
 
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Wallets with an executed position change, counted once per network."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "대시보드"
@@ -12240,10 +12151,6 @@ msgstr "마켓을 찾을 수 없습니다"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to enter a code on each network?"
-msgstr ""
-
-#: src/pages/Dashboard/ProtocolStatsCard.tsx
-msgid "Some sources are stale or missing, so the totals are incomplete."
 msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
