@@ -606,8 +606,8 @@ function MarketsList() {
                     </Button>
                   )}
                   {shouldOfferOtherMode && (
-                    <div className="flex flex-col items-center gap-4 text-12">
-                      <span>
+                    <>
+                      <span className="text-12 text-typography-secondary">
                         {isSwap ? (
                           <Trans>Results are available in Perpetuals.</Trans>
                         ) : (
@@ -616,13 +616,13 @@ function MarketsList() {
                       </span>
                       <Button
                         type="button"
-                        variant="link"
-                        className="!min-h-0 !p-0"
+                        variant="secondary"
                         onClick={() => setModeAndResetFilters(isSwap ? "perp" : "swap")}
                       >
                         {isSwap ? <Trans>View results in Perpetuals</Trans> : <Trans>View results in Swap</Trans>}
+                        <SearchIconComponent className="size-16" />
                       </Button>
-                    </div>
+                    </>
                   )}
                 </div>
               ) : (
