@@ -3104,10 +3104,6 @@ msgstr "正在加载 Express 参数…"
 msgid "RESPONSE TIME"
 msgstr "RESPONSE TIME"
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
-msgstr "GMTrade（前身为 GMX Solana）托管在另一个网站上，由另一支团队运营，因此体验可能略有不同"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "您在所选时间段内没有交易记录"
@@ -5332,6 +5328,7 @@ msgstr "CoinLedger Margin Gain Manual CSV"
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (GMTrade) is currently served from a separate domain"
 msgstr ""
