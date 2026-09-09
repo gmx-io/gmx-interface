@@ -134,7 +134,9 @@ describe.each(["wallet", "express", "one-click", "gmx-account"] as const)("%s TP
       OrderType.LimitDecrease,
       OrderType.StopLossDecrease,
     ]);
+    expect(state.setPendingOrder).toHaveBeenCalledTimes(mode === "one-click" ? 1 : 0);
     callback(builder.Sending());
+    expect(state.setPendingOrder).toHaveBeenCalledTimes(mode === "wallet" ? 0 : 1);
     callback(
       builder.Sent(
         mode === "wallet"
@@ -144,13 +146,28 @@ describe.each(["wallet", "express", "one-click", "gmx-account"] as const)("%s TP
     );
     expect(state.batches[0]).toMatchObject(mode === "wallet" ? { transactionHash: "tx" } : { relayTaskId: "task" });
     expect(state.setPendingOrder).toHaveBeenCalledTimes(1);
+    if (mode === "wallet") {
+      expect(state.pendingTxns).toHaveLength(1);
+      expect(state.pendingTxns[0]).toMatchObject({ hash: "tx", chainId: 42161 });
+      expect(state.setPendingExpressTxn).not.toHaveBeenCalled();
+    } else {
+      expect(state.pendingTxns).toEqual([]);
+      expect(state.setPendingExpressTxn).toHaveBeenCalledWith(
+        expect.objectContaining({ isGmxAccount: mode === "gmx-account" })
+      );
+      expect(state.updatePendingExpressTxn).toHaveBeenCalledWith(
+        expect.objectContaining({ taskId: "task", relayProvider: "gelato" })
+      );
+    }
   });
 
-  it("clears rejected submissions and preserves the existing error feedback", () => {
+  it("clears only the rejected batch and preserves the existing error feedback", () => {
     const builder = events(mode);
     callback(builder.Submitted());
+    const otherBatch = { ...state.batches[0], id: "other-batch" };
+    state.batches.push(otherBatch);
     callback(builder.Error(new Error("Rejected")));
-    expect(state.batches).toEqual([]);
+    expect(state.batches).toEqual([otherBatch]);
     expect(state.errorToast).toHaveBeenCalledTimes(1);
   });
 });

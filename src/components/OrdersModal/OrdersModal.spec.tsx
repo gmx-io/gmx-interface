@@ -17,7 +17,7 @@ import { OrdersModal } from "./OrdersModal";
 
 const state = vi.hoisted(() => ({
   batches: [] as PendingTpSlOrderBatch[],
-  orders: {} as Record<string, PositionOrderInfo>,
+  orders: {} as Record<string, PositionOrderInfo> | undefined,
   orderStatuses: {} as OrderStatuses,
   relayTaskStatuses: {} as Record<string, RelayTaskStatus>,
   isMobile: false,
@@ -51,7 +51,7 @@ vi.mock("context/SyntheticsStateContext/hooks/orderEditorHooks", () => ({
   useCancellingOrdersKeysState: () => [[], vi.fn()],
 }));
 vi.mock("context/SyntheticsStateContext/hooks/orderHooks", () => ({
-  usePositionOrdersWithErrors: () => Object.values(state.orders).map((order) => ({ order })),
+  usePositionOrdersWithErrors: () => Object.values(state.orders ?? {}).map((order) => ({ order })),
   useCancelOrder: () => [false, state.cancelOrder],
 }));
 vi.mock("domain/synthetics/orders/useOrderTxnCallbacks", () => ({
@@ -164,17 +164,29 @@ describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
     expect(view.queryByText("TP/SL form")).toBeNull();
   });
 
+  it.each([
+    { label: "TP", pending: tp, tab: "takeProfit" as const },
+    { label: "SL", pending: sl, tab: "stopLoss" as const },
+  ])("shows a single pending entry for a $label-only submission", ({ pending, tab }) => {
+    state.batches = [{ ...batch, orders: [pending] }];
+    const view = render(modal({ initialTab: tab }));
+    expect(view.getAllByRole("status")).toHaveLength(1);
+    expect(view.queryByText(/No (TP|SL|resting) orders/)).toBeNull();
+    expect((view.getByRole("button", { name: "Add TP/SL" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
   it("keeps confirmed orders usable alongside pending entries", () => {
     state.orders = { existing: confirmed("existing") };
     const view = render(modal());
     expect(view.getAllByRole("status")).toHaveLength(2);
     expect((view.getByRole("button", { name: "Cancel all" }) as HTMLButtonElement).disabled).toBe(false);
-    if (isMobile) {
-      fireEvent.click(view.getByRole("button", { name: "Edit" }));
-      expect(state.editingOrder).toHaveBeenCalledWith({ orderKey: "existing", source: "OrdersModal" });
-      fireEvent.click(view.getByRole("button", { name: "Cancel", exact: true }));
-      expect(state.cancelOrder).toHaveBeenCalledTimes(1);
-    }
+    const [editButton, cancelButton] = isMobile
+      ? [view.getByRole("button", { name: "Edit" }), view.getByRole("button", { name: "Cancel", exact: true })]
+      : view.getAllByRole("button", { name: "" });
+    fireEvent.click(editButton);
+    expect(state.editingOrder).toHaveBeenCalledWith({ orderKey: "existing", source: "OrdersModal" });
+    fireEvent.click(cancelButton);
+    expect(state.cancelOrder).toHaveBeenCalledTimes(1);
   });
 
   it("waits for fetched data, then replaces each row and unlocks Add TP/SL", () => {
@@ -189,6 +201,33 @@ describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
     expect(view.getAllByRole("status")).toHaveLength(1);
     expect((view.getByRole("button", { name: "Add TP/SL" }) as HTMLButtonElement).disabled).toBe(true);
     state.orders = { ...state.orders, sl: confirmed("sl", sl) };
+    view.rerender(modal());
+    expect(view.queryByRole("status")).toBeNull();
+    expect((view.getByRole("button", { name: "Add TP/SL" }) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it.each(["wallet", "relay"])("keeps a %s submission locked when an older order arrives late", (mode) => {
+    const pending = { ...tp, createdAt: 100_000 };
+    state.batches = [
+      {
+        ...batch,
+        orders: [pending],
+        existingOrderKeys: [],
+        relayTaskId: mode === "relay" ? "task" : undefined,
+        transactionHash: mode === "wallet" ? "new-tx" : undefined,
+      },
+    ];
+    state.orders = undefined;
+    const view = render(modal());
+    expect(view.getAllByRole("status")).toHaveLength(1);
+
+    state.orders = { existing: confirmed("existing", pending) };
+    view.rerender(modal());
+    expect(view.getAllByRole("status")).toHaveLength(1);
+    expect((view.getByRole("button", { name: "Add TP/SL" }) as HTMLButtonElement).disabled).toBe(true);
+    expect((view.getByRole("button", { name: "Cancel all" }) as HTMLButtonElement).disabled).toBe(false);
+
+    state.orders = { ...state.orders, created: { ...confirmed("created", pending), updatedAtTime: 101n } };
     view.rerender(modal());
     expect(view.queryByRole("status")).toBeNull();
     expect((view.getByRole("button", { name: "Add TP/SL" }) as HTMLButtonElement).disabled).toBe(false);

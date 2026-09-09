@@ -8,8 +8,10 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import { useLatest, useMountedState } from "react-use";
 import type { ReplacementReturnType } from "viem";
 
 import { getExplorerUrl } from "config/chains";
@@ -106,9 +108,14 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
   const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
+  const latestPendingTxns = useLatest(pendingTxns);
+  const isMounted = useMountedState();
+  const isPolling = useRef(false);
 
   const handleReplacement = useCallback(
     (pendingTxn: PendingTransaction, replacement: ReplacementReturnType) => {
+      if (!isMounted() || !latestPendingTxns.current.includes(pendingTxn)) return;
+
       const hash = replacement.transactionReceipt.transactionHash;
       if (replacement.reason === "repriced") {
         pendingTxn.onReplaced?.(hash);
@@ -121,86 +128,97 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
         );
       }
     },
-    [chainId]
+    [chainId, isMounted, latestPendingTxns]
   );
 
   useEffect(() => {
     const checkPendingTxns = async () => {
-      if (!provider) {
+      if (!provider || isPolling.current) {
         return;
       }
 
-      const completedPendingTxns = new Set<PendingTransaction>();
-      for (let i = 0; i < pendingTxns.length; i++) {
-        const pendingTxn = pendingTxns[i];
-        const txnChainId = pendingTxn.chainId ?? chainId;
-        const txnProvider = pendingTxn.chainId ? getProvider(undefined, txnChainId) : provider;
-        const receipt = await txnProvider.getTransactionReceipt(pendingTxn.hash);
-        if (receipt) {
-          if (receipt.status === 0) {
-            pendingTxn.onError?.();
-            const txUrl = getExplorerUrl(txnChainId) + "tx/" + pendingTxn.hash;
-            const { error: onchainError, txnData } = await getCallStaticError(
-              txnChainId,
-              txnProvider,
-              undefined,
-              pendingTxn.hash
-            );
-            const errorData = onchainError ? parseError(onchainError as any) : undefined;
+      isPolling.current = true;
+      try {
+        const completedPendingTxns = new Set<PendingTransaction>();
+        for (let i = 0; i < pendingTxns.length; i++) {
+          const pendingTxn = pendingTxns[i];
+          if (!isMounted() || !latestPendingTxns.current.includes(pendingTxn)) continue;
 
-            let toastMsg: ReactNode;
+          const txnChainId = pendingTxn.chainId ?? chainId;
+          const txnProvider = pendingTxn.chainId ? getProvider(undefined, txnChainId) : provider;
+          const receipt = await txnProvider.getTransactionReceipt(pendingTxn.hash).catch(() => null);
+          if (!isMounted() || !latestPendingTxns.current.includes(pendingTxn)) continue;
 
-            if (errorData?.contractError === "InsufficientExecutionFee" && txnData) {
-              const [minExecutionFee, executionFee]: bigint[] = errorData.contractErrorArgs;
+          if (receipt) {
+            if (receipt.status === 0) {
+              pendingTxn.onError?.();
+              const txUrl = getExplorerUrl(txnChainId) + "tx/" + pendingTxn.hash;
+              const { error: onchainError, txnData } = await getCallStaticError(
+                txnChainId,
+                txnProvider,
+                undefined,
+                pendingTxn.hash
+              );
+              if (!isMounted() || !latestPendingTxns.current.includes(pendingTxn)) continue;
 
-              toastMsg = getInsufficientExecutionFeeToastContent({
-                minExecutionFee,
-                executionFee,
-                chainId: txnChainId,
-                executionFeeBufferBps,
-                txUrl,
-                errorMessage: errorData?.errorMessage,
-                shouldOfferExpress: true,
-                setIsSettingsVisible,
-                estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
+              const errorData = onchainError ? parseError(onchainError as any) : undefined;
+
+              let toastMsg: ReactNode;
+
+              if (errorData?.contractError === "InsufficientExecutionFee" && txnData) {
+                const [minExecutionFee, executionFee]: bigint[] = errorData.contractErrorArgs;
+
+                toastMsg = getInsufficientExecutionFeeToastContent({
+                  minExecutionFee,
+                  executionFee,
+                  chainId: txnChainId,
+                  executionFeeBufferBps,
+                  txUrl,
+                  errorMessage: errorData?.errorMessage,
+                  shouldOfferExpress: true,
+                  setIsSettingsVisible,
+                  estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
+                });
+              } else {
+                toastMsg = getPendingTxnFailureToastContent({ txUrl });
+              }
+
+              helperToast.error(toastMsg, {
+                autoClose: false,
+                tradingErrorInfo: pendingTxn.actionName
+                  ? {
+                      actionName: pendingTxn.actionName,
+                      errorData: errorData ?? onchainError,
+                      metricId: pendingTxn.metricId,
+                    }
+                  : undefined,
               });
-            } else {
-              toastMsg = getPendingTxnFailureToastContent({ txUrl });
+
+              if (pendingTxn.metricId) {
+                sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
+                sendUserAnalyticsOrderResultEvent(txnChainId, pendingTxn.metricId, false);
+              }
             }
 
-            helperToast.error(toastMsg, {
-              autoClose: false,
-              tradingErrorInfo: pendingTxn.actionName
-                ? {
-                    actionName: pendingTxn.actionName,
-                    errorData: errorData ?? onchainError,
-                    metricId: pendingTxn.metricId,
-                  }
-                : undefined,
-            });
-
-            if (pendingTxn.metricId) {
-              sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
-              sendUserAnalyticsOrderResultEvent(txnChainId, pendingTxn.metricId, false);
+            if (receipt.status === 1 && pendingTxn.message) {
+              const txUrl = getExplorerUrl(txnChainId) + "tx/" + pendingTxn.hash;
+              helperToast.success(
+                getPendingTxnSuccessToastContent({
+                  message: pendingTxn.message,
+                  messageDetails: pendingTxn.messageDetails,
+                  txUrl,
+                })
+              );
             }
+            completedPendingTxns.add(pendingTxn);
           }
-
-          if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(txnChainId) + "tx/" + pendingTxn.hash;
-            helperToast.success(
-              getPendingTxnSuccessToastContent({
-                message: pendingTxn.message,
-                messageDetails: pendingTxn.messageDetails,
-                txUrl,
-              })
-            );
-          }
-          completedPendingTxns.add(pendingTxn);
         }
-      }
 
-      if (completedPendingTxns.size > 0) {
-        setPendingTxns((txns) => txns.filter((txn) => !completedPendingTxns.has(txn)));
+        if (completedPendingTxns.size > 0) {
+          setPendingTxns((txns) => txns.filter((txn) => !completedPendingTxns.has(txn)));
+        }
+      } finally {
+        isPolling.current = false;
       }
     };
 
@@ -208,7 +226,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [provider, pendingTxns, chainId, setIsSettingsVisible, executionFeeBufferBps]);
+  }, [provider, pendingTxns, chainId, setIsSettingsVisible, executionFeeBufferBps, isMounted, latestPendingTxns]);
 
   const state = useMemo(() => ({ pendingTxns, setPendingTxns }), [pendingTxns, setPendingTxns]);
 

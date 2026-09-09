@@ -230,6 +230,7 @@ export async function fetchRawTradeActions({
   orderEventCombinations,
   positionLifecycleId,
   orderKeys,
+  transactionHashes,
   showDebugValues,
   abortSignal,
 }: {
@@ -252,6 +253,7 @@ export async function fetchRawTradeActions({
     | undefined;
   positionLifecycleId?: string;
   orderKeys?: string[];
+  transactionHashes?: string[];
   showDebugValues?: boolean;
   abortSignal?: AbortSignal;
 }): Promise<RawTradeActionsResult | undefined> {
@@ -297,6 +299,7 @@ export async function fetchRawTradeActions({
         timestamp_lte: toTxTimestamp,
         positionLifecycleId_eq: positionLifecycleId,
         orderKey_in: orderKeys,
+        transactionHash_in: transactionHashes,
         // Settle executions are indexed as zero-size decreases; they belong to the Claims tab, not here.
         isFundingFeeSettle_eq: false,
       },

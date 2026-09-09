@@ -34,6 +34,7 @@ import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import {
   applyOrderBackfillMatches,
   getIsPendingOrderBackfillable,
+  getPendingTpSlOrdersForBackfill,
   ORDER_BACKFILL_MAX_AGE_MS,
   OrderBackfillMatch,
 } from "domain/synthetics/tradeHistory/orderStatusesBackfill";
@@ -1239,21 +1240,27 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     onMatches: handleOrderBackfillMatches,
   });
 
-  const pendingTpSlTerminalOrders = useMemo(
-    () =>
-      pendingTpSlOrderBatches
-        .filter((batch) => batch.chainId === chainId)
-        .flatMap((batch) => batch.orders)
-        .filter(
-          (order) =>
-            order.account === currentAccount &&
-            order.orderKey &&
-            !order.isConfirmed &&
-            !orderStatuses[order.orderKey]?.executedTxnHash &&
-            !orderStatuses[order.orderKey]?.cancelledTxnHash
-        ),
-    [chainId, currentAccount, pendingTpSlOrderBatches, orderStatuses]
-  );
+  const { pendingTpSlCreationOrders, pendingTpSlTerminalOrders } = useMemo(() => {
+    const orders = getPendingTpSlOrdersForBackfill({
+      batches: pendingTpSlOrderBatches,
+      chainId,
+      account: currentAccount,
+      orderStatuses,
+      relayTaskStatuses,
+    });
+
+    return {
+      pendingTpSlCreationOrders: orders.filter((order) => !order.orderKey),
+      pendingTpSlTerminalOrders: orders.filter((order) => order.orderKey),
+    };
+  }, [chainId, currentAccount, pendingTpSlOrderBatches, orderStatuses, relayTaskStatuses]);
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: pendingTpSlCreationOrders,
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
 
   useOrderStatusesBackfill({
     chainId,

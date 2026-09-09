@@ -2,7 +2,15 @@ import { i18n } from "@lingui/core";
 import { act, cleanup, render } from "@testing-library/react";
 import { useEffect } from "react";
 import { SWRConfig } from "swr";
-import type { ReplacementReturnType, TransactionReceipt, WaitForTransactionReceiptParameters } from "viem";
+import {
+  TransactionReceiptNotFoundError,
+  type Client,
+  type ReplacementReturnType,
+  type TransactionReceipt,
+  type WaitForTransactionReceiptParameters,
+  type WatchBlockNumberParameters,
+} from "viem";
+import { waitForTransactionReceipt } from "viem/actions";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PendingTransaction, PendingTxnsContextProvider, usePendingTxns } from "./PendingTxnsContext";
@@ -10,16 +18,18 @@ import { PendingTransaction, PendingTxnsContextProvider, usePendingTxns } from "
 const mocks = vi.hoisted(() => ({
   waitForReceipt: vi.fn(),
   getReceipt: vi.fn(),
+  getProvider: vi.fn(),
+  getPublicClient: vi.fn(),
   success: vi.fn(),
   error: vi.fn(),
 }));
 
 vi.mock("lib/wallets/walletConfig", () => ({
-  getPublicClientWithRpc: () => ({ waitForTransactionReceipt: mocks.waitForReceipt }),
+  getPublicClientWithRpc: mocks.getPublicClient,
 }));
 vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: 43114 }) }));
 vi.mock("lib/rpc", () => ({
-  getProvider: () => ({ getTransactionReceipt: mocks.getReceipt }),
+  getProvider: mocks.getProvider,
   useJsonRpcProvider: () => ({ provider: { getTransactionReceipt: mocks.getReceipt } }),
 }));
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({ useSettings: () => ({}) }));
@@ -83,6 +93,8 @@ beforeEach(() => {
   i18n.load("en", {});
   i18n.activate("en");
   mocks.getReceipt.mockResolvedValue(null);
+  mocks.getProvider.mockReturnValue({ getTransactionReceipt: mocks.getReceipt });
+  mocks.getPublicClient.mockReturnValue({ waitForTransactionReceipt: mocks.waitForReceipt });
   mocks.waitForReceipt.mockImplementation(
     (params: WaitForTransactionReceiptParameters) =>
       new Promise<TransactionReceipt>((resolve) => watchers.set(params.hash, { params, resolve }))
@@ -133,6 +145,132 @@ describe("pending wallet transaction replacements", () => {
     expect(transaction.onError).not.toHaveBeenCalled();
     await replace("cancelled");
     expect(context.pendingTxns).toEqual([]);
+  });
+
+  it("polls the submitted chain while another chain is selected", async () => {
+    mount();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000);
+    });
+    expect(mocks.getPublicClient).toHaveBeenCalledWith(42161);
+    expect(mocks.getProvider).toHaveBeenCalledWith(undefined, 42161);
+  });
+
+  it("retries receipt polling failures without losing the pending transaction", async () => {
+    const transaction = mount();
+    mocks.getReceipt.mockRejectedValueOnce(new Error("RPC unavailable")).mockResolvedValue({ status: 0 });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000);
+    });
+    expect(context.pendingTxns).toHaveLength(1);
+    expect(transaction.onError).not.toHaveBeenCalled();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000);
+    });
+    expect(context.pendingTxns).toEqual([]);
+    expect(transaction.onError).toHaveBeenCalledOnce();
+  });
+
+  it("does not overlap slow receipt polls", async () => {
+    const transaction = mount();
+    let resolveReceipt: (receipt: { status: number }) => void;
+    mocks.getReceipt.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveReceipt = resolve;
+        })
+    );
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6000);
+    });
+    expect(mocks.getReceipt).toHaveBeenCalledOnce();
+    await act(async () => {
+      resolveReceipt({ status: 0 });
+    });
+    expect(transaction.onError).toHaveBeenCalledOnce();
+    expect(mocks.error).toHaveBeenCalledOnce();
+    expect(context.pendingTxns).toEqual([]);
+  });
+
+  it.each([0, 1])("ignores stale receipt status %s after cancellation", async (status) => {
+    const transaction = mount();
+    let resolveReceipt: (receipt: { status: number }) => void;
+    mocks.getReceipt.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveReceipt = resolve;
+        })
+    );
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    await replace("cancelled");
+    await act(async () => {
+      resolveReceipt({ status });
+    });
+    expect(transaction.onError).toHaveBeenCalledOnce();
+    expect(mocks.error).toHaveBeenCalledOnce();
+    expect(mocks.success).not.toHaveBeenCalled();
+    expect(context.pendingTxns).toEqual([]);
+  });
+
+  it("ignores a replacement callback for a transaction that was already removed", async () => {
+    const transaction = mount();
+    act(() => context.setPendingTxns([]));
+    await replace("cancelled");
+    expect(transaction.onError).not.toHaveBeenCalled();
+    expect(mocks.error).not.toHaveBeenCalled();
+  });
+
+  it("ignores replacement callbacks after the provider unmounts", async () => {
+    const transaction = mount();
+    cleanup();
+    await replace("cancelled");
+    expect(transaction.onError).not.toHaveBeenCalled();
+    expect(mocks.error).not.toHaveBeenCalled();
+  });
+
+  it("detects a mined cancellation through viem's actual replacement matching", async () => {
+    const from = "0x1111111111111111111111111111111111111111";
+    const original = {
+      hash: "original",
+      from,
+      to: "0x2222222222222222222222222222222222222222",
+      nonce: 1,
+      value: 1n,
+      input: "0x1234",
+    };
+    const replacement = { ...original, hash: "replacement", to: from, value: 0n, input: "0x" };
+    let notifyBlock: WatchBlockNumberParameters["onBlockNumber"];
+    const unwatch = vi.fn();
+    const client = {
+      uid: "pending-replacement-test",
+      getTransactionReceipt: vi.fn(async ({ hash }: { hash: string }) => {
+        if (hash === "original") throw new TransactionReceiptNotFoundError({ hash: hash as `0x${string}` });
+        return { transactionHash: hash, status: "success", blockNumber: 1n };
+      }),
+      getTransaction: vi.fn(async () => original),
+      getBlock: vi.fn(async () => ({ transactions: [replacement] })),
+      watchBlockNumber: ({ onBlockNumber }: WatchBlockNumberParameters) => {
+        notifyBlock = onBlockNumber;
+        return unwatch;
+      },
+    };
+    mocks.waitForReceipt.mockImplementation((params: WaitForTransactionReceiptParameters) =>
+      waitForTransactionReceipt(client as unknown as Client, params)
+    );
+    const transaction = mount();
+    await act(async () => {
+      await Promise.resolve();
+    });
+    await act(async () => {
+      await notifyBlock(1n, undefined);
+    });
+    expect(client.getTransaction).toHaveBeenCalledWith({ hash: "original" });
+    expect(client.getBlock).toHaveBeenCalledWith({ blockNumber: 1n, includeTransactions: true });
+    expect(transaction.onError).toHaveBeenCalledOnce();
+    expect(context.pendingTxns).toEqual([]);
+    expect(unwatch).toHaveBeenCalledOnce();
   });
 
   it("does not restore a cancelled transaction when an older receipt poll completes", async () => {

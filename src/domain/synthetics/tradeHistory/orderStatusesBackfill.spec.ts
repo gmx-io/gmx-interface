@@ -3,7 +3,10 @@ import { describe, expect, it } from "vitest";
 
 import { PendingOrderData, OrderStatuses } from "context/SyntheticsEvents/types";
 import { getPendingOrderKey } from "context/SyntheticsEvents/utils";
+import { getPendingTpSlOrders } from "domain/tpsl/pendingOrders";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
+import { StatusCode } from "sdk/utils/gelatoRelay";
 import { DecreasePositionSwapType, OrderType } from "sdk/utils/orders/types";
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
@@ -13,6 +16,7 @@ import {
   getOrderBackfillParams,
   getOrderBackfillMatches,
   getOrderCreatedDataFromPendingOrder,
+  getPendingTpSlOrdersForBackfill,
   OrderBackfillMatch,
 } from "./orderStatusesBackfill";
 
@@ -110,6 +114,27 @@ describe("getOrderBackfillParams", () => {
     ]);
   });
 
+  it("restricts known TP/SL settlement recovery to its order key", () => {
+    const params = getOrderBackfillParams([
+      makePendingOrder({ orderType: OrderType.StopLossDecrease, orderKey: "0xorder" }),
+    ]);
+
+    expect(params?.orderKeys).toEqual(["0xorder"]);
+    expect(params?.orderEventCombinations).toEqual([
+      { eventName: TradeActionType.OrderExecuted, orderType: [OrderType.StopLossDecrease] },
+      { eventName: TradeActionType.OrderCancelled, orderType: [OrderType.StopLossDecrease] },
+    ]);
+  });
+
+  it("restricts missing creation recovery to its transaction without restricting settlement hashes", () => {
+    const pendingOrder = { ...makePendingOrder({ orderType: OrderType.LimitDecrease }), creationTxnHash: "0xcreate" };
+    expect(getOrderBackfillParams([pendingOrder])?.transactionHashes).toEqual(["0xcreate"]);
+    expect(getOrderBackfillParams([{ ...pendingOrder, orderKey: "0xorder" }])?.transactionHashes).toBeUndefined();
+    expect(
+      getOrderBackfillParams([pendingOrder, { ...pendingOrder, orderKey: "0xother" }])?.transactionHashes
+    ).toBeUndefined();
+  });
+
   it("queries updated and cancelled actions for update and cancel transactions", () => {
     const params = getOrderBackfillParams([
       makePendingOrder({ txnType: "update", orderKey: "0xorder", orderType: OrderType.LimitDecrease }),
@@ -164,7 +189,7 @@ describe("getOrderBackfillMatches", () => {
     expect(getMatches([pendingOrder], [{ ...createdAction, triggerPrice: "1501" }])).toEqual([]);
   });
 
-  it("does not match a previous create with a different decrease swap type", () => {
+  it("does not match a create with a different decrease swap type", () => {
     const pendingOrder = makePendingOrder({
       orderType: OrderType.LimitDecrease,
       triggerPrice: 1500n,
@@ -175,7 +200,7 @@ describe("getOrderBackfillMatches", () => {
       orderType: OrderType.LimitDecrease,
       triggerPrice: "1500",
       decreasePositionSwapType: DecreasePositionSwapType.SwapPnlTokenToCollateralToken,
-      timestamp: Math.floor(pendingOrder.createdAt / 1000) - 10,
+      timestamp: Math.floor(pendingOrder.createdAt / 1000) + 10,
     });
 
     expect(getMatches([pendingOrder], [previousCreate])).toEqual([]);
@@ -190,6 +215,84 @@ describe("getOrderBackfillMatches", () => {
 
     expect(getMatches([pendingOrder], [action])).toEqual([]);
   });
+
+  it("does not recover an identical creation from a different transaction", () => {
+    const pendingOrder = { ...makePendingOrder({ orderType: OrderType.LimitDecrease }), creationTxnHash: "0xcreate" };
+    const action = makeRawAction({ eventName: TradeActionType.OrderCreated, orderType: OrderType.LimitDecrease });
+
+    expect(getMatches([pendingOrder], [action])).toEqual([]);
+    expect(getMatches([pendingOrder], [{ ...action, transactionHash: "0xcreate" }])).toHaveLength(1);
+  });
+
+  it.each(["notification", "persistent"])(
+    "ignores older identical TP/SL creation in the %s recovery queue without transaction identity",
+    (queue) => {
+      const pendingOrder = makePendingOrder({ orderType: OrderType.LimitDecrease });
+      const pendingOrders =
+        queue === "notification"
+          ? [pendingOrder]
+          : getPendingTpSlOrdersForBackfill({
+              batches: [
+                { id: "batch", chainId: 42161, orders: [pendingOrder], existingOrderKeys: [], relayTaskId: "task" },
+              ],
+              chainId: 42161,
+              account,
+              orderStatuses: {},
+              relayTaskStatuses: {},
+            });
+      const action = makeRawAction({
+        eventName: TradeActionType.OrderCreated,
+        orderType: OrderType.LimitDecrease,
+        timestamp: Math.floor(pendingOrder.createdAt / 1000) - 10,
+      });
+
+      expect(pendingOrders).toHaveLength(1);
+      expect(getMatches(pendingOrders, [action])).toEqual([]);
+      expect(
+        getMatches(pendingOrders, [{ ...action, timestamp: Math.floor(pendingOrder.createdAt / 1000) }])
+      ).toHaveLength(1);
+    }
+  );
+
+  it("recovers TP/SL creation by its transaction when block time slightly precedes local submission time", () => {
+    const pendingOrder = { ...makePendingOrder({ orderType: OrderType.LimitDecrease }), creationTxnHash: "0xcreate" };
+    const action = makeRawAction({
+      eventName: TradeActionType.OrderCreated,
+      orderType: OrderType.LimitDecrease,
+      timestamp: Math.floor(pendingOrder.createdAt / 1000) - 10,
+      transactionHash: "0xcreate",
+    });
+
+    expect(getMatches([pendingOrder], [action])).toHaveLength(1);
+  });
+
+  it("retains the lookback window for non-TP/SL creation recovery", () => {
+    const pendingOrder = makePendingOrder({ orderType: OrderType.LimitIncrease });
+    const action = makeRawAction({
+      eventName: TradeActionType.OrderCreated,
+      orderType: OrderType.LimitIncrease,
+      timestamp: Math.floor(pendingOrder.createdAt / 1000) - 10,
+    });
+
+    expect(getMatches([pendingOrder], [action])).toHaveLength(1);
+  });
+
+  it.each([TradeActionType.OrderExecuted, TradeActionType.OrderCancelled])(
+    "recovers known TP/SL %s by key when settlement amounts differ",
+    (eventName) => {
+      const pendingOrder = makePendingOrder({ orderType: OrderType.LimitDecrease, orderKey: "0xorder" });
+      const action = makeRawAction({
+        eventName,
+        orderType: OrderType.LimitDecrease,
+        sizeDeltaUsd: "80",
+        initialCollateralDeltaAmount: "0",
+        triggerPrice: "1500",
+      });
+
+      expect(getMatches([pendingOrder], [action])).toHaveLength(1);
+      expect(getMatches([pendingOrder], [{ ...action, orderKey: "0xother" }])).toEqual([]);
+    }
+  );
 
   it("matches an update transaction exactly by order key", () => {
     const pendingOrder = makePendingOrder({
@@ -329,6 +432,110 @@ describe("getOrderBackfillMatches", () => {
 
     expect(getMatches([makePendingOrder()], [makeRawAction()], createdOnlyStatuses)).toHaveLength(1);
   });
+});
+
+describe("persistent TP/SL backfill", () => {
+  const pendingOrder = makePendingOrder({ orderType: OrderType.LimitDecrease });
+  const batch: PendingTpSlOrderBatch = {
+    id: "batch",
+    chainId: 42161,
+    orders: [pendingOrder],
+    existingOrderKeys: [],
+    transactionHash: "0xcreate",
+  };
+  const input = { batches: [batch], chainId: 42161, account, orderStatuses: {}, relayTaskStatuses: {} };
+
+  it("retains sent orders without keys across account changes and scopes recovery to their chain", () => {
+    expect(getPendingTpSlOrdersForBackfill({ ...input, account: "0xOther" })).toEqual([]);
+    expect(getPendingTpSlOrdersForBackfill({ ...input, account: undefined })).toEqual([]);
+    expect(getPendingTpSlOrdersForBackfill({ ...input, chainId: 43114 })).toEqual([]);
+    expect(getPendingTpSlOrdersForBackfill(input)).toEqual([{ ...pendingOrder, creationTxnHash: "0xcreate" }]);
+  });
+
+  it("waits for submission to be sent and uses relay transaction identity when available", () => {
+    expect(getPendingTpSlOrdersForBackfill({ ...input, batches: [{ ...batch, transactionHash: undefined }] })).toEqual(
+      []
+    );
+    const relayInput = { ...input, batches: [{ ...batch, transactionHash: undefined, relayTaskId: "task" }] };
+    expect(getPendingTpSlOrdersForBackfill(relayInput)).toHaveLength(1);
+    expect(
+      getPendingTpSlOrdersForBackfill({
+        ...relayInput,
+        relayTaskStatuses: { task: { taskId: "task", statusCode: StatusCode.Success, transactionHash: "0xrelay" } },
+      })[0].creationTxnHash
+    ).toBe("0xrelay");
+  });
+
+  it("stops recovering entries already confirmed or settled", () => {
+    expect(
+      getPendingTpSlOrdersForBackfill({
+        ...input,
+        batches: [{ ...batch, orders: [{ ...pendingOrder, isConfirmed: true }] }],
+      })
+    ).toEqual([]);
+    expect(
+      getPendingTpSlOrdersForBackfill({
+        ...input,
+        batches: [{ ...batch, orders: [{ ...pendingOrder, orderKey: "0xorder" }] }],
+        orderStatuses: { "0xorder": { key: "0xorder", createdAt: 0, cancelledTxnHash: "0xcancel" } },
+      })
+    ).toEqual([]);
+  });
+
+  it("preserves query identities when a batch needs both creation and settlement recovery", () => {
+    const orders = getPendingTpSlOrdersForBackfill({
+      ...input,
+      batches: [{ ...batch, orders: [pendingOrder, { ...pendingOrder, orderKey: "0xknown" }] }],
+    });
+    const creationParams = getOrderBackfillParams(orders.filter((order) => !order.orderKey));
+    const settlementParams = getOrderBackfillParams(orders.filter((order) => order.orderKey));
+
+    expect(creationParams?.transactionHashes).toEqual(["0xcreate"]);
+    expect(creationParams?.orderEventCombinations).toEqual([
+      { eventName: TradeActionType.OrderCreated, orderType: [OrderType.LimitDecrease] },
+    ]);
+    expect(settlementParams?.orderKeys).toEqual(["0xknown"]);
+    expect(settlementParams?.transactionHashes).toBeUndefined();
+    expect(settlementParams?.orderEventCombinations).toEqual([
+      { eventName: TradeActionType.OrderExecuted, orderType: [OrderType.LimitDecrease] },
+      { eventName: TradeActionType.OrderCancelled, orderType: [OrderType.LimitDecrease] },
+    ]);
+  });
+
+  it.each([TradeActionType.OrderExecuted, TradeActionType.OrderCancelled])(
+    "recovers missing creation followed by %s without fetched order data",
+    (eventName) => {
+      const creationOrders = getPendingTpSlOrdersForBackfill(input);
+      const creationAction = makeRawAction({
+        eventName: TradeActionType.OrderCreated,
+        orderType: OrderType.LimitDecrease,
+        transactionHash: "0xcreate",
+      });
+      const creationMatches = getOrderBackfillMatches(creationOrders, [creationAction], {});
+      const createdStatuses = applyOrderBackfillMatches({}, creationMatches);
+      const resolveInput = { ...input, positionKey: undefined, ordersInfoData: {}, orderStatuses: createdStatuses };
+      const createdResult = getPendingTpSlOrders(resolveInput);
+      const keyedBatch = { ...batch, orders: createdResult.batchUpdates[batch.id] };
+      const settlementOrders = getPendingTpSlOrdersForBackfill({
+        ...input,
+        batches: [keyedBatch],
+        orderStatuses: createdStatuses,
+      });
+      const settlementMatches = getOrderBackfillMatches(
+        settlementOrders,
+        [makeRawAction({ eventName, orderType: OrderType.LimitDecrease, sizeDeltaUsd: "80" })],
+        createdStatuses
+      );
+      const settledStatuses = applyOrderBackfillMatches(createdStatuses, settlementMatches);
+
+      expect(creationMatches).toHaveLength(1);
+      expect(settlementMatches).toHaveLength(1);
+      expect(
+        getPendingTpSlOrders({ ...resolveInput, batches: [keyedBatch], orderStatuses: settledStatuses })
+          .completedBatchIds
+      ).toEqual([batch.id]);
+    }
+  );
 });
 
 describe("applyOrderBackfillMatches", () => {

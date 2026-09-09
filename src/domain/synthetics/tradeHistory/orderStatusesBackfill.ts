@@ -1,6 +1,13 @@
 import { zeroAddress } from "viem";
 
-import { OrderCreatedEventData, OrderStatus, OrderStatuses, PendingOrderData } from "context/SyntheticsEvents/types";
+import {
+  OrderCreatedEventData,
+  OrderStatus,
+  OrderStatuses,
+  PendingOrderData,
+  RelayTaskStatus,
+} from "context/SyntheticsEvents/types";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { setByKey, updateByKey } from "lib/objects";
 import { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
 import { DecreasePositionSwapType, OrderType } from "sdk/utils/orders/types";
@@ -31,6 +38,39 @@ export type OrderBackfillMatch = {
   transactionHash: string;
 };
 
+export type OrderBackfillPendingOrder = PendingOrderData & { creationTxnHash?: string };
+
+export function getPendingTpSlOrdersForBackfill({
+  batches,
+  chainId,
+  account,
+  orderStatuses,
+  relayTaskStatuses,
+}: {
+  batches: PendingTpSlOrderBatch[];
+  chainId: number;
+  account: string | undefined;
+  orderStatuses: OrderStatuses;
+  relayTaskStatuses: Record<string, RelayTaskStatus>;
+}): OrderBackfillPendingOrder[] {
+  return batches
+    .filter((batch) => batch.chainId === chainId && (batch.transactionHash || batch.relayTaskId))
+    .flatMap((batch) => {
+      const creationTxnHash =
+        batch.transactionHash ??
+        (batch.relayTaskId ? relayTaskStatuses[batch.relayTaskId]?.transactionHash : undefined);
+
+      return batch.orders
+        .filter((order) => {
+          const status = order.orderKey ? orderStatuses[order.orderKey] : undefined;
+          return (
+            order.account === account && !order.isConfirmed && !status?.executedTxnHash && !status?.cancelledTxnHash
+          );
+        })
+        .map((order) => ({ ...order, creationTxnHash }));
+    });
+}
+
 export function getIsPendingOrderBackfillable(order: PendingOrderData) {
   // TWAP parts need twapGroupId-aware queries and matching, which is not supported here
   if (order.isTwap) {
@@ -55,7 +95,7 @@ function getExpectedEventNames(order: PendingOrderData): OrderBackfillEventName[
     : [TradeActionType.OrderCreated];
 }
 
-export function getOrderBackfillParams(pendingOrders: PendingOrderData[]) {
+export function getOrderBackfillParams(pendingOrders: OrderBackfillPendingOrder[]) {
   const orders = pendingOrders.filter(getIsPendingOrderBackfillable);
 
   if (orders.length === 0) {
@@ -91,17 +131,23 @@ export function getOrderBackfillParams(pendingOrders: PendingOrderData[]) {
 
   const createdAt = Math.min(...orders.map((order) => order.createdAt));
   const orderKeys = orders.flatMap((order) => (order.orderKey ? [order.orderKey] : []));
+  const creationTxnHashes = orders.flatMap((order) =>
+    !order.orderKey && order.creationTxnHash && getExpectedEventNames(order).includes(TradeActionType.OrderCreated)
+      ? [order.creationTxnHash]
+      : []
+  );
 
   return {
     account: orders[0].account,
     ...(orderKeys.length === orders.length ? { orderKeys } : {}),
+    ...(creationTxnHashes.length === orders.length ? { transactionHashes: [...new Set(creationTxnHashes)] } : {}),
     fromTxTimestamp: Math.max(0, Math.floor(createdAt / 1000) - ORDER_BACKFILL_LOOKBACK_SECONDS),
     orderEventCombinations,
   };
 }
 
 export function getOrderBackfillMatches(
-  pendingOrders: PendingOrderData[],
+  pendingOrders: OrderBackfillPendingOrder[],
   rawActions: RawTradeAction[] | undefined,
   orderStatuses: OrderStatuses
 ): OrderBackfillMatch[] {
@@ -155,7 +201,7 @@ function getIsActionAlreadyApplied(
   return true;
 }
 
-function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pendingOrder: PendingOrderData) {
+function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pendingOrder: OrderBackfillPendingOrder) {
   if (!getExpectedEventNames(pendingOrder).includes(rawAction.eventName as OrderBackfillEventName)) {
     return false;
   }
@@ -164,8 +210,20 @@ function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pend
     return rawAction.orderKey === pendingOrder.orderKey;
   }
 
-  const isAfterSubmission =
-    rawAction.timestamp + ORDER_BACKFILL_LOOKBACK_SECONDS >= Math.floor(pendingOrder.createdAt / 1000);
+  if (
+    rawAction.eventName === TradeActionType.OrderCreated &&
+    pendingOrder.creationTxnHash &&
+    rawAction.transactionHash !== pendingOrder.creationTxnHash
+  ) {
+    return false;
+  }
+
+  const isUnidentifiedTpSlCreation =
+    rawAction.eventName === TradeActionType.OrderCreated &&
+    isTriggerDecreaseOrderType(pendingOrder.orderType) &&
+    !pendingOrder.creationTxnHash;
+  const lookbackSeconds = isUnidentifiedTpSlCreation ? 0 : ORDER_BACKFILL_LOOKBACK_SECONDS;
+  const isAfterSubmission = rawAction.timestamp + lookbackSeconds >= Math.floor(pendingOrder.createdAt / 1000);
 
   const isInitialCollateralAmountMatch =
     pendingOrder.externalSwapQuote !== undefined ||

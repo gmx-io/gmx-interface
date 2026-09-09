@@ -33,7 +33,18 @@ export function getPendingTpSlOrders({
   const usedOrderKeys = new Set(
     batches
       .filter((batch) => batch.chainId === chainId)
-      .flatMap((batch) => batch.orders.flatMap((order) => (order.orderKey ? [order.orderKey] : [])))
+      .flatMap((batch) => {
+        const transactionHash =
+          batch.transactionHash ??
+          (batch.relayTaskId ? relayTaskStatuses[batch.relayTaskId]?.transactionHash : undefined);
+
+        return batch.orders.flatMap((order) =>
+          order.orderKey &&
+          !hasConflictingCreationTransaction(transactionHash, orderStatuses[order.orderKey]?.createdTxnHash)
+            ? [order.orderKey]
+            : []
+        );
+      })
   );
   const orders = Object.values(ordersInfoData ?? {});
   const statuses = Object.values(orderStatuses);
@@ -50,8 +61,17 @@ export function getPendingTpSlOrders({
     let hasSettledOrder = false;
 
     const updatedOrders = batch.orders.map((pendingOrder, index) => {
-      const status = pendingOrder.orderKey
-        ? orderStatuses[pendingOrder.orderKey]
+      if (!batch.transactionHash && !batch.relayTaskId) {
+        batchPendingOrders.push({ ...pendingOrder, id: `${batch.id}-${index}` });
+        return pendingOrder;
+      }
+
+      const hasConflictingOrderKey =
+        pendingOrder.orderKey !== undefined &&
+        hasConflictingCreationTransaction(transactionHash, orderStatuses[pendingOrder.orderKey]?.createdTxnHash);
+      const assignedOrderKey = hasConflictingOrderKey ? undefined : pendingOrder.orderKey;
+      const status = assignedOrderKey
+        ? orderStatuses[assignedOrderKey]
         : statuses.find(
             (status) =>
               !existingOrderKeys.has(status.key) &&
@@ -60,12 +80,16 @@ export function getPendingTpSlOrders({
               status.data &&
               isMatchingOrder(pendingOrder, status.data)
           );
-      const knownOrderKey = pendingOrder.orderKey ?? status?.key;
+      const knownOrderKey = assignedOrderKey ?? status?.key;
       const order = knownOrderKey
         ? ordersInfoData?.[knownOrderKey]
         : orders.find(
             (order) =>
-              !existingOrderKeys.has(order.key) && !usedOrderKeys.has(order.key) && isMatchingOrder(pendingOrder, order)
+              !existingOrderKeys.has(order.key) &&
+              !usedOrderKeys.has(order.key) &&
+              !hasConflictingCreationTransaction(transactionHash, orderStatuses[order.key]?.createdTxnHash) &&
+              order.updatedAtTime >= BigInt(Math.floor(pendingOrder.createdAt / 1000)) &&
+              isMatchingOrder(pendingOrder, order)
           );
 
       const orderKey = knownOrderKey ?? order?.key;
@@ -75,7 +99,10 @@ export function getPendingTpSlOrders({
       }
 
       const isConfirmed = Boolean(
-        pendingOrder.isConfirmed || order || status?.executedTxnHash || status?.cancelledTxnHash
+        (!hasConflictingOrderKey && pendingOrder.isConfirmed) ||
+          order ||
+          status?.executedTxnHash ||
+          status?.cancelledTxnHash
       );
       hasSettledOrder = hasSettledOrder || isConfirmed || Boolean(status?.createdTxnHash);
 
@@ -109,6 +136,10 @@ export function getPendingTpSlOrders({
   }
 
   return { pendingOrders, completedBatchIds, completedOrderKeys, batchUpdates };
+}
+
+function hasConflictingCreationTransaction(transactionHash: string | undefined, createdTxnHash: string | undefined) {
+  return Boolean(transactionHash && createdTxnHash && transactionHash !== createdTxnHash);
 }
 
 function isMatchingOrder(pending: PendingOrderData, order: OrderCreatedEventData | OrderInfo) {
