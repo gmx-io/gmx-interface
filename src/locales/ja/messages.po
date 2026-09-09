@@ -3999,6 +3999,10 @@ msgstr "このトリガー価格は現在の清算価格を超えています。
 msgid "Creating..."
 msgstr "作成中…"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized fees:"
+msgstr ""
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{0, plural, one {is} other {are}}"
@@ -4830,10 +4834,6 @@ msgstr "送信中..."
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Estimated time: ~5 min"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Pools stats"
-msgstr "プール統計"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -7504,10 +7504,6 @@ msgstr ""
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "複数のGMXマーケットに流動性を提供する利回り最適化ボールト"
 
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Analytics"
-msgstr "アナリティクス"
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "wstETH APR"
@@ -9343,10 +9339,6 @@ msgstr "使用資本 = max(オープンポジションの担保合計 - 実現Pn
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized:"
-msgstr "年率化:"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Trigger tickers failure"
@@ -11899,10 +11891,6 @@ msgstr "流動性を管理"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr "PnL ロング"
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats"
-msgstr "詳細統計のために"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Simulate transactions"

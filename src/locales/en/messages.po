@@ -3999,6 +3999,10 @@ msgstr "This trigger price is beyond the current liquidation price. Your positio
 msgid "Creating..."
 msgstr "Creating..."
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized fees:"
+msgstr "Annualized fees:"
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{0, plural, one {is} other {are}}"
@@ -4830,10 +4834,6 @@ msgstr "Submitting..."
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Estimated time: ~5 min"
 msgstr "Estimated time: ~5 min"
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Pools stats"
-msgstr "Pools stats"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -7504,10 +7504,6 @@ msgstr "Create your referral code and earn rebates from your referrals"
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Analytics"
-msgstr "Analytics"
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "wstETH APR"
@@ -9343,10 +9339,6 @@ msgstr "Capital used = max(sum of collateral of open positions - realized PnL + 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized:"
-msgstr "Annualized:"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Trigger tickers failure"
@@ -11899,10 +11891,6 @@ msgstr "Manage liquidity"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr "PnL long"
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats"
-msgstr "For detailed stats"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Simulate transactions"

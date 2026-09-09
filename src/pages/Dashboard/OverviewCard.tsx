@@ -402,10 +402,9 @@ export function OverviewCard({
 
     return (
       <>
-        <div className="my-5 h-1 bg-gray-800" />
-        <p className="Tooltip-row">
+        <p className="Tooltip-row !mt-12">
           <span className="label">
-            <Trans>Annualized:</Trans>
+            <Trans>Annualized fees:</Trans>
           </span>
           <span className="numbers">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
         </p>

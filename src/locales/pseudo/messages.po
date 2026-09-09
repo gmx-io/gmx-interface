@@ -3999,6 +3999,10 @@ msgstr ""
 msgid "Creating..."
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized fees:"
+msgstr ""
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{0, plural, one {is} other {are}}"
@@ -4829,10 +4833,6 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Estimated time: ~5 min"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Pools stats"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -7504,10 +7504,6 @@ msgstr ""
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Analytics"
-msgstr ""
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr ""
@@ -9342,10 +9338,6 @@ msgstr "[!! Capital used = max(sum of collateral of open positions - realized Pn
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
-msgstr ""
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized:"
 msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
@@ -11898,10 +11890,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats"
 msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
