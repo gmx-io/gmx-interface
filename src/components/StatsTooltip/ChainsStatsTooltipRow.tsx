@@ -6,13 +6,22 @@ import { formatAmountHuman } from "lib/numbers";
 
 import "./StatsTooltip.css";
 
+type EntryValue = bigint | number | string | undefined;
+
 type Props = {
-  entries: { [key: string]: bigint | number | string | undefined };
+  entries: { [key: string]: EntryValue };
   showDollar?: boolean;
   decimalsForConversion?: number;
   symbol?: string;
   subtotal?: ReactNode;
 };
+
+// a network row carries every version of that network, so the tooltip never splits one chain across rows
+export function sumNetworkParts(...parts: (bigint | number | undefined)[]): bigint | undefined {
+  const known = parts.filter((part): part is bigint | number => part !== undefined);
+
+  return known.length > 0 ? known.reduce<bigint>((acc, part) => acc + BigInt(part), 0n) : undefined;
+}
 
 export default function ChainsStatsTooltipRow({
   entries,
@@ -21,7 +30,14 @@ export default function ChainsStatsTooltipRow({
   symbol,
   subtotal,
 }: Props) {
-  const validEntries = Object.entries(entries).filter(([, value]) => value);
+  const validEntries = Object.entries(entries)
+    .filter(([, value]) => value)
+    .sort(([, left], [, right]) => {
+      const a = BigInt(left || 0);
+      const b = BigInt(right || 0);
+
+      return a === b ? 0 : a > b ? -1 : 1;
+    });
   const total = validEntries.reduce((acc, [, value]) => acc + (BigInt(value || 0) ?? 0n), 0n);
 
   if (validEntries.length === 0) {

@@ -15,7 +15,7 @@ import { MARKETS } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import ChainsStatsTooltipRow, { sumNetworkParts } from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -78,12 +78,10 @@ export function StatsCard() {
 
   const totalFeesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalFees,
-      "V2 Avalanche": v2AvalancheOverview?.totalFees,
-      "V2 MegaETH": v2MegaethOverview?.totalFees,
-      "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
-      "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
-      "GMTrade Solana": gmtradeTotalFees,
+      Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalFees, v1ArbitrumTotalFees?.totalFees),
+      Avalanche: sumNetworkParts(v2AvalancheOverview?.totalFees, v1AvalancheTotalFees?.totalFees),
+      MegaETH: v2MegaethOverview?.totalFees,
+      Solana: gmtradeTotalFees,
     }),
     [
       v1AvalancheTotalFees?.totalFees,
@@ -97,12 +95,10 @@ export function StatsCard() {
 
   const totalVolumeEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalVolume,
-      "V2 Avalanche": v2AvalancheOverview?.totalVolume,
-      "V2 MegaETH": v2MegaethOverview?.totalVolume,
-      "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
-      "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
-      "GMTrade Solana": gmtradeTotalVolume,
+      Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalVolume, v1TotalVolume?.[ARBITRUM]),
+      Avalanche: sumNetworkParts(v2AvalancheOverview?.totalVolume, v1TotalVolume?.[AVALANCHE]),
+      MegaETH: v2MegaethOverview?.totalVolume,
+      Solana: gmtradeTotalVolume,
     }),
     [
       v1TotalVolume,
@@ -115,12 +111,10 @@ export function StatsCard() {
 
   const uniqueUsersEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalUsers,
-      "V2 Avalanche": v2AvalancheOverview?.totalUsers,
-      "V2 MegaETH": v2MegaethOverview?.totalUsers,
-      "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
-      "V1 Avalanche": uniqueUsers?.[AVALANCHE],
-      "GMTrade Solana": gmtradeUsers,
+      Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalUsers, uniqueUsers?.[ARBITRUM]),
+      Avalanche: sumNetworkParts(v2AvalancheOverview?.totalUsers, uniqueUsers?.[AVALANCHE]),
+      MegaETH: v2MegaethOverview?.totalUsers,
+      Solana: gmtradeUsers,
     }),
     [
       gmtradeUsers,
