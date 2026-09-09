@@ -2,9 +2,16 @@ import { describe, expect, it } from "vitest";
 
 import type { OrderStatus, PendingOrderData } from "context/SyntheticsEvents/types";
 import { getPositionKey } from "domain/synthetics/positions";
-import { getOrderCreatedDataFromPendingOrder } from "domain/synthetics/tradeHistory/orderStatusesBackfill";
+import {
+  applyOrderBackfillMatches,
+  getOrderBackfillMatches,
+  getOrderBackfillParams,
+  getOrderCreatedDataFromPendingOrder,
+} from "domain/synthetics/tradeHistory/orderStatusesBackfill";
+import type { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
 import { StatusCode } from "sdk/utils/gelatoRelay";
 import { DecreasePositionSwapType, OrderType, type OrderInfo } from "sdk/utils/orders/types";
+import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { getPendingTpSlOrders } from "../pendingOrders";
 import type { PendingTpSlOrderBatch } from "../types";
@@ -60,6 +67,42 @@ function resolve(overrides: Partial<Parameters<typeof getPendingTpSlOrders>[0]> 
 }
 
 describe("pending TP/SL orders", () => {
+  it.each([TradeActionType.OrderExecuted, TradeActionType.OrderCancelled] as const)(
+    "recovers %s after creation backfill when the order never appears in the list",
+    (eventName) => {
+      const createdStatuses = applyOrderBackfillMatches({}, [
+        { pendingOrder: tp, orderKey: "tp", eventName: TradeActionType.OrderCreated, transactionHash: "tx" },
+      ]);
+      const created = resolve({ batches: [{ ...batch, orders: [tp] }], orderStatuses: createdStatuses });
+      const orders = created.batchUpdates[batch.id];
+      expect(created.pendingOrders).toHaveLength(1);
+      expect(getOrderBackfillParams(orders)).toMatchObject({
+        orderKeys: ["tp"],
+        orderEventCombinations: [
+          { eventName: TradeActionType.OrderExecuted, orderType: [OrderType.LimitDecrease] },
+          { eventName: TradeActionType.OrderCancelled, orderType: [OrderType.LimitDecrease] },
+        ],
+      });
+      // Executed sizes can differ from the original request after a position decrease.
+      const action = {
+        id: "terminal",
+        eventName,
+        orderKey: "tp",
+        transactionHash: "settled",
+        sizeDeltaUsd: "500",
+      } as RawTradeAction;
+      const matches = getOrderBackfillMatches(orders, [action], createdStatuses);
+      expect(matches).toHaveLength(1);
+      expect(getOrderBackfillMatches(orders, [{ ...action, orderKey: "other" }], createdStatuses)).toEqual([]);
+      const result = resolve({
+        batches: [{ ...batch, orders }],
+        orderStatuses: applyOrderBackfillMatches(createdStatuses, matches),
+      });
+      expect(result.pendingOrders).toEqual([]);
+      expect(result.completedBatchIds).toEqual([batch.id]);
+    }
+  );
+
   it("shows each submitted order before order data is available", () => {
     const result = resolve({ ordersInfoData: undefined });
     expect(result.pendingOrders.map((entry) => entry.orderType)).toEqual([

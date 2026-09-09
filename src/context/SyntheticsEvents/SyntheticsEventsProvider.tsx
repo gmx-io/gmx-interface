@@ -1239,6 +1239,29 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     onMatches: handleOrderBackfillMatches,
   });
 
+  const pendingTpSlTerminalOrders = useMemo(
+    () =>
+      pendingTpSlOrderBatches
+        .filter((batch) => batch.chainId === chainId)
+        .flatMap((batch) => batch.orders)
+        .filter(
+          (order) =>
+            order.account === currentAccount &&
+            order.orderKey &&
+            !order.isConfirmed &&
+            !orderStatuses[order.orderKey]?.executedTxnHash &&
+            !orderStatuses[order.orderKey]?.cancelledTxnHash
+        ),
+    [chainId, currentAccount, pendingTpSlOrderBatches, orderStatuses]
+  );
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: pendingTpSlTerminalOrders,
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
+
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
       orderStatuses,

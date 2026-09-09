@@ -1,5 +1,16 @@
 import { Trans } from "@lingui/macro";
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import type { ReplacementReturnType } from "viem";
 
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -8,12 +19,14 @@ import { parseError } from "lib/errors";
 import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
-import { useJsonRpcProvider } from "lib/rpc";
+import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 
 import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+
+import { PendingTxnReplacementTracker } from "./PendingTxnReplacementTracker";
 
 export type PendingTransactionData = {
   estimatedExecutionFee: bigint;
@@ -28,6 +41,8 @@ export type PendingTransaction = {
   data?: PendingTransactionData;
   actionName?: TradingActionName;
   onError?: () => void;
+  chainId?: number;
+  onReplaced?: (transactionHash: string) => void;
 };
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
@@ -92,23 +107,42 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
 
+  const handleReplacement = useCallback(
+    (pendingTxn: PendingTransaction, replacement: ReplacementReturnType) => {
+      const hash = replacement.transactionReceipt.transactionHash;
+      if (replacement.reason === "repriced") {
+        pendingTxn.onReplaced?.(hash);
+        setPendingTxns((txns) => txns.map((txn) => (txn === pendingTxn ? { ...txn, hash } : txn)));
+      } else {
+        pendingTxn.onError?.();
+        setPendingTxns((txns) => txns.filter((txn) => txn !== pendingTxn));
+        helperToast.error(
+          getPendingTxnFailureToastContent({ txUrl: getExplorerUrl(pendingTxn.chainId ?? chainId) + "tx/" + hash })
+        );
+      }
+    },
+    [chainId]
+  );
+
   useEffect(() => {
     const checkPendingTxns = async () => {
       if (!provider) {
         return;
       }
 
-      const updatedPendingTxns: any[] = [];
+      const completedPendingTxns = new Set<PendingTransaction>();
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
-        const receipt = await provider.getTransactionReceipt(pendingTxn.hash);
+        const txnChainId = pendingTxn.chainId ?? chainId;
+        const txnProvider = pendingTxn.chainId ? getProvider(undefined, txnChainId) : provider;
+        const receipt = await txnProvider.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
             pendingTxn.onError?.();
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            const txUrl = getExplorerUrl(txnChainId) + "tx/" + pendingTxn.hash;
             const { error: onchainError, txnData } = await getCallStaticError(
-              chainId,
-              provider,
+              txnChainId,
+              txnProvider,
               undefined,
               pendingTxn.hash
             );
@@ -122,7 +156,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = getInsufficientExecutionFeeToastContent({
                 minExecutionFee,
                 executionFee,
-                chainId,
+                chainId: txnChainId,
                 executionFeeBufferBps,
                 txUrl,
                 errorMessage: errorData?.errorMessage,
@@ -147,12 +181,12 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
 
             if (pendingTxn.metricId) {
               sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
-              sendUserAnalyticsOrderResultEvent(chainId, pendingTxn.metricId, false);
+              sendUserAnalyticsOrderResultEvent(txnChainId, pendingTxn.metricId, false);
             }
           }
 
           if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            const txUrl = getExplorerUrl(txnChainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
               getPendingTxnSuccessToastContent({
                 message: pendingTxn.message,
@@ -161,13 +195,12 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               })
             );
           }
-          continue;
+          completedPendingTxns.add(pendingTxn);
         }
-        updatedPendingTxns.push(pendingTxn);
       }
 
-      if (updatedPendingTxns.length !== pendingTxns.length) {
-        setPendingTxns(updatedPendingTxns);
+      if (completedPendingTxns.size > 0) {
+        setPendingTxns((txns) => txns.filter((txn) => !completedPendingTxns.has(txn)));
       }
     };
 
@@ -179,5 +212,19 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
 
   const state = useMemo(() => ({ pendingTxns, setPendingTxns }), [pendingTxns, setPendingTxns]);
 
-  return <PendingTxnsContext.Provider value={state}>{children}</PendingTxnsContext.Provider>;
+  return (
+    <PendingTxnsContext.Provider value={state}>
+      {pendingTxns.map((transaction) =>
+        transaction.onReplaced && transaction.chainId !== undefined ? (
+          <PendingTxnReplacementTracker
+            key={`${transaction.chainId}:${transaction.hash}`}
+            transaction={transaction}
+            chainId={transaction.chainId}
+            onReplaced={handleReplacement}
+          />
+        ) : null
+      )}
+      {children}
+    </PendingTxnsContext.Provider>
+  );
 }

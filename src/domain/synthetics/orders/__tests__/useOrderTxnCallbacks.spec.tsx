@@ -163,3 +163,12 @@ it("removes a wallet batch when receipt polling reports an on-chain failure", ()
   state.pendingTxns[0].onError?.();
   expect(state.batches).toEqual([]);
 });
+
+it("tracks the replacement hash when a wallet TP/SL transaction is sped up", () => {
+  const builder = events("wallet");
+  callback(builder.Submitted());
+  callback(builder.Sent({ type: "wallet", transactionHash: "tx" }));
+  expect(state.pendingTxns[0].chainId).toBe(42161);
+  state.pendingTxns[0].onReplaced?.("replacement");
+  expect(state.batches[0].transactionHash).toBe("replacement");
+});

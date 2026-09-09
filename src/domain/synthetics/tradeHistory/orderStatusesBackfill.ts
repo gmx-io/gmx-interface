@@ -4,7 +4,7 @@ import { OrderCreatedEventData, OrderStatus, OrderStatuses, PendingOrderData } f
 import { setByKey, updateByKey } from "lib/objects";
 import { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
 import { DecreasePositionSwapType, OrderType } from "sdk/utils/orders/types";
-import { isMarketOrderType, isSwapOrderType } from "sdk/utils/orders/utils";
+import { isMarketOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "sdk/utils/orders/utils";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 const ORDER_BACKFILL_LOOKBACK_SECONDS = 60;
@@ -49,8 +49,8 @@ function getExpectedEventNames(order: PendingOrderData): OrderBackfillEventName[
     return [TradeActionType.OrderCancelled];
   }
 
-  // Non-market create actions stay queryable after execution or cancellation.
-  return isMarketOrderType(order.orderType)
+  // Once a TP/SL key is known, recover settlement even if it never entered the order list.
+  return isMarketOrderType(order.orderType) || (order.orderKey && isTriggerDecreaseOrderType(order.orderType))
     ? [TradeActionType.OrderExecuted, TradeActionType.OrderCancelled]
     : [TradeActionType.OrderCreated];
 }
@@ -90,9 +90,11 @@ export function getOrderBackfillParams(pendingOrders: PendingOrderData[]) {
   );
 
   const createdAt = Math.min(...orders.map((order) => order.createdAt));
+  const orderKeys = orders.flatMap((order) => (order.orderKey ? [order.orderKey] : []));
 
   return {
     account: orders[0].account,
+    ...(orderKeys.length === orders.length ? { orderKeys } : {}),
     fromTxTimestamp: Math.max(0, Math.floor(createdAt / 1000) - ORDER_BACKFILL_LOOKBACK_SECONDS),
     orderEventCombinations,
   };
@@ -158,8 +160,8 @@ function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pend
     return false;
   }
 
-  if (pendingOrder.txnType !== "create") {
-    return pendingOrder.orderKey !== undefined && rawAction.orderKey === pendingOrder.orderKey;
+  if (pendingOrder.orderKey !== undefined) {
+    return rawAction.orderKey === pendingOrder.orderKey;
   }
 
   const isAfterSubmission =

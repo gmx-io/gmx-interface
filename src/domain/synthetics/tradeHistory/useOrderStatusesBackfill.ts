@@ -32,7 +32,9 @@ export function useOrderStatusesBackfill({
     .join(",");
 
   const { data: rawActions } = useSWR(
-    params ? ["orderStatusesBackfill", chainId, params.account, params.fromTxTimestamp, combinationsKey] : null,
+    params
+      ? ["orderStatusesBackfill", chainId, params.account, params.fromTxTimestamp, combinationsKey, params.orderKeys]
+      : null,
     {
       fetcher: () =>
         fetchRawTradeActions({
@@ -42,6 +44,7 @@ export function useOrderStatusesBackfill({
           marketsDirectionsFilter: undefined,
           forAllAccounts: false,
           account: params!.account,
+          orderKeys: params!.orderKeys,
           fromTxTimestamp: params!.fromTxTimestamp,
           toTxTimestamp: undefined,
           orderEventCombinations: params!.orderEventCombinations,

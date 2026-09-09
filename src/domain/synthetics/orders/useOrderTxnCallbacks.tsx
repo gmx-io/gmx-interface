@@ -343,7 +343,16 @@ export function useOrderTxnCallbacks() {
 
             const pendingTxn: PendingTransaction = {
               hash: e.data.transactionHash,
+              chainId,
               onError: () => setPendingTpSlOrderBatches((batches) => batches.filter((batch) => batch.id !== batchId)),
+              onReplaced: batchParams.createOrderParams.some((cp) =>
+                isTriggerDecreaseOrderType(cp.orderPayload.orderType)
+              )
+                ? (transactionHash) =>
+                    setPendingTpSlOrderBatches((batches) =>
+                      batches.map((batch) => (batch.id === batchId ? { ...batch, transactionHash } : batch))
+                    )
+                : undefined,
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               actionName: ctx.actionName,
