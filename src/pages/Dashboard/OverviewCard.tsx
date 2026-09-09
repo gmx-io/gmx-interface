@@ -16,12 +16,12 @@ import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmountHuman } from "lib/numbers";
-import { sumBigInts } from "lib/sumBigInts";
+import { sumBigInts, sumKnownBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
-import ChainsStatsTooltipRow, { sumNetworkParts } from "components/StatsTooltip/ChainsStatsTooltipRow";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
@@ -41,11 +41,6 @@ function sortNetworkRows(rows: NetworkRow[]): NetworkRow[] {
 
     return a.value === b.value ? 0 : a.value > b.value ? -1 : 1;
   });
-}
-
-// a headline total stays unknown until every contribution is known, so a missing network never reads as zero
-function sumKnown(...parts: (bigint | undefined)[]): bigint | undefined {
-  return parts.some((part) => part === undefined) ? undefined : parts.reduce<bigint>((acc, part) => acc + part!, 0n);
 }
 
 const SOLANA_ENTRY = "Solana";
@@ -132,7 +127,7 @@ export function OverviewCard({
   const gmTvlMegaeth = v2MegaethOverview.totalGMLiquidity;
   const gmTvlGmtrade = parseProtocolStatsUsd(gmtradeOverview?.tvl?.pools);
 
-  const totalGmTvl = sumKnown(gmTvlArbitrum, gmTvlAvalanche, gmTvlMegaeth, gmTvlGmtrade);
+  const totalGmTvl = sumKnownBigInts(gmTvlArbitrum, gmTvlAvalanche, gmTvlMegaeth, gmTvlGmtrade);
 
   let displayTvlArbitrum: bigint | undefined = undefined;
   let displayTvlAvalanche: bigint | undefined = undefined;
@@ -158,7 +153,7 @@ export function OverviewCard({
     displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsMarginUsd;
     displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsMarginUsd;
     displayTvlMegaeth = gmTvlMegaeth + megaethPositionsMarginUsd;
-    displayTvl = sumKnown(displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, gmTvlGmtrade);
+    displayTvl = sumKnownBigInts(displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, gmTvlGmtrade);
   }
 
   // #endregion TVL and GLP Pool
@@ -278,8 +273,8 @@ export function OverviewCard({
 
   const dailyVolumeEntries = useMemo(
     () => ({
-      Arbitrum: sumNetworkParts(v2ArbitrumOverview?.dailyVolume, v1ArbitrumDailyVolume),
-      Avalanche: sumNetworkParts(v2AvalancheOverview?.dailyVolume, v1AvalancheDailyVolume),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.dailyVolume, v1ArbitrumDailyVolume),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.dailyVolume, v1AvalancheDailyVolume),
       MegaETH: v2MegaethOverview?.dailyVolume,
       [SOLANA_ENTRY]: gmtradeDailyVolume,
     }),
@@ -295,8 +290,8 @@ export function OverviewCard({
 
   const openInterestEntries = useMemo(
     () => ({
-      Arbitrum: sumNetworkParts(v2ArbitrumOpenInterest, v1ArbitrumOpenInterest),
-      Avalanche: sumNetworkParts(v2AvalancheOpenInterest, v1AvalancheOpenInterest),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOpenInterest, v1ArbitrumOpenInterest),
+      Avalanche: sumKnownBigInts(v2AvalancheOpenInterest, v1AvalancheOpenInterest),
       MegaETH: v2MegaethOpenInterest,
       [SOLANA_ENTRY]: gmtradeOpenInterest,
     }),
@@ -312,8 +307,8 @@ export function OverviewCard({
 
   const totalLongPositionSizesEntries = useMemo(
     () => ({
-      Arbitrum: sumNetworkParts(v2ArbitrumLongPositionSizes, v1ArbitrumLongPositionSizes),
-      Avalanche: sumNetworkParts(v2AvalancheLongPositionSizes, v1AvalancheLongPositionSizes),
+      Arbitrum: sumKnownBigInts(v2ArbitrumLongPositionSizes, v1ArbitrumLongPositionSizes),
+      Avalanche: sumKnownBigInts(v2AvalancheLongPositionSizes, v1AvalancheLongPositionSizes),
       MegaETH: v2MegaethLongPositionSizes,
       [SOLANA_ENTRY]: gmtradeLongPositionSizes,
     }),
@@ -329,8 +324,8 @@ export function OverviewCard({
 
   const totalShortPositionSizesEntries = useMemo(
     () => ({
-      Arbitrum: sumNetworkParts(v2ArbitrumShortPositionSizes, v1ArbitrumShortPositionSizes),
-      Avalanche: sumNetworkParts(v2AvalancheShortPositionSizes, v1AvalancheShortPositionSizes),
+      Arbitrum: sumKnownBigInts(v2ArbitrumShortPositionSizes, v1ArbitrumShortPositionSizes),
+      Avalanche: sumKnownBigInts(v2AvalancheShortPositionSizes, v1AvalancheShortPositionSizes),
       MegaETH: v2MegaethShortPositionSizes,
       [SOLANA_ENTRY]: gmtradeShortPositionSizes,
     }),
@@ -346,8 +341,8 @@ export function OverviewCard({
 
   const epochFeesEntries = useMemo(
     () => ({
-      Arbitrum: sumNetworkParts(v2ArbitrumEpochFees, v1ArbitrumEpochFees),
-      Avalanche: sumNetworkParts(v2AvalancheEpochFees, v1AvalancheEpochFees),
+      Arbitrum: sumKnownBigInts(v2ArbitrumEpochFees, v1ArbitrumEpochFees),
+      Avalanche: sumKnownBigInts(v2AvalancheEpochFees, v1AvalancheEpochFees),
       MegaETH: v2MegaethEpochFees,
       [SOLANA_ENTRY]: gmtradeEpochFees,
     }),
@@ -393,7 +388,7 @@ export function OverviewCard({
   }, []);
 
   const feesSubtotal = useMemo(() => {
-    // only GMX-buyback fee allocations feed this: GMTrade fees buy GT historically and nothing since 2026-01-16
+    // only GMX-buyback fee allocations feed this: solana fees bought GT historically and nothing since 2026-01-16
     const v1GmxBuyPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
     const v2GmxBuyPressure =
       (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n) + (v2MegaethWeeklyFees ?? 0n)) * 27n) / 100n;
@@ -415,7 +410,7 @@ export function OverviewCard({
           <span className="numbers">{formatAmountHuman(annualizedGmxBuyPressure, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row !mt-16 max-w-[260px] whitespace-normal">
-          <Trans>Annualized data based on the past 7 days. GMTrade fees do not contribute to GMX buybacks.</Trans>
+          <Trans>Annualized data based on the past 7 days. Solana fees do not contribute to GMX buybacks.</Trans>
         </p>
       </>
     );

@@ -10,12 +10,12 @@ import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { formatAmountHuman } from "lib/numbers";
-import { sumBigInts } from "lib/sumBigInts";
+import { sumBigInts, sumKnownBigInts } from "lib/sumBigInts";
 import { MARKETS } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
-import ChainsStatsTooltipRow, { sumNetworkParts } from "components/StatsTooltip/ChainsStatsTooltipRow";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -85,8 +85,8 @@ export function StatsCard() {
 
   const totalFeesEntries = useMemo(
     () => ({
-      Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalFees, v1ArbitrumTotalFees?.totalFees),
-      Avalanche: sumNetworkParts(v2AvalancheOverview?.totalFees, v1AvalancheTotalFees?.totalFees),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalFees, v1ArbitrumTotalFees?.totalFees),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalFees, v1AvalancheTotalFees?.totalFees),
       MegaETH: v2MegaethOverview?.totalFees,
       [SOLANA_ENTRY]: gmtradeTotalFees,
     }),
@@ -102,8 +102,8 @@ export function StatsCard() {
 
   const totalVolumeEntries = useMemo(
     () => ({
-      Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalVolume, v1TotalVolume?.[ARBITRUM]),
-      Avalanche: sumNetworkParts(v2AvalancheOverview?.totalVolume, v1TotalVolume?.[AVALANCHE]),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalVolume, v1TotalVolume?.[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalVolume, v1TotalVolume?.[AVALANCHE]),
       MegaETH: v2MegaethOverview?.totalVolume,
       [SOLANA_ENTRY]: gmtradeTotalVolume,
     }),
@@ -118,8 +118,8 @@ export function StatsCard() {
 
   const uniqueUsersEntries = useMemo(
     () => ({
-      Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalUsers, uniqueUsers?.[ARBITRUM]),
-      Avalanche: sumNetworkParts(v2AvalancheOverview?.totalUsers, uniqueUsers?.[AVALANCHE]),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalUsers, uniqueUsers?.[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalUsers, uniqueUsers?.[AVALANCHE]),
       MegaETH: v2MegaethOverview?.totalUsers,
       [SOLANA_ENTRY]: gmtradeUsers,
     }),

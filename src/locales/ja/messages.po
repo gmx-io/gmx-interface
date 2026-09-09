@@ -311,10 +311,6 @@ msgstr "指値失敗"
 msgid "Performance"
 msgstr "パフォーマンス"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized data based on the past 7 days. GMTrade fees do not contribute to GMX buybacks."
-msgstr ""
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Open fees"
 msgstr "オープン手数料"
@@ -5535,6 +5531,10 @@ msgstr "正の影響係数"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "All trades"
 msgstr "すべての取引"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days. Solana fees do not contribute to GMX buybacks."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."

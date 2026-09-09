@@ -17,13 +17,6 @@ type Props = {
   staleTitles?: string[];
 };
 
-// a network row carries every version of that network, so the tooltip never splits one chain across rows
-export function sumNetworkParts(...parts: (bigint | number | undefined)[]): bigint | undefined {
-  const known = parts.filter((part): part is bigint | number => part !== undefined);
-
-  return known.length > 0 ? known.reduce<bigint>((acc, part) => acc + BigInt(part), 0n) : undefined;
-}
-
 export default function ChainsStatsTooltipRow({
   entries,
   showDollar = true,
