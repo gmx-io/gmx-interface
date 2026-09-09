@@ -1,6 +1,7 @@
 const NAVIGATION_TIMEOUT_MS = 10_000;
 const LEGACY_ASSET_CACHE_PATTERN = /^gmx-pwa-(?:shell|assets)-v2-\d+$/;
 const CONTROL_CACHE = "gmx-pwa-control-v2";
+
 const CONNECTION_ERROR_HTML = `<!doctype html>
 <html lang="en">
   <head>
