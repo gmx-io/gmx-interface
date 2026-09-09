@@ -311,6 +311,10 @@ msgstr "Лимит не удался"
 msgid "Performance"
 msgstr "Производительность"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days. GMTrade fees do not contribute to GMX buybacks."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Open fees"
 msgstr "Комиссии за открытие"
@@ -4165,10 +4169,6 @@ msgstr "Ошибка части TWAP Swap"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr ""
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized data based on the past 7 days"
-msgstr "Годовые данные на основе последних 7 дней"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "Рабочий поток"
@@ -5127,10 +5127,6 @@ msgstr "Внешняя маршрутизация временно приост�
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>Купить</0> {wrappedNativeTokenSymbol}."
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized buy pressure:"
-msgstr "Годовое давление на покупку:"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -12808,6 +12804,10 @@ msgstr "Цена исполнения может отличаться от ли�
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "Приватный"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized GMX buy pressure:"
+msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"

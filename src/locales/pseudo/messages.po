@@ -311,6 +311,10 @@ msgstr ""
 msgid "Performance"
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days. GMTrade fees do not contribute to GMX buybacks."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Open fees"
 msgstr "[!! Open fees !!]"
@@ -4165,10 +4169,6 @@ msgstr ""
 msgid "No events in the past {DAYS_BACK} days"
 msgstr ""
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized data based on the past 7 days"
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr ""
@@ -5126,10 +5126,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
-msgstr ""
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized buy pressure:"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -12807,6 +12803,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
+msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized GMX buy pressure:"
 msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx

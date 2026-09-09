@@ -311,6 +311,10 @@ msgstr "指値失敗"
 msgid "Performance"
 msgstr "パフォーマンス"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days. GMTrade fees do not contribute to GMX buybacks."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Open fees"
 msgstr "オープン手数料"
@@ -4165,10 +4169,6 @@ msgstr "TWAP スワップパート失敗"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr ""
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized data based on the past 7 days"
-msgstr "過去7日間に基づく年率換算データ"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "ワーカースレッド"
@@ -5127,10 +5127,6 @@ msgstr "外部ルーティングは失敗した試行の後、一時的に停止
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>{wrappedNativeTokenSymbol}を購入</0>。"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized buy pressure:"
-msgstr "年間購入圧力："
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -12808,6 +12804,10 @@ msgstr "手数料や価格への影響により、約定価格が指値と異な
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "プライベート"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized GMX buy pressure:"
+msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"

@@ -353,13 +353,12 @@ export function OverviewCard({
   }, []);
 
   const feesSubtotal = useMemo(() => {
-    // GMTrade allocates nothing to buybacks since 2026-01-16, so it only joins the annualized fees
-    const v1BuyingPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
-    const v2BuyingPressure =
+    // only GMX-buyback fee allocations feed this: GMTrade fees buy GT historically and nothing since 2026-01-16
+    const v1GmxBuyPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
+    const v2GmxBuyPressure =
       (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n) + (v2MegaethWeeklyFees ?? 0n)) * 27n) / 100n;
     const annualizedTotal = (totalWeeklyFeesUsd * 365n) / 7n;
-    const totalBuyingPressure = v1BuyingPressure + v2BuyingPressure;
-    const annualizedTotalBuyingPressure = (totalBuyingPressure * 365n) / 7n;
+    const annualizedGmxBuyPressure = ((v1GmxBuyPressure + v2GmxBuyPressure) * 365n) / 7n;
 
     return (
       <>
@@ -372,12 +371,12 @@ export function OverviewCard({
         </p>
         <p className="Tooltip-row">
           <span className="label">
-            <Trans>Annualized buy pressure:</Trans>
+            <Trans>Annualized GMX buy pressure:</Trans>
           </span>
-          <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
+          <span className="numbers">{formatAmountHuman(annualizedGmxBuyPressure, USD_DECIMALS, true, 2)}</span>
         </p>
-        <p className="Tooltip-row !mt-16">
-          <Trans>Annualized data based on the past 7 days</Trans>
+        <p className="Tooltip-row !mt-16 max-w-[260px] whitespace-normal">
+          <Trans>Annualized data based on the past 7 days. GMTrade fees do not contribute to GMX buybacks.</Trans>
         </p>
       </>
     );
