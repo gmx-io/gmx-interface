@@ -1,5 +1,6 @@
 import mapValues from "lodash/mapValues";
 
+import { isDevelopment } from "./env";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "./factors";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
@@ -69,6 +70,11 @@ function loadAbStorage(): void {
         } else if (abFlagsConfig[flag] === 1 && !abStorage[flag].enabled) {
           abStorage[flag] = { enabled: true };
           changed = true;
+        } else if (abFlagsConfig[flag] === 0 && abStorage[flag].enabled && !isDevelopment()) {
+          // a deployed build rolls nobody into a zero-share flag, so an enabled one was written by
+          // hand; clearing it here retires the values older builds accepted from the url
+          abStorage[flag] = { enabled: false };
+          changed = true;
         }
       }
 
@@ -119,12 +125,6 @@ export function ensureAbFlagRolled(flag: AbFlag): boolean {
 
 export function getAbFlags(): Record<AbFlag, boolean> {
   return mapValues(abStorage, ({ enabled }) => enabled);
-}
-
-export function getAbFlagUrlParams(): string {
-  return Object.entries(abStorage)
-    .map(([flag, { enabled }]) => `${flag}=${enabled ? 1 : 0}`)
-    .join("&");
 }
 
 // Config for deterministic ab flags based on address
