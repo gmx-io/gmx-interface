@@ -4633,6 +4633,10 @@ msgstr "Экспортировать кошелёк"
 msgid "20s"
 msgstr "20с"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "TVL includes GMX staked, GM pools, and position collateral. Solana contributes GM pools only."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual market ID"
 msgstr "Виртуальный ID рынка"
@@ -10648,10 +10652,6 @@ msgstr "Пул"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LIQUIDATION PRICE"
 msgstr "ЦЕНА ЛИКВИДАЦИИ"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "TVL includes GMX staked, GM pools, and position collateral"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
