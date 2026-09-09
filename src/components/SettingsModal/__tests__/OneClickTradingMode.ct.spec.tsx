@@ -198,6 +198,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
       />
     );
 
+    await expect(page.getByRole("button", { name: "One-Click settings" })).toBeVisible();
     await expectModeActive(modeButton(page, "Express + One-Click"));
 
     await modeButton(page, "Express").click();
@@ -206,8 +207,8 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
     await expectModeActive(modeButton(page, "Express"));
 
     expect(chain.sentTransactions).toHaveLength(0);
-    expect(await readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
-    expect(await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
+    await expect.poll(() => readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    await expect.poll(() => readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
   });
 });
 

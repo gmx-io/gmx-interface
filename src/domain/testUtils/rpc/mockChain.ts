@@ -74,6 +74,7 @@ const IFACE = new ethers.Interface([
   "function getBlockNumber() view returns (uint256)",
   "function getCurrentBlockTimestamp() view returns (uint256)",
   "function aggregate((address target, bytes callData)[] calls) returns (uint256 blockNumber, bytes[] returnData)",
+  "function blockAndAggregate((address target, bytes callData)[] calls) returns (uint256 blockNumber, bytes32 blockHash, (bool success, bytes returnData)[] returnData)",
   "function aggregate3((address target, bool allowFailure, bytes callData)[] calls) view returns ((bool success, bytes returnData)[] returnData)",
 ]);
 
@@ -92,6 +93,7 @@ const SELECTORS = {
   getBlockNumber: IFACE.getFunction("getBlockNumber")!.selector,
   getCurrentBlockTimestamp: IFACE.getFunction("getCurrentBlockTimestamp")!.selector,
   aggregate: IFACE.getFunction("aggregate")!.selector,
+  blockAndAggregate: IFACE.getFunction("blockAndAggregate")!.selector,
   aggregate3: IFACE.getFunction("aggregate3")!.selector,
 };
 
@@ -435,15 +437,18 @@ export class MockChain implements RpcResponder {
         const returnData = calls.map((innerCall) => this.executeCall(innerCall.target, innerCall.callData));
         return IFACE.encodeFunctionResult("aggregate", [BigInt(this.blockNumber), returnData]);
       }
+      case SELECTORS.blockAndAggregate:
       case SELECTORS.aggregate3: {
-        const [calls] = IFACE.decodeFunctionData("aggregate3", data) as unknown as [
-          { target: string; allowFailure: boolean; callData: string }[],
-        ];
+        const method = selector === SELECTORS.blockAndAggregate ? "blockAndAggregate" : "aggregate3";
+        const [calls] = IFACE.decodeFunctionData(method, data) as unknown as [{ target: string; callData: string }[]];
         const results = calls.map((innerCall) => ({
           success: true,
           returnData: this.executeCall(innerCall.target, innerCall.callData),
         }));
-        return IFACE.encodeFunctionResult("aggregate3", [results]);
+        return IFACE.encodeFunctionResult(
+          method,
+          method === "blockAndAggregate" ? [BigInt(this.blockNumber), ZERO_HASH, results] : [results]
+        );
       }
       case SELECTORS.containsAddress: {
         const [setKey, value] = IFACE.decodeFunctionData("containsAddress", data) as unknown as [string, string];
