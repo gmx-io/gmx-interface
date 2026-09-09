@@ -46,6 +46,7 @@ import {
   TriggerThresholdType,
 } from "sdk/utils/trade/types";
 
+import { getMaxPositionSizeExceededMessage } from "./getMaxPositionSizeExceededMessage";
 import { getIsPositionLiquidatableAtPrice } from "./warnings";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
@@ -429,26 +430,18 @@ export function getIncreaseError(p: {
 
   if (!isLimit && !isTwap) {
     if (isLong && (longLiquidity === undefined || longLiquidity < sizeDeltaUsd)) {
-      const maxSize = formatUsd(longLiquidity);
-
       return {
         buttonErrorMessage: t`Max ${indexToken.symbol} long exceeded`,
         buttonTooltipMessage:
-          longLiquidity === undefined
-            ? undefined
-            : t`Order won't execute: size exceeds the max long size of ${maxSize}. Reduce the order size.`,
+          longLiquidity === undefined ? undefined : getMaxPositionSizeExceededMessage(isLong, longLiquidity),
       };
     }
 
     if (!isLong && (shortLiquidity === undefined || shortLiquidity < sizeDeltaUsd)) {
-      const maxSize = formatUsd(shortLiquidity);
-
       return {
         buttonErrorMessage: t`Max ${indexToken.symbol} short exceeded`,
         buttonTooltipMessage:
-          shortLiquidity === undefined
-            ? undefined
-            : t`Order won't execute: size exceeds the max short size of ${maxSize}. Reduce the order size.`,
+          shortLiquidity === undefined ? undefined : getMaxPositionSizeExceededMessage(isLong, shortLiquidity),
       };
     }
   }

@@ -932,10 +932,6 @@ msgstr "可結算的累計資金費率費用"
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "將 esGMX 轉換為 GMX 代幣。使用金庫前請先閱讀歸屬詳情。"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max long size of {maxSize}. Reduce the order size."
-msgstr "訂單將無法執行：規模超過最大多頭規模 {maxSize}。請減小訂單規模。"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
@@ -1197,6 +1193,10 @@ msgstr "倉位手續費因子（正價格影響）"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "兌換價格影響過高"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The maximum swap size based on current liquidity. Updates live."
+msgstr "根據目前流動性計算的最大兌換規模。即時更新。"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -2670,6 +2670,10 @@ msgstr "GMX 池無法完成此規模的兌換，且當前沒有可用的外部�
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 msgid "GM: {indexName}"
 msgstr "GM：{indexName}"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
+msgstr "訂單將不會執行：規模超過最大兌換規模 {maxSwapSize}。請減小兌換規模。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
@@ -9509,10 +9513,6 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "使用 {0} 購買 GM，上限如下"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max short size of {maxSize}. Reduce the order size."
-msgstr "訂單將無法執行：規模超過最大空頭規模 {maxSize}。請減小訂單規模。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "協議分析"
@@ -11942,6 +11942,7 @@ msgstr "GMX 代幣圖示"
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "做多"
 
@@ -12184,7 +12185,7 @@ msgstr "分享 PnL"
 msgid "Frequency"
 msgstr "頻率"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
 msgstr "訂單將無法執行：規模超過最大{positionSide}規模 {maxSize}。請減小訂單規模。"
 
@@ -12272,6 +12273,7 @@ msgstr "借出的倉位影響池金額"
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "做空"
 

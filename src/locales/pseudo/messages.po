@@ -932,10 +932,6 @@ msgstr ""
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr ""
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max long size of {maxSize}. Reduce the order size."
-msgstr ""
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
@@ -1196,6 +1192,10 @@ msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The maximum swap size based on current liquidity. Updates live."
 msgstr ""
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -2669,6 +2669,10 @@ msgstr ""
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 msgid "GM: {indexName}"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -9509,10 +9513,6 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr ""
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max short size of {maxSize}. Reduce the order size."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr ""
@@ -11942,6 +11942,7 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr ""
 
@@ -12184,7 +12185,7 @@ msgstr ""
 msgid "Frequency"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
 msgstr ""
 
@@ -12272,6 +12273,7 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr ""
 

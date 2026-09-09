@@ -165,9 +165,9 @@ export default function ChartTokenSelector(props: Props) {
   );
 }
 
-type SortField = "lastPrice" | "24hChange" | "24hVolume" | "combinedOpenInterest" | "unspecified";
+const SORT_FIELDS = ["lastPrice", "24hChange", "24hVolume", "combinedOpenInterest", "unspecified"] as const;
 
-const SORT_FIELDS: SortField[] = ["lastPrice", "24hChange", "24hVolume", "combinedOpenInterest", "unspecified"];
+type SortField = (typeof SORT_FIELDS)[number];
 
 function MarketsList() {
   const chainId = useSelector(selectChainId);

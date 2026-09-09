@@ -932,10 +932,6 @@ msgstr "決済可能な未収ファンディング手数料"
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "esGMXをGMXトークンに変換します。ボールトを使用する前にベスティングの詳細をお読みください。"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max long size of {maxSize}. Reduce the order size."
-msgstr "注文は約定しません：サイズが最大ロングサイズ {maxSize} を超えています。注文サイズを減らしてください。"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
@@ -1197,6 +1193,10 @@ msgstr "ポジション手数料係数（プラスPI）"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "高いスワップ価格影響"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The maximum swap size based on current liquidity. Updates live."
+msgstr "現在の流動性に基づく最大スワップサイズです。リアルタイムで更新されます。"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -2670,6 +2670,10 @@ msgstr "GMXプールではこのスワップサイズを約定できず、現在
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
+msgstr "注文は実行されません：サイズが最大スワップサイズの{maxSwapSize}を超えています。スワップサイズを減らしてください。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
@@ -9509,10 +9513,6 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "以下の上限まで{0}でGMを購入できます"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max short size of {maxSize}. Reduce the order size."
-msgstr "注文は約定しません：サイズが最大ショートサイズ {maxSize} を超えています。注文サイズを減らしてください。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "プロトコルの分析"
@@ -11942,6 +11942,7 @@ msgstr "GMX トークンアイコン"
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "ロング"
 
@@ -12184,7 +12185,7 @@ msgstr "PnLをシェア"
 msgid "Frequency"
 msgstr "頻度"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
 msgstr "注文は約定しません：サイズが最大{positionSide}サイズ {maxSize} を超えています。注文サイズを減らしてください。"
 
@@ -12272,6 +12273,7 @@ msgstr "ポジション影響プールの貸出額"
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "ショート"
 

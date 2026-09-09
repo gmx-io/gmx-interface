@@ -932,10 +932,6 @@ msgstr "Aufgelaufene Finanzierungsgebühren zur Abwicklung verfügbar"
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "Konvertieren Sie esGMX in GMX-Token. Lesen Sie die Vesting-Details, bevor Sie die Vaults verwenden."
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max long size of {maxSize}. Reduce the order size."
-msgstr "Die Order wird nicht ausgeführt: Die Größe überschreitet die maximale Long-Größe von {maxSize}. Reduzieren Sie die Ordergröße."
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
@@ -1197,6 +1193,10 @@ msgstr "Positionsgebührfaktor (positiver PI)"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "Hohe Swap-Preisauswirkung"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The maximum swap size based on current liquidity. Updates live."
+msgstr "Die maximale Swap-Größe auf Basis der aktuellen Liquidität. Wird in Echtzeit aktualisiert."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -2670,6 +2670,10 @@ msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen, und derzeit i
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
+msgstr "Die Order wird nicht ausgeführt: Die Größe überschreitet die maximale Swap-Größe von {maxSwapSize}. Reduzieren Sie die Swap-Größe."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
@@ -9509,10 +9513,6 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "GM mit {0} kaufen bis zu den unten angegebenen Limits"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max short size of {maxSize}. Reduce the order size."
-msgstr "Die Order wird nicht ausgeführt: Die Größe überschreitet die maximale Short-Größe von {maxSize}. Reduzieren Sie die Ordergröße."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "Protokoll-Analytik"
@@ -11942,6 +11942,7 @@ msgstr "GMX Token-Symbol"
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "long"
 
@@ -12184,7 +12185,7 @@ msgstr "PnL teilen"
 msgid "Frequency"
 msgstr "Häufigkeit"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
 msgstr "Die Order wird nicht ausgeführt: Die Größe überschreitet die maximale Größe für {positionSide} von {maxSize}. Reduzieren Sie die Ordergröße."
 
@@ -12272,6 +12273,7 @@ msgstr "Ausgeliehener Betrag des Position-Impact-Pools"
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "short"
 

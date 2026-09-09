@@ -932,10 +932,6 @@ msgstr "정산 가능한 미수 펀딩 수수료"
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "esGMX를 GMX 토큰으로 전환합니다. 금고를 사용하기 전에 베스팅 세부 정보를 확인하시기 바랍니다."
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max long size of {maxSize}. Reduce the order size."
-msgstr "주문 규모가 최대 롱 규모인 {maxSize}를 초과하여 주문이 체결되지 않습니다. 주문 규모를 줄이세요."
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
@@ -1197,6 +1193,10 @@ msgstr "포지션 수수료 계수 (양의 PI)"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "높은 스왑 가격 영향"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The maximum swap size based on current liquidity. Updates live."
+msgstr "현재 유동성을 기준으로 한 최대 스왑 규모입니다. 실시간으로 업데이트됩니다."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -2670,6 +2670,10 @@ msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 현재 사�
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
+msgstr "주문이 실행되지 않습니다: 규모가 최대 스왑 규모인 {maxSwapSize}을(를) 초과합니다. 스왑 규모를 줄이세요."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
@@ -9509,10 +9513,6 @@ msgstr ""
 msgid "Buy GM with {0} up to the caps below"
 msgstr "아래 한도까지 {0}(으)로 GM을 구매할 수 있습니다"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Order won't execute: size exceeds the max short size of {maxSize}. Reduce the order size."
-msgstr "주문 규모가 최대 숏 규모인 {maxSize}를 초과하여 주문이 체결되지 않습니다. 주문 규모를 줄이세요."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
@@ -11942,6 +11942,7 @@ msgstr "GMX 토큰 아이콘"
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "롱"
 
@@ -12184,7 +12185,7 @@ msgstr "PnL 공유"
 msgid "Frequency"
 msgstr "빈도"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
 msgstr "주문 규모가 최대 {positionSide} 규모인 {maxSize}를 초과하여 주문이 체결되지 않습니다. 주문 규모를 줄이세요."
 
@@ -12272,6 +12273,7 @@ msgstr "포지션 영향 풀 대출 금액"
 
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "숏"
 
