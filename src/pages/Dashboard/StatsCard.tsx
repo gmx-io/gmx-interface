@@ -42,10 +42,7 @@ export function StatsCard() {
   const v2MegaethOverview = useV2Stats(MEGAETH);
   const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
   const gmtradeStats = gmtradeSummary.data?.byNetwork.solana;
-  const staleTitles = useMemo(
-    () => (isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : []),
-    [gmtradeSummary.data]
-  );
+  const staleTitles = isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : [];
   const gmtradeTotalFees = parseProtocolStatsUsd(gmtradeStats?.fees.total);
   const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total);
   // users.all counts a wallet on its first action of any kind, the same basis as the V2 totalUsers entries

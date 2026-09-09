@@ -35,11 +35,17 @@ type NetworkRow = { label: string; value: bigint | undefined };
 // highest first, with a network whose value has not arrived yet kept last rather than ordered as zero
 function sortNetworkRows(rows: NetworkRow[]): NetworkRow[] {
   return [...rows].sort((a, b) => {
-    if (a.value === undefined || b.value === undefined) {
-      return a.value === b.value ? 0 : a.value === undefined ? 1 : -1;
+    if (a.value === b.value) {
+      return 0;
+    }
+    if (a.value === undefined) {
+      return 1;
+    }
+    if (b.value === undefined) {
+      return -1;
     }
 
-    return a.value === b.value ? 0 : a.value > b.value ? -1 : 1;
+    return a.value > b.value ? -1 : 1;
   });
 }
 
@@ -60,10 +66,7 @@ export function OverviewCard({
   const v2MegaethOverview = useV2Stats(MEGAETH);
   const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
   const gmtradeOverview = gmtradeSummary.data?.byNetwork.solana;
-  const staleTitles = useMemo(
-    () => (isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : []),
-    [gmtradeSummary.data]
-  );
+  const staleTitles = isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : [];
   const gmtradeFees = useProtocolStatsFeesInfo({ networks: ["solana"] });
 
   const { data: positionStats } = useSWR<

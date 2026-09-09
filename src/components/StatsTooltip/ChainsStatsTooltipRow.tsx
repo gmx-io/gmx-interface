@@ -8,6 +8,18 @@ import "./StatsTooltip.css";
 
 type EntryValue = bigint | number | string | undefined;
 
+function isKnown(value: EntryValue) {
+  return value !== undefined && value !== null;
+}
+
+function amountOf(value: EntryValue): bigint {
+  return BigInt(value || 0);
+}
+
+function Notice({ children }: { children: ReactNode }) {
+  return <p className="Tooltip-row !mt-8 max-w-[260px] whitespace-normal text-yellow-300">{children}</p>;
+}
+
 type Props = {
   entries: { [key: string]: EntryValue };
   showDollar?: boolean;
@@ -23,21 +35,21 @@ export default function ChainsStatsTooltipRow({
   decimalsForConversion = USD_DECIMALS,
   symbol,
   subtotal,
-  staleTitles,
+  staleTitles = [],
 }: Props) {
-  // an entry that has not answered yet is named instead of being summed as zero, so the total stays honest
-  const knownEntries = Object.entries(entries)
-    .filter(([, value]) => value !== undefined && value !== null)
+  const allEntries = Object.entries(entries);
+
+  // an entry that has not answered yet is named below the total rather than summed as zero
+  const knownEntries = allEntries
+    .filter(([, value]) => isKnown(value))
     .sort(([, left], [, right]) => {
-      const a = BigInt(left || 0);
-      const b = BigInt(right || 0);
+      const a = amountOf(left);
+      const b = amountOf(right);
 
       return a === b ? 0 : a > b ? -1 : 1;
     });
-  const missingTitles = Object.entries(entries)
-    .filter(([, value]) => value === undefined || value === null)
-    .map(([title]) => title);
-  const total = knownEntries.reduce((acc, [, value]) => acc + BigInt(value || 0), 0n);
+  const missingTitles = allEntries.filter(([, value]) => !isKnown(value)).map(([title]) => title);
+  const total = knownEntries.reduce((acc, [, value]) => acc + amountOf(value), 0n);
 
   if (knownEntries.length === 0) {
     return null;
@@ -69,14 +81,14 @@ export default function ChainsStatsTooltipRow({
         </span>
       </p>
       {missingTitles.length > 0 && (
-        <p className="Tooltip-row !mt-8 max-w-[260px] whitespace-normal text-yellow-300">
+        <Notice>
           <Trans>Partial total: no data yet from {missingTitles.join(", ")}.</Trans>
-        </p>
+        </Notice>
       )}
-      {staleTitles !== undefined && staleTitles.length > 0 && (
-        <p className="Tooltip-row !mt-8 max-w-[260px] whitespace-normal text-yellow-300">
+      {staleTitles.length > 0 && (
+        <Notice>
           <Trans>Included but not up to date: {staleTitles.join(", ")}.</Trans>
-        </p>
+        </Notice>
       )}
       {subtotal}
     </>
