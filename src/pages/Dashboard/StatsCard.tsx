@@ -3,14 +3,14 @@ import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, MEGAETH, ContractsChainIdProduction } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
+import { isProtocolStatsNetworkStale, useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { formatAmountHuman } from "lib/numbers";
-import { sumBigInts } from "lib/sumBigInts";
+import { sumBigInts, sumKnownBigInts } from "lib/sumBigInts";
 import { MARKETS } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
@@ -32,13 +32,17 @@ const gmGmxTokenAddresses = chains.map((chain) =>
 );
 const gmxGmAndTokensAddresses = [...gmxTokenAddresses, ...gmGmxTokenAddresses];
 
+const SOLANA_ENTRY = "Solana";
+
 export function StatsCard() {
   const v1TotalVolume = useTotalVolume();
 
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2MegaethOverview = useV2Stats(MEGAETH);
-  const gmtradeStats = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana;
+  const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
+  const gmtradeStats = gmtradeSummary.data?.byNetwork.solana;
+  const staleTitles = isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : [];
   const gmtradeTotalFees = parseProtocolStatsUsd(gmtradeStats?.fees.total);
   const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total);
   // users.all counts a wallet on its first action of any kind, the same basis as the V2 totalUsers entries
@@ -78,12 +82,10 @@ export function StatsCard() {
 
   const totalFeesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalFees,
-      "V2 Avalanche": v2AvalancheOverview?.totalFees,
-      "V2 MegaETH": v2MegaethOverview?.totalFees,
-      "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
-      "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
-      "GMTrade Solana": gmtradeTotalFees,
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalFees, v1ArbitrumTotalFees?.totalFees),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalFees, v1AvalancheTotalFees?.totalFees),
+      MegaETH: v2MegaethOverview?.totalFees,
+      [SOLANA_ENTRY]: gmtradeTotalFees,
     }),
     [
       v1AvalancheTotalFees?.totalFees,
@@ -97,12 +99,10 @@ export function StatsCard() {
 
   const totalVolumeEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalVolume,
-      "V2 Avalanche": v2AvalancheOverview?.totalVolume,
-      "V2 MegaETH": v2MegaethOverview?.totalVolume,
-      "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
-      "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
-      "GMTrade Solana": gmtradeTotalVolume,
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalVolume, v1TotalVolume?.[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalVolume, v1TotalVolume?.[AVALANCHE]),
+      MegaETH: v2MegaethOverview?.totalVolume,
+      [SOLANA_ENTRY]: gmtradeTotalVolume,
     }),
     [
       v1TotalVolume,
@@ -115,12 +115,10 @@ export function StatsCard() {
 
   const uniqueUsersEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalUsers,
-      "V2 Avalanche": v2AvalancheOverview?.totalUsers,
-      "V2 MegaETH": v2MegaethOverview?.totalUsers,
-      "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
-      "V1 Avalanche": uniqueUsers?.[AVALANCHE],
-      "GMTrade Solana": gmtradeUsers,
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalUsers, uniqueUsers?.[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalUsers, uniqueUsers?.[AVALANCHE]),
+      MegaETH: v2MegaethOverview?.totalUsers,
+      [SOLANA_ENTRY]: gmtradeUsers,
     }),
     [
       gmtradeUsers,
@@ -147,7 +145,7 @@ export function StatsCard() {
               className="whitespace-nowrap"
               handle={formatAmountHuman(totalFeesUsd, USD_DECIMALS, true, 2)}
               handleClassName="numbers"
-              content={<ChainsStatsTooltipRow entries={totalFeesEntries} />}
+              content={<ChainsStatsTooltipRow entries={totalFeesEntries} staleTitles={staleTitles} />}
             />
           </div>
         </div>
@@ -174,7 +172,7 @@ export function StatsCard() {
                 2
               )}
               handleClassName="numbers"
-              content={<ChainsStatsTooltipRow entries={totalVolumeEntries} />}
+              content={<ChainsStatsTooltipRow entries={totalVolumeEntries} staleTitles={staleTitles} />}
             />
           </div>
         </div>
@@ -202,7 +200,12 @@ export function StatsCard() {
               )}
               handleClassName="numbers"
               content={
-                <ChainsStatsTooltipRow showDollar={false} entries={uniqueUsersEntries} decimalsForConversion={0} />
+                <ChainsStatsTooltipRow
+                  showDollar={false}
+                  entries={uniqueUsersEntries}
+                  decimalsForConversion={0}
+                  staleTitles={staleTitles}
+                />
               }
             />
           </div>
@@ -219,11 +222,11 @@ export function StatsCard() {
               content={
                 <div>
                   <StatsTooltipRow
-                    label={<Trans>In other tokens</Trans>}
+                    label={<Trans>In other tokens:</Trans>}
                     value={formatAmountHuman(treasuryWithoutGmxUsd, USD_DECIMALS, false, 2)}
                   />
                   <StatsTooltipRow
-                    label={<Trans>In GMX</Trans>}
+                    label={<Trans>In GMX:</Trans>}
                     value={formatAmountHuman(gmxInTreasuryUsd, USD_DECIMALS, false, 2)}
                   />
                 </div>

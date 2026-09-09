@@ -35,6 +35,7 @@ export type ProtocolStatsRevenue = {
 export type ProtocolStatsTvl = {
   pools: ProtocolStatsUsd;
   glv: ProtocolStatsUsd;
+  store: ProtocolStatsUsd | null;
   total: ProtocolStatsUsd;
 };
 
