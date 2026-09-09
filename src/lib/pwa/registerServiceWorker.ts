@@ -1,7 +1,6 @@
 const PWA_CACHE_PREFIX = "gmx-pwa-";
 const PWA_CONTROL_CACHE = "gmx-pwa-control-v2";
 const PWA_DISABLED_KEY_PREFIX = "/__gmx_pwa_disabled__/";
-const PWA_BUILD_ID_PATTERN = /<meta\s+name=["']gmx-pwa-build-id["']\s+content=["']([^"']+)["'][^>]*>/i;
 const BUILD_ID_PATTERN = /^\d+$/;
 
 function shouldDeletePwaCache(cacheName: string, disabledGeneration: number | undefined) {
@@ -42,22 +41,32 @@ function getDocumentBuildId() {
   return document.querySelector<HTMLMetaElement>('meta[name="gmx-pwa-build-id"]')?.content;
 }
 
-async function getCurrentBuildId() {
-  const documentBuildId = getDocumentBuildId();
-  if (!navigator.serviceWorker.controller) {
-    return documentBuildId;
+async function isBuildDisabled(buildId: string) {
+  const generation = BUILD_ID_PATTERN.test(buildId) ? Number(buildId) : undefined;
+  if (generation === undefined || !Number.isSafeInteger(generation)) {
+    return false;
   }
 
   try {
-    const response = await fetch("/", { cache: "no-store" });
-    if (!response.ok || !response.headers.get("content-type")?.toLowerCase().includes("text/html")) {
-      return documentBuildId;
+    if (typeof caches === "undefined" || !(await caches.keys()).includes(PWA_CONTROL_CACHE)) {
+      return false;
     }
-
-    const buildId = (await response.text()).match(PWA_BUILD_ID_PATTERN)?.[1];
-    return buildId && BUILD_ID_PATTERN.test(buildId) ? buildId : documentBuildId;
+    const controlCache = await caches.open(PWA_CONTROL_CACHE);
+    return (await controlCache.keys()).some((request) => {
+      const pathname = new URL(request.url).pathname;
+      if (!pathname.startsWith(PWA_DISABLED_KEY_PREFIX)) {
+        return false;
+      }
+      const disabledBuildId = pathname.slice(PWA_DISABLED_KEY_PREFIX.length);
+      if (!BUILD_ID_PATTERN.test(disabledBuildId)) {
+        return false;
+      }
+      const disabledGeneration = Number(disabledBuildId);
+      return Number.isSafeInteger(disabledGeneration) && disabledGeneration >= generation;
+    });
   } catch {
-    return documentBuildId;
+    // Unavailable storage must not prevent registration.
+    return false;
   }
 }
 
@@ -76,13 +85,13 @@ export function registerServiceWorker() {
   }
 
   const register = async () => {
-    const buildId = await getCurrentBuildId();
-    if (!buildId) {
+    const buildId = getDocumentBuildId();
+    if (!buildId || (await isBuildDisabled(buildId))) {
       return;
     }
 
     const serviceWorkerUrl = `/sw.js?build=${encodeURIComponent(buildId)}`;
-    await navigator.serviceWorker.register(serviceWorkerUrl).catch(() => {
+    await navigator.serviceWorker.register(serviceWorkerUrl, { updateViaCache: "none" }).catch(() => {
       // Registration failure must not block the app.
     });
   };
