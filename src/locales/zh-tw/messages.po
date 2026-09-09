@@ -482,6 +482,12 @@ msgstr "百分比"
 msgid "Swap UI fee"
 msgstr "兌換介面費用"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Connecting wallet..."
+msgstr "正在連接錢包..."
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No TP orders"
 msgstr "無 TP 訂單"

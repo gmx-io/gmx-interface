@@ -87,6 +87,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
@@ -166,6 +167,7 @@ export function useTradeboxButtonState({
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
+  const isWalletInitializing = useIsWalletInitializing();
 
   const {
     onSubmitWrapOrUnwrap,
@@ -507,6 +509,14 @@ export function useTradeboxButtonState({
       isExpressLoading,
     };
 
+    if (!account && isWalletInitializing) {
+      return {
+        ...commonState,
+        text: t`Connecting wallet...`,
+        disabled: true,
+      };
+    }
+
     if (!account && buttonErrorText) {
       return {
         ...commonState,
@@ -666,6 +676,7 @@ export function useTradeboxButtonState({
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
+    isWalletInitializing,
     buttonErrorText,
     shouldShowDepositButton,
     stopLoss.error?.percentage,

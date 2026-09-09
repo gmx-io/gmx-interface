@@ -482,6 +482,12 @@ msgstr "Porcentaje"
 msgid "Swap UI fee"
 msgstr "Comisión de interfaz de intercambio"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Connecting wallet..."
+msgstr "Conectando billetera..."
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No TP orders"
 msgstr "Sin órdenes de Take-Profit"

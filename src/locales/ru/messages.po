@@ -482,6 +482,12 @@ msgstr "Процент"
 msgid "Swap UI fee"
 msgstr "Комиссия UI за своп"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Connecting wallet..."
+msgstr "Подключение кошелька..."
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No TP orders"
 msgstr "Нет ордеров тейк-профит"
