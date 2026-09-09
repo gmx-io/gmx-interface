@@ -19,9 +19,9 @@ export type BoostConfig = {
   multiplier: bigint;
 };
 
-export type DowngradingCoefficient = {
+export type DowngradingFactor = {
   market: string;
-  coefficient: bigint;
+  factor: bigint;
 };
 
 export type ManualAllocationTierConfig = {
@@ -45,8 +45,8 @@ export type IncentivesConfig = {
   volumeTiers: VolumeTierConfig[];
   stakingTiers: StakingTierConfig[];
   boosts: BoostConfig[];
-  featuredMarketIndexTokens: string[];
-  downgradingCoefficients: DowngradingCoefficient[];
+  featuredMarketTokens: string[];
+  downgradingFactors: DowngradingFactor[];
   balancingTradesThreshold: bigint;
   lifetimeVolumeThreshold: bigint;
   manualAllocationTiers: ManualAllocationTierConfig[];
