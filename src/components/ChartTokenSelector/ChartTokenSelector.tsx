@@ -81,6 +81,7 @@ type Props = {
 };
 
 const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi", "recently-listed"];
+const MAX_MARKET_SEARCH_QUERY_LENGTH = 100;
 
 function getSearchMatchedTokens(options: Token[] | undefined, searchKeyword: string, isSwap: boolean) {
   if (!options) return undefined;
@@ -451,6 +452,7 @@ function MarketsList() {
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
+            maxLength={MAX_MARKET_SEARCH_QUERY_LENGTH}
           />
         </div>
 
@@ -586,8 +588,8 @@ function MarketsList() {
             isEmpty={true}
             emptyText={
               query ? (
-                <div className="flex flex-col items-center gap-12">
-                  <span className="text-12 text-typography-secondary">
+                <div className="flex w-full flex-col items-center gap-12 px-16">
+                  <span className="w-full min-w-0 text-center text-12 text-typography-secondary [overflow-wrap:anywhere]">
                     {shouldOfferSearchAll ? (
                       <Trans>No results with the selected filters.</Trans>
                     ) : (
