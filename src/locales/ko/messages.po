@@ -2092,10 +2092,6 @@ msgstr "온체인 퀘스트 및 보상"
 msgid "Tokens"
 msgstr "토큰"
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "Downgrading coefficients"
-msgstr "하향 조정 계수"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
 msgstr "작업"
@@ -4038,6 +4034,10 @@ msgstr "최고 등급 도달 ✓"
 msgid "Max lendable impact USD"
 msgstr "최대 대여 가능 영향 USD"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Trading volume on configured markets is counted with a reduced factor."
+msgstr "설정된 마켓의 거래량은 하향 조정 계수를 적용하여 계산됩니다."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative factor"
@@ -4515,6 +4515,10 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "Featured market tokens"
+msgstr "주요 마켓 토큰"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "담보를 출금할 수 없습니다. 잔여 담보가 {estimatedRemainingCollateralUsdText}로 최소 기준 미달입니다"
@@ -4563,6 +4567,10 @@ msgstr "배너"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch ends in"
 msgstr "에포크 종료까지"
+
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "Downgrading factors"
+msgstr "하향 조정 계수"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (including swap)"
@@ -12000,10 +12008,6 @@ msgstr "시프트"
 msgid "The Program"
 msgstr "프로그램"
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "Featured index tokens"
-msgstr "주요 인덱스 토큰"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
 msgstr "청산 위험 알림"
@@ -13143,10 +13147,6 @@ msgstr "출시 경험이 있는 실제 팀"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Earn fees from leverage trading, swaps, and spreads"
 msgstr "레버리지 거래, 스왑, 스프레드에서 수수료 수익"
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Trading volume on configured markets is counted with a reduced coefficient."
-msgstr "설정된 시장의 거래량은 낮은 계수로 계산됩니다."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Time elapsed"

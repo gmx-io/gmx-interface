@@ -162,7 +162,7 @@ export function getRewardsPromotionalBannerContent({
   }
 
   const hasFeaturedMarketOpportunity =
-    config.featuredMarketIndexTokens.length > 0 && !status.boostIds.includes("FeaturedMarkets");
+    config.featuredMarketTokens.length > 0 && !status.boostIds.includes("FeaturedMarkets");
   if (hasFeaturedMarketOpportunity) {
     banners.push({
       type: "pair-boosts",

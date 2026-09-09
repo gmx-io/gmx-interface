@@ -9,7 +9,7 @@ export type TradeMultiplierParams = {
   config: IncentivesConfig;
   status: AccountIncentiveStatus;
   sizeDeltaUsd: bigint;
-  indexTokenAddress: string;
+  marketTokenAddress: string;
   isIncrease: boolean;
   balanceWasImproved: boolean;
 };
@@ -106,7 +106,7 @@ export function getTradeMultiplierEstimate(params: TradeMultiplierParams): Trade
   const lifetimeMultiplier = status.boostIds.includes("LifetimeTrading")
     ? getBoostMultiplier(config, "LifetimeTrading")
     : 0n;
-  const featuredMultiplier = config.featuredMarketIndexTokens.includes(params.indexTokenAddress)
+  const featuredMultiplier = config.featuredMarketTokens.includes(params.marketTokenAddress)
     ? getBoostMultiplier(config, "FeaturedMarkets")
     : 0n;
   const balancingMultiplier =

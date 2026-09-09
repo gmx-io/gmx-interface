@@ -110,7 +110,7 @@ export function useTradeRewardsEstimate({
       positionFeeUsd: bigMath.abs(fees.positionFee.deltaUsd),
       totalRebateFactor: userReferralInfo?.totalRebateFactor ?? 0n,
       sizeDeltaUsd,
-      indexTokenAddress: marketInfo.indexTokenAddress,
+      marketTokenAddress: marketInfo.marketTokenAddress,
       balanceWasImproved,
       isIncrease: feesType === "increase",
       gmxPrice,

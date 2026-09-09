@@ -84,10 +84,10 @@ type Props = {
 const INCENTIVIZED_TOP_LEVEL_TABS: TopLevelTab[] = ["incentivized"];
 const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi", "recently-listed", "incentivized"];
 
-function useFeaturedMarketIndexTokenAddresses(): string[] {
+function useFeaturedMarketTokenAddresses(): string[] {
   const { availability } = useIncentivesV2State();
 
-  return availability.status === "active" ? availability.config.featuredMarketIndexTokens : EMPTY_ARRAY;
+  return availability.status === "active" ? availability.config.featuredMarketTokens : EMPTY_ARRAY;
 }
 
 export default function ChartTokenSelector(props: Props) {
@@ -100,10 +100,9 @@ export default function ChartTokenSelector(props: Props) {
 
   const { isMobile } = useBreakpoints();
   const shouldUsePerpPanelWidth = !isSwap || mode === "perp";
-  const featuredMarketIndexTokenAddresses = useFeaturedMarketIndexTokenAddresses();
-  const isSelectedTokenFeatured = selectedToken
-    ? featuredMarketIndexTokenAddresses.includes(selectedToken.address)
-    : false;
+  const featuredMarketTokenAddresses = useFeaturedMarketTokenAddresses();
+  const isSelectedMarketFeatured =
+    !isSwap && marketInfo ? featuredMarketTokenAddresses.includes(marketInfo.marketTokenAddress) : false;
 
   return (
     <SelectorBase
@@ -163,7 +162,7 @@ export default function ChartTokenSelector(props: Props) {
                     ) : null}
                   </span>
 
-                  {isSelectedTokenFeatured && (
+                  {isSelectedMarketFeatured && (
                     <div className="h-min rounded-full bg-green-900 p-3">
                       <MultiplierSolidIcon className="size-12 text-green-500" />
                     </div>
@@ -202,8 +201,8 @@ function MarketsList() {
   const tradeType = useSelector(selectTradeboxTradeType);
   const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const tokensData = useSelector(selectTokensData);
-  const featuredMarketIndexTokenAddresses = useFeaturedMarketIndexTokenAddresses();
-  const hasFeaturedMarkets = featuredMarketIndexTokenAddresses.length > 0;
+  const featuredMarketTokenAddresses = useFeaturedMarketTokenAddresses();
+  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
   const {
     topLevelTab: storedTopLevelTab,
@@ -246,6 +245,19 @@ function MarketsList() {
       availableChartTokenAddresses,
     };
   }, [availableTokens, chainId]);
+
+  const featuredMarketIndexTokenAddresses = useMemo(() => {
+    if (!options || featuredMarketTokenAddresses.length === 0) return EMPTY_ARRAY;
+
+    return options
+      .filter((token) =>
+        getMaxLongShortLiquidityPool(token).indexTokenPools?.some((pool) =>
+          featuredMarketTokenAddresses.includes(pool.marketTokenAddress)
+        )
+      )
+      .map((token) => token.address);
+  }, [featuredMarketTokenAddresses, getMaxLongShortLiquidityPool, options]);
+  const hasFeaturedMarkets = featuredMarketIndexTokenAddresses.length > 0;
 
   const recentlyListedCount = useMemo(() => {
     if (!options || recentlyListedAddressesSet.size === 0) return 0;
