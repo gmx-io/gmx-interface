@@ -126,6 +126,8 @@ export function OverviewCard({
   const gmTvlAvalanche = v2AvalancheOverview.totalGMLiquidity;
   const gmTvlMegaeth = v2MegaethOverview.totalGMLiquidity;
   const gmTvlGmtrade = parseProtocolStatsUsd(gmtradeOverview?.tvl?.pools);
+  // the store carries position collateral the way the EVM figures do, which the pool value on its own leaves out
+  const displayTvlGmtrade = parseProtocolStatsUsd(gmtradeOverview?.tvl?.store) ?? gmTvlGmtrade;
 
   const totalGmTvl = sumKnownBigInts(gmTvlArbitrum, gmTvlAvalanche, gmTvlMegaeth, gmTvlGmtrade);
 
@@ -153,7 +155,7 @@ export function OverviewCard({
     displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsMarginUsd;
     displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsMarginUsd;
     displayTvlMegaeth = gmTvlMegaeth + megaethPositionsMarginUsd;
-    displayTvl = sumKnownBigInts(displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, gmTvlGmtrade);
+    displayTvl = sumKnownBigInts(displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, displayTvlGmtrade);
   }
 
   // #endregion TVL and GLP Pool
@@ -362,9 +364,9 @@ export function OverviewCard({
         { label: t`Arbitrum`, value: displayTvlArbitrum },
         { label: t`Avalanche`, value: displayTvlAvalanche },
         { label: "MegaETH", value: displayTvlMegaeth },
-        { label: "Solana", value: gmTvlGmtrade },
+        { label: "Solana", value: displayTvlGmtrade },
       ]),
-    [displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, gmTvlGmtrade]
+    [displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, displayTvlGmtrade]
   );
 
   const gmPoolRows = useMemo(
