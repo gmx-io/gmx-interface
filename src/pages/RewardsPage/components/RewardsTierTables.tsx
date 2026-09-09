@@ -8,12 +8,12 @@ import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type {
   AccountIncentiveStatus,
   BoostConfig,
-  DowngradingCoefficient,
+  DowngradingFactor,
   IncentivesConfig,
 } from "domain/synthetics/incentives/v2/types";
-import { formatMultiplier, formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
+import { formatFactorPercentage, formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { useMarkets } from "domain/synthetics/markets";
-import { getMarketIndexName } from "domain/synthetics/markets/utils";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { formatAmount, formatAmountHuman, USD_DECIMALS } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
@@ -99,11 +99,7 @@ export function RewardsTierTables({
           {activeTab === "volume" ? (
             <div className="inline-flex items-center gap-4">
               <Trans>Your epoch trading volume sets your Volume Tier and determines your multiplier.</Trans>
-              <VolumeTierDescriptionTooltip
-                chainId={chainId}
-                config={config}
-                coefficients={config.downgradingCoefficients}
-              />
+              <VolumeTierDescriptionTooltip chainId={chainId} config={config} factors={config.downgradingFactors} />
             </div>
           ) : activeTab === "staking" ? (
             <p>
@@ -388,8 +384,8 @@ function BoostDescription({
     return (
       <>
         <BoostDescriptionText boost={boost} config={config} />{" "}
-        {boost.boost === "FeaturedMarkets" && config.featuredMarketIndexTokens.length ? (
-          <FeaturedMarketsTooltip chainId={chainId} indexTokenAddresses={config.featuredMarketIndexTokens} />
+        {boost.boost === "FeaturedMarkets" && config.featuredMarketTokens.length ? (
+          <FeaturedMarketsTooltip chainId={chainId} marketTokenAddresses={config.featuredMarketTokens} />
         ) : null}
       </>
     );
@@ -398,30 +394,50 @@ function BoostDescription({
   return <Trans>Available to eligible historical users until the incremental reward cap is consumed.</Trans>;
 }
 
-function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: number; indexTokenAddresses: string[] }) {
+function FeaturedMarketsTooltip({
+  chainId,
+  marketTokenAddresses,
+}: {
+  chainId: number;
+  marketTokenAddresses: string[];
+}) {
   const { marketsData } = useMarkets(chainId);
   const items = useMemo(
     () =>
-      indexTokenAddresses.map((address) => {
-        if (!isValidTokenSafe(chainId, address)) {
-          return { address, symbol: undefined, tradeSymbol: undefined, marketAddress: undefined, name: address };
+      marketTokenAddresses.map((marketAddress) => {
+        const market = marketsData?.[marketAddress];
+        if (!market) {
+          return { marketAddress, symbol: undefined, tradeSymbol: undefined, poolName: undefined, name: marketAddress };
         }
 
-        const token = getToken(chainId, address);
-        const market = Object.values(marketsData ?? {}).find(
-          (candidate) => !candidate.isSpotOnly && candidate.indexTokenAddress === address
-        );
-        const symbol = getNormalizedTokenSymbol(token.symbol) ?? token.symbol;
+        const indexTokenAddress = convertTokenAddress(chainId, market.indexTokenAddress, "native");
+        const longTokenAddress = market.longTokenAddress;
+        const shortTokenAddress = market.shortTokenAddress;
+        if (
+          !isValidTokenSafe(chainId, indexTokenAddress) ||
+          !isValidTokenSafe(chainId, longTokenAddress) ||
+          !isValidTokenSafe(chainId, shortTokenAddress)
+        ) {
+          return { marketAddress, symbol: undefined, tradeSymbol: undefined, poolName: undefined, name: marketAddress };
+        }
+
+        const indexToken = getToken(chainId, indexTokenAddress);
+        const poolName = getMarketPoolName({
+          longToken: getToken(chainId, longTokenAddress),
+          shortToken: getToken(chainId, shortTokenAddress),
+        });
+        const symbol = getNormalizedTokenSymbol(indexToken.symbol) ?? indexToken.symbol;
+        const indexName = getMarketIndexName({ indexToken, isSpotOnly: market.isSpotOnly });
 
         return {
-          address,
+          marketAddress,
           symbol,
-          tradeSymbol: market ? token.symbol : undefined,
-          marketAddress: market?.marketTokenAddress,
-          name: market ? getMarketIndexName({ indexToken: token, isSpotOnly: false }) : symbol,
+          tradeSymbol: market.isSpotOnly ? undefined : indexToken.symbol,
+          poolName,
+          name: `${indexName} [${poolName}]`,
         };
       }),
-    [chainId, indexTokenAddresses, marketsData]
+    [chainId, marketTokenAddresses, marketsData]
   );
 
   return (
@@ -430,18 +446,18 @@ function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: num
       handle={
         <button type="button" className="inline-flex items-center gap-2 text-left">
           <span>
-            <Trans>Featured markets:</Trans> {items.map((item) => item.symbol ?? item.address).join(", ")}.
+            <Trans>Featured markets:</Trans> {items.map((item) => item.name).join(", ")}.
           </span>
           <InfoIconStroke className="size-16 shrink-0" />
         </button>
       }
       content={
         <div className="flex flex-col gap-8">
-          {items.map(({ address, symbol, tradeSymbol, marketAddress, name }) =>
-            tradeSymbol ? (
+          {items.map(({ symbol, tradeSymbol, poolName, marketAddress, name }) =>
+            tradeSymbol && poolName ? (
               <Link
-                key={address}
-                to={`/trade/long?market=${tradeSymbol}`}
+                key={marketAddress}
+                to={`/trade/long?market=${tradeSymbol}&pool=${poolName}`}
                 onClick={() =>
                   sendRewardsNavigationEvent({
                     source: "FeaturedMarket",
@@ -456,7 +472,7 @@ function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: num
                 <NewLinkIcon className="size-12 shrink-0" />
               </Link>
             ) : (
-              <div key={address} className="flex items-center gap-4 text-12 font-medium text-typography-primary">
+              <div key={marketAddress} className="flex items-center gap-4 text-12 font-medium text-typography-primary">
                 {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
                 {name}
               </div>
@@ -471,33 +487,33 @@ function FeaturedMarketsTooltip({ chainId, indexTokenAddresses }: { chainId: num
 function VolumeTierDescriptionTooltip({
   chainId,
   config,
-  coefficients,
+  factors,
 }: {
   chainId: number;
   config: IncentivesConfig;
-  coefficients: DowngradingCoefficient[];
+  factors: DowngradingFactor[];
 }) {
   const { marketsData } = useMarkets(chainId);
   const items = useMemo(
     () =>
-      coefficients.map(({ market: marketAddress, coefficient }) => {
+      factors.map(({ market: marketAddress, factor }) => {
         const market = marketsData?.[marketAddress];
-        if (!market) return { marketAddress, coefficient, name: marketAddress, symbol: undefined };
+        if (!market) return { marketAddress, factor, name: marketAddress, symbol: undefined };
 
         const indexTokenAddress = convertTokenAddress(chainId, market.indexTokenAddress, "native");
         if (!isValidTokenSafe(chainId, indexTokenAddress)) {
-          return { marketAddress, coefficient, name: marketAddress, symbol: undefined };
+          return { marketAddress, factor, name: marketAddress, symbol: undefined };
         }
 
         const indexToken = getToken(chainId, indexTokenAddress);
         return {
           marketAddress,
-          coefficient,
+          factor,
           symbol: getNormalizedTokenSymbol(indexToken.symbol),
           name: getMarketIndexName({ indexToken, isSpotOnly: market.isSpotOnly }),
         };
       }),
-    [chainId, coefficients, marketsData]
+    [chainId, factors, marketsData]
   );
 
   return (
@@ -519,11 +535,11 @@ function VolumeTierDescriptionTooltip({
             </Trans>
           </p>
           <p>
-            <Trans>Trading volume on configured markets is counted with a reduced coefficient.</Trans>
+            <Trans>Trading volume on configured markets is counted with a reduced factor.</Trans>
           </p>
           {items.length > 0 ? (
             <div className="flex flex-col gap-8">
-              {items.map(({ marketAddress, symbol, name, coefficient }) => (
+              {items.map(({ marketAddress, symbol, name, factor }) => (
                 <div
                   key={marketAddress}
                   className="flex items-center justify-between gap-16 font-medium text-typography-primary"
@@ -532,7 +548,7 @@ function VolumeTierDescriptionTooltip({
                     {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
                     {name}
                   </span>
-                  <span>{formatMultiplier(coefficient, config.multiplierDecimals)}</span>
+                  <span>{formatFactorPercentage(factor)}</span>
                 </div>
               ))}
             </div>

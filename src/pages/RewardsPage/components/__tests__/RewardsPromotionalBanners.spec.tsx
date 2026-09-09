@@ -37,7 +37,7 @@ const config = {
     { tier: "Tier1", threshold: 0n, multiplier: 100n },
     { tier: "Tier2", threshold: 1_000n * USD_UNIT, multiplier: 125n },
   ],
-  featuredMarketIndexTokens: ["0x1111111111111111111111111111111111111111"],
+  featuredMarketTokens: ["0x1111111111111111111111111111111111111111"],
 } as IncentivesConfig;
 
 const status: AccountIncentiveStatus = {
@@ -63,7 +63,7 @@ const status: AccountIncentiveStatus = {
 const otherAccountStatus = { ...status, account: OTHER_ACCOUNT };
 const refreshedStatus = { ...status, tradingVolume: status.tradingVolume + USD_UNIT };
 const tinyManualStatus = { ...status, manualRewardRemainingUsd: USD_UNIT / 2n };
-const singleBannerConfig: IncentivesConfig = { ...config, featuredMarketIndexTokens: [] };
+const singleBannerConfig: IncentivesConfig = { ...config, featuredMarketTokens: [] };
 const REWARDS_ROUTE_ENTRIES = ["/rewards"];
 const REWARDS_BANNERS_DEBUG_ROUTE_ENTRIES = ["/rewards?rewardsDebug=banners"];
 

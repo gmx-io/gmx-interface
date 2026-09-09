@@ -47,8 +47,8 @@ const REWARDS_DEBUG_CONFIG: IncentivesConfig = {
     { boost: "LifetimeTrading", multiplier: 100n },
     { boost: "ManualAllocation", multiplier: 200n },
   ],
-  featuredMarketIndexTokens: ["0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"],
-  downgradingCoefficients: [],
+  featuredMarketTokens: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+  downgradingFactors: [],
   balancingTradesThreshold: 10_000n * PRECISION,
   lifetimeVolumeThreshold: 1_000_000n * PRECISION,
   manualAllocationTiers: [

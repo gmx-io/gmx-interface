@@ -6,7 +6,7 @@ import { getEstimatedTradeRewards, getTradeMultiplierEstimate } from "../tradeRe
 import type { AccountIncentiveStatus, IncentivesConfig } from "../types";
 
 const MARKET = "0xAbC0000000000000000000000000000000000001";
-const INDEX_TOKEN = "0xAbC0000000000000000000000000000000000002";
+const OTHER_MARKET = "0xAbC0000000000000000000000000000000000004";
 
 function usd(value: bigint) {
   return value * PRECISION;
@@ -45,8 +45,8 @@ function makeConfig(overrides: Partial<IncentivesConfig> = {}): IncentivesConfig
       { boost: "LifetimeTrading", multiplier: 100n },
       { boost: "ManualAllocation", multiplier: 200n },
     ],
-    featuredMarketIndexTokens: [INDEX_TOKEN],
-    downgradingCoefficients: [{ market: MARKET, coefficient: 50n }],
+    featuredMarketTokens: [MARKET],
+    downgradingFactors: [{ market: MARKET, factor: PRECISION / 2n }],
     balancingTradesThreshold: usd(1_000_000n),
     lifetimeVolumeThreshold: usd(200_000_000n),
     manualAllocationTiers: [],
@@ -87,7 +87,7 @@ function makeParams(
     positionFeeUsd: usd(100n),
     totalRebateFactor: 0n,
     sizeDeltaUsd: usd(100n),
-    indexTokenAddress: "0xAbC0000000000000000000000000000000000005",
+    marketTokenAddress: OTHER_MARKET,
     isIncrease: true,
     balanceWasImproved: false,
     gmxPrice: usd(2n),
@@ -153,13 +153,31 @@ describe("V2 trade reward estimate", () => {
           boostIds: ["LifetimeTrading", "FeaturedMarkets", "BalancingTrades"],
         }),
         sizeDeltaUsd: usd(1_000_000n),
-        indexTokenAddress: INDEX_TOKEN,
+        marketTokenAddress: MARKET,
         balanceWasImproved: true,
       }),
     });
 
     expect(result.normalMultiplier).toBe(650n);
     expect(result.fullMultiplier).toBe(650n);
+  });
+
+  it("applies the featured boost only to the configured market token", () => {
+    const featuredMarket = getTradeMultiplierEstimate({
+      ...makeParams({
+        config: makeConfig({ volumeTiers: [] }),
+        marketTokenAddress: MARKET,
+      }),
+    });
+    const otherPoolWithSameIndexToken = getTradeMultiplierEstimate({
+      ...makeParams({
+        config: makeConfig({ volumeTiers: [] }),
+        marketTokenAddress: OTHER_MARKET,
+      }),
+    });
+
+    expect(featuredMarket.effectiveMultiplier).toBe(50n);
+    expect(otherPoolWithSameIndexToken.effectiveMultiplier).toBe(0n);
   });
 
   it("does not use an earned lifetime boost before it becomes active", () => {

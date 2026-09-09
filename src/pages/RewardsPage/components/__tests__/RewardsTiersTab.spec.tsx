@@ -99,6 +99,7 @@ vi.mock("components/Tabs/Tabs", () => ({
 const CHECKSUMMED_ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
 const SAME_ACCOUNT_DIFFERENT_CASE = "0x52908400098527886e0f7030069857d2e4169ee7";
 const OTHER_CHECKSUMMED_ACCOUNT = "0x8617E340B3D01FA5F11F306F4090FD50E238070D";
+const GMX_MARKET = "0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da";
 const GMX_UNIT = 10n ** BigInt(ES_GMX_DECIMALS);
 const GT_UNIT = 10n ** BigInt(GT_DECIMALS);
 const mockUseRewardsPromoActivity = vi.mocked(useRewardsPromoActivity);
@@ -153,8 +154,8 @@ const config: IncentivesConfig = {
     { boost: "LifetimeTrading", multiplier: 100n },
     { boost: "ManualAllocation", multiplier: 200n },
   ],
-  featuredMarketIndexTokens: ["0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"],
-  downgradingCoefficients: [],
+  featuredMarketTokens: [GMX_MARKET],
+  downgradingFactors: [],
   balancingTradesThreshold: usd(10_000n),
   lifetimeVolumeThreshold: usd(1_000_000n),
   manualAllocationTiers: [
@@ -493,6 +494,20 @@ describe("RewardsTiersTab", () => {
     ).toBeDefined();
   });
 
+  it("displays 30-decimal downgrading factors as percentages", async () => {
+    renderTab({
+      config: {
+        ...config,
+        downgradingFactors: [{ market: GMX_MARKET, factor: PRECISION / 2n }],
+      },
+    });
+
+    const volumeDetails = screen.getByRole("button", { name: "Volume Tier details" });
+    fireEvent.mouseEnter(volumeDetails.closest(".Tooltip-handle")!);
+
+    await expectTooltipText("50%");
+  });
+
   it("shows active and projected statuses for volume and staking tiers", () => {
     renderTab();
 
@@ -622,7 +637,9 @@ describe("RewardsTiersTab", () => {
     expect(featuredMarketsButton).toBeDefined();
 
     fireEvent.mouseEnter(featuredMarketsButton.closest(".Tooltip-handle")!);
-    expect((await screen.findByRole("link", { name: /GMX\/USD/ })).getAttribute("href")).toBe("/trade/long?market=GMX");
+    expect((await screen.findByRole("link", { name: /GMX\/USD/ })).getAttribute("href")).toBe(
+      "/trade/long?market=GMX&pool=GMX-USDC"
+    );
   });
 
   it("renders the updated guidance in the inactive staking banner", () => {

@@ -44,8 +44,8 @@ export type RawIncentivesConfig = {
   volumeTiers: RawVolumeTierConfig[];
   stakingTiers: RawStakingTierConfig[];
   boosts: RawBoostConfig[];
-  featuredMarketIndexTokens: string[];
-  downgradingCoefficients: { market: string; coefficient: string }[];
+  featuredMarketTokens: string[];
+  downgradingFactors: { market: string; factor: string }[];
   balancingTradesThreshold: string;
   lifetimeVolumeThreshold: string;
   manualAllocationTiers: { minVolume: string; maxVolume: string | null; rewardCapUsd: string }[];
@@ -159,10 +159,10 @@ export function parseIncentivesConfig(config: RawIncentivesConfig | null): Incen
       boost: boost.boost,
       multiplier: BigInt(boost.multiplier),
     })),
-    featuredMarketIndexTokens: config.featuredMarketIndexTokens,
-    downgradingCoefficients: config.downgradingCoefficients.map((item) => ({
+    featuredMarketTokens: config.featuredMarketTokens,
+    downgradingFactors: config.downgradingFactors.map((item) => ({
       market: item.market,
-      coefficient: BigInt(item.coefficient),
+      factor: BigInt(item.factor),
     })),
     balancingTradesThreshold: BigInt(config.balancingTradesThreshold),
     lifetimeVolumeThreshold: BigInt(config.lifetimeVolumeThreshold),
