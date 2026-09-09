@@ -21,7 +21,7 @@ import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import ChainsStatsTooltipRow, { sumNetworkParts } from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
@@ -29,6 +29,19 @@ import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
 import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
 import { getPositionStats } from "./getPositionStats";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
+
+type NetworkRow = { label: string; value: bigint | undefined };
+
+// highest first, with a network whose value has not arrived yet kept last rather than ordered as zero
+function sortNetworkRows(rows: NetworkRow[]): NetworkRow[] {
+  return [...rows].sort((a, b) => {
+    if (a.value === undefined || b.value === undefined) {
+      return a.value === b.value ? 0 : a.value === undefined ? 1 : -1;
+    }
+
+    return a.value === b.value ? 0 : a.value > b.value ? -1 : 1;
+  });
+}
 
 export function OverviewCard({
   statsArbitrum,
@@ -250,12 +263,10 @@ export function OverviewCard({
 
   const dailyVolumeEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.dailyVolume,
-      "V2 Avalanche": v2AvalancheOverview?.dailyVolume,
-      "V2 MegaETH": v2MegaethOverview?.dailyVolume,
-      "V1 Arbitrum": v1ArbitrumDailyVolume,
-      "V1 Avalanche": v1AvalancheDailyVolume,
-      "GMTrade Solana": gmtradeDailyVolume,
+      Arbitrum: sumNetworkParts(v2ArbitrumOverview?.dailyVolume, v1ArbitrumDailyVolume),
+      Avalanche: sumNetworkParts(v2AvalancheOverview?.dailyVolume, v1AvalancheDailyVolume),
+      MegaETH: v2MegaethOverview?.dailyVolume,
+      Solana: gmtradeDailyVolume,
     }),
     [
       gmtradeDailyVolume,
@@ -269,12 +280,10 @@ export function OverviewCard({
 
   const openInterestEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOpenInterest,
-      "V2 Avalanche": v2AvalancheOpenInterest,
-      "V2 MegaETH": v2MegaethOpenInterest,
-      "V1 Avalanche": v1AvalancheOpenInterest,
-      "V1 Arbitrum": v1ArbitrumOpenInterest,
-      "GMTrade Solana": gmtradeOpenInterest,
+      Arbitrum: sumNetworkParts(v2ArbitrumOpenInterest, v1ArbitrumOpenInterest),
+      Avalanche: sumNetworkParts(v2AvalancheOpenInterest, v1AvalancheOpenInterest),
+      MegaETH: v2MegaethOpenInterest,
+      Solana: gmtradeOpenInterest,
     }),
     [
       v1ArbitrumOpenInterest,
@@ -288,12 +297,10 @@ export function OverviewCard({
 
   const totalLongPositionSizesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumLongPositionSizes,
-      "V2 Avalanche": v2AvalancheLongPositionSizes,
-      "V2 MegaETH": v2MegaethLongPositionSizes,
-      "V1 Arbitrum": v1ArbitrumLongPositionSizes,
-      "V1 Avalanche": v1AvalancheLongPositionSizes,
-      "GMTrade Solana": gmtradeLongPositionSizes,
+      Arbitrum: sumNetworkParts(v2ArbitrumLongPositionSizes, v1ArbitrumLongPositionSizes),
+      Avalanche: sumNetworkParts(v2AvalancheLongPositionSizes, v1AvalancheLongPositionSizes),
+      MegaETH: v2MegaethLongPositionSizes,
+      Solana: gmtradeLongPositionSizes,
     }),
     [
       v1ArbitrumLongPositionSizes,
@@ -307,12 +314,10 @@ export function OverviewCard({
 
   const totalShortPositionSizesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumShortPositionSizes,
-      "V2 Avalanche": v2AvalancheShortPositionSizes,
-      "V2 MegaETH": v2MegaethShortPositionSizes,
-      "V1 Arbitrum": v1ArbitrumShortPositionSizes,
-      "V1 Avalanche": v1AvalancheShortPositionSizes,
-      "GMTrade Solana": gmtradeShortPositionSizes,
+      Arbitrum: sumNetworkParts(v2ArbitrumShortPositionSizes, v1ArbitrumShortPositionSizes),
+      Avalanche: sumNetworkParts(v2AvalancheShortPositionSizes, v1AvalancheShortPositionSizes),
+      MegaETH: v2MegaethShortPositionSizes,
+      Solana: gmtradeShortPositionSizes,
     }),
     [
       v1ArbitrumShortPositionSizes,
@@ -326,12 +331,10 @@ export function OverviewCard({
 
   const epochFeesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumEpochFees,
-      "V2 Avalanche": v2AvalancheEpochFees,
-      "V2 MegaETH": v2MegaethEpochFees,
-      "V1 Arbitrum": v1ArbitrumEpochFees,
-      "V1 Avalanche": v1AvalancheEpochFees,
-      "GMTrade Solana": gmtradeEpochFees,
+      Arbitrum: sumNetworkParts(v2ArbitrumEpochFees, v1ArbitrumEpochFees),
+      Avalanche: sumNetworkParts(v2AvalancheEpochFees, v1AvalancheEpochFees),
+      MegaETH: v2MegaethEpochFees,
+      Solana: gmtradeEpochFees,
     }),
     [
       v1ArbitrumEpochFees,
@@ -341,6 +344,28 @@ export function OverviewCard({
       v2MegaethEpochFees,
       gmtradeEpochFees,
     ]
+  );
+
+  const tvlRows = useMemo(
+    () =>
+      sortNetworkRows([
+        { label: t`Arbitrum`, value: displayTvlArbitrum },
+        { label: t`Avalanche`, value: displayTvlAvalanche },
+        { label: "MegaETH", value: displayTvlMegaeth },
+        { label: "Solana", value: gmTvlGmtrade },
+      ]),
+    [displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, gmTvlGmtrade]
+  );
+
+  const gmPoolRows = useMemo(
+    () =>
+      sortNetworkRows([
+        { label: t`Arbitrum`, value: gmTvlArbitrum },
+        { label: t`Avalanche`, value: gmTvlAvalanche },
+        { label: "MegaETH", value: gmTvlMegaeth },
+        { label: "Solana", value: gmTvlGmtrade },
+      ]),
+    [gmTvlArbitrum, gmTvlAvalanche, gmTvlMegaeth, gmTvlGmtrade]
   );
 
   const [formattedDuration, setFormattedDuration] = useState(() => getFormattedFeesDuration());
@@ -427,28 +452,14 @@ export function OverviewCard({
                       <Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>
                       <br />
                       <br />
-                      <StatsTooltipRow
-                        label={t`Arbitrum`}
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvlArbitrum, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Avalanche`}
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvlAvalanche, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label="MegaETH"
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvlMegaeth, USD_DECIMALS, true, 2)}
-                      />
-                      {gmTvlGmtrade !== undefined && (
+                      {tvlRows.map(({ label, value }) => (
                         <StatsTooltipRow
-                          label="Solana (GMTrade)"
+                          key={label}
+                          label={label}
                           showDollar={false}
-                          value={formatAmountHuman(gmTvlGmtrade, USD_DECIMALS, true, 2)}
+                          value={formatAmountHuman(value, USD_DECIMALS, true, 2)}
                         />
-                      )}
+                      ))}
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
                         label={t`Total`}
@@ -474,28 +485,14 @@ export function OverviewCard({
                       <Trans>Total value of tokens in GM pools</Trans>
                       <br />
                       <br />
-                      <StatsTooltipRow
-                        label={t`Arbitrum`}
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlArbitrum, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Avalanche`}
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlAvalanche, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label="MegaETH"
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlMegaeth, USD_DECIMALS, true, 2)}
-                      />
-                      {gmTvlGmtrade !== undefined && (
+                      {gmPoolRows.map(({ label, value }) => (
                         <StatsTooltipRow
-                          label="Solana (GMTrade)"
+                          key={label}
+                          label={label}
                           showDollar={false}
-                          value={formatAmountHuman(gmTvlGmtrade, USD_DECIMALS, true, 2)}
+                          value={formatAmountHuman(value, USD_DECIMALS, true, 2)}
                         />
-                      )}
+                      ))}
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
                         label={t`Total`}
