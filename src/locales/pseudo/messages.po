@@ -250,7 +250,6 @@ msgid "External swap temporarily disabled. Try again"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMTrade"
 msgstr ""
 
@@ -1116,6 +1115,10 @@ msgstr ""
 
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
+msgstr ""
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana"
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -4153,6 +4156,10 @@ msgstr "[!! Other realized fees !!]"
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
 msgstr ""
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "In other tokens:"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP part"
 msgstr ""
@@ -5325,7 +5332,6 @@ msgid "{secondLabel}"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (GMTrade) is currently served from a separate domain"
 msgstr ""
 
@@ -5643,10 +5649,6 @@ msgstr ""
 
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
-msgstr ""
-
-#: src/pages/Dashboard/StatsCard.tsx
-msgid "In other tokens"
 msgstr ""
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -6134,6 +6136,10 @@ msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
+msgstr ""
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana (known as GMTrade) is currently served from a separate domain."
 msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
@@ -8394,6 +8400,10 @@ msgstr ""
 msgid "Already live"
 msgstr ""
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "In GMX:"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
 msgstr ""
@@ -8651,10 +8661,6 @@ msgstr ""
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Squid GraphQL"
-msgstr ""
-
-#: src/pages/Dashboard/StatsCard.tsx
-msgid "In GMX"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9382,7 +9388,6 @@ msgid "Close price impact"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr ""
 
@@ -10983,7 +10988,6 @@ msgid "Updates"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade"
 msgstr ""
 
@@ -11305,6 +11309,10 @@ msgstr ""
 
 #: src/components/HistoryExport/useHistoryExport.ts
 msgid "The export could not be completed. No file was downloaded."
+msgstr ""
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMTrade in a new tab"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx

@@ -250,7 +250,6 @@ msgid "External swap temporarily disabled. Try again"
 msgstr "外部スワップが一時的に無効になっています。再度お試しください"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMTrade"
 msgstr "GMTrade"
 
@@ -1117,6 +1116,10 @@ msgstr ""
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "ボールトおよびプール内のTVL"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana"
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -4153,6 +4156,10 @@ msgstr "その他の実現手数料"
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
 msgstr "<0>Threshold</0> を使用して BTC で tBTC をミントできます"
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "In other tokens:"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP part"
 msgstr "TWAP パート失敗"
@@ -5325,7 +5332,6 @@ msgid "{secondLabel}"
 msgstr "{secondLabel}"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (GMTrade) is currently served from a separate domain"
 msgstr ""
 
@@ -5644,10 +5650,6 @@ msgstr "TWAPを作成"
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "スリッページとは、価格変動により予想約定価格と実際の約定価格の差です。スリッページが許容最大値を超えると注文は約定されません。デフォルト値は設定で調整できます。<0/><1/>低い値（例：-{0}未満）は、ボラティリティ時に注文失敗の原因となる場合があります。<2/><3/>注：スリッページは、オープンインタレストの不均衡に基づく価格影響とは異なります。<4>詳細はこちら</4>。"
-
-#: src/pages/Dashboard/StatsCard.tsx
-msgid "In other tokens"
-msgstr "その他のトークン"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -6135,6 +6137,10 @@ msgstr "シングル"
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
 msgstr "リスクと報酬をコントロールして投資"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana (known as GMTrade) is currently served from a separate domain."
+msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Over 100 protocols"
@@ -8394,6 +8400,10 @@ msgstr "受信者はこれまでGLPトークンをステークしていません
 msgid "Already live"
 msgstr "すでに稼働中"
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "In GMX:"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
 msgstr ""
@@ -8652,10 +8662,6 @@ msgstr "手数料と価格への影響を含む、実現損益および含み損
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Squid GraphQL"
 msgstr "Squid GraphQL"
-
-#: src/pages/Dashboard/StatsCard.tsx
-msgid "In GMX"
-msgstr "GMX"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
@@ -9382,7 +9388,6 @@ msgid "Close price impact"
 msgstr "決済時の価格への影響"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "GMTradeを新しいタブで開きます"
 
@@ -10983,7 +10988,6 @@ msgid "Updates"
 msgstr "アップデート"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade"
 msgstr "GMTradeを開く"
 
@@ -11306,6 +11310,10 @@ msgstr "推定年間バイバック率。直近の平均ペースでは、GMXの
 #: src/components/HistoryExport/useHistoryExport.ts
 msgid "The export could not be completed. No file was downloaded."
 msgstr "エクスポートを完了できませんでした。ファイルはダウンロードされていません。"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMTrade in a new tab"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
