@@ -311,6 +311,10 @@ msgstr "Limit fehlgeschlagen"
 msgid "Performance"
 msgstr "Leistung"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days. GMTrade fees do not contribute to GMX buybacks."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Open fees"
 msgstr "Eröffnungsgebühren"
@@ -4165,10 +4169,6 @@ msgstr "Fehlgeschlagener TWAP-Tauschteil"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr ""
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized data based on the past 7 days"
-msgstr "Annualisierte Daten basierend auf den letzten 7 Tagen"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "Worker-Thread"
@@ -5127,10 +5127,6 @@ msgstr "Das externe Routing ist nach einem fehlgeschlagenen Versuch vorübergehe
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>Kaufe</0> {wrappedNativeTokenSymbol}."
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized buy pressure:"
-msgstr "Annualisierter Kaufdruck:"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -12808,6 +12804,10 @@ msgstr "Der Ausführungspreis kann aufgrund von Gebühren und Preiseinfluss vom 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "Privat"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized GMX buy pressure:"
+msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"
