@@ -464,9 +464,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>
-                        TVL includes GMX staked, GM pools, and position collateral. Solana contributes GM pools only.
-                      </Trans>
+                      <Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>
                       <br />
                       <br />
                       {tvlRows.map(({ label, value }) => (

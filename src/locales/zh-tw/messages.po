@@ -4633,10 +4633,6 @@ msgstr "匯出錢包"
 msgid "20s"
 msgstr "20 秒"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "TVL includes GMX staked, GM pools, and position collateral. Solana contributes GM pools only."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual market ID"
 msgstr "虛擬市場 ID"
@@ -10652,6 +10648,10 @@ msgstr "池"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LIQUIDATION PRICE"
 msgstr "清算價格"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "TVL includes GMX staked, GM pools, and position collateral"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
