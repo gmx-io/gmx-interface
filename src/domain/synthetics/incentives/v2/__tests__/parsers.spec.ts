@@ -10,6 +10,7 @@ import {
   type RawLeaderboardEntry,
   type RawRewardsHistoryEntry,
 } from "../parsers";
+import { INCENTIVES_CONFIG_QUERY } from "../queries";
 
 const CHECKSUMMED_ACCOUNT = "0xAbC0000000000000000000000000000000000123";
 const BIG_VALUE = "9007199254740993000000000000000000000";
@@ -39,8 +40,8 @@ function makeRawConfig(): RawIncentivesConfig {
       { boost: "FeaturedMarkets", multiplier: "50" },
       { boost: "ManualAllocation", multiplier: "200" },
     ],
-    featuredMarketIndexTokens: [CHECKSUMMED_ACCOUNT],
-    downgradingCoefficients: [{ market: CHECKSUMMED_ACCOUNT, coefficient: "50" }],
+    featuredMarketTokens: [CHECKSUMMED_ACCOUNT],
+    downgradingFactors: [{ market: CHECKSUMMED_ACCOUNT, factor: "500000000000000000000000000000" }],
     balancingTradesThreshold: BIG_VALUE,
     lifetimeVolumeThreshold: BIG_VALUE,
     manualAllocationTiers: [
@@ -106,6 +107,13 @@ function makeRawLeaderboardEntry(multiplier: string | null): RawLeaderboardEntry
 }
 
 describe("Incentives V2 parsers", () => {
+  it("requests the market-token and 30-decimal factor config fields", () => {
+    expect(INCENTIVES_CONFIG_QUERY).toContain("featuredMarketTokens");
+    expect(INCENTIVES_CONFIG_QUERY).toContain("downgradingFactors { market factor }");
+    expect(INCENTIVES_CONFIG_QUERY).not.toContain("featuredMarketIndexTokens");
+    expect(INCENTIVES_CONFIG_QUERY).not.toContain("downgradingCoefficients");
+  });
+
   it("parses every config BigInt, sorts tiers, and preserves the open-ended allocation tier", () => {
     const config = parseIncentivesConfig(makeRawConfig());
 
@@ -118,8 +126,11 @@ describe("Incentives V2 parsers", () => {
       maxVolume: null,
       rewardCapUsd: 25000n,
     });
-    expect(config?.featuredMarketIndexTokens).toEqual([CHECKSUMMED_ACCOUNT]);
-    expect(config?.downgradingCoefficients[0].market).toBe(CHECKSUMMED_ACCOUNT);
+    expect(config?.featuredMarketTokens).toEqual([CHECKSUMMED_ACCOUNT]);
+    expect(config?.downgradingFactors[0]).toEqual({
+      market: CHECKSUMMED_ACCOUNT,
+      factor: 500000000000000000000000000000n,
+    });
   });
 
   it("preserves an inactive null config", () => {

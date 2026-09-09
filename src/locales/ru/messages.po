@@ -2092,10 +2092,6 @@ msgstr "Ончейн-задания и вознаграждения"
 msgid "Tokens"
 msgstr "Токены"
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "Downgrading coefficients"
-msgstr "Понижающие коэффициенты"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
 msgstr "Действие(я)"
@@ -4038,6 +4034,10 @@ msgstr "Достигнут максимальный уровень ✓"
 msgid "Max lendable impact USD"
 msgstr "Макс. сумма заимствования из пула влияния (USD)"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Trading volume on configured markets is counted with a reduced factor."
+msgstr "Торговый объём на настроенных рынках учитывается с понижающим коэффициентом."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative factor"
@@ -4515,6 +4515,10 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "Featured market tokens"
+msgstr "Токены избранных рынков"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "Невозможно вывести обеспечение. Остаток составит {estimatedRemainingCollateralUsdText}, что ниже минимума"
@@ -4563,6 +4567,10 @@ msgstr "Баннеры"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch ends in"
 msgstr "Эпоха завершится через"
+
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "Downgrading factors"
+msgstr "Понижающие коэффициенты"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (including swap)"
@@ -12000,10 +12008,6 @@ msgstr "сдвиг"
 msgid "The Program"
 msgstr "Программа"
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "Featured index tokens"
-msgstr "Выбранные индексные токены"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
 msgstr "Оповещения о риске ликвидации"
@@ -13143,10 +13147,6 @@ msgstr "Реальная команда с опытом релизов"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Earn fees from leverage trading, swaps, and spreads"
 msgstr "Зарабатывайте комиссии с маржинальной торговли, свопов и спредов"
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Trading volume on configured markets is counted with a reduced coefficient."
-msgstr "Торговый объём на настроенных рынках учитывается с пониженным коэффициентом."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Time elapsed"

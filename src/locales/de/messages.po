@@ -2092,10 +2092,6 @@ msgstr "Onchain-Quests und Belohnungen"
 msgid "Tokens"
 msgstr "Tokens"
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "Downgrading coefficients"
-msgstr "Herabstufungskoeffizienten"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
 msgstr "Aktion(en)"
@@ -4038,6 +4034,10 @@ msgstr "Höchste Stufe erreicht ✓"
 msgid "Max lendable impact USD"
 msgstr "Maximal verleihbarer Impact-USD-Betrag"
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Trading volume on configured markets is counted with a reduced factor."
+msgstr "Das Handelsvolumen auf konfigurierten Märkten wird mit einem reduzierten Faktor angerechnet."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative factor"
@@ -4515,6 +4515,10 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "Featured market tokens"
+msgstr "Ausgewählte Markttoken"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "Sicherheit kann nicht abgehoben werden. Verbleibend wäre {estimatedRemainingCollateralUsdText}, unter dem Minimum"
@@ -4563,6 +4567,10 @@ msgstr "Banner"
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch ends in"
 msgstr "Epoche endet in"
+
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "Downgrading factors"
+msgstr "Herabstufungsfaktoren"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (including swap)"
@@ -12000,10 +12008,6 @@ msgstr "Verschieben"
 msgid "The Program"
 msgstr "Das Programm"
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "Featured index tokens"
-msgstr "Ausgewählte Indextoken"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
 msgstr "Liquidationsrisikowarnungen"
@@ -13143,10 +13147,6 @@ msgstr "Echtes Team mit Shipping-Erfahrung"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Earn fees from leverage trading, swaps, and spreads"
 msgstr "Verdiene Gebühren aus Leverage-Trading, Swaps und Spreads"
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Trading volume on configured markets is counted with a reduced coefficient."
-msgstr "Das Handelsvolumen auf konfigurierten Märkten wird mit einem reduzierten Koeffizienten angerechnet."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Time elapsed"

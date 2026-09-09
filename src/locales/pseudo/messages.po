@@ -2092,10 +2092,6 @@ msgstr ""
 msgid "Tokens"
 msgstr ""
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "Downgrading coefficients"
-msgstr ""
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
 msgstr ""
@@ -4038,6 +4034,10 @@ msgstr ""
 msgid "Max lendable impact USD"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTierTables.tsx
+msgid "Trading volume on configured markets is counted with a reduced factor."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative factor"
@@ -4515,6 +4515,10 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "Featured market tokens"
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr ""
@@ -4562,6 +4566,10 @@ msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch ends in"
+msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
+msgid "Downgrading factors"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -12000,10 +12008,6 @@ msgstr ""
 msgid "The Program"
 msgstr ""
 
-#: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
-msgid "Featured index tokens"
-msgstr ""
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
 msgstr ""
@@ -13142,10 +13146,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Earn fees from leverage trading, swaps, and spreads"
-msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsTierTables.tsx
-msgid "Trading volume on configured markets is counted with a reduced coefficient."
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

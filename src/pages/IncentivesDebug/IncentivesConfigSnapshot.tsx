@@ -159,19 +159,16 @@ export function IncentivesConfigSnapshot({ config, endpoint }: { config: Incenti
             value={formatUsd(config.lifetimeVolumeThreshold, { displayDecimals: 0 })}
           />
           <ConfigValue
-            label={<Trans>Featured index tokens</Trans>}
-            value={config.featuredMarketIndexTokens.length ? config.featuredMarketIndexTokens.join(", ") : "-"}
+            label={<Trans>Featured market tokens</Trans>}
+            value={config.featuredMarketTokens.length ? config.featuredMarketTokens.join(", ") : "-"}
             mono
           />
           <ConfigValue
-            label={<Trans>Downgrading coefficients</Trans>}
+            label={<Trans>Downgrading factors</Trans>}
             value={
-              config.downgradingCoefficients.length
-                ? config.downgradingCoefficients
-                    .map(
-                      ({ market, coefficient }) =>
-                        `${market}: ${formatMultiplier(coefficient, config.multiplierDecimals)}`
-                    )
+              config.downgradingFactors.length
+                ? config.downgradingFactors
+                    .map(({ market, factor }) => `${market}: ${formatFactorPercentage(factor)}`)
                     .join(", ")
                 : "-"
             }

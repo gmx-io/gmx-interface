@@ -15,8 +15,8 @@ export const INCENTIVES_CONFIG_QUERY = `
       volumeTiers { tier threshold multiplier }
       stakingTiers { tier threshold multiplier }
       boosts { boost multiplier }
-      featuredMarketIndexTokens
-      downgradingCoefficients { market coefficient }
+      featuredMarketTokens
+      downgradingFactors { market factor }
       balancingTradesThreshold
       lifetimeVolumeThreshold
       manualAllocationTiers { minVolume maxVolume rewardCapUsd }
