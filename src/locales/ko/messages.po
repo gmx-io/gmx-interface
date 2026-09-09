@@ -5064,6 +5064,10 @@ msgstr "GMX 승인 대기 중..."
 msgid "AMOUNT"
 msgstr "금액"
 
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Partial total: no data yet from {0}."
+msgstr ""
+
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
@@ -8733,6 +8737,10 @@ msgstr "<0>🔷 24시간 거래량: $1.01 Billion.</0><1>퍼미션리스 온체�
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
 msgstr "입금 금액 입력"
+
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Included but not up to date: {0}."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx

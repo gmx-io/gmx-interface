@@ -5064,6 +5064,10 @@ msgstr "Aprobación de GMX pendiente..."
 msgid "AMOUNT"
 msgstr "CANTIDAD"
 
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Partial total: no data yet from {0}."
+msgstr ""
+
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
@@ -8733,6 +8737,10 @@ msgstr "<0>🔷 Volumen 24h: $1.01 Mil Millones.</0><1>Gracias a los cientos de 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
 msgstr "Ingresa cantidad de depósito"
+
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Included but not up to date: {0}."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx

@@ -7,7 +7,7 @@ import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useProtocolStatsFeesInfo } from "domain/protocolStats/useProtocolStatsFeesInfo";
-import { useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
+import { isProtocolStatsNetworkStale, useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import { usePositionsTotalMargin } from "domain/synthetics/positions/usePositionsTotalMargin";
@@ -30,6 +30,13 @@ import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
 import { getPositionStats } from "./getPositionStats";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
+// a headline total stays unknown until every contribution is known, so a missing network never reads as zero
+function sumKnown(...parts: (bigint | undefined)[]): bigint | undefined {
+  return parts.some((part) => part === undefined) ? undefined : parts.reduce<bigint>((acc, part) => acc + part!, 0n);
+}
+
+const SOLANA_ENTRY = "GMTrade Solana";
+
 export function OverviewCard({
   statsArbitrum,
   statsAvalanche,
@@ -43,7 +50,12 @@ export function OverviewCard({
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2MegaethOverview = useV2Stats(MEGAETH);
-  const gmtradeOverview = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana;
+  const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
+  const gmtradeOverview = gmtradeSummary.data?.byNetwork.solana;
+  const staleTitles = useMemo(
+    () => (isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : []),
+    [gmtradeSummary.data]
+  );
   const gmtradeFees = useProtocolStatsFeesInfo({ networks: ["solana"] });
 
   const { data: positionStats } = useSWR<
@@ -107,7 +119,7 @@ export function OverviewCard({
   const gmTvlMegaeth = v2MegaethOverview.totalGMLiquidity;
   const gmTvlGmtrade = parseProtocolStatsUsd(gmtradeOverview?.tvl?.pools);
 
-  const totalGmTvl = gmTvlArbitrum + gmTvlAvalanche + gmTvlMegaeth + (gmTvlGmtrade ?? 0n);
+  const totalGmTvl = sumKnown(gmTvlArbitrum, gmTvlAvalanche, gmTvlMegaeth, gmTvlGmtrade);
 
   let displayTvlArbitrum: bigint | undefined = undefined;
   let displayTvlAvalanche: bigint | undefined = undefined;
@@ -121,7 +133,10 @@ export function OverviewCard({
     glpMarketCapAvalanche !== undefined &&
     arbitrumPositionsMarginUsd !== undefined &&
     avalanchePositionsMarginUsd !== undefined &&
-    megaethPositionsMarginUsd !== undefined
+    megaethPositionsMarginUsd !== undefined &&
+    gmTvlArbitrum !== undefined &&
+    gmTvlAvalanche !== undefined &&
+    gmTvlMegaeth !== undefined
   ) {
     const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
     const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
@@ -130,7 +145,7 @@ export function OverviewCard({
     displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsMarginUsd;
     displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsMarginUsd;
     displayTvlMegaeth = gmTvlMegaeth + megaethPositionsMarginUsd;
-    displayTvl = displayTvlArbitrum + displayTvlAvalanche + displayTvlMegaeth + (gmTvlGmtrade ?? 0n);
+    displayTvl = sumKnown(displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, gmTvlGmtrade);
   }
 
   // #endregion TVL and GLP Pool
@@ -255,7 +270,7 @@ export function OverviewCard({
       "V2 MegaETH": v2MegaethOverview?.dailyVolume,
       "V1 Arbitrum": v1ArbitrumDailyVolume,
       "V1 Avalanche": v1AvalancheDailyVolume,
-      "GMTrade Solana": gmtradeDailyVolume,
+      [SOLANA_ENTRY]: gmtradeDailyVolume,
     }),
     [
       gmtradeDailyVolume,
@@ -274,7 +289,7 @@ export function OverviewCard({
       "V2 MegaETH": v2MegaethOpenInterest,
       "V1 Avalanche": v1AvalancheOpenInterest,
       "V1 Arbitrum": v1ArbitrumOpenInterest,
-      "GMTrade Solana": gmtradeOpenInterest,
+      [SOLANA_ENTRY]: gmtradeOpenInterest,
     }),
     [
       v1ArbitrumOpenInterest,
@@ -293,7 +308,7 @@ export function OverviewCard({
       "V2 MegaETH": v2MegaethLongPositionSizes,
       "V1 Arbitrum": v1ArbitrumLongPositionSizes,
       "V1 Avalanche": v1AvalancheLongPositionSizes,
-      "GMTrade Solana": gmtradeLongPositionSizes,
+      [SOLANA_ENTRY]: gmtradeLongPositionSizes,
     }),
     [
       v1ArbitrumLongPositionSizes,
@@ -312,7 +327,7 @@ export function OverviewCard({
       "V2 MegaETH": v2MegaethShortPositionSizes,
       "V1 Arbitrum": v1ArbitrumShortPositionSizes,
       "V1 Avalanche": v1AvalancheShortPositionSizes,
-      "GMTrade Solana": gmtradeShortPositionSizes,
+      [SOLANA_ENTRY]: gmtradeShortPositionSizes,
     }),
     [
       v1ArbitrumShortPositionSizes,
@@ -331,7 +346,7 @@ export function OverviewCard({
       "V2 MegaETH": v2MegaethEpochFees,
       "V1 Arbitrum": v1ArbitrumEpochFees,
       "V1 Avalanche": v1AvalancheEpochFees,
-      "GMTrade Solana": gmtradeEpochFees,
+      [SOLANA_ENTRY]: gmtradeEpochFees,
     }),
     [
       v1ArbitrumEpochFees,
@@ -410,7 +425,13 @@ export function OverviewCard({
                   className="whitespace-nowrap"
                   handle={formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}
                   handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
+                  content={
+                    <ChainsStatsTooltipRow
+                      entries={epochFeesEntries}
+                      subtotal={feesSubtotal}
+                      staleTitles={staleTitles}
+                    />
+                  }
                 />
               </div>
             </div>
@@ -522,7 +543,7 @@ export function OverviewCard({
                   className="whitespace-nowrap"
                   handle={formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}
                   handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
+                  content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} staleTitles={staleTitles} />}
                 />
               </div>
             </div>
@@ -536,7 +557,7 @@ export function OverviewCard({
                   className="whitespace-nowrap"
                   handle={formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}
                   handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={openInterestEntries} />}
+                  content={<ChainsStatsTooltipRow entries={openInterestEntries} staleTitles={staleTitles} />}
                 />
               </div>
             </div>
@@ -550,7 +571,7 @@ export function OverviewCard({
                   className="whitespace-nowrap"
                   handle={formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}
                   handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
+                  content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} staleTitles={staleTitles} />}
                 />
               </div>
             </div>
@@ -564,7 +585,7 @@ export function OverviewCard({
                   className="whitespace-nowrap"
                   handle={formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}
                   handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
+                  content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} staleTitles={staleTitles} />}
                 />
               </div>
             </div>

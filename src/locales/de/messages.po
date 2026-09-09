@@ -5064,6 +5064,10 @@ msgstr "GMX-Genehmigung ausstehend..."
 msgid "AMOUNT"
 msgstr "BETRAG"
 
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Partial total: no data yet from {0}."
+msgstr ""
+
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
@@ -8733,6 +8737,10 @@ msgstr "<0>🔷 24h Volumen: $1,01 Milliarden.</0><1>Vielen Dank an die Hundertt
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
 msgstr "Einzahlungsbetrag eingeben"
+
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Included but not up to date: {0}."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx

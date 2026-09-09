@@ -5064,6 +5064,10 @@ msgstr "GMX の承認待ち..."
 msgid "AMOUNT"
 msgstr "金額"
 
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Partial total: no data yet from {0}."
+msgstr ""
+
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
@@ -8733,6 +8737,10 @@ msgstr "<0>🔷 24時間ボリューム: 10.1億ドル。</0><1>パーミッシ�
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
 msgstr "入金額を入力"
+
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Included but not up to date: {0}."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
