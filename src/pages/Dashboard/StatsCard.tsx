@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, MEGAETH, ContractsChainIdProduction } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
+import { isProtocolStatsNetworkStale, useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
@@ -32,13 +32,20 @@ const gmGmxTokenAddresses = chains.map((chain) =>
 );
 const gmxGmAndTokensAddresses = [...gmxTokenAddresses, ...gmGmxTokenAddresses];
 
+const SOLANA_ENTRY = "Solana";
+
 export function StatsCard() {
   const v1TotalVolume = useTotalVolume();
 
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2MegaethOverview = useV2Stats(MEGAETH);
-  const gmtradeStats = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana;
+  const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
+  const gmtradeStats = gmtradeSummary.data?.byNetwork.solana;
+  const staleTitles = useMemo(
+    () => (isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : []),
+    [gmtradeSummary.data]
+  );
   const gmtradeTotalFees = parseProtocolStatsUsd(gmtradeStats?.fees.total);
   const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total);
   // users.all counts a wallet on its first action of any kind, the same basis as the V2 totalUsers entries
@@ -81,7 +88,7 @@ export function StatsCard() {
       Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalFees, v1ArbitrumTotalFees?.totalFees),
       Avalanche: sumNetworkParts(v2AvalancheOverview?.totalFees, v1AvalancheTotalFees?.totalFees),
       MegaETH: v2MegaethOverview?.totalFees,
-      Solana: gmtradeTotalFees,
+      [SOLANA_ENTRY]: gmtradeTotalFees,
     }),
     [
       v1AvalancheTotalFees?.totalFees,
@@ -98,7 +105,7 @@ export function StatsCard() {
       Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalVolume, v1TotalVolume?.[ARBITRUM]),
       Avalanche: sumNetworkParts(v2AvalancheOverview?.totalVolume, v1TotalVolume?.[AVALANCHE]),
       MegaETH: v2MegaethOverview?.totalVolume,
-      Solana: gmtradeTotalVolume,
+      [SOLANA_ENTRY]: gmtradeTotalVolume,
     }),
     [
       v1TotalVolume,
@@ -114,7 +121,7 @@ export function StatsCard() {
       Arbitrum: sumNetworkParts(v2ArbitrumOverview?.totalUsers, uniqueUsers?.[ARBITRUM]),
       Avalanche: sumNetworkParts(v2AvalancheOverview?.totalUsers, uniqueUsers?.[AVALANCHE]),
       MegaETH: v2MegaethOverview?.totalUsers,
-      Solana: gmtradeUsers,
+      [SOLANA_ENTRY]: gmtradeUsers,
     }),
     [
       gmtradeUsers,
@@ -141,7 +148,7 @@ export function StatsCard() {
               className="whitespace-nowrap"
               handle={formatAmountHuman(totalFeesUsd, USD_DECIMALS, true, 2)}
               handleClassName="numbers"
-              content={<ChainsStatsTooltipRow entries={totalFeesEntries} />}
+              content={<ChainsStatsTooltipRow entries={totalFeesEntries} staleTitles={staleTitles} />}
             />
           </div>
         </div>
@@ -168,7 +175,7 @@ export function StatsCard() {
                 2
               )}
               handleClassName="numbers"
-              content={<ChainsStatsTooltipRow entries={totalVolumeEntries} />}
+              content={<ChainsStatsTooltipRow entries={totalVolumeEntries} staleTitles={staleTitles} />}
             />
           </div>
         </div>
@@ -196,7 +203,12 @@ export function StatsCard() {
               )}
               handleClassName="numbers"
               content={
-                <ChainsStatsTooltipRow showDollar={false} entries={uniqueUsersEntries} decimalsForConversion={0} />
+                <ChainsStatsTooltipRow
+                  showDollar={false}
+                  entries={uniqueUsersEntries}
+                  decimalsForConversion={0}
+                  staleTitles={staleTitles}
+                />
               }
             />
           </div>
