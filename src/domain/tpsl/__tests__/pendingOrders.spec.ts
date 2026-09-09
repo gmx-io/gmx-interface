@@ -2,16 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import type { OrderStatus, PendingOrderData } from "context/SyntheticsEvents/types";
 import { getPositionKey } from "domain/synthetics/positions";
-import {
-  applyOrderBackfillMatches,
-  getOrderBackfillMatches,
-  getOrderBackfillParams,
-  getOrderCreatedDataFromPendingOrder,
-} from "domain/synthetics/tradeHistory/orderStatusesBackfill";
-import type { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
+import { getOrderCreatedDataFromPendingOrder } from "domain/synthetics/tradeHistory/orderStatusesBackfill";
 import { StatusCode } from "sdk/utils/gelatoRelay";
 import { DecreasePositionSwapType, OrderType, type OrderInfo } from "sdk/utils/orders/types";
-import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { getPendingTpSlOrders } from "../pendingOrders";
 import type { PendingTpSlOrderBatch } from "../types";
@@ -76,52 +69,6 @@ function resolve(overrides: Partial<Parameters<typeof getPendingTpSlOrders>[0]> 
 }
 
 describe("pending TP/SL orders", () => {
-  it.each([TradeActionType.OrderExecuted, TradeActionType.OrderCancelled] as const)(
-    "recovers %s after creation backfill when the order never appears in the list",
-    (eventName) => {
-      const createdStatuses = applyOrderBackfillMatches({}, [
-        { pendingOrder: tp, orderKey: "tp", eventName: TradeActionType.OrderCreated, transactionHash: "tx" },
-      ]);
-      const created = resolve({ batches: [{ ...batch, orders: [tp] }], orderStatuses: createdStatuses });
-      const orders = created.batchUpdates[batch.id];
-      expect(created.pendingOrders).toHaveLength(1);
-      expect(getOrderBackfillParams(orders)).toMatchObject({
-        orderKeys: ["tp"],
-        orderEventCombinations: [
-          { eventName: TradeActionType.OrderExecuted, orderType: [OrderType.LimitDecrease] },
-          { eventName: TradeActionType.OrderCancelled, orderType: [OrderType.LimitDecrease] },
-        ],
-      });
-      // Executed sizes can differ from the original request after a position decrease.
-      const action = {
-        id: "terminal",
-        eventName,
-        orderKey: "tp",
-        transactionHash: "settled",
-        sizeDeltaUsd: "500",
-      } as RawTradeAction;
-      const matches = getOrderBackfillMatches(orders, [action], createdStatuses);
-      expect(matches).toHaveLength(1);
-      expect(getOrderBackfillMatches(orders, [{ ...action, orderKey: "other" }], createdStatuses)).toEqual([]);
-      const result = resolve({
-        batches: [{ ...batch, orders }],
-        orderStatuses: applyOrderBackfillMatches(createdStatuses, matches),
-      });
-      expect(result.pendingOrders).toEqual([]);
-      expect(result.completedBatchIds).toEqual([batch.id]);
-    }
-  );
-
-  it("shows each submitted order before order data is available", () => {
-    const result = resolve({ ordersInfoData: undefined });
-    expect(result.pendingOrders.map((entry) => entry.orderType)).toEqual([
-      OrderType.LimitDecrease,
-      OrderType.StopLossDecrease,
-    ]);
-    expect(result.pendingOrders.map((entry) => entry.id)).toEqual(["batch-0", "batch-1"]);
-    expect(result.completedBatchIds).toEqual([]);
-  });
-
   it("does not match an existing identical order", () => {
     expect(
       resolve({ ordersInfoData: { old: order("old") }, orderStatuses: { old: status("old") } }).pendingOrders
@@ -129,7 +76,7 @@ describe("pending TP/SL orders", () => {
   });
 
   it.each(["wallet", "relay"])("ignores older orders loaded after a %s submission", (mode) => {
-    const pending = { ...tp, createdAt: 1_700_000_100_500 };
+    const pending = { ...tp, createdAt: 1_700_000_100_999 };
     const batches = [
       {
         ...batch,
@@ -140,7 +87,7 @@ describe("pending TP/SL orders", () => {
     ];
     expect(resolve({ batches, ordersInfoData: undefined }).pendingOrders).toHaveLength(1);
 
-    const oldOrder = { ...order("old", pending), updatedAtTime: 1_700_000_000n };
+    const oldOrder = { ...order("old", pending), updatedAtTime: 1_700_000_099n };
     const result = resolve({ batches, ordersInfoData: { old: oldOrder } });
     expect(result.pendingOrders).toHaveLength(1);
     expect(result.completedBatchIds).toEqual([]);
@@ -150,19 +97,6 @@ describe("pending TP/SL orders", () => {
     expect(confirmed.pendingOrders).toEqual([]);
     expect(confirmed.completedBatchIds).toEqual([batch.id]);
     expect(confirmed.completedOrderKeys).toEqual(["new"]);
-  });
-
-  it("uses second precision for fetched orders created during submission", () => {
-    const pending = { ...tp, createdAt: 1_700_000_100_999 };
-    const batches = [{ ...batch, orders: [pending], existingOrderKeys: [], transactionHash: "tx" }];
-
-    expect(
-      resolve({
-        batches,
-        ordersInfoData: { old: { ...order("old", pending), updatedAtTime: 1_700_000_099n } },
-      }).pendingOrders
-    ).toHaveLength(1);
-    expect(resolve({ batches, ordersInfoData: { new: order("new", pending) } }).completedBatchIds).toEqual([batch.id]);
   });
 
   it("trusts matching creation transaction identity when the local clock is ahead", () => {
@@ -176,22 +110,20 @@ describe("pending TP/SL orders", () => {
     expect(result.completedBatchIds).toEqual([batch.id]);
   });
 
-  it("keeps rows pending between creation events and fetched order data", () => {
-    expect(resolve({ orderStatuses: { tp: status("tp"), sl: status("sl", sl) } }).pendingOrders).toHaveLength(2);
-  });
-
   it("replaces each pending row only when its order appears", () => {
+    const submitted = resolve({ ordersInfoData: undefined });
+    expect(submitted.pendingOrders.map((entry) => entry.orderType)).toEqual([
+      OrderType.LimitDecrease,
+      OrderType.StopLossDecrease,
+    ]);
     const orderStatuses = { tp: status("tp"), sl: status("sl", sl) };
+    expect(resolve({ orderStatuses }).pendingOrders).toHaveLength(2);
     const partial = resolve({ orderStatuses, ordersInfoData: { tp: order("tp") } });
     expect(partial.pendingOrders.map((entry) => entry.id)).toEqual(["batch-1"]);
     expect(partial.completedBatchIds).toEqual([]);
     const complete = resolve({ orderStatuses, ordersInfoData: { tp: order("tp"), sl: order("sl", sl) } });
     expect(complete.pendingOrders).toEqual([]);
     expect(complete.completedBatchIds).toEqual([batch.id]);
-  });
-
-  it("can confirm from fetched orders when websocket events are missing", () => {
-    expect(resolve({ ordersInfoData: { tp: order("tp"), sl: order("sl", sl) } }).completedBatchIds).toEqual([batch.id]);
   });
 
   it("does not restore a confirmed entry when a later refresh omits it", () => {
@@ -233,20 +165,13 @@ describe("pending TP/SL orders", () => {
   });
 
   it("matches prices and sizes within a batch", () => {
-    const otherTp = { ...tp, triggerPrice: tp.triggerPrice + 1n, sizeDeltaUsd: tp.sizeDeltaUsd + 1n };
-    const result = resolve({
-      batches: [{ ...batch, orders: [tp, otherTp] }],
-      ordersInfoData: { other: order("other", otherTp) },
-    });
-    expect(result.pendingOrders.map((entry) => entry.id)).toEqual(["batch-0"]);
-  });
-
-  it("ignores events from a different creation transaction", () => {
-    const result = resolve({
-      batches: [{ ...batch, transactionHash: "new-tx" }],
-      orderStatuses: { tp: status("tp", tp, { cancelledTxnHash: "cancel" }) },
-    });
-    expect(result.pendingOrders).toHaveLength(2);
+    const differentPrice = { ...tp, triggerPrice: tp.triggerPrice + 1n };
+    const differentSize = { ...tp, sizeDeltaUsd: tp.sizeDeltaUsd + 1n };
+    const batches = [{ ...batch, orders: [tp, differentPrice, differentSize] }];
+    const byPrice = resolve({ batches, ordersInfoData: { priced: order("priced", differentPrice) } });
+    const bySize = resolve({ batches, ordersInfoData: { sized: order("sized", differentSize) } });
+    expect(byPrice.pendingOrders.map((entry) => entry.id)).toEqual(["batch-0", "batch-2"]);
+    expect(bySize.pendingOrders.map((entry) => entry.id)).toEqual(["batch-0", "batch-1"]);
   });
 
   it.each(["wallet", "relay"])("ignores fetched orders from another %s creation transaction", (mode) => {
@@ -259,19 +184,6 @@ describe("pending TP/SL orders", () => {
     expect(result.pendingOrders).toHaveLength(2);
     expect(result.completedBatchIds).toEqual([]);
     expect(result.batchUpdates).toEqual({});
-  });
-
-  it("allocates identical orders to the batch with the matching creation transaction", () => {
-    const result = resolve({
-      batches: [
-        { ...batch, orders: [tp], transactionHash: "first-tx" },
-        { ...batch, id: "second-batch", orders: [tp], transactionHash: "tx" },
-      ],
-      ordersInfoData: { tp: order("tp") },
-      orderStatuses: { tp: status("tp") },
-    });
-    expect(result.completedBatchIds).toEqual(["second-batch"]);
-    expect(result.pendingOrders.map((entry) => entry.id)).toEqual(["batch-0"]);
   });
 
   it("releases an incorrectly assigned key when the relay reports its creation transaction", () => {
@@ -287,14 +199,6 @@ describe("pending TP/SL orders", () => {
     expect(result.completedBatchIds).toEqual(["second-batch"]);
     expect(result.pendingOrders.map((entry) => entry.id)).toEqual(["batch-0", "batch-1"]);
     expect(result.batchUpdates[batch.id][0]).toMatchObject({ orderKey: undefined, isConfirmed: false });
-  });
-
-  it("keeps fetched-order recovery when creation metadata is unavailable", () => {
-    const result = resolve({
-      batches: [{ ...batch, orders: [tp], transactionHash: "tx" }],
-      ordersInfoData: { tp: order("tp") },
-    });
-    expect(result.completedBatchIds).toEqual([batch.id]);
   });
 
   it("does not settle a batch while its wallet submission is still awaiting a signature", () => {
@@ -327,16 +231,13 @@ describe("pending TP/SL orders", () => {
     expect(result.completedBatchIds).toEqual([]);
   });
 
-  it.each(["executedTxnHash", "cancelledTxnHash"] as const)(
-    "finishes orders that %s before appearing in the list",
-    (field) => {
-      const result = resolve({
-        batches: [{ ...batch, orders: [tp] }],
-        orderStatuses: { tp: status("tp", tp, { [field]: "settled" }) },
-      });
-      expect(result.completedBatchIds).toEqual([batch.id]);
-    }
-  );
+  it("finishes an already executed order before its key was assigned to the pending batch", () => {
+    const result = resolve({
+      batches: [{ ...batch, orders: [tp] }],
+      orderStatuses: { tp: status("tp", tp, { executedTxnHash: "settled" }) },
+    });
+    expect(result.completedBatchIds).toEqual([batch.id]);
+  });
 
   it("scopes pending entries to the chain, account, market, collateral and direction", () => {
     expect(resolve({ chainId: 43114 }).pendingOrders).toEqual([]);

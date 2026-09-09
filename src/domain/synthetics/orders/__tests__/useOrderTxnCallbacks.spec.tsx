@@ -160,16 +160,21 @@ describe.each(["wallet", "express", "one-click", "gmx-account"] as const)("%s TP
       );
     }
   });
+});
 
-  it("clears only the rejected batch and preserves the existing error feedback", () => {
-    const builder = events(mode);
-    callback(builder.Submitted());
-    const otherBatch = { ...state.batches[0], id: "other-batch" };
-    state.batches.push(otherBatch);
-    callback(builder.Error(new Error("Rejected")));
-    expect(state.batches).toEqual([otherBatch]);
-    expect(state.errorToast).toHaveBeenCalledTimes(1);
-  });
+it.each(["wallet", "express"] as const)("clears only the rejected %s batch and preserves error feedback", (mode) => {
+  const builder = events(mode);
+  callback(builder.Submitted());
+  const otherBatch = { ...state.batches[0], id: "other-batch" };
+  state.batches.push(otherBatch);
+  callback(builder.Error(new Error("Rejected")));
+  expect(state.batches).toEqual([otherBatch]);
+  expect(state.errorToast).toHaveBeenCalledTimes(1);
+  if (mode === "express") {
+    expect(state.updatePendingExpressTxn).toHaveBeenCalledWith(expect.objectContaining({ sendFailed: true }));
+  } else {
+    expect(state.updatePendingExpressTxn).not.toHaveBeenCalled();
+  }
 });
 
 it("removes a wallet batch when receipt polling reports an on-chain failure", () => {

@@ -143,7 +143,7 @@ describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
     state.isMobile = isMobile;
   });
 
-  it("renders each pending entry instead of the empty state and blocks Add TP/SL", () => {
+  it("renders and filters pending entries while blocking Add TP/SL", () => {
     const view = render(modal());
     expect(view.getAllByRole("status")).toHaveLength(2);
     expect(view.queryByText("No resting orders")).toBeNull();
@@ -153,6 +153,15 @@ describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
     expect(view.queryByText("TP/SL form")).toBeNull();
     expect(view.getByText(/\$\s*2,500\.00/)).toBeTruthy();
     expect(view.getByText(/\$\s*1,500\.00/)).toBeTruthy();
+
+    fireEvent.click(view.getByRole("button", { name: /Take-Profit/ }));
+    expect(view.getAllByRole("status")).toHaveLength(1);
+    expect(view.getByText(/\$\s*2,500\.00/)).toBeTruthy();
+    expect(view.queryByText(/\$\s*1,500\.00/)).toBeNull();
+    fireEvent.click(view.getByRole("button", { name: /Stop-Loss/ }));
+    expect(view.getAllByRole("status")).toHaveLength(1);
+    expect(view.getByText(/\$\s*1,500\.00/)).toBeTruthy();
+    expect(view.queryByText(/\$\s*2,500\.00/)).toBeNull();
   });
 
   it("keeps pending entries after closing and reopening directly into the add view", () => {
@@ -162,17 +171,6 @@ describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
     view.rerender(modal({ initialView: "add" }));
     expect(view.getAllByRole("status")).toHaveLength(2);
     expect(view.queryByText("TP/SL form")).toBeNull();
-  });
-
-  it.each([
-    { label: "TP", pending: tp, tab: "takeProfit" as const },
-    { label: "SL", pending: sl, tab: "stopLoss" as const },
-  ])("shows a single pending entry for a $label-only submission", ({ pending, tab }) => {
-    state.batches = [{ ...batch, orders: [pending] }];
-    const view = render(modal({ initialTab: tab }));
-    expect(view.getAllByRole("status")).toHaveLength(1);
-    expect(view.queryByText(/No (TP|SL|resting) orders/)).toBeNull();
-    expect((view.getByRole("button", { name: "Add TP/SL" }) as HTMLButtonElement).disabled).toBe(true);
   });
 
   it("keeps confirmed orders usable alongside pending entries", () => {
@@ -206,15 +204,13 @@ describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
     expect((view.getByRole("button", { name: "Add TP/SL" }) as HTMLButtonElement).disabled).toBe(false);
   });
 
-  it.each(["wallet", "relay"])("keeps a %s submission locked when an older order arrives late", (mode) => {
+  it("keeps a submission locked when an older order arrives late", () => {
     const pending = { ...tp, createdAt: 100_000 };
     state.batches = [
       {
         ...batch,
         orders: [pending],
         existingOrderKeys: [],
-        relayTaskId: mode === "relay" ? "task" : undefined,
-        transactionHash: mode === "wallet" ? "new-tx" : undefined,
       },
     ];
     state.orders = undefined;

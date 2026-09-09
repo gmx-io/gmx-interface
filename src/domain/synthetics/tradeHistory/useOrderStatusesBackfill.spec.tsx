@@ -28,7 +28,7 @@ const pendingOrder: PendingOrderData = {
   account,
   marketAddress: "0x2222222222222222222222222222222222222222",
   initialCollateralTokenAddress: "0x3333333333333333333333333333333333333333",
-  initialCollateralDeltaAmount: 0n,
+  initialCollateralDeltaAmount: 10n,
   swapPath: [],
   sizeDeltaUsd: 100n,
   minOutputAmount: 0n,
@@ -57,7 +57,7 @@ const creationAction: RawTradeAction = {
   account,
   marketAddress: pendingOrder.marketAddress,
   initialCollateralTokenAddress: pendingOrder.initialCollateralTokenAddress,
-  initialCollateralDeltaAmount: "0",
+  initialCollateralDeltaAmount: "10",
   sizeDeltaUsd: "100",
   minOutputAmount: "0",
   triggerPrice: "1500",
@@ -105,6 +105,8 @@ describe("useOrderStatusesBackfill", () => {
         id: "settlement",
         eventName,
         sizeDeltaUsd: "80",
+        initialCollateralDeltaAmount: "0",
+        triggerPrice: "1600",
         transactionHash: "0xsettlement",
       };
       const creationResponse = Promise.withResolvers<RawTradeActionsResult>();
@@ -156,7 +158,13 @@ describe("useOrderStatusesBackfill", () => {
 
       await waitFor(() => expect(mockedFetch).toHaveBeenCalledTimes(2));
       await act(async () => {
-        settlementResponse.resolve({ tradeActions: [settlementAction], totalCount: 1 });
+        settlementResponse.resolve({
+          tradeActions: [
+            { ...settlementAction, id: "unrelated", orderKey: "0xother", transactionHash: "0xunrelated" },
+            settlementAction,
+          ],
+          totalCount: 2,
+        });
       });
       expect(onMatches).toHaveBeenCalledTimes(2);
       expect(mockedFetch.mock.calls[1][0]).toMatchObject({ orderKeys: ["0xorder"], transactionHashes: undefined });
