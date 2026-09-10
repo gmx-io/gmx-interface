@@ -995,13 +995,6 @@ msgstr "Ungültiger Sicherheitstoken. {tokenSymbol} wird nicht als Sicherheit un
 msgid "Buy GMX on centralized exchanges"
 msgstr "GMX auf zentralen Börsen kaufen"
 
-#: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-#: src/components/TVChart/ChartHeader.tsx
-#: src/components/TVChart/ChartHeader.tsx
-msgid "Available liquidity"
-msgstr "Verfügbare Liquidität"
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
 msgstr "Die GMX-Pools können diesen Swap nicht ausführen, und derzeit ist keine externe Route verfügbar. Versuchen Sie, den Betrag zu reduzieren."
@@ -1074,6 +1067,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
 msgstr "Swap-Gebühren"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max {positionSide} size"
+msgstr "Maximale Größe für {positionSide}"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -1205,6 +1202,10 @@ msgstr "Positionsgebührfaktor (positiver PI)"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "Hohe Swap-Preisauswirkung"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The maximum swap size based on current liquidity. Updates live."
+msgstr "Die maximale Swap-Größe auf Basis der aktuellen Liquidität. Wird in Echtzeit aktualisiert."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -2317,10 +2318,6 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "Leverage bei {0} halten"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAIL. LIQ."
-msgstr "VERFÜGB. LIQ."
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr "One-Click-Trading ist deaktiviert. Aktionslimit überschritten."
@@ -2691,6 +2688,10 @@ msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen, und derzeit i
 msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
+msgstr "Die Order wird nicht ausgeführt: Die Größe überschreitet die maximale Swap-Größe von {maxSwapSize}. Reduzieren Sie die Swap-Größe."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
 msgstr "Stop-Loss aktualisieren"
@@ -2800,7 +2801,6 @@ msgstr ""
 msgid "Pair"
 msgstr "Paar"
 
-#: src/components/SwapCard/SwapCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max {0} out"
 msgstr "Max. {0} heraus"
@@ -3121,6 +3121,10 @@ msgstr "Kaufe GMX auf {chainName}"
 msgid "Size"
 msgstr "Größe"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order may not execute: size exceeds the max {positionSide} size of {maxSize} at the trigger price. Reduce the order size."
+msgstr "Die Order wird möglicherweise nicht ausgeführt: Die Größe überschreitet die maximale Größe für {positionSide} von {maxSize} zum Triggerpreis. Reduzieren Sie die Ordergröße."
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Trade from your own wallet — no deposits."
 msgstr "Aus Ihrer eigenen Wallet handeln — keine Einzahlungen."
@@ -3295,6 +3299,10 @@ msgstr "Automatisch rebalancierender Vault von GM-Token, der Gebühren aus Hebel
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>Es gibt keine feste Grenze — der Desk legt Ihre Stufe anhand Ihres aktuellen und erwarteten monatlichen Volumens fest. Die meisten Trader qualifizieren sich für die Basisstufe; kontaktieren Sie uns und wir bestätigen Ihren Satz.</0>"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The most this market can add to {positionSide} positions right now. Updates live and can change before a resting order triggers."
+msgstr "Der Höchstbetrag, den dieser Markt derzeit zu {positionSide}-Positionen hinzufügen kann. Wird live aktualisiert und kann sich ändern, bevor eine ruhende Order ausgelöst wird."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3706,7 +3714,6 @@ msgstr "GLV Vaults"
 msgid "Buy GMX from centralized services"
 msgstr "Kaufe GMX von zentralisierten Diensten"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
 msgstr "Die Order wird möglicherweise nicht ausgeführt: Unzureichende Liquidität zum Auslösepreis. Reduzieren Sie die Ordergröße."
@@ -4675,7 +4682,7 @@ msgstr "Virtuelle Markt-ID"
 msgid "Your wallet is not connected to this network"
 msgstr "Ihre Wallet ist nicht mit diesem Netzwerk verbunden"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
 msgstr "Die Order wird möglicherweise nicht ausgeführt: Unzureichende Liquidität, um den Swap zum Mindestempfangsbetrag auszuführen. Ändern Sie den Mindestempfangsbetrag oder reduzieren Sie die Swap-Größe."
@@ -5755,6 +5762,10 @@ msgstr "Baue auf GMX.<0/>Verdiene an jedem Trade."
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "Seite veraltet. Aktualisieren"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max swap size"
+msgstr "Maximale Swap-Größe"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -7157,10 +7168,6 @@ msgstr ""
 msgid "Less info"
 msgstr "Weniger Infos"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "LIQ."
-msgstr "LIQ."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP und GMX autocompounding Vaults"
@@ -7218,10 +7225,6 @@ msgstr "Unzureichende Liquidität im {0} Pool. Die Auswahl eines anderen Pools e
 msgid "Max leverage"
 msgstr "Maximaler Hebel"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAILABLE LIQUIDITY"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
 msgstr "Elfa AI"
@@ -7245,6 +7248,10 @@ msgstr "Zugriffsschlüssel"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "Positionswert nach PnL und allen Gebühren"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Parts of this order may not execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "Teile dieser Order werden möglicherweise nicht ausgeführt: Die Größe überschreitet die maximale Größe für {positionSide} von {maxSize}. Reduzieren Sie die Ordergröße."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -10114,10 +10121,6 @@ msgstr "Relay-Gebühr überschreitet das zulässige Maximum"
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr "Geschätzte Rückvergütung von bis zu {0}% der Eröffnungsgebühr. Wird anteilig als {incentivesTokenTitle}-Token per Airdrop verteilt. <0><1>Mehr erfahren</1>.</0>"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Executes when price and liquidity conditions are met"
-msgstr "Wird ausgeführt, wenn Preis- und Liquiditätsbedingungen erfüllt sind"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "Standardkonto"
@@ -10216,7 +10219,7 @@ msgstr "Beanspruchungen"
 msgid "Date"
 msgstr "Datum"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "Wird ausgeführt, wenn Liquiditäts- und Preisbedingungen erfüllt sind"
 
@@ -11980,7 +11983,9 @@ msgstr "Nur aktuelle Position"
 msgid "GMX token icon"
 msgstr "GMX Token-Symbol"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "long"
 
@@ -12223,6 +12228,10 @@ msgstr "PnL teilen"
 msgid "Frequency"
 msgstr "Häufigkeit"
 
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
+msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "Die Order wird nicht ausgeführt: Die Größe überschreitet die maximale Größe für {positionSide} von {maxSize}. Reduzieren Sie die Ordergröße."
+
 #: src/pages/UiPage/BannerTest.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Switch to WBTC-USDC pool"
@@ -12305,7 +12314,9 @@ msgstr "Verkaufen"
 msgid "Lent position impact pool amount"
 msgstr "Ausgeliehener Betrag des Position-Impact-Pools"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "short"
 

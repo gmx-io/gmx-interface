@@ -995,13 +995,6 @@ msgstr "抵押品代幣無效。{tokenSymbol} 不支援作為抵押品"
 msgid "Buy GMX on centralized exchanges"
 msgstr "在中心化交易所購買 GMX"
 
-#: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-#: src/components/TVChart/ChartHeader.tsx
-#: src/components/TVChart/ChartHeader.tsx
-msgid "Available liquidity"
-msgstr "可用流動性"
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
 msgstr "GMX 池無法完成此交換，且當前沒有可用的外部路由。請嘗試減少金額。"
@@ -1074,6 +1067,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
 msgstr "兌換費用"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max {positionSide} size"
+msgstr "最大{positionSide}規模"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -1205,6 +1202,10 @@ msgstr "倉位手續費因子（正價格影響）"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "兌換價格影響過高"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The maximum swap size based on current liquidity. Updates live."
+msgstr "根據目前流動性計算的最大兌換規模。即時更新。"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -2317,10 +2318,6 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "保持槓桿在 {0}"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAIL. LIQ."
-msgstr "可用流動性"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr "One-Click Trading 已停用。操作次數已超出限制。"
@@ -2691,6 +2688,10 @@ msgstr "GMX 池無法完成此規模的兌換，且當前沒有可用的外部�
 msgid "GM: {indexName}"
 msgstr "GM：{indexName}"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
+msgstr "訂單將不會執行：規模超過最大兌換規模 {maxSwapSize}。請減小兌換規模。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
 msgstr "更新止損"
@@ -2800,7 +2801,6 @@ msgstr ""
 msgid "Pair"
 msgstr "配對"
 
-#: src/components/SwapCard/SwapCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max {0} out"
 msgstr "最多可兌出 {0}"
@@ -3121,6 +3121,10 @@ msgstr "在 {chainName} 上買入 GMX"
 msgid "Size"
 msgstr "規模"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order may not execute: size exceeds the max {positionSide} size of {maxSize} at the trigger price. Reduce the order size."
+msgstr "訂單可能無法執行：規模超過觸發價格下的最大{positionSide}規模 {maxSize}。請減小訂單規模。"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Trade from your own wallet — no deposits."
 msgstr "直接透過您自己的錢包交易——無需存款。"
@@ -3295,6 +3299,10 @@ msgstr "自動再平衡的 GM 代幣金庫，從槓桿交易和兌換中累積�
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>沒有固定門檻 — 團隊會根據您近期及預期的月交易量設定您的等級。大多數交易者符合基礎等級;聯絡我們,我們將確認您的費率。</0>"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The most this market can add to {positionSide} positions right now. Updates live and can change before a resting order triggers."
+msgstr "這是該市場目前可增加到{positionSide}倉位的最大規模。該數值即時更新，並可能在掛單觸發前發生變化。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3706,7 +3714,6 @@ msgstr "GLV 金庫"
 msgid "Buy GMX from centralized services"
 msgstr "從中心化服務購買 GMX"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
 msgstr "訂單可能無法執行：觸發價格下的流動性不足。請減小訂單規模。"
@@ -4675,7 +4682,7 @@ msgstr "虛擬市場 ID"
 msgid "Your wallet is not connected to this network"
 msgstr "您的錢包未連線至此網路"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
 msgstr "訂單可能無法執行：按最小接收金額完成兌換的流動性不足。請編輯最小接收金額或減小兌換規模。"
@@ -5755,6 +5762,10 @@ msgstr "在 GMX 上構建。<0/>每筆交易都有收益。"
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "頁面已過期，請重新整理"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max swap size"
+msgstr "最大兌換規模"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -7157,10 +7168,6 @@ msgstr ""
 msgid "Less info"
 msgstr "收起資訊"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "LIQ."
-msgstr "流動性"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP 和 GMX 自動複利金庫"
@@ -7218,10 +7225,6 @@ msgstr "{0} 池中流動性不足。選擇不同的池將建立新的倉位。"
 msgid "Max leverage"
 msgstr "最大槓桿"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAILABLE LIQUIDITY"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
 msgstr "Elfa AI"
@@ -7245,6 +7248,10 @@ msgstr "存取金鑰"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "計入 PnL 及所有費用後的倉位價值"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Parts of this order may not execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "該訂單可能有部分無法執行：規模超過最大{positionSide}規模 {maxSize}。請減小訂單規模。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -10114,10 +10121,6 @@ msgstr "中繼費用超過允許上限"
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr "預估返利最高可達開倉費用的 {0}%。以 {incentivesTokenTitle} 代幣按比例空投。<0><1>了解更多</1>。</0>"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Executes when price and liquidity conditions are met"
-msgstr "當價格和流動性條件滿足時執行"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "一般帳戶"
@@ -10216,7 +10219,7 @@ msgstr "領取"
 msgid "Date"
 msgstr "日期"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "當流動性和價格條件滿足時執行"
 
@@ -11980,7 +11983,9 @@ msgstr "僅目前持倉"
 msgid "GMX token icon"
 msgstr "GMX 代幣圖示"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "做多"
 
@@ -12223,6 +12228,10 @@ msgstr "分享 PnL"
 msgid "Frequency"
 msgstr "頻率"
 
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
+msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "訂單將無法執行：規模超過最大{positionSide}規模 {maxSize}。請減小訂單規模。"
+
 #: src/pages/UiPage/BannerTest.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Switch to WBTC-USDC pool"
@@ -12305,7 +12314,9 @@ msgstr "賣出"
 msgid "Lent position impact pool amount"
 msgstr "借出的倉位影響池金額"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "做空"
 

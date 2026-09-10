@@ -715,6 +715,13 @@ test.describe("TradeBox", () => {
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
       await expect(submitButton).toHaveText(/Max ETH long exceeded/);
       await expect(submitButton).toBeDisabled();
+
+      const maxSizeRow = page.locator(getDataQALocator("info-row-max-size"));
+      await expect(maxSizeRow).toContainText("Max long size");
+      await expect(maxSizeRow).toContainText(/\$\s*1,500/);
+
+      await submitButton.hover({ force: true });
+      await expect(page.getByText(/Order won't execute: size exceeds the max long size of \$\s*1,500/)).toBeVisible();
     });
   });
 
