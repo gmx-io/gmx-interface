@@ -981,15 +981,15 @@ export function RewardsVestingModal({
                 variant="iconStroke"
                 content={
                   <Trans>
-                    The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and
-                    locked
+                    The additional GMX needed to vest the entered esGMX, after reusing any GMX already locked. Each 1
+                    esGMX requires 5 GMX to be staked and locked
                   </Trans>
                 }
               >
                 <Trans>Collateral required for vest</Trans>
               </TooltipWithPortal>
             }
-            value={formatTokenAmount(depositAmount ?? 0n)}
+            value={formatTokenAmount(preview.additionalPairAmount)}
             unit="GMX"
           />
           <ModalValueRow
@@ -1268,13 +1268,10 @@ export function RewardsStopVestingModal({
       }
 
       const refreshedRemainingAmount = getEffectiveRemainingAmount(refreshedData);
-      const refreshedConvertedAmount = refreshedData.vestingInfo.vestedAmount - refreshedRemainingAmount;
       if (
         hasVestingPositionSnapshotChanged(submittedData, refreshedData) ||
         refreshedData.vestingInfo.vestedAmount === 0n ||
-        refreshedRemainingAmount === 0n ||
-        formatTokenAmount(effectiveRemainingAmount) !== formatTokenAmount(refreshedRemainingAmount) ||
-        formatTokenAmount(convertedAmount) !== formatTokenAmount(refreshedConvertedAmount)
+        refreshedRemainingAmount === 0n
       ) {
         helperToast.info(t`Vesting details changed. Review the updated amounts before stopping.`);
         return;

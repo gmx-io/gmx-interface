@@ -1,13 +1,27 @@
 {
   "name": "GMX",
   "short_name": "GMX",
-  "description": "Trade spot or perpetual with up to 100x leverage directly from your wallet.",
+  "description": "Trade crypto and commodities like Gold, Silver, WTI and Brent with up to 100x leverage, directly from your wallet.",
   "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#090A14",
   "theme_color": "#090A14",
+  "shortcuts": [
+    {
+      "name": "Trade",
+      "url": "/trade"
+    },
+    {
+      "name": "Pools",
+      "url": "/pools"
+    },
+    {
+      "name": "Earn",
+      "url": "/earn"
+    }
+  ],
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

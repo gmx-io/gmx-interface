@@ -4328,7 +4328,7 @@ msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking"
-msgstr ""
+msgstr "質押前，請<0>委託您尚未委託的 {0} GMX DAO 投票權</0>"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages"
@@ -11578,10 +11578,6 @@ msgstr "更新限價單"
 msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and locked"
-msgstr "用於歸屬所輸入 esGMX 所需的 GMX 數量。每 1 esGMX 需要質押並鎖定 5 GMX"
-
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit order"
@@ -11592,6 +11588,10 @@ msgstr "編輯訂單"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "模擬提取時發生錯誤"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "The additional GMX needed to vest the entered esGMX, after reusing any GMX already locked. Each 1 esGMX requires 5 GMX to be staked and locked"
+msgstr "重複使用已鎖定的 GMX 後，為輸入的 esGMX 進行歸屬所需的額外 GMX 數量。每 1 esGMX 需要質押並鎖定 5 GMX"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -13608,10 +13608,6 @@ msgstr "分配"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {minutes} minutes{0}"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
-msgid "Partial search covers the top {0} accounts. Search by full address to find any account."
-msgstr "部分搜尋僅涵蓋前 {0} 個帳戶。請輸入完整地址以尋找任意帳戶。"
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your own contact on Telegram."

@@ -20,6 +20,8 @@ import { ETH_ADDRESS, ETH_TOKEN, NATIVE_ETH_ADDRESS, USDC_ADDRESS } from "domain
 import { expandDecimals } from "lib/numbers";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
+import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
+
 import { TradeBox } from "../TradeBox";
 import { TradeBoxHeaderTabs } from "../TradeBoxHeaderTabs";
 
@@ -440,7 +442,9 @@ export function TradeBoxStory({
       {withGasTokenControl && <SetConflictingGasTokenControl />}
       <div className="text-body-medium flex flex-col rounded-8">
         <TradeBoxHeaderTabs />
-        <TradeBox isMobile={false} />
+        <ActiveFormScope formId="tradebox">
+          <TradeBox isMobile={false} activeFormId="tradebox" />
+        </ActiveFormScope>
       </div>
     </MockSyntheticsStateProvider>
   );

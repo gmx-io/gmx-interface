@@ -11,6 +11,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
+import { filterLeaderboardByAccount } from "domain/synthetics/leaderboard/utils";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
@@ -115,10 +116,7 @@ export function LeaderboardAccountsTable({
     });
   }, [data, direction, orderBy]);
 
-  const filteredStats = useMemo(() => {
-    const query = term.trim();
-    return sorted.filter((item) => item.account.includes(query));
-  }, [sorted, term]);
+  const filteredStats = useMemo(() => filterLeaderboardByAccount(sorted, term), [sorted, term]);
 
   const indexFrom = (page - 1) * PER_PAGE;
   const activeRank = activeCompetition === "pnlPercentage" ? ranks.pnlPercentage : ranks.pnl;

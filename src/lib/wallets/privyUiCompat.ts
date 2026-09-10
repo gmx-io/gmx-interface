@@ -25,6 +25,10 @@ function privyRemToPx(element: StylisElement) {
 
 export const PRIVY_STYLIS_PLUGINS = [privyRemToPx];
 
+export function getPrivyDialog() {
+  return document.getElementById("privy-dialog");
+}
+
 /**
  * react-remove-scroll in our modals cancels wheel/touch events outside their subtree,
  * and Privy renders #privy-dialog in a body-level portal, so lists inside Privy dialogs
@@ -34,7 +38,7 @@ export const PRIVY_STYLIS_PLUGINS = [privyRemToPx];
 export const PRIVY_DIALOG_SCROLL_SHARDS: RefObject<HTMLElement | null>[] = [
   {
     get current() {
-      return document.getElementById("privy-dialog");
+      return getPrivyDialog();
     },
   },
 ];
