@@ -13,11 +13,13 @@ const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
 
-function getCurtainStyle(headerHeight: number): CSSProperties {
+export function getCurtainStyle(headerHeight: number): CSSProperties {
   return {
-    bottom: `0`,
+    bottom: "var(--safe-area-inset-bottom)",
+    left: "var(--safe-area-inset-left)",
+    right: "var(--safe-area-inset-right)",
     transform: `translateY(calc(100% - ${headerHeight}px))`,
-    height: `calc(100dvh - ${headerHeight}px)`,
+    height: `calc(100dvh - ${headerHeight}px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))`,
   };
 }
 
@@ -56,6 +58,7 @@ export function Curtain({
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [externalIsCurtainOpen, setExternalIsCurtainOpen] = useIsCurtainOpen();
 
   const handleAnimate = useCallback(
@@ -124,7 +127,10 @@ export function Curtain({
 
     const curtainRect = curtainRef.current.getBoundingClientRect();
 
-    currentRelativeY.current = (window.innerHeight - curtainRect.bottom) * -1;
+    const resolvedBottomInset = Number.parseFloat(window.getComputedStyle(curtainRef.current).bottom);
+    const viewportBottom = window.innerHeight - (Number.isFinite(resolvedBottomInset) ? resolvedBottomInset : 0);
+
+    currentRelativeY.current = (viewportBottom - curtainRect.bottom) * -1;
 
     prevScreenY.current = e.screenY;
     prevScreenX.current = e.screenX;
@@ -143,6 +149,7 @@ export function Curtain({
           isDirectionLocked.current = true;
           isDraggingRef.current = isVertical;
           if (!isVertical) return;
+          setIsDragging(true);
         }
       }
 
@@ -177,7 +184,12 @@ export function Curtain({
   );
 
   const handlePointerUp = useCallback(() => {
+    if (!isPointerDownRef.current) {
+      return;
+    }
+
     isPointerDownRef.current = false;
+    setIsDragging(false);
 
     if (!isDraggingRef.current || !curtainRef.current) {
       return;
@@ -206,14 +218,43 @@ export function Curtain({
   }, [handleAnimate, setExternalIsCurtainOpen]);
 
   const handlePointerCancel = useCallback(() => {
+    if (!isPointerDownRef.current) {
+      return;
+    }
+
+    const wasDragging = isDraggingRef.current;
+
     isPointerDownRef.current = false;
     isDraggingRef.current = false;
-  }, []);
+    setIsDragging(false);
+
+    if (wasDragging && curtainRef.current) {
+      curtainRef.current.style.willChange = "";
+      handleAnimate(isOpen);
+    }
+  }, [handleAnimate, isOpen]);
+
+  useEffect(() => {
+    // WebKit can lose pointer events when a touch crosses the browser chrome.
+    window.addEventListener("pointerup", handlePointerUp, true);
+    window.addEventListener("pointercancel", handlePointerCancel, true);
+    window.addEventListener("touchend", handlePointerUp, true);
+    window.addEventListener("touchcancel", handlePointerCancel, true);
+
+    return () => {
+      window.removeEventListener("pointerup", handlePointerUp, true);
+      window.removeEventListener("pointercancel", handlePointerCancel, true);
+      window.removeEventListener("touchend", handlePointerUp, true);
+      window.removeEventListener("touchcancel", handlePointerCancel, true);
+    };
+  }, [handlePointerCancel, handlePointerUp]);
 
   useEffect(() => {
     const handler = throttle(
       () => {
-        if (isOpen && !isDraggingRef.current) {
+        if (isPointerDownRef.current) {
+          handlePointerCancel();
+        } else if (isOpen) {
           handleAnimate(true);
         }
       },
@@ -225,7 +266,7 @@ export function Curtain({
     return () => {
       window.removeEventListener("resize", handler);
     };
-  }, [handleAnimate, isOpen]);
+  }, [handleAnimate, handlePointerCancel, isOpen]);
 
   useEffect(() => {
     if (externalIsCurtainOpen && !isOpen) {
@@ -238,6 +279,7 @@ export function Curtain({
   }, [externalIsCurtainOpen, isOpen, handleAnimate]);
 
   const curtainStyle = useMemo(() => getCurtainStyle(headerHeight), [headerHeight]);
+  const isContentVisible = isOpen || isDragging;
 
   return (
     <>
@@ -252,7 +294,7 @@ export function Curtain({
         <div
           data-qa={dataQa}
           ref={curtainRef}
-          className="text-body-medium fixed left-0 right-0 z-[901] flex flex-col rounded-t-4"
+          className="text-body-medium fixed z-[901] flex flex-col rounded-t-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-[var(--safe-area-inset-bottom)] after:bg-slate-900 after:content-['']"
           style={curtainStyle}
         >
           <div
@@ -267,6 +309,7 @@ export function Curtain({
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
           >
             <div className="grow overflow-hidden" onClick={headerClick}>
               {header}
@@ -293,7 +336,14 @@ export function Curtain({
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerCancel}
           >
-            <div className="flex grow flex-col">{children}</div>
+            <div
+              aria-hidden={!isContentVisible}
+              className={cx("flex grow flex-col", {
+                invisible: !isContentVisible,
+              })}
+            >
+              {children}
+            </div>
           </div>
         </div>
       </RemoveScroll>
