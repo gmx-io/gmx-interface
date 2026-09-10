@@ -526,10 +526,6 @@ msgstr "Doble exposición a {indexSymbol} por posición y garantía. Precio de l
 msgid "GMX Account balance"
 msgstr "Saldo de GMX Account"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in perpetuals markets"
-msgstr "Buscar en mercados perpetuos"
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "¡Dirección copiada!"
@@ -934,6 +930,10 @@ msgstr "Convierta esGMX en tokens GMX. Lea los detalles del periodo de consolida
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No {marketTypeLabel} match \"{query}\"."
+msgstr "No hay coincidencias para \"{query}\" en {marketTypeLabel}."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
@@ -1545,6 +1545,10 @@ msgstr "Margen total aportado"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "Para comprar GMX en {0}, <0>cambie su red</0>"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Perpetuals."
+msgstr "Hay resultados disponibles en Perpetuos."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -2243,6 +2247,10 @@ msgstr ""
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr "Este swap requiere enrutamiento externo, que no está disponible mientras el token de pago de gas coincida con el token que recibirá, y ningún otro token de gas tiene saldo suficiente."
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all {marketTypeLabel}"
+msgstr "Buscar en todos los {marketTypeLabel}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -3043,6 +3051,10 @@ msgstr "Ayúdenos a mejorar GMX. Por seguridad, no le contactaremos primero. Env
 msgid "Cancel margin deposit"
 msgstr "Cancelar depósito de margen"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Swap tokens"
+msgstr "tokens de Swap"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "Red global"
@@ -3140,6 +3152,10 @@ msgstr "Sistema"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "Obtenga recompensas compartiendo su código de referencia"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Swap."
+msgstr "Hay resultados disponibles en Swap."
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
@@ -3249,6 +3265,10 @@ msgstr "Posiciones largas"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Perpetuals"
+msgstr "Ver resultados en Perpetuos"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -4720,6 +4740,10 @@ msgstr "Staking"
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "Plataforma de intercambio perpetuo descentralizada | GMX"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "perpetual markets"
+msgstr "mercados perpetuos"
+
 #: src/components/Footer/constants.tsx
 msgid "V1"
 msgstr "V1"
@@ -5785,6 +5809,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Compre bonos GMX en Bond Protocol con descuento y un periodo de consolidación corto"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No results with the selected filters."
+msgstr "No hay resultados con los filtros seleccionados."
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7982,6 +8010,10 @@ msgstr "Tamaño, $"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Wallet received before close"
 msgstr "Recibido en la cartera antes del cierre"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Swap"
+msgstr "Ver resultados en Swap"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
@@ -11204,7 +11236,6 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "Evite mechas de precio con feeds de precios de Chainlink transparentes y en menos de un segundo, diseñados a medida para GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr "No hay mercados coincidentes."
 
@@ -11845,10 +11876,6 @@ msgstr "Opere más, pague menos.<0/>Refiera y gane."
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "No hay pools coincidentes"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in swap markets"
-msgstr "Buscar en mercados swap"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"

@@ -526,10 +526,6 @@ msgstr "포지션과 담보에서 {indexSymbol}에 대한 이중 노출이 발�
 msgid "GMX Account balance"
 msgstr "GMX Account 잔액"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in perpetuals markets"
-msgstr "무기한 시장 검색"
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "주소가 복사되었습니다!"
@@ -934,6 +930,10 @@ msgstr "esGMX를 GMX 토큰으로 전환합니다. 금고를 사용하기 전에
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No {marketTypeLabel} match \"{query}\"."
+msgstr "{marketTypeLabel}에서 \"{query}\"와 일치하는 항목이 없습니다."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
@@ -1545,6 +1545,10 @@ msgstr "총 납입 증거금"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "{0}에서 GMX를 구매하려면 <0>네트워크를 변경하십시오</0>"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Perpetuals."
+msgstr "무기한에 검색 결과가 있습니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -2243,6 +2247,10 @@ msgstr ""
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr "이 스왑에는 외부 라우팅이 필요하지만 가스 결제 토큰이 수령할 토큰과 같은 동안에는 사용할 수 없으며, 잔액이 충분한 다른 가스 토큰도 없습니다."
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all {marketTypeLabel}"
+msgstr "모든 {marketTypeLabel} 검색"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -3043,6 +3051,10 @@ msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 먼저 연락드�
 msgid "Cancel margin deposit"
 msgstr "증거금 예치 취소"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Swap tokens"
+msgstr "스왑 토큰"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "글로벌 네트워크"
@@ -3140,6 +3152,10 @@ msgstr "시스템"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "추천 코드를 공유하여 보상을 받으십시오"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Swap."
+msgstr "스왑에 검색 결과가 있습니다."
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
@@ -3249,6 +3265,10 @@ msgstr "롱 포지션"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Perpetuals"
+msgstr "무기한 결과 보기"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -4720,6 +4740,10 @@ msgstr "스테이킹"
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "탈중앙화 무기한 거래소 | GMX"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "perpetual markets"
+msgstr "무기한 시장"
+
 #: src/components/Footer/constants.tsx
 msgid "V1"
 msgstr "V1"
@@ -5785,6 +5809,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Bond Protocol에서 짧은 베스팅 기간으로 GMX 채권을 할인 구매하십시오"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No results with the selected filters."
+msgstr "선택한 필터와 일치하는 결과가 없습니다."
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7982,6 +8010,10 @@ msgstr "크기, $"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Wallet received before close"
 msgstr "청산 전 지갑 수령액"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Swap"
+msgstr "스왑 결과 보기"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
@@ -11204,7 +11236,6 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "GMX 전용으로 설계된 투명하고 1초 미만의 Chainlink 가격 피드로 가격 위크를 방지합니다"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr "일치하는 시장이 없습니다."
 
@@ -11845,10 +11876,6 @@ msgstr "더 많이 거래하고, 더 적게 내세요.<0/>추천하고 수익을
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "일치하는 풀 없음"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in swap markets"
-msgstr "스왑 시장 검색"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"
