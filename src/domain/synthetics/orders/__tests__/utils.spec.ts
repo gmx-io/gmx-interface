@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
@@ -5,9 +6,30 @@ import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 
+import {
+  LiquidatableIncreaseMessage,
+  ReplaceMarginDepositAction,
+} from "components/MarginRemediation/MarginRemediationActions";
+
 import { NextPositionValues } from "../../trade";
 import { OrderType, PositionOrderInfo } from "../types";
 import { getOrderErrors } from "../utils";
+
+type RemediationActionElement = ReactElement<{ positionKey?: string; orderKey?: string }>;
+
+// Trans compiles an embedded action into props.components["0"]
+function getTransProps(msg: unknown) {
+  const element = msg as ReactElement<{
+    message?: string;
+    components?: Record<string, RemediationActionElement>;
+  }>;
+
+  return { message: element.props.message, action: element.props.components?.["0"] };
+}
+
+function getMessageElement(msg: unknown) {
+  return msg as ReactElement<{ positionKey?: string }>;
+}
 
 const tokensData = mockTokensData();
 const marketsInfoData = mockMarketsInfoData(tokensData, ["BTC-BTC-USDC"], {
@@ -65,9 +87,10 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
     });
 
     expect(hasLiquidatableError(result)).toBe(true);
-    expect(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg).toBe(
-      "Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size."
-    );
+
+    const message = getMessageElement(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg);
+    expect(message.type).toBe(LiquidatableIncreaseMessage);
+    expect(message.props.positionKey).toBeUndefined();
     expect(result.level).toBe("error");
   });
 
@@ -142,6 +165,9 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
     });
 
     expect(hasLiquidatableError(result)).toBe(true);
+
+    const message = getMessageElement(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg);
+    expect(message.props.positionKey).toBe(positionKey);
   });
 });
 
@@ -221,6 +247,14 @@ describe("getOrderErrors — margin deposit orders", () => {
 
     expect(errorKeys(result)).toEqual(["marginDepositInsufficient"]);
     expect(result.level).toBe("error");
+
+    const { message, action } = getTransProps(result.errors[0].msg);
+    expect(message).toBe(
+      "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. <0>Increase the deposit amount</0> or move the trigger farther from liquidation."
+    );
+    expect(action?.type).toBe(ReplaceMarginDepositAction);
+    expect(action?.props.positionKey).toBe(position.key);
+    expect(action?.props.orderKey).toBe("order-key");
   });
 
   it("returns the yellow state when the trigger is at or beyond the current liquidation price", () => {
@@ -249,7 +283,7 @@ describe("getOrderErrors — margin deposit orders", () => {
     expect(result.level).toBeUndefined();
   });
 
-  it("returns the red state and skips the standard increase checks when no position matches", () => {
+  it("reports an orphaned deposit and skips the standard increase checks when no position matches", () => {
     const otherCollateralPosition = mockPositionInfo({
       marketInfo,
       collateralTokenAddress: tokensData.BTC.address,
@@ -267,7 +301,19 @@ describe("getOrderErrors — margin deposit orders", () => {
     });
 
     // the standard path would add the "collateralToken" mismatch warning here
-    expect(errorKeys(result)).toEqual(["marginDepositInsufficient"]);
+    expect(errorKeys(result)).toEqual(["marginDepositNoPosition"]);
+    expect(result.level).toBe("error");
+  });
+
+  it("reports an orphaned deposit when the account has no positions at all", () => {
+    const result = getOrderErrors({
+      ...depositParams,
+      positionsInfoData: {},
+      order: makeDepositOrder(),
+    });
+
+    expect(errorKeys(result)).toEqual(["marginDepositNoPosition"]);
+    expect(result.level).toBe("error");
   });
 
   it("stays silent while positions are still loading", () => {

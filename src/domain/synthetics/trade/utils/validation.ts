@@ -791,10 +791,6 @@ export function getMarginDepositAutoCancelLimitMessage() {
   return t`Auto-cancel order limit reached for this position. Cancel an existing order to create another margin deposit.`;
 }
 
-export function getMarginDepositInsufficientMessage() {
-  return t`This deposit would not leave the position above its liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation.`;
-}
-
 export function getMarginDepositBeyondLiqPriceMessage() {
   return t`This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed.`;
 }

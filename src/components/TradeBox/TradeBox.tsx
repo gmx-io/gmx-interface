@@ -103,6 +103,7 @@ import { estimateExecuteSwapOrderGasLimit, getExecutionFee } from "sdk/utils/fee
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { TradeMode } from "sdk/utils/trade/types";
 
+import { useIsActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -148,7 +149,7 @@ import "./TradeBox.scss";
 
 const TRADEBOX_INPUT_PLACEHOLDER = "0.00";
 
-export function TradeBox({ isMobile }: { isMobile: boolean }) {
+export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; activeFormId: string }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
@@ -350,9 +351,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     isCreatingNewAutoCancel: isTrigger,
   });
 
+  const isActiveForm = useIsActiveForm(activeFormId);
+
   const submitButtonState = useTradeboxButtonState({
     account,
     setToTokenInputValue,
+    canSwitchGasPaymentToken: isActiveForm,
   });
 
   const wrappedOnSubmit = useCallback(async () => {
@@ -1244,7 +1248,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           {!marginDepositSuggestionHidden && (
             <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}
-          {showIncreaseLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
+          {showIncreaseLiquidationRiskWarning && (
+            <LiquidatableIncreaseWarningCard positionKey={selectedPosition?.key} />
+          )}
           {showIncreaseFreshPositionWarning && <FreshPositionIncreaseWarningCard />}
           {gasPaymentTokenWarningContent && (
             <AlertInfoCard hideClose type="warning">

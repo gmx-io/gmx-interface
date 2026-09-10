@@ -1,5 +1,6 @@
 import { maxUint256 } from "viem";
 
+import type { CancelOrderTxnParams } from "sdk/utils/orderTransactions";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 
 import { OrderType } from "./types";
@@ -23,6 +24,13 @@ export function isMarginDepositOrder(order: MarginDepositOrderLike): boolean {
   return (
     order.orderType === OrderType.LimitIncrease && order.sizeDeltaUsd === 0n && order.initialCollateralDeltaAmount > 0n
   );
+}
+
+/** Contracts auto-cancel only decrease orders, so a full close cancels margin deposits in the same batch. */
+export function getMarginDepositCancelOrderParams(
+  positionOrders: (MarginDepositOrderLike & { key: string })[]
+): CancelOrderTxnParams[] {
+  return positionOrders.filter((order) => isMarginDepositOrder(order)).map((order) => ({ orderKey: order.key }));
 }
 
 /** Index-token collateral follows the trigger price at execution, so the deposit is valued there. */

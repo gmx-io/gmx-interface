@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 import { Token } from "domain/tokens";
 import { formatPercentage } from "lib/numbers";
@@ -16,6 +16,12 @@ import {
 } from "sdk/utils/orders";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
+
+import {
+  DepositMarginNowAction,
+  LiquidatableIncreaseMessage,
+  ReplaceMarginDepositAction,
+} from "components/MarginRemediation/MarginRemediationActions";
 
 import { getMarginDepositProjections, getMarginDepositRiskLevel, isMarginDepositOrder } from "./marginDeposit";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
@@ -103,30 +109,45 @@ function getMarginDepositOrderErrors(p: {
 
   const position = Object.values(positionsInfoData).find((pos) => isOrderForPosition(order, pos.key));
 
-  let riskLevel: ReturnType<typeof getMarginDepositRiskLevel> = "insufficient";
-
-  if (position) {
-    const projections = getMarginDepositProjections({
-      position,
-      depositAmount: order.initialCollateralDeltaAmount,
-      triggerPrice: order.triggerPrice,
-      minCollateralUsd,
-      userReferralInfo,
-      pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
-    });
-
-    riskLevel = getMarginDepositRiskLevel({
-      isLong: order.isLong,
-      triggerPrice: order.triggerPrice,
-      currentLiqPrice: position.liquidationPrice,
-      nextLiqPrice: projections?.nextLiqPrice,
-    });
+  if (!position) {
+    return [
+      {
+        msg: t`This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds.`,
+        level: "error",
+        key: "marginDepositNoPosition",
+      },
+    ];
   }
+
+  const projections = getMarginDepositProjections({
+    position,
+    depositAmount: order.initialCollateralDeltaAmount,
+    triggerPrice: order.triggerPrice,
+    minCollateralUsd,
+    userReferralInfo,
+    pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
+  });
+
+  const riskLevel = getMarginDepositRiskLevel({
+    isLong: order.isLong,
+    triggerPrice: order.triggerPrice,
+    currentLiqPrice: position.liquidationPrice,
+    nextLiqPrice: projections?.nextLiqPrice,
+  });
 
   if (riskLevel === "insufficient") {
     return [
       {
-        msg: t`This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation.`,
+        msg: (
+          <Trans>
+            This margin deposit may not execute: it would not leave the position above the liquidation requirement at
+            the trigger price.{" "}
+            <ReplaceMarginDepositAction positionKey={position.key} orderKey={order.key}>
+              Increase the deposit amount
+            </ReplaceMarginDepositAction>{" "}
+            or move the trigger farther from liquidation.
+          </Trans>
+        ),
         level: "error",
         key: "marginDepositInsufficient",
       },
@@ -429,7 +450,13 @@ export function getOrderErrors(p: {
 
       if (isMaxLeverageError) {
         errors.push({
-          msg: t`Order may not execute: the resulting position would exceed the maximum allowed leverage. Deposit margin or reduce the order size before it triggers.`,
+          msg: (
+            <Trans>
+              Order may not execute: the resulting position would exceed the maximum allowed leverage.{" "}
+              <DepositMarginNowAction positionKey={position?.key}>Deposit margin</DepositMarginNowAction> or reduce the
+              order size before it triggers.
+            </Trans>
+          ),
           key: "maxLeverage",
           level: "error",
         });
@@ -447,7 +474,7 @@ export function getOrderErrors(p: {
         errors.push({
           key: "resultingLiquidatable",
           level: "error",
-          msg: t`Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or reduce the order size.`,
+          msg: <LiquidatableIncreaseMessage positionKey={position?.key} />,
         });
       }
     }

@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useHistory } from "react-router-dom";
 
 import { AB_FLAG_NAMES, getAbFlags, setAbFlagEnabled } from "config/ab";
@@ -17,6 +17,7 @@ import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
 import { getDisplayMode } from "lib/pwa/getDisplayMode";
+import { getLaunchSource } from "lib/pwa/getLaunchSource";
 import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
@@ -39,6 +40,7 @@ export function useConfigureUserAnalyticsProfile() {
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
   const displayMode = getDisplayMode();
+  const launchSource = useRef(getLaunchSource(displayMode)).current;
   const {
     shouldShowPositionLines,
     expressOrdersEnabled,
@@ -109,12 +111,13 @@ export function useConfigureUserAnalyticsProfile() {
       ordersCount,
       isWalletConnected: active,
       displayMode,
+      launchSource,
       isTest: isDevelopment(),
       isInited: Boolean(bowser),
       ...walletAnalyticsProvenance,
       ...getAbFlags(),
     });
-  }, [active, ordersCount, bowser, displayMode, walletAnalyticsProvenance]);
+  }, [active, ordersCount, bowser, displayMode, launchSource, walletAnalyticsProvenance]);
 
   useEffect(() => {
     userAnalytics.pushProfileProps({
