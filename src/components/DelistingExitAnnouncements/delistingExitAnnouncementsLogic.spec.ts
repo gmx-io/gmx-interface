@@ -24,16 +24,17 @@ i18n.load({ en: {} });
 i18n.activate("en");
 
 describe("joinMarketNames", () => {
-  it("joins one name", () => expect(joinMarketNames(["TON/USD"])).toBe("TON/USD"));
-  it("joins two names with 'and'", () => expect(joinMarketNames(["TON/USD", "PI/USD"])).toBe("TON/USD and PI/USD"));
+  it("joins one name", () => expect(joinMarketNames(["BOME/USD"])).toBe("BOME/USD"));
+  it("joins two names with 'and'", () =>
+    expect(joinMarketNames(["BOME/USD", "SATS/USD"])).toBe("BOME/USD and SATS/USD"));
   it("joins three names with commas and 'and'", () =>
     expect(joinMarketNames(["A/USD", "B/USD", "C/USD"])).toBe("A/USD, B/USD, and C/USD"));
 });
 
 describe("getDelistingMarketLabel", () => {
   it("uses the index name for normal markets", () => {
-    const marketInfo = { isSpotOnly: false, indexToken: { symbol: "KTA" } } as unknown as MarketInfo;
-    expect(getDelistingMarketLabel(marketInfo)).toBe("KTA/USD");
+    const marketInfo = { isSpotOnly: false, indexToken: { symbol: "BOME" } } as unknown as MarketInfo;
+    expect(getDelistingMarketLabel(marketInfo)).toBe("BOME/USD");
   });
 
   it("uses the pool name for swap-only pools", () => {
@@ -48,37 +49,37 @@ describe("getDelistingMarketLabel", () => {
 
 describe("buildPositionsBodyText", () => {
   it("singular market and single position", () =>
-    expect(buildPositionsBodyText(["TON/USD"], 1)).toBe(
-      "TON/USD is being delisted. Close your existing position as remaining positions may be auto-closed."
+    expect(buildPositionsBodyText(["BOME/USD"], 1)).toBe(
+      "BOME/USD is being delisted. Close your existing position as remaining positions may be auto-closed."
     ));
   it("singular market with plural positions", () =>
-    expect(buildPositionsBodyText(["TON/USD"], 2)).toBe(
-      "TON/USD is being delisted. Close your existing positions as remaining positions may be auto-closed."
+    expect(buildPositionsBodyText(["BOME/USD"], 2)).toBe(
+      "BOME/USD is being delisted. Close your existing positions as remaining positions may be auto-closed."
     ));
   it("plural markets and positions", () =>
-    expect(buildPositionsBodyText(["TON/USD", "PI/USD"], 3)).toBe(
-      "TON/USD and PI/USD are being delisted. Close your existing positions as remaining positions may be auto-closed."
+    expect(buildPositionsBodyText(["BOME/USD", "SATS/USD"], 3)).toBe(
+      "BOME/USD and SATS/USD are being delisted. Close your existing positions as remaining positions may be auto-closed."
     ));
-  it("names no deadline", () => expect(buildPositionsBodyText(["TON/USD"], 1)).not.toContain("August 5"));
+  it("names no deadline", () => expect(buildPositionsBodyText(["BOME/USD"], 1)).not.toContain("August 5"));
 });
 
 describe("buildLiquidityBodyText", () => {
   it("singular pool", () =>
-    expect(buildLiquidityBodyText(["KTA/USD"])).toBe(
-      "KTA/USD is being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
+    expect(buildLiquidityBodyText(["BOME/USD"])).toBe(
+      "BOME/USD is being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
     ));
   it("plural pools", () =>
-    expect(buildLiquidityBodyText(["KTA/USD", "MKR/USD"])).toBe(
-      "KTA/USD and MKR/USD are being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
+    expect(buildLiquidityBodyText(["BOME/USD", "SATS/USD"])).toBe(
+      "BOME/USD and SATS/USD are being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
     ));
-  it("names no deadline", () => expect(buildLiquidityBodyText(["KTA/USD"])).not.toContain("August 5"));
+  it("names no deadline", () => expect(buildLiquidityBodyText(["BOME/USD"])).not.toContain("August 5"));
 });
 
-const TON = "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c";
-const KTA = "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d";
-const AI16Z = "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169";
-const ARBITRUM_DAI_SWAP = "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665";
-const AVALANCHE_DAI_SWAP = "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b";
+const BOME = "0x71237F8C3d1484495A136022E16840b70fF84a69";
+const SATS = "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366";
+const BRETT = "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50";
+const ARBITRUM_MEME = "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C";
+const AVALANCHE_MELANIA = "0xe19da27Bf9733c429445E289B662bECDCa6ce10b";
 
 // isSpotOnly:true keeps labels deterministic via getMarketPoolName.
 const openMarket = (symbol: string) => ({
@@ -91,41 +92,41 @@ const closedMarket = (symbol: string) => ({ ...openMarket(symbol), isDisabled: t
 
 describe("isMarketOpenOnchain", () => {
   it("treats a market with isDisabled:false as open", () =>
-    expect(isMarketOpenOnchain({ [TON]: openMarket("TON") } as any, TON)).toBe(true));
+    expect(isMarketOpenOnchain({ [BOME]: openMarket("BOME") } as any, BOME)).toBe(true));
 
   it("treats a market with isDisabled:true as closed", () =>
-    expect(isMarketOpenOnchain({ [AI16Z]: closedMarket("AI16Z") } as any, AI16Z)).toBe(false));
+    expect(isMarketOpenOnchain({ [BRETT]: closedMarket("BRETT") } as any, BRETT)).toBe(false));
 
   // Guards the case where a market drops out of the data entirely rather than being flagged.
   it("treats a market missing from the data as closed", () =>
-    expect(isMarketOpenOnchain({ [TON]: openMarket("TON") } as any, AI16Z)).toBe(false));
+    expect(isMarketOpenOnchain({ [BOME]: openMarket("BOME") } as any, BRETT)).toBe(false));
 
   it("treats every market as closed while markets are still loading", () =>
-    expect(isMarketOpenOnchain(undefined, TON)).toBe(false));
+    expect(isMarketOpenOnchain(undefined, BOME)).toBe(false));
 });
 
 describe("computeAffectedPositionMarkets", () => {
   const NON_DELISTING = "0x0000000000000000000000000000000000000002";
-  const marketsInfoData = { [TON]: openMarket("TON"), [AI16Z]: closedMarket("AI16Z") } as any;
+  const marketsInfoData = { [BOME]: openMarket("BOME"), [BRETT]: closedMarket("BRETT") } as any;
 
   it("intersects positions with the delisting list and counts entries", () => {
     const positionsInfoData = {
-      k1: { marketAddress: TON },
-      k2: { marketAddress: TON }, // e.g. long + short in the same market
+      k1: { marketAddress: BOME },
+      k2: { marketAddress: BOME }, // e.g. long + short in the same market
       k3: { marketAddress: NON_DELISTING },
     } as any;
     const result = computeAffectedPositionMarkets(ARBITRUM, positionsInfoData, marketsInfoData);
-    expect(result.marketAddresses).toEqual([TON]);
+    expect(result.marketAddresses).toEqual([BOME]);
     expect(result.positionCount).toBe(2);
   });
 
   it("excludes positions in markets that are disabled onchain, including their count", () => {
     const positionsInfoData = {
-      k1: { marketAddress: TON },
-      k2: { marketAddress: AI16Z },
+      k1: { marketAddress: BOME },
+      k2: { marketAddress: BRETT },
     } as any;
     const result = computeAffectedPositionMarkets(ARBITRUM, positionsInfoData, marketsInfoData);
-    expect(result.marketAddresses).toEqual([TON]);
+    expect(result.marketAddresses).toEqual([BOME]);
     expect(result.positionCount).toBe(1);
   });
 
@@ -139,15 +140,15 @@ describe("computeAffectedPositionMarkets", () => {
 
 describe("computeAffectedLiquidityMarkets", () => {
   const NON_DELISTING = "0x0000000000000000000000000000000000000003";
-  const marketsInfoData = { [KTA]: openMarket("KTA"), [AI16Z]: closedMarket("AI16Z") } as any;
+  const marketsInfoData = { [SATS]: openMarket("SATS"), [BRETT]: closedMarket("BRETT") } as any;
 
   it("includes GM tokens with a positive balance that are delisting", () => {
-    const data = { [KTA]: { symbol: "GM", balance: 5n } } as any;
-    expect(computeAffectedLiquidityMarkets(ARBITRUM, data, marketsInfoData)).toEqual([KTA]);
+    const data = { [SATS]: { symbol: "GM", balance: 5n } } as any;
+    expect(computeAffectedLiquidityMarkets(ARBITRUM, data, marketsInfoData)).toEqual([SATS]);
   });
 
   it("excludes zero balances", () => {
-    const data = { [KTA]: { symbol: "GM", balance: 0n } } as any;
+    const data = { [SATS]: { symbol: "GM", balance: 0n } } as any;
     expect(computeAffectedLiquidityMarkets(ARBITRUM, data, marketsInfoData)).toEqual([]);
   });
 
@@ -157,40 +158,40 @@ describe("computeAffectedLiquidityMarkets", () => {
   });
 
   it("excludes GM balances in markets that are disabled onchain", () => {
-    const data = { [KTA]: { symbol: "GM", balance: 5n }, [AI16Z]: { symbol: "GM", balance: 5n } } as any;
-    expect(computeAffectedLiquidityMarkets(ARBITRUM, data, marketsInfoData)).toEqual([KTA]);
+    const data = { [SATS]: { symbol: "GM", balance: 5n }, [BRETT]: { symbol: "GM", balance: 5n } } as any;
+    expect(computeAffectedLiquidityMarkets(ARBITRUM, data, marketsInfoData)).toEqual([SATS]);
   });
 
-  it("includes the DAI swap pools on Arbitrum and Avalanche while they are open", () => {
+  it("includes delisting pools on both Arbitrum and Avalanche while they are open", () => {
     expect(
       computeAffectedLiquidityMarkets(
         ARBITRUM,
-        { [ARBITRUM_DAI_SWAP]: { symbol: "GM", balance: 1n } } as any,
-        { [ARBITRUM_DAI_SWAP]: openMarket("USDC") } as any
+        { [ARBITRUM_MEME]: { symbol: "GM", balance: 1n } } as any,
+        { [ARBITRUM_MEME]: openMarket("USDC") } as any
       )
-    ).toEqual([ARBITRUM_DAI_SWAP]);
+    ).toEqual([ARBITRUM_MEME]);
     expect(
       computeAffectedLiquidityMarkets(
         AVALANCHE,
-        { [AVALANCHE_DAI_SWAP]: { symbol: "GM", balance: 1n } } as any,
-        { [AVALANCHE_DAI_SWAP]: openMarket("USDC") } as any
+        { [AVALANCHE_MELANIA]: { symbol: "GM", balance: 1n } } as any,
+        { [AVALANCHE_MELANIA]: openMarket("USDC") } as any
       )
-    ).toEqual([AVALANCHE_DAI_SWAP]);
+    ).toEqual([AVALANCHE_MELANIA]);
   });
 
-  it("drops the DAI swap pools once they are disabled onchain", () => {
+  it("drops delisting pools on both chains once they are disabled onchain", () => {
     expect(
       computeAffectedLiquidityMarkets(
         ARBITRUM,
-        { [ARBITRUM_DAI_SWAP]: { symbol: "GM", balance: 1n } } as any,
-        { [ARBITRUM_DAI_SWAP]: closedMarket("USDC") } as any
+        { [ARBITRUM_MEME]: { symbol: "GM", balance: 1n } } as any,
+        { [ARBITRUM_MEME]: closedMarket("USDC") } as any
       )
     ).toEqual([]);
     expect(
       computeAffectedLiquidityMarkets(
         AVALANCHE,
-        { [AVALANCHE_DAI_SWAP]: { symbol: "GM", balance: 1n } } as any,
-        { [AVALANCHE_DAI_SWAP]: closedMarket("USDC") } as any
+        { [AVALANCHE_MELANIA]: { symbol: "GM", balance: 1n } } as any,
+        { [AVALANCHE_MELANIA]: closedMarket("USDC") } as any
       )
     ).toEqual([]);
   });
@@ -230,9 +231,9 @@ describe("dismissal", () => {
 
 describe("getActiveDelistingAnnouncements", () => {
   const marketsInfoData = {
-    [TON]: openMarket("TON"),
-    [KTA]: openMarket("KTA"),
-    [AI16Z]: closedMarket("AI16Z"),
+    [BOME]: openMarket("BOME"),
+    [SATS]: openMarket("SATS"),
+    [BRETT]: closedMarket("BRETT"),
   } as any;
 
   beforeEach(() => {
@@ -242,13 +243,13 @@ describe("getActiveDelistingAnnouncements", () => {
   it("shows only the positions toast when the user has a delisting position", () => {
     const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
-      positionsInfoData: { k: { marketAddress: TON } } as any,
+      positionsInfoData: { k: { marketAddress: BOME } } as any,
       depositMarketTokensData: undefined,
       marketsInfoData,
       now: 1000,
     });
     expect(result.map((item) => item.id)).toEqual([POSITIONS_TOAST_ID]);
-    expect(result[0].markets).toEqual([TON]);
+    expect(result[0].markets).toEqual([BOME]);
     expect(result[0].title).toBe("Market delistings");
     expect(result[0].link).toEqual({ text: "Close positions", href: "/trade" });
   });
@@ -257,7 +258,7 @@ describe("getActiveDelistingAnnouncements", () => {
     const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
       positionsInfoData: undefined,
-      depositMarketTokensData: { [KTA]: { symbol: "GM", balance: 1n } } as any,
+      depositMarketTokensData: { [SATS]: { symbol: "GM", balance: 1n } } as any,
       marketsInfoData,
       now: 1000,
     });
@@ -279,8 +280,8 @@ describe("getActiveDelistingAnnouncements", () => {
   it("shows nothing when the only exposure is in markets closed onchain", () => {
     const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
-      positionsInfoData: { k: { marketAddress: AI16Z } } as any,
-      depositMarketTokensData: { [AI16Z]: { symbol: "GM", balance: 1n } } as any,
+      positionsInfoData: { k: { marketAddress: BRETT } } as any,
+      depositMarketTokensData: { [BRETT]: { symbol: "GM", balance: 1n } } as any,
       marketsInfoData,
       now: 1000,
     });
@@ -290,21 +291,21 @@ describe("getActiveDelistingAnnouncements", () => {
   it("names only the markets that are still open when exposure spans both", () => {
     const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
-      positionsInfoData: { k1: { marketAddress: TON }, k2: { marketAddress: AI16Z } } as any,
+      positionsInfoData: { k1: { marketAddress: BOME }, k2: { marketAddress: BRETT } } as any,
       depositMarketTokensData: undefined,
       marketsInfoData,
       now: 1000,
     });
-    expect(result[0].markets).toEqual([TON]);
-    expect(result[0].bodyText).toContain("TON-USD");
-    expect(result[0].bodyText).not.toContain("AI16Z");
+    expect(result[0].markets).toEqual([BOME]);
+    expect(result[0].bodyText).toContain("BOME-USD");
+    expect(result[0].bodyText).not.toContain("BRETT");
   });
 
   it("does not re-show a dismissed toast within the cooldown", () => {
-    writeDismissal(POSITIONS_TOAST_ID, [TON], 1000);
+    writeDismissal(POSITIONS_TOAST_ID, [BOME], 1000);
     const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
-      positionsInfoData: { k: { marketAddress: TON } } as any,
+      positionsInfoData: { k: { marketAddress: BOME } } as any,
       depositMarketTokensData: undefined,
       marketsInfoData,
       now: 2000,
@@ -315,7 +316,7 @@ describe("getActiveDelistingAnnouncements", () => {
   it("waits when marketsInfoData has not loaded", () => {
     const result = getActiveDelistingAnnouncements({
       chainId: ARBITRUM,
-      positionsInfoData: { k: { marketAddress: TON } } as any,
+      positionsInfoData: { k: { marketAddress: BOME } } as any,
       depositMarketTokensData: undefined,
       marketsInfoData: undefined,
       now: 1000,

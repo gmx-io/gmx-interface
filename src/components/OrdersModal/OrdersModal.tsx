@@ -377,7 +377,7 @@ export function OrdersModal({
         />
 
         {isMobile && position && (
-          <div className="fixed bottom-0 left-0 right-0 border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
+          <div className="fixed bottom-[var(--safe-area-inset-bottom)] left-[var(--safe-area-inset-left)] right-[var(--safe-area-inset-right)] border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
             <Button variant="primary" className="w-full" onClick={handleAddTPSLOpen}>
               <Trans>Add TP/SL</Trans>
             </Button>

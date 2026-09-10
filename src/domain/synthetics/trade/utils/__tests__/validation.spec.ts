@@ -198,6 +198,35 @@ describe("getIncreaseError — increase liquidation guard is Market-only", () =>
   });
 });
 
+describe("getIncreaseError — max position size", () => {
+  const maxSizeUsd = expandDecimals(1000, 30);
+  const maxSizeParams = {
+    ...baseIncreaseParams,
+    initialCollateralToken: toToken,
+    targetCollateralToken: toToken,
+    initialCollateralAmount: expandDecimals(1000, 6),
+    collateralLiquidity: expandDecimals(1_000_000, 30),
+    sizeDeltaUsd: expandDecimals(1001, 30),
+    longLiquidity: maxSizeUsd,
+    shortLiquidity: maxSizeUsd,
+  };
+
+  it("blocks a market increase and includes the max size in the tooltip", () => {
+    const result = getIncreaseError(maxSizeParams);
+
+    expect(result.buttonErrorMessage).toBe("Max BTC long exceeded");
+    expect(result.buttonTooltipMessage).toBe(
+      `Order won't execute: size exceeds the max long size of ${formatUsd(maxSizeUsd)}. Reduce the order size.`
+    );
+  });
+
+  it("does not block a TWAP increase above the current max size", () => {
+    const result = getIncreaseError({ ...maxSizeParams, isTwap: true, numberOfParts: 2 });
+
+    expect(result.buttonErrorMessage).not.toBe("Max BTC long exceeded");
+  });
+});
+
 describe("getSwapError — GMX Account native token guard", () => {
   const nativeEth = { ...tokensData.ETH, isNative: true, balance: expandDecimals(100, 18) };
   const weth = {

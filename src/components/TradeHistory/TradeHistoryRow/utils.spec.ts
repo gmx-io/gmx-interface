@@ -55,6 +55,9 @@ describe("TradeHistoryRow helpers", () => {
     expect(getErrorTooltipTitle("LiquidatablePosition", false)).toBe(
       "Position would be liquidatable at current prices"
     );
+    expect(getErrorTooltipTitle("LiquidatablePosition", false, { reason: "min collateral for leverage" })).toBe(
+      "Margin is below the minimum required for the position size"
+    );
     expect(getErrorTooltipTitle("MaxPoolAmountForDepositExceeded", false)).toBe(
       "Max deposit capacity reached for this pool"
     );
