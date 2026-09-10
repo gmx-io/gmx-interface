@@ -135,36 +135,6 @@ export function useChartHeaderFormattedValues() {
     return ["...", null];
   }, [info?.shortOpenInterestPercentage, info?.openInterestShort]);
 
-  const liquidityLong = useMemo(() => {
-    const liquidity = info?.liquidityLong;
-
-    if (liquidity === undefined) {
-      return "...";
-    }
-
-    return (
-      <span className="flex items-center justify-center gap-4 numbers">
-        <LongIcon width={12} className="relative top-1 opacity-70" />
-        {formatAmountHuman(liquidity, USD_DECIMALS, true)}
-      </span>
-    );
-  }, [info?.liquidityLong]);
-
-  const liquidityShort = useMemo(() => {
-    const liquidity = info?.liquidityShort;
-
-    if (liquidity === undefined) {
-      return "...";
-    }
-
-    return (
-      <span className="flex items-center justify-center gap-4 numbers">
-        <ShortIcon width={12} className="relative opacity-70" />
-        {formatAmountHuman(liquidity, USD_DECIMALS, true)}
-      </span>
-    );
-  }, [info?.liquidityShort]);
-
   const netRateLong = useMemo(() => {
     const netRate = info?.netRateHourlyLong;
 
@@ -211,8 +181,6 @@ export function useChartHeaderFormattedValues() {
     shortOIValue,
     longOIPercentage,
     shortOIPercentage,
-    liquidityLong,
-    liquidityShort,
     netRateLong,
     netRateShort,
     dailyVolume,

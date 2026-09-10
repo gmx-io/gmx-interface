@@ -22,7 +22,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
-  selectTradeboxMaxLiquidityPath,
   selectTradeboxSetActiveOrder,
   selectTradeboxSetActivePosition,
   selectTradeboxState,
@@ -179,7 +178,6 @@ export function SyntheticsPage(p: Props) {
     setOrderTypesFilter,
   } = useOrdersControl();
 
-  const { maxLiquidity: swapOutLiquidity } = useSelector(selectTradeboxMaxLiquidityPath);
   const tokensData = useTokensData();
   const { fromTokenAddress, toTokenAddress } = useSelector(selectTradeboxState);
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -540,17 +538,13 @@ export function SyntheticsPage(p: Props) {
             <div className="absolute">
               <TradeBoxResponsiveContainer />
             </div>
-            {isSwap && !isTwap && (
-              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
-            )}
+            {isSwap && !isTwap && <SwapCard fromToken={fromToken} toToken={toToken} />}
           </>
         ) : (
           <div className="flex w-[40rem] shrink-0 flex-col gap-8">
             <TradeBoxResponsiveContainer />
 
-            {isSwap && !isTwap && (
-              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
-            )}
+            {isSwap && !isTwap && <SwapCard fromToken={fromToken} toToken={toToken} />}
 
             <TradeRewardsPromoBanner />
           </div>

@@ -27,25 +27,13 @@ export default function useUsers(chainId: number) {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching usersInfo data for chain ${chainId}:`, error);
-      return {
-        totalUsers: 0n,
-      };
+      // a failed source stays unknown: a zero here would settle the network total as complete
+      return undefined;
     }
   }
 
   async function fetcher([, chainId]: [string, number]) {
-    try {
-      const { totalUsers } = await fetchUsersInfo(chainId);
-      return {
-        totalUsers,
-      };
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error("Error fetching usersInfo data:", error);
-      return {
-        totalUsers: 0n,
-      };
-    }
+    return fetchUsersInfo(chainId);
   }
 
   const { data: feesInfo } = useSWR(["v2UsersInfo", chainId], fetcher, {

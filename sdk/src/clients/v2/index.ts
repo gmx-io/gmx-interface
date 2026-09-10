@@ -175,6 +175,26 @@ export type {
   BuybackSummary,
   BuybackWeeklyStatsResponse,
 } from "utils/buyback/types";
+export {
+  fetchApiProtocolStatsSources,
+  fetchApiProtocolStatsSummary,
+  fetchApiProtocolStatsTimeseries,
+} from "utils/stats/api";
+export type {
+  ProtocolStatsCompleteness,
+  ProtocolStatsFilterParams,
+  ProtocolStatsMeta,
+  ProtocolStatsMetricSet,
+  ProtocolStatsNetwork,
+  ProtocolStatsSourceHealth,
+  ProtocolStatsSourceStatus,
+  ProtocolStatsSummaryResponse,
+  ProtocolStatsTimeseriesGroupBy,
+  ProtocolStatsTimeseriesMetric,
+  ProtocolStatsTimeseriesParams,
+  ProtocolStatsTimeseriesResponse,
+  ProtocolStatsVersion,
+} from "utils/stats/types";
 export type {
   FetchJitLiquidityInfoParams,
   GlvShiftParam,

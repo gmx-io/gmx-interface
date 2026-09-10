@@ -13,6 +13,7 @@ import { watchInjectedProviderAnnouncements } from "./announceInjectedProviders"
 import { PRIVY_STYLIS_PLUGINS } from "./privyUiCompat";
 import {
   getWagmiConfig,
+  getWagmiInitialState,
   getSupportedChains,
   PRIVY_APP_ID,
   PRIVY_LOGIN_METHODS,
@@ -60,7 +61,9 @@ export default function WalletProvider({ children }: { children: React.ReactNode
     <StyleSheetManager stylisPlugins={PRIVY_STYLIS_PLUGINS}>
       <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
         <QueryClientProvider client={queryClient}>
-          <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>
+          <WagmiProvider config={getWagmiConfig()} initialState={getWagmiInitialState()}>
+            {children}
+          </WagmiProvider>
         </QueryClientProvider>
       </PrivyProvider>
     </StyleSheetManager>

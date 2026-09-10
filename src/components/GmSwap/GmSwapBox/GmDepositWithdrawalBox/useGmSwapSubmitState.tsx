@@ -55,6 +55,7 @@ import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 import { GmSwapFees } from "sdk/utils/trade/types";
@@ -133,6 +134,7 @@ export const useGmSwapSubmitState = ({
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
 
   const {
     glvTokenAmount = 0n,
@@ -393,6 +395,13 @@ export const useGmSwapSubmitState = ({
 
   return useMemo((): SubmitButtonState => {
     if (!account) {
+      if (isWalletInitializing) {
+        return {
+          text: t`Connecting wallet...`,
+          disabled: true,
+        };
+      }
+
       return {
         text: t`Connect wallet`,
         onSubmit: onConnectAccount,
@@ -516,6 +525,7 @@ export const useGmSwapSubmitState = ({
     };
   }, [
     account,
+    isWalletInitializing,
     isAvalancheGmxAccountWarning,
     multipleWalletExtensionsChainError,
     isAllowanceLoading,
