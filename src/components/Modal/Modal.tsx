@@ -3,6 +3,7 @@ import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
 import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
@@ -77,6 +78,8 @@ export default function Modal({
   activeFormId,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
+
+  useBlockAutoReload(Boolean(isVisible));
 
   useEffect(() => {
     if (!isVisible) return;

@@ -1,4 +1,4 @@
-import { AbFlag, getAbFlagUrlParams } from "config/ab";
+import { AbFlag } from "config/ab";
 import { getStoredUtmParams } from "domain/utm";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import type { DisplayMode } from "lib/pwa/getDisplayMode";
@@ -147,10 +147,9 @@ class UserAnalytics {
 
   getSessionForwardParams() {
     const sessionIdParam = `${SESSION_ID_KEY}=${getOrSetSessionId()}`;
-    const abFlagsParams = getAbFlagUrlParams();
     const utmParams = getStoredUtmParams();
 
-    return [sessionIdParam, abFlagsParams, utmParams?.utmString].filter(Boolean).join("&");
+    return [sessionIdParam, utmParams?.utmString].filter(Boolean).join("&");
   }
 
   pushEvent = async <T extends AnalyticsEventParams = never>(
