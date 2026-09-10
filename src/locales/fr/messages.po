@@ -3587,6 +3587,9 @@ msgid "Theme"
 msgstr "Thème"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -3716,6 +3719,7 @@ msgstr "Échec du chargement de l'historique des trades"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>Définir l'impact recommandé : {0}</0>."
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "La position serait liquidée immédiatement lors de l'exécution. Réduisez la taille."
@@ -5453,10 +5457,6 @@ msgstr "Votre volume de négociation"
 msgid "Fail external swaps"
 msgstr "Forcer l'échec des swaps externes"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
-msgstr "L'ordre peut ne pas s'exécuter : la position résultante dépasserait l'effet de levier maximal autorisé. <0>Déposez de la marge</0> ou réduisez la taille de l'ordre avant son déclenchement."
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -6670,6 +6670,10 @@ msgstr "GMX proposals"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
+msgstr "Cet ordre pourrait ne pas s'exécuter car la position résultante dépasserait l'effet de levier maximal autorisé. Augmentez la marge de la position ou réduisez la taille de l'ordre avant son déclenchement."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
@@ -7956,6 +7960,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "Aucune position ouverte"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr "Voir les avantages"
@@ -8875,6 +8883,10 @@ msgstr ""
 msgid "Trade errors"
 msgstr "Erreurs de trading"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+msgstr "Cet ordre pourrait ne pas s'exécuter car la position résultante dépasserait l'effet de levier maximal autorisé. <0>Augmentez la marge de la position</0> ou réduisez la taille de l'ordre avant son déclenchement."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "Dépôt et retrait du GMX Account en cours..."
@@ -9358,6 +9370,10 @@ msgstr "Exécution de la demande d'achat…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "Échec de l'achat de GM"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr "La position ne peut pas être augmentée avec l'effet de levier actuel. Augmentez la marge ou réduisez la taille."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
@@ -10115,6 +10131,12 @@ msgstr "La requête a été envoyée, mais son résultat n'a pas pu être confir
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
+msgstr "La position résultante dépasserait l'effet de levier maximal autorisé. Augmentez la marge ou réduisez la taille."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "No funds available for GMX Account deposit"
@@ -11645,6 +11667,8 @@ msgstr "Récupérer les frais de financement"
 msgid "Token permit testing"
 msgstr "Test de permis de jeton"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

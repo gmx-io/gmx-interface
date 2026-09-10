@@ -33,25 +33,21 @@ import {
 import {
   getAcceptablePriceInfo,
   getDecreasePositionAmounts,
-  getIncreasePositionAmounts,
   getSwapPathOutputAddresses,
   getTradeFees,
-  TradeMode,
-  TradeType,
 } from "domain/synthetics/trade";
-import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
 import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
 import { getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
+import { getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
-import { selectIsExpressTransactionAvailable } from "./expressSelectors";
 import {
   selectChainId,
   selectGasLimits,
@@ -61,17 +57,23 @@ import {
   selectOrdersInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
+  selectIsProDiscountFactorReady,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
 import {
+  makeSelectOrderExistingPosition,
+  makeSelectOrderIncreaseNextPositionValues,
+  makeSelectOrderIncreaseProjection,
+  makeSelectOrderIncreaseResultingPositionMarginState,
+} from "./orderSelectors";
+import {
   selectIsPnlInLeverage,
   selectSavedAcceptablePriceImpactBuffer,
   selectIsSetAcceptablePriceImpactEnabled,
 } from "./settingsSelectors";
-import { selectExternalSwapQuote } from "./tradeboxSelectors";
-import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
+import { makeSelectFindSwapPath } from "./tradeSelectors";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -215,151 +217,62 @@ export const selectOrderEditorExistingPosition = createSelector((q) => {
   return positionInfo;
 });
 
-const makeSelectOrderEditorExistingPosition = createSelectorFactory((orderKey: string) =>
-  createSelector((q) => {
-    const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
-
-    if (!order) return undefined;
-
-    const positionKey = getPositionKey(
-      order.account,
-      order.marketAddress,
-      order.targetCollateralToken.address,
-      order.isLong
-    );
-
-    const positionInfo = q((s) => selectPositionsInfoData(s)?.[positionKey]);
-
-    if (!getIsPositionInfoLoaded(positionInfo)) {
-      return undefined;
-    }
-
-    return positionInfo;
-  })
-);
-
-const selectOrderEditorNextPositionValuesForIncreaseArgs = createSelector((q) => {
+export const selectOrderEditorIncreaseProjection = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
-  if (!order) return undefined;
+  if (!order || !isIncreaseOrderType(order.orderType)) return undefined;
 
-  const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
-  const triggerPrice = q(selectOrderEditorTriggerPrice);
-
-  const positionOrder = order as PositionOrderInfo | undefined;
-  const positionIndexToken = positionOrder?.indexToken;
-  const indexTokenAmount = positionIndexToken
-    ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice)
-    : undefined;
-  const tokensData = q(selectTokensData);
-  const fromToken = getTokenData(tokensData, order.initialCollateralTokenAddress);
-  const existingPosition = q(selectOrderEditorExistingPosition);
-
-  // useNextPositionValuesForIncrease;
-  const isPnlInLeverage = q(selectIsPnlInLeverage);
-
-  return {
-    collateralTokenAddress: positionOrder?.targetCollateralToken.address,
-    fixedAcceptablePriceImpactBps: undefined,
-    indexTokenAddress: positionIndexToken?.address,
-    indexTokenAmount,
-    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? 0n,
-    initialCollateralTokenAddress: fromToken?.address,
-    leverage: existingPosition?.leverage,
-    marketAddress: positionOrder?.marketAddress,
-    positionKey: existingPosition?.key,
-    increaseStrategy: "independent",
-    tradeMode: isLimitOrderType(order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
-    tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
-    triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
-    tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
-    isPnlInLeverage,
-  } as const;
+  return q(
+    makeSelectOrderIncreaseProjection(order.key, q(selectOrderEditorTriggerPrice), q(selectOrderEditorSizeDeltaUsd))
+  );
 });
 
-const makeSelectOrderEditorNextPositionValuesForIncreaseArgs = createSelectorFactory(
-  (orderKey: string, triggerPrice: bigint) =>
-    createSelector((q) => {
-      const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
-
-      if (!order) return undefined;
-
-      const sizeDeltaUsd = order.sizeDeltaUsd;
-
-      const positionOrder = order as PositionOrderInfo | undefined;
-      const positionIndexToken = positionOrder?.indexToken;
-      const indexTokenAmount = positionIndexToken
-        ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice)
-        : undefined;
-      const fromToken = q((state) => getTokenData(selectTokensData(state), order.initialCollateralTokenAddress));
-      const existingPosition = q((state) => makeSelectOrderEditorExistingPosition(orderKey)(state));
-
-      const isPnlInLeverage = q(selectIsPnlInLeverage);
-
-      return {
-        collateralTokenAddress: positionOrder?.targetCollateralToken.address,
-        fixedAcceptablePriceImpactBps: undefined,
-        indexTokenAddress: positionIndexToken?.address,
-        indexTokenAmount,
-        initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? 0n,
-        initialCollateralTokenAddress: fromToken?.address,
-        leverage: existingPosition?.leverage,
-        marketAddress: positionOrder?.marketAddress,
-        positionKey: existingPosition?.key,
-        increaseStrategy: "independent",
-        externalSwapQuote: undefined,
-        tradeMode: isLimitOrderType(order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
-        tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
-        triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
-        tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
-        isPnlInLeverage,
-      } as const;
-    })
-);
+export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
+  return q(selectOrderEditorIncreaseProjection)?.increaseAmounts;
+});
 
 export const selectOrderEditorNextPositionValuesForIncrease = createSelector((q) => {
-  const args = q(selectOrderEditorNextPositionValuesForIncreaseArgs);
+  const order = q(selectOrderEditorOrder);
 
-  if (!args) return undefined;
+  if (!order || !isIncreaseOrderType(order.orderType)) return undefined;
 
-  const selector = makeSelectNextPositionValuesForIncrease({
-    ...args,
-    externalSwapQuote: q(selectExternalSwapQuote),
-    isExpressTxn: q(selectIsExpressTransactionAvailable),
-  });
-
-  return q(selector);
+  return q(
+    makeSelectOrderIncreaseNextPositionValues(
+      order.key,
+      q(selectOrderEditorTriggerPrice),
+      q(selectOrderEditorSizeDeltaUsd),
+      q(selectIsPnlInLeverage)
+    )
+  );
 });
 
-export const makeSelectOrderEditorNextPositionValuesForIncrease = createSelectorFactory(
-  (orderKey: string, triggerPrice: bigint) =>
-    createSelector((q) => {
-      const args = q(makeSelectOrderEditorNextPositionValuesForIncreaseArgs(orderKey, triggerPrice));
-
-      if (!args) return undefined;
-
-      const selector = makeSelectNextPositionValuesForIncrease({
-        ...args,
-        isExpressTxn: q(selectIsExpressTransactionAvailable),
-      });
-
-      return q(selector);
-    })
-);
-
 export const selectOrderEditorNextPositionValuesWithoutPnlForIncrease = createSelector((q) => {
-  const args = q(selectOrderEditorNextPositionValuesForIncreaseArgs);
+  const order = q(selectOrderEditorOrder);
 
-  if (!args) return undefined;
+  if (!order || !isIncreaseOrderType(order.orderType)) return undefined;
 
-  const selector = makeSelectNextPositionValuesForIncrease({
-    ...args,
-    externalSwapQuote: q(selectExternalSwapQuote),
-    isPnlInLeverage: false,
-    isExpressTxn: q(selectIsExpressTransactionAvailable),
-  });
+  return q(
+    makeSelectOrderIncreaseNextPositionValues(
+      order.key,
+      q(selectOrderEditorTriggerPrice),
+      q(selectOrderEditorSizeDeltaUsd),
+      false
+    )
+  );
+});
 
-  return q(selector);
+export const selectOrderEditorIncreaseResultingPositionMarginState = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  if (!order || !isIncreaseOrderType(order.orderType)) return undefined;
+
+  return q(
+    makeSelectOrderIncreaseResultingPositionMarginState(
+      order.key,
+      q(selectOrderEditorTriggerPrice),
+      q(selectOrderEditorSizeDeltaUsd)
+    )
+  );
 });
 
 export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
@@ -638,69 +551,6 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
   return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 });
 
-export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
-  const order = q(selectOrderEditorOrder);
-  if (!order) return undefined;
-
-  const isLimitIncreaseOrder = order.orderType === OrderType.LimitIncrease;
-
-  if (!isLimitIncreaseOrder) return undefined;
-
-  const toToken = q(selectOrderEditorToToken);
-  if (!toToken) return undefined;
-
-  const fromToken = q(selectOrderEditorFromToken);
-  if (!fromToken) return undefined;
-
-  const market = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]);
-  if (!market) return undefined;
-
-  const selectFindSwapPath = makeSelectFindSwapPath(order.initialCollateralTokenAddress, toToken?.address);
-  const findSwapPath = q(selectFindSwapPath);
-  const triggerPrice = q(selectOrderEditorTriggerPrice);
-  const existingPosition = q(selectOrderEditorExistingPosition);
-  const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
-  const userReferralInfo = q(selectUserReferralInfo);
-  const uiFeeFactor = q(selectUiFeeFactor);
-  const marketsInfoData = q(selectMarketsInfoData);
-  const chainId = q(selectChainId);
-
-  const positionOrder = order as PositionOrderInfo;
-  const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
-  const externalSwapQuote = q(selectExternalSwapQuote);
-
-  const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
-
-  return getIncreasePositionAmounts({
-    marketInfo: market,
-    indexToken: positionOrder.indexToken,
-    initialCollateralToken: fromToken,
-    collateralToken: order.targetCollateralToken,
-    isLong: order.isLong,
-    initialCollateralAmount: order.initialCollateralDeltaAmount,
-    externalSwapQuote,
-    indexTokenAmount,
-    leverage: existingPosition?.leverage,
-    triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
-    limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
-    position: getIsPositionLiquidatedBeforeTrigger({
-      liqPrice: existingPosition?.liquidationPrice,
-      triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
-      isLong: order.isLong,
-    })
-      ? undefined
-      : existingPosition,
-    findSwapPath,
-    userReferralInfo,
-    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
-    strategy: "independent",
-    marketsInfoData,
-    chainId,
-    externalSwapQuoteParams: undefined,
-    isSetAcceptablePriceImpactEnabled,
-  });
-});
-
 function calcMarginDepositProjections(p: {
   order: OrderInfo | undefined;
   position: PositionInfoLoaded | undefined;
@@ -742,7 +592,7 @@ const makeSelectOrderEditorMarginDepositProjections = createSelectorFactory((ord
   createSelector((q) => {
     return calcMarginDepositProjections({
       order: q((state) => getByKey(selectOrdersInfoData(state), orderKey)),
-      position: q(makeSelectOrderEditorExistingPosition(orderKey)),
+      position: q(makeSelectOrderExistingPosition(orderKey)),
       triggerPrice,
       minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
       userReferralInfo: q(selectUserReferralInfo),
@@ -787,6 +637,27 @@ const makeSelectOrderEditorMaxAllowedLeverage = createSelectorFactory((orderKey:
   })
 );
 
+export const selectOrderEditorIsIncreaseExecutableNow = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  if (!order || !isIncreaseOrderType(order.orderType)) {
+    return false;
+  }
+
+  const indexToken = q(selectOrderEditorIndexToken);
+
+  if (!indexToken) {
+    return false;
+  }
+
+  return getIsIncreaseOrderExecutableNow({
+    orderType: order.orderType,
+    isLong: order.isLong,
+    triggerPrice: q(selectOrderEditorTriggerPrice),
+    indexTokenPrices: indexToken.prices,
+  });
+});
+
 export const selectOrderEditorPositionOrderError = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
@@ -803,7 +674,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
   const triggerPrice = q(selectOrderEditorTriggerPrice);
   const acceptablePrice = q(selectOrderEditorAcceptablePrice);
   const existingPosition = q(selectOrderEditorExistingPosition);
-  const nextPositionValuesForIncrease = q(selectOrderEditorNextPositionValuesForIncrease);
+  const nextPositionValuesForIncrease = q(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
   const maxAllowedLeverage = q(selectOrderEditorMaxAllowedLeverage);
   const marginDepositProjections = q(selectOrderEditorMarginDepositProjections);
 
@@ -816,6 +687,9 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     existingPosition,
     nextPositionValuesForIncrease,
     maxAllowedLeverage,
+    resultingPositionMarginState: q(selectOrderEditorIncreaseResultingPositionMarginState),
+    isResultingPositionCheckBlocking:
+      q(selectOrderEditorIsIncreaseExecutableNow) && q(selectIsProDiscountFactorReady),
     marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
   });
 });
@@ -839,11 +713,7 @@ export const selectOrderEditorTpSlLiqPriceWarning = createSelector((q) => {
 
 export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
   (orderKey: string, triggerPrice: bigint) => {
-    const selectExistingPosition = makeSelectOrderEditorExistingPosition(orderKey);
-    const selectNextPositionValuesForIncrease = makeSelectOrderEditorNextPositionValuesForIncrease(
-      orderKey,
-      triggerPrice
-    );
+    const selectExistingPosition = makeSelectOrderExistingPosition(orderKey);
     const selectMaxAllowedLeverage = makeSelectOrderEditorMaxAllowedLeverage(orderKey);
     const selectMarginDepositProjections = makeSelectOrderEditorMarginDepositProjections(orderKey, triggerPrice);
 
@@ -872,9 +742,26 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
 
       const acceptablePrice = undefined;
 
-      const nextPositionValuesForIncrease = q(selectNextPositionValuesForIncrease);
       const maxAllowedLeverage = q(selectMaxAllowedLeverage);
       const marginDepositProjections = q(selectMarginDepositProjections);
+
+      const isIncrease = isIncreaseOrderType(order.orderType) && !order.isTwap;
+
+      const nextPositionValuesForIncrease = isIncrease
+        ? q(makeSelectOrderIncreaseNextPositionValues(orderKey, triggerPrice, order.sizeDeltaUsd, false))
+        : undefined;
+      const resultingPositionMarginState = isIncrease
+        ? q(makeSelectOrderIncreaseResultingPositionMarginState(orderKey, triggerPrice, order.sizeDeltaUsd))
+        : undefined;
+      const isIncreaseExecutableNow =
+        isIncrease && indexToken
+          ? getIsIncreaseOrderExecutableNow({
+              orderType: order.orderType,
+              isLong: order.isLong,
+              triggerPrice,
+              indexTokenPrices: indexToken.prices,
+            })
+          : false;
 
       return getPositionOrderError({
         positionOrder,
@@ -885,6 +772,8 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
         existingPosition,
         nextPositionValuesForIncrease,
         maxAllowedLeverage,
+        resultingPositionMarginState,
+        isResultingPositionCheckBlocking: isIncreaseExecutableNow && q(selectIsProDiscountFactorReady),
         marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
       });
     });

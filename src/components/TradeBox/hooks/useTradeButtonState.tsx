@@ -26,6 +26,7 @@ import {
 import {
   selectChainId,
   selectMarketsInfoData,
+  selectProDiscountFactor,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -90,10 +91,13 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
+import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import { TokenData } from "sdk/utils/tokens/types";
-import { TradeMode, TradeType } from "sdk/utils/trade";
+import { getLimitOrderTypeByTradeMode, TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
+import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import { mustNeverExist } from "sdk/utils/types";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
@@ -282,6 +286,12 @@ export function useTradeboxButtonState({
       nativeGasError
     );
 
+    const setMaxLeverageButton = (
+      <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
+        <Trans>Set max leverage</Trans>
+      </EmbeddedActionButton>
+    );
+
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipMessage) {
       tooltipContent = validationResult.buttonTooltipMessage;
@@ -301,12 +311,23 @@ export function useTradeboxButtonState({
               .
               <br />
               <br />
-              <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
-                <Trans>Set max leverage</Trans>
-              </EmbeddedActionButton>
+              {setMaxLeverageButton}
             </>
           );
 
+          break;
+        }
+        case ValidationButtonTooltipName.resultingPositionMaxLeverage: {
+          tooltipContent = (
+            <>
+              <Trans>
+                The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+              </Trans>
+              <br />
+              <br />
+              {setMaxLeverageButton}
+            </>
+          );
           break;
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
@@ -693,7 +714,7 @@ export function useTradeboxButtonState({
   ]);
 }
 
-function useDetectAndSetAvailableMaxLeverage({
+export function useDetectAndSetAvailableMaxLeverage({
   setToTokenInputValue,
 }: {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
@@ -701,6 +722,7 @@ function useDetectAndSetAvailableMaxLeverage({
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong } = tradeFlags;
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
 
   const { minCollateralUsd } = usePositionsConstants();
 
@@ -721,6 +743,7 @@ function useDetectAndSetAvailableMaxLeverage({
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
+  const proDiscountFactor = useSelector(selectProDiscountFactor);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
@@ -729,6 +752,8 @@ function useDetectAndSetAvailableMaxLeverage({
 
   return useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
+
+    const limitOrderType = getLimitOrderTypeByTradeMode(tradeMode);
 
     const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<bigint | undefined>(
       1,
@@ -750,10 +775,12 @@ function useDetectAndSetAvailableMaxLeverage({
           strategy: "leverageByCollateral",
           uiFeeFactor,
           userReferralInfo,
+          proDiscountFactor,
           acceptablePriceImpactBuffer,
           fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
           leverage,
-          triggerPrice,
+          triggerPrice: limitOrderType !== undefined ? triggerPrice : undefined,
+          limitOrderType,
           marketsInfoData,
           chainId,
           externalSwapQuoteParams,
@@ -784,8 +811,25 @@ function useDetectAndSetAvailableMaxLeverage({
             increaseAmounts.sizeDeltaUsd
           );
 
+          const resultingPositionMarginState = getIncreaseResultingPositionMarginState({
+            marketInfo,
+            collateralToken,
+            isLong,
+            existingPosition,
+            sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+            sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+            collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+            minCollateralUsd,
+            userReferralInfo,
+            proDiscountFactor,
+            indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
+              orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
+              triggerPrice,
+            }),
+          });
+
           return {
-            isValid: !isMaxLeverageExceeded,
+            isValid: !isMaxLeverageExceeded && resultingPositionMarginState?.isLiquidatable !== true,
             returnValue: increaseAmounts.sizeDeltaInTokens,
           };
         }
@@ -838,7 +882,9 @@ function useDetectAndSetAvailableMaxLeverage({
     triggerPrice,
     uiFeeFactor,
     userReferralInfo,
+    proDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
+    tradeMode,
   ]);
 }
 

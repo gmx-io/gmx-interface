@@ -57,6 +57,8 @@ export const MIN_POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("MIN_POSITION_IMPA
 export const POSITION_IMPACT_POOL_DISTRIBUTION_RATE_KEY = hashString("POSITION_IMPACT_POOL_DISTRIBUTION_RATE");
 export const SWAP_IMPACT_POOL_AMOUNT_KEY = hashString("SWAP_IMPACT_POOL_AMOUNT");
 export const MIN_COLLATERAL_USD_KEY = hashString("MIN_COLLATERAL_USD");
+export const PRO_TRADER_TIER_KEY = hashString("PRO_TRADER_TIER");
+export const PRO_DISCOUNT_FACTOR_KEY = hashString("PRO_DISCOUNT_FACTOR");
 export const MIN_COLLATERAL_FACTOR_KEY = hashString("MIN_COLLATERAL_FACTOR");
 export const MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER_KEY = hashString(
   "MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER"
@@ -327,6 +329,14 @@ export function accountOrderListKey(account: string) {
 
 export function minCollateralFactorKey(market: string) {
   return hashData(["bytes32", "address"], [MIN_COLLATERAL_FACTOR_KEY, market]);
+}
+
+export function proTraderTierKey(account: string) {
+  return hashData(["bytes32", "address"], [PRO_TRADER_TIER_KEY, account]);
+}
+
+export function proDiscountFactorKey(proTier: bigint) {
+  return hashData(["bytes32", "uint256"], [PRO_DISCOUNT_FACTOR_KEY, proTier]);
 }
 
 export function minCollateralFactorForLiquidationKey(market: string) {

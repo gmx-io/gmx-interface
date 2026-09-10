@@ -42,7 +42,8 @@ export function getPositionFee(
   sizeDeltaUsd: bigint,
   balanceWasImproved: boolean,
   referralInfo: { totalRebateFactor: bigint; discountFactor: bigint } | undefined,
-  uiFeeFactor?: bigint
+  uiFeeFactor?: bigint,
+  proDiscountFactor?: bigint
 ) {
   const factor = balanceWasImproved
     ? marketInfo.positionFeeFactorForBalanceWasImproved
@@ -51,12 +52,16 @@ export function getPositionFee(
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);
 
-  if (!referralInfo) {
-    return { positionFeeUsd, discountUsd: 0n, totalRebateUsd: 0n, uiFeeUsd };
-  }
+  const totalRebateUsd = referralInfo ? applyFactor(positionFeeUsd, referralInfo.totalRebateFactor) : 0n;
+  let discountUsd = referralInfo ? applyFactor(totalRebateUsd, referralInfo.discountFactor) : 0n;
 
-  const totalRebateUsd = applyFactor(positionFeeUsd, referralInfo.totalRebateFactor);
-  const discountUsd = applyFactor(totalRebateUsd, referralInfo.discountFactor);
+  if (proDiscountFactor !== undefined && proDiscountFactor > 0n) {
+    const proDiscountUsd = applyFactor(positionFeeUsd, proDiscountFactor);
+
+    if (proDiscountUsd > discountUsd) {
+      discountUsd = proDiscountUsd;
+    }
+  }
 
   positionFeeUsd = positionFeeUsd - discountUsd;
 

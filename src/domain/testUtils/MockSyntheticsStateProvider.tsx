@@ -123,6 +123,7 @@ export function MockSyntheticsStateProvider({
         positionsConstants: MOCK_POSITIONS_CONSTANTS,
         uiFeeFactor,
         userReferralInfo: undefined,
+        proDiscountFactor: undefined,
         depositMarketTokensData: undefined,
         progressiveDepositMarketTokensData: undefined,
         multichainMarketTokensBalancesResult: { tokenBalances: {}, isLoading: false },
