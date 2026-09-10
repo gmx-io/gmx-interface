@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
 import { ContractsChainId } from "config/chains";
-import { getDelistingOnlyTokenAddresses, GLV_MARKETS } from "config/markets";
+import { GLV_MARKETS } from "config/markets";
 import { parseContractPrice, TokenPricesData } from "domain/synthetics/tokens";
 import { FreshnessMetricId, metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
@@ -63,18 +63,15 @@ export function useTokenRecentPricesRequest(
         };
       });
 
-      // Tokens of delisting markets leave tickers for good: restoring them from the cache is enough,
-      // reporting a failure would ban every healthy endpoint in turn.
-      const { pricesData: result, unexpectedMissingAddresses } = tokenPricesCache.reconcile({
+      const { pricesData: result, missingAddresses } = tokenPricesCache.reconcile({
         chainId,
         pricesData: receivedPrices,
-        expectedMissingAddresses: getDelistingOnlyTokenAddresses(chainId),
       });
 
-      if (unexpectedMissingAddresses.length > 0) {
+      if (missingAddresses.length > 0) {
         // eslint-disable-next-line no-console
         console.warn("tickersPartialData", {
-          missingAddresses: unexpectedMissingAddresses,
+          missingAddresses,
           result,
           priceItems,
         });

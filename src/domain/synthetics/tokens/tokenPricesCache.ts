@@ -1,75 +1,78 @@
 import { PRICES_CACHE_TTL } from "lib/timeConstants";
-import type { TokenPricesData } from "sdk/utils/tokens/types";
+import type { TokenPrices, TokenPricesData } from "sdk/utils/tokens/types";
 
-type ChainPricesCache = {
-  prices: TokenPricesData;
-  updatedAt: { [address: string]: number };
+/**
+ * Six responses of the fastest polling (1s) outlast the four seconds the fallback tracker needs
+ * to ban an endpoint, so a partial endpoint is still rotated away before the token is forgotten.
+ */
+const MISSED_RESPONSES_BEFORE_FORGET = 6;
+
+type CachedTokenPrices = {
+  prices: TokenPrices;
+  receivedAt: number;
+  missedResponses: number;
 };
 
 export type ReconcileTokenPricesParams = {
   chainId: number;
-  /** Prices parsed from the tickers response */
   pricesData: TokenPricesData;
-  /** Tokens allowed to disappear from tickers, e.g. tokens of delisting markets */
-  expectedMissingAddresses?: Set<string>;
   now?: number;
 };
 
 export type ReconcileTokenPricesResult = {
-  /** Received prices plus cached prices of recently seen tokens missing in the response */
   pricesData: TokenPricesData;
-  /** Recently seen tokens missing in the response which were not expected to disappear */
-  unexpectedMissingAddresses: string[];
+  missingAddresses: string[];
 };
 
-export function createTokenPricesCache(ttl = PRICES_CACHE_TTL) {
-  const caches: { [chainId: number]: ChainPricesCache } = {};
+export function createTokenPricesCache(p?: { ttl?: number; missedResponsesBeforeForget?: number }) {
+  const ttl = p?.ttl ?? PRICES_CACHE_TTL;
+  const missedResponsesBeforeForget = p?.missedResponsesBeforeForget ?? MISSED_RESPONSES_BEFORE_FORGET;
+  const caches: { [chainId: number]: { [address: string]: CachedTokenPrices } } = {};
 
-  function getChainCache(chainId: number): ChainPricesCache {
+  function getChainCache(chainId: number) {
     if (!caches[chainId]) {
-      caches[chainId] = { prices: {}, updatedAt: {} };
+      caches[chainId] = {};
     }
 
     return caches[chainId];
   }
 
   /**
-   * Stores the received prices and restores prices of tokens missing in the response
-   * while their cached value is fresh. A token missing for longer than the TTL is forgotten,
-   * otherwise a delisted token would keep every following response "partial" for the rest of the session.
+   * Stores the received prices, serves a cached price of a missing token while it is fresh and reports
+   * the tokens that went missing. A token missing from several responses in a row is forgotten, so that
+   * a delisted one stops making every following response partial. Responses are counted instead of elapsed
+   * time: a polling gap — a hidden tab, a sleeping laptop — must not turn the detection off.
    */
   function reconcile(p: ReconcileTokenPricesParams): ReconcileTokenPricesResult {
-    const { chainId, pricesData, expectedMissingAddresses, now = Date.now() } = p;
+    const { chainId, pricesData, now = Date.now() } = p;
     const cache = getChainCache(chainId);
     const result: TokenPricesData = { ...pricesData };
-    const unexpectedMissingAddresses: string[] = [];
+    const missingAddresses: string[] = [];
 
     for (const address of Object.keys(pricesData)) {
-      cache.prices[address] = pricesData[address];
-      cache.updatedAt[address] = now;
+      cache[address] = { prices: pricesData[address], receivedAt: now, missedResponses: 0 };
     }
 
-    for (const address of Object.keys(cache.updatedAt)) {
+    for (const address of Object.keys(cache)) {
       if (pricesData[address]) {
         continue;
       }
 
-      const isFresh = now - cache.updatedAt[address] < ttl;
+      const cached = cache[address];
+      cached.missedResponses += 1;
 
-      if (!isFresh) {
-        delete cache.prices[address];
-        delete cache.updatedAt[address];
-        continue;
+      if (now - cached.receivedAt < ttl) {
+        result[address] = cached.prices;
       }
 
-      result[address] = cache.prices[address];
+      missingAddresses.push(address);
 
-      if (!expectedMissingAddresses?.has(address)) {
-        unexpectedMissingAddresses.push(address);
+      if (cached.missedResponses >= missedResponsesBeforeForget) {
+        delete cache[address];
       }
     }
 
-    return { pricesData: result, unexpectedMissingAddresses };
+    return { pricesData: result, missingAddresses };
   }
 
   return { reconcile };

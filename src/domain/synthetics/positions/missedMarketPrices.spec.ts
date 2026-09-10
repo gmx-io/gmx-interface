@@ -7,11 +7,6 @@ import { createMissedMarketPricesTracker } from "./missedMarketPrices";
 const CHAIN_ID = 42161;
 const ETH_MARKET = "0xethMarket";
 const BTC_MARKET = "0xbtcMarket";
-const DELISTING_MARKET = "0xdelistingMarket";
-
-vi.mock("config/markets", () => ({
-  isDelistingMarket: (_chainId: number, marketAddress: string) => marketAddress === DELISTING_MARKET,
-}));
 
 describe("trackMissedMarketPrices", () => {
   let pushCounterSpy: ReturnType<typeof vi.spyOn>;
@@ -75,13 +70,5 @@ describe("trackMissedMarketPrices", () => {
       marketName: ETH_MARKET,
       source: "usePositions",
     });
-  });
-
-  it("skips delisting markets", () => {
-    const track = createMissedMarketPricesTracker();
-
-    track(missing(DELISTING_MARKET));
-
-    expect(pushCounterSpy).not.toHaveBeenCalled();
   });
 });

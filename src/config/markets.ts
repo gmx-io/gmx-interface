@@ -1,5 +1,4 @@
 import mapValues from "lodash/mapValues";
-import { zeroAddress } from "viem";
 
 import { isDevelopment } from "config/env";
 import { SETTLEMENT_CHAINS } from "config/multichain";
@@ -15,7 +14,7 @@ import {
   ContractsChainId,
   SettlementChainId,
 } from "./chains";
-import { isDelistingMarket, MARKETS } from "./static/markets";
+import { MARKETS } from "./static/markets";
 
 export * from "./static/markets";
 
@@ -190,52 +189,4 @@ export function isGmxAccountHoldableToken(chainId: SettlementChainId, tokenAddre
   return Boolean(
     SETTLEMENT_CHAIN_TRADABLE_ASSETS_MAP[chainId]?.includes(convertTokenAddress(chainId, tokenAddress, "wrapped"))
   );
-}
-
-type MarketTokenAddresses = {
-  marketTokenAddress: string;
-  indexTokenAddress: string;
-  longTokenAddress: string;
-  shortTokenAddress: string;
-};
-
-const DELISTING_ONLY_TOKEN_ADDRESSES: Record<number, Set<string>> = {};
-
-/**
- * Tokens used by delisting markets only. The oracle keeper stops serving their prices once the market
- * is delisted, so their absence in tickers is expected and must not count as a partial response.
- */
-export function getDelistingOnlyTokenAddresses(chainId: number): Set<string> {
-  if (!DELISTING_ONLY_TOKEN_ADDRESSES[chainId]) {
-    const markets = Object.values(MARKETS[chainId] ?? {}).filter((market) =>
-      isMarketEnabled(chainId, market.marketTokenAddress)
-    );
-
-    DELISTING_ONLY_TOKEN_ADDRESSES[chainId] = collectDelistingOnlyTokenAddresses({
-      markets,
-      isDelistingMarket: (marketTokenAddress) => isDelistingMarket(chainId, marketTokenAddress),
-    });
-  }
-
-  return DELISTING_ONLY_TOKEN_ADDRESSES[chainId];
-}
-
-export function collectDelistingOnlyTokenAddresses(p: {
-  markets: MarketTokenAddresses[];
-  isDelistingMarket: (marketTokenAddress: string) => boolean;
-}): Set<string> {
-  const liveTokenAddresses = new Set<string>();
-  const delistingTokenAddresses = new Set<string>();
-
-  for (const market of p.markets) {
-    const target = p.isDelistingMarket(market.marketTokenAddress) ? delistingTokenAddresses : liveTokenAddresses;
-
-    for (const address of [market.indexTokenAddress, market.longTokenAddress, market.shortTokenAddress]) {
-      if (address !== zeroAddress) {
-        target.add(address);
-      }
-    }
-  }
-
-  return new Set(Array.from(delistingTokenAddresses).filter((address) => !liveTokenAddresses.has(address)));
 }
