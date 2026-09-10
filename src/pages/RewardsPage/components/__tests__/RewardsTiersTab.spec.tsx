@@ -1093,7 +1093,7 @@ describe("RewardsTiersTab", () => {
     expect(screen.getByRole("row", { name: /Referral Bonus/ })).toBeDefined();
   });
 
-  it("places active tier cards before banner cards while preserving their default order", () => {
+  it("keeps volume, staking, and boosts cards in order regardless of activity", () => {
     renderTab({
       status: {
         ...status,
@@ -1112,7 +1112,7 @@ describe("RewardsTiersTab", () => {
 
     expect(stakingCard?.parentElement).toBe(volumeCard?.parentElement);
     expect(boostsCard?.parentElement).toBe(volumeCard?.parentElement);
-    expect(Array.from(volumeCard!.parentElement!.children)).toEqual([stakingCard, boostsCard, volumeCard]);
+    expect(Array.from(volumeCard!.parentElement!.children)).toEqual([volumeCard, stakingCard, boostsCard]);
   });
 
   it("shows the Ranked target below the first volume tier without using the active layout", () => {
