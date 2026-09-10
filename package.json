@@ -168,7 +168,7 @@
     "@typescript-eslint/eslint-plugin": "8.26.1",
     "@typescript-eslint/parser": "8.26.1",
     "@vitejs/plugin-react": "4.7.0",
-    "@vitest/web-worker": "3.2.6",
+    "@vitest/web-worker": "4.1.11",
     "autoprefixer": "10.4.20",
     "babel-plugin-macros": "3.1.0",
     "buffer": "6.0.3",
@@ -195,7 +195,7 @@
     "vite-bundle-analyzer": "0.20.1",
     "vite-plugin-svgr": "4.2.0",
     "vite-tsconfig-paths": "5.0.1",
-    "vitest": "3.2.6"
+    "vitest": "4.1.11"
   },
   "lint-staged": {
     "sdk/**/*.{js,ts,jsx,tsx}": [

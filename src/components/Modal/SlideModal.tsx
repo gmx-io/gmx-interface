@@ -2,6 +2,7 @@ import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
@@ -42,6 +43,8 @@ function MobileSlideModal({
   fitContent?: boolean;
   hideHeaderBorder?: boolean;
 }>) {
+  useBlockAutoReload(isOpen);
+
   const curtainStyle = useMemo(
     () =>
       fitContent

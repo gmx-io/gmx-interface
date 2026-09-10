@@ -96,6 +96,7 @@ type TokensFavoritesContextType = TokensFavoritesStore & {
   setTopLevelTab: (key: TokenFavoriteKey, tab: TopLevelTab) => void;
   setSubCategoryTab: (key: TokenFavoriteKey, parent: "crypto" | "tradfi", tab: SubCategoryTab) => void;
   setMode: (key: TokenFavoriteKey, mode: TradeMode) => void;
+  setModeAndResetFilters: (key: TokenFavoriteKey, mode: TradeMode) => void;
   toggleFavoriteToken: (type: TokenFavoritesType, address: string) => void;
 };
 
@@ -107,6 +108,7 @@ export type TokenFavoritesState = {
   setTopLevelTab: (tab: TopLevelTab) => void;
   setSubCategoryTab: (tab: SubCategoryTab) => void;
   setMode: (mode: TradeMode) => void;
+  setModeAndResetFilters: (mode: TradeMode) => void;
   toggleFavoriteToken: (address: string) => void;
 };
 
@@ -119,6 +121,7 @@ const context = createContext<TokensFavoritesContextType>({
   setTopLevelTab: noop,
   setSubCategoryTab: noop,
   setMode: noop,
+  setModeAndResetFilters: noop,
   toggleFavoriteToken: noop,
 });
 
@@ -182,6 +185,21 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
     [setSettings]
   );
 
+  const setModeAndResetFilters = useCallback(
+    (key: TokenFavoriteKey, mode: TradeMode) => {
+      setSettings((prev) => ({
+        ...prev,
+        topLevelTabs: { ...(prev.topLevelTabs ?? {}), [key]: "all" },
+        subCategoryTabs: {
+          ...(prev.subCategoryTabs ?? {}),
+          [key]: { crypto: "all", tradfi: "all" },
+        },
+        modes: { ...(prev.modes ?? {}), [key]: mode },
+      }));
+    },
+    [setSettings]
+  );
+
   const toggleFavoriteToken = useCallback(
     (type: TokenFavoritesType, address: string) => {
       setSettings((prev) => {
@@ -208,9 +226,10 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
       setTopLevelTab,
       setSubCategoryTab,
       setMode,
+      setModeAndResetFilters,
       toggleFavoriteToken,
     }),
-    [normalized, setTopLevelTab, setSubCategoryTab, setMode, toggleFavoriteToken]
+    [normalized, setTopLevelTab, setSubCategoryTab, setMode, setModeAndResetFilters, toggleFavoriteToken]
   );
 
   return <Provider value={value}>{children}</Provider>;
@@ -243,6 +262,8 @@ export function useTokensFavorites(key: TokenFavoriteKey): TokenFavoritesState {
 
   const setMode = useCallback((m: TradeMode) => ctx.setMode(key, m), [ctx, key]);
 
+  const setModeAndResetFilters = useCallback((m: TradeMode) => ctx.setModeAndResetFilters(key, m), [ctx, key]);
+
   const toggleFavoriteToken = useCallback((address: string) => ctx.toggleFavoriteToken(type, address), [ctx, type]);
 
   return {
@@ -253,6 +274,7 @@ export function useTokensFavorites(key: TokenFavoriteKey): TokenFavoritesState {
     setTopLevelTab,
     setSubCategoryTab,
     setMode,
+    setModeAndResetFilters,
     toggleFavoriteToken,
   };
 }

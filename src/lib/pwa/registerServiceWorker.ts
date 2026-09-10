@@ -1,7 +1,8 @@
+import { BUILD_ID_PATTERN, getDocumentBuildId } from "lib/pwa/buildId";
+
 const PWA_CACHE_PREFIX = "gmx-pwa-";
 const PWA_CONTROL_CACHE = "gmx-pwa-control-v2";
 const PWA_DISABLED_KEY_PREFIX = "/__gmx_pwa_disabled__/";
-const BUILD_ID_PATTERN = /^\d+$/;
 
 function shouldDeletePwaCache(cacheName: string, disabledGeneration: number | undefined) {
   if (!cacheName.startsWith(PWA_CACHE_PREFIX) || cacheName === PWA_CONTROL_CACHE) {
@@ -35,10 +36,6 @@ function isRegistrationSuperseded(registration: ServiceWorkerRegistration, disab
   return [registration.installing, registration.waiting, registration.active]
     .map(getServiceWorkerGeneration)
     .some((generation) => generation !== undefined && generation > disabledGeneration);
-}
-
-function getDocumentBuildId() {
-  return document.querySelector<HTMLMetaElement>('meta[name="gmx-pwa-build-id"]')?.content;
 }
 
 async function isBuildDisabled(buildId: string) {
