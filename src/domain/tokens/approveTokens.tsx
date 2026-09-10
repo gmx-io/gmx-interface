@@ -43,6 +43,10 @@ type Params = {
 
 type PermitFallbackReason = "unsupported" | "disabled" | "permitsDisabled" | "failed" | "invalidSignature";
 
+export type ApproveTokensResult = {
+  hash: `0x${string}`;
+};
+
 export function getApproveSubmittedToastContent({ txUrl }: { txUrl: string }) {
   return (
     <div>
@@ -71,7 +75,7 @@ export async function approveTokens({
   includeMessage,
   approveAmount,
   permitParams,
-}: Params): Promise<void> {
+}: Params): Promise<ApproveTokensResult | undefined> {
   setIsApproving(true);
 
   if (approveAmount === undefined) {
@@ -172,6 +176,8 @@ export async function approveTokens({
       };
       setPendingTxns([...pendingTxns, pendingTxn]);
     }
+
+    return { hash: res.hash as `0x${string}` };
   } catch (e) {
     onApproveFail?.(e, { isPermit: false });
     // eslint-disable-next-line no-console

@@ -304,8 +304,11 @@ export function TPSLInputRow({
     if (lastEditedField === "gainLoss") {
       return gainLossInputValue;
     }
+    if (priceError) {
+      return "";
+    }
     return formatGainLossValue(displayMode);
-  }, [lastEditedField, gainLossInputValue, formatGainLossValue, displayMode]);
+  }, [lastEditedField, gainLossInputValue, priceError, formatGainLossValue, displayMode]);
 
   const derivedEstimatedPnl = useMemo(() => {
     if (currentPriceValue === undefined || currentPriceValue === 0n) return undefined;
@@ -365,6 +368,8 @@ export function TPSLInputRow({
   };
 
   const estimatedPnl = useMemo(() => {
+    if (priceError) return undefined;
+
     const base = estimatedPnlProp ?? derivedEstimatedPnl;
     if (!base) return base;
 
@@ -383,7 +388,15 @@ export function TPSLInputRow({
       pnlPercentage:
         pnlCollateralUsd > 0n ? bigMath.mulDiv(cappedPnlUsd, 10000n, pnlCollateralUsd) : base.pnlPercentage,
     };
-  }, [estimatedPnlProp, derivedEstimatedPnl, getCollateralUsdForPnl, currentPriceValue, liquidationPrice, isLong]);
+  }, [
+    priceError,
+    estimatedPnlProp,
+    derivedEstimatedPnl,
+    getCollateralUsdForPnl,
+    currentPriceValue,
+    liquidationPrice,
+    isLong,
+  ]);
   const estimatedPnlDisplay = estimatedPnl ? formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage) : "-";
 
   const formattedMarkPrice = useMemo(() => {
@@ -551,7 +564,7 @@ export function TPSLInputRow({
               className="bg-transparent h-24 w-full min-w-0 p-0 text-16 outline-none"
               inputRef={secondInputRef}
               onValueChange={handleGainLossChange}
-              placeholder="0"
+              placeholder={priceError ? "-" : "0"}
             />
             <DisplayModeSelector
               mode={displayMode}

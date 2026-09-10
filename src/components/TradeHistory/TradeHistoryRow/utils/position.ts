@@ -52,7 +52,7 @@ export const formatPositionMessage = (
   minCollateralUsd: bigint,
   relativeTimestamp = true
 ): RowDetails => {
-  const collateralToken = tradeAction.initialCollateralToken;
+  const collateralToken = getMarginDeltaCollateralToken(tradeAction);
   const isV22Action = tradeAction.srcChainId !== undefined;
 
   let sizeDeltaUsd = tradeAction.sizeDeltaUsd;
@@ -1040,37 +1040,40 @@ function getSizeComment(tradeAction: PositionTradeAction): Line[] | undefined {
     return undefined;
   }
 
+  const collateralToken = getMarginDeltaCollateralToken(tradeAction);
   const signedMarginDelta = isDecreaseOrderType(tradeAction.orderType)
     ? -tradeAction.initialCollateralDeltaAmount
     : tradeAction.initialCollateralDeltaAmount;
   const displayDecimals = calculateDisplayDecimals(
     tradeAction.initialCollateralDeltaAmount,
-    tradeAction.initialCollateralToken.decimals,
+    collateralToken.decimals,
     undefined,
-    tradeAction.initialCollateralToken.isStable
+    collateralToken.isStable
   );
 
-  if (roundsToZero(signedMarginDelta, tradeAction.initialCollateralToken.decimals, displayDecimals)) {
+  if (roundsToZero(signedMarginDelta, collateralToken.decimals, displayDecimals)) {
     return undefined;
   }
 
-  const formattedMarginDelta = formatTokenAmount(
-    signedMarginDelta,
-    tradeAction.initialCollateralToken.decimals,
-    tradeAction.initialCollateralToken.symbol,
-    {
-      useCommas: true,
-      displayPlus: true,
-      displayDecimals,
-      isStable: tradeAction.initialCollateralToken.isStable,
-    }
-  );
+  const formattedMarginDelta = formatTokenAmount(signedMarginDelta, collateralToken.decimals, collateralToken.symbol, {
+    useCommas: true,
+    displayPlus: true,
+    displayDecimals,
+    isStable: collateralToken.isStable,
+  });
 
   if (!formattedMarginDelta) {
     return undefined;
   }
 
   return lines(infoRow(t`Margin delta`, formattedMarginDelta));
+}
+
+function getMarginDeltaCollateralToken(tradeAction: PositionTradeAction) {
+  const isExecutedIncrease =
+    tradeAction.eventName === TradeActionType.OrderExecuted && isIncreaseOrderType(tradeAction.orderType);
+
+  return isExecutedIncrease ? tradeAction.targetCollateralToken : tradeAction.initialCollateralToken;
 }
 
 export function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {

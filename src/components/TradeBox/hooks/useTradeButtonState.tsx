@@ -96,6 +96,7 @@ import { TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 import { mustNeverExist } from "sdk/utils/types";
 
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
@@ -108,6 +109,7 @@ import { useTradeboxTransactions } from "./useTradeboxTransactions";
 interface TradeboxButtonStateOptions {
   account?: string;
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
+  canSwitchGasPaymentToken: boolean;
 }
 
 type TradeboxButtonState = {
@@ -127,6 +129,7 @@ type TradeboxButtonState = {
 export function useTradeboxButtonState({
   account,
   setToTokenInputValue,
+  canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -180,6 +183,7 @@ export function useTradeboxButtonState({
     primaryExecutionFee,
   } = useTradeboxTransactions({
     setPendingTxns,
+    canSwitchGasPaymentToken,
   });
 
   const approvalTokens = useMemo(() => {
@@ -297,13 +301,9 @@ export function useTradeboxButtonState({
               .
               <br />
               <br />
-              <button
-                type="button"
-                className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-                onClick={detectAndSetAvailableMaxLeverage}
-              >
+              <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
                 <Trans>Set max leverage</Trans>
-              </button>
+              </EmbeddedActionButton>
             </>
           );
 
@@ -875,14 +875,8 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
           TWAP swaps use GMX pool liquidity only, which can't fill this order size.
           <br />
           <br />
-          <button
-            type="button"
-            className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-            onClick={handleSwitchToMarketOrder}
-          >
-            Switch to a market order
-          </button>{" "}
-          to enable external routes.
+          <EmbeddedActionButton onClick={handleSwitchToMarketOrder}>Switch to a market order</EmbeddedActionButton> to
+          enable external routes.
         </Trans>
       );
     case "noRouteFound": {
@@ -978,13 +972,9 @@ function NoSwapPathTooltipContent({
       No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
       <br />
       <br />
-      <button
-        type="button"
-        className="bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 text-gray-400 underline decoration-gray-400 decoration-1 underline-offset-2 hover:text-typography-primary hover:decoration-typography-primary focus-visible:rounded-2 focus-visible:text-typography-primary focus-visible:decoration-typography-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-        onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}
-      >
+      <EmbeddedActionButton onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
         Swap {collateralSymbol}
-      </button>{" "}
+      </EmbeddedActionButton>{" "}
       or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
     </Trans>
   );

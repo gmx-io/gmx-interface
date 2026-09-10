@@ -1,6 +1,6 @@
 import type { Address } from "viem";
 
-import type { PositionEditorDepositMode } from "domain/synthetics/trade/usePositionEditorState";
+import type { Operation, PositionEditorDepositMode } from "domain/synthetics/trade/usePositionEditorState";
 
 import {
   selectPositionEditorAtPriceOpenRequest,
@@ -11,6 +11,8 @@ import {
   selectPositionEditorIsCollateralTokenFromGmxAccount,
   selectPositionEditorMinCollateralFactor,
   selectPositionEditorOpenAtPrice,
+  selectPositionEditorOpenDepositNow,
+  selectPositionEditorOperation,
   selectPositionEditorPosition,
   selectPositionEditorReplacingOrder,
   selectPositionEditorReplacingOrderKey,
@@ -19,6 +21,7 @@ import {
   selectPositionEditorSetDepositMode,
   selectPositionEditorSetEditingPositionKey,
   selectPositionEditorSetIsCollateralTokenFromGmxAccount,
+  selectPositionEditorSetOperation,
   selectPositionEditorSetReplacingOrderKey,
   selectPositionEditorSetSelectedCollateralAddress,
   selectPositionEditorSetTriggerPriceInputValue,
@@ -59,6 +62,13 @@ export const usePositionEditorCollateralInputValue = (): [string, (value: string
   return [value, setValue];
 };
 
+export const usePositionEditorOperation = (): [Operation, (operation: Operation) => void] => {
+  const operation = useSelector(selectPositionEditorOperation);
+  const setOperation = useSelector(selectPositionEditorSetOperation);
+
+  return [operation, setOperation];
+};
+
 export const usePositionEditorDepositMode = (): [
   PositionEditorDepositMode,
   (depositMode: PositionEditorDepositMode) => void,
@@ -95,3 +105,5 @@ export const usePositionEditorAtPriceOpenRequest = () => {
 };
 
 export const usePositionEditorOpenAtPrice = () => useSelector(selectPositionEditorOpenAtPrice);
+
+export const usePositionEditorOpenDepositNow = () => useSelector(selectPositionEditorOpenDepositNow);

@@ -4,7 +4,6 @@ import { RemoveScroll } from "react-remove-scroll";
 
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { getOverlayedBottomInset, useOverlayedBottomInset } from "lib/wallets/oneKeyUiCompat";
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
 import Portal from "components/Portal/Portal";
@@ -46,19 +45,18 @@ function MobileSlideModal({
 }>) {
   useBlockAutoReload(isOpen);
 
-  const bottomInset = useOverlayedBottomInset();
   const curtainStyle = useMemo(
     () =>
       fitContent
         ? {
-            top: `calc(100dvh - ${bottomInset}px)`,
-            maxHeight: `calc(100dvh - ${TOP_OFFSET + bottomInset}px)`,
+            top: `calc(100dvh)`,
+            maxHeight: `calc(100dvh - ${TOP_OFFSET}px)`,
           }
         : {
-            top: `calc(100dvh - ${bottomInset}px)`,
-            height: `calc(100dvh - ${TOP_OFFSET + bottomInset}px)`,
+            top: `calc(100dvh)`,
+            height: `calc(100dvh - ${TOP_OFFSET}px)`,
           },
-    [fitContent, bottomInset]
+    [fitContent]
   );
   const curtainRef = useRef<HTMLDivElement | null>(null);
 
@@ -126,7 +124,7 @@ function MobileSlideModal({
 
     const curtainRect = curtainRef.current.getBoundingClientRect();
 
-    currentRelativeY.current = curtainRect.top - (window.innerHeight - getOverlayedBottomInset());
+    currentRelativeY.current = curtainRect.top - window.innerHeight;
     prevScreenY.current = e.screenY;
     prevScreenX.current = e.screenX;
   }, []);
