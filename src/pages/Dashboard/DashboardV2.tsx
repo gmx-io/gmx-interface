@@ -1,5 +1,4 @@
-import { Trans, t } from "@lingui/macro";
-import { Link } from "react-router-dom";
+import { t } from "@lingui/macro";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -13,11 +12,8 @@ import { bigMath } from "sdk/utils/bigmath";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import { BuybackDashboard } from "components/Earn/BuybackTracker/BuybackDashboard";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketsList } from "components/MarketsList/MarketsList";
 import PageTitle from "components/PageTitle/PageTitle";
-
-import V2Icon from "img/ic_v2.svg?react";
 
 import { GmCard } from "./GmCard";
 import { GmxCard } from "./GmxCard";
@@ -54,27 +50,7 @@ export default function DashboardV2() {
   return (
     <AppPageLayout title={t`Stats`} header={<ChainContentHeader />}>
       <div className="default-container DashboardV2 page-layout flex flex-col gap-20">
-        <PageTitle
-          title={t`Total stats`}
-          qa="dashboard-page"
-          subtitle={
-            <div className="flex items-center gap-6 font-medium text-typography-secondary">
-              <Trans>For detailed stats</Trans>{" "}
-              <ExternalLink
-                className="flex items-center gap-4 !no-underline hover:text-typography-primary"
-                href="https://dune.com/gmx-io/gmx-analytics"
-              >
-                <V2Icon className="size-15" /> <Trans>Analytics</Trans>
-              </ExternalLink>
-              <Link
-                className="flex items-center gap-4 text-typography-secondary !no-underline hover:text-typography-primary"
-                to="/monitor"
-              >
-                <V2Icon className="size-15" /> <Trans>Pools stats</Trans>
-              </Link>
-            </div>
-          }
-        />
+        <PageTitle title={t`Total stats`} qa="dashboard-page" />
         <div className="flex flex-col gap-20">
           <div className="DashboardV2-cards">
             <OverviewCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />

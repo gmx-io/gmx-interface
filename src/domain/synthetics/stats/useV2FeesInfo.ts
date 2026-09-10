@@ -161,11 +161,8 @@ export default function useV2FeesInfo(chainId: number) {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching feesInfo data for chain ${chainId}:`, error);
-      return {
-        epochFees: 0n,
-        weeklyFees: 0n,
-        totalFees: 0n,
-      };
+      // a failed source stays unknown: a zero here would settle the network total as complete
+      return undefined;
     }
   }
 

@@ -43,15 +43,12 @@ export function GmTradeModal({
     <ModalWithPortal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
-      label={t`GMTrade`}
+      label={t`GMX on Solana`}
       contentClassName="!max-w-[420px]"
     >
       <div className="flex flex-col gap-16">
         <p className="mb-8 text-15 text-typography-secondary">
-          <Trans>
-            GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the
-            experience may vary. Opens in a new tab.
-          </Trans>
+          <Trans>GMX on Solana (known as GMTrade) is currently served from a separate domain.</Trans>
         </p>
 
         <Button
@@ -61,7 +58,7 @@ export function GmTradeModal({
           newTab
           onClick={() => setIsVisible(false)}
         >
-          <Trans>Open GMTrade</Trans>
+          <Trans>Open GMTrade in a new tab</Trans>
         </Button>
       </div>
     </ModalWithPortal>

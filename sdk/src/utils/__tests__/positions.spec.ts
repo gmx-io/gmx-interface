@@ -23,15 +23,15 @@ import {
 import { convertToUsd, getIsEquivalentTokens } from "utils/tokens";
 import { Token } from "utils/tokens/types";
 
-vi.mock("../markets", () => ({
-  ...vi.importActual("../markets"),
+vi.mock("../markets", async () => ({
+  ...(await vi.importActual("../markets")),
   getPositiveMarketPnl: vi.fn(),
   getPoolUsdWithoutPnl: vi.fn(),
   getCappedPoolPnl: vi.fn(),
 }));
 
-vi.mock("../tokens", () => ({
-  ...vi.importActual("../tokens"),
+vi.mock("../tokens", async () => ({
+  ...(await vi.importActual("../tokens")),
   convertToUsd: vi.fn(),
   getIsEquivalentTokens: vi.fn(),
 }));

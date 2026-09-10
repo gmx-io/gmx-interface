@@ -98,6 +98,10 @@ msgstr "GMXを評価"
 msgid "Order simulation failed"
 msgstr "注文シミュレーションに失敗しました"
 
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "Reload now"
+msgstr "今すぐ再読み込み"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana support</0><1>GMX Express</1>"
 msgstr "<0>Solana サポート</0><1>GMX Express</1>"
@@ -250,7 +254,6 @@ msgid "External swap temporarily disabled. Try again"
 msgstr "外部スワップが一時的に無効になっています。再度お試しください"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMTrade"
 msgstr "GMTrade"
 
@@ -522,10 +525,6 @@ msgstr "ポジションと担保による{indexSymbol}の二重エクスポー�
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX Account balance"
 msgstr "GMX Account残高"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in perpetuals markets"
-msgstr "無期限市場を検索"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
@@ -849,10 +848,6 @@ msgstr "クラシック"
 msgid "Orders"
 msgstr "注文"
 
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the experience may vary. Opens in a new tab."
-msgstr "GMTrade（旧 GMX Solana）は別のウェブサイトでホストされ、異なるチームによって運営されているため、体験が異なる場合があります。新しいタブで開きます。"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size. Size delta ({sizeDeltaUsdText}) exceeds position size ({positionSizeInUsdText})"
 msgstr "無効な減少サイズです。サイズ変更量（{sizeDeltaUsdText}）がポジションサイズ（{positionSizeInUsdText}）を超えています"
@@ -935,6 +930,10 @@ msgstr "esGMXをGMXトークンに変換します。ボールトを使用する�
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No {marketTypeLabel} match \"{query}\"."
+msgstr "{marketTypeLabel}に「{query}」と一致するものはありません。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
@@ -1121,6 +1120,10 @@ msgstr ""
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "ボールトおよびプール内のTVL"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana"
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1542,6 +1545,10 @@ msgstr "拠出証拠金の合計"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "{0} で GMX を購入するには、<0>ネットワークを切り替えてください</0>"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Perpetuals."
+msgstr "無期限に検索結果があります。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -2240,6 +2247,10 @@ msgstr ""
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr "このスワップには外部ルーティングが必要ですが、ガス支払いトークンが受け取るトークンと同じ間は利用できず、他のガストークンにも十分な残高がありません。"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all {marketTypeLabel}"
+msgstr "すべての{marketTypeLabel}を検索"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -3040,6 +3051,10 @@ msgstr "GMXの改善にご協力ください。セキュリティのため、こ
 msgid "Cancel margin deposit"
 msgstr "証拠金入金をキャンセル"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Swap tokens"
+msgstr "スワップトークン"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "グローバルネットワーク"
@@ -3081,6 +3096,10 @@ msgstr "スワップに失敗しました"
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>ここで<1>@GMX_IO</1>に注目しなければなりません。DeFi全体が混乱している中、GMXはユーザー、AUM、ボリューム/手数料、オープンインタレスト、資本利用で印象的な持続パフォーマンスを示し続けています。Arbitrum上の主要資産間のスワップに最適で、Arbエアドロップへの露出</0>"
 
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "Update available"
+msgstr "アップデートがあります"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
 msgstr "{chainName}でGMXを購入"
@@ -3108,10 +3127,6 @@ msgstr "Expressパラメータを読み込み中…"
 msgid "RESPONSE TIME"
 msgstr "RESPONSE TIME"
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly"
-msgstr "GMTrade（旧GMX Solana）は別のウェブサイトでホストされ、別のチームによって運営されているため、体験が若干異なる場合があります"
-
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "選択した期間中に取引はありませんでした"
@@ -3137,6 +3152,10 @@ msgstr "システム"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "紹介コードを共有して報酬を獲得しましょう"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Swap."
+msgstr "スワップに検索結果があります。"
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
@@ -3246,6 +3265,10 @@ msgstr "ロングポジション"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
 msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Perpetuals"
+msgstr "無期限の結果を表示"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -4003,6 +4026,10 @@ msgstr "このトリガー価格は現在の清算価格を超えています。
 msgid "Creating..."
 msgstr "作成中…"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized fees:"
+msgstr ""
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{0, plural, one {is} other {are}}"
@@ -4157,6 +4184,10 @@ msgstr "その他の実現手数料"
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
 msgstr "<0>Threshold</0> を使用して BTC で tBTC をミントできます"
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "In other tokens:"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP part"
 msgstr "TWAP パート失敗"
@@ -4172,10 +4203,6 @@ msgstr "TWAP スワップパート失敗"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events in the past {DAYS_BACK} days"
 msgstr ""
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized data based on the past 7 days"
-msgstr "過去7日間に基づく年率換算データ"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
@@ -4713,6 +4740,10 @@ msgstr "ステーキング"
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "分散型パーペチュアル取引所 | GMX"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "perpetual markets"
+msgstr "無期限市場"
+
 #: src/components/Footer/constants.tsx
 msgid "V1"
 msgstr "V1"
@@ -4838,10 +4869,6 @@ msgstr "送信中..."
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Estimated time: ~5 min"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Pools stats"
-msgstr "プール統計"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5072,6 +5099,10 @@ msgstr "GMX の承認待ち..."
 msgid "AMOUNT"
 msgstr "金額"
 
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Partial total: no data yet from {0}."
+msgstr ""
+
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
 msgstr ""
@@ -5135,10 +5166,6 @@ msgstr "外部ルーティングは失敗した試行の後、一時的に停止
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>{wrappedNativeTokenSymbol}を購入</0>。"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized buy pressure:"
-msgstr "年間購入圧力："
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -5335,6 +5362,10 @@ msgstr "CoinLedger Margin Gain Manual CSV"
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
+
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "GMX on Solana (GMTrade) is currently served from a separate domain"
+msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Pre-IPO"
@@ -5539,6 +5570,10 @@ msgstr "正の影響係数"
 msgid "All trades"
 msgstr "すべての取引"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days. Solana fees do not contribute to GMX buybacks."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
 msgstr "過去最大のステーク済みGMXまたはesGMXの20%を超えてアンステークすると、累積報酬がリセットされます。"
@@ -5647,10 +5682,6 @@ msgstr "TWAPを作成"
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "スリッページとは、価格変動により予想約定価格と実際の約定価格の差です。スリッページが許容最大値を超えると注文は約定されません。デフォルト値は設定で調整できます。<0/><1/>低い値（例：-{0}未満）は、ボラティリティ時に注文失敗の原因となる場合があります。<2/><3/>注：スリッページは、オープンインタレストの不均衡に基づく価格影響とは異なります。<4>詳細はこちら</4>。"
-
-#: src/pages/Dashboard/StatsCard.tsx
-msgid "In other tokens"
-msgstr "その他のトークン"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -5778,6 +5809,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Bond ProtocolでGMXボンドを短いベスティング期間で割引購入します"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No results with the selected filters."
+msgstr "選択したフィルターに一致する結果はありません。"
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -6138,6 +6173,10 @@ msgstr "シングル"
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
 msgstr "リスクと報酬をコントロールして投資"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX on Solana (known as GMTrade) is currently served from a separate domain."
+msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Over 100 protocols"
@@ -7023,6 +7062,10 @@ msgstr "レンディングおよびボローイング"
 msgid "GMX governance page"
 msgstr "GMXガバナンスページ"
 
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "A new version of GMX is ready. Reload when you are done to switch to it."
+msgstr "GMXの新しいバージョンが利用可能です。作業が終わったら再読み込みして切り替えてください。"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "{chainName}で直接{nativeTokenSymbol}を購入するか、送金してください"
@@ -7507,10 +7550,6 @@ msgstr ""
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "複数のGMXマーケットに流動性を提供する利回り最適化ボールト"
 
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Analytics"
-msgstr "アナリティクス"
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "wstETH APR"
@@ -7972,6 +8011,10 @@ msgstr "サイズ, $"
 msgid "Wallet received before close"
 msgstr "クローズ前のウォレット受取額"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Swap"
+msgstr "スワップの結果を表示"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "保証された流動性"
@@ -8401,6 +8444,10 @@ msgstr "受信者はこれまでGLPトークンをステークしていません
 msgid "Already live"
 msgstr "すでに稼働中"
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "In GMX:"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
 msgstr ""
@@ -8660,10 +8707,6 @@ msgstr "手数料と価格への影響を含む、実現損益および含み損
 msgid "Squid GraphQL"
 msgstr "Squid GraphQL"
 
-#: src/pages/Dashboard/StatsCard.tsx
-msgid "In GMX"
-msgstr "GMX"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr "Dolomite"
@@ -8736,6 +8779,10 @@ msgstr "<0>🔷 24時間ボリューム: 10.1億ドル。</0><1>パーミッシ�
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
 msgstr "入金額を入力"
+
+#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+msgid "Included but not up to date: {0}."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
@@ -9342,10 +9389,6 @@ msgstr "使用資本 = max(オープンポジションの担保合計 - 実現Pn
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized:"
-msgstr "年率化:"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Trigger tickers failure"
@@ -10989,7 +11032,6 @@ msgid "Updates"
 msgstr "アップデート"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade"
 msgstr "GMTradeを開く"
 
@@ -11194,7 +11236,6 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "GMX向けに設計された透明性の高いサブセカンドChainlink価格フィードで、プライスウィックを回避できます"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr "一致する市場がありません。"
 
@@ -11312,6 +11353,10 @@ msgstr "推定年間バイバック率。直近の平均ペースでは、GMXの
 #: src/components/HistoryExport/useHistoryExport.ts
 msgid "The export could not be completed. No file was downloaded."
 msgstr "エクスポートを完了できませんでした。ファイルはダウンロードされていません。"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMTrade in a new tab"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
@@ -11832,10 +11877,6 @@ msgstr "もっと取引して、もっと安く。<0/>紹介して、稼ぐ。"
 msgid "No pools matched"
 msgstr "一致するプールなし"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in swap markets"
-msgstr "スワップ市場を検索"
-
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"
 msgstr "リリース間近、またはすでに稼働中"
@@ -11897,10 +11938,6 @@ msgstr "流動性を管理"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr "PnL ロング"
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats"
-msgstr "詳細統計のために"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Simulate transactions"
@@ -12810,6 +12847,10 @@ msgstr "手数料や価格への影響により、約定価格が指値と異な
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "プライベート"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized GMX buy pressure:"
+msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"
