@@ -4167,6 +4167,10 @@ msgstr "Min funding factor (long)"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "What makes GMX more cost-efficient than other perpetual platforms?"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Margin is below the minimum required for the position size"
+msgstr "Margin is below the minimum required for the position size"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr "How much can I earn as an affiliate?"
@@ -7300,6 +7304,10 @@ msgstr "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgid "Approving..."
 msgstr "Approving..."
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
+msgstr "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
+
 #: src/config/uiFlagEvents.tsx
 msgid "Service Disruption"
 msgstr "Service Disruption"
@@ -7343,10 +7351,6 @@ msgstr "Receive at least {toAmountText} if executed. Price updates based on fees
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
-msgstr "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
@@ -9403,6 +9407,10 @@ msgstr "Fulfilling buy request..."
 msgid "Buy GM failed"
 msgstr "Buy GM failed"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
+msgstr "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "Max funding factor (long)"
@@ -10504,10 +10512,6 @@ msgstr "Min margin: {0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Market"
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
-msgstr "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
@@ -12075,6 +12079,10 @@ msgstr "{column}"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
 msgstr "Swap route unavailable for: {0}"
+
+#: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} failed to settle: {cancellationReason}"
+msgstr "{positionName} failed to settle: {cancellationReason}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"

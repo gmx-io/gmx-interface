@@ -11,8 +11,14 @@ import {
 } from "context/SyntheticsEvents";
 import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isMarketOrderType } from "domain/synthetics/orders";
+import { tryDecodeCustomError } from "lib/errors";
 import { getByKey } from "lib/objects";
 
+import { CustomErrorName } from "components/TradeHistory/TradeHistoryRow/utils/CustomErrorName";
+import {
+  getErrorTooltipTitle,
+  getMarginBelowMinimumErrorMessage,
+} from "components/TradeHistory/TradeHistoryRow/utils/shared";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
 import "./StatusNotification.scss";
@@ -24,6 +30,24 @@ type Props = {
   orders: PendingFundingFeeSettlementData["orders"];
   marketsInfoData: MarketsInfoData | undefined;
 };
+
+function getCancellationReason(reasonBytes: string | undefined) {
+  if (!reasonBytes) {
+    return undefined;
+  }
+
+  const error = tryDecodeCustomError(reasonBytes);
+
+  if (!error) {
+    return undefined;
+  }
+
+  if (error.name === CustomErrorName.UnableToWithdrawCollateral) {
+    return getMarginBelowMinimumErrorMessage();
+  }
+
+  return getErrorTooltipTitle(error.name, true, error.args);
+}
 
 export function FeesSettlementStatusNotification({ orders, toastTimestamp, marketsInfoData }: Props) {
   const { orderStatuses: allOrderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
@@ -167,7 +191,15 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
           }
 
           if (orderStatus?.cancelledTxnHash) {
-            text = <Trans>{positionName} failed to settle</Trans>;
+            const cancellationReason = getCancellationReason(orderStatus.cancellationReasonBytes);
+
+            text = cancellationReason ? (
+              <Trans>
+                {positionName} failed to settle: {cancellationReason}
+              </Trans>
+            ) : (
+              <Trans>{positionName} failed to settle</Trans>
+            );
             status = "error";
             txnHash = orderStatus?.cancelledTxnHash;
           }

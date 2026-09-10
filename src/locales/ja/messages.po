@@ -4167,6 +4167,10 @@ msgstr "最小ファンディングファクター（ロング）"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "GMXが他のパーペチュアルプラットフォームよりコスト効率が高い理由は何ですか？"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Margin is below the minimum required for the position size"
+msgstr "証拠金がポジションサイズに必要な最低額を下回っています"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr ""
@@ -7300,6 +7304,10 @@ msgstr "担保を出金できません。残りの担保が最低額を下回り
 msgid "Approving..."
 msgstr "承認中..."
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
+msgstr "このポジションは未払いの借入手数料とファンディング手数料を差し引くと証拠金がマイナスのため、決済は失敗する可能性が高いです。プラスのファンディングは決済が成功した後にのみ請求可能になります。証拠金を追加するか、実現利益が不足分を補えるようにポジションを十分にクローズしてください。"
+
 #: src/config/uiFlagEvents.tsx
 msgid "Service Disruption"
 msgstr "サービス障害"
@@ -7343,10 +7351,6 @@ msgstr "約定時に最低{toAmountText}を受け取ります。価格は手数�
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
-msgstr "このポジションは未払いの借入手数料とファンディング手数料を差し引くと証拠金がマイナスのため、決済は失敗する可能性が高いです。プラスのファンディングは決済が成功した後にのみ請求可能になります。証拠金を追加するか、実現利益が不足分を補えるようにポジションを十分に縮小またはクローズしてください。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
@@ -9403,6 +9407,10 @@ msgstr "買いリクエストを実行中…"
 msgid "Buy GM failed"
 msgstr "GMの購入に失敗しました"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
+msgstr "このポジションの証拠金は、そのサイズに必要な最低額を下回っているため、決済は失敗します。証拠金を追加するか、ポジションをクローズしてください。クローズすると、ファンディングは自動的に決済されます。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "最大ファンディングファクター（ロング）"
@@ -10504,10 +10512,6 @@ msgstr "最小証拠金：{0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "ストップマーケット"
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
-msgstr "選択されたポジションの一部は、未払いの借入手数料とファンディング手数料を差し引くと証拠金がマイナスのため、決済は失敗する可能性が高いです。プラスのファンディングは決済が成功した後にのみ請求可能になります。証拠金を追加するか、実現利益が不足分を補えるようにそれらのポジションを十分に縮小またはクローズしてください。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
@@ -12075,6 +12079,10 @@ msgstr "{column}"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
 msgstr ""
+
+#: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} failed to settle: {cancellationReason}"
+msgstr "{positionName}の決済に失敗しました: {cancellationReason}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"

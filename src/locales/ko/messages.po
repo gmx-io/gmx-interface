@@ -4167,6 +4167,10 @@ msgstr "최소 펀딩 계수(롱)"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "GMX가 다른 영구 플랫폼보다 비용 효율적인 이유는 무엇인가요?"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Margin is below the minimum required for the position size"
+msgstr "마진이 포지션 규모에 필요한 최소 금액보다 적습니다"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr ""
@@ -7300,6 +7304,10 @@ msgstr "담보를 출금할 수 없습니다. 잔여 담보가 최소 기준 미
 msgid "Approving..."
 msgstr "승인 중..."
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
+msgstr "이 포지션은 미지급 차입 수수료와 펀딩 수수료를 차감하면 마진이 마이너스이므로 정산이 실패할 가능성이 높습니다. 플러스 펀딩은 정산이 성공한 후에만 수령할 수 있습니다. 마진을 추가하거나, 실현 이익이 부족분을 충당할 수 있도록 포지션을 충분히 종료하세요."
+
 #: src/config/uiFlagEvents.tsx
 msgid "Service Disruption"
 msgstr "서비스 중단"
@@ -7343,10 +7351,6 @@ msgstr "체결 시 최소 {toAmountText}을(를) 수령합니다. 가격은 수�
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
-msgstr "이 포지션은 미지급 차입 수수료와 펀딩 수수료를 차감하면 마진이 마이너스이므로 정산이 실패할 가능성이 높습니다. 플러스 펀딩은 정산이 성공한 후에만 수령할 수 있습니다. 마진을 추가하거나, 실현 이익이 부족분을 충당할 수 있도록 포지션을 충분히 축소하거나 종료하세요."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
@@ -9403,6 +9407,10 @@ msgstr "매수 요청을 실행하는 중…"
 msgid "Buy GM failed"
 msgstr "GM 구매 실패"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
+msgstr "이 포지션의 마진이 규모에 필요한 최소 금액보다 적으므로 정산이 실패합니다. 마진을 추가하거나 포지션을 종료하세요. 종료하면 펀딩이 자동으로 정산됩니다."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "최대 펀딩 계수(롱)"
@@ -10504,10 +10512,6 @@ msgstr "최소 증거금: {0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "스탑 마켓"
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
-msgstr "선택한 포지션 중 일부는 미지급 차입 수수료와 펀딩 수수료를 차감하면 마진이 마이너스이므로 정산이 실패할 가능성이 높습니다. 플러스 펀딩은 정산이 성공한 후에만 수령할 수 있습니다. 마진을 추가하거나, 실현 이익이 부족분을 충당할 수 있도록 해당 포지션을 충분히 축소하거나 종료하세요."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
@@ -12075,6 +12079,10 @@ msgstr "{column}"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
 msgstr ""
+
+#: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} failed to settle: {cancellationReason}"
+msgstr "{positionName} 정산 실패: {cancellationReason}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
