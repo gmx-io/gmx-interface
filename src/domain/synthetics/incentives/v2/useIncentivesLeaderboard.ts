@@ -31,7 +31,7 @@ export function useIncentivesLeaderboard(
   chainId: number,
   params: {
     epoch?: number;
-    where?: { account?: string };
+    where?: { account?: string; account_contains?: string };
     orderBy?: IncentivesLeaderboardOrderBy;
     enabled?: boolean;
     isMutable?: boolean;
@@ -42,19 +42,35 @@ export function useIncentivesLeaderboard(
   const { epoch, where, orderBy, enabled = true, isMutable = false } = params;
   const endpoint = useIncentivesIndexerUrl(chainId);
   const account = where?.account && isAddress(where.account) ? where.account : undefined;
+  const accountContains = where?.account_contains?.trim() || undefined;
   const hasInvalidAccount = Boolean(where?.account && !account);
   const limit = Math.min(Math.max(Math.trunc(params.limit), 1), MAX_PAGE_SIZE);
   const offset = Math.max(Math.trunc(params.offset), 0);
   const swrKey =
     enabled && endpoint && !hasInvalidAccount
-      ? ["useIncentivesV2Leaderboard", chainId, endpoint, epoch ?? "all", account ?? "all", orderBy, limit, offset]
+      ? [
+          "useIncentivesV2Leaderboard",
+          chainId,
+          endpoint,
+          epoch ?? "all",
+          account ?? "all",
+          accountContains ?? null,
+          orderBy,
+          limit,
+          offset,
+        ]
       : null;
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<IncentivesLeaderboardPage>(swrKey, {
     fetcher: async () => {
       const variables: Record<string, unknown> = { limit, offset };
       if (epoch !== undefined) variables.epoch = epoch;
-      if (account !== undefined) variables.where = { account };
+      if (account !== undefined || accountContains !== undefined) {
+        variables.where = {
+          ...(account !== undefined ? { account } : {}),
+          ...(accountContains !== undefined ? { account_contains: accountContains } : {}),
+        };
+      }
       if (orderBy !== undefined) variables.orderBy = orderBy;
 
       const response = await fetchIncentivesGraphql<{

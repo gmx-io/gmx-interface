@@ -1,5 +1,7 @@
 import { createContext, PropsWithChildren, RefObject, useContext, useEffect, useMemo, useRef } from "react";
 
+import { getPrivyDialog } from "lib/wallets/privyUiCompat";
+
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -55,6 +57,11 @@ function isFocusableElementVisible(element: HTMLElement) {
   }
 
   return true;
+}
+
+function isPrivyDialogVisible() {
+  const dialog = getPrivyDialog();
+  return dialog !== null && isFocusableElementVisible(dialog);
 }
 
 function getFocusableElements(scope: ModalFocusScope, contentElement: HTMLElement) {
@@ -125,14 +132,15 @@ export function useModalFocusScope({
     const previouslyFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
     const animationFrame = window.requestAnimationFrame(() => {
       const contentElement = contentRef.current;
-      if (!contentElement || getActiveModalScope() !== scope) return;
+      if (!contentElement || getActiveModalScope() !== scope || isPrivyDialogVisible()) return;
+      if (getScopeRoots(scope, contentElement).some((root) => root.contains(document.activeElement))) return;
 
       const focusableElement = getFocusableElements(scope, contentElement)[0];
       (focusableElement ?? contentElement).focus();
     });
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (getActiveModalScope() !== scope) return;
+      if (event.defaultPrevented || getActiveModalScope() !== scope || isPrivyDialogVisible()) return;
 
       if (event.key === "Escape") {
         event.preventDefault();
@@ -172,7 +180,9 @@ export function useModalFocusScope({
       const wasTopScope = getActiveModalScope() === scope;
 
       if (scopeIndex >= 0) activeModalScopes.splice(scopeIndex, 1);
-      if (wasTopScope && previouslyFocusedElement?.isConnected) previouslyFocusedElement.focus();
+      if (wasTopScope && previouslyFocusedElement?.isConnected && !isPrivyDialogVisible()) {
+        previouslyFocusedElement.focus();
+      }
     };
   }, [contentRef, isVisible, scope]);
 

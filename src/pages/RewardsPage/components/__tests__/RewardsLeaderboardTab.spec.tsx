@@ -135,7 +135,6 @@ type LeaderboardSearchParams = {
 const searchMock = vi.hoisted(() => ({
   data: undefined as LeaderboardEntry[] | undefined,
   totalCount: undefined as number | undefined,
-  isTruncated: false,
   error: undefined as Error | undefined,
   loading: false,
   isValidating: false,
@@ -144,14 +143,12 @@ const searchMock = vi.hoisted(() => ({
 }));
 
 vi.mock("domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch", () => ({
-  LEADERBOARD_SEARCH_SCAN_LIMIT: 10_000,
   useIncentivesLeaderboardSearch: (_chainId: number, params: LeaderboardSearchParams) => {
     searchMock.params.push(params);
 
     return {
       data: searchMock.data,
       totalCount: searchMock.totalCount,
-      isTruncated: searchMock.isTruncated,
       error: searchMock.error,
       loading: searchMock.loading,
       isValidating: searchMock.isValidating,
@@ -257,7 +254,6 @@ describe("RewardsLeaderboardTab", () => {
     leaderboardMock.pinnedParams.length = 0;
     searchMock.data = undefined;
     searchMock.totalCount = undefined;
-    searchMock.isTruncated = false;
     searchMock.error = undefined;
     searchMock.loading = false;
     searchMock.isValidating = false;
@@ -517,7 +513,7 @@ describe("RewardsLeaderboardTab", () => {
     });
   });
 
-  it("matches partial input against the scanned leaderboard and restores the paged query when cleared", async () => {
+  it("shows partial search results and restores the unfiltered query when cleared", async () => {
     const searchEntry = makeEntry("0x1234ef2102306220921060314715629080e2fb77", 12);
     searchMock.data = [searchEntry];
     searchMock.totalCount = 1;
@@ -601,22 +597,6 @@ describe("RewardsLeaderboardTab", () => {
     await waitFor(() => expect(screen.getByTitle(pageEntry.address)).toBeTruthy());
     expect(screen.queryByText("No results found")).toBeNull();
     expect(screen.queryByText("No leaderboard entries yet.")).toBeNull();
-  });
-
-  it("warns that a partial search only covers the scanned accounts", async () => {
-    searchMock.data = [];
-    searchMock.totalCount = 0;
-    searchMock.isTruncated = true;
-
-    renderLeaderboard();
-
-    fireEvent.change(screen.getByPlaceholderText(/search address/i), { target: { value: "test" } });
-
-    await waitFor(() =>
-      expect(
-        screen.getByText("Partial search covers the top 10,000 accounts. Search by full address to find any account.")
-      ).toBeTruthy()
-    );
   });
 
   it("searches addresses that are not checksummed", async () => {
