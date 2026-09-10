@@ -4,7 +4,7 @@ import { ContractFunctionParameters, zeroAddress } from "viem";
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
-import { FreshnessMetricId } from "lib/metrics";
+import { FreshnessMetricId, metrics, MissedMarketPricesCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { executeMulticall, useMulticall } from "lib/multicall";
 import type { ContractCallConfig, MulticallRequestConfig } from "lib/multicall";
@@ -19,7 +19,6 @@ import { getPositionKey } from "sdk/utils/positions";
 import type { PositionsData } from "sdk/utils/positions/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
-import { trackMissedMarketPrices } from "./missedMarketPrices";
 import { useOptimisticPositions } from "./useOptimisticPositions";
 
 export { getPendingMockPosition } from "./useOptimisticPositions";
@@ -86,7 +85,6 @@ export function usePositions(
   const [disableBatching, setDisableBatching] = useState(true);
 
   const keysAndPrices = useKeysAndPricesParams({
-    chainId,
     marketsData,
     tokensData,
     account,
@@ -155,15 +153,11 @@ export function usePositions(
         const market = getByKey(marketsData, marketAddress);
         const marketPrices = market && tokensData ? getContractMarketPrices(tokensData, market) : undefined;
 
-        trackMissedMarketPrices({
-          chainId: requestChainId,
-          marketAddress,
-          marketName: market?.name,
-          source: "usePositions",
-          hasPrices: Boolean(marketPrices),
-        });
-
         if (!marketPrices) {
+          metrics.pushCounter<MissedMarketPricesCounter>("missedMarketPrices", {
+            marketName: market?.name ?? marketAddress,
+            source: "usePositions",
+          });
           continue;
         }
 
@@ -277,12 +271,11 @@ export function usePositions(
 }
 
 function useKeysAndPricesParams(p: {
-  chainId: ContractsChainId;
   account: string | null | undefined;
   marketsData: MarketsData | undefined;
   tokensData: TokensData | undefined;
 }) {
-  const { chainId, account, marketsData, tokensData } = p;
+  const { account, marketsData, tokensData } = p;
 
   return useMemo(() => {
     const values = {
@@ -297,21 +290,17 @@ function useKeysAndPricesParams(p: {
     const markets = Object.values(marketsData);
 
     for (const market of markets) {
+      const marketPrices = getContractMarketPrices(tokensData, market);
+
       if (market.isSpotOnly) {
         continue;
       }
 
-      const marketPrices = getContractMarketPrices(tokensData, market);
-
-      trackMissedMarketPrices({
-        chainId,
-        marketAddress: market.marketTokenAddress,
-        marketName: market.name,
-        source: "useKeysAndPricesParams",
-        hasPrices: Boolean(marketPrices),
-      });
-
       if (!marketPrices) {
+        metrics.pushCounter<MissedMarketPricesCounter>("missedMarketPrices", {
+          marketName: market.name,
+          source: "useKeysAndPricesParams",
+        });
         continue;
       }
 
@@ -330,5 +319,5 @@ function useKeysAndPricesParams(p: {
     }
 
     return values;
-  }, [chainId, account, marketsData, tokensData]);
+  }, [account, marketsData, tokensData]);
 }
