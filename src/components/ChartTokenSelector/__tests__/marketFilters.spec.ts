@@ -6,6 +6,7 @@ import {
   applySubCategoryFilter,
   applyTopLevelFilter,
   getRecentlyListedTokenAddresses,
+  getMarketSearchEmptyStateActions,
   isMarketRecentlyListed,
 } from "../marketFilters";
 
@@ -112,6 +113,58 @@ describe("applySubCategoryFilter", () => {
 
   it("ignores sub-cat when parent is not crypto/tradfi", () => {
     expect(applySubCategoryFilter(tokens, { topLevelTab: "all", subCategoryTab: "ai" })).toEqual(tokens);
+  });
+});
+
+describe("getMarketSearchEmptyStateActions", () => {
+  it("offers search in All when the current mode has matches outside the active filter", () => {
+    expect(
+      getMarketSearchEmptyStateActions({
+        hasActiveFilter: true,
+        hasCurrentModeMatches: true,
+        hasOtherModeMatches: true,
+      })
+    ).toEqual({ shouldOfferSearchAll: true, shouldOfferOtherMode: false });
+  });
+
+  it("offers the other mode only when the current mode has no matches", () => {
+    expect(
+      getMarketSearchEmptyStateActions({
+        hasActiveFilter: true,
+        hasCurrentModeMatches: false,
+        hasOtherModeMatches: true,
+      })
+    ).toEqual({ shouldOfferSearchAll: false, shouldOfferOtherMode: true });
+  });
+
+  it("offers the other mode from All when only the other mode has matches", () => {
+    expect(
+      getMarketSearchEmptyStateActions({
+        hasActiveFilter: false,
+        hasCurrentModeMatches: false,
+        hasOtherModeMatches: true,
+      })
+    ).toEqual({ shouldOfferSearchAll: false, shouldOfferOtherMode: true });
+  });
+
+  it("offers no action when neither mode has matches", () => {
+    expect(
+      getMarketSearchEmptyStateActions({
+        hasActiveFilter: true,
+        hasCurrentModeMatches: false,
+        hasOtherModeMatches: false,
+      })
+    ).toEqual({ shouldOfferSearchAll: false, shouldOfferOtherMode: false });
+  });
+
+  it("does not offer search in All when All is already active", () => {
+    expect(
+      getMarketSearchEmptyStateActions({
+        hasActiveFilter: false,
+        hasCurrentModeMatches: true,
+        hasOtherModeMatches: true,
+      })
+    ).toEqual({ shouldOfferSearchAll: false, shouldOfferOtherMode: false });
   });
 });
 

@@ -46,6 +46,7 @@ import {
   TriggerThresholdType,
 } from "sdk/utils/trade/types";
 
+import { getMaxPositionSizeExceededMessage } from "./getMaxPositionSizeExceededMessage";
 import { getIsPositionLiquidatableAtPrice } from "./warnings";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
@@ -427,13 +428,21 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Enter an amount` };
   }
 
-  if (!isLimit) {
+  if (!isLimit && !isTwap) {
     if (isLong && (longLiquidity === undefined || longLiquidity < sizeDeltaUsd)) {
-      return { buttonErrorMessage: t`Max ${indexToken.symbol} long exceeded` };
+      return {
+        buttonErrorMessage: t`Max ${indexToken.symbol} long exceeded`,
+        buttonTooltipMessage:
+          longLiquidity === undefined ? undefined : getMaxPositionSizeExceededMessage(isLong, longLiquidity),
+      };
     }
 
     if (!isLong && (shortLiquidity === undefined || shortLiquidity < sizeDeltaUsd)) {
-      return { buttonErrorMessage: t`Max ${indexToken.symbol} short exceeded` };
+      return {
+        buttonErrorMessage: t`Max ${indexToken.symbol} short exceeded`,
+        buttonTooltipMessage:
+          shortLiquidity === undefined ? undefined : getMaxPositionSizeExceededMessage(isLong, shortLiquidity),
+      };
     }
   }
 

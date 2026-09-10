@@ -4,6 +4,9 @@ import { useTotalVolume } from "landing/pages/Home/hooks/useTotalVolume";
 import { useTraders } from "landing/pages/Home/hooks/useTraders";
 import { shortFormat, shortFormatUsd } from "landing/pages/Home/utils/formatters";
 
+import { useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
+import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
+
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
 import IcMidChevron from "img/ic_mid_chevron.svg?react";
 
@@ -19,10 +22,13 @@ export function HeroSection() {
   });
   const tradersRaw = useTraders();
   const { poolsData } = useHomePageContext();
+  const gmtradeStats = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana;
+  const gmtradeOpenInterest = parseProtocolStatsUsd(gmtradeStats?.openInterest?.total) ?? 0n;
+  const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total) ?? 0n;
   const traders = tradersRaw ? shortFormat(tradersRaw) : "-";
-  const openInterest = poolsData?.openInterest ? shortFormatUsd(poolsData.openInterest) : "-";
+  const openInterest = poolsData?.openInterest ? shortFormatUsd(poolsData.openInterest + gmtradeOpenInterest) : "-";
   const { data: totalVolume } = useTotalVolume();
-  const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume) : "-";
+  const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume + gmtradeTotalVolume) : "-";
   const onTotalVolumeClick = () => {
     window.open("https://dune.com/gmx-io/gmx-analytics", "_blank");
   };

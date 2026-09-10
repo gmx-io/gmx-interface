@@ -42,26 +42,15 @@ export default function useVolumeInfo(chainId: number) {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching volume data for chain ${chain}:`, error);
-      return {
-        dailyVolume: 0n,
-        totalVolume: 0n,
-      };
+      // a failed source stays unknown: a zero here would settle the network total as complete
+      return undefined;
     }
   }
 
   async function fetcher([, chainId]: [string, number]) {
     const lastPeriodFor24Hours = Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24;
-    try {
-      const { dailyVolume, totalVolume } = await fetchVolumeData(chainId, lastPeriodFor24Hours);
-      return {
-        dailyVolume,
-        totalVolume,
-      };
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error("Error fetching volume data:", error);
-      return {};
-    }
+
+    return fetchVolumeData(chainId, lastPeriodFor24Hours);
   }
 
   const { data: volumes } = useSWR(["v2VolumeInfos", chainId], fetcher, {

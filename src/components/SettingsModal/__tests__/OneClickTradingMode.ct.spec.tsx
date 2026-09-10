@@ -14,6 +14,8 @@ import {
 } from "domain/testUtils/rpc/mockChain";
 import { assertNoRpcHoles, installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { ARBITRUM } from "sdk/configs/chainIds";
+import { minCollateralFactorKey } from "sdk/configs/dataStore";
+import { getMarketsByChainId } from "sdk/configs/markets";
 
 import { OneClickTradingModeStory } from "./OneClickTradingMode.ct.stories";
 
@@ -44,11 +46,11 @@ function modeButton(page: PageLike, title: "Classic" | "Express" | "Express + On
 }
 
 function expectModeActive(button: Locator) {
-  return expect(button).toHaveClass(/border-slate-100/);
+  return expect(button).toHaveClass(/(?:^|\s)border-slate-100(?:\s|$)/);
 }
 
 function expectModeInactive(button: Locator) {
-  return expect(button).toHaveClass(/border-slate-600/);
+  return expect(button).toHaveClass(/(?:^|\s)border-slate-600(?:\s|$)/);
 }
 
 function readLocalStorage(page: PageLike, key: unknown): Promise<string | null> {
@@ -187,6 +189,8 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
       subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
       onchain: { active: false },
     });
+    const probeMarket = Object.values(getMarketsByChainId(ARBITRUM))[0];
+    chain.setDataStoreUint(minCollateralFactorKey(probeMarket.marketTokenAddress), 1n);
     await installRpcResponder(page, chain);
 
     await mount(

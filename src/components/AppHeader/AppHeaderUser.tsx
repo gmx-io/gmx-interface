@@ -4,12 +4,14 @@ import { NETWORK_OPTIONS } from "config/networkOptions";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useChainId } from "lib/chains";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 
 import { SettingsButton } from "components/SettingsButton/SettingsButton";
 
 import { AddressDropdown } from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../ConnectWalletButton/ConnectWalletButton";
+import ConnectWalletPlaceholder from "../ConnectWalletButton/ConnectWalletPlaceholder";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 
 type Props = {
@@ -20,6 +22,7 @@ type Props = {
 export function AppHeaderUser({ openSettings, menuToggle }: Props) {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const { active, account } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
   const { openConnectModal } = useConnectModal();
 
   const visualChainId = srcChainId ?? settlementChainId;
@@ -27,14 +30,18 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
   if (!active || !account) {
     return (
       <div className="flex items-center gap-8">
-        <ConnectWalletButton
-          onClick={() => {
-            sendUserAnalyticsConnectWalletClickEvent("Header");
-            openConnectModal?.();
-          }}
-        >
-          <Trans>Connect wallet</Trans>
-        </ConnectWalletButton>
+        {isWalletInitializing ? (
+          <ConnectWalletPlaceholder />
+        ) : (
+          <ConnectWalletButton
+            onClick={() => {
+              sendUserAnalyticsConnectWalletClickEvent("Header");
+              openConnectModal?.();
+            }}
+          >
+            <Trans>Connect wallet</Trans>
+          </ConnectWalletButton>
+        )}
         <SettingsButton openSettings={openSettings} />
         <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
         {menuToggle ? menuToggle : null}

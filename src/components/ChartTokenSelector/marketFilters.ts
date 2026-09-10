@@ -47,6 +47,21 @@ export function applySubCategoryFilter(
   return tokens.filter((t) => t.categories?.includes(args.subCategoryTab as TokenCategory));
 }
 
+export function getMarketSearchEmptyStateActions({
+  hasActiveFilter,
+  hasCurrentModeMatches,
+  hasOtherModeMatches,
+}: {
+  hasActiveFilter: boolean;
+  hasCurrentModeMatches: boolean;
+  hasOtherModeMatches: boolean;
+}) {
+  return {
+    shouldOfferSearchAll: hasActiveFilter && hasCurrentModeMatches,
+    shouldOfferOtherMode: !hasCurrentModeMatches && hasOtherModeMatches,
+  };
+}
+
 export function isMarketRecentlyListed(listingDate: number | undefined, now: number): boolean {
   if (listingDate === undefined) return false;
   return now - listingDate < RECENTLY_LISTED_WINDOW_MS;

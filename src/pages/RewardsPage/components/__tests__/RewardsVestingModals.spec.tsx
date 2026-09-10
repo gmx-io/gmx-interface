@@ -37,7 +37,12 @@ vi.mock("ethers", async (importOriginal) => {
 
   return {
     ...actual,
-    ethers: { ...actual.ethers, Contract: vi.fn(() => ({})) },
+    ethers: {
+      ...actual.ethers,
+      Contract: vi.fn(function () {
+        return {};
+      }),
+    },
   };
 });
 
