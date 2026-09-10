@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
@@ -21,33 +21,12 @@ import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipComponent from "components/Tooltip/Tooltip";
+import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
 
 import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
 import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
 import { getPositionStats } from "./getPositionStats";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
-
-type NetworkRow = { label: string; value: bigint | undefined };
-
-// highest first, with a network whose value has not arrived yet kept last rather than ordered as zero
-function sortNetworkRows(rows: NetworkRow[]): NetworkRow[] {
-  return [...rows].sort((a, b) => {
-    if (a.value === b.value) {
-      return 0;
-    }
-    if (a.value === undefined) {
-      return 1;
-    }
-    if (b.value === undefined) {
-      return -1;
-    }
-
-    return a.value > b.value ? -1 : 1;
-  });
-}
 
 const SOLANA_ENTRY = "Solana";
 
@@ -132,34 +111,25 @@ export function OverviewCard({
   // the store carries position collateral the way the EVM figures do, which the pool value on its own leaves out
   const displayTvlGmtrade = parseProtocolStatsUsd(gmtradeOverview?.tvl?.store) ?? gmTvlGmtrade;
 
-  const totalGmTvl = sumKnownBigInts(gmTvlArbitrum, gmTvlAvalanche, gmTvlMegaeth, gmTvlGmtrade);
+  const getStakedGmxUsd = (stakedGmx: bigint | undefined) =>
+    gmxPrice !== undefined && stakedGmx !== undefined
+      ? bigMath.mulDiv(gmxPrice, stakedGmx, expandDecimals(1, GMX_DECIMALS))
+      : undefined;
 
-  let displayTvlArbitrum: bigint | undefined = undefined;
-  let displayTvlAvalanche: bigint | undefined = undefined;
-  let displayTvlMegaeth: bigint | undefined = undefined;
-  let displayTvl: bigint | undefined = undefined;
-  if (
-    gmxPrice !== undefined &&
-    stakedGmxArbitrum !== undefined &&
-    stakedGmxAvalanche !== undefined &&
-    glpMarketCapArbitrum !== undefined &&
-    glpMarketCapAvalanche !== undefined &&
-    arbitrumPositionsMarginUsd !== undefined &&
-    avalanchePositionsMarginUsd !== undefined &&
-    megaethPositionsMarginUsd !== undefined &&
-    gmTvlArbitrum !== undefined &&
-    gmTvlAvalanche !== undefined &&
-    gmTvlMegaeth !== undefined
-  ) {
-    const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
-    const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
-
-    // GMX Staked + GLP Pools + GM Pools
-    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsMarginUsd;
-    displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsMarginUsd;
-    displayTvlMegaeth = gmTvlMegaeth + megaethPositionsMarginUsd;
-    displayTvl = sumKnownBigInts(displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, displayTvlGmtrade);
-  }
+  // GMX staked + GLP pools + GM pools + position collateral, each network from its own inputs only
+  const displayTvlArbitrum = sumKnownBigInts(
+    getStakedGmxUsd(stakedGmxArbitrum),
+    glpMarketCapArbitrum,
+    gmTvlArbitrum,
+    arbitrumPositionsMarginUsd
+  );
+  const displayTvlAvalanche = sumKnownBigInts(
+    getStakedGmxUsd(stakedGmxAvalanche),
+    glpMarketCapAvalanche,
+    gmTvlAvalanche,
+    avalanchePositionsMarginUsd
+  );
+  const displayTvlMegaeth = sumKnownBigInts(gmTvlMegaeth, megaethPositionsMarginUsd);
 
   // #endregion TVL and GLP Pool
 
@@ -168,19 +138,8 @@ export function OverviewCard({
   const v1ArbitrumDailyVolume = v1DailyVolumeInfo?.[ARBITRUM];
   const v1AvalancheDailyVolume = v1DailyVolumeInfo?.[AVALANCHE];
 
-  const v2ArbitrumDailyVolume = v2ArbitrumOverview.dailyVolume;
-  const v2AvalancheDailyVolume = v2AvalancheOverview.dailyVolume;
-  const v2MegaethDailyVolume = v2MegaethOverview.dailyVolume;
   const gmtradeDailyVolume = parseProtocolStatsUsd(gmtradeOverview?.volume24h?.total);
 
-  const totalDailyVolume = sumBigInts(
-    v1ArbitrumDailyVolume,
-    v1AvalancheDailyVolume,
-    v2ArbitrumDailyVolume,
-    v2AvalancheDailyVolume,
-    v2MegaethDailyVolume,
-    gmtradeDailyVolume
-  );
   // #endregion Daily Volume
 
   // #region Open Interest
@@ -191,14 +150,6 @@ export function OverviewCard({
   const v2MegaethOpenInterest = v2MegaethOverview.openInterest;
   const gmtradeOpenInterest = parseProtocolStatsUsd(gmtradeOverview?.openInterest?.total);
 
-  const totalOpenInterest = sumBigInts(
-    v1ArbitrumOpenInterest,
-    v1AvalancheOpenInterest,
-    v2ArbitrumOpenInterest,
-    v2AvalancheOpenInterest,
-    v2MegaethOpenInterest,
-    gmtradeOpenInterest
-  );
   // #endregion Open Interest
 
   // #region Long Position Sizes
@@ -210,14 +161,6 @@ export function OverviewCard({
   const v2MegaethLongPositionSizes = v2MegaethOverview.totalLongPositionSizes;
   const gmtradeLongPositionSizes = parseProtocolStatsUsd(gmtradeOverview?.openInterest?.long);
 
-  const totalLongPositionSizes = sumBigInts(
-    v1ArbitrumLongPositionSizes,
-    v1AvalancheLongPositionSizes,
-    v2ArbitrumLongPositionSizes,
-    v2AvalancheLongPositionSizes,
-    v2MegaethLongPositionSizes,
-    gmtradeLongPositionSizes
-  );
   // #endregion Long Position Sizes
 
   // #region Short Position Sizes
@@ -229,14 +172,6 @@ export function OverviewCard({
   const v2MegaethShortPositionSizes = v2MegaethOverview.totalShortPositionSizes;
   const gmtradeShortPositionSizes = parseProtocolStatsUsd(gmtradeOverview?.openInterest?.short);
 
-  const totalShortPositionSizes = sumBigInts(
-    v1ArbitrumShortPositionSizes,
-    v1AvalancheShortPositionSizes,
-    v2ArbitrumShortPositionSizes,
-    v2AvalancheShortPositionSizes,
-    v2MegaethShortPositionSizes,
-    gmtradeShortPositionSizes
-  );
   // #endregion Short Position Sizes
 
   // #region Fees
@@ -247,15 +182,6 @@ export function OverviewCard({
   const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
   const v2MegaethEpochFees = v2MegaethOverview?.epochFees;
   const gmtradeEpochFees = gmtradeFees?.epochFees;
-
-  const totalEpochFeesUsd = sumBigInts(
-    v1ArbitrumEpochFees,
-    v1AvalancheEpochFees,
-    v2ArbitrumEpochFees,
-    v2AvalancheEpochFees,
-    v2MegaethEpochFees,
-    gmtradeEpochFees
-  );
 
   const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
   const v1AvalancheWeeklyFees = v1AvalancheFees?.weeklyFees;
@@ -361,25 +287,23 @@ export function OverviewCard({
     ]
   );
 
-  const tvlRows = useMemo(
-    () =>
-      sortNetworkRows([
-        { label: t`Arbitrum`, value: displayTvlArbitrum },
-        { label: t`Avalanche`, value: displayTvlAvalanche },
-        { label: "MegaETH", value: displayTvlMegaeth },
-        { label: "Solana", value: displayTvlGmtrade },
-      ]),
+  const tvlEntries = useMemo(
+    () => ({
+      Arbitrum: displayTvlArbitrum,
+      Avalanche: displayTvlAvalanche,
+      MegaETH: displayTvlMegaeth,
+      [SOLANA_ENTRY]: displayTvlGmtrade,
+    }),
     [displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, displayTvlGmtrade]
   );
 
-  const gmPoolRows = useMemo(
-    () =>
-      sortNetworkRows([
-        { label: t`Arbitrum`, value: gmTvlArbitrum },
-        { label: t`Avalanche`, value: gmTvlAvalanche },
-        { label: "MegaETH", value: gmTvlMegaeth },
-        { label: "Solana", value: gmTvlGmtrade },
-      ]),
+  const gmPoolEntries = useMemo(
+    () => ({
+      Arbitrum: gmTvlArbitrum,
+      Avalanche: gmTvlAvalanche,
+      MegaETH: gmTvlMegaeth,
+      [SOLANA_ENTRY]: gmTvlGmtrade,
+    }),
     [gmTvlArbitrum, gmTvlAvalanche, gmTvlMegaeth, gmTvlGmtrade]
   );
 
@@ -443,19 +367,7 @@ export function OverviewCard({
                 <Trans>Fees for the past</Trans> {formattedDuration}
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={
-                    <ChainsStatsTooltipRow
-                      entries={epochFeesEntries}
-                      subtotal={feesSubtotal}
-                      staleTitles={staleTitles}
-                    />
-                  }
-                />
+                <ChainsStatsTooltip entries={epochFeesEntries} subtotal={feesSubtotal} staleTitles={staleTitles} />
               </div>
             </div>
             <div className="App-card-row">
@@ -463,31 +375,10 @@ export function OverviewCard({
                 <Trans>TVL</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  handle={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  position="bottom-end"
-                  content={
-                    <>
-                      <Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>
-                      <br />
-                      <br />
-                      {tvlRows.map(({ label, value }) => (
-                        <StatsTooltipRow
-                          key={label}
-                          label={label}
-                          showDollar={false}
-                          value={formatAmountHuman(value, USD_DECIMALS, true, 2)}
-                        />
-                      ))}
-                      <div className="!my-8 h-1 bg-gray-800" />
-                      <StatsTooltipRow
-                        label={t`Total`}
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
-                      />
-                    </>
-                  }
+                <ChainsStatsTooltip
+                  entries={tvlEntries}
+                  staleTitles={staleTitles}
+                  caption={<Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>}
                 />
               </div>
             </div>
@@ -496,31 +387,10 @@ export function OverviewCard({
                 <Trans>GM pools</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  handle={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  position="bottom-end"
-                  content={
-                    <>
-                      <Trans>Total value of tokens in GM pools</Trans>
-                      <br />
-                      <br />
-                      {gmPoolRows.map(({ label, value }) => (
-                        <StatsTooltipRow
-                          key={label}
-                          label={label}
-                          showDollar={false}
-                          value={formatAmountHuman(value, USD_DECIMALS, true, 2)}
-                        />
-                      ))}
-                      <div className="!my-8 h-1 bg-gray-800" />
-                      <StatsTooltipRow
-                        label={t`Total`}
-                        showDollar={false}
-                        value={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
-                      />
-                    </>
-                  }
+                <ChainsStatsTooltip
+                  entries={gmPoolEntries}
+                  staleTitles={staleTitles}
+                  caption={<Trans>Total value of tokens in GM pools</Trans>}
                 />
               </div>
             </div>
@@ -533,13 +403,7 @@ export function OverviewCard({
                 <Trans>24h volume</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} staleTitles={staleTitles} />}
-                />
+                <ChainsStatsTooltip entries={dailyVolumeEntries} staleTitles={staleTitles} />
               </div>
             </div>
             <div className="App-card-row">
@@ -547,13 +411,7 @@ export function OverviewCard({
                 <Trans>Open interest</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={openInterestEntries} staleTitles={staleTitles} />}
-                />
+                <ChainsStatsTooltip entries={openInterestEntries} staleTitles={staleTitles} />
               </div>
             </div>
             <div className="App-card-row">
@@ -561,13 +419,7 @@ export function OverviewCard({
                 <Trans>Long positions</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} staleTitles={staleTitles} />}
-                />
+                <ChainsStatsTooltip entries={totalLongPositionSizesEntries} staleTitles={staleTitles} />
               </div>
             </div>
             <div className="App-card-row">
@@ -575,13 +427,7 @@ export function OverviewCard({
                 <Trans>Short positions</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} staleTitles={staleTitles} />}
-                />
+                <ChainsStatsTooltip entries={totalShortPositionSizesEntries} staleTitles={staleTitles} />
               </div>
             </div>
           </AppCardSection>
