@@ -26,7 +26,7 @@ import {
   PerformancePeriod,
   PerformanceSnapshotsResponse,
   RawIncentivesStats,
-  TickersResponse,
+  TickersResult,
 } from "./types";
 import { consumeUiFlagsPrefetch } from "./uiFlagsPrefetch";
 
@@ -69,6 +69,12 @@ export class OracleKeeperFetcher implements OracleFetcher {
     return this.oracleTracker.getCurrentEndpoints().primary;
   }
 
+  get endpoints() {
+    const { primary, fallbacks } = this.oracleTracker.getCurrentEndpoints();
+
+    return [primary, ...fallbacks];
+  }
+
   handleFailure(path: string) {
     metrics.pushCounter<OracleKeeperFailureCounter>("oracleKeeper.failure", {
       chainId: this.chainId,
@@ -83,6 +89,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
     opts: {
       query?: Record<string, string | number | undefined | boolean>;
       validate?: (res: any) => Error | undefined;
+      onServed?: (endpoint: string) => void;
       // For simplicity, support only tickers debug id for now
       debugId?: "tickers";
     }
@@ -124,6 +131,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
               });
             }
 
+            opts.onServed?.(endpoint);
+
             if (
               opts.debugId === "tickers" &&
               _debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerPartialTickers)
@@ -163,7 +172,9 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   };
 
-  fetchTickers(): Promise<TickersResponse> {
+  fetchTickers(): Promise<TickersResult> {
+    let endpoint = this.url;
+
     return this.request("/prices/tickers", {
       validate: (res) => {
         if (!res.length) {
@@ -172,14 +183,11 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
         return undefined;
       },
+      onServed: (servedBy) => {
+        endpoint = servedBy;
+      },
       debugId: "tickers",
-    })
-      .then((res) => {
-        return res;
-      })
-      .catch((error) => {
-        throw error;
-      });
+    }).then((tickers) => ({ tickers, endpoint }));
   }
 
   fetch24hPrices(): Promise<DayPriceCandle[]> {

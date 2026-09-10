@@ -129,7 +129,8 @@ export type PerformanceSnapshotsResponse = {
 
 export interface OracleFetcher {
   readonly url: string;
-  fetchTickers(): Promise<TickersResponse>;
+  readonly endpoints: string[];
+  fetchTickers(): Promise<TickersResult>;
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
@@ -142,6 +143,11 @@ export interface OracleFetcher {
   fetchMarkets(): Promise<ApiMarket[]>;
   handleFailure(method: string): void;
 }
+
+export type TickersResult = {
+  tickers: TickersResponse;
+  endpoint: string;
+};
 
 export type TickersResponse = {
   minPrice: string;
