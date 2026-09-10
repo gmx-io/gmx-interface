@@ -115,6 +115,7 @@ export function useSupportChat() {
       hide_default_launcher: true,
       hide_notifications: false,
       user_id: supportChatUserId,
+      Environment: "EVM",
       // theme goes into the boot settings: update({ theme_mode }) during the boot window
       // suppresses the initial unread count delivery in the Intercom widget
       theme_mode: themeToIntercomTheme(themeModeRef.current),

@@ -1,5 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import React from "react";
+import { act, render, waitFor } from "@testing-library/react";
 import { SWRConfig } from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -13,77 +12,48 @@ vi.mock("../client", () => ({
 import { fetchIncentivesGraphql, getIncentivesIndexerUrl } from "../client";
 import type { RawLeaderboardEntry } from "../parsers";
 import { INCENTIVES_LEADERBOARD_QUERY } from "../queries";
-import type { IncentivesLeaderboardOrderBy } from "../useIncentivesLeaderboard";
-import { LEADERBOARD_SEARCH_SCAN_LIMIT, useIncentivesLeaderboardSearch } from "../useIncentivesLeaderboardSearch";
+import { useIncentivesLeaderboardSearch } from "../useIncentivesLeaderboardSearch";
 
 const ENDPOINT = "https://example.com/incentives/graphql";
-const SCAN_PAGE_SIZE = 1000;
 const swrConfig = { provider: () => new Map(), dedupingInterval: 0, errorRetryCount: 0 };
-
 const mockFetchIncentivesGraphql = vi.mocked(fetchIncentivesGraphql);
 const mockGetIncentivesIndexerUrl = vi.mocked(getIncentivesIndexerUrl);
 
-function makeRawEntry(index: number, address: string, tradingVolume = String(1_000 - index)): RawLeaderboardEntry {
+type SearchParams = Parameters<typeof useIncentivesLeaderboardSearch>[1];
+
+function makeRawEntry(rank: number, address: string): RawLeaderboardEntry {
   return {
-    rank: index + 1,
+    rank,
     address,
-    tradingVolume,
+    tradingVolume: "1000",
     referralVolume: "0",
     esGmxRewards: "0",
     gtRewards: "0",
-    rewardsUsd: String(10_000 - index),
+    rewardsUsd: "100",
     multiplier: null,
   };
 }
 
-function makeAddress(index: number) {
-  return `0x${index.toString(16).padStart(40, "0")}`;
-}
-
-function makeMatchingAddress(index: number) {
-  return `0xAbCdEf${index.toString(16).padStart(34, "0")}`;
-}
-
-function mockLeaderboard(entries: RawLeaderboardEntry[], totalCount = entries.length) {
-  mockFetchIncentivesGraphql.mockImplementation(async (_endpoint, _query, variables) => {
-    const offset = (variables as { offset: number }).offset;
-    const limit = (variables as { limit: number }).limit;
-
-    return {
-      incentivesLeaderboard: { totalCount, items: entries.slice(offset, offset + limit) },
-    } as never;
-  });
-}
-
-function renderSearch(
-  params: { term: string; orderBy?: IncentivesLeaderboardOrderBy; limit?: number; offset?: number; enabled?: boolean },
-  onRender?: (result: ReturnType<typeof useIncentivesLeaderboardSearch>) => void
-) {
-  function TestComponent() {
-    const result = useIncentivesLeaderboardSearch(ARBITRUM, {
-      term: params.term,
-      orderBy: params.orderBy ?? "rewardsUsd_DESC",
-      limit: params.limit ?? 20,
-      offset: params.offset ?? 0,
-      enabled: params.enabled,
-    });
-
-    onRender?.(result);
-
-    return (
-      <div>
-        {result.data === undefined
-          ? "loading"
-          : `${result.totalCount}:${result.isTruncated}:${result.data.map((entry) => entry.address).join(",")}`}
-      </div>
-    );
+function renderSearch(params: Partial<SearchParams> & Pick<SearchParams, "term">) {
+  let current: ReturnType<typeof useIncentivesLeaderboardSearch>;
+  function TestComponent({ params }: { params: SearchParams }) {
+    current = useIncentivesLeaderboardSearch(ARBITRUM, params);
+    return null;
   }
-
-  return render(
+  const getView = (params: SearchParams) => (
     <SWRConfig value={swrConfig}>
-      <TestComponent />
+      <TestComponent params={params} />
     </SWRConfig>
   );
+  const view = render(getView({ orderBy: "rewardsUsd_DESC", limit: 20, offset: 0, ...params }));
+  return {
+    result: {
+      get current() {
+        return current;
+      },
+    },
+    rerender: (params: SearchParams) => view.rerender(getView(params)),
+  };
 }
 
 describe("useIncentivesLeaderboardSearch", () => {
@@ -93,82 +63,85 @@ describe("useIncentivesLeaderboardSearch", () => {
     mockGetIncentivesIndexerUrl.mockReturnValue(ENDPOINT);
   });
 
-  it("matches a partial address case-insensitively across scanned pages", async () => {
-    const entries = [
-      makeRawEntry(0, "0xAB1200000000000000000000000000000000FFFF"),
-      makeRawEntry(1, "0x0000000000000000000000000000000000000001"),
-      makeRawEntry(2, "0x00000000000000000000000000000000000ab120"),
-    ];
-    mockLeaderboard(entries);
+  it("requests one filtered page and preserves global rank and address casing", async () => {
+    const entry = makeRawEntry(10_501, "0xAB1200000000000000000000000000000000FFFF");
+    mockFetchIncentivesGraphql.mockResolvedValue({
+      incentivesLeaderboard: { totalCount: 12_500, items: [entry] },
+    });
 
-    renderSearch({ term: "Ab12" });
+    const { result } = renderSearch({ term: " Ab12 " });
 
-    expect(
-      await screen.findByText(
-        "2:false:0xAB1200000000000000000000000000000000FFFF,0x00000000000000000000000000000000000ab120"
-      )
-    ).toBeTruthy();
-    expect(mockFetchIncentivesGraphql).toHaveBeenCalledTimes(1);
-    expect(mockFetchIncentivesGraphql).toHaveBeenCalledWith(ENDPOINT, INCENTIVES_LEADERBOARD_QUERY, {
-      limit: SCAN_PAGE_SIZE,
+    await waitFor(() => expect(result.current.data).toHaveLength(1));
+    expect(result.current.data?.[0]).toMatchObject({ rank: 10_501, address: entry.address });
+    expect(result.current.totalCount).toBe(12_500);
+    expect(result.current.hasNextPage).toBe(true);
+    expect(mockFetchIncentivesGraphql).toHaveBeenCalledExactlyOnceWith(ENDPOINT, INCENTIVES_LEADERBOARD_QUERY, {
+      where: { account_contains: "Ab12" },
+      limit: 20,
       offset: 0,
       orderBy: "rewardsUsd_DESC",
     });
   });
 
-  it("scans every page of a long leaderboard and paginates the matches", async () => {
-    const entries = Array.from({ length: 2_500 }, (_, index) =>
-      makeRawEntry(index, index === 5 || index === 1_500 ? makeMatchingAddress(index) : makeAddress(index))
-    );
-    mockLeaderboard(entries);
+  it("delegates sorting and pagination to the indexer within the selected epoch", async () => {
+    const entries = [
+      makeRawEntry(50, "0xAA00000000000000000000000000000000000001"),
+      makeRawEntry(2, "0xAA00000000000000000000000000000000000002"),
+    ];
+    mockFetchIncentivesGraphql.mockResolvedValue({
+      incentivesLeaderboard: { totalCount: 22, items: entries },
+    });
 
-    renderSearch({ term: "abcdef", limit: 1, offset: 1 });
+    const { result } = renderSearch({ term: "0xAA", epoch: 1_784_073_600, orderBy: "tradingVolume_ASC", offset: 20 });
 
-    expect(await screen.findByText(`2:false:${makeMatchingAddress(1_500)}`)).toBeTruthy();
-    await waitFor(() => expect(mockFetchIncentivesGraphql).toHaveBeenCalledTimes(3));
-    expect(mockFetchIncentivesGraphql).toHaveBeenCalledWith(ENDPOINT, INCENTIVES_LEADERBOARD_QUERY, {
-      limit: SCAN_PAGE_SIZE,
-      offset: 2 * SCAN_PAGE_SIZE,
-      orderBy: "rewardsUsd_DESC",
+    await waitFor(() => expect(result.current.data).toHaveLength(2));
+    expect(result.current.data?.map((entry) => entry.rank)).toEqual([50, 2]);
+    expect(result.current.totalCount).toBe(22);
+    expect(result.current.hasNextPage).toBe(false);
+    expect(mockFetchIncentivesGraphql).toHaveBeenCalledExactlyOnceWith(ENDPOINT, INCENTIVES_LEADERBOARD_QUERY, {
+      epoch: 1_784_073_600,
+      where: { account_contains: "0xAA" },
+      limit: 20,
+      offset: 20,
+      orderBy: "tradingVolume_ASC",
     });
   });
 
-  it("sorts matches by the requested field and direction", async () => {
-    const entries = [
-      makeRawEntry(0, "0xAA00000000000000000000000000000000000001", "300"),
-      makeRawEntry(1, "0xAA00000000000000000000000000000000000002", "100"),
-      makeRawEntry(2, "0xAA00000000000000000000000000000000000003", "200"),
-    ];
-    mockLeaderboard(entries);
+  it("isolates cached results by search term while the next request is pending", async () => {
+    const firstEntry = makeRawEntry(1, "0xAB12000000000000000000000000000000000000");
+    const secondEntry = makeRawEntry(90, "0xCD34000000000000000000000000000000000000");
+    const secondResponse = { incentivesLeaderboard: { totalCount: 1, items: [secondEntry] } };
+    let resolveSecond: ((value: typeof secondResponse) => void) | undefined;
+    mockFetchIncentivesGraphql
+      .mockResolvedValueOnce({ incentivesLeaderboard: { totalCount: 1, items: [firstEntry] } })
+      .mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveSecond = resolve;
+        })
+      );
+    const { result, rerender } = renderSearch({ term: "Ab12" });
+    await waitFor(() => expect(result.current.data?.[0]?.address).toBe(firstEntry.address));
 
-    renderSearch({ term: "0xaa", orderBy: "tradingVolume_ASC" });
+    rerender({ term: "Cd34", orderBy: "rewardsUsd_DESC", limit: 20, offset: 0 });
+    await waitFor(() => expect(mockFetchIncentivesGraphql).toHaveBeenCalledTimes(2));
+    expect(result.current.data).toBeUndefined();
+    await act(async () => {
+      resolveSecond?.(secondResponse);
+    });
 
-    expect(
-      await screen.findByText(
-        "3:false:0xAA00000000000000000000000000000000000002,0xAA00000000000000000000000000000000000003,0xAA00000000000000000000000000000000000001"
-      )
-    ).toBeTruthy();
+    await waitFor(() => expect(result.current.data?.[0]?.address).toBe(secondEntry.address));
+    expect(mockFetchIncentivesGraphql.mock.calls[1][2]).toMatchObject({ where: { account_contains: "Cd34" } });
   });
 
-  it("reports truncation once the leaderboard outgrows the scan limit", async () => {
-    const entries = Array.from({ length: LEADERBOARD_SEARCH_SCAN_LIMIT }, (_, index) =>
-      makeRawEntry(index, index === 3 ? makeMatchingAddress(index) : makeAddress(index))
-    );
-    mockLeaderboard(entries, LEADERBOARD_SEARCH_SCAN_LIMIT + 1);
+  it.each([{ term: "0x0", enabled: false }, { term: "   " }])(
+    "does not fetch an inactive search (%o)",
+    async (params) => {
+      renderSearch(params);
+      await waitFor(() => expect(mockFetchIncentivesGraphql).not.toHaveBeenCalled());
+    }
+  );
 
-    renderSearch({ term: "abcdef" });
-
-    expect(await screen.findByText(`1:true:${makeMatchingAddress(3)}`)).toBeTruthy();
-    expect(mockFetchIncentivesGraphql).toHaveBeenCalledTimes(LEADERBOARD_SEARCH_SCAN_LIMIT / SCAN_PAGE_SIZE);
-  });
-
-  it("does not scan the leaderboard when disabled or without an endpoint", async () => {
-    mockLeaderboard([makeRawEntry(0, makeAddress(1))]);
-
-    const { unmount } = renderSearch({ term: "0x0", enabled: false });
-    await waitFor(() => expect(mockFetchIncentivesGraphql).not.toHaveBeenCalled());
-    unmount();
-
+  it("does not fetch without an endpoint", async () => {
     mockGetIncentivesIndexerUrl.mockReturnValue(undefined);
     renderSearch({ term: "0x0" });
     await waitFor(() => expect(mockFetchIncentivesGraphql).not.toHaveBeenCalled());

@@ -4328,7 +4328,7 @@ msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking"
-msgstr ""
+msgstr "<0>Déléguez votre pouvoir de vote de {0} GMX DAO non encore délégué</0> avant de staker"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages"
@@ -11578,10 +11578,6 @@ msgstr "Mettre à jour la limite"
 msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and locked"
-msgstr "Le montant de GMX nécessaire pour placer en vesting les esGMX saisis. Pour chaque esGMX, 5 GMX doivent être stakés et verrouillés"
-
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit order"
@@ -11592,6 +11588,10 @@ msgstr "Modifier l'ordre"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "Erreur de simulation de retrait"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "The additional GMX needed to vest the entered esGMX, after reusing any GMX already locked. Each 1 esGMX requires 5 GMX to be staked and locked"
+msgstr "Les GMX supplémentaires nécessaires pour acquérir les esGMX saisis, après réutilisation des GMX déjà verrouillés. Chaque esGMX nécessite 5 GMX stakés et verrouillés"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -13608,10 +13608,6 @@ msgstr "Distribution"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {minutes} minutes{0}"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
-msgid "Partial search covers the top {0} accounts. Search by full address to find any account."
-msgstr "La recherche partielle couvre les {0} premiers comptes. Recherchez par adresse complète pour trouver n'importe quel compte."
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your own contact on Telegram."

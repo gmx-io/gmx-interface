@@ -4328,7 +4328,7 @@ msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking"
-msgstr ""
+msgstr "스테이킹 전에 <0>아직 위임하지 않은 {0} GMX DAO 투표권을 위임하세요</0>"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages"
@@ -11578,10 +11578,6 @@ msgstr "지정가 업데이트"
 msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and locked"
-msgstr "입력한 esGMX를 베스팅하는 데 필요한 GMX 수량입니다. 1 esGMX마다 5 GMX를 스테이킹하고 잠가야 합니다"
-
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit order"
@@ -11592,6 +11588,10 @@ msgstr "주문 수정"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "출금 시뮬레이션 오류"
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "The additional GMX needed to vest the entered esGMX, after reusing any GMX already locked. Each 1 esGMX requires 5 GMX to be staked and locked"
+msgstr "이미 잠긴 GMX를 재사용한 후 입력한 esGMX를 베스팅하는 데 추가로 필요한 GMX입니다. esGMX 1개당 GMX 5개를 스테이킹하고 잠가야 합니다"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -13608,10 +13608,6 @@ msgstr "분배"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {minutes} minutes{0}"
 msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
-msgid "Partial search covers the top {0} accounts. Search by full address to find any account."
-msgstr "부분 검색은 상위 {0}개 계정만 대상으로 합니다. 모든 계정을 찾으려면 전체 주소로 검색하세요."
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your own contact on Telegram."

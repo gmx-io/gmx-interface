@@ -16,13 +16,10 @@ import {
   type IncentivesLeaderboardOrderBy,
   useIncentivesLeaderboard,
 } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
-import {
-  LEADERBOARD_SEARCH_SCAN_LIMIT,
-  useIncentivesLeaderboardSearch,
-} from "domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch";
+import { useIncentivesLeaderboardSearch } from "domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch";
 import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
 import { useDebounce } from "lib/debounce/useDebounce";
-import { formatUsd, numberWithCommas } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";
 
 import AddressView from "components/AddressView/AddressView";
@@ -63,7 +60,6 @@ function isSameAddress(first?: string, second?: string) {
   return Boolean(first && second && isAddress(first) && isAddress(second) && isAddressEqual(first, second));
 }
 
-// Whole addresses are filtered by the leaderboard query; shorter input falls back to a scan.
 function toSearchAccount(value: string) {
   return isAddress(value, { strict: false }) ? getAddress(value) : undefined;
 }
@@ -256,7 +252,6 @@ export function RewardsLeaderboardTab({
   const {
     data: searchData,
     totalCount: searchTotalCount,
-    isTruncated: isSearchTruncated,
     error: searchError,
     loading: searchLoading,
     isValidating: searchValidating,
@@ -266,6 +261,7 @@ export function RewardsLeaderboardTab({
     term: debouncedSearchTerm,
     orderBy,
     enabled: isPartialSearch,
+    isMutable: selectedPeriod !== "previous",
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
   });
@@ -342,7 +338,7 @@ export function RewardsLeaderboardTab({
   useEpochRolloverRevalidation({
     epochTimestamp: selectedPeriod !== "previous" ? config?.epochTimestamp : undefined,
     enabled: Boolean(config) && selectedPeriod !== "previous" && page === 1,
-    scopeKey: `${chainId}:${account ?? ""}:${selectedPeriod}:${orderBy}:${searchAccount ?? ""}:${endpoint ?? ""}`,
+    scopeKey: `${chainId}:${account ?? ""}:${selectedPeriod}:${orderBy}:${debouncedSearchTerm}:${endpoint ?? ""}`,
     revalidate: revalidateMutableLeaderboard,
   });
 
@@ -488,16 +484,6 @@ export function RewardsLeaderboardTab({
         </>
       ) : (
         <div className="flex grow flex-col rounded-b-8 bg-slate-900">
-          {isPartialSearch && isSearchTruncated ? (
-            <div className="px-20 pb-8 pt-12">
-              <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
-                <Trans>
-                  Partial search covers the top {numberWithCommas(LEADERBOARD_SEARCH_SCAN_LIMIT)} accounts. Search by
-                  full address to find any account.
-                </Trans>
-              </div>
-            </div>
-          ) : null}
           {hasCachedError ? (
             <div className="px-20 pb-8 pt-12">
               <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
