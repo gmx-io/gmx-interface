@@ -2,8 +2,8 @@ import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { getOverlayedBottomInset, useOverlayedBottomInset } from "lib/wallets/oneKeyUiCompat";
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
 import Portal from "components/Portal/Portal";
@@ -43,19 +43,20 @@ function MobileSlideModal({
   fitContent?: boolean;
   hideHeaderBorder?: boolean;
 }>) {
-  const bottomInset = useOverlayedBottomInset();
+  useBlockAutoReload(isOpen);
+
   const curtainStyle = useMemo(
     () =>
       fitContent
         ? {
-            top: `calc(100dvh - ${bottomInset}px)`,
-            maxHeight: `calc(100dvh - ${TOP_OFFSET + bottomInset}px)`,
+            top: `calc(100dvh)`,
+            maxHeight: `calc(100dvh - ${TOP_OFFSET}px)`,
           }
         : {
-            top: `calc(100dvh - ${bottomInset}px)`,
-            height: `calc(100dvh - ${TOP_OFFSET + bottomInset}px)`,
+            top: `calc(100dvh)`,
+            height: `calc(100dvh - ${TOP_OFFSET}px)`,
           },
-    [fitContent, bottomInset]
+    [fitContent]
   );
   const curtainRef = useRef<HTMLDivElement | null>(null);
 
@@ -123,7 +124,7 @@ function MobileSlideModal({
 
     const curtainRect = curtainRef.current.getBoundingClientRect();
 
-    currentRelativeY.current = curtainRect.top - (window.innerHeight - getOverlayedBottomInset());
+    currentRelativeY.current = curtainRect.top - window.innerHeight;
     prevScreenY.current = e.screenY;
     prevScreenX.current = e.screenX;
   }, []);
@@ -270,7 +271,7 @@ function MobileSlideModal({
           data-qa={qa}
           ref={setCurtainRef}
           className={cx(
-            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-slate-700 bg-slate-900",
+            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-slate-700 bg-slate-900 pb-[var(--safe-area-inset-bottom)] pl-[var(--safe-area-inset-left)] pr-[var(--safe-area-inset-right)]",
             className
           )}
           style={curtainStyle}

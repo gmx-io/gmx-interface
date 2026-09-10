@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { ReactNode, useCallback } from "react";
 
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
@@ -11,55 +11,55 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import WarnIcon from "img/ic_warn.svg?react";
 
+import { SettlementBlockReason } from "./utils";
+
 type Props = {
   position: PositionInfo;
   isMarketDisabled: boolean;
-  isSettlementLikelyToFail: boolean;
+  blockReason: SettlementBlockReason | undefined;
   isSelected: boolean;
   onCheckboxChange: (value: boolean, positionKey: string) => void;
 };
 
+function getBlockedTooltipContent(
+  isMarketDisabled: boolean,
+  blockReason: SettlementBlockReason | undefined
+): ReactNode {
+  if (isMarketDisabled) {
+    return <Trans>This market is disabled. Contact support to claim your remaining funding fees.</Trans>;
+  }
+
+  if (blockReason === "negativeMargin") {
+    return (
+      <Trans>
+        This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail:
+        positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the
+        position for the realized profit to cover the shortfall.
+      </Trans>
+    );
+  }
+
+  if (blockReason === "belowMinCollateral") {
+    return (
+      <Trans>
+        This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close
+        the position. Closing settles the funding automatically.
+      </Trans>
+    );
+  }
+
+  return undefined;
+}
+
 export const SettleAccruedFundingFeeRow = ({
   position,
   isMarketDisabled,
-  isSettlementLikelyToFail,
+  blockReason,
   isSelected,
   onCheckboxChange,
 }: Props) => {
   const { indexName, poolName } = position;
 
-  const labelContent = (
-    <div key={position.key} className="flex items-start">
-      <span className="ClaimSettleModal-row-text">
-        {position.isLong ? t`Long` : t`Short`} {indexName}
-      </span>{" "}
-      <span className="subtext">[{poolName}]</span>
-      {!isMarketDisabled && isSettlementLikelyToFail && (
-        <WarnIcon className="ml-4 self-center text-yellow-300" aria-label={t`Warning icon`} />
-      )}
-    </div>
-  );
-  const label = isMarketDisabled ? (
-    <TooltipWithPortal
-      position="top-start"
-      handle={labelContent}
-      content={<Trans>This market is disabled. Contact support to claim your remaining funding fees.</Trans>}
-    />
-  ) : isSettlementLikelyToFail ? (
-    <TooltipWithPortal
-      position="top-start"
-      handle={labelContent}
-      content={
-        <Trans>
-          This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail:
-          positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough
-          of the position for the realized profit to cover the shortfall.
-        </Trans>
-      }
-    />
-  ) : (
-    labelContent
-  );
   const handleCheckboxChange = useCallback(
     (value: boolean) => onCheckboxChange(value, position.key),
     [onCheckboxChange, position.key]
@@ -85,16 +85,42 @@ export const SettleAccruedFundingFeeRow = ({
     [longToken, position.claimableLongTokenAmount, position.claimableShortTokenAmount, shortToken]
   );
 
+  const blockedTooltipContent = getBlockedTooltipContent(isMarketDisabled, blockReason);
+
+  const checkbox = (
+    <Checkbox
+      isChecked={isSelected}
+      setIsChecked={handleCheckboxChange}
+      disabled={blockedTooltipContent !== undefined}
+      className="ClaimSettleModal-checkbox flex self-center"
+    >
+      <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
+        <div className="flex items-start">
+          <span className="ClaimSettleModal-row-text">
+            {position.isLong ? t`Long` : t`Short`} {indexName}
+          </span>{" "}
+          <span className="subtext">[{poolName}]</span>
+          {blockedTooltipContent !== undefined && (
+            <WarnIcon className="ml-4 self-center text-yellow-300" aria-label={t`Warning icon`} />
+          )}
+        </div>
+      </div>
+    </Checkbox>
+  );
+
   return (
     <div className="ClaimSettleModal-info-row">
-      <Checkbox
-        isChecked={isSelected}
-        setIsChecked={handleCheckboxChange}
-        disabled={isMarketDisabled}
-        className="ClaimSettleModal-checkbox flex self-center"
-      >
-        <div className="Exchange-info-label ClaimSettleModal-checkbox-label">{label}</div>
-      </Checkbox>
+      {blockedTooltipContent === undefined ? (
+        checkbox
+      ) : (
+        <TooltipWithPortal
+          position="top-start"
+          variant="none"
+          isHandlerDisabled
+          handle={checkbox}
+          content={blockedTooltipContent}
+        />
+      )}
       <div className="ClaimSettleModal-info-label-usd">
         <Tooltip
           className="ClaimSettleModal-tooltip"

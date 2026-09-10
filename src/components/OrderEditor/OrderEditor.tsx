@@ -127,6 +127,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
@@ -524,10 +525,13 @@ export function OrderEditor(p: Props) {
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
+  const { formId, isActiveForm } = useActiveForm();
+
   const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
+    canSwitchGasPaymentToken: isActiveForm,
   });
 
   const networkFee = useMemo(() => {
@@ -952,6 +956,7 @@ export function OrderEditor(p: Props) {
   return (
     <div className="PositionEditor">
       <Modal
+        activeFormId={formId}
         className="PositionSeller-modal"
         isVisible={true}
         setIsVisible={p.onClose}

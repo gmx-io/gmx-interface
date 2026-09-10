@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
+  usePositionsConstants,
   usePositiveFeePositionsSortedByUsd,
   useTokensData,
   useUserReferralInfo,
@@ -35,6 +36,7 @@ import { getToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
 
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
@@ -43,7 +45,12 @@ import Tooltip from "components/Tooltip/Tooltip";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
-import { getIsSettlementLikelyToFail, shouldPreSelectPosition } from "./utils";
+import {
+  SETTLEMENT_COLLATERAL_DELTA_AMOUNT,
+  getIsPositionSettleable,
+  getSettlementBlockReason,
+  shouldPreSelectPosition,
+} from "./utils";
 
 import "./SettleAccruedFundingFeeModal.scss";
 
@@ -81,13 +88,14 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const positiveFeePositions = usePositiveFeePositionsSortedByUsd();
+  const { minCollateralUsd } = usePositionsConstants();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const preCheckedPositionKeys = useMemo(() => {
     return positiveFeePositions
-      .filter((position) => shouldPreSelectPosition(position, feeUsd ?? 0n))
+      .filter((position) => shouldPreSelectPosition(position, feeUsd ?? 0n, minCollateralUsd))
       .map((position) => position.key);
-  }, [positiveFeePositions, feeUsd]);
+  }, [positiveFeePositions, feeUsd, minCollateralUsd]);
 
   const [positionKeys, setPositionKeys] = useState<string[]>([]);
 
@@ -97,13 +105,13 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [preCheckedPositionKeys, isUntouched]);
 
   const selectedPositions = useMemo(
-    () => positiveFeePositions.filter((position) => positionKeys.includes(position.key)),
-    [positionKeys, positiveFeePositions]
+    () =>
+      positiveFeePositions.filter(
+        (position) => positionKeys.includes(position.key) && getIsPositionSettleable(position, minCollateralUsd)
+      ),
+    [minCollateralUsd, positionKeys, positiveFeePositions]
   );
-  const hasSelectedPositionsLikelyToFail = useMemo(
-    () => selectedPositions.some(getIsSettlementLikelyToFail),
-    [selectedPositions]
-  );
+  const selectedPositionKeys = useMemo(() => selectedPositions.map((position) => position.key), [selectedPositions]);
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
   const totalStr = formatDeltaUsd(total);
 
@@ -120,7 +128,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           marketAddress: position.marketAddress,
           indexTokenAddress: position.indexToken.address,
           collateralTokenAddress: position.collateralTokenAddress,
-          collateralDeltaAmount: 1n,
+          collateralDeltaAmount: SETTLEMENT_COLLATERAL_DELTA_AMOUNT,
           receiveTokenAddress: position.collateralToken.address,
           sizeDeltaUsd: 0n,
           sizeDeltaInTokens: 0n,
@@ -155,10 +163,13 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     allowedSlippage,
   ]);
 
+  const { formId, isActiveForm } = useActiveForm();
+
   const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
     isGmxAccount: srcChainId !== undefined,
+    canSwitchGasPaymentToken: isActiveForm,
   });
 
   const approvalTokens = useMemo(() => {
@@ -201,7 +212,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
     if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
-    if (positionKeys.length === 0) return [t`Select positions`, true];
+    if (selectedPositions.length === 0) return [t`Select positions`, true];
 
     if (!isAllowanceLoaded) return [t`Loading...`, true];
 
@@ -215,7 +226,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     hasOutdatedUi,
     isMultichainSubmitDisabled,
     isSubmitting,
-    positionKeys.length,
+    selectedPositions.length,
     isAllowanceLoaded,
     tokensToApprove,
     isApproving,
@@ -323,6 +334,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   return (
     <Modal
+      activeFormId={formId}
       className="Confirmation-box ClaimableModal"
       isVisible={isVisible}
       setIsVisible={handleOnClose}
@@ -354,22 +366,13 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               key={position.key}
               position={position}
               isMarketDisabled={position.marketInfo?.isDisabled ?? false}
-              isSettlementLikelyToFail={getIsSettlementLikelyToFail(position)}
-              isSelected={positionKeys.includes(position.key)}
+              blockReason={getSettlementBlockReason(position, minCollateralUsd)}
+              isSelected={selectedPositionKeys.includes(position.key)}
               onCheckboxChange={handleRowCheckboxChange}
             />
           ))}
         </div>
       </div>
-      {hasSelectedPositionsLikelyToFail && (
-        <AlertInfo type="warning" compact textColor="text-yellow-300">
-          <Trans>
-            Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is
-            likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce
-            or close enough of those positions for the realized profit to cover the shortfall.
-          </Trans>
-        </AlertInfo>
-      )}
       <AlertInfo type="info" compact>
         <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
       </AlertInfo>

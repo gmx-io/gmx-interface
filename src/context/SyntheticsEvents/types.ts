@@ -356,7 +356,9 @@ export type PendingShiftData = {
   minMarketTokens: bigint;
 };
 
-export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData>;
+export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData> & {
+  cancellationReasonBytes?: string;
+};
 export type DepositStatus = MultiTransactionStatus<DepositCreatedEventData | GLVDepositCreatedEventData>;
 export type WithdrawalStatus = MultiTransactionStatus<WithdrawalCreatedEventData>;
 export type ShiftStatus = MultiTransactionStatus<ShiftCreatedEventData>;

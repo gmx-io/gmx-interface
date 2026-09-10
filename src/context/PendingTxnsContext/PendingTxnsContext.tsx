@@ -21,6 +21,7 @@ import { parseError } from "lib/errors";
 import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
@@ -130,6 +131,8 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
     },
     [chainId, isMounted, latestPendingTxns]
   );
+
+  useBlockAutoReload(pendingTxns.length > 0);
 
   useEffect(() => {
     const checkPendingTxns = async () => {

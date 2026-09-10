@@ -371,10 +371,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
+      const cancellationReasonBytes = eventData.bytesItems.items.reasonBytes;
+
       setOrderStatuses((old) => {
         if (old[key]) {
           return updateByKey(old, key, {
             cancelledTxnHash: txnParams.transactionHash,
+            cancellationReasonBytes,
             isViewed: false,
           });
         } else {
@@ -382,6 +385,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             key,
             createdAt: Date.now(),
             cancelledTxnHash: txnParams.transactionHash,
+            cancellationReasonBytes,
           });
         }
       });

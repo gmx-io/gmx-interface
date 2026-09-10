@@ -91,6 +91,7 @@ import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import {
@@ -770,10 +771,13 @@ export function AddTPSLModal({
     return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
   }, [batchParams, chainId, tokensData]);
 
+  const { formId, isActiveForm } = useActiveForm();
+
   const { expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
+    canSwitchGasPaymentToken: isActiveForm,
   });
 
   const submitError = useMemo(() => {
@@ -1018,6 +1022,7 @@ export function AddTPSLModal({
 
   return (
     <Modal
+      activeFormId={formId}
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={`${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`}
