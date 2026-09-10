@@ -39,8 +39,6 @@ import {
   volumeTierLabels,
 } from "./rewardsTiersShared";
 
-type TierCardKey = "volume" | "staking" | "boosts";
-
 export function RewardsTierCards({
   config,
   status,
@@ -85,16 +83,12 @@ export function RewardsTierCards({
   const hasReferralBoost = (status?.referralVolume ?? 0n) > 0n;
   const boostsHaveStatus =
     activePersistentBoostIds.length > 0 || qualifiedTransientBoostIds.length > 0 || hasReferralBoost;
-  const cards: { key: TierCardKey; active: boolean; content: React.ReactNode }[] = [
-    {
-      key: "volume",
-      active: volumeActive,
-      content: <VolumeCard config={config} status={status} active={volumeActive} />,
-    },
-    {
-      key: "staking",
-      active: stakingActive,
-      content: (
+
+  return (
+    <>
+      <StandaloneBuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
+      <div className="grid grid-cols-3 gap-12 max-lg:grid-cols-1">
+        <VolumeCard config={config} status={status} active={volumeActive} />
         <StakingCard
           config={config}
           status={status}
@@ -105,12 +99,6 @@ export function RewardsTierCards({
           promoSelection={promoSelection}
           onBuyGmx={openBuyGmxModal}
         />
-      ),
-    },
-    {
-      key: "boosts",
-      active: boostsHaveStatus,
-      content: (
         <BoostsCard
           config={config}
           status={status}
@@ -119,18 +107,6 @@ export function RewardsTierCards({
           hasReferralBoost={hasReferralBoost}
           hasStatus={boostsHaveStatus}
         />
-      ),
-    },
-  ];
-  const orderedCards = [...cards.filter((card) => card.active), ...cards.filter((card) => !card.active)];
-
-  return (
-    <>
-      <StandaloneBuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
-      <div className="grid grid-cols-3 gap-12 max-lg:grid-cols-1">
-        {orderedCards.map((card) => (
-          <React.Fragment key={card.key}>{card.content}</React.Fragment>
-        ))}
       </div>
     </>
   );
