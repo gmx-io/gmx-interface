@@ -10,14 +10,13 @@ import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { formatAmountHuman } from "lib/numbers";
-import { sumBigInts, sumKnownBigInts } from "lib/sumBigInts";
+import { sumKnownBigInts } from "lib/sumBigInts";
 import { MARKETS } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipComponent from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const chains: ContractsChainIdProduction[] = [ARBITRUM, AVALANCHE, MEGAETH];
@@ -52,14 +51,6 @@ export function StatsCard() {
 
   const v1ArbitrumTotalFees = useV1FeesInfo(ARBITRUM);
   const v1AvalancheTotalFees = useV1FeesInfo(AVALANCHE);
-  const totalFeesUsd = sumBigInts(
-    v1ArbitrumTotalFees?.totalFees,
-    v1AvalancheTotalFees?.totalFees,
-    v2ArbitrumOverview.totalFees,
-    v2AvalancheOverview.totalFees,
-    v2MegaethOverview.totalFees,
-    gmtradeTotalFees
-  );
 
   // #endregion Fees
 
@@ -140,13 +131,7 @@ export function StatsCard() {
             <Trans>Fees</Trans>
           </div>
           <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={formatAmountHuman(totalFeesUsd, USD_DECIMALS, true, 2)}
-              handleClassName="numbers"
-              content={<ChainsStatsTooltipRow entries={totalFeesEntries} staleTitles={staleTitles} />}
-            />
+            <ChainsStatsTooltip entries={totalFeesEntries} staleTitles={staleTitles} />
           </div>
         </div>
         <div className="App-card-row">
@@ -154,26 +139,7 @@ export function StatsCard() {
             <Trans>Volume</Trans>
           </div>
           <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={formatAmountHuman(
-                sumBigInts(
-                  v1TotalVolume?.[ARBITRUM],
-                  v1TotalVolume?.[AVALANCHE],
-                  v1TotalVolume?.[MEGAETH],
-                  v2ArbitrumOverview?.totalVolume,
-                  v2AvalancheOverview?.totalVolume,
-                  v2MegaethOverview?.totalVolume,
-                  gmtradeTotalVolume
-                ),
-                USD_DECIMALS,
-                true,
-                2
-              )}
-              handleClassName="numbers"
-              content={<ChainsStatsTooltipRow entries={totalVolumeEntries} staleTitles={staleTitles} />}
-            />
+            <ChainsStatsTooltip entries={totalVolumeEntries} staleTitles={staleTitles} />
           </div>
         </div>
         <div className="App-card-row">
@@ -181,32 +147,11 @@ export function StatsCard() {
             <Trans>Users</Trans>
           </div>
           <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={formatAmountHuman(
-                sumBigInts(
-                  uniqueUsers?.[ARBITRUM],
-                  uniqueUsers?.[AVALANCHE],
-                  uniqueUsers?.[MEGAETH],
-                  v2ArbitrumOverview?.totalUsers,
-                  v2AvalancheOverview?.totalUsers,
-                  v2MegaethOverview?.totalUsers,
-                  gmtradeUsers
-                ),
-                0,
-                false,
-                2
-              )}
-              handleClassName="numbers"
-              content={
-                <ChainsStatsTooltipRow
-                  showDollar={false}
-                  entries={uniqueUsersEntries}
-                  decimalsForConversion={0}
-                  staleTitles={staleTitles}
-                />
-              }
+            <ChainsStatsTooltip
+              entries={uniqueUsersEntries}
+              staleTitles={staleTitles}
+              showDollar={false}
+              decimalsForConversion={0}
             />
           </div>
         </div>
