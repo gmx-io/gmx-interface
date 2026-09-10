@@ -607,6 +607,14 @@ export type MissedMarketPricesCounter = {
   };
 };
 
+export type AppUpdateCounter = {
+  event: `pwa.update.${"offered" | "accepted" | "declined" | "reloaded"}`;
+  data: {
+    fromBuildId: string;
+    toBuildId: string;
+  };
+};
+
 export type TickersErrorsCounter = {
   event: "tickersErrors";
   data: {};

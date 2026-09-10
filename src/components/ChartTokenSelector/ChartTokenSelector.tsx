@@ -14,9 +14,7 @@ import {
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
-  TokenOption,
   selectTradeboxChooseSuitableMarket,
-  selectTradeboxGetMaxLongShortLiquidityPool,
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
   selectTradeboxTradeType,
@@ -68,6 +66,7 @@ import { ArbitrumRecommendation } from "./ArbitrumRecommendation";
 import {
   applySubCategoryFilter,
   applyTopLevelFilter,
+  getMarketSearchEmptyStateActions,
   getRecentlyListedTokenAddresses,
   isMarketRecentlyListed,
 } from "./marketFilters";
@@ -80,6 +79,23 @@ type Props = {
 };
 
 const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi", "recently-listed"];
+const MAX_MARKET_SEARCH_QUERY_LENGTH = 100;
+
+function getSearchMatchedTokens(options: Token[] | undefined, searchKeyword: string, isSwap: boolean) {
+  if (!options) return undefined;
+  const query = searchKeyword.trim();
+  if (!query) return options;
+
+  return searchBy(
+    options,
+    [
+      (item) => stripBlacklistedWords(item.name),
+      (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
+      (item) => (item.searchAliases ?? []).join(" "),
+    ],
+    query
+  );
+}
 
 export default function ChartTokenSelector(props: Props) {
   const { selectedToken, oneRowLabels } = props;
@@ -101,7 +117,7 @@ export default function ChartTokenSelector(props: Props) {
       })}
       desktopPanelClassName={cx("max-w-[100vw] shadow-md", {
         "w-[520px]": !shouldUsePerpPanelWidth,
-        "w-[880px]": shouldUsePerpPanelWidth,
+        "w-[680px]": shouldUsePerpPanelWidth,
       })}
       chevronClassName="hidden"
       label={
@@ -167,15 +183,9 @@ export default function ChartTokenSelector(props: Props) {
   );
 }
 
-type SortField =
-  | "lastPrice"
-  | "24hChange"
-  | "24hVolume"
-  | "longLiquidity"
-  | "shortLiquidity"
-  | "combinedAvailableLiquidity"
-  | "combinedOpenInterest"
-  | "unspecified";
+const SORT_FIELDS = ["lastPrice", "24hChange", "24hVolume", "combinedOpenInterest", "unspecified"] as const;
+
+type SortField = (typeof SORT_FIELDS)[number];
 
 function MarketsList() {
   const chainId = useSelector(selectChainId);
@@ -190,6 +200,7 @@ function MarketsList() {
     subCategoryTab: storedSubCategoryTab,
     mode,
     setMode,
+    setModeAndResetFilters,
     setSubCategoryTab,
     favoriteTokens,
     toggleFavoriteToken,
@@ -216,6 +227,7 @@ function MarketsList() {
 
   const isSwap = mode === "swap";
   const availableTokens = isSwap ? swapTokens : perpTokens;
+  const otherModeAvailableTokens = isSwap ? perpTokens : swapTokens;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
     const availableChartTokens = availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
@@ -226,6 +238,11 @@ function MarketsList() {
       availableChartTokenAddresses,
     };
   }, [availableTokens, chainId]);
+
+  const otherModeOptions = useMemo(
+    () => otherModeAvailableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol)),
+    [chainId, otherModeAvailableTokens]
+  );
 
   const recentlyListedCount = useMemo(() => {
     if (!options || recentlyListedAddressesSet.size === 0) return 0;
@@ -293,16 +310,29 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>(
-    `chart-token-selector-${isSwap ? "spot" : "perp"}`
-  );
+  const {
+    orderBy: storedOrderBy,
+    direction,
+    getSorterProps,
+  } = useSorterHandlers<SortField>(`chart-token-selector-${isSwap ? "spot" : "perp"}`);
+  const orderBy = SORT_FIELDS.includes(storedOrderBy) ? storedOrderBy : "unspecified";
 
   const [searchKeyword, setSearchKeyword] = useState("");
+  const query = searchKeyword.trim();
+
+  const currentModeSearchResults = useMemo(
+    () => getSearchMatchedTokens(options, searchKeyword, isSwap),
+    [isSwap, options, searchKeyword]
+  );
+
+  const otherModeSearchResults = useMemo(() => {
+    if (!query || currentModeSearchResults === undefined || currentModeSearchResults.length > 0) return undefined;
+    return getSearchMatchedTokens(otherModeOptions, query, !isSwap);
+  }, [currentModeSearchResults, isSwap, otherModeOptions, query]);
 
   const sortedTokens = useFilterSortTokens({
     chainId,
-    options,
-    searchKeyword,
+    textMatchedTokens: currentModeSearchResults,
     topLevelTab,
     subCategoryTab,
     recentlyListedAddressesSet,
@@ -313,7 +343,6 @@ function MarketsList() {
     dayPriceDeltaMap,
     dayVolumes,
     indexTokenStatsMap,
-    isSwap,
   });
 
   const sortedDetails = useMemo(() => {
@@ -337,7 +366,7 @@ function MarketsList() {
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
-    isEmpty: !sortedTokens?.length && topLevelTab === "all",
+    isEmpty: !currentModeSearchResults?.length,
     isLoaded: Boolean(options?.length),
     place: MissedCoinsPlace.marketDropdown,
     mode,
@@ -398,7 +427,12 @@ function MarketsList() {
     return t`Search market`;
   }, [isSwap]);
 
-  const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
+  const marketTypeLabel = isSwap ? t`Swap tokens` : t`perpetual markets`;
+  const { shouldOfferSearchAll, shouldOfferOtherMode } = getMarketSearchEmptyStateActions({
+    hasActiveFilter: topLevelTab !== "all",
+    hasCurrentModeMatches: Boolean(currentModeSearchResults?.length),
+    hasOtherModeMatches: Boolean(otherModeSearchResults?.length),
+  });
 
   return (
     <>
@@ -412,6 +446,7 @@ function MarketsList() {
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
+            maxLength={MAX_MARKET_SEARCH_QUERY_LENGTH}
           />
         </div>
 
@@ -457,7 +492,28 @@ function MarketsList() {
           "max-h-[444px] overflow-x-auto": !isMobile,
         })}
       >
-        <table className="text-body-small w-full border-separate border-spacing-0">
+        <table
+          className={cx("text-body-small w-full border-separate border-spacing-0", {
+            "table-fixed": !isMobile,
+          })}
+        >
+          {!isMobile && (
+            <colgroup>
+              <col className="w-44" />
+              <col className={isSwap ? "w-[240px]" : "w-[190px]"} />
+              <col className={isSwap ? "w-[130px]" : "w-96"} />
+              {isSwap ? (
+                <col />
+              ) : (
+                <>
+                  <col className="w-64" />
+                  <col className="w-[86px]" />
+                  <col className="w-[100px]" />
+                  <col />
+                </>
+              )}
+            </colgroup>
+          )}
           <thead>
             <tr>
               <th className={favoriteThClassName} colSpan={1}></th>
@@ -499,16 +555,11 @@ function MarketsList() {
                     </Sorter>
                   </th>
                   {!isMobile && (
-                    <>
-                      <th className={thClassName} colSpan={2}>
-                        <Sorter {...getSorterProps("combinedOpenInterest")}>
-                          <Trans>OPEN INTEREST</Trans>
-                        </Sorter>
-                      </th>
-                      <th className={thClassName} colSpan={2}>
-                        <Sorter {...getSorterProps("combinedAvailableLiquidity")}>{availableLiquidityLabel}</Sorter>
-                      </th>
-                    </>
+                    <th className={thClassName} colSpan={2}>
+                      <Sorter {...getSorterProps("combinedOpenInterest")}>
+                        <Trans>OPEN INTEREST</Trans>
+                      </Sorter>
+                    </th>
                   )}
                 </>
               )}
@@ -546,15 +597,42 @@ function MarketsList() {
             isLoading={false}
             isEmpty={true}
             emptyText={
-              searchKeyword.trim() ? (
-                <div className="flex flex-col items-center gap-12">
-                  <span className="text-12">
-                    <Trans>No markets matched.</Trans>
+              query ? (
+                <div className="flex w-full flex-col items-center gap-12 px-16">
+                  <span className="w-full min-w-0 text-center text-12 text-typography-secondary [overflow-wrap:anywhere]">
+                    {shouldOfferSearchAll ? (
+                      <Trans>No results with the selected filters.</Trans>
+                    ) : (
+                      <Trans>
+                        No {marketTypeLabel} match "{query}".
+                      </Trans>
+                    )}
                   </span>
-                  <Button type="button" variant="secondary" onClick={() => setMode(isSwap ? "perp" : "swap")}>
-                    {isSwap ? <Trans>Search in perpetuals markets</Trans> : <Trans>Search in swap markets</Trans>}
-                    <SearchIconComponent className="size-16" />
-                  </Button>
+                  {shouldOfferSearchAll && (
+                    <Button type="button" variant="secondary" onClick={() => setModeAndResetFilters(mode)}>
+                      <Trans>Search in all {marketTypeLabel}</Trans>
+                      <SearchIconComponent className="size-16" />
+                    </Button>
+                  )}
+                  {shouldOfferOtherMode && (
+                    <>
+                      <span className="text-12 text-typography-secondary">
+                        {isSwap ? (
+                          <Trans>Results are available in Perpetuals.</Trans>
+                        ) : (
+                          <Trans>Results are available in Swap.</Trans>
+                        )}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setModeAndResetFilters(isSwap ? "perp" : "swap")}
+                      >
+                        {isSwap ? <Trans>View results in Perpetuals</Trans> : <Trans>View results in Swap</Trans>}
+                        <SearchIconComponent className="size-16" />
+                      </Button>
+                    </>
+                  )}
                 </div>
               ) : (
                 <Trans>No markets matched.</Trans>
@@ -569,8 +647,7 @@ function MarketsList() {
 
 function useFilterSortTokens({
   chainId,
-  options,
-  searchKeyword,
+  textMatchedTokens,
   topLevelTab,
   subCategoryTab,
   recentlyListedAddressesSet,
@@ -581,11 +658,9 @@ function useFilterSortTokens({
   dayPriceDeltaMap,
   dayVolumes,
   indexTokenStatsMap,
-  isSwap,
 }: {
   chainId: number;
-  options: Token[] | undefined;
-  searchKeyword: string;
+  textMatchedTokens: Token[] | undefined;
   topLevelTab: TopLevelTab;
   subCategoryTab: SubCategoryTab;
   recentlyListedAddressesSet: Set<string>;
@@ -596,33 +671,18 @@ function useFilterSortTokens({
   dayPriceDeltaMap: PriceDeltaMap | undefined;
   dayVolumes: Record<Address, bigint> | undefined;
   indexTokenStatsMap: Partial<IndexTokensStats> | undefined;
-  isSwap: boolean;
 }) {
   const filteredTokens: Token[] | undefined = useMemo(() => {
-    if (!options) return undefined;
+    if (!textMatchedTokens) return undefined;
 
-    const textMatched = searchKeyword.trim()
-      ? searchBy(
-          options,
-          [
-            (item) => stripBlacklistedWords(item.name),
-            (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
-            (item) => (item.searchAliases ?? []).join(" "),
-          ],
-          searchKeyword
-        )
-      : options;
-
-    const afterTopLevel = applyTopLevelFilter(textMatched ?? [], {
+    const afterTopLevel = applyTopLevelFilter(textMatchedTokens, {
       topLevelTab,
       favoriteAddresses: favoriteTokens,
       recentlyListedAddresses: recentlyListedAddressesSet,
     });
 
     return applySubCategoryFilter(afterTopLevel, { topLevelTab, subCategoryTab });
-  }, [options, searchKeyword, isSwap, topLevelTab, subCategoryTab, favoriteTokens, recentlyListedAddressesSet]);
-
-  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
+  }, [textMatchedTokens, topLevelTab, subCategoryTab, favoriteTokens, recentlyListedAddressesSet]);
 
   const sortedTokens = useMemo(() => {
     const [favorites, nonFavorites] = partition(filteredTokens, (token) => favoriteTokens.includes(token.address));
@@ -635,7 +695,6 @@ function useFilterSortTokens({
       dayPriceDeltaMap,
       dayVolumes,
       indexTokenStatsMap,
-      getMaxLongShortLiquidityPool,
     });
 
     const sortedFavorites = favorites.slice().sort(sorter);
@@ -652,7 +711,6 @@ function useFilterSortTokens({
     dayPriceDeltaMap,
     dayVolumes,
     indexTokenStatsMap,
-    getMaxLongShortLiquidityPool,
     favoriteTokens,
   ]);
 
@@ -703,10 +761,6 @@ function MarketListItem({
   onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
   listingDate?: number;
 }) {
-  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
-
-  const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
-
   const handleFavoriteClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -719,22 +773,6 @@ function MarketListItem({
     (e: React.MouseEvent<HTMLTableCellElement | HTMLTableRowElement>) => {
       e.stopPropagation();
       onMarketSelect(token.address, "largestPosition");
-    },
-    [onMarketSelect, token.address]
-  );
-
-  const handleSelectLong = useCallback(
-    (e: React.MouseEvent<HTMLTableCellElement>) => {
-      e.stopPropagation();
-      onMarketSelect(token.address, TradeType.Long);
-    },
-    [onMarketSelect, token.address]
-  );
-
-  const handleSelectShort = useCallback(
-    (e: React.MouseEvent<HTMLTableCellElement>) => {
-      e.stopPropagation();
-      onMarketSelect(token.address, TradeType.Short);
     },
     [onMarketSelect, token.address]
   );
@@ -841,23 +879,6 @@ function MarketListItem({
           </td>
         </>
       )}
-
-      {!isMobile ? (
-        <>
-          <td className={cx(tdClassName, "group pr-4 numbers hover:bg-slate-800")} onClick={handleSelectLong}>
-            <div className="inline-flex items-center justify-end gap-6">
-              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
-            </div>
-          </td>
-          <td className={cx(tdClassName, "group pl-4 numbers hover:bg-slate-800")} onClick={handleSelectShort}>
-            <div className="inline-flex items-center justify-end gap-6">
-              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
-            </div>
-          </td>
-        </>
-      ) : null}
     </tr>
   );
 }
@@ -870,7 +891,6 @@ function tokenSortingComparatorBuilder({
   dayPriceDeltaMap,
   dayVolumes,
   indexTokenStatsMap,
-  getMaxLongShortLiquidityPool,
 }: {
   chainId: number;
   orderBy: SortField;
@@ -879,10 +899,6 @@ function tokenSortingComparatorBuilder({
   dayPriceDeltaMap: PriceDeltaMap | undefined;
   dayVolumes: Record<Address, bigint> | undefined;
   indexTokenStatsMap: Partial<IndexTokensStats> | undefined;
-  getMaxLongShortLiquidityPool: (token: Token) => {
-    maxLongLiquidityPool: TokenOption;
-    maxShortLiquidityPool: TokenOption;
-  };
 }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
@@ -925,15 +941,6 @@ function tokenSortingComparatorBuilder({
       const aChange = dayPriceDeltaMap?.[a.address]?.deltaPercentage || 0;
       const bChange = dayPriceDeltaMap?.[b.address]?.deltaPercentage || 0;
       return aChange > bChange ? directionMultiplier : -directionMultiplier;
-    }
-
-    if (orderBy === "combinedAvailableLiquidity") {
-      const { maxLongLiquidityPool: aLongLiq, maxShortLiquidityPool: aShortLiq } = getMaxLongShortLiquidityPool(a);
-      const { maxLongLiquidityPool: bLongLiq, maxShortLiquidityPool: bShortLiq } = getMaxLongShortLiquidityPool(b);
-
-      const aTotalLiq = aLongLiq.maxLongLiquidity + aShortLiq.maxShortLiquidity;
-      const bTotalLiq = bLongLiq.maxLongLiquidity + bShortLiq.maxShortLiquidity;
-      return aTotalLiq > bTotalLiq ? directionMultiplier : -directionMultiplier;
     }
 
     if (orderBy === "combinedOpenInterest") {

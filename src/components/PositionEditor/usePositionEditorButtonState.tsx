@@ -112,7 +112,10 @@ type PositionEditorButtonState = {
   bannerErrorName: ValidationBannerErrorName | undefined;
 };
 
-export function usePositionEditorButtonState(operation: Operation): PositionEditorButtonState {
+export function usePositionEditorButtonState(
+  operation: Operation,
+  canSwitchGasPaymentToken: boolean
+): PositionEditorButtonState {
   const [editingPositionKey, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
   const { chainId, srcChainId } = useChainId();
@@ -300,6 +303,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     label: "Position Editor",
     orderParams: batchParams,
     isGmxAccount: isCollateralTokenFromGmxAccount,
+    canSwitchGasPaymentToken,
   });
 
   const approvalTokens = useMemo(() => {

@@ -98,6 +98,10 @@ msgstr "GMX evaluieren"
 msgid "Order simulation failed"
 msgstr "Ordersimulation fehlgeschlagen"
 
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "Reload now"
+msgstr "Jetzt neu laden"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana support</0><1>GMX Express</1>"
 msgstr "<0>Solana-Unterstützung</0><1>GMX Express</1>"
@@ -476,6 +480,12 @@ msgstr "Prozentsatz"
 msgid "Swap UI fee"
 msgstr "Swap-UI-Gebühr"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Connecting wallet..."
+msgstr "Wallet wird verbunden..."
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No TP orders"
 msgstr "Keine TP-Orders"
@@ -516,10 +526,6 @@ msgstr "Doppeltes {indexSymbol}-Exposure durch Position und Sicherheit. Höherer
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX Account balance"
 msgstr "GMX Account Guthaben"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in perpetuals markets"
-msgstr "In Perpetual-Märkten suchen"
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
@@ -926,6 +932,10 @@ msgstr "Konvertieren Sie esGMX in GMX-Token. Lesen Sie die Vesting-Details, bevo
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No {marketTypeLabel} match \"{query}\"."
+msgstr "Keine Treffer für „{query}“ in {marketTypeLabel}."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
 msgstr "Negativer Wert: Händler zahlen Finanzierung"
@@ -979,13 +989,6 @@ msgstr "Ungültiger Sicherheitstoken. {tokenSymbol} wird nicht als Sicherheit un
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on centralized exchanges"
 msgstr "GMX auf zentralen Börsen kaufen"
-
-#: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-#: src/components/TVChart/ChartHeader.tsx
-#: src/components/TVChart/ChartHeader.tsx
-msgid "Available liquidity"
-msgstr "Verfügbare Liquidität"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
@@ -1059,6 +1062,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
 msgstr "Swap-Gebühren"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max {positionSide} size"
+msgstr "Maximale Größe für {positionSide}"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -1190,6 +1197,10 @@ msgstr "Positionsgebührfaktor (positiver PI)"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "Hohe Swap-Preisauswirkung"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The maximum swap size based on current liquidity. Updates live."
+msgstr "Die maximale Swap-Größe auf Basis der aktuellen Liquidität. Wird in Echtzeit aktualisiert."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -1536,6 +1547,10 @@ msgstr "Insgesamt eingezahlte Margin"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "Um GMX auf {0} zu kaufen, <0>wechseln Sie Ihr Netzwerk</0>"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Perpetuals."
+msgstr "Ergebnisse sind unter „Perpetuals“ verfügbar."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -2233,6 +2248,10 @@ msgstr ""
 msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr "Dieser Swap benötigt externes Routing, das nicht verfügbar ist, solange der Gas-Token dem Token entspricht, den Sie erhalten, und kein anderer Gas-Token über ausreichend Guthaben verfügt."
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in all {marketTypeLabel}"
+msgstr "Alle {marketTypeLabel} durchsuchen"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
 msgstr "Dezentrales Handelsprotokoll"
@@ -2291,10 +2310,6 @@ msgstr "EIP-4844"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Leverage bei {0} halten"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAIL. LIQ."
-msgstr "VERFÜGB. LIQ."
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
@@ -2666,6 +2681,10 @@ msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen, und derzeit i
 msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
+msgstr "Die Order wird nicht ausgeführt: Die Größe überschreitet die maximale Swap-Größe von {maxSwapSize}. Reduzieren Sie die Swap-Größe."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop-Loss"
 msgstr "Stop-Loss aktualisieren"
@@ -2775,7 +2794,6 @@ msgstr ""
 msgid "Pair"
 msgstr "Paar"
 
-#: src/components/SwapCard/SwapCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max {0} out"
 msgstr "Max. {0} heraus"
@@ -3032,6 +3050,10 @@ msgstr "Helfen Sie uns, GMX zu verbessern. Aus Sicherheitsgründen werden wir Si
 msgid "Cancel margin deposit"
 msgstr "Margin-Einzahlung stornieren"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Swap tokens"
+msgstr "Swap-Tokens"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "Globales Netzwerk"
@@ -3073,6 +3095,10 @@ msgstr "Tausch fehlgeschlagen"
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>Muss <1>@GMX_IO</1> im Auge behalten. Während ganz DeFi in Trümmern liegt, zeigt GMX beeindruckende anhaltende Leistung bei Nutzern, AUM, Volumen/Gebühren, Open Interest und Kapitalnutzung. Bester Ort zum Swappen zwischen großen Assets auf Arbitrum und Exposition gegenüber dem Arb-Airdrop</0>"
 
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "Update available"
+msgstr "Update verfügbar"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
 msgstr "Kaufe GMX auf {chainName}"
@@ -3087,6 +3113,10 @@ msgstr "Kaufe GMX auf {chainName}"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "Größe"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Order may not execute: size exceeds the max {positionSide} size of {maxSize} at the trigger price. Reduce the order size."
+msgstr "Die Order wird möglicherweise nicht ausgeführt: Die Größe überschreitet die maximale Größe für {positionSide} von {maxSize} zum Triggerpreis. Reduzieren Sie die Ordergröße."
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Trade from your own wallet — no deposits."
@@ -3125,6 +3155,10 @@ msgstr "System"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "Verdienen Sie Belohnungen, indem Sie Ihren Empfehlungscode teilen"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Results are available in Swap."
+msgstr "Ergebnisse sind im Swap verfügbar."
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
@@ -3235,6 +3269,10 @@ msgstr "Long-Positionen"
 msgid "Share your code"
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Perpetuals"
+msgstr "Ergebnisse in Perpetuals anzeigen"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
 msgstr "Kaufgebühr"
@@ -3254,6 +3292,10 @@ msgstr "Automatisch rebalancierender Vault von GM-Token, der Gebühren aus Hebel
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>Es gibt keine feste Grenze — der Desk legt Ihre Stufe anhand Ihres aktuellen und erwarteten monatlichen Volumens fest. Die meisten Trader qualifizieren sich für die Basisstufe; kontaktieren Sie uns und wir bestätigen Ihren Satz.</0>"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "The most this market can add to {positionSide} positions right now. Updates live and can change before a resting order triggers."
+msgstr "Der Höchstbetrag, den dieser Markt derzeit zu {positionSide}-Positionen hinzufügen kann. Wird live aktualisiert und kann sich ändern, bevor eine ruhende Order ausgelöst wird."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -3665,7 +3707,6 @@ msgstr "GLV Vaults"
 msgid "Buy GMX from centralized services"
 msgstr "Kaufe GMX von zentralisierten Diensten"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
 msgstr "Die Order wird möglicherweise nicht ausgeführt: Unzureichende Liquidität zum Auslösepreis. Reduzieren Sie die Ordergröße."
@@ -4125,6 +4166,10 @@ msgstr "Minimaler Finanzierungsfaktor (Long)"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "Was macht GMX kosteneffizienter als andere Perpetual-Plattformen?"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Margin is below the minimum required for the position size"
+msgstr "Die Margin liegt unter dem für die Positionsgröße erforderlichen Minimum"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
@@ -4629,7 +4674,7 @@ msgstr "Virtuelle Markt-ID"
 msgid "Your wallet is not connected to this network"
 msgstr "Ihre Wallet ist nicht mit diesem Netzwerk verbunden"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
 msgstr "Die Order wird möglicherweise nicht ausgeführt: Unzureichende Liquidität, um den Swap zum Mindestempfangsbetrag auszuführen. Ändern Sie den Mindestempfangsbetrag oder reduzieren Sie die Swap-Größe."
@@ -4699,6 +4744,10 @@ msgstr "Staking"
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "Dezentralisierte Perpetual-Börse | GMX"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "perpetual markets"
+msgstr "Perpetual-Märkte"
 
 #: src/components/Footer/constants.tsx
 msgid "V1"
@@ -5706,6 +5755,10 @@ msgstr "Baue auf GMX.<0/>Verdiene an jedem Trade."
 msgid "Page outdated. Refresh"
 msgstr "Seite veraltet. Aktualisieren"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Max swap size"
+msgstr "Maximale Swap-Größe"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -5765,6 +5818,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Kaufen Sie GMX-Bonds auf Bond Protocol mit einem Rabatt und einer kurzen Sperrfrist"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No results with the selected filters."
+msgstr "Keine Ergebnisse mit den ausgewählten Filtern."
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7014,6 +7071,10 @@ msgstr "Verleihen und Leihen"
 msgid "GMX governance page"
 msgstr "GMX Governance-Seite"
 
+#: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
+msgid "A new version of GMX is ready. Reload when you are done to switch to it."
+msgstr "Eine neue Version von GMX ist bereit. Laden Sie neu, sobald Sie fertig sind, um zu ihr zu wechseln."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "Kaufen Sie {nativeTokenSymbol} direkt auf {chainName} oder übertragen Sie es dorthin"
@@ -7099,10 +7160,6 @@ msgstr ""
 msgid "Less info"
 msgstr "Weniger Infos"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "LIQ."
-msgstr "LIQ."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP und GMX autocompounding Vaults"
@@ -7160,10 +7217,6 @@ msgstr "Unzureichende Liquidität im {0} Pool. Die Auswahl eines anderen Pools e
 msgid "Max leverage"
 msgstr "Maximaler Hebel"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAILABLE LIQUIDITY"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
 msgstr "Elfa AI"
@@ -7187,6 +7240,10 @@ msgstr "Zugriffsschlüssel"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "Positionswert nach PnL und allen Gebühren"
+
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+msgid "Parts of this order may not execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "Teile dieser Order werden möglicherweise nicht ausgeführt: Die Größe überschreitet die maximale Größe für {positionSide} von {maxSize}. Reduzieren Sie die Ordergröße."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -7247,6 +7304,10 @@ msgstr "Sicherheit kann nicht abgehoben werden. Verbleibende Sicherheit wäre un
 msgid "Approving..."
 msgstr "Genehmige…"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
+msgstr "Diese Position hat nach ausstehenden Leih- und Finanzierungsgebühren eine negative Margin, daher wird die Abwicklung wahrscheinlich fehlschlagen: Positive Finanzierungsgebühren werden erst nach einer erfolgreichen Abwicklung beanspruchbar. Fügen Sie Margin hinzu oder schließen Sie die Position so weit, dass der realisierte Gewinn den Fehlbetrag deckt."
+
 #: src/config/uiFlagEvents.tsx
 msgid "Service Disruption"
 msgstr "Dienstunterbrechung"
@@ -7290,10 +7351,6 @@ msgstr "Erhalten Sie mindestens {toAmountText} bei Ausführung. Preis wird basie
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
-msgstr "Diese Position hat nach ausstehenden Leih- und Finanzierungsgebühren eine negative Margin, daher wird die Abwicklung wahrscheinlich fehlschlagen: Positive Finanzierungsgebühren werden erst nach einer erfolgreichen Abwicklung beanspruchbar. Fügen Sie Margin hinzu oder reduzieren bzw. schließen Sie die Position so weit, dass der realisierte Gewinn den Fehlbetrag deckt."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
@@ -7958,6 +8015,10 @@ msgstr "Größe, $"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Wallet received before close"
 msgstr "Wallet-Eingang vor dem Schließen"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "View results in Swap"
+msgstr "Ergebnisse im Swap anzeigen"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
@@ -9346,6 +9407,10 @@ msgstr "Kaufanfrage wird ausgeführt…"
 msgid "Buy GM failed"
 msgstr "GM-Kauf fehlgeschlagen"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
+msgstr "Die Margin dieser Position liegt unter dem für ihre Größe erforderlichen Minimum, daher wird die Abwicklung fehlschlagen. Fügen Sie Margin hinzu oder schließen Sie die Position. Beim Schließen werden die Finanzierungsgebühren automatisch abgerechnet."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "Maximaler Finanzierungsfaktor (Long)"
@@ -10052,10 +10117,6 @@ msgstr "Relay-Gebühr überschreitet das zulässige Maximum"
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr "Geschätzte Rückvergütung von bis zu {0}% der Eröffnungsgebühr. Wird anteilig als {incentivesTokenTitle}-Token per Airdrop verteilt. <0><1>Mehr erfahren</1>.</0>"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "Executes when price and liquidity conditions are met"
-msgstr "Wird ausgeführt, wenn Preis- und Liquiditätsbedingungen erfüllt sind"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "Standardkonto"
@@ -10154,7 +10215,7 @@ msgstr "Beanspruchungen"
 msgid "Date"
 msgstr "Datum"
 
-#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "Wird ausgeführt, wenn Liquiditäts- und Preisbedingungen erfüllt sind"
 
@@ -10451,10 +10512,6 @@ msgstr "Min. Margin: {0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop-Markt"
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
-msgstr "Einige ausgewählte Positionen haben nach ausstehenden Leih- und Finanzierungsgebühren eine negative Margin, daher wird ihre Abwicklung wahrscheinlich fehlschlagen: Positive Finanzierungsgebühren werden erst nach einer erfolgreichen Abwicklung beanspruchbar. Fügen Sie Margin hinzu oder reduzieren bzw. schließen Sie diese Positionen so weit, dass der realisierte Gewinn den Fehlbetrag deckt."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
@@ -11180,7 +11237,6 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "Vermeiden Sie Preisdochte mit transparenten Chainlink-Preisfeeds unter einer Sekunde, maßgeschneidert für GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr "Keine passenden Märkte."
 
@@ -11822,10 +11878,6 @@ msgstr "Mehr traden, weniger zahlen.<0/>Empfehlen und verdienen."
 msgid "No pools matched"
 msgstr "Keine Pools passen"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Search in swap markets"
-msgstr "In Swap-Märkten suchen"
-
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"
 msgstr "Kurz vor dem Launch oder bereits live"
@@ -11923,7 +11975,9 @@ msgstr "Nur aktuelle Position"
 msgid "GMX token icon"
 msgstr "GMX Token-Symbol"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "long"
 
@@ -12025,6 +12079,10 @@ msgstr "{column}"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
 msgstr ""
+
+#: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} failed to settle: {cancellationReason}"
+msgstr "Abrechnung von {positionName} fehlgeschlagen: {cancellationReason}"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
@@ -12166,6 +12224,10 @@ msgstr "PnL teilen"
 msgid "Frequency"
 msgstr "Häufigkeit"
 
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
+msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
+msgstr "Die Order wird nicht ausgeführt: Die Größe überschreitet die maximale Größe für {positionSide} von {maxSize}. Reduzieren Sie die Ordergröße."
+
 #: src/pages/UiPage/BannerTest.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Switch to WBTC-USDC pool"
@@ -12248,7 +12310,9 @@ msgstr "Verkaufen"
 msgid "Lent position impact pool amount"
 msgstr "Ausgeliehener Betrag des Position-Impact-Pools"
 
+#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "short"
 
