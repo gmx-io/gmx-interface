@@ -34,11 +34,13 @@ import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import {
   applyOrderBackfillMatches,
   getIsPendingOrderBackfillable,
+  getPendingTpSlOrdersForBackfill,
   ORDER_BACKFILL_MAX_AGE_MS,
   OrderBackfillMatch,
 } from "domain/synthetics/tradeHistory/orderStatusesBackfill";
 import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrderStatusesBackfill";
 import { TokenBalanceType } from "domain/tokens";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { ErrorLike } from "lib/errors";
@@ -153,6 +155,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { setWebsocketTokenBalancesUpdates, setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
+  const [pendingTpSlOrderBatches, setPendingTpSlOrderBatches] = useState<PendingTpSlOrderBatch[]>([]);
   const [pendingOrdersUpdates, setPendingOrdersUpdates] = useState<PendingOrdersUpdates>({});
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [awaitingBackfillOrders, setAwaitingBackfillOrders] = useState<PendingOrderData[]>([]);
@@ -1241,6 +1244,35 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     onMatches: handleOrderBackfillMatches,
   });
 
+  const { pendingTpSlCreationOrders, pendingTpSlTerminalOrders } = useMemo(() => {
+    const orders = getPendingTpSlOrdersForBackfill({
+      batches: pendingTpSlOrderBatches,
+      chainId,
+      account: currentAccount,
+      orderStatuses,
+      relayTaskStatuses,
+    });
+
+    return {
+      pendingTpSlCreationOrders: orders.filter((order) => !order.orderKey),
+      pendingTpSlTerminalOrders: orders.filter((order) => order.orderKey),
+    };
+  }, [chainId, currentAccount, pendingTpSlOrderBatches, orderStatuses, relayTaskStatuses]);
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: pendingTpSlCreationOrders,
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: pendingTpSlTerminalOrders,
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
+
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
       orderStatuses,
@@ -1249,6 +1281,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       shiftStatuses,
       approvalStatuses,
       pendingOrdersUpdates,
+      pendingTpSlOrderBatches,
+      setPendingTpSlOrderBatches,
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
@@ -1404,6 +1438,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     shiftStatuses,
     approvalStatuses,
     pendingOrdersUpdates,
+    pendingTpSlOrderBatches,
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,
