@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import FloatingPortal from "components/Portal/FloatingPortal";
@@ -32,6 +32,69 @@ describe("Modal", () => {
   afterEach(() => {
     cleanup();
     Reflect.deleteProperty(HTMLElement.prototype, "animate");
+  });
+
+  it.each([
+    { kind: "dialog", ModalComponent: Modal, portalled: false },
+    { kind: "dialog", ModalComponent: Modal, portalled: true },
+    { kind: "slide", ModalComponent: SlideModal, portalled: true },
+  ])(
+    "preserves search autofocus in $kind, including in a portal ($portalled)",
+    async ({ ModalComponent, portalled }) => {
+      const searchInput = <input autoFocus aria-label="Search tokens" />;
+      render(
+        <I18nProvider i18n={i18n}>
+          <ModalComponent isVisible label="Tokens" setIsVisible={vi.fn()}>
+            {portalled ? <FloatingPortal>{searchInput}</FloatingPortal> : searchInput}
+          </ModalComponent>
+        </I18nProvider>
+      );
+
+      await act(async () => {
+        await new Promise(window.requestAnimationFrame);
+      });
+
+      expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Search tokens" }));
+    }
+  );
+
+  it.each([
+    { kind: "dialog", ModalComponent: Modal },
+    { kind: "slide", ModalComponent: SlideModal },
+  ])("defers $kind focus and keys to the wallet dialog, then resumes when it closes", async ({ ModalComponent }) => {
+    const closeModal = vi.fn();
+    const modal = (
+      <I18nProvider i18n={i18n}>
+        <ModalComponent isVisible label="Pay" setIsVisible={closeModal}>
+          <button>Pay action</button>
+        </ModalComponent>
+      </I18nProvider>
+    );
+    const walletDialog = render(
+      <div id="privy-dialog" role="dialog" aria-label="Connect wallet">
+        <button autoFocus>MetaMask</button>
+      </div>
+    );
+    render(modal);
+
+    await act(async () => {
+      await new Promise(window.requestAnimationFrame);
+    });
+
+    const walletButton = screen.getByRole("button", { name: "MetaMask" });
+    expect(document.activeElement).toBe(walletButton);
+    expect(fireEvent.keyDown(walletButton, { key: "Tab" })).toBe(true);
+    expect(fireEvent.keyDown(walletButton, { key: "Tab", shiftKey: true })).toBe(true);
+    expect(document.activeElement).toBe(walletButton);
+    expect(fireEvent.keyDown(walletButton, { key: "Escape" })).toBe(true);
+    expect(closeModal).not.toHaveBeenCalled();
+
+    walletDialog.unmount();
+    screen.getByRole("button", { name: "Pay action" }).focus();
+    fireEvent.keyDown(window, { key: "Tab" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close" }));
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(closeModal).toHaveBeenCalledWith(false);
   });
 
   it("keeps keyboard focus inside the dialog and its portalled content", async () => {

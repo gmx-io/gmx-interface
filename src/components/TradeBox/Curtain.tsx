@@ -4,7 +4,6 @@ import { CSSProperties, PropsWithChildren, useCallback, useEffect, useMemo, useR
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
-import { getOverlayedBottomInset, useOverlayedBottomInset } from "lib/wallets/oneKeyUiCompat";
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -14,11 +13,11 @@ const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
 
-function getCurtainStyle(headerHeight: number, bottomInset: number): CSSProperties {
+function getCurtainStyle(headerHeight: number): CSSProperties {
   return {
-    bottom: `${bottomInset}px`,
+    bottom: `0`,
     transform: `translateY(calc(100% - ${headerHeight}px))`,
-    height: `calc(100dvh - ${headerHeight + bottomInset}px)`,
+    height: `calc(100dvh - ${headerHeight}px)`,
   };
 }
 
@@ -58,7 +57,6 @@ export function Curtain({
 
   const [isOpen, setIsOpen] = useState(false);
   const [externalIsCurtainOpen, setExternalIsCurtainOpen] = useIsCurtainOpen();
-  const bottomInset = useOverlayedBottomInset();
 
   const handleAnimate = useCallback(
     (newIsOpen: boolean) => {
@@ -126,9 +124,7 @@ export function Curtain({
 
     const curtainRect = curtainRef.current.getBoundingClientRect();
 
-    const viewportBottom = window.innerHeight - getOverlayedBottomInset();
-
-    currentRelativeY.current = (viewportBottom - curtainRect.bottom) * -1;
+    currentRelativeY.current = (window.innerHeight - curtainRect.bottom) * -1;
 
     prevScreenY.current = e.screenY;
     prevScreenX.current = e.screenX;
@@ -241,7 +237,7 @@ export function Curtain({
     }
   }, [externalIsCurtainOpen, isOpen, handleAnimate]);
 
-  const curtainStyle = useMemo(() => getCurtainStyle(headerHeight, bottomInset), [headerHeight, bottomInset]);
+  const curtainStyle = useMemo(() => getCurtainStyle(headerHeight), [headerHeight]);
 
   return (
     <>

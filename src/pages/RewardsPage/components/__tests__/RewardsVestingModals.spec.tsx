@@ -289,6 +289,46 @@ describe("RewardsVestingModal", () => {
     expect(getCollateralRowText("required")).toBe("Collateralrequiredforvest25GMX");
   });
 
+  it("shows the calculated GMX requirement for a 5:1 vest with enough collateral already staked", () => {
+    renderVestModal({
+      ...baseData,
+      walletEsGmxBalance: 10n * TOKEN_UNIT,
+      stakedGmxBalance: 50n * TOKEN_UNIT,
+      freePairAmount: 50n * TOKEN_UNIT,
+      vestingInfo: { ...baseData.vestingInfo, averageStakedAmount: 500n * TOKEN_UNIT },
+    });
+
+    expect(screen.getByDisplayValue("10")).toBeDefined();
+    expect(getCollateralRowText("required")).toBe("Collateralrequiredforvest50GMX");
+    expect(getCollateralRowText("available")).toBe("Collateralavailable50GMX");
+    expect(screen.queryByText(/more GMX staked as collateral/)).toBeNull();
+    expect(screen.getByRole("button", { name: "Vest esGMX" }).hasAttribute("disabled")).toBe(false);
+  });
+
+  it.each([
+    { claimable: 0n, required: "50" },
+    { claimable: 5n * TOKEN_UNIT, required: "25" },
+    { claimable: 10n * TOKEN_UNIT, required: "0" },
+  ])("reuses locked collateral when adding esGMX after $claimable accrues", ({ claimable, required }) => {
+    renderVestModal({
+      ...baseData,
+      walletEsGmxBalance: 10n * TOKEN_UNIT,
+      freePairAmount: 50n * TOKEN_UNIT,
+      vestingInfo: {
+        ...baseData.vestingInfo,
+        pairAmount: 50n * TOKEN_UNIT,
+        vestedAmount: 10n * TOKEN_UNIT,
+        escrowedBalance: 10n * TOKEN_UNIT,
+        averageStakedAmount: 500n * TOKEN_UNIT,
+        claimable,
+      },
+    });
+
+    expect(screen.getByDisplayValue("10")).toBeDefined();
+    expect(getCollateralRowText("required")).toBe(`Collateralrequiredforvest${required}GMX`);
+    expect(getCollateralRowText("available")).toBe("Collateralavailable50GMX");
+  });
+
   it("explains the vesting collateral fields", async () => {
     renderVestModal(baseData);
 
@@ -296,7 +336,7 @@ describe("RewardsVestingModal", () => {
     fireEvent.mouseEnter(requiredLabel.closest(".Tooltip-handle")!);
     expect(
       await screen.findByText(
-        "The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and locked"
+        "The additional GMX needed to vest the entered esGMX, after reusing any GMX already locked. Each 1 esGMX requires 5 GMX to be staked and locked"
       )
     ).toBeDefined();
     fireEvent.mouseLeave(requiredLabel.closest(".Tooltip-handle")!);
@@ -368,7 +408,7 @@ describe("RewardsVestingModal", () => {
       },
     });
 
-    expect(getCollateralRowText("required")).toBe("Collateralrequiredforvest100GMX");
+    expect(getCollateralRowText("required")).toBe("Collateralrequiredforvest200GMX");
     expect(getCollateralRowText("available")).toBe("Collateralavailable175GMX");
   });
 
@@ -1737,6 +1777,40 @@ describe("RewardsStopVestingModal", () => {
     expect(mockCallContract.mock.calls[0][2]).toBe("withdraw");
     expect(wait).toHaveBeenCalledTimes(1);
     expect(mutate).toHaveBeenCalledTimes(2);
+  });
+
+  it("allows stopping when ordinary accrual advances during the preflight refresh", async () => {
+    const wait = vi.fn(async () => undefined);
+    mockCallContract.mockResolvedValueOnce({ wait } as Awaited<ReturnType<typeof callContract>>);
+    const activeData = {
+      ...baseData,
+      vestingInfo: {
+        ...baseData.vestingInfo,
+        pairAmount: 1_576_800n * TOKEN_UNIT,
+        vestedAmount: 315_360n * TOKEN_UNIT,
+        escrowedBalance: 315_360n * TOKEN_UNIT,
+        claimable: 100n * TOKEN_UNIT,
+      },
+    };
+    const refreshedClaimable = activeData.vestingInfo.claimable + TOKEN_UNIT / 100n;
+    mutate.mockResolvedValue({
+      ...activeData,
+      vestingInfo: { ...activeData.vestingInfo, claimable: refreshedClaimable },
+    });
+    renderStopModal(activeData);
+
+    fireEvent.click(screen.getByRole("button", { name: "Yes, stop vesting" }));
+
+    await waitFor(() => expect(setIsVisible).toHaveBeenCalledWith(false));
+    expect(mockCallContract).toHaveBeenCalledTimes(1);
+    expect(mockCallContract.mock.calls[0][2]).toBe("withdraw");
+    expect(wait).toHaveBeenCalledTimes(1);
+    expect(mockHelperToastInfo).not.toHaveBeenCalled();
+    expect(mockSendRewardsTransactionResultEvent).toHaveBeenCalledWith({
+      transaction: "StopVesting",
+      result: "Success",
+      amount: activeData.vestingInfo.escrowedBalance - refreshedClaimable,
+    });
   });
 
   it("does not stop vesting when the refreshed position changed", async () => {

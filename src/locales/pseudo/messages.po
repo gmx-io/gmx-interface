@@ -11578,10 +11578,6 @@ msgstr ""
 msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
-msgid "The amount of GMX needed to vest the entered esGMX. Each 1 esGMX requires 5 GMX to be staked and locked"
-msgstr "[Thë ämöünt öf GMX nëëdëd tö vëst thë ëntërëd ësGMX. Ëäch 1 ësGMX rëqüïrës 5 GMX tö bë stäkëd änd löckëd]"
-
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit order"
@@ -11591,6 +11587,10 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
+msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "The additional GMX needed to vest the entered esGMX, after reusing any GMX already locked. Each 1 esGMX requires 5 GMX to be staked and locked"
 msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -13607,10 +13607,6 @@ msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {minutes} minutes{0}"
-msgstr ""
-
-#: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
-msgid "Partial search covers the top {0} accounts. Search by full address to find any account."
 msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx

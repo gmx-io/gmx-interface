@@ -109,6 +109,7 @@ import { useTradeboxTransactions } from "./useTradeboxTransactions";
 interface TradeboxButtonStateOptions {
   account?: string;
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
+  canSwitchGasPaymentToken: boolean;
 }
 
 type TradeboxButtonState = {
@@ -128,6 +129,7 @@ type TradeboxButtonState = {
 export function useTradeboxButtonState({
   account,
   setToTokenInputValue,
+  canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -181,6 +183,7 @@ export function useTradeboxButtonState({
     primaryExecutionFee,
   } = useTradeboxTransactions({
     setPendingTxns,
+    canSwitchGasPaymentToken,
   });
 
   const approvalTokens = useMemo(() => {

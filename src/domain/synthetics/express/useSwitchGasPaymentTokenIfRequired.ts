@@ -94,10 +94,12 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   expressParams,
   orderParams,
   isGmxAccount,
+  canSwitchGasPaymentToken,
 }: {
   expressParams: Pick<ExpressTxnParams, "gasPaymentValidations" | "gasPaymentParams"> | undefined;
   orderParams: BatchOrderTxnParams | undefined;
   isGmxAccount: boolean;
+  canSwitchGasPaymentToken: boolean;
 }) {
   const payAmounts = useMemo(() => (orderParams ? getBatchTotalPayCollateralAmount(orderParams) : {}), [orderParams]);
 
@@ -107,6 +109,7 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
     gasPaymentTokenAmount: expressParams?.gasPaymentParams.gasPaymentTokenAmount,
     payAmounts,
     isGmxAccount,
+    canSwitchGasPaymentToken,
   });
 }
 
@@ -116,12 +119,14 @@ function useSwitchGasPaymentTokenIfRequired({
   gasPaymentTokenAmount,
   payAmounts,
   isGmxAccount,
+  canSwitchGasPaymentToken,
 }: {
   gasPaymentValidations: GasPaymentValidations | undefined;
   gasPaymentToken: TokenData | undefined;
   gasPaymentTokenAmount: bigint | undefined;
   payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
+  canSwitchGasPaymentToken: boolean;
 }) {
   const { chainId } = useChainId();
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
@@ -131,6 +136,7 @@ function useSwitchGasPaymentTokenIfRequired({
   useEffect(
     function switchGasPaymentToken() {
       if (
+        !canSwitchGasPaymentToken ||
         !getIsConfirmedOutOfGasPaymentTokenBalance(gasPaymentValidations) ||
         !gasPaymentToken ||
         gasPaymentTokenAmount === undefined
@@ -159,6 +165,7 @@ function useSwitchGasPaymentTokenIfRequired({
       }
     },
     [
+      canSwitchGasPaymentToken,
       chainId,
       gasPaymentToken,
       gasPaymentTokenAmount,

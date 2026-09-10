@@ -2,6 +2,7 @@ import { erc20Abi } from "viem";
 
 import AbstractSubaccountApprovalNonceable from "./AbstractSubaccountApprovalNonceable";
 import ArbitrumNodeInterface from "./ArbitrumNodeInterface";
+import ArbSys from "./ArbSys";
 import ClaimHandler from "./ClaimHandler";
 import CustomErrors from "./CustomErrors";
 import DataStore from "./DataStore";
@@ -58,6 +59,7 @@ import WETH from "./WETH";
 export const abis = {
   AbstractSubaccountApprovalNonceable,
   ArbitrumNodeInterface,
+  ArbSys,
   ClaimHandler,
   CustomErrors,
   DataStore,
