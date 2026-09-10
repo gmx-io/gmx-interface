@@ -1,4 +1,4 @@
-import { BUILD_ID_PATTERN, fetchNetworkBuildId, getDocumentBuildId } from "lib/pwa/buildId";
+import { BUILD_ID_PATTERN, getDocumentBuildId } from "lib/pwa/buildId";
 
 const PWA_CACHE_PREFIX = "gmx-pwa-";
 const PWA_CONTROL_CACHE = "gmx-pwa-control-v2";
@@ -38,13 +38,33 @@ function isRegistrationSuperseded(registration: ServiceWorkerRegistration, disab
     .some((generation) => generation !== undefined && generation > disabledGeneration);
 }
 
-async function getCurrentBuildId() {
-  const documentBuildId = getDocumentBuildId();
-  if (!navigator.serviceWorker.controller) {
-    return documentBuildId;
+async function isBuildDisabled(buildId: string) {
+  const generation = BUILD_ID_PATTERN.test(buildId) ? Number(buildId) : undefined;
+  if (generation === undefined || !Number.isSafeInteger(generation)) {
+    return false;
   }
 
-  return (await fetchNetworkBuildId()) ?? documentBuildId;
+  try {
+    if (typeof caches === "undefined" || !(await caches.keys()).includes(PWA_CONTROL_CACHE)) {
+      return false;
+    }
+    const controlCache = await caches.open(PWA_CONTROL_CACHE);
+    return (await controlCache.keys()).some((request) => {
+      const pathname = new URL(request.url).pathname;
+      if (!pathname.startsWith(PWA_DISABLED_KEY_PREFIX)) {
+        return false;
+      }
+      const disabledBuildId = pathname.slice(PWA_DISABLED_KEY_PREFIX.length);
+      if (!BUILD_ID_PATTERN.test(disabledBuildId)) {
+        return false;
+      }
+      const disabledGeneration = Number(disabledBuildId);
+      return Number.isSafeInteger(disabledGeneration) && disabledGeneration >= generation;
+    });
+  } catch {
+    // Unavailable storage must not prevent registration.
+    return false;
+  }
 }
 
 export function registerServiceWorker() {
@@ -62,13 +82,13 @@ export function registerServiceWorker() {
   }
 
   const register = async () => {
-    const buildId = await getCurrentBuildId();
-    if (!buildId) {
+    const buildId = getDocumentBuildId();
+    if (!buildId || (await isBuildDisabled(buildId))) {
       return;
     }
 
     const serviceWorkerUrl = `/sw.js?build=${encodeURIComponent(buildId)}`;
-    await navigator.serviceWorker.register(serviceWorkerUrl).catch(() => {
+    await navigator.serviceWorker.register(serviceWorkerUrl, { updateViaCache: "none" }).catch(() => {
       // Registration failure must not block the app.
     });
   };
