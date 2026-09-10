@@ -16,7 +16,7 @@ import {
   selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetAdvancedOptions,
-  selectTradeboxSetSelectedAcceptablePriceImpactBps,
+  selectTradeboxSetUserSelectedAcceptablePriceImpactBps,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
@@ -155,7 +155,7 @@ export function TradeBoxAdvancedGroups({
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
 
-  const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
+  const setUserSelectedAcceptablePriceImpactBps = useSelector(selectTradeboxSetUserSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
@@ -221,7 +221,7 @@ export function TradeBoxAdvancedGroups({
             priceImpactFeeBps={
               isTrigger ? fees?.decreasePositionPriceImpact?.bps : fees?.increasePositionPriceImpact?.bps
             }
-            setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
+            setAcceptablePriceImpactBps={setUserSelectedAcceptablePriceImpactBps}
           />
         </>
       )}

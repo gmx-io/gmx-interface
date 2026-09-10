@@ -9,17 +9,15 @@ const { selectorValues } = vi.hoisted(() => ({
 // selectors are mocked to plain keys that useSelector reads from a test-controlled map
 vi.mock("context/SyntheticsStateContext/selectors/tradeboxSelectors", () => ({
   selectTradeboxDecreasePositionAmounts: "decreaseAmounts",
-  selectTradeboxDefaultTriggerAcceptablePriceImpactBps: "defaultBps",
   selectTradeboxFromTokenAddress: "fromTokenAddress",
-  selectTradeboxFromTokenInputValue: "fromTokenInputValue",
   selectTradeboxIncreasePositionAmounts: "increaseAmounts",
+  selectTradeboxIsAcceptablePriceImpactCustomized: "isCustomized",
   selectTradeboxLeverage: "leverage",
   selectTradeboxMarketInfo: "marketInfo",
-  selectTradeboxSelectedTriggerAcceptablePriceImpactBps: "selectedBps",
   selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps: "setDefaultBps",
+  selectTradeboxSetIsAcceptablePriceImpactCustomized: "setIsCustomized",
   selectTradeboxSetSelectedAcceptablePriceImpactBps: "setSelectedBps",
   selectTradeboxToTokenAddress: "toTokenAddress",
-  selectTradeboxToTokenInputValue: "toTokenInputValue",
   selectTradeboxTradeFlags: "tradeFlags",
   selectTradeboxTriggerPrice: "triggerPrice",
 }));
@@ -76,21 +74,28 @@ const limitOrderValues: TradeboxValues = {
   decreaseAmounts: undefined,
 };
 
-let latestSetSelectedBps: (value: bigint | undefined) => void;
+let latestUserSetsImpact: (value: bigint) => void;
 
 function Harness({ values }: { values: TradeboxValues }) {
   const [defaultBps, setDefaultBps] = useState<bigint>();
   const [selectedBps, setSelectedBps] = useState<bigint>();
+  const [isCustomized, setIsCustomized] = useState(false);
 
-  latestSetSelectedBps = setSelectedBps;
+  // mirrors setUserSelectedAcceptablePriceImpactBps from useTradeboxState
+  latestUserSetsImpact = (value: bigint) => {
+    setSelectedBps(value);
+    setIsCustomized(value !== defaultBps);
+  };
 
   for (const [key, value] of Object.entries(values)) {
     selectorValues.set(key, value);
   }
   selectorValues.set("defaultBps", defaultBps);
   selectorValues.set("selectedBps", selectedBps);
+  selectorValues.set("isCustomized", isCustomized);
   selectorValues.set("setDefaultBps", setDefaultBps);
   selectorValues.set("setSelectedBps", setSelectedBps);
+  selectorValues.set("setIsCustomized", setIsCustomized);
 
   useTradeboxAcceptablePriceImpactValues();
 
@@ -121,7 +126,7 @@ function renderHook(values: TradeboxValues) {
 
 function userSetsImpact(bps: bigint) {
   act(() => {
-    latestSetSelectedBps(bps);
+    latestUserSetsImpact(bps);
   });
 }
 
@@ -175,6 +180,16 @@ describe("useTradeboxAcceptablePriceImpactValues", () => {
     update({ increaseAmounts: increaseWithRecommendation(38n), fromTokenInputValue: "1000.1" });
 
     expect(read()).toEqual({ defaultBps: "38", selectedBps: "100" });
+  });
+
+  it("keeps the user's value when the recommended impact drifts onto it and past it", () => {
+    const { read, update } = renderHook(limitOrderValues);
+
+    userSetsImpact(40n);
+    update({ increaseAmounts: increaseWithRecommendation(40n) });
+    update({ increaseAmounts: increaseWithRecommendation(45n) });
+
+    expect(read()).toEqual({ defaultBps: "45", selectedBps: "40" });
   });
 
   it("re-applies the recommended impact when the user changes the limit price", () => {

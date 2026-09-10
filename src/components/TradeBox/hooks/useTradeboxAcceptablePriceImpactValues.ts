@@ -2,10 +2,10 @@ import { useEffect } from "react";
 
 import {
   selectTradeboxDecreasePositionAmounts,
-  selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
+  selectTradeboxIsAcceptablePriceImpactCustomized,
   selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps,
+  selectTradeboxSetIsAcceptablePriceImpactCustomized,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -17,8 +17,7 @@ import { useTradeboxChanges } from "./useTradeboxChanges";
 export function useTradeboxAcceptablePriceImpactValues() {
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
-  const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const isAcceptablePriceImpactCustomized = useSelector(selectTradeboxIsAcceptablePriceImpactCustomized);
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
 
@@ -28,6 +27,7 @@ export function useTradeboxAcceptablePriceImpactValues() {
     selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps
   );
   const setSelectedAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
+  const setIsAcceptablePriceImpactCustomized = useSelector(selectTradeboxSetIsAcceptablePriceImpactCustomized);
 
   const tradeboxChanges = useTradeboxChanges();
 
@@ -46,9 +46,15 @@ export function useTradeboxAcceptablePriceImpactValues() {
       if (isAnyValueChanged) {
         setDefaultTriggerAcceptablePriceImpactBps(undefined);
         setSelectedAcceptablePriceImpactBps(undefined);
+        setIsAcceptablePriceImpactCustomized(false);
       }
     },
-    [isAnyValueChanged, setDefaultTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImpactBps]
+    [
+      isAnyValueChanged,
+      setDefaultTriggerAcceptablePriceImpactBps,
+      setIsAcceptablePriceImpactCustomized,
+      setSelectedAcceptablePriceImpactBps,
+    ]
   );
 
   useEffect(
@@ -57,21 +63,15 @@ export function useTradeboxAcceptablePriceImpactValues() {
         return;
       }
 
-      const isCustomized =
-        selectedTriggerAcceptablePriceImpactBps !== undefined &&
-        defaultTriggerAcceptablePriceImpactBps !== undefined &&
-        selectedTriggerAcceptablePriceImpactBps !== defaultTriggerAcceptablePriceImpactBps;
-
-      if (!isCustomized) {
+      if (!isAcceptablePriceImpactCustomized) {
         setSelectedAcceptablePriceImpactBps(recommendedAcceptablePriceImpactBps);
       }
 
       setDefaultTriggerAcceptablePriceImpactBps(recommendedAcceptablePriceImpactBps);
     },
     [
-      defaultTriggerAcceptablePriceImpactBps,
+      isAcceptablePriceImpactCustomized,
       recommendedAcceptablePriceImpactBps,
-      selectedTriggerAcceptablePriceImpactBps,
       setDefaultTriggerAcceptablePriceImpactBps,
       setSelectedAcceptablePriceImpactBps,
     ]
