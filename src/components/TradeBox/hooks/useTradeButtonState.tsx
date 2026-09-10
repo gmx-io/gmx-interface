@@ -87,6 +87,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
@@ -109,6 +110,7 @@ import { useTradeboxTransactions } from "./useTradeboxTransactions";
 interface TradeboxButtonStateOptions {
   account?: string;
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
+  canSwitchGasPaymentToken: boolean;
 }
 
 type TradeboxButtonState = {
@@ -128,6 +130,7 @@ type TradeboxButtonState = {
 export function useTradeboxButtonState({
   account,
   setToTokenInputValue,
+  canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -166,6 +169,7 @@ export function useTradeboxButtonState({
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
+  const isWalletInitializing = useIsWalletInitializing();
 
   const {
     onSubmitWrapOrUnwrap,
@@ -181,6 +185,7 @@ export function useTradeboxButtonState({
     primaryExecutionFee,
   } = useTradeboxTransactions({
     setPendingTxns,
+    canSwitchGasPaymentToken,
   });
 
   const approvalTokens = useMemo(() => {
@@ -507,6 +512,14 @@ export function useTradeboxButtonState({
       isExpressLoading,
     };
 
+    if (!account && isWalletInitializing) {
+      return {
+        ...commonState,
+        text: t`Connecting wallet...`,
+        disabled: true,
+      };
+    }
+
     if (!account && buttonErrorText) {
       return {
         ...commonState,
@@ -666,6 +679,7 @@ export function useTradeboxButtonState({
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
+    isWalletInitializing,
     buttonErrorText,
     shouldShowDepositButton,
     stopLoss.error?.percentage,

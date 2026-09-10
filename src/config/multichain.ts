@@ -12,6 +12,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   ContractsChainId,
+  isContractsChain,
   MEGAETH,
   SETTLEMENT_CHAIN_IDS,
   SETTLEMENT_CHAIN_IDS_DEV,
@@ -26,7 +27,7 @@ import {
 import { isDevelopment } from "config/env";
 import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
-import { getContract } from "sdk/configs/contracts";
+import { getContract, tryGetContract } from "sdk/configs/contracts";
 import {
   CHAIN_ID_TO_ENDPOINT_ID,
   isSettlementChain,
@@ -173,6 +174,22 @@ export const MULTICALLS_MAP: Record<AnyChainId, string> = {
   [AVALANCHE_FUJI]: getContract(AVALANCHE_FUJI, "Multicall"),
   [MEGAETH]: getContract(MEGAETH, "Multicall"),
 };
+
+export type BlockNumberCall = {
+  contractAddress: string;
+  abiId: "ArbSys" | "Multicall";
+  methodName: "arbBlockNumber" | "getBlockNumber";
+};
+
+export function getBlockNumberCall(chainId: AnyChainId): BlockNumberCall {
+  const arbSysAddress = isContractsChain(chainId, true) ? tryGetContract(chainId, "ArbSys") : undefined;
+
+  if (arbSysAddress) {
+    return { contractAddress: arbSysAddress, abiId: "ArbSys", methodName: "arbBlockNumber" };
+  }
+
+  return { contractAddress: MULTICALLS_MAP[chainId], abiId: "Multicall", methodName: "getBlockNumber" };
+}
 
 export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string> = {
   [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", // USDC.SG

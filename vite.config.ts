@@ -2,6 +2,7 @@
 
 import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
+import { execFileSync } from "node:child_process";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, loadEnv, type ConfigEnv, type PluginOption, type UserConfig } from "vite";
@@ -64,6 +65,17 @@ function appRedirects(): PluginOption {
       });
     },
   };
+}
+
+function getPwaBuildId(configuredBuildId: string | undefined) {
+  if (configuredBuildId) {
+    return configuredBuildId;
+  }
+
+  const commitTimestamp = execFileSync("git", ["show", "-s", "--format=%ct", "HEAD"], { encoding: "utf8" }).trim();
+
+  // Preserve ordering with the millisecond build IDs used by existing installs.
+  return `${commitTimestamp}000`;
 }
 
 function pwaMetadata(buildId: string, isEnabled: boolean): PluginOption {
@@ -221,7 +233,7 @@ export function createViteConfig(
   { emitAppRedirects = true }: { emitAppRedirects?: boolean } = {}
 ): UserConfig {
   const env = loadEnv(mode, process.cwd(), "");
-  const pwaBuildId = env.VITE_APP_PWA_GENERATION || Date.now().toString();
+  const pwaBuildId = getPwaBuildId(env.VITE_APP_PWA_GENERATION);
 
   const pwaGeneration = Number(pwaBuildId);
   if (!/^\d+$/.test(pwaBuildId) || !Number.isSafeInteger(pwaGeneration) || pwaGeneration <= 0) {

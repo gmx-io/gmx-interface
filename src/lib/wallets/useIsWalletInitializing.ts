@@ -1,12 +1,22 @@
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { useAccount } from "wagmi";
+import { useCallback, useSyncExternalStore } from "react";
+import { useAccount, useConfig } from "wagmi";
 
-// @privy-io/wagmi forces reconnectOnMount: false, so while Privy restores the session on page load
-// wagmi reports plain "disconnected" (never "reconnecting")
 export function useIsWalletInitializing(): boolean {
-  const { address: account, isConnecting, isReconnecting } = useAccount();
+  const config = useConfig();
+  const { address: account } = useAccount();
   const { ready: isPrivyReady } = usePrivy();
   const { ready: isWalletsReady, wallets } = useWallets();
 
-  return !isPrivyReady || !isWalletsReady || (wallets.length > 0 && !account) || isConnecting || isReconnecting;
+  const subscribe = useCallback(
+    (onChange: () => void) => config.subscribe((state) => state.current, onChange),
+    [config]
+  );
+  const hasRememberedConnection = useSyncExternalStore(subscribe, () => config.state.current !== null);
+
+  if (account || !hasRememberedConnection) {
+    return false;
+  }
+
+  return !isPrivyReady || !isWalletsReady || wallets.length > 0;
 }

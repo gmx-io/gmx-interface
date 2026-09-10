@@ -22,6 +22,7 @@ type Props = {
   autoFocus?: boolean;
   qa?: string;
   noBorder?: boolean;
+  maxLength?: number;
 };
 
 export default function SearchInput({
@@ -33,6 +34,7 @@ export default function SearchInput({
   autoFocus,
   qa = "token-search-input",
   noBorder,
+  maxLength,
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -86,6 +88,7 @@ export default function SearchInput({
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
+        maxLength={maxLength}
         className={cx(
           "block h-full w-full rounded-8 bg-slate-800 p-[6.5px] pl-32 pr-32 text-[13px] leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
           {

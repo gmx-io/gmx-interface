@@ -72,8 +72,10 @@ const IFACE = new ethers.Interface([
   "function allowance(address owner, address spender) view returns (uint256)",
   "function getEthBalance(address account) view returns (uint256)",
   "function getBlockNumber() view returns (uint256)",
+  "function arbBlockNumber() view returns (uint256)",
   "function getCurrentBlockTimestamp() view returns (uint256)",
   "function aggregate((address target, bytes callData)[] calls) returns (uint256 blockNumber, bytes[] returnData)",
+  "function blockAndAggregate((address target, bytes callData)[] calls) payable returns (uint256 blockNumber, bytes32 blockHash, (bool success, bytes returnData)[] returnData)",
   "function aggregate3((address target, bool allowFailure, bytes callData)[] calls) view returns ((bool success, bytes returnData)[] returnData)",
 ]);
 
@@ -90,8 +92,10 @@ const SELECTORS = {
   allowance: IFACE.getFunction("allowance")!.selector,
   getEthBalance: IFACE.getFunction("getEthBalance")!.selector,
   getBlockNumber: IFACE.getFunction("getBlockNumber")!.selector,
+  arbBlockNumber: IFACE.getFunction("arbBlockNumber")!.selector,
   getCurrentBlockTimestamp: IFACE.getFunction("getCurrentBlockTimestamp")!.selector,
   aggregate: IFACE.getFunction("aggregate")!.selector,
+  blockAndAggregate: IFACE.getFunction("blockAndAggregate")!.selector,
   aggregate3: IFACE.getFunction("aggregate3")!.selector,
 };
 
@@ -445,6 +449,20 @@ export class MockChain implements RpcResponder {
         }));
         return IFACE.encodeFunctionResult("aggregate3", [results]);
       }
+      case SELECTORS.blockAndAggregate: {
+        const [calls] = IFACE.decodeFunctionData("blockAndAggregate", data) as unknown as [
+          { target: string; callData: string }[],
+        ];
+        const results = calls.map((innerCall) => ({
+          success: true,
+          returnData: this.executeCall(innerCall.target, innerCall.callData),
+        }));
+        return IFACE.encodeFunctionResult("blockAndAggregate", [
+          BigInt(this.blockNumber),
+          ethers.keccak256(ethers.toUtf8Bytes(`block-${this.blockNumber}`)),
+          results,
+        ]);
+      }
       case SELECTORS.containsAddress: {
         const [setKey, value] = IFACE.decodeFunctionData("containsAddress", data) as unknown as [string, string];
         const isActive =
@@ -469,6 +487,9 @@ export class MockChain implements RpcResponder {
       }
       case SELECTORS.getBlockNumber: {
         return IFACE.encodeFunctionResult("getBlockNumber", [BigInt(this.blockNumber)]);
+      }
+      case SELECTORS.arbBlockNumber: {
+        return IFACE.encodeFunctionResult("arbBlockNumber", [BigInt(this.blockNumber)]);
       }
       case SELECTORS.getCurrentBlockTimestamp: {
         return IFACE.encodeFunctionResult("getCurrentBlockTimestamp", [BigInt(Math.floor(Date.now() / 1000))]);
