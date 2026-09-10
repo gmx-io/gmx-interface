@@ -14,7 +14,11 @@ import { isMarketOrderType } from "domain/synthetics/orders";
 import { tryDecodeCustomError } from "lib/errors";
 import { getByKey } from "lib/objects";
 
-import { getErrorTooltipTitle } from "components/TradeHistory/TradeHistoryRow/utils/shared";
+import { CustomErrorName } from "components/TradeHistory/TradeHistoryRow/utils/CustomErrorName";
+import {
+  getErrorTooltipTitle,
+  getMarginBelowMinimumErrorMessage,
+} from "components/TradeHistory/TradeHistoryRow/utils/shared";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
 import "./StatusNotification.scss";
@@ -34,7 +38,15 @@ function getCancellationReason(reasonBytes: string | undefined) {
 
   const error = tryDecodeCustomError(reasonBytes);
 
-  return error ? getErrorTooltipTitle(error.name, true, error.args) : undefined;
+  if (!error) {
+    return undefined;
+  }
+
+  if (error.name === CustomErrorName.UnableToWithdrawCollateral) {
+    return getMarginBelowMinimumErrorMessage();
+  }
+
+  return getErrorTooltipTitle(error.name, true, error.args);
 }
 
 export function FeesSettlementStatusNotification({ orders, toastTimestamp, marketsInfoData }: Props) {

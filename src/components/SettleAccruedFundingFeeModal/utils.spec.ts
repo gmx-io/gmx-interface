@@ -14,6 +14,9 @@ const MARKET_INFO = createMockMarketInfo(undefined, { minCollateralFactor: (PREC
 
 const SIZE_IN_USD = expandDecimals(50000, 30);
 
+// MIN_COLLATERAL_USD on Arbitrum and Avalanche: the absolute floor, independent of the position size
+const MIN_COLLATERAL_USD = expandDecimals(1, 30);
+
 function createPosition(overrides: Partial<PositionInfo> = {}): PositionInfo {
   const position = createMockPositionInfo({
     account: ACCOUNT,
@@ -28,7 +31,7 @@ function createPosition(overrides: Partial<PositionInfo> = {}): PositionInfo {
 
 describe("getSettlementBlockReason", () => {
   it("does not block a position with margin above the min collateral for its size", () => {
-    expect(getSettlementBlockReason(createPosition())).toBeUndefined();
+    expect(getSettlementBlockReason(createPosition(), MIN_COLLATERAL_USD)).toBeUndefined();
   });
 
   it("blocks a position whose margin is below the min collateral for its size", () => {
@@ -37,7 +40,7 @@ describe("getSettlementBlockReason", () => {
       remainingCollateralUsd: expandDecimals(900, 30),
     });
 
-    expect(getSettlementBlockReason(position)).toBe("belowMinCollateral");
+    expect(getSettlementBlockReason(position, MIN_COLLATERAL_USD)).toBe("belowMinCollateral");
   });
 
   it("does not block a position just above the min collateral for its size", () => {
@@ -46,7 +49,7 @@ describe("getSettlementBlockReason", () => {
       remainingCollateralUsd: expandDecimals(1100, 30),
     });
 
-    expect(getSettlementBlockReason(position)).toBeUndefined();
+    expect(getSettlementBlockReason(position, MIN_COLLATERAL_USD)).toBeUndefined();
   });
 
   it("counts pending fees and unrealized pnl into the margin", () => {
@@ -59,8 +62,8 @@ describe("getSettlementBlockReason", () => {
       pnl: expandDecimals(300, 30),
     });
 
-    expect(getSettlementBlockReason(withLosses)).toBe("belowMinCollateral");
-    expect(getSettlementBlockReason(withProfit)).toBeUndefined();
+    expect(getSettlementBlockReason(withLosses, MIN_COLLATERAL_USD)).toBe("belowMinCollateral");
+    expect(getSettlementBlockReason(withProfit, MIN_COLLATERAL_USD)).toBeUndefined();
   });
 
   it("counts the closing fee into the margin", () => {
@@ -69,7 +72,7 @@ describe("getSettlementBlockReason", () => {
       closingFeeUsd: expandDecimals(200, 30),
     });
 
-    expect(getSettlementBlockReason(position)).toBe("belowMinCollateral");
+    expect(getSettlementBlockReason(position, MIN_COLLATERAL_USD)).toBe("belowMinCollateral");
   });
 
   it("blocks a position whose collateral alone is below the min collateral for its size, even in profit", () => {
@@ -80,7 +83,7 @@ describe("getSettlementBlockReason", () => {
       pnl: expandDecimals(300, 30),
     });
 
-    expect(getSettlementBlockReason(position)).toBe("belowMinCollateral");
+    expect(getSettlementBlockReason(position, MIN_COLLATERAL_USD)).toBe("belowMinCollateral");
   });
 
   it("blocks a position whose collateral is exactly the min collateral, since the settlement withdraws 1 wei", () => {
@@ -92,8 +95,8 @@ describe("getSettlementBlockReason", () => {
     });
     const oneWeiAbove = { ...exact, collateralAmount: expandDecimals(1000, 6) + 1n };
 
-    expect(getSettlementBlockReason(exact)).toBe("belowMinCollateral");
-    expect(getSettlementBlockReason(oneWeiAbove)).toBeUndefined();
+    expect(getSettlementBlockReason(exact, MIN_COLLATERAL_USD)).toBe("belowMinCollateral");
+    expect(getSettlementBlockReason(oneWeiAbove, MIN_COLLATERAL_USD)).toBeUndefined();
   });
 
   it("holds the collateral to the open-interest-based min collateral factor when it is stricter than the market's", () => {
@@ -110,8 +113,25 @@ describe("getSettlementBlockReason", () => {
       remainingCollateralUsd: expandDecimals(1500, 30),
     });
 
-    expect(getSettlementBlockReason(position)).toBe("belowMinCollateral");
-    expect(getSettlementBlockReason({ ...position, marketInfo: MARKET_INFO })).toBeUndefined();
+    expect(getSettlementBlockReason(position, MIN_COLLATERAL_USD)).toBe("belowMinCollateral");
+    expect(getSettlementBlockReason({ ...position, marketInfo: MARKET_INFO }, MIN_COLLATERAL_USD)).toBeUndefined();
+  });
+
+  it("blocks a position whose collateral and pnl together fall below the absolute min collateral", () => {
+    // $10 long with $2 of collateral: the leverage floor is $0.20, so only the $1 absolute minimum can block it
+    const position = createPosition({
+      sizeInUsd: expandDecimals(10, 30),
+      sizeInTokens: expandDecimals(5, 15),
+      collateralAmount: expandDecimals(2, 6),
+      collateralUsd: expandDecimals(2, 30),
+      remainingCollateralUsd: expandDecimals(2, 30),
+      pnl: -expandDecimals(15, 29),
+    });
+    const smallerLoss = { ...position, pnl: -expandDecimals(5, 29) };
+
+    expect(getSettlementBlockReason(position, MIN_COLLATERAL_USD)).toBe("belowMinCollateral");
+    expect(getSettlementBlockReason(smallerLoss, MIN_COLLATERAL_USD)).toBeUndefined();
+    expect(getSettlementBlockReason(position, undefined)).toBeUndefined();
   });
 
   it("blocks a position with a negative margin after pending fees", () => {
@@ -120,7 +140,7 @@ describe("getSettlementBlockReason", () => {
       pnl: expandDecimals(5000, 30),
     });
 
-    expect(getSettlementBlockReason(position)).toBe("negativeMargin");
+    expect(getSettlementBlockReason(position, MIN_COLLATERAL_USD)).toBe("negativeMargin");
   });
 });
 
@@ -133,9 +153,9 @@ describe("getIsPositionSettleable", () => {
       remainingCollateralUsd: expandDecimals(900, 30),
     });
 
-    expect(getIsPositionSettleable(createPosition())).toBe(true);
-    expect(getIsPositionSettleable(disabledMarketPosition)).toBe(false);
-    expect(getIsPositionSettleable(blockedPosition)).toBe(false);
+    expect(getIsPositionSettleable(createPosition(), MIN_COLLATERAL_USD)).toBe(true);
+    expect(getIsPositionSettleable(disabledMarketPosition, MIN_COLLATERAL_USD)).toBe(false);
+    expect(getIsPositionSettleable(blockedPosition, MIN_COLLATERAL_USD)).toBe(false);
   });
 });
 
@@ -145,7 +165,7 @@ describe("shouldPreSelectPosition", () => {
   it("pre-selects a healthy position whose accrued funding covers the network fee", () => {
     const position = createPosition({ pendingClaimableFundingFeesUsd: expandDecimals(20, 30) });
 
-    expect(shouldPreSelectPosition(position, networkFee)).toBe(true);
+    expect(shouldPreSelectPosition(position, networkFee, MIN_COLLATERAL_USD)).toBe(true);
   });
 
   it("does not pre-select a blocked position however large its accrued funding", () => {
@@ -158,7 +178,7 @@ describe("shouldPreSelectPosition", () => {
       remainingCollateralUsd: -expandDecimals(10, 30),
     });
 
-    expect(shouldPreSelectPosition(belowMinCollateral, networkFee)).toBe(false);
-    expect(shouldPreSelectPosition(negativeMargin, networkFee)).toBe(false);
+    expect(shouldPreSelectPosition(belowMinCollateral, networkFee, MIN_COLLATERAL_USD)).toBe(false);
+    expect(shouldPreSelectPosition(negativeMargin, networkFee, MIN_COLLATERAL_USD)).toBe(false);
   });
 });

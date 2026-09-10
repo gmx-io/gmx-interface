@@ -386,6 +386,12 @@ export function getIsPositionBelowMinCollateralForLeverage(position: PositionInf
     return true;
   }
 
+  const collateralDeltaUsd = convertToUsd(
+    collateralDeltaAmount,
+    collateralToken.decimals,
+    collateralToken.prices.minPrice
+  )!;
+
   const priceImpactDeltaUsd = getLiquidationPriceImpactDeltaUsd({
     marketInfo,
     sizeInUsd,
@@ -394,7 +400,7 @@ export function getIsPositionBelowMinCollateralForLeverage(position: PositionInf
     isLong,
   });
 
-  const marginUsd = remainingCollateralUsd + pnl + priceImpactDeltaUsd - closingFeeUsd;
+  const marginUsd = remainingCollateralUsd - collateralDeltaUsd + pnl + priceImpactDeltaUsd - closingFeeUsd;
 
   return marginUsd <= 0n || marginUsd < applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
 }

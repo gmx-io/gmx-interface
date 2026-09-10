@@ -100,7 +100,7 @@ export const SettleAccruedFundingFeeRow = ({
             {position.isLong ? t`Long` : t`Short`} {indexName}
           </span>{" "}
           <span className="subtext">[{poolName}]</span>
-          {!isMarketDisabled && blockReason !== undefined && (
+          {blockedTooltipContent !== undefined && (
             <WarnIcon className="ml-4 self-center text-yellow-300" aria-label={t`Warning icon`} />
           )}
         </div>

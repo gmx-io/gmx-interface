@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
+  usePositionsConstants,
   usePositiveFeePositionsSortedByUsd,
   useTokensData,
   useUserReferralInfo,
@@ -86,13 +87,14 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const positiveFeePositions = usePositiveFeePositionsSortedByUsd();
+  const { minCollateralUsd } = usePositionsConstants();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const preCheckedPositionKeys = useMemo(() => {
     return positiveFeePositions
-      .filter((position) => shouldPreSelectPosition(position, feeUsd ?? 0n))
+      .filter((position) => shouldPreSelectPosition(position, feeUsd ?? 0n, minCollateralUsd))
       .map((position) => position.key);
-  }, [positiveFeePositions, feeUsd]);
+  }, [positiveFeePositions, feeUsd, minCollateralUsd]);
 
   const [positionKeys, setPositionKeys] = useState<string[]>([]);
 
@@ -104,9 +106,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const selectedPositions = useMemo(
     () =>
       positiveFeePositions.filter(
-        (position) => positionKeys.includes(position.key) && getIsPositionSettleable(position)
+        (position) => positionKeys.includes(position.key) && getIsPositionSettleable(position, minCollateralUsd)
       ),
-    [positionKeys, positiveFeePositions]
+    [minCollateralUsd, positionKeys, positiveFeePositions]
   );
   const selectedPositionKeys = useMemo(() => selectedPositions.map((position) => position.key), [selectedPositions]);
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
@@ -359,7 +361,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               key={position.key}
               position={position}
               isMarketDisabled={position.marketInfo?.isDisabled ?? false}
-              blockReason={getSettlementBlockReason(position)}
+              blockReason={getSettlementBlockReason(position, minCollateralUsd)}
               isSelected={selectedPositionKeys.includes(position.key)}
               onCheckboxChange={handleRowCheckboxChange}
             />

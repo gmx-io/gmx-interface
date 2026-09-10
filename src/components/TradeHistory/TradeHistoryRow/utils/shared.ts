@@ -209,6 +209,10 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, 
 
 const MIN_COLLATERAL_FOR_LEVERAGE_REASON = "min collateral for leverage";
 
+export function getMarginBelowMinimumErrorMessage() {
+  return t`Margin is below the minimum required for the position size`;
+}
+
 function getTradeHistoryErrorMessage(errorName: string, errorArgs?: unknown) {
   switch (errorName) {
     case CustomErrorName.DisabledFeature:
@@ -246,7 +250,7 @@ function getTradeHistoryErrorMessage(errorName: string, errorArgs?: unknown) {
       return t`Insufficient collateral to cover order costs`;
     case CustomErrorName.LiquidatablePosition:
       return getStringContractErrorArg(errorArgs, 0, "reason") === MIN_COLLATERAL_FOR_LEVERAGE_REASON
-        ? t`Margin is below the minimum required for the position size`
+        ? getMarginBelowMinimumErrorMessage()
         : t`Position would be liquidatable at current prices`;
     default:
       return undefined;
