@@ -198,11 +198,6 @@ msgstr "Les swaps GMX Account ne peuvent pas utiliser le {0} natif. Sélectionne
 msgid "Include rPnL in leverage display"
 msgstr "Inclure le rPnL dans l'affichage de l'effet de levier"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Arbitrum"
-msgstr "Arbitrum"
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Ordres ({0})"
@@ -2017,8 +2012,6 @@ msgstr "Adresse de l'affilié :"
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -4408,11 +4401,6 @@ msgstr "Date limite :"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Connected to {sourceChainName}"
 msgstr "Connecté à {sourceChainName}"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Avalanche"
-msgstr "Avalanche"
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"

@@ -198,11 +198,6 @@ msgstr "GMX Account-Swaps können kein natives {0} verwenden. Wählen Sie {1} od
 msgid "Include rPnL in leverage display"
 msgstr "rPnL in Hebelanzeige einbeziehen"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Arbitrum"
-msgstr "Arbitrum"
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
@@ -2017,8 +2012,6 @@ msgstr "Affiliate-Adresse:"
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -4408,11 +4401,6 @@ msgstr "Frist:"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Connected to {sourceChainName}"
 msgstr "Verbunden mit {sourceChainName}"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Avalanche"
-msgstr "Avalanche"
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
