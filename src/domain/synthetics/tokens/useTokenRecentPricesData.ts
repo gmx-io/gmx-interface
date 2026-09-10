@@ -44,9 +44,12 @@ export function useTokenRecentPricesRequest(
     refreshWhenHidden: true,
 
     fetcher: async ([chainId]) => {
-      const priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
+      let isTickersFailed = false;
+
+      const { tickers: priceItems, endpoint } = await oracleKeeperFetcher.fetchTickers().catch(() => {
+        isTickersFailed = true;
         metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
-        return [];
+        return { tickers: [], endpoint: oracleKeeperFetcher.url };
       });
 
       const receivedPrices: TokenPricesData = {};
@@ -63,10 +66,14 @@ export function useTokenRecentPricesRequest(
         };
       });
 
-      const { pricesData: result, missingAddresses } = tokenPricesCache.reconcile({
-        chainId,
-        pricesData: receivedPrices,
-      });
+      const { pricesData: result, missingAddresses } = isTickersFailed
+        ? tokenPricesCache.restore(chainId)
+        : tokenPricesCache.reconcile({
+            chainId,
+            pricesData: receivedPrices,
+            servedBy: endpoint,
+            allEndpoints: oracleKeeperFetcher.endpoints,
+          });
 
       if (missingAddresses.length > 0) {
         // eslint-disable-next-line no-console

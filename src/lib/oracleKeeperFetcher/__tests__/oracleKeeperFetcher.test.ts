@@ -30,6 +30,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -97,5 +98,26 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
     const parsed = JSON.parse(stored!);
     // Main endpoint should be banned in cachedEndpointsState
     expect(parsed.cachedEndpointsState[mainUrl]?.banned).toBeDefined();
+  });
+
+  test("should report the endpoint that served the tickers, not the current primary", async () => {
+    const fallbackUrl = oracleKeeperConfig.getOracleKeeperFallbackUrls(chainId)[0];
+    const tickers = [{ tokenAddress: "0x0", minPrice: "1", maxPrice: "1" }];
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: string) =>
+        String(url).startsWith(mainUrl)
+          ? Promise.reject(new Error("Main endpoint is down"))
+          : Promise.resolve({ json: () => Promise.resolve(tickers) })
+      )
+    );
+
+    const fetcher = new OracleKeeperFetcher({ chainId });
+    const result = await fetcher.fetchTickers();
+
+    expect(fetcher.url).toBe(mainUrl);
+    expect(result.endpoint).toBe(fallbackUrl);
+    expect(result.tickers).toEqual(tickers);
   });
 });
