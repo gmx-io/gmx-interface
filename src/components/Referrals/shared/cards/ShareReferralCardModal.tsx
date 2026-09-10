@@ -41,7 +41,7 @@ export function ShareReferralCardModal({
   const [, copyToClipboard] = useCopyToClipboard();
   const { isMobile } = useBreakpoints();
   const homeURL = getHomeUrl();
-  const referralLink = `${homeURL}/#/trade/?ref=${referralCode}`;
+  const referralLink = `${homeURL}/trade/?ref=${referralCode}`;
   const totalDiscountsFormatted = useMemo(
     () => formatUsd(totalDiscountsUsd, { fallbackToZero: true }),
     [totalDiscountsUsd]

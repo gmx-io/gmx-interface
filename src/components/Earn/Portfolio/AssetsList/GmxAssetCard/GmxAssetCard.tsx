@@ -14,11 +14,12 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getRecentAvgWeeklyBuybackGmx } from "domain/buyback/useBuybackChartData";
 import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
 import { useGmxPrice } from "domain/legacy";
-import { getUserEstimatedApr, isLoyaltyTrackingActive, useStakingPowerData } from "domain/stake/useStakingPowerData";
+import { getUserEstimatedApr, isLoyaltyTrackingActive } from "domain/stake/useStakingPowerData";
+import { useTreasuryProjection } from "domain/stake/useTreasuryProjection";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
-import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
@@ -48,7 +49,12 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   const { active, signer, account } = useWallet();
   const { setPendingTxns } = usePendingTxns();
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
-  const { stakingPowerData, isLoading: isStakingPowerLoading } = useStakingPowerData(chainId, { account });
+  const {
+    stakingPowerData,
+    projectedRewardGmx: displayProjectedRewardGmx,
+    projectedRewardUsd: accumulatedGmxUsd,
+    isLoading: isStakingPowerLoading,
+  } = useTreasuryProjection(chainId);
   const { data: buybackWeeklyStatsData, isLoading: isBuybackStatsLoading } = useBuybackWeeklyStats(chainId);
 
   const [isGmxStakeModalVisible, setIsGmxStakeModalVisible] = useState(false);
@@ -104,29 +110,6 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   }, [sbfGmxBalance, processedData?.esGmxInStakedGmx]);
 
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
-
-  const displayProjectedRewardGmx = useMemo((): bigint | undefined => {
-    if (!stakingPowerData) {
-      return undefined;
-    }
-    if (stakingPowerData.treasuryGmxBalance === null) {
-      return undefined;
-    }
-    if (stakingPowerData.projectedRewardShare !== null) {
-      return stakingPowerData.projectedRewardShare;
-    }
-    if (stakingPowerData.totalNetworkPower === 0n) {
-      return 0n;
-    }
-    return undefined;
-  }, [stakingPowerData]);
-
-  const accumulatedGmxUsd = useMemo(() => {
-    if (displayProjectedRewardGmx === undefined || gmxPrice === undefined) {
-      return undefined;
-    }
-    return bigMath.mulDiv(displayProjectedRewardGmx, gmxPrice, expandDecimals(1, 18));
-  }, [displayProjectedRewardGmx, gmxPrice]);
 
   const avgWeeklyBuybackGmx = useMemo(
     () => getRecentAvgWeeklyBuybackGmx(buybackWeeklyStatsData),
@@ -207,6 +190,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         <div className="mt-12">
           <span className="text-body-small text-typography-secondary">
             <Tooltip
+              variant="iconStroke"
               handle={<Trans>Accumulated rewards</Trans>}
               content={
                 <>
@@ -258,6 +242,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             <SyntheticsInfoRow
               label={
                 <Tooltip
+                  variant="iconStroke"
                   handle={<Trans>Est. APR</Trans>}
                   content={
                     <Trans>
@@ -448,6 +433,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
         <SyntheticsInfoRow
           label={
             <Tooltip
+              variant="iconStroke"
               handle={<Trans>Loyalty</Trans>}
               content={
                 <Trans>
@@ -469,6 +455,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
           <SyntheticsInfoRow
             label={
               <Tooltip
+                variant="iconStroke"
                 handle={<Trans>Staking power</Trans>}
                 content={
                   <Trans>
@@ -483,6 +470,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
           <SyntheticsInfoRow
             label={
               <Tooltip
+                variant="iconStroke"
                 handle={<Trans>Staking Power Share</Trans>}
                 content={
                   <Trans>

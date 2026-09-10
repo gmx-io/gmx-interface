@@ -8,6 +8,10 @@ import type { MarketFilterLongShortItemData } from "components/TableMarketFilter
 import { buildTradeCsvRows, filterRawTradeActionsForExport } from "./tradeExport";
 
 const USDC_PRICE = "1000000000000000000000000";
+const USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
+const GMX_ADDRESS = "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a";
+const SWAP_MARKET_ADDRESS = "0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da";
+const POSITION_MARKET_ADDRESS = "0x0000000000000000000000000000000000000001";
 
 describe("buildTradeCsvRows", () => {
   it("keeps an action row and expands an executed swap cashflow", () => {
@@ -66,6 +70,105 @@ describe("buildTradeCsvRows", () => {
       received_amount: "0.25",
       received_currency: "ETH",
       net_action_result_usd: "",
+    });
+  });
+
+  it("denominates executed increase collateral in the position collateral token", () => {
+    const rows = buildTradeCsvRows({
+      chainId: 42161,
+      rawActions: [
+        {
+          id: "executed-increase",
+          eventName: TradeActionType.OrderExecuted,
+          account: "0xAccount",
+          orderType: OrderType.MarketIncrease,
+          orderKey: "0xExecutedIncrease",
+          timestamp: 1783425600,
+          transactionHash: "0xExecutedIncreaseHash",
+          marketAddress: POSITION_MARKET_ADDRESS,
+          swapPath: [SWAP_MARKET_ADDRESS],
+          initialCollateralTokenAddress: USDC_ADDRESS,
+          initialCollateralDeltaAmount: "204579982339079771",
+          sizeDeltaUsd: "0",
+          collateralTokenPriceMin: "7382800000000",
+          isLong: true,
+          shouldUnwrapNativeToken: false,
+        },
+        {
+          id: "created-increase",
+          eventName: TradeActionType.OrderCreated,
+          account: "0xAccount",
+          orderType: OrderType.LimitIncrease,
+          orderKey: "0xCreatedIncrease",
+          timestamp: 1783425601,
+          transactionHash: "0xCreatedIncreaseHash",
+          marketAddress: POSITION_MARKET_ADDRESS,
+          swapPath: [SWAP_MARKET_ADDRESS],
+          initialCollateralTokenAddress: USDC_ADDRESS,
+          initialCollateralDeltaAmount: "1510000",
+          sizeDeltaUsd: "0",
+          isLong: true,
+          shouldUnwrapNativeToken: false,
+        },
+        {
+          id: "executed-decrease",
+          eventName: TradeActionType.OrderExecuted,
+          account: "0xAccount",
+          orderType: OrderType.MarketDecrease,
+          orderKey: "0xExecutedDecrease",
+          timestamp: 1783425602,
+          transactionHash: "0xExecutedDecreaseHash",
+          marketAddress: POSITION_MARKET_ADDRESS,
+          swapPath: [SWAP_MARKET_ADDRESS],
+          initialCollateralTokenAddress: USDC_ADDRESS,
+          initialCollateralDeltaAmount: "1510000",
+          sizeDeltaUsd: "0",
+          isLong: true,
+          shouldUnwrapNativeToken: false,
+        },
+      ] as any,
+      marketsInfoData: {
+        [POSITION_MARKET_ADDRESS]: {
+          indexToken: { symbol: "GMX", decimals: 18 },
+          indexTokenAddress: GMX_ADDRESS,
+          isSpotOnly: false,
+        },
+        [SWAP_MARKET_ADDRESS]: {
+          marketTokenAddress: SWAP_MARKET_ADDRESS,
+          longTokenAddress: GMX_ADDRESS,
+          shortTokenAddress: USDC_ADDRESS,
+          longToken: { address: GMX_ADDRESS },
+          shortToken: { address: USDC_ADDRESS },
+        },
+      } as any,
+      tokensData: {
+        [USDC_ADDRESS]: { address: USDC_ADDRESS, symbol: "USDC", decimals: 6, isStable: true },
+        [GMX_ADDRESS]: { address: GMX_ADDRESS, symbol: "GMX", decimals: 18 },
+      } as any,
+    });
+
+    expect(rows.find((row) => row.record_id === "42161:executed-increase:action")).toMatchObject({
+      collateral_delta_amount: "0.204579982339079771",
+      collateral_token_symbol: "GMX",
+      collateral_token_address: GMX_ADDRESS,
+      data_completeness: "partial",
+      manual_review_reason: "increase pay-token amount unavailable after swap",
+    });
+    expect(rows.find((row) => row.record_id === "42161:executed-increase:cashflow:0")).toBeUndefined();
+    expect(rows.find((row) => row.record_id === "42161:created-increase:action")).toMatchObject({
+      collateral_delta_amount: "1.51",
+      collateral_token_symbol: "USDC",
+      collateral_token_address: USDC_ADDRESS,
+    });
+    expect(rows.find((row) => row.record_id === "42161:executed-decrease:action")).toMatchObject({
+      collateral_delta_amount: "1.51",
+      collateral_token_symbol: "USDC",
+      collateral_token_address: USDC_ADDRESS,
+    });
+    expect(rows.find((row) => row.record_id === "42161:executed-decrease:cashflow:0")).toMatchObject({
+      received_amount: "1.51",
+      received_currency: "USDC",
+      received_token_address: USDC_ADDRESS,
     });
   });
 

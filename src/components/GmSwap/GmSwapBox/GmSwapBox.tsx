@@ -5,6 +5,7 @@ import {
   selectPoolsDetailsAvailableModes,
   selectPoolsDetailsAvailableOperations,
   selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsHasPendingInput,
   selectPoolsDetailsMode,
   selectPoolsDetailsOperation,
   selectPoolsDetailsSetGlvOrMarketAddress,
@@ -16,6 +17,7 @@ import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/sele
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { useLocalizedMap } from "lib/i18n";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 
 import Tabs from "components/Tabs/Tabs";
 
@@ -37,6 +39,9 @@ export function GmSwapBox() {
   const setOperation = useSelector(selectPoolsDetailsSetOperation);
   const setGlvOrMarketAddress = useSelector(selectPoolsDetailsSetGlvOrMarketAddress);
   const setSelectedMarketAddressForGlv = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
+
+  const hasPendingInput = useSelector(selectPoolsDetailsHasPendingInput);
+  useBlockAutoReload(hasPendingInput);
 
   const availableModes = useSelector(selectPoolsDetailsAvailableModes);
   const availableOperations = useSelector(selectPoolsDetailsAvailableOperations);

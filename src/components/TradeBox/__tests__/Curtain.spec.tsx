@@ -1,11 +1,6 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("lib/wallets/oneKeyUiCompat", () => ({
-  getOverlayedBottomInset: () => 0,
-  useOverlayedBottomInset: () => 0,
-}));
-
 import { Curtain, getCurtainStyle } from "../Curtain";
 
 afterEach(() => {
@@ -15,13 +10,13 @@ afterEach(() => {
 });
 
 describe("Curtain", () => {
-  it("combines device safe areas with the browser overlay inset", () => {
-    expect(getCurtainStyle(48, 54)).toEqual({
-      bottom: "calc(54px + var(--safe-area-inset-bottom))",
+  it("accounts for device safe areas", () => {
+    expect(getCurtainStyle(48)).toEqual({
+      bottom: "var(--safe-area-inset-bottom)",
       left: "var(--safe-area-inset-left)",
       right: "var(--safe-area-inset-right)",
       transform: "translateY(calc(100% - 48px))",
-      height: "calc(100dvh - 102px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))",
+      height: "calc(100dvh - 48px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))",
     });
   });
 

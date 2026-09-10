@@ -4,7 +4,6 @@ import { CSSProperties, PropsWithChildren, useCallback, useEffect, useMemo, useR
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
-import { getOverlayedBottomInset, useOverlayedBottomInset } from "lib/wallets/oneKeyUiCompat";
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -14,13 +13,13 @@ const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
 
-export function getCurtainStyle(headerHeight: number, bottomInset: number): CSSProperties {
+export function getCurtainStyle(headerHeight: number): CSSProperties {
   return {
-    bottom: `calc(${bottomInset}px + var(--safe-area-inset-bottom))`,
+    bottom: "var(--safe-area-inset-bottom)",
     left: "var(--safe-area-inset-left)",
     right: "var(--safe-area-inset-right)",
     transform: `translateY(calc(100% - ${headerHeight}px))`,
-    height: `calc(100dvh - ${headerHeight + bottomInset}px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))`,
+    height: `calc(100dvh - ${headerHeight}px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))`,
   };
 }
 
@@ -61,7 +60,6 @@ export function Curtain({
   const [isOpen, setIsOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [externalIsCurtainOpen, setExternalIsCurtainOpen] = useIsCurtainOpen();
-  const bottomInset = useOverlayedBottomInset();
 
   const handleAnimate = useCallback(
     (newIsOpen: boolean) => {
@@ -130,8 +128,7 @@ export function Curtain({
     const curtainRect = curtainRef.current.getBoundingClientRect();
 
     const resolvedBottomInset = Number.parseFloat(window.getComputedStyle(curtainRef.current).bottom);
-    const viewportBottom =
-      window.innerHeight - (Number.isFinite(resolvedBottomInset) ? resolvedBottomInset : getOverlayedBottomInset());
+    const viewportBottom = window.innerHeight - (Number.isFinite(resolvedBottomInset) ? resolvedBottomInset : 0);
 
     currentRelativeY.current = (viewportBottom - curtainRect.bottom) * -1;
 
@@ -281,7 +278,7 @@ export function Curtain({
     }
   }, [externalIsCurtainOpen, isOpen, handleAnimate]);
 
-  const curtainStyle = useMemo(() => getCurtainStyle(headerHeight, bottomInset), [headerHeight, bottomInset]);
+  const curtainStyle = useMemo(() => getCurtainStyle(headerHeight), [headerHeight]);
   const isContentVisible = isOpen || isDragging;
 
   return (
