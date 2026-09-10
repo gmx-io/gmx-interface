@@ -1,21 +1,33 @@
-import type { DisplayMode } from "./getDisplayMode";
-
 export type LaunchSource = "appIcon" | "appShortcut" | "web";
 
-export function getLaunchSource(displayMode: DisplayMode): LaunchSource {
-  if (typeof window === "undefined" || displayMode !== "standalone") {
-    return "web";
+let launchSource: LaunchSource | undefined;
+
+export function initializeLaunchSource() {
+  if (typeof window === "undefined" || launchSource !== undefined) {
+    return;
   }
 
-  const source = new URLSearchParams(window.location.search).get("source");
+  const url = new URL(window.location.href);
+  const source = url.searchParams.get("source");
 
   if (source === "pwa") {
-    return "appIcon";
+    launchSource = "appIcon";
+  } else if (source === "pwa-shortcut") {
+    launchSource = "appShortcut";
+  } else {
+    launchSource = "web";
+    return;
   }
 
-  if (source === "pwa-shortcut") {
-    return "appShortcut";
-  }
+  url.searchParams.delete("source");
 
-  return "web";
+  try {
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+  } catch {
+    // URL cleanup must not prevent the app from opening.
+  }
+}
+
+export function getLaunchSource(): LaunchSource | undefined {
+  return launchSource;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 import { getAbFlags } from "config/ab";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
@@ -30,7 +30,7 @@ export function useConfigureMetrics() {
   const apiSdkPositions = useIsApiSdkEnabled(API_UI_FLAGS.positions);
   const apiSdkOrders = useIsApiSdkEnabled(API_UI_FLAGS.orders);
   const displayMode = getDisplayMode();
-  const launchSource = useRef(getLaunchSource(displayMode)).current;
+  const launchSource = getLaunchSource();
 
   useEffect(() => {
     metrics.subscribeToEvents();

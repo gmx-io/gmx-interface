@@ -9,6 +9,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import { ThemeProvider } from "context/ThemeContext/ThemeContext";
+import { initializeLaunchSource } from "lib/pwa/getLaunchSource";
 import { registerPreloadErrorRecovery } from "lib/pwa/registerPreloadErrorRecovery";
 import { registerServiceWorker } from "lib/pwa/registerServiceWorker";
 import WalletProvider from "lib/wallets/WalletProvider";
@@ -16,6 +17,7 @@ import WalletProvider from "lib/wallets/WalletProvider";
 import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 
+initializeLaunchSource();
 registerPreloadErrorRecovery();
 
 createRoot(document.getElementById("root")!).render(

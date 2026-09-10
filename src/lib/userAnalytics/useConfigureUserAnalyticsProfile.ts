@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { AB_FLAG_NAMES, getAbFlags, setAbFlagEnabled } from "config/ab";
@@ -40,7 +40,7 @@ export function useConfigureUserAnalyticsProfile() {
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
   const displayMode = getDisplayMode();
-  const launchSource = useRef(getLaunchSource(displayMode)).current;
+  const launchSource = getLaunchSource();
   const {
     shouldShowPositionLines,
     expressOrdersEnabled,
