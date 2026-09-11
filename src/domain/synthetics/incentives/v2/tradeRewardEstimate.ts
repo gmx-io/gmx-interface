@@ -3,7 +3,6 @@ import { applyFactor, PRECISION } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "./constants";
-import { getBaseRewardUsd } from "./rewardCalculation";
 import type { AccountIncentiveStatus, BoostId, IncentivesConfig, StakingTierId, VolumeTierId } from "./types";
 
 export type TradeMultiplierParams = {
@@ -143,6 +142,12 @@ function getStakingTierMultiplier(config: IncentivesConfig, tier: StakingTierId 
 
 function getBoostMultiplier(config: IncentivesConfig, boost: BoostId) {
   return config.boosts.find((item) => item.boost === boost)?.multiplier ?? 0n;
+}
+
+function getBaseRewardUsd(feeUsd: bigint, multiplier: bigint, config: IncentivesConfig) {
+  if (feeUsd <= 0n || multiplier <= 0n || config.multiplierDecimals <= 0n) return 0n;
+
+  return applyFactor(bigMath.mulDiv(feeUsd, multiplier, config.multiplierDecimals), config.feeShareFactor);
 }
 
 function getCombinedRewardUsd(baseRewardUsd: bigint, config: IncentivesConfig) {
