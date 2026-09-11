@@ -12,27 +12,28 @@ import TradesHistorySkeletonStructure from "./TradesHistorySkeletonStructure";
 import "react-loading-skeleton/dist/skeleton.css";
 import "./Skeleton.scss";
 
-type Props = {
+type Props<StructureProps extends object> = {
   count?: number;
   invisible?: boolean;
-  Structure: ComponentType;
-};
+  Structure: ComponentType<StructureProps & { invisible?: boolean }>;
+} & Omit<StructureProps, "invisible">;
 
-function TableListSkeleton({ count = 10, Structure, invisible = false, ...restProps }: Props) {
-  if (invisible) {
-    return (
-      <SkeletonTheme baseColor="transparent" highlightColor="transparent" enableAnimation={false}>
-        {Array.from({ length: count }).map((_, index) => (
-          <Structure {...restProps} key={index} />
-        ))}
-      </SkeletonTheme>
-    );
-  }
+export function TableListSkeleton<StructureProps extends object>({
+  count = 10,
+  Structure,
+  invisible = false,
+  ...restProps
+}: Props<StructureProps>) {
+  const structureProps = { ...restProps, invisible } as StructureProps & { invisible?: boolean };
 
   return (
-    <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+    <SkeletonTheme
+      baseColor={invisible ? "transparent" : "#B4BBFF1A"}
+      highlightColor={invisible ? "transparent" : "#B4BBFF1A"}
+      enableAnimation={!invisible}
+    >
       {Array.from({ length: count }).map((_, index) => (
-        <Structure {...restProps} key={index} />
+        <Structure {...structureProps} key={index} />
       ))}
     </SkeletonTheme>
   );

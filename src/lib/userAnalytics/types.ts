@@ -262,7 +262,12 @@ export type SharePositionClickEvent = {
   };
 };
 
-export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list" | "account-dashboard";
+export type SharePositionActionSource =
+  | "auto-prompt"
+  | "positions-list"
+  | "trade-history-list"
+  | "account-dashboard"
+  | "rewards-leaderboard";
 
 export type SharePositionActionEvent = {
   event: "SharePositionAction";

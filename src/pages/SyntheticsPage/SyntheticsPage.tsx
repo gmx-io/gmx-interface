@@ -71,11 +71,14 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import { HistoricalRewardsAllocationModal } from "components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal";
+import { useHistoricalRewardsAllocationModal } from "components/HistoricalRewardsAllocationModal/useHistoricalRewardsAllocationModal";
 import { OrderList } from "components/OrderList/OrderList";
 import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
 import { PositionList } from "components/PositionList/PositionList";
 import { PositionSeller } from "components/PositionSeller/PositionSeller";
+import { TradeRewardsPromoBanner } from "components/RewardsPromoBanner/TradeRewardsPromoBanner";
 import { SwapCard } from "components/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 import Tabs from "components/Tabs/Tabs";
@@ -127,6 +130,7 @@ export function SyntheticsPage(p: Props) {
     onDoNotShowAgainChange: handleShareSuccessDoNotShowAgainChange,
     onShareAction: handleShareSuccessShareAction,
   } = useShareSuccessClosedPosition({ chainId, account });
+  const historicalRewardsAllocationModal = useHistoricalRewardsAllocationModal({ chainId, account });
 
   useExternalSwapHandler();
 
@@ -537,14 +541,12 @@ export function SyntheticsPage(p: Props) {
             {isSwap && !isTwap && <SwapCard fromToken={fromToken} toToken={toToken} />}
           </>
         ) : (
-          <div className="w-[40rem] shrink-0">
+          <div className="flex w-[40rem] shrink-0 flex-col gap-8">
             <TradeBoxResponsiveContainer />
 
-            {isSwap && !isTwap && (
-              <div className="mt-8 flex flex-col gap-12">
-                <SwapCard fromToken={fromToken} toToken={toToken} />
-              </div>
-            )}
+            {isSwap && !isTwap && <SwapCard fromToken={fromToken} toToken={toToken} />}
+
+            <TradeRewardsPromoBanner />
           </div>
         )}
 
@@ -649,6 +651,13 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
+      <HistoricalRewardsAllocationModal
+        isVisible={historicalRewardsAllocationModal.isVisible}
+        onClose={historicalRewardsAllocationModal.close}
+        rewardCapUsd={historicalRewardsAllocationModal.rewardCapUsd}
+        rewardConsumedUsd={historicalRewardsAllocationModal.rewardConsumedUsd}
+        rewardRemainingUsd={historicalRewardsAllocationModal.rewardRemainingUsd}
+      />
     </AppPageLayout>
   );
 }

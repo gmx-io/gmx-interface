@@ -4,6 +4,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 
 import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import { TradeRewardsPromoBanner } from "components/RewardsPromoBanner/TradeRewardsPromoBanner";
 
 import { Curtain } from "./Curtain";
 import { TradeBox } from "./TradeBox";
@@ -33,6 +34,7 @@ export function TradeBoxResponsiveContainer() {
           <TradeBox isMobile={isTablet} activeFormId={formId} />
         </ErrorBoundary>
       </ActiveFormScope>
+      <TradeRewardsPromoBanner className="mt-auto p-8" />
     </Curtain>
   );
 }

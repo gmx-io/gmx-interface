@@ -1,9 +1,10 @@
-import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { Placement, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import { PropsWithChildren } from "react";
 
 import Button from "components/Button/Button";
+import FloatingPortal from "components/Portal/FloatingPortal";
 
 import FilterIcon from "img/ic_filter.svg?react";
 

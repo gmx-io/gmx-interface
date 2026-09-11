@@ -144,6 +144,9 @@ export function useFilterSortPools({
               recentlyListedAddresses.has(market.indexTokenAddress.toLowerCase()) ||
               recentlyListedAddresses.has(market.indexTokenAddress);
           break;
+        case "incentivized":
+          topLevelOk = false;
+          break;
       }
       if (!topLevelOk) return false;
 

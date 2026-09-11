@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { normalizeDateRange, normalizeDateRangeToUtcBucketDays, normalizeDateRangeToUtcDays } from "./dates";
+import {
+  formatTimeLeft,
+  normalizeDateRange,
+  normalizeDateRangeToUtcBucketDays,
+  normalizeDateRangeToUtcDays,
+} from "./dates";
 
 function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
@@ -47,5 +52,24 @@ describe("date range normalization", () => {
       Date.UTC(2026, 5, 11) / 1000,
       Date.UTC(2026, 5, 12, 23, 59, 59) / 1000,
     ]);
+  });
+});
+
+describe("formatTimeLeft", () => {
+  it("formats sub-day durations with hours and minutes", () => {
+    expect(formatTimeLeft(5 * 3600 + 42 * 60)).toBe("5h 42m");
+  });
+
+  it("formats multi-day durations with days and hours", () => {
+    expect(formatTimeLeft(2 * 86400 + 5 * 3600 + 42 * 60)).toBe("2d 5h");
+  });
+
+  it("keeps the day column visible when requested", () => {
+    expect(formatTimeLeft(5 * 3600 + 42 * 60, { alwaysShowDays: true })).toBe("0d 5h");
+  });
+
+  it("returns an empty value for elapsed durations", () => {
+    expect(formatTimeLeft(0)).toBe("");
+    expect(formatTimeLeft(-1)).toBe("");
   });
 });

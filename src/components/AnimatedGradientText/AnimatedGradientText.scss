@@ -27,6 +27,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .animated-gradient-text {
+    animation: none;
+  }
+}
+
 .image-capture-in-progress .animated-gradient-text {
   animation: none !important;
 }

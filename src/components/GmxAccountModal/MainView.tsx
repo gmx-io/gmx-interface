@@ -70,6 +70,7 @@ import {
   useOpenWalletReceive,
 } from "./hooks";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
+import { RewardsSection } from "./RewardsSection";
 
 function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () => void }) {
   return (
@@ -440,6 +441,7 @@ export const MainView = ({ account }: { account: string }) => {
       <div className="flex flex-col gap-12 px-adaptive pb-12 pt-4">
         {mode !== "gmxAccount" && <WalletBlock account={account} />}
         {mode !== "walletOnly" && <GmxAccountBlock showDisconnectButton={mode === "gmxAccount"} />}
+        <RewardsSection />
         <MenuList account={account} />
       </div>
     </div>

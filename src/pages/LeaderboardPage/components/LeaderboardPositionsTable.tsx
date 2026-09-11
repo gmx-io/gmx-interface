@@ -17,6 +17,7 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
+import { filterLeaderboardByAccount } from "domain/synthetics/leaderboard/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
 import { useDebounce } from "lib/debounce/useDebounce";
@@ -113,10 +114,10 @@ export function LeaderboardPositionsTable({
     [positionFilters, sorted]
   );
 
-  const filteredStats = useMemo(() => {
-    const q = term.toLowerCase().trim();
-    return positionFilteredStats.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
-  }, [positionFilteredStats, term]);
+  const filteredStats = useMemo(
+    () => filterLeaderboardByAccount(positionFilteredStats, term),
+    [positionFilteredStats, term]
+  );
 
   const indexFrom = (page - 1) * PER_PAGE;
   const rowsData = useMemo(
