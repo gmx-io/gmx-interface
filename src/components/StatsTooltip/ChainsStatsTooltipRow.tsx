@@ -4,20 +4,17 @@ import { ReactNode } from "react";
 import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman } from "lib/numbers";
 
-import type { ChainsStatsSummary } from "./summarizeChainsStats";
+import { ChainsStatsNotices } from "./ChainsStatsNotices";
+import type { ChainsStatsStaleEntry, ChainsStatsSummary } from "./summarizeChainsStats";
 
 import "./StatsTooltip.css";
-
-function Notice({ children }: { children: ReactNode }) {
-  return <p className="Tooltip-row !mt-8 max-w-[260px] whitespace-normal text-yellow-300">{children}</p>;
-}
 
 type Props = {
   summary: ChainsStatsSummary;
   showDollar?: boolean;
   decimalsForConversion?: number;
   subtotal?: ReactNode;
-  staleTitles?: string[];
+  staleEntries: ChainsStatsStaleEntry[];
 };
 
 export default function ChainsStatsTooltipRow({
@@ -25,7 +22,7 @@ export default function ChainsStatsTooltipRow({
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
   subtotal,
-  staleTitles = [],
+  staleEntries,
 }: Props) {
   if (knownEntries.length === 0) {
     return null;
@@ -48,16 +45,11 @@ export default function ChainsStatsTooltipRow({
         </span>
         <span className="amount">{formatAmountHuman(total, decimalsForConversion, showDollar, 2)}</span>
       </p>
-      {missingTitles.length > 0 && (
-        <Notice>
-          <Trans>Partial total: no data yet from {missingTitles.join(", ")}.</Trans>
-        </Notice>
-      )}
-      {staleTitles.length > 0 && (
-        <Notice>
-          <Trans>Included but not up to date: {staleTitles.join(", ")}.</Trans>
-        </Notice>
-      )}
+      <ChainsStatsNotices
+        missingTitles={missingTitles}
+        staleEntries={staleEntries}
+        className="Tooltip-row !mt-8 max-w-[260px] whitespace-normal text-yellow-300"
+      />
       {subtotal}
     </>
   );

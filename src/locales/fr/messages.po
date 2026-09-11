@@ -5104,7 +5104,7 @@ msgstr "Approbation GMX en attente..."
 msgid "AMOUNT"
 msgstr "MONTANT"
 
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+#: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Partial total: no data yet from {0}."
 msgstr ""
 
@@ -8785,10 +8785,6 @@ msgstr "<0>🔷 Volume 24h : 1,01 milliard $.</0><1>Merci aux centaines de milli
 msgid "Enter deposit amount"
 msgstr "Entrez le montant de dépôt"
 
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "Included but not up to date: {0}."
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11634,6 +11630,10 @@ msgstr "Règlement..."
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Tableau des leaders"
+
+#: src/components/StatsTooltip/ChainsStatsNotices.tsx
+msgid "Included but not up to date: {staleList}."
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"

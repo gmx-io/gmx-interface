@@ -5104,7 +5104,7 @@ msgstr "GMX 승인 대기 중..."
 msgid "AMOUNT"
 msgstr "금액"
 
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+#: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Partial total: no data yet from {0}."
 msgstr ""
 
@@ -8785,10 +8785,6 @@ msgstr "<0>🔷 24시간 거래량: $1.01 Billion.</0><1>퍼미션리스 온체�
 msgid "Enter deposit amount"
 msgstr "입금 금액 입력"
 
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "Included but not up to date: {0}."
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11634,6 +11630,10 @@ msgstr "정산 중..."
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "리더보드"
+
+#: src/components/StatsTooltip/ChainsStatsNotices.tsx
+msgid "Included but not up to date: {staleList}."
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
