@@ -43,7 +43,7 @@ export type ProtocolStatsUsers = {
   traders: number | null;
   lps: number | null;
   all: number | null;
-  distinctness: "network";
+  distinctness: "source";
 };
 
 export type ProtocolStatsTrades = {

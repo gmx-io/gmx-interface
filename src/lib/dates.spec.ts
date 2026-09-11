@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { normalizeDateRange, normalizeDateRangeToUtcBucketDays, normalizeDateRangeToUtcDays } from "./dates";
+import {
+  formatTimeAgo,
+  normalizeDateRange,
+  normalizeDateRangeToUtcBucketDays,
+  normalizeDateRangeToUtcDays,
+} from "./dates";
 
 function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
@@ -47,5 +52,16 @@ describe("date range normalization", () => {
       Date.UTC(2026, 5, 11) / 1000,
       Date.UTC(2026, 5, 12, 23, 59, 59) / 1000,
     ]);
+  });
+});
+
+describe("formatTimeAgo", () => {
+  it("picks the largest whole unit of the age", () => {
+    const now = 1_789_126_326_000;
+
+    expect(formatTimeAgo(now - 45_000, now)).toBe("45 seconds ago");
+    expect(formatTimeAgo(now - 12 * 60_000, now)).toBe("12 minutes ago");
+    expect(formatTimeAgo(now - 3 * 3_600_000, now)).toBe("3 hours ago");
+    expect(formatTimeAgo(now - 2 * 86_400_000, now)).toBe("2 days ago");
   });
 });

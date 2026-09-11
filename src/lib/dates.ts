@@ -1,4 +1,5 @@
 import { tz } from "@date-fns/tz";
+import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 import { format as formatDateFn, isToday, isYesterday, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
@@ -46,6 +47,20 @@ export function formatRelativeDateWithComma(time: number) {
   }
 
   return formatDateWithComma(time);
+}
+
+export function formatTimeAgo(timeMs: number, nowMs = Date.now()) {
+  const seconds = Math.max(0, Math.round((nowMs - timeMs) / 1000));
+  const [value, unit]: [number, Intl.RelativeTimeFormatUnit] =
+    seconds < 60
+      ? [seconds, "second"]
+      : seconds < 3600
+        ? [Math.round(seconds / 60), "minute"]
+        : seconds < SECONDS_IN_DAY
+          ? [Math.round(seconds / 3600), "hour"]
+          : [Math.round(seconds / SECONDS_IN_DAY), "day"];
+
+  return new Intl.RelativeTimeFormat(i18n.locale || undefined, { numeric: "always" }).format(-value, unit);
 }
 
 export function formatTVDate(date: Date) {
