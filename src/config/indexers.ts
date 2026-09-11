@@ -16,6 +16,7 @@ type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
 export const INCENTIVES_TEST_SQUIDS = ["ivprod", "ivtest"] as const;
 export type IncentivesTestSquid = (typeof INCENTIVES_TEST_SQUIDS)[number];
 export const DEFAULT_INCENTIVES_TEST_SQUID: IncentivesTestSquid = "ivprod";
+export const GT_PRICES_INDEXER_URL = "https://gmx-test.squids.live/gmx-gt-prices/graphql";
 
 const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   [ARBITRUM]: {
