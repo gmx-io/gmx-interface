@@ -1,6 +1,7 @@
 import { getLandingReferralCode } from "landing/utils/referralCode";
 import { useCallback } from "react";
 
+import { PRODUCTION_HOST } from "config/links";
 import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import type { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
@@ -69,13 +70,18 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
       chainId === RedirectChainIds.Solana ? "https://gmtrade.xyz" : makeLink(TRADE_CHAIN_IDS[chainId]);
 
     if (redirectUrl) {
-      redirectWithWarning(redirectUrl, chainId);
+      if (chainId === RedirectChainIds.Solana) {
+        redirectWithWarning(redirectUrl, chainId);
+      } else {
+        window.location.href = redirectUrl;
+      }
     }
   }, [redirectWithWarning, buttonPosition, chainId]);
 }
 
 function makeLink(chainId: number) {
+  const appBaseUrl = import.meta.env.VITE_APP_BASE_URL || PRODUCTION_HOST;
   const refCode = getLandingReferralCode();
   const refParam = refCode ? `&${REFERRAL_CODE_QUERY_PARAM}=${encodeURIComponent(refCode)}` : "";
-  return `${import.meta.env.VITE_APP_BASE_URL}/trade?${userAnalytics.getSessionForwardParams()}&chainId=${chainId}${refParam}`;
+  return `${appBaseUrl}/trade?${userAnalytics.getSessionForwardParams()}&chainId=${chainId}${refParam}`;
 }

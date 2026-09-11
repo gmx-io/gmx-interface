@@ -20,13 +20,15 @@ type HookResult = ReturnType<typeof useAffiliateCodes>;
 function Harness({
   account,
   enabled,
+  refreshKey,
   onResult,
 }: {
   account: string;
   enabled: boolean;
+  refreshKey?: number;
   onResult: (result: HookResult) => void;
 }) {
-  onResult(useAffiliateCodes(ARBITRUM, account, enabled));
+  onResult(useAffiliateCodes(ARBITRUM, account, enabled, refreshKey));
   return null;
 }
 
@@ -111,5 +113,24 @@ describe("useAffiliateCodes", () => {
     const getResult = setup();
 
     await waitFor(() => expect(getResult()).toEqual({ code: null, success: true }));
+  });
+
+  it("does not treat a failed lookup as a wallet with no codes, and can retry", async () => {
+    mocks.query.mockRejectedValueOnce(new Error("Failed to fetch"));
+    let result!: HookResult;
+    const onResult = (nextResult: HookResult) => (result = nextResult);
+    const account = "0x1640e916e10610Ba39aAC5Cd8a08acF3cCae1A4c";
+    const view = render(<Harness account={account} enabled refreshKey={0} onResult={onResult} />);
+
+    await waitFor(() => expect(result).toEqual({ code: null, success: false, error: true }));
+
+    const ownedCode = encodeReferralCode("H4X");
+    mocks.query.mockResolvedValueOnce({
+      data: { affiliateStats: [], referralCodes: [{ code: ownedCode }] },
+    });
+    view.rerender(<Harness account={account} enabled refreshKey={1} onResult={onResult} />);
+
+    await waitFor(() => expect(result).toEqual({ code: "H4X", success: true }));
+    expect(mocks.query).toHaveBeenCalledTimes(2);
   });
 });
