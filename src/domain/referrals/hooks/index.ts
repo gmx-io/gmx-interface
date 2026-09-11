@@ -414,6 +414,7 @@ type AffiliateCodesQueryResponse = {
 export type AffiliateCodesState = {
   code: string | null;
   success: boolean;
+  error?: boolean;
 };
 
 const AFFILIATE_CODES_QUERY = gql`
@@ -432,7 +433,12 @@ const AFFILIATE_CODES_QUERY = gql`
   }
 `;
 
-export function useAffiliateCodes(chainId: ContractsChainId, account: string | undefined, enabled = true) {
+export function useAffiliateCodes(
+  chainId: ContractsChainId,
+  account: string | undefined,
+  enabled = true,
+  refreshKey = 0
+) {
   const [affiliateCodes, setAffiliateCodes] = useState<AffiliateCodesState>({ code: null, success: false });
 
   useEffect(() => {
@@ -441,7 +447,10 @@ export function useAffiliateCodes(chainId: ContractsChainId, account: string | u
     if (!chainId || !account || !enabled) return;
 
     const client = getReferralsGraphClient(chainId);
-    if (!client) return;
+    if (!client) {
+      setAffiliateCodes({ code: null, success: false, error: true });
+      return;
+    }
 
     let cancelled = false;
 
@@ -465,14 +474,14 @@ export function useAffiliateCodes(chainId: ContractsChainId, account: string | u
       })
       .catch(() => {
         if (!cancelled) {
-          setAffiliateCodes({ code: null, success: false });
+          setAffiliateCodes({ code: null, success: false, error: true });
         }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [chainId, account, enabled]);
+  }, [chainId, account, enabled, refreshKey]);
 
   return affiliateCodes;
 }
