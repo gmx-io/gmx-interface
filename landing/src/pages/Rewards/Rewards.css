@@ -1,0 +1,1773 @@
+html:has(.rewards-page) {
+  --rewards-header-background: #090a14;
+  --rewards-footer-background: #090a14;
+}
+html:has(.rewards-page),
+body:has(.rewards-page) {
+  background-color: var(--rewards-footer-background);
+  background-image: linear-gradient(to bottom, var(--rewards-header-background), var(--rewards-footer-background));
+}
+.rewards-page {
+  padding-top: 68px;
+  min-height: 100vh;
+  background: transparent;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.44;
+  letter-spacing: -0.032em;
+  overflow: clip;
+  --rewards-muted: #a0a3c4;
+  --rewards-blue: #2d42fc;
+  --rewards-skeleton-base: #b4bbff1a;
+  --rewards-skeleton-highlight: #b4bbff33;
+}
+
+.rewards-skeleton {
+  display: inline-block;
+  max-width: 100%;
+  line-height: 1;
+  vertical-align: baseline;
+}
+.rewards-skeleton .react-loading-skeleton {
+  max-width: 100%;
+  vertical-align: baseline;
+}
+.rewards-receipt,
+.rewards-referral-bonus {
+  --rewards-skeleton-base: #ffffff26;
+  --rewards-skeleton-highlight: #ffffff4d;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rewards-skeleton .react-loading-skeleton::after {
+    animation: none;
+  }
+}
+
+.rewards-page * {
+  box-sizing: border-box;
+}
+.rewards-page section,
+.rewards-page #invite {
+  scroll-margin-top: 88px;
+}
+.rewards-container {
+  width: min(1200px, calc(100% - 80px));
+  margin-inline: auto;
+  position: relative;
+}
+.rewards-page h1,
+.rewards-page h2,
+.rewards-page h3,
+.rewards-page h4 {
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+.rewards-page h1 {
+  font-size: 100px;
+}
+.rewards-page h2 {
+  font-size: 80px;
+}
+.rewards-page h3 {
+  font-size: 40px;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+.rewards-page h4 {
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.032em;
+}
+.rewards-page button,
+.rewards-page input,
+.rewards-page a {
+  -webkit-tap-highlight-color: transparent;
+}
+.rewards-page a,
+.rewards-page button {
+  transition:
+    background-color 0.18s,
+    color 0.18s,
+    opacity 0.18s;
+}
+.rewards-page a:hover {
+  color: #7885ff;
+}
+.rewards-page :focus-visible {
+  outline: 2px solid #7885ff;
+  outline-offset: -2px;
+}
+.rewards-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  min-height: 44px;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--rewards-blue);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.032em;
+  line-height: 24px;
+  text-align: center;
+}
+.rewards-button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.rewards-button-white {
+  background: #fff;
+  color: #2d42fc;
+}
+.rewards-button-muted {
+  background: var(--color-button-secondary);
+}
+@media (hover: hover) {
+  .rewards-page .rewards-button:not(:disabled):hover,
+  body:has(.rewards-page) [data-landing-header] .btn-landing:hover {
+    background: var(--color-button-primaryHover);
+    color: #fff;
+  }
+  .rewards-page .rewards-button-white:not(:disabled):hover {
+    background: var(--color-button-whiteHover);
+    color: #2d42fc;
+  }
+  .rewards-page .rewards-button-muted:not(:disabled):hover {
+    background: var(--color-button-secondaryHover);
+  }
+}
+.rewards-page .rewards-button:not(:disabled):active,
+body:has(.rewards-page) [data-landing-header] .btn-landing:active {
+  background: var(--color-button-primaryActive);
+  color: #fff;
+}
+.rewards-page .rewards-button-white:not(:disabled):active {
+  background: var(--color-button-whiteActive);
+  color: #2d42fc;
+}
+.rewards-page .rewards-button-muted:not(:disabled):active {
+  background: var(--color-button-secondary);
+}
+.rewards-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #a4c3f9;
+  border: 1px solid #a4c3f9;
+  border-radius: 24px;
+  padding: 4px 12px 4px 8px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.002em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.rewards-live i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a4c3f9;
+}
+.rewards-live-compact {
+  display: none;
+}
+.rewards-hero {
+  padding: 60px 0 120px;
+  /* Avoid repainting SVG blur filters while the calculator resizes. */
+  background: url("../../../../src/img/rewards-landing/hero-background.webp") center bottom / cover no-repeat;
+}
+.rewards-hero h1 {
+  margin-bottom: 40px;
+}
+.rewards-calculator {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 404px;
+  column-gap: 40px;
+  align-items: center;
+  padding: 32px;
+  border-radius: 32px;
+  background: #17182799;
+  box-shadow:
+    inset 0 0 0 0.5px #2e3b47,
+    0 24px 60px #090a1424;
+  backdrop-filter: blur(8px);
+}
+.rewards-calculator-controls {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.rewards-slider {
+  display: block;
+  color: var(--rewards-muted);
+}
+.rewards-slider + .rewards-slider {
+  margin-top: 64px;
+}
+.rewards-slider > span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.032em;
+  line-height: 32px;
+}
+.rewards-slider output {
+  color: #a4c3f9;
+  font-size: 28px;
+  line-height: 1.08;
+  font-variant-numeric: tabular-nums;
+}
+.rewards-slider input {
+  display: block;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  margin: 18px 0 6px;
+  border: 0;
+  border-radius: 30px;
+  background-color: #3c4067;
+  background-image: linear-gradient(90deg, #7885ff, #2d42fc);
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.rewards-slider input::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #2d42fc;
+  box-shadow: 0 0 0 5px #151622;
+}
+.rewards-slider input::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #2d42fc;
+  box-shadow: 0 0 0 5px #151622;
+}
+.rewards-boost-controls {
+  margin-top: 64px;
+  padding-top: 40px;
+  border-top: 1px solid #7885ff33;
+  font-size: 14px;
+  line-height: 19px;
+  font-weight: 500;
+}
+.rewards-boost-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.rewards-boost-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 32px;
+  background: #202236;
+  color: #bec0da;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.rewards-boost-toggle:hover {
+  border-color: #7885ff;
+}
+.rewards-slider input:disabled,
+.rewards-boost-toggle:has(input:disabled) {
+  cursor: default;
+}
+.rewards-boost-toggle:has(input:disabled):hover {
+  border-color: transparent;
+}
+.rewards-boost-toggle input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: #a0a3c4;
+}
+.rewards-boost-toggle input:checked {
+  background: #fff;
+}
+.rewards-boost-toggle input:checked::after {
+  content: "";
+  display: block;
+  width: 5px;
+  height: 8px;
+  border: solid #2d42fc;
+  border-width: 0 1.5px 1.5px 0;
+  transform: translate(4.5px, 2px) rotate(45deg);
+}
+.rewards-boost-toggle.is-active {
+  background: #2d42fc;
+  color: #fff;
+}
+.rewards-boost-controls a {
+  color: #8c96ff;
+}
+.rewards-receipt {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border-radius: 16px;
+  background: #2d42fc url("../../../../src/img/rewards-landing/summary-background.webp") center / 100% 100% no-repeat;
+  box-shadow: 0 6px 16px #1416271f;
+  min-height: 403px;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+.rewards-receipt-fees,
+.rewards-receipt-breakdown > div,
+.rewards-receipt-multiplier,
+.rewards-receipt-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.rewards-receipt-fees {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #7885ff66;
+  margin-bottom: 16px;
+}
+.rewards-receipt-fees strong {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 500;
+}
+.rewards-receipt-breakdown {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #ffffff99;
+  line-height: 20px;
+}
+.rewards-receipt-breakdown > div + div {
+  margin-top: 4px;
+}
+.rewards-receipt-breakdown dd {
+  color: white;
+}
+.rewards-receipt-boost,
+.rewards-cap-note {
+  overflow: hidden;
+}
+.rewards-receipt-multiplier {
+  margin-top: 8px;
+}
+.rewards-receipt-multiplier strong {
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+.rewards-cap-note {
+  text-align: right;
+  font-size: 12px;
+  line-height: 18px;
+  color: #d2d7ff;
+  margin-top: 6px;
+}
+.rewards-receipt-total {
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px dashed #7885ff66;
+}
+.rewards-receipt-total strong {
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+}
+.rewards-receipt-split {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: flex-end;
+  column-gap: 4px;
+  text-align: right;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffff99;
+  margin: 8px 0 16px;
+}
+.rewards-receipt strong,
+.rewards-receipt dd,
+.rewards-receipt-split > span {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.rewards-receipt .rewards-button {
+  width: 100%;
+  border-radius: 12px;
+}
+.rewards-estimate-note {
+  position: absolute;
+  top: 100%;
+  left: 32px;
+  right: 32px;
+  margin-top: 16px;
+  color: #a0a3c4;
+  font-size: 12px;
+}
+.rewards-config-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 64px;
+}
+.rewards-light {
+  color: #090a14;
+  background: #f4f5f9;
+  --rewards-skeleton-base: #090a140d;
+  --rewards-skeleton-highlight: #090a141a;
+}
+.rewards-comeback {
+  padding: 120px 0;
+  background: #fff;
+}
+.rewards-comeback h2 {
+  margin-bottom: 48px;
+}
+.rewards-checker {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+.rewards-address-field {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.rewards-address-field > svg {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  width: 24px;
+  height: 24px;
+  color: #2d42fc;
+  pointer-events: none;
+}
+.rewards-checker input {
+  background: #fff;
+  border: 1px solid #bec0da;
+  border-radius: 8px;
+  width: 100%;
+  padding: 0 20px 0 60px;
+  height: 60px;
+  font-size: 18px;
+  color: #090a14;
+  caret-color: #2d42fc;
+}
+.rewards-checker .rewards-button {
+  min-height: 60px;
+}
+.rewards-checker input[aria-invalid="true"] {
+  border-color: #a51b45;
+}
+.rewards-checker input::placeholder {
+  color: #a0a3c4;
+}
+.rewards-form-error {
+  color: #a51b45;
+  margin: -32px 0 24px;
+}
+.rewards-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.rewards-bonus-card,
+.rewards-referral-card {
+  position: relative;
+  --rewards-skeleton-base: #b4bbff1a;
+  --rewards-skeleton-highlight: #b4bbff33;
+  min-height: 477px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px;
+  overflow: hidden;
+  border-radius: 20px;
+  color: #fff;
+  text-align: center;
+}
+.rewards-bonus-card {
+  padding-bottom: 24px;
+  background:
+    url("../../../../src/img/rewards-landing/lines.svg") center 142px / 100% auto no-repeat,
+    url("../../../../src/img/rewards-landing/bonus-background.svg") center / cover no-repeat,
+    #090a14;
+}
+.rewards-bonus-card.is-idle h3 {
+  font-size: 40px;
+}
+.rewards-bonus-card h3,
+.rewards-referral-card h3 {
+  font-size: 50px;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  margin-bottom: 8px;
+}
+.rewards-bonus-card > p,
+.rewards-referral-card > p {
+  color: #a0a3c4;
+  font-size: 18px;
+  line-height: 1.36;
+  font-weight: 500;
+}
+.rewards-bonus-card.is-empty {
+  background: #11142a;
+}
+.rewards-shield {
+  width: 359px;
+  height: 359px;
+  flex-shrink: 0;
+  max-width: none;
+  object-fit: contain;
+  margin: -23.5px 0;
+  clip-path: inset(39.5px);
+}
+.rewards-volume-pill {
+  display: inline-block;
+  border-radius: 20px;
+  background: #090a1480;
+  padding: 4px 8px 4px 4px;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  color: #a4c3f9 !important;
+}
+.rewards-volume-pill > span[aria-hidden="true"] {
+  display: inline-grid;
+  place-items: center;
+  background: #2d42fc;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  color: white;
+}
+.rewards-card-status {
+  margin: auto;
+}
+.rewards-card-status button {
+  margin-top: 20px;
+}
+.rewards-referral-wallet {
+  min-width: 0;
+}
+.rewards-referral-wallet .rewards-referral-card {
+  height: 100%;
+}
+.rewards-referral-card {
+  background:
+    url("../../../../src/img/rewards-landing/lines.svg") center 140px / 100% auto no-repeat,
+    radial-gradient(ellipse at 0% 70%, #13216b, transparent 55%),
+    #171827;
+}
+.rewards-referral-card::before {
+  content: "";
+  position: absolute;
+  width: 931px;
+  height: 472px;
+  left: -394px;
+  top: -90px;
+  background:
+    linear-gradient(214deg, #090a1400 1%, #090a14 83%),
+    url("../../../../src/img/rewards-landing/glow.png") center bottom / cover;
+  transform: rotate(90deg) scaleY(-1);
+  filter: blur(46px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.rewards-referral-card > * {
+  position: relative;
+}
+.rewards-share-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  width: 100%;
+  flex: 1;
+  min-height: 244px;
+  padding: 19.5px 20px;
+  margin: 24px 0;
+}
+.rewards-share-image {
+  width: 393px;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 205px;
+  border-radius: 12.5px;
+  background:
+    linear-gradient(180deg, transparent 10%, #18237a 70%),
+    url("../../../../src/img/share_referral_code_bg.png") center / cover,
+    #14172e;
+  text-align: left;
+  transform: rotate(-5.6deg);
+  padding: 16px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+.rewards-share-image-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 32px;
+}
+.rewards-share-image-header > img {
+  margin-top: 4px;
+}
+.rewards-share-image-header > svg,
+.rewards-share-image-header > .rewards-skeleton {
+  border-radius: 2px;
+  position: absolute;
+  right: 16px;
+  top: 12px;
+}
+.rewards-share-image-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+}
+.rewards-share-image-copy strong {
+  font-size: 33.7px;
+  font-weight: 500;
+}
+.rewards-share-image-copy > span {
+  font-size: 24px;
+}
+.rewards-share-image-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 11.8px;
+  color: #a4c3f9;
+}
+.rewards-share-image-footer > span {
+  overflow-wrap: anywhere;
+}
+.rewards-referral-actions {
+  width: 100%;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rewards-referral-actions .rewards-button {
+  width: 100%;
+  padding-block: 8px;
+  min-height: 40px;
+}
+.rewards-referral-loading > .rewards-skeleton {
+  width: 100%;
+}
+.rewards-referral-error {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rewards-referral-error > p {
+  color: #bec0da;
+  line-height: 20px;
+}
+.rewards-share-buttons {
+  display: flex;
+  gap: 16px;
+}
+.rewards-share-buttons > * {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 6px;
+  min-height: 40px;
+  font-size: 16px;
+  gap: 4px;
+}
+.rewards-share-buttons svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.rewards-share-buttons a svg {
+  width: 20px;
+  height: 20px;
+}
+.rewards-share-feedback {
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+.rewards-create-code {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+.rewards-create-code input {
+  width: 100%;
+  color: white;
+  background: #090a1480;
+  border: 1px solid #515573;
+  border-radius: 8px;
+  padding: 12px;
+}
+.rewards-create-code [role="alert"] {
+  color: #ffa6b5;
+}
+.rewards-multipliers {
+  position: relative;
+  padding: 120px 0 200px;
+  overflow: clip;
+}
+.rewards-multipliers > .rewards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  z-index: 1;
+}
+.rewards-eyebrow {
+  color: #a0a3c4;
+  font-size: 12px;
+  line-height: 15px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.002em;
+}
+.rewards-formula {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 40px;
+  box-shadow: 0 6px 8px -6px #bec0da;
+}
+.rewards-formula-equation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.rewards-formula-equation > div {
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px #f4f5f9;
+}
+.rewards-formula-equation strong {
+  display: block;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 500;
+  letter-spacing: -0.032em;
+}
+.rewards-formula-equation > span {
+  font-size: 40px;
+  line-height: 1.02;
+  color: #a0a3c4;
+  font-weight: 500;
+}
+.rewards-formula > p {
+  line-height: 1.02;
+  letter-spacing: 0.072em;
+  text-align: center;
+}
+.rewards-tiers table {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: left;
+}
+.rewards-tiers th {
+  font-weight: 500;
+}
+.rewards-tiers thead {
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 0.002em;
+  text-transform: uppercase;
+}
+.rewards-tiers thead th {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f4f5f9;
+}
+.rewards-tiers thead th:not(:first-child) {
+  color: #a0a3c4;
+}
+.rewards-tiers tbody th,
+.rewards-tiers td {
+  padding: 7px 0;
+  line-height: 24px;
+}
+.rewards-tiers tbody tr:first-child > * {
+  padding-top: 16px;
+}
+.rewards-tiers tbody tr:last-child > * {
+  padding-bottom: 0;
+}
+.rewards-tiers tbody th {
+  font-size: 18px;
+}
+.rewards-tiers td {
+  color: #3c4067;
+}
+.rewards-tiers td:last-child {
+  color: #2d42fc;
+  width: 64px;
+  font-size: 18px;
+  font-weight: 500;
+}
+.rewards-tiers th:not(:first-child),
+.rewards-tiers td {
+  text-align: right;
+}
+.rewards-boost-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+.rewards-boost-cards article {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  min-height: 217px;
+}
+.rewards-boost-badge {
+  display: inline-grid;
+  place-items: center;
+  height: 60px;
+  min-width: 60px;
+  padding: 8px;
+  border-radius: 12px;
+  background: #f4f5f9;
+  color: #2d42fc;
+  font-size: 18px;
+  font-weight: 500;
+}
+.rewards-boost-cards h4 {
+  margin: 0;
+  line-height: 28px;
+}
+.rewards-boost-cards article > p:last-child {
+  color: #3c4067;
+  font-size: 14px;
+  line-height: 1.36;
+  letter-spacing: -0.016em;
+}
+.rewards-referral {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.rewards-invite-button {
+  align-self: center;
+  padding-inline: 24px;
+  min-height: 60px;
+}
+.rewards-referral-example {
+  padding: 32px;
+  border-radius: 20px;
+  background: #fff;
+}
+.rewards-referral-comparison {
+  display: grid;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 16px;
+  background: #bec0da33;
+}
+.rewards-referral-comparison > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 24px;
+  min-width: 0;
+  border-radius: 12px;
+}
+.rewards-referral-comparison strong {
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: -0.032em;
+  font-weight: 500;
+}
+.rewards-referral-comparison > div > span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  line-height: 24px;
+}
+.rewards-referral-comparison strong > span {
+  font-size: 18px;
+  line-height: 1;
+}
+.rewards-referral-earned {
+  background: repeating-linear-gradient(105deg, transparent 0 7px, #bec0da1a 7px 8px),
+    linear-gradient(90deg, #bec0da00, #bec0da99);
+}
+.rewards-referral-earned > span {
+  color: #3c4067;
+}
+.rewards-referral-bonus {
+  background: linear-gradient(110deg, #2d42fc, #2632df);
+  color: #fff;
+}
+.rewards-referral-bonus > span {
+  color: #a4c3f9;
+}
+.rewards-referral-bonus svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #a4c3f9;
+  color: #2d42fc;
+}
+.rewards-referral-example > p {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 19px;
+  color: #a0a3c4;
+  letter-spacing: 0.002em;
+}
+.rewards-referral-coins {
+  position: absolute;
+  width: 804.775px;
+  height: 981.009px;
+  left: calc(50% - 129.443px);
+  bottom: -592.455px;
+  transform: translateX(-50%) rotate(-57.83deg);
+  overflow: clip;
+  pointer-events: none;
+}
+.rewards-referral-coins > img {
+  /* Recreate Figma's image-fill crop with the full-resolution source. */
+  position: absolute;
+  width: 258%;
+  height: auto;
+  max-width: none;
+  left: 71.43%;
+  top: 190.63%;
+  transform: rotate(-135deg);
+  transform-origin: 0 0;
+  filter: brightness(0.84) contrast(1.81) saturate(0.84);
+}
+.rewards-tokens {
+  padding: 120px 0;
+  position: relative;
+  overflow: hidden;
+}
+.rewards-tokens::before {
+  content: "";
+  position: absolute;
+  width: 1652px;
+  height: 836px;
+  left: calc(50% - 1453px);
+  top: 140px;
+  background:
+    linear-gradient(214deg, #090a1400 1%, #090a14 83%) 0 0 / 100% 100%,
+    url("../../../../src/img/rewards-landing/tokens-glow.png") -2748px -1245.64px / 7000.5px 3861.4px no-repeat;
+  filter: blur(46px);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.rewards-tokens h2 {
+  margin-bottom: 40px;
+}
+.rewards-token-card {
+  padding: 28px;
+  border-radius: 20px;
+  background: #171827;
+  position: relative;
+  overflow: hidden;
+  font-size: 16px;
+  color: #bec0da;
+  min-height: 393px;
+}
+.rewards-esgmx-card {
+  align-self: start;
+  min-height: 388px;
+}
+.rewards-token-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #1e2033;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.rewards-token-card h3 {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.032em;
+  color: #fff;
+}
+.rewards-token-card h3 img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.rewards-esgmx-card h3 img {
+  padding: 4px;
+  border-radius: 50%;
+  background: #1e2033;
+}
+.rewards-token-tag {
+  font-size: 12px;
+  line-height: 15px;
+  font-weight: 500;
+  letter-spacing: 0.002em;
+  text-transform: uppercase;
+  color: #7885ff;
+  padding: 6px 10px;
+  border: 1px solid #3c406780;
+  border-radius: 8px;
+  background: #1e2033;
+}
+.rewards-token-option {
+  padding-left: 32px;
+  position: relative;
+  margin-bottom: 20px;
+  z-index: 1;
+}
+.rewards-token-option:last-child {
+  margin-bottom: 0;
+}
+.rewards-token-option::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 0.5px dashed #2d42fc;
+  border-radius: 50%;
+  background: #2d42fc;
+  box-shadow: inset 0 0 0 3px #171827;
+  top: 4px;
+  left: 0;
+}
+.rewards-token-option h4 {
+  font-size: 18px;
+  line-height: 1.36;
+  letter-spacing: -0.032em;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.rewards-token-option a {
+  color: #929cff;
+  display: inline-block;
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 8px;
+}
+.rewards-gt-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+.rewards-gt-stats dt {
+  font-size: 14px;
+  line-height: 1.36;
+  color: #a0a3c4;
+  margin-bottom: 4px;
+}
+.rewards-gt-stats dd {
+  color: white;
+  font-size: 18px;
+  line-height: 1.36;
+  letter-spacing: -0.032em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.rewards-data-retry {
+  text-align: left;
+  color: #a4c3f9;
+  font-size: 12px;
+  margin-top: 12px;
+  text-decoration: underline;
+}
+.rewards-step-chart {
+  position: relative;
+  margin-top: 20px;
+  aspect-ratio: 532 / 108;
+}
+.rewards-step-chart > span {
+  position: absolute;
+  left: 58.55%;
+  top: 0;
+  transform: translateX(-50%);
+  background: #2d42fc;
+  color: #fff;
+  font-size: 12px;
+  line-height: 15px;
+  font-weight: 500;
+  letter-spacing: 0.002em;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+.rewards-step-chart img {
+  width: 100%;
+  height: auto;
+}
+.rewards-cycle {
+  height: 345px;
+  max-width: 1152px;
+  margin: 80px auto 0;
+  position: relative;
+  text-align: center;
+  display: grid;
+  place-items: center;
+}
+.rewards-cycle-track {
+  position: absolute;
+  top: 73px;
+  left: 9.375%;
+  width: 81.25%;
+  height: 202px;
+  overflow: visible;
+  pointer-events: none;
+}
+.rewards-cycle-path {
+  x: 1px;
+  y: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  rx: 100px;
+  fill: none;
+  stroke-width: 2px;
+}
+.rewards-cycle-light {
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 5px #2d42fc);
+}
+.rewards-cycle-steps {
+  position: absolute;
+  left: 50%;
+  top: 47px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  white-space: nowrap;
+}
+.rewards-cycle-steps > span,
+.rewards-cycle-next {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  padding: 16px 22px;
+  border: 1px solid #2b2e47;
+  border-radius: 10px;
+  background: #171827;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+.rewards-cycle-steps > span::before,
+.rewards-cycle-next::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 48px 16px at calc(var(--rewards-light-x, -1000px) - var(--rewards-node-x, 0px))
+      calc(var(--rewards-light-y, -1000px) - var(--rewards-node-y, 0px)),
+    var(--rewards-node-glow, #2d42fc),
+    transparent
+  );
+  filter: blur(10px);
+  pointer-events: none;
+}
+.rewards-cycle-label {
+  position: relative;
+  overflow-wrap: anywhere;
+}
+.rewards-cycle-steps .rewards-cycle-higher {
+  --rewards-node-glow: #a4c3f9;
+  background: #2d42fc;
+  border-color: #2d42fc;
+}
+.rewards-cycle-copy h3 {
+  font-size: 24px;
+  text-transform: uppercase;
+  color: #a4c3f9;
+  margin-bottom: 8px;
+  line-height: 32px;
+  letter-spacing: -0.032em;
+}
+.rewards-cycle-copy p {
+  font-size: 14px;
+  line-height: 20px;
+  color: #a0a3c4;
+}
+.rewards-cycle-next {
+  position: absolute;
+  top: 247px;
+}
+.rewards-faq {
+  padding: 120px 0;
+}
+.rewards-faq > .rewards-container {
+  display: grid;
+  grid-template-columns: 384px minmax(0, 1fr);
+  gap: 24px;
+}
+.rewards-faq h2 {
+  margin: 0;
+}
+.rewards-faq details {
+  padding: 24px 0;
+}
+.rewards-faq details::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: #1e2033;
+  margin-top: 16px;
+}
+.rewards-faq summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  font-size: 18px;
+  line-height: 1.36;
+  letter-spacing: -0.032em;
+  font-weight: 500;
+  cursor: pointer;
+}
+.rewards-faq summary::-webkit-details-marker {
+  display: none;
+}
+.rewards-faq summary > span::after {
+  content: "+";
+  font-size: 18px;
+  color: #a0a3c4;
+  font-weight: 400;
+}
+.rewards-faq details[open] summary > span::after {
+  content: "×";
+}
+.rewards-faq details > p {
+  margin-top: 16px;
+  color: #bec0da;
+  font-size: 16px;
+}
+.rewards-faq-accordion > a {
+  display: inline-block;
+  color: #7885ff;
+  font-size: 18px;
+  line-height: 1.36;
+  font-weight: 500;
+}
+.rewards-closing {
+  padding: 120px 0 80px;
+  position: relative;
+}
+.rewards-closing h2 {
+  font-size: 80px;
+  margin-bottom: 40px;
+}
+.rewards-closing .rewards-button {
+  padding: 18px 20px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.rewards-closing-cta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.rewards-closing p {
+  color: #a0a3c4;
+  font-size: 14px;
+  line-height: 19px;
+}
+.rewards-closing-dial {
+  position: absolute;
+  width: 650px;
+  height: 650px;
+  max-width: none;
+  left: calc(50% + 270px);
+  top: 270px;
+  pointer-events: none;
+}
+.rewards-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 144px;
+  border-top: 1px solid #1e2033;
+  padding: 24px 0 104px;
+  font-size: 13px;
+  line-height: 16px;
+  color: #3c4067;
+  font-weight: 500;
+  letter-spacing: 0.002em;
+}
+.rewards-footer > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 1100px) {
+  .rewards-page h1,
+  .rewards-closing h2 {
+    font-size: 80px;
+  }
+  .rewards-page h2 {
+    font-size: 64px;
+  }
+  .rewards-calculator {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 24px;
+    padding: 24px;
+  }
+  .rewards-bonus-card,
+  .rewards-referral-card {
+    padding: 28px 24px;
+  }
+  .rewards-bonus-card h3,
+  .rewards-referral-card h3 {
+    font-size: 36px;
+  }
+  .rewards-share-preview {
+    padding-inline: 12px;
+  }
+  .rewards-share-image-copy strong {
+    font-size: 28px;
+  }
+  .rewards-boost-cards {
+    gap: 16px;
+  }
+  .rewards-boost-cards article {
+    padding: 16px;
+  }
+  .rewards-gt-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 18px;
+  }
+  .rewards-formula-equation {
+    gap: 12px;
+  }
+  .rewards-formula-equation strong {
+    font-size: 21px;
+  }
+  .rewards-referral-comparison strong {
+    font-size: 20px;
+  }
+  .rewards-faq > .rewards-container {
+    grid-template-columns: 32% minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .rewards-container {
+    width: calc(100% - 32px);
+  }
+  .rewards-page h1,
+  .rewards-closing h2 {
+    font-size: clamp(36px, 10.25vw, 64px);
+  }
+  .rewards-page h2 {
+    font-size: clamp(36px, 8.5vw, 56px);
+  }
+  .rewards-page h3 {
+    font-size: 30px;
+  }
+  .rewards-hero {
+    padding: 48px 0 64px;
+  }
+  .rewards-hero h1 {
+    margin-bottom: 32px;
+  }
+  .rewards-calculator {
+    grid-template-columns: 1fr;
+    padding: 24px 20px 16px;
+    border-radius: 24px;
+    gap: 24px;
+  }
+  .rewards-calculator-controls {
+    padding-top: 0;
+  }
+  .rewards-slider + .rewards-slider {
+    margin-top: 32px;
+  }
+  .rewards-slider > span {
+    font-size: 18px;
+  }
+  .rewards-slider output {
+    font-size: 24px;
+  }
+  .rewards-boost-controls {
+    margin-top: 32px;
+    padding-top: 32px;
+  }
+  .rewards-boost-options {
+    gap: 8px;
+  }
+  .rewards-boost-toggle {
+    font-size: 11px;
+    padding: 8px;
+  }
+  .rewards-receipt {
+    min-height: 365px;
+    padding: 24px;
+  }
+  .rewards-receipt-total strong {
+    font-size: 30px;
+  }
+  .rewards-estimate-note {
+    position: static;
+    margin-top: -8px;
+    font-size: 11px;
+  }
+  .rewards-comeback,
+  .rewards-multipliers {
+    padding: 64px 0;
+  }
+  .rewards-multipliers {
+    padding-bottom: 140px;
+  }
+  .rewards-multipliers > .rewards-container {
+    gap: 32px;
+  }
+  .rewards-referral-coins {
+    width: 560px;
+    height: 682.64px;
+    left: calc(50% - 90.07px);
+    bottom: -412.24px;
+  }
+  .rewards-comeback h2 {
+    margin-bottom: 32px;
+  }
+  .rewards-checker {
+    margin-bottom: 32px;
+    gap: 8px;
+  }
+  .rewards-checker input {
+    padding: 16px 12px 16px 40px;
+    font-size: 14px;
+  }
+  .rewards-address-field > svg {
+    top: 20px;
+    left: 12px;
+    width: 20px;
+    height: 20px;
+  }
+  .rewards-checker .rewards-button {
+    font-size: 13px;
+    padding: 12px;
+  }
+  .rewards-form-error {
+    margin-top: -20px;
+    font-size: 13px;
+  }
+  .rewards-card-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .rewards-bonus-card,
+  .rewards-referral-card {
+    padding: 28px 20px;
+    min-height: 430px;
+  }
+  .rewards-bonus-card h3,
+  .rewards-referral-card h3,
+  .rewards-bonus-card.is-idle h3 {
+    font-size: 34px;
+  }
+  .rewards-bonus-card > p,
+  .rewards-referral-card > p {
+    font-size: 15px;
+  }
+  .rewards-shield {
+    width: 300px;
+    height: 300px;
+    clip-path: inset(33px);
+    margin: -17px 0;
+  }
+  .rewards-share-preview {
+    padding: 16px 12px;
+    min-height: 225px;
+    margin: 16px 0;
+  }
+  .rewards-share-image {
+    padding: 16px;
+    height: auto;
+    min-height: 194px;
+  }
+  .rewards-share-image-copy strong {
+    font-size: 28px;
+  }
+  .rewards-share-image-copy > span {
+    font-size: 20px;
+  }
+  .rewards-share-buttons {
+    gap: 8px;
+  }
+  .rewards-share-buttons > * {
+    font-size: 11px;
+  }
+  .rewards-share-buttons svg,
+  .rewards-share-buttons a svg {
+    width: 12px;
+    height: 12px;
+  }
+  .rewards-formula {
+    padding: 24px 20px;
+  }
+  .rewards-formula-equation {
+    gap: 10px;
+  }
+  .rewards-formula-equation > div {
+    padding: 12px;
+  }
+  .rewards-formula-equation strong {
+    font-size: 18px;
+  }
+  .rewards-formula-equation > span {
+    font-size: 24px;
+  }
+  .rewards-formula > p {
+    font-size: 10px;
+  }
+  .rewards-tiers table {
+    padding: 20px;
+  }
+  .rewards-tiers td:last-child {
+    width: 54px;
+  }
+  .rewards-tiers tbody th {
+    font-size: 16px;
+  }
+  .rewards-tiers thead {
+    font-size: 9px;
+  }
+  .rewards-boost-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .rewards-boost-cards article {
+    padding: 16px;
+  }
+  .rewards-boost-cards h4 {
+    font-size: 21px;
+  }
+  .rewards-boost-cards article > p:last-child {
+    font-size: 13px;
+  }
+  .rewards-referral-example {
+    padding: 20px;
+  }
+  .rewards-referral-comparison {
+    display: flex;
+    flex-direction: column;
+  }
+  .rewards-referral-comparison > div {
+    padding: 12px 16px;
+  }
+  .rewards-referral-comparison > div > span {
+    font-size: 14px;
+  }
+  .rewards-tokens {
+    padding: 64px 0 80px;
+  }
+  .rewards-tokens h2 {
+    margin-bottom: 32px;
+  }
+  .rewards-token-card {
+    padding: 24px;
+    min-height: 0;
+  }
+  .rewards-token-option {
+    padding-left: 24px;
+  }
+  .rewards-token-card h3 {
+    font-size: 24px;
+  }
+  .rewards-token-tag {
+    font-size: 9px;
+  }
+  .rewards-token-card > p,
+  .rewards-token-option > p {
+    font-size: 14px;
+  }
+  .rewards-cycle {
+    margin-top: 80px;
+    height: 250px;
+  }
+  .rewards-cycle-track {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .rewards-cycle-path {
+    rx: 60px;
+  }
+  .rewards-cycle-steps {
+    left: 8px;
+    right: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    white-space: normal;
+    top: -28px;
+    transform: none;
+  }
+  .rewards-cycle-steps > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 6px;
+    min-height: 56px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .rewards-cycle-copy {
+    padding-top: 30px;
+  }
+  .rewards-cycle-copy h3 {
+    font-size: 18px;
+  }
+  .rewards-cycle-copy p {
+    font-size: 13px;
+  }
+  .rewards-cycle-next {
+    padding: 12px 16px;
+    font-size: 14px;
+    bottom: -24px;
+    top: auto;
+  }
+  .rewards-faq {
+    padding: 32px 0 64px;
+  }
+  .rewards-faq > .rewards-container {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .rewards-faq h2 {
+    margin-bottom: 24px;
+  }
+  .rewards-faq summary {
+    font-size: 18px;
+  }
+  .rewards-faq details > p {
+    font-size: 16px;
+  }
+  .rewards-faq-accordion > a {
+    margin-top: 28px;
+    font-size: 14px;
+  }
+  .rewards-closing {
+    padding: 40px 0 64px;
+  }
+  .rewards-closing h2 {
+    margin-bottom: 32px;
+  }
+  .rewards-closing-dial {
+    display: none;
+  }
+  .rewards-closing-cta {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .rewards-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding-bottom: 32px;
+  }
+  .rewards-footer > div {
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 639px) {
+  .rewards-page {
+    padding-top: 60px;
+  }
+  .rewards-slider > span {
+    font-size: 16px;
+    gap: 12px;
+  }
+  .rewards-slider output {
+    font-size: 22px;
+    white-space: nowrap;
+  }
+  .rewards-formula-equation {
+    flex-direction: column;
+  }
+  .rewards-formula-equation > div {
+    width: 100%;
+    text-align: center;
+  }
+  .rewards-live {
+    padding: 0;
+    border: 0;
+    font-size: 10px;
+    line-height: 14px;
+    gap: 6px;
+  }
+  .rewards-live i {
+    width: 6px;
+    height: 6px;
+  }
+  .rewards-live-full {
+    display: none;
+  }
+  .rewards-live-compact {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rewards-cycle-light,
+  .rewards-cycle-steps > span::before,
+  .rewards-cycle-next::before {
+    display: none;
+  }
+  .rewards-page * {
+    transition: none;
+    scroll-behavior: auto;
+  }
+}

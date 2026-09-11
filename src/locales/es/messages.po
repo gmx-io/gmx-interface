@@ -44,6 +44,10 @@ msgstr "O actualice el RPC de su monedero a través de <0>chainlist.org</0>"
 msgid "Monthly"
 msgstr "Mensual"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Reach {0} in lifetime volume. The boost is yours for good — it never resets."
+msgstr "Alcanza {0} de volumen acumulado. El potenciador será tuyo para siempre: nunca se reinicia."
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "CÓDIGO DE REFERIDO"
@@ -80,6 +84,10 @@ msgstr "Firme cada transacción en cadena utilizando su propio RPC, normalmente 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Automatically compounds your GMX rewards without manual claiming"
 msgstr "Reinvierte automáticamente sus recompensas de GMX sin necesidad de reclamar manualmente"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Estimated rewards. Actual rewards depend on eligible fees, active tiers, and remaining boost budget."
+msgstr "Recompensas estimadas. Las recompensas reales dependen de las comisiones elegibles, los niveles activos y el presupuesto restante del potenciador."
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -167,6 +175,10 @@ msgstr "Aprobación firmada"
 msgid "You can open isolated positions on GMX using your GMX Account."
 msgstr "Puede abrir posiciones aisladas en GMX utilizando su GMX Account."
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Unable to check this wallet. Please try again."
+msgstr "No se pudo comprobar esta billetera. Inténtalo de nuevo."
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr ""
@@ -178,6 +190,10 @@ msgstr "<0>Multichain</0><1>Soporte MegaETH</1><2>Liquidez justo a tiempo</2>"
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP Swap"
 msgstr "Crear Intercambio TWAP"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Earn {referralShare} of all rewards your referrals earn"
+msgstr "Gana el {referralShare} de todas las recompensas que obtengan tus referidos"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Rewards paused"
@@ -367,6 +383,10 @@ msgstr "Abrir aplicación"
 msgid "In progress"
 msgstr "En curso"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Returned to you"
+msgstr "Recibes de vuelta"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "Inventario virtual para posiciones"
@@ -428,6 +448,7 @@ msgstr "Airdrop de GM"
 msgid "At price"
 msgstr "A precio"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
@@ -462,6 +483,7 @@ msgstr "A"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
+#: landing/src/pages/Rewards/RewardsFaq.tsx
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -499,6 +521,10 @@ msgstr "Comisiones"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buyable"
 msgstr "Comprable"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Counts towards your Staking Tier just like staking GMX, raising your multiplier on every future trade. Staked esGMX earns the same GMX rewards as staked GMX."
+msgstr "Cuenta para tu nivel de staking igual que hacer staking de GMX, aumentando tu multiplicador en cada operación futura. Los esGMX en staking generan las mismas recompensas en GMX que los GMX en staking."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -569,6 +595,10 @@ msgstr "En fase de idea, nada lanzado aún"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Stake collateral"
 msgstr "Hacer staking de la garantía"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "You are here"
+msgstr "Estás aquí"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double {indexSymbol} exposure from position and collateral. Higher liquidation price than stablecoin collateral."
@@ -666,6 +696,10 @@ msgstr "Precio del Oracle no válido para {tokenSymbol}"
 msgid "<0>{0}</0><1>/</1><2>{1}</2> <3>to get {2} status <4>+{3}</4></3>"
 msgstr "<0>{0}</0><1>/</1><2>{1}</2> <3>para obtener el estado {2} <4>+{3}</4></3>"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Early user? Check your wallet for a boost on your trades, until your bonus budget runs out."
+msgstr "¿Operaste aquí antes? Comprueba tu billetera para obtener un potenciador en tus operaciones hasta agotar tu presupuesto de bonificación."
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -687,6 +721,11 @@ msgstr "No se pudo actualizar el historial de auditoría. Se muestra el último 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Unrealized fee contribution"
 msgstr "Contribución de comisiones no realizadas"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Featured markets"
+msgstr "Mercados destacados"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -736,6 +775,7 @@ msgstr "Deslizamiento excedido. Mínimo esperado: {minOutputAmountText}, real: {
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "Rendimiento anual proyectado solo a partir de comisiones de operaciones.<0/><1/>Incluye: comisiones de operaciones, comisiones de préstamo, liquidaciones, intercambios.<2/>Excluye: cambios de precio de tokens de respaldo, PnL, comisiones de financiación.<3/><4/><5>Ver estadísticas detalladas en Dune</5>."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Advocate"
 msgstr "Promotor"
@@ -834,6 +874,10 @@ msgstr ""
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "Los incentivos, airdrops y premios aparecerán aquí"
 
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Season 1"
+msgstr "Temporada 1"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "Puede abrir posiciones aisladas en GMX utilizando fondos directamente desde su monedero conectado."
@@ -882,6 +926,10 @@ msgstr "GLV:"
 msgid "A tier applies in the epoch it is achieved and remains active for 4 following epochs."
 msgstr "Un nivel se aplica en la época en la que se alcanza y permanece activo durante las 4 épocas siguientes."
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "No comeback bonus remaining for this wallet."
+msgstr "Esta billetera no tiene bonificación de regreso restante."
+
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
 msgstr "Código no registrado en: {nonTakenNetworkNamesJoined}. Cambie de red para registrarse y obtener reembolsos."
@@ -922,6 +970,10 @@ msgstr "/ mes"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "This ends your current vesting. So far {0} GMX has vested and is yours to keep. The remaining {1} esGMX would keep converting to GMX if you wait — stopping now returns it to your wallet unvested."
 msgstr "Esto finaliza su vesting actual. Hasta ahora, {0} GMX han completado el vesting y son suyos. Los {1} esGMX restantes seguirían convirtiéndose en GMX si espera — si se detiene ahora, se devolverán a su monedero sin completar el vesting."
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Unable to copy. Copy the link below."
+msgstr "No se pudo copiar. Copia el enlace de abajo."
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -1177,6 +1229,7 @@ msgstr "Época"
 msgid "Position impact"
 msgstr "Impacto en la posición"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "Creando código..."
@@ -1281,6 +1334,10 @@ msgstr ""
 msgid "Worker"
 msgstr "Worker"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "See the current markets in the app."
+msgstr "Consulta los mercados actuales en la aplicación."
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "La precisión máxima del buffer de comisión de red es 0.01%"
@@ -1297,6 +1354,10 @@ msgstr "Calcule sus ingresos"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Replace margin deposit"
 msgstr "Reemplazar depósito de margen"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Unable to switch networks. Please try again."
+msgstr "No se pudo cambiar de red. Inténtalo de nuevo."
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
@@ -1590,6 +1651,10 @@ msgstr "La compra con tarjeta no está disponible actualmente para su región o 
 msgid "Max {0} buyable amount exceeded"
 msgstr "Cantidad máxima comprable de {0} superada"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Switch to Arbitrum to create a code"
+msgstr "Cambia a Arbitrum para crear un código"
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
 msgstr ""
@@ -1598,6 +1663,7 @@ msgstr ""
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
 msgid "Code already taken"
 msgstr "Código ya cogido"
 
@@ -1618,6 +1684,7 @@ msgid "Weekly"
 msgstr "Semanal"
 
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Terms"
 msgstr "Términos"
@@ -1628,7 +1695,9 @@ msgstr "Términos"
 msgid "Unrealized PnL"
 msgstr "PnL No Realizado"
 
+#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/GmxAccountModal/RewardsSection.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
@@ -1732,6 +1801,10 @@ msgstr "Usar {0} para gas"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "Margen total aportado"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Open trades of at least {0} on the under-traded side and get rewarded for balancing the market."
+msgstr "Abre operaciones de al menos {0} en el lado con menor volumen y recibe recompensas por equilibrar el mercado."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -1997,6 +2070,11 @@ msgstr "Soy afiliado"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
 msgstr ""
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Balancing trades"
+msgstr "Operaciones de equilibrio"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -2453,6 +2531,10 @@ msgstr "Grupos de Telegram"
 msgid "Complete account transfer"
 msgstr "Completar transferencia de cuenta"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "For more information read docs ↗"
+msgstr "Más información en la documentación ↗"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts"
 msgstr ""
@@ -2537,6 +2619,10 @@ msgstr "VI POSITIONS"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop price"
 msgstr "Precio de stop"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "How vesting works ↗"
+msgstr "Cómo funciona el vesting ↗"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -2873,6 +2959,10 @@ msgstr "Icono de advertencia"
 msgid "Leftover margin below {0} USD"
 msgstr ""
 
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
+msgid "Referral code creation failed. Please try again."
+msgstr "No se pudo crear el código de referido. Inténtalo de nuevo."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "Reducción de Mercado Fallida"
@@ -2915,6 +3005,12 @@ msgstr "Factor de incremento de financiación"
 msgid "May take a few minutes to appear. Check back later"
 msgstr "Puede tardar unos minutos en aparecer. Vuelva a comprobarlo más tarde"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Every 1x returns {perMultiplierRate} of your fees. At {exampleMultiplier}, that's {exampleRate} back."
+msgstr "Cada 1x te devuelve el {perMultiplierRate} de tus comisiones. Con {exampleMultiplier}, recibes el {exampleRate} de vuelta."
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+#: landing/src/pages/Rewards/RewardsTokens.tsx
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "Stake it"
 msgstr "Hacer staking"
@@ -3006,6 +3102,10 @@ msgstr "Máx. {0}"
 #: src/components/RewardsPromoBanner/rewardsPromoCopy.tsx
 msgid "Stake GMX and receive up to {maxRewardRate} of your fees back."
 msgstr "Haz staking de GMX y recibe hasta un {maxRewardRate} de tus comisiones de vuelta."
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Lifetime volume"
+msgstr "Volumen acumulado"
 
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "No leaderboard entries yet."
@@ -3136,6 +3236,10 @@ msgstr "El importe está por debajo del límite de retirada. Pruebe con un impor
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
 msgstr "Destello"
+
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
+msgid "Unable to verify code availability. Please try again."
+msgstr "No se pudo comprobar la disponibilidad del código. Inténtalo de nuevo."
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Maintenances"
@@ -3315,6 +3419,14 @@ msgstr "Recomienda traders y gana el 50 % de sus recompensas mientras el program
 msgid "Referral Bonus"
 msgstr "Bono por referidos"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Season 1 is active on Arbitrum. Trades on Avalanche or MegaETH are not eligible."
+msgstr "La temporada 1 está activa en Arbitrum. Las operaciones en Avalanche o MegaETH no son elegibles."
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards are distributed after each weekly epoch ends. Track your earned rewards and manage your esGMX in the app's Rewards page."
+msgstr "Las recompensas se distribuyen al finalizar cada época semanal. Consulta tus recompensas obtenidas y gestiona tus esGMX en la página de Recompensas de la aplicación."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM transfiriendo a..."
@@ -3381,6 +3493,10 @@ msgstr "Vesting detenido"
 msgid "Driven by our community"
 msgstr "Impulsado por nuestra comunidad"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Maximum multiplier reached"
+msgstr "Multiplicador máximo alcanzado"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy {0}"
 msgstr "Comprar {0}"
@@ -3443,6 +3559,15 @@ msgstr "RANGO"
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "Your rank is temporarily unavailable."
 msgstr "Tu posición no está disponible temporalmente."
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Open and close on the current set:"
+msgstr "Abre y cierra operaciones en los mercados seleccionados actualmente:"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Season 1 · Live"
+msgstr "Temporada 1 · Activa"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
@@ -3518,6 +3643,10 @@ msgstr "Excluye incentivos"
 msgid "Projected volume tier"
 msgstr "Nivel de volumen proyectado"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Can the rules change?"
+msgstr "¿Pueden cambiar las reglas?"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "Comprando {symbol}..."
@@ -3578,6 +3707,10 @@ msgstr "Cargando parámetros Express…"
 msgid "RESPONSE TIME"
 msgstr "TIEMPO DE RESPUESTA"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Staking esGMX earns staking rewards and counts towards your staking tier. Vesting converts esGMX into liquid GMX over one year and reserves staked GMX or esGMX against the amount you vest. Choose based on whether you want to grow your stake or gradually receive liquid GMX."
+msgstr "Hacer staking de esGMX genera recompensas de staking y cuenta para tu nivel de staking. El vesting convierte esGMX en GMX líquidos durante un año y reserva GMX o esGMX en staking como respaldo del importe en vesting. Elige según prefieras aumentar tu stake o recibir GMX líquidos gradualmente."
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "No ha operado durante el período seleccionado"
@@ -3589,6 +3722,10 @@ msgstr "Empieza a operar para activarla y recibir tus recompensas."
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trade More. Earn More."
 msgstr "Opera más. Gana más."
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Multipliers"
+msgstr "Multiplicadores"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
@@ -3798,6 +3935,10 @@ msgstr "Vault de tokens GM con reequilibrio automático que acumula comisiones d
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>No hay un límite fijo — el equipo establece tu nivel según tu volumen mensual reciente y previsto. La mayoría de los traders califican para el nivel base; contáctanos y confirmaremos tu tarifa.</0>"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Staking tier + Volume tier + Boosts"
+msgstr "Nivel de staking + Nivel de volumen + Potenciadores"
+
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 msgid "The most this market can add to {positionSide} positions right now. Updates live and can change before a resting order triggers."
 msgstr "El máximo que este mercado puede añadir a las posiciones en {positionSide} ahora mismo. Se actualiza en tiempo real y puede cambiar antes de que se active una orden pendiente."
@@ -3813,6 +3954,10 @@ msgstr "Saldo de gas insuficiente. Express Trading y One-Click Trading no dispon
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
 msgstr "Firma no válida. Intente firmar la solicitud de nuevo"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Preparing..."
+msgstr "Preparando..."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
@@ -4025,6 +4170,10 @@ msgstr "La transacción falló.<0/><1/><2>Ver</2>"
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Saldo de {symbol} insuficiente: {availableFormatted} disponible, {requiredFormatted} requerido"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Is {maximumRate} of my fees real?"
+msgstr "¿Realmente puedo recuperar el {maximumRate} de mis comisiones?"
+
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4093,6 +4242,7 @@ msgstr "Tipo de orden"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
 #: src/components/GmxAccountModal/RewardsSection.tsx
 msgid "Your multiplier"
 msgstr "Tu multiplicador"
@@ -4408,6 +4558,10 @@ msgstr "Los importes reclamables pendientes no están incluidos"
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "Insuficiente {wrappedNativeTokenSymbol} para gas en tu Cuenta GMX."
 
+#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+msgid "Open menu"
+msgstr "Abrir menú"
+
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -4415,6 +4569,7 @@ msgstr "Insuficiente {wrappedNativeTokenSymbol} para gas en tu Cuenta GMX."
 msgid "TRANSACTION"
 msgstr "TRANSACCIÓN"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy image"
@@ -4505,6 +4660,7 @@ msgstr "Depósito enviado"
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you."
 msgstr "Ingresos onchain en stablecoins: tu propia comisión de<0/>builder más una parte de las comisiones de GMX, cada vez<1/>que alguien opera a través de ti."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Ranked"
 msgstr "Clasificado"
@@ -4906,6 +5062,10 @@ msgstr "Liquidar"
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Staked GMX + esGMX"
+msgstr "GMX + esGMX en staking"
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Insufficient gas for network fees"
 msgstr "Gas insuficiente para las comisiones de red"
@@ -5001,6 +5161,7 @@ msgstr "Alcanza un volumen de trading histórico de {0}+ para desbloquear un mul
 msgid "esGMX was claimed. Balances will refresh shortly."
 msgstr "Se reclamó esGMX. Los saldos se actualizarán en breve."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Certified"
 msgstr "Certificado"
@@ -5022,6 +5183,7 @@ msgid "Express Trading is unavailable with the network's native token {0}. Consi
 msgstr "Express Trading no está disponible con el token nativo de la red {0}. Considere utilizar {1} en su lugar."
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
@@ -5150,6 +5312,10 @@ msgstr "Recompensas en USD"
 msgid "Sending order request..."
 msgstr "Enviando solicitud de orden…"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your comeback starts here"
+msgstr "Tu regreso empieza aquí"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Vendiendo {0}{1}<1>{poolName}</1></0>"
@@ -5246,6 +5412,12 @@ msgstr "Saldo de {0}"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "numerous assets"
 msgstr "numerosos activos"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Try again"
+msgstr "Intentar de nuevo"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -5428,6 +5600,7 @@ msgstr "Retirando..."
 msgid "No claims match the selected filters"
 msgstr "No hay reclamos que coincidan con los filtros seleccionados"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "Staking"
@@ -5464,6 +5637,10 @@ msgstr "ID de boosts"
 msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Unable to load your referral codes."
+msgstr "No se pudieron cargar tus códigos de referido."
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
@@ -5492,6 +5669,7 @@ msgstr "Se ejecuta cuando el precio del oráculo es {0} {1}"
 msgid "Withdrawal from subaccount"
 msgstr "Retiro de subcuenta"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -5533,6 +5711,10 @@ msgstr "La cadena de origen solo admite un único token"
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "$1,000 <0>in</0> esGMX + GT"
+msgstr "1.000 $ <0>en</0> esGMX + GT"
+
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Bonus remaining"
 msgstr "Bonificación restante"
@@ -5565,6 +5747,10 @@ msgstr "Se alcanzó la capacidad máxima de garantía"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
 msgstr "Inventario virtual para intercambios (largo / corto)"
+
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
+msgid "Your wallet changed. Please try again."
+msgstr "Tu billetera ha cambiado. Inténtalo de nuevo."
 
 #: src/components/GmxAccountModal/keys.ts
 msgid "Withdrawal"
@@ -5636,6 +5822,7 @@ msgstr "Ingresa la dirección del destinatario"
 msgid "Trade size.<0/>Or refer those who do."
 msgstr "Opera a lo grande.<0/>O refiere a quienes lo hacen."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Veteran"
 msgstr "Veterano"
@@ -5721,6 +5908,10 @@ msgstr "Aprobación cancelada"
 msgid "Invite"
 msgstr "Invitar"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "GT is the native token of GMTrade. The minting cost shown above determines how much GT your rewards receive. It is not a market price or a guaranteed value at the token generation event."
+msgstr "GT es el token nativo de GMTrade. El coste de acuñación mostrado arriba determina cuántos GT recibes como recompensa. No es un precio de mercado ni un valor garantizado en el evento de generación del token."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -5766,6 +5957,10 @@ msgstr "Esta posición está actualmente por encima del riesgo de liquidación, 
 msgid "Base borrowing factor long"
 msgstr "Factor base de préstamo largo"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "+{0} on top"
+msgstr "+{0} adicional"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
 msgstr "Dirección del destinatario"
@@ -5805,6 +6000,10 @@ msgstr "Las posiciones {longOrShort} no pagan comisión de financiación ni comi
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Turn your audience<0/>into on-chain income."
 msgstr "Convierta a su audiencia<0/>en ingresos on-chain."
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Program parameters and featured markets can change. The calculator and tier tables use the current program configuration. Check the documentation for the latest rules."
+msgstr "Los parámetros del programa y los mercados destacados pueden cambiar. La calculadora y las tablas de niveles usan la configuración actual del programa. Consulta la documentación para conocer las reglas más recientes."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped."
@@ -5916,9 +6115,14 @@ msgstr "<0>Comprar</0> {wrappedNativeTokenSymbol}."
 msgid "{0} loaded on this page"
 msgstr "{0} registros cargados en esta página"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Supporter"
 msgstr "Colaborador"
+
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "and earn {0} of the rewards they generate in esGMX and GT."
+msgstr "y gana el {0} de las recompensas que generen en esGMX y GT."
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "No audit entries found for this account."
@@ -6082,6 +6286,10 @@ msgstr "¿Quieres añadir margen sin aumentar el tamaño de tu posición?"
 msgid "The Rewards program is not currently active"
 msgstr "El programa de recompensas no está activo actualmente"
 
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Rewards data is temporarily unavailable."
+msgstr "Los datos de recompensas no están disponibles temporalmente."
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "Posición corta pura de {indexSymbol}. La exposición proviene únicamente de la posición."
@@ -6115,6 +6323,10 @@ msgstr "Destakear"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "Número máximo de acciones alcanzado. <0>Haga clic aquí</0> para actualizar"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Checking your comeback bonus..."
+msgstr "Comprobando tu bonificación de regreso..."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
@@ -6347,6 +6559,10 @@ msgstr "Solicitud de cambio enviada"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Current impact: {0}. Add 0.30% buffer for better order execution."
 msgstr "Impacto actual: {0}. Añada un margen del 0,30% para una mejor ejecución de la orden."
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Converts to GMX over one year. Vesting reserves staked GMX or esGMX against the amount you vest."
+msgstr "Se convierte en GMX durante un año. El vesting reserva GMX o esGMX en staking como respaldo del importe en vesting."
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settle {totalStr}"
@@ -6972,9 +7188,17 @@ msgstr "Staking solo disponible en {chainNames}. Cambie de red para continuar."
 msgid "Links"
 msgstr "Enlaces"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Loading your referral codes..."
+msgstr "Cargando tus códigos de referido..."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "Factor de impacto prestable máximo para retiradas"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Enter a valid 0x wallet address"
+msgstr "Introduce una dirección de billetera 0x válida"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
@@ -7110,6 +7334,10 @@ msgstr "Shifting solo disponible en {chainNames} o {lastChainName}. Cambie de re
 msgid "Monthly bought"
 msgstr "Comprado mensualmente"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Share on X"
+msgstr "Compartir en X"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -7204,6 +7432,7 @@ msgstr "Borrar filtro de historial de posición"
 msgid "esGMX was claimed. Reconnect the original wallet to continue."
 msgstr "Se reclamó esGMX. Vuelve a conectar la billetera original para continuar."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Steward"
 msgstr "Custodio"
@@ -7289,6 +7518,7 @@ msgstr "Seleccionar mercado"
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
 msgid "Referral code creation failed"
 msgstr "Error al crear el código de referido"
 
@@ -7350,6 +7580,7 @@ msgstr "Ejecuta {numberOfParts} órdenes {type} {0} de {1} cada una durante las 
 
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -7530,6 +7761,7 @@ msgstr "La red de compensación se ha cambiado a Arbitrum, pero quedan $12.50 en
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
 msgid "Enter a code"
 msgstr "Ingresa un código"
 
@@ -7541,6 +7773,7 @@ msgstr "Detalles"
 msgid "Vesting failed"
 msgstr "Error en el vesting"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Titan"
 msgstr "Titán"
@@ -7705,6 +7938,8 @@ msgstr "Todas las redes"
 msgid "Select positions"
 msgstr "Seleccionar posiciones"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -7770,6 +8005,10 @@ msgstr "GMX (Portugués)"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
 msgstr "No hay operaciones elegibles durante el período de competición"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Your fees"
+msgstr "Tus comisiones"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GMX staking is available on Arbitrum and Avalanche. GLV vaults and GM tokens vary by chain. Visit the pools page to see liquidity options for your connected network."
@@ -7869,10 +8108,16 @@ msgstr "Alto impacto en el precio"
 msgid "Collateral available"
 msgstr "Garantía disponible"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staking tiers"
 msgstr "Niveles de staking"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "The Season 1 flywheel"
+msgstr "El ciclo de recompensas de la temporada 1"
 
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -7918,6 +8163,10 @@ msgstr ""
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Start trading"
 msgstr ""
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Invite Traders"
+msgstr "Invitar a traders"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Oracle price is stale"
@@ -7969,6 +8218,10 @@ msgstr "Retirado"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated"
 msgstr "Graduados"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Traded here before? Check your wallet →"
+msgstr "¿Ya operaste aquí? Comprueba tu billetera →"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8074,6 +8327,10 @@ msgstr "COMPOSICIÓN"
 msgid "Two ways, and you can run both. Builder Code is your own fee: you set the rate (5 to 10 bps is typical), it stacks on top of GMX's fees, and 100% comes to you. Referral Fees are a cut of GMX's own fees: up to 25% of open/close fees, paid automatically."
 msgstr "Dos formas, y puedes usar ambas. Builder Code es tu propia comisión: tú fijas la tarifa (lo típico es de 5 a 10 pb), se suma a las comisiones de GMX y el 100% es para ti. Las comisiones de referidos son una parte de las comisiones de GMX: hasta el 25% de las comisiones de apertura/cierre, pagadas automáticamente."
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Check your wallet to discover your bonus."
+msgstr "Comprueba tu billetera para descubrir tu bonificación."
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Lending and borrowing"
@@ -8098,6 +8355,10 @@ msgstr "La comisión de red máxima incluye un margen para picos de Gas. Las com
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "Error en la ejecución de la orden"
+
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Invite other traders"
+msgstr "Invita a otros traders"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
@@ -8397,6 +8658,10 @@ msgstr "Cobra tu propia comisión"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "Al recibir como {receiveTokenSymbol}, se intercambiará tu beneficio y costará {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Recibe {profitTokenSymbol} y {collateralTokenSymbol} por separado para omitir el swap. <1>Leer más</1>"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Higher multiplier"
+msgstr "Multiplicador más alto"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -8595,6 +8860,10 @@ msgstr "Cómodo con la atribución de Builder / Referral Code"
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "Las comisiones ganadas solo se registran para el GM y GLV que tienes en tu billetera en {chainName}. El GM y GLV en una GMX Account o en otra cadena siguen generando comisiones, pero todavía no se pueden atribuir por cuenta."
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "When do I get paid?"
+msgstr "¿Cuándo recibo mis recompensas?"
+
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "esGMX tokens can be converted into liquid GMX through vesting."
 msgstr "Los tokens esGMX pueden convertirse en GMX líquido mediante vesting."
@@ -8627,6 +8896,10 @@ msgstr ""
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "Bóvedas optimizadas para rendimiento que suministran liquidez en múltiples mercados de GMX"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes, at the {multiplier} multiplier cap, which can be reached by combining staking tiers, volume tiers, and boosts. Rewards are paid in esGMX and GT. Use the calculator above to see the split for your estimated trading volume and stake."
+msgstr "Sí, con el multiplicador máximo de {multiplier}, que se puede alcanzar combinando niveles de staking, niveles de volumen y potenciadores. Las recompensas se pagan en esGMX y GT. Usa la calculadora de arriba para ver el reparto según tu volumen de operaciones y stake estimados."
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -8902,6 +9175,11 @@ msgstr "Te damos la bienvenida a GMX Rewards"
 msgid "per"
 msgstr "por"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Create code and invite traders"
+msgstr "Crear código e invitar a traders"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor longs"
 msgstr "Factor de reserva largos"
@@ -9048,6 +9326,10 @@ msgstr "Tasa de victoria"
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Your claim on the TGE of GMTrade.xyz, GMX's sister protocol on Solana. Minting gets 2.1% harder every 210,000 GT — the same trade earns fewer GT as the minting cost increases."
+msgstr "Tu derecho a tokens en el TGE de GMTrade.xyz, el protocolo hermano de GMX en Solana. La acuñación se vuelve un 2,1 % más difícil cada 210.000 GT: la misma operación genera menos GT a medida que aumenta el coste de acuñación."
+
 #: src/components/LeverageField/LeverageField.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
@@ -9081,6 +9363,11 @@ msgstr "Panel de estadísticas programa de referidos GMX"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Join {0} users earning real yield"
 msgstr "Únase a {0} usuarios que obtienen rendimiento real"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Weekly volume"
+msgstr "Volumen semanal"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -9453,6 +9740,7 @@ msgid "Existing position is in {0} pool. Using the selected pool will create a s
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
 msgstr "Gobernanza"
@@ -9467,6 +9755,7 @@ msgstr "Gobernanza"
 msgid "Cancel"
 msgstr "Cancelar"
 
+#: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
 msgstr "En vivo"
@@ -9524,6 +9813,10 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Do I need to pass KYC?"
 msgstr "¿Necesito pasar por KYC?"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Season 1 values are season-scoped"
+msgstr "Los valores de la temporada 1 se limitan a esta temporada"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
@@ -9668,6 +9961,10 @@ msgstr "Ver transacción"
 msgid "Project"
 msgstr "Proyecto"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Next step"
+msgstr "Siguiente escalón"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h low"
@@ -9721,6 +10018,10 @@ msgstr "Código activo del Programa Balancer"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max amount exceeded"
 msgstr "Superado el importe máximo"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "You earn on top — {referralShare}"
+msgstr "Ganas un extra del {referralShare}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -9802,12 +10103,14 @@ msgstr "Introduzca una cantidad válida"
 msgid "Keep leverage at {currentLeverage}"
 msgstr "Mantener el apalancamiento en {currentLeverage}"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "Today"
 msgstr "Hoy"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "Enlace copiado"
@@ -9881,6 +10184,18 @@ msgstr "Transfiriendo..."
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked GMX:"
 msgstr "GMX en staking:"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "GMX + esGMX staked"
+msgstr "GMX + esGMX en staking"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Do my old trades count?"
+msgstr "¿Cuentan mis operaciones anteriores?"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "{0} in comeback rewards remaining"
+msgstr "{0} restantes en recompensas de regreso"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
@@ -9977,10 +10292,16 @@ msgstr "Mostrar más"
 msgid "Net rate = funding + borrowing fees.<0/><1/>Funding: Balances longs vs shorts, paid between traders. <2>Read more</2>.<3/><4/>Borrowing: Ensures available liquidity. <5>Read more</5>."
 msgstr "Tasa neta = comisiones de financiación + préstamo.<0/><1/>Financiación: Equilibra largos frente a cortos, pagada entre operadores. <2>Más información</2>.<3/><4/>Préstamo: Garantiza la liquidez disponible. <5>Más información</5>."
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "{0} of every payout"
+msgstr "{0} de cada pago"
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Start trading in under 5 minutes"
 msgstr "Empieza a operar en menos de 5 minutos"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Volume tiers"
 msgstr "Niveles de volumen"
@@ -10115,6 +10436,10 @@ msgstr "Los detalles del vesting han cambiado. Revisa el colateral actualizado y
 msgid "Force failures"
 msgstr "Forzar fallos"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "How your rewards<0/>are calculated"
+msgstr "Cómo se calculan<0/>tus recompensas"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -10132,6 +10457,10 @@ msgstr "La orden excede el apalancamiento máximo. Haga clic para ajustar autom�
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "No hay ruta de intercambio disponible"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Historical activity can qualify your wallet for a comeback bonus and the lifetime-volume boost. Old trades do not receive new weekly rewards retroactively. Use the wallet checker above to see your remaining comeback bonus."
+msgstr "Tu actividad histórica puede hacer que tu billetera sea elegible para una bonificación de regreso y el potenciador por volumen acumulado. Las operaciones antiguas no reciben nuevas recompensas semanales retroactivamente. Usa el verificador de billeteras de arriba para ver tu bonificación de regreso restante."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
@@ -10169,6 +10498,10 @@ msgstr "REEMBOLSOS TOTALES"
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "Bóvedas de liquidez unilateral con cobertura activa y reequilibrio para minimizar la pérdida impermanente"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Check wallet"
+msgstr "Comprobar billetera"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
@@ -10316,6 +10649,10 @@ msgstr "comisiones"
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "How long does vesting take?"
 msgstr "¿Cuánto dura el vesting?"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Start earning<0/>on your next trade."
+msgstr "Empieza a ganar<0/>en tu próxima operación."
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
@@ -10583,6 +10920,7 @@ msgstr "{0}ms"
 msgid "Deposit failed"
 msgstr "Depósito fallido"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Guardian"
 msgstr "Guardián"
@@ -10696,6 +11034,10 @@ msgstr "Construcción"
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
 msgstr "para {comment}"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Earn more on the next trade"
+msgstr "Gana más en la próxima operación"
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Adding esGMX extends your current vesting: your existing tokens will finish converting on <0>{0} instead of {1}</0>."
@@ -10995,6 +11337,7 @@ msgstr "IA"
 
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
 msgid "Referral code submitted"
 msgstr "Código de referido enviado"
 
@@ -11113,6 +11456,10 @@ msgstr "Reclámala cuando quieras en la pestaña <0>Afiliados</0>."
 msgid "It accrues to the code owner ({0})."
 msgstr "Se acumula para el propietario del código ({0})."
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "{0}+ lifetime"
+msgstr "{0}+ acumulado"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
 msgstr "Reintentar ruta externa"
@@ -11152,6 +11499,11 @@ msgstr "Cerrar posiciones"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "it stays staked, it is not unstaked."
 msgstr "permanecen en staking, no se retiran del staking."
+
+#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Your trading fees<0/>come back to you."
+msgstr "Tus comisiones de trading<0/>vuelven a ti."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
@@ -11222,6 +11574,8 @@ msgstr "Solicitud de venta enviada"
 msgid "Unable to load the incentives configuration."
 msgstr "No se pudo cargar la configuración de incentivos."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Boost"
 msgstr "Potenciador"
@@ -11401,6 +11755,10 @@ msgstr "Crear código"
 msgid "Error submitting order"
 msgstr "Error al enviar la orden"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "+{referralExample} <0>in</0> esGMX + GT"
+msgstr "+{referralExample} <0>en</0> esGMX + GT"
+
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
@@ -11424,9 +11782,17 @@ msgstr "Puente e intercambio de tokens"
 msgid "Backing composition"
 msgstr "Composición del respaldo"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Rewards are paid<0/>in two tokens"
+msgstr "Las recompensas se pagan<0/>en dos tokens"
+
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "Reembolsos reclamables"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Every epoch · paid in both tokens"
+msgstr "Cada época · pago en ambos tokens"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Lock in<0/><1>a better rate.</1>"
@@ -11685,6 +12051,10 @@ msgstr "Instantánea indexada actual de la cuenta"
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "Stakear GMX y comprar GLV o GM para obtener recompensas"
 
+#: landing/src/pages/Rewards/RewardsTradeButton.tsx
+msgid "Start Trading"
+msgstr "Empezar a operar"
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "Vendible"
@@ -11917,6 +12287,10 @@ msgstr "Comisiones netas de cierre / impacto"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order trigger price"
 msgstr "Precio de activación de la orden"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Which chains count for Season 1?"
+msgstr "¿Qué cadenas cuentan para la temporada 1?"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time"
@@ -12212,6 +12586,10 @@ msgstr "¿Cuánto podría ganar?"
 msgid "Collateral unlocked"
 msgstr "Garantía desbloqueada"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Should I stake or vest my esGMX?"
+msgstr "¿Debería hacer staking o vesting de mis esGMX?"
+
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on {0}."
 msgstr ""
@@ -12360,6 +12738,10 @@ msgstr "Hacer staking de {tokenSymbol}"
 msgid "Link copied to clipboard"
 msgstr "Enlace copiado al portapapeles"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Wallet address"
+msgstr "Dirección de billetera"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
 msgstr "Capacidad máxima del pool alcanzada. Actual: {poolAmountText}, máx.: {maxPoolAmountText}"
@@ -12379,6 +12761,10 @@ msgstr "Bóvedas basadas en opciones"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time limit"
 msgstr "Límite de tiempo"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Checking..."
+msgstr "Comprobando..."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
@@ -12728,6 +13114,10 @@ msgstr "La red de compensación se cambió a {0}, pero {1} permanece en su GMX A
 msgid "Set short Limit @ {0}"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Genesis"
+msgstr "Génesis"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
 msgstr "Depositar ETH"
@@ -12748,6 +13138,10 @@ msgstr "Proyectos integrados con GMX"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Testnet LayerZero scan"
 msgstr "Testnet LayerZero scan"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "{feeShare} of your fees"
+msgstr "{feeShare} de tus comisiones"
 
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Epoch duration"
@@ -12955,6 +13349,7 @@ msgstr "Limit Swap: intercambiar tokens cuando se alcance el precio de activaci�
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Reciba alertas y anuncios de GMX para estar al día de sus operaciones, riesgo de liquidación y más"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Legendary"
 msgstr "Legendario"
@@ -12982,6 +13377,10 @@ msgstr "Ilustrativo, basado en una comisión efectiva de ~0,05%.<0/>Las ganancia
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
 msgstr "Recibir en este monedero"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Unable to connect your wallet. Please try again."
+msgstr "No se pudo conectar tu billetera. Inténtalo de nuevo."
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Stack them."
@@ -13019,6 +13418,11 @@ msgstr "Tasa máxima corto"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking Power Share"
 msgstr ""
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Comeback boost"
+msgstr "Potenciador de regreso"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
@@ -13206,6 +13610,10 @@ msgstr "Firme transacciones fuera de la cadena. Los RPC premium garantizan fiabi
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
 msgstr "El enrutamiento externo está pausado temporalmente tras un intento fallido. Reintente para comprobar si hay una mejor tasa."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Your referral earns"
+msgstr "Tu referido gana"
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Working prototype or live product"
 msgstr "Prototipo funcional o producto en producción"
@@ -13281,6 +13689,10 @@ msgstr "La liquidez solo está disponible en {chainNames} o {lastChainName}. Cam
 msgid "Transfer history"
 msgstr "Historial de transferencias"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Your referral code"
+msgstr "Tu código de referido"
+
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr "Cancelar orden"
@@ -13315,6 +13727,10 @@ msgstr ""
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
 msgstr "Especifique la red: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Traded on GMX before?<0/>You come back at {multiplier}."
+msgstr "¿Ya operaste en GMX?<0/>Regresas con {multiplier}."
 
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
@@ -13365,6 +13781,10 @@ msgstr "GARANTÍA"
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>"
 msgstr "Comprar APE en Arbitrum con <0>Camelot</0>"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Enter your 0x wallet address"
+msgstr "Introduce tu dirección de billetera 0x"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -13502,6 +13922,10 @@ msgstr "Opere más, pague menos.<0/>Refiera y gane."
 msgid "No pools matched"
 msgstr "No hay pools coincidentes"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Your trading fees come back to you. Check your GMX rewards."
+msgstr "Tus comisiones de trading vuelven a ti. Consulta tus recompensas de GMX."
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"
 msgstr "A punto de lanzar o ya en producción"
@@ -13636,6 +14060,10 @@ msgstr "Tasa neta largos / 1h"
 msgid "{0} of net position fee"
 msgstr "{0} de la comisión neta de posición"
 
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Go check your rewards"
+msgstr "Consulta tus recompensas"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
@@ -13666,6 +14094,10 @@ msgstr "{idleSeconds}s"
 #: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
 msgstr "GT es el token nativo del proyecto GM Trade. Actualmente no tiene utilidad; las funcionalidades adicionales estarán disponibles después del evento de generación de tokens (TGE)."
+
+#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+msgid "Close menu"
+msgstr "Cerrar menú"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
@@ -13706,6 +14138,10 @@ msgstr "Monitorización del Oracle keeper"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "Ingresa un nuevo tamaño o precio"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Vest it"
+msgstr "Hacer vesting"
 
 #: src/components/RewardsShare/RewardsShareCard.tsx
 msgid "Start trading with me."
@@ -13770,6 +14206,10 @@ msgstr "Últimos 30d"
 msgid "Dashboards"
 msgstr "Paneles"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Boost is yours"
+msgstr "El potenciador es tuyo"
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"
 msgstr ""
@@ -13791,6 +14231,10 @@ msgstr "Error al decodificar. Asegúrese de que los datos hexadecimales son vál
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "7d"
 msgstr "7d"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "...and it compounds, every week"
+msgstr "...y se acumula, cada semana"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit"
@@ -13878,6 +14322,10 @@ msgstr "Nivel de staking activo"
 #: src/components/MarketsList/MarketsList.tsx
 msgid "No markets found"
 msgstr "No se encontraron mercados"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your historical volume is {0}"
+msgstr "Tu volumen histórico es {0}"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to enter a code on each network?"
@@ -14054,6 +14502,10 @@ msgstr ""
 msgid "This year"
 msgstr "Este año"
 
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Current epoch ends"
+msgstr "La época actual termina"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"
 msgstr "Retirar {glvOrGm}: {0}"
@@ -14119,6 +14571,7 @@ msgstr "Enviando solicitud de cambio…"
 msgid "Order expired before it could be executed"
 msgstr "La orden venció antes de que pudiera ejecutarse"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Apex"
 msgstr "Cúspide"
@@ -14190,6 +14643,7 @@ msgstr "No hay distribuciones para reclamar"
 msgid "Receive {tokensList} into your wallet on {networkName}, or choose another network."
 msgstr "Recibe {tokensList} en tu billetera en {networkName} o elige otra red."
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy link"
@@ -14380,11 +14834,16 @@ msgstr "TASA NETA / 1H"
 msgid "30d performance APY"
 msgstr "APY de rendimiento a 30d"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Unable to update minting data. Try again."
+msgstr "No se pudieron actualizar los datos de acuñación. Inténtalo de nuevo."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Uniswap"
 msgstr "Uniswap"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
@@ -14452,6 +14911,10 @@ msgstr "Tu multiplicador aumentará en la próxima época."
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "Los traders graduados fueron trasladados a un código del protocolo GMX tras alcanzar el umbral de graduación del programa de referidos."
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "What is GT worth?"
+msgstr "¿Cuánto vale GT?"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new price"
@@ -14545,6 +15008,10 @@ msgstr "Express Trading activado. Desactivar en <0>configuración</0>"
 msgid "Set trigger price above mark price"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Earn esGMX"
+msgstr "Gana esGMX"
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "Aún no hay oportunidades en esta cadena"
@@ -14573,6 +15040,10 @@ msgstr ""
 #: src/components/Errors/errorToasts.tsx
 msgid "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
 msgstr "Active <0>Express Trading</0> en configuración para una mayor fiabilidad.<1/><2/>O aumente el búfer máximo de comisión de red {bufferText} en {settingsLink}"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Minted"
+msgstr "Acuñados"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"

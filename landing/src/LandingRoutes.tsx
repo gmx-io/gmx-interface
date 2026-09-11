@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { Redirect, Route, RouteComponentProps, Switch, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
+import Rewards from "./pages/Rewards/Rewards";
 
 const Builders = lazy(() => import("./pages/Builders/Builders"));
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
@@ -63,6 +64,9 @@ export function LandingRoutes() {
           <Suspense fallback={<TermsPageLoader />}>
             <Builders />
           </Suspense>
+        </Route>
+        <Route exact path="/rewards">
+          <Rewards />
         </Route>
         <Route path="*" render={RedirectToHomeWithSearch} />
       </Switch>
