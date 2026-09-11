@@ -33,6 +33,37 @@ export const LATEST_GT_PRICE_QUERY = `
   }
 `;
 
+export const RETURN_BONUS_QUERY = `
+  query ReturnBonus($account: String!) {
+    accountIncentiveStatus(account: $account) {
+      boostIds
+      manualRewardCapUsd
+      manualRewardConsumedUsd
+      manualRewardRemainingUsd
+    }
+  }
+`;
+
+export const RETURN_BONUS_VOLUME_QUERY = `
+  query ReturnBonusVolume($account: String!, $programStartTimestamp: Int!) {
+    incentiveManualAllocations(
+      where: { account_eq: $account, programStartTimestamp_eq: $programStartTimestamp }
+      limit: 1
+    ) {
+      lifetimeVolume
+    }
+  }
+`;
+
+export const GT_MINTING_STATS_QUERY = `
+  query GtMintingStats {
+    gtPriceSyncById(id: "solana-mainnet") {
+      totalMinted
+      remainingToNextStep
+    }
+  }
+`;
+
 export const ACCOUNT_INCENTIVE_STATUS_QUERY = `
   query AccountIncentiveStatus($account: String!) {
     accountIncentiveStatus(account: $account) {
