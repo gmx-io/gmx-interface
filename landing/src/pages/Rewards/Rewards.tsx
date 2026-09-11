@@ -17,12 +17,14 @@ import { RewardsFaq } from "./RewardsFaq";
 import { RewardsMultipliers } from "./RewardsMultipliers";
 import { RewardsTokens } from "./RewardsTokens";
 import { RewardsTradeButton } from "./RewardsTradeButton";
+import { RewardsValue } from "./RewardsValue";
 
 import "./Rewards.css";
 
 export default function Rewards() {
   const { i18n, _ } = useLingui();
   const config = useIncentivesConfig(ARBITRUM);
+  const loading = config.loading || config.isValidating;
   const headerLinks = useMemo(
     () => [
       { label: _(msg`Season 1`), href: "#season" },
@@ -59,30 +61,23 @@ export default function Rewards() {
                   come back to you.
                 </Trans>
               </h1>
-              {config.data ? (
-                <RewardsCalculator config={config.data} />
-              ) : (
-                <div className="rewards-calculator rewards-config-status" role="status">
+              <RewardsCalculator config={config.data} loading={loading} />
+              {!config.data && !loading && (
+                <div className="rewards-config-status" role="status">
                   <p>
-                    {config.loading ? (
-                      <Trans>Loading rewards calculator...</Trans>
-                    ) : (
-                      <Trans>Rewards data is temporarily unavailable.</Trans>
-                    )}
+                    <Trans>Rewards data is temporarily unavailable.</Trans>
                   </p>
-                  {!config.loading && (
-                    <button className="rewards-button" onClick={() => void config.mutate()}>
-                      <Trans>Try again</Trans>
-                    </button>
-                  )}
+                  <button className="rewards-button" onClick={() => void config.mutate()}>
+                    <Trans>Try again</Trans>
+                  </button>
                 </div>
               )}
             </div>
           </section>
-          <ReturningTrader config={config.data} endpoint={config.endpoint} />
-          {config.data && <RewardsMultipliers config={config.data} />}
-          <RewardsTokens config={config.data} />
-          <RewardsFaq config={config.data} />
+          <ReturningTrader config={config.data} loading={loading} endpoint={config.endpoint} />
+          <RewardsMultipliers config={config.data} loading={loading} />
+          <RewardsTokens config={config.data} loading={loading} />
+          <RewardsFaq config={config.data} loading={loading} />
           <section className="rewards-closing">
             <img className="rewards-closing-dial" src={dial} alt="" loading="lazy" />
             <div className="rewards-container">
@@ -95,21 +90,23 @@ export default function Rewards() {
               </h2>
               <div className="rewards-closing-cta">
                 <RewardsTradeButton />
-                {epochEnd && (
-                  <p>
-                    <Trans>Current epoch ends</Trans>{" "}
-                    <time dateTime={epochEnd.toISOString()}>
-                      {epochEnd.toLocaleString(i18n.locale, {
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        timeZone: "UTC",
-                      })}{" "}
-                      UTC
-                    </time>
-                  </p>
-                )}
+                <p>
+                  <Trans>Current epoch ends</Trans>{" "}
+                  <RewardsValue loading={loading} width="18ch">
+                    {epochEnd && (
+                      <time dateTime={epochEnd.toISOString()}>
+                        {epochEnd.toLocaleString(i18n.locale, {
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          timeZone: "UTC",
+                        })}{" "}
+                        UTC
+                      </time>
+                    )}
+                  </RewardsValue>
+                </p>
               </div>
             </div>
           </section>

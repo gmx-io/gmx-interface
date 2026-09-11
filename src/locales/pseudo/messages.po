@@ -2776,10 +2776,6 @@ msgstr ""
 msgid "Swapped {0} for {1}"
 msgstr ""
 
-#: landing/src/pages/Rewards/RewardsReferralCard.tsx
-msgid "Earn esGMX and GT when your referrals trade."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposits are closed."
 msgstr "[Dëpösïts ärë clösëd.]"
@@ -3382,10 +3378,6 @@ msgstr "[Rëwärds Väült]"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
-msgstr ""
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Loading rewards calculator..."
 msgstr ""
 
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -7946,6 +7938,7 @@ msgstr ""
 msgid "Select positions"
 msgstr ""
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
@@ -10667,11 +10660,6 @@ msgstr ""
 
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Learn more about the rewards program"
-msgstr ""
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
-msgid "Loading wallet..."
 msgstr ""
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx

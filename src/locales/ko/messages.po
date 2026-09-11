@@ -2776,10 +2776,6 @@ msgstr "이익"
 msgid "Swapped {0} for {1}"
 msgstr "{0}을(를) {1}(으)로 스왑했습니다"
 
-#: landing/src/pages/Rewards/RewardsReferralCard.tsx
-msgid "Earn esGMX and GT when your referrals trade."
-msgstr "추천한 트레이더가 거래하면 esGMX와 GT를 받으세요."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposits are closed."
 msgstr "예치가 종료되었습니다."
@@ -3383,10 +3379,6 @@ msgstr "Rewards 볼트"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "FUNDING APR"
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Loading rewards calculator..."
-msgstr "보상 계산기 불러오는 중..."
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -7946,6 +7938,7 @@ msgstr "전체 네트워크"
 msgid "Select positions"
 msgstr "포지션 선택"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
@@ -10668,11 +10661,6 @@ msgstr "퍼밋 승인을 완료할 수 없습니다."
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Learn more about the rewards program"
 msgstr "보상 프로그램 자세히 알아보기"
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
-msgid "Loading wallet..."
-msgstr "지갑 불러오는 중..."
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"

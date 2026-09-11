@@ -2776,10 +2776,6 @@ msgstr "Gain"
 msgid "Swapped {0} for {1}"
 msgstr "{0} échangé contre {1}"
 
-#: landing/src/pages/Rewards/RewardsReferralCard.tsx
-msgid "Earn esGMX and GT when your referrals trade."
-msgstr "Gagnez des esGMX et des GT lorsque vos filleuls tradent."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposits are closed."
 msgstr "Les dépôts sont fermés."
@@ -3383,10 +3379,6 @@ msgstr "Rewards Vault"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "FUNDING APR"
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Loading rewards calculator..."
-msgstr "Chargement du calculateur de récompenses..."
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -7946,6 +7938,7 @@ msgstr "Tous les réseaux"
 msgid "Select positions"
 msgstr "Sélectionner les positions"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
@@ -10668,11 +10661,6 @@ msgstr "L'approbation par permis n'a pas pu être terminée."
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Learn more about the rewards program"
 msgstr "En savoir plus sur le programme de récompenses"
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
-msgid "Loading wallet..."
-msgstr "Chargement du portefeuille..."
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"

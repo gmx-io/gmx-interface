@@ -18,6 +18,29 @@ body:has(.rewards-page) {
   overflow: clip;
   --rewards-muted: #a0a3c4;
   --rewards-blue: #2d42fc;
+  --rewards-skeleton-base: #b4bbff1a;
+  --rewards-skeleton-highlight: #b4bbff33;
+}
+
+.rewards-skeleton {
+  display: inline-block;
+  max-width: 100%;
+  line-height: 1;
+  vertical-align: baseline;
+}
+.rewards-skeleton .react-loading-skeleton {
+  max-width: 100%;
+  vertical-align: baseline;
+}
+.rewards-receipt,
+.rewards-referral-bonus {
+  --rewards-skeleton-base: #ffffff26;
+  --rewards-skeleton-highlight: #ffffff4d;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rewards-skeleton .react-loading-skeleton::after {
+    animation: none;
+  }
 }
 
 .rewards-page * {
@@ -263,6 +286,13 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-boost-toggle:hover {
   border-color: #7885ff;
 }
+.rewards-slider input:disabled,
+.rewards-boost-toggle:has(input:disabled) {
+  cursor: default;
+}
+.rewards-boost-toggle:has(input:disabled):hover {
+  border-color: transparent;
+}
 .rewards-boost-toggle input {
   appearance: none;
   width: 14px;
@@ -399,15 +429,16 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 }
 .rewards-config-status {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  min-height: 460px;
+  gap: 12px;
+  margin-top: 64px;
 }
 .rewards-light {
   color: #090a14;
   background: #f4f5f9;
+  --rewards-skeleton-base: #090a140d;
+  --rewards-skeleton-highlight: #090a141a;
 }
 .rewards-comeback {
   padding: 120px 0;
@@ -467,6 +498,8 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-bonus-card,
 .rewards-referral-card {
   position: relative;
+  --rewards-skeleton-base: #b4bbff1a;
+  --rewards-skeleton-highlight: #b4bbff33;
   min-height: 477px;
   display: flex;
   flex-direction: column;
@@ -522,7 +555,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   line-height: 20px !important;
   color: #a4c3f9 !important;
 }
-.rewards-volume-pill span {
+.rewards-volume-pill > span[aria-hidden="true"] {
   display: inline-grid;
   place-items: center;
   background: #2d42fc;
@@ -605,7 +638,8 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-share-image-header > img {
   margin-top: 4px;
 }
-.rewards-share-image-header > svg {
+.rewards-share-image-header > svg,
+.rewards-share-image-header > .rewards-skeleton {
   border-radius: 2px;
   position: absolute;
   right: 16px;
@@ -647,6 +681,9 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   width: 100%;
   padding-block: 8px;
   min-height: 40px;
+}
+.rewards-referral-loading > .rewards-skeleton {
+  width: 100%;
 }
 .rewards-referral-error {
   display: flex;

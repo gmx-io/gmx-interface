@@ -18,10 +18,11 @@ import CopyIcon from "img/ic_copy.svg?react";
 import XIcon from "img/social/ic_x_new.svg?react";
 
 import { ReferralCardFrame, RewardsReferralCard } from "./RewardsReferralCard";
+import { RewardsValue } from "./RewardsValue";
 
 import "react-toastify/dist/ReactToastify.css";
 
-type Props = { config: IncentivesConfig | null | undefined };
+type Props = { config: IncentivesConfig | null | undefined; loading?: boolean };
 
 export default function RewardsReferralWallet(props: Props) {
   return (
@@ -32,7 +33,7 @@ export default function RewardsReferralWallet(props: Props) {
   );
 }
 
-function ReferralWallet({ config }: Props) {
+function ReferralWallet({ config, loading }: Props) {
   const [connectionError, setConnectionError] = useState<string>();
   const { address, isConnected } = useAccount();
   const { ready, authenticated } = usePrivy();
@@ -41,27 +42,29 @@ function ReferralWallet({ config }: Props) {
   const { connectWallet } = useConnectWallet({ onError });
   const { connectOrCreateWallet } = useConnectOrCreateWallet({ onError });
 
-  if (isConnected && address) return <ConnectedReferral key={address} account={address} config={config} />;
+  if (isConnected && address)
+    return <ConnectedReferral key={address} account={address} config={config} loading={loading} />;
 
   return (
-    <ReferralCardFrame config={config}>
+    <ReferralCardFrame config={config} loading={loading}>
       <button
         className="rewards-button"
         disabled={!ready || isOpen}
+        aria-busy={!ready}
         onClick={() => {
           setConnectionError(undefined);
           if (authenticated) connectWallet();
           else connectOrCreateWallet();
         }}
       >
-        {!ready ? <Trans>Loading wallet...</Trans> : <Trans>Connect wallet</Trans>}
+        <Trans>Connect wallet</Trans>
       </button>
       {connectionError && <p role="alert">{connectionError}</p>}
     </ReferralCardFrame>
   );
 }
 
-function ConnectedReferral({ account, config }: Props & { account: string }) {
+function ConnectedReferral({ account, config, loading }: Props & { account: string }) {
   const [refreshKey, setRefreshKey] = useState(0);
   const codes = useAffiliateCodes(ARBITRUM, account, true, refreshKey);
   const [createdCode, setCreatedCode] = useState<string>();
@@ -74,6 +77,7 @@ function ConnectedReferral({ account, config }: Props & { account: string }) {
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
   const creation = useCreateReferralCode({ chainId: ARBITRUM, account, signer, onSuccess: setCreatedCode });
   const code = createdCode ?? codes.code ?? undefined;
+  const loadingCode = !code && !codes.success && !codes.error;
   const url = code ? `${window.location.origin}/rewards?ref=${encodeURIComponent(code)}` : undefined;
   const codeError = getCodeError(input);
 
@@ -102,7 +106,11 @@ function ConnectedReferral({ account, config }: Props & { account: string }) {
   }
 
   return (
-    <ReferralCardFrame config={config} preview={<RewardsReferralCard code={code} url={url} ref={imageRef} />}>
+    <ReferralCardFrame
+      config={config}
+      loading={loading}
+      preview={<RewardsReferralCard code={code} url={url} loadingCode={loadingCode} ref={imageRef} />}
+    >
       {code && url ? (
         <>
           <div className="rewards-share-buttons">
@@ -146,9 +154,12 @@ function ConnectedReferral({ account, config }: Props & { account: string }) {
           </button>
         </div>
       ) : !codes.success ? (
-        <p role="status">
-          <Trans>Loading your referral codes...</Trans>
-        </p>
+        <div className="rewards-referral-loading" role="status">
+          <span className="sr-only">
+            <Trans>Loading your referral codes...</Trans>
+          </span>
+          <RewardsValue loading width="100%" height={40} />
+        </div>
       ) : chainId !== ARBITRUM ? (
         <>
           <button

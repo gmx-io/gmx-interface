@@ -2776,10 +2776,6 @@ msgstr "利益"
 msgid "Swapped {0} for {1}"
 msgstr "{0} を {1} にスワップしました"
 
-#: landing/src/pages/Rewards/RewardsReferralCard.tsx
-msgid "Earn esGMX and GT when your referrals trade."
-msgstr "紹介したトレーダーが取引すると、esGMXとGTを獲得できます。"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposits are closed."
 msgstr "入金受付は終了しました。"
@@ -3383,10 +3379,6 @@ msgstr "Rewardsボールト"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "FUNDING APR"
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Loading rewards calculator..."
-msgstr "報酬計算機を読み込み中..."
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -7946,6 +7938,7 @@ msgstr "すべてのネットワーク"
 msgid "Select positions"
 msgstr "ポジションを選択"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
@@ -10668,11 +10661,6 @@ msgstr "パーミット承認を完了できませんでした。"
 #: src/components/HistoricalRewardsAllocationModal/HistoricalRewardsAllocationModal.tsx
 msgid "Learn more about the rewards program"
 msgstr "報酬プログラムの詳細を見る"
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
-msgid "Loading wallet..."
-msgstr "ウォレットを読み込み中..."
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"

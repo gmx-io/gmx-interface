@@ -11,14 +11,17 @@ import IcWallet from "img/ic_wallet.svg?react";
 import shield from "img/rewards-landing/shield.png";
 
 import { ReferralCardFrame } from "./RewardsReferralCard";
+import { RewardsValue } from "./RewardsValue";
 
 const RewardsReferralWallet = lazy(() => import("./RewardsReferralWallet"));
 
 export function ReturningTrader({
   config,
+  loading,
   endpoint,
 }: {
   config: IncentivesConfig | null | undefined;
+  loading: boolean;
   endpoint?: string;
 }) {
   const [input, setInput] = useState("");
@@ -28,10 +31,13 @@ export function ReturningTrader({
   const hasBonus = result.data != null && result.data.manualRewardRemainingUsd > 0n;
   const volume = useReturnBonusVolume(endpoint, hasBonus ? account : undefined, config?.programStartTimestamp);
   const comebackMultiplier = config?.boosts.find(({ boost }) => boost === "ManualAllocation")?.multiplier;
-  const multiplier =
-    config && comebackMultiplier !== undefined
-      ? formatMultiplierAdjustment(comebackMultiplier, config.multiplierDecimals)
-      : "+2x";
+  const multiplier = (
+    <RewardsValue loading={loading}>
+      {config && comebackMultiplier !== undefined
+        ? formatMultiplierAdjustment(comebackMultiplier, config.multiplierDecimals)
+        : undefined}
+    </RewardsValue>
+  );
 
   function checkWallet(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -111,11 +117,16 @@ export function ReturningTrader({
                   </Trans>
                 </p>
                 <img className="rewards-shield" src={shield} alt="" loading="lazy" />
-                {volume.data != null && (
+                {(volume.data != null || volume.isLoading) && (
                   <p className="rewards-volume-pill">
                     <span aria-hidden="true">✓</span>{" "}
                     <Trans>
-                      Your historical volume is {formatAmountHuman(volume.data, USD_DECIMALS, true, 0).toUpperCase()}
+                      Your historical volume is{" "}
+                      {volume.data != null ? (
+                        formatAmountHuman(volume.data, USD_DECIMALS, true, 0).toUpperCase()
+                      ) : (
+                        <RewardsValue loading={volume.isLoading} width="6ch" />
+                      )}
                     </Trans>
                   </p>
                 )}
@@ -127,7 +138,12 @@ export function ReturningTrader({
                 </h3>
                 <p>
                   {result.isLoading ? (
-                    <Trans>Checking your comeback bonus...</Trans>
+                    <>
+                      <span className="sr-only">
+                        <Trans>Checking your comeback bonus...</Trans>
+                      </span>
+                      <RewardsValue loading width="24ch" />
+                    </>
                   ) : (
                     <Trans>Check your wallet to discover your bonus.</Trans>
                   )}
@@ -143,14 +159,14 @@ export function ReturningTrader({
           <div className="rewards-referral-wallet">
             <Suspense
               fallback={
-                <ReferralCardFrame config={config}>
-                  <p role="status">
-                    <Trans>Loading wallet...</Trans>
-                  </p>
+                <ReferralCardFrame config={config} loading={loading}>
+                  <button className="rewards-button" disabled aria-busy="true">
+                    <Trans>Connect wallet</Trans>
+                  </button>
                 </ReferralCardFrame>
               }
             >
-              <RewardsReferralWallet config={config} />
+              <RewardsReferralWallet config={config} loading={loading} />
             </Suspense>
           </div>
         </div>

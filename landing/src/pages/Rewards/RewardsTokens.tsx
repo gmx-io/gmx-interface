@@ -13,8 +13,9 @@ import gt from "img/rewards-landing/gt.svg";
 import mintingCurve from "img/rewards-landing/minting-curve.svg";
 
 import { RewardsFlywheel } from "./RewardsFlywheel";
+import { RewardsValue } from "./RewardsValue";
 
-export function RewardsTokens({ config }: { config: IncentivesConfig | null | undefined }) {
+export function RewardsTokens({ config, loading }: { config: IncentivesConfig | null | undefined; loading: boolean }) {
   const price = useLatestGtPrice(ARBITRUM);
   const stats = useGtMintingStats();
   const hasError = Boolean(price.error || stats.error);
@@ -36,11 +37,12 @@ export function RewardsTokens({ config }: { config: IncentivesConfig | null | un
                 <img src={gmx} alt="" />
                 esGMX
               </h3>
-              {config && (
-                <span className="rewards-token-tag">
-                  <Trans>{formatFactorPercentage(config.esGmxShareFactor)} of every payout</Trans>
-                </span>
-              )}
+              <span className="rewards-token-tag">
+                <Trans>
+                  {config ? formatFactorPercentage(config.esGmxShareFactor) : <RewardsValue loading={loading} />} of
+                  every payout
+                </Trans>
+              </span>
             </header>
             <div className="rewards-token-option">
               <h4>
@@ -73,11 +75,11 @@ export function RewardsTokens({ config }: { config: IncentivesConfig | null | un
                 <img src={gt} alt="" />
                 GT
               </h3>
-              {config && (
-                <span className="rewards-token-tag">
-                  <Trans>+{formatFactorPercentage(config.gtShareFactor)} on top</Trans>
-                </span>
-              )}
+              <span className="rewards-token-tag">
+                <Trans>
+                  +{config ? formatFactorPercentage(config.gtShareFactor) : <RewardsValue loading={loading} />} on top
+                </Trans>
+              </span>
             </header>
             <p>
               <Trans>
@@ -96,18 +98,22 @@ export function RewardsTokens({ config }: { config: IncentivesConfig | null | un
                 <dt>
                   <Trans>Today</Trans>
                 </dt>
-                <dd>{price.loading ? "…" : formatUsd(price.data?.priceUsd, { displayDecimals: 4 }) ?? "—"}</dd>
+                <dd>
+                  <RewardsValue loading={price.loading || price.isValidating} width="7ch">
+                    {price.data ? formatUsd(price.data.priceUsd, { displayDecimals: 4 }) : undefined}
+                  </RewardsValue>
+                </dd>
               </div>
               <div>
                 <dt>
                   <Trans>Next step</Trans>
                 </dt>
                 <dd>
-                  {stats.isLoading
-                    ? "…"
-                    : stats.data?.remainingToNextStep !== undefined
+                  <RewardsValue loading={stats.isLoading || stats.isValidating} width="9ch">
+                    {stats.data?.remainingToNextStep !== undefined
                       ? `${formatAmount(stats.data.remainingToNextStep, GT_DECIMALS, 0, true)} GT`
-                      : "—"}
+                      : undefined}
+                  </RewardsValue>
                 </dd>
               </div>
               <div>
@@ -115,11 +121,11 @@ export function RewardsTokens({ config }: { config: IncentivesConfig | null | un
                   <Trans>Minted</Trans>
                 </dt>
                 <dd>
-                  {stats.isLoading
-                    ? "…"
-                    : stats.data?.totalMinted !== undefined
+                  <RewardsValue loading={stats.isLoading || stats.isValidating} width="7ch">
+                    {stats.data?.totalMinted !== undefined
                       ? `${formatAmountHuman(stats.data.totalMinted, GT_DECIMALS, false, 1).toUpperCase()} GT`
-                      : "—"}
+                      : undefined}
+                  </RewardsValue>
                 </dd>
               </div>
             </dl>

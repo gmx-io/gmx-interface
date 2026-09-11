@@ -7,9 +7,19 @@ import {
   getMaxRewardRateFactor,
 } from "domain/synthetics/incentives/v2/utils";
 
-export function RewardsFaq({ config }: { config: IncentivesConfig | null | undefined }) {
-  const maximumRate = config ? formatFactorPercentage(getMaxRewardRateFactor(config)) : "120%";
-  const multiplier = config ? formatMultiplier(config.maxMultiplier, config.multiplierDecimals) : "10x";
+import { RewardsValue } from "./RewardsValue";
+
+export function RewardsFaq({ config, loading }: { config: IncentivesConfig | null | undefined; loading: boolean }) {
+  const maximumRate = (
+    <RewardsValue loading={loading} width="4ch">
+      {config ? formatFactorPercentage(getMaxRewardRateFactor(config)) : undefined}
+    </RewardsValue>
+  );
+  const multiplier = (
+    <RewardsValue loading={loading}>
+      {config ? formatMultiplier(config.maxMultiplier, config.multiplierDecimals) : undefined}
+    </RewardsValue>
+  );
   const items = [
     {
       question: <Trans>Is {maximumRate} of my fees real?</Trans>,

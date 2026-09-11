@@ -1,15 +1,17 @@
 import { t, Trans } from "@lingui/macro";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
 import { getRewardsSliderAmount, getRewardsSliderPosition, getRewardsSliderStops } from "landing/utils/rewardsSlider";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
-import { getLandingRewardEstimate } from "domain/synthetics/incentives/v2/landingCalculator";
+import { getLandingRewardEstimate, getLandingTradingFeesUsd } from "domain/synthetics/incentives/v2/landingCalculator";
 import type { BoostId, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier, formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { expandDecimals, formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 
 import { RewardsTradeButton } from "./RewardsTradeButton";
+import { RewardsValue } from "./RewardsValue";
 
 const BOOST_IDS = ["ManualAllocation", "FeaturedMarkets", "BalancingTrades", "LifetimeTrading"] as const;
 const ROW_VARIANTS: Variants = {
@@ -19,17 +21,33 @@ const ROW_VARIANTS: Variants = {
 const ROW_TRANSITION = { duration: 0.18, ease: "easeOut" } as const;
 const REDUCED_MOTION_TRANSITION = { duration: 0 };
 
-export function RewardsCalculator({ config }: { config: IncentivesConfig }) {
+export function RewardsCalculator({
+  config,
+  loading,
+}: {
+  config: IncentivesConfig | null | undefined;
+  loading: boolean;
+}) {
   const reducedMotion = useReducedMotion();
   const [volumeUsd, setVolumeUsd] = useState(expandDecimals(200_000, USD_DECIMALS));
   const [stakedAmount, setStakedAmount] = useState(expandDecimals(1_000, ES_GMX_DECIMALS));
   const [boosts, setBoosts] = useState<BoostId[]>(["ManualAllocation"]);
-  const estimate = getLandingRewardEstimate({ config, volumeUsd, stakedAmount, boosts });
-  const boostLabels: Record<BoostId, string> = {
+  const estimate = config ? getLandingRewardEstimate({ config, volumeUsd, stakedAmount, boosts }) : undefined;
+  const boostMultipliers = estimate?.boostMultipliers ?? boosts.map((boost) => ({ boost, multiplier: undefined }));
+  const boostLabels: Record<BoostId, ReactNode> = {
     ManualAllocation: t`Comeback boost`,
     FeaturedMarkets: t`Featured markets`,
     BalancingTrades: t`Balancing trades`,
-    LifetimeTrading: t`${formatAmountHuman(config.lifetimeVolumeThreshold, USD_DECIMALS, true, 0).toUpperCase()}+ lifetime`,
+    LifetimeTrading: (
+      <Trans>
+        {config ? (
+          formatAmountHuman(config.lifetimeVolumeThreshold, USD_DECIMALS, true, 0).toUpperCase()
+        ) : (
+          <RewardsValue loading={loading} width="4ch" />
+        )}
+        + lifetime
+      </Trans>
+    ),
   };
 
   return (
@@ -38,14 +56,16 @@ export function RewardsCalculator({ config }: { config: IncentivesConfig }) {
         <TierSlider
           label={t`Weekly volume`}
           value={volumeUsd}
-          tiers={config.volumeTiers}
+          tiers={config?.volumeTiers ?? EMPTY_ARRAY}
+          disabled={!config}
           onChange={setVolumeUsd}
           displayValue={formatAmountHuman(volumeUsd, USD_DECIMALS, true, 0).toUpperCase()}
         />
         <TierSlider
           label={t`GMX + esGMX staked`}
           value={stakedAmount}
-          tiers={config.stakingTiers}
+          tiers={config?.stakingTiers ?? EMPTY_ARRAY}
+          disabled={!config}
           onChange={setStakedAmount}
           displayValue={formatAmount(stakedAmount, ES_GMX_DECIMALS, 0, true)}
         />
@@ -56,6 +76,7 @@ export function RewardsCalculator({ config }: { config: IncentivesConfig }) {
                 <input
                   type="checkbox"
                   checked={boosts.includes(boost)}
+                  disabled={!config}
                   onChange={(event) => {
                     setBoosts(event.target.checked ? [...boosts, boost] : boosts.filter((value) => value !== boost));
                   }}
@@ -69,28 +90,40 @@ export function RewardsCalculator({ config }: { config: IncentivesConfig }) {
           </a>
         </div>
       </div>
-      <div className="rewards-receipt" aria-live="polite" aria-atomic="true">
+      <div className="rewards-receipt" aria-live="polite" aria-atomic="true" aria-busy={!config && loading}>
         <div className="rewards-receipt-fees">
           <span>
             <Trans>Your fees</Trans>
           </span>
-          <strong>{formatUsd(estimate.feesUsd)}</strong>
+          <strong>{formatUsd(getLandingTradingFeesUsd(volumeUsd))}</strong>
         </div>
         <dl className="rewards-receipt-breakdown">
           <div>
             <dt>
               <Trans>Volume</Trans>
             </dt>
-            <dd>{formatMultiplierAdjustment(estimate.volumeMultiplier, config.multiplierDecimals)}</dd>
+            <dd>
+              <RewardsValue loading={loading}>
+                {estimate && config
+                  ? formatMultiplierAdjustment(estimate.volumeMultiplier, config.multiplierDecimals)
+                  : undefined}
+              </RewardsValue>
+            </dd>
           </div>
           <div>
             <dt>
               <Trans>Staking</Trans>
             </dt>
-            <dd>{formatMultiplierAdjustment(estimate.stakingMultiplier, config.multiplierDecimals)}</dd>
+            <dd>
+              <RewardsValue loading={loading}>
+                {estimate && config
+                  ? formatMultiplierAdjustment(estimate.stakingMultiplier, config.multiplierDecimals)
+                  : undefined}
+              </RewardsValue>
+            </dd>
           </div>
           <AnimatePresence initial={false}>
-            {estimate.boostMultipliers.map(({ boost, multiplier }) => (
+            {boostMultipliers.map(({ boost, multiplier }) => (
               <motion.div
                 key={boost}
                 className="rewards-receipt-boost"
@@ -102,7 +135,13 @@ export function RewardsCalculator({ config }: { config: IncentivesConfig }) {
                 transition={reducedMotion ? REDUCED_MOTION_TRANSITION : ROW_TRANSITION}
               >
                 <dt>{boostLabels[boost]}</dt>
-                <dd>{formatMultiplierAdjustment(multiplier, config.multiplierDecimals)}</dd>
+                <dd>
+                  <RewardsValue loading={loading}>
+                    {config && multiplier !== undefined
+                      ? formatMultiplierAdjustment(multiplier, config.multiplierDecimals)
+                      : undefined}
+                  </RewardsValue>
+                </dd>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -111,10 +150,14 @@ export function RewardsCalculator({ config }: { config: IncentivesConfig }) {
           <span>
             <Trans>Your multiplier</Trans>
           </span>
-          <strong>{formatMultiplier(estimate.multiplier, config.multiplierDecimals)}</strong>
+          <strong>
+            <RewardsValue loading={loading} width="2ch">
+              {estimate && config ? formatMultiplier(estimate.multiplier, config.multiplierDecimals) : undefined}
+            </RewardsValue>
+          </strong>
         </div>
         <AnimatePresence initial={false}>
-          {estimate.isCapped && (
+          {estimate?.isCapped && (
             <motion.p
               className="rewards-cap-note"
               variants={ROW_VARIANTS}
@@ -132,11 +175,26 @@ export function RewardsCalculator({ config }: { config: IncentivesConfig }) {
           <span>
             <Trans>Returned to you</Trans>
           </span>
-          <strong>{formatUsd(estimate.rewardsUsd, { displayDecimals: 0 })}</strong>
+          <strong>
+            <RewardsValue loading={loading}>
+              {estimate ? formatUsd(estimate.rewardsUsd, { displayDecimals: 0 }) : undefined}
+            </RewardsValue>
+          </strong>
         </div>
         <p className="rewards-receipt-split">
-          <span>{formatUsd(estimate.esGmxRewardsUsd)} esGMX</span>
-          <span>+ {formatUsd(estimate.gtRewardsUsd)} GT</span>
+          <span>
+            <RewardsValue loading={loading} width="5ch">
+              {estimate ? formatUsd(estimate.esGmxRewardsUsd) : undefined}
+            </RewardsValue>{" "}
+            esGMX
+          </span>
+          <span>
+            +{" "}
+            <RewardsValue loading={loading} width="5ch">
+              {estimate ? formatUsd(estimate.gtRewardsUsd) : undefined}
+            </RewardsValue>{" "}
+            GT
+          </span>
         </p>
         <RewardsTradeButton className="rewards-button-white" />
       </div>
@@ -155,12 +213,14 @@ function TierSlider({
   tiers,
   onChange,
   displayValue,
+  disabled,
 }: {
   label: string;
   value: bigint;
   tiers: { threshold: bigint }[];
   onChange: (value: bigint) => void;
   displayValue: string;
+  disabled: boolean;
 }) {
   const stops = getRewardsSliderStops(tiers);
   const position = getRewardsSliderPosition(stops, value);
@@ -179,12 +239,13 @@ function TierSlider({
       <input
         type="range"
         min={0}
-        max={maximum}
+        max={Math.max(maximum, 1)}
         step={1}
         value={position}
         style={style}
         aria-label={label}
         aria-valuetext={displayValue}
+        disabled={disabled}
         onChange={(event) => onChange(getRewardsSliderAmount(stops, Number(event.target.value)))}
       />
     </label>

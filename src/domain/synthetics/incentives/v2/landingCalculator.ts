@@ -23,8 +23,7 @@ export function getLandingRewardEstimate({
     volumeMultiplier + stakingMultiplier
   );
   const multiplier = bigMath.min(uncappedMultiplier, config.maxMultiplier);
-  // The landing calculator estimates fees at a 0.05% rate.
-  const feesUsd = bigMath.max(volumeUsd, 0n) / 2000n;
+  const feesUsd = getLandingTradingFeesUsd(volumeUsd);
   const baseRewardUsd = getBaseRewardUsd(feesUsd, multiplier, config);
   const esGmxRewardsUsd = applyFactor(baseRewardUsd, config.esGmxShareFactor);
   const gtRewardsUsd = applyFactor(baseRewardUsd, config.gtShareFactor);
@@ -40,6 +39,11 @@ export function getLandingRewardEstimate({
     gtRewardsUsd,
     rewardsUsd: esGmxRewardsUsd + gtRewardsUsd,
   };
+}
+
+export function getLandingTradingFeesUsd(volumeUsd: bigint) {
+  // The landing calculator estimates fees at a 0.05% rate.
+  return bigMath.max(volumeUsd, 0n) / 2000n;
 }
 
 function getTierMultiplier(tiers: { threshold: bigint; multiplier: bigint }[], amount: bigint) {
