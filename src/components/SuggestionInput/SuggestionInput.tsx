@@ -55,6 +55,7 @@ export default function SuggestionInput({
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
+  const hasSuggestions = suggestionList !== undefined && suggestionList.length > 0;
 
   useEffect(() => {
     if (onPanelVisibleChange) {
@@ -91,9 +92,11 @@ export default function SuggestionInput({
       if (disabled) return;
       e.stopPropagation();
       inputRef.current?.focus();
-      setIsPanelVisible(true);
+      if (hasSuggestions) {
+        setIsPanelVisible(true);
+      }
     },
-    [disabled]
+    [disabled, hasSuggestions]
   );
 
   const handleKeyDown = useCallback(
@@ -137,7 +140,7 @@ export default function SuggestionInput({
           inputId={inputId}
           inputRef={inputRef}
           className={cx(inputClassName, "min-w-0 text-right outline-none")}
-          onFocus={() => !disabled && setIsPanelVisible(true)}
+          onFocus={() => !disabled && hasSuggestions && setIsPanelVisible(true)}
           onBlur={handleBlur}
           value={value ?? ""}
           placeholder={placeholder}
@@ -151,7 +154,7 @@ export default function SuggestionInput({
           </div>
         )}
       </div>
-      {suggestionList && isPanelVisible && (
+      {isPanelVisible && suggestionList && suggestionList.length > 0 && (
         <Portal>
           <div className="z-[1000]" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
             <ul className="Suggestion-list">

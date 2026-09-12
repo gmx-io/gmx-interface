@@ -524,6 +524,12 @@ export const selectTradeboxSelectedTriggerAcceptablePriceImpactBps = (s: Synthet
   s.tradebox.selectedTriggerAcceptablePriceImpactBps;
 export const selectTradeboxSetSelectedAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.setSelectedAcceptablePriceImpactBps;
+export const selectTradeboxSetUserSelectedAcceptablePriceImpactBps = (s: SyntheticsState) =>
+  s.tradebox.setUserSelectedAcceptablePriceImpactBps;
+export const selectTradeboxIsAcceptablePriceImpactCustomized = (s: SyntheticsState) =>
+  s.tradebox.isAcceptablePriceImpactCustomized;
+export const selectTradeboxSetIsAcceptablePriceImpactCustomized = (s: SyntheticsState) =>
+  s.tradebox.setIsAcceptablePriceImpactCustomized;
 export const selectTradeboxDefaultAllowedSwapSlippageBps = (s: SyntheticsState) =>
   s.tradebox.defaultAllowedSwapSlippageBps;
 export const selectTradeboxSetDefaultAllowedSwapSlippageBps = (s: SyntheticsState) =>
