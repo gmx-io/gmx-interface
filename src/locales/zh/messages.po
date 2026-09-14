@@ -854,6 +854,10 @@ msgstr "展开"
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersTab.tsx
+msgid "Connect wallet to view your rewards"
+msgstr "连接钱包以查看您的奖励"
+
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
 msgstr "{networkName}上所有交易者的GMX {VERSION_NAME}操作"
@@ -7721,6 +7725,7 @@ msgstr "选择仓位"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsTiersTab.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Connect wallet"
 msgstr "连接钱包"

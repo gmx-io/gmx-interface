@@ -1,6 +1,8 @@
+import { Trans } from "@lingui/macro";
 import { isAddressEqual, type Address } from "viem";
 
 import type { ContractsChainId } from "config/chains";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useGmxPrice } from "domain/legacy";
 import {
   getStakingRewardsPromoSelection,
@@ -13,6 +15,11 @@ import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
+
+import Button from "components/Button/Button";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
+
+import WalletIcon from "img/ic_wallet.svg?react";
 
 import { RewardsPromotionalBanners } from "./RewardsPromotionalBanners";
 import { RewardsTierCards } from "./RewardsTierCards";
@@ -93,6 +100,7 @@ export function RewardsTiersTab({
 }) {
   const { status: walletStatus } = useWallet();
   const isWalletInitializing = useIsWalletInitializing();
+  const { openConnectModal } = useConnectModal();
   const { gmxPrice } = useGmxPrice(chainId, {}, false, {
     enabled: Boolean(account),
     fetchAllChains: false,
@@ -181,6 +189,26 @@ export function RewardsTiersTab({
             promoSelection={stakingPromoSelection}
           />
         </div>
+
+        {!account && !isWalletInitializing ? (
+          <div className="overflow-hidden rounded-8 bg-slate-900">
+            <EmptyTableContent
+              isEmpty={true}
+              isLoading={false}
+              emptyText={
+                <div className="flex flex-col items-center p-20 text-center">
+                  <Trans>Connect wallet to view your rewards</Trans>
+                  <div className="mt-15">
+                    <Button variant="primary" onClick={openConnectModal}>
+                      <WalletIcon className="size-16" />
+                      <Trans>Connect wallet</Trans>
+                    </Button>
+                  </div>
+                </div>
+              }
+            />
+          </div>
+        ) : null}
 
         <RewardsTierTables chainId={chainId} config={config} status={currentStatus} statusState={statusState} />
       </div>
