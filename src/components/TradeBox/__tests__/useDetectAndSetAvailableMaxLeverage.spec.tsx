@@ -21,7 +21,11 @@ const SURVIVES_TO_TRIGGER = expandDecimals(1500, 30);
 
 const marketInfo = createMockMarketInfo();
 
-function buildState(liquidationPrice: bigint | undefined, triggerPrice = TRIGGER_PRICE): SyntheticsState {
+function buildState(
+  liquidationPrice: bigint | undefined,
+  triggerPrice = TRIGGER_PRICE,
+  { sizeInUsd = expandDecimals(10_000, 30), collateralUsd = expandDecimals(2_000, 30) } = {}
+): SyntheticsState {
   const position =
     liquidationPrice === undefined
       ? undefined
@@ -31,8 +35,8 @@ function buildState(liquidationPrice: bigint | undefined, triggerPrice = TRIGGER
             collateralTokenAddress: USDC_ADDRESS,
             account: ACCOUNT,
             isLong: true,
-            sizeInUsd: expandDecimals(10_000, 30),
-            collateralUsd: expandDecimals(2_000, 30),
+            sizeInUsd,
+            collateralUsd,
           },
           { isLong: true, liquidationPrice }
         );
@@ -50,31 +54,45 @@ function buildState(liquidationPrice: bigint | undefined, triggerPrice = TRIGGER
   });
 }
 
+type MaxLeverageActions = ReturnType<typeof useDetectAndSetAvailableMaxLeverage>;
+
 function Inner({
   setToTokenInputValue,
   actionsRef,
 }: {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
-  actionsRef: { current: (() => void) | null };
+  actionsRef: { current: MaxLeverageActions | null };
 }) {
-  actionsRef.current = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
+  actionsRef.current = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue, enabled: true });
 
   return null;
+}
+
+function renderMaxLeverageActions(
+  state: SyntheticsState,
+  setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void
+): MaxLeverageActions {
+  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+  const actionsRef: { current: MaxLeverageActions | null } = { current: null };
+
+  render(
+    <StateCtx.Provider value={state}>
+      <Inner setToTokenInputValue={setToTokenInputValue} actionsRef={actionsRef} />
+    </StateCtx.Provider>
+  );
+
+  return actionsRef.current!;
 }
 
 /** The size in index tokens the max-leverage detection settles on. */
 function detectMaxLeverageSize(liquidationPrice: bigint | undefined, triggerPrice = TRIGGER_PRICE): string {
   const setToTokenInputValue = vi.fn();
-  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-  const actionsRef: { current: (() => void) | null } = { current: null };
 
-  render(
-    <StateCtx.Provider value={buildState(liquidationPrice, triggerPrice)}>
-      <Inner setToTokenInputValue={setToTokenInputValue} actionsRef={actionsRef} />
-    </StateCtx.Provider>
-  );
+  const actions = renderMaxLeverageActions(buildState(liquidationPrice, triggerPrice), setToTokenInputValue);
 
-  act(() => actionsRef.current!());
+  expect(actions.hasAvailableMaxLeverage).toBe(true);
+
+  act(() => actions.detectAndSetAvailableMaxLeverage());
 
   expect(setToTokenInputValue).toHaveBeenCalled();
 
@@ -115,5 +133,64 @@ describe("useDetectAndSetAvailableMaxLeverage — sizes a resting order at its t
     const notionalBelowMark = belowMark * Number(TRIGGER_PRICE);
 
     expect(Math.abs(notionalBelowMark - notionalAtMark) / notionalAtMark).toBeLessThan(0.01);
+  });
+});
+
+describe("useDetectAndSetAvailableMaxLeverage — offers nothing when no size passes", () => {
+  afterEach(cleanup);
+
+  it("finds no leverage for a position already below the min collateral factor", () => {
+    const setToTokenInputValue = vi.fn();
+
+    const actions = renderMaxLeverageActions(
+      buildState(SURVIVES_TO_TRIGGER, TRIGGER_PRICE, {
+        sizeInUsd: expandDecimals(1_000_000, 30),
+        collateralUsd: expandDecimals(100, 30),
+      }),
+      setToTokenInputValue
+    );
+
+    expect(actions.hasAvailableMaxLeverage).toBe(false);
+
+    act(() => actions.detectAndSetAvailableMaxLeverage());
+
+    expect(setToTokenInputValue).not.toHaveBeenCalled();
+  });
+});
+
+describe("useDetectAndSetAvailableMaxLeverage — the offer matches what the search settles on", () => {
+  afterEach(cleanup);
+
+  // hasAvailableMaxLeverage probes a single leverage instead of running the whole search,
+  // so it has to agree with the search on both sides of the boundary
+  it.each([2_000, 200, 150, 120, 100, 50])("agrees for a position with %i usd of collateral", (collateralUsd) => {
+    const setToTokenInputValue = vi.fn();
+
+    const actions = renderMaxLeverageActions(
+      buildState(SURVIVES_TO_TRIGGER, TRIGGER_PRICE, {
+        sizeInUsd: expandDecimals(10_000, 30),
+        collateralUsd: expandDecimals(collateralUsd, 30),
+      }),
+      setToTokenInputValue
+    );
+
+    act(() => actions.detectAndSetAvailableMaxLeverage());
+
+    expect(actions.hasAvailableMaxLeverage).toBe(setToTokenInputValue.mock.calls.length > 0);
+  });
+
+  it("covers both sides of the boundary", () => {
+    const isOffered = (collateralUsd: number) =>
+      renderMaxLeverageActions(
+        buildState(SURVIVES_TO_TRIGGER, TRIGGER_PRICE, {
+          sizeInUsd: expandDecimals(10_000, 30),
+          collateralUsd: expandDecimals(collateralUsd, 30),
+        }),
+        vi.fn()
+      ).hasAvailableMaxLeverage;
+
+    expect(isOffered(150)).toBe(true);
+    cleanup();
+    expect(isOffered(100)).toBe(false);
   });
 });

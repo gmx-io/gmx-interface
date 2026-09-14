@@ -6308,10 +6308,6 @@ msgstr "Difference"
 msgid "Stop-Loss price"
 msgstr "Stop-Loss price"
 
-#: src/components/OrderEditor/OrderEditor.tsx
-msgid "No valid leverage available"
-msgstr "No valid leverage available"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "swap amount"
@@ -6460,6 +6456,10 @@ msgstr "Total bought GMX"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "ACTIONS"
 msgstr "ACTIONS"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order exceeds max leverage. Reduce the size."
+msgstr "Order exceeds max leverage. Reduce the size."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8522,10 +8522,6 @@ msgstr "Invalid signature.<0/><1/>Try a different wallet provider or switch to C
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit"
 msgstr "Edit"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No available leverage found"
-msgstr "No available leverage found"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"

@@ -3,7 +3,6 @@ import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import { AVALANCHE, SettlementChainId } from "config/chains";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
@@ -66,20 +65,21 @@ import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/ut
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
+import {
+  findMaxLeverageIncrease,
+  getIsMaxLeverageIncreaseAvailable,
+  type MaxLeverageIncreaseParams,
+} from "domain/synthetics/trade/utils/maxLeverageSearch";
 import {
   getCommonError,
   getExpressError,
-  getIsMaxLeverageExceeded,
   getNativeGasError,
   takeValidationResult,
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
-import { numericBinarySearch } from "lib/binarySearch";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { adjustForDecimals, formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -91,13 +91,9 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
-import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
-import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import { TokenData } from "sdk/utils/tokens/types";
 import { getLimitOrderTypeByTradeMode, TradeMode, TradeType } from "sdk/utils/trade";
-import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
-import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import { mustNeverExist } from "sdk/utils/types";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
@@ -220,9 +216,16 @@ export function useTradeboxButtonState({
   const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
 
-  const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
-
   const tradeError = useSelector(selectTradeboxTradeTypeError);
+
+  const isMaxLeverageActionOffered =
+    tradeError.buttonTooltipName === ValidationButtonTooltipName.maxLeverage ||
+    tradeError.buttonTooltipName === ValidationButtonTooltipName.resultingPositionMaxLeverage;
+
+  const { hasAvailableMaxLeverage, detectAndSetAvailableMaxLeverage } = useDetectAndSetAvailableMaxLeverage({
+    setToTokenInputValue,
+    enabled: isMaxLeverageActionOffered,
+  });
 
   const nativeGasError = useMemo((): ValidationResult => {
     if (gasPaymentToken && expressParams?.gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
@@ -283,11 +286,15 @@ export function useTradeboxButtonState({
       nativeGasError
     );
 
-    const setMaxLeverageButton = (
-      <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
-        <Trans>Set max leverage</Trans>
-      </EmbeddedActionButton>
-    );
+    const setMaxLeverageAction = hasAvailableMaxLeverage ? (
+      <>
+        <br />
+        <br />
+        <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
+          <Trans>Set max leverage</Trans>
+        </EmbeddedActionButton>
+      </>
+    ) : null;
 
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipMessage) {
@@ -305,10 +312,7 @@ export function useTradeboxButtonState({
               <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
                 <Trans>Read more</Trans>
               </ExternalLink>
-              .
-              <br />
-              <br />
-              {setMaxLeverageButton}
+              .{setMaxLeverageAction}
             </>
           );
 
@@ -320,9 +324,7 @@ export function useTradeboxButtonState({
               <Trans>
                 The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
               </Trans>
-              <br />
-              <br />
-              {setMaxLeverageButton}
+              {setMaxLeverageAction}
             </>
           );
           break;
@@ -383,6 +385,7 @@ export function useTradeboxButtonState({
     toToken,
     isLeverageSliderEnabled,
     detectAndSetAvailableMaxLeverage,
+    hasAvailableMaxLeverage,
   ]);
 
   const payTokenSourceChainMappedBalance = useMemo(() => {
@@ -713,8 +716,10 @@ export function useTradeboxButtonState({
 
 export function useDetectAndSetAvailableMaxLeverage({
   setToTokenInputValue,
+  enabled,
 }: {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
+  enabled: boolean;
 }) {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong } = tradeFlags;
@@ -747,115 +752,38 @@ export function useDetectAndSetAvailableMaxLeverage({
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
-  return useCallback(() => {
-    if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
-
-    const limitOrderType = getLimitOrderTypeByTradeMode(tradeMode);
-
-    const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<bigint | undefined>(
-      1,
-      // "10 *" means we do 1..50 search but with 0.1x step
-      (10 * maxAllowedLeverage) / BASIS_POINTS_DIVISOR,
-      (lev) => {
-        const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
-        const increaseAmounts = getIncreasePositionAmounts({
-          collateralToken,
-          findSwapPath,
-          indexToken: toToken,
-          indexTokenAmount: toTokenAmount,
-          initialCollateralAmount: fromTokenAmount,
-          initialCollateralToken: fromToken,
-          externalSwapQuote,
-          isLong,
-          marketInfo,
-          position: existingPosition,
-          strategy: "leverageByCollateral",
-          uiFeeFactor,
-          userReferralInfo,
-          proDiscountFactor,
-          acceptablePriceImpactBuffer,
-          fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
-          leverage,
-          triggerPrice: limitOrderType !== undefined ? triggerPrice : undefined,
-          limitOrderType,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams,
-          isSetAcceptablePriceImpactEnabled,
-        });
-
-        const nextPositionValues = getNextPositionValuesForIncreaseTrade({
-          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
-          collateralToken,
-          existingPosition,
-          indexPrice: increaseAmounts.indexPrice,
-          isLong,
-          marketInfo,
-          minCollateralUsd,
-          showPnlInLeverage: false,
-          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
-          userReferralInfo,
-        });
-
-        if (nextPositionValues.nextLeverage !== undefined) {
-          const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
-            nextPositionValues.nextLeverage,
-            marketInfo,
-            isLong,
-            increaseAmounts.sizeDeltaUsd
-          );
-
-          const resultingPositionMarginState = getIncreaseResultingPositionMarginState({
-            marketInfo,
-            collateralToken,
-            isLong,
-            existingPosition,
-            sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-            sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-            collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-            minCollateralUsd,
-            userReferralInfo,
-            proDiscountFactor,
-            indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
-              orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
-              triggerPrice,
-            }),
-          });
-
-          return {
-            isValid: !isMaxLeverageExceeded && resultingPositionMarginState?.isLiquidatable !== true,
-            returnValue: increaseAmounts.sizeDeltaInTokens,
-          };
-        }
-
-        return {
-          isValid: false,
-          returnValue: increaseAmounts.sizeDeltaInTokens,
-        };
-      }
-    );
-
-    if (sizeDeltaInTokens !== undefined) {
-      if (isLeverageSliderEnabled) {
-        // round to int if it's > 1x
-        const resultLeverage = maxLeverage > 10 ? Math.floor(maxLeverage / 10) : Math.floor(maxLeverage) / 10;
-
-        setLeverageOption(resultLeverage);
-      } else {
-        const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
-
-        setToTokenInputValue(
-          formatAmountFree(substractMaxLeverageSlippage(sizeDeltaInTokens / visualMultiplier), toToken.decimals, 8),
-          true
-        );
-      }
-    } else {
-      helperToast.error(t`No available leverage found`);
+  const maxLeverageSearchParams = useMemo((): MaxLeverageIncreaseParams | undefined => {
+    if (!enabled || !collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) {
+      return undefined;
     }
+
+    return {
+      collateralToken,
+      findSwapPath,
+      indexToken: toToken,
+      indexTokenAmount: toTokenAmount,
+      initialCollateralAmount: fromTokenAmount,
+      initialCollateralToken: fromToken,
+      externalSwapQuote,
+      isLong,
+      marketInfo,
+      position: existingPosition,
+      uiFeeFactor,
+      userReferralInfo,
+      proDiscountFactor,
+      acceptablePriceImpactBuffer,
+      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+      triggerPrice,
+      limitOrderType: getLimitOrderTypeByTradeMode(tradeMode),
+      marketsInfoData,
+      chainId,
+      externalSwapQuoteParams,
+      isSetAcceptablePriceImpactEnabled,
+      maxAllowedLeverage,
+      minCollateralUsd,
+    };
   }, [
+    enabled,
     acceptablePriceImpactBuffer,
     collateralToken,
     findSwapPath,
@@ -865,15 +793,12 @@ export function useDetectAndSetAvailableMaxLeverage({
     chainId,
     marketsInfoData,
     fromTokenAmount,
-    isLeverageSliderEnabled,
     isLong,
     marketInfo,
     maxAllowedLeverage,
     minCollateralUsd,
     existingPosition,
     selectedTriggerAcceptablePriceImpactBps,
-    setLeverageOption,
-    setToTokenInputValue,
     toToken,
     toTokenAmount,
     triggerPrice,
@@ -883,6 +808,51 @@ export function useDetectAndSetAvailableMaxLeverage({
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
   ]);
+
+  const hasAvailableMaxLeverage = useMemo(
+    () => maxLeverageSearchParams !== undefined && getIsMaxLeverageIncreaseAvailable(maxLeverageSearchParams),
+    [maxLeverageSearchParams]
+  );
+
+  const detectAndSetAvailableMaxLeverage = useCallback(() => {
+    if (!maxLeverageSearchParams || !toToken) {
+      return;
+    }
+
+    const maxLeverageIncrease = findMaxLeverageIncrease(maxLeverageSearchParams);
+
+    if (!maxLeverageIncrease) {
+      return;
+    }
+
+    if (isLeverageSliderEnabled) {
+      // round to int if it's > 1x
+      const resultLeverage =
+        maxLeverageIncrease.leverage > 10
+          ? Math.floor(maxLeverageIncrease.leverage / 10)
+          : Math.floor(maxLeverageIncrease.leverage) / 10;
+
+      setLeverageOption(resultLeverage);
+
+      return;
+    }
+
+    const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+
+    setToTokenInputValue(
+      formatAmountFree(
+        substractMaxLeverageSlippage(maxLeverageIncrease.increaseAmounts.sizeDeltaInTokens / visualMultiplier),
+        toToken.decimals,
+        8
+      ),
+      true
+    );
+  }, [isLeverageSliderEnabled, maxLeverageSearchParams, setLeverageOption, setToTokenInputValue, toToken]);
+
+  return {
+    hasAvailableMaxLeverage,
+    detectAndSetAvailableMaxLeverage,
+  };
 }
 
 function InsufficientGmxPoolLiquidityTooltipContent() {
