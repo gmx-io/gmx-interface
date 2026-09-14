@@ -25,7 +25,6 @@ export function useClaimableFundingDataRequest(chainId: ContractsChainId) {
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
-    keepPreviousData: true,
 
     request: () => {
       if (!marketsAddresses) {
