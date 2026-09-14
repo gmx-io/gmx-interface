@@ -95,7 +95,7 @@ export function RewardsCalculator({
           <span>
             <Trans>Your fees</Trans>
           </span>
-          <strong>{formatUsd(getLandingTradingFeesUsd(volumeUsd))}</strong>
+          <strong>{formatUsd(getLandingTradingFeesUsd(volumeUsd), { displayDecimals: 0 })}</strong>
         </div>
         <dl className="rewards-receipt-breakdown">
           <div>
