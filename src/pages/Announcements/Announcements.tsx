@@ -178,7 +178,7 @@ export default function AnnouncementsPage() {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [hasMore]);
+  }, [hasMore, isLoading]);
 
   const tabLabels = useLocalizedMap(TAB_LABELS);
 
