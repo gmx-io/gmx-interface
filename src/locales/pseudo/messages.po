@@ -3617,6 +3617,9 @@ msgid "Theme"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -3745,6 +3748,7 @@ msgstr "Failed to load trade history"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr ""
@@ -5489,10 +5493,6 @@ msgstr ""
 msgid "Fail external swaps"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
-msgstr ""
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -6356,10 +6356,6 @@ msgstr ""
 msgid "Stop-Loss price"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
-msgid "No valid leverage available"
-msgstr ""
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr ""
@@ -6507,6 +6503,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "ACTIONS"
+msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order exceeds max leverage. Reduce the size."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6717,6 +6717,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
+msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
 msgstr ""
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -8000,6 +8004,10 @@ msgstr ""
 msgid "No open positions"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr ""
@@ -8567,10 +8575,6 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No available leverage found"
-msgstr ""
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
 msgstr ""
@@ -8925,6 +8929,10 @@ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade errors"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
 msgstr ""
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
@@ -9409,6 +9417,10 @@ msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10162,6 +10174,12 @@ msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
+msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -11691,6 +11709,8 @@ msgstr ""
 msgid "Token permit testing"
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

@@ -4,8 +4,12 @@ import { getMaxAllowedLeverage } from "domain/synthetics/markets";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { bigMath } from "sdk/utils/bigmath";
+import { getPositionFee } from "sdk/utils/fees";
+import { applyFactor } from "sdk/utils/numbers";
 import { getLeverage } from "sdk/utils/positions";
-import { convertToUsd } from "sdk/utils/tokens";
+import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
+import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
+import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
 import {
   clampPercentage,
@@ -15,6 +19,7 @@ import {
   calcMarginPercentage,
   calcMarginAmountByPercentage,
 } from "../../trade/utils/marginFields";
+import type { CalcMaxSizeDeltaParams } from "../../trade/utils/marginFields";
 
 const tokensData = mockTokensData();
 
@@ -633,5 +638,237 @@ describe("calcMarginAmountByPercentage", () => {
     const balance = 1000000000n;
     const result = calcMarginAmountByPercentage(150, balance, 6, undefined, true);
     expect(result).toBe("1000");
+  });
+});
+
+describe("calcMaxSizeDeltaInUsdByLeverage — resulting position margin cap", () => {
+  const usdc = tokensData.USDC;
+
+  // impact off and a single fee factor, so the check reduces to collateral vs pnl vs fees
+  const marketInfo = makeMarketInfo({
+    positionFeeFactorForBalanceWasImproved: FEE_FACTOR_007,
+    positionFeeFactorForBalanceWasNotImproved: FEE_FACTOR_007,
+    minCollateralFactorForOpenInterestLong: 0n,
+    minCollateralFactorForOpenInterestShort: 0n,
+    positionImpactFactorPositive: 0n,
+    positionImpactFactorNegative: 0n,
+    maxPositionImpactFactorPositive: 0n,
+    maxPositionImpactFactorNegative: 0n,
+    maxPositionImpactFactorForLiquidations: 0n,
+    longInterestUsd: 0n,
+    shortInterestUsd: 0n,
+    longInterestInTokens: 0n,
+    shortInterestInTokens: 0n,
+  });
+
+  const initialCollateralUsd = expandDecimals(1000, USD_DECIMALS);
+  const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
+
+  /** 10 000 of size worth 7 000 at the oracle price → 3 000 of unrealized loss. */
+  const losingPosition = {
+    sizeInUsd: expandDecimals(10_000, USD_DECIMALS),
+    collateralUsd: expandDecimals(4000, USD_DECIMALS),
+    pendingBorrowingFeesUsd: 0n,
+    pendingFundingFeesUsd: 0n,
+    sizeInTokens: convertToTokenAmount(expandDecimals(7000, USD_DECIMALS), 18, ETH_PRICE)!,
+    collateralAmount: expandDecimals(4000, usdc.decimals),
+    pendingImpactAmount: 0n,
+  };
+
+  const baseParams = {
+    marketInfo,
+    initialCollateralUsd,
+    markPrice: ETH_PRICE,
+    toTokenDecimals: 18,
+    isLong: true,
+    longLiquidity: expandDecimals(100_000_000, USD_DECIMALS),
+    shortLiquidity: expandDecimals(100_000_000, USD_DECIMALS),
+    existingPosition: losingPosition,
+    collateralToken: usdc,
+    minCollateralUsd,
+    userReferralInfo: undefined,
+  };
+
+  /**
+   * Independent re-check of the contract predicate for a candidate size, mirroring the fee model
+   * the control uses (impact off in this market) and the price the order would be evaluated at.
+   */
+  function isSizeDeltaAccepted(sizeDeltaUsd: bigint, params: CalcMaxSizeDeltaParams) {
+    const evaluationPrice = params.indexPriceForEvaluation ?? ETH_PRICE;
+    const sizeDeltaInTokens = convertToTokenAmountForIncrease(sizeDeltaUsd, 18, evaluationPrice, params.isLong)!;
+    const { positionFeeUsd } = getPositionFee(
+      marketInfo,
+      sizeDeltaUsd,
+      false,
+      undefined,
+      undefined,
+      params.proDiscountFactor
+    );
+    const uiFeeUsd = applyFactor(sizeDeltaUsd, params.uiFeeFactor ?? 0n);
+    const collateralDeltaUsd =
+      (params.baseCollateralUsd ?? params.initialCollateralUsd) - positionFeeUsd - uiFeeUsd;
+    const collateralDeltaAmount = convertToTokenAmount(collateralDeltaUsd, usdc.decimals, usdc.prices.minPrice)!;
+
+    const state = getIncreaseResultingPositionMarginState({
+      marketInfo,
+      collateralToken: usdc,
+      isLong: params.isLong,
+      existingPosition: params.existingPosition && {
+        sizeInUsd: params.existingPosition.sizeInUsd,
+        sizeInTokens: params.existingPosition.sizeInTokens!,
+        collateralAmount: params.existingPosition.collateralAmount!,
+        pendingImpactAmount: params.existingPosition.pendingImpactAmount!,
+      },
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+      collateralDeltaAmount,
+      minCollateralUsd,
+      userReferralInfo: undefined,
+      indexPriceForEvaluation: params.indexPriceForEvaluation,
+    });
+
+    return !state?.isLiquidatable;
+  }
+
+  function structuralOnlyBound(params: CalcMaxSizeDeltaParams) {
+    return calcMaxSizeDeltaInUsdByLeverage({ ...params, collateralToken: undefined, minCollateralUsd: undefined });
+  }
+
+  function boundUsd(params: CalcMaxSizeDeltaParams) {
+    const amount = calcMaxSizeDeltaInUsdByLeverage(params);
+    return amount === undefined ? undefined : tokenAmountToUsd(amount, 18, params.indexPriceForEvaluation ?? ETH_PRICE);
+  }
+
+  it("lowers the structural bound when the existing loss makes it unreachable", () => {
+    const capped = boundUsd(baseParams)!;
+    const structural = tokenAmountToUsd(structuralOnlyBound(baseParams)!, 18, ETH_PRICE);
+
+    expect(capped).toBeGreaterThan(0n);
+    expect(capped).toBeLessThan(structural);
+  });
+
+  it("returns a size the contract check accepts, while a size just above it fails", () => {
+    const capped = boundUsd(baseParams)!;
+
+    expect(isSizeDeltaAccepted(capped, baseParams)).toBe(true);
+    // 24 bisection steps resolve the cliff far finer than 1%
+    expect(isSizeDeltaAccepted((capped * 101n) / 100n, baseParams)).toBe(false);
+  });
+
+  it("returns undefined instead of the liquidity bound when no size passes the margin check", () => {
+    // 10 000 of size worth 2 000 → 8 000 of unrealized loss eats the collateral entirely,
+    // so the resulting position fails the margin check at any added size
+    const doomedPosition = {
+      ...losingPosition,
+      sizeInTokens: convertToTokenAmount(expandDecimals(2000, USD_DECIMALS), 18, ETH_PRICE)!,
+    };
+    const params = {
+      ...baseParams,
+      existingPosition: doomedPosition,
+      initialCollateralUsd: expandDecimals(100, USD_DECIMALS),
+    };
+
+    expect(structuralOnlyBound(params)).not.toBeUndefined();
+    expect(calcMaxSizeDeltaInUsdByLeverage(params)).toBeUndefined();
+  });
+
+  it("leaves the structural bound untouched when the resulting position is healthy", () => {
+    // no existing position → nothing but the fresh order's own leverage constrains the size
+    const params = { ...baseParams, existingPosition: undefined };
+
+    expect(boundUsd(params)).toBe(tokenAmountToUsd(structuralOnlyBound(params)!, 18, ETH_PRICE));
+  });
+
+  it("is monotone in the added margin", () => {
+    const small = boundUsd(baseParams)!;
+    const large = boundUsd({ ...baseParams, initialCollateralUsd: initialCollateralUsd * 2n })!;
+
+    expect(large).toBeGreaterThan(small);
+  });
+
+  it("falls back to the structural bound without the full position state", () => {
+    const structural = structuralOnlyBound(baseParams);
+
+    for (const missing of ["sizeInTokens", "collateralAmount", "pendingImpactAmount"] as const) {
+      const params = { ...baseParams, existingPosition: { ...losingPosition, [missing]: undefined } };
+
+      expect(calcMaxSizeDeltaInUsdByLeverage(params)).toBe(structural);
+    }
+  });
+
+  it("does not book a phantom loss on a limit resting below the market", () => {
+    // the order is sized at its trigger, so evaluating it there leaves the fresh position flat;
+    // converting at the mark instead would hand every candidate an instant 10% loss
+    const triggerPrice = (ETH_PRICE * 90n) / 100n;
+    const asMarket = { ...baseParams, existingPosition: undefined };
+    const asLimit = { ...asMarket, indexPriceForEvaluation: triggerPrice };
+
+    const marketCap = boundUsd(asMarket)!;
+    const limitCap = boundUsd(asLimit)!;
+
+    expect(limitCap).toBeGreaterThan((marketCap * 99n) / 100n);
+    expect(limitCap).toBeLessThan((marketCap * 101n) / 100n);
+  });
+
+  it("keeps a stop resting above the market within the validation", () => {
+    const triggerPrice = (ETH_PRICE * 110n) / 100n;
+    const params = { ...baseParams, indexPriceForEvaluation: triggerPrice };
+
+    const capped = boundUsd(params)!;
+
+    expect(capped).toBeGreaterThan(0n);
+    expect(isSizeDeltaAccepted(capped, params)).toBe(true);
+    expect(isSizeDeltaAccepted((capped * 101n) / 100n, params)).toBe(false);
+  });
+
+  it("caps against the base collateral it is given, not the raw deposit", () => {
+    // what the swap, the swap ui fee and the pending fees leave for the position
+    const params = {
+      ...baseParams,
+      baseCollateralUsd: initialCollateralUsd - expandDecimals(300, USD_DECIMALS),
+    };
+
+    const capped = boundUsd(params)!;
+
+    expect(capped).toBeLessThan(boundUsd(baseParams)!);
+    expect(isSizeDeltaAccepted(capped, params)).toBe(true);
+    expect(isSizeDeltaAccepted((capped * 101n) / 100n, params)).toBe(false);
+  });
+
+  it("charges the ui fee on every candidate size", () => {
+    const params = { ...baseParams, uiFeeFactor: expandDecimals(1, 27) };
+
+    const capped = boundUsd(params)!;
+
+    expect(capped).toBeLessThan(boundUsd(baseParams)!);
+    expect(isSizeDeltaAccepted(capped, params)).toBe(true);
+    expect(isSizeDeltaAccepted((capped * 101n) / 100n, params)).toBe(false);
+  });
+
+  it("leaves more room to a pro tier account", () => {
+    const params = { ...baseParams, proDiscountFactor: expandDecimals(5, 29) };
+
+    const capped = boundUsd(params)!;
+
+    expect(capped).toBeGreaterThan(boundUsd(baseParams)!);
+    expect(isSizeDeltaAccepted(capped, params)).toBe(true);
+  });
+
+  it("caps a short position the same way", () => {
+    const params = {
+      ...baseParams,
+      isLong: false,
+      // a short holding more tokens than it sold is losing at the oracle price
+      existingPosition: {
+        ...losingPosition,
+        sizeInTokens: convertToTokenAmount(expandDecimals(13_000, USD_DECIMALS), 18, ETH_PRICE)!,
+      },
+    };
+
+    const capped = boundUsd(params)!;
+
+    expect(capped).toBeGreaterThan(0n);
+    expect(capped).toBeLessThan(tokenAmountToUsd(structuralOnlyBound(params)!, 18, ETH_PRICE));
+    expect(isSizeDeltaAccepted(capped, params)).toBe(true);
   });
 });

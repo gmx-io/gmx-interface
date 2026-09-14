@@ -128,6 +128,8 @@ describe("MaxSizeRow position copy", () => {
       thresholdType: undefined,
       numberOfParts: 1,
       minPositionSizeUsd: 0n,
+      resultingPositionMarginState: undefined,
+      isResultingPositionCheckBlocking: false,
     });
 
     renderRow(TradeMode.Market, true, tradeType);

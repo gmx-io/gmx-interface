@@ -14,8 +14,10 @@ import {
   isTwapOrder,
   isTwapSwapOrder,
 } from "sdk/utils/orders";
+import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
+import { getIncreaseResultingPositionMarginState, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
 import {
   DepositMarginNowAction,
@@ -31,9 +33,12 @@ import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import {
   FindSwapPath,
+  IncreasePositionAmounts,
   NextPositionValues,
   getAcceptablePriceInfo,
+  getIncreasePositionAmounts,
   getMaxSwapPathLiquidity,
+  getNextPositionValuesForIncreaseTrade,
   getSwapAmountsByFromValue,
 } from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
@@ -179,6 +184,7 @@ export function getOrderErrors(p: {
   nextPositionValues?: NextPositionValues;
   minCollateralUsd?: bigint;
   userReferralInfo?: UserReferralInfo;
+  resultingPositionMarginState?: PositionMarginState;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
@@ -448,13 +454,17 @@ export function getOrderErrors(p: {
         chainId: p.chainId,
       });
 
-      if (isMaxLeverageError) {
+      const isResultingPositionMarginError = p.resultingPositionMarginState?.isLiquidatable === true;
+
+      if (isMaxLeverageError || isResultingPositionMarginError) {
         errors.push({
           msg: (
             <Trans>
-              Order may not execute: the resulting position would exceed the maximum allowed leverage.{" "}
-              <DepositMarginNowAction positionKey={position?.key}>Deposit margin</DepositMarginNowAction> or reduce the
-              order size before it triggers.
+              This order may fail to execute because the resulting position would exceed the maximum allowed leverage.{" "}
+              <DepositMarginNowAction positionKey={position?.key}>
+                Increase the position's margin
+              </DepositMarginNowAction>{" "}
+              or reduce the order size before it triggers.
             </Trans>
           ),
           key: "maxLeverage",
@@ -464,6 +474,7 @@ export function getOrderErrors(p: {
 
       if (
         isLimitOrderType(order.orderType) &&
+        !isResultingPositionMarginError &&
         getIsIncreaseResultingPositionLiquidatable({
           currentLiqPrice: position?.liquidationPrice,
           nextLiqPrice: p.nextPositionValues?.nextLiqPrice,
@@ -548,6 +559,153 @@ export function sortSwapOrders(
     }
 
     return a.minOutputAmount - b.minOutputAmount < 0 ? -1 : 1;
+  });
+}
+
+export type OrderIncreaseProjection = {
+  order: PositionOrderInfo;
+  increaseAmounts: IncreasePositionAmounts;
+  position: PositionInfo | undefined;
+  triggerPrice: bigint;
+};
+
+export function getOrderIncreaseProjection({
+  order,
+  position,
+  triggerPrice,
+  sizeDeltaUsd,
+  findSwapPath,
+  uiFeeFactor,
+  chainId,
+  marketsInfoData,
+  isSetAcceptablePriceImpactEnabled,
+  userReferralInfo,
+  proDiscountFactor,
+}: {
+  order: PositionOrderInfo;
+  position: PositionInfo | undefined;
+  triggerPrice: bigint | undefined;
+  sizeDeltaUsd: bigint;
+  findSwapPath: FindSwapPath;
+  uiFeeFactor: bigint;
+  chainId: number;
+  marketsInfoData: MarketsInfoData | undefined;
+  isSetAcceptablePriceImpactEnabled: boolean;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
+}): OrderIncreaseProjection | undefined {
+  const marketInfo = order.marketInfo;
+
+  if (!marketInfo || !isIncreaseOrderType(order.orderType) || triggerPrice === undefined || triggerPrice <= 0n) {
+    return undefined;
+  }
+
+  const isPositionLiquidatedBeforeTrigger =
+    isLimitOrderType(order.orderType) &&
+    getIsPositionLiquidatedBeforeTrigger({
+      liqPrice: position?.liquidationPrice,
+      triggerPrice,
+      isLong: order.isLong,
+    });
+
+  const positionForProjection = isPositionLiquidatedBeforeTrigger ? undefined : position;
+
+  const increaseAmounts = getIncreasePositionAmounts({
+    marketInfo,
+    indexToken: marketInfo.indexToken,
+    initialCollateralToken: order.initialCollateralToken,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    initialCollateralAmount: order.initialCollateralDeltaAmount,
+    indexTokenAmount: convertToTokenAmount(sizeDeltaUsd, marketInfo.indexToken.decimals, triggerPrice),
+    externalSwapQuote: undefined,
+    triggerPrice,
+    limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
+    position: positionForProjection,
+    findSwapPath,
+    userReferralInfo,
+    proDiscountFactor,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+    strategy: "independent",
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
+    isSetAcceptablePriceImpactEnabled,
+  });
+
+  if (order.initialCollateralDeltaAmount > 0n && increaseAmounts.swapStrategy.amountOut <= 0n) {
+    return undefined;
+  }
+
+  return { order, increaseAmounts, position: positionForProjection, triggerPrice };
+}
+
+export function getOrderIncreaseNextPositionValues({
+  projection,
+  minCollateralUsd,
+  userReferralInfo,
+  isPnlInLeverage,
+}: {
+  projection: OrderIncreaseProjection | undefined;
+  minCollateralUsd: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+  isPnlInLeverage: boolean;
+}): NextPositionValues | undefined {
+  if (!projection || projection.increaseAmounts.initialCollateralAmount <= 0n) {
+    return undefined;
+  }
+
+  const { order, increaseAmounts, position } = projection;
+
+  return getNextPositionValuesForIncreaseTrade({
+    marketInfo: order.marketInfo,
+    collateralToken: order.targetCollateralToken,
+    existingPosition: position,
+    isLong: order.isLong,
+    collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+    collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+    sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+    positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
+    indexPrice: increaseAmounts.indexPrice,
+    showPnlInLeverage: isPnlInLeverage,
+    minCollateralUsd,
+    userReferralInfo,
+  });
+}
+
+export function getOrderIncreaseResultingPositionMarginState({
+  projection,
+  minCollateralUsd,
+  userReferralInfo,
+  proDiscountFactor,
+}: {
+  projection: OrderIncreaseProjection | undefined;
+  minCollateralUsd: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
+}): PositionMarginState | undefined {
+  if (!projection) {
+    return undefined;
+  }
+
+  const { order, increaseAmounts, position, triggerPrice } = projection;
+
+  return getIncreaseResultingPositionMarginState({
+    marketInfo: order.marketInfo,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    existingPosition: position,
+    sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+    collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+    minCollateralUsd,
+    userReferralInfo,
+    proDiscountFactor,
+    indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
+      orderType: order.orderType,
+      triggerPrice,
+    }),
   });
 }
 
