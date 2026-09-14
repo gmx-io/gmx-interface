@@ -230,6 +230,31 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expect(networkFeeLine).toContainText(/[\d.,<]+\sETH\s\(\$\s?[\d.,<]+\)/, { timeout: 20_000 });
       await expect(networkFeeLine).toContainText("· Wallet");
     });
+
+    test("GMX Account without the gas token: the update is blocked and the banner offers a deposit of that token (FEDEV-3924)", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<NetworkFeeSurfaceStory surface="orderEditor" multichain zeroBalances />);
+
+      await page.locator(getDataQALocator("open-order-editor")).click();
+
+      // the stand opens the editor with empty inputs; a price below the mark keeps the order valid so the gas check decides the button
+      await page.locator(getDataQALocator("amount-input-input")).fill("2000");
+      await page.locator(getDataQALocator("trigger-price-input-input")).fill("1700");
+
+      const blockedButton = page.getByRole("button", { name: "Insufficient gas balance" });
+      await expect(blockedButton).toBeVisible({ timeout: 20_000 });
+      await expect(blockedButton).toBeDisabled();
+
+      const banner = page.getByText("Insufficient USDC for gas in your GMX Account");
+      await expect(banner).toBeVisible();
+      await expect(banner).not.toContainText(/\d/);
+
+      await page.getByRole("button", { name: "Deposit USDC" }).click();
+
+      await expect(page.locator(getDataQALocator("gmx-account-deposit-probe"))).toHaveText("deposit USDC");
+    });
   });
 
   test.describe("Settle accrued funding fees", () => {

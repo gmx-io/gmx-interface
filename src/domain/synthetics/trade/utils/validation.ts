@@ -121,7 +121,7 @@ export function getExpressError(p: {
   if (isMultichainExpressError) {
     return {
       buttonErrorMessage: getDefaultInsufficientGasMessage(),
-      bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance,
+      bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
     };
   }
 

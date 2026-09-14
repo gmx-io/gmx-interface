@@ -30,6 +30,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import {
   isLimitDecreaseOrderType,
@@ -693,37 +697,47 @@ function useOrdersControl() {
         cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
       };
 
-      const expressParams = await estimateBatchExpressParams({
-        signer,
-        chainId,
-        batchParams,
-        globalExpressParams,
-        requireValidations: true,
-        estimationMethod: "approximate",
-        provider,
-        isGmxAccount: srcChainId !== undefined,
-        subaccount,
-      });
-
-      sendBatchOrderTxn({
-        chainId,
-        signer,
-        expressParams,
-        batchParams,
-        simulationParams: undefined,
-        provider,
-        callback: makeOrderTxnCallback({ actionName: "Cancel Order" }),
-        isGmxAccount: srcChainId !== undefined,
-      })
-        .then(async (tx) => {
-          const txnResult = await tx.wait();
-          if (txnResult?.status === "success") {
-            setSelectedOrderKeys(EMPTY_ARRAY);
-          }
-        })
-        .finally(() => {
-          setCanellingOrdersKeys((p) => p.filter((e) => !orderKeys.includes(e)));
+      try {
+        const expressParams = await estimateBatchExpressParams({
+          signer,
+          chainId,
+          batchParams,
+          globalExpressParams,
+          requireValidations: false,
+          estimationMethod: "approximate",
+          provider,
+          isGmxAccount: srcChainId !== undefined,
+          subaccount,
         });
+
+        if (
+          reportMultichainExpressSubmitError({
+            isGmxAccount: srcChainId !== undefined,
+            expressParams,
+            tokensData: undefined,
+            actionName: "Cancel Order",
+          })
+        ) {
+          return;
+        }
+
+        const tx = await sendBatchOrderTxn({
+          chainId,
+          signer,
+          expressParams: getExpressParamsForSubmit(expressParams),
+          batchParams,
+          simulationParams: undefined,
+          provider,
+          callback: makeOrderTxnCallback({ actionName: "Cancel Order" }),
+          isGmxAccount: srcChainId !== undefined,
+        });
+        const txnResult = await tx.wait();
+        if (txnResult?.status === "success") {
+          setSelectedOrderKeys(EMPTY_ARRAY);
+        }
+      } finally {
+        setCanellingOrdersKeys((p) => p.filter((e) => !orderKeys.includes(e)));
+      }
     },
     [
       chainId,
@@ -760,34 +774,48 @@ function useOrdersControl() {
         cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
       };
 
-      const expressParams = await estimateBatchExpressParams({
-        signer,
-        chainId,
-        batchParams,
-        globalExpressParams,
-        requireValidations: true,
-        estimationMethod: "approximate",
-        provider,
-        isGmxAccount: srcChainId !== undefined,
-        subaccount,
-      });
+      try {
+        const expressParams = await estimateBatchExpressParams({
+          signer,
+          chainId,
+          batchParams,
+          globalExpressParams,
+          requireValidations: false,
+          estimationMethod: "approximate",
+          provider,
+          isGmxAccount: srcChainId !== undefined,
+          subaccount,
+        });
 
-      sendBatchOrderTxn({
-        chainId,
-        signer,
-        provider,
-        expressParams,
-        batchParams,
-        simulationParams: undefined,
-        callback: makeOrderTxnCallback({
-          actionName: "Cancel Order",
-          collateralSymbol: order?.initialCollateralToken.symbol,
-        }),
-        isGmxAccount: srcChainId !== undefined,
-      }).finally(() => {
+        if (
+          reportMultichainExpressSubmitError({
+            isGmxAccount: srcChainId !== undefined,
+            expressParams,
+            tokensData: undefined,
+            actionName: "Cancel Order",
+            collateral: order.initialCollateralToken.symbol,
+          })
+        ) {
+          return;
+        }
+
+        await sendBatchOrderTxn({
+          chainId,
+          signer,
+          provider,
+          expressParams: getExpressParamsForSubmit(expressParams),
+          batchParams,
+          simulationParams: undefined,
+          callback: makeOrderTxnCallback({
+            actionName: "Cancel Order",
+            collateralSymbol: order?.initialCollateralToken.symbol,
+          }),
+          isGmxAccount: srcChainId !== undefined,
+        });
+      } finally {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
-      });
+      }
     },
     [
       chainId,

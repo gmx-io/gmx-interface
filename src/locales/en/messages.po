@@ -4816,6 +4816,10 @@ msgstr "Referral link copied to clipboard"
 msgid "Executed"
 msgstr "Executed"
 
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
+msgid "Express is unavailable right now, so this GMX Account action can't be sent."
+msgstr "Express is unavailable right now, so this GMX Account action can't be sent."
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Amount exceeds the transfer limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "Amount exceeds the transfer limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
@@ -8153,7 +8157,6 @@ msgstr "Transfer submitted"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
-#: src/domain/synthetics/express/validateMultichainExpressSubmit.ts
 msgid "Order submission failed"
 msgstr "Order submission failed"
 

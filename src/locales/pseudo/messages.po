@@ -4816,6 +4816,10 @@ msgstr ""
 msgid "Executed"
 msgstr ""
 
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
+msgid "Express is unavailable right now, so this GMX Account action can't be sent."
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Amount exceeds the transfer limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr ""
@@ -8153,7 +8157,6 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
-#: src/domain/synthetics/express/validateMultichainExpressSubmit.ts
 msgid "Order submission failed"
 msgstr ""
 

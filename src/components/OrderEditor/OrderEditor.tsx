@@ -133,6 +133,7 @@ import Button from "components/Button/Button";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
@@ -535,6 +536,8 @@ export function OrderEditor(p: Props) {
     canSwitchGasPaymentToken: isActiveForm,
   });
 
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+
   const networkFee = useMemo(() => {
     if (!additionalExecutionFee) {
       return undefined;
@@ -581,19 +584,10 @@ export function OrderEditor(p: Props) {
         return t`Set limit price above mark price`;
       }
 
-      const expressError = getExpressError({
-        expressParams,
-        tokensData,
-      });
-
-      if (expressError.buttonErrorMessage) {
-        return expressError.buttonErrorMessage;
-      }
-
-      return;
+      return expressError.buttonErrorMessage;
     }
 
-    return positionOrderError;
+    return positionOrderError ?? expressError.buttonErrorMessage;
   }, [
     isSubmitting,
     p.order.orderType,
@@ -603,8 +597,7 @@ export function OrderEditor(p: Props) {
     minOutputAmount,
     isRatioInverted,
     markRatio,
-    expressParams,
-    tokensData,
+    expressError,
   ]);
 
   const showLiquidationRiskWarning = useMemo(() => {
@@ -977,6 +970,7 @@ export function OrderEditor(p: Props) {
                 </div>
               ) : (
                 <BuyInputSection
+                  qa="amount-input"
                   topLeftLabel={isTriggerDecrease ? t`Close` : t`Size`}
                   inputValue={isTriggerDecrease ? closeSize.closeSizeInput : sizeInputValue}
                   onInputValueChange={
@@ -1005,6 +999,7 @@ export function OrderEditor(p: Props) {
               )}
 
               <BuyInputSection
+                qa="trigger-price-input"
                 topLeftLabel={priceLabel}
                 topRightLabel={t`Mark`}
                 topRightValue={formatUsdPrice(markPrice, {
@@ -1198,6 +1193,18 @@ export function OrderEditor(p: Props) {
           {marginDepositRisk?.warning !== undefined && (
             <AlertInfoCard type="warning" hideClose>
               {marginDepositRisk.warning}
+            </AlertInfoCard>
+          )}
+
+          {expressError.bannerErrorName && (
+            <AlertInfoCard type="error" hideClose>
+              <ValidationBannerErrorContent
+                validationBannerErrorName={expressError.bannerErrorName}
+                chainId={chainId}
+                srcChainId={srcChainId}
+                gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+                onBeforeNavigation={p.onClose}
+              />
             </AlertInfoCard>
           )}
 

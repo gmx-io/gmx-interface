@@ -3740,7 +3740,7 @@ msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
-msgstr ""
+msgstr "{tokensText} insuficiente para gas en tu Cuenta GMX <0>Depositar {tokensText}</0>"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Failed to load trade history"
@@ -4815,6 +4815,10 @@ msgstr ""
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "Ejecutada"
+
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
+msgid "Express is unavailable right now, so this GMX Account action can't be sent."
+msgstr "Express no está disponible ahora mismo, por lo que esta acción de la Cuenta GMX no se puede enviar."
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Amount exceeds the transfer limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
@@ -8153,7 +8157,6 @@ msgstr "Transferencia enviada"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
-#: src/domain/synthetics/express/validateMultichainExpressSubmit.ts
 msgid "Order submission failed"
 msgstr "Error en el envío de la orden"
 

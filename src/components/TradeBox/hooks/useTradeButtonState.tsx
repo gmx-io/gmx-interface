@@ -344,7 +344,12 @@ export function useTradeboxButtonState({
     }
 
     const bannerErrorContent = validationResult.bannerErrorName ? (
-      <ValidationBannerErrorContent validationBannerErrorName={validationResult.bannerErrorName} chainId={chainId} />
+      <ValidationBannerErrorContent
+        validationBannerErrorName={validationResult.bannerErrorName}
+        chainId={chainId}
+        srcChainId={srcChainId}
+        gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+      />
     ) : null;
 
     return {
@@ -354,6 +359,7 @@ export function useTradeboxButtonState({
     };
   }, [
     chainId,
+    srcChainId,
     account,
     hasOutdatedUi,
     expressParams,

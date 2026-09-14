@@ -1,6 +1,8 @@
+import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
+import { ExpressTxnParams } from "domain/synthetics/express";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
@@ -10,6 +12,7 @@ import {
   getConditionalDepositError,
   getConditionalDepositWarning,
   getEditCollateralError,
+  getExpressError,
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
   getMarginDepositBeyondLiqPriceMessage,
@@ -470,5 +473,69 @@ describe("getNativeGasError", () => {
       buttonErrorMessage: "Insufficient gas balance",
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     });
+  });
+});
+
+describe("getExpressError", () => {
+  const makeExpressParams = (overrides: { isGmxAccount: boolean; isOutGasTokenBalance: boolean }) =>
+    ({
+      chainId: ARBITRUM,
+      isGmxAccount: overrides.isGmxAccount,
+      gasPaymentValidations: {
+        isGasPaymentTokenBalanceLoaded: true,
+        isOutGasTokenBalance: overrides.isOutGasTokenBalance,
+        needGasPaymentTokenApproval: false,
+        isValid: !overrides.isOutGasTokenBalance,
+      },
+      gasPaymentParams: {
+        gasPaymentTokenAddress: tokensData.USDC.address,
+        totalRelayerFeeTokenAmount: expandDecimals(1, 18),
+      },
+    }) as unknown as ExpressTxnParams;
+
+  const withNativeWalletBalance = (walletBalance: bigint) => ({
+    ...tokensData,
+    [zeroAddress]: { ...tokensData.ETH, address: zeroAddress, isNative: true, walletBalance },
+  });
+
+  it("returns no error without express params", () => {
+    expect(getExpressError({ expressParams: undefined, tokensData })).toEqual({});
+  });
+
+  it("names the current GMX Account gas token when its balance is insufficient", () => {
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: true }),
+        tokensData,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient gas balance",
+      bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
+    });
+  });
+
+  it("returns the wallet gas token error when the wallet lacks both the gas token and native token", () => {
+    const walletTokensData = withNativeWalletBalance(expandDecimals(1, 17));
+
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+        tokensData: walletTokensData,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient gas balance",
+      bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
+    });
+  });
+
+  it("returns no error for the wallet when the native token covers the fee", () => {
+    const walletTokensData = withNativeWalletBalance(expandDecimals(10, 18));
+
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+        tokensData: walletTokensData,
+      })
+    ).toEqual({});
   });
 });

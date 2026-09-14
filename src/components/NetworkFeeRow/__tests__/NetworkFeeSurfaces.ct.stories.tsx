@@ -8,6 +8,7 @@ import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
+import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import type { PoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import {
   selectOrderEditorOrder,
@@ -30,7 +31,7 @@ import { DEFAULT_MOCK_TOKENS_DATA, MockSyntheticsStateProvider } from "domain/te
 import { ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
-import { getWrappedToken } from "sdk/configs/tokens";
+import { getToken, getWrappedToken } from "sdk/configs/tokens";
 import { DecreasePositionSwapType, OrderType, type Order } from "sdk/utils/orders/types";
 import { getOrderInfo } from "sdk/utils/orders/utils";
 
@@ -339,6 +340,18 @@ function OpenPositionEditorControl({
   );
 }
 
+/** The deposit CTA only changes the GMX Account modal state; the modal itself is not mounted here, so the state is echoed as text (view + preselected token symbol). */
+function GmxAccountDepositProbe() {
+  const [modalOpen] = useGmxAccountModalOpen();
+  const [depositTokenAddress] = useGmxAccountDepositViewTokenAddress();
+
+  return (
+    <div data-qa="gmx-account-deposit-probe">
+      {String(modalOpen)} {depositTokenAddress ? getToken(ARBITRUM, depositTokenAddress).symbol : ""}
+    </div>
+  );
+}
+
 /** Opens the order editor the way the orders list does: the editor mounts only once an order is being edited. */
 function OrderEditorSurface({ orderKey }: { orderKey: string }) {
   const setEditingOrderState = useSelector(selectSetEditingOrderState);
@@ -346,6 +359,7 @@ function OrderEditorSurface({ orderKey }: { orderKey: string }) {
 
   return (
     <>
+      <GmxAccountDepositProbe />
       <button
         type="button"
         data-qa="open-order-editor"

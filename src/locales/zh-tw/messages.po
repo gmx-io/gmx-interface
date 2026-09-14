@@ -3740,7 +3740,7 @@ msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
-msgstr ""
+msgstr "您的 GMX Account 中用於 Gas 的 {tokensText} 不足 <0>存入 {tokensText}</0>"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Failed to load trade history"
@@ -4815,6 +4815,10 @@ msgstr ""
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "已執行"
+
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
+msgid "Express is unavailable right now, so this GMX Account action can't be sent."
+msgstr "Express 目前無法使用，因此無法送出此 GMX Account 操作。"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Amount exceeds the transfer limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
@@ -8153,7 +8157,6 @@ msgstr "轉帳已提交"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
-#: src/domain/synthetics/express/validateMultichainExpressSubmit.ts
 msgid "Order submission failed"
 msgstr "訂單提交失敗"
 

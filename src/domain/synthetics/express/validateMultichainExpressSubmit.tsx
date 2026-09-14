@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 
+import { ContractsChainId } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { getExpressError } from "domain/synthetics/trade/utils/validation";
 import { TokensData } from "domain/tokens";
@@ -8,6 +9,8 @@ import type { OrderMetricId } from "lib/metrics/types";
 import { sendTxnValidationErrorMetric } from "lib/metrics/utils";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { getIsValidExpressParams } from "sdk/utils/express";
+
+import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 
 export function isMultichainExpressSubmitBlocked(
   isGmxAccount: boolean,
@@ -43,7 +46,18 @@ export function reportMultichainExpressSubmitError({
 
   const expressError = getExpressError({ expressParams, tokensData });
 
-  helperToast.error(expressError.buttonErrorMessage ?? t`Order submission failed`, {
+  const content =
+    expressParams && expressError.bannerErrorName ? (
+      <InsufficientGmxAccountGasTokenBalanceMessage
+        chainId={expressParams.chainId as ContractsChainId}
+        gasPaymentTokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
+      />
+    ) : (
+      t`Express is unavailable right now, so this GMX Account action can't be sent.`
+    );
+
+  helperToast.error(content, {
+    autoClose: expressError.bannerErrorName ? false : undefined,
     tradingErrorInfo: {
       actionName,
       collateral,
