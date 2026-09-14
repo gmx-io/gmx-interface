@@ -90,7 +90,7 @@ export function RewardsTierTables({
         selectedValue={activeTab}
         onChange={setActiveTab}
         className="px-20"
-        tabsWrapperClassName="gap-16"
+        tabsWrapperClassName="gap-16 lg:gap-24"
         regularOptionClassname="!px-0 text-16 !pb-14 lg:text-24 lg:!pb-18 !pt-12 leading-[1.1]"
       />
 
