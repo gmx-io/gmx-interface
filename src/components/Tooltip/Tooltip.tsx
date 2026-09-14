@@ -1,6 +1,5 @@
 import {
   FloatingArrow,
-  FloatingPortal,
   Placement,
   arrow,
   autoUpdate,
@@ -11,6 +10,7 @@ import {
   useClick,
   useDismiss,
   useFloating,
+  useFocus,
   useHover,
   useInteractions,
 } from "@floating-ui/react";
@@ -29,6 +29,8 @@ import {
 
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 import { usePrevious } from "lib/usePrevious";
+
+import FloatingPortal from "components/Portal/FloatingPortal";
 
 import InfoIcon from "img/ic_info_circle.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
@@ -172,6 +174,9 @@ export default function Tooltip<T extends ElementType>({
       close: closeDelay,
     },
   });
+  const focus = useFocus(context, {
+    enabled: !disabled,
+  });
   const click = useClick(context, {
     // `undefined` would fall back to the floating-ui default (true)
     enabled: Boolean(!disabled && !disableClickToggle && closeOnDoubleClick),
@@ -181,7 +186,7 @@ export default function Tooltip<T extends ElementType>({
     enabled: !disabled,
   });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, click, dismiss]);
 
   const preventClick = useCallback(
     (event: MouseEvent) => {

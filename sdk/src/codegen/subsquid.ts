@@ -2994,6 +2994,451 @@ export enum EntityType {
   Market = "Market",
 }
 
+export interface FundingBalanceOiSnapshot {
+  __typename?: "FundingBalanceOiSnapshot";
+  absNetFundingBalanceExposureUsd: Scalars["BigInt"]["output"];
+  blockNumber: Scalars["Int"]["output"];
+  blockTimestamp: Scalars["Int"]["output"];
+  id: Scalars["String"]["output"];
+  indexTokenMaxPrice?: Maybe<Scalars["BigInt"]["output"]>;
+  indexTokenMinPrice?: Maybe<Scalars["BigInt"]["output"]>;
+  indexTokenPriceAvailable: Scalars["Boolean"]["output"];
+  indexTokenPriceBasis?: Maybe<Scalars["BigInt"]["output"]>;
+  longFundingBalanceOiUsd: Scalars["BigInt"]["output"];
+  longOpenInterestInTokens: Scalars["BigInt"]["output"];
+  longOpenInterestInTokensUsingLongToken: Scalars["BigInt"]["output"];
+  longOpenInterestInTokensUsingShortToken: Scalars["BigInt"]["output"];
+  longOpenInterestUsd: Scalars["BigInt"]["output"];
+  longOpenInterestUsingLongToken: Scalars["BigInt"]["output"];
+  longOpenInterestUsingShortToken: Scalars["BigInt"]["output"];
+  marketAddress: Scalars["String"]["output"];
+  netFundingBalanceExposureUsd: Scalars["BigInt"]["output"];
+  shortFundingBalanceOiUsd: Scalars["BigInt"]["output"];
+  shortOpenInterestInTokens: Scalars["BigInt"]["output"];
+  shortOpenInterestInTokensUsingLongToken: Scalars["BigInt"]["output"];
+  shortOpenInterestInTokensUsingShortToken: Scalars["BigInt"]["output"];
+  shortOpenInterestUsd: Scalars["BigInt"]["output"];
+  shortOpenInterestUsingLongToken: Scalars["BigInt"]["output"];
+  shortOpenInterestUsingShortToken: Scalars["BigInt"]["output"];
+  snapshotTimestamp: Scalars["Int"]["output"];
+  useOpenInterestInTokensForBalance: Scalars["Boolean"]["output"];
+}
+
+export interface FundingBalanceOiSnapshotEdge {
+  __typename?: "FundingBalanceOiSnapshotEdge";
+  cursor: Scalars["String"]["output"];
+  node: FundingBalanceOiSnapshot;
+}
+
+export enum FundingBalanceOiSnapshotOrderByInput {
+  absNetFundingBalanceExposureUsd_ASC = "absNetFundingBalanceExposureUsd_ASC",
+  absNetFundingBalanceExposureUsd_ASC_NULLS_FIRST = "absNetFundingBalanceExposureUsd_ASC_NULLS_FIRST",
+  absNetFundingBalanceExposureUsd_ASC_NULLS_LAST = "absNetFundingBalanceExposureUsd_ASC_NULLS_LAST",
+  absNetFundingBalanceExposureUsd_DESC = "absNetFundingBalanceExposureUsd_DESC",
+  absNetFundingBalanceExposureUsd_DESC_NULLS_FIRST = "absNetFundingBalanceExposureUsd_DESC_NULLS_FIRST",
+  absNetFundingBalanceExposureUsd_DESC_NULLS_LAST = "absNetFundingBalanceExposureUsd_DESC_NULLS_LAST",
+  blockNumber_ASC = "blockNumber_ASC",
+  blockNumber_ASC_NULLS_FIRST = "blockNumber_ASC_NULLS_FIRST",
+  blockNumber_ASC_NULLS_LAST = "blockNumber_ASC_NULLS_LAST",
+  blockNumber_DESC = "blockNumber_DESC",
+  blockNumber_DESC_NULLS_FIRST = "blockNumber_DESC_NULLS_FIRST",
+  blockNumber_DESC_NULLS_LAST = "blockNumber_DESC_NULLS_LAST",
+  blockTimestamp_ASC = "blockTimestamp_ASC",
+  blockTimestamp_ASC_NULLS_FIRST = "blockTimestamp_ASC_NULLS_FIRST",
+  blockTimestamp_ASC_NULLS_LAST = "blockTimestamp_ASC_NULLS_LAST",
+  blockTimestamp_DESC = "blockTimestamp_DESC",
+  blockTimestamp_DESC_NULLS_FIRST = "blockTimestamp_DESC_NULLS_FIRST",
+  blockTimestamp_DESC_NULLS_LAST = "blockTimestamp_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  indexTokenMaxPrice_ASC = "indexTokenMaxPrice_ASC",
+  indexTokenMaxPrice_ASC_NULLS_FIRST = "indexTokenMaxPrice_ASC_NULLS_FIRST",
+  indexTokenMaxPrice_ASC_NULLS_LAST = "indexTokenMaxPrice_ASC_NULLS_LAST",
+  indexTokenMaxPrice_DESC = "indexTokenMaxPrice_DESC",
+  indexTokenMaxPrice_DESC_NULLS_FIRST = "indexTokenMaxPrice_DESC_NULLS_FIRST",
+  indexTokenMaxPrice_DESC_NULLS_LAST = "indexTokenMaxPrice_DESC_NULLS_LAST",
+  indexTokenMinPrice_ASC = "indexTokenMinPrice_ASC",
+  indexTokenMinPrice_ASC_NULLS_FIRST = "indexTokenMinPrice_ASC_NULLS_FIRST",
+  indexTokenMinPrice_ASC_NULLS_LAST = "indexTokenMinPrice_ASC_NULLS_LAST",
+  indexTokenMinPrice_DESC = "indexTokenMinPrice_DESC",
+  indexTokenMinPrice_DESC_NULLS_FIRST = "indexTokenMinPrice_DESC_NULLS_FIRST",
+  indexTokenMinPrice_DESC_NULLS_LAST = "indexTokenMinPrice_DESC_NULLS_LAST",
+  indexTokenPriceAvailable_ASC = "indexTokenPriceAvailable_ASC",
+  indexTokenPriceAvailable_ASC_NULLS_FIRST = "indexTokenPriceAvailable_ASC_NULLS_FIRST",
+  indexTokenPriceAvailable_ASC_NULLS_LAST = "indexTokenPriceAvailable_ASC_NULLS_LAST",
+  indexTokenPriceAvailable_DESC = "indexTokenPriceAvailable_DESC",
+  indexTokenPriceAvailable_DESC_NULLS_FIRST = "indexTokenPriceAvailable_DESC_NULLS_FIRST",
+  indexTokenPriceAvailable_DESC_NULLS_LAST = "indexTokenPriceAvailable_DESC_NULLS_LAST",
+  indexTokenPriceBasis_ASC = "indexTokenPriceBasis_ASC",
+  indexTokenPriceBasis_ASC_NULLS_FIRST = "indexTokenPriceBasis_ASC_NULLS_FIRST",
+  indexTokenPriceBasis_ASC_NULLS_LAST = "indexTokenPriceBasis_ASC_NULLS_LAST",
+  indexTokenPriceBasis_DESC = "indexTokenPriceBasis_DESC",
+  indexTokenPriceBasis_DESC_NULLS_FIRST = "indexTokenPriceBasis_DESC_NULLS_FIRST",
+  indexTokenPriceBasis_DESC_NULLS_LAST = "indexTokenPriceBasis_DESC_NULLS_LAST",
+  longFundingBalanceOiUsd_ASC = "longFundingBalanceOiUsd_ASC",
+  longFundingBalanceOiUsd_ASC_NULLS_FIRST = "longFundingBalanceOiUsd_ASC_NULLS_FIRST",
+  longFundingBalanceOiUsd_ASC_NULLS_LAST = "longFundingBalanceOiUsd_ASC_NULLS_LAST",
+  longFundingBalanceOiUsd_DESC = "longFundingBalanceOiUsd_DESC",
+  longFundingBalanceOiUsd_DESC_NULLS_FIRST = "longFundingBalanceOiUsd_DESC_NULLS_FIRST",
+  longFundingBalanceOiUsd_DESC_NULLS_LAST = "longFundingBalanceOiUsd_DESC_NULLS_LAST",
+  longOpenInterestInTokensUsingLongToken_ASC = "longOpenInterestInTokensUsingLongToken_ASC",
+  longOpenInterestInTokensUsingLongToken_ASC_NULLS_FIRST = "longOpenInterestInTokensUsingLongToken_ASC_NULLS_FIRST",
+  longOpenInterestInTokensUsingLongToken_ASC_NULLS_LAST = "longOpenInterestInTokensUsingLongToken_ASC_NULLS_LAST",
+  longOpenInterestInTokensUsingLongToken_DESC = "longOpenInterestInTokensUsingLongToken_DESC",
+  longOpenInterestInTokensUsingLongToken_DESC_NULLS_FIRST = "longOpenInterestInTokensUsingLongToken_DESC_NULLS_FIRST",
+  longOpenInterestInTokensUsingLongToken_DESC_NULLS_LAST = "longOpenInterestInTokensUsingLongToken_DESC_NULLS_LAST",
+  longOpenInterestInTokensUsingShortToken_ASC = "longOpenInterestInTokensUsingShortToken_ASC",
+  longOpenInterestInTokensUsingShortToken_ASC_NULLS_FIRST = "longOpenInterestInTokensUsingShortToken_ASC_NULLS_FIRST",
+  longOpenInterestInTokensUsingShortToken_ASC_NULLS_LAST = "longOpenInterestInTokensUsingShortToken_ASC_NULLS_LAST",
+  longOpenInterestInTokensUsingShortToken_DESC = "longOpenInterestInTokensUsingShortToken_DESC",
+  longOpenInterestInTokensUsingShortToken_DESC_NULLS_FIRST = "longOpenInterestInTokensUsingShortToken_DESC_NULLS_FIRST",
+  longOpenInterestInTokensUsingShortToken_DESC_NULLS_LAST = "longOpenInterestInTokensUsingShortToken_DESC_NULLS_LAST",
+  longOpenInterestInTokens_ASC = "longOpenInterestInTokens_ASC",
+  longOpenInterestInTokens_ASC_NULLS_FIRST = "longOpenInterestInTokens_ASC_NULLS_FIRST",
+  longOpenInterestInTokens_ASC_NULLS_LAST = "longOpenInterestInTokens_ASC_NULLS_LAST",
+  longOpenInterestInTokens_DESC = "longOpenInterestInTokens_DESC",
+  longOpenInterestInTokens_DESC_NULLS_FIRST = "longOpenInterestInTokens_DESC_NULLS_FIRST",
+  longOpenInterestInTokens_DESC_NULLS_LAST = "longOpenInterestInTokens_DESC_NULLS_LAST",
+  longOpenInterestUsd_ASC = "longOpenInterestUsd_ASC",
+  longOpenInterestUsd_ASC_NULLS_FIRST = "longOpenInterestUsd_ASC_NULLS_FIRST",
+  longOpenInterestUsd_ASC_NULLS_LAST = "longOpenInterestUsd_ASC_NULLS_LAST",
+  longOpenInterestUsd_DESC = "longOpenInterestUsd_DESC",
+  longOpenInterestUsd_DESC_NULLS_FIRST = "longOpenInterestUsd_DESC_NULLS_FIRST",
+  longOpenInterestUsd_DESC_NULLS_LAST = "longOpenInterestUsd_DESC_NULLS_LAST",
+  longOpenInterestUsingLongToken_ASC = "longOpenInterestUsingLongToken_ASC",
+  longOpenInterestUsingLongToken_ASC_NULLS_FIRST = "longOpenInterestUsingLongToken_ASC_NULLS_FIRST",
+  longOpenInterestUsingLongToken_ASC_NULLS_LAST = "longOpenInterestUsingLongToken_ASC_NULLS_LAST",
+  longOpenInterestUsingLongToken_DESC = "longOpenInterestUsingLongToken_DESC",
+  longOpenInterestUsingLongToken_DESC_NULLS_FIRST = "longOpenInterestUsingLongToken_DESC_NULLS_FIRST",
+  longOpenInterestUsingLongToken_DESC_NULLS_LAST = "longOpenInterestUsingLongToken_DESC_NULLS_LAST",
+  longOpenInterestUsingShortToken_ASC = "longOpenInterestUsingShortToken_ASC",
+  longOpenInterestUsingShortToken_ASC_NULLS_FIRST = "longOpenInterestUsingShortToken_ASC_NULLS_FIRST",
+  longOpenInterestUsingShortToken_ASC_NULLS_LAST = "longOpenInterestUsingShortToken_ASC_NULLS_LAST",
+  longOpenInterestUsingShortToken_DESC = "longOpenInterestUsingShortToken_DESC",
+  longOpenInterestUsingShortToken_DESC_NULLS_FIRST = "longOpenInterestUsingShortToken_DESC_NULLS_FIRST",
+  longOpenInterestUsingShortToken_DESC_NULLS_LAST = "longOpenInterestUsingShortToken_DESC_NULLS_LAST",
+  marketAddress_ASC = "marketAddress_ASC",
+  marketAddress_ASC_NULLS_FIRST = "marketAddress_ASC_NULLS_FIRST",
+  marketAddress_ASC_NULLS_LAST = "marketAddress_ASC_NULLS_LAST",
+  marketAddress_DESC = "marketAddress_DESC",
+  marketAddress_DESC_NULLS_FIRST = "marketAddress_DESC_NULLS_FIRST",
+  marketAddress_DESC_NULLS_LAST = "marketAddress_DESC_NULLS_LAST",
+  netFundingBalanceExposureUsd_ASC = "netFundingBalanceExposureUsd_ASC",
+  netFundingBalanceExposureUsd_ASC_NULLS_FIRST = "netFundingBalanceExposureUsd_ASC_NULLS_FIRST",
+  netFundingBalanceExposureUsd_ASC_NULLS_LAST = "netFundingBalanceExposureUsd_ASC_NULLS_LAST",
+  netFundingBalanceExposureUsd_DESC = "netFundingBalanceExposureUsd_DESC",
+  netFundingBalanceExposureUsd_DESC_NULLS_FIRST = "netFundingBalanceExposureUsd_DESC_NULLS_FIRST",
+  netFundingBalanceExposureUsd_DESC_NULLS_LAST = "netFundingBalanceExposureUsd_DESC_NULLS_LAST",
+  shortFundingBalanceOiUsd_ASC = "shortFundingBalanceOiUsd_ASC",
+  shortFundingBalanceOiUsd_ASC_NULLS_FIRST = "shortFundingBalanceOiUsd_ASC_NULLS_FIRST",
+  shortFundingBalanceOiUsd_ASC_NULLS_LAST = "shortFundingBalanceOiUsd_ASC_NULLS_LAST",
+  shortFundingBalanceOiUsd_DESC = "shortFundingBalanceOiUsd_DESC",
+  shortFundingBalanceOiUsd_DESC_NULLS_FIRST = "shortFundingBalanceOiUsd_DESC_NULLS_FIRST",
+  shortFundingBalanceOiUsd_DESC_NULLS_LAST = "shortFundingBalanceOiUsd_DESC_NULLS_LAST",
+  shortOpenInterestInTokensUsingLongToken_ASC = "shortOpenInterestInTokensUsingLongToken_ASC",
+  shortOpenInterestInTokensUsingLongToken_ASC_NULLS_FIRST = "shortOpenInterestInTokensUsingLongToken_ASC_NULLS_FIRST",
+  shortOpenInterestInTokensUsingLongToken_ASC_NULLS_LAST = "shortOpenInterestInTokensUsingLongToken_ASC_NULLS_LAST",
+  shortOpenInterestInTokensUsingLongToken_DESC = "shortOpenInterestInTokensUsingLongToken_DESC",
+  shortOpenInterestInTokensUsingLongToken_DESC_NULLS_FIRST = "shortOpenInterestInTokensUsingLongToken_DESC_NULLS_FIRST",
+  shortOpenInterestInTokensUsingLongToken_DESC_NULLS_LAST = "shortOpenInterestInTokensUsingLongToken_DESC_NULLS_LAST",
+  shortOpenInterestInTokensUsingShortToken_ASC = "shortOpenInterestInTokensUsingShortToken_ASC",
+  shortOpenInterestInTokensUsingShortToken_ASC_NULLS_FIRST = "shortOpenInterestInTokensUsingShortToken_ASC_NULLS_FIRST",
+  shortOpenInterestInTokensUsingShortToken_ASC_NULLS_LAST = "shortOpenInterestInTokensUsingShortToken_ASC_NULLS_LAST",
+  shortOpenInterestInTokensUsingShortToken_DESC = "shortOpenInterestInTokensUsingShortToken_DESC",
+  shortOpenInterestInTokensUsingShortToken_DESC_NULLS_FIRST = "shortOpenInterestInTokensUsingShortToken_DESC_NULLS_FIRST",
+  shortOpenInterestInTokensUsingShortToken_DESC_NULLS_LAST = "shortOpenInterestInTokensUsingShortToken_DESC_NULLS_LAST",
+  shortOpenInterestInTokens_ASC = "shortOpenInterestInTokens_ASC",
+  shortOpenInterestInTokens_ASC_NULLS_FIRST = "shortOpenInterestInTokens_ASC_NULLS_FIRST",
+  shortOpenInterestInTokens_ASC_NULLS_LAST = "shortOpenInterestInTokens_ASC_NULLS_LAST",
+  shortOpenInterestInTokens_DESC = "shortOpenInterestInTokens_DESC",
+  shortOpenInterestInTokens_DESC_NULLS_FIRST = "shortOpenInterestInTokens_DESC_NULLS_FIRST",
+  shortOpenInterestInTokens_DESC_NULLS_LAST = "shortOpenInterestInTokens_DESC_NULLS_LAST",
+  shortOpenInterestUsd_ASC = "shortOpenInterestUsd_ASC",
+  shortOpenInterestUsd_ASC_NULLS_FIRST = "shortOpenInterestUsd_ASC_NULLS_FIRST",
+  shortOpenInterestUsd_ASC_NULLS_LAST = "shortOpenInterestUsd_ASC_NULLS_LAST",
+  shortOpenInterestUsd_DESC = "shortOpenInterestUsd_DESC",
+  shortOpenInterestUsd_DESC_NULLS_FIRST = "shortOpenInterestUsd_DESC_NULLS_FIRST",
+  shortOpenInterestUsd_DESC_NULLS_LAST = "shortOpenInterestUsd_DESC_NULLS_LAST",
+  shortOpenInterestUsingLongToken_ASC = "shortOpenInterestUsingLongToken_ASC",
+  shortOpenInterestUsingLongToken_ASC_NULLS_FIRST = "shortOpenInterestUsingLongToken_ASC_NULLS_FIRST",
+  shortOpenInterestUsingLongToken_ASC_NULLS_LAST = "shortOpenInterestUsingLongToken_ASC_NULLS_LAST",
+  shortOpenInterestUsingLongToken_DESC = "shortOpenInterestUsingLongToken_DESC",
+  shortOpenInterestUsingLongToken_DESC_NULLS_FIRST = "shortOpenInterestUsingLongToken_DESC_NULLS_FIRST",
+  shortOpenInterestUsingLongToken_DESC_NULLS_LAST = "shortOpenInterestUsingLongToken_DESC_NULLS_LAST",
+  shortOpenInterestUsingShortToken_ASC = "shortOpenInterestUsingShortToken_ASC",
+  shortOpenInterestUsingShortToken_ASC_NULLS_FIRST = "shortOpenInterestUsingShortToken_ASC_NULLS_FIRST",
+  shortOpenInterestUsingShortToken_ASC_NULLS_LAST = "shortOpenInterestUsingShortToken_ASC_NULLS_LAST",
+  shortOpenInterestUsingShortToken_DESC = "shortOpenInterestUsingShortToken_DESC",
+  shortOpenInterestUsingShortToken_DESC_NULLS_FIRST = "shortOpenInterestUsingShortToken_DESC_NULLS_FIRST",
+  shortOpenInterestUsingShortToken_DESC_NULLS_LAST = "shortOpenInterestUsingShortToken_DESC_NULLS_LAST",
+  snapshotTimestamp_ASC = "snapshotTimestamp_ASC",
+  snapshotTimestamp_ASC_NULLS_FIRST = "snapshotTimestamp_ASC_NULLS_FIRST",
+  snapshotTimestamp_ASC_NULLS_LAST = "snapshotTimestamp_ASC_NULLS_LAST",
+  snapshotTimestamp_DESC = "snapshotTimestamp_DESC",
+  snapshotTimestamp_DESC_NULLS_FIRST = "snapshotTimestamp_DESC_NULLS_FIRST",
+  snapshotTimestamp_DESC_NULLS_LAST = "snapshotTimestamp_DESC_NULLS_LAST",
+  useOpenInterestInTokensForBalance_ASC = "useOpenInterestInTokensForBalance_ASC",
+  useOpenInterestInTokensForBalance_ASC_NULLS_FIRST = "useOpenInterestInTokensForBalance_ASC_NULLS_FIRST",
+  useOpenInterestInTokensForBalance_ASC_NULLS_LAST = "useOpenInterestInTokensForBalance_ASC_NULLS_LAST",
+  useOpenInterestInTokensForBalance_DESC = "useOpenInterestInTokensForBalance_DESC",
+  useOpenInterestInTokensForBalance_DESC_NULLS_FIRST = "useOpenInterestInTokensForBalance_DESC_NULLS_FIRST",
+  useOpenInterestInTokensForBalance_DESC_NULLS_LAST = "useOpenInterestInTokensForBalance_DESC_NULLS_LAST",
+}
+
+export interface FundingBalanceOiSnapshotWhereInput {
+  AND?: InputMaybe<Array<FundingBalanceOiSnapshotWhereInput>>;
+  OR?: InputMaybe<Array<FundingBalanceOiSnapshotWhereInput>>;
+  absNetFundingBalanceExposureUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  absNetFundingBalanceExposureUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  absNetFundingBalanceExposureUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  absNetFundingBalanceExposureUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  absNetFundingBalanceExposureUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  absNetFundingBalanceExposureUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  absNetFundingBalanceExposureUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  absNetFundingBalanceExposureUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  absNetFundingBalanceExposureUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockNumber_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  blockNumber_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  blockNumber_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  blockTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  blockTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  blockTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  indexTokenMaxPrice_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMaxPrice_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMaxPrice_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMaxPrice_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  indexTokenMaxPrice_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  indexTokenMaxPrice_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMaxPrice_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMaxPrice_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMaxPrice_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  indexTokenMinPrice_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMinPrice_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMinPrice_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMinPrice_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  indexTokenMinPrice_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  indexTokenMinPrice_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMinPrice_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMinPrice_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenMinPrice_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  indexTokenPriceAvailable_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  indexTokenPriceAvailable_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  indexTokenPriceAvailable_not_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  indexTokenPriceBasis_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenPriceBasis_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenPriceBasis_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenPriceBasis_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  indexTokenPriceBasis_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  indexTokenPriceBasis_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenPriceBasis_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenPriceBasis_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  indexTokenPriceBasis_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longFundingBalanceOiUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longFundingBalanceOiUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longFundingBalanceOiUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longFundingBalanceOiUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longFundingBalanceOiUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  longFundingBalanceOiUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longFundingBalanceOiUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longFundingBalanceOiUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longFundingBalanceOiUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestInTokensUsingLongToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingLongToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingLongToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingLongToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestInTokensUsingLongToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  longOpenInterestInTokensUsingLongToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingLongToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingLongToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingLongToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestInTokensUsingShortToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingShortToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingShortToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingShortToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestInTokensUsingShortToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  longOpenInterestInTokensUsingShortToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingShortToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingShortToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokensUsingShortToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestInTokens_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokens_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokens_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokens_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestInTokens_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  longOpenInterestInTokens_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokens_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokens_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestInTokens_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  longOpenInterestUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestUsingLongToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingLongToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingLongToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingLongToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestUsingLongToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  longOpenInterestUsingLongToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingLongToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingLongToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingLongToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestUsingShortToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingShortToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingShortToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingShortToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  longOpenInterestUsingShortToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  longOpenInterestUsingShortToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingShortToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingShortToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  longOpenInterestUsingShortToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_eq?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_gt?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_gte?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  marketAddress_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketAddress_lt?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_lte?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  marketAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  netFundingBalanceExposureUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  netFundingBalanceExposureUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  netFundingBalanceExposureUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  netFundingBalanceExposureUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  netFundingBalanceExposureUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  netFundingBalanceExposureUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  netFundingBalanceExposureUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  netFundingBalanceExposureUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  netFundingBalanceExposureUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortFundingBalanceOiUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortFundingBalanceOiUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortFundingBalanceOiUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortFundingBalanceOiUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortFundingBalanceOiUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  shortFundingBalanceOiUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortFundingBalanceOiUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortFundingBalanceOiUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortFundingBalanceOiUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestInTokensUsingLongToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingLongToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingLongToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingLongToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestInTokensUsingLongToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  shortOpenInterestInTokensUsingLongToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingLongToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingLongToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingLongToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestInTokensUsingShortToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingShortToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingShortToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingShortToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestInTokensUsingShortToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  shortOpenInterestInTokensUsingShortToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingShortToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingShortToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokensUsingShortToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestInTokens_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokens_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokens_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokens_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestInTokens_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  shortOpenInterestInTokens_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokens_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokens_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestInTokens_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  shortOpenInterestUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestUsingLongToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingLongToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingLongToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingLongToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestUsingLongToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  shortOpenInterestUsingLongToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingLongToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingLongToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingLongToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestUsingShortToken_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingShortToken_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingShortToken_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingShortToken_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  shortOpenInterestUsingShortToken_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  shortOpenInterestUsingShortToken_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingShortToken_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingShortToken_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  shortOpenInterestUsingShortToken_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  snapshotTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  snapshotTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  snapshotTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  useOpenInterestInTokensForBalance_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  useOpenInterestInTokensForBalance_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  useOpenInterestInTokensForBalance_not_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+}
+
+export interface FundingBalanceOiSnapshotsConnection {
+  __typename?: "FundingBalanceOiSnapshotsConnection";
+  edges: Array<FundingBalanceOiSnapshotEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface FundingRateSnapshot {
   __typename?: "FundingRateSnapshot";
   fundingFactorPerSecondLong: Scalars["BigInt"]["output"];
@@ -3145,6 +3590,279 @@ export interface GlvEdge {
   __typename?: "GlvEdge";
   cursor: Scalars["String"]["output"];
   node: Glv;
+}
+
+export interface GlvMarketAllocationSnapshot {
+  __typename?: "GlvMarketAllocationSnapshot";
+  blockNumber: Scalars["Int"]["output"];
+  blockTimestamp: Scalars["Int"]["output"];
+  glvAddress: Scalars["String"]["output"];
+  glvValue: Scalars["BigInt"]["output"];
+  id: Scalars["String"]["output"];
+  marketAddress: Scalars["String"]["output"];
+  marketPoolValue: Scalars["BigInt"]["output"];
+  marketTokenBalanceAmount: Scalars["BigInt"]["output"];
+  marketTokenBalancePerGlvValue: Scalars["BigInt"]["output"];
+  marketTokenBalanceUsd: Scalars["BigInt"]["output"];
+  marketTokenMaxPrice: Scalars["BigInt"]["output"];
+  marketTokenMinPrice: Scalars["BigInt"]["output"];
+  marketTokenSupply: Scalars["BigInt"]["output"];
+  snapshotTimestamp: Scalars["Int"]["output"];
+}
+
+export interface GlvMarketAllocationSnapshotEdge {
+  __typename?: "GlvMarketAllocationSnapshotEdge";
+  cursor: Scalars["String"]["output"];
+  node: GlvMarketAllocationSnapshot;
+}
+
+export enum GlvMarketAllocationSnapshotOrderByInput {
+  blockNumber_ASC = "blockNumber_ASC",
+  blockNumber_ASC_NULLS_FIRST = "blockNumber_ASC_NULLS_FIRST",
+  blockNumber_ASC_NULLS_LAST = "blockNumber_ASC_NULLS_LAST",
+  blockNumber_DESC = "blockNumber_DESC",
+  blockNumber_DESC_NULLS_FIRST = "blockNumber_DESC_NULLS_FIRST",
+  blockNumber_DESC_NULLS_LAST = "blockNumber_DESC_NULLS_LAST",
+  blockTimestamp_ASC = "blockTimestamp_ASC",
+  blockTimestamp_ASC_NULLS_FIRST = "blockTimestamp_ASC_NULLS_FIRST",
+  blockTimestamp_ASC_NULLS_LAST = "blockTimestamp_ASC_NULLS_LAST",
+  blockTimestamp_DESC = "blockTimestamp_DESC",
+  blockTimestamp_DESC_NULLS_FIRST = "blockTimestamp_DESC_NULLS_FIRST",
+  blockTimestamp_DESC_NULLS_LAST = "blockTimestamp_DESC_NULLS_LAST",
+  glvAddress_ASC = "glvAddress_ASC",
+  glvAddress_ASC_NULLS_FIRST = "glvAddress_ASC_NULLS_FIRST",
+  glvAddress_ASC_NULLS_LAST = "glvAddress_ASC_NULLS_LAST",
+  glvAddress_DESC = "glvAddress_DESC",
+  glvAddress_DESC_NULLS_FIRST = "glvAddress_DESC_NULLS_FIRST",
+  glvAddress_DESC_NULLS_LAST = "glvAddress_DESC_NULLS_LAST",
+  glvValue_ASC = "glvValue_ASC",
+  glvValue_ASC_NULLS_FIRST = "glvValue_ASC_NULLS_FIRST",
+  glvValue_ASC_NULLS_LAST = "glvValue_ASC_NULLS_LAST",
+  glvValue_DESC = "glvValue_DESC",
+  glvValue_DESC_NULLS_FIRST = "glvValue_DESC_NULLS_FIRST",
+  glvValue_DESC_NULLS_LAST = "glvValue_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  marketAddress_ASC = "marketAddress_ASC",
+  marketAddress_ASC_NULLS_FIRST = "marketAddress_ASC_NULLS_FIRST",
+  marketAddress_ASC_NULLS_LAST = "marketAddress_ASC_NULLS_LAST",
+  marketAddress_DESC = "marketAddress_DESC",
+  marketAddress_DESC_NULLS_FIRST = "marketAddress_DESC_NULLS_FIRST",
+  marketAddress_DESC_NULLS_LAST = "marketAddress_DESC_NULLS_LAST",
+  marketPoolValue_ASC = "marketPoolValue_ASC",
+  marketPoolValue_ASC_NULLS_FIRST = "marketPoolValue_ASC_NULLS_FIRST",
+  marketPoolValue_ASC_NULLS_LAST = "marketPoolValue_ASC_NULLS_LAST",
+  marketPoolValue_DESC = "marketPoolValue_DESC",
+  marketPoolValue_DESC_NULLS_FIRST = "marketPoolValue_DESC_NULLS_FIRST",
+  marketPoolValue_DESC_NULLS_LAST = "marketPoolValue_DESC_NULLS_LAST",
+  marketTokenBalanceAmount_ASC = "marketTokenBalanceAmount_ASC",
+  marketTokenBalanceAmount_ASC_NULLS_FIRST = "marketTokenBalanceAmount_ASC_NULLS_FIRST",
+  marketTokenBalanceAmount_ASC_NULLS_LAST = "marketTokenBalanceAmount_ASC_NULLS_LAST",
+  marketTokenBalanceAmount_DESC = "marketTokenBalanceAmount_DESC",
+  marketTokenBalanceAmount_DESC_NULLS_FIRST = "marketTokenBalanceAmount_DESC_NULLS_FIRST",
+  marketTokenBalanceAmount_DESC_NULLS_LAST = "marketTokenBalanceAmount_DESC_NULLS_LAST",
+  marketTokenBalancePerGlvValue_ASC = "marketTokenBalancePerGlvValue_ASC",
+  marketTokenBalancePerGlvValue_ASC_NULLS_FIRST = "marketTokenBalancePerGlvValue_ASC_NULLS_FIRST",
+  marketTokenBalancePerGlvValue_ASC_NULLS_LAST = "marketTokenBalancePerGlvValue_ASC_NULLS_LAST",
+  marketTokenBalancePerGlvValue_DESC = "marketTokenBalancePerGlvValue_DESC",
+  marketTokenBalancePerGlvValue_DESC_NULLS_FIRST = "marketTokenBalancePerGlvValue_DESC_NULLS_FIRST",
+  marketTokenBalancePerGlvValue_DESC_NULLS_LAST = "marketTokenBalancePerGlvValue_DESC_NULLS_LAST",
+  marketTokenBalanceUsd_ASC = "marketTokenBalanceUsd_ASC",
+  marketTokenBalanceUsd_ASC_NULLS_FIRST = "marketTokenBalanceUsd_ASC_NULLS_FIRST",
+  marketTokenBalanceUsd_ASC_NULLS_LAST = "marketTokenBalanceUsd_ASC_NULLS_LAST",
+  marketTokenBalanceUsd_DESC = "marketTokenBalanceUsd_DESC",
+  marketTokenBalanceUsd_DESC_NULLS_FIRST = "marketTokenBalanceUsd_DESC_NULLS_FIRST",
+  marketTokenBalanceUsd_DESC_NULLS_LAST = "marketTokenBalanceUsd_DESC_NULLS_LAST",
+  marketTokenMaxPrice_ASC = "marketTokenMaxPrice_ASC",
+  marketTokenMaxPrice_ASC_NULLS_FIRST = "marketTokenMaxPrice_ASC_NULLS_FIRST",
+  marketTokenMaxPrice_ASC_NULLS_LAST = "marketTokenMaxPrice_ASC_NULLS_LAST",
+  marketTokenMaxPrice_DESC = "marketTokenMaxPrice_DESC",
+  marketTokenMaxPrice_DESC_NULLS_FIRST = "marketTokenMaxPrice_DESC_NULLS_FIRST",
+  marketTokenMaxPrice_DESC_NULLS_LAST = "marketTokenMaxPrice_DESC_NULLS_LAST",
+  marketTokenMinPrice_ASC = "marketTokenMinPrice_ASC",
+  marketTokenMinPrice_ASC_NULLS_FIRST = "marketTokenMinPrice_ASC_NULLS_FIRST",
+  marketTokenMinPrice_ASC_NULLS_LAST = "marketTokenMinPrice_ASC_NULLS_LAST",
+  marketTokenMinPrice_DESC = "marketTokenMinPrice_DESC",
+  marketTokenMinPrice_DESC_NULLS_FIRST = "marketTokenMinPrice_DESC_NULLS_FIRST",
+  marketTokenMinPrice_DESC_NULLS_LAST = "marketTokenMinPrice_DESC_NULLS_LAST",
+  marketTokenSupply_ASC = "marketTokenSupply_ASC",
+  marketTokenSupply_ASC_NULLS_FIRST = "marketTokenSupply_ASC_NULLS_FIRST",
+  marketTokenSupply_ASC_NULLS_LAST = "marketTokenSupply_ASC_NULLS_LAST",
+  marketTokenSupply_DESC = "marketTokenSupply_DESC",
+  marketTokenSupply_DESC_NULLS_FIRST = "marketTokenSupply_DESC_NULLS_FIRST",
+  marketTokenSupply_DESC_NULLS_LAST = "marketTokenSupply_DESC_NULLS_LAST",
+  snapshotTimestamp_ASC = "snapshotTimestamp_ASC",
+  snapshotTimestamp_ASC_NULLS_FIRST = "snapshotTimestamp_ASC_NULLS_FIRST",
+  snapshotTimestamp_ASC_NULLS_LAST = "snapshotTimestamp_ASC_NULLS_LAST",
+  snapshotTimestamp_DESC = "snapshotTimestamp_DESC",
+  snapshotTimestamp_DESC_NULLS_FIRST = "snapshotTimestamp_DESC_NULLS_FIRST",
+  snapshotTimestamp_DESC_NULLS_LAST = "snapshotTimestamp_DESC_NULLS_LAST",
+}
+
+export interface GlvMarketAllocationSnapshotWhereInput {
+  AND?: InputMaybe<Array<GlvMarketAllocationSnapshotWhereInput>>;
+  OR?: InputMaybe<Array<GlvMarketAllocationSnapshotWhereInput>>;
+  blockNumber_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  blockNumber_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  blockNumber_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  blockTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  blockTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  blockTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  glvAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_eq?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_gt?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_gte?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  glvAddress_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  glvAddress_lt?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_lte?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  glvAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  glvValue_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvValue_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvValue_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvValue_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  glvValue_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  glvValue_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvValue_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvValue_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  glvValue_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_eq?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_gt?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_gte?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  marketAddress_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketAddress_lt?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_lte?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  marketAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketPoolValue_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketPoolValue_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketPoolValue_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketPoolValue_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketPoolValue_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketPoolValue_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketPoolValue_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketPoolValue_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketPoolValue_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenBalanceAmount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceAmount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceAmount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceAmount_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenBalanceAmount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketTokenBalanceAmount_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceAmount_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceAmount_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceAmount_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenBalancePerGlvValue_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalancePerGlvValue_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalancePerGlvValue_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalancePerGlvValue_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenBalancePerGlvValue_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketTokenBalancePerGlvValue_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalancePerGlvValue_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalancePerGlvValue_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalancePerGlvValue_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenBalanceUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenBalanceUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketTokenBalanceUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenBalanceUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenMaxPrice_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMaxPrice_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMaxPrice_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMaxPrice_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenMaxPrice_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketTokenMaxPrice_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMaxPrice_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMaxPrice_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMaxPrice_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenMinPrice_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMinPrice_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMinPrice_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMinPrice_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenMinPrice_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketTokenMinPrice_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMinPrice_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMinPrice_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenMinPrice_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenSupply_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenSupply_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenSupply_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenSupply_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  marketTokenSupply_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketTokenSupply_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenSupply_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenSupply_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  marketTokenSupply_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  snapshotTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  snapshotTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  snapshotTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface GlvMarketAllocationSnapshotsConnection {
+  __typename?: "GlvMarketAllocationSnapshotsConnection";
+  edges: Array<GlvMarketAllocationSnapshotEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
 }
 
 export enum GlvOrderByInput {
@@ -9586,10 +10304,16 @@ export interface Query {
   distributionById?: Maybe<Distribution>;
   distributions: Array<Distribution>;
   distributionsConnection: DistributionsConnection;
+  fundingBalanceOiSnapshotById?: Maybe<FundingBalanceOiSnapshot>;
+  fundingBalanceOiSnapshots: Array<FundingBalanceOiSnapshot>;
+  fundingBalanceOiSnapshotsConnection: FundingBalanceOiSnapshotsConnection;
   fundingRateSnapshotById?: Maybe<FundingRateSnapshot>;
   fundingRateSnapshots: Array<FundingRateSnapshot>;
   fundingRateSnapshotsConnection: FundingRateSnapshotsConnection;
   glvById?: Maybe<Glv>;
+  glvMarketAllocationSnapshotById?: Maybe<GlvMarketAllocationSnapshot>;
+  glvMarketAllocationSnapshots: Array<GlvMarketAllocationSnapshot>;
+  glvMarketAllocationSnapshotsConnection: GlvMarketAllocationSnapshotsConnection;
   glvTokenBalanceById?: Maybe<GlvTokenBalance>;
   glvTokenBalanceChangeById?: Maybe<GlvTokenBalanceChange>;
   glvTokenBalanceChanges: Array<GlvTokenBalanceChange>;
@@ -10017,6 +10741,24 @@ export interface QuerydistributionsConnectionArgs {
   where?: InputMaybe<DistributionWhereInput>;
 }
 
+export interface QueryfundingBalanceOiSnapshotByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryfundingBalanceOiSnapshotsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<FundingBalanceOiSnapshotOrderByInput>>;
+  where?: InputMaybe<FundingBalanceOiSnapshotWhereInput>;
+}
+
+export interface QueryfundingBalanceOiSnapshotsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<FundingBalanceOiSnapshotOrderByInput>;
+  where?: InputMaybe<FundingBalanceOiSnapshotWhereInput>;
+}
+
 export interface QueryfundingRateSnapshotByIdArgs {
   id: Scalars["String"]["input"];
 }
@@ -10037,6 +10779,24 @@ export interface QueryfundingRateSnapshotsConnectionArgs {
 
 export interface QueryglvByIdArgs {
   id: Scalars["String"]["input"];
+}
+
+export interface QueryglvMarketAllocationSnapshotByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryglvMarketAllocationSnapshotsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<GlvMarketAllocationSnapshotOrderByInput>>;
+  where?: InputMaybe<GlvMarketAllocationSnapshotWhereInput>;
+}
+
+export interface QueryglvMarketAllocationSnapshotsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<GlvMarketAllocationSnapshotOrderByInput>;
+  where?: InputMaybe<GlvMarketAllocationSnapshotWhereInput>;
 }
 
 export interface QueryglvTokenBalanceByIdArgs {
@@ -11930,6 +12690,7 @@ export interface TradeAction {
   indexTokenPriceMin?: Maybe<Scalars["BigInt"]["output"]>;
   initialCollateralDeltaAmount: Scalars["BigInt"]["output"];
   initialCollateralTokenAddress: Scalars["String"]["output"];
+  isFundingFeeSettle?: Maybe<Scalars["Boolean"]["output"]>;
   isLong?: Maybe<Scalars["Boolean"]["output"]>;
   liquidationFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   marketAddress?: Maybe<Scalars["String"]["output"]>;
@@ -12082,6 +12843,12 @@ export enum TradeActionOrderByInput {
   initialCollateralTokenAddress_DESC = "initialCollateralTokenAddress_DESC",
   initialCollateralTokenAddress_DESC_NULLS_FIRST = "initialCollateralTokenAddress_DESC_NULLS_FIRST",
   initialCollateralTokenAddress_DESC_NULLS_LAST = "initialCollateralTokenAddress_DESC_NULLS_LAST",
+  isFundingFeeSettle_ASC = "isFundingFeeSettle_ASC",
+  isFundingFeeSettle_ASC_NULLS_FIRST = "isFundingFeeSettle_ASC_NULLS_FIRST",
+  isFundingFeeSettle_ASC_NULLS_LAST = "isFundingFeeSettle_ASC_NULLS_LAST",
+  isFundingFeeSettle_DESC = "isFundingFeeSettle_DESC",
+  isFundingFeeSettle_DESC_NULLS_FIRST = "isFundingFeeSettle_DESC_NULLS_FIRST",
+  isFundingFeeSettle_DESC_NULLS_LAST = "isFundingFeeSettle_DESC_NULLS_LAST",
   isLong_ASC = "isLong_ASC",
   isLong_ASC_NULLS_FIRST = "isLong_ASC_NULLS_FIRST",
   isLong_ASC_NULLS_LAST = "isLong_ASC_NULLS_LAST",
@@ -12485,6 +13252,9 @@ export interface TradeActionWhereInput {
   initialCollateralTokenAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   initialCollateralTokenAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   initialCollateralTokenAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  isFundingFeeSettle_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  isFundingFeeSettle_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  isFundingFeeSettle_not_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
   isLong_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
   isLong_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
   isLong_not_eq?: InputMaybe<Scalars["Boolean"]["input"]>;

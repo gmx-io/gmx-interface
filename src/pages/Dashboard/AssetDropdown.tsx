@@ -1,4 +1,4 @@
-import { autoUpdate, flip, FloatingPortal, shift, useFloating } from "@floating-ui/react";
+import { autoUpdate, flip, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import { useCallback } from "react";
@@ -12,6 +12,7 @@ import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import { getNormalizedTokenSymbol, getTokenBySymbol } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import FloatingPortal from "components/Portal/FloatingPortal";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
