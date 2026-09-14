@@ -117,6 +117,7 @@ export type IncentiveAccountEpochAuditEntry = {
   id: string;
   account: string;
   epochTimestamp: number;
+  avgStakedGmx: bigint | null;
   fees: bigint;
   tradingVolume: bigint;
   tierVolume: bigint;
@@ -139,4 +140,17 @@ export type IncentiveAccountEpochAuditPage = {
   entries: IncentiveAccountEpochAuditEntry[];
   totalCount: number;
   hasNextPage: boolean;
+};
+
+export type IncentiveDistributionRow = {
+  wallet: string;
+  esGMX: string;
+  GT: string;
+  volume_usd: string;
+  volume_multiplier: string;
+  staking_gmx: string;
+  staking_multiplier: string;
+  total_multiplier: string;
+  eligible_referral_volume_usd: string;
+  eligible_fees_usd: string;
 };
