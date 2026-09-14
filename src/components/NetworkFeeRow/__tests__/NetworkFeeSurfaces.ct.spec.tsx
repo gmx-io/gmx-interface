@@ -35,11 +35,22 @@ const DATA_STORE_GAS_LIMITS: Record<string, bigint> = {
   GLV_PER_MARKET_GAS_LIMIT: 100000n,
 };
 
+// the stand's two GM markets and their supply as fixed in the stories (the spec cannot import the stories' values)
+const GM_MARKET_TOKEN_ADDRESSES = [
+  "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+  "0x450bb6774Dd8a756274E0ab4107953259d2ac541",
+];
+const GM_TOKEN_TOTAL_SUPPLY = 2_600_000n * 10n ** 18n;
+
 function createChain(): MockChain {
   const chain = new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY });
 
   for (const [key, value] of Object.entries(DATA_STORE_GAS_LIMITS)) {
     chain.setDataStoreUint(hashString(key), value);
+  }
+
+  for (const marketTokenAddress of GM_MARKET_TOKEN_ADDRESSES) {
+    chain.setTokenTotalSupply({ token: marketTokenAddress, value: GM_TOKEN_TOTAL_SUPPLY });
   }
 
   return chain;
