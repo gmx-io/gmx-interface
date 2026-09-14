@@ -854,6 +854,10 @@ msgstr "Развернуть"
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsTiersTab.tsx
+msgid "Connect wallet to view your rewards"
+msgstr "Подключите кошелёк, чтобы просмотреть свои награды"
+
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
 msgstr "Действия GMX {VERSION_NAME} всех трейдеров в сети {networkName}"
@@ -7721,6 +7725,7 @@ msgstr "Выберите позиции"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsTiersTab.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Connect wallet"
 msgstr "Подключить кошелек"
