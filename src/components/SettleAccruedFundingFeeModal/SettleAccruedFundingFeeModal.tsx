@@ -19,6 +19,7 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -34,12 +35,13 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
+import { buildDecreaseOrderPayload, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -162,6 +164,14 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     userReferralInfo?.referralCodeForTxn,
     allowedSlippage,
   ]);
+
+  const totalExecutionFee = useMemo(() => {
+    if (!batchParams || !tokensData || selectedPositions.length === 0) {
+      return undefined;
+    }
+
+    return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
+  }, [batchParams, chainId, selectedPositions.length, tokensData]);
 
   const { formId, isActiveForm } = useActiveForm();
 
@@ -372,6 +382,13 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
             />
           ))}
         </div>
+      </div>
+      <div className="mb-15">
+        <NetworkFeeRow
+          executionFee={totalExecutionFee}
+          gasPaymentParams={selectedPositions.length > 0 ? expressParams?.gasPaymentParams : undefined}
+          feeSource={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
+        />
       </div>
       <AlertInfo type="info" compact>
         <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>

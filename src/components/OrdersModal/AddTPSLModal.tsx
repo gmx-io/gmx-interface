@@ -32,6 +32,7 @@ import {
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import {
   DecreasePositionSwapType,
   isLimitDecreaseOrderType,
@@ -778,6 +779,8 @@ export function AddTPSLModal({
     canSwitchGasPaymentToken: isActiveForm,
   });
 
+  const feeSource = getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined });
+
   const submitError = useMemo(() => {
     if (!tpPriceInput && !slPriceInput) {
       return t`Enter an amount`;
@@ -1198,7 +1201,7 @@ export function AddTPSLModal({
         >
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />
           <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
-          <NetworkFeeRow executionFee={totalExecutionFee} />
+          <NetworkFeeRow executionFee={totalExecutionFee} feeSource={feeSource} />
           {breakdownNetPriceImpactEnabled && (
             <SyntheticsInfoRow
               label={t`Stored price impact`}

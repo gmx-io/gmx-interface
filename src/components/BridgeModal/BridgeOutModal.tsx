@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Address, encodeAbiParameters, zeroAddress } from "viem";
+import { Address, encodeAbiParameters } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -27,6 +27,7 @@ import type { BridgeOutParams } from "domain/multichain/types";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
+import { GMX_ACCOUNT_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeOutTxn } from "domain/synthetics/markets/createBridgeOutTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -51,6 +52,8 @@ import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
+import { NetworkFeeValue, type NetworkFeeDetails } from "components/NetworkFeeRow/NetworkFeeValue";
+import { SimpleNetworkFeeRow } from "components/NetworkFeeRow/SimpleNetworkFeeRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -191,50 +194,44 @@ export function BridgeOutModal({
     fromStargateAddress: bridgeOutParams?.provider,
   });
 
-  const networkFeeUsd = useMemo(() => {
-    if (
-      errors?.isOutOfTokenError?.isGasPaymentToken &&
-      errors?.isOutOfTokenError?.requiredAmount !== undefined &&
-      gasPaymentToken !== undefined &&
-      gasPaymentToken.decimals !== undefined
-    ) {
-      return convertToUsd(
-        errors.isOutOfTokenError.requiredAmount,
-        gasPaymentToken.decimals,
-        gasPaymentToken.prices.maxPrice
-      );
+  const expressFeeDetails = useMemo((): NetworkFeeDetails | undefined => {
+    if (gasPaymentToken === undefined) {
+      return undefined;
     }
 
-    if (
-      transferNativeFee === undefined ||
-      tokensData === undefined ||
-      tokensData[zeroAddress] === undefined ||
-      expressTxnParamsAsyncResult.data === undefined
-    ) {
-      return;
+    const amount =
+      errors?.isOutOfTokenError?.isGasPaymentToken && errors.isOutOfTokenError.requiredAmount !== undefined
+        ? errors.isOutOfTokenError.requiredAmount
+        : expressTxnParamsAsyncResult.data?.gasPaymentParams.gasPaymentTokenAmount;
+
+    if (amount === undefined) {
+      return undefined;
     }
 
-    const relayFeeUsd = convertToUsd(
-      expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentTokenAmount,
-      expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentToken.decimals,
-      getMidPrice(expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentToken.prices)
-    )!;
+    return {
+      amount,
+      usd: convertToUsd(amount, gasPaymentToken.decimals, getMidPrice(gasPaymentToken.prices))!,
+      decimals: gasPaymentToken.decimals,
+      symbol: gasPaymentToken.symbol,
+      isStable: gasPaymentToken.isStable,
+    };
+  }, [errors?.isOutOfTokenError, expressTxnParamsAsyncResult.data, gasPaymentToken]);
 
-    const transferNativeFeeUsd = convertToUsd(
-      transferNativeFee,
-      tokensData[zeroAddress].decimals,
-      tokensData[zeroAddress].prices.minPrice
-    )!;
+  const bridgeFeeDetails = useMemo((): NetworkFeeDetails | undefined => {
+    const wrappedToken = getTokenData(tokensData, getWrappedToken(chainId).address);
 
-    return relayFeeUsd + transferNativeFeeUsd;
-  }, [
-    errors?.isOutOfTokenError?.isGasPaymentToken,
-    errors?.isOutOfTokenError?.requiredAmount,
-    gasPaymentToken,
-    transferNativeFee,
-    tokensData,
-    expressTxnParamsAsyncResult.data,
-  ]);
+    if (transferNativeFee === undefined || wrappedToken === undefined) {
+      return undefined;
+    }
+
+    return {
+      amount: transferNativeFee,
+      usd: convertToUsd(transferNativeFee, wrappedToken.decimals, wrappedToken.prices.minPrice)!,
+      decimals: wrappedToken.decimals,
+      symbol: wrappedToken.symbol,
+    };
+  }, [chainId, tokensData, transferNativeFee]);
+  const bridgeFeeTokenSymbol = bridgeFeeDetails?.symbol;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -494,7 +491,30 @@ export function BridgeOutModal({
           </Button>
         </ButtonTooltipWrapper>
 
-        <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(networkFeeUsd)} />
+        <SimpleNetworkFeeRow
+          details={expressFeeDetails}
+          isLoading={expressFeeDetails === undefined && !expressTxnParamsAsyncResult.error}
+          source={GMX_ACCOUNT_NETWORK_FEE_SOURCE}
+          isExpress
+        />
+
+        <SyntheticsInfoRow
+          label={t`Bridge fee`}
+          value={
+            bridgeFeeDetails ? (
+              <NetworkFeeValue
+                amount={bridgeFeeDetails.amount}
+                usd={bridgeFeeDetails.usd}
+                decimals={bridgeFeeDetails.decimals}
+                symbol={bridgeFeeDetails.symbol}
+                source={GMX_ACCOUNT_NETWORK_FEE_SOURCE}
+                tooltipContent={t`The bridge fee is paid in ${bridgeFeeTokenSymbol} from your GMX Account.`}
+              />
+            ) : (
+              "..."
+            )
+          }
+        />
 
         <SyntheticsInfoRow
           label={t`GMX Account balance`}

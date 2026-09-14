@@ -8,7 +8,7 @@ import { RpcRequest, RpcResponder } from "./types";
 
 const abiCoder = ethers.AbiCoder.defaultAbiCoder();
 
-function hashString(value: string): string {
+export function hashString(value: string): string {
   return ethers.keccak256(abiCoder.encode(["string"], [value]));
 }
 

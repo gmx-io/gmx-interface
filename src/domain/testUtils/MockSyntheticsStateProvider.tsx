@@ -1,6 +1,7 @@
 import { ReactNode, useMemo } from "react";
 
 import { ARBITRUM, type SourceChainId } from "config/chains";
+import type { PoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -38,6 +39,10 @@ export const DEFAULT_MOCK_MARKETS_INFO_DATA: MarketsInfoData = {
 
 const EMPTY_POSITIONS_INFO_DATA: PositionsInfoData = {};
 const EMPTY_ORDERS_INFO_DATA: OrdersInfoData = {};
+const EMPTY_CLAIMS: SyntheticsState["claims"] = {
+  accruedPositionPriceImpactFees: [],
+  claimablePositionPriceImpactFees: [],
+};
 
 export type MockSyntheticsStateProviderProps = {
   children: ReactNode;
@@ -52,6 +57,14 @@ export type MockSyntheticsStateProviderProps = {
   subaccount?: SyntheticsState["subaccountState"]["subaccount"];
   srcChainId?: SourceChainId;
   l1ExpressOrderGasReference?: L1ExpressOrderGasReference;
+  /** Position key the PositionSeller modal opens for (prod sets it from the positions list). */
+  closingPositionKey?: string;
+  /** Claimable price impact rebates (prod loads them from the rebates API). */
+  claims?: SyntheticsState["claims"];
+  /** GM/GLV box state (prod builds it from the route and market-token requests). */
+  poolsDetails?: PoolsDetailsState;
+  /** GM token data for deposits (prod loads it with the market-token request). */
+  depositMarketTokensData?: TokensData;
 };
 
 /**
@@ -72,6 +85,10 @@ export function MockSyntheticsStateProvider({
   subaccount,
   srcChainId,
   l1ExpressOrderGasReference,
+  closingPositionKey,
+  claims = EMPTY_CLAIMS,
+  poolsDetails,
+  depositMarketTokensData,
 }: MockSyntheticsStateProviderProps) {
   const chainId = ARBITRUM;
   const { account, signer } = useWallet();
@@ -123,12 +140,12 @@ export function MockSyntheticsStateProvider({
         positionsConstants: MOCK_POSITIONS_CONSTANTS,
         uiFeeFactor,
         userReferralInfo: undefined,
-        depositMarketTokensData: undefined,
+        depositMarketTokensData,
         progressiveDepositMarketTokensData: undefined,
         multichainMarketTokensBalancesResult: { tokenBalances: {}, isLoading: false },
         glvInfo: { glvs: undefined, glvData: undefined, isLoading: false },
 
-        closingPositionKey: undefined,
+        closingPositionKey,
         setClosingPositionKey: noop,
         closingPositionOrderOption: undefined,
 
@@ -154,7 +171,7 @@ export function MockSyntheticsStateProvider({
 
         jitLiquidityData: { jitLiquidityMap: undefined },
       },
-      claims: { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] },
+      claims,
       // page-scoped, unrelated to trading widgets
       leaderboard: {} as SyntheticsState["leaderboard"],
       settings,
@@ -166,7 +183,7 @@ export function MockSyntheticsStateProvider({
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
-      poolsDetails: undefined,
+      poolsDetails,
       // populate if the component under test grows feature-gated or oracle-based behavior
       features,
       uiFlags: undefined,
@@ -191,6 +208,10 @@ export function MockSyntheticsStateProvider({
     features,
     sponsoredCallBalanceData,
     l1ExpressOrderGasReference,
+    closingPositionKey,
+    claims,
+    poolsDetails,
+    depositMarketTokensData,
     settings,
     subaccountState,
     tokenPermitsState,

@@ -91,6 +91,7 @@ import { SelectedPoolLabel } from "../SelectedPool";
 import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
+import { useGmNetworkFeeDetails } from "./useGmNetworkFeeDetails";
 import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { useTechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
@@ -227,6 +228,14 @@ export function GmSwapBoxDepositWithdrawal() {
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
   const gasPaymentToken = paySource === "gmxAccount" ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
+  const networkFee = useGmNetworkFeeDetails({
+    technicalFees,
+    logicalNetworkFeeUsd: logicalFees?.logicalNetworkFee?.deltaUsd,
+    srcChainId,
+    tokensData: tradeTokensData,
+    gasPrice,
+    gasPaymentToken,
+  });
   const gasPaymentTokenForMax = paySource === "gmxAccount" ? gasPaymentToken : nativeToken;
   const gasPaymentTokenAmountForMax = convertToTokenAmount(
     (logicalFees?.logicalNetworkFee?.deltaUsd ?? 0n) * -1n,
@@ -489,6 +498,7 @@ export function GmSwapBoxDepositWithdrawal() {
             <div className={cx("flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
               <div>
                 <BuyInputSection
+                  qa="gm-first-token"
                   topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
                   bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
                   bottomRightLabel={t`Balance`}
@@ -692,6 +702,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
         <InfoRows
           fees={logicalFees}
+          networkFee={networkFee}
           isLoading={(firstTokenAmount ?? 0n) === 0n || technicalFeesError ? false : !technicalFees}
           isDeposit={isDeposit}
         />

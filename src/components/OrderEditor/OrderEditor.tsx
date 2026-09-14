@@ -56,6 +56,7 @@ import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   EditingOrderSource,
@@ -113,7 +114,6 @@ import {
   formatAmountFree,
   formatBalanceAmount,
   formatDeltaUsd,
-  formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
   parseValue,
@@ -136,6 +136,7 @@ import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
@@ -1140,16 +1141,16 @@ export function OrderEditor(p: Props) {
                     <>
                       <StatsTooltipRow
                         label={<div className="text-typography-primary">{t`Network fee`}:</div>}
-                        value={formatTokenAmountWithUsd(
-                          networkFee.feeTokenAmount * -1n,
-                          networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
-                          networkFee.feeToken.symbol,
-                          networkFee.feeToken.decimals,
-                          {
-                            displayDecimals: 5,
-                            isStable: networkFee.feeToken.isStable,
-                          }
-                        )}
+                        value={
+                          <NetworkFeeValue
+                            amount={networkFee.feeTokenAmount}
+                            usd={networkFee.feeUsd}
+                            decimals={networkFee.feeToken.decimals}
+                            symbol={networkFee.feeToken.symbol}
+                            isStable={networkFee.feeToken.isStable}
+                            source={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
+                          />
+                        }
                         showDollar={false}
                       />
                       <br />

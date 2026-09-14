@@ -649,6 +649,10 @@ msgstr "Максимальное {0} превышение шорта"
 msgid "Insufficient GM balance"
 msgstr "Недостаточный баланс GM"
 
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
+msgstr "Комиссии Express оплачиваются токеном оплаты Gas из вашего кошелька. Изменить его можно в настройках."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
 msgstr "Проскальзывание превышено. Ожидаемый минимум: {minOutputAmountText}, фактически: {outputAmountText}"
@@ -904,6 +908,10 @@ msgstr "Реализованная PnL"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account."
 msgstr "Получите поддерживаемые активы на ваш кошелёк в сети {networksList}, затем внесите их на счет GMX."
+
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "{chainName} wallet"
+msgstr "Кошелек {chainName}"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
@@ -1355,6 +1363,11 @@ msgstr "ОБЪЁМ"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "{0} amount"
 msgstr "{0} количество"
+
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account."
+msgstr "Комиссия моста оплачивается в {bridgeFeeTokenSymbol} из вашего Счета GMX."
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "SHORTS NET RATE / 1H"
@@ -5681,6 +5694,10 @@ msgstr "Создать TWAP"
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "Проскальзывание — это разница между ожидаемой и фактической ценой исполнения из-за волатильности. Ордера не будут исполнены, если проскальзывание превысит максимально допустимое значение. Значение по умолчанию можно изменить в настройках.<0/><1/>Низкое значение (например, менее -{0}) может привести к неисполненным ордерам при волатильности.<2/><3/>Примечание: проскальзывание отличается от влияния на цену, которое основано на дисбалансе открытого интереса. <4>Подробнее</4>."
 
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Wallet transactions pay gas in {nativeTokenSymbol} from your Wallet."
+msgstr "Транзакции кошелька оплачивают gas в {nativeTokenSymbol} из вашего кошелька."
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 msgid "Margin before pending borrow and funding fees"
@@ -8608,6 +8625,10 @@ msgstr "Ссылка скопирована"
 msgid "Total wallet received"
 msgstr "Всего получено на кошелёк"
 
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "This action is paid from your GMX Account, so its fee is paid in your GMX Account gas payment token. Change it in Settings."
+msgstr "Это действие оплачивается из вашего Счета GMX, поэтому его комиссия списывается токеном оплаты Gas Счета GMX. Изменить его можно в настройках."
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -9492,9 +9513,12 @@ msgstr "Исследуйте, анализируйте и копируйте о�
 msgid "{addressLabel} on {networkLabel}"
 msgstr "{addressLabel} на {networkLabel}"
 
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Loading fees..."
-msgstr ""
+msgstr "Загрузка комиссий..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
@@ -9546,6 +9570,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "Купить GM за {0} в пределах лимитов ниже"
+
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Bridge transactions pay gas in {nativeTokenSymbol} from your {chainName} wallet."
+msgstr "Транзакции моста оплачивают gas в {nativeTokenSymbol} из вашего кошелька {chainName}."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
@@ -11085,6 +11113,7 @@ msgstr "Общий процент PnL после комиссий и влиян�
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "GMX Account"
 msgstr "Счет GMX"
 
@@ -11490,6 +11519,7 @@ msgstr "Оптимальный коэффициент использования
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "Wallet"
 msgstr "Кошелек"
 
@@ -11993,6 +12023,11 @@ msgstr "Нетто-ставка лонгов / 1ч"
 msgid "EVENT"
 msgstr "СОБЫТИЕ"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Bridge fee"
+msgstr "Комиссия моста"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr "Распределение"
@@ -12457,13 +12492,13 @@ msgid "Funds bridging to..."
 msgstr "Перевод средств в..."
 
 #: src/components/BridgeModal/BridgeInModal.tsx
-#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/NetworkFeeRow/SimpleNetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx

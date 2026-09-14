@@ -20,6 +20,7 @@ import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFe
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
+import { WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
 import { getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
@@ -46,6 +47,7 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -555,12 +557,14 @@ export function WalletSendView() {
       }
 
       return (
-        <AmountWithUsdBalance
+        <NetworkFeeValue
           className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails.usd}
           symbol={sameChainNetworkFeeDetails.symbol}
+          source={WALLET_NETWORK_FEE_SOURCE}
+          isExpress={false}
         />
       );
     }
@@ -578,12 +582,14 @@ export function WalletSendView() {
     }
 
     return (
-      <AmountWithUsdBalance
+      <NetworkFeeValue
         className="leading-1"
         amount={networkFee}
         decimals={nativeToken.decimals}
         usd={networkFeeUsd}
         symbol={nativeToken.symbol}
+        source={WALLET_NETWORK_FEE_SOURCE}
+        isExpress={false}
       />
     );
   }, [

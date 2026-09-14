@@ -15,6 +15,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Operation } from "domain/synthetics/markets/types";
@@ -349,7 +350,7 @@ export function GmShiftBox({
             contentClassName="flex flex-col gap-12"
             wrapped
           >
-            <NetworkFeeRow rowPadding executionFee={executionFee} />
+            <NetworkFeeRow rowPadding executionFee={executionFee} feeSource={WALLET_NETWORK_FEE_SOURCE} />
           </ExpandableRow>
         </div>
       </form>

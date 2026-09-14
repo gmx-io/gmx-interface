@@ -32,6 +32,7 @@ import {
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
@@ -673,6 +674,7 @@ export function PositionEditor() {
               <PositionEditorAdvancedRows
                 operation={operation}
                 gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
+                feeSource={getNetworkFeeSource({ isGmxAccount: isCollateralTokenFromGmxAccount })}
               />
             </div>
           </div>

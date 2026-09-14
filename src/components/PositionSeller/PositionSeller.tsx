@@ -49,6 +49,7 @@ import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { OrderType } from "domain/synthetics/orders";
 import { getMarginDepositCancelOrderParams } from "domain/synthetics/orders/marginDeposit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -1269,6 +1270,9 @@ export function PositionSeller() {
                   triggerPriceInputValue={triggerPriceInputValue}
                   slippageInputId={slippageInputId}
                   gasPaymentParams={expressParams?.gasPaymentParams}
+                  feeSource={getNetworkFeeSource({
+                    isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
+                  })}
                 />
               </div>
             </>

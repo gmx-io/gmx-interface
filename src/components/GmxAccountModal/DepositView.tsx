@@ -47,6 +47,7 @@ import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
 import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
+import { WALLET_NETWORK_FEE_SOURCE, getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
@@ -86,6 +87,7 @@ import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -1243,27 +1245,31 @@ export const DepositView = () => {
       }
 
       return (
-        <AmountWithUsdBalance
+        <NetworkFeeValue
           className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails?.usd}
           symbol={sameChainNetworkFeeDetails?.symbol}
+          source={WALLET_NETWORK_FEE_SOURCE}
+          isExpress={false}
         />
       );
     }
 
-    if (networkFee === undefined) {
+    if (networkFee === undefined || depositViewChain === undefined) {
       return "...";
     }
 
     return (
-      <AmountWithUsdBalance
+      <NetworkFeeValue
         className="leading-1"
         amount={networkFee}
         decimals={depositViewViemChain.nativeCurrency.decimals}
         usd={networkFeeUsd}
         symbol={depositViewViemChain.nativeCurrency.symbol}
+        source={getSourceChainNetworkFeeSource(depositViewChain)}
+        isExpress={false}
       />
     );
   }, [
@@ -1426,9 +1432,7 @@ export const DepositView = () => {
                 Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account.
               </Trans>
             ) : depositViewChain === (settlementChainId as number) ? (
-              <Trans>
-                Receive supported assets into your wallet on {networkName}, or choose another network.
-              </Trans>
+              <Trans>Receive supported assets into your wallet on {networkName}, or choose another network.</Trans>
             ) : (
               <Trans>
                 Receive {tokensList} into your wallet on {networkName}, or choose another network.

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SettlementChainId } from "config/chains";
+import { getViemChain } from "config/chains";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
@@ -18,10 +19,10 @@ import { useMultichainStargateApproval } from "domain/multichain/useMultichainSt
 import { validateReferralCodeExists } from "domain/referrals/hooks";
 import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
-import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -30,6 +31,7 @@ import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import Button from "components/Button/Button";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
 import { getReferralCodeButtonState } from "./getReferralCodeButtonState";
@@ -215,7 +217,20 @@ export function ReferralCodeFormMultichain({
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
-          value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
+          value={
+            quoteResult.networkFee !== undefined ? (
+              <NetworkFeeValue
+                amount={quoteResult.networkFee}
+                usd={quoteResult.networkFeeUsd}
+                decimals={getViemChain(srcChainId).nativeCurrency.decimals}
+                symbol={getViemChain(srcChainId).nativeCurrency.symbol}
+                source={getSourceChainNetworkFeeSource(srcChainId)}
+                isExpress={false}
+              />
+            ) : (
+              "..."
+            )
+          }
         />
       )}
 

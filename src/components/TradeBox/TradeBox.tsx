@@ -67,6 +67,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
@@ -1345,6 +1346,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           slippageInputId={submitButtonState.slippageInputId}
           gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
           totalExecutionFee={submitButtonState.totalExecutionFee}
+          feeSource={getNetworkFeeSource({ isGmxAccount: isFromTokenGmxAccount })}
         />
       </div>
     </form>

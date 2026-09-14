@@ -13,6 +13,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
+import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -34,9 +35,15 @@ export type Props = {
   triggerPriceInputValue: string;
   slippageInputId: string;
   gasPaymentParams?: GasPaymentParams;
+  feeSource: NetworkFeeSource | undefined;
 };
 
-export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId, gasPaymentParams }: Props) {
+export function PositionSellerAdvancedRows({
+  triggerPriceInputValue,
+  slippageInputId,
+  gasPaymentParams,
+  feeSource,
+}: Props) {
   const [open, setOpen] = useLocalStorageSerializeKey("position-seller-advanced-display-rows-open", false);
   const position = useSelector(selectPositionSellerPosition);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
@@ -108,7 +115,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     >
       <ExitPriceRow isSwap={false} fees={fees} price={position.markPrice} isLong={position.isLong} />
       <TradeFeesRow {...fees} feesType="decrease" />
-      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
+      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
 
       {isTwap ? (
         isSetAcceptablePriceImpactEnabled ? (

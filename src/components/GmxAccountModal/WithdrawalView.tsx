@@ -65,6 +65,7 @@ import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, ExpressTxnParams, RawRelayParamsPayload } from "domain/synthetics/express/types";
+import { GMX_ACCOUNT_NETWORK_FEE_SOURCE, WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
@@ -106,6 +107,7 @@ import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -976,6 +978,8 @@ export const WithdrawalView = () => {
     networkFeeInGasPaymentToken,
     wntFeeUsd,
     someGasPaymentTokenAmount,
+    bridgeNetworkFee,
+    bridgeNetworkFeeUsd,
   });
 
   useEffect(
@@ -986,10 +990,18 @@ export const WithdrawalView = () => {
         networkFeeInGasPaymentToken: undefined,
         wntFeeUsd: undefined,
         someGasPaymentTokenAmount: undefined,
+        bridgeNetworkFee: undefined,
+        bridgeNetworkFeeUsd: undefined,
       });
     },
     [selectedTokenAddress, withdrawalViewChain, gasPaymentToken?.address]
   );
+
+  useEffect(() => {
+    if (bridgeNetworkFee !== undefined && bridgeNetworkFeeUsd !== undefined) {
+      setLastValidNetworkFees((prev) => ({ ...prev, bridgeNetworkFee, bridgeNetworkFeeUsd }));
+    }
+  }, [bridgeNetworkFee, bridgeNetworkFeeUsd]);
 
   useEffect(() => {
     if (
@@ -1373,41 +1385,71 @@ export const WithdrawalView = () => {
       }
 
       return (
-        <AmountWithUsdBalance
+        <NetworkFeeValue
           className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails.usd}
           symbol={sameChainNetworkFeeDetails.symbol}
+          source={WALLET_NETWORK_FEE_SOURCE}
+          isExpress={false}
         />
       );
     }
 
-    const someNetworkFeeUsd = networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd;
-    const someNetworkFeeInGasPaymentToken =
-      networkFeeInGasPaymentToken ?? lastValidNetworkFees.networkFeeInGasPaymentToken;
+    const someExpressFeeAmount = someGasPaymentTokenAmount ?? lastValidNetworkFees.someGasPaymentTokenAmount;
 
-    if (someNetworkFeeUsd === undefined || gasPaymentToken === undefined) {
+    if (someExpressFeeAmount === undefined || gasPaymentToken === undefined) {
       return "...";
     }
 
     return (
-      <AmountWithUsdBalance
+      <NetworkFeeValue
         className="leading-1"
-        amount={someNetworkFeeInGasPaymentToken}
+        amount={someExpressFeeAmount}
         decimals={gasPaymentToken.decimals}
-        usd={someNetworkFeeUsd}
+        usd={convertToUsd(someExpressFeeAmount, gasPaymentToken.decimals, getMidPrice(gasPaymentToken.prices))}
         symbol={gasPaymentToken.symbol}
+        isStable={gasPaymentToken.isStable}
+        source={GMX_ACCOUNT_NETWORK_FEE_SOURCE}
+        isExpress
       />
     );
   }, [
     gasPaymentToken,
     isSameChain,
-    lastValidNetworkFees.networkFeeInGasPaymentToken,
-    lastValidNetworkFees.networkFeeUsd,
-    networkFeeInGasPaymentToken,
-    networkFeeUsd,
+    lastValidNetworkFees.someGasPaymentTokenAmount,
     sameChainNetworkFeeDetails,
+    someGasPaymentTokenAmount,
+  ]);
+
+  const bridgeFeeValue = useMemo(() => {
+    const someBridgeNetworkFee = bridgeNetworkFee ?? lastValidNetworkFees.bridgeNetworkFee;
+    const someBridgeNetworkFeeUsd = bridgeNetworkFeeUsd ?? lastValidNetworkFees.bridgeNetworkFeeUsd;
+
+    if (someBridgeNetworkFee === undefined || someBridgeNetworkFeeUsd === undefined || relayerFeeToken === undefined) {
+      return "...";
+    }
+
+    const bridgeFeeTokenSymbol = relayerFeeToken.symbol;
+
+    return (
+      <NetworkFeeValue
+        className="leading-1"
+        amount={someBridgeNetworkFee}
+        decimals={relayerFeeToken.decimals}
+        usd={someBridgeNetworkFeeUsd}
+        symbol={bridgeFeeTokenSymbol}
+        source={GMX_ACCOUNT_NETWORK_FEE_SOURCE}
+        tooltipContent={t`The bridge fee is paid in ${bridgeFeeTokenSymbol} from your GMX Account.`}
+      />
+    );
+  }, [
+    bridgeNetworkFee,
+    bridgeNetworkFeeUsd,
+    lastValidNetworkFees.bridgeNetworkFee,
+    lastValidNetworkFees.bridgeNetworkFeeUsd,
+    relayerFeeToken,
   ]);
 
   const withdrawFeeValue = useMemo(() => {
@@ -1591,6 +1633,12 @@ export const WithdrawalView = () => {
             label={<Trans>Network fee</Trans>}
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
+          {!isSameChain && (
+            <SyntheticsInfoRow
+              label={<Trans>Bridge fee</Trans>}
+              value={isNetworkFeeLoading ? valueSkeleton : bridgeFeeValue}
+            />
+          )}
           <SyntheticsInfoRow
             label={<Trans>Withdraw fee</Trans>}
             value={isWithdrawFeeLoading ? valueSkeleton : withdrawFeeValue}
