@@ -1,4 +1,5 @@
 import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
+import { useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useUsers from "domain/synthetics/stats/useUsers";
 import { sumBigInts } from "lib/sumBigInts";
@@ -8,6 +9,7 @@ export function useTraders(): number | null {
   const arbitrumUsers = useUsers(ARBITRUM);
   const avalancheUsers = useUsers(AVALANCHE);
   const megaethUsers = useUsers(MEGAETH);
+  const gmtradeUsers = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana?.users.all;
   return Number(
     sumBigInts(
       uniqueUsers?.[ARBITRUM],
@@ -15,7 +17,8 @@ export function useTraders(): number | null {
       uniqueUsers?.[MEGAETH],
       arbitrumUsers?.totalUsers,
       avalancheUsers?.totalUsers,
-      megaethUsers?.totalUsers
+      megaethUsers?.totalUsers,
+      gmtradeUsers ?? undefined
     )
   );
 }

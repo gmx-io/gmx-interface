@@ -19,6 +19,7 @@ import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 import type { SignedSubaccountApproval } from "sdk/utils/subaccount";
 
+import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
 import { TradeBox } from "components/TradeBox/TradeBox";
 
 const EXPRESS_AVAILABLE_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
@@ -102,7 +103,9 @@ export function OneClickNetworkSwitchStory({
       <SyntheticsStateWithAppChainContext>
         <NetworkSwitchControl />
         <div className="text-body-medium flex flex-col rounded-8">
-          <TradeBox isMobile={false} />
+          <ActiveFormScope formId="tradebox">
+            <TradeBox isMobile={false} activeFormId="tradebox" />
+          </ActiveFormScope>
         </div>
       </SyntheticsStateWithAppChainContext>
     </CtAppProviders>

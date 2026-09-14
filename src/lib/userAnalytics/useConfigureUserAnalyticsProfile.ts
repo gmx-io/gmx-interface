@@ -3,7 +3,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { AB_FLAG_NAMES, getAbFlags, setAbFlagEnabled } from "config/ab";
+import { getAbFlags } from "config/ab";
 import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
@@ -80,16 +80,6 @@ export function useConfigureUserAnalyticsProfile() {
         query.delete(SESSION_ID_KEY);
         isUrlParamsChanged = true;
       }
-
-      // configured flags, not assigned ones — a lazy flag must be settable by url before any roll
-      AB_FLAG_NAMES.forEach((flag) => {
-        const urlFlagValue = query.get(flag);
-        if (urlFlagValue) {
-          setAbFlagEnabled(flag, urlFlagValue === "1");
-          query.delete(flag);
-          isUrlParamsChanged = true;
-        }
-      });
 
       if (isUrlParamsChanged) {
         history.replace({

@@ -23,6 +23,7 @@ import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getTokens } from "sdk/configs/tokens";
@@ -97,6 +98,7 @@ function getNormalizedIncentive(
 
 export default function UserIncentiveDistribution() {
   const { account, active } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
   const { openConnectModal } = useConnectModal();
   const { chainId, srcChainId } = useChainId();
   const tokens = getTokens(chainId);
@@ -149,7 +151,7 @@ export default function UserIncentiveDistribution() {
                     handle={t`No distribution history`}
                     content={t`Incentives, airdrops, and prizes will appear here`}
                   />
-                  {!active ? (
+                  {!active && !isWalletInitializing ? (
                     <div className="mt-15">
                       <Button variant="primary" onClick={openConnectModal}>
                         <WalletIcon className="size-16" />

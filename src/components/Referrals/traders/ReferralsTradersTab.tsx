@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useUserReferralCode } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { isHashZero } from "lib/legacy";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 import { Faq } from "components/Faq/Faq";
 import Loader from "components/Loader/Loader";
@@ -22,9 +23,10 @@ export function ReferralsTradersTab({ isLoading, account, hasAddressInUrl = fals
   const [forceDashboard, setForceDashboard] = useState(false);
   const { chainId } = useChainId();
   const { userReferralCode, isLoading: isUserReferralCodeLoading } = useUserReferralCode(chainId, account);
+  const isWalletInitializing = useIsWalletInitializing();
   const handleGoToTraderDashboard = useCallback(() => setForceDashboard(true), []);
 
-  if (isLoading || isUserReferralCodeLoading) {
+  if (isLoading || isUserReferralCodeLoading || isWalletInitializing) {
     return <Loader />;
   }
 

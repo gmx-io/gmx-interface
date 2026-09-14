@@ -17,10 +17,7 @@ export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalP
 
       <ModalBody>
         <p>
-          <Trans>
-            GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience
-            may vary slightly
-          </Trans>
+          <Trans>GMX on Solana (GMTrade) is currently served from a separate domain</Trans>
         </p>
         <p>
           <Trans>Opens GMTrade in a new tab</Trans>

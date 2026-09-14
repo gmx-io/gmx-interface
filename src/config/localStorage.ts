@@ -30,6 +30,7 @@ export const DEBUG_RPC_ENDPOINTS_KEY = "debug_rpc_endpoints";
 export const ORACLE_KEEPER_DEBUG_STATE_KEY = "oracle_keeper_debug_state";
 export const MULTICALL_DEBUG_STATE_KEY = "multicall_debug_state";
 export const DEBUG_ERROR_BOUNDARY_KEY = "debug-error-boundary";
+export const STATS_API_URL_KEY = "stats-api-url";
 const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
@@ -68,7 +69,6 @@ export const SUPPORT_CHAT_WAS_EVER_SHOWN_KEY = "support-chat-was-ever-shown";
 export const SUPPORT_CHAT_WAS_EVER_CLICKED_KEY = "support-chat-was-ever-clicked";
 export const SUPPORT_CHAT_USER_ID_KEY = "support-chat-user-id";
 export const SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY = "support-chat-last-connected-state";
-export const SUPPORT_CHAT_WAS_OPENED_WITHOUT_WALLET_KEY = "support-chat-was-opened-without-wallet";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";

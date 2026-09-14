@@ -110,6 +110,7 @@ import {
 import { TradeMode } from "sdk/utils/trade";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -465,6 +466,8 @@ export function PositionSeller() {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
+  const { formId, isActiveForm } = useActiveForm();
+
   const {
     expressParams,
     isLoading: isExpressLoading,
@@ -476,6 +479,7 @@ export function PositionSeller() {
     label: "Position Seller",
     orderParams: batchParams,
     isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
+    canSwitchGasPaymentToken: isActiveForm,
   });
 
   const approvalTokens = useMemo(() => {
@@ -1060,6 +1064,7 @@ export function PositionSeller() {
   return (
     <div className="text-body-medium">
       <Modal
+        activeFormId={formId}
         isVisible={isVisible}
         setIsVisible={onClose}
         label={(() => {

@@ -1,4 +1,5 @@
 import { createConfig } from "@privy-io/wagmi";
+import { deserialize } from "@wagmi/core";
 import once from "lodash/once";
 import {
   Chain,
@@ -10,6 +11,7 @@ import {
   webSocket,
   WebSocketTransport,
 } from "viem";
+import type { State } from "wagmi";
 
 import { DEFAULT_SETTLEMENT_CHAIN_ID, getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -55,6 +57,10 @@ export function getSupportedChains(): [Chain, ...Chain[]] {
   return [defaultChain, ...chains.filter((chain) => chain.id !== defaultChain.id)] as [Chain, ...Chain[]];
 }
 
+const WAGMI_STORE_KEY = "wagmi.store";
+
+let persistedWagmiState: State | undefined;
+
 export const getWagmiConfig = once(() => {
   const chains = getSupportedChains();
 
@@ -67,11 +73,37 @@ export const getWagmiConfig = once(() => {
     {} as Record<number, Transport>
   );
 
+  persistedWagmiState = readPersistedWagmiState();
+
   return createConfig({
     chains,
     transports,
   });
 });
+
+export function getWagmiInitialState(): State | undefined {
+  getWagmiConfig();
+
+  return persistedWagmiState;
+}
+
+function readPersistedWagmiState(): State | undefined {
+  if (typeof localStorage === "undefined") {
+    return undefined;
+  }
+
+  const persisted = localStorage.getItem(WAGMI_STORE_KEY);
+
+  if (persisted === null) {
+    return undefined;
+  }
+
+  try {
+    return (deserialize(persisted) as { state?: State }).state;
+  } catch {
+    return undefined;
+  }
+}
 
 const TRANSPORTS_CACHE = new LRUCache<Transport>(100);
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);

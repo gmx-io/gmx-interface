@@ -19,6 +19,7 @@ import { getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
+import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import {
@@ -48,6 +49,16 @@ import {
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsWithdrawalMarketTokensData,
 } from "./baseSelectors";
+
+export const selectPoolsDetailsHasPendingInput = createSelector((q) => {
+  const inputValues = [
+    q(selectPoolsDetailsFirstTokenInputValue),
+    q(selectPoolsDetailsSecondTokenInputValue),
+    q(selectPoolsDetailsMarketOrGlvTokenInputValue),
+  ];
+
+  return inputValues.some(getIsEnteredAmount);
+});
 
 export const selectPoolsDetailsFlags = createSelector((q) => {
   const operation = q(selectPoolsDetailsOperation);

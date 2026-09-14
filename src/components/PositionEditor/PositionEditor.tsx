@@ -58,6 +58,7 @@ import {
 } from "sdk/configs/tokens";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
@@ -243,7 +244,8 @@ export function PositionEditor() {
     operation,
   });
 
-  const submitButtonState = usePositionEditorButtonState(operation);
+  const { formId, isActiveForm } = useActiveForm();
+  const submitButtonState = usePositionEditorButtonState(operation, isActiveForm);
   const gasPaymentToken = submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken;
 
   // express params cannot resolve without the trigger price, so fall back to the native-token estimate
@@ -445,6 +447,7 @@ export function PositionEditor() {
   return (
     <div className="PositionEditor">
       <Modal
+        activeFormId={formId}
         className="PositionEditor-modal"
         isVisible={!!position}
         setIsVisible={onClose}

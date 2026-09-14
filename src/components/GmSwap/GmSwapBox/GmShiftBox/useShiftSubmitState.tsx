@@ -14,6 +14,7 @@ import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWal
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import type { GmSwapFees } from "sdk/utils/trade/types";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -50,6 +51,7 @@ export function useShiftSubmitState({
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
+  const isWalletInitializing = useIsWalletInitializing();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
@@ -104,6 +106,13 @@ export function useShiftSubmitState({
     }
 
     if (!account) {
+      if (isWalletInitializing) {
+        return {
+          text: t`Connecting wallet...`,
+          disabled: true,
+        };
+      }
+
       return {
         text: t`Connect wallet`,
         onSubmit: () => openConnectModal?.(),
@@ -188,6 +197,7 @@ export function useShiftSubmitState({
     isSubmitting,
     isAllowanceLoading,
     account,
+    isWalletInitializing,
     chainId,
     hasOutdatedUi,
     selectedMarketInfo,

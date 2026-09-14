@@ -65,10 +65,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xB686BcB112660343E6d15BDb65297e110C8311c4": {
       enabled: true,
     },
-    // SWAP-ONLY [USDC-DAI]
-    "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665": {
-      enabled: true,
-    },
     // XRP/USD [WETH-USDC]
     "0x0CCB4fAa6f1F1B30911619f1184082aB4E25813c": {
       enabled: true,
@@ -193,10 +189,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1": {
       enabled: true,
     },
-    // TON/USD [WETH-USDC]
-    "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c": {
-      enabled: true,
-    },
     // WLD/USD [WETH-USDC]
     "0x872b5D567a2469Ed92D252eaCB0EB3BB0769e05b": {
       enabled: true,
@@ -277,16 +269,8 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636": {
       enabled: true,
     },
-    // MELANIA/USD [WETH-USDC]
-    "0x12fD1A4BdB96219E637180Ff5293409502b2951D": {
-      enabled: true,
-    },
     // ENA/USD [WETH-USDC]
     "0x9F159014CC218e942E9E9481742fE5BFa9ac5A2C": {
-      enabled: true,
-    },
-    // AI16Z/USD [WBTC.e-USDC]
-    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169": {
       enabled: true,
     },
     // ANIME/USD [ANIME-USDC]
@@ -341,14 +325,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x7DE8E1A1fbA845A330A6bD91118AfDA09610fB02": {
       enabled: true,
     },
-    // MKR/USD [WETH-USDC]
-    "0x2aE5c5Cd4843cf588AA8D1289894318130acc823": {
-      enabled: true,
-    },
-    // OM/USD [WBTC-USDC]
-    "0x89EB78679921499632fF16B1be3ee48295cfCD91": {
-      enabled: true,
-    },
     // DOLO/USD [WETH-USDC]
     "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4": {
       enabled: true,
@@ -367,10 +343,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // MOODENG/USD [WBTC-USDC]
     "0x2523B89298908FEf4c5e5bd6F55F20926e22058f": {
-      enabled: true,
-    },
-    // PI/USD [WBTC-USDC]
-    "0x39AC3C494950A4363D739201BA5A0861265C9ae5": {
       enabled: true,
     },
     // PUMP/USD [WBTC-USDC]
@@ -431,14 +403,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // VVV/USD [WETH-USDC]
     "0x947C521E44f727219542B0f91a85182193c1D2ad": {
-      enabled: true,
-    },
-    // WELL/USD [WETH-USDC]
-    "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4": {
-      enabled: true,
-    },
-    // KTA/USD [WETH-USDC]
-    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d": {
       enabled: true,
     },
     // ZORA/USD [WETH-USDC]
@@ -511,10 +475,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // LIT/USD [WETH-USDC]
     "0x044dFE01863CE85f9ECd5639eE5485c90AC320FC": {
-      enabled: true,
-    },
-    // IP/USD [WBTC-USDC]
-    "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a": {
       enabled: true,
     },
     // CC/USD [WBTC-USDC]
@@ -597,10 +557,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // SWAP-ONLY [USDT-USDT.e]
     "0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc": {
-      enabled: true,
-    },
-    // SWAP-ONLY [USDC-DAI.e]
-    "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b": {
       enabled: true,
     },
     // XRP/USD [WAVAX-USDC]
@@ -790,8 +746,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
 
 export const DEPOSIT_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
-    // Price impact distribution campaign still active
-    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d", // KTA/USD
     // GLV-only markets — accessible only via GLV
     "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
     "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
@@ -810,23 +764,14 @@ export function isDepositDisabledMarket(chainId: number, marketTokenAddress: str
 
 export const DELISTING_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
-    "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c", // TON/USD
-    "0x39AC3C494950A4363D739201BA5A0861265C9ae5", // PI/USD
-    "0x12fD1A4BdB96219E637180Ff5293409502b2951D", // MELANIA/USD
     "0x71237F8C3d1484495A136022E16840b70fF84a69", // BOME/USD
-    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d", // KTA/USD
     "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366", // SATS/USD
-    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169", // AI16Z/USD
     "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50", // BRETT/USD
     "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C", // MEME/USD
     "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244", // MEW/USD
-    "0x2aE5c5Cd4843cf588AA8D1289894318130acc823", // MKR/USD
-    "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a", // IP/USD
-    "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665", // SWAP-ONLY [USDC-DAI]
   ]),
   [AVALANCHE]: new Set([
     "0xe19da27Bf9733c429445E289B662bECDCa6ce10b", // MELANIA/USD
-    "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b", // SWAP-ONLY [USDC-DAI.e]
   ]),
 };
 

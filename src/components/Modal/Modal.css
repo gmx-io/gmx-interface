@@ -13,6 +13,8 @@
   align-items: center;
   justify-content: center;
   text-align: left;
+  padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom)
+    var(--safe-area-inset-left);
 }
 
 .Modal-scrollable .Modal-content .Modal-body {

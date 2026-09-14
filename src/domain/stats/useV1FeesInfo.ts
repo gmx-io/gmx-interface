@@ -81,11 +81,8 @@ export function useV1FeesInfo(chainId: number) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching feesInfo data for chain ${chainId}:`, error);
 
-      return {
-        weeklyFees: 0n,
-        epochFees: 0n,
-        totalFees: 0n,
-      };
+      // a failed source stays unknown: a zero here would settle the network total as complete
+      return undefined;
     }
   }
 

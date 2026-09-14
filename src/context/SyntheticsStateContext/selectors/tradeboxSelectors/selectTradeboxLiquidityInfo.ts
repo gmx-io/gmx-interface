@@ -9,9 +9,18 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 
-const RISK_THRESHOLD_BPS = 5000n;
+export const MAX_SIZE_WARNING_THRESHOLD_BPS = 8000n;
+
+export function getMaxSizeWarningState(sizeUsd: bigint | undefined, maxSizeUsd: bigint | undefined) {
+  const hasValues = sizeUsd !== undefined && sizeUsd > 0n && maxSizeUsd !== undefined;
+
+  return {
+    shouldShowMaxSize:
+      hasValues && sizeUsd * BASIS_POINTS_DIVISOR_BIGINT >= maxSizeUsd * MAX_SIZE_WARNING_THRESHOLD_BPS,
+    isSizeAboveMax: hasValues && sizeUsd > maxSizeUsd,
+  };
+}
 
 export const selectTradeboxLiquidityInfo = createSelector((q) => {
   const tradeFlags = q(selectTradeboxTradeFlags);
@@ -20,37 +29,30 @@ export const selectTradeboxLiquidityInfo = createSelector((q) => {
   const toToken = q(selectTradeboxToToken);
   const { longLiquidity, shortLiquidity } = q(selectTradeboxLiquidity);
   const { maxLiquidity: swapLiquidityUsd } = q(selectTradeboxMaxLiquidityPath);
-  const { isLong, isLimit, isSwap, isIncrease, isTwap } = tradeFlags;
+  const { isLong, isSwap, isIncrease } = tradeFlags;
 
-  let isLiquidityRisk = false;
-  let availableLiquidityAmount: bigint | undefined = undefined;
-  let availableLiquidityUsd: bigint | undefined = undefined;
+  let sizeUsd: bigint | undefined;
+  let maxSizeAmount: bigint | undefined;
+  let maxSizeUsd: bigint | undefined;
 
-  if (isLimit || isTwap) {
-    if (isSwap && swapAmounts) {
-      availableLiquidityUsd = swapLiquidityUsd;
+  if (isSwap && swapAmounts?.swapStrategy.type === "internalSwap") {
+    sizeUsd = swapAmounts.usdOut;
+    maxSizeUsd = swapLiquidityUsd;
 
-      isLiquidityRisk =
-        bigMath.mulDiv(availableLiquidityUsd, RISK_THRESHOLD_BPS, BASIS_POINTS_DIVISOR_BIGINT) < swapAmounts.usdOut;
-      availableLiquidityAmount = convertToTokenAmount(
-        availableLiquidityUsd,
-        toToken?.decimals,
-        toToken?.prices.maxPrice
-      );
-    }
-
-    if (isIncrease && increaseAmounts) {
-      availableLiquidityUsd = isLong ? longLiquidity : shortLiquidity;
-
-      isLiquidityRisk =
-        bigMath.mulDiv(availableLiquidityUsd!, RISK_THRESHOLD_BPS, BASIS_POINTS_DIVISOR_BIGINT) <
-        increaseAmounts.sizeDeltaUsd;
-    }
+    maxSizeAmount = convertToTokenAmount(maxSizeUsd, toToken?.decimals, toToken?.prices.maxPrice);
   }
 
+  if (isIncrease && increaseAmounts) {
+    sizeUsd = increaseAmounts.sizeDeltaUsd;
+    maxSizeUsd = isLong ? longLiquidity : shortLiquidity;
+  }
+
+  const { shouldShowMaxSize, isSizeAboveMax } = getMaxSizeWarningState(sizeUsd, maxSizeUsd);
+
   return {
-    isLiquidityRisk,
-    availableLiquidityUsd,
-    availableLiquidityAmount,
+    shouldShowMaxSize,
+    isSizeAboveMax,
+    maxSizeUsd,
+    maxSizeAmount,
   };
 });

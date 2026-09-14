@@ -1,7 +1,10 @@
 import { getIsFlagEnabled } from "config/ab";
-import { getApiUrl, isApiSupported } from "sdk/configs/api";
+import { getApiUrl, getStatsApiUrl, isApiSupported } from "sdk/configs/api";
 import type { ApiEnvironment } from "sdk/configs/api";
 import type { ContractsChainId } from "sdk/configs/chains";
+
+import { isDevelopment } from "./env";
+import { STATS_API_URL_KEY } from "./localStorage";
 
 function getIsTestApiEnabled() {
   return getIsFlagEnabled("useTestApi");
@@ -31,4 +34,15 @@ export function getUiApiCacheKey(chainId: ContractsChainId) {
 
 export function isUiApiSupported(chainId: ContractsChainId) {
   return isApiSupported(chainId, getUiApiEnvironment());
+}
+
+export function getUiStatsApiUrl() {
+  if (isDevelopment()) {
+    const url = localStorage.getItem(STATS_API_URL_KEY);
+    if (url) {
+      return url;
+    }
+  }
+
+  return getStatsApiUrl(getUiApiEnvironment());
 }

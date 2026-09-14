@@ -68,7 +68,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   if (p.blockTimestampData) {
     blockTimestamp = adjustBlockTimestamp(p.blockTimestampData);
   } else {
-    const result = await getBlockTimestampAndNumber(client, multicallAddress);
+    const result = await getBlockTimestampAndNumber(client, chainId, multicallAddress);
     blockTimestamp = result.blockTimestamp;
     blockNumber = result.blockNumber;
   }

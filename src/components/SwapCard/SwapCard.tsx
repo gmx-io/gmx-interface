@@ -2,26 +2,19 @@ import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
-import { calculateDisplayDecimals, formatAmount, formatUsd, formatUsdPrice } from "lib/numbers";
-
-import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import { TokenData, TokensRatio, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import { calculateDisplayDecimals, formatAmount, formatUsdPrice } from "lib/numbers";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 export type Props = {
-  maxLiquidityUsd?: bigint;
   fromToken?: TokenData;
   toToken?: TokenData;
   markRatio?: TokensRatio;
 };
 
 export function SwapCard(p: Props) {
-  const { fromToken, toToken, maxLiquidityUsd } = p;
-
-  const maxLiquidityAmount = convertToTokenAmount(maxLiquidityUsd, toToken?.decimals, toToken?.prices?.maxPrice);
+  const { fromToken, toToken } = p;
 
   const ratioStr = useMemo(() => {
     if (!fromToken || !toToken) return "...";
@@ -58,34 +51,6 @@ export function SwapCard(p: Props) {
           label={t`${toToken?.symbol} price`}
           value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
           valueClassName="numbers"
-        />
-
-        <SyntheticsInfoRow
-          label={t`Available liquidity`}
-          value={
-            <Tooltip
-              handle={formatUsd(maxLiquidityUsd) || "..."}
-              handleClassName="numbers"
-              position="left-start"
-              content={
-                <StatsTooltipRow
-                  textClassName="al-swap"
-                  label={t`Max ${toToken?.symbol} out`}
-                  value={
-                    <AmountWithUsdBalance
-                      multiline
-                      amount={maxLiquidityAmount}
-                      decimals={toToken?.decimals ?? 0}
-                      symbol={toToken?.symbol}
-                      usd={maxLiquidityUsd}
-                      isStable={toToken?.isStable}
-                    />
-                  }
-                  showDollar={false}
-                />
-              }
-            />
-          }
         />
 
         <SyntheticsInfoRow label={t`Price`} value={ratioStr} valueClassName="numbers" />

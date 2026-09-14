@@ -73,9 +73,10 @@ import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
+  canSwitchGasPaymentToken: boolean;
 }
 
-export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
+export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentToken }: TradeboxTransactionsProps) {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
@@ -178,6 +179,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     orderParams: batchParams,
     label: "TradeBox",
     isGmxAccount: isFromTokenGmxAccount,
+    canSwitchGasPaymentToken,
   });
 
   const initOrderMetricData = useCallback(() => {

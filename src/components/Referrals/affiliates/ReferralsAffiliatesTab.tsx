@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { registerReferralCode, TotalReferralsStats, useTiers } from "domain/referrals";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 
 import { Faq } from "components/Faq/Faq";
@@ -51,8 +52,9 @@ export function ReferralsAffiliatesTab({
   const hasRecentCode = recentCodes.length > 0;
   const isSomeReferralCodeAvailable = ownsSomeChainCode || hasRecentCode;
   const handleGoToAffiliateDashboard = useCallback(() => setForceDashboard(true), []);
+  const isWalletInitializing = useIsWalletInitializing();
 
-  if (isLoading) return <Loader />;
+  if (isLoading || isWalletInitializing) return <Loader />;
 
   const isWizard = !forceDashboard && !hasAddressInUrl && (!account || !isSomeReferralCodeAvailable);
 
