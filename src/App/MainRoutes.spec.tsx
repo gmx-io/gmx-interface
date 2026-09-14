@@ -18,6 +18,14 @@ vi.mock("pages/AccountDashboard/AccountDashboard", () => ({
   AccountDashboard: () => <div>trader-profile-page</div>,
 }));
 
+vi.mock("context/SyntheticsStateContext/SyntheticsStateContextProvider", () => ({
+  SyntheticsStateContextProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
+vi.mock("pages/Earn/EarnPortfolioPage", () => ({
+  default: () => <div>earn-portfolio-page</div>,
+}));
+
 const ACCOUNT = "0x8446ea6eA4f7bECCe4b9dBC5c61Ce1e9Cd25f22f";
 
 function noop() {
@@ -83,5 +91,14 @@ describe("MainRoutes trader routes", () => {
 
     expect(url).toBe("/traders/not-an-address?network=arbitrum&v=2");
     expect(text).toContain("trader-profile-page");
+  });
+});
+
+describe("MainRoutes legacy buy gmx url", () => {
+  it("redirects /buy_gmx to earn portfolio with the Buy GMX modal requested", () => {
+    const { url, text } = renderAt("/buy_gmx");
+
+    expect(url).toBe("/earn/portfolio?buyGmx=1");
+    expect(text).toContain("earn-portfolio-page");
   });
 });

@@ -14,8 +14,8 @@ import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/Beg
 import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import AnnouncementsPage from "pages/Announcements/Announcements";
-import BuyGMX from "pages/BuyGMX/BuyGMX";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import { BUY_GMX_DEEP_LINK } from "pages/Earn/buyGmxDeepLink";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
 import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
@@ -109,6 +109,8 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
       {/* redirect from previous stake(earn) url */}
       <RedirectWithQuery exact from="/stake" to="/earn" />
+      {/* redirect from the sunset buy gmx page to the Buy GMX modal on earn portfolio */}
+      <Redirect exact from="/buy_gmx" to={BUY_GMX_DEEP_LINK} />
       <RedirectWithQuery from="/v2" to="/trade" />
       <Route exact path="/">
         <RedirectWithQuery to="/trade" />
@@ -169,9 +171,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/jobs">
         <Jobs />
-      </Route>
-      <Route exact path="/buy_gmx">
-        <BuyGMX />
       </Route>
       <Route exact path="/ecosystem">
         <Ecosystem />
