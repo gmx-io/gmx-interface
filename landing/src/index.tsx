@@ -14,6 +14,10 @@ import { captureLandingUtmParams } from "./utils/utm";
 captureLandingReferralCode();
 captureLandingUtmParams();
 
+if ("TelegramWebviewProxy" in window) {
+  document.documentElement.classList.add("telegram-browser");
+}
+
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
