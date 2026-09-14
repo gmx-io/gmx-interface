@@ -154,7 +154,7 @@ export default function AnnouncementsPage() {
     if (!highlightedId) return;
     document
       .querySelector(`[data-announcement-id="${CSS.escape(highlightedId)}"]`)
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
     const timeoutId = window.setTimeout(() => setHighlightedId(null), 2000);
     return () => window.clearTimeout(timeoutId);
   }, [highlightedId]);
