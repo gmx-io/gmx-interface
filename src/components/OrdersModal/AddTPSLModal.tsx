@@ -66,6 +66,7 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { getExpressError } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
@@ -99,6 +100,7 @@ import {
   DecreaseReceiveOutputDisplay,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
@@ -108,6 +110,7 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ExpressTradingWarningCard } from "components/TradeBox/ExpressTradingWarningCard";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
@@ -772,13 +775,14 @@ export function AddTPSLModal({
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
     canSwitchGasPaymentToken: isActiveForm,
   });
 
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
   const feeSource = getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined });
 
   const submitError = useMemo(() => {
@@ -938,11 +942,27 @@ export function AddTPSLModal({
       };
     }
 
+    if (expressError.buttonErrorMessage) {
+      return {
+        text: expressError.buttonErrorMessage,
+        disabled: true,
+      };
+    }
+
     return {
       text: `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`,
       disabled: false,
     };
-  }, [actionLabel, directionLabel, isMultichainSubmitDisabled, isSubmitting, marketPairLabel, modePrefix, submitError]);
+  }, [
+    actionLabel,
+    directionLabel,
+    expressError.buttonErrorMessage,
+    isMultichainSubmitDisabled,
+    isSubmitting,
+    marketPairLabel,
+    modePrefix,
+    submitError,
+  ]);
 
   const currentLeverage = formatLeverage(position.leverage);
   const nextLeverage = activeNextPositionValues?.nextLeverage;
@@ -1102,6 +1122,26 @@ export function AddTPSLModal({
           </div>
         )}
 
+        {expressError.bannerErrorName && (
+          <AlertInfoCard type="error" hideClose>
+            <ValidationBannerErrorContent
+              validationBannerErrorName={expressError.bannerErrorName}
+              chainId={chainId}
+              srcChainId={srcChainId}
+              gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+              onBeforeNavigation={() => setIsVisible(false)}
+            />
+          </AlertInfoCard>
+        )}
+
+        <ExpressTradingWarningCard
+          expressParams={expressParams}
+          payTokenAddress={undefined}
+          isWrapOrUnwrap={false}
+          isGmxAccount={srcChainId !== undefined}
+          onAfterAction={() => setIsVisible(false)}
+        />
+
         <Button
           variant="primary-action"
           className="w-full"
@@ -1201,7 +1241,11 @@ export function AddTPSLModal({
         >
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />
           <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
-          <NetworkFeeRow executionFee={totalExecutionFee} feeSource={feeSource} />
+          <NetworkFeeRow
+            executionFee={totalExecutionFee}
+            gasPaymentParams={expressParams?.gasPaymentParams}
+            feeSource={feeSource}
+          />
           {breakdownNetPriceImpactEnabled && (
             <SyntheticsInfoRow
               label={t`Stored price impact`}

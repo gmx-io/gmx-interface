@@ -147,12 +147,41 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
     });
   });
 
-  test.describe("Add TP/SL", () => {
+  test.describe("Add TP/SL (FEDEV-4280)", () => {
     test("Classic: native token from the wallet", async ({ mount, page }) => {
       await mount(<NetworkFeeSurfaceStory surface="addTpsl" />);
 
       await openExecutionDetails(page);
       await expectFeeValue(feeRow(page), "ETH", "Wallet");
+    });
+
+    test("Express: the gas payment token is quoted and the order can be submitted", async ({ mount, page }) => {
+      await mount(<NetworkFeeSurfaceStory surface="addTpsl" express />);
+
+      await openExecutionDetails(page);
+      await expectFeeValue(feeRow(page), "USDC", "Wallet");
+
+      await expect(page.getByRole("button", { name: "Insufficient gas balance" })).toHaveCount(0);
+      await expect(page.getByText(/Insufficient .* for gas on Arbitrum/)).toHaveCount(0);
+    });
+
+    test("Express without any gas token: submission is blocked with the trade box's insufficient-fee state", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<NetworkFeeSurfaceStory surface="addTpsl" express zeroBalances />);
+
+      const blockedButton = page.getByRole("button", { name: "Insufficient gas balance" });
+      await expect(blockedButton).toBeVisible({ timeout: 20_000 });
+      await expect(blockedButton).toBeDisabled();
+      await expect(page.getByText(/Insufficient .* for gas on Arbitrum/)).toBeVisible();
+    });
+
+    test("GMX Account: gas payment token from the GMX Account", async ({ mount, page }) => {
+      await mount(<NetworkFeeSurfaceStory surface="addTpsl" multichain />);
+
+      await openExecutionDetails(page);
+      await expectFeeValue(feeRow(page), "USDC", "GMX Account");
     });
   });
 
