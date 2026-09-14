@@ -12,12 +12,14 @@ import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { configureInstalledApp } from "lib/pwa/getIsInstalledApp";
 import { registerPreloadErrorRecovery } from "lib/pwa/registerPreloadErrorRecovery";
 import { registerServiceWorker } from "lib/pwa/registerServiceWorker";
+import { configureInAppBrowser } from "lib/wallets/inAppBrowser";
 import WalletProvider from "lib/wallets/WalletProvider";
 
 import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 
 configureInstalledApp();
+configureInAppBrowser();
 registerPreloadErrorRecovery();
 
 createRoot(document.getElementById("root")!).render(

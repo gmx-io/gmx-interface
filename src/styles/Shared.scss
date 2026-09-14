@@ -33,6 +33,14 @@ html[data-installed-app] #root {
   padding-left: var(--safe-area-inset-left);
 }
 
+html[data-in-app-browser="trust-ios"] {
+  --safe-area-inset-bottom: calc(100px + var(--in-app-browser-viewport-overhang, 0px));
+}
+
+html[data-in-app-browser="trust-ios"] #root {
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
 /**
  * @see https://aykevl.nl/2014/09/fix-jumping-scrollbar
  * Used body selector and !important to avoid collisions with [data-scroll-locked] attribute
