@@ -1,6 +1,5 @@
 import {
   selectChainId,
-  selectIsProDiscountFactorReady,
   selectPositionConstants,
   selectProDiscountFactor,
   selectUserReferralInfo,
@@ -45,10 +44,7 @@ import {
 import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 import { OrderType } from "sdk/utils/orders/types";
 import { getIncreaseEvaluationIndexPrice, getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
-import {
-  getIncreaseResultingPositionMarginState,
-  PositionMarginState,
-} from "sdk/utils/trade/increaseMarginCheck";
+import { getIncreaseResultingPositionMarginState, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
 const selectTradeboxSwapTradeError = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -172,8 +168,7 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const chainId = q(selectChainId);
   const isExternalSwapLoading = q(selectExternalSwapIsLoading);
   const resultingPositionMarginState = q(selectTradeboxIncreaseResultingPositionMarginState);
-  const isResultingPositionCheckBlocking =
-    q(selectTradeboxIsIncreaseExecutableNow) && q(selectIsProDiscountFactorReady);
+  const isResultingPositionCheckBlocking = q(selectTradeboxIsIncreaseExecutableNow);
 
   return getIncreaseError({
     marketInfo,

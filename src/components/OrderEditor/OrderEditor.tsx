@@ -22,11 +22,7 @@ import {
   usePositionEditorOpenAtPrice,
   usePositionEditorPosition,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import {
-  selectIsProDiscountFactorReady,
-  selectMarketsInfoData,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -344,12 +340,10 @@ export function OrderEditor(p: Props) {
 
   const resultingPositionMarginState = useSelector(selectOrderEditorIncreaseResultingPositionMarginState);
   const isIncreaseExecutableNow = useSelector(selectOrderEditorIsIncreaseExecutableNow);
-  const isProDiscountFactorReady = useSelector(selectIsProDiscountFactorReady);
 
   const isResultingPositionMaxLeverageError = getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason);
 
-  const isResultingPositionBlocking =
-    isIncreaseExecutableNow && isProDiscountFactorReady && resultingPositionMarginState?.isLiquidatable === true;
+  const isResultingPositionBlocking = isIncreaseExecutableNow && resultingPositionMarginState?.isLiquidatable === true;
 
   const isMaxLeverageError = useMemo(() => {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {

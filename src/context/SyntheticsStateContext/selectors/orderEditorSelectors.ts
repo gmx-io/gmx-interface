@@ -57,7 +57,6 @@ import {
   selectOrdersInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
-  selectIsProDiscountFactorReady,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -688,8 +687,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     nextPositionValuesForIncrease,
     maxAllowedLeverage,
     resultingPositionMarginState: q(selectOrderEditorIncreaseResultingPositionMarginState),
-    isResultingPositionCheckBlocking:
-      q(selectOrderEditorIsIncreaseExecutableNow) && q(selectIsProDiscountFactorReady),
+    isResultingPositionCheckBlocking: q(selectOrderEditorIsIncreaseExecutableNow),
     marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
   });
 });
@@ -773,7 +771,7 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
         nextPositionValuesForIncrease,
         maxAllowedLeverage,
         resultingPositionMarginState,
-        isResultingPositionCheckBlocking: isIncreaseExecutableNow && q(selectIsProDiscountFactorReady),
+        isResultingPositionCheckBlocking: isIncreaseExecutableNow,
         marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
       });
     });
