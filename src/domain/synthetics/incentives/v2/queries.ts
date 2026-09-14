@@ -123,7 +123,11 @@ export const INCENTIVES_LEADERBOARD_QUERY = `
   }
 `;
 
-export const INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY = `
+export const INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY = getIncentiveAccountEpochAuditQuery(false);
+export const INCENTIVE_ACCOUNT_EPOCH_AUDIT_WITH_STAKING_QUERY = getIncentiveAccountEpochAuditQuery(true);
+
+function getIncentiveAccountEpochAuditQuery(includeAverageStaking: boolean) {
+  return `
   query IncentiveAccountEpochAudit(
     $where: IncentiveAccountEpochAuditWhereInput
     $orderBy: IncentiveAccountEpochAuditOrderByInput
@@ -155,9 +159,11 @@ export const INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY = `
         maxMultiplier
         volumeTier
         stakingTier
+        ${includeAverageStaking ? "avgStakedGmx" : ""}
         boostIds
         effectiveRewardsRatio
       }
     }
   }
 `;
+}
