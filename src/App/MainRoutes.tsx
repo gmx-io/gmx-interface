@@ -102,6 +102,17 @@ const IncentivesAuditPage = () => (
   </Suspense>
 );
 
+const LazyIncentivesDistribution = lazy(() =>
+  import("pages/IncentivesDebug/IncentivesDistributionPage").then((module) => ({
+    default: module.IncentivesDistributionPage,
+  }))
+);
+const IncentivesDistributionPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyIncentivesDistribution />
+  </Suspense>
+);
+
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   const { chainId } = useChainId();
 
@@ -271,6 +282,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route path="/incentives-audit/:account?" key="incentives-audit">
           <IncentivesAuditPage />
+        </Route>,
+        <Route exact path="/incentives-distribution" key="incentives-distribution">
+          <IncentivesDistributionPage />
         </Route>,
       ]}
       <Route path="*">

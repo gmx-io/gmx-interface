@@ -12,6 +12,7 @@ function makeRawAuditEntry(
     id: `${CHECKSUMMED_ACCOUNT}-1784073600`,
     account: CHECKSUMMED_ACCOUNT,
     epochTimestamp: 1_784_073_600,
+    avgStakedGmx: BIG_VALUE,
     fees: BIG_VALUE,
     tradingVolume: "2",
     tierVolume: "3",
@@ -40,6 +41,7 @@ describe("Incentives V2 audit parsers", () => {
       id: `${CHECKSUMMED_ACCOUNT}-1784073600`,
       account: CHECKSUMMED_ACCOUNT,
       epochTimestamp: 1_784_073_600,
+      avgStakedGmx: BigInt(BIG_VALUE),
       fees: BigInt(BIG_VALUE),
       tradingVolume: 2n,
       tierVolume: 3n,
@@ -60,6 +62,21 @@ describe("Incentives V2 audit parsers", () => {
     expect(page.hasNextPage).toBe(true);
   });
 
+  it.each([
+    [null, null],
+    [undefined, null],
+    ["0", 0n],
+    ["1", 1n],
+  ])("preserves missing average staking and exact zero/wei values: %s", (raw, expected) => {
+    const page = parseIncentiveAccountEpochAuditPage(
+      { totalCount: 1, items: [makeRawAuditEntry({ avgStakedGmx: raw })] },
+      20,
+      0
+    );
+
+    expect(page.entries[0].avgStakedGmx).toBe(expected);
+  });
+
   it("preserves aggregate-mode fields returned by the backend", () => {
     const page = parseIncentiveAccountEpochAuditPage(
       {
@@ -68,6 +85,7 @@ describe("Incentives V2 audit parsers", () => {
           makeRawAuditEntry({
             id: CHECKSUMMED_ACCOUNT,
             epochTimestamp: 0,
+            avgStakedGmx: null,
             volumeTier: null,
             stakingTier: null,
             boostIds: [],
@@ -81,6 +99,7 @@ describe("Incentives V2 audit parsers", () => {
     expect(page.entries[0]).toMatchObject({
       account: CHECKSUMMED_ACCOUNT,
       epochTimestamp: 0,
+      avgStakedGmx: null,
       volumeTier: null,
       stakingTier: null,
       boostIds: [],

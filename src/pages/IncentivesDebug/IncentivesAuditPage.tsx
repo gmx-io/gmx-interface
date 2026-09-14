@@ -8,6 +8,7 @@ import { formatEpochLabel } from "domain/synthetics/incentives/v2/utils";
 import { useChainId } from "lib/chains";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import Button from "components/Button/Button";
 import Loader from "components/Loader/Loader";
 import PageTitle from "components/PageTitle/PageTitle";
 
@@ -100,6 +101,14 @@ export function IncentivesAuditPage() {
       />
 
       <div className="mt-16 flex flex-col gap-16">
+        <div>
+          <Button
+            variant="secondary"
+            to={`/incentives-distribution${typeof selectedEpoch === "number" ? `?epoch=${selectedEpoch}` : ""}`}
+          >
+            <Trans>Incentives Distribution Audit</Trans>
+          </Button>
+        </div>
         {loading && config === undefined ? (
           <div className="flex min-h-[240px] items-center justify-center rounded-8 bg-slate-900">
             <Loader />

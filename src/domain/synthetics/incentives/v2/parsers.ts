@@ -104,6 +104,7 @@ export type RawIncentiveAccountEpochAuditEntry = {
   id: string;
   account: string;
   epochTimestamp: number;
+  avgStakedGmx?: string | null;
   fees: string;
   tradingVolume: string;
   tierVolume: string;
@@ -264,6 +265,7 @@ export function parseIncentiveAccountEpochAuditEntry(
     id: entry.id,
     account: entry.account,
     epochTimestamp: entry.epochTimestamp,
+    avgStakedGmx: entry.avgStakedGmx == null ? null : BigInt(entry.avgStakedGmx),
     fees: BigInt(entry.fees),
     tradingVolume: BigInt(entry.tradingVolume),
     tierVolume: BigInt(entry.tierVolume),

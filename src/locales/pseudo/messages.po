@@ -424,6 +424,10 @@ msgstr ""
 msgid "GM airdrop"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "The current epoch is ongoing. Rewards and fees can still change."
+msgstr "[The current epoch is ongoing. Rewards and fees can still change.]"
+
 #: src/components/PositionEditor/types.ts
 msgid "At price"
 msgstr ""
@@ -1172,6 +1176,7 @@ msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch"
@@ -1481,6 +1486,10 @@ msgstr ""
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Staking (GMX, average)"
+msgstr "[Staking (GMX, average)]"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
@@ -2124,6 +2133,7 @@ msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionValues.tsx
 msgid "Copied"
 msgstr ""
 
@@ -2215,6 +2225,7 @@ msgid "Markets"
 msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "Retry"
@@ -2509,6 +2520,7 @@ msgid "What is esGMX token?"
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "current"
 msgstr ""
 
@@ -3015,6 +3027,10 @@ msgstr ""
 msgid "No leaderboard entries yet."
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Total eligible fees (USD)"
+msgstr "[Total eligible fees (USD)]"
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs update weekly on Wednesday based on fees collected"
 msgstr ""
@@ -3247,6 +3263,10 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Hover over amounts for exact values. CSV exports all wallets at full precision."
+msgstr "[Hover over amounts for exact values. CSV exports all wallets at full precision.]"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
@@ -3550,6 +3570,10 @@ msgstr "[GMX äppröväl sübmïttëd]"
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Update available"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Average GMX staking is not available for every wallet yet. Missing values are blank in CSV."
+msgstr "[Average GMX staking is not available for every wallet yet. Missing values are blank in CSV.]"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -3859,6 +3883,7 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionValues.tsx
 msgid "Copy address"
 msgstr ""
 
@@ -4470,6 +4495,8 @@ msgid "Buy from decentralized or centralized exchanges"
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "No V2 incentives configuration is available for this chain."
 msgstr ""
 
@@ -4740,6 +4767,10 @@ msgstr ""
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Volume multiplier"
+msgstr "[Volume multiplier]"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What's the difference between GLV and GM?"
@@ -5798,6 +5829,10 @@ msgstr ""
 msgid "Pairs trading"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "{firstRow}–{lastRow} of {totalRows} wallets"
+msgstr "[{firstRow}–{lastRow} of {totalRows} wallets]"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Loading markets data..."
 msgstr ""
@@ -6509,6 +6544,10 @@ msgstr ""
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Total multiplier (average)"
+msgstr "[Total multiplier (average)]"
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "esGMX available to begin vesting."
@@ -7589,6 +7628,10 @@ msgstr ""
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Unable to load the complete epoch. Refresh to try again."
+msgstr "[Unable to load the complete epoch. Refresh to try again.]"
+
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "Each staked esGMX token provides the same staking power as one staked GMX token. It earns staking rewards and contributes toward your staking tier."
 msgstr ""
@@ -7676,6 +7719,11 @@ msgstr ""
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Wallet allocations"
+msgstr "[Wallet allocations]"
+
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr ""
@@ -7684,6 +7732,10 @@ msgstr ""
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Featured Markets"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Review epoch rewards and export wallet allocations."
+msgstr "[Review epoch rewards and export wallet allocations.]"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
@@ -8028,6 +8080,10 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Volume (USD)"
+msgstr "[Volume (USD)]"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Firebird Finance"
@@ -8382,6 +8438,10 @@ msgstr ""
 msgid "{0} claimed"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Loading all accounts for this epoch…"
+msgstr "[Loading all accounts for this epoch…]"
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Receive at least {toAmountText} if executed. Price updates based on fees and price impact."
 msgstr ""
@@ -8455,6 +8515,7 @@ msgstr ""
 msgid "ParaSwap"
 msgstr ""
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -8611,6 +8672,10 @@ msgstr ""
 #: src/pages/RewardsPage/components/RewardsPromotionalBanners.tsx
 msgid "Almost at the next tier"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Staking multiplier"
+msgstr "[Staking multiplier]"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
@@ -8982,6 +9047,7 @@ msgid "Price impact exceeds order size"
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Accounts"
 msgstr ""
 
@@ -9432,6 +9498,10 @@ msgstr ""
 msgid "Purpose"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Total esGMX"
+msgstr "[Total esGMX]"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr ""
@@ -9832,6 +9902,12 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Book a 30-min call"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Incentives Distribution Audit"
+msgstr "[Incentives Distribution Audit]"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -10649,6 +10725,10 @@ msgstr ""
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Dev only"
+msgstr "[Dev only]"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Fetching swap route ({0}/{1})..."
 msgstr ""
@@ -11211,6 +11291,10 @@ msgstr ""
 msgid "Open fee"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Download CSV"
+msgstr "[Download CSV]"
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Account page"
 msgstr ""
@@ -11224,6 +11308,7 @@ msgid "Sell request sent"
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Unable to load the incentives configuration."
 msgstr ""
 
@@ -11283,6 +11368,7 @@ msgid "Increase size (TWAP)"
 msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Refresh"
 msgstr ""
 
@@ -12561,6 +12647,10 @@ msgstr ""
 msgid "Staked"
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Eligible referral volume (USD)"
+msgstr "[Eligible referral volume (USD)]"
+
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Expires next epoch"
 msgstr ""
@@ -12879,6 +12969,7 @@ msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, re
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "No audit entries found for this epoch."
 msgstr ""
 
@@ -13094,6 +13185,7 @@ msgstr ""
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Wallet"
 msgstr ""
@@ -13679,6 +13771,10 @@ msgstr ""
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "[!! Indices !!]"
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Show detailed data"
+msgstr "[Show Detailed data]"
 
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Boost Name"
@@ -14682,3 +14778,7 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Eligible fees (USD)"
+msgstr "[Eligible fees (USD)]"
