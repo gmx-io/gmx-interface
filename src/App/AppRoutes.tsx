@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
 import { zeroHash } from "viem";
 
@@ -42,7 +42,6 @@ const Zoom = cssTransition({
 
 export function AppRoutes() {
   const { theme } = useTheme();
-  const location = useLocation();
   const history = useHistory();
 
   useConfigureMetrics();
@@ -64,7 +63,7 @@ export function AppRoutes() {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodedReferralCode !== zeroHash) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
-        const queryParams = new URLSearchParams(location.search);
+        const queryParams = new URLSearchParams(history.location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
           queryParams.delete(REFERRAL_CODE_QUERY_PARAM);
           history.replace({
@@ -73,7 +72,7 @@ export function AppRoutes() {
         }
       }
     }
-  }, [query, history, location]);
+  }, [query, history]);
 
   const { isSettingsVisible, setIsSettingsVisible } = useSettings();
 

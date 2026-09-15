@@ -16,8 +16,10 @@ import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
+import { useBuyGmxDeepLink } from "pages/Earn/buyGmxDeepLink";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
 import { EarningsOverview } from "components/Earn/Portfolio/EarningsOverview/EarningsOverview";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
@@ -27,6 +29,7 @@ export default function EarnPortfolioPage() {
   const { account } = useWallet();
   const isWalletInitializing = useIsWalletInitializing();
   const { data: processedData, mutate: mutateProcessedData } = useStakingProcessedData();
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useBuyGmxDeepLink();
 
   const { chainId, srcChainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
@@ -80,6 +83,8 @@ export default function EarnPortfolioPage() {
 
   return (
     <EarnPageLayout>
+      <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
+
       {account && !isWalletInitializing && (
         <ErrorBoundary id="EarnPortfolio-EarningsOverview" variant="block" wrapperClassName="rounded-t-8">
           <EarningsOverview processedData={processedData} mutateProcessedData={mutateProcessedData} />
