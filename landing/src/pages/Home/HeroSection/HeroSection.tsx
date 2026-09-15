@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useHeroStats, type HeroStat } from "landing/pages/Home/hooks/useHeroStats";
 import { shortFormat, shortFormatUsd } from "landing/pages/Home/utils/formatters";
+import { useEffect, useState } from "react";
 
 import { ChainsStatsNotices } from "components/StatsTooltip/ChainsStatsNotices";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -14,6 +15,24 @@ import { Features } from "./Features";
 import { HeroBackground } from "./HeroBackground";
 import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
 
+// sources answer at different moments on first load, so a missing one is a loading gap until the figure has settled
+const SETTLE_TIMEOUT_MS = 5_000;
+
+function useSettled(complete: boolean) {
+  const [settled, setSettled] = useState(complete);
+
+  useEffect(() => {
+    if (complete) {
+      setSettled(true);
+      return;
+    }
+    const timer = setTimeout(() => setSettled(true), SETTLE_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [complete]);
+
+  return settled || complete;
+}
+
 function StatValue({
   stat: { summary, staleEntries },
   format,
@@ -23,9 +42,16 @@ function StatValue({
   format: (total: bigint) => string;
   className: string;
 }) {
+  const partial = summary.missingTitles.length > 0;
+  const settled = useSettled(!partial);
+
+  if (partial && !settled) {
+    return <div className={className}>-</div>;
+  }
+
   const text = summary.total === undefined ? "-" : format(summary.total);
 
-  if (summary.missingTitles.length === 0 && staleEntries.length === 0) {
+  if (!partial && staleEntries.length === 0) {
     return <div className={className}>{text}</div>;
   }
 
