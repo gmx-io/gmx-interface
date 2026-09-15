@@ -1546,14 +1546,8 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   font-size: 24px;
   text-transform: uppercase;
   color: #a4c3f9;
-  margin-bottom: 8px;
   line-height: 32px;
   letter-spacing: -0.032em;
-}
-.rewards-cycle-copy p {
-  font-size: 14px;
-  line-height: 20px;
-  color: #a0a3c4;
 }
 .rewards-cycle-next {
   position: absolute;
@@ -2049,14 +2043,8 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
     font-size: 12px;
     line-height: 16px;
   }
-  .rewards-cycle-copy {
-    padding-top: 30px;
-  }
   .rewards-cycle-copy h3 {
     font-size: 18px;
-  }
-  .rewards-cycle-copy p {
-    font-size: 13px;
   }
   .rewards-cycle-next {
     padding: 12px 16px;

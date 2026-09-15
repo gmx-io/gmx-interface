@@ -83,8 +83,9 @@ export function RewardsTokens({ config, loading }: { config: IncentivesConfig | 
             </header>
             <p>
               <Trans>
-                Your claim on the TGE of GMTrade.xyz, GMX's sister protocol on Solana. Minting gets 2.1% harder every
-                210,000 GT — the same trade earns fewer GT as the minting cost increases.
+                GMTrade Points, added on top of every esGMX payout. GT is credited at the mint price and bought back at
+                it with a share of GMTrade's trading fees. Minting gets 2.1% harder every 210,000 GT, so the same trade
+                earns fewer GT over time.
               </Trans>
             </p>
             <dl className="rewards-gt-stats">

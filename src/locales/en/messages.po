@@ -6993,6 +6993,10 @@ msgstr "{positionName} settling fees..."
 msgid "OR"
 msgstr "OR"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "GMTrade Points, added on top of every esGMX payout. GT is credited at the mint price and bought back at it with a share of GMTrade's trading fees. Minting gets 2.1% harder every 210,000 GT, so the same trade earns fewer GT over time."
+msgstr "GMTrade Points, added on top of every esGMX payout. GT is credited at the mint price and bought back at it with a share of GMTrade's trading fees. Minting gets 2.1% harder every 210,000 GT, so the same trade earns fewer GT over time."
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
 msgstr "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
@@ -8157,10 +8161,6 @@ msgstr "Collateral available"
 msgid "Staking tiers"
 msgstr "Staking tiers"
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "The Season 1 flywheel"
-msgstr "The Season 1 flywheel"
-
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -9108,6 +9108,10 @@ msgstr "What if I'm building a competing perp DEX?"
 msgid "How do I share my code?"
 msgstr "How do I share my code?"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "The Rewards Flywheel"
+msgstr "The Rewards Flywheel"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -9374,10 +9378,6 @@ msgstr "Win rate"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
-
-#: landing/src/pages/Rewards/RewardsTokens.tsx
-msgid "Your claim on the TGE of GMTrade.xyz, GMX's sister protocol on Solana. Minting gets 2.1% harder every 210,000 GT — the same trade earns fewer GT as the minting cost increases."
-msgstr "Your claim on the TGE of GMTrade.xyz, GMX's sister protocol on Solana. Minting gets 2.1% harder every 210,000 GT — the same trade earns fewer GT as the minting cost increases."
 
 #: src/components/LeverageField/LeverageField.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -14295,10 +14295,6 @@ msgstr "Failed to decode error. Make sure the hex data is valid and starts with 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "7d"
 msgstr "7d"
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "...and it compounds, every week"
-msgstr "...and it compounds, every week"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit"

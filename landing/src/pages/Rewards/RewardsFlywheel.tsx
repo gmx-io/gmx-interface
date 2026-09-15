@@ -44,11 +44,8 @@ export function RewardsFlywheel() {
       </div>
       <div className="rewards-cycle-copy">
         <h3>
-          <Trans>The Season 1 flywheel</Trans>
+          <Trans>The Rewards Flywheel</Trans>
         </h3>
-        <p>
-          <Trans>...and it compounds, every week</Trans>
-        </p>
       </div>
       <span className="rewards-cycle-next" data-flywheel-node>
         <span className="rewards-cycle-label">

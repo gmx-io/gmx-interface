@@ -6993,6 +6993,10 @@ msgstr "{positionName} 수수료 정산 중..."
 msgid "OR"
 msgstr "또는"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "GMTrade Points, added on top of every esGMX payout. GT is credited at the mint price and bought back at it with a share of GMTrade's trading fees. Minting gets 2.1% harder every 210,000 GT, so the same trade earns fewer GT over time."
+msgstr "GMTrade 포인트는 모든 esGMX 지급에 추가로 제공됩니다. GT는 민팅 가격으로 지급되며, GMTrade 거래 수수료의 일부로 해당 가격에 바이백됩니다. 210,000 GT마다 민팅 난이도가 2.1% 높아져, 시간이 지날수록 같은 거래로 받는 GT가 줄어듭니다."
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
 msgstr "<0>GMX는 전통적인 주문장과 달리 동적으로 균형 잡힌 유동성 풀에 대해 거래를 실행합니다. 이 모델은 깊은 유동성을 지원하여 $50m 이상 포지션 개설 시 가격 영향을 줄이며, 공간에서 가장 큰 주문장과 비교해도 그렇습니다. 일부 경우 긍정적 가격 영향으로 주문 실행 시 보상을 받을 수 있습니다.</0><1>GMX는 Chainlink 및 Chaos Labs의 탈중앙화 오라클을 사용하여 조작을 방지하기 위해 여러 신뢰할 수 있는 소스에서 가격을 집계하여 불공정 청산을 방지합니다.</1>"
@@ -8157,10 +8161,6 @@ msgstr "사용 가능한 담보"
 msgid "Staking tiers"
 msgstr "스테이킹 등급"
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "The Season 1 flywheel"
-msgstr "시즌 1 보상 선순환"
-
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -9108,6 +9108,10 @@ msgstr "경쟁 무기한 DEX를 만들고 있다면요?"
 msgid "How do I share my code?"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "The Rewards Flywheel"
+msgstr "보상 선순환"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -9374,10 +9378,6 @@ msgstr "승률"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
-
-#: landing/src/pages/Rewards/RewardsTokens.tsx
-msgid "Your claim on the TGE of GMTrade.xyz, GMX's sister protocol on Solana. Minting gets 2.1% harder every 210,000 GT — the same trade earns fewer GT as the minting cost increases."
-msgstr "Solana 기반 GMX 자매 프로토콜인 GMTrade.xyz의 TGE에서 토큰을 받을 권리입니다. 210,000 GT마다 민팅 난이도가 2.1% 높아져, 민팅 비용이 증가할수록 같은 거래로 받는 GT가 줄어듭니다."
 
 #: src/components/LeverageField/LeverageField.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -14295,10 +14295,6 @@ msgstr "오류 디코딩에 실패했습니다. 16진수 데이터가 유효하�
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "7d"
 msgstr "7일"
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "...and it compounds, every week"
-msgstr "...매주 복리 효과가 쌓입니다"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit"

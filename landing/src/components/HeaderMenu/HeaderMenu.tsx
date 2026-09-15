@@ -61,7 +61,7 @@ export function HeaderMenu({ badge }: Props = {}) {
     >
       <div className="flex w-full items-center justify-center px-16 py-12 sm:px-40 sm:py-16">
         <div className="flex w-full max-w-[1200px] items-center justify-between gap-16">
-          <div className="flex shrink-0 items-center gap-8 sm:gap-24">
+          <div className="flex shrink-0 items-center gap-12 sm:gap-40">
             <Link to="/" aria-label="GMX" onClick={closeMenu}>
               <IcGmxHeader className="h-20 sm:h-24" />
             </Link>
