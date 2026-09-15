@@ -18,7 +18,7 @@ afterEach(cleanup);
 const usd = (amount: number) => expandDecimals(amount, USD_DECIMALS);
 
 function affixes(root: Element) {
-  return Array.from(root.querySelectorAll("span.text-typography-secondary")).map((span) => span.textContent);
+  return Array.from(root.querySelectorAll("span.numeric-affix")).map((span) => span.textContent);
 }
 
 describe("NumericValue", () => {

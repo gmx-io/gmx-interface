@@ -1,5 +1,6 @@
 import fromPairs from "lodash/fromPairs";
 import merge from "lodash/merge";
+import omit from "lodash/omit";
 import range from "lodash/range";
 import type { Config } from "tailwindcss";
 import defaultConfig from "tailwindcss/defaultConfig";
@@ -22,6 +23,30 @@ function injectColorsPlugin({ addBase }: any) {
 
   addBase({
     ":root:not(.dark)": cssVariables.light,
+  });
+}
+
+function textColorNames(tree: object, prefix = ""): string[] {
+  return Object.entries(tree).flatMap(([key, value]) => {
+    const name = prefix ? `${prefix}-${key}` : key;
+
+    return value && typeof value === "object" && !("light" in value) ? textColorNames(value, name) : [name];
+  });
+}
+
+function injectAffixColorsPlugin({ addUtilities }: PluginAPI) {
+  const baseColors = omit(colors, "affix");
+
+  addUtilities({
+    ".numeric-affix": {
+      color: "var(--affix-color, var(--color-typography-secondary))",
+    },
+    ...fromPairs(
+      textColorNames(baseColors).map((name) => [
+        `.text-${name}`,
+        { "--affix-color": `var(--color-affix-${name}, var(--color-typography-secondary))` },
+      ])
+    ),
   });
 }
 
@@ -209,7 +234,13 @@ const config: Config = {
       },
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin, injectAdaptiveVariablesPlugin],
+  plugins: [
+    injectColorsPlugin,
+    injectAffixColorsPlugin,
+    customUtilsPlugin,
+    fontComponentsPlugin,
+    injectAdaptiveVariablesPlugin,
+  ],
 };
 
 export default config;

@@ -15,7 +15,7 @@ type Props = NumericValuePresentation & {
   parts: NumberPart[] | undefined;
 };
 
-export function NumericValue({ parts, className, affixClassName = "text-typography-secondary", fallback }: Props) {
+export function NumericValue({ parts, className, affixClassName = "numeric-affix", fallback }: Props) {
   if (!parts) {
     return fallback === undefined ? null : <span className={cx("whitespace-nowrap", className)}>{fallback}</span>;
   }

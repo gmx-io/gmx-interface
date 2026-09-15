@@ -24,31 +24,30 @@ type Context = {
   id: string;
   title: string;
   className?: string;
-  rows: { label: string; render: (affixClassName: string) => ReactNode }[];
+  rows: { label: string; render: (affixClassName: string | undefined) => ReactNode }[];
 };
 
 type Surface = "tooltip" | "card" | "page";
 
 const VARIANTS: Variant[] = [
   {
-    id: "token",
-    title: "Secondary token",
-    rule: "color: typography.secondary",
-    affixClassName: "text-typography-secondary",
+    id: "tokens",
+    title: "Per-colour tokens",
+    rule: "each text colour carries its own affix colour",
+    affixClassName: "",
   },
   {
-    id: "mix-secondary",
-    title: "Mix with secondary",
-    rule: "color-mix(in oklab, typography.secondary S%, currentColor)",
-    affixClassName: "NumericAffixes-mix-secondary",
-    defaultStrength: 70,
+    id: "token",
+    title: "One secondary token",
+    rule: "color: typography.secondary",
+    affixClassName: "text-typography-secondary",
   },
   {
     id: "mix-background",
     title: "Mix with page background",
     rule: "color-mix(in oklab, currentColor S%, page background)",
     affixClassName: "NumericAffixes-mix-background",
-    defaultStrength: 60,
+    defaultStrength: 70,
   },
   {
     id: "relative-oklch",
@@ -56,13 +55,6 @@ const VARIANTS: Variant[] = [
     rule: "oklch(from currentColor S% min(c, 0.08) h)",
     affixClassName: "NumericAffixes-relative-oklch",
     defaultStrength: 72,
-  },
-  {
-    id: "filter-contrast",
-    title: "Contrast filter",
-    rule: "filter: contrast(S%)",
-    affixClassName: "NumericAffixes-filter-contrast",
-    defaultStrength: 40,
   },
 ];
 
@@ -184,11 +176,13 @@ export function NumericAffixes() {
     <div className="px-20">
       <h2 className="mb-16 mt-24 text-24 font-medium">Numeric affixes</h2>
       <p className="max-w-prose">
-        The $ prefix, the leverage x and the k / m / b suffixes are rendered in the secondary text colour. The first
-        column is that fixed colour; the others derive the affix colour from the colour of the value itself, so an affix
-        inside a green, red or yellow value keeps its hue. The derived rules mix with a fixed reference (a theme token
-        or the page background) instead of using opacity, so the surface behind the value does not change the result.
-        Switch the surface and the theme to check, and drag the sliders to tune each rule.
+        The $ prefix, the leverage x and the k / m / b suffixes are drawn in a secondary colour. The app ships the first
+        column: every text colour carries its own affix colour as a theme token, so an affix inside a green, red or
+        yellow value keeps that hue, and a value with no colour of its own falls back to the secondary token. The other
+        columns are the alternatives that were considered — one fixed token for every case, and two rules that derive
+        the colour at paint time. All of them read from theme tokens rather than from what is drawn behind the value, so
+        the surface does not change the result: switch the surface and the theme to check, and drag the sliders to tune
+        the derived rules.
       </p>
 
       <div className="mb-16 mt-12 flex gap-8">
@@ -206,7 +200,7 @@ export function NumericAffixes() {
       <div className="overflow-auto">
         <div className="flex gap-8">
           {VARIANTS.map((variant, index) => (
-            <div key={variant.id} className="w-[228px] shrink-0">
+            <div key={variant.id} className="w-[260px] shrink-0">
               <div className="font-medium">{variant.title}</div>
               <div className="text-12 text-typography-secondary">{variant.rule}</div>
               {variant.defaultStrength !== undefined && (
@@ -233,13 +227,15 @@ export function NumericAffixes() {
               {VARIANTS.map((variant, index) => (
                 <div
                   key={variant.id}
-                  className={cx("!w-[228px] shrink-0", surfaceClassName)}
+                  className={cx("!w-[260px] shrink-0", surfaceClassName)}
                   style={columnStyles[index]}
                 >
                   {context.rows.map((row) => (
                     <div key={row.label} className="flex justify-between gap-12">
                       <span className="whitespace-nowrap text-typography-secondary">{row.label}</span>
-                      <span className={cx("numbers", context.className)}>{row.render(variant.affixClassName)}</span>
+                      <span className={cx("numbers", context.className)}>
+                        {row.render(variant.affixClassName || undefined)}
+                      </span>
                     </div>
                   ))}
                 </div>
