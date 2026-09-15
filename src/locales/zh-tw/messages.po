@@ -373,8 +373,8 @@ msgstr "EIP-4844, 3月13-20日"
 msgid "Total size"
 msgstr "總規模"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Open app"
 msgstr "開啟應用"
@@ -869,10 +869,6 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "獎勵、空投和獎品將顯示在這裡"
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Season 1"
-msgstr "第1季"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
@@ -1703,7 +1699,7 @@ msgstr "條款"
 msgid "Unrealized PnL"
 msgstr "未實現盈虧"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/GmxAccountModal/RewardsSection.tsx
@@ -2036,7 +2032,7 @@ msgstr "期間虧損"
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "歸屬僅在 {chainNames} 或 {lastChainName} 上可用。請切換網路以繼續。"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Protocol"
 msgstr "協議"
 
@@ -3478,7 +3474,7 @@ msgstr "<0>無需 KYC、無需冗長的開戶流程，也無需存入資金。�
 msgid "Deactivate 1CT"
 msgstr "停用 1CT"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "VIP"
 msgstr "VIP"
 
@@ -3513,7 +3509,7 @@ msgstr "除錯 RPC 端點 ({0})"
 msgid "Vesting stopped"
 msgstr "歸屬已停止"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "由社群驅動"
 
@@ -3588,8 +3584,8 @@ msgstr "您的排名暫時無法使用。"
 msgid "Open and close on the current set:"
 msgstr "在當前選定的市場開倉和平倉："
 
-#: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
 msgid "Season 1 · Live"
 msgstr "第1季 · 進行中"
 
@@ -3746,10 +3742,6 @@ msgstr "開始交易以啟用並領取獎勵。"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trade More. Earn More."
 msgstr "交易越多，賺得越多。"
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Multipliers"
-msgstr "倍數"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
@@ -4590,7 +4582,7 @@ msgstr "未領取的可申領金額未包含在內"
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "您的 GMX Account 中 {wrappedNativeTokenSymbol} 不足以支付 Gas 費用。"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Open menu"
 msgstr "開啟選單"
 
@@ -7628,8 +7620,8 @@ msgstr ""
 msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
 msgstr "在接下來的 {2} 內，為 {3} 執行 {numberOfParts} 筆 {0} {type} 訂單，每筆 {1}"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8175,7 +8167,7 @@ msgstr "第1季獎勵迴圈"
 msgid "POOL"
 msgstr "池"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
 msgstr "投票"
 
@@ -9796,7 +9788,7 @@ msgstr ""
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
 msgstr ""
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
@@ -9812,7 +9804,7 @@ msgstr "治理"
 msgid "Cancel"
 msgstr "取消"
 
-#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
 msgstr "即時"
@@ -14171,7 +14163,7 @@ msgstr "{idleSeconds}s"
 msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
 msgstr "GT 是 GM Trade 專案的原生代幣。目前暫無用途；額外功能將在代幣生成事件（TGE）後開放。"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Close menu"
 msgstr "關閉選單"
 
@@ -15028,8 +15020,8 @@ msgstr "已過期的存入"
 msgid "Take-Profit"
 msgstr "止盈"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Builders.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Builders"
 msgstr "開發者"
 

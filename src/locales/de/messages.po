@@ -373,8 +373,8 @@ msgstr "EIP-4844, 13-20 März"
 msgid "Total size"
 msgstr "Gesamtgröße"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Open app"
 msgstr "App öffnen"
@@ -869,10 +869,6 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "Anreize, Airdrops und Preise werden hier angezeigt"
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Season 1"
-msgstr "Saison 1"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
@@ -1703,7 +1699,7 @@ msgstr "AGB"
 msgid "Unrealized PnL"
 msgstr "Nicht realisierter Gewinn/Verlust"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/GmxAccountModal/RewardsSection.tsx
@@ -2036,7 +2032,7 @@ msgstr "Verlust im Zeitraum"
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Vesting nur auf {chainNames} oder {lastChainName} verfügbar. Wechseln Sie das Netzwerk, um fortzufahren."
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Protocol"
 msgstr "Protokoll"
 
@@ -3478,7 +3474,7 @@ msgstr "<0>Kein KYC, kein langwieriges Onboarding und keine Einzahlung erforderl
 msgid "Deactivate 1CT"
 msgstr "1CT deaktivieren"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "VIP"
 msgstr "VIP"
 
@@ -3513,7 +3509,7 @@ msgstr "RPC-Endpunkte debuggen ({0})"
 msgid "Vesting stopped"
 msgstr "Vesting gestoppt"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "Angetrieben durch unsere Community"
 
@@ -3588,8 +3584,8 @@ msgstr "Ihr Rang ist vorübergehend nicht verfügbar."
 msgid "Open and close on the current set:"
 msgstr "Eröffne und schließe Trades auf den aktuell ausgewählten Märkten:"
 
-#: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
 msgid "Season 1 · Live"
 msgstr "Saison 1 · Live"
 
@@ -3746,10 +3742,6 @@ msgstr "Starten Sie den Handel, um ihn zu aktivieren und Ihre Belohnungen zu erh
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trade More. Earn More."
 msgstr "Mehr handeln. Mehr verdienen."
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Multipliers"
-msgstr "Multiplikatoren"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
@@ -4590,7 +4582,7 @@ msgstr "Ausstehende beanspruchbare Beträge sind nicht enthalten"
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "Unzureichendes {wrappedNativeTokenSymbol} für Gas in Ihrem GMX-Konto."
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Open menu"
 msgstr "Menü öffnen"
 
@@ -7628,8 +7620,8 @@ msgstr ""
 msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
 msgstr "Führt {numberOfParts} {0} {type}-Orders von je {1} über die nächsten {2} für {3} aus"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8175,7 +8167,7 @@ msgstr "Der Belohnungskreislauf der Saison 1"
 msgid "POOL"
 msgstr "POOL"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
 msgstr "Abstimmung"
 
@@ -9796,7 +9788,7 @@ msgstr ""
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
 msgstr ""
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
@@ -9812,7 +9804,7 @@ msgstr "Governance"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
 msgstr "Live"
@@ -14171,7 +14163,7 @@ msgstr "{idleSeconds}s"
 msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
 msgstr "GT ist der native Token des GM-Trade-Projekts. Er hat derzeit keinen Nutzen; zusätzliche Funktionen werden nach dem Token Generation Event (TGE) verfügbar."
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Close menu"
 msgstr "Menü schließen"
 
@@ -15028,8 +15020,8 @@ msgstr "Abgelaufene Einzahlung"
 msgid "Take-Profit"
 msgstr "Take-Profit"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Builders.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Builders"
 msgstr "Builder"
 

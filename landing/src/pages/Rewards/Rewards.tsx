@@ -1,7 +1,6 @@
-import { msg, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { HeaderMenu } from "landing/pages/Home/HeaderMenu/HeaderMenu";
-import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
 import { useIncentivesConfig } from "domain/synthetics/incentives/v2/useIncentivesConfig";
@@ -23,34 +22,13 @@ import { RewardsValue } from "./RewardsValue";
 import "./Rewards.css";
 
 export default function Rewards() {
-  const { i18n, _ } = useLingui();
+  const { i18n } = useLingui();
   const config = useIncentivesConfig(ARBITRUM);
   const loading = config.loading || config.isValidating;
-  const headerLinks = useMemo(
-    () => [
-      { label: _(msg`Season 1`), href: "#season" },
-      { label: _(msg`Multipliers`), href: "#multipliers" },
-    ],
-    [_]
-  );
   const epochEnd = config.data ? new Date((config.data.epochTimestamp + config.data.epochDuration) * 1000) : undefined;
 
   return (
     <SEO title={getPageTitle(t`Rewards`)}>
-      <HeaderMenu
-        badge={
-          <span className="rewards-live" title={t`Season 1 · Live`}>
-            <i aria-hidden="true" />
-            <span className="rewards-live-full">
-              <Trans>Season 1 · Live</Trans>
-            </span>
-            <span className="rewards-live-compact">
-              <Trans>Live</Trans>
-            </span>
-          </span>
-        }
-        additionalLinks={headerLinks}
-      />
       <div className="rewards-page">
         <main>
           <section className="rewards-hero" id="season">
@@ -117,9 +95,9 @@ export default function Rewards() {
           </section>
         </main>
         <footer className="rewards-footer rewards-container">
-          <a href="/terms-and-conditions">
+          <Link to="/terms-and-conditions">
             <Trans>Terms</Trans>
-          </a>
+          </Link>
           <p>
             <Trans>Season 1 values are season-scoped</Trans>
           </p>

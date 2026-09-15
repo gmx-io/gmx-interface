@@ -373,8 +373,8 @@ msgstr "EIP-4844, 3월 13-20일"
 msgid "Total size"
 msgstr "총 크기"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Open app"
 msgstr "앱 열기"
@@ -869,10 +869,6 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "인센티브, 에어드롭 및 상금이 여기에 표시됩니다"
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Season 1"
-msgstr "시즌 1"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
@@ -1703,7 +1699,7 @@ msgstr "이용약관"
 msgid "Unrealized PnL"
 msgstr "미실현 PnL"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/GmxAccountModal/RewardsSection.tsx
@@ -2036,7 +2032,7 @@ msgstr "기간 손실"
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "베스팅은 {chainNames} 또는 {lastChainName}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Protocol"
 msgstr "프로토콜"
 
@@ -3478,7 +3474,7 @@ msgstr "<0>KYC 없이, 복잡한 가입 절차 없이, 입금 없이 시작할 �
 msgid "Deactivate 1CT"
 msgstr "1CT 비활성화"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "VIP"
 msgstr "VIP"
 
@@ -3513,7 +3509,7 @@ msgstr "RPC 엔드포인트 디버그 ({0})"
 msgid "Vesting stopped"
 msgstr "베스팅이 중지되었습니다"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "우리 커뮤니티에 의해 주도됨"
 
@@ -3588,8 +3584,8 @@ msgstr "순위를 일시적으로 확인할 수 없습니다."
 msgid "Open and close on the current set:"
 msgstr "현재 선정된 시장에서 거래를 개설하고 종료하세요:"
 
-#: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
 msgid "Season 1 · Live"
 msgstr "시즌 1 · 진행 중"
 
@@ -3746,10 +3742,6 @@ msgstr "거래를 시작해 보너스를 활성화하고 보상을 받으세요.
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trade More. Earn More."
 msgstr "더 많이 거래하고, 더 많은 보상을 받으세요."
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Multipliers"
-msgstr "배율"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
@@ -4590,7 +4582,7 @@ msgstr "미청구 가능 금액은 포함되지 않습니다"
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "GMX 계정의 가스용 {wrappedNativeTokenSymbol}가 부족합니다."
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Open menu"
 msgstr "메뉴 열기"
 
@@ -7628,8 +7620,8 @@ msgstr ""
 msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
 msgstr "다음 {2} 동안 {3}에 대해 각 {1}의 {0} {type} 주문을 {numberOfParts}건 체결합니다"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8175,7 +8167,7 @@ msgstr "시즌 1 보상 선순환"
 msgid "POOL"
 msgstr "풀"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
 msgstr "투표"
 
@@ -9796,7 +9788,7 @@ msgstr ""
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
 msgstr ""
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
@@ -9812,7 +9804,7 @@ msgstr "거버넌스"
 msgid "Cancel"
 msgstr "취소"
 
-#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
 msgstr "실시간"
@@ -14171,7 +14163,7 @@ msgstr "{idleSeconds}초"
 msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
 msgstr "GT는 GM Trade 프로젝트의 네이티브 토큰입니다. 현재는 사용처가 없으며, 추가 기능은 토큰 생성 이벤트(TGE) 이후 제공될 예정입니다."
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Close menu"
 msgstr "메뉴 닫기"
 
@@ -15028,8 +15020,8 @@ msgstr "만료된 예치"
 msgid "Take-Profit"
 msgstr "익절매"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Builders.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Builders"
 msgstr "빌더"
 

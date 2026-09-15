@@ -1,31 +1,35 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { SOCIAL_LINKS } from "landing/pages/Home/constants/SociaLinks";
-import { useMemo, useState, type ReactNode } from "react";
+import { RedirectChainIds, useGoToTrade } from "landing/pages/Home/hooks/useGoToTrade";
+import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import IcBurger from "img/ic_burger_menu.svg?react";
 import IcCross from "img/ic_cross.svg?react";
 import IcGmxHeader from "img/ic_gmx_header.svg?react";
 
-import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
-
 type Props = {
   badge?: ReactNode;
-  additionalLinks?: { label: string; href: string }[];
 };
 
-export function HeaderMenu({ badge, additionalLinks = [] }: Props = {}) {
+export function HeaderMenu({ badge }: Props = {}) {
   const goToTradeArbitrum = useGoToTrade({
     buttonPosition: "MenuButton",
     chainId: RedirectChainIds.Arbitum,
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+  const closeMenu = () => setIsMenuOpen(false);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  const defaultLinks = useHeaderLinks();
-  const headerLinks = [...defaultLinks, ...additionalLinks];
-  const hasAdditionalContent = Boolean(badge || additionalLinks.length);
+  const headerLinks = useHeaderLinks();
+  const hasAdditionalContent = Boolean(badge);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   return (
     <div
@@ -38,9 +42,9 @@ export function HeaderMenu({ badge, additionalLinks = [] }: Props = {}) {
       <div className="flex w-full items-center justify-center px-16 py-12 sm:px-40 sm:py-16">
         <div className="flex w-full max-w-[1200px] items-center justify-between gap-16">
           <div className="flex shrink-0 items-center gap-8 sm:gap-24">
-            <a href="/" aria-label="GMX">
+            <Link to="/" aria-label="GMX" onClick={closeMenu}>
               <IcGmxHeader className="h-20 sm:h-24" />
-            </a>
+            </Link>
             {badge}
           </div>
           <div className="flex shrink-0 items-center gap-8 sm:gap-12">
@@ -51,13 +55,14 @@ export function HeaderMenu({ badge, additionalLinks = [] }: Props = {}) {
               )}
             >
               {headerLinks.map((link) => (
-                <a
+                <HeaderLink
                   href={link.href}
                   className="duration-180 px-6 py-8 transition-colors hover:text-white/80 active:text-white/60"
                   key={link.label}
+                  onClick={closeMenu}
                 >
                   {link.label}
-                </a>
+                </HeaderLink>
               ))}
             </div>
             <button
@@ -94,14 +99,14 @@ export function HeaderMenu({ badge, additionalLinks = [] }: Props = {}) {
         >
           <div className="mb-32 flex flex-col text-14">
             {headerLinks.map((link) => (
-              <a
+              <HeaderLink
                 href={link.href}
                 key={link.label}
                 className="border-t-1/2 border-slate-600 py-12 last:border-b-1/2"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={closeMenu}
               >
                 {link.label}
-              </a>
+              </HeaderLink>
             ))}
           </div>
           <button className="btn-landing w-full rounded-8 px-16 py-10 text-14" onClick={goToTradeArbitrum}>
@@ -123,6 +128,10 @@ export function HeaderMenu({ badge, additionalLinks = [] }: Props = {}) {
       )}
     </div>
   );
+}
+
+function HeaderLink({ href, ...props }: ComponentProps<"a"> & { href: string }) {
+  return href.startsWith("/") ? <Link to={href} {...props} /> : <a href={href} {...props} />;
 }
 
 function useHeaderLinks() {
