@@ -14,7 +14,7 @@ import { captureLandingUtmParams } from "./utils/utm";
 captureLandingReferralCode();
 captureLandingUtmParams();
 
-if ("TelegramWebviewProxy" in window) {
+if ("TelegramWebviewProxy" in window && isIOS()) {
   document.documentElement.classList.add("telegram-browser");
 }
 
