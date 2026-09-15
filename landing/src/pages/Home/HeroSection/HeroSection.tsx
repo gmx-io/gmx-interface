@@ -60,11 +60,7 @@ function StatValue({
       variant="none"
       tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
       handle={
-        <div
-          className={cx(className, "text-yellow-300 underline decoration-dotted decoration-[4%] underline-offset-8")}
-        >
-          {text}
-        </div>
+        <div className={cx(className, "underline decoration-dotted decoration-[4%] underline-offset-8")}>{text}</div>
       }
       content={
         <div className="flex max-w-[260px] flex-col gap-8">
