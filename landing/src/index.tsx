@@ -5,6 +5,8 @@ import "./main.css";
 import React from "react";
 import { createRoot } from "react-dom/client";
 
+import { isIOS } from "lib/headlessUiIsMobile";
+
 import App from "./App";
 import { captureLandingReferralCode } from "./utils/referralCode";
 import { captureLandingUtmParams } from "./utils/utm";
