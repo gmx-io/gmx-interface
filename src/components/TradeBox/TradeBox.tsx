@@ -1053,7 +1053,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       className="w-full"
       content={submitButtonState.tooltipContent}
       handle={buttonContent}
-      isHandlerDisabled
+      isHandlerDisabled={submitButtonState.disabled && !shouldDisableValidation}
       handleClassName="w-full"
       position="bottom"
       variant="none"

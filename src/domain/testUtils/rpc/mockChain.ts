@@ -185,6 +185,7 @@ export class MockChain implements RpcResponder {
   rejectSendTransaction = false;
   estimateGasError: string | undefined = undefined;
   sendTransactionError: string | undefined = undefined;
+  allowance: bigint = ethers.MaxUint256;
 
   sentTransactions: SentTransaction[] = [];
   signedTypedData: SignedTypedDataRecord[] = [];
@@ -514,7 +515,7 @@ export class MockChain implements RpcResponder {
         return IFACE.encodeFunctionResult("getEthBalance", [balance]);
       }
       case SELECTORS.allowance: {
-        return IFACE.encodeFunctionResult("allowance", [ethers.MaxUint256]);
+        return IFACE.encodeFunctionResult("allowance", [this.allowance]);
       }
       case SELECTORS.getBytes32: {
         const [key] = IFACE.decodeFunctionData("getBytes32", data) as unknown as [string];

@@ -1136,7 +1136,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Approving...</Trans>
+          {t`Approve ${selectedToken?.symbol}`}
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -1151,7 +1151,7 @@ export const DepositView = () => {
     buttonState = withdrawBlockedError;
   } else if (needTokenApprove) {
     buttonState = {
-      text: t`Allow ${selectedToken?.symbol} spending`,
+      text: t`Approve ${selectedToken?.symbol}`,
       onClick: handleApproveClick,
     };
   } else if (isSubmitting) {

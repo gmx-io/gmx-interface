@@ -25,6 +25,7 @@ import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { getExpressError } from "domain/synthetics/trade/utils/validation";
+import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
@@ -45,6 +46,7 @@ import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -223,7 +225,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     if (!isVisible) setIsSubmitting(false);
   }, [isVisible]);
 
-  const [buttonText, buttonDisabled] = useMemo(() => {
+  const [buttonText, buttonDisabled, buttonTooltip] = useMemo((): [string, boolean, string?] => {
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
     if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
@@ -234,7 +236,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
     if (tokensToApprove.length) {
       const tokenSymbol = getToken(chainId, tokensToApprove[0]).symbol;
-      return [t`Approve ${tokenSymbol}`, isApproving];
+      return [
+        getApproveButtonText({ tokenSymbol, isGasPaymentToken: true }),
+        isApproving,
+        getGasPaymentTokenApprovalTooltip(tokenSymbol),
+      ];
     }
 
     return [t`Settle`, false];
@@ -411,10 +417,12 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           />
         </AlertInfoCard>
       )}
-      <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={onSubmit}>
-        {buttonText}
-        {isApproving && tokensToApprove.length > 0 && <SpinnerIcon className="ml-4 animate-spin" />}
-      </Button>
+      <ButtonTooltipWrapper content={buttonTooltip} isHandlerDisabled={buttonDisabled}>
+        <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={onSubmit}>
+          {buttonText}
+          {isApproving && tokensToApprove.length > 0 && <SpinnerIcon className="ml-4 animate-spin" />}
+        </Button>
+      </ButtonTooltipWrapper>
     </Modal>
   );
 }

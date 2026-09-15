@@ -75,6 +75,11 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import {
+  getApproveButtonText,
+  getGasPaymentTokenApprovalTooltip,
+  getIsGasPaymentTokenApproval,
+} from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
@@ -195,15 +200,15 @@ export function useTradeboxButtonState({
       list.push({ tokenAddress: fromToken.address, amount: payAmount });
     }
 
-    if (expressParams?.gasPaymentParams && gasPaymentToken) {
+    if (expressParams?.gasPaymentParams) {
       list.push({
-        tokenAddress: gasPaymentToken.address,
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
         amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
       });
     }
 
     return list;
-  }, [fromToken, payAmount, expressParams?.gasPaymentParams, gasPaymentToken]);
+  }, [fromToken, payAmount, expressParams?.gasPaymentParams]);
 
   const {
     tokensToApprove,
@@ -598,24 +603,27 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isApproving && tokensToApprove.length) {
-      return {
-        ...commonState,
-        text: (
-          <>
-            {t`Allow ${getToken(chainId, tokensToApprove[0]).symbol} to be spent`}{" "}
-            <SpinnerIcon className="ml-4 animate-spin" />
-          </>
-        ),
-        disabled: true,
-      };
-    }
+    if ((isApproving || isAllowanceLoaded) && tokensToApprove.length) {
+      const tokenToApprove = tokensToApprove[0];
+      const tokenSymbol = getToken(chainId, tokenToApprove).symbol;
+      const isGasPaymentTokenApproval = getIsGasPaymentTokenApproval({
+        tokenAddress: tokenToApprove,
+        gasPaymentTokenAddress: expressParams?.gasPaymentParams.gasPaymentTokenAddress,
+        payTokenAddress: fromToken?.address,
+      });
+      const approveButtonText = getApproveButtonText({ tokenSymbol, isGasPaymentToken: isGasPaymentTokenApproval });
 
-    if (isAllowanceLoaded && tokensToApprove.length) {
       return {
         ...commonState,
-        text: t`Allow ${getToken(chainId, tokensToApprove[0]).symbol} to be spent`,
-        disabled: false,
+        tooltipContent: isGasPaymentTokenApproval ? getGasPaymentTokenApprovalTooltip(tokenSymbol) : tooltipContent,
+        text: isApproving ? (
+          <>
+            {approveButtonText} <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ) : (
+          approveButtonText
+        ),
+        disabled: isApproving,
       };
     }
 
@@ -703,6 +711,7 @@ export function useTradeboxButtonState({
     isTpSlEnabled,
     chainId,
     isSwap,
+    fromToken?.address,
     fromToken?.symbol,
     localizedTradeTypeLabels,
     localizedTradeModeLabels,

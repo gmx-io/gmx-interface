@@ -421,7 +421,7 @@ export function PositionEditor() {
     <TooltipWithPortal
       className="w-full"
       content={submitButtonState.tooltipContent}
-      isHandlerDisabled
+      isHandlerDisabled={submitButtonState.disabled}
       handle={buttonContent}
       handleClassName="w-full"
       position="top"

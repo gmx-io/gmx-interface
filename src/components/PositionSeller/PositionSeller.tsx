@@ -74,6 +74,7 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { Token } from "domain/tokens";
+import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
@@ -503,7 +504,7 @@ export function PositionSeller() {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
-    skip: Boolean(srcChainId),
+    skip: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
   });
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
@@ -999,23 +1000,19 @@ export function PositionSeller() {
       };
     }
 
-    if (isApproving && tokensToApprove.length) {
-      const tokenToApprove = tokensToApprove[0];
+    if (tokensToApprove.length) {
+      const tokenSymbol = getToken(chainId, tokensToApprove[0]).symbol;
+      const approveButtonText = getApproveButtonText({ tokenSymbol, isGasPaymentToken: true });
       return {
-        text: (
+        text: isApproving ? (
           <>
-            {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
+            {approveButtonText} <SpinnerIcon className="ml-4 animate-spin" />
           </>
+        ) : (
+          approveButtonText
         ),
-        disabled: true,
-      };
-    }
-
-    if (isAllowanceLoaded && tokensToApprove.length) {
-      const tokenToApprove = tokensToApprove[0];
-      return {
-        text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
-        disabled: false,
+        errorDescription: getGasPaymentTokenApprovalTooltip(tokenSymbol),
+        disabled: isApproving,
       };
     }
 
@@ -1241,7 +1238,7 @@ export function PositionSeller() {
                   </ColorfulBanner>
                 )}
 
-                <ButtonTooltipWrapper content={buttonState.errorDescription}>
+                <ButtonTooltipWrapper content={buttonState.errorDescription} isHandlerDisabled={buttonState.disabled}>
                   <Button
                     className="w-full"
                     variant="primary-action"
