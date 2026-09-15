@@ -3,6 +3,7 @@ import { useCallback } from "react";
 
 import { PRODUCTION_HOST } from "config/links";
 import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { sendRewardsLandingEvent, type RewardsLandingPlacement } from "lib/userAnalytics/rewardsLandingEvents";
 import type { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import {
@@ -30,6 +31,7 @@ export enum RedirectChainIds {
 type Props = {
   chainId: RedirectChainIds;
   buttonPosition: LandingPageLaunchAppEvent["data"]["buttonPosition"];
+  rewardsPlacement?: RewardsLandingPlacement;
 };
 
 const TRADE_CHAIN_IDS: Record<Exclude<RedirectChainIds, RedirectChainIds.Solana>, number> = {
@@ -41,30 +43,34 @@ const TRADE_CHAIN_IDS: Record<Exclude<RedirectChainIds, RedirectChainIds.Solana>
   [RedirectChainIds.Ethereum]: SOURCE_ETHEREUM_MAINNET,
 };
 
-export function useGoToTrade({ buttonPosition, chainId }: Props) {
+export function useGoToTrade({ buttonPosition, chainId, rewardsPlacement }: Props) {
   const { redirectWithWarning } = useHomePageContext();
   return useCallback(() => {
     const shouldSeeConfirmationDialog = chainId === RedirectChainIds.Solana;
 
-    userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
-      {
-        event: "LandingPageAction",
-        data:
-          chainId === RedirectChainIds.Solana
-            ? {
-                action: "SolanaNavigation",
-                buttonPosition: buttonPosition,
-                shouldSeeConfirmationDialog,
-              }
-            : {
-                action: "LaunchApp",
-                buttonPosition: buttonPosition,
-                shouldSeeConfirmationDialog,
-                chain: getChainName(chainId),
-              },
-      },
-      { instantSend: true }
-    );
+    if (rewardsPlacement) {
+      sendRewardsLandingEvent({ action: "StartTradingClick", placement: rewardsPlacement });
+    } else {
+      userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
+        {
+          event: "LandingPageAction",
+          data:
+            chainId === RedirectChainIds.Solana
+              ? {
+                  action: "SolanaNavigation",
+                  buttonPosition: buttonPosition,
+                  shouldSeeConfirmationDialog,
+                }
+              : {
+                  action: "LaunchApp",
+                  buttonPosition: buttonPosition,
+                  shouldSeeConfirmationDialog,
+                  chain: getChainName(chainId),
+                },
+        },
+        { instantSend: true }
+      );
+    }
 
     const redirectUrl =
       chainId === RedirectChainIds.Solana ? "https://gmtrade.xyz" : makeLink(TRADE_CHAIN_IDS[chainId]);
@@ -76,7 +82,7 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
         window.location.href = redirectUrl;
       }
     }
-  }, [redirectWithWarning, buttonPosition, chainId]);
+  }, [redirectWithWarning, buttonPosition, chainId, rewardsPlacement]);
 }
 
 function makeLink(chainId: number) {

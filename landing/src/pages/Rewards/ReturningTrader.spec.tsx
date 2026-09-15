@@ -1,6 +1,7 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
+import { useEffect } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { IncentivesConfig } from "domain/synthetics/incentives/v2/types";
@@ -19,7 +20,11 @@ const mocks = vi.hoisted(() => ({
   error: undefined as Error | undefined,
   resolve: vi.fn(),
   retry: vi.fn(),
+  pushEvent: vi.fn(),
+  referralReady: true,
+  referralCode: true,
 }));
+vi.mock("lib/userAnalytics/UserAnalytics", () => ({ userAnalytics: { pushEvent: mocks.pushEvent } }));
 vi.mock("lib/resolveEnsAddress", () => ({ resolveEnsAddress: mocks.resolve }));
 vi.mock("landing/hooks/useSpoilerBlur", () => ({
   useSpoilerBlur: () => ({ sourceRef: { current: null }, canvasRef: { current: null }, ready: false }),
@@ -45,7 +50,18 @@ vi.mock("domain/synthetics/incentives/v2/useReturnBonus", () => ({
   }),
 }));
 vi.mock("./RewardsReferralWallet", () => ({
-  default: ({ account }: { account: string }) => <div data-testid="referral-account">{account}</div>,
+  default: function MockRewardsReferralWallet({
+    account,
+    onResultRevealed,
+  }: {
+    account: string;
+    onResultRevealed: (hasCode: boolean) => void;
+  }) {
+    useEffect(() => {
+      if (mocks.referralReady) onResultRevealed(mocks.referralCode);
+    }, [onResultRevealed]);
+    return <div data-testid="referral-account">{account}</div>;
+  },
 }));
 
 const config: IncentivesConfig = {
@@ -86,6 +102,9 @@ beforeEach(() => {
   mocks.error = undefined;
   mocks.resolve.mockReset();
   mocks.retry.mockReset();
+  mocks.pushEvent.mockReset();
+  mocks.referralReady = true;
+  mocks.referralCode = true;
 });
 afterEach(cleanup);
 
@@ -95,6 +114,66 @@ function submit(view: ReturnType<typeof render>, value: string) {
 }
 
 describe("returning trader checker", () => {
+  it("tracks completed input once and check clicks without sending the entered address", async () => {
+    const view = render(<Page />);
+    const input = view.getByRole("textbox", { name: "Wallet address" });
+    fireEvent.change(input, { target: { value: account } });
+    expect(mocks.pushEvent).not.toHaveBeenCalled();
+    fireEvent.blur(input);
+    await act(async () => {
+      fireEvent.click(view.getByRole("button", { name: "Check wallet" }));
+      await vi.dynamicImportSettled();
+    });
+    expect(mocks.pushEvent.mock.calls.map(([event]) => event.data).slice(0, 2)).toEqual([
+      { action: "ComebackBlockAction", type: "AddressEntered" },
+      { action: "ComebackBlockAction", type: "CheckClicked" },
+    ]);
+    expect(mocks.pushEvent.mock.calls.filter(([event]) => event.data.type === "AddressEntered")).toHaveLength(1);
+  });
+
+  it.each([true, false])(
+    "reports the revealed result once with referral status and rewards (bonus: %s)",
+    async (hasBonus) => {
+      mocks.remaining = hasBonus ? 2000n * PRECISION : 0n;
+      mocks.referralCode = hasBonus;
+      const view = render(<Page />);
+      await act(async () => {
+        submit(view, account);
+        await vi.dynamicImportSettled();
+      });
+      view.rerender(<Page />);
+      const resultEvents = mocks.pushEvent.mock.calls.filter(([event]) => event.data.type === "ResultRevealed");
+      expect(resultEvents).toHaveLength(1);
+      expect(resultEvents[0][0]).toEqual({
+        event: "RewardsPageAction",
+        data: {
+          action: "ComebackBlockAction",
+          type: "ResultRevealed",
+          rewards_exist: hasBonus,
+          ref_code_exist: hasBonus,
+          rewards: hasBonus ? 2000 : 0,
+        },
+      });
+    }
+  );
+
+  it("does not report results while the bonus or referral status is unknown or the request failed", async () => {
+    mocks.loading = true;
+    const view = render(<Page />);
+    submit(view, account);
+    expect(mocks.pushEvent.mock.calls.some(([event]) => event.data.type === "ResultRevealed")).toBe(false);
+    mocks.loading = false;
+    mocks.referralReady = false;
+    await act(async () => {
+      view.rerender(<Page />);
+      await vi.dynamicImportSettled();
+    });
+    expect(mocks.pushEvent.mock.calls.some(([event]) => event.data.type === "ResultRevealed")).toBe(false);
+    mocks.error = new Error("Unavailable");
+    view.rerender(<Page />);
+    expect(mocks.pushEvent.mock.calls.some(([event]) => event.data.type === "ResultRevealed")).toBe(false);
+  });
+
   it("focuses the address field without revealing either initial card", () => {
     const view = render(<Page />);
     fireEvent.click(view.getByRole("button", { name: "Enter any wallet address to reveal" }));

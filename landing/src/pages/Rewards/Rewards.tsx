@@ -1,10 +1,12 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
 import { useIncentivesConfig } from "domain/synthetics/incentives/v2/useIncentivesConfig";
 import { getPageTitle } from "lib/legacy";
+import { sendRewardsLandingEvent } from "lib/userAnalytics/rewardsLandingEvents";
 
 import SEO from "components/Seo/SEO";
 
@@ -22,10 +24,17 @@ import { RewardsValue } from "./RewardsValue";
 import "./Rewards.css";
 
 export default function Rewards() {
+  const viewSent = useRef(false);
   const { i18n } = useLingui();
   const config = useIncentivesConfig(ARBITRUM);
   const loading = config.loading || config.isValidating;
   const epochEnd = config.data ? new Date((config.data.epochTimestamp + config.data.epochDuration) * 1000) : undefined;
+
+  useEffect(() => {
+    if (viewSent.current) return;
+    viewSent.current = true;
+    sendRewardsLandingEvent({ action: "RewardsPageView" });
+  }, []);
 
   return (
     <SEO title={getPageTitle(t`Rewards`)}>
@@ -69,7 +78,7 @@ export default function Rewards() {
                 </Trans>
               </h2>
               <div className="rewards-closing-cta">
-                <RewardsTradeButton />
+                <RewardsTradeButton placement="Closing" />
                 <p>
                   <Trans>
                     Trade before{" "}

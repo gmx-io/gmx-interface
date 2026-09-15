@@ -5,6 +5,9 @@ import { RedirectChainIds, useGoToTrade } from "landing/pages/Home/hooks/useGoTo
 import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import type { LandingPageRewardsClickEvent } from "lib/userAnalytics/types";
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
+
 import IcBurger from "img/ic_burger_menu.svg?react";
 import IcCross from "img/ic_cross.svg?react";
 import IcGmxHeader from "img/ic_gmx_header.svg?react";
@@ -14,18 +17,35 @@ type Props = {
 };
 
 export function HeaderMenu({ badge }: Props = {}) {
+  const { pathname } = useLocation();
+  const isRewardsPage = /^\/rewards\/?$/.test(pathname);
   const goToTradeArbitrum = useGoToTrade({
     buttonPosition: "MenuButton",
     chainId: RedirectChainIds.Arbitum,
+    rewardsPlacement: isRewardsPage ? "Header" : undefined,
+  });
+  const goToTradeFromMobileMenu = useGoToTrade({
+    buttonPosition: "MenuButton",
+    chainId: RedirectChainIds.Arbitum,
+    rewardsPlacement: isRewardsPage ? "MobileMenu" : undefined,
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { pathname } = useLocation();
   const closeMenu = () => setIsMenuOpen(false);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
   const headerLinks = useHeaderLinks();
   const hasAdditionalContent = Boolean(badge);
+
+  function handleLinkClick(href: string) {
+    closeMenu();
+    if (href === "/rewards" && !isRewardsPage) {
+      userAnalytics.pushEvent<LandingPageRewardsClickEvent>(
+        { event: "LandingPageAction", data: { action: "RewardsPageClick" } },
+        { instantSend: true }
+      );
+    }
+  }
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -59,7 +79,7 @@ export function HeaderMenu({ badge }: Props = {}) {
                   href={link.href}
                   className="duration-180 px-6 py-8 transition-colors hover:text-white/80 active:text-white/60"
                   key={link.label}
-                  onClick={closeMenu}
+                  onClick={() => handleLinkClick(link.href)}
                 >
                   {link.label}
                 </HeaderLink>
@@ -103,13 +123,13 @@ export function HeaderMenu({ badge }: Props = {}) {
                 href={link.href}
                 key={link.label}
                 className="border-t-1/2 border-slate-600 py-12 last:border-b-1/2"
-                onClick={closeMenu}
+                onClick={() => handleLinkClick(link.href)}
               >
                 {link.label}
               </HeaderLink>
             ))}
           </div>
-          <button className="btn-landing w-full rounded-8 px-16 py-10 text-14" onClick={goToTradeArbitrum}>
+          <button className="btn-landing w-full rounded-8 px-16 py-10 text-14" onClick={goToTradeFromMobileMenu}>
             <Trans>Open app</Trans>
           </button>
           <div className="mt-auto flex w-full flex-col items-center gap-20 text-12 text-slate-500">

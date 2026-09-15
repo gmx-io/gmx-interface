@@ -199,9 +199,9 @@ export function RewardsCalculator({
               GT
             </span>
           </p>
-          <RewardsTradeButton className="rewards-button-white" />
+          <RewardsTradeButton className="rewards-button-white" placement="Calculator" />
         </div>
-        <RewardsTradeButton className="rewards-button-white rewards-mobile-trade-button" />
+        <RewardsTradeButton className="rewards-button-white rewards-mobile-trade-button" placement="MobileCalculator" />
       </div>
       <a className="rewards-wallet-link-mobile" href="#comeback">
         <Trans>Traded here before? Check your wallet →</Trans>

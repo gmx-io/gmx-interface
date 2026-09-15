@@ -22,7 +22,7 @@ export default function Home() {
           action: "PageView",
         },
       },
-      { onlyOncePerSession: true }
+      { onlyOncePerSession: true, instantSend: true }
     );
   }, []);
 

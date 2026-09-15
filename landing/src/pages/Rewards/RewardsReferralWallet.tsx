@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { getAddress } from "viem";
 import { useAccount, useSwitchChain } from "wagmi";
@@ -13,6 +13,7 @@ import type { IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
+import { getComebackAnalyticsParams, sendRewardsLandingEvent } from "lib/userAnalytics/rewardsLandingEvents";
 import useWallet from "lib/wallets/useWallet";
 import WalletProvider from "lib/wallets/WalletProvider";
 
@@ -24,7 +25,14 @@ import { RewardsValue } from "./RewardsValue";
 
 import "react-toastify/dist/ReactToastify.css";
 
-type Props = { config: IncentivesConfig | null | undefined; loading?: boolean; account?: string; hasBonus?: boolean };
+type Props = {
+  config: IncentivesConfig | null | undefined;
+  loading?: boolean;
+  account?: string;
+  hasBonus?: boolean;
+  rewardsUsd?: bigint;
+  onResultRevealed?: (hasReferralCode: boolean) => void;
+};
 
 export default function RewardsReferralWallet(props: Props) {
   return (
@@ -35,7 +43,7 @@ export default function RewardsReferralWallet(props: Props) {
   );
 }
 
-function ReferralWallet({ config, loading, account: checkedAccount, hasBonus }: Props) {
+function ReferralWallet({ config, loading, account: checkedAccount, hasBonus, rewardsUsd, onResultRevealed }: Props) {
   const [connectionError, setConnectionError] = useState<string>();
   const { address, isConnected } = useAccount();
   const { ready, authenticated } = usePrivy();
@@ -60,6 +68,8 @@ function ReferralWallet({ config, loading, account: checkedAccount, hasBonus }: 
         config={config}
         loading={loading}
         hasBonus={hasBonus}
+        rewardsUsd={rewardsUsd}
+        onResultRevealed={onResultRevealed}
         onConnect={connect}
         connecting={!ready || isOpen}
         connectionError={connectionError}
@@ -82,6 +92,8 @@ function ConnectedReferral({
   config,
   loading,
   hasBonus,
+  rewardsUsd = 0n,
+  onResultRevealed,
   onConnect,
   connecting,
   connectionError,
@@ -107,12 +119,19 @@ function ConnectedReferral({
     chainId: ARBITRUM,
     account,
     signer: ownsAccount ? signer : undefined,
-    onSuccess: setCreatedCode,
+    onSuccess: (newCode) => {
+      setCreatedCode(newCode);
+      sendRewardsLandingEvent({
+        action: "ComebackCreateCodeSuccesfull",
+        ...getComebackAnalyticsParams(rewardsUsd, true),
+      });
+    },
   });
   const code = createdCode ?? codes.code ?? undefined;
   const loadingCode = !code && !codes.success && !codes.error;
   const url = code ? `${window.location.origin}/rewards?ref=${encodeURIComponent(code)}` : undefined;
   const codeError = getCodeError(input);
+  const analyticsParams = getComebackAnalyticsParams(rewardsUsd, Boolean(code));
   const bonus = config?.boosts.find(({ boost }) => boost === "ManualAllocation")?.multiplier;
   const multiplier =
     config && bonus !== undefined ? formatMultiplierAdjustment(bonus, config.multiplierDecimals) : undefined;
@@ -121,7 +140,16 @@ function ConnectedReferral({
       ? t`I'm getting ${multiplier} rewards. Traded on GMX before? Check your wallet.`
       : t`Your trading fees come back to you. Check your GMX rewards.`;
 
+  useEffect(() => {
+    if (code || codes.success) onResultRevealed?.(Boolean(code));
+  }, [code, codes.success, onResultRevealed]);
+
+  function trackCreateCodeClick() {
+    sendRewardsLandingEvent({ action: "ComebackCreateCodeClick", ...analyticsParams });
+  }
+
   async function copyLink() {
+    sendRewardsLandingEvent({ action: "ComebackShareClick", type: "CopyLink", ...analyticsParams });
     try {
       await navigator.clipboard.writeText(url!);
       setFeedback(t`Link copied`);
@@ -132,6 +160,7 @@ function ConnectedReferral({
 
   async function copyImage() {
     if (!imageRef.current || isSharing) return;
+    sendRewardsLandingEvent({ action: "ComebackShareClick", type: "CopyImage", ...analyticsParams });
     setIsSharing(true);
     try {
       await shareOrCopyElementAsImage({
@@ -170,6 +199,7 @@ function ConnectedReferral({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t`Share on X`}
+              onClick={() => sendRewardsLandingEvent({ action: "ComebackShareClick", type: "X", ...analyticsParams })}
             >
               <Trans>Share on</Trans>
               <XIcon aria-hidden="true" />
@@ -212,7 +242,14 @@ function ConnectedReferral({
         </div>
       ) : !ownsAccount ? (
         <>
-          <button className="rewards-button" disabled={connecting} onClick={onConnect}>
+          <button
+            className="rewards-button"
+            disabled={connecting}
+            onClick={() => {
+              trackCreateCodeClick();
+              onConnect();
+            }}
+          >
             <Trans>Connect this wallet to create a code</Trans>
           </button>
           {connectionError && <p role="alert">{connectionError}</p>}
@@ -223,6 +260,7 @@ function ConnectedReferral({
             className="rewards-button"
             disabled={isSwitching}
             onClick={() => {
+              trackCreateCodeClick();
               setFeedback(undefined);
               void switchChainAsync({ chainId: ARBITRUM }).catch(() =>
                 setFeedback(t`Unable to switch networks. Please try again.`)
@@ -263,7 +301,13 @@ function ConnectedReferral({
           </button>
         </form>
       ) : (
-        <button className="rewards-button" onClick={() => setIsCreating(true)}>
+        <button
+          className="rewards-button"
+          onClick={() => {
+            trackCreateCodeClick();
+            setIsCreating(true);
+          }}
+        >
           <Trans>Create code and invite traders</Trans>
           <XIcon aria-hidden="true" />
         </button>

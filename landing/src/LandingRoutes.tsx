@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { Redirect, Route, RouteComponentProps, Switch, useLocation, useRouteMatch } from "react-router-dom";
 
 import { LandingLayout } from "./components/LandingLayout/LandingLayout";
+import { useConfigureLandingAnalytics } from "./hooks/useConfigureLandingAnalytics";
 import Home from "./pages/Home/Home";
 import Rewards from "./pages/Rewards/Rewards";
 import { RewardsHeaderBadge } from "./pages/Rewards/RewardsHeaderBadge";
@@ -42,6 +43,7 @@ function ScrollToTopOnNavigate() {
 }
 
 export function LandingRoutes() {
+  useConfigureLandingAnalytics();
   const isRewardsPage = Boolean(useRouteMatch({ path: "/rewards", exact: true }));
 
   return (

@@ -4,8 +4,13 @@ import { act, cleanup, fireEvent, render, within } from "@testing-library/react"
 import { Link, MemoryRouter, Route, type RouteComponentProps } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
+
 import { LandingRoutes } from "./LandingRoutes";
 
+vi.mock("lib/userAnalytics/UserAnalytics", () => ({
+  userAnalytics: { pushEvent: vi.fn(), pushProfileProps: vi.fn(), setCommonEventParams: vi.fn() },
+}));
 vi.mock("./pages/Home/Home", () => ({ default: () => <h1>Home page</h1> }));
 vi.mock("./pages/Rewards/Rewards", () => ({
   default: () => (
@@ -53,6 +58,8 @@ function renderAt(entry = "/") {
 }
 
 beforeEach(() => {
+  vi.clearAllMocks();
+  localStorage.clear();
   i18n.load("en", {});
   i18n.activate("en");
   vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
@@ -71,6 +78,10 @@ describe("landing navigation", () => {
     expect(view.queryByTitle("Season 1 · Live")).toBeNull();
 
     fireEvent.click(view.getByRole("link", { name: "Rewards" }));
+    expect(userAnalytics.pushEvent).toHaveBeenCalledWith(
+      { event: "LandingPageAction", data: { action: "RewardsPageClick" } },
+      { instantSend: true }
+    );
     expect(view.router.location.pathname).toBe("/rewards");
     expect(view.getByRole("heading", { name: "Rewards page" })).toBeTruthy();
     expect(view.getByTitle("Season 1 · Live")).toBeTruthy();
@@ -99,6 +110,10 @@ describe("landing navigation", () => {
     fireEvent.click(view.getByRole("button", { name: "Open menu" }));
     const menu = view.container.querySelector<HTMLElement>("#landing-mobile-menu")!;
     fireEvent.click(within(menu).getByRole("link", { name: "Rewards" }));
+    expect(userAnalytics.pushEvent).toHaveBeenCalledWith(
+      { event: "LandingPageAction", data: { action: "RewardsPageClick" } },
+      { instantSend: true }
+    );
     expect(view.getByRole("heading", { name: "Rewards page" })).toBeTruthy();
     expect(view.queryByRole("button", { name: "Close menu" })).toBeNull();
     expect(view.container.querySelector("#landing-mobile-menu")).toBeNull();

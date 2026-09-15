@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { isAddress } from "viem";
 
 import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
@@ -8,6 +8,7 @@ import { useReturnBonus, useReturnBonusHistory } from "domain/synthetics/incenti
 import { formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 import { resolveEnsAddress } from "lib/resolveEnsAddress";
+import { getComebackAnalyticsParams, sendRewardsLandingEvent } from "lib/userAnalytics/rewardsLandingEvents";
 
 import IcWallet from "img/ic_wallet.svg?react";
 import freshCurve from "img/rewards-landing/fresh-curve.svg";
@@ -35,6 +36,9 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
   const [addressHighlightKey, setAddressHighlightKey] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const requestId = useRef(0);
+  const lastTrackedInput = useRef<string>();
+  const [checkId, setCheckId] = useState(0);
+  const lastReportedCheck = useRef<number>();
   const result = useReturnBonus(endpoint, account);
   const history = useReturnBonusHistory(endpoint, account, config?.programStartTimestamp);
   const hasBonus = result.data != null && result.data.manualRewardRemainingUsd > 0n;
@@ -68,8 +72,30 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
     }
   }
 
+  const onResultRevealed = useCallback(
+    (hasReferralCode: boolean) => {
+      if (!checked || lastReportedCheck.current === checkId) return;
+      lastReportedCheck.current = checkId;
+      sendRewardsLandingEvent({
+        action: "ComebackBlockAction",
+        type: "ResultRevealed",
+        ...getComebackAnalyticsParams(result.data?.manualRewardRemainingUsd ?? 0n, hasReferralCode),
+      });
+    },
+    [checked, checkId, result.data?.manualRewardRemainingUsd]
+  );
+
+  function trackAddressEntered() {
+    const value = input.trim();
+    if (!value || value === lastTrackedInput.current) return;
+    lastTrackedInput.current = value;
+    sendRewardsLandingEvent({ action: "ComebackBlockAction", type: "AddressEntered" });
+  }
+
   async function checkWallet(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    trackAddressEntered();
+    sendRewardsLandingEvent({ action: "ComebackBlockAction", type: "CheckClicked" });
     const value = input.trim();
     const id = ++requestId.current;
     setValidationError(undefined);
@@ -95,6 +121,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
         if (id === requestId.current) setResolving(false);
       }
     }
+    setCheckId((current) => current + 1);
     if (address === account) {
       void result.mutate();
       void history.mutate();
@@ -142,6 +169,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
               onPointerDown={(event) => {
                 if (document.activeElement === event.currentTarget) highlightAddress();
               }}
+              onBlur={trackAddressEntered}
               onChange={(event) => {
                 requestId.current += 1;
                 setInput(event.target.value);
@@ -220,6 +248,8 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
                   config={config}
                   loading={loading}
                   hasBonus={hasBonus}
+                  rewardsUsd={result.data?.manualRewardRemainingUsd}
+                  onResultRevealed={onResultRevealed}
                 />
               </Suspense>
             ) : (
