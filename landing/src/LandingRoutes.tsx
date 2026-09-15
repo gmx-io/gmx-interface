@@ -68,6 +68,11 @@ export function LandingRoutes() {
         <Route exact path="/rewards">
           <Rewards />
         </Route>
+        <Route
+          exact
+          path="/comeback"
+          render={({ location }) => <Redirect to={`/rewards${location.search}${location.hash}`} />}
+        />
         <Route path="*" render={RedirectToHomeWithSearch} />
       </Switch>
     </>

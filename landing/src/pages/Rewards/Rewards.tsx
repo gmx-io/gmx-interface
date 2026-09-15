@@ -13,6 +13,7 @@ import dial from "img/rewards-landing/dial.svg";
 
 import { ReturningTrader } from "./ReturningTrader";
 import { RewardsCalculator } from "./RewardsCalculator";
+import { RewardsEpochSummary } from "./RewardsEpochSummary";
 import { RewardsFaq } from "./RewardsFaq";
 import { RewardsMultipliers } from "./RewardsMultipliers";
 import { RewardsTokens } from "./RewardsTokens";
@@ -61,6 +62,7 @@ export default function Rewards() {
                   come back to you.
                 </Trans>
               </h1>
+              <RewardsEpochSummary endpoint={config.endpoint} config={config.data} loading={loading} />
               <RewardsCalculator config={config.data} loading={loading} />
               {!config.data && !loading && (
                 <div className="rewards-config-status" role="status">
@@ -85,27 +87,30 @@ export default function Rewards() {
                 <Trans>
                   Start earning
                   <br />
-                  on your next trade.
+                  on your next trade
                 </Trans>
               </h2>
               <div className="rewards-closing-cta">
                 <RewardsTradeButton />
                 <p>
-                  <Trans>Current epoch ends</Trans>{" "}
-                  <RewardsValue loading={loading} width="18ch">
-                    {epochEnd && (
-                      <time dateTime={epochEnd.toISOString()}>
-                        {epochEnd.toLocaleString(i18n.locale, {
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          timeZone: "UTC",
-                        })}{" "}
-                        UTC
-                      </time>
-                    )}
-                  </RewardsValue>
+                  <Trans>
+                    Trade before{" "}
+                    <RewardsValue loading={loading} width="18ch">
+                      {epochEnd && (
+                        <time dateTime={epochEnd.toISOString()}>
+                          {epochEnd.toLocaleString(i18n.locale, {
+                            weekday: "long",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hourCycle: "h23",
+                            timeZone: "UTC",
+                          })}{" "}
+                          UTC
+                        </time>
+                      )}
+                    </RewardsValue>{" "}
+                    and you're in this epoch.
+                  </Trans>
                 </p>
               </div>
             </div>

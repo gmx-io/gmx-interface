@@ -44,13 +44,30 @@ export const RETURN_BONUS_QUERY = `
   }
 `;
 
-export const RETURN_BONUS_VOLUME_QUERY = `
-  query ReturnBonusVolume($account: String!, $programStartTimestamp: Int!) {
+export const RETURN_BONUS_HISTORY_QUERY = `
+  query ReturnBonusHistory($account: String!, $programStartTimestamp: Int!) {
     incentiveManualAllocations(
       where: { account_eq: $account, programStartTimestamp_eq: $programStartTimestamp }
       limit: 1
     ) {
       lifetimeVolume
+    }
+    tradeActions(limit: 1, where: { account_eq: $account }) {
+      timestamp
+    }
+  }
+`;
+
+export const INCENTIVES_EPOCH_REWARDS_QUERY = `
+  query IncentivesEpochRewards($epoch: Int!, $after: String!, $limit: Int!) {
+    incentiveRewards(
+      where: { epochTimestamp_eq: $epoch, id_gt: $after, rewardsUsd_gt: "0" }
+      orderBy: id_ASC
+      limit: $limit
+    ) {
+      id
+      account
+      rewardsUsd
     }
   }
 `;

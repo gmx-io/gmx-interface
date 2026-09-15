@@ -70,7 +70,7 @@ export function RewardsMultipliers({
       const market = MARKETS[ARBITRUM]?.[address];
       if (!market) return [];
       const token = getToken(ARBITRUM, market.indexTokenAddress);
-      return token.symbol;
+      return `$${token.symbol}`;
     })
     .join(" · ");
   const feeShare = (
@@ -236,7 +236,7 @@ export function RewardsMultipliers({
               <Trans>Comeback boost</Trans>
             </h4>
             <p>
-              <Trans>Early user? Check your wallet for a boost on your trades, until your bonus budget runs out.</Trans>
+              <Trans>Early user? GMX rewards you with a boost on all your perp trades.</Trans>
             </p>
           </article>
           <article>
@@ -248,7 +248,8 @@ export function RewardsMultipliers({
               <Trans>Open and close on the current set:</Trans>{" "}
               <RewardsValue loading={loading} width="12ch">
                 {config ? featuredMarkets || <Trans>See the current markets in the app.</Trans> : undefined}
-              </RewardsValue>
+              </RewardsValue>{" "}
+              <Trans>this epoch.</Trans>
             </p>
           </article>
           <article>
@@ -264,7 +265,7 @@ export function RewardsMultipliers({
                 ) : (
                   <RewardsValue loading={loading} width="4ch" />
                 )}{" "}
-                on the under-traded side and get rewarded for balancing the market.
+                on the under-utilised side and get paid for balancing the market.
               </Trans>
             </p>
           </article>
@@ -275,13 +276,13 @@ export function RewardsMultipliers({
             </h4>
             <p>
               <Trans>
-                Reach{" "}
+                Past{" "}
                 {config ? (
                   formatAmountHuman(config.lifetimeVolumeThreshold, USD_DECIMALS, true, 0).toUpperCase()
                 ) : (
                   <RewardsValue loading={loading} width="4ch" />
                 )}{" "}
-                in lifetime volume. The boost is yours for good — it never resets.
+                lifetime volume the boost is yours for good — it never resets.
               </Trans>
             </p>
           </article>

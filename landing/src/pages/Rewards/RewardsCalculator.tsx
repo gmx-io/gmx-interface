@@ -4,7 +4,7 @@ import { getRewardsSliderAmount, getRewardsSliderPosition, getRewardsSliderStops
 import { useMemo, useState, type ReactNode } from "react";
 
 import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
-import { getLandingRewardEstimate, getLandingTradingFeesUsd } from "domain/synthetics/incentives/v2/landingCalculator";
+import { getLandingRewardEstimate } from "domain/synthetics/incentives/v2/landingCalculator";
 import type { BoostId, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier, formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { expandDecimals, formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
@@ -51,153 +51,161 @@ export function RewardsCalculator({
   };
 
   return (
-    <div className="rewards-calculator">
-      <div className="rewards-calculator-controls">
-        <TierSlider
-          label={t`Weekly volume`}
-          value={volumeUsd}
-          tiers={config?.volumeTiers ?? EMPTY_ARRAY}
-          disabled={!config}
-          onChange={setVolumeUsd}
-          displayValue={formatAmountHuman(volumeUsd, USD_DECIMALS, true, 0).toUpperCase()}
-        />
-        <TierSlider
-          label={t`GMX + esGMX staked`}
-          value={stakedAmount}
-          tiers={config?.stakingTiers ?? EMPTY_ARRAY}
-          disabled={!config}
-          onChange={setStakedAmount}
-          displayValue={formatAmount(stakedAmount, ES_GMX_DECIMALS, 0, true)}
-        />
-        <div className="rewards-boost-controls">
-          <div className="rewards-boost-options">
-            {BOOST_IDS.map((boost) => (
-              <label className={`rewards-boost-toggle ${boosts.includes(boost) ? "is-active" : ""}`} key={boost}>
-                <input
-                  type="checkbox"
-                  checked={boosts.includes(boost)}
-                  disabled={!config}
-                  onChange={(event) => {
-                    setBoosts(event.target.checked ? [...boosts, boost] : boosts.filter((value) => value !== boost));
-                  }}
-                />
-                {boostLabels[boost]}
-              </label>
-            ))}
+    <div className="rewards-calculator-wrapper">
+      <div className="rewards-calculator">
+        <div className="rewards-calculator-controls">
+          <TierSlider
+            label={t`Weekly volume`}
+            value={volumeUsd}
+            tiers={config?.volumeTiers ?? EMPTY_ARRAY}
+            disabled={!config}
+            onChange={setVolumeUsd}
+            displayValue={formatAmountHuman(volumeUsd, USD_DECIMALS, true, 0).toUpperCase()}
+          />
+          <TierSlider
+            label={t`GMX staked`}
+            value={stakedAmount}
+            tiers={config?.stakingTiers ?? EMPTY_ARRAY}
+            disabled={!config}
+            onChange={setStakedAmount}
+            displayValue={formatAmount(stakedAmount, ES_GMX_DECIMALS, 0, true)}
+          />
+          <div className="rewards-boost-controls">
+            <div className="rewards-boost-options">
+              {BOOST_IDS.map((boost) => (
+                <label className={`rewards-boost-toggle ${boosts.includes(boost) ? "is-active" : ""}`} key={boost}>
+                  <input
+                    type="checkbox"
+                    checked={boosts.includes(boost)}
+                    disabled={!config}
+                    onChange={(event) => {
+                      setBoosts(event.target.checked ? [...boosts, boost] : boosts.filter((value) => value !== boost));
+                    }}
+                  />
+                  {boostLabels[boost]}
+                </label>
+              ))}
+            </div>
+            <a className="rewards-wallet-link-desktop" href="#comeback">
+              <Trans>Traded here before? Check your wallet →</Trans>
+            </a>
           </div>
-          <a href="#comeback">
-            <Trans>Traded here before? Check your wallet →</Trans>
-          </a>
         </div>
-      </div>
-      <div className="rewards-receipt" aria-live="polite" aria-atomic="true" aria-busy={!config && loading}>
-        <div className="rewards-receipt-fees">
-          <span>
-            <Trans>Your fees</Trans>
-          </span>
-          <strong>{formatUsd(getLandingTradingFeesUsd(volumeUsd), { displayDecimals: 0 })}</strong>
-        </div>
-        <dl className="rewards-receipt-breakdown">
-          <div>
-            <dt>
-              <Trans>Volume</Trans>
-            </dt>
-            <dd>
-              <RewardsValue loading={loading}>
-                {estimate && config
-                  ? formatMultiplierAdjustment(estimate.volumeMultiplier, config.multiplierDecimals)
-                  : undefined}
+        <div className="rewards-receipt" aria-live="polite" aria-atomic="true" aria-busy={!config && loading}>
+          <dl className="rewards-receipt-breakdown">
+            <div>
+              <dt>
+                <Trans>Volume</Trans>
+              </dt>
+              <dd>
+                <RewardsValue loading={loading}>
+                  {estimate && config
+                    ? formatMultiplierAdjustment(estimate.volumeMultiplier, config.multiplierDecimals)
+                    : undefined}
+                </RewardsValue>
+              </dd>
+            </div>
+            <div>
+              <dt>
+                <Trans>Staking</Trans>
+              </dt>
+              <dd>
+                <RewardsValue loading={loading}>
+                  {estimate && config
+                    ? formatMultiplierAdjustment(estimate.stakingMultiplier, config.multiplierDecimals)
+                    : undefined}
+                </RewardsValue>
+              </dd>
+            </div>
+            <AnimatePresence initial={false}>
+              {boostMultipliers.map(({ boost, multiplier }) => (
+                <motion.div
+                  key={boost}
+                  className="rewards-receipt-boost"
+                  variants={ROW_VARIANTS}
+                  initial="collapsed"
+                  animate="expanded"
+                  exit="collapsed"
+                  custom={4}
+                  transition={reducedMotion ? REDUCED_MOTION_TRANSITION : ROW_TRANSITION}
+                >
+                  <dt>{boostLabels[boost]}</dt>
+                  <dd>
+                    <RewardsValue loading={loading}>
+                      {config && multiplier !== undefined
+                        ? formatMultiplierAdjustment(multiplier, config.multiplierDecimals)
+                        : undefined}
+                    </RewardsValue>
+                  </dd>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </dl>
+          <div className="rewards-receipt-multiplier">
+            <span>
+              <Trans>Your multiplier</Trans>
+            </span>
+            <strong>
+              <RewardsValue loading={loading} width="2ch">
+                {estimate && config ? formatMultiplier(estimate.multiplier, config.multiplierDecimals) : undefined}
               </RewardsValue>
-            </dd>
-          </div>
-          <div>
-            <dt>
-              <Trans>Staking</Trans>
-            </dt>
-            <dd>
-              <RewardsValue loading={loading}>
-                {estimate && config
-                  ? formatMultiplierAdjustment(estimate.stakingMultiplier, config.multiplierDecimals)
-                  : undefined}
-              </RewardsValue>
-            </dd>
+            </strong>
           </div>
           <AnimatePresence initial={false}>
-            {boostMultipliers.map(({ boost, multiplier }) => (
-              <motion.div
-                key={boost}
-                className="rewards-receipt-boost"
+            {estimate?.isCapped && (
+              <motion.p
+                className="rewards-cap-note"
                 variants={ROW_VARIANTS}
                 initial="collapsed"
                 animate="expanded"
                 exit="collapsed"
-                custom={4}
+                custom={6}
                 transition={reducedMotion ? REDUCED_MOTION_TRANSITION : ROW_TRANSITION}
               >
-                <dt>{boostLabels[boost]}</dt>
-                <dd>
-                  <RewardsValue loading={loading}>
-                    {config && multiplier !== undefined
-                      ? formatMultiplierAdjustment(multiplier, config.multiplierDecimals)
-                      : undefined}
-                  </RewardsValue>
-                </dd>
-              </motion.div>
-            ))}
+                <Trans>Maximum multiplier reached</Trans>
+              </motion.p>
+            )}
           </AnimatePresence>
-        </dl>
-        <div className="rewards-receipt-multiplier">
-          <span>
-            <Trans>Your multiplier</Trans>
-          </span>
-          <strong>
-            <RewardsValue loading={loading} width="2ch">
-              {estimate && config ? formatMultiplier(estimate.multiplier, config.multiplierDecimals) : undefined}
-            </RewardsValue>
-          </strong>
+          <div className="rewards-receipt-total">
+            <span>
+              <Trans>Returned to you</Trans>
+            </span>
+            <strong>
+              <RewardsValue loading={loading}>
+                {estimate ? formatUsd(estimate.rewardsUsd, { displayDecimals: 0 }) : undefined}
+              </RewardsValue>
+            </strong>
+          </div>
+          <p className="rewards-receipt-split">
+            <span>
+              <RewardsValue loading={loading} width="5ch">
+                {estimate
+                  ? formatUsd(estimate.esGmxRewardsUsd, {
+                      displayDecimals: estimate.esGmxRewardsUsd % expandDecimals(1, USD_DECIMALS) === 0n ? 0 : 2,
+                    })
+                  : undefined}
+              </RewardsValue>{" "}
+              esGMX
+            </span>
+            <span>
+              +{" "}
+              <RewardsValue loading={loading} width="5ch">
+                {estimate
+                  ? formatUsd(estimate.gtRewardsUsd, {
+                      displayDecimals: estimate.gtRewardsUsd % expandDecimals(1, USD_DECIMALS) === 0n ? 0 : 2,
+                    })
+                  : undefined}
+              </RewardsValue>{" "}
+              GT
+            </span>
+          </p>
+          <RewardsTradeButton className="rewards-button-white" />
         </div>
-        <AnimatePresence initial={false}>
-          {estimate?.isCapped && (
-            <motion.p
-              className="rewards-cap-note"
-              variants={ROW_VARIANTS}
-              initial="collapsed"
-              animate="expanded"
-              exit="collapsed"
-              custom={6}
-              transition={reducedMotion ? REDUCED_MOTION_TRANSITION : ROW_TRANSITION}
-            >
-              <Trans>Maximum multiplier reached</Trans>
-            </motion.p>
-          )}
-        </AnimatePresence>
-        <div className="rewards-receipt-total">
-          <span>
-            <Trans>Returned to you</Trans>
-          </span>
-          <strong>
-            <RewardsValue loading={loading}>
-              {estimate ? formatUsd(estimate.rewardsUsd, { displayDecimals: 0 }) : undefined}
-            </RewardsValue>
-          </strong>
-        </div>
-        <p className="rewards-receipt-split">
-          <span>
-            <RewardsValue loading={loading} width="5ch">
-              {estimate ? formatUsd(estimate.esGmxRewardsUsd) : undefined}
-            </RewardsValue>{" "}
-            esGMX
-          </span>
-          <span>
-            +{" "}
-            <RewardsValue loading={loading} width="5ch">
-              {estimate ? formatUsd(estimate.gtRewardsUsd) : undefined}
-            </RewardsValue>{" "}
-            GT
-          </span>
-        </p>
-        <RewardsTradeButton className="rewards-button-white" />
+        <RewardsTradeButton className="rewards-button-white rewards-mobile-trade-button" />
       </div>
+      <a className="rewards-wallet-link-mobile" href="#comeback">
+        <Trans>Traded here before? Check your wallet →</Trans>
+      </a>
       <p className="rewards-estimate-note">
         <Trans>
           Estimated rewards. Actual rewards depend on eligible fees, active tiers, and remaining boost budget.
@@ -226,7 +234,7 @@ function TierSlider({
   const position = getRewardsSliderPosition(stops, value);
   const maximum = (stops.length - 1) * 100;
   const style = useMemo(
-    () => ({ backgroundSize: `${maximum > 0 ? (position / maximum) * 100 : 0}% 100%` }),
+    () => ({ backgroundSize: `${maximum > 0 ? (position / maximum) * 100 : 0}% 100%, 12px 100%` }),
     [maximum, position]
   );
 

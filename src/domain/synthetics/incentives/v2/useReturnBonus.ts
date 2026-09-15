@@ -1,8 +1,8 @@
 import useSWR from "swr";
-import { isAddress } from "viem";
+import { getAddress, isAddress } from "viem";
 
 import { fetchIncentivesGraphql } from "./client";
-import { RETURN_BONUS_QUERY, RETURN_BONUS_VOLUME_QUERY } from "./queries";
+import { RETURN_BONUS_HISTORY_QUERY, RETURN_BONUS_QUERY } from "./queries";
 import type { AccountIncentiveStatus } from "./types";
 
 export type ReturnBonus = Pick<
@@ -38,22 +38,24 @@ export function useReturnBonus(endpoint: string | undefined, account: string | u
   );
 }
 
-export function useReturnBonusVolume(
+export function useReturnBonusHistory(
   endpoint: string | undefined,
   account: string | undefined,
   programStartTimestamp: number | undefined
 ) {
   return useSWR(
     endpoint && account && isAddress(account) && programStartTimestamp !== undefined
-      ? (["returnBonusVolume", endpoint, account, programStartTimestamp] as const)
+      ? (["returnBonusHistory", endpoint, account, programStartTimestamp] as const)
       : null,
     async ([, url, address, programStart]) => {
-      const { incentiveManualAllocations } = await fetchIncentivesGraphql<{
+      const { incentiveManualAllocations, tradeActions } = await fetchIncentivesGraphql<{
         incentiveManualAllocations: { lifetimeVolume: string }[];
-      }>(url, RETURN_BONUS_VOLUME_QUERY, { account: address, programStartTimestamp: programStart });
+        tradeActions: { timestamp: number }[];
+      }>(url, RETURN_BONUS_HISTORY_QUERY, { account: getAddress(address), programStartTimestamp: programStart });
 
       const allocation = incentiveManualAllocations[0];
-      return allocation ? BigInt(allocation.lifetimeVolume) : null;
+      const lifetimeVolume = allocation ? BigInt(allocation.lifetimeVolume) : null;
+      return { lifetimeVolume, hasHistory: (lifetimeVolume ?? 0n) > 0n || tradeActions.length > 0 };
     },
     { revalidateOnFocus: false, shouldRetryOnError: false }
   );

@@ -6,6 +6,7 @@ import {
   formatMultiplier,
   getMaxRewardRateFactor,
 } from "domain/synthetics/incentives/v2/utils";
+import { bigMath } from "sdk/utils/bigmath";
 
 import { RewardsValue } from "./RewardsValue";
 
@@ -20,14 +21,36 @@ export function RewardsFaq({ config, loading }: { config: IncentivesConfig | nul
       {config ? formatMultiplier(config.maxMultiplier, config.multiplierDecimals) : undefined}
     </RewardsValue>
   );
+  const exampleMultipliers = config
+    ? [
+        bigMath.min(3n * config.multiplierDecimals, config.maxMultiplier),
+        bigMath.min(7n * config.multiplierDecimals, config.maxMultiplier),
+      ]
+    : undefined;
+  const exampleRange = (
+    <RewardsValue loading={loading} width="5ch">
+      {config && exampleMultipliers
+        ? exampleMultipliers.map((value) => formatMultiplier(value, config.multiplierDecimals)).join("–")
+        : undefined}
+    </RewardsValue>
+  );
+  const rewardRange = (
+    <RewardsValue loading={loading} width="8ch">
+      {config && exampleMultipliers
+        ? exampleMultipliers
+            .map((value) => formatFactorPercentage(getMaxRewardRateFactor({ ...config, maxMultiplier: value })))
+            .join("–")
+        : undefined}
+    </RewardsValue>
+  );
   const items = [
     {
       question: <Trans>Is {maximumRate} of my fees real?</Trans>,
       answer: (
         <Trans>
           Yes, at the {multiplier} multiplier cap, which can be reached by combining staking tiers, volume tiers, and
-          boosts. Rewards are paid in esGMX and GT. Use the calculator above to see the split for your estimated trading
-          volume and stake.
+          boosts. For example, a {exampleRange} multiplier returns {rewardRange} of eligible fees in esGMX and GT
+          combined. Use the calculator above to see the split for your estimated trading volume and stake.
         </Trans>
       ),
     },

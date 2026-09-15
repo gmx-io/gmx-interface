@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { fetchIncentivesGraphql } from "../client";
 import { useGtMintingStats } from "../useGtMintingStats";
-import { useReturnBonus, useReturnBonusVolume } from "../useReturnBonus";
+import { useReturnBonus, useReturnBonusHistory } from "../useReturnBonus";
 
 vi.mock("../client", () => ({ fetchIncentivesGraphql: vi.fn() }));
 
@@ -91,10 +91,34 @@ describe("public comeback lookup", () => {
   it("looks up historical volume for the configured program and original address", async () => {
     fetcher.mockResolvedValue({
       incentiveManualAllocations: [{ lifetimeVolume: "21000000000000000000000000000000000000" }],
+      tradeActions: [{ timestamp: 1700000000 }],
     });
-    const hook = mountHook(() => useReturnBonusVolume(endpoint, account, 1781654400));
-    await waitFor(() => expect(hook.result().data).toBe(21000000n * 10n ** 30n));
+    const hook = mountHook(() => useReturnBonusHistory(endpoint, account, 1781654400));
+    await waitFor(() =>
+      expect(hook.result().data).toEqual({ lifetimeVolume: 21000000n * 10n ** 30n, hasHistory: true })
+    );
     expect(fetcher.mock.calls[0][2]).toEqual({ account, programStartTimestamp: 1781654400 });
+  });
+
+  it("recognizes trading history even when there is no manual allocation", async () => {
+    fetcher.mockResolvedValue({ incentiveManualAllocations: [], tradeActions: [{ timestamp: 1700000000 }] });
+    const hook = mountHook(() => useReturnBonusHistory(endpoint, account, 1781654400));
+    await waitFor(() => expect(hook.result().data).toEqual({ lifetimeVolume: null, hasHistory: true }));
+  });
+
+  it("uses the indexer's checksum format when a wallet is entered without a checksum", async () => {
+    fetcher.mockResolvedValue({ incentiveManualAllocations: [], tradeActions: [] });
+    const hook = mountHook(() =>
+      useReturnBonusHistory(endpoint, "0x1640e916e10610ba39aac5cd8a08acf3ccae1a4c", 1781654400)
+    );
+    await waitFor(() => expect(hook.result().data).toBeDefined());
+    expect(fetcher.mock.calls[0][2]).toEqual({ account, programStartTimestamp: 1781654400 });
+  });
+
+  it("marks a wallet fresh only after both allocation and trade history checks succeed", async () => {
+    fetcher.mockResolvedValue({ incentiveManualAllocations: [], tradeActions: [] });
+    const hook = mountHook(() => useReturnBonusHistory(endpoint, account, 1781654400));
+    await waitFor(() => expect(hook.result().data).toEqual({ lifetimeVolume: null, hasHistory: false }));
   });
 });
 

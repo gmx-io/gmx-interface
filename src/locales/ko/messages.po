@@ -44,10 +44,6 @@ msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하�
 msgid "Monthly"
 msgstr "월별"
 
-#: landing/src/pages/Rewards/RewardsMultipliers.tsx
-msgid "Reach {0} in lifetime volume. The boost is yours for good — it never resets."
-msgstr "누적 거래량 {0}을 달성하세요. 부스트는 영구적으로 유지되며 초기화되지 않습니다."
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "추천 코드"
@@ -233,6 +229,10 @@ msgstr "GMX 스왑 모니터링 Telegram 봇"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "No trades during the selected period"
 msgstr ""
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "this epoch."
+msgstr "이번 에포크에 적용됩니다."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Debug values unavailable"
@@ -696,10 +696,6 @@ msgstr "{tokenSymbol}의 Oracle 가격이 유효하지 않습니다"
 msgid "<0>{0}</0><1>/</1><2>{1}</2> <3>to get {2} status <4>+{3}</4></3>"
 msgstr "<0>{0}</0><1>/</1><2>{1}</2> <3>{2} 상태를 획득하려면 <4>+{3}</4></3>"
 
-#: landing/src/pages/Rewards/RewardsMultipliers.tsx
-msgid "Early user? Check your wallet for a boost on your trades, until your bonus budget runs out."
-msgstr "이전에 이용하셨나요? 지갑을 확인하고 보너스 예산이 소진될 때까지 거래에 적용되는 부스트를 받아보세요."
-
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -930,10 +926,6 @@ msgstr "GLV:"
 msgid "A tier applies in the epoch it is achieved and remains active for 4 following epochs."
 msgstr "티어는 달성한 에포크에 적용되며 이후 4개 에포크 동안 활성 상태로 유지됩니다."
 
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "No comeback bonus remaining for this wallet."
-msgstr "이 지갑에는 남은 리턴 보너스가 없습니다."
-
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
 msgstr "코드가 등록되지 않은 네트워크: {nonTakenNetworkNamesJoined}. 네트워크를 전환하여 등록하고 리베이트를 받으십시오."
@@ -1127,6 +1119,10 @@ msgstr "알 수 없는 오류"
 msgid "Market Swap"
 msgstr "마켓 스왑"
 
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Traded on GMX before? Check your wallet"
+msgstr "GMX에서 거래한 적이 있나요? 지갑을 확인하세요"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "GMX claimed"
 msgstr "GMX 수령 완료"
@@ -1172,6 +1168,10 @@ msgstr "GMX 풀에서 이 스왑을 체결할 수 없으며, 현재 사용 가�
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trade {0} more to unlock {1} status <0>+{2}</0>"
 msgstr "{0}만큼 더 거래하여 {1} 상태를 잠금 해제하세요 <0>+{2}</0>"
+
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "I'm getting {multiplier} rewards"
+msgstr "{multiplier} 보상을 받고 있어요"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
@@ -1451,6 +1451,10 @@ msgstr "{0}에서 코드 가용성을 확인할 수 없습니다. 코드를 생�
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
 msgstr "GMX 퍼프 기준 실효 왕복 수수료 약 0.05% 가정.<0/>참고용입니다. 정확한 요율은 가입 시 데스크에서 확정합니다."
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Trade before <0>{0}</0> and you're in this epoch."
+msgstr "<0>{0}</0> 전에 거래하면 이번 에포크에 참여할 수 있습니다."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
@@ -1806,10 +1810,6 @@ msgstr "가스로 {0} 사용"
 msgid "Total margin funded"
 msgstr "총 납입 증거금"
 
-#: landing/src/pages/Rewards/RewardsMultipliers.tsx
-msgid "Open trades of at least {0} on the under-traded side and get rewarded for balancing the market."
-msgstr "거래가 적은 쪽에 {0} 이상의 거래를 개설하고 시장 균형에 기여한 보상을 받으세요."
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "{0}에서 GMX를 구매하려면 <0>네트워크를 변경하십시오</0>"
@@ -1817,6 +1817,10 @@ msgstr "{0}에서 GMX를 구매하려면 <0>네트워크를 변경하십시오</
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Eligible fees on page"
 msgstr "이 페이지의 적격 수수료"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Open trades of at least {0} on the under-utilised side and get paid for balancing the market."
+msgstr "이용이 적은 방향으로 {0} 이상의 거래를 개설하고 시장 균형을 맞추는 보상을 받으세요."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Perpetuals."
@@ -2095,6 +2099,10 @@ msgstr "트레이더와 제휴사를 동시에 겸할 수 있나요?"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
 msgstr "기본 APY"
+
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "Previous epoch totals are temporarily unavailable."
+msgstr "이전 에포크 합계를 일시적으로 불러올 수 없습니다."
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
@@ -2378,6 +2386,10 @@ msgstr "총계"
 msgid "Decrease size to match the max allowed leverage."
 msgstr "최대 허용 레버리지에 맞게 포지션 크기를 줄이십시오."
 
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Up to {maximumRate}"
+msgstr "최대 {maximumRate}"
+
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "Claims history"
 msgstr "청구 내역"
@@ -2559,6 +2571,10 @@ msgstr "GMX 풀에 이 스왑 규모를 위한 유동성이 부족합니다. 금
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "Affiliate 볼트에 esGMX 토큰이 있습니다. 새 계정으로 전송하려면 출금하십시오."
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Stake just <0>{0}</0> GMX to start at <1>{1}</1>"
+msgstr "<0>{0}</0> GMX만 스테이킹하고 <1>{1}</1>로 시작하세요"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request..."
@@ -3039,6 +3055,10 @@ msgstr "{0} GMX 담보가 잠금 해제됩니다"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Auto-cancel order limit reached"
 msgstr "자동 취소 주문 한도 도달"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Enter a valid wallet address or ENS name"
+msgstr "유효한 지갑 주소 또는 ENS 이름을 입력하세요"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -4086,6 +4106,10 @@ msgstr "다른 체인에서 전송"
 msgid "Take-Profit / Stop-Loss"
 msgstr "익절매 / 손절매"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "The first epoch is under way"
+msgstr "첫 번째 에포크가 진행 중입니다"
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "수익률 트레이딩"
@@ -4393,6 +4417,10 @@ msgstr "규모 증가 (Market)"
 #: src/domain/synthetics/markets/createBridgeInTxn.ts
 msgid "Bridge transfer sent"
 msgstr "브릿지 전송이 전송되었습니다"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "applied up to <0><1>{0}</1> in rewards</0>"
+msgstr "최대 <0><1>{0}</1>의 보상</0>에 적용"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Wallet received at close"
@@ -5316,10 +5344,6 @@ msgstr "보상(USD)"
 msgid "Sending order request..."
 msgstr "주문 요청을 전송하는 중…"
 
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "Your comeback starts here"
-msgstr "여기서 다시 시작하세요"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>{0}{1} 판매<1>{poolName}</1></0>"
@@ -5419,6 +5443,7 @@ msgstr "다양한 자산"
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Try again"
 msgstr "다시 시도"
@@ -5900,6 +5925,10 @@ msgstr "청산됨"
 msgid "Update margin deposit"
 msgstr "증거금 예치 업데이트"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "{0, plural, one {# trader} other {# traders}}"
+msgstr "{0, plural, other {트레이더 #명}}"
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "사람들이 만들고 있는 것."
@@ -6036,6 +6065,10 @@ msgstr "포트폴리오"
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop market"
 msgstr "스탑 마켓"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Resolving..."
+msgstr "이름 확인 중..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Pending GMX approval..."
@@ -6327,10 +6360,6 @@ msgstr "언스테이킹"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "최대 실행 횟수에 도달했습니다. 업데이트하려면 <0>여기를 클릭</0>하십시오"
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "Checking your comeback bonus..."
-msgstr "리턴 보너스 확인 중..."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
@@ -6792,6 +6821,10 @@ msgstr "알 수 없는 GM 구매 주문"
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "GMX 위에 구축하고<0/>모든 거래에서 수익을 얻으세요."
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "I'm getting {multiplier} rewards. Traded on GMX before? Check your wallet."
+msgstr "{multiplier} 보상을 받고 있어요. GMX에서 거래한 적이 있나요? 지갑을 확인하세요."
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "페이지가 만료되었습니다. 새로고침"
@@ -6799,6 +6832,14 @@ msgstr "페이지가 만료되었습니다. 새로고침"
 #: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 msgid "Max swap size"
 msgstr "최대 스왑 규모"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "You're starting fresh"
+msgstr "새롭게 시작하세요"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Keep earning with staking, volume tiers and other boosts."
+msgstr "스테이킹, 거래량 등급 및 기타 부스트로 계속 보상을 받으세요."
 
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Using Your Rewards"
@@ -7200,10 +7241,6 @@ msgstr "추천 코드 불러오는 중..."
 msgid "Max lendable impact factor for withdrawals"
 msgstr "출금 시 최대 대출 가능 영향 계수"
 
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "Enter a valid 0x wallet address"
-msgstr "유효한 0x 지갑 주소를 입력하세요"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
 msgstr "수령이 완료되었습니다"
@@ -7223,6 +7260,11 @@ msgstr "허가 테스트"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Invalid transaction"
 msgstr "유효하지 않은 트랜잭션"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Keep building your rewards"
+msgstr "계속해서 보상을 늘려보세요"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
@@ -7569,6 +7611,10 @@ msgstr "차트에 표시할 매수/매도 마크를 선택하세요: 모든 과�
 msgid "Buy GMX on GMX swap"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "Last epoch, {payout} came back to {traders}"
+msgstr "지난 에포크에 {traders}에게 {payout}가 돌아갔습니다"
+
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
@@ -7607,6 +7653,10 @@ msgstr "마케팅 키트 + 공동 마케팅"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0}은(는) 스마트 컨트랙트 주소로 전송할 수 없습니다. 다른 토큰을 선택하십시오"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Past {0} lifetime volume the boost is yours for good — it never resets."
+msgstr "누적 거래량 {0}를 넘으면 부스트가 영구적으로 유지되며 초기화되지 않습니다."
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
@@ -7942,7 +7992,6 @@ msgstr "전체 네트워크"
 msgid "Select positions"
 msgstr "포지션 선택"
 
-#: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
@@ -8010,10 +8059,6 @@ msgstr "GMX (포르투갈어)"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
 msgstr "대회 기간 중 해당 거래 없음"
-
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "Your fees"
-msgstr "내 수수료"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GMX staking is available on Arbitrum and Avalanche. GLV vaults and GM tokens vary by chain. Visit the pools page to see liquidity options for your connected network."
@@ -8177,6 +8222,11 @@ msgstr "트레이더 초대"
 msgid "Oracle price is stale"
 msgstr ""
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Retry historical volume"
+msgstr "과거 거래량 다시 조회"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -8224,6 +8274,7 @@ msgstr "출금 완료"
 msgid "Graduated"
 msgstr "졸업"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
 #: landing/src/pages/Rewards/RewardsCalculator.tsx
 msgid "Traded here before? Check your wallet →"
 msgstr "이전에 거래하셨나요? 지갑을 확인하세요 →"
@@ -8331,10 +8382,6 @@ msgstr "구성"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Two ways, and you can run both. Builder Code is your own fee: you set the rate (5 to 10 bps is typical), it stacks on top of GMX's fees, and 100% comes to you. Referral Fees are a cut of GMX's own fees: up to 25% of open/close fees, paid automatically."
 msgstr "두 가지 방법이 있으며 둘 다 운영할 수 있습니다. Builder Code는 자체 수수료로, 요율을 직접 설정하고(일반적으로 5~10bps) GMX 수수료 위에 추가되며 100% 당신에게 돌아갑니다. 추천 수수료는 GMX 수수료의 일부로, 개설/청산 수수료의 최대 25%가 자동으로 지급됩니다."
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "Check your wallet to discover your bonus."
-msgstr "지갑을 확인하고 내 보너스를 알아보세요."
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8603,6 +8650,10 @@ msgstr "승인 중..."
 msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
 msgstr "이 포지션은 미지급 차입 수수료와 펀딩 수수료를 차감하면 마진이 마이너스이므로 정산이 실패할 가능성이 높습니다. 플러스 펀딩은 정산이 성공한 후에만 수령할 수 있습니다. 마진을 추가하거나, 실현 이익이 부족분을 충당할 수 있도록 포지션을 충분히 종료하세요."
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Enter any wallet address or ENS"
+msgstr "지갑 주소 또는 ENS 이름을 입력하세요"
+
 #: src/config/uiFlagEvents.tsx
 msgid "Service Disruption"
 msgstr "서비스 중단"
@@ -8845,6 +8896,10 @@ msgstr "주문 허용 가격"
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "{updateOrdersCount}개 TP/SL 주문 업데이트 중..."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Early user? GMX rewards you with a boost on all your perp trades."
+msgstr "오래전부터 이용하셨나요? GMX가 모든 무기한 선물 거래에 부스트를 제공합니다."
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "The amount of GMX currently available to be locked as collateral for vesting."
 msgstr "베스팅 담보로 잠글 수 있는 현재 사용 가능한 GMX 수량입니다."
@@ -8901,10 +8956,6 @@ msgstr ""
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "여러 GMX 마켓에 유동성을 공급하는 수익률 최적화 볼트"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Yes, at the {multiplier} multiplier cap, which can be reached by combining staking tiers, volume tiers, and boosts. Rewards are paid in esGMX and GT. Use the calculator above to see the split for your estimated trading volume and stake."
-msgstr "네. 스테이킹 등급, 거래량 등급, 부스트를 조합해 달성할 수 있는 최대 배율 {multiplier}에서 가능합니다. 보상은 esGMX와 GT로 지급됩니다. 위 계산기에서 예상 거래량과 스테이킹 금액에 따른 보상 구성을 확인하세요."
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -9312,6 +9363,7 @@ msgstr "자신 있게 거래"
 msgid "Receiver has staked GMX/GLP"
 msgstr "수신자가 GMX/GLP를 스테이킹하고 있습니다"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "GMX staked"
@@ -9897,6 +9949,10 @@ msgstr "지속형 배수"
 msgid "Max deposit capacity reached for this pool"
 msgstr "이 풀의 최대 입금 용량에 도달했습니다"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "No history here yet, so no comeback boost."
+msgstr "아직 거래 내역이 없어 복귀 부스트가 없습니다."
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
 msgstr ""
@@ -10190,17 +10246,9 @@ msgstr "전송 중..."
 msgid "Staked GMX:"
 msgstr "스테이킹된 GMX:"
 
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "GMX + esGMX staked"
-msgstr "GMX + esGMX 스테이킹 금액"
-
 #: landing/src/pages/Rewards/RewardsFaq.tsx
 msgid "Do my old trades count?"
 msgstr "이전 거래도 반영되나요?"
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "{0} in comeback rewards remaining"
-msgstr "남은 리턴 보상 {0}"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
@@ -10356,6 +10404,10 @@ msgstr "입금 금액 입력"
 msgid "Included but not up to date: {0}."
 msgstr ""
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Unable to resolve this ENS name. Please try again."
+msgstr "이 ENS 이름을 확인할 수 없습니다. 다시 시도하세요."
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -10367,6 +10419,10 @@ msgstr ""
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Approve {0}"
 msgstr "{0} 승인"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes, at the {multiplier} multiplier cap, which can be reached by combining staking tiers, volume tiers, and boosts. For example, a {exampleRange} multiplier returns {rewardRange} of eligible fees in esGMX and GT combined. Use the calculator above to see the split for your estimated trading volume and stake."
+msgstr "네. 스테이킹 등급, 거래량 등급 및 부스트를 조합하면 최대 배수인 {multiplier}에 도달할 수 있습니다. 예를 들어 {exampleRange} 배수는 대상 수수료의 {rewardRange}를 esGMX와 GT 합계로 돌려줍니다. 위 계산기로 예상 거래량과 스테이킹 금액에 따른 내역을 확인하세요."
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -10629,6 +10685,10 @@ msgstr "숏 미결제약정 준비금 비율"
 msgid "Referral volume on page"
 msgstr "이 페이지의 추천 거래량"
 
+#: landing/src/pages/Rewards/RewardsSpoiler.tsx
+msgid "Enter any wallet address to reveal"
+msgstr "지갑 주소를 입력하여 결과를 확인하세요"
+
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
@@ -10654,10 +10714,6 @@ msgstr "수수료"
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "How long does vesting take?"
 msgstr "베스팅에는 얼마나 걸리나요?"
-
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Start earning<0/>on your next trade."
-msgstr "다음 거래부터<0/>보상을 받으세요."
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
@@ -10802,6 +10858,10 @@ msgstr "새 에포크를 인덱싱하고 있습니다. 계정 합계가 곧 업�
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Next"
 msgstr "다음"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your volume tier builds from the first epoch"
+msgstr "거래량 등급은 첫 에포크부터 쌓입니다"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "More info"
@@ -11268,6 +11328,10 @@ msgstr "프로토콜 분석"
 msgid "Show positions on chart"
 msgstr "차트에 포지션 표시"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "On every trade"
+msgstr "모든 거래에서"
+
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
 msgstr "메트릭 디버그"
@@ -11506,7 +11570,6 @@ msgid "it stays staked, it is not unstaked."
 msgstr "스테이킹 상태로 유지되며 언스테이킹되지 않습니다."
 
 #: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/RewardsReferralCard.tsx
 msgid "Your trading fees<0/>come back to you."
 msgstr "거래 수수료가<0/>돌아옵니다."
 
@@ -11794,6 +11857,10 @@ msgstr "보상은<0/>두 가지 토큰으로 지급됩니다"
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "청구 가능한 리베이트"
+
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Your trading fees come back to you"
+msgstr "거래 수수료가 다시 돌아옵니다"
 
 #: landing/src/pages/Rewards/RewardsMultipliers.tsx
 msgid "Every epoch · paid in both tokens"
@@ -13710,6 +13777,10 @@ msgstr "현재 영향: {0}. 더 나은 주문 체결을 위해 -0.30% 이상을 
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr ""
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "This wallet has no comeback allocation."
+msgstr "이 지갑에는 복귀 보상 할당이 없습니다."
+
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim funding fees"
@@ -13718,6 +13789,10 @@ msgstr "펀딩 수수료 수령"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "토큰 허용 테스트"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Start earning<0/>on your next trade"
+msgstr "다음 거래부터<0/>보상을 받으세요"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -13783,13 +13858,13 @@ msgstr "트랜잭션 실패"
 msgid "COLLATERAL"
 msgstr "담보"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your historical volume is <0>{0}</0>"
+msgstr "과거 거래량은 <0>{0}</0>입니다"
+
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>"
 msgstr "<0>Camelot</0>을 통해 Arbitrum에서 APE를 구매하십시오"
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "Enter your 0x wallet address"
-msgstr "0x 지갑 주소를 입력하세요"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -14065,10 +14140,6 @@ msgstr "롱 순 비율 / 1시간"
 msgid "{0} of net position fee"
 msgstr "순 포지션 수수료의 {0}"
 
-#: landing/src/pages/Rewards/RewardsReferralCard.tsx
-msgid "Go check your rewards"
-msgstr "보상 확인하기"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
@@ -14211,10 +14282,6 @@ msgstr "최근 30일"
 msgid "Dashboards"
 msgstr "대시보드"
 
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "Boost is yours"
-msgstr "부스트를 받았습니다"
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"
 msgstr ""
@@ -14327,10 +14394,6 @@ msgstr "활성 스테이킹 등급"
 #: src/components/MarketsList/MarketsList.tsx
 msgid "No markets found"
 msgstr "마켓을 찾을 수 없습니다"
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "Your historical volume is {0}"
-msgstr "과거 거래량은 {0}입니다"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to enter a code on each network?"
@@ -14507,10 +14570,6 @@ msgstr ""
 msgid "This year"
 msgstr "올해"
 
-#: landing/src/pages/Rewards/Rewards.tsx
-msgid "Current epoch ends"
-msgstr "현재 에포크 종료"
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"
 msgstr "{glvOrGm} 출금: {0}"
@@ -14518,6 +14577,10 @@ msgstr "{glvOrGm} 출금: {0}"
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Save tier"
 msgstr "등급 저장"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "No wallet address was found for this ENS name"
+msgstr "이 ENS 이름에 해당하는 지갑 주소를 찾을 수 없습니다"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
@@ -14858,6 +14921,10 @@ msgstr "공유 위치"
 msgid "How are Rewards calculated?"
 msgstr "보상은 어떻게 계산되나요?"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your comeback boost is fully used"
+msgstr "복귀 부스트를 모두 사용했습니다"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "파생상품 포트폴리오 트래커"
@@ -15106,6 +15173,10 @@ msgstr ""
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
 msgstr "기본 제공되는 추천 수익"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Connect this wallet to create a code"
+msgstr "코드를 만들려면 이 지갑을 연결하세요"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"

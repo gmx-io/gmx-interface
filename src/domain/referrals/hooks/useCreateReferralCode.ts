@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import { getAccount } from "@wagmi/core";
 import { useState } from "react";
+import { getAddress } from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
@@ -45,7 +46,12 @@ export function useCreateReferralCode({
         return;
       }
       const wallet = getAccount(getWagmiConfig());
-      if (!signer || wallet.address !== account || wallet.chainId !== chainId) {
+      if (
+        !signer ||
+        !wallet.address ||
+        getAddress(wallet.address) !== getAddress(account) ||
+        wallet.chainId !== chainId
+      ) {
         setError(t`Your wallet changed. Please try again.`);
         return;
       }

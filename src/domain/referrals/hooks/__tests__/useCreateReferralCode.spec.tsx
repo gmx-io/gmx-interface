@@ -27,11 +27,11 @@ const account = "0x1640e916e10610Ba39aAC5Cd8a08acF3cCae1A4c";
 const signer = {} as WalletSigner;
 const hash = `0x${"1".repeat(64)}`;
 
-function setup() {
+function setup(checkedAccount = account) {
   let result: ReturnType<typeof useCreateReferralCode>;
   const onSuccess = vi.fn();
   function Probe() {
-    result = useCreateReferralCode({ chainId: ARBITRUM, account, signer, onSuccess });
+    result = useCreateReferralCode({ chainId: ARBITRUM, account: checkedAccount, signer, onSuccess });
     return null;
   }
   render(<Probe />);
@@ -78,6 +78,17 @@ describe("landing referral creation", () => {
     });
     expect(mocks.register).not.toHaveBeenCalled();
     expect(hook.result().error).toBeTruthy();
+  });
+
+  it("accepts the same connected wallet with different address casing", async () => {
+    const checkedAccount = "0x1640e916e10610ba39aac5cd8a08acf3ccae1a4c";
+    const hook = setup(checkedAccount);
+    await act(async () => {
+      await hook.result().createCode("MyCode");
+    });
+    expect(mocks.availability).toHaveBeenCalledWith(checkedAccount, "MyCode", ARBITRUM);
+    expect(mocks.register).toHaveBeenCalledWith(ARBITRUM, "MyCode", signer, expect.any(Object));
+    expect(hook.onSuccess).toHaveBeenCalledWith("MyCode");
   });
 
   it.each([

@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
 import { useRef, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import { getAddress } from "viem";
 import { useAccount, useSwitchChain } from "wagmi";
 
 import { ARBITRUM } from "config/chains";
@@ -9,6 +10,7 @@ import { useAffiliateCodes } from "domain/referrals/hooks";
 import { useCreateReferralCode } from "domain/referrals/hooks/useCreateReferralCode";
 import { getCodeError } from "domain/referrals/utils/referralsHelper";
 import type { IncentivesConfig } from "domain/synthetics/incentives/v2/types";
+import { formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
@@ -22,7 +24,7 @@ import { RewardsValue } from "./RewardsValue";
 
 import "react-toastify/dist/ReactToastify.css";
 
-type Props = { config: IncentivesConfig | null | undefined; loading?: boolean };
+type Props = { config: IncentivesConfig | null | undefined; loading?: boolean; account?: string; hasBonus?: boolean };
 
 export default function RewardsReferralWallet(props: Props) {
   return (
@@ -33,7 +35,7 @@ export default function RewardsReferralWallet(props: Props) {
   );
 }
 
-function ReferralWallet({ config, loading }: Props) {
+function ReferralWallet({ config, loading, account: checkedAccount, hasBonus }: Props) {
   const [connectionError, setConnectionError] = useState<string>();
   const { address, isConnected } = useAccount();
   const { ready, authenticated } = usePrivy();
@@ -42,21 +44,31 @@ function ReferralWallet({ config, loading }: Props) {
   const { connectWallet } = useConnectWallet({ onError });
   const { connectOrCreateWallet } = useConnectOrCreateWallet({ onError });
 
-  if (isConnected && address)
-    return <ConnectedReferral key={address} account={address} config={config} loading={loading} />;
+  function connect() {
+    setConnectionError(undefined);
+    if (authenticated) connectWallet();
+    else connectOrCreateWallet();
+  }
+
+  const account = checkedAccount ?? (isConnected ? address : undefined);
+  if (account)
+    return (
+      <ConnectedReferral
+        key={`${account}:${address ?? ""}`}
+        account={account}
+        connectedAccount={isConnected ? address : undefined}
+        config={config}
+        loading={loading}
+        hasBonus={hasBonus}
+        onConnect={connect}
+        connecting={!ready || isOpen}
+        connectionError={connectionError}
+      />
+    );
 
   return (
     <ReferralCardFrame config={config} loading={loading}>
-      <button
-        className="rewards-button"
-        disabled={!ready || isOpen}
-        aria-busy={!ready}
-        onClick={() => {
-          setConnectionError(undefined);
-          if (authenticated) connectWallet();
-          else connectOrCreateWallet();
-        }}
-      >
+      <button className="rewards-button" disabled={!ready || isOpen} aria-busy={!ready} onClick={connect}>
         <Trans>Connect wallet</Trans>
       </button>
       {connectionError && <p role="alert">{connectionError}</p>}
@@ -64,7 +76,22 @@ function ReferralWallet({ config, loading }: Props) {
   );
 }
 
-function ConnectedReferral({ account, config, loading }: Props & { account: string }) {
+function ConnectedReferral({
+  account,
+  connectedAccount,
+  config,
+  loading,
+  hasBonus,
+  onConnect,
+  connecting,
+  connectionError,
+}: Props & {
+  account: string;
+  connectedAccount?: string;
+  onConnect: () => void;
+  connecting: boolean;
+  connectionError?: string;
+}) {
   const [refreshKey, setRefreshKey] = useState(0);
   const codes = useAffiliateCodes(ARBITRUM, account, true, refreshKey);
   const [createdCode, setCreatedCode] = useState<string>();
@@ -75,11 +102,24 @@ function ConnectedReferral({ account, config, loading }: Props & { account: stri
   const imageRef = useRef<HTMLDivElement>(null);
   const { chainId, signer } = useWallet();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
-  const creation = useCreateReferralCode({ chainId: ARBITRUM, account, signer, onSuccess: setCreatedCode });
+  const ownsAccount = Boolean(connectedAccount && getAddress(connectedAccount) === getAddress(account));
+  const creation = useCreateReferralCode({
+    chainId: ARBITRUM,
+    account,
+    signer: ownsAccount ? signer : undefined,
+    onSuccess: setCreatedCode,
+  });
   const code = createdCode ?? codes.code ?? undefined;
   const loadingCode = !code && !codes.success && !codes.error;
   const url = code ? `${window.location.origin}/rewards?ref=${encodeURIComponent(code)}` : undefined;
   const codeError = getCodeError(input);
+  const bonus = config?.boosts.find(({ boost }) => boost === "ManualAllocation")?.multiplier;
+  const multiplier =
+    config && bonus !== undefined ? formatMultiplierAdjustment(bonus, config.multiplierDecimals) : undefined;
+  const shareText =
+    hasBonus && multiplier
+      ? t`I'm getting ${multiplier} rewards. Traded on GMX before? Check your wallet.`
+      : t`Your trading fees come back to you. Check your GMX rewards.`;
 
   async function copyLink() {
     try {
@@ -109,14 +149,24 @@ function ConnectedReferral({ account, config, loading }: Props & { account: stri
     <ReferralCardFrame
       config={config}
       loading={loading}
-      preview={<RewardsReferralCard code={code} url={url} loadingCode={loadingCode} ref={imageRef} />}
+      preview={
+        <RewardsReferralCard
+          code={code}
+          url={url}
+          loadingCode={loadingCode}
+          ref={imageRef}
+          config={config}
+          loading={loading}
+          hasBonus={Boolean(code && hasBonus)}
+        />
+      }
     >
       {code && url ? (
         <>
           <div className="rewards-share-buttons">
             <a
               className="rewards-button"
-              href={`https://x.com/intent/post?text=${encodeURIComponent(t`Your trading fees come back to you. Check your GMX rewards.`)}&url=${encodeURIComponent(url)}`}
+              href={`https://x.com/intent/post?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t`Share on X`}
@@ -160,6 +210,13 @@ function ConnectedReferral({ account, config, loading }: Props & { account: stri
           </span>
           <RewardsValue loading width="100%" height={40} />
         </div>
+      ) : !ownsAccount ? (
+        <>
+          <button className="rewards-button" disabled={connecting} onClick={onConnect}>
+            <Trans>Connect this wallet to create a code</Trans>
+          </button>
+          {connectionError && <p role="alert">{connectionError}</p>}
+        </>
       ) : chainId !== ARBITRUM ? (
         <>
           <button
@@ -181,7 +238,7 @@ function ConnectedReferral({ account, config, loading }: Props & { account: stri
           className="rewards-create-code"
           onSubmit={(event) => {
             event.preventDefault();
-            void creation.createCode(input);
+            if (ownsAccount) void creation.createCode(input);
           }}
         >
           <label htmlFor="rewards-referral-code">
@@ -208,6 +265,7 @@ function ConnectedReferral({ account, config, loading }: Props & { account: stri
       ) : (
         <button className="rewards-button" onClick={() => setIsCreating(true)}>
           <Trans>Create code and invite traders</Trans>
+          <XIcon aria-hidden="true" />
         </button>
       )}
     </ReferralCardFrame>

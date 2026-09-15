@@ -37,10 +37,10 @@ vi.mock("domain/referrals/hooks/useCreateReferralCode", () => ({
 }));
 vi.mock("lib/copyElementAsImage", () => ({ shareOrCopyElementAsImage: vi.fn() }));
 
-function Page() {
+function Page({ account }: { account?: string } = {}) {
   return (
     <I18nProvider i18n={i18n}>
-      <RewardsReferralWallet config={undefined} />
+      <RewardsReferralWallet config={undefined} account={account} />
     </I18nProvider>
   );
 }
@@ -56,6 +56,23 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe("rewards referral card", () => {
+  it("shares the checked address's public code without a wallet connection", () => {
+    mocks.codes = { code: "CheckedWallet", success: true };
+    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
+    const shareUrl = new URL(view.getByRole("link", { name: "Share on X" }).getAttribute("href")!);
+    expect(shareUrl.searchParams.get("url")).toBe(`${window.location.origin}/rewards?ref=CheckedWallet`);
+    expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
+  });
+
+  it("requires the checked wallet's owner before allowing code creation", () => {
+    mocks.account = "0x0000000000000000000000000000000000000001";
+    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
+    fireEvent.click(view.getByRole("button", { name: "Connect this wallet to create a code" }));
+    expect(mocks.connect).toHaveBeenCalledOnce();
+    expect(mocks.create).not.toHaveBeenCalled();
+    expect(view.queryByRole("textbox", { name: "Your referral code" })).toBeNull();
+  });
+
   it("requires a connection before offering sharing or code creation", () => {
     const view = render(<Page />);
     fireEvent.click(view.getByRole("button", { name: "Connect wallet" }));
