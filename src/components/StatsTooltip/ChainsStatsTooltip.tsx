@@ -2,8 +2,8 @@ import cx from "classnames";
 import { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { formatAmountHuman } from "lib/numbers";
 
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
 import ChainsStatsTooltipRow from "./ChainsStatsTooltipRow";
@@ -36,7 +36,14 @@ export default function ChainsStatsTooltip({
     <TooltipComponent
       position="bottom-end"
       className={caption ? undefined : "whitespace-nowrap"}
-      handle={formatAmountHuman(summary.total, decimalsForConversion, showDollar, 2)}
+      handle={
+        <AmountHumanValue
+          amount={summary.total}
+          decimals={decimalsForConversion}
+          showDollar={showDollar}
+          displayDecimals={2}
+        />
+      }
       handleClassName={cx("numbers", { "text-yellow-300": isIncomplete })}
       content={
         <>

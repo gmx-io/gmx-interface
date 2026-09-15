@@ -12,7 +12,7 @@ import {
 } from "domain/synthetics/markets";
 import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { BN_ZERO, formatAmountHuman } from "lib/numbers";
+import { BN_ZERO } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -20,6 +20,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 
 export function GmCard() {
   const { chainId, srcChainId } = useChainId();
@@ -103,7 +104,12 @@ export function GmCard() {
                   <Trans>Supply</Trans>
                 </div>
                 <div>
-                  <span className="numbers">{formatAmountHuman(totalGMSupply?.amount, 18, false, 2)}</span>
+                  <AmountHumanValue
+                    amount={totalGMSupply?.amount}
+                    decimals={18}
+                    displayDecimals={2}
+                    className="numbers"
+                  />
                 </div>
               </div>
               <div className="App-card-row">
@@ -111,7 +117,13 @@ export function GmCard() {
                   <Trans>Market cap</Trans>
                 </div>
                 <div>
-                  <span className="numbers">{formatAmountHuman(totalGMSupply?.usd, USD_DECIMALS, true, 2)}</span>
+                  <AmountHumanValue
+                    amount={totalGMSupply?.usd}
+                    decimals={USD_DECIMALS}
+                    showDollar
+                    displayDecimals={2}
+                    className="numbers"
+                  />
                 </div>
               </div>
             </AppCardSection>

@@ -66,7 +66,7 @@ import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPools
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
-import { formatAmountFree, formatUsd } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
@@ -76,6 +76,7 @@ import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useBestGmPoolAddressForGlv } from "components/MarketStats/hooks/useBestGmPoolForGlv";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -490,7 +491,7 @@ export function GmSwapBoxDepositWithdrawal() {
               <div>
                 <BuyInputSection
                   topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-                  bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
+                  bottomLeftValue={<UsdValue usd={firstTokenUsd ?? 0n} />}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={firstTokenMaxDetails.formattedBalance}
                   onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
@@ -558,7 +559,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   <div className="border-t-1/2 border-slate-600">
                     <BuyInputSection
                       topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-                      bottomLeftValue={formatUsd(secondTokenUsd ?? 0n)}
+                      bottomLeftValue={<UsdValue usd={secondTokenUsd ?? 0n} />}
                       bottomRightLabel={t`Balance`}
                       bottomRightValue={secondTokenMaxDetails.formattedBalance}
                       inputValue={secondTokenInputValue}
@@ -589,7 +590,7 @@ export function GmSwapBoxDepositWithdrawal() {
               <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
                 <BuyInputSection
                   topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-                  bottomLeftValue={formatUsd(receiveTokenUsd ?? 0n)}
+                  bottomLeftValue={<UsdValue usd={receiveTokenUsd ?? 0n} />}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={marketTokenMaxDetails.formattedBalance}
                   inputValue={marketOrGlvTokenInputValue}

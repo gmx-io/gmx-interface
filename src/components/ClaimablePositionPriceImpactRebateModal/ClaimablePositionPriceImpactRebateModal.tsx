@@ -35,6 +35,7 @@ import { nowInSeconds } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -390,7 +391,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       total = total + usd;
     });
 
-    return formatDeltaUsd(total);
+    return total;
   }, [rebateItems, tokensData]);
 
   const renderContent = useCallback(
@@ -416,7 +417,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
         <TooltipWithPortal
           position="top-end"
           tooltipClassName="ClaimModal-row-tooltip"
-          handle={usd}
+          handle={<DeltaUsdValue deltaUsd={usd} />}
           renderContent={renderContent}
         />
       </div>

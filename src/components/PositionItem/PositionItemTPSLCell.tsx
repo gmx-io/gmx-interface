@@ -8,7 +8,8 @@ import {
   isStopLossOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
-import { formatUsd } from "lib/numbers";
+
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 import EditIcon from "img/ic_edit.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
@@ -50,10 +51,11 @@ export function PositionItemTPSLCell({
           <span className={cx("numbers", "text-green-500")}>
             {closestTp ? (
               <>
-                {formatUsd(closestTp.triggerPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier,
-                })}
+                <UsdValue
+                  usd={closestTp.triggerPrice}
+                  displayDecimals={marketDecimals}
+                  visualMultiplier={visualMultiplier}
+                />
                 {tpCount > 1 && ` (${tpCount})`}
               </>
             ) : (
@@ -64,10 +66,11 @@ export function PositionItemTPSLCell({
           <span className={cx("numbers", "text-red-500")}>
             {closestSl ? (
               <>
-                {formatUsd(closestSl.triggerPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier,
-                })}
+                <UsdValue
+                  usd={closestSl.triggerPrice}
+                  displayDecimals={marketDecimals}
+                  visualMultiplier={visualMultiplier}
+                />
                 {slCount > 1 && ` (${slCount})`}
               </>
             ) : (
@@ -104,10 +107,11 @@ export function PositionItemTPSLCell({
         <span className={cx("numbers", "text-green-500")}>
           {closestTp ? (
             <>
-              {formatUsd(closestTp.triggerPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier,
-              })}
+              <UsdValue
+                usd={closestTp.triggerPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={visualMultiplier}
+              />
               {tpCount > 1 && <span className="ml-2">({tpCount})</span>}
             </>
           ) : (
@@ -117,10 +121,11 @@ export function PositionItemTPSLCell({
         <span className={cx("numbers", "text-red-500")}>
           {closestSl ? (
             <>
-              {formatUsd(closestSl.triggerPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier,
-              })}
+              <UsdValue
+                usd={closestSl.triggerPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={visualMultiplier}
+              />
               {slCount > 1 && <span className="ml-2">({slCount})</span>}
             </>
           ) : (

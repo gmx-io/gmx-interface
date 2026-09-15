@@ -1,5 +1,5 @@
 import type { LeaderboardAccount } from "domain/synthetics/leaderboard";
-import { formatAmount, USD_DECIMALS } from "lib/numbers";
+import { formatAmount, joinNumberParts, NumberPart, numberParts, USD_DECIMALS, USD_PART } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 export function formatDelta(
@@ -22,6 +22,19 @@ export function formatDelta(
   return `${p.prefixoid ? `${p.prefixoid}\u200a` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
   }\u200a${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+}
+
+export function formatDeltaUsdSignedParts(
+  delta: bigint,
+  { displayDecimals = 2 }: { displayDecimals?: number } = {}
+): NumberPart[] {
+  const sign = delta === 0n ? "" : delta > 0 ? "+" : "-";
+
+  return numberParts(sign, USD_PART, formatAmount(bigMath.abs(delta), USD_DECIMALS, displayDecimals, true));
+}
+
+export function formatDeltaUsdSigned(delta: bigint, opts: { displayDecimals?: number } = {}) {
+  return joinNumberParts(formatDeltaUsdSignedParts(delta, opts));
 }
 
 export function getSignedValueClassName(num: bigint) {

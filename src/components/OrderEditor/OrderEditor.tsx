@@ -75,9 +75,9 @@ import { getMarginDepositRiskLevel, isMarginDepositOrder } from "domain/syntheti
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
-  formatAcceptablePrice,
-  formatLeverage,
-  formatLiquidationPrice,
+  formatAcceptablePriceParts,
+  formatLeverageParts,
+  formatLiquidationPriceParts,
   getNameByOrderType,
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
@@ -112,10 +112,7 @@ import {
   formatAmount,
   formatAmountFree,
   formatBalanceAmount,
-  formatDeltaUsd,
-  formatTokenAmountWithUsd,
-  formatUsd,
-  formatUsdPrice,
+  formatTokenAmountWithUsdParts,
   parseValue,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -136,6 +133,11 @@ import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
@@ -981,9 +983,9 @@ export function OrderEditor(p: Props) {
                   onInputValueChange={
                     isTriggerDecrease ? closeSize.handleInputChange : (e) => setSizeInputValue(e.target.value)
                   }
-                  bottomLeftValue={isTriggerDecrease ? formatUsd(sizeUsd) : undefined}
+                  bottomLeftValue={isTriggerDecrease ? <UsdValue usd={sizeUsd} /> : undefined}
                   bottomRightLabel={isTriggerDecrease && positionSize !== undefined ? t`Max` : undefined}
-                  bottomRightValue={isTriggerDecrease ? formatUsdPrice(positionSize) : undefined}
+                  bottomRightValue={isTriggerDecrease ? <UsdPriceValue price={positionSize} /> : undefined}
                   onClickMax={
                     isTriggerDecrease && positionSize !== undefined && positionSize > 0 && sizeUsd !== positionSize
                       ? closeSize.setMaxCloseSize
@@ -1006,9 +1008,7 @@ export function OrderEditor(p: Props) {
               <BuyInputSection
                 topLeftLabel={priceLabel}
                 topRightLabel={t`Mark`}
-                topRightValue={formatUsdPrice(markPrice, {
-                  visualMultiplier: indexToken?.visualMultiplier,
-                })}
+                topRightValue={<UsdPriceValue price={markPrice} visualMultiplier={indexToken?.visualMultiplier} />}
                 onClickTopRightLabel={() =>
                   setTriggerPriceInputValue(
                     formatAmount(
@@ -1065,9 +1065,9 @@ export function OrderEditor(p: Props) {
               label={t`Leverage`}
               value={
                 <ValueTransition
-                  from={formatLeverage(existingPositionForPreview?.leverage)}
+                  from={formatLeverageParts(existingPositionForPreview?.leverage)}
                   to={
-                    formatLeverage(
+                    formatLeverageParts(
                       isMarginDeposit
                         ? marginDepositProjections?.nextLeverage
                         : nextPositionValuesForIncrease?.nextLeverage
@@ -1096,9 +1096,13 @@ export function OrderEditor(p: Props) {
               {isSetAcceptablePriceImpactEnabled && !isMarginDeposit && (
                 <SyntheticsInfoRow
                   label={t`Acceptable price`}
-                  value={formatAcceptablePrice(acceptablePrice, {
-                    visualMultiplier: indexToken?.visualMultiplier,
-                  })}
+                  value={
+                    <NumericValue
+                      parts={formatAcceptablePriceParts(acceptablePrice, {
+                        visualMultiplier: indexToken?.visualMultiplier,
+                      })}
+                    />
+                  }
                 />
               )}
 
@@ -1108,19 +1112,20 @@ export function OrderEditor(p: Props) {
                   value={
                     isMarginDeposit ? (
                       <ValueTransition
-                        from={formatLiquidationPrice(existingPositionForPreview.liquidationPrice, {
+                        from={formatLiquidationPriceParts(existingPositionForPreview.liquidationPrice, {
                           visualMultiplier: indexToken?.visualMultiplier,
                         })}
                         to={
-                          formatLiquidationPrice(marginDepositProjections?.nextLiqPrice, {
+                          formatLiquidationPriceParts(marginDepositProjections?.nextLiqPrice, {
                             visualMultiplier: indexToken?.visualMultiplier,
                           }) ?? "-"
                         }
                       />
                     ) : (
-                      formatLiquidationPrice(existingPositionForPreview.liquidationPrice, {
-                        visualMultiplier: indexToken?.visualMultiplier,
-                      })
+                      <LiquidationPriceValue
+                        liquidationPrice={existingPositionForPreview.liquidationPrice}
+                        visualMultiplier={indexToken?.visualMultiplier}
+                      />
                     )
                   }
                 />
@@ -1135,21 +1140,27 @@ export function OrderEditor(p: Props) {
                 <TooltipWithPortal
                   position="top-end"
                   tooltipClassName="PositionEditor-fees-tooltip"
-                  handle={formatDeltaUsd(networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n)}
+                  handle={
+                    <DeltaUsdValue deltaUsd={networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n} />
+                  }
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
                         label={<div className="text-typography-primary">{t`Network fee`}:</div>}
-                        value={formatTokenAmountWithUsd(
-                          networkFee.feeTokenAmount * -1n,
-                          networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
-                          networkFee.feeToken.symbol,
-                          networkFee.feeToken.decimals,
-                          {
-                            displayDecimals: 5,
-                            isStable: networkFee.feeToken.isStable,
-                          }
-                        )}
+                        value={
+                          <NumericValue
+                            parts={formatTokenAmountWithUsdParts(
+                              networkFee.feeTokenAmount * -1n,
+                              networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
+                              networkFee.feeToken.symbol,
+                              networkFee.feeToken.decimals,
+                              {
+                                displayDecimals: 5,
+                                isStable: networkFee.feeToken.isStable,
+                              }
+                            )}
+                          />
+                        }
                         showDollar={false}
                       />
                       <br />

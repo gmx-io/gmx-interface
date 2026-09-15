@@ -3,10 +3,10 @@ import { useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketIndexName } from "domain/synthetics/markets/utils";
-import { formatAmountHuman } from "lib/numbers";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -117,8 +117,21 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
       </TableTd>
       {item.type === "market" ? (
         <TableTd>
-          <span className="numbers">{formatAmountHuman(item.tvl[0], USD_DECIMALS, true, 1)}</span>/
-          <span className="numbers">{formatAmountHuman(item.tvl[1], USD_DECIMALS, true, 1)}</span>
+          <AmountHumanValue
+            amount={item.tvl[0]}
+            decimals={USD_DECIMALS}
+            showDollar
+            displayDecimals={1}
+            className="numbers"
+          />
+          /
+          <AmountHumanValue
+            amount={item.tvl[1]}
+            decimals={USD_DECIMALS}
+            showDollar
+            displayDecimals={1}
+            className="numbers"
+          />
         </TableTd>
       ) : null}
       <TableTd className="!pr-20">

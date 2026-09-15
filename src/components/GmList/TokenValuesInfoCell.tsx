@@ -1,6 +1,6 @@
 import cx from "classnames";
+import { ReactNode } from "react";
 
-import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import { ShimmerText } from "components/ShimmerText/ShimmerText";
 
 export function TokenValuesInfoCell({
@@ -12,19 +12,18 @@ export function TokenValuesInfoCell({
   isLoading = false,
 }: {
   value: string;
-  usd?: string;
+  usd?: ReactNode;
   symbol?: string;
   singleLine?: boolean;
   className?: string;
   isLoading?: boolean;
 }) {
   const isNumber = !isNaN(Number(value.replace(/,/g, "")));
-  const UsdWrapper = isLoading ? ShimmerText : NoopWrapper;
   const content = (
     <>
       {usd && (
         <div className={cx("whitespace-nowrap text-typography-primary numbers", className)}>
-          <UsdWrapper>{usd}</UsdWrapper>
+          {isLoading ? <ShimmerText>{usd}</ShimmerText> : usd}
         </div>
       )}
       {value && (

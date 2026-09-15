@@ -23,12 +23,14 @@ import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfo, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getDecreasePositionAmounts, getDecreaseReceiveOutputs } from "domain/synthetics/trade";
 import { getPositionCloseSizeDeltaUsdForDisplay, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
-import { formatBalanceAmount, formatDeltaUsd, formatUsd, formatPercentage } from "lib/numbers";
+import { formatBalanceAmount, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
 import { DecreaseReceiveOutputDisplay } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableTd, TableTr } from "components/Table/Table";
 
@@ -166,11 +168,16 @@ function useTPSLOrderViewModel({
   }, [order.orderType, isMarginDeposit]);
 
   const triggerPriceDisplay = useMemo(
-    () =>
-      `${order.triggerThresholdType} ${formatUsd(order.triggerPrice, {
-        displayDecimals: marketDecimals,
-        visualMultiplier: order.indexToken?.visualMultiplier,
-      })}`,
+    () => (
+      <>
+        {order.triggerThresholdType}{" "}
+        <UsdValue
+          usd={order.triggerPrice}
+          displayDecimals={marketDecimals}
+          visualMultiplier={order.indexToken?.visualMultiplier}
+        />
+      </>
+    ),
     [marketDecimals, order.indexToken?.visualMultiplier, order.triggerPrice, order.triggerThresholdType]
   );
 
@@ -189,11 +196,15 @@ function useTPSLOrderViewModel({
     }
 
     if (isIncrease) {
-      return <span>+{formatUsd(order.sizeDeltaUsd)}</span>;
+      return <UsdValue usd={order.sizeDeltaUsd} displayPlus />;
     }
 
     if (!position) {
-      return <span>-{formatUsd(order.sizeDeltaUsd)}</span>;
+      return (
+        <span className="whitespace-nowrap">
+          -<UsdValue usd={order.sizeDeltaUsd} />
+        </span>
+      );
     }
 
     const isFullClose = isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, position.sizeInUsd);
@@ -207,7 +218,9 @@ function useTPSLOrderViewModel({
 
     return (
       <span>
-        <span>-{formatUsd(order.sizeDeltaUsd)}</span>
+        <span className="whitespace-nowrap">
+          -<UsdValue usd={order.sizeDeltaUsd} />
+        </span>
         <span className="ml-4 text-typography-secondary">(-{formatPercentage(sizePercentage)})</span>
       </span>
     );
@@ -375,9 +388,11 @@ function TPSLOrderCard({
           <span className="text-14 font-medium text-typography-secondary">
             <Trans>Est. PnL</Trans>
           </span>
-          <span className={cx("text-body-medium numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
-            {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
-          </span>
+          <DeltaUsdValue
+            deltaUsd={estimatedPnl.pnlUsd}
+            percentage={estimatedPnl.pnlPercentage}
+            className={cx("text-body-medium numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}
+          />
         </div>
       )}
 
@@ -443,9 +458,11 @@ export function TPSLOrderRow({
       </TableTd>
       <TableTd>
         {estimatedPnl ? (
-          <span className={cx("numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
-            {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
-          </span>
+          <DeltaUsdValue
+            deltaUsd={estimatedPnl.pnlUsd}
+            percentage={estimatedPnl.pnlPercentage}
+            className={cx("numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}
+          />
         ) : (
           <span className="text-typography-secondary">—</span>
         )}

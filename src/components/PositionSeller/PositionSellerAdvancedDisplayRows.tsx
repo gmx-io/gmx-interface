@@ -14,11 +14,12 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
-import { formatLeverage } from "domain/synthetics/positions";
+import { formatLeverageParts } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatDeltaUsdParts, formatUsdParts } from "lib/numbers";
 
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -73,7 +74,12 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   const sizeRow = (
     <SyntheticsInfoRow
       label={t`Size`}
-      value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
+      value={
+        <ValueTransition
+          from={formatUsdParts(position?.sizeInUsd)}
+          to={formatUsdParts(nextPositionValues?.nextSizeUsd)}
+        />
+      }
     />
   );
 
@@ -87,8 +93,8 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     } else {
       leverageValue = (
         <ValueTransition
-          from={formatLeverage(position.leverage)}
-          to={formatLeverage(nextPositionValues?.nextLeverage)}
+          from={formatLeverageParts(position.leverage)}
+          to={formatLeverageParts(nextPositionValues?.nextLeverage)}
         />
       );
     }
@@ -131,11 +137,11 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
                 nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
                   <ValueTransition
-                    from={formatDeltaUsd(position?.pendingImpactUsd)}
-                    to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
+                    from={formatDeltaUsdParts(position?.pendingImpactUsd)}
+                    to={formatDeltaUsdParts(nextPositionValues?.nextPendingImpactDeltaUsd)}
                   />
                 ) : (
-                  formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)
+                  <DeltaUsdValue deltaUsd={nextPositionValues?.nextPendingImpactDeltaUsd} />
                 )
               }
               valueClassName="numbers"
@@ -159,8 +165,8 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
             }
             value={
               <ValueTransition
-                from={formatUsd(position?.collateralUsd)!}
-                to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                from={formatUsdParts(position?.collateralUsd)}
+                to={formatUsdParts(nextPositionValues?.nextCollateralUsd)}
               />
             }
           />

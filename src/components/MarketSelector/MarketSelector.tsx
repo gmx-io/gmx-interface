@@ -9,7 +9,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { importImage } from "lib/legacy";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import type { TokenCategory } from "sdk/utils/tokens/types";
@@ -18,6 +18,7 @@ import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
@@ -315,7 +316,12 @@ function MarketListItem(props: {
           </div>
         )}
         <span className="text-accent">
-          {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) || null}
+          {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+            <div>
+              <UsdValue usd={balanceUsd} />
+            </div>
+          )) ||
+            null}
         </span>
       </div>
       <Button variant="ghost" onClick={handleFavoriteClick}>

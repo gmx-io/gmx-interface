@@ -13,7 +13,7 @@ import { getReferralCodeTradeUrl, getSharePercentage, getTierIdDisplay } from "d
 import { useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { formatBigUsd, formatUsd } from "lib/numbers";
+import { formatBigUsdParts } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
@@ -21,6 +21,8 @@ import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/t
 import Button from "components/Button/Button";
 import { Faq } from "components/Faq/Faq";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import { GridCell, GridHeaderCell, GridRow } from "components/Referrals/distributions/table/Grid";
@@ -202,7 +204,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                           </TableTd>
                           <TableTd>
                             <Tooltip
-                              handle={formatBigUsd(stat.volume)}
+                              handle={<NumericValue parts={formatBigUsdParts(stat.volume)} />}
                               handleClassName="numbers"
                               position="bottom-start"
                               className="whitespace-nowrap"
@@ -210,13 +212,13 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                                 <>
                                   <StatsTooltipRow
                                     label={t`V1 volume`}
-                                    value={formatBigUsd(stat?.v1Data.volume ?? 0n)}
+                                    value={<NumericValue parts={formatBigUsdParts(stat?.v1Data.volume ?? 0n)} />}
                                     valueClassName="numbers"
                                     showDollar={false}
                                   />
                                   <StatsTooltipRow
                                     label={t`V2 volume`}
-                                    value={formatBigUsd(stat?.v2Data.volume ?? 0n)}
+                                    value={<NumericValue parts={formatBigUsdParts(stat?.v2Data.volume ?? 0n)} />}
                                     valueClassName="numbers"
                                     showDollar={false}
                                   />
@@ -227,7 +229,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                           <TableTd className="numbers">{stat.registeredReferralsCount}</TableTd>
                           <TableTd>
                             <Tooltip
-                              handle={formatBigUsd(stat.affiliateRebateUsd)}
+                              handle={<NumericValue parts={formatBigUsdParts(stat.affiliateRebateUsd)} />}
                               handleClassName="numbers"
                               position="bottom-start"
                               className="whitespace-nowrap"
@@ -235,13 +237,13 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                                 <>
                                   <StatsTooltipRow
                                     label={t`V1 rebates`}
-                                    value={formatUsd(stat.v1Data.affiliateRebateUsd, { fallbackToZero: true })}
+                                    value={<UsdValue usd={stat.v1Data.affiliateRebateUsd} fallbackToZero />}
                                     valueClassName="numbers"
                                     showDollar={false}
                                   />
                                   <StatsTooltipRow
                                     label={t`V2 rebates`}
-                                    value={formatUsd(stat.v2Data.affiliateRebateUsd, { fallbackToZero: true })}
+                                    value={<UsdValue usd={stat.v2Data.affiliateRebateUsd} fallbackToZero />}
                                     valueClassName="numbers"
                                     showDollar={false}
                                   />
@@ -429,7 +431,9 @@ function ReferralCodesMobileTable({
                 <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
               </div>
             </GridCell>
-            <GridCell className="text-right numbers">{formatBigUsd(stat.volume)}</GridCell>
+            <GridCell className="text-right numbers">
+              <NumericValue parts={formatBigUsdParts(stat.volume)} />
+            </GridCell>
             <GridCell className="flex items-center justify-end">
               <ChevronDownIcon
                 className={cx("size-16 text-typography-secondary", {
@@ -460,7 +464,7 @@ function ReferralCodesMobileTable({
                   <span className="font-medium text-typography-secondary">
                     <Trans>Total rebates</Trans>
                   </span>
-                  <span className="numbers">{formatBigUsd(stat.affiliateRebateUsd)}</span>
+                  <NumericValue parts={formatBigUsdParts(stat.affiliateRebateUsd)} className="numbers" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pb-12 pt-8">

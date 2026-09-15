@@ -16,14 +16,12 @@ import { OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
-  formatLeverage,
-  formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
   getPositionOffHoursLiqRisk,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatBalanceAmount, formatDeltaUsd, formatPriceImpactBps, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatPriceImpactBps } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
@@ -32,6 +30,10 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { LeverageValue } from "components/NumericValue/LeverageValue";
+import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import PositionDropdown from "components/PositionDropdown/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
@@ -114,7 +116,7 @@ export function PositionItem(p: Props) {
 
     return (
       <TooltipWithPortal
-        handle={formatUsd(displayedNetValue)}
+        handle={<UsdValue usd={displayedNetValue} />}
         handleClassName="numbers"
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
@@ -128,20 +130,20 @@ export function PositionItem(p: Props) {
             <br />
             <StatsTooltipRow
               label={t`Margin before borrow/funding`}
-              value={formatUsd(p.position.collateralUsd) || "..."}
+              value={<UsdValue usd={p.position.collateralUsd} fallback="..." />}
               valueClassName="numbers"
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`PnL`}
-              value={formatDeltaUsd(p.position?.pnl) || "..."}
+              value={<DeltaUsdValue deltaUsd={p.position?.pnl} fallback="..." />}
               valueClassName="numbers"
               showDollar={false}
               textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Borrow fee`}
-              value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+              value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
               valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
@@ -150,7 +152,7 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Negative funding fee`}
-              value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
+              value={<UsdValue usd={-p.position.pendingFundingFeesUsd} fallback="..." />}
               valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
@@ -163,7 +165,7 @@ export function PositionItem(p: Props) {
                   label={t`Net price impact`}
                   value={
                     <>
-                      {formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
+                      <DeltaUsdValue deltaUsd={p.position.netPriceImapctDeltaUsd} fallback="..." />
                       {netPriceImpactBps ? ` (${netPriceImpactBps})` : null}
                     </>
                   }
@@ -173,7 +175,7 @@ export function PositionItem(p: Props) {
                 />
                 <StatsTooltipRow
                   label={t`Close fee`}
-                  value={formatUsd(-p.position.closingFeeUsd) || "..."}
+                  value={<UsdValue usd={-p.position.closingFeeUsd} fallback="..." />}
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName={cx({
@@ -216,7 +218,7 @@ export function PositionItem(p: Props) {
     const isStableCollateral = p.position.collateralToken.isStable;
     const renderMarginValue = (amount: bigint, usd: bigint) =>
       isStableCollateral ? (
-        formatUsd(usd) || "..."
+        <UsdValue usd={usd} fallback="..." />
       ) : (
         <AmountWithUsdBalance
           amount={amount}
@@ -232,7 +234,7 @@ export function PositionItem(p: Props) {
       <div className="flex flex-col gap-4">
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <TooltipWithPortal
-            handle={formatUsd(p.position.remainingCollateralUsd)}
+            handle={<UsdValue usd={p.position.remainingCollateralUsd} />}
             handleClassName={cx("numbers", { negative: p.position.hasLowCollateral })}
             position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
@@ -261,7 +263,7 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Borrow fee`}
                   showDollar={false}
-                  value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+                  value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
                   valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
@@ -270,7 +272,7 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Negative funding fee`}
                   showDollar={false}
-                  value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
+                  value={<DeltaUsdValue deltaUsd={-p.position.pendingFundingFeesUsd} fallback="..." />}
                   valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
@@ -283,7 +285,7 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Positive funding fee`}
                   showDollar={false}
-                  value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
+                  value={<DeltaUsdValue deltaUsd={p.position.pendingClaimableFundingFeesUsd} fallback="..." />}
                   valueClassName="numbers"
                   textClassName={cx({
                     "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
@@ -296,7 +298,7 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   showDollar={false}
                   label={t`Borrow fee / day`}
-                  value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
+                  value={borrowingFeeRateUsd !== undefined ? <UsdValue usd={-borrowingFeeRateUsd} /> : "..."}
                   valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
@@ -305,7 +307,7 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   showDollar={false}
                   label={t`Funding fee / day`}
-                  value={formatDeltaUsd(fundingFeeRateUsd)}
+                  value={<DeltaUsdValue deltaUsd={fundingFeeRateUsd} />}
                   valueClassName="numbers"
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                 />
@@ -417,10 +419,12 @@ export function PositionItem(p: Props) {
             <StatsTooltipRow
               label={t`Estimated off-hours liquidation price`}
               value={
-                formatLiquidationPrice(offHoursLiqPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: p.position.indexToken.visualMultiplier,
-                }) || "..."
+                <LiquidationPriceValue
+                  liquidationPrice={offHoursLiqPrice}
+                  displayDecimals={marketDecimals}
+                  visualMultiplier={p.position.indexToken.visualMultiplier}
+                  fallback="..."
+                />
               }
               valueClassName="numbers"
               showDollar={false}
@@ -438,12 +442,15 @@ export function PositionItem(p: Props) {
       return (
         <TooltipWithPortal
           handle={
-            p.position.liquidationPrice
-              ? formatLiquidationPrice(p.position.liquidationPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: p.position.indexToken.visualMultiplier,
-                })
-              : "..."
+            p.position.liquidationPrice ? (
+              <LiquidationPriceValue
+                liquidationPrice={p.position.liquidationPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={p.position.indexToken.visualMultiplier}
+              />
+            ) : (
+              "..."
+            )
           }
           handleClassName={cx("numbers", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
@@ -458,12 +465,13 @@ export function PositionItem(p: Props) {
     }
 
     return (
-      <span className="numbers">
-        {formatLiquidationPrice(p.position.liquidationPrice, {
-          displayDecimals: marketDecimals,
-          visualMultiplier: p.position.indexToken.visualMultiplier,
-        }) || "..."}
-      </span>
+      <LiquidationPriceValue
+        liquidationPrice={p.position.liquidationPrice}
+        displayDecimals={marketDecimals}
+        visualMultiplier={p.position.indexToken.visualMultiplier}
+        className="numbers"
+        fallback="..."
+      />
     );
   }
 
@@ -536,9 +544,11 @@ export function PositionItem(p: Props) {
               )}
             </div>
             <div className="Exchange-list-info-label">
-              <span className={cx("muted mr-4 rounded-2 px-2 pb-1 numbers")}>
-                {formatLeverage(p.position.leverage) || "..."}
-              </span>
+              <LeverageValue
+                leverage={p.position.leverage}
+                className={cx("muted mr-4 rounded-2 px-2 pb-1 numbers")}
+                fallback="..."
+              />
               <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
                 {p.position.isLong ? t`Long` : t`Short`}
               </span>
@@ -548,13 +558,15 @@ export function PositionItem(p: Props) {
         <TableTd>
           <div className="flex flex-col gap-2">
             <span className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
-              {showSizeInTokens
-                ? formatBalanceAmount(
-                    p.position.sizeInTokens / indexTokenVisualMultiplier,
-                    p.position.indexToken.decimals,
-                    indexTokenDisplaySymbol
-                  )
-                : formatUsd(p.position.sizeInUsd)}
+              {showSizeInTokens ? (
+                formatBalanceAmount(
+                  p.position.sizeInTokens / indexTokenVisualMultiplier,
+                  p.position.indexToken.decimals,
+                  indexTokenDisplaySymbol
+                )
+              ) : (
+                <UsdValue usd={p.position.sizeInUsd} />
+              )}
             </span>
             <PositionItemOrdersLarge
               positionKey={p.position.key}
@@ -580,7 +592,7 @@ export function PositionItem(p: Props) {
                   })}
                   onClick={p.onShareClick}
                 >
-                  {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                  <DeltaUsdValue deltaUsd={displayedPnl} percentage={displayedPnlPercentage} />
                   {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14 shrink-0" />}
                 </div>
               )}
@@ -596,22 +608,22 @@ export function PositionItem(p: Props) {
           {p.position.isOpening ? (
             t`Opening...`
           ) : (
-            <span className="numbers">
-              {formatUsd(p.position.entryPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: p.position.indexToken.visualMultiplier,
-              })}
-            </span>
+            <UsdValue
+              usd={p.position.entryPrice}
+              displayDecimals={marketDecimals}
+              visualMultiplier={p.position.indexToken.visualMultiplier}
+              className="numbers"
+            />
           )}
         </TableTd>
         <TableTd>
           {/* markPrice */}
-          <span className="numbers">
-            {formatUsd(p.position.markPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: p.position.indexToken.visualMultiplier,
-            })}
-          </span>
+          <UsdValue
+            usd={p.position.markPrice}
+            displayDecimals={marketDecimals}
+            visualMultiplier={p.position.indexToken.visualMultiplier}
+            className="numbers"
+          />
         </TableTd>
         <TableTd>
           {/* liqPrice */}
@@ -678,7 +690,7 @@ export function PositionItem(p: Props) {
               {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
             </span>
             <div className="text-body-small flex items-center gap-4">
-              <span className="rounded-4 leading-1">{formatLeverage(p.position.leverage) || "..."}</span>
+              <LeverageValue leverage={p.position.leverage} className="rounded-4 leading-1" fallback="..." />
               <span
                 className={cx("Exchange-list-side", {
                   positive: p.position.isLong,
@@ -717,13 +729,15 @@ export function PositionItem(p: Props) {
               <Trans>Size</Trans>
             </div>
             <div className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
-              {showSizeInTokens
-                ? formatBalanceAmount(
-                    p.position.sizeInTokens / indexTokenVisualMultiplier,
-                    p.position.indexToken.decimals,
-                    indexTokenDisplaySymbol
-                  )
-                : formatUsd(p.position.sizeInUsd)}
+              {showSizeInTokens ? (
+                formatBalanceAmount(
+                  p.position.sizeInTokens / indexTokenVisualMultiplier,
+                  p.position.indexToken.decimals,
+                  indexTokenDisplaySymbol
+                )
+              ) : (
+                <UsdValue usd={p.position.sizeInUsd} />
+              )}
             </div>
           </div>
           <div className="App-card-row">
@@ -746,7 +760,7 @@ export function PositionItem(p: Props) {
                 })}
                 onClick={p.onShareClick}
               >
-                {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                <DeltaUsdValue deltaUsd={displayedPnl} percentage={displayedPnlPercentage} />
                 {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16 shrink-0" />}
               </span>
             </div>
@@ -764,10 +778,11 @@ export function PositionItem(p: Props) {
               <Trans>Entry price</Trans>
             </div>
             <div className="numbers">
-              {formatUsd(p.position.entryPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: p.position.indexToken.visualMultiplier,
-              })}
+              <UsdValue
+                usd={p.position.entryPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={p.position.indexToken.visualMultiplier}
+              />
             </div>
           </div>
           <div className="App-card-row">
@@ -775,10 +790,11 @@ export function PositionItem(p: Props) {
               <Trans>Mark price</Trans>
             </div>
             <div className="numbers">
-              {formatUsd(p.position.markPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: p.position.indexToken.visualMultiplier,
-              })}
+              <UsdValue
+                usd={p.position.markPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={p.position.indexToken.visualMultiplier}
+              />
             </div>
           </div>
           <div className="App-card-row">

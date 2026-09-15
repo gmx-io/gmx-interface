@@ -3,14 +3,13 @@ import cx from "classnames";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { formatUsd } from "lib/numbers";
-
 import {
   EarningAttributionNote,
   EarningUnavailableNote,
   EarningValue,
   getEarningAttributionScope,
 } from "components/EarningValue/EarningValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -156,7 +155,11 @@ export function LpPanel({
                 isAvailable={isAvailable && !isExpected365dUnavailable}
                 skeletonWidth={60}
               >
-                {(value) => <span className="text-blue-100 numbers">~{formatUsd(value)}</span>}
+                {(value) => (
+                  <span className="text-blue-100 numbers">
+                    ~<UsdValue usd={value} />
+                  </span>
+                )}
               </EarningValue>
             }
           />

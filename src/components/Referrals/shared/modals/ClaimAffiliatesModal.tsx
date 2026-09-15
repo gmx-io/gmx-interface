@@ -9,6 +9,7 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
@@ -163,7 +164,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                   />
                   <SyntheticsInfoRow
                     label={<Trans>Total value of assets</Trans>}
-                    value={formatUsd(state.selectedClaimTokensUsd)}
+                    value={<UsdValue usd={state.selectedClaimTokensUsd} />}
                   />
                   <SyntheticsInfoRow
                     label={

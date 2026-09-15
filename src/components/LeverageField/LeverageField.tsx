@@ -12,8 +12,11 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { multiplierPart, numberParts } from "lib/numbers";
+
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import { NumericValue } from "components/NumericValue/NumericValue";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -141,19 +144,18 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
     setIsOpen(false);
   }, []);
 
-  const displayValue = useMemo(() => {
+  const displayParts = useMemo(() => {
     if (value === null) {
-      return disabled ? EMPTY_LEVERAGE_DISPLAY : formatLeverage(minMark);
+      return disabled ? numberParts(EMPTY_LEVERAGE_DISPLAY) : numberParts(formatLeverage(minMark), multiplierPart("x"));
     }
 
     if (disabled && value > maxMark) {
-      return `> ${formatLeverage(maxMark, { integer: true })}`;
+      return numberParts(`> ${formatLeverage(maxMark, { integer: true })}`, multiplierPart("x"));
     }
 
     const clampedValue = disabled ? value : clampLeverage(value, minMark, maxMark);
-    return formatLeverage(clampedValue);
+    return numberParts(formatLeverage(clampedValue), multiplierPart("x"));
   }, [value, disabled, minMark, maxMark]);
-  const shouldShowMultiplier = displayValue !== EMPTY_LEVERAGE_DISPLAY;
 
   return (
     <>
@@ -172,22 +174,15 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
         {...getReferenceProps()}
       >
         <TooltipWithPortal disabled={!tooltipContent} content={tooltipContent} as="span" variant="none">
-          <span
-            className={cx("whitespace-nowrap text-13", isOpen ? "text-blue-300" : "text-typography-primary", {
+          <NumericValue
+            parts={displayParts}
+            className={cx("text-13", isOpen ? "text-blue-300" : "text-typography-primary", {
               "group-hover:text-blue-300": !disabled && !isOpen,
             })}
-          >
-            {displayValue}
-            {shouldShowMultiplier ? (
-              <span
-                className={cx("ml-4", isOpen ? "text-blue-300" : "text-typography-secondary", {
-                  "group-hover:text-blue-300": !disabled && !isOpen,
-                })}
-              >
-                x
-              </span>
-            ) : null}
-          </span>
+            affixClassName={cx(isOpen ? "text-blue-300" : "text-typography-secondary", {
+              "group-hover:text-blue-300": !disabled && !isOpen,
+            })}
+          />
         </TooltipWithPortal>
       </div>
 

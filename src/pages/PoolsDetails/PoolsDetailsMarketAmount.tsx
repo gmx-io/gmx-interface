@@ -16,7 +16,7 @@ export function PoolsDetailsMarketAmount({
   secondaryValueClassName,
 }: {
   value: ReactNode;
-  secondaryValue?: string;
+  secondaryValue?: ReactNode;
   afterValue?: ReactNode;
   label?: ReactNode;
   tooltipContent?: ReactNode;
@@ -34,9 +34,7 @@ export function PoolsDetailsMarketAmount({
     >
       <span className={cx("numbers", valueClassName)}>{value}</span>
       {secondaryValue ? (
-        <>
-          <span className={cx("text-typography-secondary numbers", secondaryValueClassName)}>({secondaryValue})</span>
-        </>
+        <span className={cx("text-typography-secondary numbers", secondaryValueClassName)}>({secondaryValue})</span>
       ) : null}
     </span>
   );

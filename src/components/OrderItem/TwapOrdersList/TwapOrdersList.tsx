@@ -5,9 +5,10 @@ import { useMemo } from "react";
 import { isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { Token } from "domain/tokens";
 import { formatDateTime } from "lib/dates";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { OrderType, TwapOrderInfo } from "sdk/utils/orders/types";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
@@ -66,9 +67,9 @@ function TwapOrderItem({
   };
   isExecuted: boolean;
 }) {
-  const sizeText = formatUsd(order.sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n), {
-    displayPlus: true,
-  });
+  const sizeText = (
+    <UsdValue usd={order.sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n)} displayPlus />
+  );
 
   if (isSwapOrderType(order.orderType)) {
     const fromTokenText = formatBalanceAmount(

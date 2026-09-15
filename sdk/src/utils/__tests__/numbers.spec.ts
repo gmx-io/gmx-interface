@@ -33,6 +33,23 @@ import {
   roundUpMagnitudeDivision,
   roundsToZero,
   toBigNumberWithDecimals,
+  formatUsd,
+  formatUsdParts,
+  formatDeltaUsd,
+  formatDeltaUsdParts,
+  formatBigUsd,
+  formatBigUsdParts,
+  formatUsdPriceParts,
+  formatAmountHumanParts,
+  formatTokenAmountWithUsd,
+  formatTokenAmountWithUsdParts,
+  numberWithCommas,
+  numberWithCommasParts,
+  numberParts,
+  joinNumberParts,
+  isNumberParts,
+  NumberPart,
+  USD_PART,
 } from "utils/numbers";
 
 const ONE_USD = 1000000000000000000000000000000n;
@@ -660,5 +677,93 @@ describe("formatPriceImpactBps", () => {
   it("returns undefined when size is not positive", () => {
     expect(formatPriceImpactBps(-81n, 0n)).toBeUndefined();
     expect(formatPriceImpactBps(-81n, -10000n)).toBeUndefined();
+  });
+});
+
+describe("number parts", () => {
+  const usd = (amount: number) => expandDecimals(amount, USD_DECIMALS);
+
+  it("string formatters are the joined parts", () => {
+    const cases: [string | undefined, NumberPart[] | undefined][] = [
+      [formatUsd(usd(1234)), formatUsdParts(usd(1234))],
+      [
+        formatUsd(-usd(1), { displayPlus: true, displayDecimals: 4 }),
+        formatUsdParts(-usd(1), { displayPlus: true, displayDecimals: 4 }),
+      ],
+      [formatUsd(usd(2_000_000_000)), formatUsdParts(usd(2_000_000_000))],
+      [formatUsd(1n), formatUsdParts(1n)],
+      [formatUsd(undefined, { fallbackToZero: true }), formatUsdParts(undefined, { fallbackToZero: true })],
+      [formatDeltaUsd(usd(5), expandDecimals(3, 2)), formatDeltaUsdParts(usd(5), expandDecimals(3, 2))],
+      [
+        formatDeltaUsd(0n, undefined, { showPlusForZero: true }),
+        formatDeltaUsdParts(0n, undefined, { showPlusForZero: true }),
+      ],
+      [formatBigUsd(usd(123456789)), formatBigUsdParts(usd(123456789))],
+      [formatUsdPrice(usd(3)), formatUsdPriceParts(usd(3))],
+      [formatUsdPrice(-1n), formatUsdPriceParts(-1n)],
+      [
+        formatAmountHuman(usd(1_150_000_000), USD_DECIMALS, true),
+        formatAmountHumanParts(usd(1_150_000_000), USD_DECIMALS, true),
+      ],
+      [
+        formatAmountHuman(-usd(12_500), USD_DECIMALS, false, 2),
+        formatAmountHumanParts(-usd(12_500), USD_DECIMALS, false, 2),
+      ],
+      [formatAmountHuman(undefined, USD_DECIMALS), formatAmountHumanParts(undefined, USD_DECIMALS)],
+      [numberWithCommas("1234.5", { showDollar: true }), numberWithCommasParts("1234.5", { showDollar: true })],
+      [
+        formatTokenAmountWithUsd(expandDecimals(1, 18), usd(2500), "ETH", 18),
+        formatTokenAmountWithUsdParts(expandDecimals(1, 18), usd(2500), "ETH", 18),
+      ],
+    ];
+
+    for (const [text, parts] of cases) {
+      expect(parts && joinNumberParts(parts)).toBe(text);
+    }
+  });
+
+  it("marks the currency and magnitude affixes", () => {
+    expect(formatUsdParts(-usd(1234))).toEqual([
+      { kind: "text", text: "-" },
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "1,234.00" },
+    ]);
+    expect(formatUsdParts(usd(2_000_000_000))).toEqual([
+      { kind: "text", text: "> " },
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "1,000,000,000.00" },
+    ]);
+    expect(formatDeltaUsdParts(usd(5), expandDecimals(3, 2))).toEqual([
+      { kind: "text", text: "+" },
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "5.00 (+3.00%)" },
+    ]);
+    expect(formatAmountHumanParts(usd(1_150_000_000), USD_DECIMALS, true)).toEqual([
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "1.1" },
+      { kind: "magnitude", text: "b" },
+    ]);
+    expect(formatAmountHumanParts(expandDecimals(12_500, 18), 18)).toEqual([
+      { kind: "text", text: "12.5" },
+      { kind: "magnitude", text: "k" },
+    ]);
+    expect(formatAmountHumanParts(usd(999), USD_DECIMALS, true)).toEqual([
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "999.0" },
+    ]);
+    expect(formatUsdPriceParts(-1n)).toEqual([{ kind: "text", text: "NA" }]);
+    expect(formatUsdParts(undefined)).toBeUndefined();
+  });
+
+  it("numberParts merges adjacent text and skips empty inputs", () => {
+    expect(numberParts("> ", undefined, "", "-", USD_PART, "1.00", [{ kind: "magnitude", text: "k" }])).toEqual([
+      { kind: "text", text: "> -" },
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "1.00" },
+      { kind: "magnitude", text: "k" },
+    ]);
+    expect(isNumberParts(formatUsdParts(usd(1)))).toBe(true);
+    expect(isNumberParts(["$ 1.00"])).toBe(false);
+    expect(isNumberParts("$ 1.00")).toBe(false);
   });
 });

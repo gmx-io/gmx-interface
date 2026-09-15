@@ -3,10 +3,10 @@ import { useState } from "react";
 
 import { Operation } from "domain/synthetics/markets/types";
 import { GmSwapFees } from "domain/synthetics/trade";
-import { formatDeltaUsd } from "lib/numbers";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import { GmFees } from "components/GmSwap/GmFees/GmFees";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWithSkeleton";
 
@@ -51,7 +51,7 @@ export function InfoRows({
             ) : fees?.logicalNetworkFee?.deltaUsd === undefined ? (
               "..."
             ) : (
-              formatDeltaUsd(fees.logicalNetworkFee.deltaUsd)
+              <DeltaUsdValue deltaUsd={fees.logicalNetworkFee.deltaUsd} />
             )
           }
         />

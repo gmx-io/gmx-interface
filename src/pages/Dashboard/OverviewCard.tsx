@@ -17,13 +17,14 @@ import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmountHuman } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 import { sumBigInts, sumKnownBigInts } from "lib/sumBigInts";
 import { mergeFreshness, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
 import { getStaleEntries } from "components/StatsTooltip/summarizeChainsStats";
 
@@ -328,13 +329,25 @@ export function OverviewCard({
           <span className="label">
             <Trans>Annualized fees:</Trans>
           </span>
-          <span className="numbers">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
+          <AmountHumanValue
+            amount={annualizedTotal}
+            decimals={USD_DECIMALS}
+            showDollar
+            displayDecimals={2}
+            className="numbers"
+          />
         </p>
         <p className="Tooltip-row">
           <span className="label">
             <Trans>Annualized GMX buy pressure:</Trans>
           </span>
-          <span className="numbers">{formatAmountHuman(annualizedGmxBuyPressure, USD_DECIMALS, true, 2)}</span>
+          <AmountHumanValue
+            amount={annualizedGmxBuyPressure}
+            decimals={USD_DECIMALS}
+            showDollar
+            displayDecimals={2}
+            className="numbers"
+          />
         </p>
         <p className="Tooltip-row !mt-16 max-w-[260px] whitespace-normal">
           <Trans>Annualized data based on the past 7 days. Solana fees do not contribute to GMX buybacks.</Trans>

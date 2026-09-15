@@ -26,12 +26,12 @@ import { useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
-import { formatUsd } from "lib/numbers";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Faq } from "components/Faq/Faq";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { ReferralsDocsCard } from "components/Referrals/shared/cards/ReferralsDocsCard";
 import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
 import { TraderReferralChartContainer } from "components/Referrals/shared/charts/TraderReferralChartContainer";
@@ -96,11 +96,11 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
             <OverviewChartCard
               label={isOwnAccountView ? <Trans>Your trading volume</Trans> : <Trans>Trading volume</Trans>}
-              value={formatUsd(traderStats?.summary.volumeUsd ?? 0n)}
+              value={<UsdValue usd={traderStats?.summary.volumeUsd ?? 0n} />}
               valueChange={
-                traderStats?.summary.volumeUsdDelta !== undefined
-                  ? formatUsdDelta(traderStats.summary.volumeUsdDelta)
-                  : undefined
+                traderStats?.summary.volumeUsdDelta !== undefined ? (
+                  <UsdValue usd={traderStats.summary.volumeUsdDelta} displayPlus />
+                ) : undefined
               }
               isValueChangePositive={
                 traderStats?.summary.volumeUsdDelta !== undefined ? traderStats.summary.volumeUsdDelta >= 0n : undefined
@@ -115,11 +115,11 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
             </OverviewChartCard>
             <OverviewChartCard
               label={isOwnAccountView ? <Trans>Your discounts</Trans> : <Trans>Discounts</Trans>}
-              value={formatUsd(traderStats?.summary.discountsUsd ?? 0n)}
+              value={<UsdValue usd={traderStats?.summary.discountsUsd ?? 0n} />}
               valueChange={
-                traderStats?.summary.discountsUsdDelta !== undefined
-                  ? formatUsdDelta(traderStats.summary.discountsUsdDelta)
-                  : undefined
+                traderStats?.summary.discountsUsdDelta !== undefined ? (
+                  <UsdValue usd={traderStats.summary.discountsUsdDelta} displayPlus />
+                ) : undefined
               }
               isValueChangePositive={
                 traderStats?.summary.discountsUsdDelta !== undefined
@@ -348,8 +348,4 @@ function BalancerProgramExplanation({
       </div>
     </>
   );
-}
-
-function formatUsdDelta(value: bigint): string {
-  return formatUsd(value, { displayPlus: value >= 0n }) ?? "";
 }

@@ -3,7 +3,10 @@ import range from "lodash/range";
 import { Handle, SliderTooltip } from "rc-slider";
 import { forwardRef, useCallback, useMemo } from "react";
 
+import { multiplierPart, numberParts } from "lib/numbers";
+
 import { DEFAULT_LEVERAGE, DEFAULT_LEVERAGE_MARKS } from "components/LeverageField/LeverageField";
+import { NumericValue } from "components/NumericValue/NumericValue";
 import { Slider } from "components/Slider";
 
 type Props = {
@@ -90,7 +93,9 @@ const LeverageSliderHandle = forwardRef<Handle, HandleProps>(function LeverageSl
   return (
     <SliderTooltip
       prefixCls="rc-slider-tooltip"
-      overlay={`${parseFloat(displayValue.toString()).toFixed(2)}x`}
+      overlay={
+        <NumericValue parts={numberParts(parseFloat(displayValue.toString()).toFixed(2), multiplierPart("x"))} />
+      }
       visible={dragging}
       placement="top"
       key={index}

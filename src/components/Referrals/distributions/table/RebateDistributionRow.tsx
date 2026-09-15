@@ -6,10 +6,11 @@ import { useMemo } from "react";
 import { getExplorerUrl } from "config/chains";
 import { RebateDistribution, RebateDistributionType } from "domain/referrals";
 import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount, formatBigUsd } from "lib/numbers";
+import { formatBalanceAmount, formatBigUsdParts } from "lib/numbers";
 import { getNativeToken, getToken, getTokenBySymbol, isValidTokenSafe } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { NumericValue } from "components/NumericValue/NumericValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -96,7 +97,7 @@ export function RebateDistributionRow({
                   &nbsp;
                 </>
               )}
-              {formatBigUsd(totalUsd)}
+              <NumericValue parts={formatBigUsdParts(totalUsd)} />
             </div>
           }
           content={

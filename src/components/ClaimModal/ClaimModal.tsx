@@ -35,6 +35,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { OutOfTokenErrorAlert } from "components/Referrals/shared/modals/OutOfTokenErrorAlert";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -433,9 +434,10 @@ function ClaimModalComponent(p: {
             className="ClaimSettleModal-tooltip"
             position="top-end"
             handle={
-              <span className={isMarketInsufficient ? "text-yellow-500" : undefined}>
-                {formatDeltaUsd(totalFundingUsd)}
-              </span>
+              <DeltaUsdValue
+                deltaUsd={totalFundingUsd}
+                className={isMarketInsufficient ? "text-yellow-500" : undefined}
+              />
             }
             renderContent={() => (
               <>

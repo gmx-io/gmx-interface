@@ -7,7 +7,7 @@ import type { TokenData } from "domain/synthetics/tokens";
 import { adaptToV1TokenInfo } from "domain/synthetics/tokens/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import { getExchangeRateDisplay } from "lib/legacy";
-import { formatBalanceAmount, formatDeltaUsd } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd, formatDeltaUsdParts, NumberPart } from "lib/numbers";
 import { getTokensRatioByAmounts } from "sdk/utils/tokens";
 import type { Token, TokenInfo } from "sdk/utils/tokens/types";
 import { SwapTradeAction, TradeActionType, USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
@@ -23,6 +23,7 @@ import {
   getErrorTooltipTitle,
   infoRow,
   lines,
+  numericText,
 } from "./shared";
 import { getActionTitle } from "../../keys";
 
@@ -316,7 +317,7 @@ export const formatSwapMessage = (
     };
   }
 
-  let fees: string | undefined;
+  let fees: NumberPart[] | undefined;
   let feesTooltip: Line[] | undefined;
   let priceImpact: string | undefined;
 
@@ -324,7 +325,7 @@ export const formatSwapMessage = (
     const breakdown = getSwapFeesBreakdown(tradeAction);
 
     if (breakdown.lines.length > 0) {
-      fees = formatDeltaUsd(breakdown.totalUsd);
+      fees = formatDeltaUsdParts(breakdown.totalUsd);
       feesTooltip = breakdown.lines;
     }
 
@@ -363,7 +364,10 @@ function getSwapFeesBreakdown(tradeAction: SwapTradeAction): { totalUsd: bigint;
 
   const totalUsd = items.reduce((acc, item) => acc + item.amountUsd, 0n);
 
-  return { totalUsd, lines: items.map((item) => infoRow(item.label, formatDeltaUsd(item.amountUsd))) };
+  return {
+    totalUsd,
+    lines: items.map((item) => infoRow(item.label, numericText(formatDeltaUsdParts(item.amountUsd)))),
+  };
 }
 
 export function getSwapPathMarketFullNames(

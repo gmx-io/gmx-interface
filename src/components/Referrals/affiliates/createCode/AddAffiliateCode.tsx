@@ -29,7 +29,6 @@ import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -41,6 +40,7 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
@@ -335,7 +335,7 @@ function AffiliateCodeFormMultichain({
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
-          value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
+          value={quoteResult.networkFeeUsd !== undefined ? <UsdValue usd={quoteResult.networkFeeUsd} /> : "..."}
         />
       )}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
