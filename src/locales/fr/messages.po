@@ -50,7 +50,7 @@ msgstr "CODE DE PARRAINAGE"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
-msgstr ""
+msgstr "Fonds insuffisants pour les coûts de l'ordre. Restant : {remainingCostUsdText}"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
@@ -216,7 +216,7 @@ msgstr "Valeurs de débogage indisponibles"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Swap</2> or <3>bridge</3> {1} to {networkName}"
-msgstr ""
+msgstr "Fonds insuffisants en {0} pour le Gas sur {networkName}<0/><1/><2>Échanger</2> ou <3>bridge</3> {1} vers {networkName}"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
@@ -263,7 +263,7 @@ msgstr "(remboursé)"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "Récompenses accumulées"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -1124,7 +1124,7 @@ msgstr "TVL dans les coffres et les pools"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
-msgstr ""
+msgstr "GMX sur Solana"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
