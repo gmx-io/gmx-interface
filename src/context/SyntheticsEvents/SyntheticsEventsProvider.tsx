@@ -41,7 +41,7 @@ import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrde
 import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
-import { ErrorLike } from "lib/errors";
+import { ErrorLike, parseError } from "lib/errors";
 import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
@@ -70,7 +70,13 @@ import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tok
 import { StatusCode } from "sdk/utils/gelatoRelay";
 import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
-import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
+import {
+  getDebugErrorMessage,
+  getInsufficientExecutionFeeToastContent,
+  getInsufficientFeeToastBanner,
+  getInsufficientFeeToastContent,
+  InvalidSignatureToastContent,
+} from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
@@ -1118,9 +1124,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             let isRelayerMetricSent = false;
             let isViewed = false;
 
-            if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
+            const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
 
+            if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
               sendTxnErrorMetric(pendingExpressTxn.metricId, relayError, "relayer");
 
               const executionFeeErrorParams = getIsInsufficientExecutionFeeError(relayError);
@@ -1176,7 +1182,39 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               isRelayerMetricSent = true;
             }
 
-            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
+            const relayErrorData = parseError(relayError);
+            const feeBanner = getInsufficientFeeToastBanner({
+              chainId,
+              errorData: relayErrorData,
+              expressFee: pendingExpressTxn.gasPaymentTokenAddress
+                ? {
+                    gasPaymentTokenAddress: pendingExpressTxn.gasPaymentTokenAddress,
+                    isGmxAccount: Boolean(pendingExpressTxn.isGmxAccount),
+                  }
+                : undefined,
+            });
+
+            if (feeBanner && !isViewed && !pendingExpressTxn.isViewed) {
+              const feeToastContent = getInsufficientFeeToastContent({
+                chainId,
+                banner: feeBanner,
+                debugErrorMessage: getDebugErrorMessage(relayErrorData),
+              });
+
+              sleep(500).then(() => {
+                toast.dismiss(pendingOrderToastIdRef.current);
+                helperToast.error(feeToastContent, {
+                  tradingErrorInfo: {
+                    actionName: "Express Order",
+                    errorData: relayErrorData,
+                    metricId: pendingExpressTxn.metricId,
+                  },
+                });
+              });
+              isViewed = true;
+            }
+
+            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed && !isViewed) {
               helperToast.error(pendingExpressTxn.errorMessage, {
                 tradingErrorInfo: {
                   actionName: "Express Order",

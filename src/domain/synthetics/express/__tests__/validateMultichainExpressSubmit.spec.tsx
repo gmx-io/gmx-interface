@@ -34,6 +34,7 @@ function makeExpressParams(overrides: { isGmxAccount: boolean; isOutGasTokenBala
     },
     gasPaymentParams: {
       gasPaymentTokenAddress: USDC,
+      gasPaymentToken: { symbol: "USDC" },
       totalRelayerFeeTokenAmount: 10n,
     },
   } as unknown as ExpressTxnParams;

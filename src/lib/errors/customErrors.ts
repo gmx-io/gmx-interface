@@ -141,6 +141,34 @@ export function isIgnoredEstimateGasError(error: ErrorLike): boolean {
   return false;
 }
 
+const INSUFFICIENT_FEE_CONTRACT_ERRORS = ["InsufficientMultichainBalance", "InsufficientRelayFee", "InsufficientFunds"];
+const INSUFFICIENT_FEE_MESSAGE_PATTERN = "ERC20: transfer amount exceeds balance";
+
+export function getInsufficientFeeError(
+  errorData: ErrorData | undefined
+): { isErrorMatched: false } | { isErrorMatched: true; tokenAddress: string | undefined } {
+  if (!errorData) {
+    return { isErrorMatched: false };
+  }
+
+  if (errorData.contractError && INSUFFICIENT_FEE_CONTRACT_ERRORS.includes(errorData.contractError)) {
+    const tokenArg =
+      errorData.contractError === "InsufficientMultichainBalance"
+        ? errorData.contractErrorArgs?.[1]
+        : errorData.contractError === "InsufficientFunds"
+          ? errorData.contractErrorArgs?.[0]
+          : undefined;
+
+    return { isErrorMatched: true, tokenAddress: typeof tokenArg === "string" ? tokenArg : undefined };
+  }
+
+  const isBalanceRevert = [errorData.errorMessage, errorData.data?.message].some(
+    (message) => typeof message === "string" && message.includes(INSUFFICIENT_FEE_MESSAGE_PATTERN)
+  );
+
+  return isBalanceRevert ? { isErrorMatched: true, tokenAddress: undefined } : { isErrorMatched: false };
+}
+
 export function getIsPossibleExternalSwapError(error: ErrorLike) {
   const parsedError = parseError(error);
 

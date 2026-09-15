@@ -7,7 +7,15 @@ import { useLatest } from "react-use";
 import { decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
-import { AVALANCHE, AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
+import {
+  AVALANCHE,
+  AnyChainId,
+  SettlementChainId,
+  SourceChainId,
+  getChainName,
+  getViemChain,
+  isTestnetChain,
+} from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import { isGmxAccountHoldableToken } from "config/markets";
@@ -50,7 +58,7 @@ import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedErr
 import { WALLET_NETWORK_FEE_SOURCE, getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
-import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
+import { ValidationBannerErrorName, getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -76,7 +84,7 @@ import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { TokenBalanceType, TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
@@ -1163,13 +1171,20 @@ export const DepositView = () => {
     };
   } else if (isInsufficientSourceChainNativeBalance) {
     buttonState = {
-      text: getDefaultInsufficientGasMessage(),
+      text: getInsufficientFeeButtonMessage({
+        tokenSymbol: getViemChain(depositViewChain as SourceChainId).nativeCurrency.symbol,
+        feeSource: getSourceChainNetworkFeeSource(depositViewChain as SourceChainId),
+      }),
       bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
       disabled: true,
     };
   } else if (isInsufficientSameChainNativeGasBalance) {
     buttonState = {
-      text: getDefaultInsufficientGasMessage(),
+      text: getInsufficientFeeButtonMessage({
+        tokenSymbol: getNativeToken(settlementChainId).symbol,
+        feeSource: WALLET_NETWORK_FEE_SOURCE,
+      }),
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
       disabled: true,
     };
   } else if (isNetworkFeeLoading) {

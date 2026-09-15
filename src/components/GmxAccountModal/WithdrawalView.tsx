@@ -43,6 +43,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectExpressOrdersEnabled,
+  selectGmxAccountGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -68,7 +69,7 @@ import { ExpressTransactionBuilder, ExpressTxnParams, RawRelayParamsPayload } fr
 import { GMX_ACCOUNT_NETWORK_FEE_SOURCE, WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
+import { getInsufficientFeeButtonMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, sortTokenDataByBalance, TokenBalanceType, TokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
@@ -95,7 +96,7 @@ import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
-import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, getWrappedToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
@@ -519,6 +520,7 @@ export const WithdrawalView = () => {
   const globalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
   const gasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const gasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
 
   const selectedToken = useMemo(() => {
     return getByKey(tokensData, selectedTokenAddress);
@@ -1246,13 +1248,19 @@ export const WithdrawalView = () => {
       errors?.isOutOfTokenError?.isGasPaymentToken
     ) {
       buttonState = {
-        text: getDefaultInsufficientGasMessage(),
+        text: getInsufficientFeeButtonMessage({
+          tokenSymbol: getToken(chainId, gasPaymentTokenAddress).symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
         bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
         disabled: true,
       };
     } else if (showWntWarning) {
       buttonState = {
-        text: getDefaultInsufficientGasMessage(),
+        text: getInsufficientFeeButtonMessage({
+          tokenSymbol: getWrappedToken(chainId).symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
         bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountWntBalance,
         disabled: true,
       };

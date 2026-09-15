@@ -41,6 +41,22 @@ export function getNetworkFeeSourceLabel(source: NetworkFeeSource): string {
   }
 }
 
+export function getInsufficientFeeAction({
+  tokenSymbol,
+  feeSource,
+}: {
+  tokenSymbol: string;
+  feeSource: NetworkFeeSource;
+}): string {
+  switch (feeSource.balanceType) {
+    case TokenBalanceType.GmxAccount:
+      return t`Deposit ${tokenSymbol}.`;
+    case TokenBalanceType.Wallet:
+    case TokenBalanceType.SourceChain:
+      return t`Swap or bridge ${tokenSymbol}.`;
+  }
+}
+
 export function getNetworkFeeSourceExplanation({
   source,
   isExpress,

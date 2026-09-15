@@ -87,6 +87,7 @@ export type PendingExpressTxnParams = {
   taskId: string | undefined;
   relayProvider?: RelayProvider;
   isGmxAccount: boolean;
+  gasPaymentTokenAddress?: string;
   subaccountApproval?: SignedSubaccountApproval;
   tokenPermits?: SignedTokenPermit[];
   payTokenAddresses?: string[];

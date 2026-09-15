@@ -21,8 +21,18 @@ import { ExpressTxnParams, GasPaymentValidations } from "./types";
 
 const GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID = "gas-payment-token-switched";
 
-const notifyGasPaymentTokenSwitched = ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
-  const content = t`Insufficient ${fromSymbol} balance. Gas token switched to ${toSymbol}`;
+const notifyGasPaymentTokenSwitched = ({
+  fromSymbol,
+  toSymbol,
+  isGmxAccount,
+}: {
+  fromSymbol: string;
+  toSymbol: string;
+  isGmxAccount: boolean;
+}) => {
+  const content = isGmxAccount
+    ? t`Not enough ${fromSymbol} in your GMX Account for fees. Gas payment token switched to ${toSymbol}.`
+    : t`Not enough ${fromSymbol} in your Wallet for fees. Gas payment token switched to ${toSymbol}.`;
 
   if (toast.isActive(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID)) {
     toast.update(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID, { render: content });
@@ -160,7 +170,11 @@ function useSwitchGasPaymentTokenIfRequired({
           setGasPaymentTokenAddress(anotherGasToken);
         }
         if (newTokenData) {
-          notifyGasPaymentTokenSwitched({ fromSymbol: gasPaymentToken.symbol, toSymbol: newTokenData.symbol });
+          notifyGasPaymentTokenSwitched({
+            fromSymbol: gasPaymentToken.symbol,
+            toSymbol: newTokenData.symbol,
+            isGmxAccount,
+          });
         }
       }
     },

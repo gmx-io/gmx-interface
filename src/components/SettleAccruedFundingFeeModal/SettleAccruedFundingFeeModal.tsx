@@ -24,6 +24,7 @@ import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { getExpressError } from "domain/synthetics/trade/utils/validation";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
@@ -39,7 +40,9 @@ import { buildDecreaseOrderPayload, getBatchTotalExecutionFee } from "sdk/utils/
 
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -182,6 +185,8 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     canSwitchGasPaymentToken: isActiveForm,
   });
 
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+
   const approvalTokens = useMemo(() => {
     if (!expressParams?.gasPaymentParams) return [];
 
@@ -223,6 +228,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
     if (selectedPositions.length === 0) return [t`Select positions`, true];
+    if (expressError.buttonErrorMessage) return [expressError.buttonErrorMessage, true];
 
     if (!isAllowanceLoaded) return [t`Loading...`, true];
 
@@ -237,6 +243,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     isMultichainSubmitDisabled,
     isSubmitting,
     selectedPositions.length,
+    expressError,
     isAllowanceLoaded,
     tokensToApprove,
     isApproving,
@@ -393,6 +400,17 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       <AlertInfo type="info" compact>
         <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
       </AlertInfo>
+      {expressError.bannerErrorName && (
+        <AlertInfoCard type="error" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={expressError.bannerErrorName}
+            chainId={chainId}
+            srcChainId={srcChainId}
+            gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+            onBeforeNavigation={handleOnClose}
+          />
+        </AlertInfoCard>
+      )}
       <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={onSubmit}>
         {buttonText}
         {isApproving && tokensToApprove.length > 0 && <SpinnerIcon className="ml-4 animate-spin" />}

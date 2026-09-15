@@ -156,6 +156,21 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await feeValueHandle(row).hover();
       await expect(page.getByText(GMX_ACCOUNT_EXPLANATION)).toBeVisible();
     });
+
+    test("Express without any gas token: the button names the token and the wallet, the banner is rendered (FEDEV-4283)", async ({
+      mount,
+      page,
+    }) => {
+      // the wallet covers the margin but nothing else: the pay check passes and the fee shortfall alone blocks the button
+      await mount(<NetworkFeeSurfaceStory surface="tradeBox" express marginOnlyBalances />);
+
+      await page.locator(getDataQALocator("margin-input")).fill("1000");
+
+      const blockedButton = page.getByRole("button", { name: "Insufficient USDC in Wallet" });
+      await expect(blockedButton).toBeVisible({ timeout: 20_000 });
+      await expect(blockedButton).toBeDisabled();
+      await expect(page.getByText(/Insufficient USDC in your Wallet for Express fees/)).toBeVisible();
+    });
   });
 
   test.describe("Add TP/SL (FEDEV-4280)", () => {
@@ -172,20 +187,20 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await openExecutionDetails(page);
       await expectFeeValue(feeRow(page), "USDC", "Wallet");
 
-      await expect(page.getByRole("button", { name: "Insufficient gas balance" })).toHaveCount(0);
-      await expect(page.getByText(/Insufficient .* for gas on Arbitrum/)).toHaveCount(0);
+      await expect(page.getByRole("button", { name: "Insufficient USDC in Wallet" })).toHaveCount(0);
+      await expect(page.getByText(/Insufficient USDC in your Wallet for Express fees/)).toHaveCount(0);
     });
 
-    test("Express without any gas token: submission is blocked with the trade box's insufficient-fee state", async ({
+    test("Express without any gas token: submission is blocked with the trade box's insufficient-fee state (FEDEV-4283)", async ({
       mount,
       page,
     }) => {
       await mount(<NetworkFeeSurfaceStory surface="addTpsl" express zeroBalances />);
 
-      const blockedButton = page.getByRole("button", { name: "Insufficient gas balance" });
+      const blockedButton = page.getByRole("button", { name: "Insufficient USDC in Wallet" });
       await expect(blockedButton).toBeVisible({ timeout: 20_000 });
       await expect(blockedButton).toBeDisabled();
-      await expect(page.getByText(/Insufficient .* for gas on Arbitrum/)).toBeVisible();
+      await expect(page.getByText(/Insufficient USDC in your Wallet for Express fees/)).toBeVisible();
     });
 
     test("GMX Account: gas payment token from the GMX Account", async ({ mount, page }) => {
@@ -254,7 +269,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await page.locator(getDataQALocator("amount-input-input")).fill("2000");
       await page.locator(getDataQALocator("trigger-price-input-input")).fill("1700");
 
-      const blockedButton = page.getByRole("button", { name: "Insufficient gas balance" });
+      const blockedButton = page.getByRole("button", { name: "Insufficient USDC in GMX Account" });
       await expect(blockedButton).toBeVisible({ timeout: 20_000 });
       await expect(blockedButton).toBeDisabled();
 

@@ -1218,6 +1218,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             />
           )}
 
+          {submitButtonState.bannerErrorContent && (
+            <AlertInfoCard type="error" hideClose>
+              {submitButtonState.bannerErrorContent}
+            </AlertInfoCard>
+          )}
+
           <ExpressTradingWarningCard
             expressParams={submitButtonState.expressParams}
             payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}

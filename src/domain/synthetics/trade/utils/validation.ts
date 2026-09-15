@@ -15,6 +15,11 @@ import { getMappedTokenId } from "config/multichain";
 import { isDepositDisabledMarket, isShiftIntoDisabledMarket } from "config/static/markets";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import {
+  GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+  NetworkFeeSource,
+  WALLET_NETWORK_FEE_SOURCE,
+} from "domain/synthetics/fees/networkFeeSource";
+import {
   GlvInfo,
   MarketInfo,
   getGlvDisplayName,
@@ -30,11 +35,12 @@ import type { GmPaySource } from "domain/synthetics/markets/types";
 import { getMarginDepositRiskLevel } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
+import { TokenBalanceType } from "domain/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError } from "lib/useHasOutdatedUi";
-import { getWrappedToken } from "sdk/configs/tokens";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
 import {
@@ -62,15 +68,29 @@ export enum ValidationButtonTooltipName {
 export enum ValidationBannerErrorName {
   insufficientNativeTokenBalance = "insufficientNativeTokenBalance",
   insufficientWalletGasTokenBalance = "insufficientWalletGasTokenBalance",
-  insufficientGmxAccountSomeGasTokenBalance = "insufficientGmxAccountSomeGasTokenBalance",
   insufficientGmxAccountCurrentGasTokenBalance = "insufficientGmxAccountCurrentGasTokenBalance",
   insufficientGmxAccountWntBalance = "insufficientGmxAccountWntBalance",
   insufficientSourceChainNativeTokenBalance = "insufficientSourceChainNativeTokenBalance",
   poolAtCapacity = "poolAtCapacity",
 }
 
-export function getDefaultInsufficientGasMessage() {
-  return t`Insufficient gas balance`;
+export function getInsufficientFeeButtonMessage({
+  tokenSymbol,
+  feeSource,
+}: {
+  tokenSymbol: string;
+  feeSource: NetworkFeeSource;
+}): string {
+  switch (feeSource.balanceType) {
+    case TokenBalanceType.Wallet:
+      return t`Insufficient ${tokenSymbol} in Wallet`;
+    case TokenBalanceType.GmxAccount:
+      return t`Insufficient ${tokenSymbol} in GMX Account`;
+    case TokenBalanceType.SourceChain: {
+      const chainName = getChainName(feeSource.chainId);
+      return t`Insufficient ${tokenSymbol} on ${chainName}`;
+    }
+  }
 }
 
 export type ValidationResult =
@@ -115,12 +135,14 @@ export function getExpressError(p: {
     return {};
   }
 
+  const tokenSymbol = expressParams.gasPaymentParams.gasPaymentToken.symbol;
+
   const isMultichainExpressError =
     expressParams.gasPaymentValidations.isOutGasTokenBalance && expressParams.isGmxAccount;
 
   if (isMultichainExpressError) {
     return {
-      buttonErrorMessage: getDefaultInsufficientGasMessage(),
+      buttonErrorMessage: getInsufficientFeeButtonMessage({ tokenSymbol, feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE }),
       bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
     };
   }
@@ -136,7 +158,7 @@ export function getExpressError(p: {
 
   if (isNativeExpressError) {
     return {
-      buttonErrorMessage: getDefaultInsufficientGasMessage(),
+      buttonErrorMessage: getInsufficientFeeButtonMessage({ tokenSymbol, feeSource: WALLET_NETWORK_FEE_SOURCE }),
       bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
     };
   }
@@ -1344,10 +1366,11 @@ function getIsValidPoolAmount(marketInfo: MarketInfo, poolAmount: bigint) {
 }
 
 export function getNativeGasError(p: {
+  chainId: ContractsChainId;
   networkFee: bigint | undefined;
   nativeBalance: bigint | undefined;
 }): ValidationResult {
-  const { networkFee, nativeBalance } = p;
+  const { chainId, networkFee, nativeBalance } = p;
 
   if (networkFee === undefined || nativeBalance === undefined) {
     return {};
@@ -1355,7 +1378,10 @@ export function getNativeGasError(p: {
 
   if (networkFee > nativeBalance) {
     return {
-      buttonErrorMessage: getDefaultInsufficientGasMessage(),
+      buttonErrorMessage: getInsufficientFeeButtonMessage({
+        tokenSymbol: getNativeToken(chainId).symbol,
+        feeSource: WALLET_NETWORK_FEE_SOURCE,
+      }),
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     };
   }

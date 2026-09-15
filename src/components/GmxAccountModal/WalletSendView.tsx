@@ -23,7 +23,7 @@ import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSen
 import { WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
-import { getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
+import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, TokenBalanceType, TokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -36,7 +36,7 @@ import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, getNativeToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
@@ -664,7 +664,13 @@ export function WalletSendView() {
   } else if (isInsufficientBalance) {
     buttonState = { text: t`Insufficient balance`, disabled: true };
   } else if (isInsufficientNativeBalance) {
-    buttonState = { text: getDefaultInsufficientGasMessage(), disabled: true };
+    buttonState = {
+      text: getInsufficientFeeButtonMessage({
+        tokenSymbol: getNativeToken(chainId).symbol,
+        feeSource: WALLET_NETWORK_FEE_SOURCE,
+      }),
+      disabled: true,
+    };
   } else if (!isSameChain) {
     if (isAboveLimit || isBelowLimit) {
       buttonState = { text: t`Send`, disabled: true };

@@ -78,6 +78,8 @@ export type NetworkFeeSurfaceStoryProps = {
   collateralFromGmxAccount?: boolean;
   /** Zero every balance, native ETH and GMX Account included: no gas token can pay an Express fee */
   zeroBalances?: boolean;
+  /** Trade box: the wallet holds exactly the 1000 USDC margin the test enters and nothing else, so no gas token is left for the Express fee */
+  marginOnlyBalances?: boolean;
   /** GM buy: which balance funds the deposit (`settlementChain` = wallet, `gmxAccount` = GMX Account) */
   gmPaySource?: GmPaySource;
 };
@@ -93,18 +95,35 @@ type Fixtures = {
   claims: { accruedPositionPriceImpactFees: RebateInfoItem[]; claimablePositionPriceImpactFees: RebateInfoItem[] };
 };
 
+type Balances = "huge" | "zero" | "marginOnly";
+
+const MARGIN_ONLY_USDC_BALANCE = expandDecimals(1000, 6);
+
+function getMockBalance(address: string, balances: Balances): bigint {
+  switch (balances) {
+    case "huge":
+      return HUGE_BALANCE;
+    case "zero":
+      return 0n;
+    case "marginOnly":
+      return address === USDC_ADDRESS ? MARGIN_ONLY_USDC_BALANCE : 0n;
+  }
+}
+
 /**
  * Express fee swaps (gas token -> WETH) only route through markets whose tokens have a price feed
  * provider, which prod learns from the tokens api; the default fixtures carry no such flag.
  */
-function buildTokensData(zeroBalances: boolean): TokensData {
-  const amount = zeroBalances ? 0n : HUGE_BALANCE;
-
+function buildTokensData(balances: Balances): TokensData {
   return Object.fromEntries(
-    Object.entries(DEFAULT_MOCK_TOKENS_DATA).map(([address, token]) => [
-      address,
-      { ...token, balance: amount, walletBalance: amount, gmxAccountBalance: amount, hasPriceFeedProvider: true },
-    ])
+    Object.entries(DEFAULT_MOCK_TOKENS_DATA).map(([address, token]) => {
+      const amount = getMockBalance(address, balances);
+
+      return [
+        address,
+        { ...token, balance: amount, walletBalance: amount, gmxAccountBalance: amount, hasPriceFeedProvider: true },
+      ];
+    })
   );
 }
 
@@ -248,8 +267,8 @@ function createLimitIncreaseOrder({
   return orderInfo;
 }
 
-function createFixtures({ zeroBalances }: { zeroBalances: boolean }): Fixtures {
-  const tokensData = buildTokensData(zeroBalances);
+function createFixtures(balances: Balances): Fixtures {
+  const tokensData = buildTokensData(balances);
 
   const ethToken = tokensData[ETH_ADDRESS];
   const usdcToken = tokensData[USDC_ADDRESS];
@@ -466,6 +485,7 @@ export function NetworkFeeSurfaceStory({
   receiveToGmxAccount = false,
   collateralFromGmxAccount = false,
   zeroBalances = false,
+  marginOnlyBalances = false,
   gmPaySource = "settlementChain",
 }: NetworkFeeSurfaceStoryProps) {
   // eslint-disable-next-line react/hook-use-state
@@ -487,7 +507,8 @@ export function NetworkFeeSurfaceStory({
     return true;
   });
 
-  const fixtures = useMemo(() => createFixtures({ zeroBalances }), [zeroBalances]);
+  const balances: Balances = zeroBalances ? "zero" : marginOnlyBalances ? "marginOnly" : "huge";
+  const fixtures = useMemo(() => createFixtures(balances), [balances]);
 
   return (
     <CtAppProviders

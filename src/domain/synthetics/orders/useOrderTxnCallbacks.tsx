@@ -225,6 +225,7 @@ export function useOrderTxnCallbacks() {
             successMessage,
             errorMessage,
             isGmxAccount: expressParams.isGmxAccount,
+            gasPaymentTokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
           });
         }
       };
@@ -370,6 +371,12 @@ export function useOrderTxnCallbacks() {
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),
             permitIssueType,
             setIsSettingsVisible,
+            expressFee: expressParams
+              ? {
+                  gasPaymentTokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+                  isGmxAccount: expressParams.isGmxAccount,
+                }
+              : undefined,
           });
 
           helperToast.error(toastParams.errorContent, {

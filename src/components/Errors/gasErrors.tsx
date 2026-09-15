@@ -17,6 +17,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { InsufficientWntBanner } from "components/GmxAccountModal/InsufficientWntBanner";
 
 export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: ContractsChainId }) {
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const nativeToken = getToken(chainId, zeroAddress);
 
   if (!nativeToken) {
@@ -24,12 +25,17 @@ export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: Co
   }
 
   const nativeTokenSymbol = nativeToken.symbol;
+  const chainName = getChainName(chainId);
 
   return (
     <div>
       <Trans>
-        Insufficient {nativeTokenSymbol} for gas on {getChainName(chainId)}.{" "}
-        <Link className="underline underline-offset-2" to={`/trade/swap?to=${nativeTokenSymbol}`}>
+        Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}.{" "}
+        <Link
+          className="underline underline-offset-2"
+          to={`/trade/swap?to=${nativeTokenSymbol}`}
+          onClick={() => setGmxAccountModalOpen(false)}
+        >
           Swap
         </Link>{" "}
         or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}.
@@ -38,23 +44,33 @@ export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: Co
   );
 }
 
-export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId: ContractsChainId }) {
+export function InsufficientWalletGasTokenBalanceMessage({
+  chainId,
+  gasPaymentTokenAddress,
+  onBeforeNavigation,
+}: {
+  chainId: ContractsChainId;
+  gasPaymentTokenAddress?: string;
+  onBeforeNavigation?: () => void;
+}) {
   const gasPaymentTokens = getGasPaymentTokens(chainId);
   const localizedList = useLocalizedList(gasPaymentTokens.map((token) => getToken(chainId, token).symbol));
-  const chainName = getChainName(chainId);
-  const firstGasPaymentToken = gasPaymentTokens[0];
+  const selectedTokenSymbol = gasPaymentTokenAddress ? getToken(chainId, gasPaymentTokenAddress).symbol : undefined;
+  const tokensText = selectedTokenSymbol ?? localizedList;
+  const swapToSymbol = selectedTokenSymbol ?? getToken(chainId, gasPaymentTokens[0]).symbol;
 
   return (
     <div>
       <Trans>
-        Insufficient {localizedList} for gas on {chainName}.{" "}
+        Insufficient {tokensText} in your Wallet for Express fees.{" "}
         <Link
           className="underline underline-offset-2"
-          to={`/trade/swap?to=${getToken(chainId, firstGasPaymentToken).symbol}`}
+          to={`/trade/swap?to=${swapToSymbol}`}
+          onClick={onBeforeNavigation}
         >
           Swap
         </Link>{" "}
-        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {localizedList}.
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {tokensText}.
       </Trans>
     </div>
   );
@@ -115,11 +131,12 @@ export function InsufficientSourceChainNativeTokenBalanceMessage({
   }
 
   const nativeTokenSymbol = nativeToken.symbol;
+  const chainName = getChainName(srcChainId);
 
   return (
     <div>
       <Trans>
-        Insufficient {nativeTokenSymbol} for gas on {getChainName(srcChainId)}.{" "}
+        Insufficient {nativeTokenSymbol} on {chainName} for this transaction.{" "}
         <Link
           className="underline underline-offset-2"
           to={`/trade/swap?to=${nativeTokenSymbol}`}
@@ -151,10 +168,13 @@ export function ValidationBannerErrorContent({
       return <InsufficientNativeTokenBalanceMessage chainId={chainId} />;
     }
     case ValidationBannerErrorName.insufficientWalletGasTokenBalance: {
-      return <InsufficientWalletGasTokenBalanceMessage chainId={chainId} />;
-    }
-    case ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance: {
-      return <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} onBeforeNavigation={onBeforeNavigation} />;
+      return (
+        <InsufficientWalletGasTokenBalanceMessage
+          chainId={chainId}
+          gasPaymentTokenAddress={gasPaymentTokenAddress}
+          onBeforeNavigation={onBeforeNavigation}
+        />
+      );
     }
     case ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance: {
       if (!srcChainId) {

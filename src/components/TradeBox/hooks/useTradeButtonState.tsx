@@ -235,10 +235,12 @@ export function useTradeboxButtonState({
     }
 
     return getNativeGasError({
+      chainId,
       networkFee: totalExecutionFee?.feeTokenAmount,
       nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
     });
   }, [
+    chainId,
     expressParams?.gasPaymentParams?.gasPaymentTokenAmount,
     gasPaymentToken,
     payAmount,
@@ -343,14 +345,15 @@ export function useTradeboxButtonState({
       }
     }
 
-    const bannerErrorContent = validationResult.bannerErrorName ? (
-      <ValidationBannerErrorContent
-        validationBannerErrorName={validationResult.bannerErrorName}
-        chainId={chainId}
-        srcChainId={srcChainId}
-        gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
-      />
-    ) : null;
+    const bannerErrorContent =
+      validationResult.bannerErrorName && !shouldShowDepositButton ? (
+        <ValidationBannerErrorContent
+          validationBannerErrorName={validationResult.bannerErrorName}
+          chainId={chainId}
+          srcChainId={srcChainId}
+          gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+        />
+      ) : null;
 
     return {
       buttonErrorText: validationResult.buttonErrorMessage,
@@ -373,6 +376,7 @@ export function useTradeboxButtonState({
     toToken,
     isLeverageSliderEnabled,
     detectAndSetAvailableMaxLeverage,
+    shouldShowDepositButton,
   ]);
 
   const payTokenSourceChainMappedBalance = useMemo(() => {

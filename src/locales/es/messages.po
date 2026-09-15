@@ -344,7 +344,6 @@ msgid "Margin per part: {0} (min {1})"
 msgstr "Margen por parte: {0} (mín. {1})"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
 msgstr "Comprar {gasPaymentTokensText}"
 
@@ -578,6 +577,10 @@ msgstr "Es posible que algunas partes de esta orden no se ejecuten: la liquidez 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GM"
 msgstr "GM"
+
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Not enough {fromSymbol} in your GMX Account for fees. Gas payment token switched to {toSymbol}."
+msgstr "No hay suficiente {fromSymbol} en tu Cuenta GMX para las comisiones. Token de pago de Gas cambiado a {toSymbol}."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
@@ -1335,6 +1338,10 @@ msgstr "Saldo de Gas insuficiente. Deposite más ETH."
 msgid "Execution fee is too low for current network costs"
 msgstr "La comisión de ejecución es demasiado baja para los costos actuales de la red"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {tokenSymbol} in your Wallet for gas."
+msgstr "{tokenSymbol} insuficiente en tu Monedero para gas."
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
 msgstr ""
@@ -1731,6 +1738,10 @@ msgstr "Desactivando..."
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total pending claimable"
 msgstr "Total pendiente reclamable"
+
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Not enough {fromSymbol} in your Wallet for fees. Gas payment token switched to {toSymbol}."
+msgstr "No hay suficiente {fromSymbol} en tu Monedero para las comisiones. Token de pago de Gas cambiado a {toSymbol}."
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Not yet"
@@ -2263,6 +2274,10 @@ msgstr "Este swap requiere enrutamiento externo, que no está disponible mientra
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in all {marketTypeLabel}"
 msgstr "Buscar en todos los {marketTypeLabel}"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {tokenSymbol} in GMX Account"
+msgstr "{tokenSymbol} insuficiente en la Cuenta GMX"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
@@ -3217,6 +3232,10 @@ msgstr "Moneda"
 msgid "Previous"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {tokenSymbol} on {chainName}"
+msgstr "{tokenSymbol} insuficiente en {chainName}"
+
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
 msgstr "Comisiones esperadas 365d"
@@ -3504,10 +3523,6 @@ msgstr "Neto"
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
 msgstr "La transacción falló.<0/><1/><2>Ver</2>"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
-msgstr "Saldo de {symbol} insuficiente: {availableFormatted} disponible, {requiredFormatted} requerido"
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -4179,10 +4194,6 @@ msgstr "El margen está por debajo del mínimo requerido para el tamaño de la p
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
-msgstr ""
-
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
 msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
@@ -5657,6 +5668,10 @@ msgstr "VOLUMEN MENSUAL"
 msgid "Min TWAP parts: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient {gasPaymentTokenSymbol} in your Wallet for Express fees. Express and One-Click Trading are unavailable."
+msgstr "{gasPaymentTokenSymbol} insuficiente en tu Monedero para las comisiones Express. Express y One-Click Trading no están disponibles."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Received before close (GMX balance)"
 msgstr "Recibido antes del cierre (saldo GMX)"
@@ -5752,6 +5767,10 @@ msgstr "Los fondos aparecerán pronto en su GMX Account"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your GMX liquidity provider experience"
 msgstr "Únase a un chat anónimo individual para compartir su experiencia como proveedor de liquidez en GMX"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {tokenSymbol} in your GMX Account for gas."
+msgstr "{tokenSymbol} insuficiente en tu Cuenta GMX para gas."
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawn from subaccount"
@@ -5948,11 +5967,6 @@ msgstr "GM y GLV incluyen mercados que ya no tienes."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "Obtenga un {0}% más de recompensas con esta acción"
-
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
@@ -6272,6 +6286,10 @@ msgstr "Análisis de PnL"
 msgid "Longs"
 msgstr "Largos"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Swap for {gasPaymentTokenSymbol}"
+msgstr "Intercambiar por {gasPaymentTokenSymbol}"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Affiliate rewards claimed"
 msgstr "Recompensas de afiliado reclamadas"
@@ -6315,6 +6333,10 @@ msgstr "No hay opciones para transferir {nativeTokenSymbol} a {chainName}"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Las notificaciones son proporcionadas por Notifi y no afiliadas con GMX. Al suscribirte, aceptas que la info que provees a Notifi estará gobernada por su </0><1>Política de Privacidad</1><2> y </2><3>Términos de Uso</3>."
+
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Deposit {tokenSymbol}."
+msgstr "Deposita {tokenSymbol}."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Lifecycle settlement"
@@ -7023,10 +7045,6 @@ msgstr "Aprobar {tokenSymbol}"
 msgid "REBATE"
 msgstr "REEMBOLSO"
 
-#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
-msgid "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
-msgstr "Saldo de {fromSymbol} insuficiente. Token de Gas cambiado a {toSymbol}"
-
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
@@ -7548,6 +7566,10 @@ msgstr "Las comisiones ganadas solo se registran para el GM y GLV que tienes en 
 msgid "Set long Limit @ {0}"
 msgstr ""
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr "{nativeTokenSymbol} insuficiente en {chainName} para esta transacción. <0>Intercambia</0> o <1>transfiere por puente</1> {nativeTokenSymbol}."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "La posición sería liquidable"
@@ -8037,10 +8059,6 @@ msgstr "Ver resultados en Swap"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "Liquidez garantizada"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Insufficient gas balance"
-msgstr "Saldo de gas insuficiente"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
@@ -8534,6 +8552,10 @@ msgstr "Código activo del Programa Balancer"
 msgid "Max amount exceeded"
 msgstr "Superado el importe máximo"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr "{nativeTokenSymbol} insuficiente en tu Monedero para gas en {chainName}. <0>Intercambia</0> o <1>transfiere por puente</1> {nativeTokenSymbol}."
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -9019,6 +9041,10 @@ msgstr "Total recibido (saldo GMX)"
 msgid "Hide other assets"
 msgstr ""
 
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Swap or bridge {tokenSymbol}."
+msgstr "Intercambia o transfiere por puente {tokenSymbol}."
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
@@ -9441,6 +9467,10 @@ msgstr "Orden de cambio GM desconocida"
 msgid "365d estimated fees"
 msgstr ""
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {tokensText} in your Wallet for Express fees. <0>Swap</0> or <1>bridge</1> {tokensText}."
+msgstr "{tokensText} insuficiente en tu Monedero para las comisiones Express. <0>Intercambia</0> o <1>transfiere por puente</1> {tokensText}."
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Shifting {symbol}..."
 msgstr "Cambiando {symbol}..."
@@ -9560,10 +9590,6 @@ msgstr "Disfrute de una experiencia de trading sin fricciones y evite la congest
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top positions"
 msgstr "Principales posiciones"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
-msgstr "Saldo de {nativeTokenSymbol} insuficiente para cubrir las comisiones de red. Añada fondos e inténtelo de nuevo."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -10082,10 +10108,6 @@ msgstr "Error de copia"
 msgid "Saulius GMX analytics"
 msgstr "Saulius GMX analytics"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Express Trading and One-Click Trading are unavailable due to insufficient gas balance"
-msgstr "Express Trading y One-Click Trading no están disponibles debido a un saldo de gas insuficiente"
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add RPC"
 msgstr "Añadir RPC"
@@ -10200,6 +10222,10 @@ msgstr "TAM. PROM."
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long net rate"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "{availableFormatted} {symbol} available, {requiredFormatted} {symbol} required"
+msgstr "{availableFormatted} {symbol} disponible, {requiredFormatted} {symbol} necesario"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Decode error"
@@ -10565,11 +10591,6 @@ msgstr "Buscar tipo"
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
 msgstr "Órdenes de mercado"
-
-#: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/errorToasts.tsx
-msgid "Insufficient {0} for gas on {1}<0/><1/><2>Swap</2> or <3>bridge</3> {2} to {3}"
-msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
@@ -11622,6 +11643,10 @@ msgstr "Tiempo transcurrido"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "Firme transacciones fuera de la cadena. Los RPC premium garantizan fiabilidad durante la congestión de la red.<0/><1/>Pagos de Gas en {gasPaymentTokensText}."
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {tokenSymbol} in Wallet"
+msgstr "{tokenSymbol} insuficiente en el Monedero"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."

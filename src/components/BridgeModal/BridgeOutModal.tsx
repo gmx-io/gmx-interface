@@ -31,14 +31,14 @@ import { GMX_ACCOUNT_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFe
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeOutTxn } from "domain/synthetics/markets/createBridgeOutTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
+import { getInsufficientFeeButtonMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { getWrappedToken } from "sdk/configs/tokens";
+import { getToken, getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
@@ -267,7 +267,10 @@ export function BridgeOutModal({
         });
       });
     } catch (error) {
-      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Withdrawal failed` });
+      const toastParams = getTxnErrorToast(chainId, error, {
+        defaultMessage: t`Withdrawal failed`,
+        expressFee: { gasPaymentTokenAddress, isGmxAccount: true },
+      });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
         tradingErrorInfo: {
@@ -352,7 +355,10 @@ export function BridgeOutModal({
 
     if (errors?.isOutOfTokenError?.isGasPaymentToken) {
       return {
-        text: getDefaultInsufficientGasMessage(),
+        text: getInsufficientFeeButtonMessage({
+          tokenSymbol: getToken(chainId, gasPaymentTokenAddress).symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
         bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
         disabled: true,
       };
@@ -360,7 +366,10 @@ export function BridgeOutModal({
 
     if (errors?.isOutOfTokenError?.tokenAddress === getWrappedToken(chainId).address) {
       return {
-        text: getDefaultInsufficientGasMessage(),
+        text: getInsufficientFeeButtonMessage({
+          tokenSymbol: getWrappedToken(chainId).symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
         bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountWntBalance,
         disabled: true,
       };
@@ -401,6 +410,7 @@ export function BridgeOutModal({
     errors?.isOutOfTokenError,
     expressTxnParamsAsyncResult.data,
     chainId,
+    gasPaymentTokenAddress,
   ]);
 
   if (!glvOrMarketInfo) {

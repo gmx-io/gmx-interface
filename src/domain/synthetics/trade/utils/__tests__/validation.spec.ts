@@ -1,8 +1,9 @@
 import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
@@ -13,6 +14,7 @@ import {
   getConditionalDepositWarning,
   getEditCollateralError,
   getExpressError,
+  getInsufficientFeeButtonMessage,
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
   getMarginDepositBeyondLiqPriceMessage,
@@ -460,19 +462,30 @@ describe("getEditCollateralError — invalid liquidation price tooltip", () => {
 
 describe("getNativeGasError", () => {
   it("skips validation while the fee or balance is loading", () => {
-    expect(getNativeGasError({ networkFee: undefined, nativeBalance: 0n })).toEqual({});
-    expect(getNativeGasError({ networkFee: 1n, nativeBalance: undefined })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: undefined, nativeBalance: 0n })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 1n, nativeBalance: undefined })).toEqual({});
   });
 
   it("allows a balance equal to the network fee", () => {
-    expect(getNativeGasError({ networkFee: 1n, nativeBalance: 1n })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 1n, nativeBalance: 1n })).toEqual({});
   });
 
-  it("returns the native-token balance error when the fee exceeds the balance", () => {
-    expect(getNativeGasError({ networkFee: 2n, nativeBalance: 1n })).toEqual({
-      buttonErrorMessage: "Insufficient gas balance",
+  it("names the native token and the wallet when the fee exceeds the balance", () => {
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 2n, nativeBalance: 1n })).toEqual({
+      buttonErrorMessage: "Insufficient ETH in Wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     });
+  });
+});
+
+describe("getInsufficientFeeButtonMessage", () => {
+  it("names the source chain for a source-chain fee", () => {
+    expect(
+      getInsufficientFeeButtonMessage({
+        tokenSymbol: "ETH",
+        feeSource: getSourceChainNetworkFeeSource(SOURCE_BASE_MAINNET),
+      })
+    ).toBe("Insufficient ETH on Base");
   });
 });
 
@@ -489,6 +502,7 @@ describe("getExpressError", () => {
       },
       gasPaymentParams: {
         gasPaymentTokenAddress: tokensData.USDC.address,
+        gasPaymentToken: tokensData.USDC,
         totalRelayerFeeTokenAmount: expandDecimals(1, 18),
       },
     }) as unknown as ExpressTxnParams;
@@ -502,19 +516,19 @@ describe("getExpressError", () => {
     expect(getExpressError({ expressParams: undefined, tokensData })).toEqual({});
   });
 
-  it("names the current GMX Account gas token when its balance is insufficient", () => {
+  it("names the gas token and the GMX Account when its balance is insufficient", () => {
     expect(
       getExpressError({
         expressParams: makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: true }),
         tokensData,
       })
     ).toEqual({
-      buttonErrorMessage: "Insufficient gas balance",
+      buttonErrorMessage: "Insufficient USDC in GMX Account",
       bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
     });
   });
 
-  it("returns the wallet gas token error when the wallet lacks both the gas token and native token", () => {
+  it("names the gas token and the wallet when the wallet lacks both the gas token and native token", () => {
     const walletTokensData = withNativeWalletBalance(expandDecimals(1, 17));
 
     expect(
@@ -523,7 +537,7 @@ describe("getExpressError", () => {
         tokensData: walletTokensData,
       })
     ).toEqual({
-      buttonErrorMessage: "Insufficient gas balance",
+      buttonErrorMessage: "Insufficient USDC in Wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
     });
   });
