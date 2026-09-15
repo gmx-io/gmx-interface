@@ -133,7 +133,7 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           )}
-          {isUsdgPoolsAnnouncementVisible && (
+          {isUsdgPoolsAnnouncementVisible && !isAnnouncementsPage && (
             <motion.div key="usdg-pools" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <div className="pb-12">
                 <UsdgPoolsAnnouncement onDismiss={dismissUsdgPoolsAnnouncement} />
