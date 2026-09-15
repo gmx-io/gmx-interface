@@ -506,6 +506,37 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   color: #090a14;
   caret-color: #2d42fc;
 }
+.rewards-checker input:focus {
+  outline: none;
+  border-color: #2d42fc;
+  box-shadow: 0 0 0 2px #2d42fc1a;
+}
+.rewards-address-highlight {
+  position: absolute;
+  inset: 0;
+  border: 2px solid #2d42fc;
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 6px #2d42fc26,
+    0 0 28px #2d42fc59;
+  opacity: 0;
+  pointer-events: none;
+  animation: rewards-address-blink 1.6s ease-in-out;
+}
+.rewards-address-field:not(:focus-within) .rewards-address-highlight {
+  display: none;
+}
+@keyframes rewards-address-blink {
+  0%,
+  50%,
+  100% {
+    opacity: 0;
+  }
+  20%,
+  70% {
+    opacity: 1;
+  }
+}
 .rewards-checker .rewards-button {
   min-height: 60px;
 }
@@ -643,6 +674,16 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-spoiler[data-ready="true"] > .rewards-spoiler-source {
   opacity: 0;
 }
+.rewards-spoiler-button {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
 .rewards-reveal-prompt {
   position: absolute;
   left: 50%;
@@ -661,6 +702,13 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   color: white;
   font-size: 16px;
   line-height: 24px;
+  transition:
+    background-color 0.18s,
+    border-color 0.18s;
+}
+.rewards-spoiler-button:hover .rewards-reveal-prompt {
+  border-color: #ffffff40;
+  background: #0101014d;
 }
 .rewards-reveal-prompt svg {
   width: 16px;
@@ -2099,6 +2147,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .rewards-address-highlight,
   .rewards-cycle-light,
   .rewards-cycle-steps > span::before,
   .rewards-cycle-next::before {

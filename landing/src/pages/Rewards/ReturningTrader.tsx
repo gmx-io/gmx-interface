@@ -32,6 +32,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
   const [account, setAccount] = useState<string>();
   const [validationError, setValidationError] = useState<string>();
   const [resolving, setResolving] = useState(false);
+  const [addressHighlightKey, setAddressHighlightKey] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const requestId = useRef(0);
   const result = useReturnBonus(endpoint, account);
@@ -54,6 +55,18 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
     },
     []
   );
+
+  function highlightAddress() {
+    setAddressHighlightKey((key) => key + 1);
+  }
+
+  function focusAddress() {
+    if (document.activeElement === inputRef.current) {
+      highlightAddress();
+    } else {
+      inputRef.current?.focus();
+    }
+  }
 
   async function checkWallet(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -125,6 +138,10 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
               spellCheck={false}
               aria-invalid={Boolean(validationError)}
               aria-describedby={validationError ? "rewards-address-error" : undefined}
+              onFocus={highlightAddress}
+              onPointerDown={(event) => {
+                if (document.activeElement === event.currentTarget) highlightAddress();
+              }}
               onChange={(event) => {
                 requestId.current += 1;
                 setInput(event.target.value);
@@ -132,6 +149,9 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
                 setValidationError(undefined);
               }}
             />
+            {addressHighlightKey > 0 && (
+              <span key={addressHighlightKey} className="rewards-address-highlight" aria-hidden="true" />
+            )}
           </div>
           <button className="rewards-button" disabled={!endpoint || !config || resolving || result.isValidating}>
             {resolving ? (
@@ -161,7 +181,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
               </div>
             </div>
           ) : !checked ? (
-            <RewardsSpoiler onFocusAddress={checking ? undefined : () => inputRef.current?.focus()}>
+            <RewardsSpoiler onFocusAddress={checking ? undefined : focusAddress}>
               <BonusCard loading />
             </RewardsSpoiler>
           ) : hasBonus ? (

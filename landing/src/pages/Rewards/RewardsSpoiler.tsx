@@ -13,9 +13,16 @@ export function RewardsSpoiler({ children, onFocusAddress }: { children: ReactNo
       </div>
       <canvas ref={canvasRef} aria-hidden="true" />
       {onFocusAddress && (
-        <button type="button" className="rewards-reveal-prompt" onClick={onFocusAddress}>
-          <IcEye aria-hidden="true" />
-          <Trans>Enter any wallet address to reveal</Trans>
+        <button
+          type="button"
+          className="rewards-spoiler-button"
+          aria-controls="rewards-address"
+          onClick={onFocusAddress}
+        >
+          <span className="rewards-reveal-prompt">
+            <IcEye aria-hidden="true" />
+            <Trans>Enter any wallet address to reveal</Trans>
+          </span>
         </button>
       )}
     </div>
