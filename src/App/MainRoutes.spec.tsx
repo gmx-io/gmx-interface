@@ -95,10 +95,13 @@ describe("MainRoutes trader routes", () => {
 });
 
 describe("MainRoutes legacy buy gmx url", () => {
-  it("redirects /buy_gmx to earn portfolio with the Buy GMX modal requested", () => {
-    const { url, text } = renderAt("/buy_gmx");
+  it.each([
+    ["/buy_gmx", "/earn/portfolio?buyGmx=1"],
+    ["/buy_gmx?chainId=43114&ref=CODE", "/earn/portfolio?chainId=43114&ref=CODE&buyGmx=1"],
+  ])("%s lands on earn portfolio with the Buy GMX modal requested: %s", (from, to) => {
+    const { url, text } = renderAt(from);
 
-    expect(url).toBe("/earn/portfolio?buyGmx=1");
+    expect(url).toBe(to);
     expect(text).toContain("earn-portfolio-page");
   });
 });
