@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import { colors as appColors } from "../src/config/colors";
+
 const range = require("lodash/range");
 const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
@@ -29,6 +31,11 @@ const colors = {
     100: "#A4C3F9",
     300: "#7885ff",
     400: "#2D42FC",
+  },
+  button: {
+    ...Object.fromEntries(Object.entries(appColors.button).map(([name, color]) => [name, color.dark])),
+    whiteHover: appColors.button.secondaryHover.light,
+    whiteActive: appColors.button.secondary.light,
   },
   white: "#ffffff",
   black: "#000000",

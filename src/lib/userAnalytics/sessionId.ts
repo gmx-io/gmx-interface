@@ -1,31 +1,32 @@
+import { getSharedAnalyticsValue, setSharedAnalyticsValue } from "./sharedStorage";
+
 export const SESSION_ID_KEY = "sessionId";
-const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24 * 4; // 4 days
 const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
 
 export function setLastEventTime(time: number) {
   localStorage.setItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY, time.toString());
 }
 
-function getLastEventTime() {
-  const lastEventTime = localStorage.getItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY);
-  return parseInt(lastEventTime as string) || 0;
-}
-
 export function setSessionId(sessionId: string) {
   localStorage.setItem(SESSION_ID_KEY, sessionId);
+  setSharedAnalyticsValue(SESSION_ID_KEY, sessionId);
   setLastEventTime(Date.now());
 }
 
 export function getRawSessionId() {
-  return localStorage.getItem(SESSION_ID_KEY);
+  return getSharedAnalyticsValue(SESSION_ID_KEY) || localStorage.getItem(SESSION_ID_KEY);
 }
 
 export function getOrSetSessionId() {
-  let sessionId = getRawSessionId();
+  const sessionId =
+    getRawSessionId() ||
+    new URLSearchParams(window.location.search).get(SESSION_ID_KEY) ||
+    Math.random().toString(36).substring(2, 15);
 
-  if (!sessionId || Date.now() - getLastEventTime() > MAX_SESSION_ID_AGE) {
-    sessionId = Math.random().toString(36).substring(2, 15);
+  if (localStorage.getItem(SESSION_ID_KEY) !== sessionId) {
     setSessionId(sessionId);
+  } else {
+    setSharedAnalyticsValue(SESSION_ID_KEY, sessionId);
   }
 
   return sessionId;
