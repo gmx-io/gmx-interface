@@ -44,6 +44,44 @@ export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: Co
   );
 }
 
+export function InsufficientNativeTokenForApprovalMessage({
+  chainId,
+  approvalTokenAddress,
+  alternativeGasTokenAddress,
+  onSwitchGasToken,
+}: {
+  chainId: ContractsChainId;
+  approvalTokenAddress: string;
+  alternativeGasTokenAddress?: string;
+  onSwitchGasToken?: () => void;
+}) {
+  const nativeTokenSymbol = getToken(chainId, zeroAddress).symbol;
+  const approvalTokenSymbol = getToken(chainId, approvalTokenAddress).symbol;
+  const alternativeGasTokenSymbol = alternativeGasTokenAddress
+    ? getToken(chainId, alternativeGasTokenAddress).symbol
+    : undefined;
+
+  return (
+    <div>
+      <Trans>
+        Insufficient {nativeTokenSymbol} in your Wallet to approve {approvalTokenSymbol}.{" "}
+        <Link className="underline underline-offset-2" to={`/trade/swap?to=${nativeTokenSymbol}`}>
+          Swap
+        </Link>{" "}
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}.
+      </Trans>
+      {alternativeGasTokenSymbol && onSwitchGasToken && (
+        <>
+          {" "}
+          <ColorfulButtonLink color="blue" onClick={onSwitchGasToken}>
+            <Trans>Use {alternativeGasTokenSymbol} for fees instead</Trans>
+          </ColorfulButtonLink>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function InsufficientWalletGasTokenBalanceMessage({
   chainId,
   gasPaymentTokenAddress,
@@ -156,16 +194,36 @@ export function ValidationBannerErrorContent({
   srcChainId,
   gasPaymentTokenAddress,
   onBeforeNavigation,
+  approvalTokenAddress,
+  alternativeGasTokenAddress,
+  onSwitchGasToken,
 }: {
   validationBannerErrorName: ValidationBannerErrorName;
   chainId: ContractsChainId;
   srcChainId?: SourceChainId;
   gasPaymentTokenAddress?: string;
   onBeforeNavigation?: () => void;
+  approvalTokenAddress?: string;
+  alternativeGasTokenAddress?: string;
+  onSwitchGasToken?: () => void;
 }) {
   switch (validationBannerErrorName) {
     case ValidationBannerErrorName.insufficientNativeTokenBalance: {
       return <InsufficientNativeTokenBalanceMessage chainId={chainId} />;
+    }
+    case ValidationBannerErrorName.insufficientNativeTokenForApproval: {
+      if (!approvalTokenAddress) {
+        return null;
+      }
+
+      return (
+        <InsufficientNativeTokenForApprovalMessage
+          chainId={chainId}
+          approvalTokenAddress={approvalTokenAddress}
+          alternativeGasTokenAddress={alternativeGasTokenAddress}
+          onSwitchGasToken={onSwitchGasToken}
+        />
+      );
     }
     case ValidationBannerErrorName.insufficientWalletGasTokenBalance: {
       return (

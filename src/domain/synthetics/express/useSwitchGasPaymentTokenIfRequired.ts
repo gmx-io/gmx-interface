@@ -8,11 +8,12 @@ import {
   selectSetGmxAccountGasPaymentTokenAddress,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getNeedTokenApprove, type TokensAllowanceData } from "domain/synthetics/tokens";
 import { convertToTokenAmount, convertToUsd, TokenData, TokensData } from "domain/tokens";
 import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getIsConfirmedOutOfGasPaymentTokenBalance } from "sdk/utils/express";
 import { BatchOrderTxnParams, getBatchTotalPayCollateralAmount } from "sdk/utils/orderTransactions";
@@ -49,6 +50,7 @@ export function findNextGasPaymentToken({
   payAmounts,
   isGmxAccount,
   excludeTokenAddresses,
+  tokensAllowanceData,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
@@ -57,6 +59,7 @@ export function findNextGasPaymentToken({
   payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
   excludeTokenAddresses?: string[];
+  tokensAllowanceData?: TokensAllowanceData;
 }): string | undefined {
   const usdValue = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
   if (usdValue === undefined) return undefined;
@@ -74,7 +77,10 @@ export function findNextGasPaymentToken({
     if (balance === undefined) return false;
 
     const candidatePayOverlap = payAmounts[tokenAddress] ?? 0n;
-    return balance > candidatePayOverlap + applyMinimalBuffer(requiredGasAmount);
+    const requiredAmount = candidatePayOverlap + applyMinimalBuffer(requiredGasAmount);
+    if (balance <= requiredAmount) return false;
+
+    return !tokensAllowanceData || !getNeedTokenApprove(tokensAllowanceData, tokenAddress, requiredAmount, EMPTY_ARRAY);
   });
 }
 

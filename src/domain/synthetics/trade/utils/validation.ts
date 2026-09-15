@@ -67,6 +67,7 @@ export enum ValidationButtonTooltipName {
 
 export enum ValidationBannerErrorName {
   insufficientNativeTokenBalance = "insufficientNativeTokenBalance",
+  insufficientNativeTokenForApproval = "insufficientNativeTokenForApproval",
   insufficientWalletGasTokenBalance = "insufficientWalletGasTokenBalance",
   insufficientGmxAccountCurrentGasTokenBalance = "insufficientGmxAccountCurrentGasTokenBalance",
   insufficientGmxAccountWntBalance = "insufficientGmxAccountWntBalance",
@@ -1383,6 +1384,32 @@ export function getNativeGasError(p: {
         feeSource: WALLET_NETWORK_FEE_SOURCE,
       }),
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+    };
+  }
+
+  return {};
+}
+
+export const ERC20_APPROVE_GAS_LIMIT = 100_000n;
+
+export function getApprovalGasError(p: {
+  tokenToApprove: string | undefined;
+  nativeToken: TokenData | undefined;
+  gasPrice: bigint | undefined;
+}): ValidationResult {
+  const { tokenToApprove, nativeToken, gasPrice } = p;
+
+  if (tokenToApprove === undefined || nativeToken?.walletBalance === undefined || gasPrice === undefined) {
+    return {};
+  }
+
+  if (nativeToken.walletBalance < ERC20_APPROVE_GAS_LIMIT * gasPrice) {
+    return {
+      buttonErrorMessage: getInsufficientFeeButtonMessage({
+        tokenSymbol: nativeToken.symbol,
+        feeSource: WALLET_NETWORK_FEE_SOURCE,
+      }),
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenForApproval,
     };
   }
 

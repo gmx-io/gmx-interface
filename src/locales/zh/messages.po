@@ -985,6 +985,10 @@ msgstr "查看详情"
 msgid "More"
 msgstr "更多"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} in your Wallet to approve {approvalTokenSymbol}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr "钱包中的 {nativeTokenSymbol} 不足，无法授权 {approvalTokenSymbol}。请<0>兑换</0>或<1>跨链桥接</1> {nativeTokenSymbol}。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global"
 msgstr "全球"
@@ -11868,6 +11872,10 @@ msgstr "地址已复制"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
 msgstr ""
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Use {alternativeGasTokenSymbol} for fees instead"
+msgstr "改用 {alternativeGasTokenSymbol} 支付费用"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"

@@ -985,6 +985,10 @@ msgstr "詳細を表示"
 msgid "More"
 msgstr "もっと"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} in your Wallet to approve {approvalTokenSymbol}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr "{approvalTokenSymbol}を承認するにはウォレットの{nativeTokenSymbol}が不足しています。{nativeTokenSymbol}を<0>スワップ</0>または<1>ブリッジ</1>してください。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global"
 msgstr "グローバル"
@@ -11868,6 +11872,10 @@ msgstr "アドレスがコピーされました"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
 msgstr ""
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Use {alternativeGasTokenSymbol} for fees instead"
+msgstr "代わりに{alternativeGasTokenSymbol}を手数料に使用"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"

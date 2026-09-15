@@ -5,11 +5,14 @@ import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
+import type { TokenData } from "domain/synthetics/tokens";
 import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { TriggerThresholdType } from "sdk/utils/trade/types";
 
 import {
+  ERC20_APPROVE_GAS_LIMIT,
+  getApprovalGasError,
   getConditionalDepositError,
   getConditionalDepositWarning,
   getEditCollateralError,
@@ -475,6 +478,71 @@ describe("getNativeGasError", () => {
       buttonErrorMessage: "Insufficient ETH in Wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     });
+  });
+});
+
+describe("getApprovalGasError", () => {
+  const nativeToken = (overrides: { symbol?: string; walletBalance?: bigint }) =>
+    ({ symbol: overrides.symbol ?? "ETH", walletBalance: overrides.walletBalance }) as TokenData;
+
+  it("names the native token and the wallet when the balance can't pay for the approval", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: 0n }),
+        gasPrice: 10n,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient ETH in Wallet",
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenForApproval,
+    });
+  });
+
+  it("takes the symbol from the native token", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ symbol: "AVAX", walletBalance: 0n }),
+        gasPrice: 10n,
+      }).buttonErrorMessage
+    ).toBe("Insufficient AVAX in Wallet");
+  });
+
+  it("allows a balance equal to the approval cost", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: ERC20_APPROVE_GAS_LIMIT * 10n }),
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+  });
+
+  it("skips validation while there is nothing to approve or data is loading", () => {
+    expect(
+      getApprovalGasError({ tokenToApprove: undefined, nativeToken: nativeToken({ walletBalance: 0n }), gasPrice: 10n })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: undefined }),
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: undefined,
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: 0n }),
+        gasPrice: undefined,
+      })
+    ).toEqual({});
   });
 });
 

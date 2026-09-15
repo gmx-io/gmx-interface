@@ -985,6 +985,10 @@ msgstr ""
 msgid "More"
 msgstr ""
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} in your Wallet to approve {approvalTokenSymbol}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global"
 msgstr ""
@@ -11867,6 +11871,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
+msgstr ""
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Use {alternativeGasTokenSymbol} for fees instead"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx

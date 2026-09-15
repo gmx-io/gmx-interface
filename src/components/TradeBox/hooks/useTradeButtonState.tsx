@@ -25,6 +25,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
+  selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
   selectSrcChainId,
   selectTokensData,
@@ -61,17 +62,20 @@ import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
+import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
 import {
+  getApprovalGasError,
   getCommonError,
   getExpressError,
   getIsMaxLeverageExceeded,
   getNativeGasError,
   takeValidationResult,
+  ValidationBannerErrorName,
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
@@ -86,7 +90,7 @@ import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWal
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { adjustForDecimals, formatAmountFree } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
@@ -94,7 +98,7 @@ import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAn
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import { getContract } from "sdk/configs/contracts";
-import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
+import { getToken, getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { TokenData } from "sdk/utils/tokens/types";
@@ -153,7 +157,7 @@ export function useTradeboxButtonState({
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const tradeMode = useSelector(selectTradeboxTradeMode);
   const { stage, collateralToken, tradeType, setStage } = useSelector(selectTradeboxState);
-  const { isLeverageSliderEnabled } = useSettings();
+  const { isLeverageSliderEnabled, setGasPaymentTokenAddress } = useSettings();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
   const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [, setGmxAccountDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
@@ -226,6 +230,15 @@ export function useTradeboxButtonState({
   const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
 
+  const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
+  const isPendingGasPaymentTokenApproval =
+    pendingApprovalTokenAddress !== undefined &&
+    getIsGasPaymentTokenApproval({
+      tokenAddress: pendingApprovalTokenAddress,
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      payTokenAddress: fromToken?.address,
+    });
+
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
   const tradeError = useSelector(selectTradeboxTradeTypeError);
@@ -253,7 +266,74 @@ export function useTradeboxButtonState({
     totalExecutionFee?.feeTokenAmount,
   ]);
 
+  const approvalGasError = useMemo((): ValidationResult => {
+    if (!expressParams) {
+      return {};
+    }
+
+    return getApprovalGasError({
+      tokenToApprove: pendingApprovalTokenAddress,
+      nativeToken: getByKey(tokensData, zeroAddress),
+      gasPrice: expressParams.gasPrice,
+    });
+  }, [expressParams, pendingApprovalTokenAddress, tokensData]);
+
+  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
+  const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
+
+  const alternativeGasToken = useMemo((): TokenData | undefined => {
+    if (
+      approvalGasError.bannerErrorName !== ValidationBannerErrorName.insufficientNativeTokenForApproval ||
+      !isPendingGasPaymentTokenApproval ||
+      !gasPaymentToken ||
+      expressParams?.gasPaymentParams === undefined
+    ) {
+      return undefined;
+    }
+
+    const externalSwapConflictToken = isSwap ? swapToToken : collateralToken;
+    const excludeTokenAddresses =
+      externalSwapDesirability === "required" &&
+      externalSwapConflictToken &&
+      externalSwapConflictToken.address !== getWrappedToken(chainId).address
+        ? [externalSwapConflictToken.address]
+        : undefined;
+
+    const address = findNextGasPaymentToken({
+      chainId,
+      tokensData,
+      gasPaymentToken,
+      gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      payAmounts: fromToken && payAmount !== undefined ? { [fromToken.address]: payAmount } : {},
+      isGmxAccount: false,
+      excludeTokenAddresses,
+      tokensAllowanceData: gasPaymentTokenAllowance?.tokensAllowanceData ?? EMPTY_OBJECT,
+    });
+
+    return getByKey(tokensData, address);
+  }, [
+    approvalGasError.bannerErrorName,
+    isPendingGasPaymentTokenApproval,
+    gasPaymentToken,
+    expressParams?.gasPaymentParams,
+    isSwap,
+    swapToToken,
+    collateralToken,
+    externalSwapDesirability,
+    chainId,
+    tokensData,
+    fromToken,
+    payAmount,
+    gasPaymentTokenAllowance?.tokensAllowanceData,
+  ]);
+
+  const handleSwitchGasToken = useCallback(() => {
+    if (alternativeGasToken) {
+      setGasPaymentTokenAddress(alternativeGasToken.address);
+    }
+  }, [alternativeGasToken, setGasPaymentTokenAddress]);
+
   const isOneClickActiveByUser = useSelector(selectIsOneClickActiveByUser);
   const isExternalSwapBlockedByGasConflict = useSelector(selectIsExternalSwapDisabledByExpressSchema);
   const isSubmitBlockedByRequiredExternalSwap =
@@ -288,7 +368,8 @@ export function useTradeboxButtonState({
       tradeError,
       externalSwapBlockedError,
       expressError,
-      nativeGasError
+      nativeGasError,
+      approvalGasError
     );
 
     let tooltipContent: ReactNode = null;
@@ -357,6 +438,9 @@ export function useTradeboxButtonState({
           chainId={chainId}
           srcChainId={srcChainId}
           gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+          approvalTokenAddress={pendingApprovalTokenAddress}
+          alternativeGasTokenAddress={alternativeGasToken?.address}
+          onSwitchGasToken={handleSwitchGasToken}
         />
       ) : null;
 
@@ -376,6 +460,10 @@ export function useTradeboxButtonState({
     tradeError,
     externalSwapBlockedError,
     nativeGasError,
+    approvalGasError,
+    pendingApprovalTokenAddress,
+    alternativeGasToken,
+    handleSwitchGasToken,
     collateralToken,
     fromToken,
     toToken,

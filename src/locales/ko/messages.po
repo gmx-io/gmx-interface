@@ -985,6 +985,10 @@ msgstr "상세 보기"
 msgid "More"
 msgstr "더 보기"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} in your Wallet to approve {approvalTokenSymbol}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr "{approvalTokenSymbol} 승인에 필요한 {nativeTokenSymbol}이(가) 지갑에 부족합니다. {nativeTokenSymbol}을(를) <0>스왑</0>하거나 <1>브리지</1>하세요."
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global"
 msgstr "글로벌"
@@ -11868,6 +11872,10 @@ msgstr "주소가 복사되었습니다"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
 msgstr ""
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Use {alternativeGasTokenSymbol} for fees instead"
+msgstr "대신 {alternativeGasTokenSymbol}(으)로 수수료 지불"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
