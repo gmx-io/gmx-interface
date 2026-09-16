@@ -22,13 +22,12 @@ export type MaxLeverageIncrease = {
 
 const LEVERAGE_STEPS_PER_UNIT = 10;
 const LOWEST_LEVERAGE_STEP = 1;
-const LOWEST_PROBED_LEVERAGE_STEP = LOWEST_LEVERAGE_STEP + 1;
 
 function getHighestLeverageStep(maxAllowedLeverage: number): number {
   return (LEVERAGE_STEPS_PER_UNIT * maxAllowedLeverage) / BASIS_POINTS_DIVISOR;
 }
 
-function evaluateLeverageStep(
+export function evaluateLeverageStep(
   { maxAllowedLeverage: _maxAllowedLeverage, minCollateralUsd, ...increaseParams }: MaxLeverageIncreaseParams,
   leverageStep: number
 ): { isValid: boolean; increaseAmounts: IncreasePositionAmounts } {
@@ -56,6 +55,7 @@ function evaluateLeverageStep(
     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
     positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
     userReferralInfo,
+    collateralPrice: increaseAmounts.collateralPrice,
   });
 
   if (nextPositionValues.nextLeverage === undefined) {
@@ -87,13 +87,12 @@ function evaluateLeverageStep(
   });
 
   return {
-    isValid: !isMaxLeverageExceeded && resultingPositionMarginState?.isLiquidatable !== true,
+    isValid:
+      increaseAmounts.sizeDeltaUsd > 0n &&
+      !isMaxLeverageExceeded &&
+      resultingPositionMarginState?.isLiquidatable !== true,
     increaseAmounts,
   };
-}
-
-export function getIsMaxLeverageIncreaseAvailable(params: MaxLeverageIncreaseParams): boolean {
-  return evaluateLeverageStep(params, LOWEST_PROBED_LEVERAGE_STEP).isValid;
 }
 
 export function findMaxLeverageIncrease(params: MaxLeverageIncreaseParams): MaxLeverageIncrease | undefined {

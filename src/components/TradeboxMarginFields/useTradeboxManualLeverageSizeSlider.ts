@@ -166,11 +166,11 @@ export function useTradeboxManualLeverageSizeSlider({
 
   const handleSizePercentageChange = useCallback(
     (percentage: number) => {
-      lastInteractionRef.current = "slider";
-      fixedPercentageRef.current = percentage;
-
       const indexTokenAmount = calcSizeAmountByPercentage(percentage, maxSizeByMarginInTokens);
       if (indexTokenAmount === undefined) return;
+
+      lastInteractionRef.current = "slider";
+      fixedPercentageRef.current = percentage;
       applySizeByIndexTokenAmount(indexTokenAmount);
     },
     [applySizeByIndexTokenAmount, maxSizeByMarginInTokens]
@@ -187,7 +187,9 @@ export function useTradeboxManualLeverageSizeSlider({
     applySizeByIndexTokenAmount(indexTokenAmount);
   }, [isLeverageSliderEnabled, maxSizeByMarginInTokens, applySizeByIndexTokenAmount]);
 
-  const isSizeSliderDisabled = tradeFlags.isIncrease && maxAvailableAmount <= 0n;
+  const isSizeSliderDisabled =
+    tradeFlags.isIncrease &&
+    (maxAvailableAmount <= 0n || (!isLeverageSliderEnabled && maxSizeByMarginInTokens === undefined));
 
   return {
     isLeverageSliderEnabled,

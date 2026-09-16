@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
-import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
+import { createSeededRandom, mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { getPositionFee } from "sdk/utils/fees";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { applyFactor } from "sdk/utils/numbers";
@@ -11,21 +11,6 @@ import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increas
 
 import { calcMaxSizeDeltaInUsdByLeverage } from "../../trade/utils/marginFields";
 import type { CalcMaxSizeDeltaParams } from "../../trade/utils/marginFields";
-
-/**
- * Deterministic PRNG — fast-check is not a dependency, and a fixed seed keeps a failing
- * case reproducible from the run alone.
- */
-function mulberry32(seed: number): () => number {
-  let a = seed >>> 0;
-
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 const SEED = 20260820;
 
@@ -197,7 +182,7 @@ function buildCase(random: () => number, index: number): FuzzCase {
 
 describe("calcMaxSizeDeltaInUsdByLeverage — the cap never exceeds the blocking validation", () => {
   it("hands out sizes the resulting-position check accepts", () => {
-    const random = mulberry32(SEED);
+    const random = createSeededRandom(SEED);
 
     let defined = 0;
     let marginBound = 0;
@@ -251,7 +236,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage — the cap never exceeds the blocking
   });
 
   it("prices the cap at the evaluation price, so a resting order is not charged a phantom loss", () => {
-    const random = mulberry32(SEED + 2);
+    const random = createSeededRandom(SEED + 2);
 
     for (let i = 0; i < 60; i++) {
       const marketInfo = makeMarketInfo(FEE_FACTORS[i % FEE_FACTORS.length], 0n);

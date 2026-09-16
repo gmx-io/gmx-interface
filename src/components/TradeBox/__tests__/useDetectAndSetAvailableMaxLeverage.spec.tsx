@@ -161,8 +161,7 @@ describe("useDetectAndSetAvailableMaxLeverage — offers nothing when no size pa
 describe("useDetectAndSetAvailableMaxLeverage — the offer matches what the search settles on", () => {
   afterEach(cleanup);
 
-  // hasAvailableMaxLeverage probes a single leverage instead of running the whole search,
-  // so it has to agree with the search on both sides of the boundary
+  // the action is offered from the same search result it applies, so the offer and the outcome agree
   it.each([2_000, 200, 150, 120, 100, 50])("agrees for a position with %i usd of collateral", (collateralUsd) => {
     const setToTokenInputValue = vi.fn();
 

@@ -705,8 +705,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage — resulting position margin cap", ()
       params.proDiscountFactor
     );
     const uiFeeUsd = applyFactor(sizeDeltaUsd, params.uiFeeFactor ?? 0n);
-    const collateralDeltaUsd =
-      (params.baseCollateralUsd ?? params.initialCollateralUsd) - positionFeeUsd - uiFeeUsd;
+    const collateralDeltaUsd = (params.baseCollateralUsd ?? params.initialCollateralUsd) - positionFeeUsd - uiFeeUsd;
     const collateralDeltaAmount = convertToTokenAmount(collateralDeltaUsd, usdc.decimals, usdc.prices.minPrice)!;
 
     const state = getIncreaseResultingPositionMarginState({

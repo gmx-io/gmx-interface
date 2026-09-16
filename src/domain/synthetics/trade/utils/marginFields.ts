@@ -47,6 +47,31 @@ export type CalcMaxSizeDeltaParams = {
 
 const RESULTING_POSITION_BISECTION_STEPS = 24;
 
+function getEvaluationCollateralPrice(params: CalcMaxSizeDeltaParams, collateralToken: TokenData): bigint {
+  return params.indexPriceForEvaluation !== undefined &&
+    getIsEquivalentTokens(collateralToken, params.marketInfo.indexToken)
+    ? params.indexPriceForEvaluation
+    : collateralToken.prices.minPrice;
+}
+
+function getExistingCollateralUsd(params: CalcMaxSizeDeltaParams): bigint {
+  const { existingPosition, collateralToken } = params;
+
+  if (!existingPosition) {
+    return 0n;
+  }
+
+  if (existingPosition.collateralAmount === undefined || !collateralToken) {
+    return existingPosition.collateralUsd;
+  }
+
+  return convertToUsd(
+    existingPosition.collateralAmount,
+    collateralToken.decimals,
+    getEvaluationCollateralPrice(params, collateralToken)
+  )!;
+}
+
 function getBaseCollateralUsd(params: CalcMaxSizeDeltaParams): bigint {
   if (params.baseCollateralUsd !== undefined) {
     return params.baseCollateralUsd;
@@ -117,11 +142,12 @@ function capSizeDeltaByResultingPositionMargin({
     const uiFeeUsd = applyFactor(sizeDeltaUsd, params.uiFeeFactor ?? 0n);
 
     const collateralDeltaUsd = baseCollateralUsd - positionFeeUsd - uiFeeUsd;
-    const collateralPrice =
-      params.indexPriceForEvaluation !== undefined && getIsEquivalentTokens(collateralToken, marketInfo.indexToken)
-        ? params.indexPriceForEvaluation
-        : collateralToken.prices.minPrice;
-    const collateralDeltaAmount = convertToTokenAmount(collateralDeltaUsd, collateralToken.decimals, collateralPrice) ?? 0n;
+    const collateralDeltaAmount =
+      convertToTokenAmount(
+        collateralDeltaUsd,
+        collateralToken.decimals,
+        getEvaluationCollateralPrice(params, collateralToken)
+      ) ?? 0n;
 
     const marginState = getIncreaseResultingPositionMarginState({
       marketInfo,
@@ -225,7 +251,7 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
   const leverageBigInt = BigInt(maxAllowedLeverage);
 
   const existingSizeUsd = existingPosition?.sizeInUsd ?? 0n;
-  const existingCollateralUsd = existingPosition?.collateralUsd ?? 0n;
+  const existingCollateralUsd = getExistingCollateralUsd(params);
   const uiFeeFactor = params.uiFeeFactor ?? 0n;
   const baseCollateralUsd = getBaseCollateralUsd(params);
   const conversionPrice = params.indexPriceForEvaluation ?? markPrice;
