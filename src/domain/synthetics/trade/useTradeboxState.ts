@@ -217,7 +217,9 @@ export function useTradeboxState(
         const saved = JSON.parse(raw) as StoredTradeOptions;
 
         if (saved.tokens.indexTokenAddress && availableIndexTokensAddresses.includes(saved.tokens.indexTokenAddress)) {
-          setStoredOptionsOnChain(saved);
+          if (syncedChainId !== undefined) {
+            setStoredOptionsOnChain(saved);
+          }
           setSyncedChainId(chainId);
           return;
         }
