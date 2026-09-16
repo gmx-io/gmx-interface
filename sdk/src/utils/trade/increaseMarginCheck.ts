@@ -43,8 +43,10 @@ export type PositionMarginStateParams = {
 };
 
 /**
- * Port of `PositionUtils.isPositionLiquidatable` (gmx-synthetics release-v2.2c) for a position whose
- * pending fees have just been settled — the state the contract validates right after an increase.
+ * Port of `PositionUtils.isPositionLiquidatable` from the gmx-synthetics build deployed on Arbitrum
+ * (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl in the per-position pnl cap)
+ * for a position whose pending fees have just been settled — the state the contract validates right
+ * after an increase.
  */
 export function getResultingPositionMarginState(p: PositionMarginStateParams): PositionMarginState {
   const {
@@ -186,9 +188,10 @@ function withPriceOverride<T extends TokenData>(token: T, indexToken: TokenData,
 }
 
 /**
- * Mirrors the post-increase gates of `IncreasePositionUtils.increasePosition` (gmx-synthetics
- * release-v2.2c): `willPositionCollateralBeSufficient` on the updated open interest, then
- * `validatePosition` on the resulting position.
+ * Mirrors the post-increase gates of `IncreasePositionUtils.increasePosition` from the gmx-synthetics
+ * build deployed on Arbitrum (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl
+ * in the per-position pnl cap): `willPositionCollateralBeSufficient` on the updated open interest,
+ * then `validatePosition` on the resulting position.
  */
 export function getIncreaseResultingPositionMarginState(
   p: IncreaseResultingPositionMarginStateParams

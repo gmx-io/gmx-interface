@@ -2,30 +2,16 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-import { mockMarketsInfoData, mockTokensData } from "test/mock";
+import { createSeededRandom, mockMarketsInfoData, mockTokensData } from "test/mock";
 import { USD_DECIMALS, expandDecimals } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
+import type { PositionInfo } from "utils/positions/types";
 import { getIncreaseEvaluationIndexPrice, getMarkPrice } from "utils/prices";
 import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd } from "utils/tokens";
 import type { TokenData } from "utils/tokens/types";
 import type { ExternalSwapQuoteParams } from "utils/trade/types";
 
-import { getIncreasePositionAmounts } from "../increase";
-
-/**
- * Deterministic PRNG — fast-check is not a dependency, and a fixed seed keeps a failing
- * case reproducible from the run alone.
- */
-function mulberry32(seed: number): () => number {
-  let a = seed >>> 0;
-
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "../increase";
 
 const SEED = 20260820;
 
@@ -78,7 +64,7 @@ describe("getIncreasePositionAmounts — one price for sizing and for evaluation
   }
 
   it("sizes every order at the price its resulting position is evaluated at", () => {
-    const random = mulberry32(SEED);
+    const random = createSeededRandom(SEED);
     let checked = 0;
 
     for (let i = 0; i < 400; i++) {
@@ -89,8 +75,7 @@ describe("getIncreasePositionAmounts — one price for sizing and for evaluation
       const markPrice = getMarkPrice({ prices: eth.prices, isIncrease: true, isLong });
       // ±10% around the mark, so both the executable-now and the resting side are hit
       const triggerFactorBps = 9000n + BigInt(Math.floor(random() * 2001));
-      const triggerPrice =
-        orderType === OrderType.MarketIncrease ? undefined : (markPrice * triggerFactorBps) / 10000n;
+      const triggerPrice = orderType === OrderType.MarketIncrease ? undefined : (markPrice * triggerFactorBps) / 10000n;
 
       const initialCollateralAmount = expandDecimals(100 + Math.floor(random() * 9900), usdc.decimals);
       const indexTokenAmount = convertToTokenAmount(
@@ -195,7 +180,7 @@ describe("getIncreasePositionAmounts — both swap-strategy paths agree on equiv
   }
 
   it("values the deposit the same with and without the external-swap params", () => {
-    const random = mulberry32(SEED + 1);
+    const random = createSeededRandom(SEED + 1);
     let sameToken = 0;
     let nativeToWrapped = 0;
 
@@ -264,9 +249,7 @@ describe("getIncreasePositionAmounts — both swap-strategy paths agree on equiv
       expect(withParams.collateralDeltaUsd, context).toBe(withoutParams.collateralDeltaUsd);
       expect(withParams.sizeDeltaUsd, context).toBe(withoutParams.sizeDeltaUsd);
       // no haircut: the whole deposit reaches the position, minus the position-level fees only
-      expect(withParams.collateralDeltaUsd, context).toBe(
-        depositUsd - withParams.positionFeeUsd - withParams.uiFeeUsd
-      );
+      expect(withParams.collateralDeltaUsd, context).toBe(depositUsd - withParams.positionFeeUsd - withParams.uiFeeUsd);
       expect(withParams.swapUiFeeUsd, context).toBe(0n);
 
       if (isNativePair) {
@@ -278,5 +261,81 @@ describe("getIncreasePositionAmounts — both swap-strategy paths agree on equiv
 
     expect(sameToken).toBeGreaterThan(0);
     expect(nativeToWrapped).toBeGreaterThan(0);
+  });
+});
+
+describe("one price base in next-position values", () => {
+  const tokensData = mockTokensData({
+    ETH: { prices: { minPrice: expandDecimals(1180, USD_DECIMALS), maxPrice: expandDecimals(1220, USD_DECIMALS) } },
+  });
+  const marketsInfoData = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"]);
+  const marketInfo = marketsInfoData["ETH-ETH-USDC"];
+  const eth = tokensData.ETH;
+
+  // 2 WETH of collateral booked at the 1 180 min price
+  const position = {
+    sizeInUsd: expandDecimals(6_000, USD_DECIMALS),
+    sizeInTokens: expandDecimals(5, eth.decimals),
+    collateralAmount: expandDecimals(2, eth.decimals),
+    collateralUsd: expandDecimals(2_360, USD_DECIMALS),
+    pendingBorrowingFeesUsd: 0n,
+    fundingFeeAmount: 0n,
+    pendingImpactAmount: 0n,
+    pendingImpactUsd: 0n,
+  } as PositionInfo;
+
+  const triggerPrice = expandDecimals(1_100, USD_DECIMALS);
+
+  it.each([
+    { name: "long limit below the market", isLong: true, limitOrderType: OrderType.LimitIncrease as const },
+    { name: "short stop below the market", isLong: false, limitOrderType: OrderType.StopIncrease as const },
+  ])("$name: the existing collateral and the delta share the evaluation price", ({ isLong, limitOrderType }) => {
+    const increaseAmounts = getIncreasePositionAmounts({
+      marketInfo,
+      indexToken: eth,
+      initialCollateralToken: eth,
+      collateralToken: eth,
+      isLong,
+      initialCollateralAmount: expandDecimals(1, eth.decimals),
+      indexTokenAmount: expandDecimals(5, eth.decimals),
+      position,
+      externalSwapQuote: undefined,
+      userReferralInfo: undefined,
+      strategy: "independent",
+      triggerPrice,
+      limitOrderType,
+      findSwapPath: (() => undefined) as never,
+      uiFeeFactor: 0n,
+      marketsInfoData,
+      chainId: ARBITRUM,
+      externalSwapQuoteParams: undefined,
+      isSetAcceptablePriceImpactEnabled: false,
+    });
+
+    const evaluationPrice = getIncreaseEvaluationIndexPrice({ orderType: limitOrderType, triggerPrice })!;
+    expect(increaseAmounts.collateralPrice).toBe(evaluationPrice);
+
+    const nextValues = getNextPositionValuesForIncreaseTrade({
+      marketInfo,
+      collateralToken: eth,
+      existingPosition: position,
+      isLong,
+      collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+      collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+      sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+      sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+      positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
+      indexPrice: increaseAmounts.indexPrice,
+      showPnlInLeverage: false,
+      minCollateralUsd: expandDecimals(1, USD_DECIMALS),
+      userReferralInfo: undefined,
+      collateralPrice: increaseAmounts.collateralPrice,
+    });
+
+    const nextCollateralAmount = position.collateralAmount + increaseAmounts.collateralDeltaAmount;
+
+    expect(nextValues.nextCollateralUsd).toBe(convertToUsd(nextCollateralAmount, eth.decimals, evaluationPrice));
+    // 2 ETH at 1 100 + (1 ETH at 1 100 − 0.05% of the 5 500 of size) = 2 200 + 1 097.25
+    expect(nextValues.nextCollateralUsd).toBe(expandDecimals(329_725, USD_DECIMALS - 2));
   });
 });

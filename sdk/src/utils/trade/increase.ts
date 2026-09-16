@@ -427,7 +427,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   const evaluationPrice = prices.evaluationPrice;
 
   values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || 0n;
-  values.fundingFeeUsd = position?.pendingFundingFeesUsd || 0n;
+  values.fundingFeeUsd = position
+    ? convertToUsd(position.fundingFeeAmount, collateralToken.decimals, values.collateralPrice)!
+    : 0n;
 
   if (values.indexPrice <= 0 || values.initialCollateralPrice <= 0 || values.collateralPrice <= 0) {
     return values;
@@ -598,18 +600,20 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
     values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
-    const { collateralDeltaUsd, collateralDeltaAmount, baseCollateralUsd, baseCollateralAmount } = leverageBySizeValues({
-      collateralToken,
-      leverage,
-      sizeDeltaUsd: values.sizeDeltaUsd,
-      collateralPrice: values.collateralPrice,
-      uiFeeFactor,
-      positionFeeUsd: values.positionFeeUsd,
-      borrowingFeeUsd: values.borrowingFeeUsd,
-      fundingFeeUsd: values.fundingFeeUsd,
-      uiFeeUsd: values.uiFeeUsd,
-      swapUiFeeUsd: values.swapUiFeeUsd,
-    });
+    const { collateralDeltaUsd, collateralDeltaAmount, baseCollateralUsd, baseCollateralAmount } = leverageBySizeValues(
+      {
+        collateralToken,
+        leverage,
+        sizeDeltaUsd: values.sizeDeltaUsd,
+        collateralPrice: values.collateralPrice,
+        uiFeeFactor,
+        positionFeeUsd: values.positionFeeUsd,
+        borrowingFeeUsd: values.borrowingFeeUsd,
+        fundingFeeUsd: values.fundingFeeUsd,
+        uiFeeUsd: values.uiFeeUsd,
+        swapUiFeeUsd: values.swapUiFeeUsd,
+      }
+    );
 
     values.collateralDeltaUsd = collateralDeltaUsd;
     values.collateralDeltaAmount = collateralDeltaAmount;
@@ -806,6 +810,18 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         values.uiFeeUsd -
         values.swapUiFeeUsd;
 
+      values.collateralDeltaAmount = convertToTokenAmount(
+        values.collateralDeltaUsd,
+        collateralToken.decimals,
+        values.collateralPrice
+      )!;
+    } else if (values.sizeDeltaUsd > 0n) {
+      values.collateralDeltaUsd = -(
+        values.positionFeeUsd +
+        values.borrowingFeeUsd +
+        values.fundingFeeUsd +
+        values.uiFeeUsd
+      );
       values.collateralDeltaAmount = convertToTokenAmount(
         values.collateralDeltaUsd,
         collateralToken.decimals,
@@ -1022,6 +1038,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   showPnlInLeverage: boolean;
   minCollateralUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
+  collateralPrice?: bigint;
 }): NextPositionValues {
   const {
     existingPosition,
@@ -1037,9 +1054,16 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     minCollateralUsd,
     userReferralInfo,
     positionPriceImpactDeltaUsd,
+    collateralPrice,
   } = p;
 
-  const nextCollateralUsd = existingPosition ? existingPosition.collateralUsd + collateralDeltaUsd : collateralDeltaUsd;
+  const existingCollateralUsd = !existingPosition
+    ? 0n
+    : collateralPrice === undefined || collateralPrice <= 0n
+      ? existingPosition.collateralUsd
+      : convertToUsd(existingPosition.collateralAmount, collateralToken.decimals, collateralPrice)!;
+
+  const nextCollateralUsd = existingCollateralUsd + collateralDeltaUsd;
 
   const nextCollateralAmount = existingPosition
     ? existingPosition.collateralAmount + collateralDeltaAmount

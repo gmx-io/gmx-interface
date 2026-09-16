@@ -7,6 +7,7 @@ import { bigMath } from "utils/bigmath";
 import type { MarketsInfoData } from "utils/markets/types";
 import { USD_DECIMALS, expandDecimals } from "utils/numbers";
 import { OrderType, SwapPricingType } from "utils/orders/types";
+import type { PositionInfo } from "utils/positions/types";
 import { getSwapPathStats } from "utils/swap";
 import { convertToTokenAmount, convertToUsd } from "utils/tokens";
 import {
@@ -17,7 +18,7 @@ import {
   type SwapStats,
 } from "utils/trade/types";
 
-import { getIncreasePositionAmounts } from "../increase";
+import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "../increase";
 
 describe("getIncreasePositionAmounts — independent strategy, swapped collateral", () => {
   const tokensData = mockTokensData();
@@ -475,5 +476,223 @@ describe("getIncreasePositionAmounts — internal swap of the index token on a r
     expect(bigMath.abs(values.collateralDeltaUsd - targetCollateralUsd)).toBeLessThanOrEqual(
       targetCollateralUsd / 10_000n
     );
+  });
+});
+
+describe("getIncreasePositionAmounts — independent strategy, size-only order", () => {
+  const tokensData = mockTokensData();
+  const marketsInfoData = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"]);
+  const marketInfo = marketsInfoData["ETH-ETH-USDC"];
+  const eth = tokensData.ETH;
+  const usdc = tokensData.USDC;
+
+  const build = (overrides: Partial<Parameters<typeof getIncreasePositionAmounts>[0]>) =>
+    getIncreasePositionAmounts({
+      marketInfo,
+      indexToken: eth,
+      initialCollateralToken: usdc,
+      collateralToken: usdc,
+      isLong: true,
+      initialCollateralAmount: 0n,
+      indexTokenAmount: expandDecimals(5, eth.decimals),
+      position: undefined,
+      externalSwapQuote: undefined,
+      userReferralInfo: undefined,
+      strategy: "independent",
+      findSwapPath: (() => undefined) as never,
+      // 0.1%
+      uiFeeFactor: expandDecimals(1, 27),
+      marketsInfoData,
+      chainId: ARBITRUM,
+      externalSwapQuoteParams: undefined,
+      isSetAcceptablePriceImpactEnabled: false,
+      ...overrides,
+    });
+
+  it("pays the fees from the existing collateral when nothing is deposited", () => {
+    const values = build({
+      position: {
+        pendingBorrowingFeesUsd: expandDecimals(2, USD_DECIMALS),
+        fundingFeeAmount: expandDecimals(4, usdc.decimals),
+      } as PositionInfo,
+    });
+
+    // 5 ETH at 1 200 = 6 000 of size: 0.05% position fee 3, 0.1% ui fee 6, borrowing 2, funding 4 USDC
+    expect(values.sizeDeltaUsd).toBe(expandDecimals(6_000, USD_DECIMALS));
+    expect(values.positionFeeUsd).toBe(expandDecimals(3, USD_DECIMALS));
+    expect(values.uiFeeUsd).toBe(expandDecimals(6, USD_DECIMALS));
+    expect(values.collateralDeltaUsd).toBe(-expandDecimals(15, USD_DECIMALS));
+    expect(values.collateralDeltaAmount).toBe(-expandDecimals(15, usdc.decimals));
+    expect(values.initialCollateralUsd).toBe(0n);
+    expect(values.initialCollateralAmount).toBe(0n);
+  });
+
+  it("converts the fees at the trigger price for an index-token collateral", () => {
+    const values = build({
+      initialCollateralToken: eth,
+      collateralToken: eth,
+      triggerPrice: expandDecimals(1_000, USD_DECIMALS),
+      limitOrderType: OrderType.LimitIncrease,
+      position: {
+        pendingBorrowingFeesUsd: expandDecimals(2, USD_DECIMALS),
+        // 0.001 ETH, worth 1 at the trigger
+        fundingFeeAmount: expandDecimals(1, 15),
+      } as PositionInfo,
+    });
+
+    // 5 ETH at the 1 000 trigger = 5 000 of size: position fee 2.5, ui fee 5, borrowing 2, funding 1
+    expect(values.collateralDeltaUsd).toBe(-expandDecimals(105, USD_DECIMALS - 1));
+    // 10.5 / 1 000 = 0.0105 ETH
+    expect(values.collateralDeltaAmount).toBe(-expandDecimals(105, 14));
+    expect(values.initialCollateralUsd).toBe(0n);
+  });
+
+  it("leaves the collateral delta at zero without size or deposit", () => {
+    const values = build({
+      indexTokenAmount: 0n,
+      position: { pendingBorrowingFeesUsd: expandDecimals(2, USD_DECIMALS), fundingFeeAmount: 0n } as PositionInfo,
+    });
+
+    expect(values.sizeDeltaUsd).toBe(0n);
+    expect(values.collateralDeltaUsd).toBe(0n);
+    expect(values.collateralDeltaAmount).toBe(0n);
+  });
+});
+
+describe("getNextPositionValuesForIncreaseTrade — prices the existing collateral like the delta", () => {
+  const tokensData = mockTokensData();
+  const marketsInfoData = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"]);
+  const marketInfo = marketsInfoData["ETH-ETH-USDC"];
+  const eth = tokensData.ETH;
+  const usdc = tokensData.USDC;
+  const triggerPrice = expandDecimals(1_000, USD_DECIMALS);
+
+  // 500 of collateral entering at the trigger
+  const delta = {
+    marketInfo,
+    isLong: true,
+    sizeDeltaUsd: expandDecimals(1_000, USD_DECIMALS),
+    sizeDeltaInTokens: expandDecimals(1, eth.decimals),
+    collateralDeltaUsd: expandDecimals(500, USD_DECIMALS),
+    indexPrice: triggerPrice,
+    positionPriceImpactDeltaUsd: 0n,
+    showPnlInLeverage: false,
+    minCollateralUsd: expandDecimals(1, USD_DECIMALS),
+    userReferralInfo: undefined,
+  };
+
+  // 1 ETH of collateral, booked at the 1 200 mark
+  const ethPosition = {
+    sizeInUsd: expandDecimals(6_000, USD_DECIMALS),
+    sizeInTokens: expandDecimals(5, eth.decimals),
+    collateralAmount: expandDecimals(1, eth.decimals),
+    collateralUsd: expandDecimals(1_200, USD_DECIMALS),
+    pendingImpactAmount: 0n,
+    pendingImpactUsd: 0n,
+  } as PositionInfo;
+
+  it("values an index-token collateral at the price the delta was valued at", () => {
+    const atTrigger = getNextPositionValuesForIncreaseTrade({
+      ...delta,
+      collateralToken: eth,
+      existingPosition: ethPosition,
+      collateralDeltaAmount: expandDecimals(5, eth.decimals - 1),
+      collateralPrice: triggerPrice,
+    });
+
+    // 1 ETH at 1 000 + 500
+    expect(atTrigger.nextCollateralUsd).toBe(expandDecimals(1_500, USD_DECIMALS));
+  });
+
+  it("keeps the mark-based value without the price", () => {
+    const atMark = getNextPositionValuesForIncreaseTrade({
+      ...delta,
+      collateralToken: eth,
+      existingPosition: ethPosition,
+      collateralDeltaAmount: expandDecimals(5, eth.decimals - 1),
+    });
+
+    // 1 200 + 500
+    expect(atMark.nextCollateralUsd).toBe(expandDecimals(1_700, USD_DECIMALS));
+  });
+
+  it("changes nothing for a stable collateral", () => {
+    const usdcPosition = {
+      ...ethPosition,
+      collateralAmount: expandDecimals(1_000, usdc.decimals),
+      collateralUsd: expandDecimals(1_000, USD_DECIMALS),
+    } as PositionInfo;
+
+    const usdcDelta = {
+      ...delta,
+      collateralToken: usdc,
+      existingPosition: usdcPosition,
+      collateralDeltaAmount: expandDecimals(500, usdc.decimals),
+    };
+
+    const withPrice = getNextPositionValuesForIncreaseTrade({ ...usdcDelta, collateralPrice: usdc.prices.minPrice });
+    const withoutPrice = getNextPositionValuesForIncreaseTrade(usdcDelta);
+
+    expect(withPrice.nextCollateralUsd).toBe(expandDecimals(1_500, USD_DECIMALS));
+    expect(withoutPrice.nextCollateralUsd).toBe(expandDecimals(1_500, USD_DECIMALS));
+  });
+});
+
+describe("getIncreasePositionAmounts — funding fee is a fixed token amount", () => {
+  const tokensData = mockTokensData();
+  const marketsInfoData = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"]);
+  const marketInfo = marketsInfoData["ETH-ETH-USDC"];
+  const eth = tokensData.ETH;
+  const triggerPrice = expandDecimals(1_000, USD_DECIMALS);
+
+  // 0.01 ETH of funding owed, 12 at the 1 200 mark
+  const fundingFeeAmount = expandDecimals(1, 16);
+
+  const build = (overrides: Partial<Parameters<typeof getIncreasePositionAmounts>[0]>) =>
+    getIncreasePositionAmounts({
+      marketInfo,
+      indexToken: eth,
+      initialCollateralToken: eth,
+      collateralToken: eth,
+      isLong: true,
+      initialCollateralAmount: expandDecimals(1, eth.decimals),
+      indexTokenAmount: expandDecimals(5, eth.decimals),
+      position: {
+        pendingBorrowingFeesUsd: 0n,
+        fundingFeeAmount,
+        pendingFundingFeesUsd: expandDecimals(12, USD_DECIMALS),
+      } as PositionInfo,
+      externalSwapQuote: undefined,
+      userReferralInfo: undefined,
+      strategy: "independent",
+      findSwapPath: (() => undefined) as never,
+      uiFeeFactor: 0n,
+      marketsInfoData,
+      chainId: ARBITRUM,
+      externalSwapQuoteParams: undefined,
+      isSetAcceptablePriceImpactEnabled: false,
+      triggerPrice,
+      limitOrderType: OrderType.LimitIncrease,
+      ...overrides,
+    });
+
+  it("re-prices the owed tokens at the trigger for a resting order", () => {
+    const values = build({});
+
+    // 0.01 ETH at 1 000
+    expect(values.fundingFeeUsd).toBe(expandDecimals(10, USD_DECIMALS));
+
+    const withoutFunding = build({
+      position: { pendingBorrowingFeesUsd: 0n, fundingFeeAmount: 0n, pendingFundingFeesUsd: 0n } as PositionInfo,
+    });
+
+    const fundingTokens = withoutFunding.collateralDeltaAmount - values.collateralDeltaAmount;
+    expect(bigMath.abs(fundingTokens - fundingFeeAmount)).toBeLessThanOrEqual(1n);
+  });
+
+  it("matches the mark-priced pending fee for a market order", () => {
+    const values = build({ triggerPrice: undefined, limitOrderType: undefined });
+
+    expect(values.fundingFeeUsd).toBe(expandDecimals(12, USD_DECIMALS));
   });
 });

@@ -1,11 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { mockMarketsInfoData, mockTokensData } from "test/mock";
-import { bigMath } from "utils/bigmath";
-import { capPositionImpactUsdByMaxPriceImpactFactor, getPriceImpactForPosition } from "utils/fees";
 import { getMarketInfoWithOpenInterestDelta } from "utils/markets";
-import { USD_DECIMALS, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
-import { convertToTokenAmount, convertToUsd } from "utils/tokens";
+import { USD_DECIMALS, expandDecimals } from "utils/numbers";
+import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd } from "utils/tokens";
 import {
   PositionMarginFailureReason,
   type PositionMarginStateParams,
@@ -429,33 +427,28 @@ describe("getResultingPositionMarginState — oracle sides", () => {
 });
 
 describe("getIncreaseResultingPositionMarginState — open interest projection", () => {
-  const impactTokens = mockTokensData();
-
+  // linear impact (exponent 1) keeps every leg a round number:
+  // a crossover pays factorNegative on the side it lands on and earns factorPositive on the side it leaves
   function impactMarket(useOpenInterestInTokensForBalance: boolean) {
-    return mockMarketsInfoData(impactTokens, ["BTC-BTC-USDC"], {
-      "BTC-BTC-USDC": {
-        minCollateralFactor: expandDecimals(1, 28),
-        minCollateralFactorForLiquidation: expandDecimals(5, 27),
-        minCollateralFactorForOpenInterestLong: 0n,
-        minCollateralFactorForOpenInterestShort: 0n,
-        positionFeeFactorForBalanceWasImproved: 0n,
-        positionFeeFactorForBalanceWasNotImproved: 0n,
-        positionImpactFactorPositive: expandDecimals(5, 19),
-        positionImpactFactorNegative: expandDecimals(1, 20),
-        positionImpactExponentFactorPositive: expandDecimals(2, 30),
-        positionImpactExponentFactorNegative: expandDecimals(2, 30),
-        maxPositionImpactFactorPositive: expandDecimals(1, 29),
-        maxPositionImpactFactorNegative: expandDecimals(1, 29),
-        maxPositionImpactFactorForLiquidations: expandDecimals(1, 29),
-        // shorts dominate, so closing the resulting long widens the imbalance and the
-        // close impact is negative — a positive one would just be clamped away
-        longInterestUsd: expandDecimals(100_000, USD_DECIMALS),
-        shortInterestUsd: expandDecimals(2_000_000, USD_DECIMALS),
-        longInterestInTokens: btcAmount(100_000),
-        shortInterestInTokens: btcAmount(2_000_000),
-        useOpenInterestInTokensForBalance,
-      },
-    })["BTC-BTC-USDC"];
+    return buildMarket({
+      positionImpactFactorPositive: expandDecimals(1, 27), // 0.1%
+      positionImpactFactorNegative: expandDecimals(3, 27), // 0.3%
+      positionImpactExponentFactorPositive: expandDecimals(1, 30),
+      positionImpactExponentFactorNegative: expandDecimals(1, 30),
+      maxPositionImpactFactorPositive: expandDecimals(1, 29),
+      maxPositionImpactFactorNegative: expandDecimals(1, 29),
+      maxPositionImpactFactorForLiquidations: expandDecimals(1, 29),
+      // longs 50 000 (all USDC-collateralised) vs shorts 100 000
+      longInterestUsd: expandDecimals(50_000, USD_DECIMALS),
+      shortInterestUsd: expandDecimals(100_000, USD_DECIMALS),
+      longInterestInTokens: btcAmount(50_000),
+      shortInterestInTokens: btcAmount(100_000),
+      longInterestUsdUsingLongToken: 0n,
+      longInterestInTokensUsingLongToken: 0n,
+      longInterestUsdUsingShortToken: expandDecimals(50_000, USD_DECIMALS),
+      longInterestInTokensUsingShortToken: btcAmount(50_000),
+      useOpenInterestInTokensForBalance,
+    });
   }
 
   const sizeDeltaUsd = expandDecimals(100_000, USD_DECIMALS);
@@ -466,7 +459,7 @@ describe("getIncreaseResultingPositionMarginState — open interest projection",
     (useOpenInterestInTokensForBalance) => {
       const marketInfo = impactMarket(useOpenInterestInTokensForBalance);
 
-      const actual = getIncreaseResultingPositionMarginState({
+      const state = getIncreaseResultingPositionMarginState({
         marketInfo,
         collateralToken: usdc,
         isLong: true,
@@ -478,49 +471,43 @@ describe("getIncreaseResultingPositionMarginState — open interest projection",
         userReferralInfo: undefined,
       });
 
-      // the increase's own impact the projection stores as pending impact, replicated here:
-      // computed on the pre-order market, positive side capped, converted with the contract's rounding
-      const increaseImpact = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, true, { sizeDeltaInTokens });
-      let increaseImpactUsd = increaseImpact.priceImpactDeltaUsd;
-      if (increaseImpactUsd > 0n) {
-        increaseImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, increaseImpactUsd);
-      }
-      const increasePendingImpactAmount =
-        increaseImpactUsd > 0n
-          ? convertToTokenAmount(increaseImpactUsd, tokensData.BTC.decimals, tokensData.BTC.prices.maxPrice)!
-          : roundUpMagnitudeDivision(
-              increaseImpactUsd * expandDecimals(1, tokensData.BTC.decimals),
-              tokensData.BTC.prices.minPrice
-            );
+      // increase: longs 50 000 → 150 000 crosses the 100 000 of shorts, 50 000 on each side:
+      // +0.1% × 50 000 − 0.3% × 50 000 = −100 → pending impact −100 / 20 000 = −0.005 BTC
+      // close on the projected market: 150 000 → 50 000 crosses back, again −100
+      // total −200, under the 10% liquidation cap → 5 000 − 200
+      expect(state?.remainingCollateralUsd).toBe(expandDecimals(4_800, USD_DECIMALS));
+      expect(state?.isLiquidatable).toBe(false);
 
-      const resultingPosition = {
+      // on the pre-order market the close would run 50 000 → 0 on the shorts' side: −0.3% × 50 000 = −150
+      const withoutProjection = getResultingPositionMarginState({
+        marketInfo,
         collateralToken: usdc,
         sizeInUsd: sizeDeltaUsd,
         sizeInTokens: sizeDeltaInTokens,
         collateralAmount: usdcAmount(5_000),
-        pendingImpactAmount: increasePendingImpactAmount,
+        pendingImpactAmount: -500_000n,
         minCollateralUsd: expandDecimals(1, USD_DECIMALS),
         isLong: true,
         userReferralInfo: undefined,
-      };
-
-      const expected = getResultingPositionMarginState({
-        ...resultingPosition,
-        marketInfo: getMarketInfoWithOpenInterestDelta({
-          marketInfo,
-          collateralToken: usdc,
-          isLong: true,
-          sizeDeltaUsd,
-          sizeDeltaInTokens,
-        }),
       });
 
-      expect(actual).toEqual(expected);
+      expect(withoutProjection.remainingCollateralUsd).toBe(expandDecimals(4_750, USD_DECIMALS));
 
-      // and the projection is not a no-op: the pre-order market gives a different close impact
-      const withoutProjection = getResultingPositionMarginState({ ...resultingPosition, marketInfo });
+      const projected = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: usdc,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
 
-      expect(withoutProjection.remainingCollateralUsd).not.toBe(expected.remainingCollateralUsd);
+      expect(projected).toMatchObject({
+        longInterestUsd: expandDecimals(150_000, USD_DECIMALS),
+        longInterestInTokens: 750_000_000n,
+        longInterestUsdUsingShortToken: expandDecimals(150_000, USD_DECIMALS),
+        longInterestInTokensUsingShortToken: 750_000_000n,
+        shortInterestUsd: expandDecimals(100_000, USD_DECIMALS),
+      });
     }
   );
 });
@@ -574,6 +561,13 @@ describe("contract parity — MarketIncreaseOrder «validates collateral amount�
     pendingImpactAmount: 0n,
   };
 
+  // a short's size in tokens rounds up, as the contract does: 20 000 / 5 500 = 3.6363…63 → …64 wei
+  const sizeDeltaInTokens = convertToTokenAmountForIncrease(sizeDeltaUsd, 18, ETH_PRICE, false)!;
+
+  // that extra wei is worth 5 500 × 1e-18 = 5.5e-15 USD; valued at 5 500 the 3.6363…64 ETH come to
+  // 20 000 + 2e-15 USD, so the loss carries 2e-15 USD of round-up dust
+  const ROUND_UP_DUST = 2n * expandDecimals(1, 15);
+
   function runIncrease(collateralDeltaAmount: bigint) {
     return getIncreaseResultingPositionMarginState({
       marketInfo,
@@ -581,23 +575,23 @@ describe("contract parity — MarketIncreaseOrder «validates collateral amount�
       isLong: false,
       existingPosition,
       sizeDeltaUsd,
-      sizeDeltaInTokens: convertToTokenAmount(sizeDeltaUsd, 18, ETH_PRICE)!,
+      sizeDeltaInTokens,
       collateralDeltaAmount,
       minCollateralUsd: expandDecimals(1, USD_DECIMALS),
       userReferralInfo: undefined,
     });
   }
 
-  /** The contract compares in 30-decimal USD; a cent of tolerance absorbs token-level rounding. */
-  const ONE_CENT = expandDecimals(1, USD_DECIMALS) / 100n;
+  it("sizes the short's tokens with the contract's round-up", () => {
+    expect(sizeDeltaInTokens).toBe(3_636_363_636_363_636_364n);
+  });
 
   it("rejects the second increase the contract cancels", () => {
     // 1 000 USDC added, less the 0.05% fee
     const state = runIncrease(expandDecimals(990, 6));
 
     // collateral 1 980, unrealized loss 2 000, closing fee 20 → the margin goes negative
-    expect(state?.remainingCollateralUsd).toBeLessThan(0n);
-    expect(bigMath.abs(state!.remainingCollateralUsd - -expandDecimals(40, USD_DECIMALS))).toBeLessThan(ONE_CENT);
+    expect(state?.remainingCollateralUsd).toBe(-expandDecimals(40, USD_DECIMALS) - ROUND_UP_DUST);
     expect(state?.isLiquidatable).toBe(true);
     // the fixed minimum is checked before the leverage one, so this is the reason the contract reports
     expect(state?.reason).toBe(PositionMarginFailureReason.MinCollateral);
@@ -607,7 +601,8 @@ describe("contract parity — MarketIncreaseOrder «validates collateral amount�
     // 2 000 USDC added, less the 0.05% fee
     const state = runIncrease(expandDecimals(1_990, 6));
 
-    expect(bigMath.abs(state!.remainingCollateralUsd - expandDecimals(960, USD_DECIMALS))).toBeLessThan(ONE_CENT);
+    // collateral 2 980, unrealized loss 2 000, closing fee 20
+    expect(state?.remainingCollateralUsd).toBe(expandDecimals(960, USD_DECIMALS) - ROUND_UP_DUST);
     expect(state?.minCollateralUsdForLeverage).toBe(expandDecimals(400, USD_DECIMALS));
     expect(state?.isLiquidatable).toBe(false);
     expect(state?.reason).toBeUndefined();
@@ -829,5 +824,192 @@ describe("getIncreaseResultingPositionMarginState — evaluation at the trigger 
     // the collateral is valued at the trigger (~90 USD), not at the current price (~100 USD)
     expect(state!.remainingCollateralUsd).toBeLessThanOrEqual(expandDecimals(90, USD_DECIMALS));
     expect(state!.remainingCollateralUsd).toBeGreaterThan(expandDecimals(89, USD_DECIMALS));
+  });
+});
+
+describe("pool pnl cap — profitable position while the cap binds, min < max", () => {
+  const spreadTokens = mockTokensData({
+    BTC: { prices: { minPrice: expandDecimals(20_000, 30), maxPrice: expandDecimals(20_400, 30) } },
+    USDC: { prices: { minPrice: expandDecimals(99, 28), maxPrice: expandDecimals(101, 28) } },
+  } as any);
+
+  const spreadUsdc = spreadTokens.USDC;
+  const spreadBtc = spreadTokens.BTC;
+
+  function cappedMarket(overrides: Record<string, bigint | boolean>) {
+    return mockMarketsInfoData(spreadTokens, ["BTC-BTC-USDC"], {
+      "BTC-BTC-USDC": {
+        minCollateralFactor: expandDecimals(1, 28),
+        minCollateralFactorForLiquidation: expandDecimals(5, 27),
+        minCollateralFactorForOpenInterestLong: 0n,
+        minCollateralFactorForOpenInterestShort: 0n,
+        positionFeeFactorForBalanceWasImproved: 0n,
+        positionFeeFactorForBalanceWasNotImproved: 0n,
+        positionImpactFactorPositive: 0n,
+        positionImpactFactorNegative: 0n,
+        maxPositionImpactFactorPositive: 0n,
+        maxPositionImpactFactorNegative: 0n,
+        maxPositionImpactFactorForLiquidations: 0n,
+        // traders may take at most 10% of the pool
+        maxPnlFactorForTradersLong: expandDecimals(1, 29),
+        maxPnlFactorForTradersShort: expandDecimals(1, 29),
+        ...overrides,
+      },
+    })["BTC-BTC-USDC"];
+  }
+
+  it.each([
+    {
+      side: "long",
+      isLong: true,
+      // 10 BTC pool at the 20 000 min price = 200 000 → max pnl 20 000;
+      // 5 BTC of long OI opened for 62 000: at the maximising 20 400 the pool owes 102 000 − 62 000 = 40 000,
+      // at 20 000 only 38 000
+      marketInfo: cappedMarket({
+        longPoolAmount: expandDecimals(10, 8),
+        longInterestUsd: expandDecimals(62_000, USD_DECIMALS),
+        longInterestInTokens: expandDecimals(5, 8),
+        longInterestUsdUsingLongToken: 0n,
+        longInterestInTokensUsingLongToken: 0n,
+        longInterestUsdUsingShortToken: expandDecimals(62_000, USD_DECIMALS),
+        longInterestInTokensUsingShortToken: expandDecimals(5, 8),
+      }),
+      // 10 000 bought at 16 000 = 0.625 BTC, worth 12 500 at the 20 000 min price → +2 500 raw
+      sizeInTokens: 62_500_000n,
+      rawPnlUsd: expandDecimals(2_500, USD_DECIMALS),
+      // 2 500 × 20 000 / 40 000
+      cappedPnlUsd: expandDecimals(1_250, USD_DECIMALS),
+      // 2 500 × 20 000 / 38 000 — the cap ratio at the minimising price
+      cappedAtMinimisingPriceUsd: (expandDecimals(2_500, USD_DECIMALS) * 20_000n) / 38_000n,
+    },
+    {
+      side: "short",
+      isLong: false,
+      // 200 000 USDC pool at 0.99 = 198 000 → max pnl 19 800;
+      // 5 BTC of short OI sold for 139 600: at the maximising 20 000 the pool owes 139 600 − 100 000 = 39 600,
+      // at 20 400 only 37 600
+      marketInfo: cappedMarket({
+        shortPoolAmount: expandDecimals(200_000, 6),
+        shortInterestUsd: expandDecimals(139_600, USD_DECIMALS),
+        shortInterestInTokens: expandDecimals(5, 8),
+        shortInterestUsdUsingLongToken: 0n,
+        shortInterestInTokensUsingLongToken: 0n,
+        shortInterestUsdUsingShortToken: expandDecimals(139_600, USD_DECIMALS),
+        shortInterestInTokensUsingShortToken: expandDecimals(5, 8),
+      }),
+      // 10 000 sold at 25 000 = 0.4 BTC, bought back for 8 160 at the 20 400 max price → +1 840 raw
+      sizeInTokens: 40_000_000n,
+      rawPnlUsd: expandDecimals(1_840, USD_DECIMALS),
+      // 1 840 × 19 800 / 39 600
+      cappedPnlUsd: expandDecimals(920, USD_DECIMALS),
+      // 1 840 × 19 800 / 37 600
+      cappedAtMinimisingPriceUsd: (expandDecimals(1_840, USD_DECIMALS) * 19_800n) / 37_600n,
+    },
+  ])(
+    "scales a $side's profit by the pool cap taken at the price that maximises the pool's pnl",
+    ({ isLong, marketInfo, sizeInTokens, rawPnlUsd, cappedPnlUsd, cappedAtMinimisingPriceUsd }) => {
+      const state = getResultingPositionMarginState({
+        marketInfo,
+        collateralToken: spreadUsdc,
+        sizeInUsd: expandDecimals(10_000, USD_DECIMALS),
+        sizeInTokens,
+        // 1 000 USDC at 0.99
+        collateralAmount: expandDecimals(1_000, spreadUsdc.decimals),
+        pendingImpactAmount: 0n,
+        minCollateralUsd: expandDecimals(1, USD_DECIMALS),
+        isLong,
+        userReferralInfo: undefined,
+      });
+
+      const collateralUsd = expandDecimals(990, USD_DECIMALS);
+
+      expect(state.remainingCollateralUsd).toBe(collateralUsd + cappedPnlUsd);
+      expect(state.remainingCollateralUsd).not.toBe(collateralUsd + cappedAtMinimisingPriceUsd);
+      expect(state.remainingCollateralUsd).not.toBe(collateralUsd + rawPnlUsd);
+      expect(state.isLiquidatable).toBe(false);
+      expect(spreadBtc.prices.minPrice).toBeLessThan(spreadBtc.prices.maxPrice);
+    }
+  );
+});
+
+describe("getIncreaseResultingPositionMarginState — collateral delta and impact clamp", () => {
+  const marketInfo = buildMarket();
+  const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
+
+  // 10 000 of size opened at the oracle price with 1 000 USDC
+  const existingPosition = {
+    sizeInUsd: expandDecimals(10_000, USD_DECIMALS),
+    sizeInTokens: btcAmount(10_000),
+    collateralAmount: usdcAmount(1_000),
+    pendingImpactAmount: 0n,
+  };
+
+  function sizeOnlyIncrease(collateralDeltaAmount: bigint) {
+    return getIncreaseResultingPositionMarginState({
+      marketInfo,
+      collateralToken: usdc,
+      isLong: true,
+      existingPosition,
+      sizeDeltaUsd: expandDecimals(10_000, USD_DECIMALS),
+      sizeDeltaInTokens: btcAmount(10_000),
+      collateralDeltaAmount,
+      minCollateralUsd,
+      userReferralInfo: undefined,
+    });
+  }
+
+  it("a negative collateralDeltaAmount is paid from the existing collateral", () => {
+    // 1 000 − 50, flat pnl, no fees
+    const state = sizeOnlyIncrease(-usdcAmount(50));
+
+    expect(state?.remainingCollateralUsd).toBe(expandDecimals(950, USD_DECIMALS));
+    expect(state?.isLiquidatable).toBe(false);
+  });
+
+  it("clamps the collateral at zero when the fees exceed it", () => {
+    // 1 000 − 1 100 → 0; the open-interest gate runs first and sees no collateral against
+    // 1% of the 20 000 of resulting size, so its reason wins over MinCollateral
+    const state = sizeOnlyIncrease(-usdcAmount(1_100));
+
+    expect(state?.remainingCollateralUsd).toBe(0n);
+    expect(state?.isLiquidatable).toBe(true);
+    expect(state?.reason).toBe(PositionMarginFailureReason.InsufficientCollateralUsd);
+  });
+
+  it("the summed negative impact is clamped by maxPositionImpactFactorForLiquidations after the pending impact is added", () => {
+    // linear impact, shorts 30 000 vs longs 10 000: closing the 10 000 long widens the gap by 10 000
+    // → exit impact −2% × 10 000 = −200
+    const impactMarket = (maxPositionImpactFactorForLiquidations: bigint) =>
+      buildMarket({
+        positionImpactFactorNegative: expandDecimals(2, 28),
+        positionImpactExponentFactorPositive: expandDecimals(1, 30),
+        positionImpactExponentFactorNegative: expandDecimals(1, 30),
+        maxPositionImpactFactorNegative: expandDecimals(1, 29),
+        maxPositionImpactFactorForLiquidations,
+        longInterestUsd: expandDecimals(10_000, USD_DECIMALS),
+        shortInterestUsd: expandDecimals(30_000, USD_DECIMALS),
+        longInterestInTokens: btcAmount(10_000),
+        shortInterestInTokens: btcAmount(30_000),
+        useOpenInterestInTokensForBalance: false,
+      });
+
+    const run = (maxPositionImpactFactorForLiquidations: bigint) =>
+      getResultingPositionMarginState({
+        marketInfo: impactMarket(maxPositionImpactFactorForLiquidations),
+        collateralToken: usdc,
+        sizeInUsd: expandDecimals(10_000, USD_DECIMALS),
+        sizeInTokens: btcAmount(10_000),
+        collateralAmount: usdcAmount(1_000),
+        // −300 USD at the 20 000 index price = −0.015 BTC
+        pendingImpactAmount: -1_500_000n,
+        minCollateralUsd,
+        isLong: true,
+        userReferralInfo: undefined,
+      });
+
+    // −300 − 200 = −500, clamped at 1% of 10 000 → 1 000 − 100
+    expect(run(expandDecimals(1, 28)).remainingCollateralUsd).toBe(expandDecimals(900, USD_DECIMALS));
+    // with a 10% cap the whole −500 goes through
+    expect(run(expandDecimals(1, 29)).remainingCollateralUsd).toBe(expandDecimals(500, USD_DECIMALS));
   });
 });
