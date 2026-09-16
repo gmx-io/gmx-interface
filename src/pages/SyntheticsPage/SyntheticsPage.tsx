@@ -220,9 +220,9 @@ export function SyntheticsPage(p: Props) {
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
   useEffect(() => {
-    // Mobile wallet browsers use the page title as the dApp name when connecting.
-    if (getIsMobileUserAgent()) {
-      document.title = window.location.hostname;
+    // Trust Wallet's mobile browser uses the page title as the dApp name when connecting.
+    if (getIsMobileUserAgent() && (window.ethereum?.isTrust || window.ethereum?.isTrustWallet)) {
+      document.title = t`GMX | decentralized perpetual exchange`;
       return;
     }
 

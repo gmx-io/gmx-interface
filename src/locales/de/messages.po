@@ -11645,6 +11645,7 @@ msgid "Cancellable in ..."
 msgstr "Stornierbar in ..."
 
 #: src/components/Seo/SEO.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
