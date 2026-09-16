@@ -19,6 +19,26 @@
         margin: 0;
         background: #090a14;
       }
+      #app-loading:not([hidden]) {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      #app-loading button {
+        padding: 12px 24px;
+        border: 0;
+        border-radius: 4px;
+        background: #2d42fc;
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
+      }
     </style>
     <!-- gmx-pwa-metadata -->
     <meta property="og:title" content="GMX | Decentralized Perpetual Exchange" />
@@ -121,6 +141,22 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Available before JavaScript and translations load. -->
+    <main id="app-loading" role="status">
+      <p id="app-loading-message">Loading...</p>
+      <button type="button" onclick="window.location.reload()">Reload page</button>
+    </main>
+    <script>
+      window.addEventListener(
+        "error",
+        function (event) {
+          if (event.target instanceof HTMLScriptElement && event.target.type === "module") {
+            document.getElementById("app-loading-message").textContent = "Something went wrong";
+          }
+        },
+        true
+      );
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.
