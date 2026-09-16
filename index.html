@@ -1,10 +1,18 @@
 <!doctype html>
-<html lang="en" class="notranslate" translate="no">
+<html lang="en" class="notranslate dark" translate="no">
   <head>
     <meta name="google" content="notranslate" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <script>
+      // Apply the saved theme before the app styles load.
+      try {
+        const themeMode = JSON.parse(localStorage.getItem(JSON.stringify("app-theme-mode")) || "null") || "dark";
+        const isDark =
+          themeMode === "dark" || (themeMode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      } catch {}
+
       // Configure the installed viewport before WebKit performs its first layout.
       if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
         document.documentElement.setAttribute("data-installed-app", "");
@@ -13,11 +21,17 @@
     </script>
     <meta name="theme-color" content="#090A14" />
     <style>
+      :root {
+        --color-slate-950: #090a14;
+      }
+      :root:not(.dark) {
+        --color-slate-950: #eeeef4;
+      }
       html,
       body {
         min-height: 100%;
         margin: 0;
-        background: #090a14;
+        background: var(--color-slate-950);
       }
       #app-loading:not([hidden]) {
         min-height: 100vh;
