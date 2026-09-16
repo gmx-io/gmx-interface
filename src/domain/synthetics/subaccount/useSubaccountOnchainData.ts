@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
@@ -117,10 +117,14 @@ export function useSubaccountOnchainData(
     },
   });
 
+  const refreshSubaccountData = useCallback(() => {
+    mutate(undefined, { revalidate: true, populateCache: false });
+  }, [mutate]);
+
   return useMemo(() => {
     return {
       subaccountData: data,
-      refreshSubaccountData: mutate,
+      refreshSubaccountData,
     };
-  }, [data, mutate]);
+  }, [data, refreshSubaccountData]);
 }
