@@ -22,7 +22,7 @@ describe("startup error boundary", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     document.body.insertAdjacentHTML(
       "beforeend",
-      '<main id="app-loading"><p id="app-loading-message">Loading...</p><button>Reload page</button></main>'
+      '<main id="app-loading" hidden><p id="app-loading-message">Something went wrong</p><button>Reload page</button></main>'
     );
     if (alreadyStarted) {
       completeAppStartup();

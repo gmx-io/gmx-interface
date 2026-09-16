@@ -41,8 +41,8 @@ export function useConfigureMetrics() {
   }, []);
 
   useEffect(() => {
-    metrics.setFetcher(fetcher);
     setStartupErrorReporter(metrics.pushError);
+    metrics.setFetcher(fetcher);
   }, [fetcher]);
 
   useEffect(() => {
