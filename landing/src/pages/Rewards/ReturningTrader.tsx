@@ -60,16 +60,9 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
     []
   );
 
-  function highlightAddress() {
-    setAddressHighlightKey((key) => key + 1);
-  }
-
   function focusAddress() {
-    if (document.activeElement === inputRef.current) {
-      highlightAddress();
-    } else {
-      inputRef.current?.focus();
-    }
+    inputRef.current?.focus();
+    setAddressHighlightKey((key) => key + 1);
   }
 
   const onResultRevealed = useCallback(
@@ -165,11 +158,10 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
               spellCheck={false}
               aria-invalid={Boolean(validationError)}
               aria-describedby={validationError ? "rewards-address-error" : undefined}
-              onFocus={highlightAddress}
-              onPointerDown={(event) => {
-                if (document.activeElement === event.currentTarget) highlightAddress();
+              onBlur={() => {
+                setAddressHighlightKey(0);
+                trackAddressEntered();
               }}
-              onBlur={trackAddressEntered}
               onChange={(event) => {
                 requestId.current += 1;
                 setInput(event.target.value);
