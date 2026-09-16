@@ -33,6 +33,14 @@
         margin: 0;
         background: var(--color-slate-950);
       }
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        background: var(--color-slate-950);
+      }
       #app-loading:not([hidden]) {
         min-height: 100vh;
         display: flex;
@@ -55,6 +63,13 @@
         cursor: pointer;
       }
     </style>
+    <noscript>
+      <style>
+        #app-splash {
+          display: none;
+        }
+      </style>
+    </noscript>
     <!-- gmx-pwa-metadata -->
     <meta property="og:title" content="GMX | Decentralized Perpetual Exchange" />
     <meta property="og:site_name" content="GMX" />
@@ -157,6 +172,9 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <!-- Available before JavaScript and translations load. -->
+    <div id="app-splash" role="status">
+      <img src="/src/img/logo-icon.svg?inline" width="84" height="69" alt="GMX" />
+    </div>
     <main id="app-loading" role="status" hidden>
       <p id="app-loading-message">Something went wrong</p>
       <button type="button" onclick="window.location.reload()">Reload page</button>
@@ -166,6 +184,7 @@
         "error",
         function (event) {
           if (event.target instanceof HTMLScriptElement && event.target.type === "module") {
+            document.getElementById("app-splash")?.remove();
             document.getElementById("app-loading").hidden = false;
           }
         },

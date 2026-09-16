@@ -9,6 +9,7 @@ vi.mock("lib/metrics/startupErrors", () => ({ reportStartupError: vi.fn() }));
 
 afterEach(() => {
   cleanup();
+  document.getElementById("app-splash")?.remove();
   document.getElementById("app-loading")?.remove();
   vi.restoreAllMocks();
 });
@@ -22,7 +23,7 @@ describe("startup error boundary", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     document.body.insertAdjacentHTML(
       "beforeend",
-      '<main id="app-loading" hidden><p id="app-loading-message">Something went wrong</p><button>Reload page</button></main>'
+      '<div id="app-splash"><img alt="GMX" /></div><main id="app-loading" hidden><p id="app-loading-message">Something went wrong</p><button>Reload page</button></main>'
     );
     if (alreadyStarted) {
       completeAppStartup();
@@ -34,6 +35,7 @@ describe("startup error boundary", () => {
       </StartupErrorBoundary>
     );
 
+    expect(document.getElementById("app-splash")).toBeNull();
     expect(document.getElementById("app-loading")?.hidden).toBe(false);
     expect(document.getElementById("app-loading-message")?.textContent).toBe("Something went wrong");
     expect(document.querySelector("#app-loading button")?.textContent).toBe("Reload page");
