@@ -61,6 +61,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -219,6 +220,12 @@ export function SyntheticsPage(p: Props) {
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
   useEffect(() => {
+    // Mobile wallet browsers use the page title as the dApp name when connecting.
+    if (getIsMobileUserAgent()) {
+      document.title = window.location.hostname;
+      return;
+    }
+
     if (!chartToken) return;
 
     const averagePrice = getMidPrice(chartToken.prices);
