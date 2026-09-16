@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer } from "react-toastify";
@@ -10,9 +11,14 @@ import { useAffiliateCodes } from "domain/referrals/hooks";
 import { useCreateReferralCode } from "domain/referrals/hooks/useCreateReferralCode";
 import { getCodeError } from "domain/referrals/utils/referralsHelper";
 import type { IncentivesConfig } from "domain/synthetics/incentives/v2/types";
-import { formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
+import {
+  formatFactorPercentage,
+  formatMultiplierAdjustment,
+  getMaxRewardRateFactor,
+} from "domain/synthetics/incentives/v2/utils";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
-import { MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
+import { helperToast } from "lib/helperToast";
+import { getHomeUrl, getTwitterIntentURL, MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
 import { getComebackAnalyticsParams, sendRewardsLandingEvent } from "lib/userAnalytics/rewardsLandingEvents";
 import useWallet from "lib/wallets/useWallet";
 import WalletProvider from "lib/wallets/WalletProvider";
@@ -22,6 +28,7 @@ import XIcon from "img/social/ic_x_new.svg?react";
 
 import { ReferralCardFrame, RewardsReferralCard } from "./RewardsReferralCard";
 import { RewardsValue } from "./RewardsValue";
+import { useRewardsReferralShare } from "../../hooks/useRewardsReferralShare";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -111,7 +118,9 @@ function ConnectedReferral({
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState<string>();
   const [isSharing, setIsSharing] = useState(false);
+  const [sharingLink, setSharingLink] = useState<"copy" | "x">();
   const imageRef = useRef<HTMLDivElement>(null);
+  const { i18n } = useLingui();
   const { chainId, signer } = useWallet();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
   const ownsAccount = Boolean(connectedAccount && getAddress(connectedAccount) === getAddress(account));
@@ -129,12 +138,19 @@ function ConnectedReferral({
   });
   const code = createdCode ?? codes.code ?? undefined;
   const loadingCode = !code && !codes.success && !codes.error;
-  const url = code ? `${window.location.origin}/rewards?ref=${encodeURIComponent(code)}` : undefined;
+  const url = code ? `${getHomeUrl()}/rewards?ref=${encodeURIComponent(code)}` : undefined;
   const codeError = getCodeError(input);
   const analyticsParams = getComebackAnalyticsParams(rewardsUsd, Boolean(code));
   const bonus = config?.boosts.find(({ boost }) => boost === "ManualAllocation")?.multiplier;
   const multiplier =
     config && bonus !== undefined ? formatMultiplierAdjustment(bonus, config.multiplierDecimals) : undefined;
+  const maximumRate = config ? formatFactorPercentage(getMaxRewardRateFactor(config)) : undefined;
+  const getShareLink = useRewardsReferralShare({
+    imageRef,
+    code,
+    cardKey: JSON.stringify([url, Boolean(hasBonus), multiplier, maximumRate, i18n.locale]),
+  });
+  const sharingDisabled = isSharing || Boolean(sharingLink) || loading || !config;
   const shareText =
     hasBonus && multiplier
       ? t`I'm getting ${multiplier} rewards. Traded on GMX before? Check your wallet.`
@@ -149,17 +165,60 @@ function ConnectedReferral({
   }
 
   async function copyLink() {
+    if (sharingDisabled) return;
     sendRewardsLandingEvent({ action: "ComebackShareClick", type: "CopyLink", ...analyticsParams });
+    setSharingLink("copy");
+    const link = getShareLink();
     try {
-      await navigator.clipboard.writeText(url!);
-      setFeedback(t`Link copied`);
-    } catch (_error) {
-      setFeedback(t`Unable to copy. Copy the link below.`);
+      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+        // Keep the clipboard call in the click handler while the image uploads (Safari).
+        await navigator.clipboard.write([
+          new ClipboardItem({ "text/plain": link.then((value) => new Blob([value], { type: "text/plain" })) }),
+        ]);
+      } else {
+        await navigator.clipboard.writeText(await link);
+      }
+      helperToast.success(t`Link copied to clipboard`);
+    } catch {
+      const shareUrl = await link.catch(() => undefined);
+      if (shareUrl) {
+        helperToast.error(
+          <>
+            <Trans>Unable to copy. Copy the link below.</Trans>
+            <a className="block break-all" href={shareUrl}>
+              {shareUrl}
+            </a>
+          </>
+        );
+      } else {
+        helperToast.error(t`Image generation failed. Refresh and try again.`);
+      }
+    } finally {
+      setSharingLink(undefined);
+    }
+  }
+
+  async function shareOnX() {
+    if (sharingDisabled) return;
+    sendRewardsLandingEvent({ action: "ComebackShareClick", type: "X", ...analyticsParams });
+    const popup = window.open("about:blank", "_blank");
+    if (popup) popup.opener = null;
+    setSharingLink("x");
+    try {
+      const shareUrl = await getShareLink();
+      const intentUrl = getTwitterIntentURL(shareText, shareUrl);
+      if (popup && !popup.closed) popup.location.replace(intentUrl);
+      else window.location.assign(intentUrl);
+    } catch {
+      popup?.close();
+      helperToast.error(t`Image generation failed. Refresh and try again.`);
+    } finally {
+      setSharingLink(undefined);
     }
   }
 
   async function copyImage() {
-    if (!imageRef.current || isSharing) return;
+    if (!imageRef.current || sharingDisabled) return;
     sendRewardsLandingEvent({ action: "ComebackShareClick", type: "CopyImage", ...analyticsParams });
     setIsSharing(true);
     try {
@@ -179,51 +238,51 @@ function ConnectedReferral({
       config={config}
       loading={loading}
       preview={
-        <RewardsReferralCard
-          code={code}
-          url={url}
-          loadingCode={loadingCode}
-          ref={imageRef}
-          config={config}
-          loading={loading}
-          hasBonus={Boolean(code && hasBonus)}
-        />
-      }
-    >
-      {code && url ? (
         <>
-          <div className="rewards-share-buttons">
-            <a
-              className="rewards-button"
-              href={`https://x.com/intent/post?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={t`Share on X`}
-              onClick={() => sendRewardsLandingEvent({ action: "ComebackShareClick", type: "X", ...analyticsParams })}
-            >
-              <Trans>Share on</Trans>
-              <XIcon aria-hidden="true" />
-            </a>
-            <button
-              className="rewards-button rewards-button-muted"
-              onClick={() => void copyImage()}
-              disabled={isSharing}
-            >
-              {isSharing ? <Trans>Preparing...</Trans> : <Trans>Copy image</Trans>}
-              <CopyIcon aria-hidden="true" />
-            </button>
-            <button className="rewards-button rewards-button-muted" onClick={() => void copyLink()}>
-              <Trans>Copy link</Trans>
-              <CopyIcon aria-hidden="true" />
-            </button>
-          </div>
-          {feedback && (
-            <div className="rewards-share-feedback" role="status">
-              <p>{feedback}</p>
-              <a href={url}>{url}</a>
+          <RewardsReferralCard
+            code={code}
+            url={url}
+            loadingCode={loadingCode}
+            config={config}
+            loading={loading}
+            hasBonus={Boolean(code && hasBonus)}
+          />
+          {code && url && (
+            <div className="rewards-share-export" aria-hidden="true">
+              <RewardsReferralCard ref={imageRef} code={code} url={url} config={config} hasBonus={Boolean(hasBonus)} />
             </div>
           )}
         </>
+      }
+    >
+      {code && url ? (
+        <div className="rewards-share-buttons">
+          <button
+            className="rewards-button"
+            disabled={sharingDisabled}
+            aria-label={t`Share on X`}
+            onClick={() => void shareOnX()}
+          >
+            {sharingLink === "x" ? <Trans>Preparing...</Trans> : <Trans>Share on</Trans>}
+            <XIcon aria-hidden="true" />
+          </button>
+          <button
+            className="rewards-button rewards-button-muted"
+            onClick={() => void copyImage()}
+            disabled={sharingDisabled}
+          >
+            {isSharing ? <Trans>Preparing...</Trans> : <Trans>Copy image</Trans>}
+            <CopyIcon aria-hidden="true" />
+          </button>
+          <button
+            className="rewards-button rewards-button-muted"
+            onClick={() => void copyLink()}
+            disabled={sharingDisabled}
+          >
+            {sharingLink === "copy" ? <Trans>Preparing...</Trans> : <Trans>Copy link</Trans>}
+            <CopyIcon aria-hidden="true" />
+          </button>
+        </div>
       ) : codes.error ? (
         <div className="rewards-referral-error">
           <p role="alert">

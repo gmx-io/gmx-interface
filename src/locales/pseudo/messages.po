@@ -706,6 +706,8 @@ msgstr ""
 msgid "Crypto"
 msgstr "[!! Crypto !!]"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr ""
@@ -3971,6 +3973,8 @@ msgstr ""
 msgid "Invalid signature. Try signing the request again"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Preparing..."
 msgstr ""
@@ -10163,7 +10167,6 @@ msgstr ""
 msgid "Today"
 msgstr ""
 
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr ""
@@ -12798,6 +12801,7 @@ msgstr ""
 msgid "Stake {tokenSymbol}"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr ""

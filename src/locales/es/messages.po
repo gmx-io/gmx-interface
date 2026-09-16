@@ -706,6 +706,8 @@ msgstr "Seleccionar token"
 msgid "Crypto"
 msgstr "Cripto"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "La generación de la imagen ha fallado. Actualice la página e inténtelo de nuevo."
@@ -3971,6 +3973,8 @@ msgstr "Saldo de gas insuficiente. Express Trading y One-Click Trading no dispon
 msgid "Invalid signature. Try signing the request again"
 msgstr "Firma no válida. Intente firmar la solicitud de nuevo"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Preparing..."
 msgstr "Preparando..."
@@ -10163,7 +10167,6 @@ msgstr "Mantener el apalancamiento en {currentLeverage}"
 msgid "Today"
 msgstr "Hoy"
 
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "Enlace copiado"
@@ -12798,6 +12801,7 @@ msgstr "Introduzca un nuevo importe o precio"
 msgid "Stake {tokenSymbol}"
 msgstr "Hacer staking de {tokenSymbol}"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "Enlace copiado al portapapeles"

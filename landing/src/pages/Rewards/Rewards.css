@@ -884,6 +884,24 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   justify-content: space-between;
   gap: 16px;
 }
+.rewards-share-export {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 400px;
+  pointer-events: none;
+}
+.rewards-share-export .rewards-share-image {
+  transform: none;
+  min-height: 210px;
+}
+.rewards-share-export .rewards-share-image-copy strong {
+  font-size: 36px;
+}
+.rewards-share-export .rewards-share-code {
+  flex-shrink: 0;
+  max-width: 33%;
+}
 .rewards-share-art {
   position: absolute;
   inset: 0;
@@ -1033,13 +1051,9 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   height: 16px;
   flex-shrink: 0;
 }
-.rewards-share-buttons a svg {
+.rewards-share-buttons > .rewards-button:first-child svg {
   width: 20px;
   height: 20px;
-}
-.rewards-share-feedback {
-  margin-top: 12px;
-  overflow-wrap: anywhere;
 }
 .rewards-create-code {
   display: flex;

@@ -706,6 +706,8 @@ msgstr "選擇代幣"
 msgid "Crypto"
 msgstr "加密"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "圖片生成失敗。請重新整理後再試一次。"
@@ -3971,6 +3973,8 @@ msgstr "Gas 餘額不足。Express Trading 和 One-Click Trading 無法使用。
 msgid "Invalid signature. Try signing the request again"
 msgstr "簽名無效。請重新簽署請求"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Preparing..."
 msgstr "準備中..."
@@ -10163,7 +10167,6 @@ msgstr "維持槓桿於 {currentLeverage}"
 msgid "Today"
 msgstr "今天"
 
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "連結已複製"
@@ -12798,6 +12801,7 @@ msgstr "輸入新的金額或價格"
 msgid "Stake {tokenSymbol}"
 msgstr "質押 {tokenSymbol}"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "連結已複製到剪貼簿"

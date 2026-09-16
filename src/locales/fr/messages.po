@@ -706,6 +706,8 @@ msgstr "Sélectionner un jeton"
 msgid "Crypto"
 msgstr "Crypto"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "La génération d'image a échoué. Actualisez et réessayez."
@@ -3971,6 +3973,8 @@ msgstr "Solde de gas insuffisant. Express Trading et One-Click Trading indisponi
 msgid "Invalid signature. Try signing the request again"
 msgstr "Signature non valide. Essayez de signer à nouveau la requête"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Preparing..."
 msgstr "Préparation..."
@@ -10163,7 +10167,6 @@ msgstr "Maintenir l'effet de levier à {currentLeverage}"
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "Lien copié"
@@ -12798,6 +12801,7 @@ msgstr "Saisissez un nouveau montant ou prix"
 msgid "Stake {tokenSymbol}"
 msgstr "Staker {tokenSymbol}"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"

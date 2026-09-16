@@ -706,6 +706,8 @@ msgstr "토큰 선택"
 msgid "Crypto"
 msgstr "암호화폐"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "이미지 생성에 실패했습니다. 새로고침 후 다시 시도하십시오."
@@ -3971,6 +3973,8 @@ msgstr "가스 잔액이 부족합니다. Express Trading 및 One-Click Trading�
 msgid "Invalid signature. Try signing the request again"
 msgstr "서명이 유효하지 않습니다. 요청에 다시 서명해 주세요"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Preparing..."
 msgstr "준비 중..."
@@ -10163,7 +10167,6 @@ msgstr "레버리지를 {currentLeverage}로 유지"
 msgid "Today"
 msgstr "오늘"
 
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "링크 복사됨"
@@ -12798,6 +12801,7 @@ msgstr "새로운 금액 또는 가격을 입력하십시오"
 msgid "Stake {tokenSymbol}"
 msgstr "{tokenSymbol} 스테이킹"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "링크가 클립보드에 복사되었습니다"

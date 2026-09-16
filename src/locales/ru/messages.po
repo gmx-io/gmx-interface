@@ -706,6 +706,8 @@ msgstr "Выберите токен"
 msgid "Crypto"
 msgstr "Крипто"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "Не удалось сгенерировать изображение. Обновите страницу и попробуйте снова."
@@ -3971,6 +3973,8 @@ msgstr "Недостаточный баланс для газа. Express Trading
 msgid "Invalid signature. Try signing the request again"
 msgstr "Недействительная подпись. Попробуйте подписать запрос еще раз"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Preparing..."
 msgstr "Подготовка..."
@@ -10163,7 +10167,6 @@ msgstr "Сохранить кредитное плечо на уровне {curr
 msgid "Today"
 msgstr "Сегодня"
 
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "Ссылка скопирована"
@@ -12798,6 +12801,7 @@ msgstr "Введите новую сумму или цену"
 msgid "Stake {tokenSymbol}"
 msgstr "Застейкать {tokenSymbol}"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "Ссылка скопирована в буфер обмена"

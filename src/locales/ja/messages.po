@@ -706,6 +706,8 @@ msgstr "トークンを選択"
 msgid "Crypto"
 msgstr "暗号資産"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "画像の生成に失敗しました。更新して再度お試しください。"
@@ -3971,6 +3973,8 @@ msgstr "Gasの残高が不足しています。Express TradingとOne-Click Tradi
 msgid "Invalid signature. Try signing the request again"
 msgstr "署名が無効です。リクエストに再度署名してください"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Preparing..."
 msgstr "準備中..."
@@ -10163,7 +10167,6 @@ msgstr "レバレッジを{currentLeverage}に維持"
 msgid "Today"
 msgstr "今日"
 
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "リンクをコピーしました"
@@ -12798,6 +12801,7 @@ msgstr "新しい金額または価格を入力してください"
 msgid "Stake {tokenSymbol}"
 msgstr "{tokenSymbol}をステーク"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "リンクがクリップボードにコピーされました"
