@@ -67,7 +67,6 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import {
   findMaxLeverageIncrease,
-  getIsMaxLeverageIncreaseAvailable,
   type MaxLeverageIncreaseParams,
 } from "domain/synthetics/trade/utils/maxLeverageSearch";
 import {
@@ -823,19 +822,15 @@ export function useDetectAndSetAvailableMaxLeverage({
     tradeMode,
   ]);
 
-  const hasAvailableMaxLeverage = useMemo(
-    () => maxLeverageSearchParams !== undefined && getIsMaxLeverageIncreaseAvailable(maxLeverageSearchParams),
+  const maxLeverageIncrease = useMemo(
+    () => (maxLeverageSearchParams === undefined ? undefined : findMaxLeverageIncrease(maxLeverageSearchParams)),
     [maxLeverageSearchParams]
   );
 
+  const hasAvailableMaxLeverage = maxLeverageIncrease !== undefined;
+
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
-    if (!maxLeverageSearchParams || !toToken) {
-      return;
-    }
-
-    const maxLeverageIncrease = findMaxLeverageIncrease(maxLeverageSearchParams);
-
-    if (!maxLeverageIncrease) {
+    if (!maxLeverageIncrease || !toToken) {
       return;
     }
 
@@ -861,7 +856,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       ),
       true
     );
-  }, [isLeverageSliderEnabled, maxLeverageSearchParams, setLeverageOption, setToTokenInputValue, toToken]);
+  }, [isLeverageSliderEnabled, maxLeverageIncrease, setLeverageOption, setToTokenInputValue, toToken]);
 
   return {
     hasAvailableMaxLeverage,

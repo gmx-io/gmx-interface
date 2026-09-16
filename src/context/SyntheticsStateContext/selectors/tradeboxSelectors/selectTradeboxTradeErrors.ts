@@ -1,5 +1,6 @@
 import {
   selectChainId,
+  selectIsPositionsLoading,
   selectPositionConstants,
   selectProDiscountFactor,
   selectUserReferralInfo,
@@ -44,7 +45,11 @@ import {
 import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
 import { OrderType } from "sdk/utils/orders/types";
 import { getIncreaseEvaluationIndexPrice, getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
-import { getIncreaseResultingPositionMarginState, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getIncreaseResultingPositionMarginState,
+  getIsMaxLeverageMarginReason,
+  PositionMarginState,
+} from "sdk/utils/trade/increaseMarginCheck";
 
 const selectTradeboxSwapTradeError = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -89,7 +94,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
   (q): PositionMarginState | undefined => {
     const { isIncrease, isLong, isTwap } = q(selectTradeboxTradeFlags);
 
-    if (!isIncrease || isTwap) {
+    if (!isIncrease || isTwap || q(selectIsPositionsLoading)) {
       return undefined;
     }
 
@@ -271,7 +276,9 @@ export const selectTradeboxIncreaseMaxLeverageAlert = createSelector((q): "error
     return undefined;
   }
 
-  if (q(selectTradeboxIncreaseResultingPositionMarginState)?.isLiquidatable !== true) {
+  const marginState = q(selectTradeboxIncreaseResultingPositionMarginState);
+
+  if (marginState?.isLiquidatable !== true) {
     return undefined;
   }
 
@@ -282,7 +289,11 @@ export const selectTradeboxIncreaseMaxLeverageAlert = createSelector((q): "error
       : undefined;
   }
 
-  return q(selectTradeboxIncreaseTradeError).buttonErrorMessage ? undefined : "warning";
+  if (q(selectTradeboxIncreaseTradeError).buttonErrorMessage) {
+    return undefined;
+  }
+
+  return getIsMaxLeverageMarginReason(marginState.reason) ? "warning" : undefined;
 });
 
 export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) => {
@@ -296,8 +307,10 @@ export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) =
     return false;
   }
 
-  if (q(selectTradeboxIncreaseResultingPositionMarginState)?.isLiquidatable === true) {
-    return false;
+  const marginState = q(selectTradeboxIncreaseResultingPositionMarginState);
+
+  if (marginState?.isLiquidatable === true) {
+    return !getIsMaxLeverageMarginReason(marginState.reason);
   }
 
   const existingPosition = q(selectTradeboxSelectedPosition);

@@ -92,7 +92,6 @@ import { getMarkPrice } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import {
   findMaxLeverageIncrease,
-  getIsMaxLeverageIncreaseAvailable,
   type MaxLeverageIncreaseParams,
 } from "domain/synthetics/trade/utils/maxLeverageSearch";
 import {
@@ -363,9 +362,6 @@ export function OrderEditor(p: Props) {
     return false;
   }, [p.order, sizeDeltaUsd, nextPositionValuesWithoutPnlForIncrease?.nextLeverage]);
 
-  const showResultingPositionMaxLeverageWarning =
-    !isIncreaseExecutableNow && !isMaxLeverageError && resultingPositionMarginState?.isLiquidatable === true;
-
   const isMaxLeverageActionOffered =
     isMaxLeverageError || (isResultingPositionBlocking && isResultingPositionMaxLeverageError);
 
@@ -428,18 +424,14 @@ export function OrderEditor(p: Props) {
     isSetAcceptablePriceImpactEnabled,
   ]);
 
-  const hasAvailableMaxLeverage = useMemo(
-    () => maxLeverageSearchParams !== undefined && getIsMaxLeverageIncreaseAvailable(maxLeverageSearchParams),
+  const maxLeverageIncrease = useMemo(
+    () => (maxLeverageSearchParams === undefined ? undefined : findMaxLeverageIncrease(maxLeverageSearchParams)),
     [maxLeverageSearchParams]
   );
 
+  const hasAvailableMaxLeverage = maxLeverageIncrease !== undefined;
+
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
-    if (!maxLeverageSearchParams) {
-      return;
-    }
-
-    const maxLeverageIncrease = findMaxLeverageIncrease(maxLeverageSearchParams);
-
     if (!maxLeverageIncrease) {
       return;
     }
@@ -447,7 +439,7 @@ export function OrderEditor(p: Props) {
     setSizeInputValue(
       formatAmountFree(substractMaxLeverageSlippage(maxLeverageIncrease.increaseAmounts.sizeDeltaUsd), USD_DECIMALS, 2)
     );
-  }, [maxLeverageSearchParams, setSizeInputValue]);
+  }, [maxLeverageIncrease, setSizeInputValue]);
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     if (!signer || !tokensData || !marketsInfoData) {
@@ -607,6 +599,9 @@ export function OrderEditor(p: Props) {
     tokensData,
   ]);
 
+  const showResultingPositionMaxLeverageWarning =
+    !error && !isIncreaseExecutableNow && !isMaxLeverageError && isResultingPositionMaxLeverageError;
+
   const showLiquidationRiskWarning = useMemo(() => {
     if (error || !positionOrder || isMarginDeposit) {
       return false;
@@ -620,7 +615,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (resultingPositionMarginState?.isLiquidatable) {
-      return false;
+      return !isIncreaseExecutableNow && !isResultingPositionMaxLeverageError;
     }
 
     return getIsIncreaseResultingPositionLiquidatable({
@@ -637,6 +632,8 @@ export function OrderEditor(p: Props) {
     nextPositionValuesForIncrease,
     triggerPrice,
     resultingPositionMarginState,
+    isIncreaseExecutableNow,
+    isResultingPositionMaxLeverageError,
   ]);
 
   const onSubmit = useCallback(async () => {

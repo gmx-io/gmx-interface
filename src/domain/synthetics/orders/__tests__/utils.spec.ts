@@ -2,11 +2,19 @@ import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
+import { createMockMarketInfo, MOCK_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
+import { ETH_TOKEN, USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
-import { convertToTokenAmount } from "sdk/utils/tokens";
-import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
+import { createFindSwapPath } from "sdk/utils/swap/swapPath";
+import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
+import {
+  getIsMaxLeverageMarginReason,
+  PositionMarginFailureReason,
+  PositionMarginState,
+} from "sdk/utils/trade/increaseMarginCheck";
 
 import {
   DepositMarginNowAction,
@@ -75,9 +83,6 @@ function makeIncreaseOrder(orderType: OrderType, overrides: Partial<PositionOrde
 const baseParams = {
   marketsInfoData,
   positionsInfoData: {},
-  findSwapPath: (() => undefined) as any,
-  uiFeeFactor: 0n,
-  chainId: ARBITRUM,
   isSetAcceptablePriceImpactEnabled: false,
 };
 
@@ -584,13 +589,18 @@ describe("getOrderErrors — position liquidated before the trigger price", () =
 describe("getOrderErrors — resulting position margin, end-to-end from order + position state", () => {
   const maxLeverageErrors = (result: ReturnType<typeof getOrderErrors>) =>
     result.errors.filter((e) => e.key === "maxLeverage");
+  const liquidatableErrors = (result: ReturnType<typeof getOrderErrors>) =>
+    result.errors.filter((e) => e.key === "resultingLiquidatable");
 
   const minCollateralUsd = expandDecimals(1, 30);
   const currentPrice = expandDecimals(20_000, 30); // the mock BTC oracle price
 
-  // fees and impact are zeroed so the scenarios are exact; 1% min collateral factor → 100x
+  // fees and impact are zeroed so the scenarios are exact; 1% min collateral factor → 100x;
+  // the pool is deep enough that the liquidity check stays out of the way
   const cleanMarketsInfoData = mockMarketsInfoData(tokensData, ["BTC-BTC-USDC"], {
     "BTC-BTC-USDC": {
+      longPoolAmount: expandDecimals(1_000, 8),
+      maxOpenInterestLong: expandDecimals(1_000_000_000, 30),
       minCollateralFactor: expandDecimals(1, 28),
       minCollateralFactorForLiquidation: expandDecimals(5, 27),
       minCollateralFactorForOpenInterestLong: 0n,
@@ -635,6 +645,7 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
       pendingImpactAmount: 0n,
       pendingBorrowingFeesUsd: 0n,
       pendingFundingFeesUsd: 0n,
+      fundingFeeAmount: 0n,
     } as any;
   }
 
@@ -644,26 +655,37 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
     return `${order.account}:${order.marketAddress}:${order.targetCollateralToken.address}:${order.isLong}`;
   }
 
-  // the full production chain: order + position + market → projection at the evaluation
-  // price → contract margin check → order error mark; no hand-made intermediate state
+  // the full production chain: order + position + market → one projection at the evaluation
+  // price → next position values without pnl and the contract margin check → order error mark;
+  // no hand-made intermediate state
   function runOrderErrors(order: PositionOrderInfo, position?: any) {
     const positionsInfoData = position ? { [positionKeyFor(order)]: { ...position, key: positionKeyFor(order) } } : {};
+    const projection = getOrderIncreaseProjection({
+      order,
+      position,
+      triggerPrice: order.triggerPrice,
+      sizeDeltaUsd: order.sizeDeltaUsd,
+      findSwapPath: (() => undefined) as any,
+      uiFeeFactor: 0n,
+      chainId: ARBITRUM,
+      marketsInfoData: cleanMarketsInfoData,
+      isSetAcceptablePriceImpactEnabled: false,
+      userReferralInfo: undefined,
+    });
 
     return getOrderErrors({
       ...baseParams,
       marketsInfoData: cleanMarketsInfoData,
       positionsInfoData,
       order,
-      resultingPositionMarginState: marginStateFor({
-        order,
-        position,
-        triggerPrice: order.triggerPrice,
-        sizeDeltaUsd: order.sizeDeltaUsd,
-        findSwapPath: (() => undefined) as any,
-        uiFeeFactor: 0n,
-        chainId: ARBITRUM,
-        marketsInfoData: cleanMarketsInfoData,
-        isSetAcceptablePriceImpactEnabled: false,
+      nextPositionValues: getOrderIncreaseNextPositionValues({
+        projection,
+        minCollateralUsd,
+        userReferralInfo: undefined,
+        isPnlInLeverage: false,
+      }),
+      resultingPositionMarginState: getOrderIncreaseResultingPositionMarginState({
+        projection,
         minCollateralUsd,
         userReferralInfo: undefined,
       }),
@@ -684,13 +706,35 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
     initialCollateralDeltaAmount: expandDecimals(10, 6),
   });
 
-  it("flags a limit below the market whose position loses enough at the trigger (any failure reason)", () => {
-    // at the trigger the position loses 100 against 70 of total margin → remaining < 0,
-    // which is a "min collateral" failure, not a leverage one — it must still be flagged;
+  it("shows the liquidatable message for a limit below the market that fails on the min-collateral reason", () => {
+    // at the trigger the position loses 100 against 70 of total margin → remaining −30 < 1 of
+    // min collateral, which is not a leverage failure, so the max-leverage remedy is wrong here;
     // at the current price the same order looks healthy (the trigger-priced tokens would
     // show fake instant profit), so this also locks in the trigger-price evaluation
     const result = runOrderErrors(restingBelowMarket, makeFlatPosition({ sizeUsd: 1_000, collateralUsd: 60 }));
 
+    expect(maxLeverageErrors(result)).toHaveLength(0);
+    expect(liquidatableErrors(result)).toHaveLength(1);
+    expect(liquidatableErrors(result)[0].level).toBe("error");
+    expect(result.errors.filter((e) => e.level === "error")).toHaveLength(1);
+
+    const message = getMessageElement(liquidatableErrors(result)[0].msg);
+    expect(message.type).toBe(LiquidatableIncreaseMessage);
+    expect(message.props.positionKey).toBe(positionKeyFor(restingBelowMarket));
+  });
+
+  it("offers the max-leverage remedy for a limit below the market that fails on the leverage reason", () => {
+    // 60 + 80 of margin less the 100 lost at the trigger leaves 40: above the 1 of min collateral
+    // and positive, but below 1% of the resulting 5 000 of size (50) → "min collateral for leverage"
+    const order = makeCleanOrder(OrderType.LimitIncrease, {
+      triggerPrice: expandDecimals(18_000, 30),
+      sizeDeltaUsd: expandDecimals(4_000, 30),
+      initialCollateralDeltaAmount: expandDecimals(80, 6),
+    });
+
+    const result = runOrderErrors(order, makeFlatPosition({ sizeUsd: 1_000, collateralUsd: 60 }));
+
+    expect(liquidatableErrors(result)).toHaveLength(0);
     expect(maxLeverageErrors(result)).toHaveLength(1);
     expect(maxLeverageErrors(result)[0].level).toBe("error");
 
@@ -699,7 +743,7 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
       "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
     );
     expect(action?.type).toBe(DepositMarginNowAction);
-    expect(action?.props.positionKey).toBe(positionKeyFor(restingBelowMarket));
+    expect(action?.props.positionKey).toBe(positionKeyFor(order));
   });
 
   it("does not flag a stop above the market whose position is healthy at the trigger", () => {
@@ -737,7 +781,7 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
     expect(maxLeverageErrors(result)).toHaveLength(0);
   });
 
-  it("suppresses the liq-price heuristic when the precise margin prediction already warns", () => {
+  it("shows a single liquidatable message when the precise check and the heuristic both fire", () => {
     const position = makeFlatPosition({ sizeUsd: 1_000, collateralUsd: 60 });
 
     // nextLiqPrice beyond the trigger fires the liq-price heuristic on its own
@@ -761,9 +805,9 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
       }),
     });
 
-    // the precise prediction fails → only its message shows, the heuristic one is hidden
-    expect(maxLeverageErrors(withHeuristic)).toHaveLength(1);
-    expect(withHeuristic.errors.filter((e) => e.key === "resultingLiquidatable")).toHaveLength(0);
+    // the precise prediction fails on min collateral → one liquidatable message, no leverage one
+    expect(maxLeverageErrors(withHeuristic)).toHaveLength(0);
+    expect(liquidatableErrors(withHeuristic)).toHaveLength(1);
   });
 
   it("reports a single deduplicated entry when both checks fail", () => {
@@ -779,6 +823,53 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
 
     expect(maxLeverageErrors(both)).toHaveLength(1);
     expect(maxLeverageErrors(both)[0].level).toBe("error");
+  });
+
+  // 200 000 of size on 1 000 of margin: the 200x next leverage handed in below trips the order-level check
+  const heuristicOverLeveraged = makeCleanOrder(OrderType.LimitIncrease, {
+    triggerPrice: expandDecimals(18_000, 30),
+    sizeDeltaUsd: expandDecimals(200_000, 30),
+    initialCollateralDeltaAmount: expandDecimals(1_000, 6),
+  });
+
+  it("keeps a single max-leverage entry when the precise check passes but both heuristics fire", () => {
+    const passingState: PositionMarginState = {
+      isLiquidatable: false,
+      reason: undefined,
+      remainingCollateralUsd: expandDecimals(1_000, 30),
+      minCollateralUsd,
+      minCollateralUsdForLeverage: expandDecimals(500, 30),
+    };
+
+    const result = getOrderErrors({
+      ...baseParams,
+      marketsInfoData: cleanMarketsInfoData,
+      order: heuristicOverLeveraged,
+      nextPositionValues: {
+        nextLiqPrice: expandDecimals(19_000, 30),
+        nextLeverage: BigInt(200 * BASIS_POINTS_DIVISOR),
+      } as NextPositionValues,
+      resultingPositionMarginState: passingState,
+    });
+
+    expect(result.errors.map((e) => e.key)).toEqual(["maxLeverage"]);
+  });
+
+  it("stays silent on the increase checks while positions are loading", () => {
+    const params = {
+      ...baseParams,
+      marketsInfoData: cleanMarketsInfoData,
+      order: heuristicOverLeveraged,
+      nextPositionValues: {
+        nextLiqPrice: expandDecimals(19_000, 30),
+        nextLeverage: BigInt(200 * BASIS_POINTS_DIVISOR),
+      } as NextPositionValues,
+    };
+
+    expect(getOrderErrors({ ...params, positionsInfoData: undefined }).errors).toEqual([]);
+
+    // control: the same order is flagged once the (empty) positions are known
+    expect(getOrderErrors({ ...params, positionsInfoData: {} }).errors.map((e) => e.key)).toEqual(["maxLeverage"]);
   });
 });
 
@@ -835,7 +926,7 @@ describe("getOrderIncreaseProjection", () => {
     expect(next.nextLeverage).toBeGreaterThan(0n);
   });
 
-  it("skips the next position values for an increase without a deposit", () => {
+  it("skips the next position values for an increase without a deposit and without a position", () => {
     const projection = getOrderIncreaseProjection({
       ...baseArgs,
       order: makeIncreaseOrder(OrderType.LimitIncrease, { triggerPrice, initialCollateralDeltaAmount: 0n }),
@@ -850,6 +941,299 @@ describe("getOrderIncreaseProjection", () => {
         isPnlInLeverage: false,
       })
     ).toBeUndefined();
+  });
+
+  const ACCOUNT = "0x1111111111111111111111111111111111111111";
+
+  function makeUsdcPosition(p: { marketInfo: typeof marketInfo; sizeUsd: number; collateralUsd: number }) {
+    return mockPositionInfo(
+      {
+        marketInfo: p.marketInfo,
+        collateralTokenAddress: tokensData.USDC.address,
+        account: ACCOUNT,
+        isLong: true,
+        sizeInUsd: expandDecimals(p.sizeUsd, 30),
+        collateralUsd: expandDecimals(p.collateralUsd, 30),
+      },
+      { liquidationPrice: expandDecimals(10_000, 30) }
+    );
+  }
+
+  const sizeOnlyOrder = makeIncreaseOrder(OrderType.LimitIncrease, {
+    triggerPrice,
+    initialCollateralDeltaAmount: 0n,
+    sizeDeltaUsd: expandDecimals(4_000, 30),
+  });
+
+  it("derives the next position values for a size-only increase on an existing position", () => {
+    const position = makeUsdcPosition({ marketInfo, sizeUsd: 10_000, collateralUsd: 300 });
+
+    const projection = getOrderIncreaseProjection({
+      ...baseArgs,
+      order: sizeOnlyOrder,
+      sizeDeltaUsd: sizeOnlyOrder.sizeDeltaUsd,
+      position,
+    });
+
+    const next = getOrderIncreaseNextPositionValues({
+      projection,
+      minCollateralUsd: baseArgs.minCollateralUsd,
+      userReferralInfo: undefined,
+      isPnlInLeverage: false,
+    });
+
+    expect(next).toBeDefined();
+    expect(next!.nextCollateralUsd).toBeLessThan(position.collateralUsd);
+  });
+
+  it("charges a size-only order's fees against the position's collateral", () => {
+    const position = makeUsdcPosition({ marketInfo, sizeUsd: 10_000, collateralUsd: 300 });
+
+    const projection = getOrderIncreaseProjection({
+      ...baseArgs,
+      uiFeeFactor: expandDecimals(1, 26),
+      order: sizeOnlyOrder,
+      sizeDeltaUsd: sizeOnlyOrder.sizeDeltaUsd,
+      position,
+    })!;
+
+    // 0.05% position fee on 4 000 = 2, 0.01% ui fee = 0.4, no pending fees on the fixture
+    expect(projection.increaseAmounts.collateralDeltaUsd).toBe(-expandDecimals(24, 29));
+
+    const next = getOrderIncreaseNextPositionValues({
+      projection,
+      minCollateralUsd: baseArgs.minCollateralUsd,
+      userReferralInfo: undefined,
+      isPnlInLeverage: false,
+    })!;
+
+    // 300 − 2 − 0.4
+    expect(next.nextCollateralUsd).toBe(expandDecimals(2976, 29));
+  });
+
+  it("fails a size-only order whose fees exceed the position's collateral on a non-leverage reason", () => {
+    // no min collateral factor, so the open-interest gate is off and the check reaches the
+    // min-collateral floor: 1 − 2.4 of collateral clamps to 0, less 7 of closing fee on 14 000 → "min collateral"
+    const floorOnlyMarketInfo = mockMarketsInfoData(tokensData, ["BTC-BTC-USDC"])["BTC-BTC-USDC"];
+    const position = makeUsdcPosition({ marketInfo: floorOnlyMarketInfo, sizeUsd: 10_000, collateralUsd: 1 });
+
+    const state = marginStateFor({
+      ...baseArgs,
+      uiFeeFactor: expandDecimals(1, 26),
+      order: { ...sizeOnlyOrder, marketInfo: floorOnlyMarketInfo },
+      sizeDeltaUsd: sizeOnlyOrder.sizeDeltaUsd,
+      position,
+    })!;
+
+    expect(state.isLiquidatable).toBe(true);
+    expect(state.reason).toBe(PositionMarginFailureReason.MinCollateral);
+    expect(getIsMaxLeverageMarginReason(state.reason)).toBe(false);
+  });
+
+  it("values the existing collateral at the trigger when the collateral is the index token", () => {
+    const ethMarketInfo = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"], {
+      "ETH-ETH-USDC": { minCollateralFactor: expandDecimals(1, 28) },
+    })["ETH-ETH-USDC"];
+    const ethTriggerPrice = expandDecimals(1_000, 30); // ETH is mocked at 1 200
+
+    const position = mockPositionInfo(
+      {
+        marketInfo: ethMarketInfo,
+        collateralTokenAddress: tokensData.ETH.address,
+        account: ACCOUNT,
+        isLong: true,
+        sizeInUsd: expandDecimals(6_000, 30),
+        collateralUsd: expandDecimals(1_200, 30),
+      },
+      { liquidationPrice: expandDecimals(500, 30) }
+    );
+
+    const projection = getOrderIncreaseProjection({
+      ...baseArgs,
+      marketsInfoData: { [ethMarketInfo.marketTokenAddress]: ethMarketInfo },
+      triggerPrice: ethTriggerPrice,
+      sizeDeltaUsd: expandDecimals(3_000, 30),
+      position,
+      order: makeIncreaseOrder(OrderType.LimitIncrease, {
+        marketInfo: ethMarketInfo,
+        marketAddress: ethMarketInfo.marketTokenAddress,
+        indexToken: ethMarketInfo.indexToken,
+        initialCollateralToken: tokensData.ETH,
+        initialCollateralTokenAddress: tokensData.ETH.address,
+        targetCollateralToken: tokensData.ETH,
+        initialCollateralDeltaAmount: expandDecimals(1, 18),
+        sizeDeltaUsd: expandDecimals(3_000, 30),
+        triggerPrice: ethTriggerPrice,
+      }),
+    })!;
+
+    const next = getOrderIncreaseNextPositionValues({
+      projection,
+      minCollateralUsd: baseArgs.minCollateralUsd,
+      userReferralInfo: undefined,
+      isPnlInLeverage: false,
+    })!;
+
+    // 1 ETH of existing collateral is worth 1 000 at the trigger, not the 1 200 booked at the mark
+    expect(next.nextCollateralUsd).toBe(
+      convertToUsd(position.collateralAmount, 18, ethTriggerPrice)! + projection.increaseAmounts.collateralDeltaUsd
+    );
+    expect(next.nextCollateralUsd).not.toBe(position.collateralUsd + projection.increaseAmounts.collateralDeltaUsd);
+  });
+});
+
+describe("getOrderIncreaseProjection — saved swap route", () => {
+  // DOGE/USD [WETH-USDC] on Arbitrum: a second WETH→USDC edge in the prebuilt swap graph
+  const SECOND_POOL_ADDRESS = "0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4";
+
+  // impact is zeroed on both pools and the fee factors are flat, so only the fee tells the routes apart
+  const flatPoolOverrides = (swapFeeFactor: bigint) => ({
+    swapFeeFactorForBalanceWasImproved: swapFeeFactor,
+    swapFeeFactorForBalanceWasNotImproved: swapFeeFactor,
+    swapImpactFactorPositive: 0n,
+    swapImpactFactorNegative: 0n,
+  });
+
+  const cheapPool = createMockMarketInfo(ETH_TOKEN, flatPoolOverrides(expandDecimals(1, 26))); // 0.01%
+  const expensivePool = createMockMarketInfo(ETH_TOKEN, {
+    marketTokenAddress: SECOND_POOL_ADDRESS,
+    ...flatPoolOverrides(expandDecimals(1, 28)), // 1%
+  });
+  const twoPoolsMarketsInfoData = {
+    [cheapPool.marketTokenAddress]: cheapPool,
+    [expensivePool.marketTokenAddress]: expensivePool,
+  };
+
+  const triggerPrice = expandDecimals(1_800, 30); // ETH is mocked at 2 000
+
+  function makeEthDepositOrder(swapPath: string[]) {
+    return makeIncreaseOrder(OrderType.LimitIncrease, {
+      marketInfo: cheapPool,
+      marketAddress: cheapPool.marketTokenAddress,
+      indexToken: ETH_TOKEN,
+      initialCollateralToken: ETH_TOKEN,
+      initialCollateralTokenAddress: ETH_TOKEN.address,
+      targetCollateralToken: USDC_TOKEN,
+      initialCollateralDeltaAmount: expandDecimals(5, 17), // 0.5 ETH
+      sizeDeltaUsd: expandDecimals(3_000, 30),
+      triggerPrice,
+      swapPath,
+    });
+  }
+
+  function projectAlong(order: PositionOrderInfo, manualPath: string[] | undefined) {
+    return getOrderIncreaseProjection({
+      order,
+      position: undefined,
+      triggerPrice,
+      sizeDeltaUsd: order.sizeDeltaUsd,
+      findSwapPath: createFindSwapPath({
+        chainId: ARBITRUM,
+        fromTokenAddress: ETH_TOKEN.address,
+        toTokenAddress: USDC_TOKEN.address,
+        marketsInfoData: twoPoolsMarketsInfoData,
+        swapPricingType: undefined,
+        manualPath,
+      }),
+      uiFeeFactor: 0n,
+      chainId: ARBITRUM,
+      marketsInfoData: twoPoolsMarketsInfoData,
+      isSetAcceptablePriceImpactEnabled: false,
+      userReferralInfo: undefined,
+    });
+  }
+
+  it("swaps the deposit along the route saved on the order, not the one the router would pick", () => {
+    const routed = projectAlong(makeEthDepositOrder([]), undefined)!;
+    expect(routed.increaseAmounts.swapStrategy.swapPathStats?.swapPath).toEqual([MOCK_MARKET_ADDRESS]);
+
+    const saved = makeEthDepositOrder([SECOND_POOL_ADDRESS]);
+    const alongSaved = projectAlong(saved, saved.swapPath)!;
+    expect(alongSaved.increaseAmounts.swapStrategy.swapPathStats?.swapPath).toEqual(saved.swapPath);
+
+    // 0.5 ETH is 900 at the trigger: 1% is 9 of fee against 0.09 at 0.01% → 8.91 less collateral
+    expect(routed.increaseAmounts.collateralDeltaUsd - alongSaved.increaseAmounts.collateralDeltaUsd).toBe(
+      expandDecimals(891, 28)
+    );
+  });
+
+  it("gives up on a saved route through a market missing from the markets data", () => {
+    const saved = makeEthDepositOrder(["0x000000000000000000000000000000000000dEaD"]);
+
+    expect(projectAlong(saved, saved.swapPath)).toBeUndefined();
+  });
+
+  it("does not blame the leverage when the saved route no longer resolves", () => {
+    // the deposit cannot be priced along a dead route, so there is no projection and the order-level
+    // check has no next leverage to compare; the route itself is what the order row must complain about.
+    // 20 000 of size on 100 of existing margin at a 1% min collateral factor: priced at zero the
+    // deposit would let the check see 210x against a 100x cap
+    const market = { ...cheapPool, minCollateralFactor: expandDecimals(1, 28) };
+    const saved = {
+      ...makeEthDepositOrder(["0x000000000000000000000000000000000000dEaD"]),
+      marketInfo: market,
+      sizeDeltaUsd: expandDecimals(20_000, 30),
+    };
+    const positionKey = `${saved.account}:${saved.marketAddress}:${saved.targetCollateralToken.address}:${saved.isLong}`;
+    const position = {
+      ...mockPositionInfo(
+        {
+          marketInfo: market,
+          collateralTokenAddress: USDC_TOKEN.address,
+          account: saved.account,
+          isLong: true,
+          sizeInUsd: expandDecimals(1_000, 30),
+          collateralUsd: expandDecimals(100, 30),
+        },
+        // survives to the 1 800 trigger, so the order is projected onto this position
+        { isLong: true, liquidationPrice: expandDecimals(1_500, 30) }
+      ),
+      key: positionKey,
+    };
+    const marketsInfoDataWithCap = { ...twoPoolsMarketsInfoData, [market.marketTokenAddress]: market };
+    const minCollateralUsd = expandDecimals(1, 30);
+
+    const projection = getOrderIncreaseProjection({
+      order: saved,
+      position,
+      triggerPrice,
+      sizeDeltaUsd: saved.sizeDeltaUsd,
+      findSwapPath: createFindSwapPath({
+        chainId: ARBITRUM,
+        fromTokenAddress: ETH_TOKEN.address,
+        toTokenAddress: USDC_TOKEN.address,
+        marketsInfoData: marketsInfoDataWithCap,
+        swapPricingType: undefined,
+        manualPath: saved.swapPath,
+      }),
+      uiFeeFactor: 0n,
+      chainId: ARBITRUM,
+      marketsInfoData: marketsInfoDataWithCap,
+      isSetAcceptablePriceImpactEnabled: false,
+      userReferralInfo: undefined,
+    });
+
+    expect(projection).toBeUndefined();
+
+    const result = getOrderErrors({
+      ...baseParams,
+      marketsInfoData: marketsInfoDataWithCap,
+      positionsInfoData: { [positionKey]: position },
+      order: saved,
+      nextPositionValues: getOrderIncreaseNextPositionValues({
+        projection,
+        minCollateralUsd,
+        userReferralInfo: undefined,
+        isPnlInLeverage: false,
+      }),
+      resultingPositionMarginState: getOrderIncreaseResultingPositionMarginState({
+        projection,
+        minCollateralUsd,
+        userReferralInfo: undefined,
+      }),
+    });
+
+    expect(result.errors.map((e) => e.key)).not.toContain("maxLeverage");
   });
 });
 
@@ -883,6 +1267,7 @@ describe("getOrderIncreaseResultingPositionMarginState", () => {
       pendingImpactAmount: 0n,
       pendingBorrowingFeesUsd: 0n,
       pendingFundingFeesUsd: 0n,
+      fundingFeeAmount: 0n,
     } as any;
   }
 
