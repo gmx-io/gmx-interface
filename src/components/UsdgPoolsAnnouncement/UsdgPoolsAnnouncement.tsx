@@ -7,7 +7,7 @@ export function UsdgPoolsAnnouncement({ onDismiss }: { onDismiss: () => void }) 
     <AnnouncementBanner
       className="pointer-events-auto"
       variant="info"
-      headerLabel="Early access: new USDG LP pools with 8% boost APR at launch"
+      headerLabel="Early access: new USDG LP pools on Arbitrum with 8% boost APR at launch"
       headerIcon="info"
       truncateHeader={false}
       onClose={onDismiss}

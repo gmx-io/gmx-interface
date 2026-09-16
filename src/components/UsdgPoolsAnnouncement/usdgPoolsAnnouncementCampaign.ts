@@ -1,6 +1,5 @@
 import { type Hash } from "viem";
 
-import { ARBITRUM } from "config/chains";
 import { USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY } from "config/localStorage";
 
 import { TargetedAnnouncementCampaign } from "components/TargetedAnnouncement/targetedAnnouncementLogic";
@@ -9,7 +8,6 @@ export const USDG_POOLS_ANNOUNCEMENT_CAMPAIGN: TargetedAnnouncementCampaign = {
   flag: "showUsdgPoolsAnnouncement",
   endTimestamp: Date.UTC(2026, 11, 1),
   dismissedKey: USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY,
-  chainIds: [ARBITRUM],
   addressHashes: new Set<Hash>([
     "0x92560100b956855c0f544eb5b5e96285ad10bec7cd8a2239ba71ffa82b80569f",
     "0x4261650ce8caf7955a2f7ecc6e8f6e9c4be8b2a26efcc2258c43e9e9399d56fa",

@@ -13,7 +13,7 @@ import {
 const MAX_TIMEOUT_MS = 2_147_483_647;
 
 export function useTargetedAnnouncement(campaign: TargetedAnnouncementCampaign) {
-  const { account, chainId } = useWallet();
+  const { account } = useWallet();
   const { uiFlags } = useUiFlagsRequest();
   const [stateVersion, bumpStateVersion] = useReducer((version: number) => version + 1, 0);
 
@@ -26,7 +26,6 @@ export function useTargetedAnnouncement(campaign: TargetedAnnouncementCampaign) 
   const isVisible = shouldShowTargetedAnnouncement({
     campaign,
     accountHash,
-    chainId,
     flagEnabled: uiFlags?.[campaign.flag]?.enabled === true,
     isDismissed,
     now: Date.now(),
