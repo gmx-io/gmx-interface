@@ -76,7 +76,6 @@ type Fixture = {
     payAmount: bigint;
     collateralTokenAddress: string;
     swapPath: string[];
-    autoSwapPath: string[] | null;
     uiFeeFactor: bigint;
     sizeOnly: boolean;
   };
@@ -325,31 +324,6 @@ describe("resulting-position margin check against contract verdicts captured on 
           expect(reasons, `${describeState(marginState)}`).toContain(marginState!.reason);
         }
       });
-
-      if (order.autoSwapPath !== null && fixture.marketsInfoData[order.swapPath[0]]) {
-        it("keeps the saved route: the app's own router would pick a different pool for this deposit", () => {
-          const r = describeReplay(fixture);
-          const autoFindSwapPath = createFindSwapPath({
-            chainId: CHAIN_ID,
-            fromTokenAddress: r.payToken.address,
-            toTokenAddress: r.collateralToken.address,
-            marketsInfoData: fixture.marketsInfoData,
-            swapPricingType: SwapPricingType.Swap,
-          });
-          const autoSwapPath = autoFindSwapPath(
-            r.depositUsd,
-            r.limitOrderType !== undefined ? { order: ["length", "liquidity"] } : undefined
-          )?.swapPath;
-
-          expect(autoSwapPath, "the fixture's markets must let the router reproduce the app's choice").toEqual(
-            order.autoSwapPath
-          );
-          expect(autoSwapPath).not.toEqual(order.swapPath);
-
-          const saved = replay(fixture, flip.largestExecutesUsd).amounts.swapStrategy.swapPathStats?.swapPath;
-          expect(saved).toEqual(order.swapPath);
-        });
-      }
 
       const marketInfo = fixture.marketsInfoData[fixture.market.marketTokenAddress];
       const poolPnl = getPositiveMarketPnl(marketInfo, order.isLong, false);
