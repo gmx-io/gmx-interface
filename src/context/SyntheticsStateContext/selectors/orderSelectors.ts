@@ -16,9 +16,10 @@ import { getIsPositionInfoLoaded, getPositionKey } from "domain/synthetics/posit
 import { getByKey } from "lib/objects";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorFactory } from "../utils";
+import { createSelector, createSelectorFactory, PER_ORDER_SELECTOR_CACHE_SIZE } from "../utils";
 import {
   selectChainId,
+  selectIsPositionsLoading,
   selectJitLiquidityMap,
   selectMarketsInfoData,
   selectPositionConstants,
@@ -32,27 +33,33 @@ import { makeSelectFindSwapPath } from "./tradeSelectors";
 
 const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 
-export const makeSelectOrderExistingPosition = createSelectorFactory((orderKey: string) =>
-  createSelector(function selectOrderExistingPosition(q) {
-    const order = q((s) => getByKey(selectOrdersInfoData(s), orderKey));
+export const makeSelectOrderExistingPosition = createSelectorFactory(
+  (orderKey: string) =>
+    createSelector(function selectOrderExistingPosition(q) {
+      const order = q((s) => getByKey(selectOrdersInfoData(s), orderKey));
 
-    if (!order) return undefined;
+      if (!order) return undefined;
 
-    const positionKey = getPositionKey(
-      order.account,
-      order.marketAddress,
-      order.targetCollateralToken.address,
-      order.isLong
-    );
-    const position = q((s) => getByKey(selectPositionsInfoData(s), positionKey));
+      const positionKey = getPositionKey(
+        order.account,
+        order.marketAddress,
+        order.targetCollateralToken.address,
+        order.isLong
+      );
+      const position = q((s) => getByKey(selectPositionsInfoData(s), positionKey));
 
-    return getIsPositionInfoLoaded(position) ? position : undefined;
-  })
+      return getIsPositionInfoLoaded(position) ? position : undefined;
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
 );
 
 export const makeSelectOrderIncreaseProjection = createSelectorFactory(
   (orderKey: string, triggerPrice: bigint | undefined, sizeDeltaUsd: bigint | undefined) =>
     createSelector(function selectOrderIncreaseProjection(q) {
+      if (q(selectIsPositionsLoading)) {
+        return undefined;
+      }
+
       const order = q((s) => getByKey(selectOrdersInfoData(s), orderKey));
 
       if (!order || !isIncreaseOrderType(order.orderType) || isTwapOrder(order) || sizeDeltaUsd === undefined) {
@@ -71,7 +78,12 @@ export const makeSelectOrderIncreaseProjection = createSelectorFactory(
         triggerPrice,
         sizeDeltaUsd,
         findSwapPath: q(
-          makeSelectFindSwapPath(order.initialCollateralTokenAddress, order.targetCollateralToken.address)
+          makeSelectFindSwapPath(
+            order.initialCollateralTokenAddress,
+            order.targetCollateralToken.address,
+            undefined,
+            positionOrder.swapPath
+          )
         ),
         uiFeeFactor: q(selectUiFeeFactor),
         chainId: q(selectChainId),
@@ -80,7 +92,8 @@ export const makeSelectOrderIncreaseProjection = createSelectorFactory(
         userReferralInfo: q(selectUserReferralInfo),
         proDiscountFactor: q(selectProDiscountFactor),
       });
-    })
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
 );
 
 export const makeSelectOrderIncreaseNextPositionValues = createSelectorFactory(
@@ -99,7 +112,8 @@ export const makeSelectOrderIncreaseNextPositionValues = createSelectorFactory(
         userReferralInfo: q(selectUserReferralInfo),
         isPnlInLeverage,
       });
-    })
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
 );
 
 export const makeSelectOrderIncreaseResultingPositionMarginState = createSelectorFactory(
@@ -118,57 +132,52 @@ export const makeSelectOrderIncreaseResultingPositionMarginState = createSelecto
         userReferralInfo: q(selectUserReferralInfo),
         proDiscountFactor: q(selectProDiscountFactor),
       });
-    })
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
 );
 
-export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: string | undefined) =>
-  createSelector(function selectOrderErrorByOrderId(q): OrderErrors {
-    const orderInfo = q((s) => (orderId ? selectOrdersInfoData(s)?.[orderId] : undefined));
-    const positionsInfoData = q(selectPositionsInfoData);
-    const marketsInfoData = q(selectMarketsInfoData);
-    const chainId = q(selectChainId);
-    const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
+export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
+  (orderId: string | undefined) =>
+    createSelector(function selectOrderErrorByOrderId(q): OrderErrors {
+      const orderInfo = q((s) => (orderId ? selectOrdersInfoData(s)?.[orderId] : undefined));
+      const positionsInfoData = q(selectIsPositionsLoading) ? undefined : q(selectPositionsInfoData);
+      const marketsInfoData = q(selectMarketsInfoData);
+      const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
 
-    if (!orderInfo) return { errors: [], level: undefined };
-    if (!marketsInfoData) return { errors: [], level: undefined };
+      if (!orderInfo) return { errors: [], level: undefined };
+      if (!marketsInfoData) return { errors: [], level: undefined };
 
-    const uiFeeFactor = q(selectUiFeeFactor);
-    const findSwapPath = q(
-      makeSelectFindSwapPath(orderInfo.initialCollateralToken.address, orderInfo.targetCollateralToken.address)
-    );
+      const jitLiquidityMap = q(selectJitLiquidityMap);
 
-    const jitLiquidityMap = q(selectJitLiquidityMap);
+      const { triggerPrice, sizeDeltaUsd } = orderInfo as PositionOrderInfo;
+      const isRestingIncrease =
+        isIncreaseOrderType(orderInfo.orderType) && !isTwapOrder(orderInfo) && sizeDeltaUsd > 0n;
 
-    const isRestingIncrease = isIncreaseOrderType(orderInfo.orderType) && !isTwapOrder(orderInfo);
-    const { triggerPrice, sizeDeltaUsd } = orderInfo as PositionOrderInfo;
+      const nextPositionValues = isRestingIncrease
+        ? q(makeSelectOrderIncreaseNextPositionValues(orderInfo.key, triggerPrice, sizeDeltaUsd, false))
+        : undefined;
+      const resultingPositionMarginState = isRestingIncrease
+        ? q(makeSelectOrderIncreaseResultingPositionMarginState(orderInfo.key, triggerPrice, sizeDeltaUsd))
+        : undefined;
 
-    const nextPositionValues = isRestingIncrease
-      ? q(makeSelectOrderIncreaseNextPositionValues(orderInfo.key, triggerPrice, sizeDeltaUsd, false))
-      : undefined;
-    const resultingPositionMarginState = isRestingIncrease
-      ? q(makeSelectOrderIncreaseResultingPositionMarginState(orderInfo.key, triggerPrice, sizeDeltaUsd))
-      : undefined;
+      const { minCollateralUsd } = q(selectPositionConstants);
+      const userReferralInfo = q(selectUserReferralInfo);
 
-    const { minCollateralUsd } = q(selectPositionConstants);
-    const userReferralInfo = q(selectUserReferralInfo);
+      const { errors, level } = getOrderErrors({
+        order: orderInfo,
+        positionsInfoData,
+        marketsInfoData,
+        isSetAcceptablePriceImpactEnabled,
+        jitLiquidityMap,
+        nextPositionValues,
+        minCollateralUsd,
+        userReferralInfo,
+        resultingPositionMarginState,
+      });
 
-    const { errors, level } = getOrderErrors({
-      order: orderInfo,
-      positionsInfoData,
-      marketsInfoData,
-      findSwapPath,
-      uiFeeFactor,
-      chainId,
-      isSetAcceptablePriceImpactEnabled,
-      jitLiquidityMap,
-      nextPositionValues,
-      minCollateralUsd,
-      userReferralInfo,
-      resultingPositionMarginState,
-    });
-
-    return { errors, level };
-  })
+      return { errors, level };
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
 );
 
 export const makeSelectOrdersByPositionKey = createSelectorFactory((positionKey: string | undefined) =>

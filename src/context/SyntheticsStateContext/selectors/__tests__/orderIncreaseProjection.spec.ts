@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import * as orderUtils from "domain/synthetics/orders/utils";
+import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { MOCK_POSITIONS_CONSTANTS } from "domain/testUtils/mockChainData";
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockSyntheticsState, MOCK_ACCOUNT } from "domain/testUtils/mockSyntheticsState";
-import { ETH_ADDRESS, ETH_TOKEN, USDC_TOKEN } from "domain/testUtils/mockTokens";
+import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { OrderType, PositionOrderInfo } from "sdk/utils/orders/types";
@@ -159,8 +160,97 @@ describe("per-order increase projection", () => {
     const editorMarginState = selectOrderEditorIncreaseResultingPositionMarginState(state)!;
 
     // the size round-trips through the index-token amount at the trigger, so only rounding dust may differ
-    expect(bigMath.abs(projection.increaseAmounts.sizeDeltaUsd - order.sizeDeltaUsd)).toBeLessThan(expandDecimals(1, 24));
+    expect(bigMath.abs(projection.increaseAmounts.sizeDeltaUsd - order.sizeDeltaUsd)).toBeLessThan(
+      expandDecimals(1, 24)
+    );
     expect(editorMarginState.isLiquidatable).toBe(true);
     expect(rowErrors.errors.map((e) => e.key)).toContain("maxLeverage");
+  });
+
+  it("swaps the deposit along the route saved on the order, not the one the router would pick", () => {
+    // DOGE/USD [WETH-USDC] on Arbitrum: a second WETH→USDC edge, priced at a 1% swap fee
+    const expensivePool = createMockMarketInfo(ETH_TOKEN, {
+      marketTokenAddress: "0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4",
+      swapFeeFactorForBalanceWasImproved: expandDecimals(1, 28),
+      swapFeeFactorForBalanceWasNotImproved: expandDecimals(1, 28),
+    });
+
+    function projectWithSavedRoute(swapPath: string[]) {
+      const order = makeOrder({ swapPath });
+      const state = createState({ order });
+      state.globals.marketsInfo.marketsInfoData![expensivePool.marketTokenAddress] = expensivePool;
+
+      return makeSelectOrderIncreaseProjection(order.key, TRIGGER_PRICE, SIZE_USD)(state)!;
+    }
+
+    const alongSaved = projectWithSavedRoute([expensivePool.marketTokenAddress]);
+    const alongCheap = projectWithSavedRoute([MOCK_MARKET_ADDRESS]);
+
+    expect(alongSaved.increaseAmounts.swapStrategy.swapPathStats?.swapPath).toEqual([expensivePool.marketTokenAddress]);
+    expect(alongCheap.increaseAmounts.swapStrategy.swapPathStats?.swapPath).toEqual([MOCK_MARKET_ADDRESS]);
+    expect(alongSaved.increaseAmounts.collateralDeltaUsd).toBeLessThan(alongCheap.increaseAmounts.collateralDeltaUsd);
+  });
+
+  describe("while positions are unknown", () => {
+    // liquidated above the 1 800 trigger, so a known position yields the liquidated-before-trigger
+    // warning and the order is then sized as a fresh ≈ 90x position
+    const position = mockPositionInfo(
+      {
+        marketInfo,
+        collateralTokenAddress: USDC_ADDRESS,
+        account: MOCK_ACCOUNT,
+        isLong: true,
+        sizeInUsd: expandDecimals(20_000, 30),
+        collateralUsd: expandDecimals(300, 30),
+      },
+      { liquidationPrice: expandDecimals(1_900, 30) }
+    );
+
+    const positionDependentKeys = ["maxLeverage", "resultingLiquidatable", "liquidatedBeforeTrigger"];
+
+    function makeOverLeveragedOrder() {
+      return makeOrder({ sizeDeltaUsd: expandDecimals(80_000, 30) });
+    }
+
+    function createOverLeveragedState(order: PositionOrderInfo) {
+      return createState({ order, editor: { triggerPriceInputValue: "1800", sizeInputValue: "80000" } });
+    }
+
+    function expectSilence(state: ReturnType<typeof createState>, order: PositionOrderInfo) {
+      expect(
+        makeSelectOrderIncreaseProjection(order.key, order.triggerPrice, order.sizeDeltaUsd)(state)
+      ).toBeUndefined();
+
+      const keys = makeSelectOrderErrorByOrderKey(order.key)(state).errors.map((e) => e.key);
+      expect(keys.filter((key) => positionDependentKeys.includes(key))).toEqual([]);
+      expect(selectOrderErrorsCount(state).errors).toBe(0);
+    }
+
+    it("flags the order once the position is known", () => {
+      const order = makeOverLeveragedOrder();
+      const state = createOverLeveragedState(order);
+      state.globals.positionsInfo = { positionsInfoData: { [position.key]: position }, isLoading: false };
+
+      const keys = makeSelectOrderErrorByOrderKey(order.key)(state).errors.map((e) => e.key);
+      expect(keys).toContain("liquidatedBeforeTrigger");
+      expect(keys).toContain("maxLeverage");
+    });
+
+    it("stays silent while positions are loading", () => {
+      const order = makeOverLeveragedOrder();
+      const state = createOverLeveragedState(order);
+      state.globals.positionsInfo = { positionsInfoData: undefined, isLoading: true };
+
+      expectSilence(state, order);
+    });
+
+    it("stays silent after an account switch while the previous account's positions linger", () => {
+      const order = makeOverLeveragedOrder();
+      const state = createOverLeveragedState(order);
+      state.globals.account = "0x2222222222222222222222222222222222222222";
+      state.globals.positionsInfo = { positionsInfoData: { [position.key]: position }, isLoading: true };
+
+      expectSilence(state, order);
+    });
   });
 });

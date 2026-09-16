@@ -605,7 +605,12 @@ export const selectOrderEditorFindSwapPath = createSelector((q) => {
   if (!order) throw new Error("selectOrderEditorSwapRoutes: Order is not defined");
 
   const toToken = q(selectOrderEditorToToken);
-  const selectFindSwapPath = makeSelectFindSwapPath(order.initialCollateralTokenAddress, toToken?.address);
+  const selectFindSwapPath = makeSelectFindSwapPath(
+    order.initialCollateralTokenAddress,
+    toToken?.address,
+    undefined,
+    isIncreaseOrderType(order.orderType) ? order.swapPath : undefined
+  );
 
   return q(selectFindSwapPath);
 });

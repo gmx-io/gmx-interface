@@ -27,7 +27,12 @@ import {
 import { createTradeFlags, getLimitOrderTypeByTradeMode } from "sdk/utils/trade";
 import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/utils/trade/types";
 
-import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
+import {
+  createSelector,
+  createSelectorDeprecated,
+  createSelectorFactory,
+  PER_ORDER_SELECTOR_CACHE_SIZE,
+} from "../utils";
 import {
   selectChainId,
   selectGasLimits,
@@ -159,12 +164,15 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
 );
 
 const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
-export const makeSelectFindSwapPath = createSelectorFactory(
+const makeSelectFindSwapPathByKey = createSelectorFactory(
   (
     fromTokenAddress: string | undefined,
     toTokenAddress: string | undefined,
-    swapPricingType: SwapPricingType | undefined = SwapPricingType.Swap
+    swapPricingType: SwapPricingType | undefined = SwapPricingType.Swap,
+    manualPathKey?: string
   ) => {
+    const manualPath: string[] | undefined = manualPathKey === undefined ? undefined : JSON.parse(manualPathKey);
+
     return createSelector((q) => {
       const chainId = q(selectChainId);
       const marketsInfoData = q(selectMarketsInfoData);
@@ -179,14 +187,28 @@ export const makeSelectFindSwapPath = createSelectorFactory(
         marketsInfoData,
         swapPricingType,
         disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
-        manualPath: _debugSwapMarketsConfig?.manualPath,
+        manualPath: manualPath ?? _debugSwapMarketsConfig?.manualPath,
         gasEstimationParams,
       });
 
       return findSwapPath;
     });
-  }
+  },
+  PER_ORDER_SELECTOR_CACHE_SIZE
 );
+
+export const makeSelectFindSwapPath = (
+  fromTokenAddress: string | undefined,
+  toTokenAddress: string | undefined,
+  swapPricingType?: SwapPricingType,
+  manualPath?: string[]
+) =>
+  makeSelectFindSwapPathByKey(
+    fromTokenAddress,
+    toTokenAddress,
+    swapPricingType,
+    manualPath === undefined ? undefined : JSON.stringify(manualPath)
+  );
 
 export const makeSelectIncreasePositionAmounts = ({
   collateralTokenAddress,
@@ -500,6 +522,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
             showPnlInLeverage: isPnlInLeverage,
             minCollateralUsd,
             userReferralInfo,
+            collateralPrice: increaseAmounts.collateralPrice,
           });
         }
       }
