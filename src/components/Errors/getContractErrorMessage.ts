@@ -7,13 +7,19 @@ import { bigMath } from "sdk/utils/bigmath";
 import { CustomErrorName } from "sdk/utils/errors/transactionsErrors";
 import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
 
+export function getMarginBelowMinimumErrorMessage() {
+  return t`Margin is below the minimum required for the position size`;
+}
+
 export function getContractErrorMessage({
   chainId,
   errorData,
+  isSizeIncrease,
   decodeDepth = 0,
 }: {
   chainId?: number;
   errorData: Pick<ErrorData, "contractError" | "contractErrorArgs">;
+  isSizeIncrease?: boolean;
   decodeDepth?: number;
 }): string | undefined {
   if (!errorData.contractError) {
@@ -28,13 +34,11 @@ export function getContractErrorMessage({
 
     case CustomErrorName.InsufficientCollateralUsd: {
       const remainingCollateralUsd = getBigIntContractErrorArg(args, 0, "remainingCollateralUsd");
-      const missingCollateralUsd =
-        remainingCollateralUsd !== undefined ? bigMath.abs(remainingCollateralUsd) : undefined;
-      const missingCollateralUsdText = formatUsd(missingCollateralUsd);
+      const remainingCollateralUsdText = formatUsd(remainingCollateralUsd);
 
-      return missingCollateralUsdText
-        ? t`Insufficient margin. Add ${missingCollateralUsdText} more margin`
-        : t`Insufficient margin. Add more margin`;
+      return remainingCollateralUsdText
+        ? t`Max leverage exceeded. Remaining margin ${remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size`
+        : t`Max leverage exceeded. Increase margin or reduce size`;
     }
 
     case CustomErrorName.LiquidatablePosition: {
@@ -47,9 +51,15 @@ export function getContractErrorMessage({
         const remainingCollateralUsdText = formatUsd(remainingCollateralUsd);
         const minCollateralUsdForLeverageText = formatUsd(minCollateralUsdForLeverage);
 
+        if (isSizeIncrease) {
+          return remainingCollateralUsdText && minCollateralUsdForLeverageText
+            ? t`The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}`
+            : t`The position cannot be increased at the current leverage. Increase margin or reduce size.`;
+        }
+
         return remainingCollateralUsdText && minCollateralUsdForLeverageText
-          ? t`The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}`
-          : t`The position cannot be increased at the current leverage. Increase margin or reduce size.`;
+          ? t`Margin is below the minimum required for the position size. Current: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}`
+          : getMarginBelowMinimumErrorMessage();
       }
 
       const minCollateralUsd = getBigIntContractErrorArg(args, 2, "minCollateralUsd");
@@ -264,6 +274,7 @@ export function getContractErrorMessage({
                 contractError: decodedExternalCallError.name,
                 contractErrorArgs: decodedExternalCallError.args,
               },
+              isSizeIncrease,
               decodeDepth: decodeDepth + 1,
             });
 

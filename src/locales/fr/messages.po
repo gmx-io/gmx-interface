@@ -4171,7 +4171,7 @@ msgstr "Facteur de financement minimal (long)"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "Qu'est-ce qui rend GMX plus rentable que d'autres plateformes perpétuelles ?"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Margin is below the minimum required for the position size"
 msgstr "La marge est inférieure au minimum requis pour la taille de la position"
 
@@ -6368,10 +6368,6 @@ msgstr "Optimal"
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} ordres TP/SL mis à jour"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add more margin"
-msgstr ""
-
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "What's the minimum volume to qualify?"
 msgstr "Quel est le volume minimum pour être éligible ?"
@@ -8006,7 +8002,7 @@ msgstr "Aucune position ouverte"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
-msgstr ""
+msgstr "La position ne peut pas être augmentée avec l'effet de levier actuel. Augmentez la marge ou réduisez la taille. Marge actuelle : {remainingCollateralUsdText}, requis : {minCollateralUsdForLeverageText}"
 
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
@@ -8480,10 +8476,6 @@ msgstr "Projet"
 msgid "24h low"
 msgstr "Plus bas 24h"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
-msgstr ""
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
@@ -8740,6 +8732,10 @@ msgstr "Remboursement GLP (test)"
 msgid "Built for those<0/>who do more."
 msgstr "Conçu pour ceux<0/>qui font plus."
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Increase margin or reduce size"
+msgstr "Effet de levier maximum dépassé. Augmentez la marge ou réduisez la taille"
+
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Transférer {tokenSymbol} vers {chainName} avec"
@@ -8946,6 +8942,10 @@ msgstr ""
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
 msgstr "LIQ. SHORT"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size"
+msgstr "Effet de levier maximum dépassé. La marge restante {remainingCollateralUsdText} est inférieure au minimum requis pour la taille de la position. Augmentez la marge ou réduisez la taille"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Account type"
@@ -9894,6 +9894,10 @@ msgstr "La taille de la position dépasse les positions ouvertes disponibles. De
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Yes"
 msgstr "Oui"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Margin is below the minimum required for the position size. Current: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "La marge est inférieure au minimum requis pour la taille de la position. Actuel : {remainingCollateralUsdText}, requis : {minCollateralUsdForLeverageText}"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
