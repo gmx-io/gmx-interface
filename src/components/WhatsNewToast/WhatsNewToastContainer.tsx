@@ -43,6 +43,7 @@ export function WhatsNewToastContainer() {
     useBalancerProgramAnnouncement();
   const [isScrolled, setIsScrolled] = useState(false);
   const { pathname } = useLocation();
+  const isAnnouncementsPage = pathname === "/announcements";
   const { isVisible: isWalletExtensionBannerVisible, dismiss: dismissWalletExtensionBanner } =
     useWalletExtensionConnectionBanner(pathname);
   const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate } = useAppUpdateBanner();
@@ -58,6 +59,10 @@ export function WhatsNewToastContainer() {
   useEffect(() => {
     setIsScrolled(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (isAnnouncementsPage) dismiss();
+  }, [isAnnouncementsPage, dismiss]);
 
   useEffect(() => {
     const onScroll = (e: Event) => {
@@ -165,7 +170,7 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           )}
-          {cards.length > 0 && (
+          {cards.length > 0 && !isAnnouncementsPage && (
             <motion.div key="whats-new" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <WhatsNewToast cards={cards} dismiss={dismiss} />
             </motion.div>

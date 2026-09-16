@@ -41,9 +41,9 @@ import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
+import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
-import { MaxSizeRow } from "./MaxSizeRow";
 import { NextStoredImpactRows } from "./NextStoredImpactRows";
 import { SwapDebugRow } from "./SwapDebugRow";
 import { SwapRouteRow } from "./SwapRouteRow";
@@ -158,7 +158,7 @@ export function TradeBoxAdvancedGroups({
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isSwap, isMarket, isLimit, isTrigger, isTwap, isLong } = tradeFlags;
 
-  const { isSizeAboveMax } = useSelector(selectTradeboxLiquidityInfo);
+  const { isLiquidityRisk } = useSelector(selectTradeboxLiquidityInfo);
 
   const fees = useSelector(selectTradeboxFees);
   const feesType = useSelector(selectTradeboxTradeFeesType);
@@ -189,8 +189,8 @@ export function TradeBoxAdvancedGroups({
   const collateralSpreadInfo = useSelector(selectTradeboxCollateralSpreadInfo);
 
   const hasError = useMemo(() => {
-    return isSizeAboveMax || collateralSpreadInfo?.isHigh;
-  }, [isSizeAboveMax, collateralSpreadInfo]);
+    return isLiquidityRisk || collateralSpreadInfo?.isHigh;
+  }, [isLiquidityRisk, collateralSpreadInfo]);
 
   const toggleAdvancedDisplay = useCallback(
     (value: boolean) => {
@@ -248,7 +248,7 @@ export function TradeBoxAdvancedGroups({
       {/* only when isSwap */}
       {isSwap && <SwapRouteRow />}
       {isSwap && <SwapSpreadRow />}
-      <MaxSizeRow />
+      {(isLimit || isTwap) && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
       {!isTwap && (
         <>
