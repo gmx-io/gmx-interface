@@ -358,11 +358,14 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
     }
+    if (expressTxnParamsAsyncResult.error) {
+      return { text: t`Network fee unavailable`, disabled: true };
+    }
     if (networkFee.isLoading) {
       return { text: t`Loading fees...`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
-  }, [handleSubmit, hasOutdatedUi, isSubmitting, networkFee.isLoading]);
+  }, [expressTxnParamsAsyncResult.error, handleSubmit, hasOutdatedUi, isSubmitting, networkFee.isLoading]);
 
   return (
     <ClaimablePositionPriceImpactRebateModalComponent

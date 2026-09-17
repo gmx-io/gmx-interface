@@ -422,5 +422,41 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       await expectFeeValue(feeRow(page), "USDC", "GMX Account");
     });
+
+    test("Claim funding fees from the GMX Account without the gas token: a stable insufficient state with a deposit action (FEDEV-3574)", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<NetworkFeeSurfaceStory surface="claimFunding" multichain zeroBalances />);
+
+      const blockedButton = page.getByRole("button", { name: "Insufficient USDC in GMX Account" });
+      await expect(blockedButton).toBeVisible({ timeout: 20_000 });
+      await expect(blockedButton).toBeDisabled();
+      await expect(page.getByText("Loading fees...")).toHaveCount(0);
+      await expectFeeValue(feeRow(page), "USDC", "GMX Account");
+
+      const banner = page.getByText("Insufficient USDC for gas in your GMX Account");
+      await expect(banner).toBeVisible();
+      await expect(banner).not.toContainText(/\d/);
+
+      await expect(page.getByRole("button", { name: "Deposit USDC" })).toBeVisible();
+    });
+
+    test("Claim funding fees from the GMX Account: a failed fee estimate blocks the button instead of loading forever (FEDEV-3574)", async ({
+      mount,
+      page,
+    }) => {
+      const chain = createChain();
+      chain.estimateGasError = "execution reverted";
+      await installRpcResponder(page, chain);
+
+      await mount(<NetworkFeeSurfaceStory surface="claimFunding" multichain />);
+
+      const blockedButton = page.getByRole("button", { name: "Network fee unavailable" });
+      await expect(blockedButton).toBeVisible({ timeout: 20_000 });
+      await expect(blockedButton).toBeDisabled();
+      await expect(feeRow(page)).toContainText("-");
+      await expect(page.getByText("Loading fees...")).toHaveCount(0);
+    });
   });
 });

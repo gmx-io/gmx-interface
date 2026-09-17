@@ -230,6 +230,11 @@ msgstr "Découvrez les niveaux & l'onboarding en direct"
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 msgstr "Impact sur le prix à la clôture. Les valeurs positives vous sont favorables. <0>En savoir plus</0>."
 
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Network fee unavailable"
+msgstr "Frais de réseau indisponibles"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning, disable other wallet extensions in your browser settings."
 msgstr "Avant de confirmer une transaction, assurez-vous que l'invite du portefeuille utilise {desiredChainName}. Pour éviter cet avertissement, désactivez les autres extensions de portefeuille dans les paramètres de votre navigateur."
@@ -7470,7 +7475,6 @@ msgstr ""
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
@@ -9574,6 +9578,7 @@ msgstr "{addressLabel} sur {networkLabel}"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Loading fees..."
 msgstr "Chargement des frais..."
@@ -10162,7 +10167,6 @@ msgstr "Ajouter un point de terminaison"
 msgid "This pool is at maximum capacity and not accepting deposits right now. Try a different pool."
 msgstr "Ce pool est à la capacité maximale et n'accepte pas les dépôts en ce moment. Sélectionnez un pool différent."
 
-#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/domain/synthetics/trade/utils/validation.ts
