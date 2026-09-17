@@ -146,9 +146,17 @@ export function getWithdrawalAmounts(p: {
         shortToken.decimals,
         shortToken.prices.maxPrice
       )!;
+    } else if (isSameCollaterals && wrappedReceiveTokenAddress) {
+      const longToReceiveSwapPathStats = findSwapPath!(values.longTokenUsd);
+      const shortToReceiveSwapPathStats = findSwapPath!(values.shortTokenUsd);
+      if (!longToReceiveSwapPathStats || !shortToReceiveSwapPathStats) {
+        return values;
+      }
+      values.longTokenSwapPathStats = longToReceiveSwapPathStats;
+      values.shortTokenSwapPathStats = shortToReceiveSwapPathStats;
     }
   } else {
-    if (wrappedReceiveTokenAddress) {
+    if (wrappedReceiveTokenAddress && !isSameCollaterals) {
       if (strategy === "byLongCollateral" && longPoolUsd > 0 && wrappedReceiveTokenAddress === longToken.address) {
         values.longTokenAmount = longTokenAmount;
         values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
@@ -201,6 +209,15 @@ export function getWithdrawalAmounts(p: {
         values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
         values.longTokenUsd = convertToUsd(values.longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenUsd = convertToUsd(values.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+
+        if (wrappedReceiveTokenAddress && wrappedReceiveTokenAddress !== longToken.address) {
+          const longToReceiveSwapPathStats = findSwapPath!(values.longTokenUsd);
+          const shortToReceiveSwapPathStats = findSwapPath!(values.shortTokenUsd);
+          if (longToReceiveSwapPathStats && shortToReceiveSwapPathStats) {
+            values.longTokenSwapPathStats = longToReceiveSwapPathStats;
+            values.shortTokenSwapPathStats = shortToReceiveSwapPathStats;
+          }
+        }
       } else if (strategy === "byLongCollateral" && longPoolUsd > 0) {
         values.longTokenAmount = longTokenAmount;
         values.longTokenBeforeSwapAmount = values.longTokenAmount;
