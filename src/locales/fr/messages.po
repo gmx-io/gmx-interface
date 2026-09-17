@@ -11650,6 +11650,7 @@ msgid "Cancellable in ..."
 msgstr "Annulable dans..."
 
 #: src/components/Seo/SEO.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
