@@ -124,6 +124,7 @@ export const useBestGmPoolAddressForGlv = ({
         marketTokenUsd: amounts?.marketTokenUsd,
         longTokenAmount: amounts?.longTokenAmount,
         shortTokenAmount: amounts?.shortTokenAmount,
+        initialShortTokenAmount: undefined,
         longTokenUsd: amounts?.longTokenUsd,
         shortTokenUsd: amounts?.shortTokenUsd,
         longTokenLiquidityUsd,

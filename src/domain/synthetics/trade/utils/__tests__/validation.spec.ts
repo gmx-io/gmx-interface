@@ -559,3 +559,57 @@ describe("getIncreaseError — resulting-position margin check", () => {
     expect(result.buttonErrorMessage).toBe(undefined);
   });
 });
+
+describe("getGmSwapError — paying a same-collateral pool with another token", () => {
+  const stableTokensData = mockTokensData({
+    USDC: { walletBalance: 0n },
+    DAI: { walletBalance: expandDecimals(100, 30) },
+  });
+  const sameCollateralMarket = mockMarketsInfoData(stableTokensData, ["ETH-USDC-USDC"], {
+    "ETH-USDC-USDC": {
+      maxLongPoolUsdForDeposit: expandDecimals(10_000, 30),
+      maxShortPoolUsdForDeposit: expandDecimals(10_000, 30),
+    },
+  })["ETH-USDC-USDC"];
+  const marketToken = {
+    ...stableTokensData.USDC,
+    address: sameCollateralMarket.marketTokenAddress,
+    symbol: "GM",
+    decimals: 18,
+    totalSupply: expandDecimals(2000, 18),
+  };
+  const params: Parameters<typeof getGmSwapError>[0] = {
+    isDeposit: true,
+    marketInfo: sameCollateralMarket,
+    marketToken,
+    payLongToken: stableTokensData.USDC,
+    payShortToken: stableTokensData.DAI,
+    glvToken: undefined,
+    glvTokenAmount: undefined,
+    glvTokenUsd: undefined,
+    longTokenAmount: 0n,
+    shortTokenAmount: expandDecimals(50, 6),
+    initialShortTokenAmount: expandDecimals(50, 30),
+    longTokenUsd: 0n,
+    shortTokenUsd: expandDecimals(50, 30),
+    marketTokenAmount: expandDecimals(50, 18),
+    marketTokenUsd: expandDecimals(50, 30),
+    longTokenLiquidityUsd: expandDecimals(10_000, 30),
+    shortTokenLiquidityUsd: expandDecimals(10_000, 30),
+    fees: undefined,
+    priceImpactUsd: 0n,
+    paySource: "settlementChain",
+    isPair: false,
+    chainId: ARBITRUM,
+  };
+
+  it("checks the paid token balance instead of the pool collateral balance", () => {
+    expect(getGmSwapError(params).buttonErrorMessage).toBeUndefined();
+  });
+
+  it("reports the paid token when its balance is short", () => {
+    expect(getGmSwapError({ ...params, initialShortTokenAmount: expandDecimals(150, 30) }).buttonErrorMessage).toBe(
+      "Insufficient DAI balance"
+    );
+  });
+});
