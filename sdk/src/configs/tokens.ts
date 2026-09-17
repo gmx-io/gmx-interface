@@ -1205,6 +1205,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/69995/standard/ICON.png?1760337992",
       explorerUrl: "https://arbiscan.io/token/0x13983f27Ce9365055a6a553233c49fE28e70103e",
     },
+    {
+      name: "Global Dollar",
+      symbol: "USDG",
+      address: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      decimals: 6,
+      isStable: true,
+      explorerUrl: "https://arbiscan.io/token/0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
   ],
   [AVALANCHE]: [
     {
