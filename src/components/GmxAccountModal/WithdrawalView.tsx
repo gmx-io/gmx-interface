@@ -69,7 +69,11 @@ import { ExpressTransactionBuilder, ExpressTxnParams, RawRelayParamsPayload } fr
 import { GMX_ACCOUNT_NETWORK_FEE_SOURCE, WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { getInsufficientFeeButtonMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
+import {
+  getInsufficientFeeButtonMessage,
+  getNativeGasError,
+  ValidationBannerErrorName,
+} from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, sortTokenDataByBalance, TokenBalanceType, TokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
@@ -817,6 +821,14 @@ export const WithdrawalView = () => {
     [sameChainNetworkFeeAsyncResult.data, gasPrice, tokensData]
   );
 
+  const sameChainGasError = isSameChain
+    ? getNativeGasError({
+        chainId,
+        networkFee: sameChainNetworkFeeDetails?.amount,
+        nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
+      })
+    : undefined;
+
   const isSelectedGasPaymentToken = useMemo(() => {
     if (selectedToken === undefined || gasPaymentToken === undefined) {
       return false;
@@ -1240,6 +1252,12 @@ export const WithdrawalView = () => {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
+      disabled: true,
+    };
+  } else if (sameChainGasError?.buttonErrorMessage) {
+    buttonState = {
+      text: sameChainGasError.buttonErrorMessage,
+      bannerErrorName: sameChainGasError.bannerErrorName,
       disabled: true,
     };
   } else if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) !== chainId) {
