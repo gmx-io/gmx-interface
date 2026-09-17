@@ -5,6 +5,8 @@ import { useMemo } from "react";
 
 import { isDevelopment } from "config/env";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { reportStartupError } from "lib/metrics/startupErrors";
+import { messages as englishMessages } from "locales/en/messages.po";
 
 // uses BCP-47 codes from https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html
 export const locales = {
@@ -29,13 +31,38 @@ export function isTestLanguage(locale: string) {
 }
 
 export async function dynamicActivate(locale: string) {
-  const { messages } = await import(`../locales/${locale}/messages.po`);
+  const { messages } =
+    locale === defaultLocale ? { messages: englishMessages } : await import(`../locales/${locale}/messages.po`);
 
-  if (!isTestLanguage(locale)) {
-    localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, locale);
-  }
   i18n.load(locale, messages);
   i18n.activate(locale);
+  if (!isTestLanguage(locale)) {
+    try {
+      localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, locale);
+    } catch {
+      // Saving the preference must not prevent language activation.
+    }
+  }
+}
+
+export async function initializeI18n() {
+  let locale = defaultLocale;
+  try {
+    const savedLocale = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY);
+    if (savedLocale && Object.prototype.hasOwnProperty.call(locales, savedLocale)) {
+      locale = savedLocale;
+    }
+  } catch {
+    // Use English when storage is unavailable.
+  }
+
+  try {
+    await dynamicActivate(locale);
+  } catch (error) {
+    reportStartupError(error, "app.i18n");
+    i18n.load(defaultLocale, englishMessages);
+    i18n.activate(defaultLocale);
+  }
 }
 
 export function useLocalizedMap<T extends Record<string, MessageDescriptor>>(map: T): Record<keyof T, string> {

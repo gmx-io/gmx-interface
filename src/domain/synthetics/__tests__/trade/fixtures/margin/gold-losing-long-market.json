@@ -1,0 +1,542 @@
+{
+  "name": "gold-losing-long-market",
+  "meta": {
+    "chainId": 42161,
+    "forkBlock": 503710836,
+    "forkBlockTimestamp": 1789043821,
+    "capturedAt": "2026-09-10T13:15:24.687Z",
+    "dumpedAt": "2026-09-15T14:24:58.699Z",
+    "headBlock": 503710880,
+    "headTimestamp": 1789043865,
+    "contractsBuild": "gmx-synthetics release_2.2.1 @ 23c9d160",
+    "positionUtils": "0x077887985985eBF1B406263aa175bdB17BF1FEd0",
+    "increasePositionUtils": "0x00F39bbbBAB35bA47Daa17A18D833350EC398Ff6",
+    "bytecodeHashes": {
+      "positionUtils": "0x3d8c6f65072f928f3110d47adf94c72bbf08377fda3f1b5298bf363d70642fb8",
+      "increasePositionUtils": "0x5f9779393cfa31d27a37c400b1710c3e9fa526ce991b3e4daddefb1a47b13460"
+    }
+  },
+  "market": {
+    "name": "GOLD/USD [WETH-USDC]",
+    "marketTokenAddress": "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f"
+  },
+  "minCollateralUsd": {
+    "$bigint": "1000000000000000000000000000000"
+  },
+  "marketsInfoData": {
+    "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f": {
+      "longInterestUsd": {
+        "$bigint": "111252043092114623745303194818766580"
+      },
+      "shortInterestUsd": {
+        "$bigint": "89955156200779374062297103417670263"
+      },
+      "longInterestUsdUsingLongToken": {
+        "$bigint": "250000000000000000000000000000000"
+      },
+      "longInterestUsdUsingShortToken": {
+        "$bigint": "111002043092114623745303194818766580"
+      },
+      "shortInterestUsdUsingLongToken": {
+        "$bigint": "0"
+      },
+      "shortInterestUsdUsingShortToken": {
+        "$bigint": "89955156200779374062297103417670263"
+      },
+      "longInterestInTokens": {
+        "$bigint": "25325188194404550138"
+      },
+      "shortInterestInTokens": {
+        "$bigint": "20220910449425405038"
+      },
+      "longInterestInTokensUsingLongToken": {
+        "$bigint": "56262873648776760"
+      },
+      "longInterestInTokensUsingShortToken": {
+        "$bigint": "25268925320755773378"
+      },
+      "shortInterestInTokensUsingLongToken": {
+        "$bigint": "0"
+      },
+      "shortInterestInTokensUsingShortToken": {
+        "$bigint": "20220910449425405038"
+      },
+      "longPoolAmount": {
+        "$bigint": "32694394530612902395"
+      },
+      "shortPoolAmount": {
+        "$bigint": "52185749316"
+      },
+      "poolValueMin": {
+        "$bigint": "127902209185653613525882098738872646"
+      },
+      "poolValueMax": {
+        "$bigint": "127902438397463769513034583738872646"
+      },
+      "totalBorrowingFees": {
+        "$bigint": "1281069648844901236607954980597348"
+      },
+      "positionImpactPoolAmount": {
+        "$bigint": "296263387367475321"
+      },
+      "swapImpactPoolAmountLong": {
+        "$bigint": "154633658546950135"
+      },
+      "swapImpactPoolAmountShort": {
+        "$bigint": "337133314"
+      },
+      "borrowingFactorPerSecondForLongs": {
+        "$bigint": "8149724208830281159361"
+      },
+      "borrowingFactorPerSecondForShorts": {
+        "$bigint": "0"
+      },
+      "fundingFactorPerSecond": {
+        "$bigint": "5067574423163147466531"
+      },
+      "longsPayShorts": true,
+      "virtualPoolAmountForLongToken": {
+        "$bigint": "32694394530612902395"
+      },
+      "virtualPoolAmountForShortToken": {
+        "$bigint": "52185749316"
+      },
+      "virtualInventoryForPositions": {
+        "$bigint": "0"
+      },
+      "virtualInventoryForPositionsInTokens": {
+        "$bigint": "0"
+      },
+      "isDisabled": false,
+      "maxLongPoolUsdForDeposit": {
+        "$bigint": "7500000000000000000000000000000000000"
+      },
+      "maxShortPoolUsdForDeposit": {
+        "$bigint": "7500000000000000000000000000000000000"
+      },
+      "maxLongPoolAmount": {
+        "$bigint": "4430000000000000000000"
+      },
+      "maxShortPoolAmount": {
+        "$bigint": "10000000000000"
+      },
+      "reserveFactorLong": {
+        "$bigint": "2550000000000000000000000000000"
+      },
+      "reserveFactorShort": {
+        "$bigint": "2550000000000000000000000000000"
+      },
+      "openInterestReserveFactorLong": {
+        "$bigint": "2500000000000000000000000000000"
+      },
+      "openInterestReserveFactorShort": {
+        "$bigint": "2500000000000000000000000000000"
+      },
+      "maxOpenInterestLong": {
+        "$bigint": "5000000000000000000000000000000000000"
+      },
+      "maxOpenInterestShort": {
+        "$bigint": "5000000000000000000000000000000000000"
+      },
+      "maxCollateralSumLongTokenLong": {
+        "$bigint": "5000000000000000000000000000000"
+      },
+      "maxCollateralSumLongTokenShort": {
+        "$bigint": "5000000000000000000000000000000"
+      },
+      "maxCollateralSumShortTokenLong": {
+        "$bigint": "5000000000000000000000000000000"
+      },
+      "maxCollateralSumShortTokenShort": {
+        "$bigint": "5000000000000000000000000000000"
+      },
+      "minPositionImpactPoolAmount": {
+        "$bigint": "0"
+      },
+      "positionImpactPoolDistributionRate": {
+        "$bigint": "0"
+      },
+      "borrowingFactorLong": {
+        "$bigint": "6250000000000000000000"
+      },
+      "borrowingFactorShort": {
+        "$bigint": "6250000000000000000000"
+      },
+      "borrowingExponentFactorLong": {
+        "$bigint": "1000000000000000000000000000000"
+      },
+      "borrowingExponentFactorShort": {
+        "$bigint": "1000000000000000000000000000000"
+      },
+      "fundingFactor": {
+        "$bigint": "20000000000000000000000"
+      },
+      "fundingExponentFactor": {
+        "$bigint": "1000000000000000000000000000000"
+      },
+      "fundingIncreaseFactorPerSecond": {
+        "$bigint": "1072261771379446388"
+      },
+      "minFundingIncreaseRatePerSecond": {
+        "$bigint": "0"
+      },
+      "fundingDecreaseFactorPerSecond": {
+        "$bigint": "89355147614953872"
+      },
+      "thresholdForDecreaseFunding": {
+        "$bigint": "0"
+      },
+      "thresholdForStableFunding": {
+        "$bigint": "40000000000000000000000000000"
+      },
+      "minFundingFactorPerSecondLong": {
+        "$bigint": "317097919837645865043"
+      },
+      "minFundingFactorPerSecondShort": {
+        "$bigint": "317097919837645865043"
+      },
+      "maxFundingFactorPerSecondLong": {
+        "$bigint": "7720284753932014444444"
+      },
+      "maxFundingFactorPerSecondShort": {
+        "$bigint": "7720284753932014444444"
+      },
+      "maxPnlFactorForTradersLong": {
+        "$bigint": "750000000000000000000000000000"
+      },
+      "maxPnlFactorForTradersShort": {
+        "$bigint": "750000000000000000000000000000"
+      },
+      "maxPnlFactorForDepositsLong": {
+        "$bigint": "750000000000000000000000000000"
+      },
+      "maxPnlFactorForDepositsShort": {
+        "$bigint": "750000000000000000000000000000"
+      },
+      "maxPnlFactorForWithdrawalsLong": {
+        "$bigint": "600000000000000000000000000000"
+      },
+      "maxPnlFactorForWithdrawalsShort": {
+        "$bigint": "600000000000000000000000000000"
+      },
+      "minCollateralFactor": {
+        "$bigint": "9000000000000000000000000000"
+      },
+      "minCollateralFactorForOpenInterestLong": {
+        "$bigint": "100000000000000000000"
+      },
+      "minCollateralFactorForOpenInterestShort": {
+        "$bigint": "100000000000000000000"
+      },
+      "minCollateralFactorForLiquidation": {
+        "$bigint": "5000000000000000000000000000"
+      },
+      "positionFeeFactorForBalanceWasImproved": {
+        "$bigint": "100000000000000000000000000"
+      },
+      "positionFeeFactorForBalanceWasNotImproved": {
+        "$bigint": "200000000000000000000000000"
+      },
+      "positionImpactFactorPositive": {
+        "$bigint": "320000000000000000000"
+      },
+      "positionImpactFactorNegative": {
+        "$bigint": "400000000000000000000"
+      },
+      "maxPositionImpactFactorPositive": {
+        "$bigint": "4000000000000000000000000000"
+      },
+      "maxPositionImpactFactorNegative": {
+        "$bigint": "10000000000000000000000000000"
+      },
+      "maxPositionImpactFactorForLiquidations": {
+        "$bigint": "0"
+      },
+      "maxLendableImpactFactor": {
+        "$bigint": "0"
+      },
+      "maxLendableImpactFactorForWithdrawals": {
+        "$bigint": "0"
+      },
+      "maxLendableImpactUsd": {
+        "$bigint": "0"
+      },
+      "lentPositionImpactPoolAmount": {
+        "$bigint": "0"
+      },
+      "positionImpactExponentFactorPositive": {
+        "$bigint": "2000000000000000000000000000000"
+      },
+      "positionImpactExponentFactorNegative": {
+        "$bigint": "2000000000000000000000000000000"
+      },
+      "swapFeeFactorForBalanceWasImproved": {
+        "$bigint": "500000000000000000000000000"
+      },
+      "swapFeeFactorForBalanceWasNotImproved": {
+        "$bigint": "700000000000000000000000000"
+      },
+      "swapImpactFactorPositive": {
+        "$bigint": "1750000000000000000000"
+      },
+      "swapImpactFactorNegative": {
+        "$bigint": "3500000000000000000000"
+      },
+      "atomicSwapFeeFactor": {
+        "$bigint": "37500000000000000000000000000"
+      },
+      "withdrawalFeeFactorBalanceWasImproved": {
+        "$bigint": "500000000000000000000000000"
+      },
+      "withdrawalFeeFactorBalanceWasNotImproved": {
+        "$bigint": "700000000000000000000000000"
+      },
+      "swapImpactExponentFactor": {
+        "$bigint": "2000000000000000000000000000000"
+      },
+      "virtualMarketId": "0x2653989f22c3247eaa8b34189a055d5e287c66d0f5b21cde3b071c1e05879a52",
+      "virtualIndexTokenId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "virtualLongTokenId": "0x3c48977e4fc47fa4616e13af7ceb68b0d545dce7b1fb9ec7b85bb6e00870a051",
+      "virtualShortTokenId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "marketTokenAddress": "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f",
+      "indexTokenAddress": "0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956",
+      "longTokenAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isSameCollaterals": false,
+      "isSpotOnly": false,
+      "name": "GOLD/USD [WETH-USDC]",
+      "data": "",
+      "useOpenInterestInTokensForBalance": true,
+      "claimableFundingAmountLong": {
+        "$bigint": "0"
+      },
+      "claimableFundingAmountShort": {
+        "$bigint": "0"
+      },
+      "longToken": {
+        "symbol": "WETH",
+        "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+        "decimals": 18,
+        "name": "Wrapped Ethereum",
+        "isWrapped": true,
+        "baseSymbol": "ETH",
+        "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+        "isV1Available": true,
+        "isPermitSupported": true,
+        "contractVersion": "1",
+        "prices": {
+          "minPrice": {
+            "$bigint": "2358000000000000000000000000000000"
+          },
+          "maxPrice": {
+            "$bigint": "2358000000000000000000000000000000"
+          }
+        },
+        "balance": {
+          "$bigint": "20000000000000000000"
+        }
+      },
+      "shortToken": {
+        "symbol": "USDC",
+        "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "decimals": 6,
+        "name": "USD Coin",
+        "isStable": true,
+        "isV1Available": true,
+        "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+        "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "isPermitSupported": true,
+        "prices": {
+          "minPrice": {
+            "$bigint": "999861349928527700000000000000"
+          },
+          "maxPrice": {
+            "$bigint": "999861349928527700000000000000"
+          }
+        },
+        "balance": {
+          "$bigint": "500000000000"
+        }
+      },
+      "indexToken": {
+        "symbol": "GOLD",
+        "address": "0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956",
+        "decimals": 18,
+        "isSynthetic": true,
+        "name": "Gold (XAU)",
+        "categories": [
+          "tradfi",
+          "commodities"
+        ],
+        "imageUrl": "https://assets.coingecko.com/coins/images/69746/standard/1000023657.jpg?1759482216",
+        "explorerUrl": "https://arbiscan.io/token/0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956",
+        "prices": {
+          "minPrice": {
+            "$bigint": "4346512500000000000000000000000000"
+          },
+          "maxPrice": {
+            "$bigint": "4346517500000000000000000000000000"
+          }
+        }
+      }
+    }
+  },
+  "tokensData": {
+    "0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956": {
+      "symbol": "GOLD",
+      "address": "0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956",
+      "decimals": 18,
+      "isSynthetic": true,
+      "name": "Gold (XAU)",
+      "categories": [
+        "tradfi",
+        "commodities"
+      ],
+      "imageUrl": "https://assets.coingecko.com/coins/images/69746/standard/1000023657.jpg?1759482216",
+      "explorerUrl": "https://arbiscan.io/token/0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956",
+      "prices": {
+        "minPrice": {
+          "$bigint": "4346512500000000000000000000000000"
+        },
+        "maxPrice": {
+          "$bigint": "4346517500000000000000000000000000"
+        }
+      }
+    },
+    "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": {
+      "symbol": "WETH",
+      "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "decimals": 18,
+      "name": "Wrapped Ethereum",
+      "isWrapped": true,
+      "baseSymbol": "ETH",
+      "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+      "isV1Available": true,
+      "isPermitSupported": true,
+      "contractVersion": "1",
+      "prices": {
+        "minPrice": {
+          "$bigint": "2358000000000000000000000000000000"
+        },
+        "maxPrice": {
+          "$bigint": "2358000000000000000000000000000000"
+        }
+      },
+      "balance": {
+        "$bigint": "20000000000000000000"
+      }
+    },
+    "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": {
+      "symbol": "USDC",
+      "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "decimals": 6,
+      "name": "USD Coin",
+      "isStable": true,
+      "isV1Available": true,
+      "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isPermitSupported": true,
+      "prices": {
+        "minPrice": {
+          "$bigint": "999861349928527700000000000000"
+        },
+        "maxPrice": {
+          "$bigint": "999861349928527700000000000000"
+        }
+      },
+      "balance": {
+        "$bigint": "500000000000"
+      }
+    }
+  },
+  "position": {
+    "key": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266:0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f:0xaf88d065e77c8cC2239327C5EDb3A432268e5831:true",
+    "contractKey": "0x3026e3c446d160aa107c8d9ac554ed98dabcc7714807648c004854a4be3499da",
+    "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "marketAddress": "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f",
+    "collateralTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "isLong": true,
+    "sizeInUsd": {
+      "$bigint": "20000000000000000000000000000000000"
+    },
+    "sizeInTokens": {
+      "$bigint": "4444444444444444444"
+    },
+    "collateralAmount": {
+      "$bigint": "1000000000"
+    },
+    "pendingImpactAmount": {
+      "$bigint": "0"
+    },
+    "pendingBorrowingFeesUsd": {
+      "$bigint": "8638707661360098028922660000"
+    },
+    "pendingFundingFeesUsd": {
+      "$bigint": "5372255033165979332100000000"
+    },
+    "fundingFeeAmount": {
+      "$bigint": "5373"
+    },
+    "claimableLongTokenAmount": {
+      "$bigint": "0"
+    },
+    "claimableShortTokenAmount": {
+      "$bigint": "0"
+    },
+    "increasedAtTime": {
+      "$bigint": "1789043846"
+    },
+    "decreasedAtTime": {
+      "$bigint": "0"
+    },
+    "collateralUsd": {
+      "$bigint": "999861349928527700000000000000000"
+    },
+    "entryPrice": {
+      "$bigint": "4500000000000000000450000000000000"
+    },
+    "markPrice": {
+      "$bigint": "4346512500000000000000000000000000"
+    },
+    "liquidationPrice": {
+      "$bigint": "4298434348732687000000000000000000"
+    },
+    "pnl": {
+      "$bigint": "-682166666666666668598450000000000"
+    },
+    "leverage": {
+      "$bigint": "200030"
+    }
+  },
+  "order": {
+    "isLong": true,
+    "orderType": 2,
+    "orderTypeName": "MarketIncrease",
+    "triggerPrice": null,
+    "payTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "payAmount": {
+      "$bigint": "500000000"
+    },
+    "collateralTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "swapPath": [],
+    "autoSwapPath": [],
+    "uiFeeFactor": {
+      "$bigint": "0"
+    },
+    "sizeOnly": false
+  },
+  "flip": {
+    "largestExecutesUsd": {
+      "$bigint": "68336852854666725070599214732646941"
+    },
+    "firstRejectedUsd": {
+      "$bigint": "68336860289315203315370610356330871"
+    },
+    "reason": "LiquidatablePosition(min collateral for leverage, 795031680325345882540629343669129, 1000000000000000000000000000000, 795031742603836829838335493206977)",
+    "precisionUsd": {
+      "$bigint": "10000000000000000000000000000"
+    },
+    "probes": 27,
+    "probedAt": "mark"
+  }
+}

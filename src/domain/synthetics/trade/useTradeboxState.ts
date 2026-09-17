@@ -292,6 +292,7 @@ export function useTradeboxState(
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
+  const [isAcceptablePriceImpactCustomized, setIsAcceptablePriceImpactCustomized] = useState(false);
   const [defaultAllowedSwapSlippageBps, setDefaultAllowedSwapSlippageBps] = useState<bigint>();
   const [selectedAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps] = useState<bigint>();
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
@@ -302,6 +303,16 @@ export function useTradeboxState(
 
   const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
     storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
+  );
+
+  const latestDefaultTriggerAcceptablePriceImpactBps = useLatest(defaultTriggerAcceptablePriceImpactBps);
+
+  const setUserSelectedAcceptablePriceImpactBps = useCallback(
+    (value: bigint) => {
+      setSelectedTriggerAcceptablePriceImpactBps(value);
+      setIsAcceptablePriceImpactCustomized(value !== latestDefaultTriggerAcceptablePriceImpactBps.current);
+    },
+    [latestDefaultTriggerAcceptablePriceImpactBps]
   );
 
   const { swapTokens } = availableTokensOptions;
@@ -779,6 +790,9 @@ export function useTradeboxState(
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
     setSelectedAcceptablePriceImpactBps: setSelectedTriggerAcceptablePriceImpactBps,
+    setUserSelectedAcceptablePriceImpactBps,
+    isAcceptablePriceImpactCustomized,
+    setIsAcceptablePriceImpactCustomized,
     defaultAllowedSwapSlippageBps,
     setDefaultAllowedSwapSlippageBps,
     selectedAllowedSwapSlippageBps,
