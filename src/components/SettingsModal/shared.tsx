@@ -150,10 +150,10 @@ export function SettingButton({
   const Wrapper = disabled && disabledTooltip ? TooltipWithPortal : NoopWrapper;
 
   return (
-    <Wrapper content={disabledTooltip} variant="none">
+    <Wrapper content={disabledTooltip} variant="none" className="w-full" handleClassName="w-full">
       <div
         className={cx(
-          `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
+          `grid min-h-66 w-full select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
           active ? "border-slate-100 text-typography-primary" : "border-slate-600",
           disabled ? "muted cursor-not-allowed" : "cursor-pointer"
         )}

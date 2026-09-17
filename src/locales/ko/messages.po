@@ -2206,6 +2206,10 @@ msgstr "차입 수수료 / 일"
 msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
 msgstr "GMX 풀에 이 스왑 규모를 위한 유동성이 부족합니다. 금액을 줄여보세요."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Classic transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from your Wallet."
+msgstr "Express 및 One-Click 수수료에만 사용되며, 작업이 사용하는 잔액에서 지불됩니다. 클래식 트랜잭션, 동일 체인 GMX 계정 이체 및 브리지의 Gas는 지갑의 {nativeTokenSymbol}(으)로 지불됩니다."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "Affiliate 볼트에 esGMX 토큰이 있습니다. 새 계정으로 전송하려면 출금하십시오."
@@ -2419,6 +2423,10 @@ msgstr "GMX 잔액"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Avalanche에서 가격"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "오프체인으로 거래에 서명합니다. 프리미엄 RPC가 네트워크 혼잡 시 안정성을 보장합니다.<0/><1/>수수료는 작업이 사용하는 잔액에서 Gas 결제 토큰으로 지불됩니다."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Lifecycle RPNL"
@@ -3329,10 +3337,6 @@ msgstr "<0>고정된 기준은 없습니다 — 데스크가 최근 및 예상 �
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr ""
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
-msgstr "가스 잔액이 부족합니다. Express Trading 및 One-Click Trading을 이용할 수 없습니다."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
 msgstr "서명이 유효하지 않습니다. 요청에 다시 서명해 주세요"
@@ -3829,6 +3833,10 @@ msgstr "GMX 생태계 페이지"
 msgid "Dune Analytics for GMX"
 msgstr "GMX를 위한 Dune 분석"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
+msgstr "Express를 사용하려면 GMX 계정에 {gasPaymentTokensText}이(가) 필요합니다. 그중 하나를 입금하십시오."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "모든 미결 포지션의 미지급 차입 수수료"
@@ -4280,6 +4288,10 @@ msgstr "탈중앙화 옵션 프로토콜"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade at scale without worrying about thin order books or slippage"
 msgstr "얇은 호가창이나 슬리피지 걱정 없이 대규모로 거래하십시오"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your Wallet. Swap or bridge one of them."
+msgstr "Express를 사용하려면 지갑에 {gasPaymentTokensText}이(가) 필요합니다. 그중 하나를 스왑하거나 브리지하십시오."
 
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -5692,10 +5704,6 @@ msgstr "승인 실패"
 msgid "Updating settings..."
 msgstr "설정 업데이트 중..."
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "GMX는 개별 서명 없이 거래를 실행합니다. 네트워크 혼잡 시에도 안정성을 위해 GMX가 후원하는 프리미엄 RPC를 사용합니다.<0/><1/>Gas 결제 수단: {gasPaymentTokensText}."
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "최종 리밸런싱"
@@ -6241,6 +6249,10 @@ msgstr "보호 기능이 있는 레버리지 토큰"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "현재 스테이킹 파워 기준 트레저리에서의 예상 몫입니다. 최선의 추정치일 뿐이며, 실제 분배는 DAO 거버넌스에 따릅니다."
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your Wallet. Express and One-Click Trading are unavailable."
+msgstr "지갑의 {gasPaymentTokensText}이(가) 부족합니다. Express 및 One-Click Trading을 이용할 수 없습니다."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
@@ -7398,6 +7410,10 @@ msgstr "자체 수수료를 부과하세요"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "{receiveTokenSymbol}(으)로 받으면 수익이 스왑되고 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을 별도로 받으세요. <1>자세히 보기</1>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "GMX는 개별 서명 없이 거래를 실행합니다. 네트워크 혼잡 시에도 안정성을 위해 GMX가 후원하는 프리미엄 RPC를 사용합니다.<0/><1/>수수료는 작업이 사용하는 잔액에서 Gas 결제 토큰으로 지불됩니다."
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -8379,6 +8395,7 @@ msgid "Do I need to pass KYC?"
 msgstr "KYC를 통과해야 하나요?"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
 msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 다른 지갑을 연결하세요."
 
@@ -9749,6 +9766,7 @@ msgid "Short positions"
 msgstr "숏 포지션"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 클래식 모드를 사용하세요."
 
@@ -11640,10 +11658,6 @@ msgstr "레버리지 거래, 스왑, 스프레드에서 수수료 수익"
 msgid "Time elapsed"
 msgstr "경과 시간"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "오프체인으로 거래에 서명합니다. 프리미엄 RPC가 네트워크 혼잡 시 안정성을 보장합니다.<0/><1/>Gas 결제는 {gasPaymentTokensText}로 이루어집니다."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} in Wallet"
 msgstr "지갑의 {tokenSymbol}이(가) 부족합니다"
@@ -12538,6 +12552,10 @@ msgstr "자금 브릿징 중..."
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Network fee"
 msgstr "네트워크 수수료"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas in {srcChainNativeTokenSymbol} from your {srcChainName} wallet."
+msgstr "Express 및 One-Click 수수료에만 사용되며, 작업이 사용하는 잔액에서 지불됩니다. 브리지의 Gas는 {srcChainName} 지갑의 {srcChainNativeTokenSymbol}(으)로 지불됩니다."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"

@@ -2206,6 +2206,10 @@ msgstr "借貸費用 / 日"
 msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
 msgstr "GMX 池沒有足夠的流動性來完成此規模的交換。請嘗試減少金額。"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Classic transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from your Wallet."
+msgstr "僅用於 Express 和 One-Click 費用，從操作所使用的餘額中支付。Classic 交易、同鏈 GMX Account 轉帳和跨鏈橋的 Gas 以您錢包中的 {nativeTokenSymbol} 支付。"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "您在推薦人金庫中有 esGMX 代幣。請先提取後再轉帳至新帳戶。"
@@ -2419,6 +2423,10 @@ msgstr "GMX 餘額"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Avalanche 上的價格"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "鏈下簽署交易。優質 RPC 確保在網路擁塞時的可靠性。<0/><1/>費用以您的 Gas 支付代幣從操作所使用的餘額中支付。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Lifecycle RPNL"
@@ -3329,10 +3337,6 @@ msgstr "<0>沒有固定門檻 — 團隊會根據您近期及預期的月交易�
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr ""
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
-msgstr "Gas 餘額不足。Express Trading 和 One-Click Trading 無法使用。"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
 msgstr "簽名無效。請重新簽署請求"
@@ -3829,6 +3833,10 @@ msgstr "GMX 生態系統頁面"
 msgid "Dune Analytics for GMX"
 msgstr "Dune Analytics for GMX"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
+msgstr "Express 需要您 GMX Account 中有 {gasPaymentTokensText}。請存入其中一種。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "所有未平倉倉位的待結算借貸費用"
@@ -4280,6 +4288,10 @@ msgstr "去中心化選擇權協議"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade at scale without worrying about thin order books or slippage"
 msgstr "大規模交易，無需擔憂薄弱的訂單簿或滑點"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your Wallet. Swap or bridge one of them."
+msgstr "Express 需要您錢包中有 {gasPaymentTokensText}。請兌換或跨鏈橋接其中一種。"
 
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -5692,10 +5704,6 @@ msgstr "授權失敗"
 msgid "Updating settings..."
 msgstr "正在更新設定..."
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "GMX 執行交易無需逐筆簽名。交易使用 GMX 提供的高級 RPC 以確保可靠性，即使在網路擁塞時也是如此。<0/><1/>Gas 費用以 {gasPaymentTokensText} 支付。"
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "上次再平衡"
@@ -6241,6 +6249,10 @@ msgstr "具有保護機制的槓桿代幣"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "依您目前的質押力預計可從金庫獲得的份額。僅為盡力估算，實際分配以 DAO 治理決定為準。"
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your Wallet. Express and One-Click Trading are unavailable."
+msgstr "您錢包中的 {gasPaymentTokensText} 不足。Express 和 One-Click Trading 無法使用。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
@@ -7398,6 +7410,10 @@ msgstr "收取你自己的費用"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "以 {receiveTokenSymbol} 接收會交換您的利潤並產生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳過交換。<1>了解更多</1>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "GMX 執行交易無需逐筆簽名。交易使用 GMX 提供的高級 RPC 以確保可靠性，即使在網路擁塞時也是如此。<0/><1/>費用以您的 Gas 支付代幣從操作所使用的餘額中支付。"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -8379,6 +8395,7 @@ msgid "Do I need to pass KYC?"
 msgstr "我需要通過 KYC 嗎？"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
 msgstr "您的錢包無法簽署訊息。請連接其他錢包進行交易。"
 
@@ -9749,6 +9766,7 @@ msgid "Short positions"
 msgstr "做空倉位"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "您的錢包無法簽署訊息。請使用 Classic 模式進行交易。"
 
@@ -11640,10 +11658,6 @@ msgstr "從槓桿交易、兌換和價差中賺取手續費"
 msgid "Time elapsed"
 msgstr "已經過時間"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "鏈下簽署交易。優質 RPC 確保在網路擁塞時的可靠性。<0/><1/>以 {gasPaymentTokensText} 支付 Gas 費用。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} in Wallet"
 msgstr "錢包中的 {tokenSymbol} 不足"
@@ -12538,6 +12552,10 @@ msgstr "資金正在跨鏈至..."
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Network fee"
 msgstr "網路費用"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas in {srcChainNativeTokenSymbol} from your {srcChainName} wallet."
+msgstr "僅用於 Express 和 One-Click 費用，從操作所使用的餘額中支付。跨鏈橋的 Gas 以您 {srcChainName} 錢包中的 {srcChainNativeTokenSymbol} 支付。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"

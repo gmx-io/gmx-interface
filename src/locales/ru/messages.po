@@ -2206,6 +2206,10 @@ msgstr "Комиссия за заимствование / день"
 msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
 msgstr "В пулах GMX недостаточно ликвидности для свопа такого размера. Попробуйте уменьшить сумму."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Classic transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from your Wallet."
+msgstr "Используется только для комиссий Express и One-Click и оплачивается из баланса, который использует действие. Транзакции Classic, переводы на Счет GMX в той же сети и мосты оплачивают gas в {nativeTokenSymbol} из вашего Кошелька."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "У вас есть токены esGMX в хранилище Affiliate. Выведите их для перевода на новый аккаунт."
@@ -2419,6 +2423,10 @@ msgstr "Баланс GMX"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Цена на Avalanche"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "Подписывайте транзакции вне сети. Премиальные RPC обеспечивают надёжность при перегрузке сети.<0/><1/>Комиссии оплачиваются вашим токеном оплаты Gas из баланса, который использует действие."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Lifecycle RPNL"
@@ -3329,10 +3337,6 @@ msgstr "<0>Фиксированного порога нет — деск опр�
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr ""
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
-msgstr "Недостаточный баланс для газа. Express Trading и One-Click Trading недоступны."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
 msgstr "Недействительная подпись. Попробуйте подписать запрос еще раз"
@@ -3829,6 +3833,10 @@ msgstr "Страницы экосистемы GMX"
 msgid "Dune Analytics for GMX"
 msgstr "Dune Analytics для GMX"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
+msgstr "Для Express нужны {gasPaymentTokensText} на вашем Счете GMX. Внесите один из них."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Незафиксированные комиссии за заимствование по всем открытым позициям"
@@ -4280,6 +4288,10 @@ msgstr "Децентрализованный протокол опционов"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade at scale without worrying about thin order books or slippage"
 msgstr "Торгуйте крупными объёмами, не беспокоясь о тонких книгах ордеров или проскальзывании"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your Wallet. Swap or bridge one of them."
+msgstr "Для Express нужны {gasPaymentTokensText} в вашем Кошельке. Обменяйте или переведите через мост один из них."
 
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -5692,10 +5704,6 @@ msgstr "Одобрение не удалось"
 msgid "Updating settings..."
 msgstr "Обновление настроек..."
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "GMX исполняет транзакции без индивидуальной подписи. Сделки используют премиум RPC, спонсируемые GMX, для надёжности даже при перегрузке сети.<0/><1/>Оплата Gas в {gasPaymentTokensText}."
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "Последняя ребалансировка"
@@ -6241,6 +6249,10 @@ msgstr "Токены с плечом и защитой"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "Ваша прогнозируемая доля Казначейства при текущей силе стейкинга. Это лишь ориентировочная оценка; фактическое распределение зависит от решения DAO."
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your Wallet. Express and One-Click Trading are unavailable."
+msgstr "Недостаточно {gasPaymentTokensText} в вашем Кошельке. Express и One-Click Trading недоступны."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
@@ -7398,6 +7410,10 @@ msgstr "Берите свою комиссию"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "При получении в {receiveTokenSymbol} ваша прибыль будет обменена, а стоимость составит {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Получайте {profitTokenSymbol} и {collateralTokenSymbol} отдельно, чтобы пропустить обмен. <1>Подробнее</1>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "GMX исполняет транзакции без индивидуальной подписи. Сделки используют премиум RPC, спонсируемые GMX, для надёжности даже при перегрузке сети.<0/><1/>Комиссии оплачиваются вашим токеном оплаты Gas из баланса, который использует действие."
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -8379,6 +8395,7 @@ msgid "Do I need to pass KYC?"
 msgstr "Нужно ли проходить KYC?"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
 msgstr "Ваш кошелёк не может подписывать сообщения. Подключите другой кошелёк для торговли."
 
@@ -9749,6 +9766,7 @@ msgid "Short positions"
 msgstr "Шорт-позиции"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "Ваш кошелёк не может подписывать сообщения. Используйте классический режим для торговли."
 
@@ -11640,10 +11658,6 @@ msgstr "Зарабатывайте комиссии с маржинальной 
 msgid "Time elapsed"
 msgstr "Прошло времени"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "Подписывайте транзакции вне сети. Премиальные RPC обеспечивают надёжность при перегрузке сети.<0/><1/>Оплата Gas в {gasPaymentTokensText}."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} in Wallet"
 msgstr "Недостаточно {tokenSymbol} в Кошельке"
@@ -12538,6 +12552,10 @@ msgstr "Перевод средств в..."
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Network fee"
 msgstr "Комиссия сети"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas in {srcChainNativeTokenSymbol} from your {srcChainName} wallet."
+msgstr "Используется только для комиссий Express и One-Click и оплачивается из баланса, который использует действие. Мосты оплачивают gas в {srcChainNativeTokenSymbol} из вашего кошелька {srcChainName}."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"

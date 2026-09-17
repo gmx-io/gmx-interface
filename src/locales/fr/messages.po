@@ -2206,6 +2206,10 @@ msgstr "Frais d'emprunt / jour"
 msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
 msgstr "Les pools GMX n'ont pas assez de liquidité pour cette taille de swap. Essayez de réduire le montant."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Classic transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from your Wallet."
+msgstr "Utilisé uniquement pour les frais Express et One-Click, payés depuis le solde utilisé par l'action. Les transactions Classiques, les transferts vers le Compte GMX sur la même chaîne et les bridges paient le gas en {nativeTokenSymbol} depuis votre Portefeuille."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "Vous avez des jetons esGMX dans le vault Affiliate. Retirez-les pour les transférer vers le nouveau compte."
@@ -2419,6 +2423,10 @@ msgstr "Solde GMX"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Prix sur Avalanche"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "Signez les transactions hors chaîne. Les RPC premium garantissent la fiabilité en cas de congestion du réseau.<0/><1/>Les frais sont payés avec votre jeton de paiement du Gas depuis le solde utilisé par l'action."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Lifecycle RPNL"
@@ -3329,10 +3337,6 @@ msgstr "<0>Il n'y a pas de seuil fixe — le desk définit votre niveau selon vo
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr ""
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
-msgstr "Solde de gas insuffisant. Express Trading et One-Click Trading indisponibles."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
 msgstr "Signature non valide. Essayez de signer à nouveau la requête"
@@ -3829,6 +3833,10 @@ msgstr "Pages de l'écosystème GMX"
 msgid "Dune Analytics for GMX"
 msgstr "Analyses Dune pour GMX"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
+msgstr "Express nécessite {gasPaymentTokensText} dans votre Compte GMX. Déposez l'un d'eux."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Frais d'emprunt en attente de toutes les positions ouvertes"
@@ -4280,6 +4288,10 @@ msgstr "Protocole d'options décentralisé"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade at scale without worrying about thin order books or slippage"
 msgstr "Tradez à grande échelle sans vous soucier de carnets d'ordres peu profonds ou du glissement"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your Wallet. Swap or bridge one of them."
+msgstr "Express nécessite {gasPaymentTokensText} dans votre Portefeuille. Échangez ou bridgez l'un d'eux."
 
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -5692,10 +5704,6 @@ msgstr "Approbation échouée"
 msgid "Updating settings..."
 msgstr "Mise à jour des paramètres..."
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "GMX exécute les transactions sans signature individuelle. Les trades utilisent des RPC premium sponsorisés par GMX pour garantir la fiabilité, même en cas de congestion du réseau.<0/><1/>Paiement du Gas en {gasPaymentTokensText}."
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "Dernier rééquilibrage"
@@ -6241,6 +6249,10 @@ msgstr "Tokens à effet de levier avec protection"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "Votre part projetée de la Trésorerie à votre puissance de staking actuelle. Estimation indicative uniquement ; la distribution réelle est soumise à la gouvernance de la DAO."
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your Wallet. Express and One-Click Trading are unavailable."
+msgstr "{gasPaymentTokensText} insuffisant dans votre Portefeuille. Express et One-Click Trading sont indisponibles."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
@@ -7398,6 +7410,10 @@ msgstr "Facturez vos propres frais"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "Recevoir en {receiveTokenSymbol} échangera votre profit et coûtera {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Recevez {profitTokenSymbol} et {collateralTokenSymbol} séparément pour éviter le swap. <1>En savoir plus</1>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "GMX exécute les transactions sans signature individuelle. Les trades utilisent des RPC premium sponsorisés par GMX pour garantir la fiabilité, même en cas de congestion du réseau.<0/><1/>Les frais sont payés avec votre jeton de paiement du Gas depuis le solde utilisé par l'action."
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -8379,6 +8395,7 @@ msgid "Do I need to pass KYC?"
 msgstr "Dois-je passer un KYC ?"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
 msgstr "Votre wallet ne peut pas signer de messages. Connectez un autre wallet pour trader."
 
@@ -9749,6 +9766,7 @@ msgid "Short positions"
 msgstr "Positions short"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "Votre wallet ne peut pas signer de messages. Utilisez le mode Classique pour trader."
 
@@ -11640,10 +11658,6 @@ msgstr "Gagnez des frais sur le trading à effet de levier, les swaps et les spr
 msgid "Time elapsed"
 msgstr "Temps écoulé"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "Signez les transactions hors chaîne. Les RPC premium garantissent la fiabilité en cas de congestion du réseau.<0/><1/>Paiements de Gas en {gasPaymentTokensText}."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} in Wallet"
 msgstr "{tokenSymbol} insuffisant dans le Portefeuille"
@@ -12538,6 +12552,10 @@ msgstr "Transfert des fonds vers..."
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Network fee"
 msgstr "Frais de réseau"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas in {srcChainNativeTokenSymbol} from your {srcChainName} wallet."
+msgstr "Utilisé uniquement pour les frais Express et One-Click, payés depuis le solde utilisé par l'action. Les bridges paient le gas en {srcChainNativeTokenSymbol} depuis votre Portefeuille {srcChainName}."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"
