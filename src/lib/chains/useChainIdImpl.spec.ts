@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM, AVALANCHE, SOURCE_ETHEREUM_MAINNET } from "config/chains";
+import { ARBITRUM, AVALANCHE, SOLANA, SOURCE_ETHEREUM_MAINNET } from "config/chains";
 
 import {
   canWalletChainUpdateSelectedNetwork,
   getSelectedSourceChainId,
   getWalletNetworkSelection,
+  isAppSelectedSolana,
+  shouldClearSelectedNetwork,
 } from "./useChainIdImpl";
 
 describe("getSelectedSourceChainId", () => {
@@ -122,5 +124,49 @@ describe("getWalletNetworkSelection", () => {
         settlementChainId: ARBITRUM,
       })
     ).toBeUndefined();
+  });
+});
+
+describe("isAppSelectedSolana", () => {
+  it("requires the app-selected flag", () => {
+    expect(
+      isAppSelectedSolana({
+        chainIdFromLocalStorage: SOLANA,
+        selectedNetworkWasAppSelected: false,
+      })
+    ).toBe(false);
+  });
+
+  it("keeps an explicit Solana app selection", () => {
+    expect(
+      isAppSelectedSolana({
+        chainIdFromLocalStorage: SOLANA,
+        selectedNetworkWasAppSelected: true,
+      })
+    ).toBe(true);
+  });
+});
+
+describe("shouldClearSelectedNetwork", () => {
+  it("does not clear an app-selected Solana network", () => {
+    expect(
+      shouldClearSelectedNetwork({
+        mustChangeChainId: true,
+        isLocalStorageChainSupported: false,
+        isLocalStorageChainSource: false,
+        isAppSelectedSolanaNetwork: true,
+      })
+    ).toBe(false);
+  });
+
+  it("clears unsupported EVM selections when the wallet chain cannot be used", () => {
+    expect(
+      shouldClearSelectedNetwork({
+        mustChangeChainId: true,
+        isLocalStorageChainSupported: false,
+        isLocalStorageChainSource: false,
+        isAppSelectedSolanaNetwork: false,
+      })
+    ).toBe(true);
   });
 });

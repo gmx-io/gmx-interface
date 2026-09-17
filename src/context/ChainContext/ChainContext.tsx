@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from "react";
 
-import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/chains";
+import { type AppNetworkId, DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
@@ -14,21 +14,27 @@ type ChainContext = {
    */
   srcChainId: SourceChainId | undefined;
   isConnectedToChainId: boolean | undefined;
+  selectedNetworkId: AppNetworkId;
+  isSolana: boolean;
 };
 
 const initialChainId: ContractsChainId = DEFAULT_SETTLEMENT_CHAIN_ID;
 const realChainId = window.ethereum?.chainId ? parseInt(window.ethereum?.chainId) : initialChainId;
+const initialSrcChainId = isSourceChain(realChainId, initialChainId) ? realChainId : undefined;
 
 const context = createContext<ChainContext>({
   chainId: initialChainId,
-  srcChainId: isSourceChain(realChainId, initialChainId) ? realChainId : undefined,
+  srcChainId: initialSrcChainId,
   isConnectedToChainId: false,
+  selectedNetworkId: initialSrcChainId ?? initialChainId,
+  isSolana: false,
 });
 
 export function ChainContextProvider({ children }: PropsWithChildren) {
   const [gmxAccountSettlementChainId, setGmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
 
-  const { chainId, srcChainId, isConnectedToChainId } = useChainIdImpl(gmxAccountSettlementChainId);
+  const { chainId, srcChainId, isConnectedToChainId, selectedNetworkId, isSolana } =
+    useChainIdImpl(gmxAccountSettlementChainId);
 
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
@@ -47,8 +53,10 @@ export function ChainContextProvider({ children }: PropsWithChildren) {
       chainId,
       srcChainId,
       isConnectedToChainId,
+      selectedNetworkId,
+      isSolana,
     }),
-    [chainId, srcChainId, isConnectedToChainId]
+    [chainId, srcChainId, isConnectedToChainId, selectedNetworkId, isSolana]
   );
 
   return <context.Provider value={value}>{children}</context.Provider>;

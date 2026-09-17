@@ -7,11 +7,13 @@ import {
   MEGAETH,
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
   GmxAccountPseudoChainId,
+  SOLANA,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
+  type SolanaNetworkId,
 } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
@@ -38,6 +40,7 @@ import gmxIcon from "img/tokens/ic_gmx.svg";
 import megaeth from "img/tokens/ic_megaeth.svg";
 import optimismSepolia from "img/tokens/ic_op.svg";
 import sepolia from "img/tokens/ic_sepolia.svg";
+import solana from "img/tokens/ic_sol.svg";
 
 export type ChainIcons = {
   network?: string;
@@ -94,7 +97,7 @@ const ICONS: Record<number | "common", ChainIcons> = {
   },
 };
 
-export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChainId, string> = {
+export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChainId | SolanaNetworkId, string> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [GMX_ACCOUNT_PSEUDO_CHAIN_ID]: gmxIcon,
@@ -106,6 +109,7 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChain
   [SOURCE_SEPOLIA]: sepolia,
   [MEGAETH]: megaeth,
   [SOURCE_BSC_MAINNET]: bsc,
+  [SOLANA]: solana,
 };
 
 /**
@@ -124,7 +128,7 @@ export function getChainIcon(chainId: number): string {
     throw new Error(`No icon found for chain: ${chainId}`);
   }
 
-  return CHAIN_ID_TO_NETWORK_ICON[chainId as AnyChainId];
+  return CHAIN_ID_TO_NETWORK_ICON[chainId as AnyChainId | GmxAccountPseudoChainId | SolanaNetworkId];
 }
 
 export function getIcons(chainId: number | "common"): ChainIcons {

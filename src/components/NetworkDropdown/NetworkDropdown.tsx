@@ -2,9 +2,10 @@ import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 
+import { getAppNetworkName, isSolanaNetwork } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { isValidVisualSettlementChain, isValidVisualSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
@@ -14,7 +15,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
 import { useWalletCanSignTypedData, useWalletUnavailableChains } from "lib/wallets/useWalletSessionChains";
-import { getChainName, isContractsChain } from "sdk/configs/chains";
+import { isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
@@ -25,13 +26,13 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
-import { GmTradeModal, SolanaNetworkItem } from "./SolanaNetworkItem";
+import { SolanaNetworkItem } from "./SolanaNetworkItem";
 
 import "./NetworkDropdown.scss";
 
 function NavIcons({ chainId, open }: { chainId: number; open: boolean }) {
   const icon = getChainIcon(chainId);
-  const chainName = getChainName(chainId);
+  const chainName = getAppNetworkName(chainId);
 
   return (
     <>
@@ -49,8 +50,6 @@ export default function NetworkDropdown({
   chainId: number;
   networkOptions: NetworkOption[];
 }) {
-  const [isGmTradeModalVisible, setIsGmTradeModalVisible] = useState(false);
-
   return (
     <div className="relative flex items-center gap-8">
       <Menu>
@@ -67,17 +66,12 @@ export default function NetworkDropdown({
             </Menu.Button>
             <Menu.Items as="div" className="network-dropdown-items" data-qa="networks-dropdown">
               <div className="network-dropdown-list">
-                <NetworkMenuItems
-                  networkOptions={networkOptions}
-                  chainId={chainId}
-                  onSolanaSelect={() => setIsGmTradeModalVisible(true)}
-                />
+                <NetworkMenuItems networkOptions={networkOptions} chainId={chainId} />
               </div>
             </Menu.Items>
           </>
         )}
       </Menu>
-      <GmTradeModal isVisible={isGmTradeModalVisible} setIsVisible={setIsGmTradeModalVisible} />
     </div>
   );
 }
@@ -105,15 +99,7 @@ function getNetworkDisabledReason({
   return undefined;
 }
 
-function NetworkMenuItems({
-  networkOptions,
-  chainId,
-  onSolanaSelect,
-}: {
-  networkOptions: NetworkOption[];
-  chainId: number;
-  onSolanaSelect: () => void;
-}) {
+function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
   const { unavailableChains, isLoading: isAvailabilityLoading } = useWalletUnavailableChains(
     networkOptions.map((network) => network.value)
   );
@@ -187,7 +173,7 @@ function NetworkMenuItems({
           ))}
         </>
       )}
-      <SolanaNetworkItem onSelect={onSolanaSelect} />
+      <SolanaNetworkItem isSelected={isSolanaNetwork(chainId)} />
     </>
   );
 }
