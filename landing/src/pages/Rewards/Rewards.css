@@ -660,6 +660,19 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-spoiler-source > * {
   height: 100%;
 }
+.rewards-bonus-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url("../../../../src/img/rewards-landing/bonus-background.svg") center / cover no-repeat;
+}
+.rewards-bonus-preview strong {
+  color: #fff;
+  font-size: clamp(160px, 52vw, 240px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
 .rewards-spoiler > canvas {
   position: absolute;
   inset: 0;
@@ -1908,6 +1921,18 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   }
   .rewards-spoiler {
     min-height: 430px;
+  }
+  .rewards-comeback .rewards-card-grid > .rewards-spoiler {
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 1;
+  }
+  .rewards-comeback .rewards-card-grid > .rewards-spoiler > .rewards-spoiler-source {
+    position: absolute;
+    inset: 0;
+  }
+  .rewards-comeback .rewards-card-grid[data-checked="false"] > .rewards-referral-wallet {
+    display: none;
   }
   .rewards-fresh-card {
     padding: 28px 0 0;

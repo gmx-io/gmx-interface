@@ -6,7 +6,12 @@ import { useMemo, useState, type ReactNode } from "react";
 import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import { getLandingRewardEstimate } from "domain/synthetics/incentives/v2/landingCalculator";
 import type { BoostId, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
-import { formatMultiplier, formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
+import {
+  formatFactorPercentage,
+  formatMultiplier,
+  formatMultiplierAdjustment,
+  getMaxRewardRateFactor,
+} from "domain/synthetics/incentives/v2/utils";
 import { expandDecimals, formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 
@@ -33,6 +38,13 @@ export function RewardsCalculator({
   const [stakedAmount, setStakedAmount] = useState(expandDecimals(1_000, ES_GMX_DECIMALS));
   const [boosts, setBoosts] = useState<BoostId[]>(["ManualAllocation"]);
   const estimate = config ? getLandingRewardEstimate({ config, volumeUsd, stakedAmount, boosts }) : undefined;
+  const rewardRate = (
+    <RewardsValue loading={loading}>
+      {estimate && config
+        ? formatFactorPercentage(getMaxRewardRateFactor({ ...config, maxMultiplier: estimate.multiplier }), 2)
+        : undefined}
+    </RewardsValue>
+  );
   const boostMultipliers = estimate?.boostMultipliers ?? boosts.map((boost) => ({ boost, multiplier: undefined }));
   const boostLabels: Record<BoostId, ReactNode> = {
     ManualAllocation: t`Comeback boost`,
@@ -167,14 +179,9 @@ export function RewardsCalculator({
             )}
           </AnimatePresence>
           <div className="rewards-receipt-total">
-            <span>
-              <Trans>Returned to you</Trans>
-            </span>
-            <strong>
-              <RewardsValue loading={loading}>
-                {estimate ? formatUsd(estimate.rewardsUsd, { displayDecimals: 0 }) : undefined}
-              </RewardsValue>
-            </strong>
+            <Trans>
+              <strong>{rewardRate}</strong> <span>of your fees back</span>
+            </Trans>
           </div>
           <p className="rewards-receipt-split">
             <span>

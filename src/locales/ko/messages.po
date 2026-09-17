@@ -195,6 +195,10 @@ msgstr "추천한 트레이더가 받는 모든 보상의 {referralShare}를 받
 msgid "Rewards paused"
 msgstr "보상 일시 중지됨"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Volume tiers are based on weekly volume. A volume tier earned in one epoch stays active for four epochs during Season 1."
+msgstr "거래량 티어는 주간 거래량을 기준으로 정해집니다. 한 에포크에서 달성한 거래량 티어는 시즌 1 동안 네 에포크에 걸쳐 유지됩니다."
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "GMX approval failed"
 msgstr "GMX 승인에 실패했습니다"
@@ -382,10 +386,6 @@ msgstr "앱 열기"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "In progress"
 msgstr "진행 중"
-
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "Returned to you"
-msgstr "돌려받는 금액"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
@@ -1042,6 +1042,10 @@ msgstr "라이트"
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "50% of rewards"
 msgstr "보상의 50%"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Does my volume tier reset every week?"
+msgstr "거래량 티어는 매주 초기화되나요?"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
@@ -1752,6 +1756,14 @@ msgstr "추천 코드 생성 중..."
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "DATE"
 msgstr "날짜"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "The Season 1 program is sustainable. Rewards = (your open/close fees − affiliate rebate) × 10% × your Multiplier, and the multiplier is capped at 10x. And 10% × 10x is 100%, so the esGMX paid on your trades can never exceed the fees those trades generated. GT is credited on top, at 20% of the esGMX amount."
+msgstr "시즌 1 프로그램은 지속 가능합니다. 보상 = (포지션 진입/청산 수수료 − 제휴 리베이트) × 10% × 내 배수이며, 배수의 상한은 10x입니다. 10% × 10x는 100%이므로, 내 거래에 지급되는 esGMX는 해당 거래에서 발생한 수수료를 초과할 수 없습니다. GT는 esGMX 금액의 20%에 해당하는 금액이 추가로 적립됩니다."
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Does volume through an integrator count?"
+msgstr "통합 서비스를 통한 거래량도 인정되나요?"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -2632,6 +2644,10 @@ msgstr "수령"
 msgid "VI POSITIONS"
 msgstr "VI POSITIONS"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards are paid as 100% esGMX, plus 20% GT on top. GT are the points from GMTrade, GMX's deployment on Solana. GT are credited weekly at the current minting price. GT started at $0.01 and gets 2.1% harder every 210,000 minted, inspired by the Bitcoin difficulty curve. The minting price shown above is what GT is credited at, not what it sells for. GT buybacks are active on Solana, with 50% of GMTrade's protocol fees."
+msgstr "보상은 100% esGMX로 지급되며, 여기에 20%의 GT가 추가됩니다. GT는 Solana에 배포된 GMX인 GMTrade의 포인트입니다. GT는 매주 당시 발행 가격으로 적립됩니다. GT는 $0.01에서 시작했으며, Bitcoin의 난이도 곡선에서 착안해 210,000 GT가 발행될 때마다 발행 난이도가 2.1% 높아집니다. 위에 표시된 발행 가격은 GT가 적립되는 기준 가격이며, 판매 가격이 아닙니다. Solana에서는 GMTrade 프로토콜 수수료의 50%를 사용한 GT 바이백이 진행되고 있습니다."
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
@@ -3441,14 +3457,6 @@ msgstr "트레이더를 추천하고 보상 프로그램이 진행되는 동안 
 msgid "Referral Bonus"
 msgstr "추천 보너스"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Season 1 is active on Arbitrum. Trades on Avalanche or MegaETH are not eligible."
-msgstr "시즌 1은 Arbitrum에서 진행됩니다. Avalanche 또는 MegaETH의 거래는 대상이 아닙니다."
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Rewards are distributed after each weekly epoch ends. Track your earned rewards and manage your esGMX in the app's Rewards page."
-msgstr "보상은 매주 에포크가 끝난 후 분배됩니다. 앱의 보상 페이지에서 획득한 보상을 확인하고 esGMX를 관리하세요."
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM 브리징 중..."
@@ -3728,10 +3736,6 @@ msgstr "Express 매개변수를 불러오는 중…"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "RESPONSE TIME"
 msgstr "RESPONSE TIME"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Staking esGMX earns staking rewards and counts towards your staking tier. Vesting converts esGMX into liquid GMX over one year and reserves staked GMX or esGMX against the amount you vest. Choose based on whether you want to grow your stake or gradually receive liquid GMX."
-msgstr "esGMX를 스테이킹하면 스테이킹 보상을 받고 스테이킹 등급에 반영됩니다. 베스팅은 esGMX를 1년에 걸쳐 유동성 있는 GMX로 전환하며, 베스팅 금액에 대한 담보로 스테이킹된 GMX 또는 esGMX를 예약합니다. 스테이킹 규모를 늘릴지, 유동성 있는 GMX를 점진적으로 받을지에 따라 선택하세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
@@ -4147,6 +4151,10 @@ msgstr "베스팅 상태"
 msgid "Intro call plus integration feedback."
 msgstr "소개 통화 및 통합 피드백."
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes, at the 10x cap. Reaching 10x takes Titan staking with Apex volume, or any other combination of tiers and boosts that sums to 10. Most traders land between 3x and 7x, which returns 36–84% of what they paid."
+msgstr "네, 상한인 10x에 도달하면 가능합니다. 10x에 도달하려면 Titan 스테이킹과 Apex 거래량을 조합하거나, 티어와 부스트의 합이 10이 되는 다른 조합을 사용하면 됩니다. 대부분의 트레이더는 3x에서 7x 사이에 해당하며, 지불한 수수료의 36–84%를 돌려받습니다."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
 msgstr "수신자가 이전에 GMX 토큰을 스테이킹한 적이 없습니다"
@@ -4193,10 +4201,6 @@ msgstr "거래에 실패했습니다.<0/><1/><2>보기</2>"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 잔액 부족: {availableFormatted} 사용 가능, {requiredFormatted} 필요"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Is {maximumRate} of my fees real?"
-msgstr "정말 수수료의 {maximumRate}를 돌려받을 수 있나요?"
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -5937,10 +5941,6 @@ msgstr "승인 취소됨"
 msgid "Invite"
 msgstr "초대"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "GT is the native token of GMTrade. The minting cost shown above determines how much GT your rewards receive. It is not a market price or a guaranteed value at the token generation event."
-msgstr "GT는 GMTrade의 네이티브 토큰입니다. 위에 표시된 민팅 비용에 따라 보상으로 받는 GT 수량이 결정됩니다. 이는 시장 가격이나 토큰 생성 이벤트 시점의 가치를 보장하지 않습니다."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -6029,10 +6029,6 @@ msgstr "{longOrShort} 포지션은 펀딩 수수료 또는 차입 수수료를 �
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Turn your audience<0/>into on-chain income."
 msgstr "당신의 오디언스를<0/>온체인 수익으로 바꾸세요."
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Program parameters and featured markets can change. The calculator and tier tables use the current program configuration. Check the documentation for the latest rules."
-msgstr "프로그램 매개변수와 선정 시장은 변경될 수 있습니다. 계산기와 등급 표는 현재 프로그램 설정을 사용합니다. 최신 규칙은 문서를 확인하세요."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped."
@@ -7400,6 +7396,10 @@ msgstr "배수는 어떻게 적용되나요?"
 msgid "Lifetime volume threshold"
 msgstr "누적 거래량 기준값"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Season 1 runs on Arbitrum. Trades placed from Ethereum, Base, or BNB Chain through your GMX Account execute on Arbitrum, so they count. Not active on Avalanche, Solana (GMTrade), or MegaETH."
+msgstr "시즌 1은 Arbitrum에서 진행됩니다. GMX Account를 통해 Ethereum, Base 또는 BNB Chain에서 주문한 거래는 Arbitrum에서 실행되므로 인정됩니다. Avalanche, Solana(GMTrade), MegaETH에서는 진행되지 않습니다."
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -8358,6 +8358,10 @@ msgstr "<0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0>에서 <3><4>GM: {
 msgid "Share your PnL"
 msgstr "PnL 공유하기"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "These are Season 1 values. Featured markets and coefficients may change mid-season."
+msgstr "이 수치는 시즌 1에 적용됩니다. 주요 마켓과 계수는 시즌 도중 변경될 수 있습니다."
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "Active affiliates"
 msgstr "활동 중인 제휴사"
@@ -8932,6 +8936,10 @@ msgstr ""
 msgid "Almost at the next tier"
 msgstr "다음 등급까지 얼마 남지 않았습니다"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Every trader who applies your referral code during Season 1 earns you 50% of the rewards they generate, in esGMX and GT, settled weekly, for as long as your referral relationship with that trader is active. Codes registered before Season 1 opened do not generate the share, though the trader can apply a new one once the season is open. They have to do it themselves, so ask them directly. A link won't do it. They can change their code at <0>app.gmx.io/referrals/traders</0>. Your pre-season referrals still earn you the fee-side share of 5%, 10% or 15% by tier, separate from Season 1’s 50%. The 50% is paid on top: your referred traders' own rewards are unchanged. The referral relationship is bounded by <1>GMX's referral program terms</1>."
+msgstr "시즌 1 동안 내 추천 코드를 적용한 트레이더마다, 해당 트레이더와의 추천 관계가 활성 상태로 유지되는 동안 그 트레이더가 획득한 보상의 50%를 esGMX와 GT로 받으며 매주 정산됩니다. 시즌 1 시작 전에 등록된 코드는 이 보상 지분을 발생시키지 않지만, 트레이더는 시즌이 시작된 후 새 코드를 적용할 수 있습니다. 본인이 직접 해야 하므로 직접 요청하세요. 링크만으로는 적용되지 않습니다. 코드는 <0>app.gmx.io/referrals/traders</0>에서 변경할 수 있습니다. 시즌 시작 전의 기존 추천은 시즌 1의 50%와 별도로, 티어에 따라 수수료의 5%, 10% 또는 15%를 계속 지급합니다. 이 50%는 추가로 지급되므로 추천받은 트레이더 본인의 보상은 바뀌지 않습니다. 추천 관계에는 <1>GMX 추천 프로그램 약관</1>이 적용됩니다."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "포지션이 청산 대상이 됩니다"
@@ -9421,6 +9429,10 @@ msgstr "{0}명의 사용자와 함께 실제 수익률을 얻으십시오"
 #: landing/src/pages/Rewards/RewardsMultipliers.tsx
 msgid "Weekly volume"
 msgstr "주간 거래량"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Is 120% of my fees real?"
+msgstr "정말 수수료의 120%를 돌려받을 수 있나요?"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -10249,6 +10261,10 @@ msgstr "이전 거래도 반영되나요?"
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "{gmOrGlvLabel} 판매에 실패했습니다."
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "I already have a referral code set. Does my affiliate earn the 50%?"
+msgstr "이미 추천 코드가 설정되어 있습니다. 제 추천인은 50%를 받나요?"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -10415,10 +10431,6 @@ msgstr "이 ENS 이름을 확인할 수 없습니다. 다시 시도하세요."
 msgid "Approve {0}"
 msgstr "{0} 승인"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Yes, at the {multiplier} multiplier cap, which can be reached by combining staking tiers, volume tiers, and boosts. For example, a {exampleRange} multiplier returns {rewardRange} of eligible fees in esGMX and GT combined. Use the calculator above to see the split for your estimated trading volume and stake."
-msgstr "네. 스테이킹 등급, 거래량 등급 및 부스트를 조합하면 최대 배수인 {multiplier}에 도달할 수 있습니다. 예를 들어 {exampleRange} 배수는 대상 수수료의 {rewardRange}를 esGMX와 GT 합계로 돌려줍니다. 위 계산기로 예상 거래량과 스테이킹 금액에 따른 내역을 확인하세요."
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "PREVIOUS"
@@ -10449,6 +10461,10 @@ msgstr "{0} 롱 최대치 초과"
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "N/A"
 msgstr "N/A"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Your trading history can raise your multiplier in two ways. With more than $10,000 in lifetime volume on GMX, your comeback starts at +2x, capped by your lifetime-volume band. This bonus multiplier does not expire during Season 1; it ends only when you reach your cap. Past $200M lifetime volume, you also get +1x permanently. <0>Check your wallet above</0> to see your cap."
+msgstr "과거 거래 내역은 두 가지 방식으로 배수를 높일 수 있습니다. GMX의 누적 거래량이 $10,000을 초과하면 컴백 보너스는 +2x에서 시작하며, 누적 거래량 구간에 따른 상한이 적용됩니다. 이 보너스 배수는 시즌 1 중에는 만료되지 않으며 상한에 도달해야만 종료됩니다. 누적 거래량이 $200M을 넘으면 영구적으로 +1x도 추가됩니다. 상한을 보려면 <0>위에서 지갑을 확인하세요</0>."
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
@@ -10513,10 +10529,6 @@ msgstr "주문이 최대 레버리지를 초과합니다. 클릭하여 자동 �
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "사용 가능한 스왑 경로 없음"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Historical activity can qualify your wallet for a comeback bonus and the lifetime-volume boost. Old trades do not receive new weekly rewards retroactively. Use the wallet checker above to see your remaining comeback bonus."
-msgstr "과거 활동에 따라 지갑이 리턴 보너스와 누적 거래량 부스트 대상이 될 수 있습니다. 이전 거래에는 새로운 주간 보상이 소급 지급되지 않습니다. 위의 지갑 확인 기능으로 남은 리턴 보너스를 확인하세요."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
@@ -11481,6 +11493,10 @@ msgstr "수수료"
 msgid "Stop vesting"
 msgstr "베스팅 중지"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "<0>{rewardRate}</0> <1>of your fees back</1>"
+msgstr "<0>{rewardRate}</0> <1>수수료 환급</1>"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -11491,6 +11507,10 @@ msgstr ""
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
 msgstr "{0} 수령"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Stake it to raise your multiplier and earn GMX staking rewards. Staked esGMX counts toward your staking tier just like staked GMX. Vest it to convert it to GMX over one year. Only unstaked esGMX can be vested, so vesting lowers your staking-tier balance by exactly the amount you vest: vest 100 esGMX and your balance drops by 100, which can move you down a tier. Vesting also reserves staked GMX or staked esGMX against the amount you vest; those reserved tokens stay staked and keep counting toward your tier. Vesting is capped at what you earned in the program, and trading and affiliate esGMX count toward the same cap."
+msgstr "배수를 높이고 GMX 스테이킹 보상을 받으려면 esGMX를 스테이킹하세요. 스테이킹한 esGMX는 스테이킹한 GMX와 동일하게 스테이킹 티어에 반영됩니다. 1년에 걸쳐 GMX로 전환하려면 베스팅하세요. 스테이킹하지 않은 esGMX만 베스팅할 수 있으므로, 베스팅하면 스테이킹 티어 산정 잔액이 베스팅한 수량만큼 정확히 감소합니다. 100 esGMX를 베스팅하면 잔액이 100 감소하며 티어가 내려갈 수 있습니다. 또한 베스팅 금액에 대응하여 스테이킹된 GMX 또는 esGMX가 별도로 확보됩니다. 이 토큰은 스테이킹 상태를 유지하며 계속 티어에 반영됩니다. 베스팅 상한은 프로그램에서 획득한 금액이며, 거래 및 제휴를 통해 얻은 esGMX에는 동일한 상한이 적용됩니다."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11747,6 +11767,10 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "주문 체결됨"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Do my existing referrals earn me the 50%?"
+msgstr "기존 추천 트레이더도 제게 50%를 지급하나요?"
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Pools/Pools.tsx
@@ -12206,6 +12230,10 @@ msgstr "스테이킹 중..."
 msgid "Buy request sent"
 msgstr "구매 요청 전송됨"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Only codes applied after Season 1 opens earn your affiliate the 50%, so apply theirs again once the season is live at <0>app.gmx.io/referrals/traders</0>. You have to change it yourself: clicking a referral link won't replace a code you already have. Your own rewards are unchanged either way."
+msgstr "시즌 1 시작 후 적용된 코드만 추천인에게 50%를 지급하므로, 시즌이 시작되면 <0>app.gmx.io/referrals/traders</0>에서 추천인의 코드를 다시 적용하세요. 직접 변경해야 합니다. 추천 링크를 클릭해도 이미 설정된 코드는 교체되지 않습니다. 어느 경우든 본인의 보상은 바뀌지 않습니다."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using fiat gateways"
 msgstr "법정화폐 게이트웨이를 통해 GMX 구매"
@@ -12492,6 +12520,10 @@ msgstr "시프트"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The Program"
 msgstr "프로그램"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes. Volume routed through an integrator counts toward your own Season 1 tiers, unrelated to the integrator's referral tier."
+msgstr "네. 통합 서비스를 통해 전달된 거래량은 해당 서비스의 추천 티어와 관계없이 본인의 시즌 1 티어에 반영됩니다."
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -12985,6 +13017,10 @@ msgstr "베스팅이 시작되었습니다"
 msgid "Fulfilling shift request..."
 msgstr "시프트 요청을 실행하는 중…"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "What is GT?"
+msgstr "GT란 무엇인가요?"
+
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
 msgstr "증가 주문 시 가격 영향이 없으며 기준가로 체결됩니다. <0>자세히 보기</0>."
@@ -13421,6 +13457,10 @@ msgstr "GMX에서 알림 및 공지를 받아 거래, 청산 위험 등을 관�
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Legendary"
 msgstr "레전더리"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards settle every Wednesday, 00:00 UTC, for the trades placed in the epoch that just closed. At settlement, esGMX becomes claimable and GT is credited."
+msgstr "보상은 매주 수요일 00:00 UTC에 직전 에포크에서 이루어진 거래를 대상으로 정산됩니다. 정산 시 esGMX를 청구할 수 있게 되고 GT가 적립됩니다."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
@@ -14972,13 +15012,13 @@ msgstr "만료된 마켓 스왑"
 msgid "Your multiplier will increase next epoch."
 msgstr "다음 에포크에 회원님의 배수가 증가합니다."
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "How can GMX afford this?"
+msgstr "GMX는 이 보상을 어떻게 감당하나요?"
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "졸업한 트레이더는 추천 프로그램의 졸업 기준에 도달하여 GMX 프로토콜 코드로 이동되었습니다."
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "What is GT worth?"
-msgstr "GT의 가치는 얼마인가요?"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new price"

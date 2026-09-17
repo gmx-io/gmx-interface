@@ -188,7 +188,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
             {validationError}
           </p>
         )}
-        <div className="rewards-card-grid">
+        <div className="rewards-card-grid" data-checked={checked}>
           {result.error && !checking ? (
             <div className="rewards-bonus-card">
               <div className="rewards-card-status" role="alert">
@@ -202,7 +202,9 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
             </div>
           ) : !checked ? (
             <RewardsSpoiler onFocusAddress={checking ? undefined : focusAddress}>
-              <BonusCard loading />
+              <div className="rewards-bonus-preview">
+                <strong>+2x</strong>
+              </div>
             </RewardsSpoiler>
           ) : hasBonus ? (
             <BonusCard

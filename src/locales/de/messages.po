@@ -195,6 +195,10 @@ msgstr "Verdiene {referralShare} aller Belohnungen, die deine geworbenen Trader 
 msgid "Rewards paused"
 msgstr "Belohnungen pausiert"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Volume tiers are based on weekly volume. A volume tier earned in one epoch stays active for four epochs during Season 1."
+msgstr "Volumenstufen basieren auf dem wöchentlichen Volumen. Eine in einer Epoche erreichte Volumenstufe bleibt während Saison 1 für vier Epochen aktiv."
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "GMX approval failed"
 msgstr "GMX-Genehmigung fehlgeschlagen"
@@ -382,10 +386,6 @@ msgstr "App öffnen"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "In progress"
 msgstr "In Bearbeitung"
-
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "Returned to you"
-msgstr "Du erhältst zurück"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
@@ -1042,6 +1042,10 @@ msgstr "Hell"
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "50% of rewards"
 msgstr "50 % der Belohnungen"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Does my volume tier reset every week?"
+msgstr "Wird meine Volumenstufe jede Woche zurückgesetzt?"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
@@ -1752,6 +1756,14 @@ msgstr "Empfehlungscode wird erstellt..."
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "DATE"
 msgstr "DATUM"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "The Season 1 program is sustainable. Rewards = (your open/close fees − affiliate rebate) × 10% × your Multiplier, and the multiplier is capped at 10x. And 10% × 10x is 100%, so the esGMX paid on your trades can never exceed the fees those trades generated. GT is credited on top, at 20% of the esGMX amount."
+msgstr "Das Programm für Saison 1 ist nachhaltig. Belohnungen = (deine Eröffnungs-/Schließungsgebühren − Affiliate-Rückvergütung) × 10% × dein Multiplikator. Der Multiplikator ist auf 10x begrenzt. Und 10% × 10x ergibt 100%, sodass die für deine Trades ausgezahlten esGMX niemals die durch diese Trades erzeugten Gebühren übersteigen können. GT werden zusätzlich in Höhe von 20% des esGMX-Betrags gutgeschrieben."
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Does volume through an integrator count?"
+msgstr "Zählt Volumen über einen Integrator?"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -2632,6 +2644,10 @@ msgstr "ERHALTEN"
 msgid "VI POSITIONS"
 msgstr "VI POSITIONS"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards are paid as 100% esGMX, plus 20% GT on top. GT are the points from GMTrade, GMX's deployment on Solana. GT are credited weekly at the current minting price. GT started at $0.01 and gets 2.1% harder every 210,000 minted, inspired by the Bitcoin difficulty curve. The minting price shown above is what GT is credited at, not what it sells for. GT buybacks are active on Solana, with 50% of GMTrade's protocol fees."
+msgstr "Belohnungen werden zu 100% in esGMX ausgezahlt, zuzüglich 20% in GT. GT sind die Punkte von GMTrade, der GMX-Implementierung auf Solana. GT werden wöchentlich zum aktuellen Ausgabepreis gutgeschrieben. GT startete bei $0.01, und die Ausgabe wird je 210,000 ausgegebenen GT um 2.1% schwieriger, inspiriert von der Bitcoin-Schwierigkeitskurve. Der oben angezeigte Ausgabepreis ist der Preis, zu dem GT gutgeschrieben werden, nicht ihr Verkaufspreis. GT-Rückkäufe sind auf Solana aktiv und werden mit 50% der Protokollgebühren von GMTrade finanziert."
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
@@ -3441,14 +3457,6 @@ msgstr "Empfehlen Sie Trader und verdienen Sie 50 % ihrer Belohnungen, solange d
 msgid "Referral Bonus"
 msgstr "Empfehlungsbonus"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Season 1 is active on Arbitrum. Trades on Avalanche or MegaETH are not eligible."
-msgstr "Saison 1 ist auf Arbitrum aktiv. Trades auf Avalanche oder MegaETH sind nicht berechtigt."
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Rewards are distributed after each weekly epoch ends. Track your earned rewards and manage your esGMX in the app's Rewards page."
-msgstr "Die Belohnungen werden nach Ende jeder wöchentlichen Epoche verteilt. Verfolge deine verdienten Belohnungen und verwalte deine esGMX auf der Belohnungsseite der App."
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM-Bridging zu..."
@@ -3728,10 +3736,6 @@ msgstr "Express-Parameter werden geladen…"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "RESPONSE TIME"
 msgstr "ANTWORTZEIT"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Staking esGMX earns staking rewards and counts towards your staking tier. Vesting converts esGMX into liquid GMX over one year and reserves staked GMX or esGMX against the amount you vest. Choose based on whether you want to grow your stake or gradually receive liquid GMX."
-msgstr "Gestakte esGMX verdienen Staking-Belohnungen und zählen zu deiner Staking-Stufe. Vesting wandelt esGMX über ein Jahr in liquide GMX um und reserviert dafür gestakte GMX oder esGMX entsprechend dem Vesting-Betrag. Entscheide, ob du deinen Stake erhöhen oder nach und nach liquide GMX erhalten möchtest."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
@@ -4147,6 +4151,10 @@ msgstr "Vesting-Status"
 msgid "Intro call plus integration feedback."
 msgstr "Kennenlern-Call plus Integrations-Feedback."
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes, at the 10x cap. Reaching 10x takes Titan staking with Apex volume, or any other combination of tiers and boosts that sums to 10. Most traders land between 3x and 7x, which returns 36–84% of what they paid."
+msgstr "Ja, beim Höchstwert von 10x. Um 10x zu erreichen, brauchst du Titan-Staking mit Apex-Volumen oder eine andere Kombination aus Stufen und Boosts, die zusammen 10 ergeben. Die meisten Trader liegen zwischen 3x und 7x und erhalten dadurch 36–84% ihrer gezahlten Gebühren zurück."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Der Empfänger hat zuvor noch keine GMX-Token gestaked"
@@ -4193,10 +4201,6 @@ msgstr "Transaktion fehlgeschlagen.<0/><1/><2>Ansicht</2>"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Unzureichendes {symbol}-Guthaben: {availableFormatted} verfügbar, {requiredFormatted} erforderlich"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Is {maximumRate} of my fees real?"
-msgstr "Bekomme ich wirklich {maximumRate} meiner Gebühren zurück?"
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -5937,10 +5941,6 @@ msgstr "Genehmigung abgebrochen"
 msgid "Invite"
 msgstr "Einladen"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "GT is the native token of GMTrade. The minting cost shown above determines how much GT your rewards receive. It is not a market price or a guaranteed value at the token generation event."
-msgstr "GT ist der native Token von GMTrade. Die oben angezeigten Minting-Kosten bestimmen, wie viel GT du als Belohnung erhältst. Sie sind weder ein Marktpreis noch ein garantierter Wert beim Token Generation Event."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -6029,10 +6029,6 @@ msgstr "{longOrShort}-Positionen zahlen weder eine Finanzierungsgebühr noch ein
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Turn your audience<0/>into on-chain income."
 msgstr "Verwandeln Sie Ihr Publikum<0/>in On-Chain-Einkommen."
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Program parameters and featured markets can change. The calculator and tier tables use the current program configuration. Check the documentation for the latest rules."
-msgstr "Programmparameter und ausgewählte Märkte können sich ändern. Der Rechner und die Stufentabellen verwenden die aktuelle Programmkonfiguration. Die neuesten Regeln findest du in der Dokumentation."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped."
@@ -7400,6 +7396,10 @@ msgstr "Wie funktionieren Multiplikatoren?"
 msgid "Lifetime volume threshold"
 msgstr "Schwellenwert für das Lebenszeitvolumen"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Season 1 runs on Arbitrum. Trades placed from Ethereum, Base, or BNB Chain through your GMX Account execute on Arbitrum, so they count. Not active on Avalanche, Solana (GMTrade), or MegaETH."
+msgstr "Saison 1 läuft auf Arbitrum. Trades, die du von Ethereum, Base oder BNB Chain über dein GMX Account aufgibst, werden auf Arbitrum ausgeführt und zählen daher mit. Auf Avalanche, Solana (GMTrade) und MegaETH ist das Programm nicht aktiv."
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -8358,6 +8358,10 @@ msgstr "Verschiebe von <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> zu
 msgid "Share your PnL"
 msgstr "Teilen Sie Ihren PnL"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "These are Season 1 values. Featured markets and coefficients may change mid-season."
+msgstr "Dies sind die Werte für Saison 1. Hervorgehobene Märkte und Koeffizienten können sich während der Saison ändern."
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "Active affiliates"
 msgstr "Aktive Affiliates"
@@ -8932,6 +8936,10 @@ msgstr ""
 msgid "Almost at the next tier"
 msgstr "Fast auf der nächsten Stufe"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Every trader who applies your referral code during Season 1 earns you 50% of the rewards they generate, in esGMX and GT, settled weekly, for as long as your referral relationship with that trader is active. Codes registered before Season 1 opened do not generate the share, though the trader can apply a new one once the season is open. They have to do it themselves, so ask them directly. A link won't do it. They can change their code at <0>app.gmx.io/referrals/traders</0>. Your pre-season referrals still earn you the fee-side share of 5%, 10% or 15% by tier, separate from Season 1’s 50%. The 50% is paid on top: your referred traders' own rewards are unchanged. The referral relationship is bounded by <1>GMX's referral program terms</1>."
+msgstr "Jeder Trader, der deinen Empfehlungscode während Saison 1 anwendet, bringt dir 50% der von ihm erzeugten Belohnungen in esGMX und GT, wöchentlich abgerechnet, solange deine Empfehlungsbeziehung mit diesem Trader aktiv ist. Codes, die vor Beginn von Saison 1 registriert wurden, erzeugen diesen Anteil nicht. Der Trader kann jedoch nach Saisonbeginn einen neuen Code anwenden. Das muss er selbst tun, sprich ihn also direkt darauf an. Ein Link reicht nicht aus. Er kann seinen Code unter <0>app.gmx.io/referrals/traders</0> ändern. Deine Empfehlungen aus der Zeit vor der Saison bringen dir weiterhin je nach Stufe einen Gebührenanteil von 5%, 10% oder 15%, unabhängig von den 50% aus Saison 1. Die 50% werden zusätzlich gezahlt: Die eigenen Belohnungen deiner empfohlenen Trader bleiben unverändert. Für die Empfehlungsbeziehung gelten <1>die Bedingungen des GMX-Empfehlungsprogramms</1>."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "Position wäre liquidierbar"
@@ -9421,6 +9429,10 @@ msgstr "Schließen Sie sich {0} Nutzern an, die echte Rendite erzielen"
 #: landing/src/pages/Rewards/RewardsMultipliers.tsx
 msgid "Weekly volume"
 msgstr "Wöchentliches Volumen"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Is 120% of my fees real?"
+msgstr "Sind 120% meiner Gebühren wirklich möglich?"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -10249,6 +10261,10 @@ msgstr "Zählen meine früheren Trades?"
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "Verkaufen von {gmOrGlvLabel} fehlgeschlagen."
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "I already have a referral code set. Does my affiliate earn the 50%?"
+msgstr "Ich habe bereits einen Empfehlungscode hinterlegt. Erhält mein Affiliate die 50%?"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -10415,10 +10431,6 @@ msgstr "Dieser ENS-Name konnte nicht aufgelöst werden. Bitte versuche es erneut
 msgid "Approve {0}"
 msgstr "{0} genehmigen"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Yes, at the {multiplier} multiplier cap, which can be reached by combining staking tiers, volume tiers, and boosts. For example, a {exampleRange} multiplier returns {rewardRange} of eligible fees in esGMX and GT combined. Use the calculator above to see the split for your estimated trading volume and stake."
-msgstr "Ja, beim maximalen Multiplikator von {multiplier}, der durch die Kombination von Staking-Stufen, Volumenstufen und Boosts erreicht werden kann. Ein Multiplikator von {exampleRange} gibt beispielsweise {rewardRange} der anrechenbaren Gebühren in esGMX und GT zusammen zurück. Nutze den Rechner oben, um die Aufteilung für dein geschätztes Handelsvolumen und deinen Staking-Betrag zu sehen."
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "PREVIOUS"
@@ -10449,6 +10461,10 @@ msgstr "Max {0} Long überschritten"
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "N/A"
 msgstr "N/A"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Your trading history can raise your multiplier in two ways. With more than $10,000 in lifetime volume on GMX, your comeback starts at +2x, capped by your lifetime-volume band. This bonus multiplier does not expire during Season 1; it ends only when you reach your cap. Past $200M lifetime volume, you also get +1x permanently. <0>Check your wallet above</0> to see your cap."
+msgstr "Deine Handelshistorie kann deinen Multiplikator auf zwei Arten erhöhen. Bei mehr als $10,000 Gesamtvolumen auf GMX beginnt dein Comeback mit +2x, begrenzt durch deine Gesamtvolumenspanne. Dieser Bonusmultiplikator verfällt während Saison 1 nicht; er endet erst, wenn du deine Obergrenze erreichst. Über $200M Gesamtvolumen erhältst du außerdem dauerhaft +1x. <0>Prüfe oben deine Wallet</0>, um deine Obergrenze zu sehen."
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
@@ -10513,10 +10529,6 @@ msgstr "Die Order überschreitet den maximalen Hebel. Klicken Sie zur automatisc
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "Kein Tauschpfad verfügbar"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Historical activity can qualify your wallet for a comeback bonus and the lifetime-volume boost. Old trades do not receive new weekly rewards retroactively. Use the wallet checker above to see your remaining comeback bonus."
-msgstr "Frühere Aktivitäten können deine Wallet für einen Rückkehrbonus und den Gesamtvolumen-Boost qualifizieren. Für alte Trades gibt es keine rückwirkenden neuen wöchentlichen Belohnungen. Prüfe mit dem Wallet-Checker oben deinen verbleibenden Rückkehrbonus."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
@@ -11481,6 +11493,10 @@ msgstr "GEBÜHREN"
 msgid "Stop vesting"
 msgstr "Vesting stoppen"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "<0>{rewardRate}</0> <1>of your fees back</1>"
+msgstr "<0>{rewardRate}</0> <1>deiner Gebühren zurück</1>"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -11491,6 +11507,10 @@ msgstr ""
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
 msgstr "{0} beanspruchen"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Stake it to raise your multiplier and earn GMX staking rewards. Staked esGMX counts toward your staking tier just like staked GMX. Vest it to convert it to GMX over one year. Only unstaked esGMX can be vested, so vesting lowers your staking-tier balance by exactly the amount you vest: vest 100 esGMX and your balance drops by 100, which can move you down a tier. Vesting also reserves staked GMX or staked esGMX against the amount you vest; those reserved tokens stay staked and keep counting toward your tier. Vesting is capped at what you earned in the program, and trading and affiliate esGMX count toward the same cap."
+msgstr "Stake deine esGMX, um deinen Multiplikator zu erhöhen und GMX-Staking-Belohnungen zu erhalten. Gestakte esGMX zählen für deine Staking-Stufe genauso wie gestakte GMX. Nutze Vesting, um sie über ein Jahr in GMX umzuwandeln. Nur nicht gestakte esGMX können ins Vesting gegeben werden. Deshalb reduziert Vesting dein für die Staking-Stufe relevantes Guthaben genau um den Vesting-Betrag: Gibst du 100 esGMX ins Vesting, sinkt dein Guthaben um 100, was dich eine Stufe zurücksetzen kann. Beim Vesting werden außerdem gestakte GMX oder esGMX zur Deckung des Vesting-Betrags reserviert; diese reservierten Token bleiben gestakt und zählen weiterhin für deine Stufe. Vesting ist auf den im Programm verdienten Betrag begrenzt, und esGMX aus Trading und Affiliate-Belohnungen zählen zur selben Obergrenze."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11747,6 +11767,10 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "Order ausgeführt"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Do my existing referrals earn me the 50%?"
+msgstr "Bringen mir meine bestehenden Empfehlungen die 50%?"
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Pools/Pools.tsx
@@ -12206,6 +12230,10 @@ msgstr "Staken..."
 msgid "Buy request sent"
 msgstr "Kaufanfrage gesendet"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Only codes applied after Season 1 opens earn your affiliate the 50%, so apply theirs again once the season is live at <0>app.gmx.io/referrals/traders</0>. You have to change it yourself: clicking a referral link won't replace a code you already have. Your own rewards are unchanged either way."
+msgstr "Nur Codes, die nach dem Start von Saison 1 angewendet werden, bringen deinem Affiliate die 50%. Wende seinen Code daher nach Saisonbeginn erneut unter <0>app.gmx.io/referrals/traders</0> an. Du musst ihn selbst ändern: Ein Klick auf einen Empfehlungslink ersetzt keinen bereits hinterlegten Code. Deine eigenen Belohnungen bleiben in beiden Fällen unverändert."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using fiat gateways"
 msgstr "GMX über Fiat-Gateways kaufen"
@@ -12492,6 +12520,10 @@ msgstr "Verschieben"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The Program"
 msgstr "Das Programm"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes. Volume routed through an integrator counts toward your own Season 1 tiers, unrelated to the integrator's referral tier."
+msgstr "Ja. Über einen Integrator geleitetes Volumen zählt für deine eigenen Stufen in Saison 1, unabhängig von der Empfehlungsstufe des Integrators."
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -12985,6 +13017,10 @@ msgstr "Vesting gestartet"
 msgid "Fulfilling shift request..."
 msgstr "Shift-Anfrage wird ausgeführt…"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "What is GT?"
+msgstr "Was ist GT?"
+
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
 msgstr "Kein Preiseinfluss bei Erhöhungen — Orders werden zum Markpreis ausgeführt. <0>Mehr erfahren</0>."
@@ -13421,6 +13457,10 @@ msgstr "Erhalten Sie Benachrichtigungen und Ankündigungen von GMX, um über Ihr
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Legendary"
 msgstr "Legendary"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards settle every Wednesday, 00:00 UTC, for the trades placed in the epoch that just closed. At settlement, esGMX becomes claimable and GT is credited."
+msgstr "Belohnungen werden jeden Mittwoch um 00:00 UTC für die Trades der gerade abgeschlossenen Epoche abgerechnet. Bei der Abrechnung werden esGMX beanspruchbar und GT gutgeschrieben."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
@@ -14972,13 +15012,13 @@ msgstr "Abgelaufener Markt-Tausch"
 msgid "Your multiplier will increase next epoch."
 msgstr "Ihr Multiplikator steigt in der nächsten Epoche."
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "How can GMX afford this?"
+msgstr "Wie kann GMX sich das leisten?"
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "Abgeschlossene Trader wurden auf einen GMX-Protokollcode umgestellt, nachdem sie die Abschluss-Schwelle des Empfehlungsprogramms erreicht haben."
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "What is GT worth?"
-msgstr "Was ist GT wert?"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new price"

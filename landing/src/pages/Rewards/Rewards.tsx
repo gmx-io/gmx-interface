@@ -66,7 +66,7 @@ export default function Rewards() {
           <ReturningTrader config={config.data} loading={loading} endpoint={config.endpoint} />
           <RewardsMultipliers config={config.data} loading={loading} />
           <RewardsTokens config={config.data} loading={loading} />
-          <RewardsFaq config={config.data} loading={loading} />
+          <RewardsFaq />
           <section className="rewards-closing">
             <img className="rewards-closing-dial" src={dial} alt="" loading="lazy" />
             <div className="rewards-container">

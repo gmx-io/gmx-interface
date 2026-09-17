@@ -195,6 +195,10 @@ msgstr "赚取受邀交易者全部奖励的 {referralShare}"
 msgid "Rewards paused"
 msgstr "奖励已暂停"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Volume tiers are based on weekly volume. A volume tier earned in one epoch stays active for four epochs during Season 1."
+msgstr "交易量等级基于每周交易量。在某个周期内获得的交易量等级，会在第1季期间持续生效四个周期。"
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "GMX approval failed"
 msgstr "GMX 授权失败"
@@ -382,10 +386,6 @@ msgstr "打开应用"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "In progress"
 msgstr "进行中"
-
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "Returned to you"
-msgstr "返还给您"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
@@ -1042,6 +1042,10 @@ msgstr "浅色"
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "50% of rewards"
 msgstr "奖励的 50%"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Does my volume tier reset every week?"
+msgstr "我的交易量等级会每周重置吗？"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
@@ -1752,6 +1756,14 @@ msgstr "正在创建推荐码..."
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "DATE"
 msgstr "日期"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "The Season 1 program is sustainable. Rewards = (your open/close fees − affiliate rebate) × 10% × your Multiplier, and the multiplier is capped at 10x. And 10% × 10x is 100%, so the esGMX paid on your trades can never exceed the fees those trades generated. GT is credited on top, at 20% of the esGMX amount."
+msgstr "第1季计划是可持续的。奖励 =（您的开仓/平仓费用 − 联盟返佣）× 10% × 您的倍数，倍数上限为10x。而10% × 10x等于100%，因此，您交易所得的esGMX奖励绝不会超过这些交易产生的费用。GT在此基础上额外发放，金额相当于esGMX金额的20%。"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Does volume through an integrator count?"
+msgstr "通过集成商产生的交易量会计入吗？"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -2632,6 +2644,10 @@ msgstr "接收"
 msgid "VI POSITIONS"
 msgstr "VI POSITIONS"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards are paid as 100% esGMX, plus 20% GT on top. GT are the points from GMTrade, GMX's deployment on Solana. GT are credited weekly at the current minting price. GT started at $0.01 and gets 2.1% harder every 210,000 minted, inspired by the Bitcoin difficulty curve. The minting price shown above is what GT is credited at, not what it sells for. GT buybacks are active on Solana, with 50% of GMTrade's protocol fees."
+msgstr "奖励以100% esGMX支付，并额外发放20%的GT。GT是GMTrade的积分，GMTrade是GMX在Solana上的部署。GT每周按当时的铸造价格发放。GT的初始价格为$0.01，借鉴比特币难度曲线，每铸造210,000个GT，铸造难度就提高2.1%。上方显示的铸造价格是GT发放时采用的价格，并非其卖出价格。Solana上的GT回购已启动，使用GMTrade协议费用的50%。"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
@@ -3441,14 +3457,6 @@ msgstr "推荐交易者，并在奖励计划期间赚取其奖励的 50%。"
 msgid "Referral Bonus"
 msgstr "推荐奖励"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Season 1 is active on Arbitrum. Trades on Avalanche or MegaETH are not eligible."
-msgstr "第1季在 Arbitrum 上进行。Avalanche 或 MegaETH 上的交易不符合条件。"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Rewards are distributed after each weekly epoch ends. Track your earned rewards and manage your esGMX in the app's Rewards page."
-msgstr "奖励在每周结算周期结束后发放。您可在应用的奖励页面追踪已赚取的奖励并管理 esGMX。"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM 跨链桥接至..."
@@ -3728,10 +3736,6 @@ msgstr "正在加载 Express 参数…"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "RESPONSE TIME"
 msgstr "RESPONSE TIME"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Staking esGMX earns staking rewards and counts towards your staking tier. Vesting converts esGMX into liquid GMX over one year and reserves staked GMX or esGMX against the amount you vest. Choose based on whether you want to grow your stake or gradually receive liquid GMX."
-msgstr "质押 esGMX 可赚取质押奖励，并计入您的质押等级。归属会在一年内将 esGMX 转换为可流通的 GMX，并根据归属金额预留已质押的 GMX 或 esGMX 作为抵押。您可以根据希望增加质押规模还是逐步获得可流通的 GMX 来选择。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
@@ -4147,6 +4151,10 @@ msgstr "归属期状态"
 msgid "Intro call plus integration feedback."
 msgstr "介绍通话以及集成反馈。"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes, at the 10x cap. Reaching 10x takes Titan staking with Apex volume, or any other combination of tiers and boosts that sums to 10. Most traders land between 3x and 7x, which returns 36–84% of what they paid."
+msgstr "是的，在达到10x上限时可以实现。要达到10x，需要Titan质押等级搭配Apex交易量等级，或任何其他合计为10的等级和加成组合。大多数交易者处于3x至7x之间，可获得已支付费用的36–84%返还。"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
 msgstr "接收方此前未质押过 GMX 代币"
@@ -4193,10 +4201,6 @@ msgstr "交易失败。<0/><1/><2>查看</2>"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 余额不足：可用 {availableFormatted}，需要 {requiredFormatted}"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Is {maximumRate} of my fees real?"
-msgstr "真的能返还手续费的 {maximumRate} 吗？"
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -5937,10 +5941,6 @@ msgstr "授权已取消"
 msgid "Invite"
 msgstr "邀请"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "GT is the native token of GMTrade. The minting cost shown above determines how much GT your rewards receive. It is not a market price or a guaranteed value at the token generation event."
-msgstr "GT 是 GMTrade 的原生代币。上方显示的铸造成本决定您获得的 GT 奖励数量。这不是市场价格，也不保证代币生成事件时的价值。"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -6029,10 +6029,6 @@ msgstr "{longOrShort} 仓位无需支付资金费用或借贷费用"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Turn your audience<0/>into on-chain income."
 msgstr "把您的受众<0/>变成链上收入。"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Program parameters and featured markets can change. The calculator and tier tables use the current program configuration. Check the documentation for the latest rules."
-msgstr "计划参数和精选市场可能发生变化。计算器和等级表使用当前计划配置。请查阅文档了解最新规则。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped."
@@ -7400,6 +7396,10 @@ msgstr "倍数如何计算？"
 msgid "Lifetime volume threshold"
 msgstr "累计交易量门槛"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Season 1 runs on Arbitrum. Trades placed from Ethereum, Base, or BNB Chain through your GMX Account execute on Arbitrum, so they count. Not active on Avalanche, Solana (GMTrade), or MegaETH."
+msgstr "第1季在Arbitrum上运行。通过GMX Account从Ethereum、Base或BNB Chain发起的交易会在Arbitrum上执行，因此会计入。Avalanche、Solana（GMTrade）和MegaETH不参与。"
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -8358,6 +8358,10 @@ msgstr "从 <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> 转移到 <3>
 msgid "Share your PnL"
 msgstr "分享您的盈亏"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "These are Season 1 values. Featured markets and coefficients may change mid-season."
+msgstr "这些是第1季的参数。精选市场和系数可能在赛季期间调整。"
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "Active affiliates"
 msgstr "活跃联盟伙伴"
@@ -8932,6 +8936,10 @@ msgstr ""
 msgid "Almost at the next tier"
 msgstr "即将达到下一等级"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Every trader who applies your referral code during Season 1 earns you 50% of the rewards they generate, in esGMX and GT, settled weekly, for as long as your referral relationship with that trader is active. Codes registered before Season 1 opened do not generate the share, though the trader can apply a new one once the season is open. They have to do it themselves, so ask them directly. A link won't do it. They can change their code at <0>app.gmx.io/referrals/traders</0>. Your pre-season referrals still earn you the fee-side share of 5%, 10% or 15% by tier, separate from Season 1’s 50%. The 50% is paid on top: your referred traders' own rewards are unchanged. The referral relationship is bounded by <1>GMX's referral program terms</1>."
+msgstr "每位在第1季期间应用您推荐码的交易者，只要您与该交易者的推荐关系仍然有效，就会为您带来其所获奖励的50%，以esGMX和GT支付，并每周结算。第1季开始前登记的代码不会产生这部分分成，但交易者可以在赛季开始后应用新代码。交易者必须自行操作，因此请直接联系他们。仅发送链接无法完成操作。他们可以在<0>app.gmx.io/referrals/traders</0>更改代码。赛季开始前的推荐仍会根据您的等级，为您带来5%、10%或15%的费用分成，与第1季的50%奖励分成分开计算。这50%为额外支付：您推荐的交易者自身的奖励保持不变。推荐关系受<1>GMX推荐计划条款</1>约束。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "仓位将面临清算"
@@ -9421,6 +9429,10 @@ msgstr "加入 {0} 位用户，获取真实收益"
 #: landing/src/pages/Rewards/RewardsMultipliers.tsx
 msgid "Weekly volume"
 msgstr "每周交易量"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Is 120% of my fees real?"
+msgstr "真的能返还我120%的费用吗？"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -10249,6 +10261,10 @@ msgstr "以前的交易算吗？"
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "卖出 {gmOrGlvLabel} 失败。"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "I already have a referral code set. Does my affiliate earn the 50%?"
+msgstr "我已经设置了推荐码。我的联盟伙伴能获得50%吗？"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -10415,10 +10431,6 @@ msgstr "无法解析此 ENS 名称，请重试。"
 msgid "Approve {0}"
 msgstr "授权 {0}"
 
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Yes, at the {multiplier} multiplier cap, which can be reached by combining staking tiers, volume tiers, and boosts. For example, a {exampleRange} multiplier returns {rewardRange} of eligible fees in esGMX and GT combined. Use the calculator above to see the split for your estimated trading volume and stake."
-msgstr "是的，通过组合质押等级、交易量等级和加成，可以达到 {multiplier} 的倍数上限。例如，{exampleRange} 的倍数可将符合条件手续费的 {rewardRange} 以 esGMX 和 GT 合计返还。使用上方计算器查看您的预计交易量和质押金额对应的奖励明细。"
-
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "PREVIOUS"
@@ -10449,6 +10461,10 @@ msgstr "超过最大 {0} 多头"
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "N/A"
 msgstr "不适用"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Your trading history can raise your multiplier in two ways. With more than $10,000 in lifetime volume on GMX, your comeback starts at +2x, capped by your lifetime-volume band. This bonus multiplier does not expire during Season 1; it ends only when you reach your cap. Past $200M lifetime volume, you also get +1x permanently. <0>Check your wallet above</0> to see your cap."
+msgstr "您的交易历史可以通过两种方式提高倍数。如果您在GMX的累计交易量超过$10,000，回归加成从+2x开始，上限由您的累计交易量档位决定。此奖励倍数在第1季期间不会到期，只有达到上限时才会结束。累计交易量超过$200M时，您还可永久获得+1x。<0>在上方查询您的钱包</0>，即可查看您的上限。"
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
@@ -10513,10 +10529,6 @@ msgstr "订单超过最大杠杆。点击自动调整。"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "无可用兑换路径"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "Historical activity can qualify your wallet for a comeback bonus and the lifetime-volume boost. Old trades do not receive new weekly rewards retroactively. Use the wallet checker above to see your remaining comeback bonus."
-msgstr "历史活动可能让您的钱包符合回归奖励和累计交易量加成条件。过去的交易不会追溯获得新的每周奖励。使用上方钱包查询工具，查看剩余回归奖励。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
@@ -11481,6 +11493,10 @@ msgstr "费用"
 msgid "Stop vesting"
 msgstr "停止归属"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "<0>{rewardRate}</0> <1>of your fees back</1>"
+msgstr "<0>{rewardRate}</0> <1>费用返还</1>"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -11491,6 +11507,10 @@ msgstr ""
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
 msgstr "领取 {0}"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Stake it to raise your multiplier and earn GMX staking rewards. Staked esGMX counts toward your staking tier just like staked GMX. Vest it to convert it to GMX over one year. Only unstaked esGMX can be vested, so vesting lowers your staking-tier balance by exactly the amount you vest: vest 100 esGMX and your balance drops by 100, which can move you down a tier. Vesting also reserves staked GMX or staked esGMX against the amount you vest; those reserved tokens stay staked and keep counting toward your tier. Vesting is capped at what you earned in the program, and trading and affiliate esGMX count toward the same cap."
+msgstr "质押esGMX可提高您的倍数，并赚取GMX质押奖励。质押的esGMX与质押的GMX一样，会计入您的质押等级。通过归属可在一年内将esGMX转换为GMX。只有未质押的esGMX可以进行归属，因此归属会使您的质押等级余额减少相同的数量：归属100 esGMX，余额就减少100，这可能导致您的等级下降。归属还会针对归属金额预留已质押的GMX或esGMX；这些预留代币仍保持质押状态，并继续计入您的等级。归属上限为您在计划中赚取的金额，交易和联盟奖励中的esGMX计入同一上限。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11747,6 +11767,10 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "订单已成交"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Do my existing referrals earn me the 50%?"
+msgstr "我现有的推荐关系能为我带来50%吗？"
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Pools/Pools.tsx
@@ -12206,6 +12230,10 @@ msgstr "质押中..."
 msgid "Buy request sent"
 msgstr "买入请求已发送"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Only codes applied after Season 1 opens earn your affiliate the 50%, so apply theirs again once the season is live at <0>app.gmx.io/referrals/traders</0>. You have to change it yourself: clicking a referral link won't replace a code you already have. Your own rewards are unchanged either way."
+msgstr "只有在第1季开始后应用的代码，才能为您的联盟伙伴带来50%，因此请在赛季开始后前往<0>app.gmx.io/referrals/traders</0>重新应用对方的代码。您必须自行更改：点击推荐链接不会替换您已经设置的代码。无论是否更改，您自身的奖励都保持不变。"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using fiat gateways"
 msgstr "通过法币通道购买 GMX"
@@ -12492,6 +12520,10 @@ msgstr "转移"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The Program"
 msgstr "计划"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes. Volume routed through an integrator counts toward your own Season 1 tiers, unrelated to the integrator's referral tier."
+msgstr "会。通过集成商路由的交易量会计入您自己的第1季等级，与集成商的推荐等级无关。"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -12985,6 +13017,10 @@ msgstr "归属已开始"
 msgid "Fulfilling shift request..."
 msgstr "正在执行转移请求…"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "What is GT?"
+msgstr "什么是GT？"
+
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
 msgstr "加仓无价格影响——订单按标记价格执行。<0>了解更多</0>。"
@@ -13421,6 +13457,10 @@ msgstr "获取 GMX 的提醒和公告，随时掌握您的交易、清算风险�
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Legendary"
 msgstr "Legendary"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards settle every Wednesday, 00:00 UTC, for the trades placed in the epoch that just closed. At settlement, esGMX becomes claimable and GT is credited."
+msgstr "奖励于每周三00:00 UTC结算，针对刚刚结束的周期内进行的交易。结算时，esGMX变为可领取状态，GT则会入账。"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
@@ -14972,13 +15012,13 @@ msgstr "已过期的市场交换"
 msgid "Your multiplier will increase next epoch."
 msgstr "您的倍数将在下个周期提高。"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "How can GMX afford this?"
+msgstr "GMX如何承担这些奖励？"
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "毕业的交易者在达到推荐计划的毕业门槛后，已被转移至 GMX 协议码。"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "What is GT worth?"
-msgstr "GT 价值多少？"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new price"
