@@ -1,6 +1,7 @@
 import {
   FloatingArrow,
   FloatingPortal,
+  OpenChangeReason,
   Placement,
   arrow,
   autoUpdate,
@@ -13,12 +14,14 @@ import {
   useFloating,
   useHover,
   useInteractions,
+  useMergeRefs,
 } from "@floating-ui/react";
 import { getOppositePlacement, getOppositeAlignmentPlacement } from "@floating-ui/utils";
 import cx from "classnames";
 import {
   ComponentPropsWithoutRef,
   ElementType,
+  FocusEvent,
   MouseEvent,
   ReactNode,
   useCallback,
@@ -119,6 +122,16 @@ export default function Tooltip<T extends ElementType>({
 }: TooltipProps<T>) {
   const [visible, setVisible] = useState(false);
   const arrowRef = useRef<SVGSVGElement>(null);
+  const referenceRef = useRef<Element | null>(null);
+
+  const handleOpenChange = useCallback((open: boolean, _event?: Event, reason?: OpenChangeReason) => {
+    if (!open && reason === "hover" && hasVisibleFocusWithin(referenceRef.current)) {
+      return;
+    }
+
+    setVisible(open);
+  }, []);
+
   const { refs, floatingStyles, context } = useFloating({
     middleware: [
       offset(10),
@@ -154,8 +167,10 @@ export default function Tooltip<T extends ElementType>({
     placement: position,
     whileElementsMounted: autoUpdate,
     open: visible,
-    onOpenChange: setVisible,
+    onOpenChange: handleOpenChange,
   });
+
+  const setReference = useMergeRefs<Element>([refs.setReference, referenceRef]);
 
   const previousDisabled = usePrevious(disabled);
 
@@ -203,16 +218,30 @@ export default function Tooltip<T extends ElementType>({
 
       // If element was blurred, allow some time so that activeElement is updated
       requestAnimationFrame(() => {
-        const activeElement = document.activeElement;
-        const focusWithin = (refs.reference.current as HTMLElement)?.contains(activeElement);
-
-        // :focus-visible check filters out handles focused by a pointer click
-        if (focusWithin && activeElement && matchesFocusVisible(activeElement)) {
+        if (hasVisibleFocusWithin(referenceRef.current)) {
           setVisible(true);
         }
       });
     },
-    [disabled, refs.reference, visible]
+    [disabled, visible]
+  );
+
+  const handleBlur = useCallback(
+    (event: FocusEvent) => {
+      const reference = referenceRef.current;
+      const nextFocused = event.relatedTarget as Node | null;
+
+      if (reference && nextFocused && reference.contains(nextFocused)) {
+        return;
+      }
+
+      if (isHovered(reference) || isHovered(refs.floating.current)) {
+        return;
+      }
+
+      setVisible(false);
+    },
+    [refs.floating]
   );
 
   const finalContent = visible ? content ?? renderContent?.() : undefined;
@@ -235,11 +264,15 @@ export default function Tooltip<T extends ElementType>({
       <Container
         {...containerProps}
         className={cx("Tooltip", className)}
-        ref={refs.setReference}
+        ref={setReference}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
             preventClick(e);
             containerProps.onClick?.(e);
+          },
+          onBlur: (e: FocusEvent) => {
+            handleBlur(e);
+            containerProps.onBlur?.(e);
           },
         })}
       >
@@ -253,7 +286,7 @@ export default function Tooltip<T extends ElementType>({
   return (
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
-        ref={refs.setReference}
+        ref={setReference}
         className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
         {...getReferenceProps({
@@ -261,6 +294,7 @@ export default function Tooltip<T extends ElementType>({
             preventClick(e);
             containerProps.onClick?.(e);
           },
+          onBlur: handleBlur,
         })}
       >
         <div className={cx("flex grow items-center gap-2", contentClassName)}>
@@ -293,10 +327,25 @@ export default function Tooltip<T extends ElementType>({
   );
 }
 
+// :focus-visible filters out handles focused by a pointer click; text inputs match it either way
+function hasVisibleFocusWithin(element: Element | null): boolean {
+  const activeElement = document.activeElement;
+
+  return !!element && !!activeElement && element.contains(activeElement) && matchesFocusVisible(activeElement);
+}
+
 function matchesFocusVisible(element: Element): boolean {
   try {
     return element.matches(":focus-visible");
   } catch {
     return true;
+  }
+}
+
+function isHovered(element: Element | null): boolean {
+  try {
+    return !!element && element.matches(":hover");
+  } catch {
+    return false;
   }
 }
