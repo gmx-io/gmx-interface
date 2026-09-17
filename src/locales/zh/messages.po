@@ -3611,6 +3611,9 @@ msgid "Theme"
 msgstr "主题"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -3740,6 +3743,7 @@ msgstr "加载交易历史记录失败"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>设置推荐影响值：{0}</0>。"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "执行后仓位将立即被清算。请减小规模。"
@@ -4164,7 +4168,7 @@ msgstr "最小资金费率因子（多头）"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "是什么让 GMX 比其他永续平台更具成本效益？"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Margin is below the minimum required for the position size"
 msgstr "保证金低于该仓位规模所需的最低要求"
 
@@ -5487,10 +5491,6 @@ msgstr "您的交易量"
 msgid "Fail external swaps"
 msgstr "强制外部兑换失败"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
-msgstr "订单可能无法执行：生成的仓位将超过允许的最大杠杆。请在订单触发前<0>存入保证金</0>或减小订单规模。"
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -6350,10 +6350,6 @@ msgstr "差额"
 msgid "Stop-Loss price"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
-msgid "No valid leverage available"
-msgstr "无可用的有效杠杆"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "兑换金额"
@@ -6365,10 +6361,6 @@ msgstr "最佳"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} 个 TP/SL 订单已更新"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add more margin"
-msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "What's the minimum volume to qualify?"
@@ -6502,6 +6494,10 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "ACTIONS"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order exceeds max leverage. Reduce the size."
+msgstr "订单超过最大杠杆。请减小规模。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6712,6 +6708,10 @@ msgstr "GMX 提案"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
+msgstr "由于最终仓位将超过允许的最大杠杆，此订单可能无法执行。请在触发前增加仓位保证金或减小订单规模。"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
@@ -7998,6 +7998,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "无开放头寸"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "当前杠杆下无法增加仓位。请增加保证金或减小规模。当前保证金：{remainingCollateralUsdText}，所需：{minCollateralUsdForLeverageText}"
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr "查看权益"
@@ -8470,10 +8474,6 @@ msgstr "项目"
 msgid "24h low"
 msgstr "24h 最低"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
-msgstr ""
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
@@ -8564,10 +8564,6 @@ msgstr ""
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit"
 msgstr "编辑"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No available leverage found"
-msgstr "未找到可用杠杆"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
@@ -8733,6 +8729,10 @@ msgstr "GLP 补偿（测试）"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Built for those<0/>who do more."
 msgstr "为做得更多的人<0/>而建。"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Increase margin or reduce size"
+msgstr "已超过最大杠杆。请增加保证金或减小规模"
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
@@ -8921,6 +8921,10 @@ msgstr ""
 msgid "Trade errors"
 msgstr "交易错误"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+msgstr "由于最终仓位将超过允许的最大杠杆，此订单可能无法执行。请在触发前<0>增加仓位保证金</0>或减小订单规模。"
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "正在存入和从 GMX Account 提取..."
@@ -8932,6 +8936,10 @@ msgstr ""
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
 msgstr "做空清算"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size"
+msgstr "已超过最大杠杆。剩余保证金 {remainingCollateralUsdText} 低于该仓位规模所需的最低要求。请增加保证金或减小规模"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Account type"
@@ -9405,6 +9413,10 @@ msgstr "买入 GM 失败"
 msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
 msgstr "该仓位的保证金低于其规模所需的最低要求，因此结算将失败。请增加保证金或平仓。平仓时资金费用会自动结算。"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr "当前杠杆下无法增加仓位。请增加保证金或减小规模。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "最大资金费率因子（多头）"
@@ -9877,6 +9889,10 @@ msgstr "仓位规模超过可用未平仓量。Delta：{usdDeltaText}，最大 O
 msgid "Yes"
 msgstr "是"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Margin is below the minimum required for the position size. Current: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "保证金低于该仓位规模所需的最低要求。当前：{remainingCollateralUsdText}，所需：{minCollateralUsdForLeverageText}"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
 msgstr "增加规模 (TWAP)"
@@ -10161,6 +10177,12 @@ msgstr "请求已发送，但无法确认其结果。它可能已经完成 — �
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
+msgstr "最终仓位将超过允许的最大杠杆。请增加保证金或减小规模。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "No funds available for GMX Account deposit"
@@ -11694,6 +11716,8 @@ msgstr "领取资金费用"
 msgid "Token permit testing"
 msgstr "代币许可测试"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

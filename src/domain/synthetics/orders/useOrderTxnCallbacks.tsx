@@ -65,6 +65,7 @@ import {
 
 import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
 
+import { getIsSizeIncreaseBatch } from "./getIsSizeIncreaseBatch";
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 import { ExpressTxnParams } from "../express/types";
 
@@ -410,6 +411,7 @@ export function useOrderTxnCallbacks() {
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
+            isSizeIncrease: getIsSizeIncreaseBatch(batchParams),
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),
