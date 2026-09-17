@@ -28,7 +28,7 @@ import { createMockMarketInfo, MOCK_MARKET_ADDRESS, SECOND_ETH_MARKET_ADDRESS } 
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
 import { MOCK_ACCOUNT, mockMultichainWagmiConfig, mockWagmiConfig, noop } from "domain/testUtils/mockSyntheticsState";
 import { DEFAULT_MOCK_TOKENS_DATA, MockSyntheticsStateProvider } from "domain/testUtils/MockSyntheticsStateProvider";
-import { ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
+import { ETH_ADDRESS, NATIVE_ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { getToken, getWrappedToken } from "sdk/configs/tokens";
@@ -80,6 +80,8 @@ export type NetworkFeeSurfaceStoryProps = {
   zeroBalances?: boolean;
   /** Trade box: the wallet holds exactly the 1000 USDC margin the test enters and nothing else, so no gas token is left for the Express fee */
   marginOnlyBalances?: boolean;
+  /** Settle: fund the wallet and the GMX Account separately (`nativeOnly` = the wallet holds ETH but no gas token) */
+  balances?: BalanceShape;
   /** GM buy: which balance funds the deposit (`settlementChain` = wallet, `gmxAccount` = GMX Account) */
   gmPaySource?: GmPaySource;
 };
@@ -95,7 +97,8 @@ type Fixtures = {
   claims: { accruedPositionPriceImpactFees: RebateInfoItem[]; claimablePositionPriceImpactFees: RebateInfoItem[] };
 };
 
-type Balances = "huge" | "zero" | "marginOnly";
+type Balances = "huge" | "zero" | "marginOnly" | "nativeOnly";
+export type BalanceShape = { wallet: Balances; gmxAccount: Balances };
 
 const MARGIN_ONLY_USDC_BALANCE = expandDecimals(1000, 6);
 
@@ -107,6 +110,8 @@ function getMockBalance(address: string, balances: Balances): bigint {
       return 0n;
     case "marginOnly":
       return address === USDC_ADDRESS ? MARGIN_ONLY_USDC_BALANCE : 0n;
+    case "nativeOnly":
+      return address === NATIVE_ETH_ADDRESS ? HUGE_BALANCE : 0n;
   }
 }
 
@@ -114,14 +119,21 @@ function getMockBalance(address: string, balances: Balances): bigint {
  * Express fee swaps (gas token -> WETH) only route through markets whose tokens have a price feed
  * provider, which prod learns from the tokens api; the default fixtures carry no such flag.
  */
-function buildTokensData(balances: Balances): TokensData {
+function buildTokensData(balances: BalanceShape): TokensData {
   return Object.fromEntries(
     Object.entries(DEFAULT_MOCK_TOKENS_DATA).map(([address, token]) => {
-      const amount = getMockBalance(address, balances);
+      const walletAmount = getMockBalance(address, balances.wallet);
+      const gmxAccountAmount = getMockBalance(address, balances.gmxAccount);
 
       return [
         address,
-        { ...token, balance: amount, walletBalance: amount, gmxAccountBalance: amount, hasPriceFeedProvider: true },
+        {
+          ...token,
+          balance: walletAmount,
+          walletBalance: walletAmount,
+          gmxAccountBalance: gmxAccountAmount,
+          hasPriceFeedProvider: true,
+        },
       ];
     })
   );
@@ -267,7 +279,7 @@ function createLimitIncreaseOrder({
   return orderInfo;
 }
 
-function createFixtures(balances: Balances): Fixtures {
+function createFixtures(balances: BalanceShape): Fixtures {
   const tokensData = buildTokensData(balances);
 
   const ethToken = tokensData[ETH_ADDRESS];
@@ -486,6 +498,7 @@ export function NetworkFeeSurfaceStory({
   collateralFromGmxAccount = false,
   zeroBalances = false,
   marginOnlyBalances = false,
+  balances: balancesProp,
   gmPaySource = "settlementChain",
 }: NetworkFeeSurfaceStoryProps) {
   // eslint-disable-next-line react/hook-use-state
@@ -507,8 +520,11 @@ export function NetworkFeeSurfaceStory({
     return true;
   });
 
-  const balances: Balances = zeroBalances ? "zero" : marginOnlyBalances ? "marginOnly" : "huge";
-  const fixtures = useMemo(() => createFixtures(balances), [balances]);
+  const fixtures = useMemo(() => {
+    const sharedBalances: Balances = zeroBalances ? "zero" : marginOnlyBalances ? "marginOnly" : "huge";
+
+    return createFixtures(balancesProp ?? { wallet: sharedBalances, gmxAccount: sharedBalances });
+  }, [balancesProp, marginOnlyBalances, zeroBalances]);
 
   return (
     <CtAppProviders

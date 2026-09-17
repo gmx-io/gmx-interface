@@ -5,7 +5,7 @@ import { hashString, MOCK_ACCOUNT_PRIVATE_KEY, MockChain } from "domain/testUtil
 import { collectRpcHoles, installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { getDataQALocator } from "lib/__tests__/testUtils";
 
-import { NetworkFeeSurfaceStory } from "./NetworkFeeSurfaces.ct.stories";
+import { NetworkFeeSurfaceStory, type BalanceShape } from "./NetworkFeeSurfaces.ct.stories";
 
 type PageLike = {
   locator: (selector: string) => Locator;
@@ -16,6 +16,12 @@ const WALLET_CLASSIC_EXPLANATION = "Wallet transactions pay gas in ETH from your
 const WALLET_EXPRESS_EXPLANATION = "Express fees are paid in your Wallet gas payment token. Change it in Settings.";
 const GMX_ACCOUNT_EXPLANATION =
   "This action is paid from your GMX Account, so its fee is paid in your GMX Account gas payment token. Change it in Settings.";
+const SETTLE_GMX_ACCOUNT_SWITCH_EXPLANATION =
+  "Paid from your GMX Account because your Wallet does not have enough USDC for the fee.";
+const SETTLE_CLASSIC_FALLBACK_EXPLANATION =
+  "Paid in ETH from your Wallet because your Wallet does not have enough USDC for Express.";
+const GMX_ACCOUNT_ONLY_BALANCES: BalanceShape = { wallet: "zero", gmxAccount: "huge" };
+const WALLET_ETH_ONLY_BALANCES: BalanceShape = { wallet: "nativeOnly", gmxAccount: "zero" };
 
 /** DataStore gas limits, mirroring `MOCK_GAS_LIMITS`: the modals read them through `useGasLimits`, not the state. */
 const DATA_STORE_GAS_LIMITS: Record<string, bigint> = {
@@ -290,10 +296,68 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expectFeeValue(feeRow(page), "ETH", "Wallet");
     });
 
-    test("Express: gas payment token from the wallet", async ({ mount, page }) => {
+    test("Express: gas payment token from the wallet, approved before settling", async ({ mount, page }) => {
+      // the control for the approval-free cases below: a wallet that pays does ask for the approval
+      const chain = createChain();
+      chain.allowance = 0n;
+      await installRpcResponder(page, chain);
+
       await mount(<NetworkFeeSurfaceStory surface="settle" express />);
 
       await expectFeeValue(feeRow(page), "USDC", "Wallet");
+      await expect(page.getByRole("button", { name: "Approve USDC for Express fees" })).toBeVisible();
+    });
+
+    test("Express, wallet without a gas token: the GMX Account pays and no approval is asked (FEDEV-3900)", async ({
+      mount,
+      page,
+    }) => {
+      const chain = createChain();
+      chain.allowance = 0n;
+      await installRpcResponder(page, chain);
+
+      await mount(<NetworkFeeSurfaceStory surface="settle" express balances={GMX_ACCOUNT_ONLY_BALANCES} />);
+
+      const row = feeRow(page);
+      await expectFeeValue(row, "USDC", "GMX Account");
+      await expect(page.getByRole("button", { name: "Settle", exact: true })).toBeEnabled();
+      await expect(page.getByRole("button", { name: /^Approve/ })).toHaveCount(0);
+
+      await feeValueHandle(row).hover();
+      await expect(page.getByText(SETTLE_GMX_ACCOUNT_SWITCH_EXPLANATION)).toBeVisible();
+    });
+
+    test("Express, both balances funded: the fee follows the remaining-margin preference (FEDEV-3900)", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<NetworkFeeSurfaceStory surface="settle" express receiveToGmxAccount />);
+
+      const row = feeRow(page);
+      await expectFeeValue(row, "USDC", "GMX Account");
+      await expect(page.getByRole("button", { name: "Settle", exact: true })).toBeEnabled();
+
+      await feeValueHandle(row).hover();
+      await expect(page.getByText(GMX_ACCOUNT_EXPLANATION)).toBeVisible();
+    });
+
+    test("Express, no gas token in either balance but ETH in the wallet: a wallet transaction in ETH, no approval (FEDEV-3900)", async ({
+      mount,
+      page,
+    }) => {
+      const chain = createChain();
+      chain.allowance = 0n;
+      await installRpcResponder(page, chain);
+
+      await mount(<NetworkFeeSurfaceStory surface="settle" express balances={WALLET_ETH_ONLY_BALANCES} />);
+
+      const row = feeRow(page);
+      await expectFeeValue(row, "ETH", "Wallet");
+      await expect(page.getByRole("button", { name: "Settle", exact: true })).toBeEnabled();
+      await expect(page.getByRole("button", { name: /^Approve/ })).toHaveCount(0);
+
+      await feeValueHandle(row).hover();
+      await expect(page.getByText(SETTLE_CLASSIC_FALLBACK_EXPLANATION)).toBeVisible();
     });
   });
 

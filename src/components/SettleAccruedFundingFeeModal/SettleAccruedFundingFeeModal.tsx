@@ -1,13 +1,21 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { ARBITRUM } from "config/chains";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
   usePositiveFeePositionsSortedByUsd,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectIsExpressTransactionAvailable,
+  selectSettlementChainGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
@@ -35,7 +43,8 @@ import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
-import { getToken } from "sdk/configs/tokens";
+import { getNativeToken, getToken } from "sdk/configs/tokens";
+import { getIsConfirmedOutOfGasPaymentTokenBalance } from "sdk/utils/express";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
@@ -56,6 +65,7 @@ import {
   SETTLEMENT_COLLATERAL_DELTA_AMOUNT,
   getIsPositionSettleable,
   getSettlementBlockReason,
+  getShouldSwitchNetworkFeeSource,
   shouldPreSelectPosition,
 } from "./utils";
 
@@ -78,6 +88,17 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const gasPrice = useGasPrice(chainId);
   const [isUntouched, setIsUntouched] = useState(true);
   const hasOutdatedUi = useHasOutdatedUi();
+  const settings = useSettings();
+  const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
+  const walletGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+
+  const canUseGmxAccountFeeSource = chainId === ARBITRUM && srcChainId === undefined && isExpressAvailable;
+  const preferGmxAccount = canUseGmxAccountFeeSource && (settings.receiveToGmxAccount ?? false);
+  const [switchedFromPreference, setSwitchedFromPreference] = useState<boolean | undefined>(undefined);
+  const isFeeSourceSwitched = canUseGmxAccountFeeSource && switchedFromPreference === preferGmxAccount;
+  const isGmxAccountFeeSource =
+    srcChainId !== undefined || (canUseGmxAccountFeeSource && preferGmxAccount !== isFeeSourceSwitched);
 
   const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
@@ -180,17 +201,49 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const {
+    expressParams,
+    expressParamsPromise,
+    isMultichainSubmitDisabled,
+    isLoading: isExpressLoading,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount: isGmxAccountFeeSource,
     canSwitchGasPaymentToken: isActiveForm,
   });
 
+  const isSwitchPending = useMemo(
+    () =>
+      isVisible &&
+      canUseGmxAccountFeeSource &&
+      !isFeeSourceSwitched &&
+      selectedPositions.length > 0 &&
+      expressParams !== undefined &&
+      getShouldSwitchNetworkFeeSource({ chainId, tokensData, expressParams }),
+    [
+      canUseGmxAccountFeeSource,
+      chainId,
+      expressParams,
+      isFeeSourceSwitched,
+      isVisible,
+      selectedPositions.length,
+      tokensData,
+    ]
+  );
+
+  useEffect(() => {
+    if (isSwitchPending) setSwitchedFromPreference(preferGmxAccount);
+  }, [isSwitchPending, preferGmxAccount]);
+
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+  const isWalletOutOfGasPaymentToken =
+    !isGmxAccountFeeSource && getIsConfirmedOutOfGasPaymentTokenBalance(expressParams?.gasPaymentValidations);
+  const isWalletClassicFallback =
+    !isSwitchPending && isWalletOutOfGasPaymentToken && expressError.buttonErrorMessage === undefined;
 
   const approvalTokens = useMemo(() => {
-    if (!expressParams?.gasPaymentParams) return [];
+    if (!expressParams?.gasPaymentParams || isWalletOutOfGasPaymentToken) return [];
 
     return [
       {
@@ -198,7 +251,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
       },
     ];
-  }, [expressParams?.gasPaymentParams]);
+  }, [expressParams?.gasPaymentParams, isWalletOutOfGasPaymentToken]);
 
   const {
     tokensToApprove,
@@ -210,7 +263,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
-    skip: Boolean(srcChainId),
+    skip: isGmxAccountFeeSource,
   });
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
@@ -218,6 +271,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const handleOnClose = useCallback(() => {
     setPositionKeys([]);
     setIsUntouched(true);
+    setSwitchedFromPreference(undefined);
     onClose();
   }, [onClose, setPositionKeys, setIsUntouched]);
 
@@ -227,7 +281,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled, buttonTooltip] = useMemo((): [string, boolean, string?] => {
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
-    if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
+    if (isExpressLoading || isMultichainSubmitDisabled || isSwitchPending) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
     if (selectedPositions.length === 0) return [t`Select positions`, true];
     if (expressError.buttonErrorMessage) return [expressError.buttonErrorMessage, true];
@@ -246,7 +300,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     return [t`Settle`, false];
   }, [
     hasOutdatedUi,
+    isExpressLoading,
     isMultichainSubmitDisabled,
+    isSwitchPending,
     isSubmitting,
     selectedPositions.length,
     expressError,
@@ -296,11 +352,10 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
     try {
       const fulfilledExpressParams = await expressParamsPromise;
-      const isGmxAccount = srcChainId !== undefined;
 
       if (
         reportMultichainExpressSubmitError({
-          isGmxAccount,
+          isGmxAccount: isGmxAccountFeeSource,
           expressParams: fulfilledExpressParams,
           tokensData,
           actionName: "Settle Funding Fee",
@@ -322,7 +377,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           actionName: "Settle Funding Fee",
         }),
         provider,
-        isGmxAccount,
+        isGmxAccount: isGmxAccountFeeSource,
       });
 
       handleOnClose();
@@ -338,12 +393,42 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     handleOnClose,
     isAllowanceLoaded,
     isApproving,
+    isGmxAccountFeeSource,
     makeOrderTxnCallback,
     provider,
     signer,
-    srcChainId,
     tokensData,
     tokensToApprove,
+  ]);
+
+  const feeSourceExplanation = useMemo(() => {
+    if (srcChainId !== undefined) return undefined;
+
+    const walletGasTokenSymbol = walletGasPaymentToken?.symbol;
+    const gmxAccountGasTokenSymbol = gmxAccountGasPaymentToken?.symbol;
+
+    if (isWalletClassicFallback && walletGasTokenSymbol) {
+      const nativeTokenSymbol = getNativeToken(chainId).symbol;
+      return t`Paid in ${nativeTokenSymbol} from your Wallet because your Wallet does not have enough ${walletGasTokenSymbol} for Express.`;
+    }
+
+    if (isFeeSourceSwitched && isGmxAccountFeeSource && walletGasTokenSymbol) {
+      return t`Paid from your GMX Account because your Wallet does not have enough ${walletGasTokenSymbol} for the fee.`;
+    }
+
+    if (isFeeSourceSwitched && !isGmxAccountFeeSource && gmxAccountGasTokenSymbol) {
+      return t`Paid from your Wallet because your GMX Account does not have enough ${gmxAccountGasTokenSymbol} for the fee.`;
+    }
+
+    return undefined;
+  }, [
+    chainId,
+    gmxAccountGasPaymentToken?.symbol,
+    isFeeSourceSwitched,
+    isGmxAccountFeeSource,
+    isWalletClassicFallback,
+    srcChainId,
+    walletGasPaymentToken?.symbol,
   ]);
 
   const renderTooltipContent = useCallback(
@@ -398,15 +483,20 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       </div>
       <div className="mb-15">
         <NetworkFeeRow
-          executionFee={totalExecutionFee}
-          gasPaymentParams={selectedPositions.length > 0 ? expressParams?.gasPaymentParams : undefined}
-          feeSource={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
+          executionFee={isExpressLoading || isSwitchPending ? undefined : totalExecutionFee}
+          gasPaymentParams={
+            selectedPositions.length > 0 && !isWalletClassicFallback && !isSwitchPending
+              ? expressParams?.gasPaymentParams
+              : undefined
+          }
+          feeSource={getNetworkFeeSource({ isGmxAccount: isGmxAccountFeeSource })}
+          feeSourceExplanation={feeSourceExplanation}
         />
       </div>
       <AlertInfo type="info" compact>
         <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
       </AlertInfo>
-      {expressError.bannerErrorName && (
+      {expressError.bannerErrorName && !isSwitchPending && (
         <AlertInfoCard type="error" hideClose>
           <ValidationBannerErrorContent
             validationBannerErrorName={expressError.bannerErrorName}

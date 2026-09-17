@@ -27,6 +27,7 @@ type Props = {
   executionFee?: ExecutionFee;
   gasPaymentParams?: GasPaymentParams;
   feeSource: NetworkFeeSource | undefined;
+  feeSourceExplanation?: string;
   isAdditionOrdersMsg?: boolean;
   rowPadding?: boolean;
 };
@@ -41,6 +42,7 @@ export function NetworkFeeRow({
   executionFee,
   gasPaymentParams,
   feeSource,
+  feeSourceExplanation,
   isAdditionOrdersMsg,
   rowPadding = false,
 }: Props) {
@@ -158,9 +160,11 @@ export function NetworkFeeRow({
 
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
 
-    const sourceExplanation = feeSource
-      ? getNetworkFeeSourceExplanation({ source: feeSource, isExpress: networkFee.isExpress, chainId })
-      : undefined;
+    const sourceExplanation =
+      feeSourceExplanation ??
+      (feeSource
+        ? getNetworkFeeSourceExplanation({ source: feeSource, isExpress: networkFee.isExpress, chainId })
+        : undefined);
 
     return (
       <TooltipWithPortal
@@ -222,6 +226,7 @@ export function NetworkFeeRow({
     executionFee,
     chainId,
     feeSource,
+    feeSourceExplanation,
     estimatedRefundText,
     additionalOrdersMsg,
   ]);

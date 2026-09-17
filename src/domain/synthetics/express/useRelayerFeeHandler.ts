@@ -81,7 +81,7 @@ export function useExpressOrdersParams({
     : undefined;
   const externalSwapGasLimit = orderParams ? getBatchExternalSwapGasLimit(orderParams) : undefined;
 
-  const estimationKey = `${executionFeeKey}:${requiredActions}:${externalSwapGasLimit}:${globalExpressParams?.gasPaymentTokenAddress}`;
+  const estimationKey = `${executionFeeKey}:${requiredActions}:${externalSwapGasLimit}:${globalExpressParams?.gasPaymentTokenAddress}:${isGmxAccount}`;
   const prevEstimationKey = usePrevious(estimationKey);
 
   const forceRecalculate = estimationKey !== prevEstimationKey;
@@ -191,22 +191,25 @@ export function useExpressOrdersParams({
       };
     }
 
-    const expressParams = isAsyncEnabled ? asyncExpressParams ?? fastExpressParams : fastExpressParams;
+    const matchingFastExpressParams = fastExpressParams?.isGmxAccount === isGmxAccount ? fastExpressParams : undefined;
+    const matchingAsyncExpressParams =
+      asyncExpressParams?.isGmxAccount === isGmxAccount ? asyncExpressParams : undefined;
+    const expressParams = isAsyncEnabled
+      ? matchingAsyncExpressParams ?? matchingFastExpressParams
+      : matchingFastExpressParams;
     const hasOrderParams = !getIsEmptyBatch(orderParams);
-    const isLoading = hasOrderParams && !fastExpressParams && !fastExpressError;
+    const isLoading = hasOrderParams && !matchingFastExpressParams && !fastExpressError;
     const isMultichainSubmitDisabled = isGmxAccount && hasOrderParams && !expressParams;
 
     const expressParamsPromise = Promise.race([fastExpressPromise, asyncExpressPromise])
-      .then((result) => {
-        return result;
-      })
+      .then((result) => (result?.isGmxAccount === isGmxAccount ? result : undefined))
       .catch(() => undefined);
 
     return {
       expressParams,
       expressEstimateMethod: expressParams?.estimationMethod,
-      fastExpressParams,
-      asyncExpressParams,
+      fastExpressParams: matchingFastExpressParams,
+      asyncExpressParams: matchingAsyncExpressParams,
       isLoading,
       isMultichainSubmitDisabled,
       expressParamsPromise,
