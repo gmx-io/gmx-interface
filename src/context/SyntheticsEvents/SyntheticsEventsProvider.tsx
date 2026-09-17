@@ -44,7 +44,11 @@ import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { ErrorLike } from "lib/errors";
-import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
+import {
+  getIsInsufficientExecutionFeeError,
+  getIsInvalidSignatureError,
+  getIsInvalidSubaccountApprovalNonceError,
+} from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import {
@@ -72,7 +76,11 @@ import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tok
 import { StatusCode } from "sdk/utils/gelatoRelay";
 import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
-import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
+import {
+  getInsufficientExecutionFeeToastContent,
+  getOutdatedSubaccountApprovalToastContent,
+  InvalidSignatureToastContent,
+} from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
@@ -121,7 +129,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
   const { resetTokenPermits } = useTokenPermitsContext();
-  const { refreshSubaccountData } = useSubaccountContext();
+  const { refreshSubaccountData, invalidateSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
@@ -1179,6 +1187,26 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               isRelayerMetricSent = true;
             }
 
+            // not gated on isViewed: the order status toast marks a new order's txn viewed before the relay answers
+            if (pendingExpressTxn.subaccountApproval && !pendingExpressTxn.isSubaccountApprovalErrorChecked) {
+              setPendingExpressTxnParams((old) =>
+                updateByKey(old, pendingExpressTxn.key!, { isSubaccountApprovalErrorChecked: true })
+              );
+
+              if (
+                getIsInvalidSubaccountApprovalNonceError(
+                  extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId])
+                ) &&
+                invalidateSubaccountApproval(pendingExpressTxn.subaccountApproval)
+              ) {
+                // Wait to ensure there is no race condition with the pending order toast
+                sleep(500).then(() => {
+                  toast.dismiss(pendingOrderToastIdRef.current);
+                  helperToast.error(getOutdatedSubaccountApprovalToastContent());
+                });
+              }
+            }
+
             if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
               helperToast.error(pendingExpressTxn.errorMessage, {
                 tradingErrorInfo: {
@@ -1209,6 +1237,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [
       chainId,
       executionFeeBufferBps,
+      invalidateSubaccountApproval,
       relayTaskStatuses,
       pendingExpressTxnParams,
       provider,

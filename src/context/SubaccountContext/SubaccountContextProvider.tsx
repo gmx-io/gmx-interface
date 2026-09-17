@@ -19,7 +19,9 @@ import {
   deserializeSubaccountApproval,
   findFallbackSubaccountApproval,
   migrateLegacySubaccountApprovalSlot,
+  readStoredSubaccountApproval,
   removeAllStoredSubaccountApprovals,
+  removeStoredSubaccountApproval,
   serializeSubaccountApproval,
   writeStoredSubaccountApproval,
 } from "domain/synthetics/subaccount/subaccountApprovalStorage";
@@ -121,6 +123,7 @@ export type SubaccountState = {
     nextIsGmxAccount?: boolean;
   }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
+  invalidateSubaccountApproval: (approval: SignedSubaccountApproval) => boolean;
   tryEnableSubaccount: () => Promise<boolean>;
   tryDisableSubaccount: () => Promise<boolean>;
   refreshSubaccountData: () => void;
@@ -149,6 +152,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     setSubaccountConfig,
     setSignedApproval,
     resetStoredApproval,
+    removeStoredApproval,
     resetStoredConfig,
   } = useStoredSubaccountData(chainId, srcChainId, signer?.address);
 
@@ -275,6 +279,15 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     resetStoredApproval();
     refreshSubaccountData();
   }, [refreshSubaccountData, resetStoredApproval]);
+
+  const invalidateSubaccountApproval = useCallback(
+    (approval: SignedSubaccountApproval) => {
+      const isRemoved = removeStoredApproval(approval);
+      refreshSubaccountData();
+      return isRemoved;
+    },
+    [refreshSubaccountData, removeStoredApproval]
+  );
 
   const tryEnableSubaccount = useCallback(async () => {
     if (!provider || !signer) {
@@ -471,6 +484,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       subaccountDeactivationFailureReason,
       updateSubaccountSettings,
       resetSubaccountApproval,
+      invalidateSubaccountApproval,
       tryEnableSubaccount,
       tryDisableSubaccount,
       refreshSubaccountData,
@@ -484,6 +498,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccountDeactivationFailureReason,
     updateSubaccountSettings,
     resetSubaccountApproval,
+    invalidateSubaccountApproval,
     tryEnableSubaccount,
     tryDisableSubaccount,
     refreshSubaccountData,
@@ -770,6 +785,30 @@ function useStoredSubaccountData(
     bumpStorageRevision();
   }, [account, chainId, setStoredSignedApproval]);
 
+  const removeStoredApproval = useCallback(
+    (approval: SignedSubaccountApproval) => {
+      if (!account) {
+        return false;
+      }
+
+      const approvalSrcChainId = getSubaccountApprovalContextSrcChainId(chainId, approval);
+
+      if (readStoredSubaccountApproval(chainId, account, approvalSrcChainId)?.signature !== approval.signature) {
+        return false;
+      }
+
+      if (approvalSrcChainId === srcChainId) {
+        setStoredSignedApproval(null as any);
+      } else {
+        removeStoredSubaccountApproval(chainId, account, approvalSrcChainId);
+        bumpStorageRevision();
+      }
+
+      return true;
+    },
+    [account, chainId, srcChainId, setStoredSignedApproval]
+  );
+
   const resetStoredConfig = useCallback(() => {
     setSubaccountConfig(null as any);
   }, [setSubaccountConfig]);
@@ -782,6 +821,7 @@ function useStoredSubaccountData(
       setSubaccountConfig,
       setSignedApproval,
       resetStoredApproval,
+      removeStoredApproval,
       resetStoredConfig,
     };
   }, [
@@ -791,6 +831,7 @@ function useStoredSubaccountData(
     setSubaccountConfig,
     setSignedApproval,
     resetStoredApproval,
+    removeStoredApproval,
     resetStoredConfig,
   ]);
 }

@@ -5,6 +5,7 @@ import { zeroAddress } from "viem";
 
 import { PendingTransaction, usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import {
   getPendingOrderKey,
   PendingOrderData,
@@ -28,6 +29,7 @@ import { parseError } from "lib/errors";
 import {
   getExpiredPermitDeadlineError,
   getInvalidPermitSignatureError,
+  getIsInvalidSubaccountApprovalNonceError,
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
@@ -97,6 +99,7 @@ export function useOrderTxnCallbacks() {
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
+  const { invalidateSubaccountApproval } = useSubaccountContext();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
 
@@ -407,6 +410,10 @@ export function useOrderTxnCallbacks() {
             }
           }
 
+          const sentSubaccountApproval = expressParams?.subaccount?.signedApproval;
+          const isOutdatedSubaccountApproval =
+            sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
+
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
@@ -414,6 +421,7 @@ export function useOrderTxnCallbacks() {
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),
             permitIssueType,
+            isOutdatedSubaccountApproval,
             setIsSettingsVisible,
           });
 
@@ -461,6 +469,10 @@ export function useOrderTxnCallbacks() {
             resetTokenPermits();
           }
 
+          if (isOutdatedSubaccountApproval) {
+            invalidateSubaccountApproval(sentSubaccountApproval);
+          }
+
           if (expressParams) {
             updatePendingExpressTxn({
               key: getExpressParamsKey(expressParams),
@@ -481,6 +493,7 @@ export function useOrderTxnCallbacks() {
       blockNumber,
       chainId,
       srcChainId,
+      invalidateSubaccountApproval,
       ordersInfoData,
       orderStatuses,
       setPendingTpSlOrderBatches,
