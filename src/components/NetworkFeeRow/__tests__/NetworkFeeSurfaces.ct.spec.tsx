@@ -316,12 +316,14 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       await page.locator(getDataQALocator("open-order-editor")).click();
 
-      // the stand opens the editor with empty inputs; a price below the mark keeps the order valid so the gas check decides the button
-      await page.locator(getDataQALocator("amount-input-input")).fill("2000");
-      await page.locator(getDataQALocator("trigger-price-input-input")).fill("1700");
-
+      // the stand opens the editor with empty inputs; a price below the mark keeps the order valid so the gas check decides the button.
+      // The editor's init effect may overwrite a fill that lands before it under load, so the fills are retried until the state settles.
       const blockedButton = page.getByRole("button", { name: "Insufficient USDC in GMX Account" });
-      await expect(blockedButton).toBeVisible({ timeout: 20_000 });
+      await expect(async () => {
+        await page.locator(getDataQALocator("amount-input-input")).fill("2000");
+        await page.locator(getDataQALocator("trigger-price-input-input")).fill("1700");
+        await expect(blockedButton).toBeVisible({ timeout: 5_000 });
+      }).toPass({ timeout: 30_000 });
       await expect(blockedButton).toBeDisabled();
 
       const banner = page.getByText("Insufficient USDC for gas in your GMX Account");
