@@ -66,6 +66,11 @@ export function getWithdrawalAmounts(p: {
   };
 
   if (totalPoolUsd == 0n) {
+    if (strategy === "byMarketToken") {
+      values.marketTokenAmount = marketTokenAmount;
+      values.glvTokenAmount = glvTokenAmount ?? 0n;
+    }
+
     return values;
   }
 
