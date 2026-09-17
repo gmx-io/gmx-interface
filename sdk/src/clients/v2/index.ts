@@ -96,6 +96,26 @@ import type {
   OrderStatusResponse,
 } from "utils/orderTransactions/api";
 import { fetchApiPairs } from "utils/pairs/api";
+import {
+  fetchApiTransitAuthorization,
+  fetchApiTransitFeeTier,
+  fetchApiTransitOrder,
+  fetchApiTransitOrders,
+  fetchApiTransitQuote,
+  fetchApiTransitRoutes,
+} from "utils/paxos/api";
+import type {
+  TransitAuthorizationParams,
+  TransitAuthorizationResponse,
+  TransitFeeTierResponse,
+  TransitOrder,
+  TransitOrdersParams,
+  TransitOrdersResponse,
+  TransitQuote,
+  TransitQuoteParams,
+  TransitRoute,
+  TransitRoutesParams,
+} from "utils/paxos/types";
 import { fetchApiPerformanceAnnualized, fetchApiPerformanceSnapshots } from "utils/performance/api";
 import { PerformanceAnnualized, PerformanceParams, PerformanceSnapshots } from "utils/performance/types";
 import { fetchApiPositionsInfo } from "utils/positions/api";
@@ -204,6 +224,26 @@ export type {
   JitLiquidityMap,
 } from "utils/jitLiquidity/types";
 export type { StakingPowerResponse } from "utils/staking/types";
+export type {
+  TransitAuthorizationMethod,
+  TransitAuthorizationParams,
+  TransitAuthorizationResponse,
+  TransitFeeTier,
+  TransitFeeTierResponse,
+  TransitOrder,
+  TransitOrderExecution,
+  TransitOrderStatus,
+  TransitOrdersParams,
+  TransitOrdersResponse,
+  TransitPermitData,
+  TransitQuote,
+  TransitQuoteParams,
+  TransitQuoteTransaction,
+  TransitResponseFormat,
+  TransitRoute,
+  TransitRoutesParams,
+  TransitTokenMetadata,
+} from "utils/paxos/types";
 export type {
   ApiTradeAction,
   FetchTradesParams,
@@ -411,6 +451,30 @@ export class GmxApiSdk {
 
   fetchStakingPower(params: { address: string }): Promise<StakingPowerResponse> {
     return fetchApiStakingPower(this.ctx, params);
+  }
+
+  fetchTransitRoutes(params?: TransitRoutesParams): Promise<TransitRoute[]> {
+    return fetchApiTransitRoutes(this.ctx, params);
+  }
+
+  fetchTransitFeeTier(params: { userAddress: string }): Promise<TransitFeeTierResponse> {
+    return fetchApiTransitFeeTier(this.ctx, params);
+  }
+
+  fetchTransitAuthorization(params: TransitAuthorizationParams): Promise<TransitAuthorizationResponse> {
+    return fetchApiTransitAuthorization(this.ctx, params);
+  }
+
+  fetchTransitQuote(params: TransitQuoteParams): Promise<TransitQuote> {
+    return fetchApiTransitQuote(this.ctx, params);
+  }
+
+  fetchTransitOrder(params: { orderId: string }): Promise<TransitOrder> {
+    return fetchApiTransitOrder(this.ctx, params);
+  }
+
+  fetchTransitOrders(params: TransitOrdersParams): Promise<TransitOrdersResponse> {
+    return fetchApiTransitOrders(this.ctx, params);
   }
 
   fetchWalletBalances(params: { address: string }): Promise<WalletBalance[]> {

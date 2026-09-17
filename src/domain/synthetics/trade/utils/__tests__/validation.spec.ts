@@ -11,6 +11,7 @@ import {
   getConditionalDepositError,
   getConditionalDepositWarning,
   getEditCollateralError,
+  getGmSwapError,
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
   getMarginDepositBeyondLiqPriceMessage,
