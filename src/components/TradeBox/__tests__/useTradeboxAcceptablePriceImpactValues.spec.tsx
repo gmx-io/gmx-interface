@@ -201,6 +201,15 @@ describe("useTradeboxAcceptablePriceImpactValues", () => {
     expect(read()).toEqual({ defaultBps: "40", selectedBps: "40" });
   });
 
+  it("re-applies the unchanged recommended impact when the user changes the limit price", () => {
+    const { read, update } = renderHook(limitOrderValues);
+
+    update({ triggerPrice: 1900n * 10n ** 30n + 10n ** 28n });
+    update({ increaseAmounts: increaseWithRecommendation(35n), toTokenInputValue: "1.0501" });
+
+    expect(read()).toEqual({ defaultBps: "35", selectedBps: "35" });
+  });
+
   it("re-applies the recommended impact when the user changes the market", () => {
     const { read, update } = renderHook(limitOrderValues);
 

@@ -63,7 +63,7 @@ export function useTradeboxAcceptablePriceImpactValues() {
         return;
       }
 
-      if (!isAcceptablePriceImpactCustomized) {
+      if (isAnyValueChanged || !isAcceptablePriceImpactCustomized) {
         setSelectedAcceptablePriceImpactBps(recommendedAcceptablePriceImpactBps);
       }
 
@@ -71,6 +71,7 @@ export function useTradeboxAcceptablePriceImpactValues() {
     },
     [
       isAcceptablePriceImpactCustomized,
+      isAnyValueChanged,
       recommendedAcceptablePriceImpactBps,
       setDefaultTriggerAcceptablePriceImpactBps,
       setSelectedAcceptablePriceImpactBps,
