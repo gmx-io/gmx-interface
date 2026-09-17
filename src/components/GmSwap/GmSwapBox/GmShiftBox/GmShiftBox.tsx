@@ -128,10 +128,8 @@ export function GmShiftBox({
       toMarketInfo !== undefined && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress),
   });
 
-  const noAmountSet = amounts?.fromTokenAmount === undefined;
-  const balanceNotEqualToAmount = selectedToken?.balance !== amounts?.fromTokenAmount;
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
-  const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
+  const isMaxSelected = selectedToken?.balance !== undefined && amounts?.fromTokenAmount === selectedToken.balance;
 
   const selectedTokenDollarAmount = formatUsd(
     amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n
@@ -270,7 +268,8 @@ export function GmShiftBox({
                     : undefined
                 }
                 onClickBottomRightLabel={handleSelectedTokenClickMax}
-                onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
+                onClickMax={hasBalance ? handleSelectedTokenClickMax : undefined}
+                isMaxSelected={isMaxSelected}
                 inputValue={selectedMarketText}
                 onInputValueChange={handleSelectedTokenInputValueChange}
                 onFocus={handleSelectedTokenFocus}

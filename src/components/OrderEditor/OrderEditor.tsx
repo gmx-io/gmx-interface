@@ -980,10 +980,11 @@ export function OrderEditor(p: Props) {
                   bottomRightLabel={isTriggerDecrease && positionSize !== undefined ? t`Max` : undefined}
                   bottomRightValue={isTriggerDecrease ? formatUsdPrice(positionSize) : undefined}
                   onClickMax={
-                    isTriggerDecrease && positionSize !== undefined && positionSize > 0 && sizeUsd !== positionSize
+                    isTriggerDecrease && positionSize !== undefined && positionSize > 0
                       ? closeSize.setMaxCloseSize
                       : undefined
                   }
+                  isMaxSelected={sizeUsd === positionSize}
                   maxDecimals={
                     isTriggerDecrease && closeSize.showSizeInTokens ? positionIndexToken?.decimals ?? 18 : USD_DECIMALS
                   }

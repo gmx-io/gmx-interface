@@ -70,7 +70,12 @@ import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
+import {
+  convertToTokenAmount,
+  convertToUsd,
+  getBalanceByBalanceType,
+  TokenBalanceType,
+} from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -99,10 +104,13 @@ import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import useWallet from "lib/wallets/useWallet";
-import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { estimateOrderOraclePriceCount } from "sdk/utils/fees/estimateOraclePriceCount";
-import { estimateExecuteSwapOrderGasLimit, getExecutionFee } from "sdk/utils/fees/executionFee";
+import {
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getExecutionFee,
+} from "sdk/utils/fees/executionFee";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { TradeMode } from "sdk/utils/trade/types";
 
@@ -112,6 +120,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
+import { MaxActionsHint } from "components/MaxActions/MaxActions";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -398,28 +407,27 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     gasPaymentTokenAddress,
   ]);
 
-  const treatMinimalBufferAsEnough =
-    isSwap &&
-    toToken &&
-    (expressOrdersEnabledForMax
-      ? getGasPaymentTokens(chainId).includes(toToken.address)
-      : toToken.address === zeroAddress);
-
   const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
     : submitButtonState.primaryExecutionFee?.feeTokenAmount;
 
-  const fallbackSwapExecutionFeeAmount = useMemo(() => {
-    if (!isSwap || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
-    const estimatedGasLimit = estimateExecuteSwapOrderGasLimit(gasLimits, {
-      swapsCount: 0,
-      callbackGasLimit: 0n,
-    });
+  const fallbackExecutionFeeAmount = useMemo(() => {
+    if ((!isSwap && !isIncrease) || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
+    const estimatedGasLimit = isSwap
+      ? estimateExecuteSwapOrderGasLimit(gasLimits, { swapsCount: 0, callbackGasLimit: 0n })
+      : estimateExecuteIncreaseOrderGasLimit(gasLimits, { swapsCount: 0 });
     const oraclePriceCount = estimateOrderOraclePriceCount(0);
-    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice, oraclePriceCount)
-      ?.feeTokenAmount;
-  }, [isSwap, gasLimits, gasPrice, tokensData, chainId]);
+    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice, oraclePriceCount);
+
+    if (!expressOrdersEnabledForMax) {
+      return executionFee?.feeTokenAmount;
+    }
+
+    return executionFee && gasPaymentTokenData
+      ? convertToTokenAmount(executionFee.feeUsd, gasPaymentTokenData.decimals, gasPaymentTokenData.prices.minPrice)
+      : undefined;
+  }, [isSwap, isIncrease, gasLimits, gasPrice, tokensData, chainId, expressOrdersEnabledForMax, gasPaymentTokenData]);
 
   const isMaxAmountLoading = expressOrdersEnabledForMax && submitButtonState.isExpressLoading;
 
@@ -427,32 +435,48 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     fromToken,
     isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet
   );
-  const gasPaymentTokenBalanceForMax = getBalanceByBalanceType(
-    gasPaymentTokenForMax,
-    isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet
-  );
+  const reserveTokenForMax = isFromTokenGmxAccount
+    ? gmxAccountGasPaymentTokenData
+    : expressOrdersEnabled
+      ? gasPaymentTokenData
+      : undefined;
 
-  const { maxAvailableAmount, formattedMaxAvailableAmount, showClickMax, gasPaymentTokenWarningContent } =
-    useMaxAvailableAmount({
-      fromToken,
-      fromTokenBalance,
-      fromTokenAmount,
-      fromTokenInputValue,
-      isLoading: isMaxAmountLoading,
-      gasPaymentToken: gasPaymentTokenForMax,
-      gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
-      gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
-      fallbackGasPaymentTokenAmount: fallbackSwapExecutionFeeAmount,
-      useMinimalBuffer: treatMinimalBufferAsEnough,
-      isGmxAccount: isFromTokenGmxAccount,
-    });
+  const {
+    maxAvailableAmount,
+    formattedMaxAvailableAmount,
+    formattedKeepGasAmount,
+    maxActions,
+    gasPaymentTokenWarningContent,
+  } = useMaxAvailableAmount({
+    fromToken,
+    fromTokenBalance,
+    fromTokenAmount,
+    isLoading: isMaxAmountLoading,
+    feeToken: gasPaymentTokenForMax,
+    feeTokenAmount: gasPaymentTokenAmountForMax,
+    fallbackFeeTokenAmount: fallbackExecutionFeeAmount,
+    reserveToken: reserveTokenForMax,
+    isGmxAccount: isFromTokenGmxAccount,
+  });
 
   const onMaxClick = useCallback(() => {
-    if (formattedMaxAvailableAmount) {
+    if (maxAvailableAmount > 0n) {
       setFocusedInput("from");
       setFromTokenInputValue(formattedMaxAvailableAmount, true);
     }
-  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
+  }, [maxAvailableAmount, formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
+
+  const onKeepGasClick = useCallback(() => {
+    if (formattedKeepGasAmount !== undefined) {
+      setFocusedInput("from");
+      setFromTokenInputValue(formattedKeepGasAmount, true);
+    }
+  }, [formattedKeepGasAmount, setFocusedInput, setFromTokenInputValue]);
+
+  const payMaxActionsProps =
+    fromTokenBalance !== undefined && fromTokenBalance > 0n
+      ? { state: maxActions, onMax: onMaxClick, onKeepGas: onKeepGasClick }
+      : undefined;
 
   useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
@@ -769,7 +793,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           }
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputTokenChange}
-          onClickMax={showClickMax ? onMaxClick : undefined}
+          maxActions={payMaxActionsProps}
           qa="pay"
           maxDecimals={fromToken?.decimals}
           placeholder={TRADEBOX_INPUT_PLACEHOLDER}
@@ -880,6 +904,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                 )}
               </BuyInputSection>
             </div>
+            <MaxActionsHint hint={maxActions.hint} />
           </>
         )}
 
@@ -1143,6 +1168,8 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                   triggerPriceInputValue={triggerPriceInputValue}
                   onTriggerPriceInputChange={handleTriggerPriceInputChange}
                   maxAvailableAmount={maxAvailableAmount}
+                  maxActions={maxActions}
+                  onKeepGasClick={onKeepGasClick}
                   onMarkPriceClick={setMarkPriceAsTriggerPrice}
                 />
               )}

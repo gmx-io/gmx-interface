@@ -12,6 +12,7 @@ import {
   RANDOM_ACCOUNT,
 } from "config/multichain";
 import { useGmxAccountModalOpen, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { showWalletCrossChainSendStatusToast } from "domain/multichain/progress/walletCrossChainSendToast";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
@@ -47,6 +48,7 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
+import { MaxActions, MaxActionsHint } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -373,26 +375,28 @@ export function WalletSendView() {
   const fallbackSameChainNetworkFee =
     gasPrice !== undefined ? applyGasLimitBuffer(NATIVE_TOKEN_TRANSFER_GAS_LIMIT) * gasPrice : undefined;
 
-  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
-    fromToken: selectedToken,
-    fromTokenBalance: walletBalance,
-    fromTokenAmount: amount,
-    fromTokenInputValue: inputValue,
-    isLoading: selectedToken?.isNative
-      ? isSameChain
-        ? fallbackSameChainNetworkFee === undefined
-        : networkFee === undefined && !hasCrossChainQuoteError
-      : false,
-    gasPaymentToken: nativeToken,
-    gasPaymentTokenBalance: nativeToken?.walletBalance,
-    gasPaymentTokenAmount: selectedToken?.isNative
-      ? isSameChain
-        ? sameChainNetworkFeeDetails?.amount
-        : networkFee
-      : undefined,
-    fallbackGasPaymentTokenAmount: isSameChain && selectedToken?.isNative ? fallbackSameChainNetworkFee : undefined,
-    useMinimalBuffer: isSameChain,
-  });
+  const { expressOrdersEnabled, gasPaymentTokenAddress } = useSettings();
+
+  const { formattedMaxAvailableAmount, formattedKeepGasAmount, maxAvailableAmount, maxActions } = useMaxAvailableAmount(
+    {
+      fromToken: selectedToken,
+      fromTokenBalance: walletBalance,
+      fromTokenAmount: amount,
+      isLoading: selectedToken?.isNative
+        ? isSameChain
+          ? fallbackSameChainNetworkFee === undefined
+          : networkFee === undefined && !hasCrossChainQuoteError
+        : false,
+      feeToken: nativeToken,
+      feeTokenAmount: selectedToken?.isNative
+        ? isSameChain
+          ? sameChainNetworkFeeDetails?.amount
+          : networkFee
+        : undefined,
+      fallbackFeeTokenAmount: isSameChain && selectedToken?.isNative ? fallbackSameChainNetworkFee : undefined,
+      reserveToken: expressOrdersEnabled ? getByKey(tokensData, gasPaymentTokenAddress) : undefined,
+    }
+  );
 
   const isInsufficientBalance = amount !== undefined && walletBalance !== undefined && amount > walletBalance;
 
@@ -409,8 +413,16 @@ export function WalletSendView() {
       : undefined;
 
   const handleMaxClick = useCallback(() => {
-    setInputValue(formattedMaxAvailableAmount);
-  }, [formattedMaxAvailableAmount]);
+    if (maxAvailableAmount > 0n) {
+      setInputValue(formattedMaxAvailableAmount);
+    }
+  }, [maxAvailableAmount, formattedMaxAvailableAmount]);
+
+  const handleKeepGasClick = useCallback(() => {
+    if (formattedKeepGasAmount !== undefined) {
+      setInputValue(formattedKeepGasAmount);
+    }
+  }, [formattedKeepGasAmount]);
 
   const handleSameChainSend = useCallback(async () => {
     if (
@@ -754,15 +766,20 @@ export function WalletSendView() {
           <div className="text-body-medium flex items-center justify-between text-typography-secondary">
             <Trans>Amount</Trans>
             {selectedToken !== undefined && walletBalance !== undefined && (
-              <div>
-                <Trans>Available:</Trans>{" "}
-                <Amount
-                  className="text-typography-primary"
-                  amount={walletBalance}
-                  decimals={selectedToken.decimals}
-                  isStable={selectedToken.isStable}
-                  symbol={selectedToken.symbol}
-                />
+              <div className="flex items-center gap-8">
+                {walletBalance > 0n && (
+                  <MaxActions qa="send" state={maxActions} onMax={handleMaxClick} onKeepGas={handleKeepGasClick} />
+                )}
+                <button type="button" onClick={handleMaxClick}>
+                  <Trans>Available:</Trans>{" "}
+                  <Amount
+                    className="text-typography-primary"
+                    amount={walletBalance}
+                    decimals={selectedToken.decimals}
+                    isStable={selectedToken.isStable}
+                    symbol={selectedToken.symbol}
+                  />
+                </button>
               </div>
             )}
           </div>
@@ -777,18 +794,10 @@ export function WalletSendView() {
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
-              {showClickMax && (
-                <button
-                  className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
-                           hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
-                  onClick={handleMaxClick}
-                >
-                  <Trans>Max</Trans>
-                </button>
-              )}
             </div>
           </div>
           <div className="text-body-medium text-typography-secondary numbers">{formatUsd(amountUsd ?? 0n)}</div>
+          <MaxActionsHint hint={maxActions.hint} />
         </div>
       </div>
 

@@ -38,6 +38,7 @@ import {
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
@@ -95,6 +96,7 @@ import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { MaxActions, MaxActionsHint } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -551,39 +553,44 @@ export const DepositView = () => {
   const gasPaymentTokenBalanceForDeposit = getBalanceByBalanceType(gasPaymentToken, depositBalanceType);
   const gasPaymentTokenAmountForDepositView =
     depositViewChain === settlementChainId ? sameChainNetworkFeeDetails?.amount : networkFee;
-  const needsGasPaymentTokenBuffer =
-    !ignoreGasPaymentToken &&
-    paymentToken !== undefined &&
-    gasPaymentToken !== undefined &&
-    paymentToken.address === gasPaymentToken.address;
 
   const isLoadingDepositMax =
     depositViewChain === settlementChainId
       ? false
       : isComposeGasLoading ||
         isBaseQuoteSendNativeFeeLoading ||
-        ((inputAmount ?? 0n) > 0n && isQuoteSendNativeFeeLoading) ||
-        (needsGasPaymentTokenBuffer && networkFee === undefined);
+        ((inputAmount ?? 0n) > 0n && isQuoteSendNativeFeeLoading);
+
+  const { expressOrdersEnabled, gasPaymentTokenAddress: settlementChainGasPaymentTokenAddress } = useSettings();
+  const reserveTokenForDeposit =
+    depositViewChain === settlementChainId && expressOrdersEnabled
+      ? getByKey(settlementChainTokensData, settlementChainGasPaymentTokenAddress)
+      : undefined;
+
+  const paymentTokenBalance = getBalanceByBalanceType(paymentToken, depositBalanceType);
 
   const depositMaxDetails = useMaxAvailableAmount({
     fromToken: paymentToken,
-    fromTokenBalance: getBalanceByBalanceType(paymentToken, depositBalanceType),
+    fromTokenBalance: paymentTokenBalance,
     fromTokenAmount: inputAmount,
-    fromTokenInputValue: inputValue ?? "",
     isLoading: isLoadingDepositMax,
     srcChainId: depositViewChain,
-    gasPaymentToken,
-    gasPaymentTokenBalance: gasPaymentTokenBalanceForDeposit,
-    gasPaymentTokenAmount: gasPaymentTokenAmountForDepositView,
-    ignoreGasPaymentToken,
-    useMinimalBuffer: depositViewChain !== undefined && depositViewChain !== settlementChainId,
+    feeToken: ignoreGasPaymentToken ? undefined : gasPaymentToken,
+    feeTokenAmount: gasPaymentTokenAmountForDepositView,
+    reserveToken: reserveTokenForDeposit,
   });
 
   const handleMaxButtonClick = useCallback(() => {
-    if (depositMaxDetails.formattedMaxAvailableAmount) {
+    if (depositMaxDetails.maxAvailableAmount > 0n) {
       setInputValue(depositMaxDetails.formattedMaxAvailableAmount);
     }
-  }, [depositMaxDetails.formattedMaxAvailableAmount, setInputValue]);
+  }, [depositMaxDetails.maxAvailableAmount, depositMaxDetails.formattedMaxAvailableAmount, setInputValue]);
+
+  const handleKeepGasClick = useCallback(() => {
+    if (depositMaxDetails.formattedKeepGasAmount !== undefined) {
+      setInputValue(depositMaxDetails.formattedKeepGasAmount);
+    }
+  }, [depositMaxDetails.formattedKeepGasAmount, setInputValue]);
 
   const isFirstDeposit = useIsFirstDeposit();
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
@@ -1372,11 +1379,21 @@ export const DepositView = () => {
             <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
               <Trans>Deposit</Trans>
               {selectedToken !== undefined && (
-                <div>
-                  <Trans>Available</Trans>{" "}
-                  <span className="text-typography-primary">
-                    <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
-                  </span>
+                <div className="flex items-center gap-8">
+                  {paymentTokenBalance !== undefined && paymentTokenBalance > 0n && (
+                    <MaxActions
+                      qa="deposit"
+                      state={depositMaxDetails.maxActions}
+                      onMax={handleMaxButtonClick}
+                      onKeepGas={handleKeepGasClick}
+                    />
+                  )}
+                  <button type="button" onClick={handleMaxButtonClick}>
+                    <Trans>Available</Trans>{" "}
+                    <span className="text-typography-primary">
+                      <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
+                    </span>
+                  </button>
                 </div>
               )}
             </div>
@@ -1391,16 +1408,6 @@ export const DepositView = () => {
               />
               <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
                 <span className="text-typography-secondary">{selectedToken?.symbol}</span>
-                {depositMaxDetails.showClickMax && (
-                  <button
-                    className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
-                             hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
-                    type="button"
-                    onClick={handleMaxButtonClick}
-                  >
-                    <Trans>Max</Trans>
-                  </button>
-                )}
               </div>
             </div>
             {!selectedToken?.isStable && (
@@ -1408,6 +1415,7 @@ export const DepositView = () => {
                 {formatUsd(inputAmountUsd ?? 0n)}
               </div>
             )}
+            <MaxActionsHint hint={depositMaxDetails.maxActions.hint} />
             {isAboveLimit && (
               <AlertInfoCard type="warning" className="mt-8" hideClose>
                 <div>

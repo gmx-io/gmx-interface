@@ -60,7 +60,7 @@ export function TradeInputBox({
         </div>
 
         {(rightHeadline || rightContent) && (
-          <div className="flex w-[124px] shrink-0 flex-col justify-end gap-4 px-12 pb-8 pt-10">
+          <div className="flex min-w-[124px] shrink-0 flex-col justify-end gap-4 px-12 pb-8 pt-10">
             {rightHeadline && (
               <div className="text-body-small flex items-center justify-end text-typography-secondary">
                 {rightHeadline}

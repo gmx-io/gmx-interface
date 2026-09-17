@@ -126,12 +126,10 @@ export function BridgeOutModal({
       ? gmxAccountMarketTokenBalance - bridgeOutAmount
       : undefined;
 
-  const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+  const { formattedBalance, formattedMaxAvailableAmount, maxAvailableAmount, maxActions } = useMaxAvailableAmount({
     fromToken: marketToken,
     fromTokenBalance: gmxAccountMarketTokenBalance,
     fromTokenAmount: bridgeOutAmount,
-    fromTokenInputValue: bridgeOutInputValue,
-    ignoreGasPaymentToken: true,
   });
 
   const bridgeOutParams = useBridgeOutParams({
@@ -433,12 +431,13 @@ export function BridgeOutModal({
           bottomRightValue={formattedBalance}
           bottomRightLabel={t`Available`}
           onClickMax={
-            showClickMax
+            maxAvailableAmount > 0n
               ? () => {
                   setBridgeOutInputValue(formattedMaxAvailableAmount);
                 }
               : undefined
           }
+          isMaxSelected={maxActions.selected === "max"}
           maxDecimals={marketTokenDecimals}
         >
           <span className="inline-flex items-center">

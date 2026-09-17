@@ -112,6 +112,7 @@ import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
+import { MaxActions, MaxActionsHint } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -1072,12 +1073,11 @@ export const WithdrawalView = () => {
     wrappedNativeTokenAddress,
   ]);
 
-  const { gasPaymentTokenForMax, gasPaymentTokenAmountForMax, gasPaymentTokenBalanceForMax } = useMemo(() => {
+  const { gasPaymentTokenForMax, gasPaymentTokenAmountForMax } = useMemo(() => {
     if (isSameChain) {
       return {
-        gasPaymentTokenForMax: gasPaymentToken,
-        gasPaymentTokenAmountForMax: 0n,
-        gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
+        gasPaymentTokenForMax: undefined,
+        gasPaymentTokenAmountForMax: undefined,
       };
     }
 
@@ -1085,7 +1085,6 @@ export const WithdrawalView = () => {
       return {
         gasPaymentTokenForMax: selectedToken,
         gasPaymentTokenAmountForMax: wntFee ?? lastValidNetworkFees.wntFee,
-        gasPaymentTokenBalanceForMax: getBalanceByBalanceType(selectedToken, TokenBalanceType.GmxAccount),
       };
     }
 
@@ -1093,14 +1092,12 @@ export const WithdrawalView = () => {
       return {
         gasPaymentTokenForMax: gasPaymentToken,
         gasPaymentTokenAmountForMax: networkFeeInGasPaymentToken ?? lastValidNetworkFees.networkFeeInGasPaymentToken,
-        gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
       };
     }
 
     return {
       gasPaymentTokenForMax: gasPaymentToken,
       gasPaymentTokenAmountForMax: someGasPaymentTokenAmount ?? lastValidNetworkFees.someGasPaymentTokenAmount,
-      gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
     };
   }, [
     gasPaymentToken,
@@ -1122,15 +1119,12 @@ export const WithdrawalView = () => {
     fromToken: selectedToken,
     fromTokenAmount: inputAmount,
     fromTokenBalance: getBalanceByBalanceType(selectedToken, TokenBalanceType.GmxAccount),
-    fromTokenInputValue: inputValue ?? "",
     isLoading: isLoadingWithdrawalMax,
-    gasPaymentToken: gasPaymentTokenForMax,
-    gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
-    gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
+    feeToken: gasPaymentTokenForMax,
+    feeTokenAmount: gasPaymentTokenAmountForMax,
+    reserveToken: gasPaymentToken,
     isGmxAccount: true,
   });
-
-  const showMaxButton = withdrawalMaxDetails.showClickMax;
 
   const handlePickToken = useCallback(
     (tokenAddress: string) => {
@@ -1174,10 +1168,16 @@ export const WithdrawalView = () => {
   });
 
   const handleMaxButtonClick = useCallback(() => {
-    if (withdrawalMaxDetails.formattedMaxAvailableAmount) {
+    if (withdrawalMaxDetails.maxAvailableAmount > 0n) {
       setInputValue(withdrawalMaxDetails.formattedMaxAvailableAmount);
     }
-  }, [withdrawalMaxDetails.formattedMaxAvailableAmount, setInputValue]);
+  }, [withdrawalMaxDetails.maxAvailableAmount, withdrawalMaxDetails.formattedMaxAvailableAmount, setInputValue]);
+
+  const handleKeepGasClick = useCallback(() => {
+    if (withdrawalMaxDetails.formattedKeepGasAmount !== undefined) {
+      setInputValue(withdrawalMaxDetails.formattedKeepGasAmount);
+    }
+  }, [withdrawalMaxDetails.formattedKeepGasAmount, setInputValue]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
 
@@ -1580,10 +1580,17 @@ export const WithdrawalView = () => {
         <div className="flex flex-col gap-6">
           <div className="text-body-medium flex items-center justify-between text-typography-secondary">
             <Trans>Withdraw</Trans>
-            {selectedToken !== undefined &&
-              selectedToken.gmxAccountBalance !== undefined &&
-              selectedToken !== undefined && (
-                <div>
+            {selectedToken !== undefined && selectedToken.gmxAccountBalance !== undefined && (
+              <div className="flex items-center gap-8">
+                {selectedToken.gmxAccountBalance > 0n && (
+                  <MaxActions
+                    qa="withdraw"
+                    state={withdrawalMaxDetails.maxActions}
+                    onMax={handleMaxButtonClick}
+                    onKeepGas={handleKeepGasClick}
+                  />
+                )}
+                <button type="button" onClick={handleMaxButtonClick}>
                   <Trans>Available:</Trans>{" "}
                   <Amount
                     className="text-typography-primary"
@@ -1592,8 +1599,9 @@ export const WithdrawalView = () => {
                     isStable={selectedToken.isStable}
                     symbol={selectedToken.symbol}
                   />
-                </div>
-              )}
+                </button>
+              </div>
+            )}
           </div>
           <div className="relative text-16 leading-base">
             <NumberInput
@@ -1606,18 +1614,10 @@ export const WithdrawalView = () => {
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
-              {showMaxButton && (
-                <button
-                  className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
-                           hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
-                  onClick={handleMaxButtonClick}
-                >
-                  <Trans>Max</Trans>
-                </button>
-              )}
             </div>
           </div>
           <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          <MaxActionsHint hint={withdrawalMaxDetails.maxActions.hint} />
         </div>
       </div>
 

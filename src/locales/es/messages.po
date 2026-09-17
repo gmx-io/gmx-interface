@@ -416,6 +416,10 @@ msgstr "Hoja de Ruta"
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price."
 msgstr "Es posible que este depósito de margen no se ejecute antes de la liquidación: su activador está en o más allá del precio de liquidación estimado."
 
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Leaves no {symbol} in your {source} for future Express fees."
+msgstr "No deja {symbol} en tu {source} para futuras comisiones Express."
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "A"
@@ -1991,6 +1995,10 @@ msgstr "Mercados"
 msgid "Retry"
 msgstr "Reintentar"
 
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Keeps {reserve} {symbol} in your {source} for future Express fees."
+msgstr "Guarda {reserve} {symbol} en tu {source} para futuras comisiones Express."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Available liquidity {directionLabel}"
 msgstr "Liquidez disponible {directionLabel}"
@@ -2354,6 +2362,10 @@ msgstr "EIP-4844"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Mantener apalancamiento en {0}"
+
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Fills Max minus {reserve} {symbol}, kept in your {source} for future Express fees."
+msgstr "Rellena \"Máx.\" menos {reserve} {symbol}, que se guardan en tu {source} para futuras comisiones Express."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
@@ -2982,7 +2994,6 @@ msgid "Refer traders to GMX with your unique link and earn a share of the fees t
 msgstr "Refiera traders a GMX con su enlace único y gane una parte de las comisiones que generen."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Max:"
@@ -3058,11 +3069,8 @@ msgstr "RANGO"
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} orden para"
 
-#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/WalletSendView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/MaxActions/MaxActions.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Max"
 msgstr "Máx."
@@ -3143,6 +3151,10 @@ msgstr "Intercambio fallido"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>Hay que vigilar a <1>@GMX_IO</1> aquí. Mientras todo DeFi está en ruinas, GMX continúa mostrando un rendimiento sostenido impresionante en usuarios, AUM, volumen/tarifas, interés abierto y utilización de capital. El mejor lugar para intercambiar entre activos mayores en Arbitrum y exposición al airdrop de Arb</0>"
+
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Not enough {symbol} in your {source} to cover this transaction's fee (~{holdback} {symbol})."
+msgstr "No hay suficiente {symbol} en tu {source} para cubrir la comisión de esta transacción (~{holdback} {symbol})."
 
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Update available"
@@ -6374,6 +6386,10 @@ msgstr "Liquidación del ciclo de vida"
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
 
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Reserves ~{holdback} {symbol} for this transaction's fee. Leaves no {symbol} in your {source} for future Express fees."
+msgstr "Reserva ~{holdback} {symbol} para la comisión de esta transacción. No deja {symbol} en tu {source} para futuras comisiones Express."
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Reclamaciones no disponibles en Avalanche Fuji"
@@ -9580,6 +9596,8 @@ msgstr "{addressLabel} en {networkLabel}"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+#: src/domain/tokens/useMaxAvailableAmount.ts
+#: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Loading fees..."
 msgstr "Cargando comisiones..."
 
@@ -11300,6 +11318,10 @@ msgstr "Comparta su operación de GMX en X"
 msgid "Pool short amount"
 msgstr "Cantidad corta del pool"
 
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Reserves ~{holdback} {symbol} for this transaction's fee."
+msgstr "Reserva ~{holdback} {symbol} para la comisión de esta transacción."
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "APY de Comisión"
@@ -12398,6 +12420,10 @@ msgstr "Vender"
 msgid "Lent position impact pool amount"
 msgstr "Cantidad prestada del pool de impacto de posición"
 
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee."
+msgstr "Guarda {reserve} {symbol} en tu {source} para futuras comisiones Express y ~{holdback} {symbol} para la comisión de esta transacción."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "corto"
@@ -12572,6 +12598,10 @@ msgstr "Comisión de red"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas in {srcChainNativeTokenSymbol} from your {srcChainName} wallet."
 msgstr "Se usa solo para las comisiones Express y One-Click, pagadas desde el saldo que utiliza la acción. Los puentes pagan el gas en {srcChainNativeTokenSymbol} desde tu Monedero de {srcChainName}."
+
+#: src/components/MaxActions/MaxActions.tsx
+msgid "Keep gas"
+msgstr "Guardar gas"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"

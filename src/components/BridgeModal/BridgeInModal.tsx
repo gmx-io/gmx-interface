@@ -126,13 +126,11 @@ export function BridgeInModal({
       ? gmxAccountMarketTokenBalance + bridgeInAmount
       : undefined;
 
-  const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+  const { formattedBalance, formattedMaxAvailableAmount, maxAvailableAmount, maxActions } = useMaxAvailableAmount({
     fromToken: marketToken,
     fromTokenBalance: bridgeInChainMarketTokenBalance,
     fromTokenAmount: bridgeInAmount,
-    fromTokenInputValue: bridgeInInputValue,
     srcChainId: bridgeInChain,
-    ignoreGasPaymentToken: true,
   });
 
   const nativeFeeAsyncResult = useThrottledAsync(
@@ -342,12 +340,13 @@ export function BridgeInModal({
           bottomRightValue={formattedBalance}
           bottomRightLabel={t`Available`}
           onClickMax={
-            showClickMax
+            maxAvailableAmount > 0n
               ? () => {
                   setBridgeInInputValue(formattedMaxAvailableAmount);
                 }
               : undefined
           }
+          isMaxSelected={maxActions.selected === "max"}
           maxDecimals={sourceChainDecimals}
         >
           <MultichainMarketTokenSelector

@@ -14,11 +14,13 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import useWallet from "lib/wallets/useWallet";
 
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
+import { MaxActions } from "components/MaxActions/MaxActions";
 import NumberInput from "components/NumberInput/NumberInput";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -32,6 +34,8 @@ type Props = {
   onInputValueChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
   onMaxClick?: () => void;
+  onKeepGasClick?: () => void;
+  maxActions?: MaxActionsState;
   onFocus?: () => void;
   qa?: string;
 };
@@ -41,6 +45,8 @@ export function MarginField({
   onInputValueChange,
   onSelectFromTokenAddress,
   onMaxClick,
+  onKeepGasClick,
+  maxActions = DEFAULT_MAX_ACTIONS_STATE,
   onFocus,
   qa,
 }: Props) {
@@ -78,6 +84,10 @@ export function MarginField({
     [onMaxClick]
   );
 
+  const handleMaxClick = useCallback(() => {
+    onMaxClick?.();
+  }, [onMaxClick]);
+
   const showUsd = fromUsd !== undefined && !fromToken?.isStable;
 
   return (
@@ -100,15 +110,20 @@ export function MarginField({
       }
       rightHeadline={
         formattedBalance !== undefined ? (
-          <button
-            type="button"
-            onClick={handleBalanceClick}
-            className="flex items-center gap-4 text-12 text-typography-secondary hover:text-typography-primary"
-            data-qa={qa ? qa + "-max" : undefined}
-          >
-            <WalletIcon className="size-14" />
-            <span className="numbers">{formattedBalance}</span>
-          </button>
+          <div className="flex items-center gap-6">
+            {fromToken !== undefined && fromToken.balance !== undefined && fromToken.balance > 0n && (
+              <MaxActions qa={qa} state={maxActions} onMax={handleMaxClick} onKeepGas={onKeepGasClick} />
+            )}
+            <button
+              type="button"
+              onClick={handleBalanceClick}
+              className="flex items-center gap-4 text-12 text-typography-secondary hover:text-typography-primary"
+              data-qa={qa ? qa + "-balance" : undefined}
+            >
+              <WalletIcon className="size-14" />
+              <span className="numbers">{formattedBalance}</span>
+            </button>
+          </div>
         ) : undefined
       }
       rightContent={

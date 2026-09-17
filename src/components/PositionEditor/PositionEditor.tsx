@@ -26,6 +26,10 @@ import {
   usePositionEditorTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import {
+  selectGmxAccountGasPaymentToken,
+  selectSettlementChainGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorSelectedCollateralToken,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
@@ -34,12 +38,12 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
+import { convertToTokenAmount, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/validation";
-import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
+import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState, useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import {
@@ -63,6 +67,7 @@ import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { MaxActions, MaxActionsHint } from "components/MaxActions/MaxActions";
 import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
 import Tabs from "components/Tabs/Tabs";
@@ -249,33 +254,40 @@ export function PositionEditor() {
   const submitButtonState = usePositionEditorButtonState(operation, isActiveForm);
   const gasPaymentToken = submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken;
 
-  // express params cannot resolve without the trigger price, so fall back to the native-token estimate
-  const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
-  const gasPaymentTokenForMax =
-    expressOrdersEnabled && !collateralToken?.isNative && expressGasPaymentParams !== undefined
-      ? expressGasPaymentParams.gasPaymentToken
-      : nativeToken;
-  const gasPaymentTokenAmountForMax =
-    expressOrdersEnabled && !collateralToken?.isNative && expressGasPaymentParams !== undefined
-      ? expressGasPaymentParams.gasPaymentTokenAmount
-      : executionFee?.feeTokenAmount;
+  const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const reserveTokenForMax = isCollateralTokenFromGmxAccount
+    ? gmxAccountGasPaymentToken
+    : expressOrdersEnabled
+      ? settlementChainGasPaymentToken
+      : undefined;
 
   const expressEnabledForMax = expressOrdersEnabled && !collateralToken?.isNative;
+  const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+  const gasPaymentTokenForMax = expressEnabledForMax
+    ? expressGasPaymentParams?.gasPaymentToken ?? reserveTokenForMax
+    : nativeToken;
+  const gasPaymentTokenAmountForMax = expressEnabledForMax
+    ? expressGasPaymentParams?.gasPaymentTokenAmount
+    : executionFee?.feeTokenAmount;
+  const fallbackGasPaymentTokenAmountForMax =
+    expressEnabledForMax && executionFee && gasPaymentTokenForMax
+      ? convertToTokenAmount(executionFee.feeUsd, gasPaymentTokenForMax.decimals, gasPaymentTokenForMax.prices.minPrice)
+      : undefined;
   const isMaxAmountLoading = expressEnabledForMax && submitButtonState.isExpressLoading;
 
   const depositBalanceType = isCollateralTokenFromGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet;
   const collateralTokenBalance = getBalanceByBalanceType(collateralToken, depositBalanceType);
-  const gasPaymentTokenBalanceForMax = getBalanceByBalanceType(gasPaymentTokenForMax, depositBalanceType);
 
   const depositMaxDetails = useMaxAvailableAmount({
     fromToken: collateralToken,
     fromTokenBalance: collateralTokenBalance,
     fromTokenAmount: collateralDeltaAmount,
-    fromTokenInputValue: collateralInputValue,
     isLoading: isMaxAmountLoading,
-    gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
-    gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
-    gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+    feeToken: isDeposit ? gasPaymentTokenForMax : undefined,
+    feeTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+    fallbackFeeTokenAmount: isDeposit ? fallbackGasPaymentTokenAmountForMax : undefined,
+    reserveToken: isDeposit ? reserveTokenForMax : undefined,
     isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
@@ -289,6 +301,20 @@ export function PositionEditor() {
     const percentage = Number((collateralDeltaAmount * 100n) / maxAvailableAmount);
     return Math.min(100, Math.max(0, percentage));
   }, [collateralDeltaAmount, maxAvailableAmount]);
+
+  const withdrawMaxActionsState = useMemo(
+    (): MaxActionsState => ({
+      ...DEFAULT_MAX_ACTIONS_STATE,
+      selected: collateralDeltaAmount === maxWithdrawAmount ? "max" : undefined,
+    }),
+    [collateralDeltaAmount, maxWithdrawAmount]
+  );
+
+  const handleKeepGasClick = useCallback(() => {
+    if (depositMaxDetails.formattedKeepGasAmount !== undefined) {
+      setCollateralInputValue(depositMaxDetails.formattedKeepGasAmount);
+    }
+  }, [depositMaxDetails.formattedKeepGasAmount, setCollateralInputValue]);
 
   const handleCollateralPercentageChange = useCallback(
     (percentage: number) => {
@@ -532,24 +558,40 @@ export function PositionEditor() {
               }
               rightHeadline={
                 isDeposit ? (
-                  <button
-                    type="button"
-                    className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCollateralPercentageChange(100);
-                    }}
-                  >
-                    <WalletIcon className="size-14" />
-                    <span className="numbers">
-                      {formatBalanceAmount(collateralTokenBalance ?? 0n, collateralToken?.decimals ?? 0, undefined, {
-                        isStable: collateralToken?.isStable,
-                      })}
-                    </span>
-                  </button>
+                  <div className="flex items-center gap-6">
+                    {collateralTokenBalance !== undefined && collateralTokenBalance > 0n && (
+                      <MaxActions
+                        qa="amount-input"
+                        state={depositMaxDetails.maxActions}
+                        onMax={() => handleCollateralPercentageChange(100)}
+                        onKeepGas={handleKeepGasClick}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCollateralPercentageChange(100);
+                      }}
+                    >
+                      <WalletIcon className="size-14" />
+                      <span className="numbers">
+                        {formatBalanceAmount(collateralTokenBalance ?? 0n, collateralToken?.decimals ?? 0, undefined, {
+                          isStable: collateralToken?.isStable,
+                        })}
+                      </span>
+                    </button>
+                  </div>
                 ) : (
-                  <span className="flex items-center gap-4 text-typography-secondary">
-                    {t`Max:`}{" "}
+                  <span className="flex items-center gap-6 text-typography-secondary">
+                    {maxWithdrawAmount > 0n && (
+                      <MaxActions
+                        qa="amount-input"
+                        state={withdrawMaxActionsState}
+                        onMax={() => handleCollateralPercentageChange(100)}
+                      />
+                    )}
                     <span className="numbers">
                       {formatBalanceAmount(
                         maxWithdrawAmount ?? 0n,
@@ -580,6 +622,7 @@ export function PositionEditor() {
                 </div>
               }
             />
+            <MaxActionsHint hint={isDeposit ? depositMaxDetails.maxActions.hint : undefined} />
             {maxAvailableAmount !== undefined && maxAvailableAmount > 0n && (
               <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
             )}
