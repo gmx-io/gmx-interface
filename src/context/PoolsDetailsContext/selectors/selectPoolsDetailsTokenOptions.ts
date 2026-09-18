@@ -26,6 +26,7 @@ import type { DisplayToken } from "components/TokenSelector/types";
 
 import { selectPoolsDetailsMultichainTokensArray, selectPoolsDetailsPaySource } from "./baseSelectors";
 import {
+  selectPoolsDetailsAvailableCollateralSwapToken,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsCrossChainMarket,
@@ -130,6 +131,7 @@ const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[]
   const marketAndTradeTokensData = q(selectPoolsDetailsMarketAndTradeTokensData);
   const multichainTradeTokensArray = q(selectPoolsDetailsMultichainTokensArray);
   const isMarketTransferrableToSourceChain = q(selectPoolsDetailsIsCrossChainMarket);
+  const availableCollateralSwapToken = q(selectPoolsDetailsAvailableCollateralSwapToken);
 
   if (!longTokenAddress || !shortTokenAddress) return EMPTY_ARRAY;
 
@@ -219,6 +221,10 @@ const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[]
         });
       }
     }
+  }
+
+  if (availableCollateralSwapToken) {
+    result.push(createDisplayToken(availableCollateralSwapToken, chainId, availableCollateralSwapToken.walletBalance));
   }
 
   const deduplicated = uniqBy(result, (token) => `${token.address}-${token.chainId}`);
