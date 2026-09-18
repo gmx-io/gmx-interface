@@ -28,10 +28,10 @@ const findSwapPath: FindSwapPath = (usdIn) => {
 
   return {
     swapPath: ["0xpool"],
-    swapSteps: [],
-    usdOut: usdIn,
-    amountOut: usdIn / expandDecimals(1, 30 - collateralToken.decimals),
-    totalFeesDeltaUsd: 0n,
+    swapSteps: [{ amountIn: usdIn / expandDecimals(1, 30 - initialShortToken.decimals) }],
+    usdOut,
+    amountOut: usdOut / expandDecimals(1, 30 - collateralToken.decimals),
+    totalFeesDeltaUsd: -feeUsd,
     tokenInAddress: initialShortToken.address,
     tokenOutAddress: collateralToken.address,
   } as unknown as SwapPathStats;
@@ -65,8 +65,9 @@ describe("getDepositAmounts with an initial short token", () => {
   it("deposits the swap output and keeps the paid amount by collaterals", () => {
     const amounts = getAmounts({ strategy: "byCollaterals", findSwapPath });
 
-    expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(10n * USD);
-    expect(amounts.shortTokenAmount).toBe(expandDecimals(10, collateralToken.decimals));
+    expect(amounts.initialShortTokenAmount).toBe(expandDecimals(10, initialShortToken.decimals));
+    expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(SWAPPED_USD);
+    expect(amounts.shortTokenAmount).toBe(swappedShortTokenAmount);
     expect(amounts.longTokenAmount).toBe(0n);
   });
 
@@ -91,12 +92,12 @@ describe("getDepositAmounts with an initial short token", () => {
     expect(swapped.marketTokenAmount).toBeGreaterThan(0n);
   });
 
-  it("estimates the short token by price without a route", () => {
-    const amounts = getAmounts({ strategy: "byCollaterals" });
+  it("does not swap without a route", () => {
+    const amounts = getAmounts({ strategy: "byCollaterals", findSwapPath: () => undefined });
 
     expect(amounts.shortTokenSwapPathStats).toBeUndefined();
-    expect(amounts.shortTokenUsd > 0n).toBe(true);
-    expect(amounts.longTokenAmount).toBe(0n);
+    expect(amounts.initialShortTokenAmount).toBeUndefined();
+    expect(amounts.shortTokenAmount).toBe(0n);
   });
 
   it("asks for enough of the paid token to cover the swap fee by market token", () => {
@@ -109,7 +110,8 @@ describe("getDepositAmounts with an initial short token", () => {
     const swappedUsd = findSwapPath(paidUsd)!.usdOut;
     const paidTokenUnitUsd = expandDecimals(1, 30 - initialShortToken.decimals);
 
-    expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(amounts.shortTokenUsd);
+    expect(paidUsd).toBeGreaterThan(amounts.shortTokenUsd);
+    expect(bigMath.abs(swappedUsd - amounts.shortTokenUsd)).toBeLessThanOrEqual(paidTokenUnitUsd);
     expect(amounts.longTokenUsd).toBe(0n);
   });
 });

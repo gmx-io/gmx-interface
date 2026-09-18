@@ -66,22 +66,21 @@ export function getDepositAmounts(p: {
   };
 
   if (strategy === "byCollaterals") {
-    let shortTokenAfterSwapAmount = 0n;
-
-    if (initialShortToken && initialShortTokenAmount !== undefined && initialShortTokenAmount > 0n) {
+    if (initialShortToken && findSwapPath && initialShortTokenAmount !== undefined && initialShortTokenAmount > 0n) {
       const initialShortTokenUsd = convertToUsd(
         initialShortTokenAmount,
         initialShortToken.decimals,
         initialShortToken.prices.minPrice
       )!;
 
-      values.shortTokenSwapPathStats = findSwapPath?.(initialShortTokenUsd);
-      shortTokenAfterSwapAmount =
-        values.shortTokenSwapPathStats?.amountOut ??
-        convertToTokenAmount(initialShortTokenUsd, shortToken.decimals, shortToken.prices.maxPrice)!;
+      values.shortTokenSwapPathStats = findSwapPath(initialShortTokenUsd);
+
+      if (values.shortTokenSwapPathStats) {
+        values.initialShortTokenAmount = initialShortTokenAmount;
+      }
     }
 
-    const depositShortTokenAmount = initialShortToken ? shortTokenAfterSwapAmount : shortTokenAmount;
+    const depositShortTokenAmount = values.shortTokenSwapPathStats?.amountOut ?? shortTokenAmount;
 
     if (longTokenAmount == 0n && depositShortTokenAmount == 0n && marketTokenAmount == 0n) {
       return values;
@@ -267,7 +266,20 @@ export function getDepositAmounts(p: {
     values.shortTokenAmount = convertToTokenAmount(values.shortTokenUsd, shortToken.decimals, shortTokenPrice)!;
 
     if (initialShortToken && findSwapPath && values.shortTokenUsd > 0n) {
-      values.shortTokenSwapPathStats = findSwapPath(values.shortTokenUsd);
+      const preferredUsdOut = values.shortTokenUsd;
+      const approximateUsdIn = preferredUsdOut;
+      const approximateSwapPathStats = findSwapPath(approximateUsdIn);
+
+      if (approximateSwapPathStats && approximateSwapPathStats.usdOut > 0n) {
+        const adjustedUsdIn = bigMath.mulDiv(approximateUsdIn, preferredUsdOut, approximateSwapPathStats.usdOut);
+
+        values.shortTokenSwapPathStats = findSwapPath(adjustedUsdIn);
+        values.initialShortTokenAmount = convertToTokenAmount(
+          adjustedUsdIn,
+          initialShortToken.decimals,
+          initialShortToken.prices.minPrice
+        );
+      }
     }
   }
 
