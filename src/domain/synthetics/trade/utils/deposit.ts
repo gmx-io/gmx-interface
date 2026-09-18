@@ -66,22 +66,21 @@ export function getDepositAmounts(p: {
   };
 
   if (strategy === "byCollaterals") {
-    let shortTokenAfterSwapAmount = 0n;
-
-    if (initialShortToken && initialShortTokenAmount !== undefined && initialShortTokenAmount > 0n) {
+    if (initialShortToken && findSwapPath && initialShortTokenAmount !== undefined && initialShortTokenAmount > 0n) {
       const initialShortTokenUsd = convertToUsd(
         initialShortTokenAmount,
         initialShortToken.decimals,
         initialShortToken.prices.minPrice
       )!;
 
-      values.shortTokenSwapPathStats = findSwapPath?.(initialShortTokenUsd);
-      shortTokenAfterSwapAmount =
-        values.shortTokenSwapPathStats?.amountOut ??
-        convertToTokenAmount(initialShortTokenUsd, shortToken.decimals, shortToken.prices.maxPrice)!;
+      values.shortTokenSwapPathStats = findSwapPath(initialShortTokenUsd);
+
+      if (values.shortTokenSwapPathStats) {
+        values.initialShortTokenAmount = initialShortTokenAmount;
+      }
     }
 
-    const depositShortTokenAmount = initialShortToken ? shortTokenAfterSwapAmount : shortTokenAmount;
+    const depositShortTokenAmount = values.shortTokenSwapPathStats?.amountOut ?? shortTokenAmount;
 
     if (longTokenAmount == 0n && depositShortTokenAmount == 0n && marketTokenAmount == 0n) {
       return values;
@@ -268,6 +267,7 @@ export function getDepositAmounts(p: {
 
     if (initialShortToken && findSwapPath && values.shortTokenUsd > 0n) {
       values.shortTokenSwapPathStats = findSwapPath(values.shortTokenUsd);
+      values.initialShortTokenAmount = values.shortTokenSwapPathStats?.swapSteps[0]?.amountIn;
     }
   }
 

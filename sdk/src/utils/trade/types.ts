@@ -149,6 +149,7 @@ export type DepositAmounts = {
   glvTokenUsd: bigint;
   shortTokenAmount: bigint;
   shortTokenUsd: bigint;
+  initialShortTokenAmount?: bigint;
   shortTokenSwapPathStats?: SwapPathStats;
   swapFeeUsd: bigint;
   uiFeeUsd: bigint;
