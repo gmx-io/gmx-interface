@@ -42,6 +42,7 @@ import SyntheticsReader from "./SyntheticsReader";
 import SyntheticsRouter from "./SyntheticsRouter";
 import Timelock from "./Timelock";
 import Token from "./Token";
+import TransitStation from "./TransitStation";
 import Treasury from "./Treasury";
 import UniPool from "./UniPool";
 import UniswapV2 from "./UniswapV2";
@@ -97,6 +98,7 @@ export const abis = {
   SyntheticsRouter,
   Timelock,
   Token,
+  TransitStation,
   Reader,
   ReaderV2,
   Treasury,
