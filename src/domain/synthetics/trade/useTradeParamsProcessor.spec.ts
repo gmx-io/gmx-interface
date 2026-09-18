@@ -1,23 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
 import { TradeType } from "sdk/utils/trade/types";
 
-import { getCleanedTradeSearch, getTradeLinkTradeType, isSupportedTradeLinkChainId } from "./useTradeParamsProcessor";
-
-describe("isSupportedTradeLinkChainId", () => {
-  it("accepts supported settlement-chain links", () => {
-    expect(isSupportedTradeLinkChainId(String(AVALANCHE), ARBITRUM)).toBe(true);
-  });
-
-  it("rejects retired settlement-chain links", () => {
-    expect(isSupportedTradeLinkChainId("3637", ARBITRUM)).toBe(false);
-  });
-});
+import { getCleanedTradeSearch, getTradeLinkTradeType } from "./useTradeParamsProcessor";
 
 describe("getCleanedTradeSearch", () => {
   it("strips consumed trade link params and keeps the rest", () => {
     expect(getCleanedTradeSearch("?from=USDC&to=ETH&mode=market&utm_source=x")).toBe("utm_source=x");
+  });
+
+  it("leaves the network param to the app-level network switch", () => {
+    expect(getCleanedTradeSearch("?to=ETH&chainId=43114")).toBe("chainId=43114");
   });
 
   it("strips a search consisting only of trade link params to an empty string", () => {
