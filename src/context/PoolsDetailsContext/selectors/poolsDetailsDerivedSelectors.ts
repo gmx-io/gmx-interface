@@ -517,12 +517,13 @@ export const selectPoolsDetailsGlvTokenAmount = createSelector((q) => {
 
 export const selectPoolsDetailsAvailableCollateralSwapToken = createSelector((q) => {
   const chainId = q(selectChainId);
+  const { isPair } = q(selectPoolsDetailsFlags);
   const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
   const tokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
   const config = getPaxosTransitConfig(chainId);
 
-  if (!config || longTokenAddress !== config.usdgAddress || shortTokenAddress !== config.usdgAddress) {
+  if (!config || isPair || longTokenAddress !== config.usdgAddress || shortTokenAddress !== config.usdgAddress) {
     return undefined;
   }
 
