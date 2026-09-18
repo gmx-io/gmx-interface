@@ -144,6 +144,8 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       glvToken,
       findSwapPath: withdrawalFindSwapPath,
       wrappedReceiveTokenAddress: receiveTokenAddress,
+      receiveToken: collateralSwapTokens?.token,
+      receiveTokenAmount: firstTokenAmount,
       isSameCollaterals: marketInfo.isSameCollaterals,
     });
   }

@@ -12,6 +12,8 @@ export function getWithdrawalAmounts(p: {
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
   wrappedReceiveTokenAddress?: ERC20Address;
+  receiveToken?: TokenData;
+  receiveTokenAmount?: bigint;
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
@@ -34,6 +36,8 @@ export function getWithdrawalAmounts(p: {
     glvTokenAmount,
     findSwapPath,
     wrappedReceiveTokenAddress,
+    receiveToken,
+    receiveTokenAmount,
     isSameCollaterals,
   } = p;
 
@@ -202,7 +206,16 @@ export function getWithdrawalAmounts(p: {
       }
     } else {
       if (isSameCollaterals) {
-        const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
+        const isReceiveTokenSwapped =
+          wrappedReceiveTokenAddress !== undefined && wrappedReceiveTokenAddress !== longToken.address;
+        const receiveTokenUsd =
+          isReceiveTokenSwapped && receiveToken && receiveTokenAmount !== undefined
+            ? convertToUsd(receiveTokenAmount, receiveToken.decimals, receiveToken.prices.minPrice)
+            : undefined;
+        const positiveAmount =
+          receiveTokenUsd !== undefined
+            ? convertToTokenAmount(receiveTokenUsd, longToken.decimals, longToken.prices.maxPrice)!
+            : bigMath.max(longTokenAmount, shortTokenAmount);
         values.longTokenAmount = positiveAmount / 2n;
         values.longTokenBeforeSwapAmount = values.longTokenAmount;
         values.shortTokenAmount = positiveAmount - values.longTokenAmount;
@@ -210,7 +223,7 @@ export function getWithdrawalAmounts(p: {
         values.longTokenUsd = convertToUsd(values.longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenUsd = convertToUsd(values.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
 
-        if (wrappedReceiveTokenAddress && wrappedReceiveTokenAddress !== longToken.address) {
+        if (isReceiveTokenSwapped) {
           const longToReceiveSwapPathStats = findSwapPath!(values.longTokenUsd);
           const shortToReceiveSwapPathStats = findSwapPath!(values.shortTokenUsd);
           if (longToReceiveSwapPathStats && shortToReceiveSwapPathStats) {
