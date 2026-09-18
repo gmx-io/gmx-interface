@@ -1,14 +1,20 @@
 import { lazy, Suspense, useEffect } from "react";
-import { Redirect, Route, RouteComponentProps, Switch, useLocation } from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch, useLocation, useRouteMatch } from "react-router-dom";
 
+import { LandingLayout } from "./components/LandingLayout/LandingLayout";
+import { useConfigureLandingAnalytics } from "./hooks/useConfigureLandingAnalytics";
 import Home from "./pages/Home/Home";
+import Rewards from "./pages/Rewards/Rewards";
+import { RewardsHeaderBadge } from "./pages/Rewards/RewardsHeaderBadge";
 
 const Builders = lazy(() => import("./pages/Builders/Builders"));
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 const TraderAffiliateProgram = lazy(() => import("./pages/TraderAffiliateProgram/TraderAffiliateProgram"));
 
-function TermsPageLoader() {
+const LANDING_PAGE_PATHS = ["/", "/rewards", "/builders", "/trader-affiliate-program"];
+
+function PageLoader() {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="text-center">
@@ -37,33 +43,48 @@ function ScrollToTopOnNavigate() {
 }
 
 export function LandingRoutes() {
+  useConfigureLandingAnalytics();
+  const isRewardsPage = Boolean(useRouteMatch({ path: "/rewards", exact: true }));
+
   return (
     <>
       <ScrollToTopOnNavigate />
       <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
         <Route exact path="/referral-terms">
-          <Suspense fallback={<TermsPageLoader />}>
+          <Suspense fallback={<PageLoader />}>
             <ReferralTerms />
           </Suspense>
         </Route>
         <Route exact path="/terms-and-conditions">
-          <Suspense fallback={<TermsPageLoader />}>
+          <Suspense fallback={<PageLoader />}>
             <TermsAndConditions />
           </Suspense>
         </Route>
-        <Route exact path="/trader-affiliate-program">
-          <Suspense fallback={<TermsPageLoader />}>
-            <TraderAffiliateProgram />
-          </Suspense>
+        <Route exact path={LANDING_PAGE_PATHS}>
+          <LandingLayout headerBadge={isRewardsPage ? <RewardsHeaderBadge /> : undefined}>
+            <Suspense fallback={<PageLoader />}>
+              <Switch>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route exact path="/rewards">
+                  <Rewards />
+                </Route>
+                <Route exact path="/builders">
+                  <Builders />
+                </Route>
+                <Route exact path="/trader-affiliate-program">
+                  <TraderAffiliateProgram />
+                </Route>
+              </Switch>
+            </Suspense>
+          </LandingLayout>
         </Route>
-        <Route exact path="/builders">
-          <Suspense fallback={<TermsPageLoader />}>
-            <Builders />
-          </Suspense>
-        </Route>
+        <Route
+          exact
+          path="/comeback"
+          render={({ location }) => <Redirect to={`/rewards${location.search}${location.hash}`} />}
+        />
         <Route path="*" render={RedirectToHomeWithSearch} />
       </Switch>
     </>

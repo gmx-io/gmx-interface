@@ -1,5 +1,5 @@
 import { AbFlag } from "config/ab";
-import { getStoredUtmParams } from "domain/utm";
+import { getStoredUtmParams, getUtmProfileProps } from "domain/utm";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 
@@ -25,8 +25,8 @@ type ProfileProps = WalletAnalyticsProvenance & {
   last30DVolume?: number;
   totalVolume?: number;
   languageCode: string;
-  ExpressEnabled: boolean;
-  Express1CTEnabled: boolean;
+  ExpressEnabled?: boolean;
+  Express1CTEnabled?: boolean;
   ref?: string;
   utm_source?: string;
   utm_medium?: string;
@@ -66,9 +66,13 @@ class UserAnalytics {
   debug = false;
   earlyEventsQueue: UserAnalyticsEventItem[] = [];
   initCommonParamsRetries = 3;
+  isProcessingQueue = false;
 
   setCommonEventParams = (params: CommonEventParams) => {
     this.commonEventParams = { ...this.commonEventParams, ...params };
+    if (this.getIsCommonParamsInited()) {
+      this.earlyEventsQueue.splice(0).map(this.fillCommonParams).forEach(metrics.pushBatchItem);
+    }
   };
 
   getIsCommonParamsInited = () => {
@@ -142,7 +146,7 @@ class UserAnalytics {
   };
 
   getSessionForwardParams() {
-    const sessionIdParam = `${SESSION_ID_KEY}=${getOrSetSessionId()}`;
+    const sessionIdParam = new URLSearchParams({ [SESSION_ID_KEY]: getOrSetSessionId() }).toString();
     const utmParams = getStoredUtmParams();
 
     return [sessionIdParam, utmParams?.utmString].filter(Boolean).join("&");
@@ -203,30 +207,29 @@ class UserAnalytics {
         distinctId: sessionId,
         customFields: {
           ...data,
+          ...getUtmProfileProps(),
         },
       },
     });
   };
 
   processQueue = async (): Promise<void> => {
-    if (this.earlyEventsQueue.length === 0) {
+    if (this.earlyEventsQueue.length === 0 || this.isProcessingQueue) {
       return;
     }
 
-    if (!this.getIsCommonParamsInited() && this.initCommonParamsRetries > 0) {
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("UserAnalytics: processQueue waiting for common params");
+    this.isProcessingQueue = true;
+    try {
+      while (!this.getIsCommonParamsInited() && this.initCommonParamsRetries > 0) {
+        this.initCommonParamsRetries--;
+        await sleep(PROCESS_QUEUE_INTERVAL_MS);
       }
 
-      this.initCommonParamsRetries--;
-
-      return sleep(PROCESS_QUEUE_INTERVAL_MS).then(this.processQueue);
+      const items = this.earlyEventsQueue.splice(0).map(this.fillCommonParams);
+      items.forEach(metrics.pushBatchItem);
+    } finally {
+      this.isProcessingQueue = false;
     }
-
-    const items = this.earlyEventsQueue.map(this.fillCommonParams);
-
-    await metrics.sendBatchItems(items);
   };
 
   fillCommonParams = (item: UserAnalyticsEventItem): UserAnalyticsEventItem => {
