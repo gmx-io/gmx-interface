@@ -9,6 +9,7 @@ export const PLATFORM_TOKEN_DECIMALS = 18;
 const FALLBACK_STRING_SETTER = noop as (value: string) => void;
 const FALLBACK_STRING_OR_UNDEFINED_SETTER = noop as (value: string | undefined) => void;
 const FALLBACK_BOOLEAN_SETTER = noop as (value: boolean) => void;
+const FALLBACK_BIGINT_OR_UNDEFINED_SETTER = noop as (value: bigint | undefined) => void;
 
 export const selectPoolsDetailsGlvOrMarketAddress = (s: SyntheticsState) => s.poolsDetails?.glvOrMarketAddress;
 export const selectPoolsDetailsSetGlvOrMarketAddress = (s: SyntheticsState) =>
@@ -63,6 +64,13 @@ export const selectPoolsDetailsIsMarketForGlvSelectedManually = (s: SyntheticsSt
   s.poolsDetails?.isMarketForGlvSelectedManually ?? false;
 export const selectPoolsDetailsSetIsMarketForGlvSelectedManually = (s: SyntheticsState) =>
   s.poolsDetails?.setIsMarketForGlvSelectedManually ?? FALLBACK_BOOLEAN_SETTER;
+
+export const selectPoolsDetailsIsTransitRoute = (s: SyntheticsState) => s.poolsDetails?.isTransitRoute ?? false;
+export const selectPoolsDetailsSetIsTransitRoute = (s: SyntheticsState) =>
+  s.poolsDetails?.setIsTransitRoute ?? FALLBACK_BOOLEAN_SETTER;
+export const selectPoolsDetailsTransitAmountOut = (s: SyntheticsState) => s.poolsDetails?.transitAmountOut;
+export const selectPoolsDetailsSetTransitAmountOut = (s: SyntheticsState) =>
+  s.poolsDetails?.setTransitAmountOut ?? FALLBACK_BIGINT_OR_UNDEFINED_SETTER;
 
 export const selectPoolsDetailsWithdrawalMarketTokensData = (s: SyntheticsState) =>
   s.poolsDetails?.withdrawalMarketTokensData;
